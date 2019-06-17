@@ -174,29 +174,44 @@ class ClueToCustomerPanel extends React.Component {
         const clueId = this.props.clue.id;
 
         _.each(contacts, contact => {
-            //如果没有需要更新的字段，直接返回
-            if (_.isEmpty(contact.updateFields)) return;
+            //如果是新联系人
+            if (contact.isNew) {
+                contact = this.refs[contact.id].state.formData;
 
-            //遍历需要更新的字段
-            _.each(contact.updateFields, field => {
                 ajax.send({
-                    url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
-                    type: 'put',
+                    url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
+                    type: 'post',
                     data: contact
                 })
                     .done(result => {
                     })
                     .fail(err => {
-                        /*
-                        this.setState({
-                            isShowClueToCustomerPanel: false,
-                            isShowAddCustomerPanel: true,
-                        });
-                        */
                     });
-            });
+            } else {
+                //如果没有需要更新的字段，直接返回
+                if (_.isEmpty(contact.updateFields)) return;
 
-            delete contact.updateFields;
+                //遍历需要更新的字段
+                _.each(contact.updateFields, field => {
+                    ajax.send({
+                        url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
+                        type: 'put',
+                        data: contact
+                    })
+                        .done(result => {
+                        })
+                        .fail(err => {
+                            /*
+                            this.setState({
+                                isShowClueToCustomerPanel: false,
+                                isShowAddCustomerPanel: true,
+                            });
+                            */
+                        });
+                });
+
+                delete contact.updateFields;
+            }
         });
     }
 
@@ -284,11 +299,15 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染联系人表单
     renderContactForm(contact) {
+        const contactId = contact.id;
+
+        //将联系人对象转换成联系人表单组件需要的形式
         contact = {contact};
 
         return (
             <div className="crm-pannel-contacts">
                 <ContactForm
+                    ref={ref => {this.refs[contactId] = ref;}}
                     type="edit"
                     contact={contact}
                 />
