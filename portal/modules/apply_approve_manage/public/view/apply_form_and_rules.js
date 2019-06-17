@@ -293,9 +293,12 @@ class ApplyFormAndRules extends React.Component {
     renderApplyRegex = () => {
         var applyTypeData = this.state.applyTypeData;
         var applyRulesAndSetting = _.get(applyTypeData, 'applyRulesAndSetting');
-        if (!_.isEmpty(applyRulesAndSetting) && _.isString(applyRulesAndSetting.applyApproveRules)) {
+        if (!_.isEmpty(applyRulesAndSetting)) {
             //如果之前保存过流程的相关配置，后端保存的applyApproveRules是字符串格式的，
-            applyRulesAndSetting.applyApproveRules = JSON.parse(applyRulesAndSetting.applyApproveRules);
+            if (_.isString(applyRulesAndSetting.applyApproveRules)){
+                applyRulesAndSetting.applyApproveRules = JSON.parse(applyRulesAndSetting.applyApproveRules);
+            }
+
 
         } else {
             //如果之前没有加过流程，这是默认的流程，默认流程是部门经理审批的
