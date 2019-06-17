@@ -73,12 +73,18 @@ class SalesStageForm extends React.Component {
                 let existOrderStageList = this.state.salesStageList;
                 let length = _.get(existOrderStageList, 'length');
                 if (length) {
-                    let isExist = _.find(existOrderStageList, item => item.name === orderValue);
-                    if (isExist) {
-                        callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
-                    } else {
+                    let formData = this.state.formData;
+                    if (_.get(formData, 'name') === orderValue) {
                         callback();
+                    } else {
+                        let isExist = _.find(existOrderStageList, item => item.name === orderValue);
+                        if (isExist) {
+                            callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
+                        } else {
+                            callback();
+                        }
                     }
+
                 } else {
                     callback();
                 }
