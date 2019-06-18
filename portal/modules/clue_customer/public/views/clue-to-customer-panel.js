@@ -363,17 +363,16 @@ class ClueToCustomerPanel extends React.Component {
         return (
             <div className="customer-merge">
                 <div className="title">
-                    <b>合并到此客户</b>
-                    <span className="go-back clickable" onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}>返回</span>
+                    <span
+                        className="go-back clickable"
+                        onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
+                    >
+                        〈 返回
+                    </span>
                 </div>
-                <Row>
-                    <Col span={4}>
-                        {Intl.get('crm.41', '客户名')}：
-                    </Col>
-                    <Col span={20}>
-                        {this.state.customerName}
-                    </Col>
-                </Row>
+                <div className="customer-name">
+                    {this.state.customerName}
+                </div>
                 {_.map(this.state.customerContacts, (contact, contactIndex) => {
                     if (contact.isNew) {
                         return this.renderContactForm(contact);
