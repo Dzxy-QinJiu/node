@@ -192,6 +192,12 @@ class ClueToCustomerPanel extends React.Component {
             //如果是新联系人
             if (contact.isNew) {
                 contact = _.cloneDeep(this.refs[contact.id].state.formData);
+
+                if (contact.birthday) {
+                    //将moment格式的值转为时间戳
+                    contact.birthday = contact.birthday.valueOf();
+                }
+
                 const fields = ['phone', 'qq', 'weChat', 'email'];
 
                 _.each(contact, (value, key) => {
@@ -207,8 +213,6 @@ class ClueToCustomerPanel extends React.Component {
                         delete contact[key];
                     }
                 });
-                //console.log(contact)
-                //return
 
                 ajax.send({
                     url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
