@@ -60,6 +60,12 @@ class ClueToCustomerPanel extends React.Component {
 
     componentDidMount() {
         ContactStore.listen(this.onContactStoreChange);
+        $(window).on('resize', this.onWindowResize);
+    }
+
+    componentWillUnmount() {
+        ContactStore.unlisten(this.onContactStoreChange);
+        $(window).off('resize', this.onWindowResize);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -70,11 +76,20 @@ class ClueToCustomerPanel extends React.Component {
         }
     }
 
-    componentWillUnmount() {
-        ContactStore.unlisten(this.onContactStoreChange);
-    }
-
     componentDidUpdate() {
+        const contactListWrap = $('.contact-list-wrap');
+
+        if (contactListWrap.length) {
+            const contactListHeight = $('.contact-list').height();
+            const contactListWrapMaxHeight = $(window).height() - contactListWrap.offset().top - 60;
+
+            if (contactListHeight > contactListWrapMaxHeight) {
+                contactListWrap.height(contactListWrapMaxHeight);
+            } else {
+                contactListWrap.css('height', 'auto');
+            }
+        }
+
         //调整联系人表单
         this.adjustContactForm();
 
@@ -109,6 +124,10 @@ class ClueToCustomerPanel extends React.Component {
 
     onContactStoreChange = () => {
         //为了让点击除电话外的其他联系方式后面的添加按钮时，界面上能有变化
+        this.setState({});
+    };
+
+    onWindowResize = () => {
         this.setState({});
     };
 
@@ -427,16 +446,22 @@ class ClueToCustomerPanel extends React.Component {
                         〈 返回
                     </span>
                 </div>
+
                 <div className="customer-name">
                     {this.state.customerName}
                 </div>
-                {_.map(this.state.customerContacts, (contact, contactIndex) => {
-                    if (contact.isNew) {
-                        return this.renderContactForm(contact);
-                    } else {
-                        return this.renderContact(contact, contactIndex);
-                    }
-                })}
+
+                <div className="contact-list-wrap">
+                    <div className="contact-list">
+                        {_.map(this.state.customerContacts, (contact, contactIndex) => {
+                            if (contact.isNew) {
+                                return this.renderContactForm(contact);
+                            } else {
+                                return this.renderContact(contact, contactIndex);
+                            }
+                        })}
+                    </div>
+                </div>
 
                 <div className="btn-block">
                     <Button
