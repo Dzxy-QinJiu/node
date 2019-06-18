@@ -168,7 +168,8 @@ class competingProduct extends React.Component {
         let length = _.get(productList, 'length');
         let getErrMsg = this.state.getErrMsg;
         let isLoading = this.state.isLoading;
-        let contentWidth = $('.competing-product-content').width();
+        let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
+            BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - 2 * BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
         let tagWidth = ajustTagWidth(contentWidth);
         return (
             <div className="competing-product-content-zone">
@@ -263,19 +264,17 @@ class competingProduct extends React.Component {
     render() {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
-        let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
-            BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
         return (
             <div className="competing-product-container" data-tracename="行业" style={{height: height}}>
                 <div className="competing-product-content-wrap" style={{height: height}}>
                     <div className="competing-product-top-nav">
                         {this.renderTopNavOperation()}
                     </div>
-                    <div className="competing-product-content" style={{height: contentHeight}}>
-                        <GeminiScrollBar style={{width: contentWidth}}>
+                    <GeminiScrollBar style={{height: contentHeight}}>
+                        <div className="competing-product-content">
                             {this.renderCompetingProductList()}
-                        </GeminiScrollBar>
-                    </div>
+                        </div>
+                    </GeminiScrollBar>
 
                 </div>
             </div>
