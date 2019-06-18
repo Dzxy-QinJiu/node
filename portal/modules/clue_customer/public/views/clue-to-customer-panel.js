@@ -287,38 +287,39 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
-    renderContactTitle(contact) {
+    //渲染联系人标题
+    renderContactTitle(contact, contactIndex) {
         return (
             <div className="contact-title">
                 <div className="contact-name">
                     <span className="iconfont icon-contact-default is-default-contact"></span>
                     {contact.name}
                 </div>
+
+                {contact.replaceName ? (
+                    <div className="is-replace-contract-name">
+                        修改姓名为“{contact.replaceName}”？
+                        <Button
+                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                        >
+                            不修改
+                        </Button>
+                        <Button
+                            type="primary"
+                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                        >
+                            确认修改
+                        </Button>
+                    </div>
+                ) : null}
             </div>
         );
     }
 
     //渲染联系人内容
-    renderContactContent(contact, contactIndex) {
+    renderContactContent(contact) {
         return (
             <div className="contact-content">
-                {contact.replaceName ? (
-                    <div className="replace-contact-name">
-                        修改姓名为“{contact.replaceName}”？
-                        <Button
-                            type="primary"
-                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
-                        >
-                        确认修改
-                        </Button>
-                        <Button
-                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
-                        >
-                        不修改
-                        </Button>
-                    </div>
-                ) : null}
-
                 <Row>
                     <Col span={3}>
                         {Intl.get('common.phone', '电话')}：
