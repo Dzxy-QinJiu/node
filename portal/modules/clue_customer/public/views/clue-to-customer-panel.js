@@ -7,6 +7,7 @@ require('MOD_DIR/crm/public/css/contact.less');
 import { Row, Col, Button } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
+import DetailCard from 'CMP_DIR/detail-card';
 //联系人表单
 const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
 //联系人store
@@ -286,36 +287,40 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
-    //渲染联系人
-    renderContact(contact, contactIndex) {
+    renderContactTitle(contact) {
         return (
-            <div className="exist-customer">
+            <div className="contact-title">
+                <div className="contact-name">
+                    <span className="iconfont icon-contact-default is-default-contact"></span>
+                    {contact.name}
+                </div>
+            </div>
+        );
+    }
+
+    //渲染联系人内容
+    renderContactContent(contact, contactIndex) {
+        return (
+            <div className="contact-content">
+                {contact.replaceName ? (
+                    <div className="replace-contact-name">
+                        修改姓名为“{contact.replaceName}”？
+                        <Button
+                            type="primary"
+                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                        >
+                        确认修改
+                        </Button>
+                        <Button
+                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                        >
+                        不修改
+                        </Button>
+                    </div>
+                ) : null}
+
                 <Row>
-                    <Col span={4}>
-                        {Intl.get('call.record.contacts', '联系人')}：
-                    </Col>
-                    <Col span={20}>
-                        {contact.name}
-                        {contact.replaceName ? (
-                            <div>
-                                修改姓名为“{contact.replaceName}”？
-                                <Button
-                                    type="primary"
-                                    onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
-                                >
-                                确认修改
-                                </Button>
-                                <Button
-                                    onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
-                                >
-                                不修改
-                                </Button>
-                            </div>
-                        ) : null}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={4}>
+                    <Col span={3}>
                         {Intl.get('common.phone', '电话')}：
                     </Col>
                     <Col span={20}>
@@ -329,6 +334,16 @@ class ClueToCustomerPanel extends React.Component {
                     </Col>
                 </Row>
             </div>
+        );
+    }
+
+    //渲染联系人
+    renderContact(contact, contactIndex) {
+        return (
+            <DetailCard
+                title={this.renderContactTitle(contact)}
+                content={this.renderContactContent(contact, contactIndex)}
+            />
         );
     }
 
