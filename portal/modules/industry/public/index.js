@@ -201,24 +201,12 @@ class Industry extends React.Component {
         );
     };
 
-    getAdjustTagWidth = () => {
-        let contentWidth = $('.industry-content').width();
-        let tagsWidth = TAG_MIN_WIDTH * COUNT + 16 * 5;
-        let tagWidth = TAG_MIN_WIDTH;
-        if (contentWidth) {
-            if (contentWidth >= tagsWidth) {
-                tagWidth = (contentWidth - 16 * 5) / 6;
-            } else {
-                let count = Math.floor(contentWidth / 176);
-                tagWidth = (contentWidth - 16 * (count - 1)) / count;
-            }
-        }
-    };
-
     renderIndustryConfig = () => {
         let TagLists = this.state.TagLists;
         let length = _.get(TagLists, 'length');
-        let contentWidth = $('.industry-content').width();
+        // 内容区宽度
+        let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
+            BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - 2 * BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
         let tagWidth = ajustTagWidth(contentWidth);
         return (
             <div className="industry-content-zone">
@@ -277,20 +265,17 @@ class Industry extends React.Component {
     render = () => {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
-        let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
-            BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
         return (
             <div className="industry-container" data-tracename="行业" style={{height: height}}>
                 <div className="industry-content-wrap" style={{height: height}}>
                     <div className="industry-top-nav">
                         {this.renderTopNavOperation()}
                     </div>
-                    <div className="industry-content" style={{height: contentHeight}}>
-                        <GeminiScrollBar style={{width: contentWidth}}>
+                    <GeminiScrollBar style={{height: contentHeight}}>
+                        <div className="industry-content">
                             {this.renderIndustryConfig()}
-                        </GeminiScrollBar>
-                    </div>
-
+                        </div>
+                    </GeminiScrollBar>
                 </div>
             </div>
         );
