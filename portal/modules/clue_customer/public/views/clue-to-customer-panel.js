@@ -312,7 +312,7 @@ class ClueToCustomerPanel extends React.Component {
                     );
                 })}
 
-                <div className="convert-to-new-customer">
+                <div className="btn-block">
                     <Button onClick={this.props.hidePanel}>{Intl.get('common.cancel', '取消')}</Button>
                     <Button type="primary" onClick={this.props.showAddCustomerPanel}>{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
                 </div>
@@ -430,7 +430,7 @@ class ClueToCustomerPanel extends React.Component {
                     }
                 })}
 
-                <div className="convert-to-new-customer">
+                <div className="btn-block">
                     <Button
                         onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
                     >
