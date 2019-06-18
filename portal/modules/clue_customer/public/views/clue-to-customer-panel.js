@@ -375,8 +375,8 @@ class ClueToCustomerPanel extends React.Component {
     renderContact(contact, contactIndex) {
         return (
             <DetailCard
-                title={this.renderContactTitle(contact)}
-                content={this.renderContactContent(contact, contactIndex)}
+                title={this.renderContactTitle(contact, contactIndex)}
+                content={this.renderContactContent(contact)}
             />
         );
     }
