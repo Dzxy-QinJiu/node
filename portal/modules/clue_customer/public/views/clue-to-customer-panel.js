@@ -62,6 +62,14 @@ class ClueToCustomerPanel extends React.Component {
         ContactStore.listen(this.onContactStoreChange);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.clue.id !== this.props.clue.id) {
+            this.setState({
+                viewType: VIEW_TYPE.CUSTOMER_LIST,
+            });
+        }
+    }
+
     componentWillUnmount() {
         ContactStore.unlisten(this.onContactStoreChange);
     }
