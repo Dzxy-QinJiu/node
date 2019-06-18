@@ -6,6 +6,7 @@
 require('./phone-number-board.less');
 import {Button, Popover, Input, Icon, message} from 'antd';
 import {handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
+// import {insertAfterText} from 'PUB_DIR/sources/utils/common-method-util';
 import {isTelephone} from 'PUB_DIR/sources/utils/validate-util';
 //拨号键对应的数组
 const phoneNumArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
@@ -27,9 +28,23 @@ class PhoneNumberBoard extends React.Component {
     }
 
     onButtonClick = (num) => {
-        num = this.state.inputNumber + num;
+        let numberInputDom = this.inputNumberInput.refs.input;
+        //光标选中内容的开始位置
+        let selectionStart = numberInputDom.selectionStart;
+        //光标选中内容的结束位置(未选中内容时，开始结束位置相同)
+        let selectionEnd = numberInputDom.selectionEnd;
+        let inputNumber = this.state.inputNumber;
+        if (inputNumber) {
+            inputNumber = inputNumber.slice(0, selectionStart) + num + inputNumber.slice(selectionEnd);
+            numberInputDom.focus();
+            let focusIndex = selectionStart + 1;
+            numberInputDom.setSelectionRange(focusIndex, focusIndex, 'forward');
+        } else {
+            inputNumber += num;
+            numberInputDom.focus();
+        }
         this.setState({
-            inputNumber: num
+            inputNumber
         });
     }
 
@@ -70,6 +85,7 @@ class PhoneNumberBoard extends React.Component {
             // }
         }
     }
+
     render() {
         const suffix = this.state.inputNumber ? <Icon type="close-circle" onClick={this.clearInputNumber}/> : null;
         return (
