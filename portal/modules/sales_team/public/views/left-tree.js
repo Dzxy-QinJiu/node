@@ -211,7 +211,7 @@ class LeftTree extends React.Component {
         event.stopPropagation();
         this.setState({
             mouseZoneHoverKey: _.get(item, 'key'),
-            visible: true
+            visible: false
         });
     };
 
@@ -226,9 +226,17 @@ class LeftTree extends React.Component {
 
     handleMouseLeave = (event) => {
         event.stopPropagation();
+        if (!this.state.visible) {
+            this.setState({
+                mouseZoneHoverKey: '',
+                visible: false
+            });
+        }
+    };
+
+    handleMouseEnterMoreBtn = () => {
         this.setState({
-            mouseZoneHoverKey: '',
-            visible: false
+            visible: true
         });
     };
     // 确认删除部门
@@ -302,8 +310,12 @@ class LeftTree extends React.Component {
                                                     content={this.renderOperateChildTeam(item)}
                                                     placement="bottomRight"
                                                     onVisibleChange={this.handleHoverChange}
+                                                    visible={this.state.visible}
                                                 >
-                                                    <span className='iconfont icon-more'></span>
+                                                    <span
+                                                        className='iconfont icon-more'
+                                                        onMouseEnter={this.handleMouseEnterMoreBtn}
+                                                    ></span>
                                                 </Popover>
                                             ) : (
                                                 isDeleteGroup ? (
@@ -452,6 +464,7 @@ class LeftTree extends React.Component {
                     >
                         <ul
                             className="left-tree-ul"
+                            onMouseLeave={this.handleMouseLeave}
                         >
                             {
                                 this.props.isEditGroupFlag ? (
