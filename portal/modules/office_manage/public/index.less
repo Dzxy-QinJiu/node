@@ -1,10 +1,11 @@
 @import "../../../public/css/common-variables.less";
 
 .office-container {
-  padding: 16px 24px;
+  padding: 16px 0 16px 24px;
   .office-content {
     .office-list {
       .item-office-container {
+        margin-right: 24px;
         min-height: 32px;
         font-size: 14px;
         .item-office-content {
@@ -73,6 +74,7 @@
   }
   // 表单样式
   .edit-item-or-add-zone {
+    margin-right: 24px;
     height: 128px;
     background: #E4F2FE;
     border-radius: 4px;
@@ -105,7 +107,6 @@
 // 编辑职务、删除职务、设为默认的样式
 .ant-popover-inner-content {
   .office-operation-zone {
-    z-index: 99;
     cursor: pointer;
     color: #8DA8C5;
     font-size: 14px;
@@ -114,6 +115,9 @@
     }
     .operation-item-zone {
       height: 32px;
+      .setting-default {
+        padding-left:20px;
+      }
       &:hover {
         color: #2196F3;
         background-color: #F1F8FE;

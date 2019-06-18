@@ -155,7 +155,7 @@ class OfficeManage extends React.Component {
                 <div className="operation-item-zone"
                     onClick={this.setDefautRole.bind(this, item)}
                 >
-                    <span className='operation-item-text'>
+                    <span className='operation-item-text setting-default'>
                         {Intl.get('member.position.set.default', '设为默认')}
                     </span>
                 </div>
@@ -296,7 +296,7 @@ class OfficeManage extends React.Component {
     renderPositionList = () => {
         let positionList = this.state.positionList;
         let length = _.get(positionList, 'length');
-        let scrollHeight = this.getContentHeight() - LAYOUT.ADD_POSITION_HEIGHT;
+        let scrollHeight = this.getContentHeight(); -LAYOUT.ADD_POSITION_HEIGHT;
         if (!this.state.isShowAddPosition) {
             scrollHeight -= LAYOUT.ADD_FORM_HEIGHT;
         }
@@ -309,8 +309,8 @@ class OfficeManage extends React.Component {
         } else if (_.isArray(positionList) && length) {
             // 职务列表
             return (
-                <div className="office-content-zone" style={{height: scrollHeight}}>
-                    <GeminiScrollbar>
+                <div className="office-content-zone">
+                    <GeminiScrollbar style={{height: scrollHeight}}>
                         <ul className="office-list" data-tracename="职务管理">
                             {_.map(positionList,(item) => {
                                 let isDefaultFlag = _.get(item, 'is_default');
@@ -362,7 +362,6 @@ class OfficeManage extends React.Component {
                                                             </div>
                                                         ) : (
                                                             <div className="customer-container">
-                                                                <span>{Intl.get('sales.role.config.customer.num','最大客户数')}</span>
                                                                 {
                                                                     isShowMoreBtn ? (
                                                                         <Popover
@@ -373,7 +372,10 @@ class OfficeManage extends React.Component {
                                                                             <span className='iconfont icon-more'></span>
                                                                         </Popover>
                                                                     ) : (
-                                                                        <span className="customer-count">{count}</span>
+                                                                        <span>
+                                                                            <span>{Intl.get('sales.role.config.customer.num','最大客户数')}</span>
+                                                                            <span className="customer-count">{count}</span>
+                                                                        </span>
                                                                     )
                                                                 }
                                                             </div>
