@@ -263,23 +263,22 @@ class ClueToCustomerPanel extends React.Component {
 
                 {_.map(existingCustomers, (customer, index) => {
                     return (
-                        <Row>
-                            <Col span={12}>
+                        <div className="customer-item">
+                            <div className="customer-name">
                                 {customer.name}
-                            </Col>
-                            <Col span={12}>
-                                <span
-                                    className="clickable"
+                            </div>
+                            <div className="customer-contact-and-btn">
+                                <Button
                                     onClick={this.onMergeToCustomerClick.bind(this, customer)}
                                 >
                                     合并到此客户
-                                </span>
-                            </Col>
-                        </Row>
+                                </Button>
+                            </div>
+                        </div>
                     );
                 })}
 
-                <div className="btn-block">
+                <div className="convert-to-new-customer">
                     <Button onClick={this.props.hidePanel}>{Intl.get('common.cancel', '取消')}</Button>
                     <Button type="primary" onClick={this.props.showAddCustomerPanel}>{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
                 </div>
@@ -382,9 +381,19 @@ class ClueToCustomerPanel extends React.Component {
                         return this.renderContact(contact, contactIndex);
                     }
                 })}
-                <div className="btn-block">
-                    <Button onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}>{Intl.get('common.cancel', '取消')}</Button>
-                    <Button type="primary" onClick={this.mergeToCustomer}>确认合并</Button>
+
+                <div className="convert-to-new-customer">
+                    <Button
+                        onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
+                    >
+                        {Intl.get('common.cancel', '取消')}
+                    </Button>
+
+                    <Button
+                        type="primary" onClick={this.mergeToCustomer}
+                    >
+                        确认合并
+                    </Button>
                 </div>
             </div>
         );

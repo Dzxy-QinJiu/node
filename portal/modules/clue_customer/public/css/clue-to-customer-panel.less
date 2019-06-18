@@ -4,15 +4,24 @@
         cursor: pointer;
     }
     .panel-content {
-        margin: 24px;
         padding: 12px;
-        background: #fff;
         font-size: 14px;
         .customer-list,
         .customer-merge {
-            margin: 20px 0;
             .title {
                 margin-bottom: 10px;
+            }
+        }
+        .customer-list {
+            .customer-item {
+                background: #fff;
+                padding: 10px 15px;
+                .customer-contact-and-btn {
+                    overflow: hidden;
+                    button {
+                        float: right;
+                    }
+                }
             }
         }
         .customer-merge {
@@ -35,12 +44,16 @@
                 }
             }
         }
-        .btn-block {
-            margin-top: 10px;
+        .convert-to-new-customer {
+            margin-top: 15px;
             overflow: hidden;
-            .ant-btn {
+            button {
                 float: right;
-                margin-right: 10px;
+            }
+            .ant-btn-primary {
+                background-color: #666;
+                border-color: #666;
+                margin-right: 15px;
             }
         }
     }
