@@ -9,6 +9,8 @@ import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 //联系人表单
 const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
+//联系人store
+const ContactStore = require('MOD_DIR/crm/public/store/contact-store');
 const noop = function() {};
 //视图类型
 const VIEW_TYPE = {
@@ -54,6 +56,19 @@ class ClueToCustomerPanel extends React.Component {
             customerContacts: [],
         };
     }
+
+    componentDidMount() {
+        ContactStore.listen(this.onContactStoreChange);
+    }
+
+    componentWillUnmount() {
+        ContactStore.unlisten(this.onContactStoreChange);
+    }
+
+    onContactStoreChange = () => {
+        //为了让点击除电话外的其他联系方式后面的添加按钮时，界面上能有变化
+        this.setState({});
+    };
 
     //合并到此客户按钮点击事件
     onMergeToCustomerClick = customer => {
