@@ -121,16 +121,18 @@ class OfficeManage extends React.Component {
         event.stopPropagation();
         this.setState({
             mouseZoneHoverItemId: _.get(item, 'id'),
-            visible: true
+            visible: false
         });
     };
 
     handleMouseLeave = (event) => {
         event.stopPropagation();
-        this.setState({
-            mouseZoneHoverItemId: '',
-            visible: false
-        });
+        if (!this.state.visible) {
+            this.setState({
+                mouseZoneHoverItemId: '',
+                visible: false
+            });
+        }
     };
 
     renderModifyOffice = (item) => {
@@ -292,6 +294,12 @@ class OfficeManage extends React.Component {
         }
     };
 
+    handleMouseEnterMoreBtn = () => {
+        this.setState({
+            visible: true
+        });
+    };
+
     // 渲染职务列表
     renderPositionList = () => {
         let positionList = this.state.positionList;
@@ -311,7 +319,7 @@ class OfficeManage extends React.Component {
             return (
                 <div className="office-content-zone">
                     <GeminiScrollbar style={{height: scrollHeight}}>
-                        <ul className="office-list" data-tracename="职务管理">
+                        <ul className="office-list" data-tracename="职务管理" onMouseLeave={this.handleMouseLeave}>
                             {_.map(positionList,(item) => {
                                 let isDefaultFlag = _.get(item, 'is_default');
                                 let defaultCls = classNames('default-role-descr', {'default-role-checked': isDefaultFlag});
@@ -368,8 +376,12 @@ class OfficeManage extends React.Component {
                                                                             content={this.renderModifyOffice(item)}
                                                                             placement="bottomRight"
                                                                             onVisibleChange={this.handleHoverChange}
+                                                                            visible={this.state.visible}
                                                                         >
-                                                                            <span className='iconfont icon-more'></span>
+                                                                            <span
+                                                                                className='iconfont icon-more'
+                                                                                onMouseEnter={this.handleMouseEnterMoreBtn}
+                                                                            ></span>
                                                                         </Popover>
                                                                     ) : (
                                                                         <span>
