@@ -71,7 +71,7 @@ function showLoginOrBindWechatPage(req, res) {
 
         function renderHtml() {
             let isCurtao = commonUtil.method.isCurtao(req);
-            const phone = '400-677-0986';
+            const phone = '400-6978-520';
             const qq = '4006770986';
             let backendIntl = new BackendIntl(req);
             let hideLangQRcode = '';
