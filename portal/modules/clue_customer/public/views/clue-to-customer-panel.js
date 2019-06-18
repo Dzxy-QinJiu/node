@@ -66,6 +66,39 @@ class ClueToCustomerPanel extends React.Component {
         ContactStore.unlisten(this.onContactStoreChange);
     }
 
+    componentDidUpdate() {
+        //调整联系人表单
+        this.adjustContactForm();
+
+        //联系方式后面的删除按钮
+        const minusBtn = $('.crm-contact-form .anticon-minus-circle-o:not(.bound)');
+
+        if (minusBtn.length) {
+            //点联系方式后面的删除按钮后调整联系人表单
+            //因为点删除按钮后不会像点添加按钮后那样触发父组件的更新
+            //所以只能用这种手段绑定事件的方式实现
+            minusBtn.click(() => {
+                setTimeout(this.adjustContactForm);
+            });
+        }
+    }
+
+    //调整联系人表单
+    //去掉滚动条
+    adjustContactForm() {
+        const contactForm = $('.crm-contact-form');
+
+        if (contactForm.length) {
+            contactForm.css('height', 'auto');
+            contactForm.find('.gm-scrollbar').hide();
+            contactForm.find('.gm-scroll-view').css({
+                width: 'auto',
+                height: 'auto',
+                overflow: 'hidden'
+            });
+        }
+    }
+
     onContactStoreChange = () => {
         //为了让点击除电话外的其他联系方式后面的添加按钮时，界面上能有变化
         this.setState({});
