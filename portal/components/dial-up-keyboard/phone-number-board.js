@@ -18,6 +18,10 @@ class PhoneNumberBoard extends React.Component {
             phoneNumber: props.phoneNumber,
             //拨号键盘输入的电话号码
             inputNumber: '',
+            //电话输入框的光标所在开始位置（选中内容的开始位置）
+            selectionStart: 0,
+            //电话输入框的光标所在结束位置（选中内容的结束位置）
+            selectionEnd: 0
         };
     }
 
@@ -28,23 +32,31 @@ class PhoneNumberBoard extends React.Component {
     }
 
     onButtonClick = (num) => {
-        let numberInputDom = this.inputNumberInput.refs.input;
         //光标选中内容的开始位置
-        let selectionStart = numberInputDom.selectionStart;
+        let selectionStart = this.state.selectionStart;
         //光标选中内容的结束位置(未选中内容时，开始结束位置相同)
-        let selectionEnd = numberInputDom.selectionEnd;
+        let selectionEnd = this.state.selectionEnd;
         let inputNumber = this.state.inputNumber;
         if (inputNumber) {
             inputNumber = inputNumber.slice(0, selectionStart) + num + inputNumber.slice(selectionEnd);
-            numberInputDom.focus();
-            let focusIndex = selectionStart + 1;
-            numberInputDom.setSelectionRange(focusIndex, focusIndex, 'forward');
         } else {
             inputNumber += num;
-            numberInputDom.focus();
         }
+        //电话输入框的光标所在开始后移一位，结束位置跟开始位置相同
+        let cursorIndex = selectionStart + 1;
         this.setState({
-            inputNumber
+            inputNumber,
+            selectionStart: cursorIndex,
+            selectionEnd: cursorIndex
+        });
+    }
+
+    onNumberInputBlur = (event) => {
+        let numberInputDom = event.target;
+        //电话输入框的光标所在开始、结束位置
+        this.setState({
+            selectionStart: numberInputDom.selectionStart,
+            selectionEnd: numberInputDom.selectionEnd
         });
     }
 
@@ -96,6 +108,7 @@ class PhoneNumberBoard extends React.Component {
                     value={this.state.inputNumber}
                     placeholder={Intl.get('user.info.input.phone', '请输入电话')}
                     onChange={this.onNumberInputChange}
+                    onBlur={this.onNumberInputBlur}
                 />
                 <div className="number-key-container">
                     {_.map(phoneNumArray, item => {
