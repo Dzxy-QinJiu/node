@@ -282,7 +282,7 @@ let routers = [
                 routePath: '/background_management/industry',
                 component: `${MODULE_PATH}industry/public`,
                 //有这个权限，才显示入口图标
-                showPrivileges: ['GET_CONFIG_INDUSTRY']
+                showPrivileges: ['CREATE_CONFIG_INDUSTRY']
             },
             {
                 id: 'COMPETE',
