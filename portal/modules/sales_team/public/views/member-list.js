@@ -223,10 +223,6 @@ const MemberList = createReactClass({
         if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
             return;
         }
-        //如果有确认保存的提示框，应先保存或取消保存后再进行操作
-        if (this.state.teamConfirmVisible || this.state.memberConfirmVisible) {
-            return;
-        }
         if (this.props.isAddMember) {
             this.setState({
                 selectedRowKeys: []
@@ -252,7 +248,6 @@ const MemberList = createReactClass({
         if (curShowTeamMemberObj.owner) {
             ownerId = curShowTeamMemberObj.owner.userId;
         }
-
         //秘书
         if (_.isArray(curShowTeamMemberObj.managers) && curShowTeamMemberObj.managers.length > 0) {
             curShowTeamMemberObj.managers.forEach(function(member) {
@@ -272,6 +267,7 @@ const MemberList = createReactClass({
             managerIds: JSON.stringify(managerIds),
             userIds: JSON.stringify(userIds)
         };
+        console.log('编辑的请求参数：saveMemberListObj:', saveMemberListObj);
         MemberListEditAction.setMemberListSaving(true);
         MemberListEditAction.editMember(saveMemberListObj);
         this.setState({
@@ -412,6 +408,7 @@ const MemberList = createReactClass({
     },
 
     onSelectChange(selectedRowKeys){
+        console.log('selectedRowKeys:',selectedRowKeys);
         this.setState({
             selectedRowKeys: selectedRowKeys
         });
@@ -432,6 +429,7 @@ const MemberList = createReactClass({
         };
 
         const hasSelected = _.get(selectedRowKeys, 'length', 0);
+        console.log('hasSelected:',hasSelected);
         if (hasSelected) {
             if (!this.props.isAddMember) {
                 this.editMember();
@@ -485,7 +483,11 @@ const MemberList = createReactClass({
     // 编辑团队数据时，处理选中的数据
     handleEditTeamData() {
         let selectedRowKeys = this.state.selectedRowKeys;
+        console.log('selectedRowKeys:',selectedRowKeys);
         let curMemberList = this.processTableData();
+        _.each(curMemberList, (item) => {
+            delete item.selected;
+        });
         _.each(selectedRowKeys, item => {
             curMemberList[item].selected = true;
         });
@@ -496,12 +498,13 @@ const MemberList = createReactClass({
     getSelectSize: function() {
         let selectedOwnerSize = 0, selectedManagerSize = 0, selectedUserSize = 0;
         let curMemberList = this.handleEditTeamData();
+        console.log('getSelectSize:', curMemberList);
         _.each(curMemberList, item => {
             if (item.selected) {
                 if (item.role === 'owner') { // 负责人
                     selectedOwnerSize++;
                 }
-                if (item.role === 'manager') { // 管理员
+                if (item.role === 'manager') { // 秘书
                     selectedManagerSize++;
                 }
                 if (item.role === 'user') { // 成员
@@ -509,7 +512,10 @@ const MemberList = createReactClass({
                 }
             }
         });
-
+        console.log('###############选择的类型###############');
+        console.log('selectedOwnerSize: 负责人',selectedOwnerSize);
+        console.log('selectedManagerSize: 秘书',selectedManagerSize);
+        console.log('selectedUserSize: 成员',selectedUserSize);
         return {
             selectedOwnerSize: selectedOwnerSize,
             selectedManagerSize: selectedManagerSize,
@@ -684,6 +690,7 @@ const MemberList = createReactClass({
             return;
         }
         let curShowTeamMemberObj = this.state.curShowTeamMemberObj;
+        console.log('加为成员的处理##############', curShowTeamMemberObj);
         let editObj = {
             group_id: curShowTeamMemberObj.groupId
         };
@@ -730,6 +737,7 @@ const MemberList = createReactClass({
         let type = this.props.isAddMember ? 'add' : 'edit';
         let saveResult = this.state.saveMemberListResult;
         let saveObj = this.state.saveMemberListObj;
+        console.log('hideSaveTooltip:', saveObj);
         MemberListEditAction.clearSaveFlags(type, saveResult, saveObj);
     },
 
@@ -743,13 +751,13 @@ const MemberList = createReactClass({
             'member-btn-enable': selectSizeObj.selectedSize === 1 && !selectSizeObj.selectedOwnerSize
         });
         let addManagerEnable = true;
-        //不可同时选择了owner和user设为管理员，只能选一种角色中的人进行转换
+        //不可同时选择了owner和user设为秘书，只能选一种角色中的人进行转换
         if (selectSizeObj.selectedSize === 0
             || (selectSizeObj.selectedOwnerSize && selectSizeObj.selectedUserSize)
             || (selectSizeObj.selectedManagerSize === selectSizeObj.selectedSize)) {
             addManagerEnable = false;
         }
-        //管理员按钮样式设置
+        // 秘书按钮样式设置
         let addManagerBtnCls = classNames('add-member-btn', {
             'member-btn-enable': addManagerEnable
         });
@@ -1203,6 +1211,7 @@ const MemberList = createReactClass({
     render() {
         let salesTeamPersonnelWidth = this.props.salesTeamMemberWidth;
         let containerHeight = this.props.containerHeight;
+        console.log('render ################:this.state.saveMemberListResult',this.state.saveMemberListResult);
         return (
             <div
                 className="sales-team-personnel"
