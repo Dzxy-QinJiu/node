@@ -323,12 +323,18 @@ class ClueToCustomerPanel extends React.Component {
                 </div>
 
                 {_.map(existingCustomers, (customer, index) => {
+                    const defContact = _.find(customer.contacts, contact => contact.def_contancts === 'true');
+                    const defContactName = _.get(defContact, 'name', '');
+                    const defContactPhone = _.get(defContact, 'phone[0]', '');
+                    
                     return (
                         <div className="customer-item">
                             <div className="customer-name">
                                 {customer.name}
                             </div>
                             <div className="customer-contact-and-btn">
+                                <span className="contact-name">{defContactName}</span>
+                                <span className="contact-phone">{defContactPhone}</span>
                                 <Button
                                     onClick={this.onMergeToCustomerClick.bind(this, customer)}
                                 >
