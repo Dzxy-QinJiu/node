@@ -896,3 +896,21 @@ exports.uniteFileSize = function(fileLists) {
     }
     return fileLists;
 };
+
+const TAG_MIN_WIDTH = 160; // 标签最小的宽度，160
+const COUNT = 6; // 一行放标签的个数是 6
+const PADDING_WIDTH = 16; // 边距宽度16
+// 计算自适应标签的宽度
+exports.ajustTagWidth = (contentWidth) => {
+    let tagsWidth = TAG_MIN_WIDTH * COUNT + PADDING_WIDTH * (COUNT - 1);
+    let tagWidth = TAG_MIN_WIDTH;
+    if (contentWidth > 0) {
+        if (contentWidth >= tagsWidth) {
+            tagWidth = (contentWidth - PADDING_WIDTH * (COUNT - 1)) / COUNT;
+        } else {
+            let count = Math.floor(contentWidth / (TAG_MIN_WIDTH + PADDING_WIDTH));
+            tagWidth = (contentWidth - PADDING_WIDTH * (count - 1)) / count;
+        }
+    }
+    return tagWidth;
+};
