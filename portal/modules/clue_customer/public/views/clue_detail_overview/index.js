@@ -30,6 +30,7 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 const EDIT_FEILD_WIDTH = 300;
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -440,7 +441,7 @@ class ClueDetailOverview extends React.Component {
     };
 
     //标记线索无效或者有效
-    handleClickInvalidBtn = (item) => {
+    handleClickInvalidBtn = (item, callback) => {
         var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
         if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY) {
             updateValue = AVALIBILITYSTATUS.AVALIBILITY;
@@ -458,6 +459,7 @@ class ClueDetailOverview extends React.Component {
                     isInvalidClue: false,
                 });
             } else {
+                _.isFunction(callback) && callback(updateValue);
                 var curClue = this.state.curClue;
                 curClue.invalid_info = {
                     user_name: userData.getUserData().nick_name,
@@ -902,6 +904,7 @@ class ClueDetailOverview extends React.Component {
                                                 noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                                                 addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
                                                 contactName={contactItem.name}
+                                                showClueDetailPanel={this.props.showClueDetailPanel.bind(this,curClue)}
                                             />
                                         </div>
                                         <div className="contact-item-content">
@@ -1029,6 +1032,12 @@ ClueDetailOverview.defaultProps = {
     },
     updateRemarks: function() {
 
+    },
+    hideRightPanel: function() {
+
+    },
+    showClueDetailPanel: function() {
+
     }
 };
 ClueDetailOverview.propTypes = {
@@ -1043,6 +1052,8 @@ ClueDetailOverview.propTypes = {
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
     updateRemarks: PropTypes.func,
+    hideRightPanel: PropTypes.func,
+    showClueDetailPanel: PropTypes.func
 };
 
 module.exports = ClueDetailOverview;

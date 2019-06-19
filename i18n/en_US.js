@@ -2279,7 +2279,7 @@ var en_US = {
     'crm.phone.failed.get.customer': 'Failed to query the customer connectting to this phone number',//查询此号码对应的客户信息失败
     'call.record.show.customer.detail': 'See details',//查看详情
     'call.record.customer.source': 'Source',//来源
-    'call.record.no.response.customer': 'This number does not have a corresponding customer',//此号码无对应客户
+    'call.record.no.response.customer': 'This number does not have a corresponding {type}',//此号码无对应{type}
     'call.record.some.customer': 'This number has {num} corresponding customers',//此号码对应{num}个客户
     'call.record.contact.phone': 'contact phone',//联系号码
     'call.record.getting.tag.lists': 'Getting the tag list',//正在获取标签列表
@@ -2981,6 +2981,8 @@ var en_US = {
     'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
-    'apply.select.approver.type': 'Please select apply type'//请选择审批人类型
+    'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
+    'apply.phone.close': 'Phone off',//手机关机
+    'apply.select.trace.clue': 'Please select trace clue'//请选择要跟进的线索
 };
 export default en_US;

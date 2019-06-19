@@ -145,7 +145,9 @@ class DynamicAddDelField extends React.Component {
                 <div className="item-show-content">
                     {_.map(this.state.value, item => {
                         return ( <div className="item-content">
-                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true}/> :
+                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true}
+                                showClueDetailPanel={this.props.showClueDetailPanel}
+                            /> :
                                 <span className="item-text">{item}</span>}
 
                         </div>);
@@ -233,6 +235,7 @@ DynamicAddDelField.propTypes = {
     addItemBtn: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     contactName: PropTypes.string,
     saveEditData: PropTypes.func,
+    showClueDetailPanel: PropTypes.func,
 
 };
 DynamicAddDelField.defaultProps = {
@@ -276,6 +279,9 @@ DynamicAddDelField.defaultProps = {
     //以下是电话类型时，需要传的打电话所需数据
     //联系人姓名
     contactName: '',
+    showClueDetailPanel: function() {
+
+    }
 };
 export default Form.create()(DynamicAddDelField);
 

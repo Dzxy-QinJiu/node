@@ -7,6 +7,7 @@ import {Popover} from 'antd';
 import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
+var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 var classNames = require('classnames');
 require('./index.less');
 import Trace from 'LIB_DIR/trace';
@@ -19,7 +20,6 @@ class PhoneCallout extends React.Component {
         };
     }
     componentDidMount() {
-
     }
     // 自动拨号
     handleClickCallOut = (phoneNumber, contactName) => {
@@ -31,6 +31,8 @@ class PhoneCallout extends React.Component {
             this.setState({
                 ableClickPhoneIcon: true
             });
+            //如果是在线索里拨打的电话，要展示线索的详情
+            _.isFunction(this.props.showClueDetailPanel) && this.props.showClueDetailPanel();
         });
     };
     handleVisibleChange = (phoneNumber, contactName,visible) => {
@@ -85,12 +87,14 @@ PhoneCallout.defaultProps = {
     contactName: '',//（非必传）拨打电话时，用来在弹屏上展示的联系人姓名
     showPhoneIcon: false,//是否一直展示电话图标
     hidePhoneNumber: false,//是否不展示电话号码，不展示时，电话图标会一直显示
+    showClueDetailPanel: function(){},
 };
 PhoneCallout.propTypes = {
     showPhoneNum: PropTypes.string,
     phoneNumber: PropTypes.string,
     contactName: PropTypes.string,
     showPhoneIcon: PropTypes.bool,
-    hidePhoneNumber: PropTypes.bool
+    hidePhoneNumber: PropTypes.bool,
+    showClueDetailPanel: PropTypes.func,
 };
 export default PhoneCallout;

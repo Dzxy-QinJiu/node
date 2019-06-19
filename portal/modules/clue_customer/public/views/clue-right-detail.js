@@ -37,7 +37,7 @@ import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/so
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
 import {handleSubmitClueItemData} from '../utils/clue-customer-utils';
-
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 class ClueRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -246,6 +246,15 @@ class ClueRightPanel extends React.Component {
             isRemoveClue: {},
         });
     };
+    showClueDetailPanel = (curClue) => {
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+            clue_params: {
+                currentId: curClue.id,
+                curClue: curClue,
+                hideRightPanel: this.hideRightPanel
+            }
+        });
+    };
     render() {
         var curClue = this.state.curClue;
         //是否没有权限修改线索详情
@@ -256,10 +265,10 @@ class ClueRightPanel extends React.Component {
             cls += ` ${this.props.className}`;
         }
         return (
-            <RightPanel
+            <div
                 className={cls}
                 showFlag={this.props.showFlag} data-tracename="线索详情面板">
-                <span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel} data-tracename="关闭线索详情面板"></span>
+                {/*<span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel} data-tracename="关闭线索详情面板"></span>*/}
                 {this.state.getClueDetailErrMsg ? <div className="no-data-tip">{this.state.getClueDetailErrMsg}</div> :
                     <div className="clue-detail-wrap" data-tracename="线索详情">
                         <div className="clue-basic-info-container">
@@ -294,6 +303,7 @@ class ClueRightPanel extends React.Component {
                                 >
                                     {this.state.activeKey === TAB_KEYS.OVERVIEW_TAB ? (
                                         <ClueBasicInfo
+                                            ref={clueBasicInfo => this.clueBasicInfo = clueBasicInfo}
                                             curClue={curClue}
                                             accessChannelArray={this.state.accessChannelArray}
                                             clueSourceArray={this.state.clueSourceArray}
@@ -305,6 +315,8 @@ class ClueRightPanel extends React.Component {
                                             divHeight={divHeight}
                                             removeUpdateClueItem={this.props.removeUpdateClueItem}
                                             updateRemarks={this.props.updateRemarks}
+                                            hideRightPanel={this.hideRightPanel}
+                                            showClueDetailPanel={this.showClueDetailPanel}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -314,9 +326,11 @@ class ClueRightPanel extends React.Component {
                                 >
                                     {this.state.activeKey === TAB_KEYS.CLUE_TRACE_LIST ? (
                                         <ClueTraceList
+                                            ref={clueTraceList => this.clueTraceList = clueTraceList}
                                             curClue={curClue}
                                             divHeight={divHeight}
                                             updateCustomerLastContact={this.props.updateCustomerLastContact}
+                                            showClueDetailPanel={this.showClueDetailPanel}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -348,7 +362,7 @@ class ClueRightPanel extends React.Component {
                     </div>
                 }
 
-            </RightPanel>
+            </div>
         );
     }
 }

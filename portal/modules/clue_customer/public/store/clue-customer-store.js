@@ -53,6 +53,15 @@ ClueCustomerStore.prototype.setLastClueId = function(updateId) {
 ClueCustomerStore.prototype.setSortField = function(updateSortField) {
     this.sorter.field = updateSortField;
 };
+ClueCustomerStore.prototype.updateCurrentClueRemark = function(submitObj) {
+    let clue = _.find(this.curClueLists, (clue) => {
+        return clue.id === submitObj.lead_id;
+    });
+    if (clue && _.isArray(clue.clue_traces) && clue.customer_traces.length) {
+        clue.customer_traces[0].remark = submitObj.remark;
+    }
+},
+
 
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {

@@ -14,8 +14,14 @@ exports.phoneMsgEmitter = new EventEmitter();
 exports.phoneMsgEmitter.OPEN_PHONE_PANEL = 'openPhonePanel';
 exports.phoneMsgEmitter.CLOSE_PHONE_PANEL = 'closePhonePanel';
 exports.phoneMsgEmitter.SEND_PHONE_NUMBER = 'sendPhoneNumber';
+//打开拨打电话线索面板emitter
+exports.phoneMsgEmitter.OPEN_CLUE_PANEL = 'openCluePanel';
+//关闭拨打电话线索面板emitter
+exports.phoneMsgEmitter.CLOSE_CLUE_PANEL = 'closeCluePanel';
 //关闭拨打电话模态框emitter
 exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = 'closePhoneModal';
+//标记线索无效
+exports.phoneMsgEmitter.SETTING_CLUE_INVALID = 'settingClueInvalid';
 //拨打电话emitter
 exports.audioMsgEmitter = new EventEmitter();
 //打开播放录音的面板emitter

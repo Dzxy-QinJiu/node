@@ -1,0 +1,415 @@
+@import "../../../../public/css/common-variables";
+
+@FINISHSTATUSBACKGROUND: #8DA8C5;
+@PHONENORMALCOLOR: #2196f3;
+//session过期后，提示重输密码的样式设置
+.overflow-break {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+#clue-phone-status-content {
+  .right-pannel-default .ant-form-item-label label {
+    padding-right: 20px;
+    font-weight: normal;
+    padding-top: 8px;
+    font-size: @form_font_size;
+    line-height: @form_font_size;
+    padding-bottom: 9px;
+  }
+  //查看客户下的用户页面
+  .right-pannel-default.customer-user-list-panel {
+    width: auto;
+    left: 75px;
+    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+    background-color: #fff;
+    display: block;
+    z-index: 116;
+    .topNav {
+      position: fixed;
+      z-index: 11;
+      top: 0;
+      right: 0;
+      left: 75px;
+      height: 76px;
+      background: #fff;
+      padding-left: 16px;
+    }
+    .no-more-data-tip .ant-alert {
+      width: 100%;
+      top: 0;
+      left: 0;
+    }
+    .user_manage_return_block {
+      .icon-return.return-btn {
+        margin-top: 22px;
+        margin-left: 14px;
+      }
+      .customer_name_wrap {
+        font-size: 15px;
+        margin-top: 40px;
+      }
+    }
+    .topNav .topnav-links-wrap {
+      display: none !important;
+    }
+  }
+  .right-pannel-default .ant-tabs-tab-inner {
+    padding: 11px 4px;
+  }
+  .crm-add-form .tip-customer-exist {
+    margin-top: -13px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    margin-left: 100px;
+  }
+  .crm-add-form.ant-form-horizontal {
+    .ant-form-item .ant-form-item-label > label {
+      padding-right: 10px;
+      font-weight: normal;
+      padding-top: 8px;
+      font-size: 13px;
+      line-height: 13px;
+      padding-bottom: 9px;
+    }
+  }
+  .tip-customer-exist {
+    margin-top: -13px;
+    line-height: 20px;
+    margin-bottom: 10px;
+    margin-left: 100px;
+  }
+}
+
+/* 通话状态展示面板-start*/
+#clue-phone-status-content {
+  width: 100%;
+  font-size: 14px;
+  z-index: 101;
+  overflow: hidden;
+  //关闭按钮
+  .modal-close {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    opacity: .2;
+    border: 0;
+    background: #fff;
+  }
+  .phone-alert-modal-inner {
+    position: relative;
+    height: 100%;
+    border: 0;
+    .phone-alert-modal-title {
+      overflow: hidden;
+      position: relative;
+      //联系人相关信息
+      .contact-info-detail {
+        overflow: hidden;
+        padding: 8px;
+        background-color: @PHONENORMALCOLOR;
+        .call-operation-button {
+          height: 18px;
+          margin-left: 10px;
+          padding: 0 8px;
+          float: right;
+          border: 1px solid #d9d9d9;
+          background-color: #b8c4ca;
+          color: white;
+        }
+        //通话图标
+        #iconfont-tip {
+          display: inline-block;
+          width: 34px;
+          height: 34px;
+          border-radius: 3px;
+          color: #F6A43E;
+          background: #fff;
+          text-align: center;
+          float: left;
+          i {
+            font-size: 18px;
+            text-align: center;
+            line-height: 32px;
+          }
+        }
+        //电话和通话状态的提示
+        .phone-status-tip {
+          float: left;
+          .contact-phone-title {
+            height: 18px;
+            line-height: 18px;
+            margin-left: 10px;
+            font-size: 16px;
+            color: #fff;
+          }
+          .status-tip-title {
+            height: 16px;
+            margin-left: 10px;
+            font-size: 12px;
+            color: #fff;
+            vertical-align: bottom;
+          }
+        }
+      }
+      .contact-info-detail.finish-phone-call {
+        background: @FINISHSTATUSBACKGROUND;
+      }
+      //跟进记录及相关操作
+      .trace-and-handle-btn {
+        .trace-content-container {
+          clear: both;
+          overflow: hidden;
+          width: 100%;
+          .ant-select {
+            width: 100%;
+          }
+          .trace-content {
+            padding: 8px 8px 4px 8px;
+            background-color: #EEF7FE;
+            line-height: 18px;
+            font-size: 12px;
+            &:extend(.overflow-break);
+            .trace-content-label {
+              margin-right: 8px;
+              color: #aaa;
+            }
+            .icon-update {
+              position: absolute;
+              display: none;
+              cursor: pointer;
+              margin-left: 5px;
+            }
+            &:hover {
+              .icon-update {
+                display: inline-block;
+              }
+            }
+          }
+
+          .input-item {
+            textarea {
+              width: 100%;
+            }
+
+          }
+          .modal-submit-tip {
+            position: absolute;
+            bottom: 10px;
+            color: red;
+            left: 100px;
+          }
+          .btn-select-container {
+            overflow: hidden;
+            .select-add-trace-customer {
+              float: left;
+              margin-top: 10px;
+              color: #aaa;
+            }
+            .ant-select {
+              width: 150px;
+              margin: 0 15px 0 5px;
+            }
+            //提交按钮
+            .modal-submit-btn {
+              float: left;
+              margin-top: 10px;
+              margin-right: 8px;
+              cursor: pointer;
+              padding: 0 12px;
+              display: none;
+              &.showCls{
+                display: inline-block;
+              }
+
+            }
+            .ant-btn {
+              margin-top: 10px;
+            }
+          }
+        }
+        .add-trace-and-plan {
+          background-color: #EEF7FE;
+          overflow: hidden;
+          .ant-btn.ant-btn-sm {
+            color: #92AAC8;
+          }
+          //添加反馈，竞品信息部分按钮的样式
+          .add-more-info-container {
+            float: left;
+            margin: 8px;
+          }
+          .add-plan-info-container {
+            margin: 8px;
+          }
+        }
+
+      }
+
+      .second-line-title {
+        margin-left: 10px;
+        font-size: 22px;
+        color: #fff;
+      }
+
+    }
+    //
+    .phone-alert-inner-content {
+      background: #EEF7FE;
+      padding: 10px;
+    }
+    //添加反馈，竞品信息内容样式
+    .add-more-info-content-container {
+      box-shadow: -4px 0 20px #ddd;
+      background: #fff;
+      border-radius: 4px;
+      //增加产品反馈内容
+      .product-feedback-container {
+        padding: 10px 10px 0 10px;
+        .ant-form-item {
+          margin-bottom: 10px;
+        }
+        .ant-form-item .ant-form-item-control-wrapper .ant-select {
+          width: 100%;
+        }
+      }
+    }
+    //添加联系计划内容样式
+    .add-plan {
+      .schedule-form {
+        box-shadow: -4px 0 20px #ddd;
+        background: #fff;
+        border-radius: 4px;
+      }
+    }
+    .customer-info-container {
+      .customer-count-tip {
+        font-size: 15px;
+        padding: 4px 10px 0 10px;
+      }
+      .customer-detail {
+        border-radius: 3px;
+        .customer-detail-content {
+          overflow: hidden;
+        }
+        .show-customer-detail {
+          position: relative;
+          .return-customer-cards {
+            position: absolute;
+            left: 8px;
+            font-size: 14px;
+            top: 2px;
+            z-index: 10;
+          }
+        }
+        //客户基本资料
+        .customer-name {
+          background: #fff;
+          padding: 5px 5px 5px 15px;
+          margin-top: 10px;
+          border-bottom: 2px solid #f5f5f5;
+          h3 {
+            border-bottom: 1px solid #DEDFE3;
+            padding: 8px 0;
+            .icon-interested {
+              color: #DEDFE3;
+            }
+            span {
+              font-size: 23px;
+              font-weight: bold;
+              margin-left: 10px;
+              max-width: 400px;
+              overflow: hidden;
+              display: inline-block;
+              vertical-align: bottom;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+          }
+          dl.customer-info {
+            overflow: hidden;
+            padding: 9px 0 0;
+            color: #53575a;
+            font-size: 14px;
+            dt {
+              float: left;
+              width: 65px;
+              text-align: right;
+              color: #aaa;
+              font-weight: normal;
+            }
+            dd {
+              float: left;
+              margin-left: 10px;
+              color: #353535
+            }
+            .tag {
+              .ant-tag {
+                color: #666;
+                border-radius: 4px;
+                background: #d1d9db
+              }
+            }
+          }
+          dl.remark.customer-info {
+            padding-bottom: 5px;
+            border-bottom: 1px solid #DEDFE3;
+          }
+          .show-customer-detail {
+            padding-top: 10px;
+            padding-bottom: 5px;
+            button {
+              background: #fff;
+              color: #4d96d1;
+            }
+          }
+
+        }
+        .customer-name:not(:first-child) {
+          margin-top: 10px;
+        }
+        .other-customer-container {
+          background: #fff;
+          padding: 5px 5px 5px 15px;
+          margin-top: 10px;
+        }
+        //添加客户按钮
+        .handle-btn-container {
+          float: left;
+          display: block;
+          height: 35px;
+          line-height: 35px;
+          text-align: left;
+          color: #4d96d1;
+          cursor: pointer;
+          border-radius: 4px;
+          padding-left: 10px;
+        }
+        //查询客户失败后的提示
+        .failed-to-get-customer {
+          display: block;
+          color: red;
+          margin-top: 14px;
+          a {
+            cursor: pointer;
+            color: #00ABEA;
+            padding-left: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* 通话状态展示面板-end*/
+.crm-right-panel {
+  z-index: 115;
+}

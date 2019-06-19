@@ -180,39 +180,8 @@ class PhonePanel extends React.Component {
         phoneRecordObj.callid = '';
         phoneRecordObj.received_time = '';//通话时间
         phoneAlertAction.setInitialState();
-        phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_PHONE_MODAL, this.closeModal);
         phoneAlertStore.unlisten(this.onStoreChange);
     }
-
-    closeModal = () => {
-        var $modal = $('#phone-status-content');
-        if ($modal && $modal.length > 0) {
-            this.setState({
-                isModalShown: false,
-                isAddFlag: false,
-                isAddToCustomerFlag: false,
-            });
-            //在最后阶段，将数据清除掉
-            if (this.state.phonemsgObj && (this.state.phonemsgObj.type === PHONERINGSTATUS.phone || this.state.phonemsgObj.type === PHONERINGSTATUS.curtao_phone || this.state.phonemsgObj.type === PHONERINGSTATUS.call_back)) {
-                //恢复初始数据
-                phoneAlertAction.setInitialState();
-                //清空联系人名称的信息
-                let paramObj = this.state.paramObj;
-                if (paramObj.call_params && _.isFunction(paramObj.call_params.setInitialPhoneObj)) {
-                    paramObj.call_params.setInitialPhoneObj();
-                }
-                if (_.get(paramObj, 'call_params.contactNameObj')) {
-                    paramObj.call_params.contactNameObj = {};
-                }
-                this.setState({
-                    paramObj: paramObj,
-                    phoneNum: '',
-                    rightPanelIsShow: false,
-                    isInitialHeight: true,
-                });
-            }
-        }
-    };
 
     showAddCustomerForm = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.handle-btn-container .add-customer'), '点击添加客户按钮');
@@ -543,10 +512,10 @@ class PhonePanel extends React.Component {
             if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
                 //只对应一个客户时不用提示
                 if (phonemsgObj.customers.length !== 1) {
-                    tipContent = Intl.get('call.record.some.customer', '此号码对应{num}个客户', {num: phonemsgObj.customers.length});
+                    tipContent = Intl.get('call.record.some.customer', '此号码对应{num}个{type}', {num: phonemsgObj.customers.length, type: Intl.get('call.record.customer', '客户')});
                 }
             } else if (!(_.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length)) {//添加完客户后，此提示不用展示
-                tipContent = Intl.get('call.record.no.response.customer', '此号码无对应客户');
+                tipContent = Intl.get('call.record.no.response.customer', '此号码无对应{type}',{type: Intl.get('call.record.customer', '客户')});
             }
         }
         if (tipContent) {
