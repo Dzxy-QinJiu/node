@@ -90,7 +90,7 @@ const MemberList = createReactClass({
             isShowBatchChangeSelfGoal: true, //是否展示设置个人目标按钮
             isSavingTeamGoal: false, //正在保存团队目标
             isSavingMemberGoal: false,//正在保存个人目标
-            selectedRowKeys: [], // 选中的行
+            selectedRowKeys: _.get(this.state, 'selectedRowKeys', []), // 选中的行
         };
     },
 
@@ -828,8 +828,10 @@ const MemberList = createReactClass({
                 <AlertTimer
                     time={saveResult === 'error' ? 3000 : 600}
                     message={this.state.saveMemberListMsg}
-                    type={saveResult} showIcon
-                    onHide={this.hideSaveTooltip}/>
+                    type={saveResult}
+                    showIcon
+                    onHide={this.hideSaveTooltip}
+                />
             </div>) : null;
 
     },
