@@ -4,7 +4,7 @@
 
 require('../css/clue-to-customer-panel.less');
 require('MOD_DIR/crm/public/css/contact.less');
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Icon } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -319,7 +319,7 @@ class ClueToCustomerPanel extends React.Component {
         return (
             <div className="customer-list">
                 <div className="title">
-                    <b>{Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}</b>
+                    <Icon type="exclamation-circle" /><b>{Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}</b>
                 </div>
 
                 {_.map(existingCustomers, (customer, index) => {
