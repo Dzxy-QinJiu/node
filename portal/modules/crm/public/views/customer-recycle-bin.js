@@ -15,6 +15,8 @@ import {SearchInput} from 'antc';
 import {message, Popconfirm, Icon} from 'antd';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
+import BottomTotalCount from 'CMP_DIR/bottom-total-count';
+import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 const PRIVILEGES = {
     MANAGER_CUSTOMER_BAK_AUTH: 'CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD'//管理员获取回收站中客户列表的权限
 };
@@ -400,7 +402,7 @@ class CustomerRecycleBin extends React.Component {
         }
     };
 
-    renderTableContent(tableHeight) {
+    renderTableContent() {
         //初次获取数据时展示loading效果
         if (this.state.isLoading && !_.get(this.state, 'customerList[0]')) {
             return (<Spinner />);
@@ -416,26 +418,19 @@ class CustomerRecycleBin extends React.Component {
                         util={{zoomInSortArea: true}}
                         onChange={this.onTableChange}
                         pagination={false}
-                        scroll={{y: tableHeight - LAYOUT_CONSTANTS.TH_HEIGHT}}
+                        scroll={{y: getTableContainerHeight()}}
                         dropLoad={{
                             listenScrollBottom: this.state.listenScrollBottom,
                             handleScrollBottom: this.handleScrollBottom,
                             loading: this.state.isLoading,
                             showNoMoreDataTip: this.showNoMoreDataTip(),
-                            noMoreDataText: Intl.get('deal.no.more.tip', '没有更多订单了')
+                            noMoreDataText: Intl.get('common.no.more.crm', '没有更多客户了')
                         }}
                     />
                     {this.state.totalSize ?
-                        <div className="summary_info">
-                            <ReactIntl.FormattedMessage
-                                id='crm.207'
-                                defaultMessage={'共{count}个客户'}
-                                values={{
-                                    'count': this.state.totalSize
-                                }}
-                            />
-                        </div> : null
-                    }
+                        <BottomTotalCount
+                            totalCount={Intl.get('crm.207', '共{count}个客户', {count: this.state.totalSize})}/>
+                        : null}
                 </div>);
         } else {
             let noDataTip = Intl.get('contract.60', '暂无客户');
@@ -462,7 +457,6 @@ class CustomerRecycleBin extends React.Component {
     };
 
     render() {
-        let tableHeight = $('body').height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT - LAYOUT_CONSTANTS.TOTAL_HEIGHT;
         const searchFields = [
             {
                 name: Intl.get('crm.41', '客户名'),
@@ -498,8 +492,8 @@ class CustomerRecycleBin extends React.Component {
                         />
                     </div>
                 </TopNav>
-                <div className="customer-table-container customer-bak-table" style={{height: tableHeight}}>
-                    {this.renderTableContent(tableHeight)}
+                <div className="customer-table-container customer-bak-table" style={{height: getTableContainerHeight()}}>
+                    {this.renderTableContent()}
                 </div>
             </div>
         );

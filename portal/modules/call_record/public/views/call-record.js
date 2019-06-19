@@ -30,6 +30,7 @@ import RefreshButton from 'CMP_DIR/refresh-button';
 const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 //获取无效电话的列表  设置某个电话为无效电话
 import {getInvalidPhone,addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
+import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 //接听状态
 let CALL_STATUS_MAP = {
     'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
@@ -38,18 +39,6 @@ let CALL_STATUS_MAP = {
 };
 let searchInputTimeOut = null;
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
-//计算布局的常量
-const LAYOUT_CONSTANTS = {
-    PADDING_TOP: 66,
-    PANEL_PADDING: 40,
-    TAB_HEIGHT: 53,
-    RANGE_HEIGHT: 30,
-    CHART_HEIGHT: 232,
-    FIXED_THEAD: 50,
-    TABLE_MARGIN_BOTTOM: 20,
-    SUMMARY: 45
-};
-
 // 通话状态的常量
 const CALL_STATUS_OPTION = {
     ALL: 'ALL',
@@ -178,11 +167,7 @@ class CallRecord extends React.Component {
 
     //计算表格高度
     changeTableHeight = () => {
-        var tableHeight = $(window).height() -
-            LAYOUT_CONSTANTS.PADDING_TOP -
-            LAYOUT_CONSTANTS.FIXED_THEAD -
-            LAYOUT_CONSTANTS.TABLE_MARGIN_BOTTOM -
-            LAYOUT_CONSTANTS.SUMMARY;
+        var tableHeight = commonMethodUtil.getTableContainerHeight();
         this.setState({ tableHeight });
     };
 
@@ -961,15 +946,13 @@ class CallRecord extends React.Component {
                     </div>
                     {
                         this.state.callRecord.data_list.length ? (
-                            <div className="total_summary">
-                                <ReactIntl.FormattedMessage
-                                    id="common.total.data"
-                                    defaultMessage={'共{num}条数据'}
-                                    values={{
-                                        'num': this.state.callRecord.total
-                                    }}
-                                />
-                            </div>
+                            <BottomTotalCount totalCount={<ReactIntl.FormattedMessage
+                                id="common.total.data"
+                                defaultMessage={'共{num}条数据'}
+                                values={{
+                                    'num': this.state.callRecord.total
+                                }}
+                            />}/>
                         ) : null
                     }
                 </div>

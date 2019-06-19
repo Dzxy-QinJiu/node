@@ -27,12 +27,8 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-//用于布局的高度
-var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 120,
-    BOTTOM_DISTANCE: 40
-};
 import {RETRY_GET_APP} from '../util/consts';
+import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 
 // 用户类型的常量
 const USER_TYPE_OPTION = {
@@ -294,6 +290,7 @@ class LogView extends React.Component {
                 sorter: true,
                 width: '150px',
                 key: 'timestamp',
+                align: 'left',
                 render: function(timestamp, rowData, idx) {
                     return (<span>
                         {moment(timestamp).format(oplateConsts.DATE_TIME_FORMAT)}
@@ -763,7 +760,7 @@ class LogView extends React.Component {
             doNotShow = true;
         }
         var columns = Oplate.hideSomeItem ? this.getTableColumnsVe() : this.getTableColumns();
-        var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
+        var tableHeight = commonMethodUtil.getTableContainerHeight();
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,
             handleScrollBottom: this.handleScrollBottom,
@@ -798,15 +795,13 @@ class LogView extends React.Component {
                     />
                 </div>
                 {this.state.total ?
-                    <div className="summary_info">
-                        <ReactIntl.FormattedMessage
-                            id="user.log.total"
-                            defaultMessage={'共有{number}条日志记录'}
-                            values={{
-                                'number': this.state.total
-                            }}
-                        />
-                    </div> : null}
+                    <BottomTotalCount totalCount={<ReactIntl.FormattedMessage
+                        id="user.log.total"
+                        defaultMessage={'共有{number}条日志记录'}
+                        values={{
+                            'number': this.state.total
+                        }}
+                    />}/> : null}
             </div>
         );
     };

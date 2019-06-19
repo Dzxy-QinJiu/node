@@ -15,13 +15,10 @@ import classNames from 'classnames';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import {num as antUtilsNum} from 'ant-utils';
-
+import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 const parseAmount = antUtilsNum.parseAmount;
 const PAGE_SIZE = 20;
-const TOP_NAV_HEIGHT = 64,//头部导航区高度
-    TOTAL_HEIGHT = 40,//总数的高度
-    TH_HEIGHT = 50;//表头的高度
-
+import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 class DealTable extends React.Component {
     constructor(props) {
         super(props);
@@ -224,7 +221,7 @@ class DealTable extends React.Component {
         if (dealListObj.isLoading && (!_.get(dealListObj, 'list[0]'))) {
             return (<Spinner />);
         } else if (_.get(dealListObj, 'list[0]')) {
-            let tableHeight = $('body').height() - TOP_NAV_HEIGHT - TOTAL_HEIGHT;
+            let tableHeight = getTableContainerHeight();
             return (
                 <div className="deal-table-container" style={{height: tableHeight}} data-tracename="订单列表">
                     <AntcTable
@@ -236,7 +233,7 @@ class DealTable extends React.Component {
                         util={{zoomInSortArea: true}}
                         onChange={this.onTableChange}
                         pagination={false}
-                        scroll={{y: tableHeight - TH_HEIGHT}}
+                        scroll={{y: tableHeight}}
                         dropLoad={{
                             listenScrollBottom: dealListObj.listenScrollBottom,
                             handleScrollBottom: this.handleScrollBottom,
@@ -246,15 +243,13 @@ class DealTable extends React.Component {
                         }}
                     />
                     {dealListObj.total ?
-                        <div className="summary_info">
-                            <ReactIntl.FormattedMessage
-                                id='deal.total.tip'
-                                defaultMessage={'共{count}个订单'}
-                                values={{
-                                    'count': dealListObj.total
-                                }}
-                            />
-                        </div> : null
+                        <BottomTotalCount totalCount={ <ReactIntl.FormattedMessage
+                            id='deal.total.tip'
+                            defaultMessage={'共{count}个订单'}
+                            values={{
+                                'count': dealListObj.total
+                            }}
+                        />}/> : null
                     }
                 </div>);
         } else {
