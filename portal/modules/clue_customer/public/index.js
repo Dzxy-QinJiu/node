@@ -1760,6 +1760,7 @@ class ClueCustomer extends React.Component {
                         existingCustomers={this.state.existingCustomers}
                         hidePanel={this.hideClueToCustomerPanel}
                         showAddCustomerPanel={this.showAddCustomerPanel}
+                        getClueList={this.onTypeChange}
                     />
 
                     {this.state.isShowAddCustomerPanel ? (
