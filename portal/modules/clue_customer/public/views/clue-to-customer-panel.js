@@ -141,22 +141,58 @@ class ClueToCustomerPanel extends React.Component {
             //因为点删除按钮后不会像点添加按钮后那样触发父组件的更新
             //所以只能用这种手段绑定事件的方式实现
             minusBtn.click(() => {
-                setTimeout(this.hideScrollBar.bind(this, contactForm));
+                setTimeout(() => {
+                    //隐藏滚动条
+                    this.hideScrollBar(contactForm);
+
+                    //给联系人表单设置折叠效果
+                    this.setFoldingEffect(contactForm);
+                });
             });
         }
     }
 
     //给联系人表单设置折叠效果
     setFoldingEffect(contactForm) {
-        //contactForm.css('height', 'auto');
         //折叠按钮
-        const foldingBtn = contactForm.find('.folding-btn');
+        let foldingBtn = contactForm.find('.folding-btn');
 
         if (!foldingBtn.length) {
-            const gendarItem = $('.contact-sex-item');
+            foldingBtn = $('<div/>');
+            foldingBtn.addClass('folding-btn clickable');
+            const expandBtnText = '展开全部 ∨';
+            const closeBtnText = '收起 ∧';
+            foldingBtn.text(expandBtnText);
+
+            const gendarItem = contactForm.find('.contact-sex-item');
+
+            gendarItem.before(foldingBtn);
+
             const properHeight = gendarItem.offset().top - contactForm.offset().top; 
 
             contactForm.height(properHeight);
+
+            foldingBtn.click(function() {
+                const self = $(this);
+
+                if (self.hasClass('expand')) {
+                    contactForm.height(properHeight);
+                    self.removeClass('expand');
+                    foldingBtn.text(expandBtnText);
+                } else {
+                    contactForm.height('auto');
+                    self.addClass('expand');
+                    foldingBtn.text(closeBtnText);
+                }
+            });
+        } else {
+            if (!foldingBtn.hasClass('expand')) {
+                const gendarItem = contactForm.find('.contact-sex-item');
+
+                const properHeight = gendarItem.offset().top - contactForm.offset().top; 
+
+                contactForm.height(properHeight);
+            }
         }
     }
 
