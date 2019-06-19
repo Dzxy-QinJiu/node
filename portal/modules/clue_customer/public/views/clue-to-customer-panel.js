@@ -106,19 +106,29 @@ class ClueToCustomerPanel extends React.Component {
         if (contactForms.length) {
             contactForms.each((index, contactForm) => {
                 contactForm = $(contactForm);
-                contactForm.css('height', 'auto');
-                //去掉滚动条
-                contactForm.find('.gm-scrollbar').hide();
-                contactForm.find('.gm-scroll-view').css({
-                    width: 'auto',
-                    height: 'auto',
-                    overflow: 'hidden'
-                });
+
+                //给联系人表单设置折叠效果
+                this.setFoldingEffect(contactForm);
+
+                //隐藏滚动条
+                this.hideScrollBar(contactForm);
 
                 //给联系方式后面的删除按钮设置点击事件
                 this.setClickEventForContactWayDeleteBtn(contactForm);
             });
         }
+    }
+
+    //隐藏滚动条
+    hideScrollBar(contactForm) {
+        //隐藏滚动条元素
+        contactForm.find('.gm-scrollbar').hide();
+        //调整滚动条视图元素的样式
+        contactForm.find('.gm-scroll-view').css({
+            width: 'auto',
+            height: 'auto',
+            overflow: 'hidden'
+        });
     }
 
     //给联系方式后面的删除按钮设置点击事件
@@ -131,8 +141,22 @@ class ClueToCustomerPanel extends React.Component {
             //因为点删除按钮后不会像点添加按钮后那样触发父组件的更新
             //所以只能用这种手段绑定事件的方式实现
             minusBtn.click(() => {
-                setTimeout(this.adjustContactForm);
+                setTimeout(this.hideScrollBar.bind(this, contactForm));
             });
+        }
+    }
+
+    //给联系人表单设置折叠效果
+    setFoldingEffect(contactForm) {
+        //contactForm.css('height', 'auto');
+        //折叠按钮
+        const foldingBtn = contactForm.find('.folding-btn');
+
+        if (!foldingBtn.length) {
+            const gendarItem = $('.contact-sex-item');
+            const properHeight = gendarItem.offset().top - contactForm.offset().top; 
+
+            contactForm.height(properHeight);
         }
     }
 
