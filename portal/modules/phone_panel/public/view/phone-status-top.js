@@ -16,7 +16,7 @@ var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
-//挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回复
+//挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访
 const HANG_UP_TYPES = [PHONERINGSTATUS.phone, PHONERINGSTATUS.curtao_phone, PHONERINGSTATUS.call_back];
 class phoneStatusTop extends React.Component {
     constructor(props) {
