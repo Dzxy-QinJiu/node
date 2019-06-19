@@ -112,20 +112,23 @@ class phoneStatusTop extends React.Component {
     };
     //提交跟进记录
     handleTraceSubmit = () => {
-        let customer_id = this.getSaveTraceCustomerId();
         //跟进记录的id，只有当通话结束后(type=phone时)，推送过来的数据中才会有id
         let trace_id = this.state.phonemsgObj && this.state.phonemsgObj.id;
-        if (!customer_id) return;
         if (!trace_id) {
             phoneAlertAction.setSubmitErrMsg(Intl.get('phone.delay.save', '通话记录正在同步，请稍等再保存！'));
             return;
         }
         const submitObj = {
             id: trace_id,
-            customer_id: customer_id,
             last_callrecord: 'true',
             remark: this.state.inputContent
         };
+        //获取保存跟进记录的客户id
+        let customer_id = this.getSaveTraceCustomerId();
+        //没有客户id时，会只将跟进内容保存到通话记录中
+        if(customer_id){
+            submitObj.customer_id = customer_id;
+        }
         phoneAlertAction.updateCustomerTrace(submitObj, () => {
             let updateData = {customer_id: customer_id, remark: this.state.inputContent};
             if (this.state.isConnected) {
@@ -190,8 +193,8 @@ class phoneStatusTop extends React.Component {
                             />
                         ) : null}
                     </div>
-                    {//通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示保存跟进记录按钮
-                        HANG_UP_TYPES.includes(phonemsgObj.type) && this.getSaveTraceCustomerId() ?
+                    {//通话结束后，展示保存跟进记录的按钮
+                        HANG_UP_TYPES.includes(phonemsgObj.type) ?
                             <div className="btn-select-container">
                                 {/*如果获取到的客户不止一个，要手动选择要关联的客户*/}
                                 {this.state.customerInfoArr.length > 1 ?
@@ -237,7 +240,7 @@ class phoneStatusTop extends React.Component {
         var phoneNum = this.props.contactNameObj && this.props.contactNameObj.contact ? this.props.contactNameObj.contact + '-' : '';
         if (phonemsgObj.call_type === 'IN') {
             phoneNum += phonemsgObj.extId;
-            if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
+            if (HANG_UP_TYPES.includes(phonemsgObj.type)) {
                 phoneNum += phonemsgObj.dst;
             }
         } else {
@@ -292,7 +295,7 @@ class phoneStatusTop extends React.Component {
             }
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             iconFontCls += ' icon-phone-answering';
-        } else if (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) {
+        } else if (HANG_UP_TYPES.includes(phonemsgObj.type)) {
             iconFontCls += ' icon-phone-bye';
             phoneStatusContainer += ' finish-phone-call';
         }
@@ -315,7 +318,7 @@ class phoneStatusTop extends React.Component {
                 </div>
                 <div className="trace-and-handle-btn">
                     <div className="trace-content-container">
-                        {this.getSaveTraceCustomerId() ? this.renderTraceItem(phonemsgObj) : null}
+                        {this.renderTraceItem(phonemsgObj)}
                     </div>
                     {this.state.showAddFeedbackOrAddPlan && (!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo) ?
                         <div className="add-trace-and-plan">
