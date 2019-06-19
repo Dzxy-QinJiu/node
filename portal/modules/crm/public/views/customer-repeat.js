@@ -24,8 +24,8 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 let CONSTANTS = {
     PADDING_TOP: 84,
     PADDING_BOTTOM: 20,
-    TABLE_HEAD_HEIGHT: 53,
-    TOTAL_HEIGHT: 20,
+    TABLE_HEAD_HEIGHT: 35,
+    TOTAL_HEIGHT: 30,
     PAGE_SIZE: 20//一页展示的客户个数
 };
 let searchInputTimeOut = null;

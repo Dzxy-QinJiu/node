@@ -38,15 +38,10 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 const WEBSITE_CONFIG = oplateConsts.STORE_PERSONNAL_SETTING.WEBSITE_CONFIG;
 //个人配置中存储的近期登录用户列表选择的应用id
 const RECENT_LOGIN_USER_SELECTED_APP_ID = oplateConsts.STORE_PERSONNAL_SETTING.RECENT_LOGIN_USER_SELECTED_APP_ID;
-//用于布局的高度
-const LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 120,
-    BOTTOM_DISTANCE: 50
-};
-
 const PAGE_SIZE = 20;//一页获取20条数据
 const ALL_MEMBER_VALUE = 'ALL_MEMBER';
 import {isEqualArray} from 'LIB_DIR/func';
+import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -612,7 +607,7 @@ class RecentLoginUsers extends React.Component {
     }
 
     render() {
-        let divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
+        let divHeight = commonMethodUtil.getTableContainerHeight();
 
         let columns = this.getTableColumns();
         return (
@@ -643,15 +638,13 @@ class RecentLoginUsers extends React.Component {
                         </GeminiScrollBar>
                     </div>
                     {this.state.totalUserSize ?
-                        <div className="summary_info">
-                            <ReactIntl.FormattedMessage
-                                id="user.total.data"
-                                defaultMessage={'共{number}个用户'}
-                                values={{
-                                    'number': this.state.totalUserSize
-                                }}
-                            />
-                        </div> : null
+                        <BottomTotalCount totalCount={<ReactIntl.FormattedMessage
+                            id="user.total.data"
+                            defaultMessage={'共{number}个用户'}
+                            values={{
+                                'number': this.state.totalUserSize
+                            }}
+                        />}/> : null
                     }
                 </div>
                 <RightPanel

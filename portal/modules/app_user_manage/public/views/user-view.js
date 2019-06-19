@@ -40,18 +40,16 @@ const EXCEPTION_TYPES = [{
     name: Intl.get('user.frequent.logon', '频繁登录'),
     value: 'login_frequency'
 }];
-//用于布局的高度
-var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 120,
-    BOTTOM_DISTANCE: 50
-};
+
 // 自定义属性变量
 const CUSTOM_VARIABLES = 'custom_variables';
 import {
     removeSpacesAndEnter,
     traversingSelectTeamTree,
-    getRequestTeamIds
+    getRequestTeamIds,
+    getTableContainerHeight
 } from 'PUB_DIR/sources/utils/common-method-util';
+import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 
 class UserTabContent extends React.Component {
     state = {
@@ -1536,10 +1534,7 @@ class UserTabContent extends React.Component {
             hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
         //只有oplate的用户才有批量操作
         var rowSelection = hasSelectAuth && isOplateUser() ? this.getRowSelection() : null;
-        var divHeight = $(window).height() -
-            LAYOUT_CONSTANTS.TOP_DISTANCE -
-            LAYOUT_CONSTANTS.BOTTOM_DISTANCE -
-            (this.state.filterAreaExpanded ? $(this.refs.filter_adv).outerHeight() || 0 : 0);
+        var divHeight = getTableContainerHeight() - (this.state.filterAreaExpanded ? $(this.refs.filter_adv).outerHeight() || 0 : 0);
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,
             handleScrollBottom: this.handleScrollBottom,
@@ -1592,15 +1587,13 @@ class UserTabContent extends React.Component {
 
                 </div>
                 {this.state.appUserCount ?
-                    <div className="summary_info">
-                        <ReactIntl.FormattedMessage
-                            id="user.total.data"
-                            defaultMessage={'共{number}个用户'}
-                            values={{
-                                'number': this.state.appUserCount
-                            }}
-                        />
-                    </div> : null
+                    <BottomTotalCount totalCount={<ReactIntl.FormattedMessage
+                        id="user.total.data"
+                        defaultMessage={'共{number}个用户'}
+                        values={{
+                            'number': this.state.appUserCount
+                        }}
+                    />}/> : null
                 }
             </div>
         );

@@ -58,7 +58,7 @@ const tabSaleStageMap = {
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 66 + 56,//表格容器上外边距 + 表头的高度
+    TOP_DISTANCE: 66 + 46,//表格容器上外边距 + 表头的高度
     BOTTOM_DISTANCE: 30 + 10 * 2,//分页器的高度 + 分页器上下外边距
     SCREEN_WIDTH: 1130,//屏幕宽度小于1130时，右侧操作按钮变成图标
     UPLOAD_MODAL_HEIGHT: 260

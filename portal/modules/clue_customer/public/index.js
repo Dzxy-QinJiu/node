@@ -21,7 +21,7 @@ const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
-import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
+import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
@@ -53,19 +53,18 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
+import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
-    TOP_DISTANCE: 68,
-    BOTTOM_DISTANCE: 40,
     FILTER_WIDTH: 300,
-    TABLE_TITLE_HEIGHT: 50
+    TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
+    TH_MORE_HEIGHT: 20//带选择框的TH60比不带选择框的TH40多出来的高度
 };
 
 class ClueCustomer extends React.Component {
     state = {
         clueAddFormShow: false,//
         rightPanelIsShow: rightPanelShow,//是否展示右侧客户详情
-        tableHeight: 630,
         accessChannelArray: accessChannelArray,//线索渠道
         clueSourceArray: clueSourceArray,//线索来源
         clueClassifyArray: clueClassifyArray,//线索分类
@@ -102,8 +101,7 @@ class ClueCustomer extends React.Component {
         if(!this.isCommonSales()){
             this.getClueList();
         }
-        this.changeTableHeight();
-        $(window).on('resize', e => this.changeTableHeight());
+
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
     }
     getUnhandledClue = () => {
@@ -112,10 +110,7 @@ class ClueCustomer extends React.Component {
         clueFilterAction.setFilterClueAllotNoTrace('0');
         this.filterPanel.filterList.setDefaultFilterSetting();
     };
-    changeTableHeight = () => {
-        var tableHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE - LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT;
-        this.setState({ tableHeight});
-    };
+
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps,'history.action') === 'PUSH' && _.get(nextProps,'location.state.clickUnhandleNum')){
 
@@ -193,7 +188,6 @@ class ClueCustomer extends React.Component {
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
-        $(window).off('resize', this.changeTableHeight);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
     }
 
@@ -1019,7 +1013,7 @@ class ClueCustomer extends React.Component {
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
-                scroll={{y: this.state.tableHeight }}
+                scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
             />);
 
     };
@@ -1217,20 +1211,20 @@ class ClueCustomer extends React.Component {
     };
 
     renderClueCustomerBlock = () => {
-        var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
+        var divHeight = getTableContainerHeight();
         if (this.state.curClueLists.length) {
             return (
                 <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
-                        style={{height: divHeight}}
+                        style={{height: divHeight + LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
                         id="area"
                     >
                         {this.renderClueCustomerLists()}
                     </div>
                     {this.state.customersSize ?
-                        <div className="clue-customer-total-tip">
-                            {Intl.get('crm.215', '共{count}个线索', {'count': this.state.customersSize})}
-                        </div> : null}
+                        <BottomTotalCount
+                            totalCount={Intl.get('crm.215', '共{count}个线索', {'count': this.state.customersSize})}/>
+                        : null}
                 </div>
             );
         }else{
@@ -1601,7 +1595,7 @@ class ClueCustomer extends React.Component {
                                 clueClassifyArray={this.state.clueClassifyArray}
                                 salesManList={this.getSalesDataList()}
                                 getClueList={this.getClueList}
-                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: this.state.tableHeight + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
+                                style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
                             />
                         </div>
                         <div className={contentClassName}>
