@@ -267,7 +267,6 @@ const MemberList = createReactClass({
             managerIds: JSON.stringify(managerIds),
             userIds: JSON.stringify(userIds)
         };
-        console.log('编辑的请求参数：saveMemberListObj:', saveMemberListObj);
         MemberListEditAction.setMemberListSaving(true);
         MemberListEditAction.editMember(saveMemberListObj);
         this.setState({
@@ -408,7 +407,6 @@ const MemberList = createReactClass({
     },
 
     onSelectChange(selectedRowKeys){
-        console.log('selectedRowKeys:',selectedRowKeys);
         this.setState({
             selectedRowKeys: selectedRowKeys
         });
@@ -429,7 +427,6 @@ const MemberList = createReactClass({
         };
 
         const hasSelected = _.get(selectedRowKeys, 'length', 0);
-        console.log('hasSelected:',hasSelected);
         if (hasSelected) {
             if (!this.props.isAddMember) {
                 this.editMember();
@@ -483,11 +480,12 @@ const MemberList = createReactClass({
     // 编辑团队数据时，处理选中的数据
     handleEditTeamData() {
         let selectedRowKeys = this.state.selectedRowKeys;
-        console.log('selectedRowKeys:',selectedRowKeys);
         let curMemberList = this.processTableData();
+        // 去除之前选择的状态
         _.each(curMemberList, (item) => {
             delete item.selected;
         });
+        // 更新这次选择的成员的状态
         _.each(selectedRowKeys, item => {
             curMemberList[item].selected = true;
         });
@@ -498,7 +496,6 @@ const MemberList = createReactClass({
     getSelectSize: function() {
         let selectedOwnerSize = 0, selectedManagerSize = 0, selectedUserSize = 0;
         let curMemberList = this.handleEditTeamData();
-        console.log('getSelectSize:', curMemberList);
         _.each(curMemberList, item => {
             if (item.selected) {
                 if (item.role === 'owner') { // 负责人
@@ -512,10 +509,6 @@ const MemberList = createReactClass({
                 }
             }
         });
-        console.log('###############选择的类型###############');
-        console.log('selectedOwnerSize: 负责人',selectedOwnerSize);
-        console.log('selectedManagerSize: 秘书',selectedManagerSize);
-        console.log('selectedUserSize: 成员',selectedUserSize);
         return {
             selectedOwnerSize: selectedOwnerSize,
             selectedManagerSize: selectedManagerSize,
@@ -607,6 +600,7 @@ const MemberList = createReactClass({
             operate: 'exchange_owner'
         };
         let ownerId = '';
+
         //当前选中的是秘书，将秘书转为负责人
         _.each(curMemberList, item => {
             if (item.role === 'manager') {
@@ -634,7 +628,6 @@ const MemberList = createReactClass({
             this.setState({
                 saveMemberListObj: editObj,
                 selectedRowKeys: [],
-                curShowTeamMemberObj: curShowTeamMemberObj
             });
         }
     },
@@ -648,6 +641,7 @@ const MemberList = createReactClass({
         let editObj = {
             group_id: curShowTeamMemberObj.groupId
         };
+
         //负责人转为秘书
         let curMemberList = this.handleEditTeamData();
         _.each(curMemberList, item => {
@@ -659,6 +653,7 @@ const MemberList = createReactClass({
                 }
             }
         });
+
         //成员转为秘书
         if (_.isArray(curShowTeamMemberObj.users) && curShowTeamMemberObj.users.length > 0) {
             let managerIds = [];
@@ -690,7 +685,6 @@ const MemberList = createReactClass({
             return;
         }
         let curShowTeamMemberObj = this.state.curShowTeamMemberObj;
-        console.log('加为成员的处理##############', curShowTeamMemberObj);
         let editObj = {
             group_id: curShowTeamMemberObj.groupId
         };
@@ -712,7 +706,7 @@ const MemberList = createReactClass({
         if (_.isArray(curShowTeamMemberObj.managers) && curShowTeamMemberObj.managers.length > 0) {
             let userIds = [];
             _.each(curMemberList, item => {
-                if (item.role === 'user') {
+                if (item.role === 'manager') {
                     if (item.selected) {
                         userIds.push(item.userId);
                     }
@@ -737,7 +731,6 @@ const MemberList = createReactClass({
         let type = this.props.isAddMember ? 'add' : 'edit';
         let saveResult = this.state.saveMemberListResult;
         let saveObj = this.state.saveMemberListObj;
-        console.log('hideSaveTooltip:', saveObj);
         MemberListEditAction.clearSaveFlags(type, saveResult, saveObj);
     },
 
@@ -1211,7 +1204,6 @@ const MemberList = createReactClass({
     render() {
         let salesTeamPersonnelWidth = this.props.salesTeamMemberWidth;
         let containerHeight = this.props.containerHeight;
-        console.log('render ################:this.state.saveMemberListResult',this.state.saveMemberListResult);
         return (
             <div
                 className="sales-team-personnel"
