@@ -4,7 +4,7 @@
 
 require('../css/clue-to-customer-panel.less');
 require('MOD_DIR/crm/public/css/contact.less');
-import { Row, Col, Button, Icon } from 'antd';
+import { Row, Col, Button, Icon, message } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -32,7 +32,9 @@ class ClueToCustomerPanel extends React.Component {
         //关闭面板按钮点击事件
         hidePanel: noop,
         //显示添加客户面板
-        showAddCustomerPanel: noop
+        showAddCustomerPanel: noop,
+        //获取线索列表
+        getClueList: noop
     };
 
     static propTypes = {
@@ -40,7 +42,8 @@ class ClueToCustomerPanel extends React.Component {
         clue: PropTypes.object,
         existingCustomers: PropTypes.array,
         hidePanel: PropTypes.func,
-        showAddCustomerPanel: PropTypes.func
+        showAddCustomerPanel: PropTypes.func,
+        getClueList: PropTypes.func
     };
 
     constructor(props) {
@@ -219,6 +222,7 @@ class ClueToCustomerPanel extends React.Component {
                 }, this.setMergedCustomer);
             })
             .fail(err => {
+                message.success('获取客户联系人失败');
             });
     }
 
@@ -288,7 +292,7 @@ class ClueToCustomerPanel extends React.Component {
         });
 
         //将这些不重复的联系人合并到客户联系人
-        customerContacts = _.concat(customerContacts, noneDupClueContacts);
+        customerContacts = _.concat( noneDupClueContacts, customerContacts);
 
         this.setState({
             customerContacts,
@@ -356,8 +360,11 @@ class ClueToCustomerPanel extends React.Component {
                     data: contact
                 })
                     .done(result => {
+                        message.success('合并成功');
+                        setTimeout(this.props.getClueList, 1000);
                     })
                     .fail(err => {
+                        message.success('合并失败');
                     });
             } else {
                 //如果没有需要更新的字段，直接返回
@@ -371,14 +378,11 @@ class ClueToCustomerPanel extends React.Component {
                         data: contact
                     })
                         .done(result => {
+                            message.success('合并成功');
+                            setTimeout(this.props.getClueList, 1000);
                         })
                         .fail(err => {
-                            /*
-                            this.setState({
-                                isShowClueToCustomerPanel: false,
-                                isShowAddCustomerPanel: true,
-                            });
-                            */
+                            message.success('合并失败');
                         });
                 });
 
