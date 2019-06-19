@@ -232,7 +232,7 @@ const MemberList = createReactClass({
             Trace.traceEvent(e, '取消添加团队成员的修改');
         } else if (this.props.isEditMember) {
             this.setState({
-                selectedRowKeys: [],
+                selectedRowKeys: []
             });
             SalesTeamAction.cancelEditMember();
             this.resetCurShowTeamMemberObj();
@@ -427,6 +427,7 @@ const MemberList = createReactClass({
         };
 
         const hasSelected = _.get(selectedRowKeys, 'length', 0);
+
         if (hasSelected) {
             if (!this.props.isAddMember) {
                 this.editMember();
@@ -483,7 +484,9 @@ const MemberList = createReactClass({
         let curMemberList = this.processTableData();
         // 去除之前选择的状态
         _.each(curMemberList, (item) => {
-            delete item.selected;
+            if (item.selected) {
+                delete item.selected;
+            }
         });
         // 更新这次选择的成员的状态
         _.each(selectedRowKeys, item => {
@@ -743,6 +746,9 @@ const MemberList = createReactClass({
             //只选一个非负责人成员时，加为负责任按钮点击事件可用
             'member-btn-enable': selectSizeObj.selectedSize === 1 && !selectSizeObj.selectedOwnerSize
         });
+
+        let isShowSettingOwnerBtn = selectSizeObj.selectedSize === 1 && !selectSizeObj.selectedOwnerSize;
+
         let addManagerEnable = true;
         //不可同时选择了owner和user设为秘书，只能选一种角色中的人进行转换
         if (selectSizeObj.selectedSize === 0
@@ -779,38 +785,54 @@ const MemberList = createReactClass({
         });
         return (
             <div className="set-select-member-btns">
-                <div
-                    id="set-owner-btn"
-                    className={addOwnerBtnCls}
-                    onClick={this.addOwner}
-                    data-tracename="设为负责人"
-                >
-                    {Intl.get('sales.team.add.owner', '设为负责人')}
-                </div>
-                <div
-                    id="set-manager-btn"
-                    className={addManagerBtnCls}
-                    onClick={this.addManager}
-                    data-tracename="设为秘书"
-                >
-                    {Intl.get('sales.team.add.manager', '设为秘书')}
-                </div>
-                <div
-                    id="set-user-btn"
-                    className={addUserBtnCls}
-                    onClick={this.addUser}
-                    data-tracename="设为成员"
-                >
-                    {Intl.get('sales.team.add.to.member', '设为成员')}
-                </div>
-                <div
-                    id="del-member-btn"
-                    className={delMemberBtnCls}
-                    onClick={this.delMember}
-                    data-tracename="删除成员"
-                >
-                    {Intl.get('common.delete', '删除')}
-                </div>
+                {
+                    isShowSettingOwnerBtn ? (
+                        <div
+                            id="set-owner-btn"
+                            className={addOwnerBtnCls}
+                            onClick={this.addOwner}
+                            data-tracename="设为负责人"
+                        >
+                            {Intl.get('sales.team.add.owner', '设为负责人')}
+                        </div>
+                    ) : null
+                }
+                {
+                    addManagerEnable ? (
+                        <div
+                            id="set-manager-btn"
+                            className={addManagerBtnCls}
+                            onClick={this.addManager}
+                            data-tracename="设为秘书"
+                        >
+                            {Intl.get('sales.team.add.manager', '设为秘书')}
+                        </div>
+                    ) : null
+                }
+                {
+                    addUserEnable ? (
+                        <div
+                            id="set-user-btn"
+                            className={addUserBtnCls}
+                            onClick={this.addUser}
+                            data-tracename="设为成员"
+                        >
+                            {Intl.get('sales.team.add.to.member', '设为成员')}
+                        </div>
+                    ) : null
+                }
+                {
+                    delBtnEnable ? (
+                        <div
+                            id="del-member-btn"
+                            className={delMemberBtnCls}
+                            onClick={this.delMember}
+                            data-tracename="删除成员"
+                        >
+                            {Intl.get('common.delete', '删除')}
+                        </div>
+                    ) : null
+                }
                 <div
                     className="add-member-btn member-btn-enable"
                     onClick={(e) => {this.handleCancel(e);}}
