@@ -65,35 +65,41 @@ class SalesStageForm extends React.Component {
             this.props.submitSalesStageForm(submitObj);
         });
     }
+
+    validatorOrderName = (orderValue, callback) => {
+        if (orderValue) {
+            let existOrderStageList = this.state.salesStageList; // 已存在的订单阶段
+            let length = _.get(existOrderStageList, 'length');
+            if (length) { // 需要判断订单阶段名称，和已存在的订单阶段名称是否相同
+                let isExist = _.find(existOrderStageList, item => item.name === orderValue);
+                if (isExist) { // 和已存在的订单阶段名称是相同
+                    callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
+                } else {
+                    callback();
+                }
+            } else {
+                callback();
+            }
+        } else {
+            callback(Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称'));
+        }
+    };
+
+
     // 订单阶段唯一性校验
     getValidator = () => {
         return (rule, value, callback) => {
-            // 首先，判断文本框是否有值，没有值，提示请输入阶段名称；有值时，判断是否有订单阶段
-            // 有订单阶段时，需要判断编辑或是添加的订单阶段名称，和已有的是否相同，相同的话，提示该阶段名称已存在
-            // 若只是编辑订单阶段的描述，即_.get(formData, 'name') === orderValue，无需出现提示信息
-            // 没有订单阶段时，不需要判断，直接添加即可；
             let orderValue = _.trim(value); // 文本框中的值
-            if (orderValue) { // 订单阶段名称
-                let existOrderStageList = this.state.salesStageList; // 已存在的订单阶段
-                let length = _.get(existOrderStageList, 'length');
-                if (length) { // 已存在订单阶段
-                    let formData = this.state.formData;
-                    if (_.get(formData, 'name') === orderValue) { // 编辑订单信息，不修改名称的处理
-                        callback();
-                    } else {
-                        let isExist = _.find(existOrderStageList, item => item.name === orderValue);
-                        if (isExist) {
-                            callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
-                        } else {
-                            callback();
-                        }
-                    }
-                } else { // length === 0,说明无订单阶段，不需要判断订单阶段的名称是否存在
+            let formData = this.state.formData;
+            let name = _.get(formData, 'name');
+            if (name) { // 编辑订单阶段
+                if (name === orderValue) { // 没有修改阶段名称
                     callback();
+                } else {
+                    this.validatorOrderName(orderValue, callback);
                 }
-
-            } else { // 订单阶段名称的值为空时的提示信息
-                callback(Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称'));
+            } else { // 添加订单阶段
+                this.validatorOrderName(orderValue, callback);
             }
         };
     };
