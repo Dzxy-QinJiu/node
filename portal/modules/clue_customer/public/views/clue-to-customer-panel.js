@@ -77,6 +77,14 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     componentDidUpdate() {
+        //设置联系人列表容器的高度
+        this.setContactListWrapHeight(); 
+        //调整联系人表单
+        this.adjustContactForm();
+    }
+
+    //设置联系人列表容器的高度
+    setContactListWrapHeight() {
         const contactListWrap = $('.contact-list-wrap');
 
         if (contactListWrap.length) {
@@ -89,12 +97,34 @@ class ClueToCustomerPanel extends React.Component {
                 contactListWrap.css('height', 'auto');
             }
         }
+    }
 
-        //调整联系人表单
-        this.adjustContactForm();
+    //调整联系人表单
+    adjustContactForm = () => {
+        const contactForms = $('.crm-contact-form');
 
+        if (contactForms.length) {
+            contactForms.each((index, contactForm) => {
+                contactForm = $(contactForm);
+                contactForm.css('height', 'auto');
+                //去掉滚动条
+                contactForm.find('.gm-scrollbar').hide();
+                contactForm.find('.gm-scroll-view').css({
+                    width: 'auto',
+                    height: 'auto',
+                    overflow: 'hidden'
+                });
+
+                //给联系方式后面的删除按钮设置点击事件
+                this.setClickEventForContactWayDeleteBtn(contactForm);
+            });
+        }
+    }
+
+    //给联系方式后面的删除按钮设置点击事件
+    setClickEventForContactWayDeleteBtn(contactForm) {
         //联系方式后面的删除按钮
-        const minusBtn = $('.crm-contact-form .anticon-minus-circle-o:not(.bound)');
+        const minusBtn = contactForm.find('.anticon-minus-circle-o:not(.bound)');
 
         if (minusBtn.length) {
             //点联系方式后面的删除按钮后调整联系人表单
@@ -106,22 +136,7 @@ class ClueToCustomerPanel extends React.Component {
         }
     }
 
-    //调整联系人表单
-    //去掉滚动条
-    adjustContactForm() {
-        const contactForm = $('.crm-contact-form');
-
-        if (contactForm.length) {
-            contactForm.css('height', 'auto');
-            contactForm.find('.gm-scrollbar').hide();
-            contactForm.find('.gm-scroll-view').css({
-                width: 'auto',
-                height: 'auto',
-                overflow: 'hidden'
-            });
-        }
-    }
-
+    //联系人Store变更处理事件
     onContactStoreChange = () => {
         //为了让点击除电话外的其他联系方式后面的添加按钮时，界面上能有变化
         this.setState({});
