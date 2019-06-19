@@ -190,7 +190,7 @@ class phoneStatusTop extends React.Component {
                             />
                         ) : null}
                     </div>
-                    {//通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
+                    {//通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示保存跟进记录按钮
                         HANG_UP_TYPES.includes(phonemsgObj.type) && this.getSaveTraceCustomerId() ?
                             <div className="btn-select-container">
                                 {/*如果获取到的客户不止一个，要手动选择要关联的客户*/}
