@@ -6,7 +6,6 @@
 require('./phone-number-board.less');
 import {Button, Popover, Input, Icon, message} from 'antd';
 import {handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
-// import {insertAfterText} from 'PUB_DIR/sources/utils/common-method-util';
 import {isTelephone} from 'PUB_DIR/sources/utils/validate-util';
 //拨号键对应的数组
 const phoneNumArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
