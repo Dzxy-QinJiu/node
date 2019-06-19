@@ -9,6 +9,11 @@ import {handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
 import {isTelephone} from 'PUB_DIR/sources/utils/validate-util';
 //拨号键对应的数组
 const phoneNumArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
+//电话输入框光标的开始结束位置
+let cursorSelection = {
+    start: 0,//电话输入框的光标所在开始位置（选中内容的开始位置）
+    end: 0 //电话输入框的光标所在结束位置（选中内容的结束位置）
+};
 class PhoneNumberBoard extends React.Component {
     constructor(props) {
         super(props);
@@ -16,11 +21,7 @@ class PhoneNumberBoard extends React.Component {
             //外部传入的电话号码
             phoneNumber: props.phoneNumber,
             //拨号键盘输入的电话号码
-            inputNumber: '',
-            //电话输入框的光标所在开始位置（选中内容的开始位置）
-            selectionStart: 0,
-            //电话输入框的光标所在结束位置（选中内容的结束位置）
-            selectionEnd: 0
+            inputNumber: ''
         };
     }
 
@@ -32,9 +33,9 @@ class PhoneNumberBoard extends React.Component {
 
     onButtonClick = (num) => {
         //光标选中内容的开始位置
-        let selectionStart = this.state.selectionStart;
+        let selectionStart = cursorSelection.start;
         //光标选中内容的结束位置(未选中内容时，开始结束位置相同)
-        let selectionEnd = this.state.selectionEnd;
+        let selectionEnd = cursorSelection.end;
         let inputNumber = this.state.inputNumber;
         if (inputNumber) {
             inputNumber = inputNumber.slice(0, selectionStart) + num + inputNumber.slice(selectionEnd);
@@ -43,20 +44,16 @@ class PhoneNumberBoard extends React.Component {
         }
         //电话输入框的光标所在开始后移一位，结束位置跟开始位置相同
         let cursorIndex = selectionStart + 1;
-        this.setState({
-            inputNumber,
-            selectionStart: cursorIndex,
-            selectionEnd: cursorIndex
-        });
+        cursorSelection.start = cursorIndex;
+        cursorSelection.end = cursorIndex;
+        this.setState({inputNumber});
     }
 
     onNumberInputBlur = (event) => {
         let numberInputDom = event.target;
-        //电话输入框的光标所在开始、结束位置
-        this.setState({
-            selectionStart: numberInputDom.selectionStart,
-            selectionEnd: numberInputDom.selectionEnd
-        });
+        //设置电话输入框的光标所在开始、结束位置
+        cursorSelection.start = numberInputDom.selectionStart;
+        cursorSelection.end = numberInputDom.selectionEnd;
     }
 
     //每次只删除最后一个字符
