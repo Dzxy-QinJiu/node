@@ -16,7 +16,8 @@ var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
-
+//挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访
+const HANG_UP_TYPES = [PHONERINGSTATUS.phone, PHONERINGSTATUS.curtao_phone, PHONERINGSTATUS.call_back];
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -189,29 +190,31 @@ class phoneStatusTop extends React.Component {
                             />
                         ) : null}
                     </div>
-                    <div className="btn-select-container">
-                        {/*如果获取到的客户不止一个，要手动选择要关联的客户*/}
-                        {this.state.customerInfoArr.length > 1 ?
-                            <div className="select-add-trace-customer">
-                                {Intl.get('phone.alert.select.customer', '请选择要跟进的客户')}：
-                                <Select
-                                    defaultValue={this.state.customerInfoArr[0].id}
-                                    dropdownMatchSelectWidth={false}
-                                    onChange={this.handleSelectCustomer}
-                                >
-                                    {options}
-                                </Select>
+                    {//通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示保存跟进记录按钮
+                        HANG_UP_TYPES.includes(phonemsgObj.type) && this.getSaveTraceCustomerId() ?
+                            <div className="btn-select-container">
+                                {/*如果获取到的客户不止一个，要手动选择要关联的客户*/}
+                                {this.state.customerInfoArr.length > 1 ?
+                                    <div className="select-add-trace-customer">
+                                        {Intl.get('phone.alert.select.customer', '请选择要跟进的客户')}：
+                                        <Select
+                                            defaultValue={this.state.customerInfoArr[0].id}
+                                            dropdownMatchSelectWidth={false}
+                                            onChange={this.handleSelectCustomer}
+                                        >
+                                            {options}
+                                        </Select>
 
+                                    </div> : null}
+                                <Button type='primary' className="modal-submit-btn" onClick={this.handleTraceSubmit}
+                                    data-tracename="保存跟进记录">
+                                    {this.state.submittingTrace ? (Intl.get('retry.is.submitting', '提交中...')) : (Intl.get('common.save', '保存'))}
+                                </Button>
+                                {this.state.showCancelBtn ?
+                                    <Button onClick={this.handleTraceCancel}
+                                        data-tracename="取消保存跟进记录">{Intl.get('common.cancel', '取消')}</Button>
+                                    : null}
                             </div> : null}
-                        <Button type='primary' className="modal-submit-btn" onClick={this.handleTraceSubmit}
-                            data-tracename="保存跟进记录">
-                            {this.state.submittingTrace ? (Intl.get('retry.is.submitting', '提交中...')) : (Intl.get('common.save', '保存'))}
-                        </Button>
-                        {this.state.showCancelBtn ?
-                            <Button onClick={this.handleTraceCancel}
-                                data-tracename="取消保存跟进记录">{Intl.get('common.cancel', '取消')}</Button>
-                            : null}
-                    </div>
                 </div>
             );
         } else {
@@ -312,9 +315,7 @@ class phoneStatusTop extends React.Component {
                 </div>
                 <div className="trace-and-handle-btn">
                     <div className="trace-content-container">
-                        { //通话结束后，并且该电话有对应的客户可以添加跟进记录时，展示添加跟进记录界面
-                            (phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back) && this.getSaveTraceCustomerId() ? this.renderTraceItem(phonemsgObj) : null
-                        }
+                        {this.getSaveTraceCustomerId() ? this.renderTraceItem(phonemsgObj) : null}
                     </div>
                     {this.state.showAddFeedbackOrAddPlan && (!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo) ?
                         <div className="add-trace-and-plan">
