@@ -393,18 +393,29 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染客户列表项
     renderCustomerItem(customer) {
-        const defContact = _.find(customer.contacts, contact => contact.def_contancts === 'true');
-        const defContactName = _.get(defContact, 'name', '');
-        const defContactPhone = _.get(defContact, 'phone[0]', '');
+        const clue = this.props.clue;
+        const clueName = clue.name;
+        let customerName = customer.name;
+
+        if (customerName === clueName) {
+            customerName = <span className="high-light">{customerName}</span>;
+        } else {
+            const startIndex = customerName.indexOf(clueName);
+            const endIndex = startIndex + clueName.length;
+            const beginPart = customerName.substr(0, startIndex);
+            const endPart = customerName.substr(endIndex);
+
+            customerName = <span>{beginPart}<span className="high-light">{clueName}</span>{endPart}</span>;
+        }
         
         return (
             <div className="customer-item">
                 <div className="customer-name">
-                    {customer.name}
+                    {customerName}
                 </div>
                 <div className="customer-contact-and-btn">
-                    <span className="contact-name">{defContactName}</span>
-                    <span className="contact-phone">{defContactPhone}</span>
+                    <span className="contact-name">{}</span>
+                    <span className="contact-phone">{}</span>
                     <Button
                         onClick={this.onMergeToCustomerClick.bind(this, customer)}
                     >
