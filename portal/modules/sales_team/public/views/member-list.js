@@ -226,16 +226,18 @@ const MemberList = createReactClass({
         if (this.props.isAddMember) {
             this.setState({
                 selectedRowKeys: []
+            }, () => {
+                SalesTeamAction.cancelAddMember();
+                this.resetAddMemberList();
             });
-            SalesTeamAction.cancelAddMember();
-            this.resetAddMemberList();
             Trace.traceEvent(e, '取消添加团队成员的修改');
         } else if (this.props.isEditMember) {
             this.setState({
                 selectedRowKeys: []
+            }, () => {
+                SalesTeamAction.cancelEditMember();
+                this.resetCurShowTeamMemberObj();
             });
-            SalesTeamAction.cancelEditMember();
-            this.resetCurShowTeamMemberObj();
             Trace.traceEvent(e, '取消编辑团队成员的修改');
         }
         this.cleanSearchInput();
@@ -382,11 +384,11 @@ const MemberList = createReactClass({
             dataSource = _.concat(dataSource, owner);
         }
         let managers = _.get(curShowTeamMemberObj, 'managers');
-        if (managers) {
+        if (managers && _.get(managers, 'length')) {
             dataSource = _.concat(dataSource, managers);
         }
         let users = _.get(curShowTeamMemberObj, 'users');
-        if (users) {
+        if (users && _.get(users, 'length')) {
             dataSource = _.concat(dataSource, users);
         }
         return dataSource;
