@@ -500,6 +500,10 @@ class ClueTraceList extends React.Component {
     };
     renderTimeLineItem = (item, hasSplitLine) => {
         var traceObj = processForTrace(item);
+        //如果是其他类型的，需要把描述修改一下
+        if (item.type === CALL_RECORD_TYPE.OTHER){
+            traceObj.traceDsc = Intl.get('clue.customer.trace.clues', '跟进线索');
+        }
         //渲染时间线
         var iconClass = traceObj.iconClass, title = traceObj.title, traceDsc = traceObj.traceDsc;
         //是否上传了录音文件

@@ -218,7 +218,7 @@ exports.APPROVER_TYPE = [{
 ];
 exports.HIGHER_LEVEL = [
     {
-        name: Intl.get('apply.add.approve.node.team.owner', '团队所有者'),
+        name: Intl.get('apply.add.approve.node.team.owner', '部门经理'),
         value: 'teamowner'
     },
     {

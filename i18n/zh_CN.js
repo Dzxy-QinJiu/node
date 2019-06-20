@@ -2980,7 +2980,9 @@ var zh_CN = {
     'common.net.increase': '净增',
     'common.reflux': '回流',
     'user.info.get.user.condition.failed': '获取用户查询条件失败',
-    'apply.upload.same.name': '该文件名称已存在', 'apply.add.apply.type': '添加申请类型',
+    /*自定义流程 start*/
+    'apply.upload.same.name': '该文件名称已存在',
+    'apply.add.apply.type': '添加申请类型',
     'apply.add.form.content': '表单内容',
     'apply.add.form.regex': '审批规则',
     'apply.approve.manage.add.from.right': '请从右边添加表单内容',
@@ -3028,7 +3030,7 @@ var zh_CN = {
     'apply.add.approver.applicant.self': '申请人自己',
     'apply.add.approver.submit.files': '可提交文件',
     'apply.add.approver.distribute': '指定下一审批人',
-    'apply.add.approve.node.team.owner': '团队所有者',
+    'apply.add.approve.node.team.owner': '部门经理',
     'apply.add.approve.node.team.owner.and.higher.level.owner': '团队所有者或者上级团队所有者',
     'apply.add.approve.node.higher.level.owner': '上级团队所有者',
     'apply.add.approve.node.all.higher.level.owner': '所有上级团队所有者',
@@ -3058,6 +3060,9 @@ var zh_CN = {
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
     'apply.my.self.setting.work.flow': '我的自定义流程',
+    'apply.approve.set.approver': '指定审批人',
+    'apply.select.approver.type': '请选择审批人类型',
+    /*自定义流程 end*/
     'app.user.manage.role.name': '角色名称',
     'app.user.manage.organaization.name': '所在单位或公司',
     'app.user.manage.product.key.validate': '自定义属性key只能包含字母、下划线',
@@ -3084,7 +3089,6 @@ var zh_CN = {
     'clue.show.no.show.tip': '还有{num}个提醒未展示',
     'clue.close.all.noty': '关闭所有提醒？',
     'clue.fail.customer.trace.statics': '获取跟进记录的分类统计失败',
-    'apply.approve.set.approver': '指定审批人',
-    'apply.select.approver.type': '请选择审批人类型'
+    'clue.customer.trace.clues': '跟进线索',
 };
 export default zh_CN;

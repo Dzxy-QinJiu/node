@@ -310,7 +310,7 @@ class ApplyFormAndRules extends React.Component {
                                 name: 'UserTask_1_2',
                                 id: 'UserTask_1_2',
                                 type: 'UserTask',
-                                showName: '部门经理',
+                                showName: Intl.get('apply.add.approve.node.team.owner', '部门经理'),
                                 candidateApprover: 'teamowner',
                                 flowIndex: '1_2'
                             }

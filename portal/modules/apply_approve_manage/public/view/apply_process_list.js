@@ -17,9 +17,11 @@ let userData = require('PUB_DIR/sources/user-data');
 class AddAndShowApplyList extends React.Component {
     constructor(props) {
         super(props);
+        var applyList = userData.getUserData().workFlowConfigs;
+        applyList = _.filter(applyList, item => item.type !== 'member_invite');
         this.state = {
             newApplyTitle: '',//新添加的申请的名称
-            showApplyList: userData.getUserData().workFlowConfigs,//自定义流程的列表
+            showApplyList: applyList,//自定义流程的列表
             showAddWorkFlowName: this.props.showAddWorkFlowName,//是否展示添加自定义流程名称
             showApplyDetailForm: false,//是否展示审批的详情
             tableHeight: 610,
@@ -159,9 +161,9 @@ class AddAndShowApplyList extends React.Component {
     renderOverLayMenu = (record) => {
         return (
             <Menu>
-                <Menu.Item>
-                    <span onClick={this.copyApply.bind(this, record)}>{Intl.get('user.jscode.copy', '复制')}</span>
-                </Menu.Item>
+                {/*<Menu.Item>*/}
+                {/*<span onClick={this.copyApply.bind(this, record)}>{Intl.get('user.jscode.copy', '复制')}</span>*/}
+                {/*</Menu.Item>*/}
                 {!record.approveCheck && record.customiz ? <Menu.Item>
                     <span onClick={this.deleteApply.bind(this, record)}>{Intl.get('common.delete', '删除')}</span>
                 </Menu.Item> : null}
@@ -172,8 +174,8 @@ class AddAndShowApplyList extends React.Component {
     renderOperateBtns = (record) => {
         return (
             <span>
-                <Switch size="small" checked={record.approveCheck}
-                    onChange={this.changeApplyStatus.bind(this, _.get(record, 'id'))}/>
+                {/*<Switch size="small" checked={record.approveCheck}*/}
+                {/*onChange={this.changeApplyStatus.bind(this, _.get(record, 'id'))}/>*/}
                 <Dropdown overlay={this.renderOverLayMenu(record)} trigger={['click']}><i
                     className="iconfont icon-suspension-points icon-hangye"></i>
                 </Dropdown>
@@ -257,7 +259,7 @@ class AddAndShowApplyList extends React.Component {
                         );
                     }
                 }
-            },
+            }
             // {
             //     title: Intl.get('apply.approve.qualified.user', '可申用户'),
             //     //todo 数据不全，后期会修改
@@ -274,25 +276,30 @@ class AddAndShowApplyList extends React.Component {
             //         }
             //
             //     }
-            // }, {
-            //     title: Intl.get('common.operate', '操作'),
-            //     width: '240px',
-            //     className: '',
-            //     render: (text, record, index) => {
-            //         if (record.showAddWorkFlowName) {
-            //             return {
-            //                 children: text,
-            //                 props: {'colSpan': 0},
-            //             };
-            //         } else {
-            //             return (
-            //                 <span className="operate-wrap">
-            //                     {record.isDeleting ? this.renderDeletingBtns(record) : this.renderOperateBtns(record) }
-            //                 </span>
-            //             );
-            //         }
-            //     }
-            // },
+            // }
+            , {
+
+                title: Intl.get('common.operate', '操作'),
+                width: '240px',
+                className: '',
+                render: (text, record, index) => {
+                    if (record.showAddWorkFlowName) {
+                        return {
+                            children: text,
+                            props: {'colSpan': 0},
+                        };
+                    } else if (record.customiz) {
+                        //todo 暂时把内置流程先隐藏这个图标
+                        return (
+                            <span className="operate-wrap">
+                                {record.isDeleting ? this.renderDeletingBtns(record) : this.renderOperateBtns(record) }
+                            </span>
+                        );
+                    }else{
+                        return null;
+                    }
+                }
+            },
         ];
         var height = calculateHeight() - APPLYAPPROVE_LAYOUT.PADDINGHEIGHT * 2;
         return (
