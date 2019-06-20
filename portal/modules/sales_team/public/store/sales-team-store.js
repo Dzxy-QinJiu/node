@@ -509,7 +509,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                     this.curShowTeamMemberObj.owner = owner;
                 }
             } else {
-                this.curShowTeamMemberObj.owner = [];
+                delete this.curShowTeamMemberObj.owner;
             }
             // 秘书
             let managerIds = _.get(curShowTeam, 'manager_ids');
