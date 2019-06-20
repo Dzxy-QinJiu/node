@@ -65,32 +65,37 @@ class SalesStageForm extends React.Component {
             this.props.submitSalesStageForm(submitObj);
         });
     }
+
+    validatorOrderName = (orderValue, callback) => {
+        let existOrderStageList = this.state.salesStageList; // 已存在的订单阶段
+        let isExist = _.find(existOrderStageList, item => item.name === orderValue);
+        if (isExist) { // 和已存在的订单阶段名称是相同
+            callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
+        } else {
+            callback();
+        }
+    };
+
+
     // 订单阶段唯一性校验
     getValidator = () => {
         return (rule, value, callback) => {
-            let orderValue = _.trim(value);
-            if (orderValue) {
-                let existOrderStageList = this.state.salesStageList;
-                let length = _.get(existOrderStageList, 'length');
-                if (length) {
-                    let isExist = _.find(existOrderStageList, item => item.name === orderValue);
-                    if (isExist) {
-                        callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
-                    } else {
-                        callback();
-                    }
-                } else {
+            let orderValue = _.trim(value); // 文本框中的值
+            let formData = this.state.formData;
+            if (_.get(formData, 'id')) { // 编辑订单阶段
+                if (_.get(formData, 'name') === orderValue) { // 没有修改阶段名称
                     callback();
+                } else {
+                    this.validatorOrderName(orderValue, callback);
                 }
-
-            } else {
-                callback(Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称'));
+            } else { // 添加订单阶段
+                this.validatorOrderName(orderValue, callback);
             }
         };
     };
 
     renderFormContent() {
-        var formData = this.state.formData;
+        let formData = this.state.formData;
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             colon: false,
