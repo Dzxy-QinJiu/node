@@ -391,6 +391,30 @@ class ClueToCustomerPanel extends React.Component {
         });
     }
 
+    //渲染客户列表项
+    renderCustomerItem(customer) {
+        const defContact = _.find(customer.contacts, contact => contact.def_contancts === 'true');
+        const defContactName = _.get(defContact, 'name', '');
+        const defContactPhone = _.get(defContact, 'phone[0]', '');
+        
+        return (
+            <div className="customer-item">
+                <div className="customer-name">
+                    {customer.name}
+                </div>
+                <div className="customer-contact-and-btn">
+                    <span className="contact-name">{defContactName}</span>
+                    <span className="contact-phone">{defContactPhone}</span>
+                    <Button
+                        onClick={this.onMergeToCustomerClick.bind(this, customer)}
+                    >
+                        合并到此客户
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
     //渲染客户列表
     renderCustomerList() {
         const existingCustomers = this.props.existingCustomers;
@@ -401,27 +425,8 @@ class ClueToCustomerPanel extends React.Component {
                     <Icon type="exclamation-circle" /><b>{Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}</b>
                 </div>
 
-                {_.map(existingCustomers, (customer, index) => {
-                    const defContact = _.find(customer.contacts, contact => contact.def_contancts === 'true');
-                    const defContactName = _.get(defContact, 'name', '');
-                    const defContactPhone = _.get(defContact, 'phone[0]', '');
-                    
-                    return (
-                        <div className="customer-item">
-                            <div className="customer-name">
-                                {customer.name}
-                            </div>
-                            <div className="customer-contact-and-btn">
-                                <span className="contact-name">{defContactName}</span>
-                                <span className="contact-phone">{defContactPhone}</span>
-                                <Button
-                                    onClick={this.onMergeToCustomerClick.bind(this, customer)}
-                                >
-                                    合并到此客户
-                                </Button>
-                            </div>
-                        </div>
-                    );
+                {_.map(existingCustomers, customer => {
+                    return this.renderCustomerItem(customer);
                 })}
 
                 <div className="btn-block">
