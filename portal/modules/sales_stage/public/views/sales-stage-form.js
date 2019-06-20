@@ -67,20 +67,12 @@ class SalesStageForm extends React.Component {
     }
 
     validatorOrderName = (orderValue, callback) => {
-        if (orderValue) {
-            let existOrderStageList = this.state.salesStageList; // 已存在的订单阶段
-            if (_.get(existOrderStageList, 'length')) { // 需要判断订单阶段名称，和已存在的订单阶段名称是否相同
-                let isExist = _.find(existOrderStageList, item => item.name === orderValue);
-                if (isExist) { // 和已存在的订单阶段名称是相同
-                    callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
-                } else {
-                    callback();
-                }
-            } else {
-                callback();
-            }
+        let existOrderStageList = this.state.salesStageList; // 已存在的订单阶段
+        let isExist = _.find(existOrderStageList, item => item.name === orderValue);
+        if (isExist) { // 和已存在的订单阶段名称是相同
+            callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
         } else {
-            callback(Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称'));
+            callback();
         }
     };
 
