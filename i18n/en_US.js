@@ -2981,6 +2981,7 @@ var en_US = {
     'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
-    'apply.select.approver.type': 'Please select apply type'//请选择审批人类型
+    'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
+    'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
 };
 export default en_US;

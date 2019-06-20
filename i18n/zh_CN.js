@@ -3085,6 +3085,7 @@ var zh_CN = {
     'clue.close.all.noty': '关闭所有提醒？',
     'clue.fail.customer.trace.statics': '获取跟进记录的分类统计失败',
     'apply.approve.set.approver': '指定审批人',
-    'apply.select.approver.type': '请选择审批人类型'
+    'apply.select.approver.type': '请选择审批人类型',
+    'apply.select.search.clear.value': '修改筛选范围，已勾选的{type}将被清空',
 };
 export default zh_CN;
