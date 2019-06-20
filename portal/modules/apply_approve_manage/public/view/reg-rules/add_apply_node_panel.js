@@ -81,7 +81,7 @@ class AddApplyNodePanel extends React.Component {
                 });
                 this.setState({
                     userList: _.get(userListObj, 'data'),
-                    roleList: rolesList
+                    roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
                 });
             },
             error: (xhr, textStatus) => {
@@ -202,10 +202,10 @@ class AddApplyNodePanel extends React.Component {
                                     })}
                                 </Select>
                             </div>
-                            <Radio.Group className="radio-select-list" onChange={this.onChangeAdminApproveHigherLevel} value={this.state.adminApproveHigherLevel}>
-                                <Radio value='higherLevelApproveChecked'>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Radio>
-                                <Radio value='adminApproveChecked'>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Radio>
-                            </Radio.Group>
+                            {/*<Radio.Group className="radio-select-list" onChange={this.onChangeAdminApproveHigherLevel} value={this.state.adminApproveHigherLevel}>*/}
+                            {/*<Radio value='higherLevelApproveChecked'>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Radio>*/}
+                            {/*<Radio value='adminApproveChecked'>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Radio>*/}
+                            {/*</Radio.Group>*/}
                         </div>
                     );
                 case 'setting_roles' :
@@ -315,7 +315,7 @@ class AddApplyNodePanel extends React.Component {
         var hideType = false;
         var applyRulesAndSetting = _.get(this, 'props.applyRulesAndSetting.applyApproveRules');
         var addNodePanelFlow = this.props.addNodePanelFlow;
-        if (_.isObject(applyRulesAndSetting[addNodePanelFlow]) && _.isArray(applyRulesAndSetting[addNodePanelFlow]['bpmnNode'])) {
+        if (applyRulesAndSetting && _.isObject(applyRulesAndSetting[addNodePanelFlow]) && _.isArray(applyRulesAndSetting[addNodePanelFlow]['bpmnNode'])) {
             //如果是之前已经添加过的流程，最后一个节点是结束的节点，那就要看倒数第二个是不是指定了需要
             var bpmnNodeArr = applyRulesAndSetting[addNodePanelFlow]['bpmnNode'];
             var lastNode = _.last(bpmnNodeArr);
