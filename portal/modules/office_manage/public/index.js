@@ -28,7 +28,7 @@ class OfficeManage extends React.Component {
         isShowEditPositionFlag: false, // 默认不显示编辑
         isShowDeletePositionFlag: false, // 默认不显示删除
         mouseZoneHoverItemId: '', // 鼠标移入区域的id
-        visible: false
+        visible: false // 是否显示编辑、删除、设置默认职务的操作，默认是false
     };
 
     componentDidMount = () => {
@@ -84,18 +84,21 @@ class OfficeManage extends React.Component {
                 });
                 this.setState({
                     positionList: this.state.positionList,
-                    mouseZoneHoverItemId: ''
+                    mouseZoneHoverItemId: '',
+                    visible: false
                 });
             } else {
                 this.setState({
                     deleteErrMsg: Intl.get('member.position.set.default.failed', '设置默认角色失败！'),
-                    mouseZoneHoverItemId: ''
+                    mouseZoneHoverItemId: '',
+                    visible: false
                 });
             }
         }, (errMsg) => {
             this.setState({
                 deleteErrMsg: errMsg,
-                mouseZoneHoverItemId: ''
+                mouseZoneHoverItemId: '',
+                visible: false
             });
         } );
     };
@@ -121,7 +124,6 @@ class OfficeManage extends React.Component {
         event.stopPropagation();
         this.setState({
             mouseZoneHoverItemId: _.get(item, 'id'),
-            visible: false
         });
     };
 
@@ -130,7 +132,6 @@ class OfficeManage extends React.Component {
         if (!this.state.visible) {
             this.setState({
                 mouseZoneHoverItemId: '',
-                visible: false
             });
         }
     };
@@ -183,19 +184,22 @@ class OfficeManage extends React.Component {
                 let positionList = _.filter(this.state.positionList, (item) => item.id !== id);
                 this.setState({
                     positionList: positionList,
-                    isShowDeletePositionFlag: false
+                    isShowDeletePositionFlag: false,
+                    visible: false
                 });
             } else {
                 this.setState({
                     deleteErrMsg: Intl.get('crm.139', '删除失败！'),
-                    isShowDeletePositionFlag: false
+                    isShowDeletePositionFlag: false,
+                    visible: false
                 });
             }
         }, (errMsg) => {
             delete item.isDelete;
             this.setState({
                 deleteErrMsg: errMsg,
-                isShowDeletePositionFlag: false
+                isShowDeletePositionFlag: false,
+                visible: false
             });
         } );
     };
@@ -204,7 +208,8 @@ class OfficeManage extends React.Component {
     handleCancelDelete = (item) => {
         delete item.isDelete;
         this.setState({
-            isShowDeletePositionFlag: false
+            isShowDeletePositionFlag: false,
+            visible: false
         });
     };
 
@@ -228,7 +233,6 @@ class OfficeManage extends React.Component {
             this.setState({
                 positionList: positionList,
                 isShowAddPosition: true,
-                mouseZoneHoverItemId: ''
             });
         } else if( flag === 'edit'){
             delete result.isEdit;
@@ -238,7 +242,8 @@ class OfficeManage extends React.Component {
             positionList.splice(index, 1, result);
             this.setState({
                 isShowEditPositionFlag: false,
-                mouseZoneHoverItemId: ''
+                mouseZoneHoverItemId: '',
+                visible: false
             });
         }
 
@@ -248,7 +253,6 @@ class OfficeManage extends React.Component {
         if (!this.state.isShowAddPosition) {
             this.setState({
                 isShowAddPosition: true,
-                mouseZoneHoverItemId: ''
             });
         } else {
             let id = _.get(data, 'id');
@@ -259,7 +263,8 @@ class OfficeManage extends React.Component {
             });
             this.setState({
                 isShowEditPositionFlag: false,
-                mouseZoneHoverItemId: ''
+                mouseZoneHoverItemId: '',
+                visible: false
             });
         }
     };
