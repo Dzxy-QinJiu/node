@@ -54,6 +54,7 @@ const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -83,6 +84,7 @@ class ClueCustomer extends React.Component {
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
+        condition: {},
         ...clueCustomerStore.getState()
     };
     isCommonSales = () => {
@@ -338,6 +340,12 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+    clearSelectedClue = () => {
+        this.setState({
+            selectedClues: [],
+            selectAllMatched: false
+        });
+    };
     //获取线索列表
     getClueList = (data) => {
         var rangeParams = _.get(data, 'rangeParams') || JSON.stringify(clueFilterStore.getState().rangeParams);
@@ -361,6 +369,20 @@ class ClueCustomer extends React.Component {
         if (filterAllotNoTraced){
             typeFilter.allot_no_traced = filterAllotNoTraced;
         }
+        var condition = this.getCondition();
+        delete condition.rangeParams;
+        if (_.isString(condition.typeFilter)){
+            var typeFilterObj = JSON.parse(condition.typeFilter);
+            for(var key in typeFilterObj){
+                condition[key] = typeFilterObj[key];
+            }
+            delete condition.typeFilter;
+        }
+        //去除查询条件中值为空的项
+        commonMethodUtil.removeEmptyItem(condition);
+        this.setState({
+            condition: condition
+        });
         //跟据类型筛选
         const queryObj = {
             lastClueId: this.state.lastCustomerId,
@@ -370,6 +392,10 @@ class ClueCustomer extends React.Component {
             rangeParams: rangeParams,
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
+        if (!this.state.lastCustomerId){
+            //清除线索的选择
+            this.clearSelectedClue();
+        }
         //选中的线索来源
         var filterClueSource = filterStoreData.filterClueSource;
         if (_.isArray(filterClueSource) && filterClueSource.length){
@@ -407,22 +433,31 @@ class ClueCustomer extends React.Component {
     };
     //获取请求参数
     getCondition = (isGetAllClue) => {
+        var filterStoreData = clueFilterStore.getState();
         var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
             to: moment().valueOf(),
             type: 'time',
             name: 'source_time'
-        }] : clueFilterStore.getState().rangeParams;
+        }] : filterStoreData.rangeParams;
         var keyWord = isGetAllClue ? '' : this.state.keyword;
-        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
+        var filterClueStatus = filterStoreData.filterClueStatus;
         var typeFilter = isGetAllClue ? {status: ''} : getClueStatusValue(filterClueStatus);//线索类型
+        //按销售进行筛选
+        var filterClueUsers = filterStoreData.filterClueUsers;
+        if (_.isArray(filterClueUsers) && filterClueUsers.length && !isGetAllClue) {
+            typeFilter.user_name = filterClueUsers.join(',');
+        }
+        var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
+        if (filterAllotNoTraced && !isGetAllClue){
+            typeFilter.allot_no_traced = filterAllotNoTraced;
+        }
         var queryObj = {
             keyword: keyWord,
             rangeParams: JSON.stringify(rangeParams),
             typeFilter: JSON.stringify(typeFilter)
         };
         if (!isGetAllClue){
-            var filterStoreData = clueFilterStore.getState();
             //选中的线索来源
             var filterClueSource = filterStoreData.filterClueSource;
             if (_.isArray(filterClueSource) && filterClueSource.length) {
@@ -442,6 +477,25 @@ class ClueCustomer extends React.Component {
             var isFilterInavalibilityClue = filterStoreData.filterClueAvailability;
             if (isFilterInavalibilityClue) {
                 queryObj.availability = isFilterInavalibilityClue;
+            }
+            //选中的线索地域
+            var filterClueProvince = filterStoreData.filterClueProvince;
+            if (_.isArray(filterClueProvince) && filterClueProvince.length){
+                queryObj.province = filterClueProvince.join(',');
+            }
+            var existFilelds = filterStoreData.exist_fields;
+            //如果是筛选的重复线索，把排序字段改成repeat_id
+            if (_.indexOf(existFilelds, 'repeat_id') > -1){
+                clueCustomerAction.setSortField('repeat_id');
+            }else{
+                clueCustomerAction.setSortField('source_time');
+            }
+            var unExistFileds = filterStoreData.unexist_fields;
+            if(_.isArray(existFilelds) && existFilelds.length){
+                queryObj.exist_fields = JSON.stringify(existFilelds);
+            }
+            if(_.isArray(unExistFileds) && unExistFileds.length){
+                queryObj.unexist_fields = JSON.stringify(unExistFileds);
             }
         }
         return queryObj;
@@ -974,14 +1028,21 @@ class ClueCustomer extends React.Component {
                 type: 'checkbox',
                 selectedRowKeys: _.map(this.state.selectedClues, 'id'),
                 onSelect: (record, selected, selectedRows) => {
+                    if (selectedRows.length !== _.get(this, 'state.curClueLists.length')) {
+                        this.state.selectAllMatched = false;
+                    }
                     this.setState({
-                        selectedClues: selectedRows
+                        selectedClues: selectedRows,
+                        selectAllMatched: this.state.selectAllMatched
                     });
                     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中某个线索');
                 },
                 //对客户列表当前页进行全选或取消全选操作时触发
                 onSelectAll: (selected, selectedRows, changeRows) => {
-                    this.setState({selectedClues: selectedRows });
+                    if (this.state.selectAllMatched && selectedRows.length === 0) {
+                        this.state.selectAllMatched = false;
+                    }
+                    this.setState({selectedClues: selectedRows, selectAllMatched: this.state.selectAllMatched});
                     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
                 }
             };
@@ -1080,13 +1141,16 @@ class ClueCustomer extends React.Component {
                 sale_name = nameArray[0];//销售的名字
                 team_name = _.trim(nameArray[1]);//团队的名字
             }
-            return {
-                'customer_id': itemId,
+            var submitObj = {
                 'sale_id': sale_id,
                 'sale_name': sale_name,
                 'team_id': team_id,
                 'team_name': team_name,
             };
+            if (itemId){
+                submitObj.customer_id = itemId;
+            }
+            return submitObj;
         }
     };
     updateItem = (item, submitObj,isWillDistribute) => {
@@ -1170,8 +1234,19 @@ class ClueCustomer extends React.Component {
     };
     //批量修改跟进人
     handleSubmitAssignSalesBatch = () => {
-        var customerIds = _.map(this.state.selectedClues, item => item.id);
-        var submitObj = this.handleBeforeSumitChangeSales(customerIds.join(','));
+        //如果是选了修改全部
+        var selectedClueIds = '', selectClueAll = this.state.selectAllMatched;
+        if (!selectClueAll){
+            var cluesArr = _.map(this.state.selectedClues, item => item.id);
+            selectedClueIds = cluesArr.join(',');
+        }
+        var submitObj = this.handleBeforeSumitChangeSales(selectedClueIds);
+        if (selectClueAll){
+            submitObj.query_param = {
+                query: this.state.condition,
+                rangeParams: this.state.rangeParams,
+            };
+        }
         if (_.isEmpty(submitObj)){
             return;
         }else{
@@ -1497,10 +1572,43 @@ class ClueCustomer extends React.Component {
         ];
         return previewColumns;
     };
+    selectAllSearchResult = () => {
+        this.setState({
+            selectedClues: this.state.curClueLists.slice(),
+            selectAllMatched: true,
+        });
+    };
+    clearSelectAllSearchResult = () => {
+        this.setState({
+            selectedClues: [],
+            selectAllMatched: false,
+        }, () => {
+            $('th.ant-table-selection-column input').click();
+        });
+    };
+
     renderSelectClueTips = () => {
-        return (
-            <span>{Intl.get('clue.batch.select.clues', '已选择{num}个线索', {num: _.get(this, 'state.selectedClues.length')})}
-            </span>);
+        //选择全部选项后，展示：已选择全部xxx项，<a>只选当前项</a>
+        if (this.state.selectAllMatched) {
+            return (
+                <span>
+                    {Intl.get('crm.8', '已选择全部{count}项', { count: this.state.customersSize })}
+                    <a href="javascript:void(0)"
+                        onClick={this.clearSelectAllSearchResult}>{Intl.get('crm.10', '只选当前展示项')}</a>
+                </span>);
+        } else {//只选择了当前页时，展示：已选当前页xxx项, <a>选择全部xxx项</a>
+            return (
+                <span>
+                    {Intl.get('crm.11', '已选当前页{count}项', { count: _.get(this, 'state.selectedClues.length') })}
+                    {/*在筛选条件下可 全选 ，没有筛选条件时，后端接口不支持选 全选*/}
+                    {/*如果一页可以展示全，不再展示选择全部的提示*/}
+                    {_.isEmpty(this.state.condition) || this.state.customersSize <= this.state.pageSize ? null : (
+                        <a href="javascript:void(0)" onClick={this.selectAllSearchResult}>
+                            {Intl.get('crm.12', '选择全部{count}项', { count: this.state.customersSize })}
+                        </a>)
+                    }
+                </span>);
+        }
 
     };
     renderBatchChangeClues = () => {
@@ -1569,7 +1677,9 @@ class ClueCustomer extends React.Component {
                                 <div className="search-input-wrapper">
                                     <FilterInput
                                         ref="filterinput"
+                                        showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
                                         toggleList={this.toggleList.bind(this)}
+                                        filterType={Intl.get('crm.sales.clue', '线索')}
                                     />
                                 </div>
                                 {hasSelectedClue ? (
@@ -1596,6 +1706,7 @@ class ClueCustomer extends React.Component {
                                 salesManList={this.getSalesDataList()}
                                 getClueList={this.getClueList}
                                 style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
+                                showSelectTip={_.get(this.state.selectedClues, 'length')}
                             />
                         </div>
                         <div className={contentClassName}>

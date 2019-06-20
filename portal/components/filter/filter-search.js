@@ -150,7 +150,8 @@ class FilterSearch extends React.Component {
         const showInput = _.get(this.state.plainFilterList, 'length') > 0;
         const clearPopContent = (
             <div className="clear-confirm-pop-container">
-                <h5><Icon type="info-circle" />修改筛选范围，已勾选的客户将被清空</h5>
+                <h5><Icon type="info-circle" />
+                    {Intl.get('apply.select.search.clear.value','修改筛选范围，已勾选的{type}将被清空',{type: this.props.filterType})}</h5>
                 <div className="btn-bar">
                     <Button onClick={this.handleConfirmEdit.bind(this)}>确认修改</Button>
                     <Button onClick={this.showConfirmPop.bind(this, false)}>{Intl.get('common.cancel', '取消')}</Button>
@@ -261,7 +262,8 @@ FilterSearch.defaultProps = {
         maxWidth: 320
     },
     key: '',
-    showSelectChangeTip: false
+    showSelectChangeTip: false,
+    filterType: ''
 };
 
 FilterSearch.propTypes = {
@@ -272,6 +274,7 @@ FilterSearch.propTypes = {
     errorMsg: PropTypes.string,
     toggleList: PropTypes.func,
     showSelectChangeTip: PropTypes.bool,
+    filterType: PropTypes.string,
 };
 
 export default FilterSearch;

@@ -50,7 +50,7 @@ const restApis = {
     //删除某个线索
     deleteClueById: clueBaseUrl + '/delete',
     //批量修改线索的跟进人
-    changeClueSalesBatch: clueBaseUrl + '/distribute/:type/batch',
+    changeClueSalesBatch: clueBaseUrl + '/distribute/:type/batch/new',
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {

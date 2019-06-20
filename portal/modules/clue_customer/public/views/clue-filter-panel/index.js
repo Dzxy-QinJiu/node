@@ -299,6 +299,7 @@ class ClueFilterPanel extends React.Component {
                         setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
                         setDefaultCommonSelect={true}
                         style={this.props.style}
+                        showSelectTip={this.props.showSelectTip}
                     />
                 </div>
             </div>
@@ -312,7 +313,8 @@ ClueFilterPanel.defaultProps = {
     getClueList: function() {
 
     },
-    style: {}
+    style: {},
+    showSelectTip: false
 };
 ClueFilterPanel.propTypes = {
     clueSourceArray: PropTypes.object,
@@ -320,6 +322,7 @@ ClueFilterPanel.propTypes = {
     clueClassifyArray: PropTypes.object,
     getClueList: PropTypes.func,
     style: PropTypes.object,
+    showSelectTip: PropTypes.bool
 };
 
 export default ClueFilterPanel;

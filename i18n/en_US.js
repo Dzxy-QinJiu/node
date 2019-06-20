@@ -2985,5 +2985,6 @@ var en_US = {
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     /*自定义审批 end*/
     'clue.customer.trace.clues': 'Trace clue',//跟进线索
+    'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
 };
 export default en_US;
