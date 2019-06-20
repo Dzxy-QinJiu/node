@@ -810,23 +810,24 @@ class ClueCustomer extends React.Component {
     renderAvailabilityClue = (salesClueItem) => {
         //是有效线索
         let availability = salesClueItem.availability !== '1';
-        //关联客户
-        var associatedCustomer = salesClueItem.customer_name;
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         return(
             <div className="avalibility-container">
-                {/*是有效线索并且有关联客户*/}
-                {associatedCustomer ?
-                    <div className="associate-customer">
-                        {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
-                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> :
-                    <div>
-                        {associatedPrivilege ? <span className="can-edit associate-btn" onClick={this.showClueDetailOut.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</span> : null}
-                        {this.renderInavailabilityOrValidClue(salesClueItem)}
-                    </div>
+                <div className="associate-customer">
+                    {this.renderInavailabilityOrValidClue(salesClueItem)}
 
-                }
+                    {associatedPrivilege ? (
+                        <span
+                        
+                            className="can-edit"
+                            style={{marginLeft: 15}}
+                            onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name)}
+                        >
+                            {Intl.get('common.convert.to.customer', '转为客户')}
+                        </span> 
+                    ) : null}
+                </div>
             </div>
         );
 
@@ -937,8 +938,7 @@ class ClueCustomer extends React.Component {
                     );
                 }
             },{
-                title: Intl.get('clue.customer.associate.customer', '关联客户'),
-                dataIndex: 'assocaite_customer',
+                title: Intl.get('common.operate': '操作'),
                 className: 'invalid-td-clue',
                 width: '300px',
                 render: (text, salesClueItem, index) => {
@@ -950,20 +950,6 @@ class ClueCustomer extends React.Component {
                         <div className="avalibity-or-invalid-container">
                             {availability ? this.renderAvailabilityClue(salesClueItem) : this.renderInavailabilityOrValidClue(salesClueItem)}
                         </div>
-                    );
-                }
-            },{
-                title: Intl.get('common.operate': '操作'),
-                width: 100,
-                render: (value, record) => {
-                    return (
-                        <span
-                        
-                            className="can-edit"
-                            onClick={this.onConvertToCustomerBtnClick.bind(this, record.id, record.name)}
-                        >
-                            {Intl.get('common.convert.to.customer', '转为客户')}
-                        </span>
                     );
                 }
             }];
