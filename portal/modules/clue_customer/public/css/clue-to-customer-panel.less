@@ -13,7 +13,6 @@
     .customer-name {
         font-size: 16px;
         font-weight: bold;
-        margin-bottom: 10px;
     }
     .panel-content {
         padding: 12px;
@@ -34,21 +33,32 @@
                 }
             }
             .customer-item {
+                position: relative;
                 background: #fff;
                 padding: 10px 15px;
-                .customer-contact-and-btn {
-                    overflow: hidden;
-                    .contact-phone {
-                        margin-left: 15px;
+                .customer-contacts {
+                    margin-top: 10px;
+                    .contact-item {
+                        overflow: hidden;
+                        .contact-name, 
+                        .contact-phone {
+                            float: left
+                        }
+                        .contact-phone {
+                            margin-left: 10px;
+                        }
                     }
-                    button {
-                        float: right;
-                    }
+                }
+                button {
+                    position: absolute;
+                    right: 15px;
+                    bottom: 8px;
                 }
             }
         }
         .customer-merge {
             .contact-list-wrap {
+                margin-top: 10px;
                 overflow-y: auto;
                 .contact-list {
                     &>div:first-child {

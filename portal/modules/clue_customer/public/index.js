@@ -1754,14 +1754,16 @@ class ClueCustomer extends React.Component {
                             </RightPanel> : null
                     }
 
-                    <ClueToCustomerPanel
-                        showFlag={this.state.isShowClueToCustomerPanel}
-                        clue={this.state.curClue}
-                        existingCustomers={this.state.existingCustomers}
-                        hidePanel={this.hideClueToCustomerPanel}
-                        showAddCustomerPanel={this.showAddCustomerPanel}
-                        getClueList={this.onTypeChange}
-                    />
+                    {this.state.isShowClueToCustomerPanel ? (
+                        <ClueToCustomerPanel
+                            showFlag={this.state.isShowClueToCustomerPanel}
+                            clue={this.state.curClue}
+                            existingCustomers={this.state.existingCustomers}
+                            hidePanel={this.hideClueToCustomerPanel}
+                            showAddCustomerPanel={this.showAddCustomerPanel}
+                            getClueList={this.onTypeChange}
+                        />
+                    ) : null}
 
                     {this.state.isShowAddCustomerPanel ? (
                         <CRMAddForm

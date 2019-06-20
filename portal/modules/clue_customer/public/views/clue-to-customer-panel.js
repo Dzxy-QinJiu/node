@@ -209,6 +209,63 @@ class ClueToCustomerPanel extends React.Component {
         this.setState({});
     };
 
+    //获取重复的客户联系人
+    getDupCustomerContacts(customer, clue) {
+        let dupContacts = [];
+
+        //客户联系人列表
+        const customerContacts = customer.contacts;
+        //线索联系人列表
+        const clueContacts = clue.contacts;
+
+        //遍历客户联系人列表
+        _.each(customerContacts, customerContact => {
+            //遍历线索联系人列表
+            _.some(clueContacts, clueContact => {
+                //客户联系人电话和线索联系人电话的合集
+                const allPhone = _.concat(customerContact.phone, clueContact.phone);
+                //去重后的电话合集
+                const uniqPhone = _.uniq(allPhone);
+                //电话是否重复
+                //如果去重后电话总数少了，说明有重复的电话
+                const isPhoneDup = allPhone.length > uniqPhone.length;
+
+                //联系人名是否重复
+                //如果线索和客户存在同名联系人，说明联系人重复
+                const isContactNameDup = clueContact.name === customerContact.name;
+
+                //联系人名重复或电话重复都认为是联系人重复
+                const isContactDup = isContactNameDup || isPhoneDup;
+
+                //如果联系人重复
+                if (isContactDup) {
+                    let dupContact = {
+                        name: customerContact.name,
+                        phone: _.clone(customerContact.phone)
+                    }; 
+
+                    if (isContactNameDup) {
+                        dupContact.name = <span className="high-light">{dupContact.name}</span>;
+                    }
+
+                    if (isPhoneDup) {
+                        dupContact.phone = _.map(dupContact.phone, item => {
+                            if (_.includes(clueContact.phone, item)) {
+                                item = <span className="high-light">{item}</span>;
+                            }
+
+                            return item;
+                        });
+                    }
+
+                    dupContacts.push(dupContact);
+                }
+            });
+        });
+
+        return dupContacts;
+    }
+
     //合并到此客户按钮点击事件
     onMergeToCustomerClick = customer => {
         ajax.send({
@@ -230,9 +287,6 @@ class ClueToCustomerPanel extends React.Component {
     setMergedCustomer() {
         //当前线索
         const clue = this.props.clue;
-
-        //没有当前线索时直接返回
-        if (_.isEmpty(clue)) return;
 
         //线索联系人列表
         const clueContacts = clue.contacts;
@@ -408,20 +462,43 @@ class ClueToCustomerPanel extends React.Component {
             customerName = <span>{beginPart}<span className="high-light">{clueName}</span>{endPart}</span>;
         }
         
+        const contacts = this.getDupCustomerContacts(customer, clue);
+
         return (
             <div className="customer-item">
-                <div className="customer-name">
-                    {customerName}
+                <div className="customer-info">
+                    <div className="customer-name">
+                        {customerName}
+                    </div>
+                    {contacts.length ? (
+                        <div className="customer-contacts">
+                            {_.map(contacts, contact => {
+                                return (
+                                    <div className="contact-item">
+                                        <div className="contact-name">
+                                            {contact.name}
+                                        </div>
+                                        <div className="contact-phone">
+                                            {_.map(contact.phone, (phone, phoneIndex) => {
+                                                return (
+                                                    <div>
+                                                        {phone}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : null}
                 </div>
-                <div className="customer-contact-and-btn">
-                    <span className="contact-name">{}</span>
-                    <span className="contact-phone">{}</span>
-                    <Button
-                        onClick={this.onMergeToCustomerClick.bind(this, customer)}
-                    >
-                        合并到此客户
-                    </Button>
-                </div>
+
+                <Button
+                    onClick={this.onMergeToCustomerClick.bind(this, customer)}
+                >
+                    合并到此客户
+                </Button>
             </div>
         );
     }
