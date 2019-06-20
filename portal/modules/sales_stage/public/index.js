@@ -266,16 +266,6 @@ class SalesStagePage extends React.Component {
                     <div className="order-stage-top-nav">
                         {this.renderTopNavOperation()}
                     </div>
-
-                    {
-                        this.state.loading ? (
-                            <Spinner/>
-                        ) : null
-                    }
-                    {
-                        !this.state.loading && (length === 0 || this.state.getSalesStageListErrMsg) ?
-                            this.renderNoDataTipsOrErrMsg() : null
-                    }
                     {this.state.salesStageFormShow ? (
                         <SalesStageForm
                             salesStage={this.state.currentSalesStage}
@@ -284,6 +274,15 @@ class SalesStagePage extends React.Component {
                             submitSalesStageForm={this.events_submitSalesStageForm}
                         />) : null}
                     <GeminiScrollBar style={{height: containerHeight}}>
+                        {
+                            this.state.loading ? (
+                                <Spinner/>
+                            ) : null
+                        }
+                        {
+                            !this.state.loading && (length === 0 || this.state.getSalesStageListErrMsg) ?
+                                this.renderNoDataTipsOrErrMsg() : null
+                        }
                         <div className="sales-stage-table-block">
                             {this.state.isSavingSalesStageHome ? (<div className="sales-stage-block">
                                 <Spinner className="sales-stage-saving"/>
