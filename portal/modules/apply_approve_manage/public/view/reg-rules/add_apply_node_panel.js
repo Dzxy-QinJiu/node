@@ -202,10 +202,10 @@ class AddApplyNodePanel extends React.Component {
                                     })}
                                 </Select>
                             </div>
-                            <Radio.Group className="radio-select-list" onChange={this.onChangeAdminApproveHigherLevel} value={this.state.adminApproveHigherLevel}>
-                                <Radio value='higherLevelApproveChecked'>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Radio>
-                                <Radio value='adminApproveChecked'>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Radio>
-                            </Radio.Group>
+                            {/*<Radio.Group className="radio-select-list" onChange={this.onChangeAdminApproveHigherLevel} value={this.state.adminApproveHigherLevel}>*/}
+                            {/*<Radio value='higherLevelApproveChecked'>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Radio>*/}
+                            {/*<Radio value='adminApproveChecked'>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Radio>*/}
+                            {/*</Radio.Group>*/}
                         </div>
                     );
                 case 'setting_roles' :
