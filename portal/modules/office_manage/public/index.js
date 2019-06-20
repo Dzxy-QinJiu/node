@@ -124,6 +124,7 @@ class OfficeManage extends React.Component {
         event.stopPropagation();
         this.setState({
             mouseZoneHoverItemId: _.get(item, 'id'),
+            visible: false
         });
     };
 

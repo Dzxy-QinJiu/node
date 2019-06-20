@@ -457,7 +457,10 @@ class LeftTree extends React.Component {
             scrollHeight -= 40;//40：添加根团队按钮的高度
         }
         return (
-            <div className="sales-team-group" style={{height: this.props.containerHeight}} data-tracename="团队管理左侧列表">
+            <div className="sales-team-group"
+                style={{height: this.props.containerHeight}}
+                data-tracename="部门列表"
+            >
                 <div className="sales-team-tree-container" style={{height: scrollHeight}} data-tracename="团队列表">
                     <GeminiScrollbar
                         className="geminiScrollbar-vertical"
