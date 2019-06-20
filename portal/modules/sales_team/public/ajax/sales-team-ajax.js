@@ -77,7 +77,7 @@ exports.getMemberList = function() {
 };
 
 exports.addMember = function(obj) {
-    var Deferred = $.Deferred();
+    let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/sales_team_member',
         dataType: 'json',
@@ -101,9 +101,9 @@ exports.editMember = function(obj) {
         contentType: 'application/json',
         type: 'put',
         data: JSON.stringify(obj),
-        success: function(list) {
+        success: (list) => {
             Deferred.resolve(list);
-        }, error: function(errorInfo) {
+        }, error: (errorInfo) => {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

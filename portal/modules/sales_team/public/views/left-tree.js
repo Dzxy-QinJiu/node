@@ -211,7 +211,7 @@ class LeftTree extends React.Component {
         event.stopPropagation();
         this.setState({
             mouseZoneHoverKey: _.get(item, 'key'),
-            visible: true
+            visible: false
         });
     };
 
@@ -226,9 +226,17 @@ class LeftTree extends React.Component {
 
     handleMouseLeave = (event) => {
         event.stopPropagation();
+        if (!this.state.visible) {
+            this.setState({
+                mouseZoneHoverKey: '',
+                visible: false
+            });
+        }
+    };
+
+    handleMouseEnterMoreBtn = () => {
         this.setState({
-            mouseZoneHoverKey: '',
-            visible: false
+            visible: true
         });
     };
     // 确认删除部门
@@ -302,8 +310,12 @@ class LeftTree extends React.Component {
                                                     content={this.renderOperateChildTeam(item)}
                                                     placement="bottomRight"
                                                     onVisibleChange={this.handleHoverChange}
+                                                    visible={this.state.visible}
                                                 >
-                                                    <span className='iconfont icon-more'></span>
+                                                    <span
+                                                        className='iconfont icon-more'
+                                                        onMouseEnter={this.handleMouseEnterMoreBtn}
+                                                    ></span>
                                                 </Popover>
                                             ) : (
                                                 isDeleteGroup ? (
@@ -445,13 +457,17 @@ class LeftTree extends React.Component {
             scrollHeight -= 40;//40：添加根团队按钮的高度
         }
         return (
-            <div className="sales-team-group" style={{height: this.props.containerHeight}} data-tracename="团队管理左侧列表">
+            <div className="sales-team-group"
+                style={{height: this.props.containerHeight}}
+                data-tracename="部门列表"
+            >
                 <div className="sales-team-tree-container" style={{height: scrollHeight}} data-tracename="团队列表">
                     <GeminiScrollbar
                         className="geminiScrollbar-vertical"
                     >
                         <ul
                             className="left-tree-ul"
+                            onMouseLeave={this.handleMouseLeave}
                         >
                             {
                                 this.props.isEditGroupFlag ? (

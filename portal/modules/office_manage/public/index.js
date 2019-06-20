@@ -28,7 +28,7 @@ class OfficeManage extends React.Component {
         isShowEditPositionFlag: false, // 默认不显示编辑
         isShowDeletePositionFlag: false, // 默认不显示删除
         mouseZoneHoverItemId: '', // 鼠标移入区域的id
-        visible: false
+        visible: false // 是否显示编辑、删除、设置默认职务的操作，默认是false
     };
 
     componentDidMount = () => {
@@ -84,18 +84,21 @@ class OfficeManage extends React.Component {
                 });
                 this.setState({
                     positionList: this.state.positionList,
-                    mouseZoneHoverItemId: ''
+                    mouseZoneHoverItemId: '',
+                    visible: false
                 });
             } else {
                 this.setState({
                     deleteErrMsg: Intl.get('member.position.set.default.failed', '设置默认角色失败！'),
-                    mouseZoneHoverItemId: ''
+                    mouseZoneHoverItemId: '',
+                    visible: false
                 });
             }
         }, (errMsg) => {
             this.setState({
                 deleteErrMsg: errMsg,
-                mouseZoneHoverItemId: ''
+                mouseZoneHoverItemId: '',
+                visible: false
             });
         } );
     };
@@ -105,7 +108,7 @@ class OfficeManage extends React.Component {
     };
 
     handleDeleteRoleFail = () => {
-        var hide = () => {
+        let hide = () => {
             this.setState({
                 deleteErrMsg: ''
             });
@@ -121,16 +124,17 @@ class OfficeManage extends React.Component {
         event.stopPropagation();
         this.setState({
             mouseZoneHoverItemId: _.get(item, 'id'),
-            visible: true
+            visible: false
         });
     };
 
     handleMouseLeave = (event) => {
         event.stopPropagation();
-        this.setState({
-            mouseZoneHoverItemId: '',
-            visible: false
-        });
+        if (!this.state.visible) {
+            this.setState({
+                mouseZoneHoverItemId: '',
+            });
+        }
     };
 
     renderModifyOffice = (item) => {
@@ -155,7 +159,7 @@ class OfficeManage extends React.Component {
                 <div className="operation-item-zone"
                     onClick={this.setDefautRole.bind(this, item)}
                 >
-                    <span className='operation-item-text'>
+                    <span className='operation-item-text setting-default'>
                         {Intl.get('member.position.set.default', '设为默认')}
                     </span>
                 </div>
@@ -181,19 +185,22 @@ class OfficeManage extends React.Component {
                 let positionList = _.filter(this.state.positionList, (item) => item.id !== id);
                 this.setState({
                     positionList: positionList,
-                    isShowDeletePositionFlag: false
+                    isShowDeletePositionFlag: false,
+                    visible: false
                 });
             } else {
                 this.setState({
                     deleteErrMsg: Intl.get('crm.139', '删除失败！'),
-                    isShowDeletePositionFlag: false
+                    isShowDeletePositionFlag: false,
+                    visible: false
                 });
             }
         }, (errMsg) => {
             delete item.isDelete;
             this.setState({
                 deleteErrMsg: errMsg,
-                isShowDeletePositionFlag: false
+                isShowDeletePositionFlag: false,
+                visible: false
             });
         } );
     };
@@ -202,7 +209,8 @@ class OfficeManage extends React.Component {
     handleCancelDelete = (item) => {
         delete item.isDelete;
         this.setState({
-            isShowDeletePositionFlag: false
+            isShowDeletePositionFlag: false,
+            visible: false
         });
     };
 
@@ -226,7 +234,6 @@ class OfficeManage extends React.Component {
             this.setState({
                 positionList: positionList,
                 isShowAddPosition: true,
-                mouseZoneHoverItemId: ''
             });
         } else if( flag === 'edit'){
             delete result.isEdit;
@@ -236,7 +243,8 @@ class OfficeManage extends React.Component {
             positionList.splice(index, 1, result);
             this.setState({
                 isShowEditPositionFlag: false,
-                mouseZoneHoverItemId: ''
+                mouseZoneHoverItemId: '',
+                visible: false
             });
         }
 
@@ -246,7 +254,6 @@ class OfficeManage extends React.Component {
         if (!this.state.isShowAddPosition) {
             this.setState({
                 isShowAddPosition: true,
-                mouseZoneHoverItemId: ''
             });
         } else {
             let id = _.get(data, 'id');
@@ -257,7 +264,8 @@ class OfficeManage extends React.Component {
             });
             this.setState({
                 isShowEditPositionFlag: false,
-                mouseZoneHoverItemId: ''
+                mouseZoneHoverItemId: '',
+                visible: false
             });
         }
     };
@@ -292,6 +300,12 @@ class OfficeManage extends React.Component {
         }
     };
 
+    handleMouseEnterMoreBtn = () => {
+        this.setState({
+            visible: true
+        });
+    };
+
     // 渲染职务列表
     renderPositionList = () => {
         let positionList = this.state.positionList;
@@ -309,9 +323,9 @@ class OfficeManage extends React.Component {
         } else if (_.isArray(positionList) && length) {
             // 职务列表
             return (
-                <div className="office-content-zone" style={{height: scrollHeight}}>
-                    <GeminiScrollbar>
-                        <ul className="office-list" data-tracename="职务管理">
+                <div className="office-content-zone">
+                    <GeminiScrollbar style={{height: scrollHeight}}>
+                        <ul className="office-list" data-tracename="职务管理" onMouseLeave={this.handleMouseLeave}>
                             {_.map(positionList,(item) => {
                                 let isDefaultFlag = _.get(item, 'is_default');
                                 let defaultCls = classNames('default-role-descr', {'default-role-checked': isDefaultFlag});
@@ -362,18 +376,24 @@ class OfficeManage extends React.Component {
                                                             </div>
                                                         ) : (
                                                             <div className="customer-container">
-                                                                <span>{Intl.get('sales.role.config.customer.num','最大客户数')}</span>
                                                                 {
                                                                     isShowMoreBtn ? (
                                                                         <Popover
                                                                             content={this.renderModifyOffice(item)}
                                                                             placement="bottomRight"
                                                                             onVisibleChange={this.handleHoverChange}
+                                                                            visible={this.state.visible}
                                                                         >
-                                                                            <span className='iconfont icon-more'></span>
+                                                                            <span
+                                                                                className='iconfont icon-more'
+                                                                                onMouseEnter={this.handleMouseEnterMoreBtn}
+                                                                            ></span>
                                                                         </Popover>
                                                                     ) : (
-                                                                        <span className="customer-count">{count}</span>
+                                                                        <span>
+                                                                            <span>{Intl.get('sales.role.config.customer.num','最大客户数')}</span>
+                                                                            <span className="customer-count">{count}</span>
+                                                                        </span>
                                                                     )
                                                                 }
                                                             </div>
