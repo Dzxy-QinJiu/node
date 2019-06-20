@@ -669,15 +669,15 @@ class RegRulesView extends React.Component {
                             </span>
                             {this.renderApplyWorkFlowNode(candidateRules, FLOW_TYPES.DEFAULTFLOW)}
                         </div>
-                        <div className="default-cc-person rule-item">
-                            <span className="item-label">
-                                {Intl.get('apply.default.cc.email', '默认抄送人')}:
-                            </span>
-                            <div className="rule-content">
+                        {/*<div className="default-cc-person rule-item">*/}
+                        {/*<span className="item-label">*/}
+                        {/*{Intl.get('apply.default.cc.email', '默认抄送人')}:*/}
+                        {/*</span>*/}
+                        {/*<div className="rule-content">*/}
 
-                            </div>
+                        {/*</div>*/}
 
-                        </div>
+                        {/*</div>*/}
                         <div className="condition-apply-workflow rule-item">
                             <span className="item-label">
                                 {Intl.get('apply.condition.work.flow', '条件审批流程')}:

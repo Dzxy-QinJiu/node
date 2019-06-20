@@ -81,7 +81,7 @@ class AddApplyNodePanel extends React.Component {
                 });
                 this.setState({
                     userList: _.get(userListObj, 'data'),
-                    roleList: rolesList
+                    roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
                 });
             },
             error: (xhr, textStatus) => {
@@ -315,7 +315,7 @@ class AddApplyNodePanel extends React.Component {
         var hideType = false;
         var applyRulesAndSetting = _.get(this, 'props.applyRulesAndSetting.applyApproveRules');
         var addNodePanelFlow = this.props.addNodePanelFlow;
-        if (_.isObject(applyRulesAndSetting[addNodePanelFlow]) && _.isArray(applyRulesAndSetting[addNodePanelFlow]['bpmnNode'])) {
+        if (applyRulesAndSetting && _.isObject(applyRulesAndSetting[addNodePanelFlow]) && _.isArray(applyRulesAndSetting[addNodePanelFlow]['bpmnNode'])) {
             //如果是之前已经添加过的流程，最后一个节点是结束的节点，那就要看倒数第二个是不是指定了需要
             var bpmnNodeArr = applyRulesAndSetting[addNodePanelFlow]['bpmnNode'];
             var lastNode = _.last(bpmnNodeArr);

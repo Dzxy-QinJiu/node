@@ -2980,7 +2980,10 @@ var en_US = {
     'clue.show.no.show.tip': 'There has {num} notices not showing',//还有{num}个提醒未展示
     'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
+    /*自定义审批 start*/
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
-    'apply.select.approver.type': 'Please select apply type'//请选择审批人类型
+    'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
+    /*自定义审批 end*/
+    'clue.customer.trace.clues': 'Trace clue',//跟进线索
 };
 export default en_US;
