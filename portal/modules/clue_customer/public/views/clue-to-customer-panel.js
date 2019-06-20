@@ -163,8 +163,8 @@ class ClueToCustomerPanel extends React.Component {
         if (!foldingBtn.length) {
             foldingBtn = $('<div/>');
             foldingBtn.addClass('folding-btn clickable');
-            const expandBtnText = '展开全部 ∨';
-            const closeBtnText = '收起 ∧';
+            const expandBtnText = Intl.get('notification.system.more', '展开全部') + ' ∨';
+            const closeBtnText = Intl.get('crm.contact.way.hide', '收起') + ' ∧';
             foldingBtn.text(expandBtnText);
 
             const gendarItem = contactForm.find('.contact-sex-item');
@@ -497,7 +497,7 @@ class ClueToCustomerPanel extends React.Component {
                 <Button
                     onClick={this.onMergeToCustomerClick.bind(this, customer)}
                 >
-                    合并到此客户
+                    {Intl.get('common.merge.to.customer', '合并到此客户')}
                 </Button>
             </div>
         );
@@ -536,17 +536,17 @@ class ClueToCustomerPanel extends React.Component {
 
                 {contact.replaceName ? (
                     <div className="is-replace-contract-name">
-                        修改姓名为“{contact.replaceName}”？
+                        {Intl.get('common.modify.name.to', '修改姓名为')} + “{contact.replaceName}”？
                         <Button
                             onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
                         >
-                            不修改
+                            {Intl.get('common.not.modify', '不修改')}
                         </Button>
                         <Button
                             type="primary"
                             onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
                         >
-                            确认修改
+                            {Intl.get('common.confirm.modify', '确认修改')}
                         </Button>
                     </div>
                 ) : null}
@@ -621,7 +621,7 @@ class ClueToCustomerPanel extends React.Component {
                         className="go-back clickable"
                         onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
                     >
-                        〈 返回
+                        〈 {Intl.get('crm.52', '返回')}
                     </span>
                 </div>
 
@@ -651,7 +651,7 @@ class ClueToCustomerPanel extends React.Component {
                     <Button
                         type="primary" onClick={this.mergeToCustomer}
                     >
-                        确认合并
+                        {Intl.get('common.confirm.merge', '确认合并')}
                     </Button>
                 </div>
             </div>

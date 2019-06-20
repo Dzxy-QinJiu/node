@@ -3037,7 +3037,12 @@ var zh_CN = {
     'common.rank': '名次',
     'common.sales.productivity.analysis': '销售生产力分析',
     'common.convert.to.customer': '转为客户',
+    'common.merge.to.customer': '合并到此客户',
+    'common.modify.name.to': '修改姓名为',
     'common.convert.to.new.customer': '转为新客户',
     'common.has.similar.customers': '有{count}个信息相似的客户',
+    'common.not.modify': '不修改',
+    'common.confirm.modify': '确认修改',
+    'common.confirm.merge': '确认合并',
 };
 export default zh_CN;
