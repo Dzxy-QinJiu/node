@@ -1601,7 +1601,8 @@ class ClueCustomer extends React.Component {
                 <span>
                     {Intl.get('crm.11', '已选当前页{count}项', { count: _.get(this, 'state.selectedClues.length') })}
                     {/*在筛选条件下可 全选 ，没有筛选条件时，后端接口不支持选 全选*/}
-                    {_.isEmpty(this.state.condition) ? null : (
+                    {/*如果一页可以展示全，不再展示选择全部的提示*/}
+                    {_.isEmpty(this.state.condition) || this.state.customersSize <= this.state.pageSize ? null : (
                         <a href="javascript:void(0)" onClick={this.selectAllSearchResult}>
                             {Intl.get('crm.12', '选择全部{count}项', { count: this.state.customersSize })}
                         </a>)
