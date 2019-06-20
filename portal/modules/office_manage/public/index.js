@@ -105,7 +105,7 @@ class OfficeManage extends React.Component {
     };
 
     handleDeleteRoleFail = () => {
-        var hide = () => {
+        let hide = () => {
             this.setState({
                 deleteErrMsg: ''
             });
@@ -304,7 +304,7 @@ class OfficeManage extends React.Component {
     renderPositionList = () => {
         let positionList = this.state.positionList;
         let length = _.get(positionList, 'length');
-        let scrollHeight = this.getContentHeight(); -LAYOUT.ADD_POSITION_HEIGHT;
+        let scrollHeight = this.getContentHeight() - LAYOUT.ADD_POSITION_HEIGHT;
         if (!this.state.isShowAddPosition) {
             scrollHeight -= LAYOUT.ADD_FORM_HEIGHT;
         }
