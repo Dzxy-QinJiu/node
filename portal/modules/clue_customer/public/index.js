@@ -815,18 +815,18 @@ class ClueCustomer extends React.Component {
         return(
             <div className="avalibility-container">
                 <div className="associate-customer">
-                    {this.renderInavailabilityOrValidClue(salesClueItem)}
-
                     {associatedPrivilege ? (
                         <span
                         
                             className="can-edit"
-                            style={{marginLeft: 15}}
+                            style={{marginRight: 15}}
                             onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name)}
                         >
                             {Intl.get('common.convert.to.customer', '转为客户')}
                         </span> 
                     ) : null}
+
+                    {this.renderInavailabilityOrValidClue(salesClueItem)}
                 </div>
             </div>
         );
