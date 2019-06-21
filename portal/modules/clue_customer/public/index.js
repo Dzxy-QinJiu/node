@@ -1011,6 +1011,11 @@ class ClueCustomer extends React.Component {
         this.setState({isShowAddCustomerPanel: true});
     };
 
+    //隐藏添加客户面板
+    hideAddCustomerPanel = () => {
+        this.setState({isShowAddCustomerPanel: false});
+    };
+
     //在列表中隐藏当前操作的线索
     hideCurClue = () => {
         const index = _.findIndex(this.state.curClueLists, item => item.id === this.state.curClue.id);
@@ -1027,7 +1032,7 @@ class ClueCustomer extends React.Component {
         this.hideCurClue();
 
         //隐藏添加客户面板
-        this.setState({isShowAddCustomerPanel: false});
+        this.hideAddCustomerPanel();
     };
 
     setInvalidClassName= (record, index) => {
@@ -1780,7 +1785,7 @@ class ClueCustomer extends React.Component {
 
                     {this.state.isShowAddCustomerPanel ? (
                         <CRMAddForm
-                            hideAddForm={this.onConvertClueToNewCustomerDone}
+                            hideAddForm={this.hideAddCustomerPanel}
                             addOne={this.onConvertClueToNewCustomerDone}
                             formData={this.state.curClue}
                             isAssociateClue={true}
