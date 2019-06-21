@@ -940,7 +940,7 @@ class ClueCustomer extends React.Component {
             },{
                 title: Intl.get('common.operate': '操作'),
                 className: 'invalid-td-clue',
-                width: '300px',
+                width: '150px',
                 render: (text, salesClueItem, index) => {
                     //是有效线索
                     let availability = salesClueItem.availability !== '1';
