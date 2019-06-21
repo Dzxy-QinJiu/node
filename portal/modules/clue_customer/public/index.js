@@ -1789,7 +1789,7 @@ class ClueCustomer extends React.Component {
                             addOne={this.onConvertClueToNewCustomerDone}
                             formData={this.state.curClue}
                             isAssociateClue={true}
-                            phoneNum={_.get(this.state, 'curClue.contact_way', '')}
+                            phoneNum={_.get(this.state, 'curClue.phones[0]', '')}
                             isShowMadal={false}
                         />
                     ) : null}
