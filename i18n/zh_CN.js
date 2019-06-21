@@ -742,6 +742,7 @@ var zh_CN = {
     'member.position.edit.office': '编辑职务',
     'member.position.delete.office': '删除职务',
     'member.position.set.default': '设为默认',
+    'member.continue.add.member': '继续添加成员',
 
     //后台管理-成员end
     //组织管理start

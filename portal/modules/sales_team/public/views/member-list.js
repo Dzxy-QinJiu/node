@@ -338,10 +338,10 @@ const MemberList = createReactClass({
                         <div className='accout'>
                             <i className={iconClass}/>
                             <span>
-                                {_.get(record, 'userName')}
+                                {_.get(record, 'nickName')}
                             </span>
                         </div>
-                        <div className='nickname'>{_.get(record, 'nickName')}</div>
+                        <div className='nickname'>{_.get(record, 'userName')}</div>
                     </div>
                 );
             }

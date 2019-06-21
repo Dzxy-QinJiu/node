@@ -30,6 +30,8 @@ exports.toFrontObject = function(restObject) {
     frontObj.phone = restObject.phone || '';
     frontObj.email = restObject.email || '';
     frontObj.phoneOrder = restObject.phone_order || '';
+    frontObj.positionName = restObject.teamrole_name || '';
+    frontObj.positionId = restObject.position_id || '';
     //邮箱是否激活的状态
     frontObj.emailEnable = restObject.email_enable;
     let roles = restObject.roles || [];
