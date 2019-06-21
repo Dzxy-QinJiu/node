@@ -17,11 +17,7 @@ const COMMON_OTHER_ITEM = 'otherSelectedItem';
 const otherFilterArray = [{
     name: Intl.get('clue.repeat.clue.list', '重复线索'),
     value: 'repeat_id'
-}, {
-    name: Intl.get('clue.has.no.relative.customer', '没有关联客户的线索'),
-    value: 'customer_id'
-}
-];
+}];
 import userData from 'PUB_DIR/sources/user-data';
 class ClueFilterPanel extends React.Component {
     constructor(props) {
@@ -103,14 +99,13 @@ class ClueFilterPanel extends React.Component {
                     });
                     FilterAction.setFilterClueProvince(provinceList);
                 }else if (item.groupId === COMMON_OTHER_ITEM){
-                    //如果是筛选没有关联客户的线索
                     //如果是筛选重复线索
                     if (item.value === 'repeat_id'){
                         FilterAction.setExistedFiled('repeat_id');
                         FilterAction.setUnexistedFiled();
                     }else if (item.value === 'customer_id'){
-                        FilterAction.setExistedFiled();
-                        FilterAction.setUnexistedFiled('customer_id');
+                        filteraction.setexistedfiled();
+                        filteraction.setunexistedfiled('customer_id');
                     }
                 }else if (item.groupId === 'user_name'){
                     FilterAction.setFilterClueUsername( _.get(item,'data'));
