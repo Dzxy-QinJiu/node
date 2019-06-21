@@ -13,6 +13,7 @@ var LeftMenu = require('../../../components/privilege/nav-sidebar');
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 import PhonePanel from 'MOD_DIR/phone_panel/public';
+import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
 //窗口改变的事件emitter
@@ -37,6 +38,8 @@ class PageFrame extends React.Component {
         isShowNotificationPanel: false, // 是否展示系统通知面板
         rightContentHeight: 0,
         showCluePanel: false,
+        clueDetailPanelShow: false,
+        clueParamObj: $.extend(true, {}, emptyParamObj),
         clueId: ''//展示线索的id
     };
 
@@ -47,6 +50,9 @@ class PageFrame extends React.Component {
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
         //关闭拨打电话面板的事件监听
         phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_PHONE_PANEL, this.closePhonePanel);
+        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_CLUE_PANEL, this.openCluePanel);
+        //关闭拨打电话面板的事件监听
+        phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.closeCluePanel);
         //打开播放录音面板的事件监听
         audioMsgEmitter.on(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         //隐藏上报客服电话的按钮
@@ -60,9 +66,10 @@ class PageFrame extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        //路由切换时，关闭电话弹屏和客户详情的处理
+        //路由切换时，关闭电话弹屏和客户详情的处理，也需要关闭线索详情
         if (_.get(nextProps, 'location.pathname') !== _.get(this.props, 'location.pathname')) {
             this.closePhonePanel();
+            this.closeCluePanel();
         }
     }
 
@@ -95,7 +102,10 @@ class PageFrame extends React.Component {
         Trace.detachEventListener(window, 'click', Trace.eventHandler);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.openPhonePanel);
         //关闭拨打电话面板的事件监听
-        phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_PHONE_PANEL, this.closePhonePanel);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_PHONE_PANEL, this.closePhonePanel);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.openCluePanel);
+        //关闭拨打电话面板的事件监听
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.closeCluePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
@@ -146,6 +156,25 @@ class PageFrame extends React.Component {
         }
         this.setState({phonePanelShow: true, paramObj: $.extend(this.state.paramObj, paramObj)});
     };
+    //打开线索面板
+    openCluePanel = (paramObj) => {
+        if (!this.state.clueDetailPanelShow) {
+            if (paramObj.call_params) {
+                Trace.traceEvent('线索弹屏', '弹出拨打电话的面板');
+            } else {
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '查看线索详情');
+            }
+        }
+        this.setState({clueDetailPanelShow: true, clueParamObj: $.extend(this.state.clueParamObj, paramObj)});
+    };
+    closeCluePanel = () => {
+        //关闭电话弹屏面板时，将系统内拨打电话时，记录的电话联系人信息清掉
+        if (this.state.clueParamObj.call_params && _.isFunction(this.state.clueParamObj.call_params.setInitialPhoneObj)) {
+            this.state.clueParamObj.call_params.setInitialPhoneObj();
+        }
+        this.setState({clueDetailPanelShow: false, clueParamObj: $.extend(true, {}, emptyParamObj)});
+    };
+
 
     closePhonePanel = () => {
         //关闭电话弹屏面板时，将系统内拨打电话时，记录的电话联系人信息清掉
@@ -201,6 +230,12 @@ class PageFrame extends React.Component {
                                 paramObj={this.state.paramObj}
                                 closePhonePanel={this.closePhonePanel}
                                 notificationCustomer={this.state.isShowNotificationPanel}
+                            />) : null}
+                        {this.state.clueDetailPanelShow ? (
+                            <ClueDetailPanel
+                                showFlag={this.state.clueDetailPanelShow}
+                                paramObj={this.state.clueParamObj}
+                                closeClueDetailPanel={this.closeCluePanel}
                             />) : null}
                         {
                             this.state.isShowNotificationPanel ? (

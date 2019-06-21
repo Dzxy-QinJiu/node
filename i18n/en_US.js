@@ -2982,7 +2982,8 @@ var en_US = {
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
     'common.convert.to.customer': ' convert to customer',//转为客户
     'common.convert.to.new.customer': ' convert to new customer',//转为新客户
-    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户    'common.total.points': 'total points',//总分
+    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户 
+    'common.total.points': 'total points',//总分
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From "{source}"',//来自“{source}”
     'clue.item.acceess.channel': 'Detail: "{content}"',//详情：“{content}”
@@ -2995,5 +2996,7 @@ var en_US = {
     /*自定义审批 end*/
     'clue.customer.trace.clues': 'Trace clue',//跟进线索
     'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
+    'apply.phone.close': 'Phone off',//手机关机
+    'apply.select.trace.clue': 'Please select trace clue',//请选择要跟进的线索
 };
 export default en_US;

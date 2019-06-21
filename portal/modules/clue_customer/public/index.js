@@ -111,6 +111,7 @@ class ClueCustomer extends React.Component {
         }
 
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
+        phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
     }
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
@@ -196,16 +197,41 @@ class ClueCustomer extends React.Component {
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
-        batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
+        batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
     }
-
+    invalidBtnClickedListener = (data) => {
+        this.handleClickInvalidBtn(data.item, data.callback);
+    };
     //展示右侧面板
-    showRightPanel = (id) => {
+    showClueDetailOut = (item) => {
         rightPanelShow = true;
         this.setState({rightPanelIsShow: true});
-        clueCustomerAction.setCurrentCustomer(id);
+        clueCustomerAction.setCurrentCustomer(item.id);
+        setTimeout(() => {
+            this.renderClueDetail();
+        });
     };
+    renderClueDetail = () => {
+        //触发打开带拨打电话状态的线索详情面板
+        if (this.state.currentId) {
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+                clue_params: {
+                    currentId: this.state.currentId,
+                    showRightPanel: this.showClueDetailOut,
+                    hideRightPanel: this.hideRightPanel,
+                    curClue: this.state.curClue,
+                    ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
 
+                    // refreshCustomerList: this.refreshCustomerList,
+                    // updateCustomerDefContact: CrmAction.updateCustomerDefContact,
+                    // updateCustomerLastContact: CrmAction.updateCustomerLastContact,
+                    // handleFocusCustomer: this.handleFocusCustomer,
+
+                }
+            });
+        }
+    };
     hideRightPanel = () => {
         rightPanelShow = false;
         this.setState({rightPanelIsShow: false});
@@ -561,11 +587,7 @@ class ClueCustomer extends React.Component {
             clueCustomerAction.afterAddClueTrace(updateId);
         }
     };
-    showClueDetailOut = (item) => {
-        rightPanelShow = true;
-        this.setState({rightPanelIsShow: true});
-        clueCustomerAction.setCurrentCustomer(item.id);
-    };
+
     handleContactLists = (contact) => {
         var clipContact = false;
         if (contact.length > 1){
@@ -802,7 +824,7 @@ class ClueCustomer extends React.Component {
         });
     };
     //标记线索无效或者有效
-    handleClickInvalidBtn = (item) => {
+    handleClickInvalidBtn = (item, callback) => {
         var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
         if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY) {
             updateValue = AVALIBILITYSTATUS.AVALIBILITY;
@@ -814,12 +836,14 @@ class ClueCustomer extends React.Component {
         this.setState({
             isInvalidClue: item.id,
         });
+
         clueCustomerAction.updateCluecustomerDetail(submitObj, (result) => {
             if (_.isString(result)) {
                 this.setState({
                     isInvalidClue: '',
                 });
             } else {
+                _.isFunction(callback) && callback(updateValue);
                 var salesClueItemDetail = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                 salesClueItemDetail.invalid_info = {
                     user_name: userData.getUserData().nick_name,
@@ -897,6 +921,14 @@ class ClueCustomer extends React.Component {
         );
 
     };
+    showClueDetailPanel = (salesClueItem) => {
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+            clue_params: {
+                curClue: salesClueItem,
+                currentId: salesClueItem.id
+            }
+        });
+    };
     getClueTableColunms = () => {
         const column_width = '80px';
         let columns = [
@@ -946,6 +978,7 @@ class ClueCustomer extends React.Component {
                                     customerData={salesClueItem}
                                     showContactLabel={false}
                                     hasMoreIcon={hasMoreIconPrivilege}
+                                    showClueDetailPanel={this.showClueDetailPanel.bind(this, salesClueItem)}
                                 />
                                 {hasMoreIconPrivilege ? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
                             </div>
@@ -1687,7 +1720,6 @@ class ClueCustomer extends React.Component {
                     }
                 </span>);
         }
-
     };
     renderBatchChangeClues = () => {
         return (
@@ -1821,15 +1853,15 @@ class ClueCustomer extends React.Component {
                         regRules={XLS_FILES_TYPE_RULES}
                         downLoadFileName={Intl.get('sales.home.customer', '客户') + '.xls'}
                     />
-                    {this.state.rightPanelIsShow ?
-                        <ClueRightPanel
-                            showFlag={this.state.rightPanelIsShow}
-                            currentId={this.state.currentId}
-                            curClue={this.state.curClue}
-                            ShowCustomerUserListPanel = {this.ShowCustomerUserListPanel}
-                            hideRightPanel={this.hideRightPanel}
-                            updateCustomerLastContact={this.updateCustomerLastContact}
-                        /> : null}
+                    {/*{this.state.rightPanelIsShow ?*/}
+                    {/*<ClueRightPanel*/}
+                    {/*showFlag={this.state.rightPanelIsShow}*/}
+                    {/*currentId={this.state.currentId}*/}
+                    {/*curClue={this.state.curClue}*/}
+                    {/*ShowCustomerUserListPanel = {this.ShowCustomerUserListPanel}*/}
+                    {/*hideRightPanel={this.hideRightPanel}*/}
+                    {/*updateCustomerLastContact={this.updateCustomerLastContact}*/}
+                    {/*/> : null}*/}
 
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"

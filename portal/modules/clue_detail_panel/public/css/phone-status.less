@@ -9,7 +9,7 @@
   word-break: break-all;
 }
 
-#phone-status-content {
+#clue-phone-status-content {
   .right-pannel-default .ant-form-item-label label {
     padding-right: 20px;
     font-weight: normal;
@@ -84,7 +84,7 @@
 }
 
 /* 通话状态展示面板-start*/
-#phone-status-content {
+#clue-phone-status-content {
   width: 100%;
   font-size: 14px;
   z-index: 101;
@@ -205,7 +205,7 @@
             position: absolute;
             bottom: 10px;
             color: red;
-            right: 10px;
+            left: 100px;
           }
           .btn-select-container {
             overflow: hidden;
@@ -225,6 +225,11 @@
               margin-right: 8px;
               cursor: pointer;
               padding: 0 12px;
+              display: none;
+              &.showCls{
+                display: inline-block;
+              }
+
             }
             .ant-btn {
               margin-top: 10px;
@@ -302,6 +307,7 @@
             left: 8px;
             font-size: 14px;
             top: 2px;
+            z-index: 10;
           }
         }
         //客户基本资料

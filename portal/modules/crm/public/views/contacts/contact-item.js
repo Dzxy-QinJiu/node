@@ -16,6 +16,9 @@ const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
 import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
+import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
+import PhoneCallout from 'CMP_DIR/phone-callout';
+import PhoneInput from 'CMP_DIR/phone-input';
 class ContactItem extends React.Component {
     static defaultProps = {
         contact: ContactUtil.getEmptyViewContactObject()
@@ -105,7 +108,32 @@ class ContactItem extends React.Component {
         }
         return contactInfo;
     };
-
+    renderItemSelfSettingContent = (item) => {
+        return <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true}/>;
+    };
+    renderItemSelfSettingForm = (key, index, that) => {
+        const fieldKey = `${that.props.field}[${key}]`;
+        let initValue = _.get(that.state, `value[${key}]`, '');
+        let validateRules = [];
+        if (index === 0) {//电话必填的验证
+            validateRules = _.concat(validateRules, [{
+                required: true,
+                message: Intl.get('user.info.input.phone', '请输入电话'),
+            }]);
+        }
+        return (
+            <PhoneInput
+                initialValue={initValue}
+                placeholder={Intl.get('clue.add.phone.num', '电话号码')}
+                validateRules={validateRules}
+                id={fieldKey}
+                labelCol={{span: 4}}
+                wrapperCol={{span: 20}}
+                colon={false}
+                form={that.props.form}
+                label={index === 0 ? Intl.get('common.phone', '电话') : ' '}
+            />);
+    };
     //渲染联系人标题区
     renderContactTitle = () => {
         let contact = this.props.contact.contact;
@@ -318,6 +346,9 @@ class ContactItem extends React.Component {
                         noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                         addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
                         contactName={contact.name}
+                        renderItemSelfSettingContent={this.renderItemSelfSettingContent}
+                        renderItemSelfSettingForm={this.renderItemSelfSettingForm}
+
                     />
                 </div>
                 {isExpanded ? (

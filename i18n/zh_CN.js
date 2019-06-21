@@ -2328,8 +2328,8 @@ var zh_CN = {
     'crm.phone.failed.get.customer': '查询此号码对应的客户信息失败',
     'call.record.show.customer.detail': '查看详情',
     'call.record.customer.source': '来源',
-    'call.record.no.response.customer': '此号码无对应客户',
-    'call.record.some.customer': '此号码对应{num}个客户',
+    'call.record.no.response.customer': '此号码无对应{type}',
+    'call.record.some.customer': '此号码对应{num}个{type}',
     'call.record.contact.phone': '联系号码',
     'call.record.getting.tag.lists': '正在获取标签列表',
 
@@ -3091,7 +3091,8 @@ var zh_CN = {
     'common.sales.productivity.analysis': '销售生产力分析',
     'common.convert.to.customer': '转为客户',
     'common.convert.to.new.customer': '转为新客户',
-    'common.has.similar.customers': '有{count}个信息相似的客户', 'common.total.points': '总分',
+    'common.has.similar.customers': '有{count}个信息相似的客户',
+    'common.total.points': '总分',
     'clue.filter.wait.me.handle': '待我处理',
     'clue.item.source.from': '来自“{source}”',
     'clue.item.acceess.channel': '详情：“{content}”',
@@ -3100,5 +3101,7 @@ var zh_CN = {
     'clue.fail.customer.trace.statics': '获取跟进记录的分类统计失败',
     'clue.customer.trace.clues': '跟进线索',
     'apply.select.search.clear.value': '修改筛选范围，已勾选的{type}将被清空',
+    'apply.phone.close': '手机关机',
+    'apply.select.trace.clue': '请选择要跟进的线索',
 };
 export default zh_CN;
