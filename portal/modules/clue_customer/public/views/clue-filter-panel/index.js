@@ -103,9 +103,6 @@ class ClueFilterPanel extends React.Component {
                     if (item.value === 'repeat_id'){
                         FilterAction.setExistedFiled('repeat_id');
                         FilterAction.setUnexistedFiled();
-                    }else if (item.value === 'customer_id'){
-                        filteraction.setexistedfiled();
-                        filteraction.setunexistedfiled('customer_id');
                     }
                 }else if (item.groupId === 'user_name'){
                     FilterAction.setFilterClueUsername( _.get(item,'data'));
