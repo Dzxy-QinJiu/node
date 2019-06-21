@@ -988,11 +988,8 @@ class ClueCustomer extends React.Component {
                 }
             })
             .fail(err => {
-                this.setState({
-                    isShowClueToCustomerPanel: false,
-                    isShowAddCustomerPanel: true,
-                    existingCustomers: []
-                });
+                const errMsg = Intl.get('member.apply.approve.tips', '操作失败') + Intl.get('user.info.retry', '请重试');
+                message.error(errMsg);
             });
     };
 
