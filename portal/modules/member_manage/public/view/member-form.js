@@ -180,7 +180,6 @@ class MemberForm extends React.Component {
             this.returnInfoPanel(this.state.savedUser);
             this.props.showContinueAddButton();
         }
-
         MemberFormAction.resetSaveResult(this.props.formType, this.state.saveResult);
     };
 

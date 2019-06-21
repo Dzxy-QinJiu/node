@@ -394,7 +394,7 @@ class MemberManage extends React.Component {
                             <MemberInfo
                                 memberInfo={this.state.currentMember}
                                 closeRightPanel={this.closeRightPanel}
-                                showEditForm={this.showMemberInfo}
+                                showEditForm={this.showMemberForm}
                                 isContinueAddButtonShow={this.state.isContinueAddButtonShow}
                                 changeMemberFieldSuccess={this.changeMemberFieldSuccess}
                                 updateMemberStatus={this.updateMemberStatus}

@@ -813,9 +813,13 @@ class MemberInfo extends React.Component {
                                 className='member-contact-card-container'
                             />
                             {this.props.isContinueAddButtonShow ? (
-                                <div className="btn-add-member" onClick={this.props.showEditForm.bind(null, 'add')}>
-                                    <Icon type="plus"/><span><ReactIntl.FormattedMessage id="common.add.member"
-                                        defaultMessage="添加成员"/></span>
+                                <div className="btn-add-member"
+                                    onClick={this.props.showEditForm.bind(null, 'add')}
+                                >
+                                    <Icon type="plus"/>
+                                    <span>
+                                        {Intl.get('member.continue.add.member', '继续添加成员')}
+                                    </span>
                                 </div>
                             ) : null}
                         </div>
