@@ -58,6 +58,8 @@ class ClueToCustomerPanel extends React.Component {
             customerName: '',
             //当前操作的客户的联系人列表
             customerContacts: [],
+            //是否禁用“确认合并”按钮
+            isConfirmMergeBtnDisabled: false
         };
     }
 
@@ -292,6 +294,8 @@ class ClueToCustomerPanel extends React.Component {
         const clueContacts = clue.contacts;
         //客户联系人列表
         let customerContacts = _.cloneDeep(this.state.customerContacts);
+        //是否禁用“确认合并”按钮
+        let isConfirmMergeBtnDisabled = false;
 
         //遍历客户联系人列表
         _.each(customerContacts, customerContact => {
@@ -326,6 +330,7 @@ class ClueToCustomerPanel extends React.Component {
                     if (isPhoneDup && customerContact.name !== clueContact.name) {
                         //将客户联系人的替换名字设置为线索联系人的名字，以供用户选择
                         customerContact.replaceName = clueContact.name;
+                        isConfirmMergeBtnDisabled = true;
                     }
 
                     //中止遍历
@@ -350,12 +355,13 @@ class ClueToCustomerPanel extends React.Component {
 
         this.setState({
             customerContacts,
+            isConfirmMergeBtnDisabled,
             viewType: VIEW_TYPE.CUSTOMER_MERGE
         });
     }
 
-    //替换联系人名称按钮点击事件
-    onReplaceContactNameClick = (contactIndex, replaceName) => {
+    //替换联系人名称确认按钮点击事件
+    onReplaceContactNameConfirmBtnClick = (contactIndex, replaceName) => {
         //客户联系人列表
         let customerContacts = _.cloneDeep(this.state.customerContacts);
 
@@ -369,7 +375,35 @@ class ClueToCustomerPanel extends React.Component {
         //在联系人需要更新的字段中加上名称
         contact.updateFields.push('name');
 
-        this.setState({ customerContacts });
+        //是否禁用“确认合并”按钮
+        //若客户联系人列表中还有需要处理名称替换的联系人，则禁用“确认合并”按钮
+        const isConfirmMergeBtnDisabled = _.some(customerContacts, contact => contact.replaceName);
+
+        this.setState({
+            customerContacts,
+            isConfirmMergeBtnDisabled
+        });
+    }
+
+    //替换联系人名称取消按钮点击事件
+    onReplaceContactNameCancelBtnClick = contactIndex => {
+        //客户联系人列表
+        let customerContacts = _.cloneDeep(this.state.customerContacts);
+
+        //要更新的联系人
+        let contact = customerContacts[contactIndex];
+
+        //删除暂存的替换名称
+        delete contact.replaceName;
+
+        //是否禁用“确认合并”按钮
+        //若客户联系人列表中还有需要处理名称替换的联系人，则禁用“确认合并”按钮
+        const isConfirmMergeBtnDisabled = _.some(customerContacts, contact => contact.replaceName);
+
+        this.setState({
+            customerContacts,
+            isConfirmMergeBtnDisabled
+        });
     }
 
     //设置视图类型
@@ -538,13 +572,13 @@ class ClueToCustomerPanel extends React.Component {
                     <div className="is-replace-contract-name">
                         {Intl.get('common.modify.name.to', '修改姓名为')}“{contact.replaceName}”？
                         <Button
-                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                            onClick={this.onReplaceContactNameCancelBtnClick.bind(this, contactIndex)}
                         >
                             {Intl.get('common.not.modify', '不修改')}
                         </Button>
                         <Button
                             type="primary"
-                            onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
+                            onClick={this.onReplaceContactNameConfirmBtnClick.bind(this, contactIndex, contact.replaceName)}
                         >
                             {Intl.get('common.confirm.modify', '确认修改')}
                         </Button>
@@ -650,6 +684,7 @@ class ClueToCustomerPanel extends React.Component {
 
                     <Button
                         type="primary" onClick={this.mergeToCustomer}
+                        disabled={this.state.isConfirmMergeBtnDisabled}
                     >
                         {Intl.get('common.confirm.merge', '确认合并')}
                     </Button>
