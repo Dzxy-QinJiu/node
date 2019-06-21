@@ -958,8 +958,10 @@ class ClueCustomer extends React.Component {
         //设置当前线索
         clueCustomerAction.setCurrentCustomer(clueId);
         
+        //权限类型
         const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
 
+        //根据线索名称查询相似客户
         ajax.send({
             url: `/rest/customer/v3/customer/range/${authType}/20/1/start_time/descend`,
             type: 'post',
@@ -972,16 +974,23 @@ class ClueCustomer extends React.Component {
             .done(result => {
                 const existingCustomers = _.get(result, 'result');
 
+                //若存在相似客户
                 if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
                     this.setState({
+                        //显示线索转客户面板
                         isShowClueToCustomerPanel: true,
+                        //不显示添加客户面板
                         isShowAddCustomerPanel: false,
+                        //保存相似客户
                         existingCustomers
                     });
                 } else {
                     this.setState({
+                        //不显示线索转客户面板
                         isShowClueToCustomerPanel: false,
+                        //显示添加客户面板
                         isShowAddCustomerPanel: true,
+                        //清空相似客户
                         existingCustomers: []
                     });
                 }
