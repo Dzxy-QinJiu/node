@@ -427,7 +427,6 @@ var CRMAddForm = createReactClass({
             wrapperCol: {span: 19},
         };
         let formHeight = $('body').height() - ADD_TITLE_HEIGHT;
-        console.log(initialValue);
         return (<Form layout='horizontal' className="crm-add-form" id="crm-add-form" style={{height: formHeight}}>
             <GeminiScrollbar>
                 <Validation ref="validation" onValidate={this.handleValidate}>
