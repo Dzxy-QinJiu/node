@@ -683,7 +683,8 @@ class ClueToCustomerPanel extends React.Component {
                     </Button>
 
                     <Button
-                        type="primary" onClick={this.mergeToCustomer}
+                        type="primary"
+                        onClick={this.mergeToCustomer}
                         disabled={this.state.isConfirmMergeBtnDisabled}
                     >
                         {Intl.get('common.confirm.merge', '确认合并')}

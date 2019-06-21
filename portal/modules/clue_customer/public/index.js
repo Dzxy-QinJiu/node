@@ -1590,11 +1590,15 @@ class ClueCustomer extends React.Component {
         );
     };
 
-    //在列表中隐藏当前操作的线索
-    hideCurClue = () => {
+    //线索合并到客户后的回调事件
+    onClueMergedToCustomer = () => {
         const index = _.findIndex(this.state.curClueLists, item => item.id === this.state.curClue.id);
         
+        //在列表中隐藏当前操作的线索
         $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').slideToggle(2000);
+
+        //关闭线索转客户面板
+        this.hideClueToCustomerPanel();
     }
 
     render() {
@@ -1750,7 +1754,7 @@ class ClueCustomer extends React.Component {
                             existingCustomers={this.state.existingCustomers}
                             hidePanel={this.hideClueToCustomerPanel}
                             showAddCustomerPanel={this.showAddCustomerPanel}
-                            onMerged={this.hideCurClue}
+                            onMerged={this.onClueMergedToCustomer}
                         />
                     ) : null}
 
