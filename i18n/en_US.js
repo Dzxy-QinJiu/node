@@ -2980,13 +2980,15 @@ var en_US = {
     'common.current.year': 'current year',//本年
     'common.rank': 'rank',//名次
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
-    'common.convert.to.customer': ' convert to customer',//转为客户
-    'common.convert.to.new.customer': ' convert to new customer',//转为新客户
+    'common.convert.to.customer': 'convert to customer',//转为客户
+    'common.merge.to.customer': 'convert to customer',//合并到此客户
+    'common.modify.name.to': 'modify name to',//修改姓名为
+    'common.convert.to.new.customer': 'convert to new customer',//转为新客户
     'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户 
     'common.total.points': 'total points',//总分
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
-    'clue.item.source.from': 'From "{source}"',//来自“{source}”
-    'clue.item.acceess.channel': 'Detail: "{content}"',//详情：“{content}”
+    'clue.item.source.from': 'From {source}',//来自“{source}”
+    'clue.item.acceess.channel': 'Detail: {content}',//详情：“{content}”
     'clue.show.no.show.tip': 'There has {num} notices not showing',//还有{num}个提醒未展示
     'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
@@ -2998,5 +3000,9 @@ var en_US = {
     'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
     'apply.phone.close': 'Phone off',//手机关机
     'apply.select.trace.clue': 'Please select trace clue',//请选择要跟进的线索
+    'common.not.modify': 'not modify',//不修改
+    'common.confirm.modify': 'confirm modify',//确认修改
+    'common.confirm.merge': 'confirm merge',//确认合并
+    'common.merge.success': 'merge success',//合并成功
 };
 export default en_US;

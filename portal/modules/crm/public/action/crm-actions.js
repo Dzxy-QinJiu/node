@@ -61,7 +61,7 @@ function CrmActions() {
         });
     };
     //通过线索添加客户
-    this.addCustomerByClue = function(newCus, isConvert, cb) {
+    this.addCustomerByClue = function(newCus, cb) {
         newCus.contacts0_phone = [newCus.contacts0_phone];
         newCus.contacts = [{}];
         for (var p in newCus) {
@@ -72,7 +72,7 @@ function CrmActions() {
             }
         }
         newCus.contacts[0].def_contancts = 'true';
-        crmAjax.addCustomerByClue(newCus, isConvert).then((data) => {
+        crmAjax.addCustomerByClue(newCus).then((data) => {
             cb(data);
         }, (errorMsg) => {
             cb(errorMsg || Intl.get('crm.192', '添加客户失败!'));

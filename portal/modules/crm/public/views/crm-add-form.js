@@ -81,8 +81,6 @@ var CRMAddForm = createReactClass({
             isAssociateClue: false,
             formData: {},
             isShowMadal: true,
-            //是否是在线索转客户的过程中添加客户
-            isConvert: true,
         };
     },
     propTypes: {
@@ -92,7 +90,6 @@ var CRMAddForm = createReactClass({
         isAssociateClue: PropTypes.bool,
         formData: PropTypes.object,
         isShowMadal: PropTypes.bool,
-        isConvert: PropTypes.bool,
     },
 
     componentDidMount: function() {
@@ -200,7 +197,7 @@ var CRMAddForm = createReactClass({
         }
         //由线索创建的客户和普通的添加客户不是一个接口
         if(this.props.isAssociateClue && PropsFormData){
-            CrmAction.addCustomerByClue(formData, this.props.isConvert, result => {
+            CrmAction.addCustomerByClue(formData, result => {
                 afterAddCustomer(result, this);
             });
         }else{

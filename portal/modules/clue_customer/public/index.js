@@ -900,23 +900,23 @@ class ClueCustomer extends React.Component {
     renderAvailabilityClue = (salesClueItem) => {
         //是有效线索
         let availability = salesClueItem.availability !== '1';
-        //关联客户
-        var associatedCustomer = salesClueItem.customer_name;
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         return(
             <div className="avalibility-container">
-                {/*是有效线索并且有关联客户*/}
-                {associatedCustomer ?
-                    <div className="associate-customer">
-                        {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
-                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> :
-                    <div>
-                        {associatedPrivilege ? <span className="can-edit associate-btn" onClick={this.showClueDetailOut.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</span> : null}
-                        {this.renderInavailabilityOrValidClue(salesClueItem)}
-                    </div>
+                <div className="associate-customer">
+                    {associatedPrivilege ? (
+                        <span
+                            className="can-edit"
+                            style={{marginRight: 15}}
+                            onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name)}
+                        >
+                            {Intl.get('common.convert.to.customer', '转为客户')}
+                        </span> 
+                    ) : null}
 
-                }
+                    {this.renderInavailabilityOrValidClue(salesClueItem)}
+                </div>
             </div>
         );
 
@@ -947,11 +947,8 @@ class ClueCustomer extends React.Component {
                                 <ShearContent>
                                     <span>
                                         <span className="clue_source_time">{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}&nbsp;</span>
-                                        <span>
-                                            {salesClueItem.clue_source ? Intl.get('clue.item.source.from', '来自{source}',{source: salesClueItem.clue_source}) : null}
-                                        </span>
-                                        {salesClueItem.clue_source && salesClueItem.source ? '，' : null}
-                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '详情：“{content}”',{content: salesClueItem.source}) : null}</span>
+                                        
+                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '描述：{content}',{content: salesClueItem.source}) : null}</span>
 
                                     </span>
                                 </ShearContent>
@@ -1038,33 +1035,16 @@ class ClueCustomer extends React.Component {
                     );
                 }
             },{
-                title: Intl.get('clue.customer.associate.customer', '关联客户'),
-                dataIndex: 'assocaite_customer',
+                title: Intl.get('common.operate': '操作'),
                 className: 'invalid-td-clue',
-                width: '300px',
+                width: '150px',
                 render: (text, salesClueItem, index) => {
                     //是有效线索
                     let availability = salesClueItem.availability !== '1';
-                    //关联客户
-                    var associatedCustomer = salesClueItem.customer_name;
                     return (
                         <div className="avalibity-or-invalid-container">
                             {availability ? this.renderAvailabilityClue(salesClueItem) : this.renderInavailabilityOrValidClue(salesClueItem)}
                         </div>
-                    );
-                }
-            },{
-                title: Intl.get('common.operate', '操作'),
-                width: 100,
-                render: (value, record) => {
-                    return (
-                        <span
-                        
-                            className="can-edit"
-                            onClick={this.onConvertToCustomerBtnClick.bind(this, record.id, record.name)}
-                        >
-                            {Intl.get('common.convert.to.customer', '转为客户')}
-                        </span>
                     );
                 }
             }];
@@ -1076,8 +1056,10 @@ class ClueCustomer extends React.Component {
         //设置当前线索
         clueCustomerAction.setCurrentCustomer(clueId);
         
+        //权限类型
         const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
 
+        //根据线索名称查询相似客户
         ajax.send({
             url: `/rest/customer/v3/customer/range/${authType}/20/1/start_time/descend`,
             type: 'post',
@@ -1090,26 +1072,30 @@ class ClueCustomer extends React.Component {
             .done(result => {
                 const existingCustomers = _.get(result, 'result');
 
+                //若存在相似客户
                 if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
                     this.setState({
+                        //显示线索转客户面板
                         isShowClueToCustomerPanel: true,
+                        //不显示添加客户面板
                         isShowAddCustomerPanel: false,
+                        //保存相似客户
                         existingCustomers
                     });
                 } else {
                     this.setState({
+                        //不显示线索转客户面板
                         isShowClueToCustomerPanel: false,
+                        //显示添加客户面板
                         isShowAddCustomerPanel: true,
+                        //清空相似客户
                         existingCustomers: []
                     });
                 }
             })
             .fail(err => {
-                this.setState({
-                    isShowClueToCustomerPanel: false,
-                    isShowAddCustomerPanel: true,
-                    existingCustomers: []
-                });
+                const errMsg = Intl.get('member.apply.approve.tips', '操作失败') + Intl.get('user.info.retry', '请重试');
+                message.error(errMsg);
             });
     };
 
@@ -1126,6 +1112,25 @@ class ClueCustomer extends React.Component {
     //隐藏添加客户面板
     hideAddCustomerPanel = () => {
         this.setState({isShowAddCustomerPanel: false});
+    };
+
+    //在列表中隐藏当前操作的线索
+    hideCurClue = () => {
+        const index = _.findIndex(this.state.curClueLists, item => item.id === this.state.curClue.id);
+        
+        $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').slideToggle(2000);
+    }
+
+    //线索转为新客户完成后的回调事件
+    onConvertClueToNewCustomerDone = () => {
+        const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
+        message.success(msgInfo);
+
+        //在列表中隐藏当前操作的线索
+        this.hideCurClue();
+
+        //隐藏添加客户面板
+        this.hideAddCustomerPanel();
     };
 
     setInvalidClassName= (record, index) => {
@@ -1765,6 +1770,16 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+
+    //线索合并到客户后的回调事件
+    onClueMergedToCustomer = () => {
+        //在列表中隐藏当前操作的线索
+        this.hideCurClue();
+
+        //关闭线索转客户面板
+        this.hideClueToCustomerPanel();
+    }
+
     render() {
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
@@ -1916,22 +1931,24 @@ class ClueCustomer extends React.Component {
                             </RightPanel> : null
                     }
 
-                    <ClueToCustomerPanel
-                        showFlag={this.state.isShowClueToCustomerPanel}
-                        clue={this.state.curClue}
-                        existingCustomers={this.state.existingCustomers}
-                        hidePanel={this.hideClueToCustomerPanel}
-                        showAddCustomerPanel={this.showAddCustomerPanel}
-                    />
+                    {this.state.isShowClueToCustomerPanel ? (
+                        <ClueToCustomerPanel
+                            showFlag={this.state.isShowClueToCustomerPanel}
+                            clue={this.state.curClue}
+                            existingCustomers={this.state.existingCustomers}
+                            hidePanel={this.hideClueToCustomerPanel}
+                            showAddCustomerPanel={this.showAddCustomerPanel}
+                            onMerged={this.onClueMergedToCustomer}
+                        />
+                    ) : null}
 
                     {this.state.isShowAddCustomerPanel ? (
                         <CRMAddForm
                             hideAddForm={this.hideAddCustomerPanel}
-                            addOne={this.hideAddCustomerPanel}
+                            addOne={this.onConvertClueToNewCustomerDone}
                             formData={this.state.curClue}
                             isAssociateClue={true}
-                            isConvert={true}
-                            phoneNum={_.get(this.state, 'curClue.contact_way', '')}
+                            phoneNum={_.get(this.state, 'curClue.phones[0]', '')}
                             isShowMadal={false}
                         />
                     ) : null}

@@ -107,7 +107,6 @@ class ClueFilterPanel extends React.Component {
                     });
                     FilterAction.setFilterClueProvince(provinceList);
                 }else if (item.groupId === COMMON_OTHER_ITEM){
-                    //如果是筛选没有关联客户的线索
                     //如果是筛选重复线索
                     if (item.value === 'repeat_id'){
                         FilterAction.setExistedFiled('repeat_id');
