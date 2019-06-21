@@ -136,7 +136,6 @@ exports.getRoleList = function(req, res) {
 //昵称（对应的是姓名）唯一性验证
 exports.checkOnlyNickName = (req, res) => {
     memberManageService.checkOnlyNickName(req, res, req.params.nickname).on('success', (data) => {
-        console.log('#############################data',data);
         if (data && data.account_nickname) {
             // 昵称（对应的是姓名）已存在，返回true
             res.status(200).json(true);

@@ -33,6 +33,8 @@ const memberRestApis = {
     getAndSetSalesGoals: '/rest/contract/v2/goal/users',
     // 获取成员的职务
     getMemberPosition: '/rest/base/v1/user/member/teamrole',
+    // 成员分配职务
+    setMemberPosition: '/rest/base/v1/user/member/teamrole',
 };
 
 exports.urls = memberRestApis;
@@ -129,33 +131,75 @@ exports.getCurUserById = function(req, res, memberId) {
     return emitter;
 };
 
-//添加用户
-exports.addUser = function(req, res, frontUser) {
-    var addUser = Member.toRestObject(frontUser);
-    addUser.realm_id = auth.getUser(req).auth.realm_id;
-    return restUtil.authRest.post(
-        {
+// 添加成员
+function addMember(req, res, obj) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.post({
             url: memberRestApis.addUser,
             req: req,
             res: res
-        },
-        addUser,
-        {
-            success: function(eventEmitter, data) {
-                //处理数据
-                if (_.isObject(data)) {
-                    frontUser.id = data.user_id;
-                    if (_.isArray(data.roles) && data.roles.length) {
-                        frontUser.roleIds = _.map(data.roles, 'role_id');
-                    } else {
-                        frontUser.roleIds = [];
-                    }
-                    frontUser.teamId = data.team_id;
-                    frontUser.status = data.status;
-                }
-                eventEmitter.emit('success', frontUser);
+        }, obj, {
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
             }
         });
+    });
+}
+
+// 给成员分配职务
+function setMemberPosition(req, res, obj) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.post({
+            url: memberRestApis.setMemberPosition,
+            req: req,
+            res: res
+        }, obj, {
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
+            }
+        });
+    });
+}
+
+
+//添加用户
+exports.addUser = function(req, res, frontUser) {
+    let emitter = new EventEmitter();
+    let addUser = Member.toRestObject(frontUser);
+    addUser.realm_id = auth.getUser(req).auth.realm_id;
+
+    addMember(req, res, addUser).then((data) => {
+        if (_.isObject(data)) {
+            let obj = {
+                member_id: _.get(data, 'user_id'),
+                teamrole_id: _.get(frontUser, 'position')
+            };
+            frontUser.id = data.user_id;
+            if (_.isArray(data.roles) && data.roles.length) {
+                frontUser.roleIds = _.map(data.roles, 'role_id');
+            } else {
+                frontUser.roleIds = [];
+            }
+            frontUser.teamId = data.team_id;
+            frontUser.status = data.status;
+            setMemberPosition(req, res, obj).then( (positionData) => {
+                frontUser.positionName = _.get(positionData, 'teamrole_name');
+                frontUser.positionId = _.get(positionData, 'teamrole_id');
+                eventEmitter.emit('success', frontUser);
+            } ).catch( () => {
+                emitter.emit('success', frontUser);
+            });
+        }
+    }).catch((errorObj) => {
+        emitter.emit('error', errorObj);
+    });
+    return emitter;
 };
 
 //修改用户

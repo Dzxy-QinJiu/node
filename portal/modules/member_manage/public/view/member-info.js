@@ -98,7 +98,6 @@ class MemberInfo extends React.Component {
 
     getPositionList = () => {
         MemberManageAjax.getSalesPosition().then( (data) => {
-            console.log('salesRoleList:',data);
             this.setState({
                 salesRoleList: _.isArray(data) ? data : [],
             });

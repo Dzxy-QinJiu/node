@@ -217,7 +217,6 @@ var SalesTeamForm = createReactClass({
     },
     //团队名的修改
     onChangeTeamName: function(event) {
-        console.log('event:', event.target.value);
         let formData = this.state.formData;
         formData.title = _.trim(event.target.value);
         formData.saveTeamMsg = '';
@@ -225,7 +224,6 @@ var SalesTeamForm = createReactClass({
     },
     render: function() {
         var formData = this.state.formData;
-        console.log(' form render: ', formData);
         var status = this.state.status;
         var formClass = classNames('edit-sales-team-form', this.props.className, {
             'select': formData.select

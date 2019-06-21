@@ -15,6 +15,7 @@ import Trace from 'LIB_DIR/trace';
 import {nameLengthRule, emailRegex, commonPhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import MemberManageAjax from '../ajax';
 
 function noop() {
 }
@@ -51,14 +52,11 @@ class MemberForm extends React.Component {
                 role: [],
                 team: ''
             },
-            phoneEmailCheck: true//电话邮箱必填一项的验证
+            phoneEmailCheck: true, //电话邮箱必填一项的验证
+            positionList: [], // 职务列表
 
         };
     };
-
-    componentWillReceiveProps(nextProps) {
-        this.setState(this.initData());
-    }
 
     onChange = () => {
         this.setState({... MemberFormStore.getState()});
@@ -68,8 +66,21 @@ class MemberForm extends React.Component {
         MemberFormStore.unlisten(this.onChange);
     }
 
+    getPositionList = () => {
+        MemberManageAjax.getSalesPosition().then( (data) => {
+            this.setState({
+                positionList: _.isArray(data) ? data : [],
+            });
+        }, () => {
+            this.setState({
+                positionList: [],
+            });
+        } );
+    };
+
     componentDidMount = () => {
         MemberFormStore.listen(this.onChange);
+        this.getPositionList();
     }
 
     //关闭面板前清空验证的处理
@@ -272,12 +283,7 @@ class MemberForm extends React.Component {
         let positionOptions = '';
         let positionList = this.state.positionList;
         if (_.isArray(positionList) && _.get(positionList, 'length')) {
-            positionOptions = _.map(positionList, (item) => {
-                let className = (item.name === values.position ? 'role-options-selected' : '');
-                return (<Option className={className} key={item.name} value={item.name}>
-                    {item.name}
-                </Option>);
-            });
+            positionOptions = _.map(positionList, item => <Option value={item.id} key={item.id}>{item.name}</Option>);
         } else {
             positionOptions =
                 <Option value="">{Intl.get('member.no.position', '暂无职务')}</Option>;
@@ -404,36 +410,6 @@ class MemberForm extends React.Component {
                                 )}
                             </FormItem>
                             {this.renderEmailMsg()}
-                            {/**
-                             * <FormItem
-                             label={Intl.get('member.position', '职务')}
-                             {...formItemLayout}
-                             >
-                             {this.state.isLoadingPosition ? (
-                                 <div className="role-list-loading">
-                                     {Intl.get('member.is.get.position.lists', '正在获取职务列表')}
-                                     <Icon type="loading"/>
-                                 </div>) : (
-                                 <div>
-                                     {getFieldDecorator('position', {
-                                     })(
-                                         <Select
-                                             name="position"
-                                             id="position"
-                                             optionFilterProp="children"
-                                             placeholder={Intl.get('member.select.position', '请选择职务')}
-                                             searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
-                                             notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
-                                             onSelect={this.handlePositionSelect}
-                                             getPopupContainer={() => document.getElementById('user-add-form')}
-                                         >
-                                             {this.renderPositionOptions()}
-                                         </Select>
-                                     )}
-                                 </div>)
-                             }
-                             </FormItem>
-                             * */}
                             <FormItem
                                 label={Intl.get('common.role', '角色')}
                                 {...formItemLayout}
@@ -461,6 +437,34 @@ class MemberForm extends React.Component {
                                                 getPopupContainer={() => document.getElementById('user-add-form')}
                                             >
                                                 {this.renderRoleOptions()}
+                                            </Select>
+                                        )}
+                                    </div>)
+                                }
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get('member.position', '职务')}
+                                {...formItemLayout}
+                            >
+                                {this.state.isLoadingPosition ? (
+                                    <div className="role-list-loading">
+                                        {Intl.get('member.is.get.position.lists', '正在获取职务列表')}
+                                        <Icon type="loading"/>
+                                    </div>) : (
+                                    <div>
+                                        {getFieldDecorator('position', {
+                                        })(
+                                            <Select
+                                                name="position"
+                                                id="position"
+                                                optionFilterProp="children"
+                                                placeholder={Intl.get('member.select.position', '请选择职务')}
+                                                searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
+                                                notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                                onSelect={this.handlePositionSelect}
+                                                getPopupContainer={() => document.getElementById('user-add-form')}
+                                            >
+                                                {this.renderPositionOptions()}
                                             </Select>
                                         )}
                                     </div>)

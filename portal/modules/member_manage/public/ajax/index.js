@@ -54,8 +54,6 @@ exports.updateMemberStatus = (member) => {
     return Deferred.promise();
 };
 
-
-
 // 获取用户的个人日志
 exports.getLogList = function(condition) {
     let Deferred = $.Deferred();
@@ -109,7 +107,7 @@ exports.editUser = function(user) {
 };
 
 //修改成员的部门
-exports.updateUserTeam = function(user) {
+exports.updateMemberTeam = function(user) {
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/user_team/' + user.id + '/' + user.team,
