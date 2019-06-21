@@ -6,7 +6,7 @@
 var ClueCustomerAction = require('../action/clue-customer-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
-import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue} from '../utils/clue-customer-utils';
+import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue,AVALIBILITYSTATUS } from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone','qq','weChat','email'];
@@ -41,17 +41,40 @@ ClueCustomerStore.prototype.resetState = function() {
     this.distributeBatchLoading = false;
     this.distributeBatchErrMsg = '';
     this.keyword = '';//线索全文搜索的关键字
+    this.agg_list = {};//线索统计数据
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
     this.curClueLists = [];//查询到的线索列表
     this.customersSize = 0;
     this.lastCustomerId = '';
+    this.isLoading = true;
+    this.listenScrollBottom = true;
 };
 ClueCustomerStore.prototype.setLastClueId = function(updateId) {
     this.lastCustomerId = updateId;
 };
 ClueCustomerStore.prototype.setSortField = function(updateSortField) {
     this.sorter.field = updateSortField;
+};
+//获取线索的统计数据
+ClueCustomerStore.prototype.getClueStatics = function(result) {
+    if(_.isArray(_.get(result, 'data[0].status'))){
+        var arr = _.get(result, 'data[0].status');
+        var willDistribute = _.find(arr, item => item.name === SELECT_TYPE.WILL_DISTRIBUTE);
+        var willTrace = _.find(arr, item => item.name === SELECT_TYPE.WILL_TRACE);
+        var hasTrace = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRACE);
+        this.agg_list = {
+            'willDistribute': _.get(willDistribute,'total'),
+            'willTrace': _.get(willTrace,'total'),
+            'hasTrace': _.get(hasTrace,'total'),
+        };
+    }
+    //无效的数据
+    if(_.isArray(_.get(result, 'data[1].availability'))){
+        var arr = _.get(result, 'data[1].availability');
+        var invalidClue = _.find(arr, item => item.name === AVALIBILITYSTATUS.INAVALIBILITY);
+        this.agg_list['invalidClue'] = _.get(invalidClue,'total');
+    }
 };
 
 //全文查询线索

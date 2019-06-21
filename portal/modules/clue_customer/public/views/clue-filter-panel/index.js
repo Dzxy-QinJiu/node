@@ -200,15 +200,6 @@ class ClueFilterPanel extends React.Component {
         const accessChannelArray = this.state.accessChannelArray;
         //线索分类
         const clueClassifyArray = this.state.clueClassifyArray;
-        var filterClueStatus = this.state.filterClueStatus;
-        filterClueStatus = _.filter(filterClueStatus, item => {
-            return item.value;
-        });
-        //加上无效线索的筛选
-        filterClueStatus.push({
-            name: Intl.get('sales.clue.is.enable', '无效'),
-            value: 'avaibility',
-        });
         const clueProvinceList = this.handleClueProvinceList();
         //如果是普通销售，增加待我处理筛选项
         if (!userData.getUserData().isCommonSales){
@@ -238,11 +229,6 @@ class ClueFilterPanel extends React.Component {
         });
         const advancedData = [
             {
-                groupName: Intl.get('clue.filter.clue.status','线索状态'),
-                groupId: 'clue_status',
-                singleSelect: true,
-                data: filterClueStatus,
-            },{
                 groupName: Intl.get('crm.sales.clue.source', '线索来源'),
                 groupId: 'clue_source',
                 data: clueSourceArray.map(x => ({

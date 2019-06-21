@@ -70,10 +70,6 @@ export const SELECT_TYPE = {
 
 export const CLUE_DIFF_TYPE = [
     {
-        name: Intl.get('common.all', '全部'),
-        value: SELECT_TYPE.ALL,
-    },
-    {
         name: Intl.get('sales.home.will.trace', '待跟进'),
         value: SELECT_TYPE.WILL_TRACE,
     },
@@ -94,6 +90,10 @@ export const isOperation = function(){
 //是否是销售领导或者管理员
 export const isSalesLeaderOrManager = function(){
     return !userData.getUserData().isCommonSales || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+};
+//是否是销售
+export const isSalesRole = function() {
+    return userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 };
 //获取所选中线索状态的状态值
 export const getClueStatusValue = (filterClueStatus) => {

@@ -175,7 +175,47 @@
         padding-left: 0;
       }
       //table表格中相关样式的调整
-      #clue-content-block .clue-customer-list{
+      #clue-content-block #area.clue-customer-list{
+        td, th{
+          border-right:none !important;
+        }
+        th{
+          position: relative;
+          padding-bottom: 0!important;
+          height: 40px;
+        }
+        .clue-status-wrap{
+          position: absolute;
+          font-size: 14px;
+          color:#999;
+          bottom:-2px;
+          padding-left: 10px;
+          .clue-status-tab{
+            display: inline-block;
+            padding: 0px 20px 6px 0;
+            cursor: pointer;
+            .clue-status-num{
+              padding-left: 5px;
+            }
+            &.active-will-distribute{
+              color:@will-distribute-color;
+              border-bottom: 2px solid @will-distribute-color;
+            }
+            &.active-will-trace{
+              color:@has-distribute-color;
+              border-bottom: 2px solid @has-distribute-color;
+            }
+            &.active-has-trace{
+              color: @has-follow-color;
+              border-bottom: 2px solid @has-follow-color;
+            }
+            &.active-invalid-clue{
+              color:#ddd;
+              border-bottom: 2px solid #666;
+            }
+          }
+        }
+
         .ant-table-tbody{
           tr{
             .icon-active-call_record-ico{
@@ -405,3 +445,4 @@
     }
   }
 }
+

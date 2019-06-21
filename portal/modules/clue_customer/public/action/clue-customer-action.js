@@ -126,5 +126,14 @@ function ClueCustomerActions() {
             });
         });
     };
+    //获取线索的统计数据
+    this.getClueStatics = function(queryObj) {
+        clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
+            this.dispatch({data: _.get(result,'agg_list')
+            });
+        }, (errorMsg) => {
+
+        });
+    };
 }
 module.exports = alt.createActions(ClueCustomerActions);
