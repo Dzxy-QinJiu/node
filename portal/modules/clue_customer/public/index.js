@@ -1011,8 +1011,17 @@ class ClueCustomer extends React.Component {
         this.setState({isShowAddCustomerPanel: true});
     };
 
-    //隐藏添加客户面板
-    hideAddCustomerPanel = () => {
+    //线索转为新客户完成后的回调事件
+    onConvertClueToNewCustomerDone = () => {
+        const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
+        message.success(msgInfo);
+
+        const index = _.findIndex(this.state.curClueLists, item => item.id === this.state.curClue.id);
+        
+        //在列表中隐藏当前操作的线索
+        $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').slideToggle(2000);
+
+        //隐藏添加客户面板
         this.setState({isShowAddCustomerPanel: false});
     };
 
@@ -1768,8 +1777,8 @@ class ClueCustomer extends React.Component {
 
                     {this.state.isShowAddCustomerPanel ? (
                         <CRMAddForm
-                            hideAddForm={this.hideAddCustomerPanel}
-                            addOne={this.hideAddCustomerPanel}
+                            hideAddForm={this.onConvertClueToNewCustomerDone}
+                            addOne={this.onConvertClueToNewCustomerDone}
                             formData={this.state.curClue}
                             isAssociateClue={true}
                             phoneNum={_.get(this.state, 'curClue.contact_way', '')}
