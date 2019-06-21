@@ -298,6 +298,7 @@ class MemberManage extends React.Component {
     // 由编辑页面返回信息展示页面
     returnInfoPanel = (newMember) => {
         MemberManageAction.returnInfoPanel(newMember);
+        this.props.getMemberCount(this.state.memberTotal);
     };
     
     // 显示成员详情
@@ -394,7 +395,7 @@ class MemberManage extends React.Component {
                             <MemberInfo
                                 memberInfo={this.state.currentMember}
                                 closeRightPanel={this.closeRightPanel}
-                                showEditForm={this.showMemberInfo}
+                                showEditForm={this.showMemberForm}
                                 isContinueAddButtonShow={this.state.isContinueAddButtonShow}
                                 changeMemberFieldSuccess={this.changeMemberFieldSuccess}
                                 updateMemberStatus={this.updateMemberStatus}

@@ -1,0 +1,190 @@
+@import "../../../../public/css/common-variables";
+
+@right_panel_width: 504px;
+@right_panel_content_width: 480px;
+@right_panel_bgcolor: #f5f5f5;
+@box_shadow_color: #cac8c8;
+@tab_active_color: #2196f3;
+@font-color: #5D5D5D;
+//新版客户详情的样式
+//TODO 后期所有界面宽度改成统一的宽度后抽出到公共的rightPanel样式中即可
+.clue-right-panel.right-pannel-default {
+  width: @right_panel_width !important;
+  transform: translate(@right_panel_width, 0);
+  background-color: transparent !important;
+  overflow: inherit;
+  .right-panel-content {
+    height: 100%;
+    width: @right_panel_content_width !important;
+    box-shadow: -4px 0 20px @box_shadow_color;
+    background-color: @right_panel_bgcolor !important;
+  }
+  > .icon-close,.close-placeholder {
+    width: 24px;
+    height: 24px;
+    float: left;
+    font-size: 14px;
+    z-index: 1010;
+  }
+  > .icon-close{
+    color: #fff;
+    background-color: #8ea9c4;
+    border-radius: 0 !important;
+  }
+  .load8 {
+    transform: scale(0.5, 0.5);
+  }
+}
+
+
+.clue-right-panel {
+  .clue-right-panel-content-slide {
+    -webkit-transform: translateX(-700px);
+    transform: translateX(-700px);
+  }
+  .clue-right-panel-content {
+    float: left;
+    width: 100%;
+    padding: 0 20px 20px;
+    .ant-tabs-bar {
+      margin-bottom: 8px;
+      .ant-tabs-nav {
+        color: #999999;
+        .ant-tabs-tab {
+          margin-right: 9px;
+          font-size: 14px;
+          padding: 8px 4px !important;
+        }
+        .ant-tabs-tab-active {
+          color: @tab_active_color;
+        }
+      }
+    }
+
+    .ant-form-item {
+      color: @font-color;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      padding: 5px 4px 10px 4px;
+      border-bottom: 1px solid #D2DBE6;
+    }
+    .ant-tabs-tabs-bar {
+      color: #B6C2C9;
+      border-bottom: 1px solid #D2DBE6;
+    }
+    .ant-tabs-nav .ant-tabs-tab-active .ant-tabs-tab-inner {
+      color: @font-color;
+
+    }
+    .ant-tabs-ink-bar {
+      background-color: @tab_active_color !important;
+      height: 2px;
+    }
+    .ant-tabs-nav .ant-tabs-tab-inner {
+      padding-bottom: 12px;
+      padding-top: 5px;
+      color: #898989;
+      &:hover {
+        color: #4D96D1;
+      }
+    }
+  }
+
+  .clue-right-panel-addbtn {
+    height: 34px;
+    border: 1px solid #33A3DC;
+    border-radius: @border-radius;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #33A3DC;
+    padding-top: 5px;
+    background-color: #D4E6ED;
+    span {
+      margin-left: 6px;
+    }
+    cursor: pointer;
+  }
+
+  .clue-right-panel-addbtn:hover {
+    background-color: #B9DBEA;
+  }
+}
+
+//添加销售线索
+.add-form-wrap {
+  height: 100%;
+  .sales-clue-form {
+    .ant-form-item {
+      .ant-calendar-picker {
+        .ant-calendar-picker-input {
+          width: 155px;
+        }
+      }
+      .indicator {
+        position: absolute;
+        float: right;
+        right: 150px;
+        top: 16px;
+        .ant-alert {
+          position: relative;
+          width: auto;
+          top: auto;
+          left: auto;
+          padding: 8px;
+        }
+      }
+      .form-cancel-btn {
+        margin-right: 16px;
+      }
+    }
+  }
+}
+
+//某个客户下的用户列表
+.customer-user-list-panel.right-pannel-default {
+  width: auto;
+  left: 75px;
+  transform: translateX(100%);
+  -webkit-transform: translateX(100%);
+  background-color: #fff;
+  display: block;
+  .button-zones{
+    position: inherit;
+    left: 0;
+    padding-left: 20px;
+  }
+  .no-more-data-tip .ant-alert{
+    width: 100%;
+    top:0;
+    left:0;
+  }
+  .user_manage_return_block{
+    .icon-return.return-btn{
+      margin-top: 2px;
+      margin-left: 6px;
+      left: 0;
+    }
+    .customer_name_wrap{
+      font-size: 15px;
+      margin-top: 20px;
+      margin-left: 38px;
+    }
+  }
+  .user_manage_filter_block{
+    .user_manage_droplist{
+      margin-right: 20px;
+    }
+    .ant-select{
+      width: auto;
+    }
+  }
+  .topNav {
+    left: 0 !important;
+    .topnav-links-wrap{
+      display: none!important;
+    }
+  }
+}

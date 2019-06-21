@@ -740,6 +740,7 @@ var en_US = {
     'member.position.edit.office': '', // 编辑职务
     'member.position.delete.office': '', // 删除职务
     'member.position.set.default': '', // 设为默认
+    'member.continue.add.member': 'Continue', // 继续添加成员
     //后台管理-成员end
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
@@ -1281,7 +1282,7 @@ var en_US = {
     'crm.193': 'Failed to verify customer', // 客户名唯一性验证失败
     'crm.194': 'Failed to verify phone', // 联系人电话唯一性验证失败
     'crm.196': 'Please enter a valid phone number.', // 请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555
-    'crm.197': 'The customer name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 25', // 客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到25（包括25）之间
+    'crm.197': 'The customer name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 25', // 客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到25（包括25）之间
     'crm.198': '{number} users.', // 有{number}个用户
     'crm.199': 'Call {phone} on {time} for {duration} seconds ', // 在{time}拨打了号码{phone}通话时长{duration}秒
     'crm.200': 'Budget Amount (Unit: Million)', // 预算金额(单位: 万)
@@ -1508,6 +1509,12 @@ var en_US = {
     'crm.schedule.del.confirm': 'Are you sure to delete this schedule?',//确定要删除此联系计划吗？
     'crm.recycle.bin.type': 'Operation type',//操作类型
     'crm.recycle.bin.time': 'Operation time',//操作时间
+    'crm.import.required': 'Required, can not be empty',//必填项，不能为空
+    'crm.import.name.repeat': 'There are identical customers in the imported data',//导入数据中存在同名客户
+    'crm.system.name.repeat': 'The same name customer already exists in the system',//系统中已存在同名客户
+    'crm.import.phone.repeat': 'The same phone exists in the imported data',//导入数据中存在相同的电话
+    'crm.system.phone.repeat': 'The same telephone already exists in the system',//系统中已存在相同的电话
+    'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -1751,7 +1758,7 @@ var en_US = {
     'contract.190': 'Sales contract template', // 《销售合同模板》
     'contract.191': 'Purchase contract template', // 《采购合同模板》
     'contract.192': 'Whether to delete this charge？', //  是否删除此费用
-    'contract.193': 'The party a name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', //  甲方名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'contract.193': 'The party a name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', //  甲方名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间
     'contract.194': 'Debt collection process',//回款进程
     'contract.195': 'A collection plan has not been added',// 还未添加回款计划
     'contract.196': 'The collection process has not been added',// 还未添加回款进程
@@ -2539,7 +2546,7 @@ var en_US = {
     'clue.customer.import.clue.failed': 'Failed to import {type}',//导入{type}失败
     'clue.delete.duplicate.failed': 'Failed to delete clue',//删除重复线索失败
     'clue.repeat.delete': 'Red indicates that the clue name or contact information already exists, please delete it before importing it',//红色标示线索名及联系方式已存在，请删除后再导入
-    'crm.repeat.delete': 'Red indicates that the customer name or phone already exists, please delete it before importing it.',//红色标识客户名或电话已存在，请删除后再导入
+    'import.repeat.delete.tip': 'Red labeled data already exists or does not conform to the rules. Please delete the red labeled data and import it directly, or re-import it after modifying the data locally.',//'红色标示数据已存在或不符合规则，请删除红色标示的数据后直接导入，或本地修改数据后重新导入'
     'clue.customer.belong.to.other.sales': 'This phone is registered to {customer} and belongs to {sales}',//该电话属于客户{customer}，所属销售{sales}
     'phone.alert.select.customer': 'Please select the customer to follow',//请选择要跟进的客户
     'clue.analysis.consult.time': 'Consult time',//咨询时间
@@ -2595,7 +2602,7 @@ var en_US = {
     'clue.add.trace.follow': 'follow up',//跟进
     'clue.search.full.text': 'search',//全文搜索
     'clue.suggest.input.customer.name': 'Recommend to enter the customer name',//建议输入客户名称
-    'clue.name.rule': 'The clue name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'clue.name.rule': 'The clue name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间
     'clue.add.customer.need': 'Please describe the customer needs',//请描述一下客户需求
     'clue.add.phone.num': 'Phone',//电话号码
     'clue.add.qq.num': 'QQ',//QQ号码
@@ -2928,7 +2935,7 @@ var en_US = {
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
     'crm.click.set.def.contact': 'Please set default contact first',//请先设置默认联系人
-    'clue.contact.name.within.ten.character': 'The contact name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'clue.contact.name.within.ten.character': 'The contact name can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underscores, dots, Chinese and English brackets, and the length is between 1 and 50 (including 50).',//客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间
     'common.number.of.unremarked.customer': 'Number of unremarked customer',//填写跟进记录客户数
     'common.number.of.remarked.customer': 'Number of remarked customer',//未填写跟进记录客户数
     'common.number.of.trial.qualified.customer': 'Number of trial qualified customer',//试用合格客户数
@@ -2973,10 +2980,15 @@ var en_US = {
     'common.current.year': 'current year',//本年
     'common.rank': 'rank',//名次
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
+    'common.convert.to.customer': 'convert to customer',//转为客户
+    'common.merge.to.customer': 'convert to customer',//合并到此客户
+    'common.modify.name.to': 'modify name to',//修改姓名为
+    'common.convert.to.new.customer': 'convert to new customer',//转为新客户
+    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户 
     'common.total.points': 'total points',//总分
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
-    'clue.item.source.from': 'From "{source}"',//来自“{source}”
-    'clue.item.acceess.channel': 'Detail: "{content}"',//详情：“{content}”
+    'clue.item.source.from': 'From {source}',//来自“{source}”
+    'clue.item.acceess.channel': 'Detail: {content}',//详情：“{content}”
     'clue.show.no.show.tip': 'There has {num} notices not showing',//还有{num}个提醒未展示
     'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
@@ -2985,5 +2997,12 @@ var en_US = {
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     /*自定义审批 end*/
     'clue.customer.trace.clues': 'Trace clue',//跟进线索
+    'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
+    'apply.phone.close': 'Phone off',//手机关机
+    'apply.select.trace.clue': 'Please select trace clue',//请选择要跟进的线索
+    'common.not.modify': 'not modify',//不修改
+    'common.confirm.modify': 'confirm modify',//确认修改
+    'common.confirm.merge': 'confirm merge',//确认合并
+    'common.merge.success': 'merge success',//合并成功
 };
 export default en_US;

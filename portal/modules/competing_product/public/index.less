@@ -5,6 +5,7 @@
     .competing-product-top-nav {
       padding: 24px;
       height: 80px;
+      border-bottom: 1px solid #E5E5E5;
       .pull-left {
         .add-input {
           width: 225px;
@@ -16,40 +17,52 @@
       }
     }
     .competing-product-content {
-      border-top: 1px solid #E5E5E5;
-      padding: 24px;
       .msg-tips {
         width: 350px;
       }
       .mb-taglist {
+        padding-top: 8px;
+        padding-left:24px;
         .mb-tag {
           position: relative;
-          width: 167px;
+          min-width: 160px;
           height:56px;
           border: 1px solid #E5E5E5;
           border-radius:4px;
           color: #333;
-          margin: 0 16px 16px 0;
+          margin: 16px 16px 0 0;
           display: inline-block;
           .mb-tag-content {
-            text-align: center;
-            line-height: 56px;
+            padding: 0 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 54px;
             .tag-content {
               font-size: 16px;
             }
-            .icon-delete {
+            .ant-btn {
               position: absolute;
-              right: 5px;
-              top: -15px;
-              color: #CCC;
-              width: 14px;
-              height: 16px;
+              right: -10px;
+              top: -12px;
+              width: 24px;
+              height: 24px;
+              border-radius: 50%;
+              background-color: #8DA8C5;
+              .icon-delete {
+                color: #CCC;
+                width: 14px;
+                height: 16px;
+                position: relative;
+                top: 2px;
+                right: 8px;
+              }
               display: none;
             }
           }
           &:hover {
             background-color: #F1F8FE;
-            .icon-delete {
+            .ant-btn {
               display: inline-block;
             }
           }

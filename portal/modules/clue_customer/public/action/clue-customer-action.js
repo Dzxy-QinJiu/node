@@ -34,7 +34,8 @@ function ClueCustomerActions() {
         'setSortField',
         'updateClueCustomers',//更新线索列表
         //添加、补充跟进记录后，列表中最后联系数据的更新
-        'updateCustomerLastContact'
+        'updateCustomerLastContact',
+        'updateCurrentClueRemark',
     );
     //获取销售列表
     this.getSalesManList = function(cb) {

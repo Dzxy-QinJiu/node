@@ -401,27 +401,33 @@ function phoneEventListener(phonemsgObj) {
             //通话结束后，可以继续拨打电话了
             Oplate.isCalling = false;
         }
-        if (!phonemsgObj.customers) {
-            phonemsgObj.customers = [];
-        }
-        //是否清空存储的联系人的处理
-        if (contactNameObj && contactNameObj.contact) {
-            //ALERT、ANSERED状态下电话在to上，phone、BYE状态下电话在dst上
-            if (phonemsgObj.dst || phonemsgObj.to) {
-                let phone = phonemsgObj.to || phonemsgObj.dst;
-                //当前状态的电话跟存储的联系电话不是同一个电话时，
-                if (!phone.includes(contactNameObj.phone) && !contactNameObj.phone.includes(phone)) {
-                    // 清空存储的联系人、电话信息
+        //如果原来有线索或者客户打电话的面板，判断一下推过来的数据的callId和原来的是不是一样，如果一样就更新原来的电话状态
+        var customerPhonePanelShow = _.get($('#customer_phone_panel_wrap'), 'length');
+        var cluePhonePanelShow = _.get($('#clue_phone_panel_wrap'), 'length');
+        if ((cluePhonePanelShow && _.get(phonemsgObj, 'leads[0]')) || (!_.get(phonemsgObj, 'customers[0]') && _.get(phonemsgObj, 'leads[0]'))) {
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+                call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj}
+            });
+        } else {
+            //是否清空存储的联系人的处理
+            if (contactNameObj && contactNameObj.contact) {
+                //ALERT、ANSERED状态下电话在to上，phone、BYE状态下电话在dst上
+                if (phonemsgObj.dst || phonemsgObj.to) {
+                    let phone = phonemsgObj.to || phonemsgObj.dst;
+                    //当前状态的电话跟存储的联系电话不是同一个电话时，
+                    if (!phone.includes(contactNameObj.phone) && !contactNameObj.phone.includes(phone)) {
+                        // 清空存储的联系人、电话信息
+                        setInitialPhoneObj();
+                    }
+                } else {//dst和to都不存在时，说明不是从客套里打的电话
+                    // 清空存储的联系人电话信息
                     setInitialPhoneObj();
                 }
-            } else {//dst和to都不存在时，说明不是从客套里打的电话
-                // 清空存储的联系人电话信息
-                setInitialPhoneObj();
             }
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj}
+            });
         }
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-            call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj}
-        });
     }
 }
 
@@ -433,9 +439,13 @@ function canPopDesktop() {
 //点击拨打电话
 window.handleClickPhone = function(phoneObj) {
     //如果原来页面上有模态框，再拨打电话的时候把模态框关闭
-    var $modal = $('#phone-status-content');
-    if ($modal && $modal.length > 0) {
-        phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_MODAL);
+    var showCustomerModal = _.get($('#customer-phone-status-content'),'length',0) > 0;
+    var showClueModal = _.get($('#clue-phone-status-content'),'length',0) > 0;
+    if (showCustomerModal){
+        phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
+    }
+    if (showClueModal){
+        phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_CLUE_PANEL);
     }
     var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName;
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .phone-item .icon-phone-call-out'), '拨打电话');

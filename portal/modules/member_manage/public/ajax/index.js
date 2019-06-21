@@ -54,8 +54,6 @@ exports.updateMemberStatus = (member) => {
     return Deferred.promise();
 };
 
-
-
 // 获取用户的个人日志
 exports.getLogList = function(condition) {
     let Deferred = $.Deferred();
@@ -109,7 +107,7 @@ exports.editUser = function(user) {
 };
 
 //修改成员的部门
-exports.updateUserTeam = function(user) {
+exports.updateMemberTeam = function(user) {
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/user_team/' + user.id + '/' + user.team,
@@ -125,7 +123,7 @@ exports.updateUserTeam = function(user) {
 };
 
 //修改成员的角色
-exports.updateUserRoles = (user) => {
+exports.updateMemberRoles = (user) => {
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/user_roles',
@@ -148,6 +146,24 @@ exports.getSalesPosition = () => {
         Deferred.resolve(data);
     }).error((xhr) => {
         Deferred.reject(xhr.responseJSON || Intl.get('user.log.login.fail', '获取职务列表失败！'));
+    });
+    return Deferred.promise();
+};
+
+// 成员设置职务
+exports.setMemberPosition = (reqBody) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/role/change',
+        type: 'post',
+        dateType: 'json',
+        data: reqBody,
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
     });
     return Deferred.promise();
 };

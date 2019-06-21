@@ -4,8 +4,10 @@ import {Icon, Alert, Input, Button} from 'antd';
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {ajustTagWidth} from 'PUB_DIR/sources/utils/common-method-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 const PAGE_SIZE = 1000;
+
 class Industry extends React.Component {
     state = {
         isLoading: true, // 获取行业列表的loading，初始状态为true
@@ -202,6 +204,10 @@ class Industry extends React.Component {
     renderIndustryConfig = () => {
         let TagLists = this.state.TagLists;
         let length = _.get(TagLists, 'length');
+        // 内容区宽度
+        let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
+            BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - 2 * BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
+        let tagWidth = ajustTagWidth(contentWidth);
         return (
             <div className="industry-content-zone">
                 <div className="msg-tips">
@@ -229,15 +235,17 @@ class Industry extends React.Component {
                     <ul className="mb-taglist">
                         {
                             _.map(TagLists, (item, index) => {
+                                let content = _.get(item, 'industry');
                                 return (
-                                    <li className="mb-tag" key={index}>
+                                    <li className="mb-tag" key={index} style={{width: tagWidth}}>
                                         <div className="mb-tag-content">
-                                            <span className="tag-content">{item.industry}</span>
+                                            <span className="tag-content" title={content}>{content}</span>
                                             <span
                                                 onClick={this.handleDeleteItem.bind(this, item)}
                                                 data-tracename="点击删除某个行业按钮"
-                                                className="iconfont icon-delete"
+                                                className="ant-btn"
                                             >
+                                                <i className="iconfont icon-delete "></i>
                                             </span>
                                             { this.state.DeletingItemId === item.id ? (
                                                 <span ><Icon type="loading"/></span>
@@ -263,12 +271,11 @@ class Industry extends React.Component {
                     <div className="industry-top-nav">
                         {this.renderTopNavOperation()}
                     </div>
-                    <div className="industry-content" style={{height: contentHeight}}>
-                        <GeminiScrollBar>
+                    <GeminiScrollBar style={{height: contentHeight}}>
+                        <div className="industry-content">
                             {this.renderIndustryConfig()}
-                        </GeminiScrollBar>
-                    </div>
-
+                        </div>
+                    </GeminiScrollBar>
                 </div>
             </div>
         );

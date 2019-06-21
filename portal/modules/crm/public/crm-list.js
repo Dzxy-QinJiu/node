@@ -1311,17 +1311,37 @@ class Crm extends React.Component {
     //获取导入预览中的列
     getPreviewColumns = () => {
         const column_width_min = 80, column_width = 120, column_width_max = 200;
-        let columns = [
+        return [
             {
                 title: Intl.get('crm.4', '客户名称'),
                 width: column_width_max,
                 dataIndex: 'name',
                 render: (text, record, index) => {
-                    let cls = classNames({
-                        'repeat-item-name': record.name_repeat
-                    });
-                    return (<span className={cls}
-                        title={record.name_repeat ? Intl.get('crm.name.exist', '客户名已存在！') : ''}>{text}</span>);
+                    if (text) {
+                        //客户名不符合验证规则
+                        let name_verify = _.get(record, 'errors.name_verify');
+                        //导入的数据中存在同名客户
+                        let import_name_repeat = _.get(record, 'errors.import_name_reteat');
+                        //系统中存在同名客户
+                        let name_repeat = _.get(record, 'errors.name_repeat');
+                        let cls = classNames({
+                            'repeat-item-name': name_verify || import_name_repeat || name_repeat
+                        });
+                        let title = '';
+                        if (name_verify) {
+                            title = Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到25（包括25）之间');
+                        } else if (import_name_repeat) {
+                            title = Intl.get('crm.import.name.repeat', '导入数据中存在同名客户');
+                        } else if (name_repeat) {
+                            title = Intl.get('crm.system.name.repeat', '系统中已存在同名客户');
+                        }
+                        return (<span className={cls} title={title}>{text}</span>);
+                    } else {//必填
+                        return (
+                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
+                                {Intl.get('apply.components.required.item', '必填')}
+                            </span>);
+                    }
                 }
             }, {
                 title: Intl.get('call.record.contacts', '联系人'),
@@ -1332,16 +1352,38 @@ class Crm extends React.Component {
                 width: column_width,
                 dataIndex: 'contact_phone',
                 render: (text, record, index) => {
-                    let cls = classNames({
-                        'repeat-item-name': record.phone_repeat
-                    });
-                    return (
-                        <div className={cls}
-                            title={record.phone_repeat ? Intl.get('common.phone.is.existed', '电话已存在！') : ''}>
-                            {_.map(record.contact_phone, (item, index) => {
-                                return (<div key={index}>{item}</div>);
-                            })}
-                        </div>);
+                    if (_.get(record, 'contact_phone.length')) {
+                        return _.map(record.contact_phone, (item, index) => {
+                            //电话规则不匹配的电话列表
+                            let phone_verify_list = _.get(record, 'errors.phone_verify');
+                            //导入的列表中存在相同的电话的电话列表
+                            let import_phone_repeat_list = _.get(record, 'errors.import_phone_repeat_list');
+                            //系统中存在相同电话的电话列表
+                            let phone_repeat_list = _.get(record, 'errors.phone_repeat_list');
+                            let cls = '';
+                            let title = '';
+                            //电话规则不匹配
+                            if (this.isIncludesItem(phone_verify_list, item)) {
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.import.phone.verify', '电话只能是11位手机号或11-12位带区号的座机号');
+                            } else if (this.isIncludesItem(import_phone_repeat_list, item)) {
+                                //导入的列表中存在相同的电话
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.import.phone.repeat', '导入数据中存在相同的电话');
+                            } else if (this.isIncludesItem(phone_repeat_list, item)) {
+                                //系统中存在同名客户
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.system.phone.repeat', '系统中已存在相同的电话');
+                            }
+                            return (<div className={cls} title={title} key={index}>{item}</div>);
+                        });
+                    } else {//必填
+                        return (
+                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
+                                {Intl.get('apply.components.required.item', '必填')}
+                            </span>);
+
+                    }
                 }
             }, {
                 title: 'QQ',
@@ -1406,35 +1448,32 @@ class Crm extends React.Component {
                 title: Intl.get('common.remark', '备注'),
                 width: column_width,
                 dataIndex: 'remarks',
-            }];
-        let hasRepeatCustomer = _.some(this.state.previewList, item => item.repeat);
-        if (hasRepeatCustomer) {
-            columns.push({
+            }, {
                 title: Intl.get('common.operate', '操作'),
                 width: 50,
                 render: (text, record, index) => {
-                    //是否是重复的客户
-                    const isRepeat = record.phone_repeat || record.name_repeat;
                     return (
                         <span className="cus-op" data-tracename="删除客户">
-                            {isRepeat ? (
-                                <Button className="order-btn-class" icon="delete"
-                                    onClick={this.deleteDuplicatImportCustomer.bind(this, index)}
-                                    title={Intl.get('common.delete', '删除')}/>
-                            ) : null}
+                            <Button className="order-btn-class" icon="delete"
+                                onClick={this.deleteDuplicatImportCustomer.bind(this, index)}
+                                title={Intl.get('common.delete', '删除')}/>
                         </span>
                     );
                 }
-            });
-        }
-        return columns;
+            }];
     }
+
+    //是否包含此项内容
+    isIncludesItem(list, item) {
+        return !_.isEmpty(list) && _.includes(list, item);
+    }
+
     //将导入预览的数据转换为预览列表中展示所需数据
     handlePreviewList(list) {
         return _.map(list, item => {
             let start_time = _.get(item, 'start_time', '');
             start_time = start_time ? moment(start_time).format(oplateConsts.DATE_FORMAT) : '';
-            return {
+            let previewCustomer = {
                 name: _.get(item, 'name', ''),
                 contact_name: _.get(item, 'contacts[0].name', ''),
                 contact_phone: _.get(item, 'contacts[0].phone', ''),
@@ -1451,10 +1490,13 @@ class Crm extends React.Component {
                 address: _.get(item, 'address', ''),
                 competing_products: _.get(item, 'competing_products', ''),
                 remarks: _.get(item, 'remarks', ''),
-                name_repeat: _.get(item, 'name_repeat', false),
-                phone_repeat: _.get(item, 'phone_repeat', false),
-                repeat: _.get(item, 'name_repeat', false) || _.get(item, 'phone_repeat', false)
             };
+            if (_.get(item, 'errors')) {
+                previewCustomer.errors = item.errors;
+                //导入组件中需要此参数进行判断是否展示错误提示
+                previewCustomer.repeat = true;
+            }
+            return previewCustomer;
         });
     }
 
@@ -1696,6 +1738,7 @@ class Crm extends React.Component {
                                     showSelectChangeTip={_.get(this.state.selectedCustomer, 'length')}
                                     toggleList={this.toggleList.bind(this)}
                                     onSubmit={this.handleAddCommonFilter.bind(this)}
+                                    filterType={Intl.get('call.record.customer', '客户')}
                                 />
                             </div>
                             <FilterBlock>
@@ -1804,7 +1847,7 @@ class Crm extends React.Component {
                     closeTemplatePanel={this.closeCrmTemplatePanel}
                     onItemListImport={this.onCustomerImport}
                     doImportAjax={this.doImport}
-                    repeatAlertMessage={Intl.get('crm.repeat.delete', '红色标识客户名或电话已存在，请删除后再导入')}
+                    repeatAlertMessage={Intl.get('import.repeat.delete.tip', '红色标示数据已存在或不符合规则，请删除红色标示的数据后直接导入，或本地修改数据后重新导入')}
                     regRules={XLS_FILES_TYPE_RULES}
                     downLoadFileName={Intl.get('crm.sales.clue', '线索') + '.xls'}
                 />

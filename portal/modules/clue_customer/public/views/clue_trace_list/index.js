@@ -36,6 +36,12 @@ const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
+var userData = require('PUB_DIR/sources/user-data');
+var clueCustomerAction = require('../../action/clue-customer-action');
+var timeoutFunc;//定时方法
+var timeout = 1000;//1秒后刷新未读数
+var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {SELECT_TYPE, AVALIBILITYSTATUS} from '../../utils/clue-customer-utils';
 class ClueTraceList extends React.Component {
     state = {
         playingItemAddr: '',//正在播放的那条记录的地址
@@ -498,6 +504,62 @@ class ClueTraceList extends React.Component {
             playingItemPhone: ''
         });
     };
+    //标记线索无效或者有效
+    handleClickInvalidBtn = (item, callback) => {
+        var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
+        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY) {
+            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
+        }
+        var submitObj = {
+            id: item.id,
+            availability: updateValue
+        };
+        this.setState({
+            isInvalidClue: true,
+        });
+        clueCustomerAction.updateCluecustomerDetail(submitObj, (result) => {
+            if (_.isString(result)) {
+                this.setState({
+                    isInvalidClue: false,
+                });
+            } else {
+                _.isFunction(callback) && callback(updateValue);
+                var curClue = this.state.curClue;
+                curClue.invalid_info = {
+                    user_name: userData.getUserData().nick_name,
+                    time: moment().valueOf()
+                };
+                curClue.availability = updateValue;
+                //点击无效后状态应该改成已跟进的状态
+                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
+                    //如果角色是管理员，并且该线索之前的状态是待分配状态
+                    //或者  如果角色是销售人员，并且该线索之前的状态是待跟进状态
+                    //标记为无效后 ,把全局上未处理的线索数量要减一
+                    if (Oplate && Oplate.unread && ((userData.hasRole(userData.ROLE_CONSTANS.SALES) && curClue.status === SELECT_TYPE.WILL_TRACE) || (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && curClue.status === SELECT_TYPE.WILL_DISTRIBUTE))) {
+                        Oplate.unread['unhandleClue'] -= 1;
+                        if (timeoutFunc) {
+                            clearTimeout(timeoutFunc);
+                        }
+                        timeoutFunc = setTimeout(function() {
+                            //触发展示的组件待处理数的刷新
+                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+                        }, timeout);
+                    }
+                    curClue.status = SELECT_TYPE.HAS_TRACE;
+                }
+
+                clueCustomerAction.updateClueProperty({
+                    id: item.id,
+                    availability: updateValue,
+                    status: SELECT_TYPE.HAS_TRACE
+                });
+                this.setState({
+                    isInvalidClue: false,
+                    curClue: curClue
+                });
+            }
+        });
+    };
     renderTimeLineItem = (item, hasSplitLine) => {
         var traceObj = processForTrace(item);
         //如果是其他类型的，需要把描述修改一下
@@ -547,6 +609,7 @@ class ClueTraceList extends React.Component {
                                 <PhoneCallout
                                     phoneNumber={item.dst}
                                     hidePhoneNumber={true}
+                                    showClueDetailPanel={this.props.showClueDetailPanel.bind(this, this.props.curClue)}
                                 />
                             </span>) : null}
                         <span className="item-bottom-right">
@@ -703,7 +766,8 @@ ClueTraceList.propTypes = {
     currentId: PropTypes.string,
     ShowCustomerUserListPanel: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
-    curClue: PropTypes.object
+    curClue: PropTypes.object,
+    showClueDetailPanel: PropTypes.func
 
 };
 module.exports = ClueTraceList;

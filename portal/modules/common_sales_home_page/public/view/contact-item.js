@@ -52,6 +52,7 @@ class ContactItem extends React.Component {
                                             <PhoneCallout
                                                 phoneNumber={phoneItem}
                                                 contactName={contactName}
+                                                showClueDetailPanel={this.props.showClueDetailPanel}
                                             />
                                         );
                                     })}
@@ -117,7 +118,10 @@ ContactItem.defaultProps = {
     customerData: {},//客户信息
     itemType: '',
     showContactLabel: true,//是否展示联系人这几个字
-    hasMoreIcon: false
+    hasMoreIcon: false,
+    showClueDetailPanel: function() {
+
+    }
 };
 ContactItem.propTypes = {
     contacts: PropTypes.object,//联系人信息
@@ -125,5 +129,6 @@ ContactItem.propTypes = {
     itemType: PropTypes.string,
     showContactLabel: PropTypes.bool,//是否展示联系人这几个字
     hasMoreIcon: PropTypes.bool,
+    showClueDetailPanel: PropTypes.func
 };
 export default ContactItem;

@@ -28,7 +28,6 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-const EDIT_FEILD_WIDTH = 300;
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 class ClueDetailOverview extends React.Component {
     state = {
@@ -320,17 +319,13 @@ class ClueDetailOverview extends React.Component {
                     this.setState({
                         clickAssigenedBtn: false
                     });
-                    var updateObj = {
+                    clueCustomerAction.afterEditCustomerDetail({
                         'user_name': userName,
                         'user_id': submitObj.user_id,
                         'sales_team': teamName,
                         'sales_team_id': teamId,
-                    };
-                    //如果原来的状态是待分配状态，分配完线索后，把状态改成待跟进
-                    if (_.get(this, 'state.curClue.status') === SELECT_TYPE.WILL_DISTRIBUTE){
-                        updateObj.status = SELECT_TYPE.WILL_TRACE;
-                    }
-                    clueCustomerAction.afterEditCustomerDetail(updateObj);
+                        'status': SELECT_TYPE.WILL_TRACE
+                    });
                 }
             });
         }
@@ -343,48 +338,6 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    //点击关联客户按钮
-    handleClickAssociatedBtn = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clue-info-item'), '点击关联客户按钮');
-        this.setState({
-            clickAssociatedBtn: true
-        });
-    };
-
-    //线索关联客户
-    handleAssociatedCustomer = (submitObj, successFunc, errorFunc) => {
-        var curClueDetail = this.state.curClue;
-        clueCustomerAction.setClueAssociatedCustomer(submitObj, (result) => {
-            if (_.isString(result)) {
-                if (_.isFunction(errorFunc)) errorFunc(result);
-            } else {
-                if (_.isFunction(successFunc)) successFunc();
-                curClueDetail.customer_id = submitObj.customer_id;
-                curClueDetail.customer_name = submitObj.customer_name;
-                if (submitObj.customer_id){
-                    //如果有客户的id，需要把线索的状态改成已跟进
-                    this.props.removeUpdateClueItem();
-                    if (curClueDetail.status !== SELECT_TYPE.HAS_TRACE){
-                        curClueDetail.status = SELECT_TYPE.HAS_TRACE;
-
-                    }
-                }else{
-                    if (!_.get(curClueDetail,'customer_traces[0].remark')){
-                        if (_.get(curClueDetail,'user_name')){
-                            curClueDetail.status = SELECT_TYPE.WILL_TRACE;
-                        }else{
-                            curClueDetail.status = SELECT_TYPE.WILL_DISTRIBUTE;
-                        }
-                    }
-                }
-                this.setState({
-                    clickAssociatedBtn: false,
-                    curClue: curClueDetail
-                });
-                clueCustomerAction.afterModifiedAssocaitedCustomer(curClueDetail);
-            }
-        });
-    };
     saveSameNoCustomerName = () => {
         this.setState({
             clickAssociatedBtn: false,
@@ -554,8 +507,6 @@ class ClueDetailOverview extends React.Component {
     renderAssociatedAndInvalidClueHandle = (curClue) => {
         //该线索无效
         var isInvalidClue = curClue.availability === '1';
-        //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && !isInvalidClue;
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         return (
@@ -567,9 +518,6 @@ class ClueDetailOverview extends React.Component {
                     {Intl.get('clue.has.no.handle', '暂未处理')}
                 </div>
                 <div className="btn-container">
-                    {associatedPrivilege ? <Button type="primary"
-                        onClick={this.handleClickAssociatedBtn.bind(this, curClue)}>{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
-
                     {avalibility ? <Button data-tracename="判定线索无效按钮" className='clue-inability-btn' disabled={this.state.isInvalidClue}
                         onClick={this.handleClickInvalidBtn.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
                         {this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button> : null}
@@ -585,44 +533,12 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    renderAssociatedAndInvalidClueText = (associatedCustomer, isInvalidClue) => {
+    renderAssociatedAndInvalidClueText = (isInvalidClue) => {
         var curClue = this.state.curClue;
         var invalid_info = curClue.invalid_info;
-        //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && !isInvalidClue;
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
-        //关联客户的按钮状态
-        var associatedDisplyType = this.state.clickAssociatedBtn ? 'edit' : 'text';
-        //如果关联了客户
-        if (this.state.clickAssociatedBtn || associatedCustomer) {
-            return (
-                <div className="clue-info-item">
-                    <div className="clue-info-label">
-                        {Intl.get('clue.customer.associate.customer', '关联客户')}：
-                    </div>
-                    <div className="clue-info-detail has-associated-customer">
-                        <CustomerSuggest
-                            field='customer_id'
-                            hasEditPrivilege={associatedPrivilege}
-                            displayText={associatedCustomer}
-                            displayType={associatedDisplyType}
-                            id={curClue.id}
-                            show_error={this.state.isShowCustomerError}
-                            noJumpToCrm={true}
-                            saveEditSelectCustomer={this.handleAssociatedCustomer}
-                            customer_name={associatedCustomer}
-                            customer_id={curClue.customer_id}
-                            addAssignedCustomer={this.addAssignedCustomer}
-                            noDataTip={Intl.get('clue.has.no.data', '暂无')}
-                            handleCancel={this.handleCancelCustomerSuggest}
-                            customerLable={curClue.customer_label}
-                            saveSameNoCustomerName={this.saveSameNoCustomerName}
-                        />
-                    </div>
-                </div>
-            );
-        } else if (isInvalidClue && invalid_info) {
+        if (isInvalidClue && invalid_info) {
             //如果该线索是无效的
             return (
                 <div className="clue-info-item">
@@ -677,7 +593,6 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="clue-info-detail">
                         <BasicEditInputField
-                            width={EDIT_FEILD_WIDTH}
                             hasEditPrivilege={hasPrivilegeAddEditTrace}
                             id={curClue.id}
                             saveEditInput={this.saveTraceContentInfo}
@@ -692,6 +607,7 @@ class ClueDetailOverview extends React.Component {
                             noDataTip={Intl.get('clue.no.trace.content', '暂无跟进')}
                             addDataTip={Intl.get('clue.add.trace.content', '添加跟进内容')}
                             placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
+                            hasMoreRow={true}
                         />
                     </div>
                 </div>
@@ -732,7 +648,6 @@ class ClueDetailOverview extends React.Component {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
-
         return (
             <div className="clue-info-wrap clue-detail-block">
                 <div className="clue-basic-info">
@@ -742,7 +657,6 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <DatePickerField
-                                width={EDIT_FEILD_WIDTH}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
                                 saveEditDateInput={this.saveEditBasicInfo.bind(this, 'source_time')}
@@ -758,7 +672,6 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditInputField
-                                width={EDIT_FEILD_WIDTH}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
                                 saveEditInput={this.saveEditBasicInfo.bind(this, 'source')}
@@ -778,7 +691,6 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
                                 combobox={true}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
@@ -827,7 +739,6 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
                                 combobox={true}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
@@ -850,7 +761,6 @@ class ClueDetailOverview extends React.Component {
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
-                                width={EDIT_FEILD_WIDTH}
                                 combobox={true}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
@@ -868,26 +778,26 @@ class ClueDetailOverview extends React.Component {
                         </div>
                     </div>
                     <div className="clue-info-item">
-                        <div className="clue-contact-container">
+                        <div className="clue-info-label">
+                            {Intl.get('crm.5', '联系方式')}：
+                        </div>
+                        <div className="clue-info-detail clue-contact-container">
                             {_.map(curClue.contacts, (contactItem) => {
                                 return (
                                     <div className="contact-item">
-                                        <div className="contact-item-content contact-name">
-                                            <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}:</span>
-                                            <div className="clue-info-detail">
-                                                <BasicEditInputField
-                                                    width={EDIT_FEILD_WIDTH}
-                                                    hasEditPrivilege={hasPrivilegeEdit}
-                                                    id={curClue.id}
-                                                    saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'contact_name',id: contactItem.id})}
-                                                    value={contactItem.name}
-                                                    field='contact_name'
-                                                    noDataTip={Intl.get('common.unknown', '未知')}
-                                                    addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
-                                                    placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
-                                                    validators={contactNameRule()}
-                                                />
-                                            </div>
+                                        <div className="contact-name">
+                                            <BasicEditInputField
+                                                hasEditPrivilege={hasPrivilegeEdit}
+                                                id={curClue.id}
+                                                saveEditInput={this.saveEditBasicInfo.bind(this, {editItem: 'contact_name',id: contactItem.id})}
+                                                value={contactItem.name}
+                                                field='contact_name'
+                                                noDataTip={Intl.get('common.unknown', '未知')}
+                                                addDataTip={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
+                                                placeholder={Intl.get('clue.customer.edit.contact','请填写联系人名称')}
+                                                hasMoreRow={true}
+                                                validators={contactNameRule()}
+                                            />
                                         </div>
                                         <div className="contact-item-content">
                                             <DynamicAddDelField
@@ -903,8 +813,6 @@ class ClueDetailOverview extends React.Component {
                                                 addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
                                                 contactName={contactItem.name}
                                             />
-                                        </div>
-                                        <div className="contact-item-content">
                                             <DynamicAddDelField
                                                 id={curClue.id}
                                                 field='qq'
@@ -973,8 +881,6 @@ class ClueDetailOverview extends React.Component {
         var curClue = this.state.curClue;
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
-        //关联客户
-        var associatedCustomer = curClue.customer_name;
         //分配线索给销售的权限
         var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
         //该线索无效
@@ -990,12 +896,13 @@ class ClueDetailOverview extends React.Component {
                             this.renderAssigendClueText() : this.renderAssignedClueEdit()
                         }
                     </div>
+                    {this.renderTraceContent()}
                     <div className="associate-customer-detail clue-detail-block">
-                        {/*线索处理，没有关联到客户并且线索不是无效的*/}
+                        {/*线索处理，如果索不是无效的*/}
                         {
-                            !associatedCustomer && !isInvalidClue && !this.state.clickAssociatedBtn ?
+                            !isInvalidClue ?
                                 this.renderAssociatedAndInvalidClueHandle(curClue)
-                                : this.renderAssociatedAndInvalidClueText(associatedCustomer, isInvalidClue)
+                                : null 
                         }
                     </div>
                     {this.renderAppUserDetail()}

@@ -72,14 +72,7 @@ var SalesTeamForm = createReactClass({
             formData: this.getFormData(this.props.salesTeam)
         };
     },
-
-    componentWillReceiveProps: function(nextProps) {
-        this.refs.validation.reset();
-        this.setState({
-            formData: this.getFormData(nextProps.salesTeam)
-        });
-    },
-
+    
     componentDidUpdate: function() {
         if (this.state.formData.id) {
             this.refs.validation.validate(noop);
@@ -248,8 +241,16 @@ var SalesTeamForm = createReactClass({
                             validateStatus={this.renderValidateStyle('title')}
                             help={status.title.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.title.errors && status.title.errors.join(','))}>
                             <Validator
-                                rules={[{required: true, min: 1, max: 20 , message: Intl.get('common.input.character.rules', '最少1个字符,最多8个字符')}]}>
-                                <Input name="title" id="title" value={formData.title}
+                                rules={[{
+                                    required: true,
+                                    min: 1,
+                                    max: 20 ,
+                                    message: Intl.get('common.input.character.rules', '最少1个字符,最多8个字符')}]}
+                            >
+                                <Input
+                                    name="title"
+                                    id="title"
+                                    value={formData.title}
                                     onChange={this.onChangeTeamName.bind(this)}
                                     placeholder={Intl.get('sales.team.search.placeholder', '请输入团队名称')}
                                     data-tracename="填写团队名称"

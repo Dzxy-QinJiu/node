@@ -90,11 +90,11 @@ exports.addMember = function(req, res, obj) {
 };
 
 exports.editMember = function(req, res, obj) {
-    var editObj = {
+    let editObj = {
         group_id: obj.group_id,
         operate: obj.operate
     };
-    var url = '';
+    let url = '';
     if (obj.type === 'owner') {
         url = salesTeamRestApis.editOwner;
         editObj.owner_id = obj.owner_id;

@@ -323,25 +323,24 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
     if (data) {
         this.isEditMember = false;
         //当前展示组的信息
-        var curTeamId = data.group_id;
-        var curShowTeam = _.find(this.salesTeamList, function(team) {
-            if (team.group_id === curTeamId) {
-                return true;
-            }
-        });
-        if (data.user_ids) {
-            data.user_ids = JSON.parse(data.user_ids);
+        let curTeamId = _.get(data, 'group_id');
+        let curShowTeam = _.find(this.salesTeamList, team => team.group_id === curTeamId);
+        let user_ids = _.get(data, 'user_ids');
+        if (user_ids) {
+            data.user_ids = JSON.parse(user_ids);
         }
-        if (data.type === 'owner') {//所有者的处理
-            //删除所有者
+        let type = _.get(data, 'type'); // 成员角色的类型（负责人、秘书、成员）
+        let operate = _.get(data, 'operate'); // 操作的值
+        if (type === 'owner') {//所有者(负责人)的处理
+            //删除所有者（负责人）
             delete curShowTeam.owner_id;
-            if (data.operate === 'move_manager') {//将所有者设为管理员
+            if (operate === 'move_manager') {// 将负责人设置为秘书
                 if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
                     curShowTeam.manager_ids.push(data.owner_id);
                 } else {
                     curShowTeam.manager_ids = [data.owner_id];
                 }
-            } else if (data.operate === 'move_member') {//将所有者设为普通成员
+            } else if (operate === 'move_member') {//将负责人设为普通成员
                 if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length) {
                     curShowTeam.user_ids.push(data.owner_id);
                 } else {
@@ -350,10 +349,10 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
             } else {//删除所有者后，将团队的人数减一
                 this.delTeamMemberCount(curTeamId, [data.owner_id], 'owner');
             }
-        } else if (data.type === 'manager') {//管理员的处理
-            //删除选中的管理员
+        } else if (type === 'manager') {//秘书（管理员）的处理
+            //删除选中的秘书（管理员）
             curShowTeam.manager_ids = _.difference(curShowTeam.manager_ids, data.user_ids);
-            if (data.operate === 'exchange_owner') {//将管理员设为所有者
+            if (operate === 'exchange_owner') {//将秘书设为负责人
                 //将原所有者加到普通成员里
                 if(curShowTeam.owner_id){
                     if (_.isEmpty(curShowTeam.user_ids)) {
@@ -364,7 +363,7 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
                 }
                 //团队所有者的更新
                 curShowTeam.owner_id = data.user_ids[0];
-            } else if (data.operate === 'exchange') {//将管理员设为普通成员
+            } else if (operate === 'exchange') {//将管理员设为普通成员
                 if (_.isArray(curShowTeam.user_ids) && curShowTeam.user_ids.length) {
                     curShowTeam.user_ids = curShowTeam.user_ids.concat(data.user_ids);
                 } else {
@@ -373,19 +372,19 @@ SalesTeamStore.prototype.afterEditMember = function(data) {
             } else {//删除管理员后，将团队的人数统计减去删除的管理员的个数
                 this.delTeamMemberCount(curTeamId, data.user_ids, 'manager');
             }
-        } else if (data.type === 'user') {//普通成员的处理
+        } else if (type === 'user') {//普通成员的处理
             //删除选中的普通成员
             curShowTeam.user_ids = _.difference(curShowTeam.user_ids, data.user_ids);
-            if (data.operate === 'exchange_owner') {//将普通成员设为所有者
-                //将原所有者加到普通成员里
+            if (operate === 'exchange_owner') {//将普通成员设为负责人（所有者）
+                //将原负责人(所有者)加到普通成员里
                 if (_.isEmpty(curShowTeam.user_ids)) {
                     curShowTeam.user_ids = [curShowTeam.owner_id];
                 } else {
                     curShowTeam.user_ids.push(curShowTeam.owner_id);
                 }
-                //团队所有者的更新
+                //团队负责人(所有者)的更新
                 curShowTeam.owner_id = data.user_ids[0];
-            } else if (data.operate === 'exchange') {//将普通成员设为管理员
+            } else if (operate === 'exchange') {//将普通成员设为秘书（管理员）
                 if (_.isArray(curShowTeam.manager_ids) && curShowTeam.manager_ids.length) {
                     curShowTeam.manager_ids = curShowTeam.manager_ids.concat(data.user_ids);
                 } else {
@@ -504,8 +503,13 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
             // 负责人
             let ownerId = _.get(curShowTeam, 'owner_id');
             if (ownerId) {
-                this.curShowTeamMemberObj.owner = _.find(salesTeamMemberList, member => ownerId === member.userId);
-                this.curShowTeamMemberObj.owner.role = 'owner';
+                let owner = _.find(salesTeamMemberList, member => ownerId === member.userId);
+                if (owner) {
+                    owner.role = 'owner';
+                    this.curShowTeamMemberObj.owner = owner;
+                }
+            } else {
+                delete this.curShowTeamMemberObj.owner;
             }
             // 秘书
             let managerIds = _.get(curShowTeam, 'manager_ids');

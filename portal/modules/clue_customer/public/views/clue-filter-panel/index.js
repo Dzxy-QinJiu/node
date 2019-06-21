@@ -107,7 +107,6 @@ class ClueFilterPanel extends React.Component {
                     });
                     FilterAction.setFilterClueProvince(provinceList);
                 }else if (item.groupId === COMMON_OTHER_ITEM){
-                    //如果是筛选没有关联客户的线索
                     //如果是筛选重复线索
                     if (item.value === 'repeat_id'){
                         FilterAction.setExistedFiled('repeat_id');
@@ -299,6 +298,7 @@ class ClueFilterPanel extends React.Component {
                         setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
                         setDefaultCommonSelect={true}
                         style={this.props.style}
+                        showSelectTip={this.props.showSelectTip}
                     />
                 </div>
             </div>
@@ -312,7 +312,8 @@ ClueFilterPanel.defaultProps = {
     getClueList: function() {
 
     },
-    style: {}
+    style: {},
+    showSelectTip: false
 };
 ClueFilterPanel.propTypes = {
     clueSourceArray: PropTypes.object,
@@ -320,6 +321,7 @@ ClueFilterPanel.propTypes = {
     clueClassifyArray: PropTypes.object,
     getClueList: PropTypes.func,
     style: PropTypes.object,
+    showSelectTip: PropTypes.bool
 };
 
 export default ClueFilterPanel;
