@@ -384,7 +384,6 @@ function setInitialPhoneObj() {
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
-    console.log(phonemsgObj);
     //后端推送过来的通话类型
     const CALL_TYPES = {
         ALERT: 'ALERT',//对方振铃中
@@ -442,8 +441,10 @@ window.handleClickPhone = function(phoneObj) {
     //如果原来页面上有模态框，再拨打电话的时候把模态框关闭
     var showCustomerModal = _.get($('#customer-phone-status-content'),'length',0) > 0;
     var showClueModal = _.get($('#clue-phone-status-content'),'length',0) > 0;
-    if (showCustomerModal || showClueModal) {
+    if (showCustomerModal){
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
+    }
+    if (showClueModal){
         phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_CLUE_PANEL);
     }
     var phoneNumber = phoneObj.phoneItem, contactName = phoneObj.contactName;

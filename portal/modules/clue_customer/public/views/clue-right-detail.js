@@ -268,7 +268,6 @@ class ClueRightPanel extends React.Component {
             <div
                 className={cls}
                 showFlag={this.props.showFlag} data-tracename="线索详情面板">
-                {/*<span className="iconfont icon-close clue-right-btn" onClick={this.hideRightPanel} data-tracename="关闭线索详情面板"></span>*/}
                 {this.state.getClueDetailErrMsg ? <div className="no-data-tip">{this.state.getClueDetailErrMsg}</div> :
                     <div className="clue-detail-wrap" data-tracename="线索详情">
                         <div className="clue-basic-info-container">

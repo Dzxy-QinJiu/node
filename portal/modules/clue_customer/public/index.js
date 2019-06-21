@@ -105,7 +105,7 @@ class ClueCustomer extends React.Component {
         this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
-        phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.handleListenClickInvalidBtn);
+        phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
     }
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
@@ -196,9 +196,9 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.resetState();
         $(window).off('resize', this.changeTableHeight);
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
-        phoneMsgEmitter.removeListener(phoneMsgEmitter.SETTING_CLUE_INVALID, this.handleListenClickInvalidBtn);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
     }
-    handleListenClickInvalidBtn = (data) => {
+    invalidBtnClickedListener = (data) => {
         this.handleClickInvalidBtn(data.item, data.callback);
     };
     //展示右侧面板
@@ -1540,7 +1540,6 @@ class ClueCustomer extends React.Component {
         return (
             <span>{Intl.get('clue.batch.select.clues', '已选择{num}个线索', {num: _.get(this, 'state.selectedClues.length')})}
             </span>);
-
     };
     renderBatchChangeClues = () => {
         return (

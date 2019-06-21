@@ -541,7 +541,7 @@ class ClueTraceList extends React.Component {
                             clearTimeout(timeoutFunc);
                         }
                         timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待审批数的刷新
+                            //触发展示的组件待处理数的刷新
                             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
                         }, timeout);
                     }

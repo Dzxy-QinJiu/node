@@ -119,11 +119,16 @@ class phoneStatusTop extends React.Component {
             phoneAlertAction.setSubmitErrMsg(Intl.get('phone.delay.save', '通话记录正在同步，请稍等再保存！'));
             return;
         }
+        if (!_.trim(this.state.inputContent)){
+            phoneAlertAction.setSubmitErrMsg(Intl.get('customer.trace.content', '跟进记录内容不能为空'));
+            return;
+        }
         const submitObj = {
             id: trace_id,
             customer_id: customer_id,
             last_callrecord: 'true',
-            remark: this.state.inputContent
+            remark: this.state.inputContent,
+            call_date: _.get(this.state.phonemsgObj, 'call_date')
         };
         phoneAlertAction.updateCustomerTrace(submitObj, () => {
             let updateData = {customer_id: customer_id, remark: this.state.inputContent};

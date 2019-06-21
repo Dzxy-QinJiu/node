@@ -30,7 +30,9 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 const EDIT_FEILD_WIDTH = 300;
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
+import PhoneCallout from 'CMP_DIR/phone-callout';
+import PhoneInput from 'CMP_DIR/phone-input';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -659,7 +661,33 @@ class ClueDetailOverview extends React.Component {
             curShowUserId: ''
         });
     };
-
+    renderItemSelfSettingContent = (curClue,item) => {
+        return <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true} showClueDetailPanel={this.props.showClueDetailPanel.bind(this, curClue)}
+        />;
+    };
+    renderItemSelfSettingForm = (key, index, that) => {
+        const fieldKey = `${that.props.field}[${key}]`;
+        let initValue = _.get(that.state, `value[${key}]`, '');
+        let validateRules = [];
+        if (index === 0) {//电话必填的验证
+            validateRules = _.concat(validateRules, [{
+                required: true,
+                message: Intl.get('user.info.input.phone', '请输入电话'),
+            }]);
+        }
+        return (
+            <PhoneInput
+                initialValue={initValue}
+                placeholder={Intl.get('clue.add.phone.num', '电话号码')}
+                validateRules={validateRules}
+                id={fieldKey}
+                labelCol={{span: 4}}
+                wrapperCol={{span: 20}}
+                colon={false}
+                form={that.props.form}
+                label={index === 0 ? Intl.get('common.phone', '电话') : ' '}
+            />);
+    };
     //渲染跟进内容
     renderTraceContent = () => {
         //是否有添加跟进记录的权限
@@ -904,7 +932,9 @@ class ClueDetailOverview extends React.Component {
                                                 noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                                                 addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
                                                 contactName={contactItem.name}
-                                                showClueDetailPanel={this.props.showClueDetailPanel.bind(this,curClue)}
+                                                renderItemSelfSettingContent={this.renderItemSelfSettingContent.bind(this, curClue)}
+                                                renderItemSelfSettingForm={this.renderItemSelfSettingForm}
+
                                             />
                                         </div>
                                         <div className="contact-item-content">
@@ -1033,9 +1063,6 @@ ClueDetailOverview.defaultProps = {
     updateRemarks: function() {
 
     },
-    hideRightPanel: function() {
-
-    },
     showClueDetailPanel: function() {
 
     }
@@ -1052,7 +1079,6 @@ ClueDetailOverview.propTypes = {
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
     updateRemarks: PropTypes.func,
-    hideRightPanel: PropTypes.func,
     showClueDetailPanel: PropTypes.func
 };
 

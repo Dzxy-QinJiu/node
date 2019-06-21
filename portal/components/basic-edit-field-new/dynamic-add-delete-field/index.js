@@ -5,13 +5,10 @@
  * 动态增删元素的组件
  */
 require('./index.less');
-import PhoneInput from 'CMP_DIR/phone-input';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import {Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-import PhoneCallout from 'CMP_DIR/phone-callout';
 import Trace from 'LIB_DIR/trace';
 class DynamicAddDelField extends React.Component {
     constructor(props) {
@@ -104,26 +101,9 @@ class DynamicAddDelField extends React.Component {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const fieldKey = `${this.props.field}[${key}]`;
         let initValue = _.get(this.state, `value[${key}]`, '');
-        if (this.props.type === 'phone') {
-            let validateRules = this.props.validateRules || [];
-            if (index === 0) {//电话必填的验证
-                validateRules = _.concat(validateRules, [{
-                    required: true,
-                    message: Intl.get('user.info.input.phone', '请输入电话'),
-                }]);
-            }
-            return (
-                <PhoneInput
-                    initialValue={initValue}
-                    placeholder={Intl.get('clue.add.phone.num', '电话号码')}
-                    validateRules={validateRules}
-                    id={fieldKey}
-                    labelCol={{span: 4}}
-                    wrapperCol={{span: 20}}
-                    colon={false}
-                    form={this.props.form}
-                    label={index === 0 ? this.props.label : ' '}
-                />);
+        var selfItemForm = this.props.renderItemSelfSettingForm(key, index, this);
+        if (selfItemForm) {
+            return selfItemForm;
         } else {
             return (
                 <FormItem key={key}
@@ -144,10 +124,9 @@ class DynamicAddDelField extends React.Component {
             return (
                 <div className="item-show-content">
                     {_.map(this.state.value, item => {
+                        var selfItemContent = this.props.renderItemSelfSettingContent(item);
                         return ( <div className="item-content">
-                            {this.props.type === 'phone' ? <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true}
-                                showClueDetailPanel={this.props.showClueDetailPanel}
-                            /> :
+                            {selfItemContent ? selfItemContent :
                                 <span className="item-text">{item}</span>}
 
                         </div>);
@@ -235,7 +214,8 @@ DynamicAddDelField.propTypes = {
     addItemBtn: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     contactName: PropTypes.string,
     saveEditData: PropTypes.func,
-    showClueDetailPanel: PropTypes.func,
+    renderItemSelfSettingContent: PropTypes.func,
+    renderItemSelfSettingForm: PropTypes.func,
 
 };
 DynamicAddDelField.defaultProps = {
@@ -279,9 +259,12 @@ DynamicAddDelField.defaultProps = {
     //以下是电话类型时，需要传的打电话所需数据
     //联系人姓名
     contactName: '',
-    showClueDetailPanel: function() {
+    renderItemSelfSettingContent: function() {
 
-    }
+    },
+    renderItemSelfSettingForm: function() {
+
+    },
 };
 export default Form.create()(DynamicAddDelField);
 
