@@ -7,13 +7,50 @@ import {Dropdown, Icon, Menu} from 'antd';
 import ColumnItem from './column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
-const MY_HELPER_TYPES = [{name: Intl.get('home.page.helper.all', '全部事务'), value: ''},];
+import myWorkAjax from '../ajax';
+//我的工作类型
+const MY_WORK_TYPES = {};
+
 class MyHelperColumn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             curHelperType: '',
+            myWorkList: [],
+            myWorkTypes: [{name: Intl.get('home.page.helper.all', '全部事务'), value: ''}],
         };
+    }
+
+    componentDidMount() {
+        this.getMyWorkTypes();
+        this.getMyWorkList();
+    }
+
+    getMyWorkTypes() {
+        myWorkAjax.getMyWorkTypes().then((result) => {
+            let workTypes = _.map(result.list, item => {
+                return {name: item.name, value: item.key};
+            });
+            workTypes.unshift({name: Intl.get('home.page.helper.all', '全部事务'), value: ''});
+            this.setState({myWorkTypes: workTypes});
+        }, (errorMsg) => {
+
+        });
+    }
+
+    getMyWorkList() {
+        let queryParams = {
+            page_size: 20,
+            type: this.state.curHelperType,
+            load_id: '',
+            //sort_id:'',
+            //order:'desc'
+        };
+        myWorkAjax.getMyWorkList().then((result) => {
+            this.setState({myWorkList: result.list});
+        }, (errorMsg) => {
+
+        });
     }
 
     onChangeHelperType = (item, key) => {
@@ -23,12 +60,12 @@ class MyHelperColumn extends React.Component {
     getHelperTypeDropdown() {
         const helperTypeMenu = (
             <Menu onClick={this.onChangeHelperType}>
-                {_.map(MY_HELPER_TYPES, item => {
+                {_.map(MY_WORK_TYPES, item => {
                     return (<Menu.Item key={item.value}>{item.name}</Menu.Item>);
                 })}
             </Menu>);
-        const curHelperType = _.find(MY_HELPER_TYPES, item => item.value === this.state.curHelperType);
-        const curHelperTypeName = _.get(curHelperType, 'name', MY_HELPER_TYPES[0].name);
+        const curHelperType = _.find(MY_WORK_TYPES, item => item.value === this.state.curHelperType);
+        const curHelperTypeName = _.get(curHelperType, 'name', MY_WORK_TYPES[0].name);
         return (
             <Dropdown overlay={helperTypeMenu} trigger={['click']}>
                 <span className='my-helper-dropdown-trigger'>
@@ -37,11 +74,18 @@ class MyHelperColumn extends React.Component {
                 </span>
             </Dropdown>);
     }
+
+    renderMyWorkList() {
+        return _.map(this.state.myWorkList, (item, index) => {
+            return (<div>{item.name}</div>);
+        });
+    }
+
     renderHelperContent() {
         return (
             <div className='my-insterest-content' style={{height: getColumnHeight()}}>
                 <GeminiScrollbar>
-                    {/*{this.renderNoticeList()}*/}
+                    {this.renderMyWorkList()}
                 </GeminiScrollbar>
             </div>);
     }
