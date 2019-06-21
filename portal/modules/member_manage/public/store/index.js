@@ -3,7 +3,6 @@ import MemberFormStore from './member-form-store';
 import userData from 'PUB_DIR/sources/user-data';
 import {userInfoEmitter} from 'PUB_DIR/sources/utils/emitters';
 
-
 let emptyMember = {
     id: '',
     name: '',
@@ -27,7 +26,6 @@ class MemberManageStore {
         this.setInitialData();
         this.bindActions(MemberManageAction);
     }
-
     // 初始化数据
     setInitialData() {
         this.loading = false; // 获取成员列表的loading
@@ -66,7 +64,6 @@ class MemberManageStore {
             }
         }
     }
-
     // 设置当前成员的loading
     setMemberLoading(flag) {
         this.isGetMemberDetailLoading = flag;
@@ -74,12 +71,10 @@ class MemberManageStore {
             this.getMemberDetailErrMsg = ''; // 重新获取详情时，清空之前的错误提示
         }
     }
-
     //点击成员查看详情时，先设置已有的详情信息
     setCurMember(memberId) {
         this.currentMember = _.find(this.memberList, item => item.id === memberId) || emptyMember;
     }
-
     //获取成员详情后，重新赋值详情信息
     getCurMemberById(result) {
         this.isGetMemberDetailLoading = false;
@@ -135,6 +130,8 @@ class MemberManageStore {
     }
     // 返回详细信息展示页
     returnInfoPanel(newMember) {
+        this.memberList.unshift(newMember);
+        this.memberTotal += 1;
         if (_.get(newMember, 'id')) {
             //添加完成员返回详情页的处理
             let rolesIds = _.get(newMember, 'roleIds');
@@ -214,7 +211,6 @@ class MemberManageStore {
             }
         }
     }
-    
     // 修改成员状态
     updateMemberStatus(modifiedMember) {
         if (_.isObject(modifiedMember)) {
@@ -230,31 +226,26 @@ class MemberManageStore {
             this.errorMsg = modifiedMember || Intl.get('common.edit.failed', '修改失败');
         }
     }
-
     // 更新列表中当前修改成员的状态
     updateCurrentMemberStatus(status) {
         if(this.currentMember){
             this.currentMember.status = status;
         }
     }
-
     // 处理搜索框的内容
     updateSearchContent(searchContent) {
         //搜索框和角色不能联合查询
         this.searchContent = searchContent;
         this.selectRole = '';
     }
-
     // 显示继续添加按钮
     showContinueAddButton() {
         this.isContinueAddButtonShow = true;
     }
-
     // 隐藏继续添加按钮
     hideContinueAddButton() {
         this.isContinueAddButtonShow = false;
     }
-
     // 修改成员部门(所属团队)
     updateMemberTeam(team) {
         if (this.currentMember) {

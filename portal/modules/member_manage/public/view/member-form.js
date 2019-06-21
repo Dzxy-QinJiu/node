@@ -1,10 +1,7 @@
 require('../css/member-add-form.less');
-var Form = require('antd').Form;
-var Input = require('antd').Input;
-var Select = require('antd').Select;
-var Icon = require('antd').Icon;
-var Option = Select.Option;
-var FormItem = Form.Item;
+import {Form, Input, Select, Icon} from 'antd';
+const Option = Select.Option;
+const FormItem = Form.Item;
 import HeadIcon from 'CMP_DIR/headIcon';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const crypto = require('crypto');//用于密码md5

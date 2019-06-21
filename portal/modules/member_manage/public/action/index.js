@@ -20,8 +20,6 @@ class MemberManageAction {
             'hideContinueAddButton', // 隐藏继续添加按钮
             'updateMemberTeam', // 修改成员部门(所属团队)
             'updateMemberPosition', // 修改成员职务
-            'addUser',
-            'editUser',
             'getLogList',
             'closeAddPanel',
             'updateUserRoles',
