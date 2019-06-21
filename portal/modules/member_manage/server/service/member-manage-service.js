@@ -4,6 +4,9 @@ const restUtil = require('ant-auth-request').restUtil(restLogger);
 const Member = require('../dto/member');
 const _ = require('lodash');
 const auth = require('../../../../lib/utils/auth');
+const Promise = require('bluebird');
+const EventEmitter = require('events').EventEmitter;
+
 
 const memberRestApis = {
     //获取用户列表地址
@@ -27,7 +30,9 @@ const memberRestApis = {
     //修改成员角色
     updateUserRoles: '/rest/base/v1/user/member/roles',
     //查询及添加个人销售目标
-    getAndSetSalesGoals: '/rest/contract/v2/goal/users'
+    getAndSetSalesGoals: '/rest/contract/v2/goal/users',
+    // 获取成员的职务
+    getMemberPosition: '/rest/base/v1/user/member/teamrole',
 };
 
 exports.urls = memberRestApis;
@@ -65,24 +70,64 @@ exports.getMemberList = (req, res, condition, isGetAllUser) => {
 };
 
 
-//通过用户id获取用户详细信息
-exports.getCurUserById = function(req, res, userId) {
-    return restUtil.authRest.get(
-        {
-            url: memberRestApis.getUserById + '/' + userId,
+// 获取成员的职务
+function getMemberPosition(req, res, memberId) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get({
+            url: memberRestApis.getMemberPosition + '?member_id=' + memberId,
             req: req,
             res: res
         }, null, {
-            success: function(eventEmitter, data) {
-                //处理数据
-                if (data) {
-                    data = Member.toFrontObject(data);
-                }
-                eventEmitter.emit('success', data);
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
             }
         });
-};
+    });
+}
 
+// 获取成员详细信息
+function getMemberDetail(req, res, memberId) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get({
+            url: memberRestApis.getUserById + '/' + memberId,
+            req: req,
+            res: res
+        }, null, {
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
+            }
+        });
+    });
+}
+
+// 通过用户id获取用户详细信息
+exports.getCurUserById = function(req, res, memberId) {
+    let emitter = new EventEmitter();
+    let promiseList = [getMemberPosition(req, res, memberId), getMemberDetail(req, res, memberId)];
+    Promise.all(promiseList).then(data => {
+        let positionObj = _.get(data, '[0]');
+        let detailObj = _.get(data, '[1]');
+        if (positionObj) {
+            detailObj = {...detailObj,
+                teamrole_name: positionObj.teamrole_name,
+                position_id: positionObj.id
+            };
+        }
+        if (detailObj) {
+            detailObj = Member.toFrontObject(detailObj);
+        }
+        emitter.emit('success', detailObj);
+    }).catch(errorMsg => {
+        emitter.emit('error', errorMsg);
+    });
+    return emitter;
+};
 
 //添加用户
 exports.addUser = function(req, res, frontUser) {

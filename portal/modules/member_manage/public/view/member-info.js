@@ -49,6 +49,7 @@ class MemberInfo extends React.Component {
         activeKey: TAB_KEYS.BASIC_INFO_TAB,
         resultType: this.props.resultType,
         errorMsg: this.props.errorMsg,
+        salesRoleList: [], // 职务列表
         ...MemberInfoStore.getState(),
     };
 
@@ -85,8 +86,9 @@ class MemberInfo extends React.Component {
         MemberInfoStore.listen(this.onChange);
         setTimeout(() => {
             this.getUserData(this.state.memberInfo);
+            this.getPositionList(); // 获取职务列表
         });
-        var userBasicDetail = this.state.userBasicDetail;
+        let userBasicDetail = this.state.userBasicDetail;
         if (userBasicDetail.id) {
             //获取用户的详情
             MemberManageAction.setUserLoading(true);
@@ -94,6 +96,19 @@ class MemberInfo extends React.Component {
         }
     }
 
+    getPositionList = () => {
+        MemberManageAjax.getSalesPosition().then( (data) => {
+            console.log('salesRoleList:',data);
+            this.setState({
+                salesRoleList: _.isArray(data) ? data : [],
+            });
+        }, () => {
+            this.setState({
+                salesRoleList: [],
+            });
+        } );
+    };
+    
     getUserData = (user) => {
         if (user.id) {
             //跟据用户的id获取销售提成和比例
@@ -137,7 +152,7 @@ class MemberInfo extends React.Component {
 
     //团队的选择事件
     onSelectTeam = (teamId) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择所属团队');
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择部门');
         let memberInfo = this.state.memberInfo;
         memberInfo.teamId = teamId;
         this.setState({memberInfo});
@@ -153,7 +168,7 @@ class MemberInfo extends React.Component {
     afterEditTeamSuccess = (user) => {
         //更新详情中的所属团队
         let updateTeam = _.find(this.state.userTeamList, team => team.group_id === user.team);
-        MemberManageAction.updateUserTeam(updateTeam);
+        MemberManageAction.updateMemberTeam(updateTeam);
         if (_.isFunction(this.props.afterEditTeamSuccess)) {
             this.props.afterEditTeamSuccess(user);
         }
@@ -373,8 +388,8 @@ class MemberInfo extends React.Component {
 
     //保存编辑的团队
     saveEditTeam = (saveObj, successFunc, errorFunc) => {
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员团队的修改');
-        MemberManageAjax.updateUserTeam(saveObj).then((result) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员部门的修改');
+        MemberManageAjax.updateMemberTeam(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 this.afterEditTeamSuccess(saveObj);
@@ -384,7 +399,46 @@ class MemberInfo extends React.Component {
         }, (errorMsg) => {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg);
         });
-    }
+    };
+
+    // 职务选择事件
+    onSelectPosition = (positionId) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '选择职务');
+        let memberInfo = this.state.memberInfo;
+        memberInfo.positionId = positionId;
+        this.setState({memberInfo});
+    };
+
+    cancelEditPosition = () => {
+        let memberInfo = this.state.memberInfo;
+        memberInfo.positionId = this.props.memberInfo.positionId;
+        this.setState({memberInfo});
+    };
+    // 成功保存职务的修改
+    afterEditPositionSuccess = (member) => {
+        //更新详情中的职务
+        let updatePosition = _.find(this.state.salesRoleList, position => position.id === member.position);
+        MemberManageAction.updateMemberPosition(updatePosition);
+    };
+    // 保存职务
+    saveEditPosition = (saveObj, successFunc, errorFunc) => {
+        let reqBody = {
+            member_id: saveObj.id,
+            teamrole_id: saveObj.position
+        };
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存职务的修改');
+        MemberManageAjax.setMemberPosition(reqBody).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                this.afterEditPositionSuccess(saveObj);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+
+    };
 
     renderMemberInfoContent = () => {
         let memberInfo = this.state.memberInfo;
@@ -398,57 +452,11 @@ class MemberInfo extends React.Component {
             roleNames = memberInfo.roleNames.join(',');
         }
         let roleId = _.get(memberInfo, 'roleIds[0]');
+        // 职务的下拉列表
+        let positionOptions = _.map(this.state.salesRoleList, item => <Option value={item.id} >{item.name}</Option>);
+
         return (
             <div>
-                {/** v8环境下，不显示所属团队*/}
-                { !Oplate.hideSomeItem ? (
-                    <div className="basic-info-item">
-                        <span className="basic-info-label">
-                            {Intl.get('operation.report.department', '部门')}:
-                        </span>
-                        <BasicEditSelectField
-                            id={memberInfo.id}
-                            displayText={memberInfo.teamName}
-                            value={memberInfo.teamId}
-                            field="team"
-                            selectOptions={this.getTeamOptions()}
-                            placeholder={Intl.get('member.select.group', '请选择团队')}
-                            validators={[{message: Intl.get('member.select.group', '请选择团队')}]}
-                            onSelectChange={this.onSelectTeam}
-                            cancelEditField={this.cancelEditTeam}
-                            width={EDIT_FEILD_LESS_WIDTH}
-                            hasEditPrivilege={hasPrivilege('USER_MANAGE_EDIT_USER')}
-                            saveEditSelect={this.saveEditTeam.bind(this)}
-                            noDataTip={Intl.get('member.no.groups', '暂无团队')}
-                            addDataTip={Intl.get('sales.team.add.team', '添加团队')}
-                        />
-                    </div>) : null }
-                {/**
-                 *  <div className="basic-info-item">
-                     <span className="basic-info-label">{Intl.get('member.position', '职务')}:</span>
-                     <BasicEditInputField
-                     width={EDIT_FEILD_LESS_WIDTH}
-                     id={memberInfo.id}
-                     value={memberInfo.phoneOrder}
-                     hasEditPrivilege={false}
-                     />
-                 </div>
-                 */}
-                <div className="basic-info-item">
-                    <span className="basic-info-label">{Intl.get('user.manage.phone.order', '座席号')}:</span>
-                    <BasicEditInputField
-                        width={EDIT_FEILD_LESS_WIDTH}
-                        id={memberInfo.id}
-                        value={memberInfo.phoneOrder}
-                        field="phone_order"
-                        type="text"
-                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
-                        placeholder={Intl.get('user.position.number.tips', '请输入座席号')}
-                        saveEditInput={this.saveEditMemberInfo.bind(this, 'phone_order')}
-                        noDataTip={Intl.get('sales.team.add.sales.team', '添加')}
-                        addDataTip={Intl.get('sales.team.add.sales.team', '添加')}
-                    />
-                </div>
                 <div className="basic-info-item">
                     <span className="basic-info-label">
                         {Intl.get('common.role', '角色')}:
@@ -471,6 +479,63 @@ class MemberInfo extends React.Component {
                         saveEditSelect={this.saveEditRoles.bind(this)}
                         noDataTip={Intl.get('member.no.role', '暂无角色')}
                         addDataTip={Intl.get('user.setting.roles', '设置角色')}
+                    />
+                </div>
+                {/** v8环境下，不显示所属团队*/}
+                { !Oplate.hideSomeItem ? (
+                    <div className="basic-info-item">
+                        <span className="basic-info-label">
+                            {Intl.get('operation.report.department', '部门')}:
+                        </span>
+                        <BasicEditSelectField
+                            id={memberInfo.id}
+                            displayText={memberInfo.teamName}
+                            value={memberInfo.teamId}
+                            field="team"
+                            selectOptions={this.getTeamOptions()}
+                            placeholder={Intl.get('contract.67', '请选择部门')}
+                            validators={[{message: Intl.get('contract.67', '请选择部门')}]}
+                            onSelectChange={this.onSelectTeam}
+                            cancelEditField={this.cancelEditTeam}
+                            width={EDIT_FEILD_LESS_WIDTH}
+                            hasEditPrivilege={hasPrivilege('USER_MANAGE_EDIT_USER')}
+                            saveEditSelect={this.saveEditTeam.bind(this)}
+                            noDataTip={Intl.get('contract.68', '暂无部门')}
+                            addDataTip={Intl.get('organization.add.department', '添加部门')}
+                        />
+                    </div>) : null }
+                <div className="basic-info-item">
+                    <span className="basic-info-label">{Intl.get('member.position', '职务')}:</span>
+                    <BasicEditSelectField
+                        id={memberInfo.id}
+                        displayText={memberInfo.positionName}
+                        value={memberInfo.positionId}
+                        field="position"
+                        selectOptions={positionOptions}
+                        placeholder={Intl.get('member.select.position', '请选择职务')}
+                        validators={[{message: Intl.get('member.select.position', '请选择职务')}]}
+                        onSelectChange={this.onSelectPosition}
+                        cancelEditField={this.cancelEditPosition}
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        hasEditPrivilege={hasPrivilege('MEMBER_TEAM_ROLE_MANAGE')}
+                        saveEditSelect={this.saveEditPosition.bind(this)}
+                        noDataTip={Intl.get('member.no.position', '暂无职务')}
+                        addDataTip={Intl.get('member.add.position', '添加职务')}
+                    />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">{Intl.get('user.manage.phone.order', '座席号')}:</span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={memberInfo.id}
+                        value={memberInfo.phoneOrder}
+                        field="phone_order"
+                        type="text"
+                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                        placeholder={Intl.get('user.position.number.tips', '请输入座席号')}
+                        saveEditInput={this.saveEditMemberInfo.bind(this, 'phone_order')}
+                        noDataTip={Intl.get('sales.team.add.sales.team', '添加')}
+                        addDataTip={Intl.get('sales.team.add.sales.team', '添加')}
                     />
                 </div>
                 <div className="basic-info-item">

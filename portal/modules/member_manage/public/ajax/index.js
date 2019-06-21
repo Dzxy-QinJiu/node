@@ -152,6 +152,24 @@ exports.getSalesPosition = () => {
     return Deferred.promise();
 };
 
+// 成员设置职务
+exports.setMemberPosition = (reqBody) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/role/change',
+        type: 'post',
+        dateType: 'json',
+        data: reqBody,
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //获取角色列表
 exports.getRoleList = () => {
     let Deferred = $.Deferred();

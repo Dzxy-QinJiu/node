@@ -254,6 +254,21 @@ class MemberManageStore {
     hideContinueAddButton() {
         this.isContinueAddButtonShow = false;
     }
+
+    // 修改成员部门(所属团队)
+    updateMemberTeam(team) {
+        if (this.currentMember) {
+            this.currentMember.teamId = team.group_id;
+            this.currentMember.teamName = team.group_name;
+        }
+    }
+    // 修改成员职务
+    updateMemberPosition(position) {
+        if (this.currentMember) {
+            this.currentMember.positionId = position.id;
+            this.currentMember.positionName = position.name;
+        }
+    }
 }
 
 export default alt.createStore(MemberManageStore, 'MemberManageStore');
