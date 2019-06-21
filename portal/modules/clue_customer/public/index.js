@@ -6,6 +6,7 @@
 var React = require('react');
 var rightPanelShow = false;
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
+import { AUTHS } from 'MOD_DIR/crm/public/utils/crm-util';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
@@ -36,6 +37,9 @@ const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
 import ClueRightPanel from './views/clue-right-detail';
+import ClueToCustomerPanel from './views/clue-to-customer-panel';
+var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+import ajax from 'ant-ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
@@ -82,6 +86,8 @@ class ClueCustomer extends React.Component {
         submitTraceLoading: false,//正在提交跟进记录
         showCustomerId: '',//正在展示客户详情的客户id
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+        isShowClueToCustomerPanel: false,//是否展示线索转客户面板
+        isShowAddCustomerPanel: false,//是否展示添加客户面板
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
         condition: {},
@@ -1014,9 +1020,81 @@ class ClueCustomer extends React.Component {
                         </div>
                     );
                 }
+            },{
+                title: Intl.get('common.operate', '操作'),
+                width: 100,
+                render: (value, record) => {
+                    return (
+                        <span
+                        
+                            className="can-edit"
+                            onClick={this.onConvertToCustomerBtnClick.bind(this, record.id, record.name)}
+                        >
+                            {Intl.get('common.convert.to.customer', '转为客户')}
+                        </span>
+                    );
+                }
             }];
         return columns;
     };
+
+    //转为客户按钮点击事件
+    onConvertToCustomerBtnClick = (clueId, clueName) => {
+        //设置当前线索
+        clueCustomerAction.setCurrentCustomer(clueId);
+        
+        const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
+
+        ajax.send({
+            url: `/rest/customer/v3/customer/range/${authType}/20/1/start_time/descend`,
+            type: 'post',
+            data: {
+                query: {
+                    name: clueName
+                }
+            }
+        })
+            .done(result => {
+                const existingCustomers = _.get(result, 'result');
+
+                if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
+                    this.setState({
+                        isShowClueToCustomerPanel: true,
+                        isShowAddCustomerPanel: false,
+                        existingCustomers
+                    });
+                } else {
+                    this.setState({
+                        isShowClueToCustomerPanel: false,
+                        isShowAddCustomerPanel: true,
+                        existingCustomers: []
+                    });
+                }
+            })
+            .fail(err => {
+                this.setState({
+                    isShowClueToCustomerPanel: false,
+                    isShowAddCustomerPanel: true,
+                    existingCustomers: []
+                });
+            });
+    };
+
+    //隐藏线索转客户面板
+    hideClueToCustomerPanel = () => {
+        this.setState({isShowClueToCustomerPanel: false});
+    };
+
+    //显示添加客户面板
+    showAddCustomerPanel = () => {
+        this.setState({isShowAddCustomerPanel: true});
+    };
+
+    //隐藏添加客户面板
+    hideAddCustomerPanel = () => {
+        this.setState({isShowAddCustomerPanel: false});
+    };
+
     setInvalidClassName= (record, index) => {
         return (record.availability === '1' ? 'invalid-clue' : '');
     };
@@ -1805,6 +1883,26 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
+
+                    <ClueToCustomerPanel
+                        showFlag={this.state.isShowClueToCustomerPanel}
+                        clue={this.state.curClue}
+                        existingCustomers={this.state.existingCustomers}
+                        hidePanel={this.hideClueToCustomerPanel}
+                        showAddCustomerPanel={this.showAddCustomerPanel}
+                    />
+
+                    {this.state.isShowAddCustomerPanel ? (
+                        <CRMAddForm
+                            hideAddForm={this.hideAddCustomerPanel}
+                            addOne={this.hideAddCustomerPanel}
+                            formData={this.state.curClue}
+                            isAssociateClue={true}
+                            isConvert={true}
+                            phoneNum={_.get(this.state, 'curClue.contact_way', '')}
+                            isShowMadal={false}
+                        />
+                    ) : null}
                 </div>
             </RightContent>
         );

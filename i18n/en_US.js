@@ -2979,7 +2979,9 @@ var en_US = {
     'common.current.year': 'current year',//本年
     'common.rank': 'rank',//名次
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
-    'common.total.points': 'total points',//总分
+    'common.convert.to.customer': ' convert to customer',//转为客户
+    'common.convert.to.new.customer': ' convert to new customer',//转为新客户
+    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户    'common.total.points': 'total points',//总分
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From "{source}"',//来自“{source}”
     'clue.item.acceess.channel': 'Detail: "{content}"',//详情：“{content}”

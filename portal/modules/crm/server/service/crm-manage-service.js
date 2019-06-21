@@ -78,8 +78,10 @@ var crmRestApis = {
     callOut: '/rest/customer/v2/phone/call/ou',
     //获取客户是否还能继续添加客户 返回0是可以继续添加，返回大于0的值，表示超出几个客户
     getCustomerLimit: '/rest/customer/v3/customer/limit/flag',
-    //线索生成客户
+    //线索生成客户（在关联客户时）
     addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
+    //线索生成客户（在转客户时）
+    addCustomerByClueAtConvert: '/rest/customer/v3/customer/lead',
     //获取客户所属销售及联合跟进人
     getSalesByCustomerId: '/rest/customer/v3/customer/customer/users/:customer_id',
     //修改客户的联合跟进人
@@ -428,9 +430,19 @@ exports.editCustomer = function(req, res) {
 
 //由线索生成客户
 exports.addCustomerByClue = function(req, res) {
+    let url;
+
+    //在线索转客户过程中生成客户时
+    if (req.query.is_convert) {
+        url = crmRestApis.addCustomerByClueAtConvert + `?clue_id=${req.query.clueId}`;
+    //在线索关联客户过程中生成客户时
+    } else {
+        url = crmRestApis.addCustomerByClue + `?clue_id=${req.query.clueId}`;
+    }
+
     return restUtil.authRest.post(
         {
-            url: crmRestApis.addCustomerByClue + `?clue_id=${req.query.clueId}`,
+            url,
             req: req,
             res: res
         }, req.body);
