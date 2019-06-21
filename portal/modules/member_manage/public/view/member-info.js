@@ -175,15 +175,10 @@ class MemberInfo extends React.Component {
 
     afterEditRoleSuccess = (user) => {
         //更新详情中的角色
-        let roleObj = {roleIds: [], roleNames: []}, roleList = this.state.roleList;
-        if (_.isArray(user.role) && user.role.length) {
-            user.role.forEach(roleId => {
-                let curRole = _.find(roleList, role => role.roleId === roleId);
-                roleObj.roleIds.push(curRole.roleId);
-                roleObj.roleNames.push(curRole.roleName);
-            });
-            MemberManageAction.updateUserRoles(roleObj);
-        }
+        let roleList = this.state.roleList;
+        let curRole = _.find(roleList, role => role.roleId === user.role);
+        let roleObj = {roleIds: [_.get(curRole, 'roleId')], roleNames: [_.get(curRole, 'roleName')]};
+        MemberManageAction.updateMemberRoles(roleObj); 
         if (_.isFunction(this.props.afterEditRoleSuccess)) {
             this.props.afterEditRoleSuccess(user);
         }
@@ -210,7 +205,7 @@ class MemberInfo extends React.Component {
         }
         return roleOptions;
     };
-
+    
     selectRole = (roleIds) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
         let memberInfo = this.state.memberInfo;
@@ -373,7 +368,7 @@ class MemberInfo extends React.Component {
     //保存编辑的角色
     saveEditRoles = (saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员角色的修改');
-        MemberManageAjax.updateUserRoles(saveObj).then((result) => {
+        MemberManageAjax.updateMemberRoles(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 this.afterEditRoleSuccess(saveObj);
@@ -460,6 +455,7 @@ class MemberInfo extends React.Component {
                     <span className="basic-info-label">
                         {Intl.get('common.role', '角色')}:
                     </span>
+
                     <BasicEditSelectField
                         width={EDIT_FEILD_WIDTH}
                         id={memberInfo.id}

@@ -123,7 +123,7 @@ exports.updateMemberTeam = function(user) {
 };
 
 //修改成员的角色
-exports.updateUserRoles = (user) => {
+exports.updateMemberRoles = (user) => {
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user/user_roles',
