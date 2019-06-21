@@ -137,7 +137,6 @@ ClueCustomerStore.prototype.addCluecustomerTrace = function(result) {
     }
 };
 function getContactWay(contactPhone) {
-    console.log(contactPhone,3);
     var contact_way = '';
     if (_.isArray(contactPhone)) {
         contactPhone.forEach(function(phone) {
