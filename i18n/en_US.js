@@ -2940,5 +2940,6 @@ var en_US = {
     'common.not.modify': 'not modify',//不修改
     'common.confirm.modify': 'confirm modify',//确认修改
     'common.confirm.merge': 'confirm merge',//确认合并
+    'common.merge.success': 'merge success',//合并成功
 };
 export default en_US;

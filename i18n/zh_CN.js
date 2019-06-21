@@ -3044,5 +3044,6 @@ var zh_CN = {
     'common.not.modify': '不修改',
     'common.confirm.modify': '确认修改',
     'common.confirm.merge': '确认合并',
+    'common.merge.success': '合并成功',
 };
 export default zh_CN;

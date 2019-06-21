@@ -279,7 +279,7 @@ class ClueToCustomerPanel extends React.Component {
                 }, this.setMergedCustomer);
             })
             .fail(err => {
-                message.success('获取客户联系人失败');
+                message.success(err);
             });
     }
 
@@ -414,11 +414,11 @@ class ClueToCustomerPanel extends React.Component {
                     data: contact
                 })
                     .done(result => {
-                        message.success('合并成功');
+                        message.success(Intl.get('common.merge.success', '合并成功'));
                         this.props.onMerged();
                     })
                     .fail(err => {
-                        message.success('合并失败');
+                        message.success(err);
                     });
             } else {
                 //如果没有需要更新的字段，直接返回
@@ -432,11 +432,11 @@ class ClueToCustomerPanel extends React.Component {
                         data: contact
                     })
                         .done(result => {
-                            message.success('合并成功');
+                            message.success(Intl.get('common.merge.success', '合并成功'));
                             this.props.onMerged();
                         })
                         .fail(err => {
-                            message.success('合并失败');
+                            message.success(err);
                         });
                 });
 
