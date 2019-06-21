@@ -262,7 +262,6 @@ class MemberManageStore {
     }
     // 修改成员角色
     updateMemberRoles(roleObj) {
-        console.log('roleObj:',roleObj);
         if (this.currentMember) {
             this.currentMember.roleIds = roleObj.roleIds;
             this.currentMember.roleNames = roleObj.roleNames;

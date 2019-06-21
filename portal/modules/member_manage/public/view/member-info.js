@@ -205,7 +205,7 @@ class MemberInfo extends React.Component {
         }
         return roleOptions;
     };
-    
+
     selectRole = (roleIds) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '选择角色');
         let memberInfo = this.state.memberInfo;
