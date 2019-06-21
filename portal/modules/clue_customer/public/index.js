@@ -817,7 +817,6 @@ class ClueCustomer extends React.Component {
                 <div className="associate-customer">
                     {associatedPrivilege ? (
                         <span
-                        
                             className="can-edit"
                             style={{marginRight: 15}}
                             onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name)}
