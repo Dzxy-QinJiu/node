@@ -1594,6 +1594,14 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+
+    //在列表中隐藏当前操作的线索
+    hideCurClue = () => {
+        const index = _.findIndex(this.state.curClueLists, item => item.id === this.state.curClue.id);
+        
+        $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').slideToggle(2000);
+    }
+
     render() {
         var cls = classNames('right-panel-modal',
             {'show-modal': this.state.clueAddFormShow
@@ -1747,7 +1755,7 @@ class ClueCustomer extends React.Component {
                             existingCustomers={this.state.existingCustomers}
                             hidePanel={this.hideClueToCustomerPanel}
                             showAddCustomerPanel={this.showAddCustomerPanel}
-                            getClueList={this.onTypeChange}
+                            onMerged={this.hideCurClue}
                         />
                     ) : null}
 

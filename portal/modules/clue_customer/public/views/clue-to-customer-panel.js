@@ -33,8 +33,8 @@ class ClueToCustomerPanel extends React.Component {
         hidePanel: noop,
         //显示添加客户面板
         showAddCustomerPanel: noop,
-        //获取线索列表
-        getClueList: noop
+        //合并完成后的回调事件
+        onMerged: noop
     };
 
     static propTypes = {
@@ -43,7 +43,7 @@ class ClueToCustomerPanel extends React.Component {
         existingCustomers: PropTypes.array,
         hidePanel: PropTypes.func,
         showAddCustomerPanel: PropTypes.func,
-        getClueList: PropTypes.func
+        onMerged: PropTypes.func
     };
 
     constructor(props) {
@@ -415,7 +415,7 @@ class ClueToCustomerPanel extends React.Component {
                 })
                     .done(result => {
                         message.success('合并成功');
-                        setTimeout(this.props.getClueList, 1000);
+                        this.props.onMerged();
                     })
                     .fail(err => {
                         message.success('合并失败');
@@ -433,7 +433,7 @@ class ClueToCustomerPanel extends React.Component {
                     })
                         .done(result => {
                             message.success('合并成功');
-                            setTimeout(this.props.getClueList, 1000);
+                            this.props.onMerged();
                         })
                         .fail(err => {
                             message.success('合并失败');
@@ -536,7 +536,7 @@ class ClueToCustomerPanel extends React.Component {
 
                 {contact.replaceName ? (
                     <div className="is-replace-contract-name">
-                        {Intl.get('common.modify.name.to', '修改姓名为')} + “{contact.replaceName}”？
+                        {Intl.get('common.modify.name.to', '修改姓名为')}“{contact.replaceName}”？
                         <Button
                             onClick={this.onReplaceContactNameClick.bind(this, contactIndex, contact.replaceName)}
                         >
