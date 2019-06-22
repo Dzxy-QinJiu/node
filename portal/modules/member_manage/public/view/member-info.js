@@ -519,21 +519,6 @@ class MemberInfo extends React.Component {
                     />
                 </div>
                 <div className="basic-info-item">
-                    <span className="basic-info-label">{Intl.get('user.manage.phone.order', '座席号')}:</span>
-                    <BasicEditInputField
-                        width={EDIT_FEILD_LESS_WIDTH}
-                        id={memberInfo.id}
-                        value={memberInfo.phoneOrder}
-                        field="phone_order"
-                        type="text"
-                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
-                        placeholder={Intl.get('user.position.number.tips', '请输入座席号')}
-                        saveEditInput={this.saveEditMemberInfo.bind(this, 'phone_order')}
-                        noDataTip={Intl.get('sales.team.add.sales.team', '添加')}
-                        addDataTip={Intl.get('sales.team.add.sales.team', '添加')}
-                    />
-                </div>
-                <div className="basic-info-item">
                     <span className="basic-info-label">{Intl.get('member.create.time', '创建时间')}:</span>
                     <BasicEditDateField
                         width={EDIT_FEILD_WIDTH}
