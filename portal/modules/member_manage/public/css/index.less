@@ -21,7 +21,11 @@
           .member-list-table-wrap {
             .antc-table {
               .ant-table tbody tr {
+                cursor: pointer;
                 background:#fff !important;
+              }
+              .ant-table tbody .current-row, .ant-table tbody .current-row:hover {
+                background: #E4F2FE !important;
               }
               .ant-table td,.ant-table th {
                 border-bottom:1px solid #F5F5F5 !important;
@@ -53,9 +57,6 @@
                 .member-status {
                   color: #999;
                 }
-              }
-              .current-row, .current-row:hover {
-                background: #E4F2FE !important;
               }
             }
           }

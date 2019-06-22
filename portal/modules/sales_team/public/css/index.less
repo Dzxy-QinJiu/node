@@ -205,12 +205,13 @@
           // table表格
           .member-list-table {
             border-top: 1px solid #E5E5E5;
-            .current-row, .current-row:hover{
-              background:#DFEAF3;
-            }
             .antc-table {
               .ant-table tbody tr {
                 background:#fff !important;
+                cursor: pointer;
+              }
+              .ant-table tbody .current-row, .ant-table tbody .current-row:hover {
+                background: #E4F2FE !important;
               }
               .ant-table td,.ant-table th {
                 border-bottom:1px solid #F5F5F5 !important;
@@ -263,9 +264,6 @@
                   color: #999;
                 }
               }
-              .current-row, .current-row:hover {
-                background: #E4F2FE !important;
-              }
             }
           }
         }
@@ -295,6 +293,9 @@
         overflow: hidden;
         padding-top: 80px;
         .ant-tabs {
+          .ant-tabs-bar {
+            margin-bottom: 0;
+          }
           border-left: 1px solid #E5E5E5;
           border-top: 1px solid #E5E5E5;
           .ant-tabs-bar .ant-tabs-nav .ant-tabs-tab{
@@ -302,19 +303,12 @@
           }
         }
         .sales-team-group {
-          width: @group-tree-width;
+          padding: 16px 24px 16px;
           font-size: 14px;
           .left-tree-ul {
-            padding: 16px 24px 16px;
             .sales-team-group-li {
               .sales-team-group-name-div {
                 cursor: pointer;
-                //左侧树项的背景设置
-                .item-border-style {
-                  position: absolute;
-                  height: 32px;
-                  width: 264px;
-                }
                 .left-tree-item-container {
                   .sales-team-group-info, .member-info {
                     position: relative;
@@ -377,15 +371,17 @@
                   }
                 }
                 &.select {
+                  width: 100%;
+                  background-color: #E4F2FE;
                   color: #2196F3;
-                  .item-border-style {
+                  .sale-team-tree-item-container {
                     background-color: #E4F2FE !important;
                   }
                 }
-
                 &:hover {
-                  .item-border-style {
-                    background-color: #F1F8FE;
+                  width: 100%;
+                  .sale-team-tree-item-container {
+                    background-color: #E4F2FE;
                   }
                   .tree-operation-icon {
                     display: block !important;
@@ -503,17 +499,14 @@
             cursor: default;
             height: @edit-team-form-height;
             .form {
-              padding: 10px;
-
               .ant-form-item {
                 margin-bottom: 6px;
                 position: relative;
                 left: 10px;
               }
               .edit-sales-team-btn-item {
-                padding-right: 12px;
-                max-width: 236px;
-                height: auto;
+                margin-top: 4px;
+                max-width: 240px;
                 .button-container{
                   margin-top: 5px;
                   .button-cancel, .button-save {
@@ -690,7 +683,7 @@
       }
     }
     &:hover {
-      background-color: #F1F8FE;
+      background-color: #E4F2FE;
     }
   }
 }
@@ -708,7 +701,7 @@
       height: 32px;
       &:hover {
         color: #2196F3;
-        background-color: #F1F8FE;
+        background-color: #E4F2FE;
       }
     }
   }
