@@ -205,13 +205,13 @@
           // table表格
           .member-list-table {
             border-top: 1px solid #E5E5E5;
-            .current-row, .current-row:hover{
-              background:#DFEAF3;
-            }
             .antc-table {
               .ant-table tbody tr {
                 background:#fff !important;
                 cursor: pointer;
+              }
+              .ant-table tbody .current-row, .ant-table tbody .current-row:hover {
+                background: #E4F2FE !important;
               }
               .ant-table td,.ant-table th {
                 border-bottom:1px solid #F5F5F5 !important;
@@ -263,9 +263,6 @@
                 .member-status {
                   color: #999;
                 }
-              }
-              .current-row, .current-row:hover {
-                background: #E4F2FE !important;
               }
             }
           }
