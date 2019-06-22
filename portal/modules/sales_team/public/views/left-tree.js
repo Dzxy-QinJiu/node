@@ -13,6 +13,8 @@ import {SearchInput} from 'antc';
 const SalesTeamAction = require('../action/sales-team-actions');
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
+const TAB_HAED_HEIGHT = 40; // tabs 头部高度
+
 
 function noop() {
 }
@@ -363,11 +365,6 @@ class LeftTree extends React.Component {
         }
         return (
             <div className={formClass}>
-                {
-                    this.props.isEditGroupFlag ? null : (
-                        <div className="item-border-style"></div>
-                    )
-                }
                 <GroupFrom
                     cancelSalesTeamForm={this.cancelEditGroup.bind(this,item )}
                     salesTeam={item}
@@ -387,7 +384,6 @@ class LeftTree extends React.Component {
 
         return (
             <div className={btnClass} onClick={this.onSelectGroup.bind(this, item )}>
-                <div className="item-border-style"></div>
                 {this.element(item, type)}
             </div>
         );
@@ -458,7 +454,7 @@ class LeftTree extends React.Component {
         }
         return (
             <div className="sales-team-group"
-                style={{height: this.props.containerHeight}}
+                style={{height: this.props.containerHeight - TAB_HAED_HEIGHT}}
                 data-tracename="部门列表"
             >
                 <div className="sales-team-tree-container" style={{height: scrollHeight}} data-tracename="团队列表">
