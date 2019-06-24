@@ -175,7 +175,7 @@ class TopBar extends React.Component {
             }
         }
 
-        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime, interval);
+        dateSelectorEmitter.emit(dateSelectorEmitter.SELECT_DATE, startTime, endTime, interval, range);
     };
 
     componentWillReceiveProps(nextProps) {
