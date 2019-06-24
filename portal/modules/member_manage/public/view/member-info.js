@@ -164,13 +164,11 @@ class MemberInfo extends React.Component {
     };
 
     //修改的所属团队成功后的处理
-    afterEditTeamSuccess = (user) => {
+    afterEditTeamSuccess = (member) => {
         //更新详情中的所属团队
-        let updateTeam = _.find(this.state.userTeamList, team => team.group_id === user.team);
+        let updateTeam = _.find(this.state.userTeamList, team => team.group_id === member.team);
         MemberManageAction.updateMemberTeam(updateTeam);
-        if (_.isFunction(this.props.afterEditTeamSuccess)) {
-            this.props.afterEditTeamSuccess(user);
-        }
+        this.props.changeMemberFieldSuccess({...member, teamName: _.get(updateTeam, 'group_name')});
     };
 
     afterEditRoleSuccess = (user) => {
@@ -413,6 +411,7 @@ class MemberInfo extends React.Component {
         //更新详情中的职务
         let updatePosition = _.find(this.state.salesRoleList, position => position.id === member.position);
         MemberManageAction.updateMemberPosition(updatePosition);
+        this.props.changeMemberFieldSuccess({...member, positionName: _.get(updatePosition, 'name')});
     };
     // 保存职务
     saveEditPosition = (saveObj, successFunc, errorFunc) => {
@@ -847,7 +846,6 @@ MemberInfo.propTypes = {
     memberInfo: PropTypes.object,
     isContinueAddButtonShow: PropTypes.bool,
     deleteCard: PropTypes.func,
-    afterEditTeamSuccess: PropTypes.func,
     afterEditRoleSuccess: PropTypes.func,
     changeMemberFieldSuccess: PropTypes.func,
     updateMemberStatus: PropTypes.func,
