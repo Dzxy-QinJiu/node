@@ -499,12 +499,14 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
             this.teamMemberListTipMsg = '';
             //当前展示组的信息
             let curTeamId = _.get(this.curShowTeamMemberObj, 'groupId');
+            let teamName = _.get(this.curShowTeamMemberObj, 'groupName');
             let curShowTeam = _.find(this.salesTeamList, team => team.group_id === curTeamId);
             // 负责人
             let ownerId = _.get(curShowTeam, 'owner_id');
             if (ownerId) {
                 let owner = _.find(salesTeamMemberList, member => ownerId === member.userId);
                 if (owner) {
+                    owner.teamName = teamName;
                     owner.role = 'owner';
                     this.curShowTeamMemberObj.owner = owner;
                 }
@@ -518,6 +520,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 _.each(managerIds, (id) => {
                     let manager = _.find(salesTeamMemberList, member => id === member.userId);
                     if (manager) {
+                        manager.teamName = teamName;
                         manager.role = 'manager';
                         managers.push(manager);
                     }
@@ -531,6 +534,7 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
                 _.each(userIds, (id) => {
                     let user = _.find(salesTeamMemberList, item => id === item.userId);
                     if (user) {
+                        user.teamName = teamName;
                         user.role = 'user';
                         users.push(user);
                     }
