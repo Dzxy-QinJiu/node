@@ -697,15 +697,17 @@ class ClueToCustomerPanel extends React.Component {
     render() {
         return (
             <RightPanel
-                className="clue_customer_rightpanel clue-to-customer-panel"
+                className="clue-right-panel clue-to-customer-panel"
                 showFlag={this.props.showFlag}
                 data-tracename="线索转客户面板"
             >
                 <span className="iconfont icon-close clue-right-btn" onClick={this.props.hidePanel} data-tracename="关闭线索转客户面板"></span>
-                <div className="clue-detail-wrap">
-                    <div className="panel-content">
-                        {this.state.viewType === VIEW_TYPE.CUSTOMER_LIST ? this.renderCustomerList() : null}
-                        {this.state.viewType === VIEW_TYPE.CUSTOMER_MERGE ? this.renderCustomerMerge() : null}
+                <div className="right-panel-content">
+                    <div className="clue-detail-wrap">
+                        <div className="panel-content">
+                            {this.state.viewType === VIEW_TYPE.CUSTOMER_LIST ? this.renderCustomerList() : null}
+                            {this.state.viewType === VIEW_TYPE.CUSTOMER_MERGE ? this.renderCustomerMerge() : null}
+                        </div>
                     </div>
                 </div>
             </RightPanel>
