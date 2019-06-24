@@ -21,26 +21,27 @@ exports.User = function(opts) {
 
 exports.toFrontObject = function(restObject) {
     let frontObj = {};
-    frontObj.id = restObject.user_id;
-    frontObj.userName = restObject.user_name || '';
-    frontObj.name = restObject.nick_name || '';
-    frontObj.image = restObject.user_logo || '';
+    frontObj.id = restObject.user_id; // 成员id
+    frontObj.userName = restObject.user_name || ''; // 账号
+    frontObj.name = restObject.nick_name || ''; // 昵称
+    frontObj.image = restObject.user_logo || ''; // 图像
     frontObj.password = '密码******';
     frontObj.rePassword = '密码******';
-    frontObj.phone = restObject.phone || '';
-    frontObj.email = restObject.email || '';
+    frontObj.phone = restObject.phone || ''; // 手机
+    frontObj.email = restObject.email || ''; // 邮箱
+    frontObj.email = restObject.email || ''; // 邮箱
     frontObj.phoneOrder = restObject.phone_order || '';
-    frontObj.positionName = restObject.teamrole_name || '';
-    frontObj.positionId = restObject.position_id || '';
+    frontObj.positionName = restObject.teamrole_name || ''; // 职务
+    frontObj.positionId = restObject.teamrole_id || ''; // 职务id
     //邮箱是否激活的状态
     frontObj.emailEnable = restObject.email_enable;
-    let roles = restObject.roles || [];
+    let roles = restObject.roles || []; // 角色
     frontObj.roleIds = _.map(roles, 'role_id');
     frontObj.roleNames = _.map(roles, 'role_name');
     if (restObject.team_name) {
-        frontObj.teamName = restObject.team_name;
+        frontObj.teamName = restObject.team_name; // 部门
     }
-    if (restObject.team_id) {
+    if (restObject.team_id) { // 部门id
         frontObj.teamId = restObject.team_id;
     }
     let user_client = restObject.user_client;

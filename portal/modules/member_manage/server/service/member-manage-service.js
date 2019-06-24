@@ -117,8 +117,8 @@ exports.getCurUserById = function(req, res, memberId) {
         let detailObj = _.get(data, '[1]');
         if (positionObj) {
             detailObj = {...detailObj,
-                teamrole_name: positionObj.teamrole_name,
-                position_id: positionObj.id
+                teamrole_name: _.get(positionObj, 'teamrole_name'),
+                teamrole_id: _.get(positionObj, 'teamrole_id')
             };
         }
         if (detailObj) {
