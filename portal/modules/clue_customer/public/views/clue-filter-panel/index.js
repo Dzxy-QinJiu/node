@@ -149,7 +149,7 @@ class ClueFilterPanel extends React.Component {
     renderTimeRangeSelect = () => {
         return(
             <div className="time-range-wrap">
-                <span className="consult-time">{Intl.get('clue.analysis.consult.time', '咨询时间')}</span>
+                <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
                 <DatePicker
                     disableDateAfterToday={true}
                     range={this.state.timeType}
@@ -242,7 +242,7 @@ class ClueFilterPanel extends React.Component {
                 singleSelect: true,
                 data: filterClueStatus,
             },{
-                groupName: Intl.get('crm.sales.clue.source', '线索来源'),
+                groupName: Intl.get('clue.analysis.source', '来源'),
                 groupId: 'clue_source',
                 data: clueSourceArray.map(x => ({
                     name: x,
