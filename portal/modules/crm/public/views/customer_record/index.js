@@ -254,11 +254,11 @@ class CustomerRecord extends React.Component {
         this.getCustomerTraceList();
     };
 
-    saveAddTraceContent = () => {
+    saveAddTraceContent = (type) => {
         //顶部增加跟进记录的内容
         var customerId = this.state.customerId || '';
-        if (this.state.saveButtonType === 'add') {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
+        if (type === 'add') {
+            // Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
             //输入框中的内容
             var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
             var queryObj = {
@@ -276,7 +276,7 @@ class CustomerRecord extends React.Component {
             //补充跟进记录的内容
             var detail = _.trim(_.get(this.state, 'detailContent.value'));
             var item = this.state.edittingItem;
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
+            // Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
             var queryObj = {
                 id: item.id,
                 customer_id: item.customer_id || customerId,
@@ -328,9 +328,12 @@ class CustomerRecord extends React.Component {
             //点击补充客户跟踪记录编辑状态下的保存按钮
             var detail = _.trim(_.get(this.state, 'detailContent.value'));
             if (detail) {
-                CustomerRecordActions.setModalDialogFlag(true);
+                // CustomerRecordActions.setModalDialogFlag(true);
                 CustomerRecordActions.changeAddButtonType('update');
                 CustomerRecordActions.updateItem(item);
+                setTimeout(() => {
+                    this.saveAddTraceContent('update');
+                });
             } else {
                 CustomerRecordActions.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
@@ -339,8 +342,9 @@ class CustomerRecord extends React.Component {
             //点击顶部输入框下的保存按钮
             var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
             if (addcontent) {
-                CustomerRecordActions.setModalDialogFlag(true);
+                // CustomerRecordActions.setModalDialogFlag(true);
                 CustomerRecordActions.changeAddButtonType('add');
+                this.saveAddTraceContent('add');
             } else {
                 CustomerRecordActions.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
@@ -590,9 +594,11 @@ class CustomerRecord extends React.Component {
         let isEditRecord = item.remark && !this.props.disableEdit;
         //是否展示编辑按钮,有跟进内容(没有跟进内容时是补充跟进记录)，能编辑，并且没有正在编辑的跟进记录，并且没有正在添加跟进记录
         let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow;
+        // 换行处理
+        let remark = item.remark.replace(/[\n\r]/g,'<br/>');
         return (
             <div className="record-content-show">
-                {item.remark ? (<ShearContent>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
+                {item.remark ? (<ShearContent><span dangerouslySetInnerHTML={{__html: remark}}/></ShearContent>) : this.renderSupplementTip(item)}
                 {showEidtBtn ? <DetailEditBtn
                     title={Intl.get('common.edit', '编辑')}
                     onClick={this.editDetailContent.bind(this, item)}

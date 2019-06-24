@@ -131,14 +131,14 @@ CustomerRecordStore.prototype.addCustomerTrace = function(result) {
 };
 CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
     if (result.loading) {
-        this.addDetailLoading = true;
-        this.addDetailErrMsg = '';
-        this.addDetailSuccMsg = '';
+        this.addCustomerLoading = true;
+        this.addCustomerErrMsg = '';
+        this.addCustomerSuccMsg = '';
     } else if (result.error) {
         var _this = this;
-        this.addDetailLoading = false;
-        this.addDetailErrMsg = result.errorMsg;
-        this.addDetailSuccMsg = '';
+        this.addCustomerLoading = false;
+        this.addCustomerErrMsg = result.errorMsg;
+        this.addCustomerSuccMsg = '';
         var customerRecord = this.customerRecord;
         customerRecord.forEach(function(item) {
             if (item.id === _this.updateId) {
@@ -147,9 +147,9 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
         });
     } else {
         var _this = this;
-        this.addDetailLoading = false;
-        this.addDetailErrMsg = '';
-        this.addDetailSuccMsg = result.data.msg;
+        this.addCustomerLoading = false;
+        this.addCustomerErrMsg = '';
+        this.addCustomerSuccMsg = result.data.msg;
         this.isEdit = false;
         var customerRecord = this.customerRecord;
         customerRecord.forEach(item => {
