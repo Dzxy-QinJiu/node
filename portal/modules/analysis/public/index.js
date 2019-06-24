@@ -400,6 +400,10 @@ class CurtaoAnalysis extends React.Component {
             name: 'interval',
             value: 'day',
         }, {
+            //日期选择器上当前选择的时间区间
+            name: 'time_range',
+            value: initialTime.range,
+        }, {
             name: 'auth_type',
             value: authType,
             type: 'params',
@@ -458,6 +462,8 @@ class CurtaoAnalysis extends React.Component {
                 name: 'end_time',
             }, {
                 name: 'interval',
+            }, {
+                name: 'time_range',
             }],
         }];
     }

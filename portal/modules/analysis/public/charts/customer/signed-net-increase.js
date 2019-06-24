@@ -11,7 +11,13 @@ export function getSignedCustomerNetIncreaseChart(paramObj = {}) {
         title: '签约客户净增分析',
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/sign/customer',
-        argCallback: paramObj.argCallback,
+        argCallback: arg => {
+            paramObj.argCallback(arg);
+
+            let query = arg.query;
+            //用日期选择器上当前选择的时间区间作为查询的时间区间
+            query.interval = query.time_range;
+        },
         processData: (data, chart, analysisInstance) => {
             const conditions = _.cloneDeep(analysisInstance.state.conditions);
 
