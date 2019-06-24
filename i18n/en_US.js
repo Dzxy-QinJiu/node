@@ -3004,5 +3004,6 @@ var en_US = {
     'common.confirm.modify': 'confirm modify',//确认修改
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
+    'call.record.phone.err.msg': 'Wrong phone number'//电话号码错误
 };
 export default en_US;
