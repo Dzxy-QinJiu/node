@@ -1035,7 +1035,7 @@ class ClueCustomer extends React.Component {
                     );
                 }
             },{
-                title: Intl.get('common.operate': '操作'),
+                title: Intl.get('common.operate', '操作'),
                 className: 'invalid-td-clue',
                 width: '150px',
                 render: (text, salesClueItem, index) => {
