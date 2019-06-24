@@ -423,7 +423,9 @@ class ClueToCustomerPanel extends React.Component {
             //已经完成的ajax请求数
             let ajaxDoneNum = 0;
 
-            _.each(contacts, contact => {
+            const promises = [];
+
+            _.each(contacts, (contact, index) => {
                 //如果是新联系人
                 if (contact.isNew) {
                     contact = _.cloneDeep(this.refs[contact.id].state.formData);
@@ -449,53 +451,41 @@ class ClueToCustomerPanel extends React.Component {
                         }
                     });
 
-                    ajax.send({
+                    const promise = ajax.send({
                         url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
                         type: 'post',
                         data: contact
-                    })
-                        .done(result => {
-                            ajaxDoneNum++;
+                    });
 
-                            //合并相关的ajax请求全部完成时
-                            if (ajaxDoneNum === changedContacts.length) {
-                                message.success(Intl.get('common.merge.success', '合并成功'));
-
-                                this.props.onMerged();
-                            }
-                        })
-                        .fail(err => {
-                            message.error(err);
-                        });
+                    promises.push(promise);
                 } else {
-                    //如果没有需要更新的字段，直接返回
-                    if (_.isEmpty(contact.updateFields)) return;
-
                     //遍历需要更新的字段
                     _.each(contact.updateFields, field => {
-                        ajax.send({
+
+                        const promise = ajax.send({
                             url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
                             type: 'put',
                             data: contact
-                        })
-                            .done(result => {
-                                ajaxDoneNum++;
+                        }, `clueToCustomer${index}`);
 
-                                //合并相关的ajax请求全部完成时
-                                if (ajaxDoneNum === changedContacts.length) {
-                                    message.success(Intl.get('common.merge.success', '合并成功'));
-
-                                    this.props.onMerged();
-                                }
-                            })
-                            .fail(err => {
-                                message.error(err);
-                            });
+                        promises.push(promise);
                     });
 
                     delete contact.updateFields;
                 }
             });
+
+            $.when(...promises)
+                .done(() => {
+                    message.success(Intl.get('common.merge.success', '合并成功'));
+
+                    this.props.onMerged();
+                })
+                .fail(err => {
+                    const content = _.isArray(err) ? err.join('; ') : err;
+
+                    message.error(content);
+                });
         }
     }
 
