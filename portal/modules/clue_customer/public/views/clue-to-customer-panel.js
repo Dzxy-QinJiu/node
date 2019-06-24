@@ -281,7 +281,7 @@ class ClueToCustomerPanel extends React.Component {
                 }, this.setMergedCustomer);
             })
             .fail(err => {
-                message.success(err);
+                message.error(err);
             });
     }
 
@@ -416,67 +416,87 @@ class ClueToCustomerPanel extends React.Component {
         const contacts = this.state.customerContacts;
         const clueId = this.props.clue.id;
 
-        _.each(contacts, contact => {
-            //如果是新联系人
-            if (contact.isNew) {
-                contact = _.cloneDeep(this.refs[contact.id].state.formData);
+        //变化了的联系人（新增或需要更新的）
+        const changedContacts = _.filter(contacts, contact => contact.isNew || !_.isEmpty(contact.updateFields));
 
-                if (contact.birthday) {
-                    //将moment格式的值转为时间戳
-                    contact.birthday = contact.birthday.valueOf();
-                }
+        if (!_.isEmpty(changedContacts)) {
+            //已经完成的ajax请求数
+            let ajaxDoneNum = 0;
 
-                const fields = ['phone', 'qq', 'weChat', 'email'];
+            _.each(contacts, contact => {
+                //如果是新联系人
+                if (contact.isNew) {
+                    contact = _.cloneDeep(this.refs[contact.id].state.formData);
 
-                _.each(contact, (value, key) => {
-                    const keyWithoutIndex = key.substr(0, key.length - 1);
-
-                    if (_.includes(fields, keyWithoutIndex)) {
-                        if (!contact[keyWithoutIndex]) {
-                            contact[keyWithoutIndex] = [value];
-                        } else {
-                            contact[keyWithoutIndex].push(value);
-                        }
-
-                        delete contact[key];
+                    if (contact.birthday) {
+                        //将moment格式的值转为时间戳
+                        contact.birthday = contact.birthday.valueOf();
                     }
-                });
 
-                ajax.send({
-                    url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
-                    type: 'post',
-                    data: contact
-                })
-                    .done(result => {
-                        message.success(Intl.get('common.merge.success', '合并成功'));
-                        this.props.onMerged();
-                    })
-                    .fail(err => {
-                        message.success(err);
+                    const fields = ['phone', 'qq', 'weChat', 'email'];
+
+                    _.each(contact, (value, key) => {
+                        const keyWithoutIndex = key.substr(0, key.length - 1);
+
+                        if (_.includes(fields, keyWithoutIndex)) {
+                            if (!contact[keyWithoutIndex]) {
+                                contact[keyWithoutIndex] = [value];
+                            } else {
+                                contact[keyWithoutIndex].push(value);
+                            }
+
+                            delete contact[key];
+                        }
                     });
-            } else {
-                //如果没有需要更新的字段，直接返回
-                if (_.isEmpty(contact.updateFields)) return;
 
-                //遍历需要更新的字段
-                _.each(contact.updateFields, field => {
                     ajax.send({
-                        url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
-                        type: 'put',
+                        url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
+                        type: 'post',
                         data: contact
                     })
                         .done(result => {
-                            message.success(Intl.get('common.merge.success', '合并成功'));
-                            this.props.onMerged();
+                            ajaxDoneNum++;
+
+                            //合并相关的ajax请求全部完成时
+                            if (ajaxDoneNum === changedContacts.length) {
+                                message.success(Intl.get('common.merge.success', '合并成功'));
+
+                                this.props.onMerged();
+                            }
                         })
                         .fail(err => {
-                            message.success(err);
+                            message.error(err);
                         });
-                });
+                } else {
+                    //如果没有需要更新的字段，直接返回
+                    if (_.isEmpty(contact.updateFields)) return;
 
-                delete contact.updateFields;
-            }
-        });
+                    //遍历需要更新的字段
+                    _.each(contact.updateFields, field => {
+                        ajax.send({
+                            url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
+                            type: 'put',
+                            data: contact
+                        })
+                            .done(result => {
+                                ajaxDoneNum++;
+
+                                //合并相关的ajax请求全部完成时
+                                if (ajaxDoneNum === changedContacts.length) {
+                                    message.success(Intl.get('common.merge.success', '合并成功'));
+
+                                    this.props.onMerged();
+                                }
+                            })
+                            .fail(err => {
+                                message.error(err);
+                            });
+                    });
+
+                    delete contact.updateFields;
+                }
+            });
+        }
     }
 
     //渲染客户列表项
