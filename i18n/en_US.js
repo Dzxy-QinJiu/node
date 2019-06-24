@@ -2151,8 +2151,8 @@ var en_US = {
     'errorcode.131': 'Illegal request',//非法请求
     'errorcode.132': 'unknown mistake',//未知错误
     'errorcode.133': 'The server is busy or the network is not working properly. Please try again later',//服务器繁忙或网络不正常，请稍后再试
-    'errorcode.134': 'Failed to add customer trace record',//添加客户跟踪记录失败
-    'errorcode.135': 'Failed to get customer trace record',//获取客户跟踪记录失败
+    'errorcode.134': 'Failed to add trace record',//添加跟进记录失败
+    'errorcode.135': 'Failed to get trace record',//获取跟进记录失败
     'errorcode.136': 'Failed to update customer trace record',//更新客户跟踪记录失败
     'errorcode.137': 'You have not open this application yet',//您尚未开通此应用
     'errorcode.138': 'This seat number is existed',//座席号已存在！

@@ -951,7 +951,10 @@ class ClueCustomer extends React.Component {
         var hasTrace = classNames('clue-status-tab', {'active-has-trace': SELECT_TYPE.HAS_TRACE === typeFilter.status});
         var invalidClue = classNames('clue-status-tab', {'active-invalid-clue': filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY});
         var statics = this.state.agg_list;
-        return <span className="clue-status-wrap">
+        const clueStatusCls = classNames('clue-status-wrap',{
+            'show-clue-filter': this.state.showFilterList
+        });
+        return <span className={clueStatusCls}>
             {isSalesRole() ? null : <span className={willDistCls}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span className="clue-status-num">{_.get(statics,'willDistribute','')}</span>
@@ -971,18 +974,17 @@ class ClueCustomer extends React.Component {
         </span>;
     };
    showClueDetailPanel = (salesClueItem) => {
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
-            clue_params: {
-                curClue: salesClueItem,
-                currentId: salesClueItem.id
-            }
-        });
-    };
+       phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+           clue_params: {
+               curClue: salesClueItem,
+               currentId: salesClueItem.id
+           }
+       });
+   };
     getClueTableColunms = () => {
         const column_width = '80px';
         let columns = [
             {
-                title: this.getClueTypeTab(),
                 dataIndex: 'clue_name',
                 width: '350px',
                 render: (text, salesClueItem, index) => {
@@ -1080,8 +1082,9 @@ class ClueCustomer extends React.Component {
                         </div>
                     );
                 }
-            },{
-                title: Intl.get('common.operate', '操作'),
+            }];
+        if (!isSalesRole()){
+            columns.push({
                 className: 'invalid-td-clue',
                 width: '150px',
                 render: (text, salesClueItem, index) => {
@@ -1450,24 +1453,24 @@ class ClueCustomer extends React.Component {
 
     renderClueCustomerBlock = () => {
         var divHeight = getTableContainerHeight();
-        // if (this.state.curClueLists.length) {
-        return (
-            <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
-                <div className="clue-customer-list"
-                    style={{height: divHeight + LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
-                    id="area"
-                >
-                    {this.renderClueCustomerLists()}
+        if (this.state.curClueLists.length) {
+            return (
+                <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
+                    <div className="clue-customer-list"
+                        style={{height: divHeight + LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                        id="area"
+                    >
+                        {this.renderClueCustomerLists()}
+                    </div>
+                    {this.state.customersSize ?
+                        <BottomTotalCount
+                            totalCount={Intl.get('crm.215', '共{count}个线索', {'count': this.state.customersSize})}/>
+                        : null}
                 </div>
-                {this.state.customersSize ?
-                    <BottomTotalCount
-                        totalCount={Intl.get('crm.215', '共{count}个线索', {'count': this.state.customersSize})}/>
-                    : null}
-            </div>
-        );
-        // }else{
-        //     return null;
-        // }
+            );
+        }else{
+            return null;
+        }
     };
 
     showNoMoreDataTip = () => {
@@ -1525,20 +1528,17 @@ class ClueCustomer extends React.Component {
                 </div>
             );
         }
-
-        // else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
-        //     //如果有筛选条件时
-        //     return (
-        //         <NoDataIntro
-        //             noDataAndAddBtnTip={Intl.get('clue.no.data','暂无线索信息')}
-        //             renderAddAndImportBtns={this.renderAddAndImportBtns}
-        //             showAddBtn={this.hasNoFilterCondition()}
-        //             noDataTip={Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}
-        //         />
-        //     );
-        //
-        //
-        // }
+        else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
+            //如果有筛选条件时
+            return (
+                <NoDataIntro
+                    noDataAndAddBtnTip={Intl.get('clue.no.data','暂无线索信息')}
+                    renderAddAndImportBtns={this.renderAddAndImportBtns}
+                    showAddBtn={this.hasNoFilterCondition()}
+                    noDataTip={Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}
+                />
+            );
+        }
         else {
             //渲染线索列表
             return this.renderClueCustomerBlock();
@@ -1885,6 +1885,7 @@ class ClueCustomer extends React.Component {
                             />
                         </div>
                         <div className={contentClassName}>
+                            {this.getClueTypeTab()}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
                     </div>
@@ -1918,16 +1919,6 @@ class ClueCustomer extends React.Component {
                         regRules={XLS_FILES_TYPE_RULES}
                         downLoadFileName={Intl.get('sales.home.customer', '客户') + '.xls'}
                     />
-                    {/*{this.state.rightPanelIsShow ?*/}
-                    {/*<ClueRightPanel*/}
-                    {/*showFlag={this.state.rightPanelIsShow}*/}
-                    {/*currentId={this.state.currentId}*/}
-                    {/*curClue={this.state.curClue}*/}
-                    {/*ShowCustomerUserListPanel = {this.ShowCustomerUserListPanel}*/}
-                    {/*hideRightPanel={this.hideRightPanel}*/}
-                    {/*updateCustomerLastContact={this.updateCustomerLastContact}*/}
-                    {/*/> : null}*/}
-
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}

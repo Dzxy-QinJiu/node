@@ -315,8 +315,12 @@ ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
     //这个updateItemId可能是一个id，也可能是多个id
     var clueIds = updateItemId.split(',');
     //如果是待分配状态，分配完之后要在列表中删除一个
-    this.curClueLists = _.filter(this.curClueLists, clue => _.indexOf(clueIds, clue.id) === -1);
-    this.customersSize = _.get(this,'curClueLists.length',0);
+    this.curClueLists = _.filter(this.curClueLists, clue => {
+        if (_.indexOf(clueIds, clue.id) !== -1){
+            this.customersSize--;
+            this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
+        }
+        return _.indexOf(clueIds, clue.id) === -1;});
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];
@@ -336,7 +340,6 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
 //更新线索列表
 ClueCustomerStore.prototype.updateClueCustomers = function(data) {
     this.curClueLists = data;
-    this.customersSize = _.get(this,'curClueLists.length');
 };
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
 ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
