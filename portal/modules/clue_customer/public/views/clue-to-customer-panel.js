@@ -113,7 +113,7 @@ class ClueToCustomerPanel extends React.Component {
                 contactForm = $(contactForm);
 
                 //给联系人表单设置折叠效果
-                this.setFoldingEffect(contactForm);
+                this.setFormHeight(contactForm);
 
                 //隐藏滚动条
                 this.hideScrollBar(contactForm);
@@ -151,54 +151,20 @@ class ClueToCustomerPanel extends React.Component {
                     this.hideScrollBar(contactForm);
 
                     //给联系人表单设置折叠效果
-                    this.setFoldingEffect(contactForm);
+                    this.setFormHeight(contactForm);
                 });
             });
         }
     }
 
-    //给联系人表单设置折叠效果
-    setFoldingEffect(contactForm) {
-        //折叠按钮
-        let foldingBtn = contactForm.find('.folding-btn');
+    //给联系人表单设置合适的高度
+    setFormHeight(contactForm) {
+        //性别项
+        const gendarItem = contactForm.find('.contact-sex-item');
 
-        if (!foldingBtn.length) {
-            foldingBtn = $('<div/>');
-            foldingBtn.addClass('folding-btn clickable');
-            const expandBtnText = Intl.get('notification.system.more', '展开全部') + ' ∨';
-            const closeBtnText = Intl.get('crm.contact.way.hide', '收起') + ' ∧';
-            foldingBtn.text(expandBtnText);
-
-            const gendarItem = contactForm.find('.contact-sex-item');
-
-            gendarItem.before(foldingBtn);
-
-            const properHeight = gendarItem.offset().top - contactForm.offset().top; 
-
-            contactForm.height(properHeight);
-
-            foldingBtn.click(function() {
-                const self = $(this);
-
-                if (self.hasClass('expand')) {
-                    contactForm.height(properHeight);
-                    self.removeClass('expand');
-                    foldingBtn.text(expandBtnText);
-                } else {
-                    contactForm.height('auto');
-                    self.addClass('expand');
-                    foldingBtn.text(closeBtnText);
-                }
-            });
-        } else {
-            if (!foldingBtn.hasClass('expand')) {
-                const gendarItem = contactForm.find('.contact-sex-item');
-
-                const properHeight = gendarItem.offset().top - contactForm.offset().top; 
-
-                contactForm.height(properHeight);
-            }
-        }
+        //计算高度，将性别项连同其下面的表单项排除在高度之外，以达到隐藏这些表单项的效果
+        const properHeight = gendarItem.offset().top - contactForm.offset().top; 
+        contactForm.height(properHeight);
     }
 
     //联系人Store变更处理事件
