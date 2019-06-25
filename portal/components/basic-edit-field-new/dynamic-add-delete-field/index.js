@@ -148,7 +148,8 @@ class DynamicAddDelField extends React.Component {
     setEditable = (e) => {
         this.setState({
             displayType: 'edit',
-            value: this.props.value
+            value: this.props.value,
+            item_keys: this.getInitItemKeys(this.props.value)
         });
         Trace.traceEvent(e, '点击编辑' + this.props.field);
     }

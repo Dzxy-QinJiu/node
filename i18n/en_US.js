@@ -2092,7 +2092,7 @@ var en_US = {
     'errorcode.68': 'Permission denied',//没有权限
     'errorcode.69': 'Failed to migrate customer',//迁移客户失败
     'errorcode.70': 'Failed to delete customer',//删除客户失败
-    'errorcode.71': 'Contact information already exists',//联系方式已存在
+    'errorcode.71': 'The phone number already exists',//电话号码已存在
     'errorcode.72': 'The reminder time must be later than the current time',//提醒时间必须大于当前时间
     'errorcode.73': 'Failed to add the contact person',//添加联系人失败
     'errorcode.74': 'The customer does not exist',//客户不存在

@@ -114,7 +114,7 @@ class ContactItem extends React.Component {
     renderItemSelfSettingForm = (key, index, that) => {
         const fieldKey = `${that.props.field}[${key}]`;
         let initValue = _.get(that.state, `value[${key}]`, '');
-        let validateRules = [];
+        let validateRules = this.getPhoneInputValidateRules(that);
         if (index === 0) {//电话必填的验证
             validateRules = _.concat(validateRules, [{
                 required: true,
@@ -220,8 +220,22 @@ class ContactItem extends React.Component {
         });
     }
 
+    //获取当前已添加的电话列表
+    getCurPhoneArray(that) {
+        let formData = that.props.form.getFieldsValue();
+        let phoneArray = [];
+        _.each(formData, (val, key) => {
+            if (key.indexOf('phone') !== -1) {
+                phoneArray = _.map(val, item => {
+                    return _.trim(item);
+                });
+            }
+        });
+        return phoneArray;
+    }
+
     //获取联系人电话验证规则
-    getPhoneInputValidateRules() {
+    getPhoneInputValidateRules(that) {
         return [{
             validator: (rule, value, callback) => {
                 value = _.trim(value);
@@ -229,25 +243,39 @@ class ContactItem extends React.Component {
                     let phone = value.replace('-', '');
                     let contact = this.props.contact.contact;
                     let phoneArray = contact && _.isArray(contact.phone) ? contact.phone : [];
+                    //获取当前已添加的电话列表
+                    let curPhoneArray = this.getCurPhoneArray(that);
+                    // 判断当前添加的电话列表中是否已存在该电话
+                    let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
-                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                        CrmAction.checkOnlyContactPhone(phone, data => {
-                            if (_.isString(data)) {
-                                //唯一性验证出错了
-                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-                            } else {
-                                if (_.isObject(data) && data.result === 'true') {
-                                    callback();
+                        if (phoneCount.length > 1) {
+                            //当前添加的电话列表已存在该电话，再添加时（重复添加）
+                            callback(Intl.get('crm.83', '该电话已存在'));
+                        } else {
+                            //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
+                            CrmAction.checkOnlyContactPhone(phone, data => {
+                                if (_.isString(data)) {
+                                    //唯一性验证出错了
+                                    callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                                 } else {
-                                    //已存在
-                                    callback(Intl.get('crm.83', '该电话已存在'));
+                                    if (_.isObject(data) && data.result === 'true') {
+                                        callback();
+                                    } else {
+                                        //已存在
+                                        callback(Intl.get('crm.83', '该电话已存在'));
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     } else {//该联系人员电话列表中已存在该电话
-                        // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
-                        callback();
+                        if (phoneCount.length > 1) {
+                            //该联系人中的电话列表已存在该电话，再添加时（重复添加）
+                            callback(Intl.get('crm.83', '该电话已存在'));
+                        } else {
+                            // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
+                            callback();
+                        }
                     }
                 } else {
                     callback();
@@ -341,7 +369,6 @@ class ContactItem extends React.Component {
                         label={Intl.get('common.phone', '电话')}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('crm.95', '请输入联系人电话')}
-                        validateRules={this.getPhoneInputValidateRules()}
                         saveEditData={this.saveContactInfo.bind(this, 'phone')}
                         noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
                         addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
