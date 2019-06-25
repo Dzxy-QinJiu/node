@@ -21,7 +21,6 @@ const {TextArea} = Input;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
-import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
@@ -646,7 +645,7 @@ class ClueCustomer extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
         this.setState({
             isEdittingItem: updateItem,
-            submitContent: this.getSubmitContent(updateItem)
+            submitContent: ''
         }, () => {
             if (this['changeTextare' + updateItem.id]) {
                 this['changeTextare' + updateItem.id].focus();
@@ -654,9 +653,12 @@ class ClueCustomer extends React.Component {
         });
     };
     handleInputChange = (e) => {
-        this.setState({
-            submitContent: e.target.value
-        });
+        e.preventDefault();
+        //todo 如果用setState方法页面会卡顿
+        this.state.submitContent = e.target.value;
+        // this.setState({
+        //     submitContent: e.target.value
+        // });
     };
     handleSubmitContent = (item) => {
         if (this.state.submitTraceLoading) {
@@ -731,7 +733,7 @@ class ClueCustomer extends React.Component {
         this.setState({
             submitTraceErrMsg: '',
             isEdittingItem: {},
-            submitContent: this.getSubmitContent(this.state.salesClueItemDetail)
+            submitContent: ''
         });
     };
 
@@ -755,9 +757,8 @@ class ClueCustomer extends React.Component {
                         />
                     </div>
                 ) : null}
-                <TextArea ref={changeTextare => this['changeTextare' + salesClueItem.id] = changeTextare} type='textarea' value={this.state.submitContent}
-                    placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
-                    onChange={this.handleInputChange}/>
+                <TextArea onScroll={event => event.stopPropagation()} ref={changeTextare => this['changeTextare' + salesClueItem.id] = changeTextare} placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')} onChange={this.handleInputChange}
+                />
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleSubmitContent.bind(this, salesClueItem)}
                         disabled={this.state.submitTraceLoading} data-tracename="保存跟进内容">
@@ -1518,9 +1519,8 @@ class ClueCustomer extends React.Component {
             //如果有筛选条件时
             return (
                 <NoDataIntro
-                    noDataAndAddBtnTip={Intl.get('clue.no.data','暂无线索信息')}
                     renderAddAndImportBtns={this.renderAddAndImportBtns}
-                    showAddBtn={this.hasNoFilterCondition()}
+                    showAddBtn={false}
                     noDataTip={Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}
                 />
             );
