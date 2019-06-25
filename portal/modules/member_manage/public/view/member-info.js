@@ -54,7 +54,7 @@ class MemberInfo extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.memberInfo.id !== this.state.memberInfo.id) {
+        if (_.get(nextProps, 'memberInfo.id') && _.get(nextProps, 'memberInfo.id') !== this.state.memberInfo.id) {
             setTimeout(() => {
                 this.getUserData(nextProps.memberInfo);
             });

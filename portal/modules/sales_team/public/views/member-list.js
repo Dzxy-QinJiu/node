@@ -325,22 +325,20 @@ const MemberList = createReactClass({
             key: 'nickName',
             width: '40%',
             render: (name, record) => {
-                let memberNameCls = classNames('member-name', this.memberStatusClass(_.get(record, 'status')));
-                let role = _.get(record, 'role');
+                let memberNameCls = classNames('member-name', this.memberStatusClass(record.status));
+                let role = record.role;
                 let iconClass = classNames('iconfont', {
                     'icon-team-role': role === 'owner',
                     'icon-sale-team-manager': role === 'manager',
-                    'sale-status-stop': _.get(record, 'status') === 0
+                    'sale-status-stop': record.status === 0
                 });
                 return (
                     <div className={memberNameCls}>
                         <div className='accout'>
                             <i className={iconClass}/>
-                            <span>
-                                {_.get(record, 'nickName')}
-                            </span>
+                            <span> {record.nickName}</span>
                         </div>
-                        <div className='nickname'>{_.get(record, 'userName')}</div>
+                        <div className='nickname'>{record.userName}</div>
                     </div>
                 );
             }
@@ -350,7 +348,7 @@ const MemberList = createReactClass({
             key: 'teamName',
             width: '20%',
             render: (teamName, record) => {
-                let teamCls = this.memberStatusClass(_.get(record, 'status'));
+                let teamCls = this.memberStatusClass(record.status);
                 return (
                     <div className={teamCls}>
                         {teamName}
@@ -363,11 +361,10 @@ const MemberList = createReactClass({
             key: 'position',
             width: '20%',
             render: (position , record) => {
-                let positionCls = this.memberStatusClass(_.get(record, 'status'));
-                let positionName = _.get(record, 'teamRoleName');
+                let positionCls = this.memberStatusClass(record.status);
                 return (
                     <div className={positionCls}>
-                        {positionName}
+                        {record.teamRoleName}
                     </div>
                 );
             }
@@ -377,7 +374,7 @@ const MemberList = createReactClass({
             key: 'phone',
             width: '20%',
             render: (phone, record) => {
-                let phoneCls = this.memberStatusClass(_.get(record, 'status'));
+                let phoneCls = this.memberStatusClass(record.status);
                 return (
                     <div className={phoneCls}>
                         {phone}

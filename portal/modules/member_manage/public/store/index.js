@@ -171,23 +171,24 @@ class MemberManageStore {
         if (_.isObject(modifiedMember)) {
             let memberList = this.memberList;
             let changeMember = _.find(memberList, item => item.id === modifiedMember.user_id || item.id === modifiedMember.id);
-            // 成员启停状态
-            let status = _.get(modifiedMember, 'status');
-            if (status) {
+
+            let status = _.get(modifiedMember, 'status'); // 成员启停状态
+            let nick_name = _.get(modifiedMember, 'nick_name'); // 昵称
+            let user_logo = _.get(modifiedMember, 'user_logo'); // 头像
+            let phone = _.get(modifiedMember, 'phone'); // 手机
+            let email = _.get(modifiedMember, 'email'); // 邮箱
+            let teamName = _.get(modifiedMember, 'teamName'); // 部门
+            let positionName = _.get(modifiedMember, 'positionName'); // 职务
+
+            if (status) { // 修改成员状态
                 changeMember.status = status;
-            }
-            // 昵称
-            let nick_name = _.get(modifiedMember, 'nick_name');
-            if (nick_name) {
+            } else if (nick_name) { // 修改成员昵称
                 changeMember.name = nick_name;
                 //如果修改当前登录的用户时 修改完成后刷新左下角用户头像(没有头像的是通过昵称的第一个字来代替头像)
                 userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
                     nickName: modifiedMember.name
                 });
-            }
-            // 头像
-            let user_logo = _.get(modifiedMember, 'user_logo');
-            if (user_logo) {
+            } else if (user_logo) { // 修改头像
                 changeMember.image = user_logo;
                 if (userData.getUserData().user_id === modifiedMember.user_id) {
                     //如果修改当前登录的用户时 修改完成后刷新左下角用户头像
@@ -195,28 +196,15 @@ class MemberManageStore {
                         userLogo: modifiedMember.user_logo
                     });
                 }
-            }
-            // 手机
-            let phone = _.get(modifiedMember, 'phone');
-            if (phone) {
+            } else if (phone) { // 修改成员手机
                 changeMember.phone = phone;
-            }
-            // 邮箱
-            let email = _.get(modifiedMember, 'email');
-            if (email) {
+            } else if (email) { // 修改成员邮箱
                 changeMember.email = email;
                 changeMember.emailEnable = false; // 修改邮箱后，邮箱的激活状态改为未激活
-            }
-            // 部门
-            let teamName = _.get(modifiedMember, 'teamName');
-            if (teamName) {
+            } else if (teamName) { // 修改成员部门
                 changeMember.teamName = teamName;
                 changeMember.teamId = _.get(modifiedMember, 'team');
-            }
-
-            // 职务
-            let positionName = _.get(modifiedMember, 'positionName');
-            if (positionName) {
+            } else if (positionName) { // 修改成员职务
                 changeMember.positionName = positionName;
                 changeMember.positionId = _.get(modifiedMember, 'position');
             }
