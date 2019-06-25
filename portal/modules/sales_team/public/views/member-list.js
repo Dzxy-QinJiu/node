@@ -1236,7 +1236,6 @@ const MemberList = createReactClass({
         SalesTeamAction.updateCurShowTeamMemberObj(member);
         //对左边数据重新进行获取
         SalesTeamAction.getTeamMemberCountList();
-        this.closeRightPanel();
     },
 
     // 修改成员详情中职务信息后的处理

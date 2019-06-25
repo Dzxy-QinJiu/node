@@ -167,10 +167,11 @@ class MemberInfo extends React.Component {
     afterEditTeamSuccess = (member) => {
         //更新详情中的所属团队
         let updateTeam = _.find(this.state.userTeamList, team => team.group_id === member.team);
-        MemberManageAction.updateMemberTeam(updateTeam);
-        this.props.changeMemberFieldSuccess({...member, teamName: _.get(updateTeam, 'group_name')});
         if (_.isFunction(this.props.afterEditTeamSuccess)) {
             this.props.afterEditTeamSuccess(member);
+        } else {
+            MemberManageAction.updateMemberTeam(updateTeam);
+            this.props.changeMemberFieldSuccess({...member, teamName: _.get(updateTeam, 'group_name')});
         }
     };
 
@@ -413,14 +414,15 @@ class MemberInfo extends React.Component {
     afterEditPositionSuccess = (member) => {
         //更新详情中的职务
         let updatePosition = _.find(this.state.salesRoleList, position => position.id === member.position);
-        MemberManageAction.updateMemberPosition(updatePosition);
         let updateMember = {
             ...member,
             positionName: _.get(updatePosition, 'name')
         };
-        this.props.changeMemberFieldSuccess(updateMember);
         if (_.isFunction(this.props.afterEditPositionSuccess)) {
             this.props.afterEditPositionSuccess(updateMember);
+        } else {
+            MemberManageAction.updateMemberPosition(updatePosition);
+            this.props.changeMemberFieldSuccess(updateMember);
         }
 
     };
