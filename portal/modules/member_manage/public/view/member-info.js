@@ -54,7 +54,7 @@ class MemberInfo extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.memberInfo.id !== this.state.memberInfo.id) {
+        if (_.get(nextProps, 'memberInfo.id') && _.get(nextProps, 'memberInfo.id') !== this.state.memberInfo.id) {
             setTimeout(() => {
                 this.getUserData(nextProps.memberInfo);
             });
@@ -164,12 +164,14 @@ class MemberInfo extends React.Component {
     };
 
     //修改的所属团队成功后的处理
-    afterEditTeamSuccess = (user) => {
+    afterEditTeamSuccess = (member) => {
         //更新详情中的所属团队
-        let updateTeam = _.find(this.state.userTeamList, team => team.group_id === user.team);
-        MemberManageAction.updateMemberTeam(updateTeam);
+        let updateTeam = _.find(this.state.userTeamList, team => team.group_id === member.team);
         if (_.isFunction(this.props.afterEditTeamSuccess)) {
-            this.props.afterEditTeamSuccess(user);
+            this.props.afterEditTeamSuccess(member);
+        } else {
+            MemberManageAction.updateMemberTeam(updateTeam);
+            this.props.changeMemberFieldSuccess({...member, teamName: _.get(updateTeam, 'group_name')});
         }
     };
 
@@ -412,7 +414,17 @@ class MemberInfo extends React.Component {
     afterEditPositionSuccess = (member) => {
         //更新详情中的职务
         let updatePosition = _.find(this.state.salesRoleList, position => position.id === member.position);
-        MemberManageAction.updateMemberPosition(updatePosition);
+        let updateMember = {
+            ...member,
+            positionName: _.get(updatePosition, 'name')
+        };
+        if (_.isFunction(this.props.afterEditPositionSuccess)) {
+            this.props.afterEditPositionSuccess(updateMember);
+        } else {
+            MemberManageAction.updateMemberPosition(updatePosition);
+            this.props.changeMemberFieldSuccess(updateMember);
+        }
+
     };
     // 保存职务
     saveEditPosition = (saveObj, successFunc, errorFunc) => {
@@ -865,6 +877,7 @@ MemberInfo.propTypes = {
     memberInfo: PropTypes.object,
     isContinueAddButtonShow: PropTypes.bool,
     deleteCard: PropTypes.func,
+    afterEditPositionSuccess: PropTypes.func,
     afterEditTeamSuccess: PropTypes.func,
     afterEditRoleSuccess: PropTypes.func,
     changeMemberFieldSuccess: PropTypes.func,

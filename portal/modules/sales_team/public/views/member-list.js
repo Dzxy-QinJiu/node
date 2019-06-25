@@ -8,7 +8,7 @@ import {InputNumber, Button, message, Icon} from 'antd';
 const PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 const Spinner = require('../../../../components/spinner');
 const AlertTimer = require('../../../../components/alert-timer');
-import {SearchInput} from 'antc';
+import {SearchInput, AntcTable} from 'antc';
 const classNames = require('classnames');
 const SalesTeamAction = require('../action/sales-team-actions');
 const MemberListEditAction = require('../action/member-list-edit-actions');
@@ -19,7 +19,6 @@ import MemberInfo from 'MOD_DIR/member_manage/public/view/member-info';
 import MemberManageStore from 'MOD_DIR/member_manage/public/store';
 import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-actions';
-import { AntcTable } from 'antc';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 const tableHeadHeight = 50; // table表格头部高度
 
@@ -326,22 +325,33 @@ const MemberList = createReactClass({
             key: 'nickName',
             width: '40%',
             render: (name, record) => {
-                let memberNameCls = classNames('member-name', this.memberStatusClass(_.get(record, 'status')));
-                let role = _.get(record, 'role');
+                let memberNameCls = classNames('member-name', this.memberStatusClass(record.status));
+                let role = record.role;
                 let iconClass = classNames('iconfont', {
                     'icon-team-role': role === 'owner',
                     'icon-sale-team-manager': role === 'manager',
-                    'sale-status-stop': _.get(record, 'status') === 0
+                    'sale-status-stop': record.status === 0
                 });
                 return (
                     <div className={memberNameCls}>
                         <div className='accout'>
                             <i className={iconClass}/>
-                            <span>
-                                {_.get(record, 'nickName')}
-                            </span>
+                            <span> {record.nickName}</span>
                         </div>
-                        <div className='nickname'>{_.get(record, 'userName')}</div>
+                        <div className='nickname'>{record.userName}</div>
+                    </div>
+                );
+            }
+        }, {
+            title: Intl.get('crm.113', '部门'),
+            dataIndex: 'teamName',
+            key: 'teamName',
+            width: '20%',
+            render: (teamName, record) => {
+                let teamCls = this.memberStatusClass(record.status);
+                return (
+                    <div className={teamCls}>
+                        {teamName}
                     </div>
                 );
             }
@@ -349,13 +359,12 @@ const MemberList = createReactClass({
             title: Intl.get('member.position', '职务'),
             dataIndex: 'position',
             key: 'position',
-            width: '30%',
+            width: '20%',
             render: (position , record) => {
-                let positionCls = this.memberStatusClass(_.get(record, 'status'));
-                let positionName = _.get(record, 'teamRoleName');
+                let positionCls = this.memberStatusClass(record.status);
                 return (
                     <div className={positionCls}>
-                        {positionName}
+                        {record.teamRoleName}
                     </div>
                 );
             }
@@ -363,9 +372,9 @@ const MemberList = createReactClass({
             title: Intl.get('member.phone', '手机'),
             dataIndex: 'phone',
             key: 'phone',
-            width: '30%',
+            width: '20%',
             render: (phone, record) => {
-                let phoneCls = this.memberStatusClass(_.get(record, 'status'));
+                let phoneCls = this.memberStatusClass(record.status);
                 return (
                     <div className={phoneCls}>
                         {phone}
@@ -1079,6 +1088,7 @@ const MemberList = createReactClass({
             this.cancelSaveSalesGoals(type,false);
         });
     },
+
     // 关闭右侧面板
     closeRightPanel() {
         SalesTeamAction.closeRightPanel();
@@ -1218,11 +1228,16 @@ const MemberList = createReactClass({
         this.changeMemberFieldSuccess(updateObj);
     },
 
-    //修改团队后的处理
-    afterEditTeamSuccess(user) {
-        SalesTeamAction.updateCurShowTeamMemberObj(user);
+    //修改成员详情中部门信息后的处理
+    afterEditTeamSuccess(member) {
+        SalesTeamAction.updateCurShowTeamMemberObj(member);
         //对左边数据重新进行获取
         SalesTeamAction.getTeamMemberCountList();
+    },
+
+    // 修改成员详情中职务信息后的处理
+    afterEditPositionSuccess(member) {
+        SalesTeamAction.updateCurShowTeamMemberObj(member);
     },
 
     render() {
@@ -1279,6 +1294,7 @@ const MemberList = createReactClass({
                         changeMemberFieldSuccess={this.changeMemberFieldSuccess}
                         updateMemberStatus={this.updateMemberStatus}
                         afterEditTeamSuccess={this.afterEditTeamSuccess}
+                        afterEditPositionSuccess={this.afterEditPositionSuccess}
                     />) : null}
             </div>
         );
