@@ -15,7 +15,8 @@ import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY
 import classNames from 'classnames';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { AntcTimeLine } from 'antc';
-const TOP_PADDING = 80;//top padding for inputs
+const TOP_PADDING = 40;//top padding for inputs（时间选择框和搜索框高度）
+const APP_SELECT_HEIGHT = 40; // 应用选择框的高度
 
 class SingleUserLog extends React.Component {
     static defaultProps = {
@@ -321,7 +322,10 @@ class SingleUserLog extends React.Component {
     };
 
     renderLogInformation = () => {
-        var scrollBarHeight = this.props.height - TOP_PADDING;
+        let scrollBarHeight = this.props.height - TOP_PADDING;
+        if (this.props.selectedAppId === '') { // 全部应用下，需要显示应用选择框
+            scrollBarHeight -= APP_SELECT_HEIGHT; // 应用选择框的高度
+        }
         return (
             <div style={{ height: scrollBarHeight }} className="log-info">
                 {/**搜索框 */}

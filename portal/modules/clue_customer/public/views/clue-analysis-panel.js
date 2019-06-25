@@ -598,7 +598,7 @@ class ClueAnalysisPanel extends React.Component {
                     <RightPanelClose onClick={this.closeClueAnalysisPanel}/>
                     <div className="date-picker-wrap">
                         <span className="date-picker-tip btn-item">
-                            {Intl.get('clue.analysis.consult.time', '咨询时间')}
+                            {Intl.get('common.login.time', '时间')}
                         </span>
                         <span className="btn-item">
                             <DatePicker

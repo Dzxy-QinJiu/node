@@ -266,7 +266,7 @@ class ClueAddForm extends React.Component {
                         <Form layout='horizontal' className="sales-clue-form" id="sales-clue-form">
                             <FormItem
                                 className="form-item-label"
-                                label={Intl.get('clue.analysis.consult.time', '咨询时间')}
+                                label={Intl.get('common.login.time', '时间')}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('source_time', {
@@ -323,8 +323,7 @@ class ClueAddForm extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
-                                label={Intl.get('crm.sales.clue.source', '线索来源')}
-                                id="clue_source"
+                                label={Intl.get('clue.analysis.source', '来源')}
                                 {...formItemLayout}
                             >
                                 {

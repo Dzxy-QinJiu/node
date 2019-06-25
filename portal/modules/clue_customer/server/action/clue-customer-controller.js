@@ -230,11 +230,11 @@ function getClueListColumns(backendIntl) {
             dataIndex: 'status'
         },
         {
-            title: backendIntl.get('clue.analysis.consult.time', '咨询时间'),
+            title: backendIntl.get('common.login.time', '时间'),
             dataIndex: 'source_time',
         },
         {
-            title: backendIntl.get('crm.sales.clue.source', '线索来源'),
+            title: backendIntl.get('clue.analysis.source', '来源'),
             dataIndex: 'clue_source',
         },{
             title: backendIntl.get('clue.customer.source.ip', '来源IP'),

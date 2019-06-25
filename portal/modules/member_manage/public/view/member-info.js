@@ -823,20 +823,38 @@ class MemberInfo extends React.Component {
     }
 
     renderDetailTabs() {
+        let containerHeight = this.getContainerHeight();
         return (
-            <Tabs defaultActiveKey={TAB_KEYS.BASIC_INFO_TAB}
+            <Tabs
+                defaultActiveKey={TAB_KEYS.BASIC_INFO_TAB}
                 activeKey={this.state.activeKey}
-                onChange={this.changeActiveKey}>
-                <TabPane tab={Intl.get('user.basic.info', '基本资料')}
-                    key={TAB_KEYS.BASIC_INFO_TAB}>
-                    {this.state.activeKey === TAB_KEYS.BASIC_INFO_TAB ? this.renderBasicContent() : null}
+                onChange={this.changeActiveKey}
+            >
+                <TabPane
+                    tab={Intl.get('user.basic.info', '基本资料')}
+                    key={TAB_KEYS.BASIC_INFO_TAB}
+                >
+                    {
+                        this.state.activeKey === TAB_KEYS.BASIC_INFO_TAB ?
+                            <div style={{height: containerHeight}}>
+                                {this.renderBasicContent()}
+                            </div>
+                            : null
+                    }
                 </TabPane>
-                <TabPane tab={Intl.get('member.operation.log', '操作日志')}
-                    key={TAB_KEYS.LOG_TAB}>
-                    {this.state.activeKey === TAB_KEYS.LOG_TAB ? (
-                        <MemberLog getContainerHeight={this.getContainerHeight}
-                            userName={_.get(this.state, 'memberInfo.userName.value') ||
-                                   _.get(this.state, 'memberInfo.userName', '')}/>) : null}
+                <TabPane
+                    tab={Intl.get('member.operation.log', '操作日志')}
+                    key={TAB_KEYS.LOG_TAB}
+                >
+                    {
+                        this.state.activeKey === TAB_KEYS.LOG_TAB ? (
+                            <MemberLog
+                                getContainerHeight={this.getContainerHeight}
+                                userName={_.get(this.state, 'memberInfo.userName.value') ||
+                                       _.get(this.state, 'memberInfo.userName', '')}
+                            />
+                        ) : null
+                    }
                 </TabPane>
             </Tabs>);
     }

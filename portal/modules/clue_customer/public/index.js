@@ -1656,7 +1656,7 @@ class ClueCustomer extends React.Component {
                 }
             },
             {
-                title: Intl.get('crm.sales.clue.source', '线索来源'),
+                title: Intl.get('clue.analysis.source', '来源'),
                 dataIndex: 'clue_source',
             }, {
                 title: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
