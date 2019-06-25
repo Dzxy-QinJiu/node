@@ -666,7 +666,7 @@ class ClueToCustomerPanel extends React.Component {
                         className="go-back clickable"
                         onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
                     >
-                        〈 {Intl.get('crm.52', '返回')}
+                        <i className="iconfont icon-left-arrow"/> {Intl.get('crm.52', '返回')}
                     </span>
                 </div>
 
