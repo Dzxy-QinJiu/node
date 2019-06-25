@@ -554,7 +554,8 @@ class ClueToCustomerPanel extends React.Component {
         return (
             <div className="customer-list">
                 <div className="title">
-                    <Icon type="exclamation-circle" /><b>{Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}</b>
+                    <Icon type="exclamation-circle" />
+                    {Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}
                 </div>
 
                 {_.map(existingCustomers, customer => {
