@@ -66,6 +66,17 @@ function handleNumberClick(conditions, customerType, e) {
     const dataTypeCondition = _.find(conditions, item => item.name === 'data_type');
     const dataType = _.get(dataTypeCondition, 'value', 'all');
 
+    //查询用的时间区间
+    const intervalCondition = _.find(conditions, item => item.name === 'interval');
+    //日期选择器上当前选择的时间区间
+    const timeRangeCondition = _.find(conditions, item => item.name === 'time_range');
+
+    if (intervalCondition && timeRangeCondition) {
+        //查询用的时间区间参数是一个公共参数，在赋值时做过处理，和日期选择器上选择的时间区间并不一致
+        //因为这个统计要求查询用的时间区间需要和日期选择器上的一致，所以这里做下处理
+        intervalCondition.value = timeRangeCondition.value;
+    }
+
     conditions = _.filter(conditions, item => !item.type);
 
     conditions.push({
