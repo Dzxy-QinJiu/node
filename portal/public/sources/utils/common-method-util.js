@@ -367,7 +367,7 @@ exports.getClueUnhandledPrivilege = function() {
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {
     var data = {
-        typeFilter: JSON.stringify({allot_no_traced: '0',status: '0'}),
+        typeFilter: JSON.stringify({allot_no_traced: '0',status: '1'}),
         rangeParams: JSON.stringify([{//时间范围参数
             from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
             to: moment().valueOf(),

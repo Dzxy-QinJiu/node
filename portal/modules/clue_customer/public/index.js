@@ -36,7 +36,6 @@ import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
-import ClueRightPanel from './views/clue-right-detail';
 import ClueToCustomerPanel from './views/clue-to-customer-panel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import ajax from 'ant-ajax';
@@ -423,6 +422,7 @@ class ClueCustomer extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
+            statistics_fields: 'status,availability',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
         if (!this.state.lastCustomerId){
@@ -460,16 +460,6 @@ class ClueCustomer extends React.Component {
 
         if(_.isArray(unExistFileds) && unExistFileds.length){
             queryObj.unexist_fields = JSON.stringify(unExistFileds);
-        }
-        //获取线索的统计数据
-        if(!this.state.lastCustomerId){
-            var cloneQueryObj = _.cloneDeep(queryObj);
-            var statusFilter = JSON.parse(cloneQueryObj.typeFilter);
-            statusFilter.status = '';
-            cloneQueryObj.typeFilter = JSON.stringify(statusFilter);
-            cloneQueryObj.statistics_fields = 'status,availability',
-            delete cloneQueryObj.availability;
-            clueCustomerAction.getClueStatics(cloneQueryObj);
         }
         //取全部线索列表
         clueCustomerAction.getClueFulltext(queryObj);
@@ -705,7 +695,7 @@ class ClueCustomer extends React.Component {
                         submitTraceErrMsg: Intl.get('common.save.failed', '保存失败')
                     });
                 } else {
-                    //如果是待跟进状态,需要在列表中删除，其他状态
+                    //如果是待跟进状态,需要在列表中删除并且把数字减一
                     var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                     clueItem.status = SELECT_TYPE.HAS_TRACE;
                     var userId = userData.getUserData().user_id || '';
@@ -1462,10 +1452,6 @@ class ClueCustomer extends React.Component {
                     >
                         {this.renderClueCustomerLists()}
                     </div>
-                    {this.state.customersSize ?
-                        <BottomTotalCount
-                            totalCount={Intl.get('crm.215', '共{count}个线索', {'count': this.state.customersSize})}/>
-                        : null}
                 </div>
             );
         }else{

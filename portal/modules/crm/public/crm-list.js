@@ -34,7 +34,6 @@ const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
 import { FilterInput } from 'CMP_DIR/filter';
 var classNames = require('classnames');
-import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import queryString from 'query-string';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import PhoneCallout from 'CMP_DIR/phone-callout';
@@ -121,7 +120,6 @@ class Crm extends React.Component {
             importAlertType: '',//导入结果提示框类型
             currentId: crmStoreData.currentId,
             curCustomer: crmStoreData.curCustomer,
-            clueId: crmStoreData.clueId,//展示线索详情的id
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -1272,15 +1270,6 @@ class Crm extends React.Component {
         return sorter;
     };
 
-    hideClueRightPanel = () => {
-        CrmAction.showClueDetail('');
-    };
-
-    //删除线索之后
-    afterDeleteClue = () => {
-        CrmAction.showClueDetail('');
-    };
-
     state = {
         showFilterList: false,//是否展示筛选区域
         ...this.getStateData()
@@ -1860,12 +1849,6 @@ class Crm extends React.Component {
                     afterMergeCustomer={this.afterMergeCustomer}
                     refreshCustomerList={this.refreshCustomerList}
                 />) : null}
-                {this.state.clueId ? <ClueRightPanel
-                    showFlag={true}
-                    currentId={this.state.clueId}
-                    hideRightPanel={this.hideClueRightPanel}
-                    afterDeleteClue={this.afterDeleteClue}
-                /> : null}
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"

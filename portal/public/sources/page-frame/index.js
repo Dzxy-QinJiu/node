@@ -18,7 +18,6 @@ import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
 //窗口改变的事件emitter
 var resizeEmitter = require('../../../public/sources/utils/emitters').resizeEmitter;
-import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
@@ -37,10 +36,8 @@ class PageFrame extends React.Component {
         audioParamObj: {},
         isShowNotificationPanel: false, // 是否展示系统通知面板
         rightContentHeight: 0,
-        showCluePanel: false,
         clueDetailPanelShow: false,
         clueParamObj: $.extend(true, {}, emptyParamObj),
-        clueId: ''//展示线索的id
     };
 
     componentDidMount() {
@@ -57,8 +54,6 @@ class PageFrame extends React.Component {
         audioMsgEmitter.on(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         //隐藏上报客服电话的按钮
         audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
-        //系统内有弹窗时，点击弹框中的线索名称可以查看线索详情
-        notificationEmitter.on(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         // 点击系统通知框的的触发
         notificationEmitter.on(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
 
@@ -108,7 +103,6 @@ class PageFrame extends React.Component {
         phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.closeCluePanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
-        notificationEmitter.removeListener(notificationEmitter.SHOW_CLUE_DETAIL, this.showClueDetailFromNotification);
         notificationEmitter.removeListener(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
@@ -122,19 +116,6 @@ class PageFrame extends React.Component {
         });
     }
 
-    showClueDetailFromNotification = (clueObj) => {
-        this.setState({
-            showCluePanel: true,
-            clueId: clueObj.clueId
-        });
-    };
-
-    hideClueRightPanel = () => {
-        this.setState({
-            showCluePanel: false,
-            clueId: ''
-        });
-    };
 
     openAudioPanel = (audioParamObj) => {
         this.setState({audioPanelShow: true, audioParamObj: $.extend(this.state.audioParamObj, audioParamObj)});
@@ -256,13 +237,6 @@ class PageFrame extends React.Component {
                         hideErrTooltip={audioParamObj.hideErrTooltip}
                     />
                 ) : null}
-                {this.state.showCluePanel ?
-                    <ClueRightPanel
-                        className="page-frame-clue-detail"
-                        showFlag={this.state.showCluePanel}
-                        currentId={this.state.clueId}
-                        hideRightPanel={this.hideClueRightPanel}
-                    /> : null}
             </div>
         );
     }

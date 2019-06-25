@@ -303,9 +303,14 @@ class SalesClueItem extends React.Component {
         });
     };
     handleShowClueDetail = (item) => {
-        this.setState({
-            isShowClueDetail: true,
-            isAssocaiteItem: item
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+            clue_params: {
+                currentId: item.id,
+                hideRightPanel: this.hideRightPanel,
+                afterDeleteClue: this.afterDeleteClue,
+                removeUpdateClueItem: this.removeUpdateClueItem,
+                updateRemarks: this.updateRemarks
+            }
         });
     };
     showCustomerDetail = (customerId) => {
@@ -515,18 +520,6 @@ class SalesClueItem extends React.Component {
                             type="error"
                             showIcon
                             onHide={hide}
-                        />
-                    </div>
-                    : null}
-                {this.state.isAssocaiteItem ?
-                    <div className={associateCls}>
-                        <ClueRightPanel
-                            showFlag={true}
-                            curClue={this.state.isAssocaiteItem}
-                            hideRightPanel={this.hideRightPanel}
-                            curCustomer={this.state.isAssocaiteItem}
-                            removeUpdateClueItem={this.removeUpdateClueItem}
-                            updateRemarks={this.updateRemarks}
                         />
                     </div>
                     : null}

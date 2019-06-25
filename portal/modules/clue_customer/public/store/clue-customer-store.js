@@ -64,28 +64,6 @@ ClueCustomerStore.prototype.updateCurrentClueRemark = function(submitObj) {
         clue.customer_traces[0].remark = submitObj.remark;
     }
 },
-//获取线索的统计数据
-ClueCustomerStore.prototype.getClueStatics = function(result) {
-    if(_.isArray(_.get(result, 'data[0].status'))){
-        var arr = _.get(result, 'data[0].status');
-        var willDistribute = _.find(arr, item => item.name === SELECT_TYPE.WILL_DISTRIBUTE);
-        var willTrace = _.find(arr, item => item.name === SELECT_TYPE.WILL_TRACE);
-        var hasTrace = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRACE);
-        this.agg_list = {
-            'willDistribute': _.get(willDistribute,'total'),
-            'willTrace': _.get(willTrace,'total'),
-            'hasTrace': _.get(hasTrace,'total'),
-        };
-    }
-    //无效的数据
-    if(_.isArray(_.get(result, 'data[1].availability'))){
-        var arr = _.get(result, 'data[1].availability');
-        var invalidClue = _.find(arr, item => item.name === AVALIBILITYSTATUS.INAVALIBILITY);
-        this.agg_list['invalidClue'] = _.get(invalidClue,'total');
-    }
-};
-
-
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     if (clueData.loading) {
@@ -106,16 +84,12 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         this.customersSize = data ? data.total : 0;
         this.listenScrollBottom = this.customersSize > this.curClueLists.length;
         this.isLoading = false;
-        //跟据线索客户不同的状态进行排序
-        this.curClueLists = _.sortBy(this.curClueLists, (item) => {
-            return item.status;
-        });
         //把线索详情中电话，邮箱，微信，qq里的空值删掉
-        _.forEach(this.curClueLists,(clueItem) => {
-            if (_.isArray(clueItem.contacts) && clueItem.contacts.length){
-                _.forEach(clueItem.contacts,(contactItem) => {
-                    _.forEach(clueContactType,(item) => {
-                        if (_.isArray(contactItem[item]) && contactItem[item].length){
+        _.forEach(this.curClueLists, (clueItem) => {
+            if (_.isArray(clueItem.contacts) && clueItem.contacts.length) {
+                _.forEach(clueItem.contacts, (contactItem) => {
+                    _.forEach(clueContactType, (item) => {
+                        if (_.isArray(contactItem[item]) && contactItem[item].length) {
                             contactItem[item] = contactItem[item].filter(item => item);
                         }
                     });
@@ -123,6 +97,26 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
 
             }
         });
+        if (_.isArray(_.get(data, 'agg_list'))) {
+            _.forEach(_.get(data, 'agg_list'), item => {
+                if (_.isArray(_.get(item, 'status'))) {
+                    var arr = _.get(item, 'status');
+                    var willDistribute = _.find(arr, item => item.name === SELECT_TYPE.WILL_DISTRIBUTE);
+                    var willTrace = _.find(arr, item => item.name === SELECT_TYPE.WILL_TRACE);
+                    var hasTrace = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRACE);
+                    this.agg_list = {
+                        'willDistribute': _.get(willDistribute, 'total'),
+                        'willTrace': _.get(willTrace, 'total'),
+                        'hasTrace': _.get(hasTrace, 'total'),
+                    };
+                }
+                if (_.isArray(_.get(item, 'availability'))) {
+                    var arr = _.get(item, 'availability');
+                    var invalidClue = _.find(arr, item => item.name === AVALIBILITYSTATUS.INAVALIBILITY);
+                    this.agg_list['invalidClue'] = _.get(invalidClue, 'total');
+                }
+            });
+        }
 
     }
 };
@@ -308,6 +302,8 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
 //如果原来的筛选条件是在待跟进的时候，要添加完跟进记录后，该类型的线索要删除添加跟进记录的这个线索
 ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
     this.curClueLists = _.filter(this.curClueLists, clue => updateId !== clue.id);
+    //把统计数据中的待跟进的数据减一
+    this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
     this.customersSize--;
 };
 //分配销售之后
