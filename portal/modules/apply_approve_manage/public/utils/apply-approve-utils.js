@@ -248,26 +248,28 @@ exports.CONDITION_LIMITE = [{
     name: Intl.get('apply.add.condition.larger', '大于'),
     value: '>',
     inverseCondition: '<='
-}, {
-    name: Intl.get('apply.add.condition.larger.and.equal', '大于等于'),
-    value: '>=',
-    inverseCondition: '<'
-}, {
-    name: Intl.get('apply.add.condition.less', '小于'),
-    value: '<',
-    inverseCondition: '>='
-}, {
-    name: Intl.get('apply.add.condition.less.and.equal', '小于等于'),
-    value: '<=',
-    inverseCondition: '>'
-}, {
-    name: Intl.get('apply.add.condition.equal', '等于'),
-    value: '===',
-    inverseCondition: '!=='
-}, {
-    name: Intl.get('apply.add.condition.within', '介于'),
-    value: '',
-}];
+}
+// , {
+//     name: Intl.get('apply.add.condition.larger.and.equal', '大于等于'),
+//     value: '>=',
+//     inverseCondition: '<'
+// }, {
+//     name: Intl.get('apply.add.condition.less', '小于'),
+//     value: '<',
+//     inverseCondition: '>='
+// }, {
+//     name: Intl.get('apply.add.condition.less.and.equal', '小于等于'),
+//     value: '<=',
+//     inverseCondition: '>'
+// }, {
+//     name: Intl.get('apply.add.condition.equal', '等于'),
+//     value: '===',
+//     inverseCondition: '!=='
+// }, {
+//     name: Intl.get('apply.add.condition.within', '介于'),
+//     value: '',
+// }
+];
 //是销售机会申请流程
 exports.isSalesOpportunityFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.BUSINESSOPPORTUNITIES;
