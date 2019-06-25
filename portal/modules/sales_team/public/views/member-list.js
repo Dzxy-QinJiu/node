@@ -1091,6 +1091,7 @@ const MemberList = createReactClass({
             this.cancelSaveSalesGoals(type,false);
         });
     },
+
     // 关闭右侧面板
     closeRightPanel() {
         SalesTeamAction.closeRightPanel();
@@ -1230,11 +1231,17 @@ const MemberList = createReactClass({
         this.changeMemberFieldSuccess(updateObj);
     },
 
-    //修改团队后的处理
-    afterEditTeamSuccess(user) {
-        SalesTeamAction.updateCurShowTeamMemberObj(user);
+    //修改成员详情中部门信息后的处理
+    afterEditTeamSuccess(member) {
+        SalesTeamAction.updateCurShowTeamMemberObj(member);
         //对左边数据重新进行获取
         SalesTeamAction.getTeamMemberCountList();
+        this.closeRightPanel();
+    },
+
+    // 修改成员详情中职务信息后的处理
+    afterEditPositionSuccess(member) {
+        SalesTeamAction.updateCurShowTeamMemberObj(member);
     },
 
     render() {
@@ -1291,6 +1298,7 @@ const MemberList = createReactClass({
                         changeMemberFieldSuccess={this.changeMemberFieldSuccess}
                         updateMemberStatus={this.updateMemberStatus}
                         afterEditTeamSuccess={this.afterEditTeamSuccess}
+                        afterEditPositionSuccess={this.afterEditPositionSuccess}
                     />) : null}
             </div>
         );

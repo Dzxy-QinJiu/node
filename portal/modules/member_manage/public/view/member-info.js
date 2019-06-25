@@ -169,6 +169,9 @@ class MemberInfo extends React.Component {
         let updateTeam = _.find(this.state.userTeamList, team => team.group_id === member.team);
         MemberManageAction.updateMemberTeam(updateTeam);
         this.props.changeMemberFieldSuccess({...member, teamName: _.get(updateTeam, 'group_name')});
+        if (_.isFunction(this.props.afterEditTeamSuccess)) {
+            this.props.afterEditTeamSuccess(member);
+        }
     };
 
     afterEditRoleSuccess = (user) => {
@@ -411,7 +414,15 @@ class MemberInfo extends React.Component {
         //更新详情中的职务
         let updatePosition = _.find(this.state.salesRoleList, position => position.id === member.position);
         MemberManageAction.updateMemberPosition(updatePosition);
-        this.props.changeMemberFieldSuccess({...member, positionName: _.get(updatePosition, 'name')});
+        let updateMember = {
+            ...member,
+            positionName: _.get(updatePosition, 'name')
+        };
+        this.props.changeMemberFieldSuccess(updateMember);
+        if (_.isFunction(this.props.afterEditPositionSuccess)) {
+            this.props.afterEditPositionSuccess(updateMember);
+        }
+
     };
     // 保存职务
     saveEditPosition = (saveObj, successFunc, errorFunc) => {
@@ -846,6 +857,8 @@ MemberInfo.propTypes = {
     memberInfo: PropTypes.object,
     isContinueAddButtonShow: PropTypes.bool,
     deleteCard: PropTypes.func,
+    afterEditPositionSuccess: PropTypes.func,
+    afterEditTeamSuccess: PropTypes.func,
     afterEditRoleSuccess: PropTypes.func,
     changeMemberFieldSuccess: PropTypes.func,
     updateMemberStatus: PropTypes.func,
