@@ -127,11 +127,15 @@ class MemberInfo extends React.Component {
         if (memberInfo.status === 1) {
             status = 0;
         }
+        let updateObj = {
+            id: _.get(this.state, 'memberInfo.id'),
+            status
+        };
+        MemberManageAction.updateMemberStatus(updateObj);
+        // 更新列表中当前修改成员的状态
+        MemberManageAction.updateCurrentMemberStatus(status);
         if (memberInfo.id && _.isFunction(this.props.updateMemberStatus)) {
-            this.props.updateMemberStatus({
-                id: _.get(this.state, 'memberInfo.id'),
-                status
-            });
+            this.props.updateMemberStatus(updateObj);
         }
     };
 
@@ -297,12 +301,6 @@ class MemberInfo extends React.Component {
             num: num,
             page_size: this.state.page_size
         });
-    };
-
-    //启用、停用
-    updateMemberStatus = (userId, status) => {
-        var updateObj = {id: userId, status: status};
-        _.isFunction(this.props.updateMemberStatus) && this.props.updateMemberStatus(updateObj);
     };
 
     cancelEditIcon = () => {

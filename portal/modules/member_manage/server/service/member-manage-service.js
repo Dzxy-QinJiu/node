@@ -62,7 +62,15 @@ exports.getMemberList = (req, res, condition, isGetAllUser) => {
                             status: curMemberList[i].status
                         };
                     } else {
-                        curMemberList[i] = Member.toFrontObject(curMemberList[i]);
+                        curMemberList[i] = {
+                            id: curMemberList[i].user_id, // 成员id
+                            name: curMemberList[i].nick_name, // 昵称
+                            userName: curMemberList[i].user_name, // 账号
+                            status: curMemberList[i].status, // 状态
+                            positionName: curMemberList[i].teamrole_name, // 职务
+                            teamName: curMemberList[i].team_name,
+                            phone: curMemberList[i].phone // 手机
+                        };
                     }
                 }
                 memberListObj.data = curMemberList;
@@ -232,7 +240,7 @@ exports.updateUserRoles = function(req, res, user) {
 };
 //启停用户
 exports.updateUserStatus = function(req, res, frontUser) {
-    var flag = +frontUser.status === 0 ? 'disable' : 'enable';//成员的启停
+    let flag = +frontUser.status === 0 ? 'disable' : 'enable';//成员的启停
     return restUtil.authRest.put(
         {
             url: memberRestApis.updateUserStatus + '/' + frontUser.id + '/status/' + flag,

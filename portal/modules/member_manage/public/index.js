@@ -356,13 +356,6 @@ class MemberManage extends React.Component {
     changeMemberFieldSuccess = (member) => {
         MemberManageAction.afterEditMember(member);
     };
-    // 修改成员状态
-    updateMemberStatus = (updateObj) => {
-        let status = _.get(updateObj, 'status');
-        MemberManageAction.updateMemberStatus(updateObj);
-        // 更新列表中当前修改成员的状态
-        MemberManageAction.updateCurrentMemberStatus(status);
-    };
 
     render() {
         let height = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT;
@@ -411,7 +404,6 @@ class MemberManage extends React.Component {
                                 showEditForm={this.showMemberForm}
                                 isContinueAddButtonShow={this.state.isContinueAddButtonShow}
                                 changeMemberFieldSuccess={this.changeMemberFieldSuccess}
-                                updateMemberStatus={this.updateMemberStatus}
                                 resultType={this.state.resultType}
                                 errorMsg={this.state.errorMsg}
                                 isGetMemberDetailLoading={this.state.isGetMemberDetailLoading}
