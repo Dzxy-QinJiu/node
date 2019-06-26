@@ -385,17 +385,19 @@ class MemberManage extends React.Component {
                     </div>
                 </div>
                 <div className='member-right-panel'>
-                    {this.state.isShowMemberForm ? (
-                        <MemberForm
-                            formType={this.state.formType}
-                            closeRightPanel={this.closeRightPanel}
-                            returnInfoPanel={this.returnInfoPanel}
-                            showMemberInfo={this.showMemberInfo.bind(this)}
-                            showContinueAddButton={this.showContinueAddButton}
-                            member={this.state.currentMember}
-                            isShowMemberForm={this.state.isShowMemberForm}
-                        />
-                    ) : null}
+                    {
+                        this.state.isShowMemberForm ? (
+                            <MemberForm
+                                formType={this.state.formType}
+                                closeRightPanel={this.closeRightPanel}
+                                returnInfoPanel={this.returnInfoPanel}
+                                showMemberInfo={this.showMemberInfo.bind(this)}
+                                showContinueAddButton={this.showContinueAddButton}
+                                member={this.state.currentMember}
+                                isShowMemberForm={this.state.isShowMemberForm}
+                            />
+                        ) : null
+                    }
                     {
                         this.state.isShowMemberDetail ? (
                             <MemberInfo
