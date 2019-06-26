@@ -42,7 +42,7 @@ const restApis = {
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
-    getClueFulltext: clueBaseUrl + '/query/range/fulltext/:type/:page_size/:sort_field/:order',
+    getClueFulltext: clueBaseUrl + '/query/lead/range/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: clueBaseUrl + '/dynamic/:clue_id/:page_size',
     //根据线索的id查询线索的详情
