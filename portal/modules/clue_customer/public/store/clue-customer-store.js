@@ -6,7 +6,7 @@
 var ClueCustomerAction = require('../action/clue-customer-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
-import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue} from '../utils/clue-customer-utils';
+import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue,AVALIBILITYSTATUS } from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone','qq','weChat','email'];
@@ -41,11 +41,14 @@ ClueCustomerStore.prototype.resetState = function() {
     this.distributeBatchLoading = false;
     this.distributeBatchErrMsg = '';
     this.keyword = '';//线索全文搜索的关键字
+    this.agg_list = {};//线索统计数据
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
     this.curClueLists = [];//查询到的线索列表
     this.customersSize = 0;
     this.lastCustomerId = '';
+    this.isLoading = true;
+    this.listenScrollBottom = true;
 };
 ClueCustomerStore.prototype.setLastClueId = function(updateId) {
     this.lastCustomerId = updateId;
@@ -61,8 +64,6 @@ ClueCustomerStore.prototype.updateCurrentClueRemark = function(submitObj) {
         clue.customer_traces[0].remark = submitObj.remark;
     }
 },
-
-
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     if (clueData.loading) {
@@ -83,16 +84,12 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         this.customersSize = data ? data.total : 0;
         this.listenScrollBottom = this.customersSize > this.curClueLists.length;
         this.isLoading = false;
-        //跟据线索客户不同的状态进行排序
-        this.curClueLists = _.sortBy(this.curClueLists, (item) => {
-            return item.status;
-        });
         //把线索详情中电话，邮箱，微信，qq里的空值删掉
-        _.forEach(this.curClueLists,(clueItem) => {
-            if (_.isArray(clueItem.contacts) && clueItem.contacts.length){
-                _.forEach(clueItem.contacts,(contactItem) => {
-                    _.forEach(clueContactType,(item) => {
-                        if (_.isArray(contactItem[item]) && contactItem[item].length){
+        _.forEach(this.curClueLists, (clueItem) => {
+            if (_.isArray(clueItem.contacts) && clueItem.contacts.length) {
+                _.forEach(clueItem.contacts, (contactItem) => {
+                    _.forEach(clueContactType, (item) => {
+                        if (_.isArray(contactItem[item]) && contactItem[item].length) {
                             contactItem[item] = contactItem[item].filter(item => item);
                         }
                     });
@@ -100,6 +97,26 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
 
             }
         });
+        if (_.isArray(_.get(data, 'agg_list'))) {
+            _.forEach(_.get(data, 'agg_list'), item => {
+                if (_.isArray(_.get(item, 'status'))) {
+                    var arr = _.get(item, 'status');
+                    var willDistribute = _.find(arr, item => item.name === SELECT_TYPE.WILL_DISTRIBUTE);
+                    var willTrace = _.find(arr, item => item.name === SELECT_TYPE.WILL_TRACE);
+                    var hasTrace = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRACE);
+                    this.agg_list = {
+                        'willDistribute': _.get(willDistribute, 'total'),
+                        'willTrace': _.get(willTrace, 'total'),
+                        'hasTrace': _.get(hasTrace, 'total'),
+                    };
+                }
+                if (_.isArray(_.get(item, 'availability'))) {
+                    var arr = _.get(item, 'availability');
+                    var invalidClue = _.find(arr, item => item.name === AVALIBILITYSTATUS.INAVALIBILITY);
+                    this.agg_list['invalidClue'] = _.get(invalidClue, 'total');
+                }
+            });
+        }
 
     }
 };
@@ -285,6 +302,8 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
 //如果原来的筛选条件是在待跟进的时候，要添加完跟进记录后，该类型的线索要删除添加跟进记录的这个线索
 ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
     this.curClueLists = _.filter(this.curClueLists, clue => updateId !== clue.id);
+    //把统计数据中的待跟进的数据减一
+    this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
     this.customersSize--;
 };
 //分配销售之后
@@ -292,8 +311,12 @@ ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
     //这个updateItemId可能是一个id，也可能是多个id
     var clueIds = updateItemId.split(',');
     //如果是待分配状态，分配完之后要在列表中删除一个
-    this.curClueLists = _.filter(this.curClueLists, clue => _.indexOf(clueIds, clue.id) === -1);
-    this.customersSize = _.get(this,'curClueLists.length',0);
+    this.curClueLists = _.filter(this.curClueLists, clue => {
+        if (_.indexOf(clueIds, clue.id) !== -1){
+            this.customersSize--;
+            this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
+        }
+        return _.indexOf(clueIds, clue.id) === -1;});
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];
@@ -313,7 +336,6 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
 //更新线索列表
 ClueCustomerStore.prototype.updateClueCustomers = function(data) {
     this.curClueLists = data;
-    this.customersSize = _.get(this,'curClueLists.length');
 };
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
 ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {

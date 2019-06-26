@@ -457,8 +457,11 @@ window.handleClickPhone = function(phoneObj) {
 //点击展开线索详情
 window.handleClickClueName = function(event,clueId) {
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .clue-item .clue-name'), '打开线索详情');
-    //展示线索详情
-    notificationEmitter.emit(notificationEmitter.SHOW_CLUE_DETAIL,{clueId: clueId});
+    phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+        clue_params: {
+            currentId: clueId
+        }
+    });
     //点击查看详情时要把对应的通知框关掉
     $(event.target).closest('li').remove();
 };

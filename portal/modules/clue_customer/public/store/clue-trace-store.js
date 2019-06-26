@@ -31,9 +31,7 @@ ClueTraceStore.prototype.resetState = function() {
     this.listenScrollBottom = true;//是否下拉加载
     this.pageSize = 10;//每页的加载条数
     this.curPage = 1;//当前页
-    this.isEdit = false;//当前有一条数据处在编辑状态
-    this.modalDialogFlag = false;//是否显示模态框
-    this.saveButtonType = '';//点击增加跟进记录的保存还是补充跟进记录的保存
+    this.isEdit = false;//当前有一条数据处在编辑状
     this.edittingItem = [];//当前正在编辑添加详情的那条跟进记录
     this.lastPhoneTraceItemId = '';//最后一条电话类型的跟进记录
     this.filterType = 'all';
@@ -149,12 +147,6 @@ ClueTraceStore.prototype.setInitial = function() {
     this.customerRecord = [];
     this.listenScrollBottom = true;
     this.curPage = 1;
-};
-ClueTraceStore.prototype.changeAddButtonType = function(type) {
-    this.saveButtonType = type;
-};
-ClueTraceStore.prototype.setModalDialogFlag = function(state) {
-    this.modalDialogFlag = state;
 };
 ClueTraceStore.prototype.updateItem = function(item) {
     this.edittingItem = item;

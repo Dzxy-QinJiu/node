@@ -113,7 +113,7 @@ class ClueToCustomerPanel extends React.Component {
                 contactForm = $(contactForm);
 
                 //给联系人表单设置折叠效果
-                this.setFoldingEffect(contactForm);
+                this.setFormHeight(contactForm);
 
                 //隐藏滚动条
                 this.hideScrollBar(contactForm);
@@ -151,54 +151,20 @@ class ClueToCustomerPanel extends React.Component {
                     this.hideScrollBar(contactForm);
 
                     //给联系人表单设置折叠效果
-                    this.setFoldingEffect(contactForm);
+                    this.setFormHeight(contactForm);
                 });
             });
         }
     }
 
-    //给联系人表单设置折叠效果
-    setFoldingEffect(contactForm) {
-        //折叠按钮
-        let foldingBtn = contactForm.find('.folding-btn');
+    //给联系人表单设置合适的高度
+    setFormHeight(contactForm) {
+        //性别项
+        const gendarItem = contactForm.find('.contact-sex-item');
 
-        if (!foldingBtn.length) {
-            foldingBtn = $('<div/>');
-            foldingBtn.addClass('folding-btn clickable');
-            const expandBtnText = Intl.get('notification.system.more', '展开全部') + ' ∨';
-            const closeBtnText = Intl.get('crm.contact.way.hide', '收起') + ' ∧';
-            foldingBtn.text(expandBtnText);
-
-            const gendarItem = contactForm.find('.contact-sex-item');
-
-            gendarItem.before(foldingBtn);
-
-            const properHeight = gendarItem.offset().top - contactForm.offset().top; 
-
-            contactForm.height(properHeight);
-
-            foldingBtn.click(function() {
-                const self = $(this);
-
-                if (self.hasClass('expand')) {
-                    contactForm.height(properHeight);
-                    self.removeClass('expand');
-                    foldingBtn.text(expandBtnText);
-                } else {
-                    contactForm.height('auto');
-                    self.addClass('expand');
-                    foldingBtn.text(closeBtnText);
-                }
-            });
-        } else {
-            if (!foldingBtn.hasClass('expand')) {
-                const gendarItem = contactForm.find('.contact-sex-item');
-
-                const properHeight = gendarItem.offset().top - contactForm.offset().top; 
-
-                contactForm.height(properHeight);
-            }
-        }
+        //计算高度，将性别项连同其下面的表单项排除在高度之外，以达到隐藏这些表单项的效果
+        const properHeight = gendarItem.offset().top - contactForm.offset().top; 
+        contactForm.height(properHeight);
     }
 
     //联系人Store变更处理事件
@@ -281,7 +247,7 @@ class ClueToCustomerPanel extends React.Component {
                 }, this.setMergedCustomer);
             })
             .fail(err => {
-                message.success(err);
+                message.error(err);
             });
     }
 
@@ -416,67 +382,77 @@ class ClueToCustomerPanel extends React.Component {
         const contacts = this.state.customerContacts;
         const clueId = this.props.clue.id;
 
-        _.each(contacts, contact => {
-            //如果是新联系人
-            if (contact.isNew) {
-                contact = _.cloneDeep(this.refs[contact.id].state.formData);
+        //变化了的联系人（新增或需要更新的）
+        const changedContacts = _.filter(contacts, contact => contact.isNew || !_.isEmpty(contact.updateFields));
 
-                if (contact.birthday) {
-                    //将moment格式的值转为时间戳
-                    contact.birthday = contact.birthday.valueOf();
-                }
+        if (!_.isEmpty(changedContacts)) {
+            //已经完成的ajax请求数
+            let ajaxDoneNum = 0;
 
-                const fields = ['phone', 'qq', 'weChat', 'email'];
+            const promises = [];
 
-                _.each(contact, (value, key) => {
-                    const keyWithoutIndex = key.substr(0, key.length - 1);
+            _.each(contacts, (contact, index) => {
+                //如果是新联系人
+                if (contact.isNew) {
+                    contact = _.cloneDeep(this.refs[contact.id].state.formData);
 
-                    if (_.includes(fields, keyWithoutIndex)) {
-                        if (!contact[keyWithoutIndex]) {
-                            contact[keyWithoutIndex] = [value];
-                        } else {
-                            contact[keyWithoutIndex].push(value);
-                        }
-
-                        delete contact[key];
+                    if (contact.birthday) {
+                        //将moment格式的值转为时间戳
+                        contact.birthday = contact.birthday.valueOf();
                     }
-                });
 
-                ajax.send({
-                    url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
-                    type: 'post',
-                    data: contact
-                })
-                    .done(result => {
-                        message.success(Intl.get('common.merge.success', '合并成功'));
-                        this.props.onMerged();
-                    })
-                    .fail(err => {
-                        message.success(err);
+                    const fields = ['phone', 'qq', 'weChat', 'email'];
+
+                    _.each(contact, (value, key) => {
+                        const keyWithoutIndex = key.substr(0, key.length - 1);
+
+                        if (_.includes(fields, keyWithoutIndex)) {
+                            if (!contact[keyWithoutIndex]) {
+                                contact[keyWithoutIndex] = [value];
+                            } else {
+                                contact[keyWithoutIndex].push(value);
+                            }
+
+                            delete contact[key];
+                        }
                     });
-            } else {
-                //如果没有需要更新的字段，直接返回
-                if (_.isEmpty(contact.updateFields)) return;
 
-                //遍历需要更新的字段
-                _.each(contact.updateFields, field => {
-                    ajax.send({
-                        url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
-                        type: 'put',
+                    const promise = ajax.send({
+                        url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
+                        type: 'post',
                         data: contact
-                    })
-                        .done(result => {
-                            message.success(Intl.get('common.merge.success', '合并成功'));
-                            this.props.onMerged();
-                        })
-                        .fail(err => {
-                            message.success(err);
-                        });
-                });
+                    });
 
-                delete contact.updateFields;
-            }
-        });
+                    promises.push(promise);
+                } else {
+                    //遍历需要更新的字段
+                    _.each(contact.updateFields, field => {
+
+                        const promise = ajax.send({
+                            url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
+                            type: 'put',
+                            data: contact
+                        }, `clueToCustomer${index}`);
+
+                        promises.push(promise);
+                    });
+
+                    delete contact.updateFields;
+                }
+            });
+
+            $.when(...promises)
+                .done(() => {
+                    message.success(Intl.get('common.merge.success', '合并成功'));
+
+                    this.props.onMerged();
+                })
+                .fail(err => {
+                    const content = _.isArray(err) ? err.join('; ') : err;
+
+                    message.error(content);
+                });
+        }
     }
 
     //渲染客户列表项
@@ -544,7 +520,8 @@ class ClueToCustomerPanel extends React.Component {
         return (
             <div className="customer-list">
                 <div className="title">
-                    <Icon type="exclamation-circle" /><b>{Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}</b>
+                    <Icon type="exclamation-circle" />
+                    {Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}
                 </div>
 
                 {_.map(existingCustomers, customer => {
@@ -655,7 +632,7 @@ class ClueToCustomerPanel extends React.Component {
                         className="go-back clickable"
                         onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
                     >
-                        〈 {Intl.get('crm.52', '返回')}
+                        <i className="iconfont icon-left-arrow"/> {Intl.get('crm.52', '返回')}
                     </span>
                 </div>
 

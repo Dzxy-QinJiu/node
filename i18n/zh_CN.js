@@ -2185,9 +2185,9 @@ var zh_CN = {
     'errorcode.131': '非法请求',
     'errorcode.132': '未知错误',
     'errorcode.133': '服务器繁忙或网络不正常，请稍后再试',
-    'errorcode.134': '添加客户跟踪记录失败',
-    'errorcode.135': '获取客户跟踪记录失败',
-    'errorcode.136': '更新客户跟踪记录失败',
+    'errorcode.134': '添加跟进记录失败',
+    'errorcode.135': '获取跟进记录失败',
+    'errorcode.136': '更新跟进记录失败',
     'errorcode.137': '您尚未开通此应用',
     'errorcode.138': '座席号已存在！',
     'errorcode.139': '被分配的用户ID不能为空',
@@ -3112,5 +3112,6 @@ var zh_CN = {
     'apply.select.trace.clue': '请选择要跟进的线索',
     'crm.103': '变更负责人',
     'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
+    'call.record.phone.err.msg': '电话号码错误'
 };
 export default zh_CN;

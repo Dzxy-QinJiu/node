@@ -2151,8 +2151,8 @@ var en_US = {
     'errorcode.131': 'Illegal request',//非法请求
     'errorcode.132': 'unknown mistake',//未知错误
     'errorcode.133': 'The server is busy or the network is not working properly. Please try again later',//服务器繁忙或网络不正常，请稍后再试
-    'errorcode.134': 'Failed to add customer trace record',//添加客户跟踪记录失败
-    'errorcode.135': 'Failed to get customer trace record',//获取客户跟踪记录失败
+    'errorcode.134': 'Failed to add trace record',//添加跟进记录失败
+    'errorcode.135': 'Failed to get trace record',//获取跟进记录失败
     'errorcode.136': 'Failed to update customer trace record',//更新客户跟踪记录失败
     'errorcode.137': 'You have not open this application yet',//您尚未开通此应用
     'errorcode.138': 'This seat number is existed',//座席号已存在！
@@ -3006,5 +3006,6 @@ var en_US = {
     'common.merge.success': 'merge success',//合并成功
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
+    'call.record.phone.err.msg': 'Wrong phone number'//电话号码错误
 };
 export default en_US;
