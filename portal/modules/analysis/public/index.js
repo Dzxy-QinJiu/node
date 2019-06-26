@@ -45,15 +45,11 @@ class CurtaoAnalysis extends React.Component {
         super(props);
 
         let processedGroups = this.processMenu(groups);
-        let contractIndex = _.findIndex(processedGroups, item => {
-            return item.title === '合同分析';
-        });
-        // 有查看合同分析的权限时
-        if(contractIndex !== -1) {
-            // 没有开通营收中心时，去掉合同分析
-            if(!isOpenCash()) {
-                processedGroups.splice(contractIndex, 1);
-            }
+        // 没有开通营收中心时，去掉合同分析
+        if(!isOpenCash()) {
+            processedGroups = _.filter(processedGroups, item => {
+                return item.title !== '合同分析';
+            });
         }
 
         this.state = {

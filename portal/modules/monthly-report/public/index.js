@@ -321,7 +321,7 @@ class MonthlyReport extends React.Component {
         let charts = [];
         // 开通呼叫中心
         if(commonMethodUtil.isOpenCaller()) {
-            charts = charts.concat([
+            charts.push(
                 {
                     title: Intl.get('common.telephone.statistics', '电话量统计'),
                     height: 'auto',
@@ -361,8 +361,8 @@ class MonthlyReport extends React.Component {
                     option: {
                         columns: this.getAppStatisticsColumns(),
                     },
-                },
-            ]);
+                }
+            );
         }
         charts.push({
             title: Intl.get('common.trial.qualified.customer.statistics', '试用合格客户数统计'),

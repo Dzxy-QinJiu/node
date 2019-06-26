@@ -362,43 +362,43 @@ class SalesReport extends React.Component {
 
     //渲染销售业绩
     renderSalesPerformance = () => {
-        // 开通营收中心
-        if(commonMethodUtil.isOpenCash()) {
-            const roleName = this.state.currentMember.role_name;
+        const roleName = this.state.currentMember.role_name;
 
-            let charts = [];
+        let charts = [];
 
-            if (roleName === SALES_ROLE.sales_manager) {
-                charts.push(
-                    //新销售机会统计
-                    chanceCharts.getNewChanceChart('table'),
-                    //所有销售机会统计
-                    chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
-                );
-            } else if (roleName === SALES_ROLE.customer_manager) {
+        if (roleName === SALES_ROLE.sales_manager) {
+            charts.push(
+                //新销售机会统计
+                chanceCharts.getNewChanceChart('table'),
+                //所有销售机会统计
+                chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
+            );
+        } else if (roleName === SALES_ROLE.customer_manager) {
+            // 开通营收中心
+            if(commonMethodUtil.isOpenCash()) {
                 charts.push(
                     reportCharts.contractChart,
                     reportCharts.repaymentChart,
                 );
+            }else {
+                return null;
             }
-
-            return (
-                <dl>
-                    <dt>{Intl.get('common.sales.performance', '销售业绩')}</dt>
-                    <dd>
-                        <AntcAnalysis
-                            charts={charts}
-                            conditions={this.getConditions()}
-                            emitterConfigList={this.getEmitters()}
-                            isGetDataOnMount={true}
-                            forceUpdate={true}
-                        />
-                    </dd>
-                </dl>
-            );
-        }else {
-            return null;
         }
+
+        return (
+            <dl>
+                <dt>{Intl.get('common.sales.performance', '销售业绩')}</dt>
+                <dd>
+                    <AntcAnalysis
+                        charts={charts}
+                        conditions={this.getConditions()}
+                        emitterConfigList={this.getEmitters()}
+                        isGetDataOnMount={true}
+                        forceUpdate={true}
+                    />
+                </dd>
+            </dl>
+        );
     };
 
     //销售行为统计拜访客户数点击处理函数
