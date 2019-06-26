@@ -32,7 +32,7 @@
     z-index: 1000;
 }
 
-@media (max-height: 710px) {
+@media (max-height: 715px) {
     //缩小浏览器时，展示小图标
     .navbar {
         .navbar-nav {
@@ -42,7 +42,7 @@
                     height: @reduce-nav-icon-li-height;
                     line-height: @reduce-nav-icon-li-height;
                     &:before {
-                        font-size: 20px;
+                        font-size: 24px;
                     }
                 }
             }
@@ -50,19 +50,19 @@
         .sidebar-user {
             .notification, .sidebar-backend-config {
                 .iconfont.sidebar-bottom-icon {
-                    font-size: 18px;
+                    font-size: 22px;
                 }
             }
             .dial-up-keyboard-btn {
                 .iconfont.sidebar-bottom-icon {
-                    font-size: 16px;
+                    font-size: 22px;
                 }
             }
         }
     }
 }
 
-@media (max-height: 580px) {
+@media (max-height: 605px) {
     //再缩小浏览器到小图标并缩小间距时的样式
     .navbar {
         .navbar-nav {
@@ -71,6 +71,21 @@
                 > a.iconfont {
                     height: @reduce-nav-margin-li-height;
                     line-height: @reduce-nav-margin-li-height;
+                    &:before {
+                        font-size: 18px;
+                    }
+                }
+            }
+        }
+        .sidebar-user {
+            .notification, .sidebar-backend-config {
+                .iconfont.sidebar-bottom-icon {
+                    font-size: 16px;
+                }
+            }
+            .dial-up-keyboard-btn {
+                .iconfont.sidebar-bottom-icon {
+                    font-size: 16px;
                 }
             }
         }
@@ -195,28 +210,6 @@
             }
             //申请审批入口
             &.application_icon_container {
-                //padding: 0;
-                //text-align: center;
-                //position: relative;
-                //&:before {
-                //    &:extend(.unread-style);
-                //}
-                //&>a {
-                //    display: block;
-                //    text-decoration: none !important;
-                //}
-                //a:hover,
-                //a.active,
-                //a:active,
-                //a:focus {
-                //    .iconfont {
-                //        color: #4a8ec4;
-                //    }
-                //}
-                //.iconfont {
-                //    cursor: pointer;
-                //    position: relative;
-                //}
                 //有未读回复提示的样式
                 .iconfont.icon-apply-message-tip {
                     position: absolute;
@@ -232,16 +225,6 @@
                         font-size: initial;
                     }
                 }
-                //b {
-                //    position: absolute;
-                //    width: 7px;
-                //    height: 7px;
-                //    top: 1px;
-                //    right: 3px;
-                //    overflow: hidden;
-                //    background: #f41919;
-                //    border-radius: 50%;
-                //}
             }
             float: left;
             height: @nav-item-height;
