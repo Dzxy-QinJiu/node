@@ -151,9 +151,9 @@ function getConfigJson(req) {
         '14205': {'httpCode': 500, 'message': backendIntl.get('errorcode.82', '查询订单对应客户失败')},
         '14206': {'httpCode': 500, 'message': backendIntl.get('errorcode.83', '查询订单失败')},
         //客户跟进记录部分
-        '80001': {'httpCode': 500, 'message': backendIntl.get('errorcode.134', '添加客户跟踪记录失败')},
-        '80002': {'httpCode': 500, 'message': backendIntl.get('errorcode.135', '获取客户跟踪记录失败')},
-        '80003': {'httpCode': 500, 'message': backendIntl.get('errorcode.136', '更新客户跟踪记录失败')},
+        '80001': {'httpCode': 500, 'message': backendIntl.get('errorcode.134', '添加跟进记录失败')},
+        '80002': {'httpCode': 500, 'message': backendIntl.get('errorcode.135', '获取跟进记录失败')},
+        '80003': {'httpCode': 500, 'message': backendIntl.get('errorcode.136', '更新跟进记录失败')},
 
         // 客户管理，拨打电话
         '90001': {'httpCode': 500, 'message': backendIntl.get('errorcode.143', '通话系统出现未知异常')},

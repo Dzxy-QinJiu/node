@@ -24,7 +24,7 @@ var noop = function() {
 
 };
 const DYNAMICHEIGHT = {
-    LAYOUT: 130
+    LAYOUT: 117
 };
 import PropTypes from 'prop-types';
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';

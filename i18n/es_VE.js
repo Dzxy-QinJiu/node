@@ -1120,9 +1120,9 @@ var en_VE = {
     'errorcode.132': 'Error desconocido',
     'errorcode.133': 'El servidor está ocupado o la red es anormal, inténtelo más tarde',
     //待补充的翻译部分
-    'errorcode.134': 'Fallo en agregar el registro de seguimiento del cliente',//添加客户跟踪记录失败
-    'errorcode.135': 'Fallo en conseguir el registro de seguimiento del cliente',//获取客户跟踪记录失败
-    'errorcode.136': 'Fallo en actualizar el registro de seguimiento del cliente',//更新客户跟踪记录失败
+    'errorcode.134': 'Fallo en agregar el registro de seguimiento del cliente',//添加跟进记录失败
+    'errorcode.135': 'Fallo en conseguir el registro de seguimiento del cliente',//获取跟进记录失败
+    'errorcode.136': 'Fallo en actualizar el registro de seguimiento del cliente',//更新跟进记录失败
     'errorcode.137': 'No ha abierto la aplicación',//您尚未开通此应用
     //待补充的
     'call.record.customer': 'Cliente',//客户

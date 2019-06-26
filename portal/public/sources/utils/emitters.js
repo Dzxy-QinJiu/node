@@ -62,8 +62,6 @@ exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
 exports.notificationEmitter.PHONE_INITIALIZE = 'phoneInitialize';
 //未审批申请的数量
 exports.notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT = 'showUnhandledApplyApproveCount';
-//展开线索详情
-exports.notificationEmitter.SHOW_CLUE_DETAIL = 'showClueDetail';
 //申请审批未读回复
 exports.notificationEmitter.APPLY_UNREAD_REPLY = 'applyUnreadReply';
 //其他申请审批未读回复
