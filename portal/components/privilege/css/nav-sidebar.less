@@ -5,8 +5,12 @@
 @font-grey: #cccccc;
 @icon-grey: #CBCBCB;
 @icon-blue: #2196F3;
-@nav-icon-size: 31px;
-@nav-text-height: 32px;
+@nav-icon-size: 30px;
+//缩小图标时的菜单高度
+@reduce-nav-icon-li-height: 40px;
+//缩小图标并缩小间距时的菜单高度
+@reduce-nav-margin-li-height: 32px;
+//正常图标时的菜单高度
 @nav-item-height: 50px;
 @nav-text-width: 72px;
 @nav-text-fontSize: 14px;
@@ -28,11 +32,63 @@
     z-index: 1000;
 }
 
-@media (min-width: 768px) {
-    .navbar-nav>li>a {
-        padding-top: 0;
-        padding-bottom: 0;
+@media (max-height: 710px) {
+    //缩小浏览器时，展示小图标
+    .navbar {
+        .navbar-nav {
+            > li.sidebar-menu-li {
+                height: @reduce-nav-icon-li-height;
+                > a.iconfont {
+                    height: @reduce-nav-icon-li-height;
+                    line-height: @reduce-nav-icon-li-height;
+                    &:before {
+                        font-size: 20px;
+                    }
+                }
+            }
+        }
+        .sidebar-user {
+            .notification, .sidebar-backend-config {
+                .iconfont.sidebar-bottom-icon {
+                    font-size: 18px;
+                }
+            }
+            .dial-up-keyboard-btn {
+                .iconfont.sidebar-bottom-icon {
+                    font-size: 16px;
+                }
+            }
+        }
     }
+}
+
+@media (max-height: 580px) {
+    //再缩小浏览器到小图标并缩小间距时的样式
+    .navbar {
+        .navbar-nav {
+            > li.sidebar-menu-li {
+                height: @reduce-nav-margin-li-height;
+                > a.iconfont {
+                    height: @reduce-nav-margin-li-height;
+                    line-height: @reduce-nav-margin-li-height;
+                }
+            }
+        }
+    }
+}
+#hamburger{
+  display: none;
+}
+#menusLists{
+  display: block;
+}
+@media (max-height: 510px) {
+  #hamburger{
+    display: block;
+  }
+  #menusLists{
+    display: none;
+  }
 }
 
 .navbar {
@@ -75,6 +131,7 @@
         height: @top_nav_height;
         padding: 12px 0;
         position: relative;
+        margin-bottom: 10px;
         .logo {
             float: none;
             margin-left: 0;
@@ -98,7 +155,6 @@
     .navbar-nav {
         float: none;
         margin: 0;
-        margin-top: -6px;
         font-size: @nav-text-fontSize;
         >li {
             //线索未读数
@@ -109,7 +165,7 @@
                     cursor: pointer;
                     position: absolute;
                     right: 17px;
-                    top: 8px;   
+                    top: 8px;
                     min-width: 16px;
                     height: 16px;
                     overflow: hidden;
@@ -137,46 +193,7 @@
             &.sidebar-applyentry:before {
                 left: -29px;
             }
-            //文字菜单
-            &.text-nav-li {
-                &.clue_customer_icon_container:before{
-                     right: 2px;
-                 }
-                &.application_icon_container:before{
-                    top: 4px;
-                    right: 12px;
-                }
-                &.sidebar-applyentry:before {
-                    left: -18px;
-                }
-                &:first-child {
-                    margin-top: 6px;
-                }
-                height: @nav-text-height;
-                width: @nav-text-width;
-                margin: 0;
-                a {
-                    height: @nav-text-height;
-                    color: @font-grey;
-                    line-height: @nav-text-height;
-                    text-align: center;
-                    margin: 0;
-                    padding: 0;
-                }
-                a:hover,
-                a.active,
-                a:active,
-                a:focus {
-                    color: @icon-blue;
-                }
-                a.deactivation {
-                    color: @icon-grey
-                }
-                &.application_icon_container .iconfont.icon-apply-message-tip {
-                    top: -7px;
-                    right: 14px;
-                }
-            } //申请审批入口
+            //申请审批入口
             &.application_icon_container {
                 //padding: 0;
                 //text-align: center;
@@ -229,7 +246,6 @@
             float: left;
             height: @nav-item-height;
             width: @sidebar-min-width - 1;
-            margin: 3px 0;
             &.iconfont:before,
             .iconfont:before {
                 color: @icon-grey;
@@ -247,11 +263,11 @@
                 &.deactivation.iconfont:before {
                     color: @icon-grey
                 }
-                height: 60px;
+                height: @nav-item-height;
                 white-space: nowrap;
                 color: @navbar-default-link-color;
-                line-height: 30px;
-                margin: 15px 0 15px 0;
+                line-height: @nav-item-height;
+                //margin: 15px 0 15px 0;
                 padding: 0;
                 text-decoration: none;
                 >i {
@@ -266,118 +282,16 @@
                 &:hover,
                 &:focus {
                     color: @navbar-default-link-color;
-                    background-color: transparent;                    
+                    background-color: transparent;
                 }
-            }           
+            }
         }
-        >li.realm_ico i {
-            background-image: url("../images/realm.png");
-        }
-        >li.realm_ico .active i,
-        >li.realm_ico i:hover {
-            background-image: url("../images/realm_hover.png");
-        }
-        >li.online_ico i {
-            background-image: url("../images/online.png");
-        }
-        >li.online_ico .active i,
-        >li.online_ico i:hover {
-            background-image: url("../images/online_hover.png");
-        }
-        >li.user_ico i {
-            background-image: url("../images/user.png");
-        }
-        >li.user_ico .active i,
-        >li.user_ico i:hover {
-            background-image: url("../images/user_hover.png");
-        }
-        >li.analysis_realm_ico i,
-        >li.analysis_user_ico i,
-        >li.analysis_customer_ico i {
-            background-image: url("../images/analysis.png");
-        }
-        >li.analysis_realm_ico .active i,
-        >li.analysis_realm_ico i:hover,
-        >li.analysis_user_ico .active i,
-        >li.analysis_user_ico i:hover,
-        >li.analysis_customer_ico .active i,
-        >li.analysis_customer_ico i:hover {
-            background-image: url("../images/analysis_hover.png");
-        }
-        >li.crm_ico i {
-            background-image: url("../images/crm.png");
-        }
-        >li.crm_ico .active i,
-        >li.crm_ico i:hover {
-            background-image: url("../images/crm_hover.png");
-        }
-        >li.clue_customer_ico i {
-            background-image: url("../images/clue_customer.png");
-        } //未读数样式
         >li.clue_customer_ico {
             &:before {
                 &:extend(.unread-style);
                 top: 12px;
                 left: -35px;
             }
-        }
-        >li.clue_customer_ico .active i,
-        >li.clue_customer_ico i:hover {
-            background-image: url("../images/clue_customer_hover.png");
-        }
-        >li.schedule_management_ico i {
-              background-image: url("../images/schedule.png");
-          }
-        >li.schedule_management_ico .active i,
-        >li.schedule_management_ico i:hover {
-            background-image: url("../images/schedule_hover.png");
-        }
-        >li.call_record_ico i {
-            background-image: url("../images/call_record.png");
-        }
-        >li.call_record_ico .active i,
-        >li.call_record_ico i:hover {
-            background-image: url("../images/call_record_hover.png");
-        }
-        >li.contract_ico i {
-            background-image: url("../images/contract.png");
-        }
-        >li.contract_ico .active i,
-        >li.contract_ico i:hover {
-            background-image: url("../images/contract_hover.png");
-        }
-        >li.app_ico i {
-            background-image: url("../images/app.png");
-        }
-        >li.app_ico .active i,
-        >li.app_ico i:hover {
-            background-image: url("../images/app_hover.png");
-        }
-        >li.app_overview_ico i {
-            background-image: url("../images/app_overview.png");
-        }
-        >li.app_overview_ico .active i,
-        >li.app_overview_ico i:hover {
-            background-image: url("../images/app_overview_hover.png");
-        }
-        >li.my_app_ico i {
-            background-image: url("../images/app.png");
-        }
-        >li.my_app_ico .active i,
-        >li.my_app_ico i:hover {
-            background-image: url("../images/app_hover.png");
-        }
-        >li.report_ico i {
-            height: 32px;
-            width: 32px;
-            background-image: url("../images/report.png");
-        }
-        >li.report_ico .active i,
-        >li.report_ico i:hover {
-            background-image: url("../images/report_hover.png");
-        }
-        >li.report_ico a {
-            padding: 14px 0 14px 18px;
         }
     }
     .sidebar-user {
@@ -416,6 +330,9 @@
             }
             text-align: center;
             padding-bottom: 4px;
+            .nav-small-icon.iconfont {
+                font-size: 20px;
+            }
             .iconfont {
                 cursor: pointer;
                 font-size: 29px;
@@ -516,7 +433,9 @@
         .dial-up-keyboard-btn{
             margin-top: 10px;
             padding-bottom: 4px;
-            font-size: 14px;
+            .iconfont {
+                font-size: 29px;
+            }
         }
     }
 }
