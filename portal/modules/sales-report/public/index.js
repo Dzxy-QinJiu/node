@@ -362,38 +362,43 @@ class SalesReport extends React.Component {
 
     //渲染销售业绩
     renderSalesPerformance = () => {
-        const roleName = this.state.currentMember.role_name;
+        // 开通营收中心
+        if(commonMethodUtil.isOpenCash()) {
+            const roleName = this.state.currentMember.role_name;
 
-        let charts = [];
+            let charts = [];
 
-        if (roleName === SALES_ROLE.sales_manager) {
-            charts.push(
-                //新销售机会统计
-                chanceCharts.getNewChanceChart('table'),
-                //所有销售机会统计
-                chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
+            if (roleName === SALES_ROLE.sales_manager) {
+                charts.push(
+                    //新销售机会统计
+                    chanceCharts.getNewChanceChart('table'),
+                    //所有销售机会统计
+                    chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
+                );
+            } else if (roleName === SALES_ROLE.customer_manager) {
+                charts.push(
+                    reportCharts.contractChart,
+                    reportCharts.repaymentChart,
+                );
+            }
+
+            return (
+                <dl>
+                    <dt>{Intl.get('common.sales.performance', '销售业绩')}</dt>
+                    <dd>
+                        <AntcAnalysis
+                            charts={charts}
+                            conditions={this.getConditions()}
+                            emitterConfigList={this.getEmitters()}
+                            isGetDataOnMount={true}
+                            forceUpdate={true}
+                        />
+                    </dd>
+                </dl>
             );
-        } else if (roleName === SALES_ROLE.customer_manager) {
-            charts.push(
-                reportCharts.contractChart,
-                reportCharts.repaymentChart,
-            );
+        }else {
+            return null;
         }
-
-        return (
-            <dl>
-                <dt>{Intl.get('common.sales.performance', '销售业绩')}</dt>
-                <dd>
-                    <AntcAnalysis
-                        charts={charts}
-                        conditions={this.getConditions()}
-                        emitterConfigList={this.getEmitters()}
-                        isGetDataOnMount={true}
-                        forceUpdate={true}
-                    />
-                </dd>
-            </dl>
-        );
     };
 
     //销售行为统计拜访客户数点击处理函数
@@ -451,6 +456,21 @@ class SalesReport extends React.Component {
         listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
     }
 
+    // 销售行为统计列处理函数
+    getSalesBehaviorVisitCustomerChartHandler = () => {
+        let chart = customerCharts.getSalesBehaviorVisitCustomerChart({
+            visitedCustomerNumClickHandler: this.visitedCustomerNumClickHandler
+        });
+        let columns = chart.option.columns;
+        // 没有开通营收中心时，去掉接通数(phone_answer)，未接通数(phone_no_answer)这两列
+        if(!commonMethodUtil.isOpenCaller()) {
+            chart.option.columns = _.filter(columns, column => {
+                return !_.includes(['phone_answer','phone_no_answer'], column.dataIndex);
+            });
+        }
+        return chart;
+    };
+
     //渲染销售行为
     renderSalesBehavior = () => {
         if (!this.state.currentMember.team_id) return;
@@ -460,9 +480,14 @@ class SalesReport extends React.Component {
         let charts = [];
 
         if (roleName === SALES_ROLE.sales_manager) {
+            // 开通呼叫中心
+            if(commonMethodUtil.isOpenCaller()) {
+                charts.push(
+                    //电话量
+                    reportCharts.callVolumeChart
+                );
+            }
             charts.push(
-                //电话量
-                reportCharts.callVolumeChart,
                 //客户阶段
                 customerCharts.getCustomerStageChart(),
                 //客户活跃度统计
@@ -479,9 +504,7 @@ class SalesReport extends React.Component {
                 //客户数统计
                 customerCharts.getCustomerNumChart(),
                 //销售行为统计
-                customerCharts.getSalesBehaviorVisitCustomerChart({
-                    visitedCustomerNumClickHandler: this.visitedCustomerNumClickHandler
-                }),
+                this.getSalesBehaviorVisitCustomerChartHandler(),
                 //订单阶段
                 orderCharts.getOrderStageChart({
                     stageList: this.state.stageList

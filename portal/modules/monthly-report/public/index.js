@@ -318,87 +318,91 @@ class MonthlyReport extends React.Component {
             name: 'statistics_type',
             value: 'user'
         }];
+        let charts = [];
+        // 开通呼叫中心
+        if(commonMethodUtil.isOpenCaller()) {
+            charts = charts.concat([
+                {
+                    title: Intl.get('common.telephone.statistics', '电话量统计'),
+                    height: 'auto',
+                    layout: {sm: 24},
+                    url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
+                    conditions,
+                    argCallback: commanSalesCallback,
+                    dataField: 'result',
+                    processData: data => {
+                        data = _.orderBy(data, 'assessment_index', 'desc');
 
-        return [
-            {
-                title: Intl.get('common.telephone.statistics', '电话量统计'),
-                height: 'auto',
-                layout: {sm: 24},
-                url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
-                conditions,
-                argCallback: commanSalesCallback,
-                dataField: 'result',
-                processData: data => {
-                    data = _.orderBy(data, 'assessment_index', 'desc');
+                        _.each(data, (item, index) => {
+                            item.rank = index + 1;
+                            const currentMember = _.find(this.state.memberList, member => member.nick_name === item.name);
+                            item.user_id = _.get(currentMember, 'user_id');
+                        });
 
-                    _.each(data, (item, index) => {
-                        item.rank = index + 1;
-                        const currentMember = _.find(this.state.memberList, member => member.nick_name === item.name);
-                        item.user_id = _.get(currentMember, 'user_id');
-                    });
-
-                    return data;
+                        return data;
+                    },
+                    chartType: 'table',
+                    option: {
+                        columns: this.getPhoneStatisticsColumns(),
+                    },
                 },
-                chartType: 'table',
-                option: {
-                    columns: this.getPhoneStatisticsColumns(),
+                {
+                    title: Intl.get('common.ketao.app.telephone.statistics', '客套APP电话量统计'),
+                    height: 'auto',
+                    layout: {sm: 24},
+                    url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
+                    conditions: [...conditions, {
+                        name: 'device_type',
+                        value: 'app'
+                    }],
+                    argCallback: commanSalesCallback,
+                    dataField: 'result',
+                    chartType: 'table',
+                    option: {
+                        columns: this.getAppStatisticsColumns(),
+                    },
                 },
+            ]);
+        }
+        charts.push({
+            title: Intl.get('common.trial.qualified.customer.statistics', '试用合格客户数统计'),
+            height: 'auto',
+            layout: {sm: 24},
+            url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
+            //条件参数，只对当前图表有效
+            conditions: [{
+                name: 'data_type',
+                value: this.getDataType(),
+                type: 'params'
+            }, {
+                name: 'statistics_type',
+                value: 'user',
+            }],
+            argCallback: (arg) => {
+                let query = arg.query;
+
+                //因后端统计规则原因，这个统计和其他统计不太一样，其查询区间为当月的2号到下月的1号
+                //所以查询开始时间从当月2号开始
+                query.start_time = moment(query.start_time).startOf('month').add(1, 'days').valueOf();
+                //查询结束时间为下月1号
+                query.end_time = moment(query.end_time).endOf('month').add(1, 'days').valueOf();
             },
-            {
-                title: Intl.get('common.ketao.app.telephone.statistics', '客套APP电话量统计'),
-                height: 'auto',
-                layout: {sm: 24},
-                url: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
-                conditions: [...conditions, {
-                    name: 'device_type',
-                    value: 'app'
-                }],
-                argCallback: commanSalesCallback,
-                dataField: 'result',
-                chartType: 'table',
-                option: {
-                    columns: this.getAppStatisticsColumns(),
-                },
-            },
-            {
-                title: Intl.get('common.trial.qualified.customer.statistics', '试用合格客户数统计'),
-                height: 'auto',
-                layout: {sm: 24},
-                url: '/rest/analysis/customer/v2/statistic/:data_type/customer/qualify',
-                //条件参数，只对当前图表有效
-                conditions: [{
-                    name: 'data_type',
-                    value: this.getDataType(),
-                    type: 'params'
-                }, {
-                    name: 'statistics_type',
-                    value: 'user',
-                }],
-                argCallback: (arg) => {
-                    let query = arg.query;
+            dataField: 'list',
+            processData: data => {
+                _.each(data, (item, index) => {
+                    item.this_month_total = item.this_month.total;
+                    item.highest_total = item.highest.total;
+                    item.this_month_add_highest_total = item.this_month_add_highest.total;
+                });
 
-                    //因后端统计规则原因，这个统计和其他统计不太一样，其查询区间为当月的2号到下月的1号
-                    //所以查询开始时间从当月2号开始
-                    query.start_time = moment(query.start_time).startOf('month').add(1, 'days').valueOf();
-                    //查询结束时间为下月1号
-                    query.end_time = moment(query.end_time).endOf('month').add(1, 'days').valueOf();
-                },
-                dataField: 'list',
-                processData: data => {
-                    _.each(data, (item, index) => {
-                        item.this_month_total = item.this_month.total;
-                        item.highest_total = item.highest.total;
-                        item.this_month_add_highest_total = item.this_month_add_highest.total;
-                    });
-
-                    return data;
-                },
-                chartType: 'table',
-                option: {
-                    columns: this.getTrialQualifiedColumns(),
-                },
+                return data;
             },
-        ];
+            chartType: 'table',
+            option: {
+                columns: this.getTrialQualifiedColumns(),
+            },
+        });
+        return charts;
     };
 
     //公共条件，应用于所有图表

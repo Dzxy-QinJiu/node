@@ -536,3 +536,9 @@ export const BACKGROUG_LAYOUT_CONSTANTS = {
     PADDING_HEIGHT: 24 * 2 // padding占的高度
 };
 
+// 组织应用类型
+export const ORGANIZATION_APP_TYPES = {
+    CURTAO: 'curtao', // 客套
+    CALLER: 'call', // 呼叫中心
+    CASH: 'cash', // 营收中心
+};

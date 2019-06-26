@@ -9,6 +9,7 @@ import ajax from 'ant-ajax';
 import TableListPanel from 'CMP_DIR/table-list-panel';
 import TopBar from './top-bar';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
+import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
@@ -43,7 +44,17 @@ class CurtaoAnalysis extends React.Component {
     constructor(props) {
         super(props);
 
-        const processedGroups = this.processMenu(groups);
+        let processedGroups = this.processMenu(groups);
+        let contractIndex = _.findIndex(processedGroups, item => {
+            return item.title === '合同分析';
+        });
+        // 有查看合同分析的权限时
+        if(contractIndex !== -1) {
+            // 没有开通营收中心时，去掉合同分析
+            if(!isOpenCash()) {
+                processedGroups.splice(contractIndex, 1);
+            }
+        }
 
         this.state = {
             currentMenuIndex: '0,0',

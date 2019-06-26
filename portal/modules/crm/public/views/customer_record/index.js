@@ -30,7 +30,7 @@ import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import TimeLine from 'CMP_DIR/time-line-new';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
-import {decodeHTML} from 'PUB_DIR/sources/utils/common-method-util';
+import {decodeHTML, isOpenCaller} from 'PUB_DIR/sources/utils/common-method-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
 import PhoneCallout from 'CMP_DIR/phone-callout';
@@ -915,23 +915,26 @@ class CustomerRecord extends React.Component {
     }
     //获取类型统计数据（根据固定类型+后端获取的额外类型和后端获取的统计数据的组合）
     getTypeStatisticData(){
+        let statisticData = {};
+        //从后端获取的类型统计数据
+        let traceStatisticObj = this.state.customerTraceStatisticObj || {};
+        // 开通呼叫中心时，增加电话次数统计
+        if(isOpenCaller()) {
+            statisticData.phone = 0;//eefung+客套容联+客套APP+回访的电话次
+            // 电话次数(eefung电话+客套容联+客套app+回访)
+            _.each(PHONE_TYPES, type => {
+                statisticData.phone += _.get(traceStatisticObj, type, 0);
+            });
+        }
         //固定的跟进类型统计
-        let statisticData = {
-            phone: 0,//eefung+客套容联+客套APP+回访的电话次
-            visit: 0,//拜访
-        };
+        statisticData.visit = 0;//拜访
+
         //将从后端获取的额外的跟进类型，加入到跟进类型统计对象中
         _.each(this.state.extraTraceTypeList, type => {
             statisticData[type] = 0;
         });
         //其他跟进
         statisticData.other = 0;
-        //从后端获取的类型统计数据
-        let traceStatisticObj = this.state.customerTraceStatisticObj || {};
-        // 电话次数(eefung电话+客套容联+客套app+回访)
-        _.each(PHONE_TYPES, type => {
-            statisticData.phone += _.get(traceStatisticObj, type, 0);
-        });
         //非电话类型的次数统计
         _.each(statisticData, (value, key) => {
             //不是电话类型时的次数
@@ -944,8 +947,8 @@ class CustomerRecord extends React.Component {
     //渲染跟进统计
     renderStatisticTabs() {
         let statisticData = this.getTypeStatisticData();
-        //获取跟进类型的个数，最少有3个固定的类型，所以默认值为：3
-        let typeSize = _.get(_.keys(statisticData), 'length', 3);
+        //获取跟进类型的个数，最少有2个固定的类型，所以默认值为：2
+        let typeSize = _.get(_.keys(statisticData), 'length', 2);
         let typeItemWidth = (100 / typeSize) + '%';
         return (
             <div className="statistic-container">
