@@ -149,6 +149,7 @@ class DynamicAddDelField extends React.Component {
         this.setState({
             displayType: 'edit',
             value: this.props.value,
+            // 用来清除修改后再取消，key值的缓存问题
             item_keys: this.getInitItemKeys(this.props.value)
         });
         Trace.traceEvent(e, '点击编辑' + this.props.field);

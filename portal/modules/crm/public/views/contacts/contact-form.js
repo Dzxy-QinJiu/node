@@ -380,7 +380,8 @@ var ContactForm = createReactClass({
                     let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
-                        // 判断当前添加的电话列表中是否已存在该电话
+                        // 判断当前添加的电话列表中是否已存在该电话,获取当前已添加的电话列表有延迟，
+                        // 在验证时，在电话列表里是不会存在验证的这个号码，所以有两个length会是1，就它自己length是0
                         if (phoneCount.length > 0) {
                             //当前添加的电话列表已存在该电话，再添加时（重复添加）
                             callback(Intl.get('crm.83', '该电话已存在'));
