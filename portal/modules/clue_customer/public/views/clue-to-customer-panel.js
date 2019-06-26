@@ -513,9 +513,17 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
-    //渲染客户列表
+    //渲染相似客户列表
     renderCustomerList() {
+        //相似客户列表
         const existingCustomers = this.props.existingCustomers;
+
+        //客户列表标题区域高度
+        const titleBlockHeight = 45;
+        //转为新客户按钮区域高度
+        const convertToNewCustomerBtnBlockHeight = 60;
+        //列表容器最大高度
+        const listWrapMaxHeight = $(window).height() - titleBlockHeight - convertToNewCustomerBtnBlockHeight;
 
         return (
             <div className="customer-list">
@@ -524,9 +532,11 @@ class ClueToCustomerPanel extends React.Component {
                     {Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}
                 </div>
 
-                {_.map(existingCustomers, customer => {
-                    return this.renderCustomerItem(customer);
-                })}
+                <div className="list-wrap" style={{maxHeight: listWrapMaxHeight}}>
+                    {_.map(existingCustomers, customer => {
+                        return this.renderCustomerItem(customer);
+                    })}
+                </div>
 
                 <div className="btn-block">
                     <Button onClick={this.props.hidePanel}>{Intl.get('common.cancel', '取消')}</Button>
