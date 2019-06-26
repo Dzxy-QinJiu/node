@@ -7,6 +7,7 @@ require('MOD_DIR/crm/public/css/contact.less');
 import { Row, Col, Button, Icon, message } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DetailCard from 'CMP_DIR/detail-card';
 //联系人表单
 const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
@@ -532,10 +533,12 @@ class ClueToCustomerPanel extends React.Component {
                     {Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}
                 </div>
 
-                <div className="list-wrap" style={{maxHeight: listWrapMaxHeight}}>
-                    {_.map(existingCustomers, customer => {
-                        return this.renderCustomerItem(customer);
-                    })}
+                <div className="list-wrap" style={{height: listWrapMaxHeight}}>
+                    <GeminiScrollbar>
+                        {_.map(existingCustomers, customer => {
+                            return this.renderCustomerItem(customer);
+                        })}
+                    </GeminiScrollbar>
                 </div>
 
                 <div className="btn-block">
