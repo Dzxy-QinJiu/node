@@ -29,7 +29,7 @@ const PRIVILEGE_MAP = {
 
 class CrmRightPanel extends React.Component {
     state = {
-        activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
+        activeKey: this.props.activeKey || TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
         apps: [],
         curOrder: {},
         curCustomer: this.props.curCustomer,
@@ -289,6 +289,7 @@ class CrmRightPanel extends React.Component {
 CrmRightPanel.propTypes = {
     curCustomer: PropTypes.object,
     currentId: PropTypes.string,
+    activeKey: PropTypes.string,
     showApplyUserForm: PropTypes.func,
     hideRightPanel: PropTypes.func,
     isRepeat: PropTypes.bool,

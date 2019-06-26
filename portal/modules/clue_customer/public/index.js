@@ -6,7 +6,7 @@
 var React = require('react');
 var rightPanelShow = false;
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
-import { AUTHS } from 'MOD_DIR/crm/public/utils/crm-util';
+import { AUTHS, TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
@@ -1808,9 +1808,17 @@ class ClueCustomer extends React.Component {
     };
 
     //线索合并到客户后的回调事件
-    onClueMergedToCustomer = () => {
+    onClueMergedToCustomer = (customerId) => {
         //在列表中隐藏当前操作的线索
         this.hideCurClue();
+
+        //打开客户面板，显示合并后的客户信息
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customerId,
+                activeKey: TAB_KEYS.CONTACT_TAB
+            }
+        });
 
         //关闭线索转客户面板
         this.hideClueToCustomerPanel();
