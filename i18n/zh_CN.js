@@ -2126,7 +2126,7 @@ var zh_CN = {
     'errorcode.68': '没有权限',
     'errorcode.69': '迁移客户失败',
     'errorcode.70': '删除客户失败',
-    'errorcode.71': '联系方式已存在',
+    'errorcode.71': '电话号码已存在',
     'errorcode.72': '提醒时间必须大于当前时间',
     'errorcode.73': '添加联系人失败',
     'errorcode.74': '客户不存在',
