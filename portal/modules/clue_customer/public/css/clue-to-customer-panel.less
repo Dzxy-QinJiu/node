@@ -1,8 +1,10 @@
 .clue-to-customer-panel {
+    .ant-btn {
+        color: #8DA8C5;
+    }
     .ant-btn-primary {
-        background-color: #666;
-        border-color: #666;
         margin-right: 15px;
+        color:#fff;
     }
     .ant-btn-primary[disabled] {
         background-color: #d6d6d6;
@@ -13,7 +15,7 @@
         cursor: pointer;
     }
     .high-light {
-        color: #dea83c;
+        color: #EFA246;
     }
     .customer-name {
         font-size: 16px;
@@ -27,6 +29,10 @@
             .title {
                 overflow: hidden;
                 margin-bottom: 10px;
+                color: #999;
+               .icon-left-arrow {
+                   font-size: 13px;
+               }
             }
         }
         .customer-list {
@@ -34,13 +40,15 @@
                 .anticon-exclamation-circle {
                     font-size: 15px;
                     margin-right: 5px;
-                    color: #666;
+                    color: #EFA246;
                 }
             }
             .customer-item {
                 position: relative;
                 background: #fff;
                 padding: 10px 15px;
+                box-shadow:0px 0px 4px 0px rgba(28,14,14,0.24);
+                border-radius:8px;
                 .customer-contacts {
                     margin-top: 10px;
                     .contact-item {
@@ -58,6 +66,11 @@
                     position: absolute;
                     right: 15px;
                     bottom: 8px;
+                }
+                button:hover {
+                    color: #fff;
+                    background-color: #108ee9;
+                    border-color: #108ee9;
                 }
             }
         }
@@ -83,7 +96,7 @@
                 margin: 5px -12px -10px;
                 padding: 5px 10px;
                 overflow: hidden;
-                background: #e4e4e4;
+                background: #E4F2FE;
                 line-height: 28px;
                 button {
                     float: right;
@@ -91,13 +104,16 @@
             }
             .detail-card-container {
                 float: none;
+                border-radius: 4px;
             }
             .crm-pannel-contacts {
                 overflow: hidden;
+                border-radius: 4px;
                 .button-container {
                     display: none;
                 }
                 .detail-card-edit-status {
+                    padding-bottom: 0;
                     box-shadow: none;
                 }
                 .folding-btn {
