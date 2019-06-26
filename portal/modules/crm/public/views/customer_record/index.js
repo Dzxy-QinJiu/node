@@ -254,11 +254,10 @@ class CustomerRecord extends React.Component {
         this.getCustomerTraceList();
     };
 
-    saveAddTraceContent = () => {
+    saveAddTraceContent = (type) => {
         //顶部增加跟进记录的内容
         var customerId = this.state.customerId || '';
-        if (this.state.saveButtonType === 'add') {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
+        if (type === 'add') {
             //输入框中的内容
             var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
             var queryObj = {
@@ -276,7 +275,6 @@ class CustomerRecord extends React.Component {
             //补充跟进记录的内容
             var detail = _.trim(_.get(this.state, 'detailContent.value'));
             var item = this.state.edittingItem;
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
             var queryObj = {
                 id: item.id,
                 customer_id: item.customer_id || customerId,
@@ -321,16 +319,17 @@ class CustomerRecord extends React.Component {
         }
     };
 
-    //点击保存按钮，展示模态框
-    showModalDialog = (item, e) => {
+    //点击保存按钮
+    handleSubmitRecord = (item, e) => {
         if (item.id) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '添加补充的跟进内容');
             //点击补充客户跟踪记录编辑状态下的保存按钮
             var detail = _.trim(_.get(this.state, 'detailContent.value'));
             if (detail) {
-                CustomerRecordActions.setModalDialogFlag(true);
-                CustomerRecordActions.changeAddButtonType('update');
                 CustomerRecordActions.updateItem(item);
+                setTimeout(() => {
+                    this.saveAddTraceContent('update');
+                });
             } else {
                 CustomerRecordActions.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
@@ -339,8 +338,7 @@ class CustomerRecord extends React.Component {
             //点击顶部输入框下的保存按钮
             var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
             if (addcontent) {
-                CustomerRecordActions.setModalDialogFlag(true);
-                CustomerRecordActions.changeAddButtonType('add');
+                this.saveAddTraceContent('add');
             } else {
                 CustomerRecordActions.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
@@ -384,7 +382,7 @@ class CustomerRecord extends React.Component {
                 </FormItem>
                 <SaveCancelButton loading={this.state.addCustomerLoading}
                     saveErrorMsg={this.state.addCustomerErrMsg}
-                    handleSubmit={this.showModalDialog}
+                    handleSubmit={this.handleSubmitRecord}
                     handleCancel={this.handleCancel}
                 />
             </Form>
@@ -443,7 +441,7 @@ class CustomerRecord extends React.Component {
                     <div className="record-null-tip">{this.state.editRecordNullTip}</div>) : null}
                 <SaveCancelButton loading={this.state.addCustomerLoading}
                     saveErrorMsg={this.state.addCustomerErrMsg}
-                    handleSubmit={this.showModalDialog.bind(this, item)}
+                    handleSubmit={this.handleSubmitRecord.bind(this, item)}
                     handleCancel={this.handleCancelDetail.bind(this, item)}
                 />
             </Form>);
@@ -980,9 +978,6 @@ class CustomerRecord extends React.Component {
 
     render() {
         //addTrace 顶部增加记录的teaxare框
-        //下部时间线列表
-        var modalContent = Intl.get('customer.confirm.trace', '确定要保存此跟进内容？');
-        var closedModalTip = _.trim(_.get(this.state, 'detailContent.value')) ? '取消补充跟进内容' : '取消添加跟进内容';
         //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
         let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit;
         return (
@@ -1004,13 +999,6 @@ class CustomerRecord extends React.Component {
                     {this.renderCustomerRecordLists()}
                     {this.renderTraceRecordBottom()}
                 </div>
-                <ModalDialog modalContent={modalContent}
-                    modalShow={this.state.modalDialogFlag}
-                    container={this}
-                    hideModalDialog={this.hideModalDialog}
-                    delete={this.saveAddTraceContent}
-                    closedModalTip={closedModalTip}
-                />
             </div>
         );
     }
