@@ -5,7 +5,8 @@
  */
 const PropTypes = require('prop-types');
 var React = require('react');
-import {Button, Tag, Select} from 'antd';
+import {Button, Tag, Select, Input, Menu, Dropdown} from 'antd';
+const {TextArea} = Input;
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import {PHONERINGSTATUS, HANG_UP_TYPES} from 'MOD_DIR/phone_panel/public/consts';
@@ -140,8 +141,8 @@ class phoneStatusTop extends React.Component {
         });
     };
     //将输入框中的文字放在state上
-    handleInputChange = (value) => {
-        phoneAlertAction.setContent(value);
+    handleInputChange = (e) => {
+        phoneAlertAction.setContent(e.target.value);
     };
     handleSelectCustomer = (clueId) => {
         this.setState({
@@ -159,7 +160,11 @@ class phoneStatusTop extends React.Component {
             }
         });
     };
-
+    onClickMenu = ({ key }) => {
+        var commonPhoneDesArray = this.props.commonPhoneDesArray;
+        var inputContent = commonPhoneDesArray[key];
+        phoneAlertAction.setContent(inputContent);
+    };
     renderTraceItem(phonemsgObj) {
         var onHide = function() {
             phoneAlertAction.setSubmitErrMsg('');
@@ -171,28 +176,26 @@ class phoneStatusTop extends React.Component {
         var saveCls = className('modal-submit-btn',{
             'showCls': this.isFinishedCall(phonemsgObj)
         });
+        const menu =
+            <Menu onClick={this.onClickMenu}>{_.isArray(commonPhoneDesArray) ? commonPhoneDesArray.map((Des, idx) => {
+                //如果电话已经接通，不需要展示 “未接通这个提示”
+                if (phonemsgObj.billsec > 0 && idx === 0) {
+                    return;
+                }
+                return (<Menu.Item key={idx} value={Des}>{Des}</Menu.Item>);
+            }) : null}</Menu>
+           ;
         //通话记录的编辑状态
         if (this.state.isEdittingTrace) {
             return (
                 <div className="trace-content edit-trace">
                     <div className="input-item">
-                        <Select combobox
-                            searchPlaceholder={Intl.get('phone.status.record.content', '请填写本次跟进内容')}
-                            onChange={this.handleInputChange}
-                            value={this.state.inputContent}
-                            getPopupContainer={() => document.getElementById('clue-phone-status-content')}
-                        >
-                            {
-                                _.isArray(commonPhoneDesArray) ?
-                                    commonPhoneDesArray.map((Des, idx) => {
-                                        //如果电话已经接通，不需要展示 “未接通这个提示”
-                                        if (phonemsgObj.billsec > 0 && idx === 0) {
-                                            return;
-                                        }
-                                        return (<Option key={idx} value={Des}>{Des}</Option>);
-                                    }) : null
-                            }
-                        </Select>
+                        <Dropdown overlay={menu} trigger={['click']}>
+                            <TextArea
+                                onChange={this.handleInputChange}
+                                value={this.state.inputContent}
+                                placeholder={Intl.get('phone.status.record.content', '请填写本次跟进内容')}/>
+                        </Dropdown>
                     </div>
                     <div className="modal-submit-tip">
                         {this.state.submittingTraceMsg ? (
