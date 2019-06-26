@@ -2997,6 +2997,7 @@ var en_US = {
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     /*自定义审批 end*/
     'clue.customer.trace.clues': 'Trace clue',//跟进线索
+    'clue.need.complete.clue.name': 'Please complete the clue name first.',//请先完善线索名
     'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
     'apply.phone.close': 'Phone off',//手机关机
     'apply.select.trace.clue': 'Please select trace clue',//请选择要跟进的线索

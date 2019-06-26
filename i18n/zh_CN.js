@@ -3107,6 +3107,7 @@ var zh_CN = {
     'clue.close.all.noty': '关闭所有提醒？',
     'clue.fail.customer.trace.statics': '获取跟进记录的分类统计失败',
     'clue.customer.trace.clues': '跟进线索',
+    'clue.need.complete.clue.name': '请先完善线索名',
     'apply.select.search.clear.value': '修改筛选范围，已勾选的{type}将被清空',
     'apply.phone.close': '手机关机',
     'apply.select.trace.clue': '请选择要跟进的线索',

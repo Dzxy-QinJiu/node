@@ -1094,6 +1094,14 @@ class ClueCustomer extends React.Component {
 
     //转为客户按钮点击事件
     onConvertToCustomerBtnClick = (clueId, clueName) => {
+        //线索名为空时不能执行转为客户的操作
+        //此时提示用户完善客户名
+        if (!clueName) {
+            message.error(Intl.get('clue.need.complete.clue.name', '请先完善线索名'));
+
+            return;
+        }
+
         //设置当前线索
         clueCustomerAction.setCurrentCustomer(clueId);
         
