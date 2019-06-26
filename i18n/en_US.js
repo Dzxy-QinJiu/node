@@ -2159,7 +2159,7 @@ var en_US = {
     'errorcode.139': 'The ID of assigned user can not be empty',//被分配的用户ID不能为空
     'errorcode.140': 'No permission to distribute clues customer',//没有权限执行分配线索客户的操作
     'errorcode.141': 'This member does not belong to you',//该成员不属于您管理
-    'errorcode.142': 'The clue customer does not exist',//线索客户不存在
+    'errorcode.142': 'The clue does not exist',//线索不存在
     'errorcode.143': 'The phone system has an unknown error',//通话系统出现未知异常
     'errorcode.144': 'The phone system did not respond',//通话系统没有响应
     'errorcode.145': 'Landline busy',//座机繁忙

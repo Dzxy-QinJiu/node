@@ -32,7 +32,7 @@ const TIMEOUTDELAY = {
     renderTimeDelay: 2000,
     phoneRenderDelay: 2000
 };
-import crmAjax from 'MOD_DIR/crm/public/ajax/index';
+import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 //当前正在拨打的联系人信息，从点击事件emitter出来
 var contactNameObj = {};
 //socketIo对象
@@ -401,8 +401,22 @@ function phoneEventListener(phonemsgObj) {
             //通话结束后，可以继续拨打电话了
             Oplate.isCalling = false;
         }
+        //监听推送来的消息，如果是容联的电话系统,在打通状态需要把左边导航的图标改掉
+        if (isRongLianPhoneSystem()){
+            //电话接通推过来状态
+            if([CALL_TYPES.ALERT].indexOf(phonemsgObj.type) !== -1){
+                var phoneNum = '';
+                if (phonemsgObj.call_type === 'IN') {
+                    phoneNum += phonemsgObj.extId;
+                } else {
+                    phoneNum += phonemsgObj.to || phonemsgObj.dst;
+                }
+                phoneMsgEmitter.emit(phoneMsgEmitter.CALLING_RONGLIAN_BTN, {callNum: phoneNum});
+            }else if([CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back].indexOf(phonemsgObj.type) !== -1){
+                phoneMsgEmitter.emit(phoneMsgEmitter.CALLING_RONGLIAN_BTN, {callNum: ''});
+            }
+        }
         //如果原来有线索或者客户打电话的面板，判断一下推过来的数据的callId和原来的是不是一样，如果一样就更新原来的电话状态
-        var customerPhonePanelShow = _.get($('#customer_phone_panel_wrap'), 'length');
         var cluePhonePanelShow = _.get($('#clue_phone_panel_wrap'), 'length');
         if ((cluePhonePanelShow && _.get(phonemsgObj, 'leads[0]')) || (!_.get(phonemsgObj, 'customers[0]') && _.get(phonemsgObj, 'leads[0]'))) {
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
