@@ -43,7 +43,7 @@ exports.urls = memberRestApis;
 exports.getMemberList = (req, res, condition, isGetAllUser) => {
     return restUtil.authRest.get(
         {
-            url: memberRestApis.getUsers,
+            url: memberRestApis.getUsers + '?with_extentions=' + true,
             req: req,
             res: res
         }, condition, {
