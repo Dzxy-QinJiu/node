@@ -901,7 +901,25 @@ class ClueCustomer extends React.Component {
 
     };
     renderAssociatedCustomer = (salesClueItem) => {
-        return null;
+        //是有效线索
+        let availability = salesClueItem.availability !== '1';
+        //关联客户
+        var associatedCustomer = salesClueItem.customer_name;
+        //是否有修改线索关联客户的权利
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
+        return(
+            <div className="avalibility-container">
+                {/*是有效线索并且有关联客户*/}
+                {associatedCustomer ?
+                    <div className="associate-customer">
+                        {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
+                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> :
+                    <div>
+                        {associatedPrivilege ? <span className="can-edit associate-btn" onClick={this.showClueDetailOut.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</span> : null}
+                    </div>
+                }
+            </div>
+        );
     };
     renderAvailabilityClue = (salesClueItem) => {
         //是有效线索
@@ -1083,13 +1101,11 @@ class ClueCustomer extends React.Component {
             columns.push({
                 dataIndex: 'assocaite_customer',
                 className: 'invalid-td-clue',
-                width: '150px',
+                width: '300px',
                 render: (text, salesClueItem, index) => {
-                    //关联客户
-                    var associatedCustomer = salesClueItem.customer_name;
                     return (
                         <div className="avalibity-or-invalid-container">
-                            {this.renderAssociatedCustomer}
+                            {this.renderAssociatedCustomer(salesClueItem)}
                         </div>
                     );
                 }
