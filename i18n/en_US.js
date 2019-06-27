@@ -3004,6 +3004,9 @@ var en_US = {
     'common.confirm.modify': 'confirm modify',//确认修改
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
-    'call.record.phone.err.msg': 'Wrong phone number'//电话号码错误
+    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
+    'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
+    'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
+    'clue.manage.contact.clue': 'Contact clue'//联系线索
 };
 export default en_US;

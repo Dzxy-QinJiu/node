@@ -16,7 +16,6 @@ import {tabNameList, TAB_KEYS} from '../utils/crm-util';
 import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
-import {isEqualArray} from 'LIB_DIR/func';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import contactUtil from '../utils/contact-util';

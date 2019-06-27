@@ -4,7 +4,6 @@ var React = require('react');
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/8.
  */
-import {RightPanel} from 'CMP_DIR/rightPanel';
 require('../css/clue-right-detail.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
@@ -14,11 +13,13 @@ const TAB_KEYS = {
     OVERVIEW_TAB: '1',//概览页
     CLUE_TRACE_LIST: '2',//跟进记录
     DYNAMIC_TAB: '3',//动态
+    SCHEDULE_LIST: '4',//联系计划
 };
 var tabNameList = {
     '1': Intl.get('clue.detail.info', '线索信息'),
     '2': Intl.get('menu.trace', '跟进记录'),
-    '3': Intl.get('user.change.record', '变更记录')
+    '3': Intl.get('user.change.record', '变更记录'),
+    '4': Intl.get('crm.right.schedule', '联系计划')
 };
 var noop = function() {
 
@@ -31,6 +32,7 @@ import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import ClueDynamic from '../views/dynamic';
 import ClueBasicInfo from '../views/clue_detail_overview';
 import ClueTraceList from '../views/clue_trace_list';
+import ScheduleList from '../views/schedule';
 import Trace from 'LIB_DIR/trace';
 import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
@@ -342,6 +344,17 @@ class ClueRightPanel extends React.Component {
                                             currentId={curClue.id}
                                             divHeight={divHeight}
                                             ShowCustomerUserListPanel={this.props.ShowCustomerUserListPanel}
+                                        />
+                                    ) : null}
+                                </TabPane>
+                                <TabPane
+                                    tab={tabNameList[TAB_KEYS.SCHEDULE_LIST]}
+                                    key={TAB_KEYS.SCHEDULE_LIST}
+                                >
+                                    {this.state.activeKey === TAB_KEYS.SCHEDULE_LIST ? (
+                                        <ScheduleList
+                                            curClue={this.state.curClue}
+                                            divHeight={divHeight}
                                         />
                                     ) : null}
                                 </TabPane>

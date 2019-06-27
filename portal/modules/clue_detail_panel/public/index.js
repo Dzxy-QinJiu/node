@@ -11,7 +11,7 @@ var phoneAlertStore = require('./store/phone-alert-store');
 const PropTypes = require('prop-types');
 var userData = require('PUB_DIR/sources/user-data');
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import AddScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
+import AddScheduleForm from 'MOD_DIR/clue_customer/public/views/schedule/form';
 import {Button} from 'antd';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
@@ -197,24 +197,24 @@ class ClueDetailPanel extends React.Component {
     };
 
     //渲染线索名及所属销售卡片
-    renderCustomerCard(customer, myCustomer) {
+    renderClueCard(clue, myCustomer) {
         return (
             <div className="customer-name">
                 <h3>
                     <i className="iconfont icon-interested"/>
-                    <span title={customer.name}>{customer.name}</span>
+                    <span title={clue.name}>{clue.name}</span>
                 </h3>
                 <dl className="customer-info">
                     <dt>
                         {Intl.get('common.belong.sales', '所属销售')}:
                     </dt>
                     <dd>
-                        {customer.user_name}
+                        {clue.user_name}
                     </dd>
                 </dl>
                 { myCustomer ? (//我的线索可以查看线索详情
                     <p className="show-customer-detail">
-                        <Button type="primary" onClick={this.toggleClueDetail.bind(this, customer.id)}
+                        <Button type="primary" onClick={this.toggleClueDetail.bind(this, clue.id)}
                             data-tracename={myCustomer.isShowDetail ? '收起线索详情' : '查看线索详情'}>
                             {myCustomer.isShowDetail ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('call.record.show.customer.detail', '查看详情')}
                         </Button>
@@ -243,10 +243,10 @@ class ClueDetailPanel extends React.Component {
                 if (_.isArray(clueInfoArr) && clueInfoArr[0]) {//该电话是自己线索的，展示线索详情
                     return this.renderClueDetail(clueInfoArr[0]);
                 } else {//该电话不是自己线索的
-                    return this.renderCustomerCard(phonemsgObj.leads[0]);
+                    return this.renderClueCard(phonemsgObj.leads[0]);
                 }
             } else {//该电话对应多个线索时的处理
-                let showDetailCustomer = _.find(clueInfoArr, customer => customer.isShowDetail);
+                let showDetailCustomer = _.find(clueInfoArr, clue => clue.isShowDetail);
                 if (showDetailCustomer) {//有展示的线索详情时
                     return (
                         <div className="show-customer-detail">
@@ -335,8 +335,8 @@ class ClueDetailPanel extends React.Component {
         let defalutClueInfoArr = _.get(this.state, 'clueInfoArr[0]', {});
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         const newSchedule = {
-            customer_id: defalutClueInfoArr.id,
-            customer_name: defalutClueInfoArr.name,
+            lead_id: defalutClueInfoArr.id || _.get(this, 'state.paramObj.clue_params.curClue.id'),
+            lead_name: defalutClueInfoArr.name || _.get(this, 'state.paramObj.clue_params.curClue.name'),
             start_time: '',
             end_time: '',
             alert_time: '',
@@ -345,12 +345,13 @@ class ClueDetailPanel extends React.Component {
         };
         var cls = 'phone-alert-inner-content';
         if (this.state.isAddingPlanInfo) {
+            var clueArr = _.get(this,'state.clueInfoArr.length') ? this.state.clueInfoArr : [_.get(this, 'state.paramObj.clue_params.curClue')];
             return (
                 <div className={`add-plan ${cls}`}>
                     <AddScheduleForm
                         handleScheduleCancel={this.handleScheduleCancel}
                         currentSchedule={newSchedule}
-                        customerArr={this.state.clueInfoArr}
+                        clueArr={clueArr}
                     />
                 </div>
             );

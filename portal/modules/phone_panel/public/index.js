@@ -443,8 +443,8 @@ class PhonePanel extends React.Component {
         let defalutCustomerInfoArr = _.get(this.state, 'customerInfoArr[0]', {});
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         const newSchedule = {
-            customer_id: defalutCustomerInfoArr.id,
-            customer_name: defalutCustomerInfoArr.name,
+            customer_id: defalutCustomerInfoArr.id || _.get(this, 'state.paramObj.customer_params.curCustomer.id'),
+            customer_name: defalutCustomerInfoArr.name || _.get(this, 'state.paramObj.customer_params.curCustomer.name'),
             start_time: '',
             end_time: '',
             alert_time: '',
@@ -465,12 +465,13 @@ class PhonePanel extends React.Component {
                 </div>
             );
         } else if (this.state.isAddingPlanInfo) {
+            var clueArr = _.get(this,'state.customerInfoArr.length') ? this.state.customerInfoArr : [_.get(this, 'state.paramObj.customer_params.curCustomer')];
             return (
                 <div className={`add-plan ${cls}`}>
                     <AddScheduleForm
                         handleScheduleCancel={this.handleScheduleCancel}
                         currentSchedule={newSchedule}
-                        customerArr={this.state.customerInfoArr}
+                        customerArr={clueArr}
                     />
                 </div>
             );
