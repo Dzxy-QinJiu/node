@@ -21,7 +21,6 @@ import { Select, Alert } from 'antd';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import ShearContent from '../../../../components/shear-content';
 var Option = Select.Option;
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 //高度常量
 var LAYOUT_CONSTANTS = {
@@ -49,12 +48,6 @@ class UserDetailChangeRecord extends React.Component {
     componentDidMount() {
         UserDetailChangeRecordStore.listen(this.onStateChange);
         let userId = this.props.userId;
-        const userInfo = {
-            data: null,
-            loading: true,
-            errorMsg: ''
-        };
-        userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
         UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
             this.showSelectedApp(this.props, queryObj);
         });

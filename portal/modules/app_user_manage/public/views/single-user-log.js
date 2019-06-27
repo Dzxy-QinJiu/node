@@ -17,7 +17,6 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { AntcTimeLine } from 'antc';
 const TOP_PADDING = 40;//top padding for inputs（时间选择框和搜索框高度）
 const APP_SELECT_HEIGHT = 40; // 应用选择框的高度
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class SingleUserLog extends React.Component {
     static defaultProps = {
@@ -53,12 +52,6 @@ class SingleUserLog extends React.Component {
         SingleUserLogStore.listen(this.onStateChange);
         SingleUserLogAction.resetLogState();
         let userId = this.props.userId;
-        const userInfo = {
-            data: null,
-            loading: true,
-            errorMsg: ''
-        };
-        userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
         this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
     }
 

@@ -32,6 +32,7 @@ function SingleUserLogAction() {
 
     // 获取单个用户的应用列表
     this.getSingleUserAppList = function(searchObj, selectedAppId, appLists) {
+
         if (_.isObject(searchObj)) {
             let getLogParam = {
                 user_id: searchObj.user_id,

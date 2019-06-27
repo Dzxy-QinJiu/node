@@ -13,7 +13,6 @@ import { Progress, Tooltip, Icon, Alert, Select } from 'antd';
 const Option = Select.Option;
 import PropTypes from 'prop-types';
 import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 //日历热力图颜色
 const CALENDER_COLOR = {
@@ -51,12 +50,6 @@ class UserLoginAnalysis extends React.Component {
         UserLoginAnalysisStore.listen(this.onStateChange);
         UserLoginAnalysisAction.resetState();
         let userId = this.props.userId;
-        const userInfo = {
-            data: null,
-            loading: true,
-            errorMsg: ''
-        };
-        userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
         this.getUserAnalysisInfo(userId, this.props.selectedAppId);
     }
 

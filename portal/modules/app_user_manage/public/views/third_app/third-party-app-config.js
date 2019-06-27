@@ -10,7 +10,6 @@ import ThirdPartyAppConfigStore from '../../store/third-party-app-config-store';
 import ThirdPartyAppConfigAction from '../../action/third-party-app-config-actions';
 import DefaultUserLogoTitle from 'CMP_DIR/default-user-logo-title';
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 const FORMAT = oplateConsts.DATE_FORMAT;
 
@@ -29,13 +28,6 @@ class ThreePartyAppConfig extends React.Component {
 
     componentDidMount() {
         ThirdPartyAppConfigStore.listen(this.onStateChange);
-        const userInfo = {
-            data: null,
-            loading: true,
-            errorMsg: ''
-        };
-        userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
-        ThirdPartyAppConfigAction.getUserBasicInfo(this.props.userId);
         ThirdPartyAppConfigAction.getAppConfigList(this.props.userId);
     }
 
