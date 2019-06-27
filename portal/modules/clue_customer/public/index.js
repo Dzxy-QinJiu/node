@@ -900,9 +900,14 @@ class ClueCustomer extends React.Component {
         );
 
     };
+    renderAssociatedCustomer = (salesClueItem) => {
+        return null;
+    };
     renderAvailabilityClue = (salesClueItem) => {
         //是有效线索
         let availability = salesClueItem.availability !== '1';
+        //关联客户
+        var associatedCustomer = salesClueItem.customer_name;
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         return(
@@ -922,7 +927,6 @@ class ClueCustomer extends React.Component {
                 </div>
             </div>
         );
-
     };
     handleChangeSelectedType = (selectedType) => {
         //如果选中的是无效状态
@@ -1074,15 +1078,27 @@ class ClueCustomer extends React.Component {
                     );
                 }
             }];
+
         if (!isSalesRole()){
             columns.push({
+                dataIndex: 'assocaite_customer',
+                className: 'invalid-td-clue',
+                width: '150px',
+                render: (text, salesClueItem, index) => {
+                    //关联客户
+                    var associatedCustomer = salesClueItem.customer_name;
+                    return (
+                        <div className="avalibity-or-invalid-container">
+                            {this.renderAssociatedCustomer}
+                        </div>
+                    );
+                }
+            },{
                 className: 'invalid-td-clue',
                 width: '150px',
                 render: (text, salesClueItem, index) => {
                     //是有效线索
                     let availability = salesClueItem.availability !== '1';
-                    //关联客户
-                    var associatedCustomer = salesClueItem.customer_name;
                     return (
                         <div className="avalibity-or-invalid-container">
                             {availability ? this.renderAvailabilityClue(salesClueItem) : this.renderInavailabilityOrValidClue(salesClueItem)}
@@ -1091,6 +1107,7 @@ class ClueCustomer extends React.Component {
                 }
             });
         }
+
         return columns;
     };
 
@@ -1898,7 +1915,6 @@ class ClueCustomer extends React.Component {
                                 updateClueChannel={this.updateClueChannel}
                                 updateClueClassify={this.updateClueClassify}
                             />
-                            )
                         </div> : null}
                     <ClueImportRightDetail
                         importType={Intl.get('crm.sales.clue', '线索')}
