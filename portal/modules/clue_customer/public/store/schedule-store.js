@@ -55,12 +55,12 @@ ScheduleStore.prototype.showAddForm = function(newSchedule) {
 ScheduleStore.prototype.showEditForm = function(alert) {
     this.clearEditState();
     this.alertListBak = JSON.parse(JSON.stringify(this.scheduleList));
-    let theSchedule = _.find(this.scheduleList, item => item.id == alert.id);
+    let theSchedule = _.find(this.scheduleList, item => item.id === alert.id);
     theSchedule.edit = true;
 };
 
 ScheduleStore.prototype.clearEditState = function() {
-    let theSchedule = _.find(this.scheduleList, item => item.edit == true);
+    let theSchedule = _.find(this.scheduleList, item => item.edit === true);
     if (theSchedule) {
         if (theSchedule.id) {
             delete theSchedule.edit;
@@ -80,12 +80,12 @@ ScheduleStore.prototype.afterAddSchedule = function(newSchedule) {
 };
 ScheduleStore.prototype.afterDelSchedule = function(id) {
     this.scheduleList = _.filter(this.scheduleList,(schedule) => {
-        return schedule.id != id;
+        return schedule.id !== id;
     });
 };
 
 ScheduleStore.prototype.afterHandleStatus = function(newStatusObj) {
-    var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id == newStatusObj.id;});
+    var curSchedule = _.filter(this.scheduleList, (schedule) => {return schedule.id === newStatusObj.id;});
     curSchedule[0].status = newStatusObj.status;
 };
 
