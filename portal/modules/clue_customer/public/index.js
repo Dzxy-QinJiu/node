@@ -1081,6 +1081,8 @@ class ClueCustomer extends React.Component {
                 render: (text, salesClueItem, index) => {
                     //是有效线索
                     let availability = salesClueItem.availability !== '1';
+                    //关联客户
+                    var associatedCustomer = salesClueItem.customer_name;
                     return (
                         <div className="avalibity-or-invalid-container">
                             {availability ? this.renderAvailabilityClue(salesClueItem) : this.renderInavailabilityOrValidClue(salesClueItem)}
