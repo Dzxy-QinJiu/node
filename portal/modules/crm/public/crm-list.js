@@ -1320,9 +1320,9 @@ class Crm extends React.Component {
                         if (name_verify) {
                             title = Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到25（包括25）之间');
                         } else if (import_name_repeat) {
-                            title = Intl.get('crm.import.name.repeat', '导入数据中存在同名客户');
+                            title = Intl.get('crm.import.name.repeat', '导入数据中存在同名{type}',{type: Intl.get('call.record.customer', '客户')});
                         } else if (name_repeat) {
-                            title = Intl.get('crm.system.name.repeat', '系统中已存在同名客户');
+                            title = Intl.get('crm.system.name.repeat', '系统中已存在同名{type}',{type: Intl.get('call.record.customer', '客户')});
                         }
                         return (<span className={cls} title={title}>{text}</span>);
                     } else {//必填
@@ -1838,7 +1838,6 @@ class Crm extends React.Component {
                     doImportAjax={this.doImport}
                     repeatAlertMessage={Intl.get('import.repeat.delete.tip', '红色标示数据已存在或不符合规则，请删除红色标示的数据后直接导入，或本地修改数据后重新导入')}
                     regRules={XLS_FILES_TYPE_RULES}
-                    downLoadFileName={Intl.get('crm.sales.clue', '线索') + '.xls'}
                 />
 
                 {this.state.mergePanelIsShow ? (<CrmRightMergePanel

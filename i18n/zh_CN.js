@@ -1528,8 +1528,8 @@ var zh_CN = {
     'crm.recycle.bin.type': '操作类型',
     'crm.recycle.bin.time': '操作时间',
     'crm.import.required': '必填项，不能为空',
-    'crm.import.name.repeat': '导入数据中存在同名客户',
-    'crm.system.name.repeat': '系统中已存在同名客户',
+    'crm.import.name.repeat': '导入数据中存在同名{type}',
+    'crm.system.name.repeat': '系统中已存在同名{type}',
     'crm.import.phone.repeat': '导入数据中存在相同的电话',
     'crm.system.phone.repeat': '系统中已存在相同的电话',
     'crm.import.phone.verify': '电话只能是11位手机号或11-12位带区号的座机号',
@@ -3113,6 +3113,6 @@ var zh_CN = {
     'apply.select.trace.clue': '请选择要跟进的线索',
     'crm.103': '变更负责人',
     'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
-    'call.record.phone.err.msg': '电话号码错误'
+    'call.record.phone.err.msg': '电话号码错误',
 };
 export default zh_CN;
