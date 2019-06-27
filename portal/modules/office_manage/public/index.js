@@ -10,6 +10,7 @@ import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
 import OfficeForm from './office-form';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 const LAYOUT = {
     HAED_HEIGHT: 40, // tabs项的高度
@@ -133,6 +134,11 @@ class OfficeManage extends React.Component {
         });
     };
 
+    handleClickPosition = (item) => {
+        let positionObj = {teamrole_id: item.id};
+        positionEmitter.emit(positionEmitter.CLICK_POSITION, positionObj);
+    };
+
     handleMouseLeave = (event) => {
         event.stopPropagation();
         if (!this.state.visible) {
@@ -222,13 +228,6 @@ class OfficeManage extends React.Component {
         });
     };
 
-    // 正在添加、编辑、删除职务时，其他不能点击
-    onSelectPosition = (item, event) => {
-        event.stopPropagation();
-        if ( !this.state.isShowAddPosition || item.isEdit || item.isDelete) {
-            return;
-        }
-    };
 
     handleSubmit = (result, flag) => {
         if (flag === 'add') {
@@ -348,7 +347,7 @@ class OfficeManage extends React.Component {
                                 return (
                                     <li
                                         onMouseEnter={this.handleMouseEnter.bind(this, item)}
-                                        onClick={this.onSelectPosition.bind(this, item )}
+                                        onClick={this.handleClickPosition.bind(this, item )}
                                     >
                                         {
                                             this.state.deleteOrSetDefaultPositionId === item.id && this.state.deleteOrSetDefaultErrMsg ? (

@@ -13,6 +13,7 @@ import {Icon, Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
+import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -41,6 +42,7 @@ class MemberManage extends React.Component {
 
     componentDidMount = () => {
         MemberManageStore.listen(this.onChange);
+        positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberList);
         setTimeout( () => {
             this.getMemberList(); // 获取成员列表
         }, 0);
@@ -54,6 +56,10 @@ class MemberManage extends React.Component {
             status: _.get(queryParams, 'status', this.state.status), // 成员状态
             id: _.get(queryParams, 'id', ''), // 下拉加载最后一条的id
         };
+        let teamrole_id = _.get(queryParams, 'teamrole_id');
+        if (teamrole_id) {
+            queryObj.teamrole_id = teamrole_id;
+        }
         MemberManageAction.getMemberList(queryObj, (memberTotal) => {
             this.props.getMemberCount(memberTotal);
         });
@@ -61,6 +67,7 @@ class MemberManage extends React.Component {
 
     componentWillUnmount = () => {
         MemberManageStore.unlisten(this.onChange);
+        positionEmitter.removeListener(positionEmitter.CLICK_POSITION, this.getMemberList);
     };
 
     showMemberForm = (type) => {
