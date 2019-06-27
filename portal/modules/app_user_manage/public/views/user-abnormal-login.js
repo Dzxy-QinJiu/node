@@ -32,6 +32,7 @@ var LAYOUT_CONSTANTS = {
     BOTTOM_HEIGHT: 20,
 };
 const IGNORE_ABNORMAL_SUCCESS = Intl.get('user.login.abnormal.success', '该条异地信息已忽略！');
+import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class UserAbnormalLogin extends React.Component {
     static defaultProps = {
@@ -59,6 +60,13 @@ class UserAbnormalLogin extends React.Component {
             UserAbnormalLoginAction.setApp(app_id);
         }
         var userId = this.props.userId;
+        const userInfo = {
+            data: null,
+            loading: true,
+            errorMsg: ''
+        };
+        userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
+
         UserAbnormalLoginAction.getUserApp(userId, () => {
             this.getAbnormalLoginLists(searchObj);
         });

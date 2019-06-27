@@ -6,6 +6,7 @@
 var userAbnormalLoginAjax = require('../ajax/user-abnormal-login-ajax');
 var userDetailChangeRecordAjax = require('../ajax/user-detail-change-record-ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
+import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 function UserAbnormalLoginAction() {
     this.generateActions(
@@ -26,6 +27,14 @@ function UserAbnormalLoginAction() {
     this.getUserApp = function(userId,callback) {
         this.dispatch({loading: true,error: false});
         userDetailChangeRecordAjax.getSingleUserAppList(userId).then((result) => {
+            // 触发用户的基本信息
+            const userInfo = {
+                data: _.get(result, 'user'),
+                loading: false,
+                errorMsg: ''
+            };
+            userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
+
             this.dispatch({loading: false,error: false, dataObj: result.apps});
             callback && callback();
         }, (errorMsg) => {

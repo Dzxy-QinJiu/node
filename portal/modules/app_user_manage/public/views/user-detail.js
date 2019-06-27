@@ -383,13 +383,16 @@ class UserDetail extends React.Component {
         if (hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && this.props.isShownExceptionTab) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.login.abnormal', '异常登录')} key="5">
-                    {this.state.activeKey === '5' ? <div className="user_manage_login_abnormal">
-                        <UserAbnormalLogin
-                            height={contentHeight}
-                            userId={this.props.userId}
-                            selectedAppId={this.props.selectedAppId}
-                        />
-                    </div> : null}
+                    {
+                        this.state.activeKey === '5' ?
+                            <div className="user_manage_login_abnormal">
+                                <UserAbnormalLogin
+                                    height={contentHeight}
+                                    userId={this.props.userId}
+                                    selectedAppId={this.props.selectedAppId}
+                                />
+                            </div> : null
+                    }
                 </TabPane>
             );
         }
