@@ -74,3 +74,24 @@ exports.getAppConfigList = function(userId) {
     });
     return Deferred.promise();
 };
+
+// 根据用户user_id获取用户基本信息
+let userBasicInfoAjax = null;
+exports.getUserBasicInfo = (userId) => {
+    let Deferred = $.Deferred();
+    userBasicInfoAjax && userBasicInfoAjax.abort();
+    userBasicInfoAjax = $.ajax({
+        url: '/rest/appuser/detail/' + userId,
+        type: 'get',
+        dateType: 'json',
+        success: (data) => {
+            Deferred.resolve(data);
+        },
+        error: (xhr,status) => {
+            if(status !== 'abort') {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

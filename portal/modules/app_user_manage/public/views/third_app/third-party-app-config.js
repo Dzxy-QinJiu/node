@@ -10,6 +10,7 @@ import ThirdPartyAppConfigStore from '../../store/third-party-app-config-store';
 import ThirdPartyAppConfigAction from '../../action/third-party-app-config-actions';
 import DefaultUserLogoTitle from 'CMP_DIR/default-user-logo-title';
 import AppUserPanelSwitchAction from '../../action/app-user-panelswitch-actions';
+import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 const FORMAT = oplateConsts.DATE_FORMAT;
 
@@ -28,15 +29,22 @@ class ThreePartyAppConfig extends React.Component {
 
     componentDidMount() {
         ThirdPartyAppConfigStore.listen(this.onStateChange);
+        const userInfo = {
+            data: null,
+            loading: true,
+            errorMsg: ''
+        };
+        userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
+        ThirdPartyAppConfigAction.getUserBasicInfo(this.props.userId);
         ThirdPartyAppConfigAction.getAppConfigList(this.props.userId);
-
     }
 
     componentDidUpdate(prevProps, prevState) {
         var newUserId = this.props.userId;
-        if (prevProps.userId != newUserId) {
+        if (prevProps.userId !== newUserId) {
             setTimeout( () => {
                 ThirdPartyAppConfigAction.dismiss();
+                ThirdPartyAppConfigAction.getUserBasicInfo(newUserId);
                 ThirdPartyAppConfigAction.getAppConfigList(newUserId);
             }, 0);
         }
@@ -68,7 +76,7 @@ class ThreePartyAppConfig extends React.Component {
         var establish_time = moment(new Date(+app.create_time)).format(FORMAT);
         var displayEstablishTime = '';
 
-        if (app.create_time == '0') {
+        if (app.create_time === '0') {
             displayEstablishTime = Intl.get('user.nothing', '无');
         } else if (establish_time === 'Invalid date') {
             displayEstablishTime = Intl.get('common.unknown', '未知');
@@ -222,5 +230,9 @@ class ThreePartyAppConfig extends React.Component {
         );
     }
 }
+
+ThreePartyAppConfig.propTypes = {
+    userId: PropTypes.string,
+};
 
 export default ThreePartyAppConfig;
