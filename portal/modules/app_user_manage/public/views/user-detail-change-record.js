@@ -21,6 +21,7 @@ import { Select, Alert } from 'antd';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import ShearContent from '../../../../components/shear-content';
 var Option = Select.Option;
+
 //高度常量
 var LAYOUT_CONSTANTS = {
     RIGHT_PANEL_PADDING_TOP: 20,//右侧面板顶部padding
@@ -46,7 +47,7 @@ class UserDetailChangeRecord extends React.Component {
 
     componentDidMount() {
         UserDetailChangeRecordStore.listen(this.onStateChange);
-        var userId = this.props.userId;
+        let userId = this.props.userId;
         UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
             this.showSelectedApp(this.props, queryObj);
         });
