@@ -33,7 +33,7 @@ const SALES_ROLE = {
 };
 
 const now = moment();
-const defaultStartTime = now.startOf('week').valueOf();
+const defaultStartTime = now.clone().startOf('week').valueOf();
 const defaultEndTime = now.valueOf();
 
 class SalesReport extends React.Component {
