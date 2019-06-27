@@ -10,7 +10,6 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 }
 var Tabs = require('antd').Tabs;
 var TabPane = Tabs.TabPane;
-var RightPanelClose = require('../../../../components/rightPanel').RightPanelClose;
 var AppUserAction = require('../action/app-user-actions');
 var AppUserDetailAction = require('../action/app-user-detail-actions');
 var UserDetailBasic = require('./user-detail-basic');
@@ -38,6 +37,8 @@ import UserStatusSwitch from './user-status-switch';
 import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
+import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
+
 class UserDetail extends React.Component {
     static defaultProps = {
         userId: '1',
@@ -121,6 +122,7 @@ class UserDetail extends React.Component {
         this.getIntegrateConfig();
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
+        userBasicInfoEmitter.on(userBasicInfoEmitter.GET_USER_BASIC_INFO, this.getBasicInfo);
         let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
         if (scrollWrapElem) {
             scrollWrapElem.addEventListener('mousewheel', this.handleWheel, false);
@@ -132,6 +134,7 @@ class UserDetail extends React.Component {
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
+        userBasicInfoEmitter.removeListener(userBasicInfoEmitter.GET_USER_BASIC_INFO, this.getBasicInfo);
         let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
         if (scrollWrapElem) {
             scrollWrapElem.removeEventListener('mousewheel', this.handleWheel, false);
@@ -338,9 +341,16 @@ class UserDetail extends React.Component {
         if (hasPrivilege('USER_AUDIT_LOG_LIST')) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('sales.user.analysis', '用户分析')} key="2">
-                    {this.state.activeKey === '2' ? <div className="user-analysis">
-                        <UserLoginAnalysis height={contentHeight} userId={this.props.userId} selectedAppId={this.props.selectedAppId} />
-                    </div> : null}
+                    {
+                        this.state.activeKey === '2' ?
+                            <div className="user-analysis">
+                                <UserLoginAnalysis
+                                    height={contentHeight}
+                                    userId={this.props.userId}
+                                    selectedAppId={this.props.selectedAppId}
+                                />
+                            </div> : null
+                    }
                 </TabPane>
             );
             tabPaneList.push(
