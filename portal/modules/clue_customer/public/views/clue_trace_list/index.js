@@ -286,6 +286,7 @@ class ClueTraceList extends React.Component {
                 ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
                     //更新列表中的最后联系
                     _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
+                    this.props.updateRemarks(addcontent);
                     this.toggleAddRecordPanel();
                 });
             } else {
@@ -733,8 +734,8 @@ ClueTraceList.propTypes = {
     ShowCustomerUserListPanel: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     curClue: PropTypes.object,
-    showClueDetailPanel: PropTypes.func
-
+    showClueDetailPanel: PropTypes.func,
+    updateRemarks: PropTypes.func,
 };
 module.exports = ClueTraceList;
 

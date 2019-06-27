@@ -330,6 +330,7 @@ class ClueRightPanel extends React.Component {
                                             divHeight={divHeight}
                                             updateCustomerLastContact={this.props.updateCustomerLastContact}
                                             showClueDetailPanel={this.showClueDetailPanel}
+                                            updateRemarks={this.props.updateRemarks}
                                         />
                                     ) : null}
                                 </TabPane>
