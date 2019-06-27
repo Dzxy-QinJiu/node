@@ -922,10 +922,6 @@ class ClueCustomer extends React.Component {
         );
     };
     renderAvailabilityClue = (salesClueItem) => {
-        //是有效线索
-        let availability = salesClueItem.availability !== '1';
-        //关联客户
-        var associatedCustomer = salesClueItem.customer_name;
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         return(
@@ -2017,6 +2013,7 @@ class ClueCustomer extends React.Component {
                             addOne={this.onConvertClueToNewCustomerDone}
                             formData={this.state.curClue}
                             isAssociateClue={true}
+                            isConvert={true}
                             phoneNum={_.get(this.state, 'curClue.phones[0]', '')}
                             isShowMadal={false}
                         />
