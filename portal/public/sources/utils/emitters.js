@@ -22,8 +22,6 @@ exports.phoneMsgEmitter.CLOSE_CLUE_PANEL = 'closeCluePanel';
 exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = 'closePhoneModal';
 //标记线索无效
 exports.phoneMsgEmitter.SETTING_CLUE_INVALID = 'settingClueInvalid';
-//容联的电话系统左边导航展示挂断按钮
-exports.phoneMsgEmitter.CALLING_RONGLIAN_BTN = 'callingRonglianBtn';
 //拨打电话emitter
 exports.audioMsgEmitter = new EventEmitter();
 //打开播放录音的面板emitter

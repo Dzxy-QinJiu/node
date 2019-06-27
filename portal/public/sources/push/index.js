@@ -14,7 +14,7 @@ var socketEmitter = require('../../../public/sources/utils/emitters').socketEmit
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY} from '../utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
@@ -32,7 +32,6 @@ const TIMEOUTDELAY = {
     renderTimeDelay: 2000,
     phoneRenderDelay: 2000
 };
-import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 //当前正在拨打的联系人信息，从点击事件emitter出来
 var contactNameObj = {};
 //socketIo对象
@@ -384,14 +383,6 @@ function setInitialPhoneObj() {
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
-    //后端推送过来的通话类型
-    const CALL_TYPES = {
-        ALERT: 'ALERT',//对方振铃中
-        ANSWERED: 'ANSWERED',//通话中
-        phone: 'phone',//通话结束（eefung电话系统）
-        curtao_phone: 'curtao_phone',//通话结束（容联电话系统）
-        call_back: 'call_back'//通话结束（运营拨打的回访电话的）
-    };
     // sendMessage && sendMessage(JSON.stringify(phonemsgObj));
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
     const PHONE_STATUS = [CALL_TYPES.ALERT, CALL_TYPES.ANSWERED, CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back];
@@ -401,26 +392,11 @@ function phoneEventListener(phonemsgObj) {
             //通话结束后，可以继续拨打电话了
             Oplate.isCalling = false;
         }
-        //监听推送来的消息，如果是容联的电话系统,在打通状态需要把左边导航的图标改掉
-        if (isRongLianPhoneSystem()){
-            //电话接通推过来状态
-            if([CALL_TYPES.ALERT].indexOf(phonemsgObj.type) !== -1){
-                var phoneNum = '';
-                if (phonemsgObj.call_type === 'IN') {
-                    phoneNum += phonemsgObj.extId;
-                } else {
-                    phoneNum += phonemsgObj.to || phonemsgObj.dst;
-                }
-                phoneMsgEmitter.emit(phoneMsgEmitter.CALLING_RONGLIAN_BTN, {callNum: phoneNum});
-            }else if([CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back].indexOf(phonemsgObj.type) !== -1){
-                phoneMsgEmitter.emit(phoneMsgEmitter.CALLING_RONGLIAN_BTN, {callNum: ''});
-            }
-        }
         //如果原来有线索或者客户打电话的面板，判断一下推过来的数据的callId和原来的是不是一样，如果一样就更新原来的电话状态
         var cluePhonePanelShow = _.get($('#clue_phone_panel_wrap'), 'length');
         if ((cluePhonePanelShow && _.get(phonemsgObj, 'leads[0]')) || (!_.get(phonemsgObj, 'customers[0]') && _.get(phonemsgObj, 'leads[0]'))) {
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
-                call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj}
+                call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj},
             });
         } else {
             //是否清空存储的联系人的处理
