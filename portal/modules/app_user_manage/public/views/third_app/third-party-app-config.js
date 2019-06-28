@@ -29,14 +29,14 @@ class ThreePartyAppConfig extends React.Component {
     componentDidMount() {
         ThirdPartyAppConfigStore.listen(this.onStateChange);
         ThirdPartyAppConfigAction.getAppConfigList(this.props.userId);
-
     }
 
     componentDidUpdate(prevProps, prevState) {
         var newUserId = this.props.userId;
-        if (prevProps.userId != newUserId) {
+        if (prevProps.userId !== newUserId) {
             setTimeout( () => {
                 ThirdPartyAppConfigAction.dismiss();
+                ThirdPartyAppConfigAction.getUserBasicInfo(newUserId);
                 ThirdPartyAppConfigAction.getAppConfigList(newUserId);
             }, 0);
         }
@@ -68,7 +68,7 @@ class ThreePartyAppConfig extends React.Component {
         var establish_time = moment(new Date(+app.create_time)).format(FORMAT);
         var displayEstablishTime = '';
 
-        if (app.create_time == '0') {
+        if (app.create_time === '0') {
             displayEstablishTime = Intl.get('user.nothing', '无');
         } else if (establish_time === 'Invalid date') {
             displayEstablishTime = Intl.get('common.unknown', '未知');
@@ -222,5 +222,9 @@ class ThreePartyAppConfig extends React.Component {
         );
     }
 }
+
+ThreePartyAppConfig.propTypes = {
+    userId: PropTypes.string,
+};
 
 export default ThreePartyAppConfig;

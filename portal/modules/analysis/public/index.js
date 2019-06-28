@@ -9,6 +9,7 @@ import ajax from 'ant-ajax';
 import TableListPanel from 'CMP_DIR/table-list-panel';
 import TopBar from './top-bar';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
+import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
@@ -43,7 +44,13 @@ class CurtaoAnalysis extends React.Component {
     constructor(props) {
         super(props);
 
-        const processedGroups = this.processMenu(groups);
+        let processedGroups = this.processMenu(groups);
+        // 没有开通营收中心时，去掉合同分析
+        if(!isOpenCash()) {
+            processedGroups = _.filter(processedGroups, item => {
+                return item.title !== '合同分析';
+            });
+        }
 
         this.state = {
             currentMenuIndex: '0,0',
@@ -400,6 +407,10 @@ class CurtaoAnalysis extends React.Component {
             name: 'interval',
             value: 'day',
         }, {
+            //日期选择器上当前选择的时间区间
+            name: 'time_range',
+            value: initialTime.range,
+        }, {
             name: 'auth_type',
             value: authType,
             type: 'params',
@@ -458,6 +469,8 @@ class CurtaoAnalysis extends React.Component {
                 name: 'end_time',
             }, {
                 name: 'interval',
+            }, {
+                name: 'time_range',
             }],
         }];
     }

@@ -1,0 +1,278 @@
+//日程列表
+@btn_color: #8ba9c3;
+@hover_color: #2196f3;
+@padding: 8px;
+@icon_visit_color: #9b5bf7;
+@other_icon_color: #8da8c5;
+@title_color: #333333;
+@font_color: #999999;
+@overdue_color: #fbcb8f;
+@today_color: #34ca71;
+
+.break_line {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+//提醒时间popover的样式设置
+.schedule-alert-time {
+  padding-top: 2px;
+  .ant-popover-inner-content {
+    padding: 4px 8px;
+  }
+  .ant-popover-arrow {
+    display: none;
+  }
+}
+
+
+//日程列表
+.schedule-list {
+  float: left;
+  width: 100%;
+  margin-top: 6px;
+  background-color: #ffffff;
+  color: @title_color;
+  .time-line{
+    overflow: hidden;
+    padding: 6px 10px 0 12px;
+  }
+  //没有联系计划的提示
+  .schedule-list-no-data {
+    .ant-alert {
+      top: 200px;
+      width: 150px;
+      left: 50%;
+      margin-left: -75px;
+    }
+  }
+}
+
+//日程列表项的展示
+.schedule-item {
+  float: left;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  border-radius: 3px;
+  background-color: #f9f9f9;
+  &:hover {
+    background-color: #f1f9ff;
+    .schedule-item-buttons {
+      .right-handle-buttons {
+        display: inline-block;
+      }
+    }
+  }
+  .schedule-item-title {
+    color: @title_color;
+    .iconfont.icon-alarm-clock {
+      float: right;
+      color: @btn_color;
+      cursor: default;
+    }
+  }
+  .iconfont.schedule-type-icon{
+    margin-right: 8px;
+    font-size: 14px;
+    color: #c4c6c7;
+  }
+  .schedule-type-text {
+    padding-left: 10px;
+  }
+  .schedule-item-content-wrap{
+    padding-left: 28px;
+    .schedule-item-content {
+      padding-bottom: 4px;
+      color: @font_color;
+      &:extend(.break_line);
+    }
+  }
+  //每条日程底部按钮区的样式
+  .schedule-item-buttons {
+    button {
+      height: 24px;
+      margin-right: 10px;
+      color: @btn_color;
+    }
+    //联系电话展示区域
+    .schedule-contact-phone-block {
+      position: relative;
+      &:extend(.break_line);
+      .name-and-phone-container{
+        display: inline-block;
+        color: #8ba9c3;
+        margin-right: 4px;
+        margin-bottom: 8px;
+        border: 1px solid #0e77ca;
+        padding: 2px 7px;
+        font-size: 12px;
+        border-radius: 4px;
+        line-height: 1.15;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+        .iconfont.icon-active-call_record-ico{
+          visibility: visible;
+        }
+      }
+      .contact-name {
+        margin-right: 4px;
+      }
+      .icon-close {
+        position: absolute;
+        float: right;
+        top: 0;
+        right: 0;
+        padding-right: 0;
+        font-size: 14px;
+      }
+    }
+    //联系客户按钮
+    .schedule-contact-btn {
+      color: #ffffff;
+      border-color: #c4c6c7;
+      background-color: #c4c6c7;
+      &:hover {
+        border-color: @hover_color;
+        background-color: @hover_color;
+      }
+    }
+    .right-handle-buttons {
+      float: right;
+      margin-right: 3px;
+      display: none;
+    }
+  }
+  .iconfont {
+    //margin-right: @padding;
+    //font-size: 12px;
+    color: @other_icon_color;
+    &:hover {
+      color: @hover_color;
+    }
+  }
+  .icon-visit-briefcase {
+    color: @icon_visit_color;
+  }
+  .icon-alarm-clock {
+    &:hover {
+      color: @hover_color;
+    }
+  }
+}
+
+//超期的日程
+.overdue-schedule-item {
+  .schedule-item-title {
+    .iconfont {
+      color: @overdue_color;
+    }
+  }
+  .schedule-item-buttons {
+    .schedule-contact-btn {
+      border-color: @overdue_color;
+      background-color: @overdue_color;
+    }
+  }
+}
+
+//今天的日程
+.today-schedule-item {
+  @today_color: #7dc6a1;
+  .schedule-item-title {
+    .iconfont {
+      color: @today_color;
+    }
+  }
+  .schedule-item-buttons {
+    .schedule-contact-btn {
+      border-color: @today_color;
+      background-color: @today_color;
+    }
+  }
+}
+form.schedule-form {
+  //自定义提醒时间样式设置
+  .define-timerange-area {
+    .ant-form-item {
+      .ant-switch {
+        margin-left: 2px;
+      }
+      .begin-date-input {
+        border: 1px solid #ffe8c8;
+        width: 110px;
+        margin-right: 10px;
+        padding-left: 8px;
+      }
+    }
+  }
+  .ant-radio-group {
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    .iconfont {
+      margin-right: 2px;
+      font-size: 16px;
+    }
+    .ant-radio-button-wrapper{
+      color:#ddd;
+    }
+    .ant-radio-button-wrapper-checked{
+      color:#999;
+      .iconfont{
+        color: @other_icon_color;
+      }
+      .iconfont.icon-visit-briefcase {
+        color: @icon_visit_color;
+      }
+      .icon-phone-call-out {
+        color: @today_color;
+      }
+    }
+
+  }
+  .ant-form-item input{
+    height: 30px;
+    border-radius: 3px;
+    font-size: 13px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+}
+.right-pannel-default,.add-todo{
+  //添加面板的表单
+  form.schedule-form {
+    padding: 10px;
+    border: 1px solid #d3eafc;
+    //自定义提醒时间样式设置
+    .define-timerange-area {
+      .ant-form-item {
+
+        .begin-date-input {
+          width: auto;
+          margin-right: 10px;
+          padding-left: 8px;
+        }
+      }
+    }
+    .ant-form-item {
+      width: 100%;
+      .ant-form-item-label {
+        text-align: center;
+      }
+      input, textarea, .ant-select, .ant-time-picker-input {
+        width: 100%;
+      }
+      .ant-radio-group {
+        margin-right: 20px;
+        .iconfont {
+          margin-right: 8px;
+        }
+      }
+
+    }
+  }
+}

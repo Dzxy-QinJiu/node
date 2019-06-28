@@ -34,7 +34,6 @@ const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
 import { FilterInput } from 'CMP_DIR/filter';
 var classNames = require('classnames');
-import ClueRightPanel from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import queryString from 'query-string';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import PhoneCallout from 'CMP_DIR/phone-callout';
@@ -121,7 +120,6 @@ class Crm extends React.Component {
             importAlertType: '',//导入结果提示框类型
             currentId: crmStoreData.currentId,
             curCustomer: crmStoreData.curCustomer,
-            clueId: crmStoreData.clueId,//展示线索详情的id
             keyword: $('.search-input').val() || '',
             isAddFlag: _this.state && _this.state.isAddFlag || false,
             batchChangeShow: _this.state && _this.state.batchChangeShow || false,
@@ -1272,15 +1270,6 @@ class Crm extends React.Component {
         return sorter;
     };
 
-    hideClueRightPanel = () => {
-        CrmAction.showClueDetail('');
-    };
-
-    //删除线索之后
-    afterDeleteClue = () => {
-        CrmAction.showClueDetail('');
-    };
-
     state = {
         showFilterList: false,//是否展示筛选区域
         ...this.getStateData()
@@ -1321,7 +1310,7 @@ class Crm extends React.Component {
                         //客户名不符合验证规则
                         let name_verify = _.get(record, 'errors.name_verify');
                         //导入的数据中存在同名客户
-                        let import_name_repeat = _.get(record, 'errors.import_name_reteat');
+                        let import_name_repeat = _.get(record, 'errors.import_name_repeat');
                         //系统中存在同名客户
                         let name_repeat = _.get(record, 'errors.name_repeat');
                         let cls = classNames({
@@ -1331,9 +1320,9 @@ class Crm extends React.Component {
                         if (name_verify) {
                             title = Intl.get('crm.197', '客户名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到25（包括25）之间');
                         } else if (import_name_repeat) {
-                            title = Intl.get('crm.import.name.repeat', '导入数据中存在同名客户');
+                            title = Intl.get('crm.import.name.repeat', '导入数据中存在同名{type}',{type: Intl.get('call.record.customer', '客户')});
                         } else if (name_repeat) {
-                            title = Intl.get('crm.system.name.repeat', '系统中已存在同名客户');
+                            title = Intl.get('crm.system.name.repeat', '系统中已存在同名{type}',{type: Intl.get('call.record.customer', '客户')});
                         }
                         return (<span className={cls} title={title}>{text}</span>);
                     } else {//必填
@@ -1357,7 +1346,7 @@ class Crm extends React.Component {
                             //电话规则不匹配的电话列表
                             let phone_verify_list = _.get(record, 'errors.phone_verify');
                             //导入的列表中存在相同的电话的电话列表
-                            let import_phone_repeat_list = _.get(record, 'errors.import_phone_repeat_list');
+                            let import_phone_repeat_list = _.get(record, 'errors.import_phone_list');
                             //系统中存在相同电话的电话列表
                             let phone_repeat_list = _.get(record, 'errors.phone_repeat_list');
                             let cls = '';
@@ -1849,7 +1838,6 @@ class Crm extends React.Component {
                     doImportAjax={this.doImport}
                     repeatAlertMessage={Intl.get('import.repeat.delete.tip', '红色标示数据已存在或不符合规则，请删除红色标示的数据后直接导入，或本地修改数据后重新导入')}
                     regRules={XLS_FILES_TYPE_RULES}
-                    downLoadFileName={Intl.get('crm.sales.clue', '线索') + '.xls'}
                 />
 
                 {this.state.mergePanelIsShow ? (<CrmRightMergePanel
@@ -1860,12 +1848,6 @@ class Crm extends React.Component {
                     afterMergeCustomer={this.afterMergeCustomer}
                     refreshCustomerList={this.refreshCustomerList}
                 />) : null}
-                {this.state.clueId ? <ClueRightPanel
-                    showFlag={true}
-                    currentId={this.state.clueId}
-                    hideRightPanel={this.hideClueRightPanel}
-                    afterDeleteClue={this.afterDeleteClue}
-                /> : null}
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"

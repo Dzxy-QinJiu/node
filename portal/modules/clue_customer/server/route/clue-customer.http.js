@@ -143,6 +143,13 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{
+            method: 'post',
+            path: '/rest/get/clue/selfhandle/fulltext/:page_size/:sort_field/:order/:type',
+            handler: 'getClueFulltextSelfHandle',
+            passport: {
+                'needLogin': true
+            }
         }, {
             method: 'get',
             path: '/rest/clue_dynamic/:clue_id/:page_size',

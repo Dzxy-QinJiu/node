@@ -33,7 +33,7 @@ const SALES_ROLE = {
 };
 
 const now = moment();
-const defaultStartTime = now.startOf('week').valueOf();
+const defaultStartTime = now.clone().startOf('week').valueOf();
 const defaultEndTime = now.valueOf();
 
 class SalesReport extends React.Component {
@@ -374,10 +374,15 @@ class SalesReport extends React.Component {
                 chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
             );
         } else if (roleName === SALES_ROLE.customer_manager) {
-            charts.push(
-                reportCharts.contractChart,
-                reportCharts.repaymentChart,
-            );
+            // 开通营收中心
+            if(commonMethodUtil.isOpenCash()) {
+                charts.push(
+                    reportCharts.contractChart,
+                    reportCharts.repaymentChart,
+                );
+            }else {
+                return null;
+            }
         }
 
         return (
@@ -451,6 +456,21 @@ class SalesReport extends React.Component {
         listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
     }
 
+    // 销售行为统计列处理函数
+    getSalesBehaviorVisitCustomerChartHandler = () => {
+        let chart = customerCharts.getSalesBehaviorVisitCustomerChart({
+            visitedCustomerNumClickHandler: this.visitedCustomerNumClickHandler
+        });
+        let columns = chart.option.columns;
+        // 没有开通营收中心时，去掉接通数(phone_answer)，未接通数(phone_no_answer)这两列
+        if(!commonMethodUtil.isOpenCaller()) {
+            chart.option.columns = _.filter(columns, column => {
+                return !_.includes(['phone_answer','phone_no_answer'], column.dataIndex);
+            });
+        }
+        return chart;
+    };
+
     //渲染销售行为
     renderSalesBehavior = () => {
         if (!this.state.currentMember.team_id) return;
@@ -460,9 +480,14 @@ class SalesReport extends React.Component {
         let charts = [];
 
         if (roleName === SALES_ROLE.sales_manager) {
+            // 开通呼叫中心
+            if(commonMethodUtil.isOpenCaller()) {
+                charts.push(
+                    //电话量
+                    reportCharts.callVolumeChart
+                );
+            }
             charts.push(
-                //电话量
-                reportCharts.callVolumeChart,
                 //客户阶段
                 customerCharts.getCustomerStageChart(),
                 //客户活跃度统计
@@ -479,9 +504,7 @@ class SalesReport extends React.Component {
                 //客户数统计
                 customerCharts.getCustomerNumChart(),
                 //销售行为统计
-                customerCharts.getSalesBehaviorVisitCustomerChart({
-                    visitedCustomerNumClickHandler: this.visitedCustomerNumClickHandler
-                }),
+                this.getSalesBehaviorVisitCustomerChartHandler(),
                 //订单阶段
                 orderCharts.getOrderStageChart({
                     stageList: this.state.stageList

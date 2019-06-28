@@ -1,3 +1,4 @@
+@import "../../public/css/common-variables";
 //拨号键盘
 .dial-up-keyboard-wrap{
   width: 145px;
@@ -32,5 +33,9 @@
     width: calc(100% - 8px);
     margin-top: 4px;
     margin-left: 4px;
+    &.hang-up-background{
+      background-color: @error_tips_color;
+      border-color: @error_tips_color
+    }
   }
 }

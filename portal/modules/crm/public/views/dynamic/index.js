@@ -9,9 +9,8 @@ import {AntcTimeLine} from 'antc';
 import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
-import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import ShearContent from '../../../../../components/shear-content';
-
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 class Dynamic extends React.Component {
     state = {
         ...CustomerDynamicStore.getState(),
@@ -40,9 +39,21 @@ class Dynamic extends React.Component {
         CustomerDynamicStore.unlisten(this.onStoreChange);
         $(window).off('resize', this.onStoreChange);
     }
-
+    hideRightPanel = () => {
+        crmAction.showClueDetail('');
+    }
+    //删除线索之后
+    afterDeleteClue = () => {
+        crmAction.showClueDetail('');
+    };
     showClueDetailOut = (clueId) => {
-        crmAction.showClueDetail(clueId);
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+            clue_params: {
+                currentId: clueId,
+                hideRightPanel: this.hideRightPanel,
+                afterDeleteClue: this.afterDeleteClue
+            }
+        });
     };
 
     timeLineItemRender = (item) => {

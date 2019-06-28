@@ -14,7 +14,7 @@ var socketEmitter = require('../../../public/sources/utils/emitters').socketEmit
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY} from '../utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
@@ -32,7 +32,6 @@ const TIMEOUTDELAY = {
     renderTimeDelay: 2000,
     phoneRenderDelay: 2000
 };
-import crmAjax from 'MOD_DIR/crm/public/ajax/index';
 //当前正在拨打的联系人信息，从点击事件emitter出来
 var contactNameObj = {};
 //socketIo对象
@@ -140,7 +139,6 @@ window.closeAllNoty = function() {
 //处理线索的数据
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
-        //只有管理员或者运营人员才处理
         if (getClueUnhandledPrivilege()){
             updateUnreadByPushMessage('unhandleClue', data.clue_list.length);
         }
@@ -384,14 +382,6 @@ function setInitialPhoneObj() {
 /*
  * 监听拨打电话消息的推送*/
 function phoneEventListener(phonemsgObj) {
-    //后端推送过来的通话类型
-    const CALL_TYPES = {
-        ALERT: 'ALERT',//对方振铃中
-        ANSWERED: 'ANSWERED',//通话中
-        phone: 'phone',//通话结束（eefung电话系统）
-        curtao_phone: 'curtao_phone',//通话结束（容联电话系统）
-        call_back: 'call_back'//通话结束（运营拨打的回访电话的）
-    };
     // sendMessage && sendMessage(JSON.stringify(phonemsgObj));
     //为了避免busy事件在两个不同的通话中错乱的问题，过滤掉推送过来的busy状态
     const PHONE_STATUS = [CALL_TYPES.ALERT, CALL_TYPES.ANSWERED, CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back];
@@ -402,11 +392,10 @@ function phoneEventListener(phonemsgObj) {
             Oplate.isCalling = false;
         }
         //如果原来有线索或者客户打电话的面板，判断一下推过来的数据的callId和原来的是不是一样，如果一样就更新原来的电话状态
-        var customerPhonePanelShow = _.get($('#customer_phone_panel_wrap'), 'length');
         var cluePhonePanelShow = _.get($('#clue_phone_panel_wrap'), 'length');
         if ((cluePhonePanelShow && _.get(phonemsgObj, 'leads[0]')) || (!_.get(phonemsgObj, 'customers[0]') && _.get(phonemsgObj, 'leads[0]'))) {
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
-                call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj}
+                call_params: {phonemsgObj, contactNameObj, setInitialPhoneObj},
             });
         } else {
             //是否清空存储的联系人的处理
@@ -457,8 +446,11 @@ window.handleClickPhone = function(phoneObj) {
 //点击展开线索详情
 window.handleClickClueName = function(event,clueId) {
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .clue-item .clue-name'), '打开线索详情');
-    //展示线索详情
-    notificationEmitter.emit(notificationEmitter.SHOW_CLUE_DETAIL,{clueId: clueId});
+    phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+        clue_params: {
+            currentId: clueId
+        }
+    });
     //点击查看详情时要把对应的通知框关掉
     $(event.target).closest('li').remove();
 };
@@ -473,7 +465,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
             }
         });
     }
-    var title = Intl.get('customer.contact.somebody', '联系') + scheduleAlertMsg.customer_name;
+    var title = Intl.get('customer.contact.somebody', '联系') + scheduleAlertMsg.topic;
     var tipContent = scheduleAlertMsg.content || '';
     if (canPopDesktop()) {
         tipContent = tipContent + '\n';
@@ -845,13 +837,14 @@ function getClueUnreadNum(data, callback){
         type = 'manager';
     }
     $.ajax({
-        url: '/rest/get/clue/fulltext/0/source_time/descend/' + type,
+        url: '/rest/get/clue/selfhandle/fulltext/100/source_time/descend/' + type,
         dataType: 'json',
         type: 'post',
         data: data,
         success: data => {
             var messages = {
-                'unhandleClue': 0
+                'unhandleClue': 0,
+                'unhandleClueList': []
             };
             var value = data.total;
             if (typeof value === 'number' && value > 0) {
@@ -861,6 +854,9 @@ function getClueUnreadNum(data, callback){
                 if (!isNaN(num) && num > 0) {
                     messages['unhandleClue'] = num;
                 }
+            }
+            if (_.isArray(_.get(data, 'result'))){
+                messages['unhandleClueList'] = _.get(data, 'result');
             }
             //更新全局中存的未处理的线索数
             updateGlobalUnreadStorage(messages);

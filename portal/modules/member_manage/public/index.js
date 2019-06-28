@@ -202,19 +202,32 @@ class MemberManage extends React.Component {
                 );
             }
         }, {
-            title: Intl.get('common.email', '邮箱'),
-            dataIndex: 'email',
-            key: 'email',
-            width: '30%',
-            render: (email, record) => {
-                let emailCls = this.memberStatusClass(_.get(record, 'status'));
+            title: Intl.get('crm.113', '部门'),
+            dataIndex: 'teamName',
+            key: 'teamName',
+            width: '20%',
+            render: (teamName, record) => {
+                let teamCls = this.memberStatusClass(_.get(record, 'status'));
                 return (
-                    <div className={emailCls}>
-                        {email}
+                    <div className={teamCls}>
+                        {teamName}
                     </div>
                 );
             }
-        },{
+        }, {
+            title: Intl.get('member.position', '职务'),
+            dataIndex: 'positionName',
+            key: 'positionName',
+            width: '20%',
+            render: (positionName, record) => {
+                let positionCls = this.memberStatusClass(_.get(record, 'status'));
+                return (
+                    <div className={positionCls}>
+                        {positionName}
+                    </div>
+                );
+            }
+        }, {
             title: Intl.get('member.phone', '手机'),
             dataIndex: 'phone',
             key: 'phone',

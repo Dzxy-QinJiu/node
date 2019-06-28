@@ -27,7 +27,7 @@ import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
+import {renderClueStatus, subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 class SalesClueItem extends React.Component {
     constructor(props) {
@@ -36,7 +36,7 @@ class SalesClueItem extends React.Component {
         this.state = {
             salesClueItemDetail: propsItem,
             isEdittingItem: {},//正在编辑的那一条
-            submitContent: this.getSubmitContent(propsItem),//要提交的跟进记录的内容
+            submitContent: '',//要提交的跟进记录的内容
             submitTraceErrMsg: '',//提交跟进记录出错的信息
             submitTraceLoading: false,//正在提交跟进记录
             isRemarkingItem: '',//正在标记线索是否有效的线索
@@ -52,15 +52,11 @@ class SalesClueItem extends React.Component {
         };
     }
 
-    getSubmitContent(propsItem) {
-        return _.get(propsItem, 'customer_traces[0]', '') ? propsItem.customer_traces[0].remark : '';
-    }
-
     componentWillReceiveProps(nextProps) {
         //如果只改了某些属性，也要把state上的状态更新掉
         this.setState({
             salesClueItemDetail: nextProps.salesClueItemDetail,
-            submitContent: this.getSubmitContent(nextProps.salesClueItemDetail),
+            submitContent: '',
         });
 
         if (this.state.distributeLoading !== nextProps.distributeLoading) {
@@ -86,7 +82,7 @@ class SalesClueItem extends React.Component {
         this.setState({
             submitTraceErrMsg: '',
             isEdittingItem: {},
-            submitContent: this.getSubmitContent(this.state.salesClueItemDetail)
+            submitContent: ''
         });
     };
     handleInputChange = (e) => {
@@ -96,11 +92,11 @@ class SalesClueItem extends React.Component {
     };
     updateRemarks = (remarks) => {
         var salesClueItemDetail = this.state.salesClueItemDetail;
-        salesClueItemDetail['customer_traces'] = remarks;
+        salesClueItemDetail['customer_traces'][0].remark = remarks;
         salesClueItemDetail['status'] = SELECT_TYPE.HAS_TRACE;
         this.setState({
             salesClueItemDetail,
-            submitContent: this.getSubmitContent(salesClueItemDetail)
+            submitContent: ''
         });
     };
     handleSubmitContent = (item) => {
@@ -114,19 +110,13 @@ class SalesClueItem extends React.Component {
                 submitTraceErrMsg: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')
             });
         } else {
-            if (Oplate && Oplate.unread && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
-                Oplate.unread['unhandleClue'] -= 1;
-                if (timeoutFunc) {
-                    clearTimeout(timeoutFunc);
-                }
-                timeoutFunc = setTimeout(function() {
-                    //触发展示的组件待审批数的刷新
-                    notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-                }, timeout);
+            if (Oplate && Oplate.unread && item.status === SELECT_TYPE.WILL_TRACE) {
+                subtracteGlobalClue(item);
             }
             var submitObj = {
-                'customer_id': item.id,
-                'remark': textareVal
+                'lead_id': item.id,
+                'remark': textareVal,
+                'type': 'other'
             };
             this.setState({
                 submitTraceLoading: true,
@@ -238,24 +228,6 @@ class SalesClueItem extends React.Component {
                     time: moment().valueOf()
                 };
                 salesClueItemDetail.availability = updateValue;
-                //点击无效后状态应该改成已跟进的状态
-                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
-                    //如果角色是管理员，并且该线索之前的状态是待分配状态
-                    //或者  如果角色是销售人员，并且该线索之前的状态是待跟进状态
-                    //标记为无效后 ,把全局上未处理的线索数量要减一
-                    if (Oplate && Oplate.unread && ((userData.hasRole(userData.ROLE_CONSTANS.SALES) && salesClueItemDetail.status === SELECT_TYPE.WILL_TRACE) || (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && salesClueItemDetail.status === SELECT_TYPE.WILL_DISTRIBUTE))) {
-                        Oplate.unread['unhandleClue'] -= 1;
-                        if (timeoutFunc) {
-                            clearTimeout(timeoutFunc);
-                        }
-                        timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待审批数的刷新
-                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-                        }, timeout);
-                    }
-                    salesClueItemDetail.status = SELECT_TYPE.HAS_TRACE;
-                }
-
                 clueCustomerAction.updateClueProperty({
                     id: item.id,
                     availability: updateValue,
@@ -303,9 +275,14 @@ class SalesClueItem extends React.Component {
         });
     };
     handleShowClueDetail = (item) => {
-        this.setState({
-            isShowClueDetail: true,
-            isAssocaiteItem: item
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+            clue_params: {
+                currentId: item.id,
+                hideRightPanel: this.hideRightPanel,
+                afterDeleteClue: this.afterDeleteClue,
+                removeUpdateClueItem: this.removeUpdateClueItem,
+                updateRemarks: this.updateRemarks
+            }
         });
     };
     showCustomerDetail = (customerId) => {
@@ -383,9 +360,6 @@ class SalesClueItem extends React.Component {
                         :
                         </span>
                         {traceContent}
-                        {canEditTrace ? <i className="iconfont icon-edit-btn"
-                            onClick={this.handleEditTrace.bind(this, salesClueItem)}
-                        ></i> : null}
                     </span> : null }</div>
                 : null}
 
@@ -430,11 +404,11 @@ class SalesClueItem extends React.Component {
                         /> : null
                     }
                 </div>
-                {!traceContent && hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
+                {hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
                     <Button className='add-trace-content'
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
-                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleAssociateCustomer.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
+                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleShowClueDetail.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('common.sales.transfer.customer','转为客户')}</Button> : null}
 
                 {avalibilityPrivilege ? (salesClueItem.availability === '1' ?
 
@@ -515,18 +489,6 @@ class SalesClueItem extends React.Component {
                             type="error"
                             showIcon
                             onHide={hide}
-                        />
-                    </div>
-                    : null}
-                {this.state.isAssocaiteItem ?
-                    <div className={associateCls}>
-                        <ClueRightPanel
-                            showFlag={true}
-                            curClue={this.state.isAssocaiteItem}
-                            hideRightPanel={this.hideRightPanel}
-                            curCustomer={this.state.isAssocaiteItem}
-                            removeUpdateClueItem={this.removeUpdateClueItem}
-                            updateRemarks={this.updateRemarks}
                         />
                     </div>
                     : null}

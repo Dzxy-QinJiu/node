@@ -7,13 +7,9 @@ var React = require('react');
 require('../../css/clue_trace_list.less');
 var ClueTraceStore = require('../../store/clue-trace-store');
 var ClueTraceAction = require('../../action/clue-trace-action');
-import {AntcTimeLine} from 'antc';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {RightPanel} from 'CMP_DIR/rightPanel';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from '../../../../../components/shear-content';
 import {Dropdown, Icon, Button, Form, Input, Menu, message} from 'antd';
 const FormItem = Form.Item;
@@ -21,7 +17,6 @@ const {TextArea} = Input;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 import {AntcDatePicker as DatePicker} from 'antc';
-import ModalDialog from 'CMP_DIR/ModalDialog';
 import ErrorDataTip from 'MOD_DIR/crm/public/views/components/error-data-tip';
 import {processForTrace, CALL_RECORD_TYPE, LAYOUT_CONSTANTS} from 'MOD_DIR/crm/public/utils/crm-util';
 import TimeLine from 'CMP_DIR/time-line-new';
@@ -239,9 +234,6 @@ class ClueTraceList extends React.Component {
             ClueTraceAction.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
         }
     };
-    hideModalDialog = () => {
-        ClueTraceAction.setModalDialogFlag(false);
-    };
     //渲染顶部增加记录的teaxare框
     renderAddRecordPanel = () => {
         const formItemLayout = {
@@ -265,7 +257,7 @@ class ClueTraceList extends React.Component {
                 </FormItem>
                 <SaveCancelButton loading={this.state.addCustomerLoading}
                     saveErrorMsg={this.state.addCustomerErrMsg}
-                    handleSubmit={this.showModalDialog}
+                    handleSubmit={this.saveAddTraceContent }
                     handleCancel={this.handleCancel}
                 />
             </Form>
@@ -278,28 +270,49 @@ class ClueTraceList extends React.Component {
         this.toggleAddRecordPanel();
         this.setState({addRecordNullTip: ''});
     };
-    //点击保存按钮，展示模态框
-    showModalDialog = (item, e) => {
-        if (item.id) {
-            Trace.traceEvent(ReactDOM.findDOMNode(this), '添加补充的跟进内容');
-            //点击补充客户跟踪记录编辑状态下的保存按钮
-            var detail = _.trim(_.get(this.state, 'detailContent.value'));
-            if (detail) {
-                ClueTraceAction.setModalDialogFlag(true);
-                ClueTraceAction.changeAddButtonType('update');
-                ClueTraceAction.updateItem(item);
-            } else {
-                ClueTraceAction.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
-            }
-        } else {
+    saveAddTraceContent = (item) => {
+        //顶部增加跟进记录的内容
+        var leadId = this.state.leadId || '';
+        if (!item.id) {
             Trace.traceEvent(ReactDOM.findDOMNode(this), '保存添加跟进内容');
             //点击顶部输入框下的保存按钮
             var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
             if (addcontent) {
-                ClueTraceAction.setModalDialogFlag(true);
-                ClueTraceAction.changeAddButtonType('add');
+                var queryObj = {
+                    lead_id: leadId,
+                    type: 'other',//界面上没有选项，默认传other类型，必传
+                    remark: addcontent,
+                };
+                ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
+                    //更新列表中的最后联系
+                    _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
+                    this.props.updateRemarks(addcontent);
+                    this.toggleAddRecordPanel();
+                });
             } else {
                 ClueTraceAction.setContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
+            }
+
+        } else {
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '添加补充的跟进内容');
+            //点击补充客户跟踪记录编辑状态下的保存按钮
+            var detail = _.trim(_.get(this.state, 'detailContent.value'));
+            if (detail) {
+                var queryObj = {
+                    id: item.id,
+                    lead_id: item.lead_id || leadId,
+                    type: item.type,
+                    remark: detail
+                };
+                ClueTraceAction.setUpdateId(item.id);
+                ClueTraceAction.updateClueTrace(queryObj, () => {
+                    //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
+                    if (_.get(this.state, 'customerRecord[0].id') === item.id) {
+                        _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
+                    }
+                });
+            } else {
+                ClueTraceAction.setDetailContent({value: '', validateStatus: 'error', errorMsg: TRACE_NULL_TIP});
             }
         }
     };
@@ -387,7 +400,7 @@ class ClueTraceList extends React.Component {
                     <div className="record-null-tip">{this.state.editRecordNullTip}</div>) : null}
                 <SaveCancelButton loading={this.state.addCustomerLoading}
                     saveErrorMsg={this.state.addCustomerErrMsg}
-                    handleSubmit={this.showModalDialog.bind(this, item)}
+                    handleSubmit={this.saveAddTraceContent .bind(this, item)}
                     handleCancel={this.handleCancelDetail.bind(this, item)}
                 />
             </Form>);
@@ -530,24 +543,6 @@ class ClueTraceList extends React.Component {
                     time: moment().valueOf()
                 };
                 curClue.availability = updateValue;
-                //点击无效后状态应该改成已跟进的状态
-                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
-                    //如果角色是管理员，并且该线索之前的状态是待分配状态
-                    //或者  如果角色是销售人员，并且该线索之前的状态是待跟进状态
-                    //标记为无效后 ,把全局上未处理的线索数量要减一
-                    if (Oplate && Oplate.unread && ((userData.hasRole(userData.ROLE_CONSTANS.SALES) && curClue.status === SELECT_TYPE.WILL_TRACE) || (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && curClue.status === SELECT_TYPE.WILL_DISTRIBUTE))) {
-                        Oplate.unread['unhandleClue'] -= 1;
-                        if (timeoutFunc) {
-                            clearTimeout(timeoutFunc);
-                        }
-                        timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待处理数的刷新
-                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-                        }, timeout);
-                    }
-                    curClue.status = SELECT_TYPE.HAS_TRACE;
-                }
-
                 clueCustomerAction.updateClueProperty({
                     id: item.id,
                     availability: updateValue,
@@ -634,44 +629,7 @@ class ClueTraceList extends React.Component {
                 relativeDate={false}
             />);
     };
-    saveAddTraceContent = () => {
-        //顶部增加跟进记录的内容
-        var leadId = this.state.leadId || '';
-        if (this.state.saveButtonType === 'add') {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加跟进内容');
-            //输入框中的内容
-            var addcontent = _.trim(_.get(this.state, 'inputContent.value'));
-            var queryObj = {
-                lead_id: leadId,
-                type: 'other',//界面上没有选项，默认传other类型，必传
-                remark: addcontent,
-            };
-            ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
-                //更新列表中的最后联系
-                _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
-                this.toggleAddRecordPanel();
-            });
-            // $('.add-content-input').focus();
-        } else {
-            //补充跟进记录的内容
-            var detail = _.trim(_.get(this.state, 'detailContent.value'));
-            var item = this.state.edittingItem;
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确认添加补充的跟进内容');
-            var queryObj = {
-                id: item.id,
-                lead_id: item.lead_id || leadId,
-                type: item.type,
-                remark: detail
-            };
-            ClueTraceAction.setUpdateId(item.id);
-            ClueTraceAction.updateClueTrace(queryObj, () => {
-                //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
-                if (_.get(this.state, 'customerRecord[0].id') === item.id) {
-                    _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
-                }
-            });
-        }
-    };
+
     renderCustomerRecordLists = () => {
         var recordLength = _.get(this, 'state.customerRecord.length');
         //加载状态或加载数据错误时，容器高度的设置
@@ -732,8 +690,6 @@ class ClueTraceList extends React.Component {
     render() {
         //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
         let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit;
-        var modalContent = Intl.get('customer.confirm.trace', '确定要保存此跟进内容？');
-        var closedModalTip = _.trim(_.get(this.state, 'detailContent.value')) ? '取消补充跟进内容' : '取消添加跟进内容';
         return (
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
@@ -749,13 +705,6 @@ class ClueTraceList extends React.Component {
                         </a>
                     </Dropdown> : null}
                     {this.renderCustomerRecordLists()}
-                    <ModalDialog modalContent={modalContent}
-                        modalShow={this.state.modalDialogFlag}
-                        container={this}
-                        hideModalDialog={this.hideModalDialog}
-                        delete={this.saveAddTraceContent}
-                        closedModalTip={closedModalTip}
-                    />
                 </div>
             </div>
         );
@@ -767,8 +716,8 @@ ClueTraceList.propTypes = {
     ShowCustomerUserListPanel: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     curClue: PropTypes.object,
-    showClueDetailPanel: PropTypes.func
-
+    showClueDetailPanel: PropTypes.func,
+    updateRemarks: PropTypes.func,
 };
 module.exports = ClueTraceList;
 

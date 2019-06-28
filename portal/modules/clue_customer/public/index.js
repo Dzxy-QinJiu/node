@@ -6,12 +6,11 @@
 var React = require('react');
 var rightPanelShow = false;
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
-import { AUTHS } from 'MOD_DIR/crm/public/utils/crm-util';
+import { AUTHS, TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
 var clueFilterAction = require('./action/filter-action');
-import {clueEmitter} from 'OPLATE_EMITTER';
 var userData = require('../../../public/sources/user-data');
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
@@ -21,7 +20,6 @@ const {TextArea} = Input;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
-import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
@@ -36,7 +34,6 @@ import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
-import ClueRightPanel from './views/clue-right-detail';
 import ClueToCustomerPanel from './views/clue-to-customer-panel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import ajax from 'ant-ajax';
@@ -49,7 +46,7 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
-import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
+import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from 'CMP_DIR/shear-content';
@@ -57,8 +54,8 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
-import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -77,7 +74,7 @@ class ClueCustomer extends React.Component {
         clueImportTemplateFormShow: false,//线索导入面板是否展示
         previewList: [],//预览列表
         clueAnalysisPanelShow: false,//线索分析面板是否展示
-        showFilterList: userData.getUserData().isCommonSales ? true : false,//是否展示线索筛选区域
+        showFilterList: isSalesRole() ? true : false,//是否展示线索筛选区域
         exportRange: 'filtered',
         isExportModalShow: false,//是否展示导出线索的模态框
         isEdittingItem: {},//正在编辑的那一条
@@ -91,6 +88,7 @@ class ClueCustomer extends React.Component {
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
         condition: {},
+        filterClueStatus: clueFilterStore.getState().filterClueStatus,
         ...clueCustomerStore.getState()
     };
     isCommonSales = () => {
@@ -105,8 +103,8 @@ class ClueCustomer extends React.Component {
         //获取线索分类
         this.getClueClassify();
         clueCustomerAction.getSalesManList();
-        //如果是普通销售，不需要发请求了
-        if(!this.isCommonSales()){
+        //如果是销售角色，不需要发请求了
+        if(!isSalesRole()){
             this.getClueList();
         }
 
@@ -124,7 +122,7 @@ class ClueCustomer extends React.Component {
         if (_.get(nextProps,'history.action') === 'PUSH' && _.get(nextProps,'location.state.clickUnhandleNum')){
 
             var filterStoreData = clueFilterStore.getState();
-            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === '0';//待我审批
+            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === '0';//待我处理
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
             var checkOtherData = _.get(this,'filterPanel.filterList.props.advancedData',[]);//线索状态
             if (filterStoreData.filterClueAvailability === '1'){
@@ -241,10 +239,19 @@ class ClueCustomer extends React.Component {
 
     onClueImport = (list) => {
         this.setState({
-            previewList: list,
+            previewList: this.handlePreviewList(list),
         });
     };
-
+    //将导入预览的数据转换为预览列表中展示所需数据
+    handlePreviewList(list) {
+        return _.map(list, item => {
+            if (_.get(item, 'errors')) {
+                //导入组件中需要此参数进行判断是否展示错误提示
+                item.repeat = true;
+            }
+            return item;
+        });
+    }
 
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
@@ -398,9 +405,7 @@ class ClueCustomer extends React.Component {
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-        if (filterAllotNoTraced){
-            typeFilter.allot_no_traced = filterAllotNoTraced;
-        }
+
         var condition = this.getCondition();
         delete condition.rangeParams;
         if (_.isString(condition.typeFilter)){
@@ -422,7 +427,9 @@ class ClueCustomer extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
-            typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
+            statistics_fields: 'status',
+            typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
+            availability: AVALIBILITYSTATUS.AVALIBILITY
         };
         if (!this.state.lastCustomerId){
             //清除线索的选择
@@ -443,11 +450,6 @@ class ClueCustomer extends React.Component {
         if (_.isArray(filterClueClassify) && filterClueClassify.length){
             queryObj.clue_classify = filterClueClassify.join(',');
         }
-        //过滤无效线索
-        var isFilterInavalibilityClue = filterStoreData.filterClueAvailability;
-        if (isFilterInavalibilityClue){
-            queryObj.availability = isFilterInavalibilityClue;
-        }
         //选中的线索地域
         var filterClueProvince = filterStoreData.filterClueProvince;
         if (_.isArray(filterClueProvince) && filterClueProvince.length){
@@ -460,8 +462,16 @@ class ClueCustomer extends React.Component {
         if(_.isArray(unExistFileds) && unExistFileds.length){
             queryObj.unexist_fields = JSON.stringify(unExistFileds);
         }
-        //取全部线索列表
-        clueCustomerAction.getClueFulltext(queryObj);
+        if (filterAllotNoTraced){
+            //取全部线索列表
+            clueCustomerAction.getClueFulltextSelfHandle(queryObj);
+        }else{
+            //取全部线索列表
+            clueCustomerAction.getClueFulltext(queryObj);
+        }
+
+
+
     };
     //获取请求参数
     getCondition = (isGetAllClue) => {
@@ -644,7 +654,7 @@ class ClueCustomer extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.foot-text-content'), '点击添加/编辑跟进内容');
         this.setState({
             isEdittingItem: updateItem,
-            submitContent: this.getSubmitContent(updateItem)
+            submitContent: ''
         }, () => {
             if (this['changeTextare' + updateItem.id]) {
                 this['changeTextare' + updateItem.id].focus();
@@ -652,24 +662,20 @@ class ClueCustomer extends React.Component {
         });
     };
     handleInputChange = (e) => {
-        this.setState({
-            submitContent: e.target.value
-        });
+        e.preventDefault();
+        //todo 如果用setState方法页面会卡顿
+        this.state.submitContent = e.target.value;
+        // this.setState({
+        //     submitContent: e.target.value
+        // });
     };
     handleSubmitContent = (item) => {
         if (this.state.submitTraceLoading) {
             return;
         }
         var value = _.get(item, 'customer_traces[0].remark', '');
-        if (Oplate && Oplate.unread && !value && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
-            Oplate.unread['unhandleClue'] -= 1;
-            if (timeoutFunc) {
-                clearTimeout(timeoutFunc);
-            }
-            timeoutFunc = setTimeout(function() {
-                //触发展示的组件待审批数的刷新
-                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-            }, timeout);
+        if (Oplate && Oplate.unread && item.status === SELECT_TYPE.WILL_TRACE) {
+            subtracteGlobalClue(item);
         }
         //获取填写的保存跟进记录的内容
         var textareVal = _.trim(this.state.submitContent);
@@ -693,7 +699,6 @@ class ClueCustomer extends React.Component {
                         submitTraceErrMsg: Intl.get('common.save.failed', '保存失败')
                     });
                 } else {
-                    //如果是待跟进状态,需要在列表中删除，其他状态
                     var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                     clueItem.status = SELECT_TYPE.HAS_TRACE;
                     var userId = userData.getUserData().user_id || '';
@@ -719,6 +724,7 @@ class ClueCustomer extends React.Component {
                         submitTraceErrMsg: '',
                         isEdittingItem: {},
                     });
+                    //如果是待跟进状态,需要在列表中删除并且把数字减一
                     this.afterAddClueTrace(item.id);
                 }
             });
@@ -729,7 +735,7 @@ class ClueCustomer extends React.Component {
         this.setState({
             submitTraceErrMsg: '',
             isEdittingItem: {},
-            submitContent: this.getSubmitContent(this.state.salesClueItemDetail)
+            submitContent: ''
         });
     };
 
@@ -753,9 +759,8 @@ class ClueCustomer extends React.Component {
                         />
                     </div>
                 ) : null}
-                <TextArea ref={changeTextare => this['changeTextare' + salesClueItem.id] = changeTextare} type='textarea' value={this.state.submitContent}
-                    placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
-                    onChange={this.handleInputChange}/>
+                <TextArea onScroll={event => event.stopPropagation()} ref={changeTextare => this['changeTextare' + salesClueItem.id] = changeTextare} placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')} onChange={this.handleInputChange}
+                />
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleSubmitContent.bind(this, salesClueItem)}
                         disabled={this.state.submitTraceLoading} data-tracename="保存跟进内容">
@@ -770,7 +775,7 @@ class ClueCustomer extends React.Component {
     };
     renderShowTraceContent = (salesClueItem) => {
         var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');//该线索的跟进内容
-        var traceAddTime = _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
+        var traceAddTime = _.get(salesClueItem, 'customer_traces[0].call_date') || _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
         return (
             <div className="foot-text-content" key={salesClueItem.id}>
                 {/*有跟进记录*/}
@@ -850,24 +855,6 @@ class ClueCustomer extends React.Component {
                     time: moment().valueOf()
                 };
                 salesClueItemDetail.availability = updateValue;
-                //点击无效后状态应该改成已跟进的状态
-                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
-                    //如果角色是管理员，并且该线索之前的状态是待分配状态
-                    //或者  如果角色是销售人员，并且该线索之前的状态是待跟进状态
-                    //标记为无效后 ,把全局上未处理的线索数量要减一
-                    if (Oplate && Oplate.unread && ((userData.hasRole(userData.ROLE_CONSTANS.SALES) && salesClueItemDetail.status === SELECT_TYPE.WILL_TRACE) || (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && salesClueItemDetail.status === SELECT_TYPE.WILL_DISTRIBUTE))) {
-                        Oplate.unread['unhandleClue'] -= 1;
-                        if (timeoutFunc) {
-                            clearTimeout(timeoutFunc);
-                        }
-                        timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待审批数的刷新
-                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-                        }, timeout);
-                    }
-                    salesClueItemDetail.status = SELECT_TYPE.HAS_TRACE;
-                }
-
                 clueCustomerAction.updateClueProperty({
                     id: item.id,
                     availability: updateValue,
@@ -921,26 +908,59 @@ class ClueCustomer extends React.Component {
         );
 
     };
-    showClueDetailPanel = (salesClueItem) => {
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
-            clue_params: {
-                curClue: salesClueItem,
-                currentId: salesClueItem.id
-            }
-        });
+    handleChangeSelectedType = (selectedType) => {
+        clueFilterAction.setFilterType(selectedType);
+        this.onTypeChange();
     };
+    getClueTypeTab = () => {
+        var filterStore = clueFilterStore.getState();
+        var filterClueStatus = filterStore.filterClueStatus;
+        var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        var willDistCls = classNames('clue-status-tab', {'active-will-distribute': SELECT_TYPE.WILL_DISTRIBUTE === typeFilter.status});
+        var willTrace = classNames('clue-status-tab', {'active-will-trace': SELECT_TYPE.WILL_TRACE === typeFilter.status});
+        var hasTrace = classNames('clue-status-tab', {'active-has-trace': SELECT_TYPE.HAS_TRACE === typeFilter.status});
+        var hasTransfer = classNames('clue-status-tab', {'active-has-transfer': SELECT_TYPE.HAS_TRANSFER === typeFilter.status});
+        var statics = this.state.agg_list;
+        const clueStatusCls = classNames('clue-status-wrap',{
+            'show-clue-filter': this.state.showFilterList
+        });
+        return <span className={clueStatusCls}>
+            {isSalesRole() ? null : <span className={willDistCls}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
+                <span className="clue-status-num">{_.get(statics,'willDistribute','')}</span>
+            </span>}
+            <span className={willTrace}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_TRACE)}>{Intl.get('sales.home.will.trace', '待跟进')}
+                <span className="clue-status-num">{_.get(statics,'willTrace','')}</span>
+            </span>
+            <span className={hasTrace}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
+                <span className="clue-status-num">{_.get(statics,'hasTrace','')}</span>
+            </span>
+            <span className={hasTransfer}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
+                <span className="clue-status-num">{_.get(statics,'hasTransfer','')}</span>
+            </span>
+        </span>;
+    };
+   showClueDetailPanel = (salesClueItem) => {
+       phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+           clue_params: {
+               curClue: salesClueItem,
+               currentId: salesClueItem.id
+           }
+       });
+   };
     getClueTableColunms = () => {
         const column_width = '80px';
         let columns = [
             {
-                title: Intl.get('crm.sales.clue', '线索'),
                 dataIndex: 'clue_name',
                 width: '350px',
                 render: (text, salesClueItem, index) => {
                     return (
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
-                            {renderClueStatus(salesClueItem.status)}
                             <span className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}</span>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
@@ -958,7 +978,6 @@ class ClueCustomer extends React.Component {
 
                 }
             },{
-                title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'contact',
                 width: '230px',
                 render: (text, salesClueItem, index) => {
@@ -987,7 +1006,6 @@ class ClueCustomer extends React.Component {
 
                 }
             },{
-                title: Intl.get('crm.6', '负责人'),
                 dataIndex: 'trace_person',
                 width: '100px',
                 render: (text, salesClueItem, index) => {
@@ -1022,7 +1040,6 @@ class ClueCustomer extends React.Component {
 
                 }
             },{
-                title: Intl.get('call.record.follow.content', '跟进内容'),
                 dataIndex: 'trace_content',
                 width: '300px',
                 render: (text, salesClueItem, index) => {
@@ -1034,8 +1051,12 @@ class ClueCustomer extends React.Component {
                         </div>
                     );
                 }
-            },{
-                title: Intl.get('common.operate', '操作'),
+            }];
+        //只有不是待跟进状态，才能展示操作区域
+        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
+        var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.HAS_TRANSFER){
+            columns.push({
                 className: 'invalid-td-clue',
                 width: '150px',
                 render: (text, salesClueItem, index) => {
@@ -1047,12 +1068,21 @@ class ClueCustomer extends React.Component {
                         </div>
                     );
                 }
-            }];
+            });
+        }
         return columns;
     };
 
     //转为客户按钮点击事件
     onConvertToCustomerBtnClick = (clueId, clueName) => {
+        //线索名为空时不能执行转为客户的操作
+        //此时提示用户完善客户名
+        if (!clueName) {
+            message.error(Intl.get('clue.need.complete.clue.name', '请先完善线索名'));
+
+            return;
+        }
+
         //设置当前线索
         clueCustomerAction.setCurrentCustomer(clueId);
         
@@ -1273,17 +1303,16 @@ class ClueCustomer extends React.Component {
         let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
         SetLocalSalesClickCount(sale_id);
         //member_id是跟进销售的id
-        //如果该账号是管理员角色，且该线索之前是待分配状态，分配完毕后要把全局未处理的线索数减一
-        if (Oplate && Oplate.unread &&
-            userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && item.status === SELECT_TYPE.WILL_DISTRIBUTE && !_.get(item, 'member_id')) {
-            Oplate.unread['unhandleClue'] -= 1;
-            if (timeoutFunc) {
-                clearTimeout(timeoutFunc);
-            }
-            timeoutFunc = setTimeout(function() {
-                //触发展示的组件待审批数的刷新
-                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-            }, timeout);
+        if (Oplate && Oplate.unread && item.status === SELECT_TYPE.WILL_TRACE) {
+            subtracteGlobalClue(item,(flag) => {
+                var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+                if (flag && filterAllotNoTraced){
+                    //需要在列表中删除
+                    clueCustomerAction.afterAddClueTrace(item.id);
+                }
+            });
+
+
         }
         if (!isWillDistribute){
             item.user_name = sale_name;
@@ -1412,10 +1441,6 @@ class ClueCustomer extends React.Component {
                     >
                         {this.renderClueCustomerLists()}
                     </div>
-                    {this.state.customersSize ?
-                        <BottomTotalCount
-                            totalCount={Intl.get('crm.215', '共{count}个线索', {'count': this.state.customersSize})}/>
-                        : null}
                 </div>
             );
         }else{
@@ -1477,19 +1502,18 @@ class ClueCustomer extends React.Component {
                     <p className="abnornal-status-tip">{this.state.clueCustomerErrMsg}</p>
                 </div>
             );
-        } else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
+        }
+        else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
             //如果有筛选条件时
             return (
                 <NoDataIntro
-                    noDataAndAddBtnTip={Intl.get('clue.no.data','暂无线索信息')}
                     renderAddAndImportBtns={this.renderAddAndImportBtns}
-                    showAddBtn={this.hasNoFilterCondition()}
-                    noDataTip={Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}
+                    showAddBtn={false}
+                    noDataTip={Intl.get('clue.no.data.during.range.and.status', '没有符合条件的线索')}
                 />
             );
-
-
-        } else {
+        }
+        else {
             //渲染线索列表
             return this.renderClueCustomerBlock();
         }
@@ -1609,6 +1633,10 @@ class ClueCustomer extends React.Component {
             }
         });
     };
+    //是否包含此项内容
+    isIncludesItem(list, item) {
+        return !_.isEmpty(list) && _.includes(list, item);
+    }
     getCluePrevList = () => {
         var _this = this;
         let previewColumns = [
@@ -1616,12 +1644,31 @@ class ClueCustomer extends React.Component {
                 title: Intl.get('clue.customer.clue.name', '线索名称'),
                 dataIndex: 'name',
                 render: function(text, record, index) {
-                    var cls = record.repeat ? 'repeat-item-name' : '';
-                    return (
-                        <span className={cls}>
-                            {record.name}
-                        </span>
-                    );
+                    if (text) {
+                        //线索名不符合验证规则
+                        let name_verify = _.get(record, 'errors.name_verify');
+                        //导入的数据中存在同名线索
+                        let import_name_repeat = _.get(record, 'errors.import_name_repeat');
+                        //系统中存在同名线索
+                        let name_repeat = _.get(record, 'errors.name_repeat');
+                        let cls = classNames({
+                            'repeat-item-name': name_verify || import_name_repeat || name_repeat
+                        });
+                        let title = '';
+                        if (name_verify) {
+                            title = Intl.get('clue.name.rule', '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间');
+                        } else if (import_name_repeat) {
+                            title = Intl.get('crm.import.name.repeat', '导入数据中存在同名{type}',{type: Intl.get('crm.sales.clue', '线索')});
+                        } else if (name_repeat) {
+                            title = Intl.get('crm.system.name.repeat', '系统中已存在同名{type}',{type: Intl.get('crm.sales.clue', '线索')});
+                        }
+                        return (<span className={cls} title={title}>{text}</span>);
+                    } else {//必填
+                        return (
+                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
+                                {Intl.get('apply.components.required.item', '必填')}
+                            </span>);
+                    }
                 }
             },
             {
@@ -1636,22 +1683,51 @@ class ClueCustomer extends React.Component {
             },
             {
                 title: Intl.get('common.phone', '电话'),
-                render: function(text, record, index) {
-                    if (_.isArray(record.contacts)) {
-                        var cls = record.repeat ? 'repeat-item-name' : '';
-                        return (
-                            <span className={cls}>{record.contacts[0] ? record.contacts[0].phone : null}</span>
-                        );
+                render: (text, record, index) => {
+                    if (_.isArray(_.get(record, 'contacts[0].phone'))) {
+                        return _.map(_.get(record, 'contacts[0].phone'), (item, index) => {
+                            //电话规则不匹配的电话列表
+                            let phone_verify_list = _.get(record, 'errors.phone_verify');
+                            //导入的列表中存在相同的电话的电话列表
+                            let import_phone_repeat_list = _.get(record, 'errors.import_phone_repeat');
+                            //系统中存在相同电话的电话列表
+                            let phone_repeat_list = _.get(record, 'errors.phone_repeat_list');
+                            let cls = '';
+                            let title = '';
+                            //电话规则不匹配
+                            if (this.isIncludesItem(phone_verify_list, item)) {
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.import.phone.verify', '电话只能是11位手机号或11-12位带区号的座机号');
+                            } else if (this.isIncludesItem(import_phone_repeat_list, item)) {
+                                //导入的列表中存在相同的电话
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.import.phone.repeat', '导入数据中存在相同的电话');
+                            } else if (this.isIncludesItem(phone_repeat_list, item)) {
+                                //系统中存在同名客户
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.system.phone.repeat', '系统中已存在相同的电话');
+                            }
+                            return (<div className={cls} title={title} key={index}>{item}</div>);
+                        });
                     }
                 }
             },
             {
                 title: 'QQ',
                 render: function(text, record, index) {
-                    if (_.isArray(record.contacts) && _.isArray(record.contacts[0].qq)) {
-                        return (
-                            <span>{record.contacts[0] ? record.contacts[0].qq[0] : null}</span>
-                        );
+                    if (_.isArray(_.get(record, 'contacts[0].qq'))) {
+                        return _.map(_.get(record, 'contacts[0].qq'), (item, index) => {
+                            //电话规则不匹配的电话列表
+                            let qq_verify_list = _.get(record, 'errors.QQ_verify');
+                            let cls = '';
+                            let title = '';
+                            //电话规则不匹配
+                            if (qq_verify_list) {
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('common.correct.qq', '请输入正确的QQ号');
+                            }
+                            return (<div className={cls} title={title} key={index}>{item}</div>);
+                        });
                     }
                 }
             },
@@ -1671,16 +1747,13 @@ class ClueCustomer extends React.Component {
                 title: Intl.get('common.operate', '操作'),
                 width: '60px',
                 render: (text, record, index) => {
-                    //是否在导入预览列表上可以删除
-                    const isDeleteBtnShow = record.repeat;
                     return (
                         <span className="cus-op">
-                            {isDeleteBtnShow ? (
-                                <i className="order-btn-class iconfont icon-delete "
-                                    onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
-                                    data-tracename="删除重复线索"
-                                    title={Intl.get('common.delete', '删除')}/>
-                            ) : null}
+                            <i className="order-btn-class iconfont icon-delete "
+                                onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
+                                data-tracename="删除重复线索"
+                                title={Intl.get('common.delete', '删除')}/>
+
                         </span>
                     );
                 }
@@ -1772,9 +1845,17 @@ class ClueCustomer extends React.Component {
     };
 
     //线索合并到客户后的回调事件
-    onClueMergedToCustomer = () => {
+    onClueMergedToCustomer = (customerId) => {
         //在列表中隐藏当前操作的线索
         this.hideCurClue();
+
+        //打开客户面板，显示合并后的客户信息
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customerId,
+                activeKey: TAB_KEYS.CONTACT_TAB
+            }
+        });
 
         //关闭线索转客户面板
         this.hideClueToCustomerPanel();
@@ -1835,6 +1916,7 @@ class ClueCustomer extends React.Component {
                             />
                         </div>
                         <div className={contentClassName}>
+                            {this.getClueTypeTab()}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
                     </div>
@@ -1864,20 +1946,9 @@ class ClueCustomer extends React.Component {
                         closeTemplatePanel={this.closeClueTemplatePanel}
                         doImportAjax={this.doImportAjax}
                         onItemListImport={this.onClueImport}
-                        repeatAlertMessage={Intl.get('clue.repeat.delete', '红色标示线索名及联系方式已存在，请删除后再导入')}
+                        repeatAlertMessage={Intl.get('import.repeat.delete.tip', '红色标示数据已存在或不符合规则，请删除红色标示的数据后直接导入，或本地修改数据后重新导入')}
                         regRules={XLS_FILES_TYPE_RULES}
-                        downLoadFileName={Intl.get('sales.home.customer', '客户') + '.xls'}
                     />
-                    {/*{this.state.rightPanelIsShow ?*/}
-                    {/*<ClueRightPanel*/}
-                    {/*showFlag={this.state.rightPanelIsShow}*/}
-                    {/*currentId={this.state.currentId}*/}
-                    {/*curClue={this.state.curClue}*/}
-                    {/*ShowCustomerUserListPanel = {this.ShowCustomerUserListPanel}*/}
-                    {/*hideRightPanel={this.hideRightPanel}*/}
-                    {/*updateCustomerLastContact={this.updateCustomerLastContact}*/}
-                    {/*/> : null}*/}
-
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}

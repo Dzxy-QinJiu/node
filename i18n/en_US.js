@@ -1510,8 +1510,8 @@ var en_US = {
     'crm.recycle.bin.type': 'Operation type',//操作类型
     'crm.recycle.bin.time': 'Operation time',//操作时间
     'crm.import.required': 'Required, can not be empty',//必填项，不能为空
-    'crm.import.name.repeat': 'There are identical customers in the imported data',//导入数据中存在同名客户
-    'crm.system.name.repeat': 'The same name customer already exists in the system',//系统中已存在同名客户
+    'crm.import.name.repeat': 'There are identical {type} in the imported data',//导入数据中存在同名{type}
+    'crm.system.name.repeat': 'The same name {type} already exists in the system',//系统中已存在同名{type}
     'crm.import.phone.repeat': 'The same phone exists in the imported data',//导入数据中存在相同的电话
     'crm.system.phone.repeat': 'The same telephone already exists in the system',//系统中已存在相同的电话
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
@@ -2092,7 +2092,7 @@ var en_US = {
     'errorcode.68': 'Permission denied',//没有权限
     'errorcode.69': 'Failed to migrate customer',//迁移客户失败
     'errorcode.70': 'Failed to delete customer',//删除客户失败
-    'errorcode.71': 'Contact information already exists',//联系方式已存在
+    'errorcode.71': 'The phone number already exists',//电话号码已存在
     'errorcode.72': 'The reminder time must be later than the current time',//提醒时间必须大于当前时间
     'errorcode.73': 'Failed to add the contact person',//添加联系人失败
     'errorcode.74': 'The customer does not exist',//客户不存在
@@ -2151,15 +2151,15 @@ var en_US = {
     'errorcode.131': 'Illegal request',//非法请求
     'errorcode.132': 'unknown mistake',//未知错误
     'errorcode.133': 'The server is busy or the network is not working properly. Please try again later',//服务器繁忙或网络不正常，请稍后再试
-    'errorcode.134': 'Failed to add customer trace record',//添加客户跟踪记录失败
-    'errorcode.135': 'Failed to get customer trace record',//获取客户跟踪记录失败
+    'errorcode.134': 'Failed to add trace record',//添加跟进记录失败
+    'errorcode.135': 'Failed to get trace record',//获取跟进记录失败
     'errorcode.136': 'Failed to update customer trace record',//更新客户跟踪记录失败
     'errorcode.137': 'You have not open this application yet',//您尚未开通此应用
     'errorcode.138': 'This seat number is existed',//座席号已存在！
     'errorcode.139': 'The ID of assigned user can not be empty',//被分配的用户ID不能为空
     'errorcode.140': 'No permission to distribute clues customer',//没有权限执行分配线索客户的操作
     'errorcode.141': 'This member does not belong to you',//该成员不属于您管理
-    'errorcode.142': 'The clue customer does not exist',//线索客户不存在
+    'errorcode.142': 'The clue does not exist',//线索不存在
     'errorcode.143': 'The phone system has an unknown error',//通话系统出现未知异常
     'errorcode.144': 'The phone system did not respond',//通话系统没有响应
     'errorcode.145': 'Landline busy',//座机繁忙
@@ -2643,7 +2643,7 @@ var en_US = {
     'menu.shortName.operate': 'operate', //'运营',
     'menu.shortName.schedule': 'schedule', //'日程',
     'menu.shortName.config': 'config', //'设置',
-    'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.',//当前筛选时间段及状态没有相关线索信息
+    'clue.no.data.during.range.and.status': 'No qualifying clues',//没有符合条件的线索
     'clue.no.data': 'There is no relevant clue information',//暂无线索信息
     'clue.filter.clue.status': 'clue status',//线索状态
     'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
@@ -2997,6 +2997,7 @@ var en_US = {
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     /*自定义审批 end*/
     'clue.customer.trace.clues': 'Trace clue',//跟进线索
+    'clue.need.complete.clue.name': 'Please complete the clue name first.',//请先完善线索名
     'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
     'apply.phone.close': 'Phone off',//手机关机
     'apply.select.trace.clue': 'Please select trace clue',//请选择要跟进的线索
@@ -3004,5 +3005,14 @@ var en_US = {
     'common.confirm.modify': 'confirm modify',//确认修改
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
+    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
+    'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
+    'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
+    'clue.manage.contact.clue': 'Contact clue',//联系线索
+    'crm.103': 'Change in charge',//变更负责人
+    'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
+    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
+    'clue.customer.has.transfer': 'Has transfer',//已转化
+    'common.sales.transfer.customer': 'Transfer customer'//转为客户
 };
 export default en_US;

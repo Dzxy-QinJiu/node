@@ -6,10 +6,16 @@
 var ClueCustomerAction = require('../action/clue-customer-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
-import {SELECT_TYPE, isOperation, isSalesLeaderOrManager, getClueStatusValue} from '../utils/clue-customer-utils';
+import {
+    SELECT_TYPE,
+    isOperation,
+    isSalesLeaderOrManager,
+    getClueStatusValue,
+    AVALIBILITYSTATUS
+} from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
-const clueContactType = ['phone','qq','weChat','email'];
+const clueContactType = ['phone', 'qq', 'weChat', 'email'];
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -41,11 +47,14 @@ ClueCustomerStore.prototype.resetState = function() {
     this.distributeBatchLoading = false;
     this.distributeBatchErrMsg = '';
     this.keyword = '';//线索全文搜索的关键字
+    this.agg_list = {};//线索统计数据
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
     this.curClueLists = [];//查询到的线索列表
     this.customersSize = 0;
     this.lastCustomerId = '';
+    this.isLoading = true;
+    this.listenScrollBottom = true;
 };
 ClueCustomerStore.prototype.setLastClueId = function(updateId) {
     this.lastCustomerId = updateId;
@@ -61,10 +70,7 @@ ClueCustomerStore.prototype.updateCurrentClueRemark = function(submitObj) {
         clue.customer_traces[0].remark = submitObj.remark;
     }
 },
-
-
-//全文查询线索
-ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
+ClueCustomerStore.prototype.handleClueData = function(clueData) {
     if (clueData.loading) {
         this.isLoading = true;
         this.clueCustomerErrMsg = '';
@@ -83,16 +89,12 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
         this.customersSize = data ? data.total : 0;
         this.listenScrollBottom = this.customersSize > this.curClueLists.length;
         this.isLoading = false;
-        //跟据线索客户不同的状态进行排序
-        this.curClueLists = _.sortBy(this.curClueLists, (item) => {
-            return item.status;
-        });
         //把线索详情中电话，邮箱，微信，qq里的空值删掉
-        _.forEach(this.curClueLists,(clueItem) => {
-            if (_.isArray(clueItem.contacts) && clueItem.contacts.length){
-                _.forEach(clueItem.contacts,(contactItem) => {
-                    _.forEach(clueContactType,(item) => {
-                        if (_.isArray(contactItem[item]) && contactItem[item].length){
+        _.forEach(this.curClueLists, (clueItem) => {
+            if (_.isArray(clueItem.contacts) && clueItem.contacts.length) {
+                _.forEach(clueItem.contacts, (contactItem) => {
+                    _.forEach(clueContactType, (item) => {
+                        if (_.isArray(contactItem[item]) && contactItem[item].length) {
                             contactItem[item] = contactItem[item].filter(item => item);
                         }
                     });
@@ -100,21 +102,45 @@ ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
 
             }
         });
+        if (_.isArray(_.get(data, 'agg_list'))) {
+            _.forEach(_.get(data, 'agg_list'), item => {
+                if (_.isArray(_.get(item, 'status'))) {
+                    var arr = _.get(item, 'status');
+                    var willDistribute = _.find(arr, item => item.name === SELECT_TYPE.WILL_DISTRIBUTE);
+                    var willTrace = _.find(arr, item => item.name === SELECT_TYPE.WILL_TRACE);
+                    var hasTrace = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRACE);
+                    var hasTransfer = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRANSFER);
+                    this.agg_list = {
+                        'willDistribute': _.get(willDistribute, 'total'),
+                        'willTrace': _.get(willTrace, 'total'),
+                        'hasTrace': _.get(hasTrace, 'total'),
+                        'hasTransfer': _.get(hasTransfer, 'total'),
+                    };
+                }
+            });
+        }
 
     }
+},
+ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
+    this.handleClueData(clueData);
+},
+//全文查询线索
+ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
+    this.handleClueData(clueData);
 };
 //更新线索客户的一些属性
 ClueCustomerStore.prototype.updateClueProperty = function(updateObj) {
     var updateClue = _.find(this.curClueLists, clue => updateObj.id === clue.id);
-    if (updateClue){
+    if (updateClue) {
         updateClue.availability = updateObj.availability;
-        if (updateObj.availability){
+        if (updateObj.availability) {
             updateClue.availability = updateObj.availability;
         }
-        if (updateObj.status){
+        if (updateObj.status) {
             updateClue.status = updateObj.status;
         }
-        if (updateObj.customer_traces){
+        if (updateObj.customer_traces) {
             updateClue.customer_traces = updateObj.customer_traces;
         }
     }
@@ -128,7 +154,7 @@ ClueCustomerStore.prototype.removeClueItem = function(updateObj) {
 ClueCustomerStore.prototype.afterModifiedAssocaitedCustomer = function(updateClue) {
     var targetIndex = _.findIndex(this.curClueLists, clue => updateClue.id === clue.id);
     this.curClueLists[targetIndex] = updateClue;
-    if (this.curClue.id === updateClue.id){
+    if (this.curClue.id === updateClue.id) {
         this.curClue = updateClue;
     }
 };
@@ -200,12 +226,12 @@ ClueCustomerStore.prototype.distributeCluecustomerToSaleBatch = function(result)
 
 //查看某个线索的详情，关闭某个线索时，需要把这两个字段置空
 ClueCustomerStore.prototype.setCurrentCustomer = function(id) {
-    if (id){
+    if (id) {
         this.currentId = id;
         this.curClue = _.find(this.curClueLists, customer => {
             return customer.id === id;
         });
-    }else{
+    } else {
         this.currentId = '';
         this.curClue = {};
     }
@@ -219,14 +245,14 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
     var filterClueStatus = clueFilterStore.getState().filterClueStatus;
     var typeFilter = getClueStatusValue(filterClueStatus);
     //只有筛选状态是待分配 或者 没有选分配状态的时候，并且筛选时间是今天的时候，才把这个新增客户加到列表中
-    if (filterClueStatus && typeFilter){
-        if (((typeFilter.status === '0' || typeFilter.status === '')) && clueFilterStore.getState().rangeParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangeParams[0].to){
+    if (filterClueStatus && typeFilter) {
+        if (((typeFilter.status === '0' || typeFilter.status === '')) && clueFilterStore.getState().rangeParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangeParams[0].to) {
             this.curClueLists.unshift(newCustomer);
             this.customersSize++;
         }
     }
 
-    if (updateObj.showDetail){
+    if (updateObj.showDetail) {
         //新添加的是正在展示的那条线索
         this.curClue = newCustomer;
         this.currentId = newCustomer.id;
@@ -252,9 +278,9 @@ ClueCustomerStore.prototype.setUnSelectDataTip = function(tip) {
 ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail) {
     //修改客户相关的属性，直接传属性和客户的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
-    var customerProperty = ['access_channel', 'clue_source','clue_classify','source', 'user_id', 'user_name', 'sales_team', 'sales_team_id','name','availability','source_time','status'];
+    var customerProperty = ['access_channel', 'clue_source', 'clue_classify', 'source', 'user_id', 'user_name', 'sales_team', 'sales_team_id', 'name', 'availability', 'source_time', 'status'];
     var contact_id = newCustomerDetail.contact_id || '';
-    if (newCustomerDetail.contact_id){
+    if (newCustomerDetail.contact_id) {
         delete newCustomerDetail.contact_id;
     }
     for (var key in newCustomerDetail) {
@@ -264,16 +290,16 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
         } else {
             //修改联系人的相关属性
             if (key === 'contact_name' && contact_id) {
-                var target = _.find(this.curClue.contacts,item => item.id === contact_id);
+                var target = _.find(this.curClue.contacts, item => item.id === contact_id);
                 //联系人是多个
                 target.name = newCustomerDetail[key];
                 this.curClue.contact = newCustomerDetail[key];
-            } else if (contact_id){
-                var target = _.find(this.curClue.contacts,item => item.id === contact_id);
+            } else if (contact_id) {
+                var target = _.find(this.curClue.contacts, item => item.id === contact_id);
                 //因为newCustomerDetail中有个属性id是表示的线索的id，所以在遍历属性的时候不要修改这个id，这样会把联系人的id改成线索的id
-                if (target && key !== 'id'){
+                if (target && key !== 'id') {
                     var submitValue = newCustomerDetail[key];
-                    if (_.isArray(submitValue)){
+                    if (_.isArray(submitValue)) {
                         submitValue = _.filter(submitValue, item => item);
                     }
                     target[key] = submitValue;
@@ -285,6 +311,8 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
 //如果原来的筛选条件是在待跟进的时候，要添加完跟进记录后，该类型的线索要删除添加跟进记录的这个线索
 ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
     this.curClueLists = _.filter(this.curClueLists, clue => updateId !== clue.id);
+    //把统计数据中的待跟进的数据减一
+    this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
     this.customersSize--;
 };
 //分配销售之后
@@ -292,8 +320,13 @@ ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
     //这个updateItemId可能是一个id，也可能是多个id
     var clueIds = updateItemId.split(',');
     //如果是待分配状态，分配完之后要在列表中删除一个
-    this.curClueLists = _.filter(this.curClueLists, clue => _.indexOf(clueIds, clue.id) === -1);
-    this.customersSize = _.get(this,'curClueLists.length',0);
+    this.curClueLists = _.filter(this.curClueLists, clue => {
+        if (_.indexOf(clueIds, clue.id) !== -1) {
+            this.customersSize--;
+            this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
+        }
+        return _.indexOf(clueIds, clue.id) === -1;
+    });
 };
 ClueCustomerStore.prototype.getSalesManList = function(list) {
     list = _.isArray(list) ? list : [];
@@ -313,7 +346,6 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
 //更新线索列表
 ClueCustomerStore.prototype.updateClueCustomers = function(data) {
     this.curClueLists = data;
-    this.customersSize = _.get(this,'curClueLists.length');
 };
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
 ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
@@ -324,10 +356,10 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
                 updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
                 updateTraceCustomer.customer_traces[0].add_time = traceObj.time;
             } else {
-                updateTraceCustomer.customer_traces = [{remark: traceObj.remark,add_time: traceObj.time}];
+                updateTraceCustomer.customer_traces = [{remark: traceObj.remark, add_time: traceObj.time}];
             }
         }
-        if (traceObj.remark){
+        if (traceObj.remark) {
             updateTraceCustomer.status = SELECT_TYPE.HAS_TRACE;
         }
     }

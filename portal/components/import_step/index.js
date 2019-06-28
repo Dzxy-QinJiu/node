@@ -103,8 +103,7 @@ class ImportTemplate extends React.Component {
                     regRules={this.props.regRules}
                 />
                 <div className="down-load-template">
-                    <a data-tracename="点击下载模板" href={this.props.templateHref}
-                        download={this.props.downLoadFileName}>
+                    <a data-tracename="点击下载模板" href={this.props.templateHref}>
                         {Intl.get('clue.download.clue.csv', '下载{type}模板',{type: this.props.importType})}
                     </a>
                 </div>
@@ -237,7 +236,6 @@ ImportTemplate.defaultProps = {
     doImportAjax: noop,//确认导入时的函数
     repeatAlertMessage: '',//有重复数据后的提示信息
     regRules: [],//文件类型的校验规则,
-    downLoadFileName: '',//下载导入模板的文件名,例如：Intl.get('sales.home.customer', '客户') + '.xls'
 };
 ImportTemplate.propTypes = {
     uploadActionName: PropTypes.string,
@@ -251,7 +249,6 @@ ImportTemplate.propTypes = {
     doImportAjax: PropTypes.func,
     getItemPrevList: PropTypes.func,
     repeatAlertMessage: PropTypes.string,//有重复数据后的提示信息
-    regRules: PropTypes.object,
-    downLoadFileName: PropTypes.string
+    regRules: PropTypes.object
 };
 export default ImportTemplate;

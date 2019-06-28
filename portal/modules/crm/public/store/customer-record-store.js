@@ -40,9 +40,6 @@ CustomerRecordStore.prototype.resetState = function() {
     this.addContentDetailShow = 'false';//增加详情的输入框是否显示
     this.detailContent = {value: ''};//增加详情的输入框中的内容
     this.initialDetailContent = '';//增加详情的输入框中的初始化中的内容
-    this.addDetailLoading = false;//正在增加详情
-    this.addDetailErrMsg = '';//增加详情保存错误
-    this.addDetailSuccMsg = '';//正在增加详情保存成功
     this.updateId = '';//正在更新的某一条的id
     this.listenScrollBottom = true;//是否下拉加载
     this.pageSize = 10;//每页的加载条数
@@ -131,14 +128,14 @@ CustomerRecordStore.prototype.addCustomerTrace = function(result) {
 };
 CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
     if (result.loading) {
-        this.addDetailLoading = true;
-        this.addDetailErrMsg = '';
-        this.addDetailSuccMsg = '';
+        this.addCustomerLoading = true;
+        this.addCustomerErrMsg = '';
+        this.addCustomerSuccMsg = '';
     } else if (result.error) {
         var _this = this;
-        this.addDetailLoading = false;
-        this.addDetailErrMsg = result.errorMsg;
-        this.addDetailSuccMsg = '';
+        this.addCustomerLoading = false;
+        this.addCustomerErrMsg = result.errorMsg;
+        this.addCustomerSuccMsg = '';
         var customerRecord = this.customerRecord;
         customerRecord.forEach(function(item) {
             if (item.id === _this.updateId) {
@@ -147,9 +144,9 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
         });
     } else {
         var _this = this;
-        this.addDetailLoading = false;
-        this.addDetailErrMsg = '';
-        this.addDetailSuccMsg = result.data.msg;
+        this.addCustomerLoading = false;
+        this.addCustomerErrMsg = '';
+        this.addCustomerSuccMsg = result.data.msg;
         this.isEdit = false;
         var customerRecord = this.customerRecord;
         customerRecord.forEach(item => {

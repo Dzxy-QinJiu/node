@@ -131,7 +131,7 @@ function getConfigJson(req) {
         '14007': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
         '14008': {'httpCode': 500, 'message': backendIntl.get('errorcode.69', '迁移客户失败')},
         '14009': {'httpCode': 500, 'message': backendIntl.get('errorcode.70', '删除客户失败')},
-        '14010': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '联系方式已存在')},
+        '14010': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '电话号码已存在')},
         '14011': {'httpCode': 500, 'message': backendIntl.get('errorcode.72', '提醒时间必须大于当前时间')},
         //更新内容是空不做处理
         '14012': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
@@ -139,7 +139,7 @@ function getConfigJson(req) {
         '14013': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
         '14101': {'httpCode': 500, 'message': backendIntl.get('errorcode.73', '添加联系人失败')},
         '14102': {'httpCode': 500, 'message': backendIntl.get('errorcode.74', '客户不存在')},
-        '14103': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '联系方式已存在')},
+        '14103': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '电话号码已存在')},
         '14104': {'httpCode': 500, 'message': backendIntl.get('errorcode.75', '修改联系人失败')},
         '14105': {'httpCode': 500, 'message': backendIntl.get('errorcode.76', '设置联系人失败')},
         '14106': {'httpCode': 500, 'message': backendIntl.get('errorcode.77', '删除联系人失败')},
@@ -151,9 +151,9 @@ function getConfigJson(req) {
         '14205': {'httpCode': 500, 'message': backendIntl.get('errorcode.82', '查询订单对应客户失败')},
         '14206': {'httpCode': 500, 'message': backendIntl.get('errorcode.83', '查询订单失败')},
         //客户跟进记录部分
-        '80001': {'httpCode': 500, 'message': backendIntl.get('errorcode.134', '添加客户跟踪记录失败')},
-        '80002': {'httpCode': 500, 'message': backendIntl.get('errorcode.135', '获取客户跟踪记录失败')},
-        '80003': {'httpCode': 500, 'message': backendIntl.get('errorcode.136', '更新客户跟踪记录失败')},
+        '80001': {'httpCode': 500, 'message': backendIntl.get('errorcode.134', '添加跟进记录失败')},
+        '80002': {'httpCode': 500, 'message': backendIntl.get('errorcode.135', '获取跟进记录失败')},
+        '80003': {'httpCode': 500, 'message': backendIntl.get('errorcode.136', '更新跟进记录失败')},
 
         // 客户管理，拨打电话
         '90001': {'httpCode': 500, 'message': backendIntl.get('errorcode.143', '通话系统出现未知异常')},
@@ -166,7 +166,7 @@ function getConfigJson(req) {
         '90021': {'httpCode': 500, 'message': backendIntl.get('errorcode.140', '没有权限执行分配线索客户的操作')},
         '90022': {'httpCode': 500, 'message': backendIntl.get('errorcode.141', '该成员不属于您管理')},
         '90023': {'httpCode': 500, 'message': backendIntl.get('errorcode.139', '被分配的用户ID不能为空')},
-        '90024': {'httpCode': 500, 'message': backendIntl.get('errorcode.142', '线索客户不存在')},
+        '90024': {'httpCode': 500, 'message': backendIntl.get('errorcode.142', '线索不存在')},
         '90010': {'httpCode': 500, 'message': backendIntl.get('errorcode.150', '修改线索信息失败')},
         '90031': {'httpCode': 500, 'message': backendIntl.get('errorcode.152', '线索重复')},
 

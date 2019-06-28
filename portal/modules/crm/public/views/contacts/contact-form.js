@@ -375,26 +375,33 @@ var ContactForm = createReactClass({
                     let phone = value.replace('-', '');
                     let contact = this.props.contact.contact;
                     let phoneArray = contact && _.isArray(contact.phone) ? contact.phone : [];
+                    //获取当前已添加的电话列表
+                    let curPhoneArray = this.getCurPhoneArray();
+                    let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
-                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                        CrmAction.checkOnlyContactPhone(phone, data => {
-                            if (_.isString(data)) {
-                                //唯一性验证出错了
-                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-                            } else {
-                                if (_.isObject(data) && data.result === 'true') {
-                                    callback();
+                        // 判断当前添加的电话列表中是否已存在该电话,获取当前已添加的电话列表有延迟，
+                        // 在验证时，在电话列表里是不会存在验证的这个号码，所以有两个length会是1，就它自己length是0
+                        if (phoneCount.length > 0) {
+                            //当前添加的电话列表已存在该电话，再添加时（重复添加）
+                            callback(Intl.get('crm.83', '该电话已存在'));
+                        } else {
+                            //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
+                            CrmAction.checkOnlyContactPhone(phone, data => {
+                                if (_.isString(data)) {
+                                    //唯一性验证出错了
+                                    callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                                 } else {
-                                    //已存在
-                                    callback(Intl.get('crm.83', '该电话已存在'));
+                                    if (_.isObject(data) && data.result === 'true') {
+                                        callback();
+                                    } else {
+                                        //已存在
+                                        callback(Intl.get('crm.83', '该电话已存在'));
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     } else {//该联系人员电话列表中已存在该电话
-                        //获取当前已添加的电话列表
-                        let curPhoneArray = this.getCurPhoneArray();
-                        let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
                         if (phoneCount.length > 1) {
                             //该联系人中的电话列表已存在该电话，再添加时（重复添加）
                             callback(Intl.get('crm.83', '该电话已存在'));

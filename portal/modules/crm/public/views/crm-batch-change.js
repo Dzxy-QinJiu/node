@@ -40,7 +40,7 @@ const BATCH_MENU_TYPE = [
     {key: 'changeTag', value: Intl.get('common.tag', '标签')},
     {key: 'changeIndustry', value: Intl.get('common.industry', '行业')},
     {key: 'changeTerritory', value: Intl.get('crm.96', '地域')},
-    {key: 'changeSales', value: Intl.get('sales.home.sales', '销售')},
+    {key: 'changeSales', value: Intl.get('crm.6', '负责人')},
     {key: 'changeAdministrativeLevel', value: Intl.get('crm.administrative.level', '行政级别')}
 ];
 
@@ -93,7 +93,7 @@ var CrmBatchChange = createReactClass({
     },
 
     onSalesmanChange: function(sales_man) {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.change-salesman'), '点击切换销售人员');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.change-salesman'), '点击切换负责人');
         BatchChangeActions.setSalesMan(sales_man);
     },
 
@@ -133,7 +133,7 @@ var CrmBatchChange = createReactClass({
     doTransfer: function(transferType, title) {
         if (!this.state.sales_man) {
             // message.error(Intl.get("crm.17", "请选择销售人员"));
-            BatchChangeActions.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
+            BatchChangeActions.setUnSelectDataTip(Intl.get('contract.63', '请选择负责人'));
             return;
         }
         BatchChangeActions.setLoadingState(true);
@@ -148,7 +148,7 @@ var CrmBatchChange = createReactClass({
             CrmAction.getCustomerLimit({member_id: member_id, num: selectedCustomerNum}, (result) => {
                 if (_.isNumber(result) && result > 0){
                     //超过销售拥有客户的上限
-                    var warningTip = Intl.get('crm.change.over.limit', '变更销售后会超过该销售拥有客户的上限，请减少{num}个客户后再变更销售',{num: result});
+                    var warningTip = Intl.get('crm.104', '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人' ,{num: result});
                     message.warn(warningTip);
                     BatchChangeActions.setLoadingState(false);
                 }else{
@@ -492,7 +492,7 @@ var CrmBatchChange = createReactClass({
         var currentTab = this.state.currentTab;
         switch (currentTab) {
             case BATCH_OPERATE_TYPE.CHANGE_SALES:
-                this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get('crm.18', '变更销售人员'));
+                this.doTransfer(BATCH_OPERATE_TYPE.USER, Intl.get('crm.103', '变更负责人'));
                 break;
             case BATCH_OPERATE_TYPE.CHANGE_TAG:
                 this.doChangeTag(BATCH_OPERATE_TYPE.CHANGE_LABEL, Intl.get('crm.206', '更新标签'));
@@ -581,10 +581,10 @@ var CrmBatchChange = createReactClass({
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
-                    placeholder={Intl.get('crm.17', '请选择销售人员')}
+                    placeholder={Intl.get('contract.63', '请选择负责人')}
                     value={this.state.sales_man}
                     onChange={this.onSalesmanChange}
-                    notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
+                    notFoundContent={dataList.length ? Intl.get('contract.64', '暂无负责人') : Intl.get('crm.search.no.owner', '无相关负责人')}
                     dataList={dataList}
                 />
             </div>
@@ -794,7 +794,7 @@ var CrmBatchChange = createReactClass({
                         <AntcDropdown
                             ref="changeSales"
                             content={changeBtns.btn}
-                            overlayTitle={Intl.get('user.salesman', '销售人员')}
+                            overlayTitle={Intl.get('crm.6', '负责人')}
                             isSaving={this.state.isLoading}
                             overlayContent={this.renderSalesBlock()}
                             handleSubmit={this.handleSubmit}
