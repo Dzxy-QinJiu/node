@@ -140,7 +140,6 @@ window.closeAllNoty = function() {
 //处理线索的数据
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
-        //只有管理员或者运营人员才处理
         if (getClueUnhandledPrivilege()){
             updateUnreadByPushMessage('unhandleClue', data.clue_list.length);
         }
@@ -848,13 +847,14 @@ function getClueUnreadNum(data, callback){
         type = 'manager';
     }
     $.ajax({
-        url: '/rest/get/clue/fulltext/0/source_time/descend/' + type,
+        url: '/rest/get/clue/selfhandle/fulltext/100/source_time/descend/' + type,
         dataType: 'json',
         type: 'post',
         data: data,
         success: data => {
             var messages = {
-                'unhandleClue': 0
+                'unhandleClue': 0,
+                'unhandleClueList': []
             };
             var value = data.total;
             if (typeof value === 'number' && value > 0) {
@@ -864,6 +864,9 @@ function getClueUnreadNum(data, callback){
                 if (!isNaN(num) && num > 0) {
                     messages['unhandleClue'] = num;
                 }
+            }
+            if (_.isArray(_.get(data, 'result'))){
+                messages['unhandleClueList'] = _.get(data, 'result');
             }
             //更新全局中存的未处理的线索数
             updateGlobalUnreadStorage(messages);

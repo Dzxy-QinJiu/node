@@ -360,14 +360,15 @@ exports.renderClueStatus = function(status) {
     return statusDes;
 };
 //获取线索未处理的权限
-//只有普通銷售才有展示线索未读数的权限
+//只有銷售才有展示线索未读数的权限
 exports.getClueUnhandledPrivilege = function() {
-    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && userData.getUserData().isCommonSales;
+    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && isSalesRole();
 };
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {
     var data = {
-        typeFilter: JSON.stringify({allot_no_traced: '0',status: '1'}),
+        typeFilter: JSON.stringify({status: '1'}),
+        availability: '0',
         rangeParams: JSON.stringify([{//时间范围参数
             from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
             to: moment().valueOf(),
@@ -928,4 +929,24 @@ exports.getTableContainerHeight = function() {
         LAYOUT_CONSTANTS.FIXED_THEAD -
         LAYOUT_CONSTANTS.PADDING_BOTTOM -
         LAYOUT_CONSTANTS.SUMMARY;
+};
+function isSalesRole() {
+    return userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
+}
+exports.isSalesRole = isSalesRole;
+exports.subtracteGlobalClue = function(clueItem,callback) {
+    var unHandleClueLists = Oplate.unread['unhandleClueList'];
+    var targetObj = _.find(unHandleClueLists,item => item.id === clueItem.id);
+    unHandleClueLists = _.filter(unHandleClueLists,item => item.id !== clueItem.id);
+    if (targetObj){
+        Oplate.unread['unhandleClue'] -= 1;
+        if (timeoutFunc) {
+            clearTimeout(timeoutFunc);
+        }
+        timeoutFunc = setTimeout(function() {
+            //触发展示的组件待审批数的刷新
+            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+        }, timeout);
+        _.isFunction(callback) && callback(true);
+    }
 };

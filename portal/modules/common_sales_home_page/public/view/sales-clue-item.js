@@ -27,7 +27,7 @@ import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
+import {renderClueStatus, subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 class SalesClueItem extends React.Component {
     constructor(props) {
@@ -114,15 +114,8 @@ class SalesClueItem extends React.Component {
                 submitTraceErrMsg: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')
             });
         } else {
-            if (Oplate && Oplate.unread && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
-                Oplate.unread['unhandleClue'] -= 1;
-                if (timeoutFunc) {
-                    clearTimeout(timeoutFunc);
-                }
-                timeoutFunc = setTimeout(function() {
-                    //触发展示的组件待审批数的刷新
-                    notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-                }, timeout);
+            if (Oplate && Oplate.unread && item.status === SELECT_TYPE.WILL_TRACE) {
+                subtracteGlobalClue(item);
             }
             var submitObj = {
                 'customer_id': item.id,
@@ -238,24 +231,6 @@ class SalesClueItem extends React.Component {
                     time: moment().valueOf()
                 };
                 salesClueItemDetail.availability = updateValue;
-                //点击无效后状态应该改成已跟进的状态
-                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
-                    //如果角色是管理员，并且该线索之前的状态是待分配状态
-                    //或者  如果角色是销售人员，并且该线索之前的状态是待跟进状态
-                    //标记为无效后 ,把全局上未处理的线索数量要减一
-                    if (Oplate && Oplate.unread && ((userData.hasRole(userData.ROLE_CONSTANS.SALES) && salesClueItemDetail.status === SELECT_TYPE.WILL_TRACE) || (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && salesClueItemDetail.status === SELECT_TYPE.WILL_DISTRIBUTE))) {
-                        Oplate.unread['unhandleClue'] -= 1;
-                        if (timeoutFunc) {
-                            clearTimeout(timeoutFunc);
-                        }
-                        timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待审批数的刷新
-                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-                        }, timeout);
-                    }
-                    salesClueItemDetail.status = SELECT_TYPE.HAS_TRACE;
-                }
-
                 clueCustomerAction.updateClueProperty({
                     id: item.id,
                     availability: updateValue,

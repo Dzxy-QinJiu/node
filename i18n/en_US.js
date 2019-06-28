@@ -3007,6 +3007,7 @@ var en_US = {
     'common.merge.success': 'merge success',//合并成功
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
-    'call.record.phone.err.msg': 'Wrong phone number'//电话号码错误
+    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
+    'clue.customer.has.transfer': 'Has transfer'//已转化
 };
 export default en_US;

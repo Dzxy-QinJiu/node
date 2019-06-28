@@ -43,6 +43,8 @@ const restApis = {
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
     getClueFulltext: clueBaseUrl + '/query/lead/range/fulltext/:type/:page_size/:sort_field/:order',
+    //有待我处理筛选项时的全文搜索
+    getClueFullTextWithSelfHandle: clueBaseUrl + '/query/self_no_traced/range/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: clueBaseUrl + '/dynamic/:clue_id/:page_size',
     //根据线索的id查询线索的详情
@@ -227,16 +229,14 @@ exports.getClueTrendStatics = function(req, res) {
             res: res
         }, null);
 };
-//线索全文搜索
-exports.getClueFulltext = function(req, res) {
+function handleClueParams(req, clueUrl) {
     var reqBody = req.body;
     if (_.isString(req.body.reqData)){
         reqBody = JSON.parse(req.body.reqData);
     }
     var rangeParams = _.isString(reqBody.rangeParams) ? JSON.parse(reqBody.rangeParams) : reqBody.rangeParams;
     var typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
-
-    var url = restApis.getClueFulltext.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':order',req.params.order);
+    var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':order',req.params.order);
     if (rangeParams[0].from){
         url += `?start_time=${rangeParams[0].from}`;
     }
@@ -293,11 +293,25 @@ exports.getClueFulltext = function(req, res) {
     if (_.isArray(unexist_fields) && unexist_fields.length){
         bodyObj.unexist_fields = unexist_fields;
     }
+    return {url: url, bodyObj: bodyObj};
+}
+//线索全文搜索
+exports.getClueFulltext = function(req, res) {
+    var obj = handleClueParams(req, restApis.getClueFulltext);
     return restUtil.authRest.post({
-        url: url,
+        url: obj.url,
         req: req,
         res: res
-    },bodyObj);
+    },obj.bodyObj);
+};
+//线索有待我处理筛选项时的全文搜索
+exports.getClueFulltextSelfHandle = function(req, res) {
+    var obj = handleClueParams(req, restApis.getClueFullTextWithSelfHandle);
+    return restUtil.authRest.post({
+        url: obj.url,
+        req: req,
+        res: res
+    },obj.bodyObj);
 };
 //获取动态列表
 exports.getDynamicList = function(req, res) {
