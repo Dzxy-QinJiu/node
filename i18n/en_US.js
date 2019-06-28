@@ -1510,8 +1510,8 @@ var en_US = {
     'crm.recycle.bin.type': 'Operation type',//操作类型
     'crm.recycle.bin.time': 'Operation time',//操作时间
     'crm.import.required': 'Required, can not be empty',//必填项，不能为空
-    'crm.import.name.repeat': 'There are identical customers in the imported data',//导入数据中存在同名客户
-    'crm.system.name.repeat': 'The same name customer already exists in the system',//系统中已存在同名客户
+    'crm.import.name.repeat': 'There are identical {type} in the imported data',//导入数据中存在同名{type}
+    'crm.system.name.repeat': 'The same name {type} already exists in the system',//系统中已存在同名{type}
     'crm.import.phone.repeat': 'The same phone exists in the imported data',//导入数据中存在相同的电话
     'crm.system.phone.repeat': 'The same telephone already exists in the system',//系统中已存在相同的电话
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号

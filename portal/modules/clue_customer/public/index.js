@@ -239,10 +239,19 @@ class ClueCustomer extends React.Component {
 
     onClueImport = (list) => {
         this.setState({
-            previewList: list,
+            previewList: this.handlePreviewList(list),
         });
     };
-
+    //将导入预览的数据转换为预览列表中展示所需数据
+    handlePreviewList(list) {
+        return _.map(list, item => {
+            if (_.get(item, 'errors')) {
+                //导入组件中需要此参数进行判断是否展示错误提示
+                item.repeat = true;
+            }
+            return item;
+        });
+    }
 
     onStoreChange = () => {
         this.setState(clueCustomerStore.getState());
@@ -1652,6 +1661,10 @@ class ClueCustomer extends React.Component {
             }
         });
     };
+    //是否包含此项内容
+    isIncludesItem(list, item) {
+        return !_.isEmpty(list) && _.includes(list, item);
+    }
     getCluePrevList = () => {
         var _this = this;
         let previewColumns = [
@@ -1659,12 +1672,31 @@ class ClueCustomer extends React.Component {
                 title: Intl.get('clue.customer.clue.name', '线索名称'),
                 dataIndex: 'name',
                 render: function(text, record, index) {
-                    var cls = record.repeat ? 'repeat-item-name' : '';
-                    return (
-                        <span className={cls}>
-                            {record.name}
-                        </span>
-                    );
+                    if (text) {
+                        //线索名不符合验证规则
+                        let name_verify = _.get(record, 'errors.name_verify');
+                        //导入的数据中存在同名线索
+                        let import_name_repeat = _.get(record, 'errors.import_name_repeat');
+                        //系统中存在同名线索
+                        let name_repeat = _.get(record, 'errors.name_repeat');
+                        let cls = classNames({
+                            'repeat-item-name': name_verify || import_name_repeat || name_repeat
+                        });
+                        let title = '';
+                        if (name_verify) {
+                            title = Intl.get('clue.name.rule', '线索名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间');
+                        } else if (import_name_repeat) {
+                            title = Intl.get('crm.import.name.repeat', '导入数据中存在同名{type}',{type: Intl.get('crm.sales.clue', '线索')});
+                        } else if (name_repeat) {
+                            title = Intl.get('crm.system.name.repeat', '系统中已存在同名{type}',{type: Intl.get('crm.sales.clue', '线索')});
+                        }
+                        return (<span className={cls} title={title}>{text}</span>);
+                    } else {//必填
+                        return (
+                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
+                                {Intl.get('apply.components.required.item', '必填')}
+                            </span>);
+                    }
                 }
             },
             {
@@ -1679,22 +1711,51 @@ class ClueCustomer extends React.Component {
             },
             {
                 title: Intl.get('common.phone', '电话'),
-                render: function(text, record, index) {
-                    if (_.isArray(record.contacts)) {
-                        var cls = record.repeat ? 'repeat-item-name' : '';
-                        return (
-                            <span className={cls}>{record.contacts[0] ? record.contacts[0].phone : null}</span>
-                        );
+                render: (text, record, index) => {
+                    if (_.isArray(_.get(record, 'contacts[0].phone'))) {
+                        return _.map(_.get(record, 'contacts[0].phone'), (item, index) => {
+                            //电话规则不匹配的电话列表
+                            let phone_verify_list = _.get(record, 'errors.phone_verify');
+                            //导入的列表中存在相同的电话的电话列表
+                            let import_phone_repeat_list = _.get(record, 'errors.import_phone_repeat');
+                            //系统中存在相同电话的电话列表
+                            let phone_repeat_list = _.get(record, 'errors.phone_repeat_list');
+                            let cls = '';
+                            let title = '';
+                            //电话规则不匹配
+                            if (this.isIncludesItem(phone_verify_list, item)) {
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.import.phone.verify', '电话只能是11位手机号或11-12位带区号的座机号');
+                            } else if (this.isIncludesItem(import_phone_repeat_list, item)) {
+                                //导入的列表中存在相同的电话
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.import.phone.repeat', '导入数据中存在相同的电话');
+                            } else if (this.isIncludesItem(phone_repeat_list, item)) {
+                                //系统中存在同名客户
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('crm.system.phone.repeat', '系统中已存在相同的电话');
+                            }
+                            return (<div className={cls} title={title} key={index}>{item}</div>);
+                        });
                     }
                 }
             },
             {
                 title: 'QQ',
                 render: function(text, record, index) {
-                    if (_.isArray(record.contacts) && _.isArray(record.contacts[0].qq)) {
-                        return (
-                            <span>{record.contacts[0] ? record.contacts[0].qq[0] : null}</span>
-                        );
+                    if (_.isArray(_.get(record, 'contacts[0].qq'))) {
+                        return _.map(_.get(record, 'contacts[0].qq'), (item, index) => {
+                            //电话规则不匹配的电话列表
+                            let qq_verify_list = _.get(record, 'errors.QQ_verify');
+                            let cls = '';
+                            let title = '';
+                            //电话规则不匹配
+                            if (qq_verify_list) {
+                                cls = classNames({'repeat-item-name': true});
+                                title = Intl.get('common.correct.qq', '请输入正确的QQ号');
+                            }
+                            return (<div className={cls} title={title} key={index}>{item}</div>);
+                        });
                     }
                 }
             },
@@ -1714,16 +1775,13 @@ class ClueCustomer extends React.Component {
                 title: Intl.get('common.operate', '操作'),
                 width: '60px',
                 render: (text, record, index) => {
-                    //是否在导入预览列表上可以删除
-                    const isDeleteBtnShow = record.repeat;
                     return (
                         <span className="cus-op">
-                            {isDeleteBtnShow ? (
-                                <i className="order-btn-class iconfont icon-delete "
-                                    onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
-                                    data-tracename="删除重复线索"
-                                    title={Intl.get('common.delete', '删除')}/>
-                            ) : null}
+                            <i className="order-btn-class iconfont icon-delete "
+                                onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
+                                data-tracename="删除重复线索"
+                                title={Intl.get('common.delete', '删除')}/>
+
                         </span>
                     );
                 }
@@ -1916,9 +1974,8 @@ class ClueCustomer extends React.Component {
                         closeTemplatePanel={this.closeClueTemplatePanel}
                         doImportAjax={this.doImportAjax}
                         onItemListImport={this.onClueImport}
-                        repeatAlertMessage={Intl.get('clue.repeat.delete', '红色标示线索名及联系方式已存在，请删除后再导入')}
+                        repeatAlertMessage={Intl.get('import.repeat.delete.tip', '红色标示数据已存在或不符合规则，请删除红色标示的数据后直接导入，或本地修改数据后重新导入')}
                         regRules={XLS_FILES_TYPE_RULES}
-                        downLoadFileName={Intl.get('sales.home.customer', '客户') + '.xls'}
                     />
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
