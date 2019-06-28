@@ -11,6 +11,7 @@ exports.getMemberList = (req, res) => {
     let filterContent = req.query.searchContent;
     let roleParam = req.query.roleParam;
     let status = req.query.status;
+    let teamrole_id = req.query.teamrole_id;
     if (pageSize) {
         params.page_size = pageSize;
     } else {
@@ -32,7 +33,7 @@ exports.getMemberList = (req, res) => {
         params.id = req.query.id;
     }
 
-    memberManageService.getMemberList(req, res, params === {} ? null : params, isGetAllUser).on('success', (data) => {
+    memberManageService.getMemberList(req, res, params === {} ? null : params, isGetAllUser, teamrole_id).on('success', (data) => {
         res.status(200).json(data);
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);

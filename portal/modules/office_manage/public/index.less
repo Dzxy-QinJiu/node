@@ -3,6 +3,14 @@
 .office-container {
   padding: 16px 0 16px 24px;
   .office-content {
+    .load8 {
+      transform: scale(0.5, 0.5);
+      .loader8 {
+        border-left-color: #394144;
+        position: absolute;
+        left: -30px;
+      }
+    }
     .office-list {
       .delete_ip_config_err_tips {
         margin-right: 24px;
@@ -52,7 +60,7 @@
           }
         }
         &:hover{
-          background: #F1F8FE;
+          background: #F1F8FE; // 悬停背景色
         }
       }
       .item-office-delete-container {
@@ -61,6 +69,9 @@
           background: #FBDFDD;
         }
       }
+      .item-selected {
+        background: #E4F2FE; // 选中背景色
+      };
     }
   }
 

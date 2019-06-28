@@ -58,6 +58,7 @@ class MemberManage extends React.Component {
         };
         let teamrole_id = _.get(queryParams, 'teamrole_id');
         if (teamrole_id) {
+            MemberManageAction.setInitialData();
             queryObj.teamrole_id = teamrole_id;
         }
         MemberManageAction.getMemberList(queryObj, (memberTotal) => {

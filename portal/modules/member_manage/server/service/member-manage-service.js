@@ -40,10 +40,14 @@ const memberRestApis = {
 exports.urls = memberRestApis;
 
 // 获取成员列表
-exports.getMemberList = (req, res, condition, isGetAllUser) => {
+exports.getMemberList = (req, res, condition, isGetAllUser, teamrole_id) => {
+    let url = memberRestApis.getUsers + '?with_extentions=' + true;
+    if (teamrole_id) {
+        url += '&teamrole_id=' + teamrole_id;
+    }
     return restUtil.authRest.get(
         {
-            url: memberRestApis.getUsers + '?with_extentions=' + true,
+            url: url,
             req: req,
             res: res
         }, condition, {
