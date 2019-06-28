@@ -11,7 +11,6 @@ var clueCustomerStore = require('./store/clue-customer-store');
 var clueFilterStore = require('./store/clue-filter-store');
 var clueCustomerAction = require('./action/clue-customer-action');
 var clueFilterAction = require('./action/filter-action');
-import {clueEmitter} from 'OPLATE_EMITTER';
 var userData = require('../../../public/sources/user-data');
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
@@ -24,7 +23,7 @@ import TopNav from 'CMP_DIR/top-nav';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS,isSalesRole} from './utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
 import ContactItem from 'MOD_DIR/common_sales_home_page/public/view//contact-item';
@@ -47,7 +46,7 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
-import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
+import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from 'CMP_DIR/shear-content';
@@ -56,6 +55,7 @@ const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -74,7 +74,7 @@ class ClueCustomer extends React.Component {
         clueImportTemplateFormShow: false,//线索导入面板是否展示
         previewList: [],//预览列表
         clueAnalysisPanelShow: false,//线索分析面板是否展示
-        showFilterList: userData.getUserData().isCommonSales ? true : false,//是否展示线索筛选区域
+        showFilterList: isSalesRole() ? true : false,//是否展示线索筛选区域
         exportRange: 'filtered',
         isExportModalShow: false,//是否展示导出线索的模态框
         isEdittingItem: {},//正在编辑的那一条
@@ -103,8 +103,8 @@ class ClueCustomer extends React.Component {
         //获取线索分类
         this.getClueClassify();
         clueCustomerAction.getSalesManList();
-        //如果是普通销售，不需要发请求了
-        if(!this.isCommonSales()){
+        //如果是销售角色，不需要发请求了
+        if(!isSalesRole()){
             this.getClueList();
         }
 
@@ -122,7 +122,7 @@ class ClueCustomer extends React.Component {
         if (_.get(nextProps,'history.action') === 'PUSH' && _.get(nextProps,'location.state.clickUnhandleNum')){
 
             var filterStoreData = clueFilterStore.getState();
-            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === '0';//待我审批
+            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === '0';//待我处理
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
             var checkOtherData = _.get(this,'filterPanel.filterList.props.advancedData',[]);//线索状态
             if (filterStoreData.filterClueAvailability === '1'){
@@ -405,9 +405,7 @@ class ClueCustomer extends React.Component {
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-        if (filterAllotNoTraced){
-            typeFilter.allot_no_traced = filterAllotNoTraced;
-        }
+
         var condition = this.getCondition();
         delete condition.rangeParams;
         if (_.isString(condition.typeFilter)){
@@ -429,8 +427,9 @@ class ClueCustomer extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
-            statistics_fields: 'status,availability',
-            typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
+            statistics_fields: 'status',
+            typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
+            availability: AVALIBILITYSTATUS.AVALIBILITY
         };
         if (!this.state.lastCustomerId){
             //清除线索的选择
@@ -451,11 +450,6 @@ class ClueCustomer extends React.Component {
         if (_.isArray(filterClueClassify) && filterClueClassify.length){
             queryObj.clue_classify = filterClueClassify.join(',');
         }
-        //过滤无效线索
-        var isFilterInavalibilityClue = filterStoreData.filterClueAvailability;
-        if (isFilterInavalibilityClue){
-            queryObj.availability = isFilterInavalibilityClue;
-        }
         //选中的线索地域
         var filterClueProvince = filterStoreData.filterClueProvince;
         if (_.isArray(filterClueProvince) && filterClueProvince.length){
@@ -468,8 +462,15 @@ class ClueCustomer extends React.Component {
         if(_.isArray(unExistFileds) && unExistFileds.length){
             queryObj.unexist_fields = JSON.stringify(unExistFileds);
         }
-        //取全部线索列表
-        clueCustomerAction.getClueFulltext(queryObj);
+        if (filterAllotNoTraced){
+            //取全部线索列表
+            clueCustomerAction.getClueFulltextSelfHandle(queryObj);
+        }else{
+            //取全部线索列表
+            clueCustomerAction.getClueFulltext(queryObj);
+        }
+
+
 
     };
     //获取请求参数
@@ -673,15 +674,8 @@ class ClueCustomer extends React.Component {
             return;
         }
         var value = _.get(item, 'customer_traces[0].remark', '');
-        if (Oplate && Oplate.unread && !value && userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
-            Oplate.unread['unhandleClue'] -= 1;
-            if (timeoutFunc) {
-                clearTimeout(timeoutFunc);
-            }
-            timeoutFunc = setTimeout(function() {
-                //触发展示的组件待审批数的刷新
-                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-            }, timeout);
+        if (Oplate && Oplate.unread && item.status === SELECT_TYPE.WILL_TRACE) {
+            subtracteGlobalClue(item);
         }
         //获取填写的保存跟进记录的内容
         var textareVal = _.trim(this.state.submitContent);
@@ -705,7 +699,6 @@ class ClueCustomer extends React.Component {
                         submitTraceErrMsg: Intl.get('common.save.failed', '保存失败')
                     });
                 } else {
-                    //如果是待跟进状态,需要在列表中删除并且把数字减一
                     var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                     clueItem.status = SELECT_TYPE.HAS_TRACE;
                     var userId = userData.getUserData().user_id || '';
@@ -731,6 +724,7 @@ class ClueCustomer extends React.Component {
                         submitTraceErrMsg: '',
                         isEdittingItem: {},
                     });
+                    //如果是待跟进状态,需要在列表中删除并且把数字减一
                     this.afterAddClueTrace(item.id);
                 }
             });
@@ -781,7 +775,7 @@ class ClueCustomer extends React.Component {
     };
     renderShowTraceContent = (salesClueItem) => {
         var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');//该线索的跟进内容
-        var traceAddTime = _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
+        var traceAddTime = _.get(salesClueItem, 'customer_traces[0].call_date') || _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
         return (
             <div className="foot-text-content" key={salesClueItem.id}>
                 {/*有跟进记录*/}
@@ -861,24 +855,6 @@ class ClueCustomer extends React.Component {
                     time: moment().valueOf()
                 };
                 salesClueItemDetail.availability = updateValue;
-                //点击无效后状态应该改成已跟进的状态
-                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
-                    //如果角色是管理员，并且该线索之前的状态是待分配状态
-                    //或者  如果角色是销售人员，并且该线索之前的状态是待跟进状态
-                    //标记为无效后 ,把全局上未处理的线索数量要减一
-                    if (Oplate && Oplate.unread && ((userData.hasRole(userData.ROLE_CONSTANS.SALES) && salesClueItemDetail.status === SELECT_TYPE.WILL_TRACE) || (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && salesClueItemDetail.status === SELECT_TYPE.WILL_DISTRIBUTE))) {
-                        Oplate.unread['unhandleClue'] -= 1;
-                        if (timeoutFunc) {
-                            clearTimeout(timeoutFunc);
-                        }
-                        timeoutFunc = setTimeout(function() {
-                            //触发展示的组件待审批数的刷新
-                            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-                        }, timeout);
-                    }
-                    salesClueItemDetail.status = SELECT_TYPE.HAS_TRACE;
-                }
-
                 clueCustomerAction.updateClueProperty({
                     id: item.id,
                     availability: updateValue,
@@ -933,12 +909,7 @@ class ClueCustomer extends React.Component {
 
     };
     handleChangeSelectedType = (selectedType) => {
-        //如果选中的是无效状态
-        if (selectedType === 'avaibility'){
-            clueFilterAction.setFilterClueAvailbility();
-        }else{
-            clueFilterAction.setFilterType(selectedType);
-        }
+        clueFilterAction.setFilterType(selectedType);
         this.onTypeChange();
     };
     getClueTypeTab = () => {
@@ -948,7 +919,7 @@ class ClueCustomer extends React.Component {
         var willDistCls = classNames('clue-status-tab', {'active-will-distribute': SELECT_TYPE.WILL_DISTRIBUTE === typeFilter.status});
         var willTrace = classNames('clue-status-tab', {'active-will-trace': SELECT_TYPE.WILL_TRACE === typeFilter.status});
         var hasTrace = classNames('clue-status-tab', {'active-has-trace': SELECT_TYPE.HAS_TRACE === typeFilter.status});
-        var invalidClue = classNames('clue-status-tab', {'active-invalid-clue': filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY});
+        var hasTransfer = classNames('clue-status-tab', {'active-has-transfer': SELECT_TYPE.HAS_TRANSFER === typeFilter.status});
         var statics = this.state.agg_list;
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList
@@ -966,9 +937,9 @@ class ClueCustomer extends React.Component {
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
                 <span className="clue-status-num">{_.get(statics,'hasTrace','')}</span>
             </span>
-            <span className={invalidClue}
-                onClick={this.handleChangeSelectedType.bind(this, 'avaibility')}>{Intl.get('sales.clue.is.enable', '无效')}
-                <span className="clue-status-num">{_.get(statics,'invalidClue','')}</span>
+            <span className={hasTransfer}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
+                <span className="clue-status-num">{_.get(statics,'hasTransfer','')}</span>
             </span>
         </span>;
     };
@@ -990,7 +961,6 @@ class ClueCustomer extends React.Component {
                     return (
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
-                            {renderClueStatus(salesClueItem.status)}
                             <span className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}</span>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
@@ -1082,7 +1052,10 @@ class ClueCustomer extends React.Component {
                     );
                 }
             }];
-        if (!isSalesRole()){
+        //只有不是待跟进状态，才能展示操作区域
+        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
+        var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.HAS_TRANSFER){
             columns.push({
                 className: 'invalid-td-clue',
                 width: '150px',
@@ -1330,17 +1303,16 @@ class ClueCustomer extends React.Component {
         let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
         SetLocalSalesClickCount(sale_id);
         //member_id是跟进销售的id
-        //如果该账号是管理员角色，且该线索之前是待分配状态，分配完毕后要把全局未处理的线索数减一
-        if (Oplate && Oplate.unread &&
-            userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && item.status === SELECT_TYPE.WILL_DISTRIBUTE && !_.get(item, 'member_id')) {
-            Oplate.unread['unhandleClue'] -= 1;
-            if (timeoutFunc) {
-                clearTimeout(timeoutFunc);
-            }
-            timeoutFunc = setTimeout(function() {
-                //触发展示的组件待审批数的刷新
-                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-            }, timeout);
+        if (Oplate && Oplate.unread && item.status === SELECT_TYPE.WILL_TRACE) {
+            subtracteGlobalClue(item,(flag) => {
+                var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+                if (flag && filterAllotNoTraced){
+                    //需要在列表中删除
+                    clueCustomerAction.afterAddClueTrace(item.id);
+                }
+            });
+
+
         }
         if (!isWillDistribute){
             item.user_name = sale_name;

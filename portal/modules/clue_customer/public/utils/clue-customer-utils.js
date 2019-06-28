@@ -59,12 +59,13 @@ export const checkEmail = function(rule, value, callback) {
     }
 };
 
-// 全部 "" 待分配 0 待跟进 1 已跟进 2
+// 全部 "" 待分配 0 待跟进 1 已跟进 2 已转化  3
 export const SELECT_TYPE = {
     ALL: '',
     WILL_DISTRIBUTE: '0',
     WILL_TRACE: '1',
     HAS_TRACE: '2',
+    HAS_TRANSFER: '3',
     WAIT_ME_HANDLE: 'waitMeHandle'
 };
 
@@ -76,6 +77,10 @@ export const CLUE_DIFF_TYPE = [
     {
         name: Intl.get('clue.customer.has.follow', '已跟进'),
         value: SELECT_TYPE.HAS_TRACE,
+    },
+    {
+        name: Intl.get('clue.customer.has.transfer', '已转化'),
+        value: SELECT_TYPE.HAS_TRANSFER,
     }];
 //线索的有效还是无效状态
 export const AVALIBILITYSTATUS = {
@@ -90,10 +95,6 @@ export const isOperation = function(){
 //是否是销售领导或者管理员
 export const isSalesLeaderOrManager = function(){
     return !userData.getUserData().isCommonSales || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
-};
-//是否是销售
-export const isSalesRole = function() {
-    return userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 };
 //获取所选中线索状态的状态值
 export const getClueStatusValue = (filterClueStatus) => {
