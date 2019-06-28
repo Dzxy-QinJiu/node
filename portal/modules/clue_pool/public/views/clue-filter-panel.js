@@ -276,6 +276,7 @@ class ClueFilterPanel extends React.Component {
             <div data-tracename="筛选">
                 <div className="clue-filter-panel">
                     <FilterList
+                        hideAdvancedTitle={true}
                         ref={filterList => this.filterList = filterList}
                         commonData={commonData}
                         advancedData={advancedData}
