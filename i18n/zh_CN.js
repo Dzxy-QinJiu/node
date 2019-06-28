@@ -2193,7 +2193,7 @@ var zh_CN = {
     'errorcode.139': '被分配的用户ID不能为空',
     'errorcode.140': '没有权限执行分配线索客户的操作',
     'errorcode.141': '该成员不属于您管理',
-    'errorcode.142': '线索客户不存在',
+    'errorcode.142': '线索不存在',
     'errorcode.143': '通话系统出现未知异常',
     'errorcode.144': '通话系统没有响应',
     'errorcode.145': '座机繁忙',

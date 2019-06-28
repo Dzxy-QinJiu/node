@@ -19,11 +19,11 @@ import ModalIntro from '../modal-intro';
 import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
-import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
-import {phoneEmitter, notificationEmitter, userInfoEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneEmitter, notificationEmitter, userInfoEmitter,phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
-
+import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 
 const session = storageUtil.session;
 //需要加引导的模块
@@ -139,6 +139,7 @@ var NavSidebar = createReactClass({
             // isReduceNavIcon: false,//是否展示缩小的图标(缩小浏览器时)
             // isReduceNavMargin: false, //是否展示小图标和图标间距
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
+            ronglianNum: ''//正在拨打的容联的电话
         };
     },
     propTypes: {
@@ -198,6 +199,9 @@ var NavSidebar = createReactClass({
         phoneEmitter.on(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
         //其他类型的未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
+        //正在拨打容联的电话
+        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_CLUE_PANEL,this.callingRonglianBtn);
+        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL,this.callingRonglianBtn);
         //获取用户审批的未读回复列表
         this.getHasUnreadReply();
         //获取其他类型的用户审批的未读回复列表
@@ -332,12 +336,39 @@ var NavSidebar = createReactClass({
         }, 100);
     },
 
+    getPhonemsgObj(paramObj) {
+        return paramObj.call_params && paramObj.call_params.phonemsgObj || null;
+    },
+    callingRonglianBtn: function(data) {
+        //监听推送来的消息，如果是容联的电话系统,在打通状态需要把左边导航的图标改掉
+        if (isRongLianPhoneSystem()){
+            var phonemsgObj = this.getPhonemsgObj(data);
+            //电话接通推过来状态
+            if([CALL_TYPES.ALERT].indexOf(phonemsgObj.type) !== -1){
+                var phoneNum = '';
+                if (phonemsgObj.call_type === 'IN') {
+                    phoneNum += phonemsgObj.extId;
+                } else {
+                    phoneNum += phonemsgObj.to || phonemsgObj.dst;
+                }
+                this.setState({
+                    ronglianNum: phoneNum
+                });
+            }else if([CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back].indexOf(phonemsgObj.type) !== -1){
+                this.setState({
+                    ronglianNum: ''
+                });
+            }
+        }
+    },
     componentWillUnmount: function() {
         userInfoEmitter.removeListener(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
         phoneEmitter.removeListener(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
-        // $(window).off('resize', this.calculateHeight);
+        //正在拨打容联的电话
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL,this.callingRonglianBtn);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL,this.callingRonglianBtn);
     },
 
 
@@ -564,7 +595,12 @@ var NavSidebar = createReactClass({
 
     render: function() {
         var _this = this;
-        const DialIcon = <i className='iconfont icon-dial-up-keybord sidebar-bottom-icon'/>;
+        var iconCls = classNames('iconfont ',{
+            'icon-dial-up-keybord': !this.state.ronglianNum,
+            'icon-active-call_record-ico': this.state.ronglianNum,
+        });
+        const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
+            (<i className={iconCls} style={{fontSize: 24}}/>);
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
@@ -594,8 +630,7 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
-                        {this.state.isShowDialUpKeyboard ? (
-                            <DialUpKeyboard placement="right" dialIcon={DialIcon}/>) : null}
+                        {this.state.isShowDialUpKeyboard ? (<DialUpKeyboard placement="right" dialIcon={DialIcon} inputNumber={this.state.ronglianNum}/>) : null}
                         {_this.getNotificationBlock()}
                         {_this.renderBackendConfigBlock()}
                         {_this.getUserInfoBlock()}

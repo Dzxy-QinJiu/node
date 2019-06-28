@@ -14,6 +14,8 @@ let cursorSelection = {
     start: 0,//电话输入框的光标所在开始位置（选中内容的开始位置）
     end: 0 //电话输入框的光标所在结束位置（选中内容的结束位置）
 };
+import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+var classNames = require('classnames');
 class PhoneNumberBoard extends React.Component {
     constructor(props) {
         super(props);
@@ -96,15 +98,26 @@ class PhoneNumberBoard extends React.Component {
 
     render() {
         const suffix = this.state.inputNumber ? <Icon type="close-circle" onClick={this.clearInputNumber}/> : null;
+        var phoneNum = this.props.inputNumber || this.state.inputNumber;
+        var isRonglianCalling = this.props.inputNumber;
+        var phonePopIcon = classNames('iconfont',{
+            'icon-phone-hang-up': isRonglianCalling,
+            'icon-active-call_record-ico': !isRonglianCalling,
+        });
+        var phoneBtnWrap = classNames('call-btn',{
+            'hang-up-background': isRonglianCalling,
+        });
+        let callClient = getCallClient();
         return (
             <div className="dial-up-keyboard-wrap">
                 <Input allowClear
                     suffix={suffix}
                     ref={node => this.inputNumberInput = node}
-                    value={this.state.inputNumber}
+                    value={phoneNum}
                     placeholder={Intl.get('user.info.input.phone', '请输入电话')}
                     onChange={this.onNumberInputChange}
                     onBlur={this.onNumberInputBlur}
+                    disabled={this.props.inputNumber ? true : false}
                 />
                 <div className="number-key-container">
                     {_.map(phoneNumArray, item => {
@@ -113,13 +126,15 @@ class PhoneNumberBoard extends React.Component {
                                 onClick={this.onButtonClick.bind(this, item)}>{item}</Button>);
                     })}
                 </div>
-                <Button type='primary' className='call-btn' onClick={this.dialPhoneNumber}>
-                    <i className="iconfont icon-active-call_record-ico"/></Button>
+                <Button type='primary' className={phoneBtnWrap} onClick={isRonglianCalling && callClient.needShowAnswerView() ? callClient.releaseCall.bind(callClient) : this.dialPhoneNumber}>
+                    <i className={phonePopIcon}/></Button>
             </div>);
     }
 }
 
 PhoneNumberBoard.propTypes = {
+    //在输入框展示的电话号码
+    inputNumber: PropTypes.string,
     //外部传入的电话号码
     phoneNumber: PropTypes.string,
 };

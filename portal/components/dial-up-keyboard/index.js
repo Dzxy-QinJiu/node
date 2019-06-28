@@ -12,6 +12,7 @@ class DialUpKeyboard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            inputNumber: props.inputNumber,
             //外部传入的电话号码
             phoneNumber: props.phoneNumber,
             //是否展示拨号键盘
@@ -22,6 +23,9 @@ class DialUpKeyboard extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.phoneNumber !== this.state.phoneNumber) {
             this.setState({phoneNumber: nextProps.phoneNumber});
+        }
+        if (nextProps.inputNumber !== this.state.inputNumber) {
+            this.setState({inputNumber: nextProps.inputNumber});
         }
     }
 
@@ -34,7 +38,7 @@ class DialUpKeyboard extends React.Component {
 
     renderPhoneNumberBoard() {
         if(this.state.keyboardVisible){
-            return (<PhoneNumberBoard phoneNumber={this.state.phoneNumber}/>);
+            return (<PhoneNumberBoard phoneNumber={this.state.phoneNumber} inputNumber={this.state.inputNumber}/>);
         }
         return null;
     }
@@ -59,6 +63,8 @@ class DialUpKeyboard extends React.Component {
 }
 
 DialUpKeyboard.propTypes = {
+    //默认展示所拨打电话的号码
+    inputNumber: PropTypes.string,
     //外部传入的电话号码
     phoneNumber: PropTypes.string,
     //拨号键盘的显示位置 ：top、right、bottom、left等，不传默认为bottom
