@@ -24,7 +24,8 @@ import {
     APPLY_USER_STATUS,
     REG_FILES_SIZE_RULES,
     ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM,
-    FINAL_TASK
+    FINAL_TASK,
+    ORGANIZATION_APP_TYPES
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -950,3 +951,16 @@ exports.subtracteGlobalClue = function(clueItem,callback) {
         _.isFunction(callback) && callback(true);
     }
 };
+
+// 是否开通呼叫中心
+exports.isOpenCaller = () => {
+    let organization = getOrganization();
+    return _.includes(_.get(organization,'functions', []), ORGANIZATION_APP_TYPES.CALLER);
+};
+
+// 是否开通营收中心
+exports.isOpenCash = () => {
+    let organization = getOrganization();
+    return _.includes(_.get(organization,'functions', []), ORGANIZATION_APP_TYPES.CASH);
+};
+

@@ -543,3 +543,10 @@ export const CALL_TYPES = {
     curtao_phone: 'curtao_phone',//通话结束（容联电话系统）
     call_back: 'call_back'//通话结束（运营拨打的回访电话的）
 };
+
+// 组织应用类型
+export const ORGANIZATION_APP_TYPES = {
+    CURTAO: 'curtao', // 客套
+    CALLER: 'call', // 呼叫中心
+    CASH: 'cash', // 营收中心
+};

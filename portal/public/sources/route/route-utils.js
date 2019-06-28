@@ -11,8 +11,10 @@ const userData = require('../user-data');
 const menuUtil = require('../utils/menu-util');
 const ROUTE_CONST = {
     'SALES_HOME': 'sales_home_page',//销售首页id
-    'CONTRACT_DASHBOARD': 'contract_dashboard'//合同概览id
+    'CONTRACT_DASHBOARD': 'contract_dashboard',//合同概览id
+    'CALL_RECORD': 'call_record',//通话记录id
 };
+const isOpenCaller = require('../utils/common-method-util').isOpenCaller;
 
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class HomeIndexRoute extends React.Component {
@@ -204,6 +206,21 @@ function dealWorkFlowConfigRoute(userRoutes, workFlowConfigList) {
     });
 }
 
+/***
+ * 过滤通话记录路由
+ * * @param userRoutes  授权的路由
+ * @returns {*[]}
+ */
+function dealCallRecordRoute(userRoutes) {
+    // 没有开通呼叫中心时，过滤掉通话记录路由
+    if(!isOpenCaller()) {
+        let callRecordIndex = _.findIndex(userRoutes, item => item.id === ROUTE_CONST.CALL_RECORD);
+        if(callRecordIndex !== -1) {
+            userRoutes.splice(callRecordIndex, 1);
+        }
+    }
+}
+
 /**
  * 过滤路由，返回界面上需要的路由
  * @param allRoutes
@@ -213,6 +230,8 @@ function filterRoute(allRoutes) {
     let user = userData.getUserData();
     //过滤没有配置过流程的路由
     dealWorkFlowConfigRoute(user.routes, user.workFlowConfigs);
+    //过滤没有开通呼叫中心时的通话记录路由
+    dealCallRecordRoute(user.routes);
     let childRoutes = matchRoute(user.routes, allRoutes);
     dealCommonSaleRoute(childRoutes, user.isCommonSales);
     //路由配置
