@@ -446,7 +446,7 @@ class ClueToCustomerPanel extends React.Component {
                 .done(() => {
                     message.success(Intl.get('common.merge.success', '合并成功'));
 
-                    this.props.onMerged();
+                    this.props.onMerged(this.state.customerId);
                 })
                 .fail(err => {
                     const content = _.isArray(err) ? err.join('; ') : err;
