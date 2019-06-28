@@ -476,7 +476,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
             }
         });
     }
-    var title = Intl.get('customer.contact.somebody', '联系') + scheduleAlertMsg.customer_name;
+    var title = Intl.get('customer.contact.somebody', '联系') + scheduleAlertMsg.topic;
     var tipContent = scheduleAlertMsg.content || '';
     if (canPopDesktop()) {
         tipContent = tipContent + '\n';
