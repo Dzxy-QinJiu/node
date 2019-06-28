@@ -41,7 +41,11 @@ class BasicData extends React.Component {
     componentDidMount() {
         CrmOverviewStore.listen(this.onChange);
         CrmOverviewActions.getBasicData(this.props.curCustomer);
-        this.getIndustryList();
+        let isGetIndustryListFlag = hasPrivilege('GET_CONFIG_INDUSTRY') && hasPrivilege('CUSTOMER_UPDATE_INDUSTRY')
+            && !this.props.disableEdit;
+        if (isGetIndustryListFlag) {
+            this.getIndustryList();
+        }
         if (this.hasEditCutomerLabelPrivilege()) {
             //如果已经获取过客户标签后，不用再获取
             if (!_.get(customerLabelList, '[0]')) {

@@ -1310,7 +1310,7 @@ class Crm extends React.Component {
                         //客户名不符合验证规则
                         let name_verify = _.get(record, 'errors.name_verify');
                         //导入的数据中存在同名客户
-                        let import_name_repeat = _.get(record, 'errors.import_name_reteat');
+                        let import_name_repeat = _.get(record, 'errors.import_name_repeat');
                         //系统中存在同名客户
                         let name_repeat = _.get(record, 'errors.name_repeat');
                         let cls = classNames({
@@ -1346,7 +1346,7 @@ class Crm extends React.Component {
                             //电话规则不匹配的电话列表
                             let phone_verify_list = _.get(record, 'errors.phone_verify');
                             //导入的列表中存在相同的电话的电话列表
-                            let import_phone_repeat_list = _.get(record, 'errors.import_phone_repeat_list');
+                            let import_phone_repeat_list = _.get(record, 'errors.import_phone_list');
                             //系统中存在相同电话的电话列表
                             let phone_repeat_list = _.get(record, 'errors.phone_repeat_list');
                             let cls = '';

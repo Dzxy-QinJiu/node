@@ -33,7 +33,13 @@ const USER_INFO_BOTTOM = 18;
 //单个菜单的最小高度
 const ONE_MENU_HEIGHT = 32;
 
-//需要特殊处理的菜单的id
+//拨号键盘图标的大小
+const DIAL_ICON_SIZE = {
+    NORMAL_FONT: 24,//正常图标的字体大小
+    SMALL_FONT: 18//缩小浏览器后的拨号图标大小
+};
+
+//需要特殊处理的菜单的idNORMAL
 const MENU = {
     'NOTE': 'notification',
     'BACK_CONFIG': 'background_management',
@@ -130,7 +136,8 @@ var NavSidebar = createReactClass({
             tipMessage: '',//提示内容
             hasUnreadReply: false,//是否有未读的回复
             hasDiffApplyUnreadReply: false,//除用户申请外其他申请是否有未读回复
-            hideNavIcon: false,//是否隐藏图标（小屏幕只展示文字）
+            // isReduceNavIcon: false,//是否展示缩小的图标(缩小浏览器时)
+            // isReduceNavMargin: false, //是否展示小图标和图标间距
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
         };
     },
@@ -188,19 +195,19 @@ var NavSidebar = createReactClass({
         userInfoEmitter.on(userInfoEmitter.CHANGE_USER_LOGO, this.changeUserInfoLogo);
         //未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
-        phoneEmitter.on(phoneEmitter.CALL_CLIENT_INITED,this.triggerDialUpKeyboardShow);
+        phoneEmitter.on(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
         //其他类型的未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
         //获取用户审批的未读回复列表
         this.getHasUnreadReply();
         //获取其他类型的用户审批的未读回复列表
         this.getHasDiffApplyUnreadReply();
-        //响应式设计 logo和菜单占据的实际高度
-        responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
-        //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
-        responsiveLayout.userInfoHeight = $(this.userInfo).outerHeight(true);
-        this.calculateHeight();
-        $(window).on('resize', this.calculateHeight);
+        // //响应式设计 logo和菜单占据的实际高度
+        // responsiveLayout.logoAndMenusHeight = $('.logo-and-menus').outerHeight(true);
+        // //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
+        // responsiveLayout.userInfoHeight = $(this.userInfo).outerHeight(true);
+        // this.calculateHeight();
+        // $(window).on('resize', this.calculateHeight);
         //获取已经点击过的模块
         getWebsiteConfig((WebsiteConfigModuleRecord) => {
             //本次要加引导的模块是否点击过
@@ -222,11 +229,6 @@ var NavSidebar = createReactClass({
         //电话系统初始化完成后，判断是否有打电话的权限（是否配坐席号，配置了才可以打电话）
         if (hasCalloutPrivilege) {
             this.setState({isShowDialUpKeyboard: true});
-            setTimeout(() => {
-                //计算 拨号按钮、通知、设置、个人信息 占据的实际高度
-                responsiveLayout.userInfoHeight = $(this.userInfo).outerHeight(true);
-                this.calculateHeight();
-            });
         }
     },
     getHasDiffApplyUnreadReply: function() {
@@ -280,6 +282,13 @@ var NavSidebar = createReactClass({
         $('#hamburger').hide();
         $('#menusLists').show();
     },
+    //获取窗口高度是否小于导航展示的高度
+    getWinHeightLessNavHeight(){
+        let curLogoMenusHeight = $('.logo-and-menus').outerHeight(true);
+        let curUserInfoHeight = $(this.userInfo).outerHeight(true);
+        //当前窗口高度小于当前导航展示的高度（logo和菜单高度+个人信息高度+个人信息离底部的绝对高度）
+        return $(window).height() < (curLogoMenusHeight + curUserInfoHeight + USER_INFO_BOTTOM);
+    },
     //计算并设置菜单展示样式
     calculateHeight: function() {
         if (this.calculateHeightTimeOut) {
@@ -287,25 +296,33 @@ var NavSidebar = createReactClass({
             this.calculateHeightTimeOut = null;
         }
         this.calculateHeightTimeOut = setTimeout(() => {
-            //窗口高度小于 （logo和菜单高度+个人信息高度+个人信息离底部的绝对高度）时，隐藏导航图标，只展示文字
-            if ($(window).height() < (responsiveLayout.logoAndMenusHeight + responsiveLayout.userInfoHeight + USER_INFO_BOTTOM)) {
+            //窗口高度小于正常图标的导航展示高度 （logo和菜单高度+个人信息高度+个人信息离底部的绝对高度）时，展示小点的导航图标
+            if (this.getWinHeightLessNavHeight()) {
                 this.hideHamburger();
                 this.setState({
-                    hideNavIcon: true
+                    isReduceNavIcon: true,
+                    isReduceNavMargin: false
                 }, () => {
-                    //如果再缩放，则展示汉堡包
-                    responsiveLayout.shortNameMenusHeight = $('.logo-and-menus').outerHeight(true);
-                    responsiveLayout.shortNameUserInfoHeight = $(this.userInfo).outerHeight(true);
-                    if ($(window).height() < (responsiveLayout.shortNameMenusHeight + responsiveLayout.shortNameUserInfoHeight + USER_INFO_BOTTOM)
-                        && (responsiveLayout.shortNameMenusHeight > ONE_MENU_HEIGHT)) {
-                        //>32  目的是左侧只有一个导航菜单时不会出现汉堡包按钮
-                        this.showHamburger();
+                    //如果再缩放，则缩小图标和图标间距
+                    if (this.getWinHeightLessNavHeight()) {
+                        this.hideHamburger();
+                        this.setState({
+                            isReduceNavIcon: false,
+                            isReduceNavMargin: true
+                        }, () => {
+                            //再缩小时展示汉堡包按钮
+                            if (this.getWinHeightLessNavHeight()) {
+                                //>32  目的是左侧只有一个导航菜单时不会出现汉堡包按钮
+                                this.showHamburger();
+                            }
+                        });
                     }
                 });
             } else {
                 this.hideHamburger();
                 this.setState({
-                    hideNavIcon: false
+                    isReduceNavIcon: false,
+                    isReduceNavMargin: false
                 });
             }
             //模态框存在时，才需要选要加引导的元素
@@ -320,7 +337,7 @@ var NavSidebar = createReactClass({
         notificationEmitter.removeListener(notificationEmitter.APPLY_UNREAD_REPLY, this.refreshHasUnreadReply);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
         phoneEmitter.removeListener(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
-        $(window).off('resize', this.calculateHeight);
+        // $(window).off('resize', this.calculateHeight);
     },
 
 
@@ -334,18 +351,16 @@ var NavSidebar = createReactClass({
         if (!notification) {
             return null;
         }
-        let noticeCls = classNames('iconfont icon-tongzhi',{
+        let noticeCls = classNames('iconfont icon-tongzhi','sidebar-bottom-icon', {
             'acitve': this.props.isShowNotificationPanel,
+            // 'nav-small-icon': this.isShowSmallIcon()
         });
-        let aCls = classNames({
-            'acitve': this.props.isShowNotificationPanel,
-        });
+        // let aCls = classNames({
+        //     'acitve': this.props.isShowNotificationPanel,
+        // });
         return (
             <div className="notification" onClick={this.toggleNotificationPanel}>
-                {
-                    this.state.hideNavIcon ? <a className={aCls}>{notification.shortName}</a> :
-                        <i className={noticeCls} title={notification.name}></i>
-                }
+                <i className={noticeCls} title={notification.name}/>
             </div>
         );
     },
@@ -375,25 +390,24 @@ var NavSidebar = createReactClass({
             return null;
         }
         let backendConfigList = this.getBackendConfigLinks(backendConfigMenu.routes);
-        let wrapperCls = classNames({
+        let wrapperCls = classNames('sidebar-menu-li',{
             'sidebar-backend-config': true,
-            'text-nav-li': this.state.hideNavIcon
+            // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
+            // 'reduce-nav-margin-li': this.state.isReduceNavMargin
         });
-        let backendConfigCls = classNames('iconfont icon-role-auth-config',{
+        let backendConfigCls = classNames('iconfont icon-role-auth-config','sidebar-bottom-icon', {
             'deactivation': this.props.isShowNotificationPanel,
+            // 'nav-small-icon': this.isShowSmallIcon()
         });
-        let backendConfigSpanCls = classNames({
-            'deactivation': this.props.isShowNotificationPanel,
-        });
+        // let backendConfigSpanCls = classNames({
+        //     'deactivation': this.props.isShowNotificationPanel,
+        // });
         return (
             <div className={wrapperCls}>
                 <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
                     overlayClassName="nav-sidebar-backend-config">
                     <NavLink to={backendConfigMenu.routePath} activeClassName="active">
-                        {this.state.hideNavIcon ? <span className={backendConfigSpanCls}>
-                            {backendConfigMenu.shortName}
-                        </span> :
-                            <i className={backendConfigCls} title={backendConfigMenu.name}/>}
+                        <i className={backendConfigCls} title={backendConfigMenu.name}/>
                     </NavLink>
                 </Popover>
             </div>
@@ -507,6 +521,11 @@ var NavSidebar = createReactClass({
             return null;
         }
     },
+    //是否展示小图标
+    isShowSmallIcon(){
+        //缩放到显示小图标或（显示小图标并缩小图标间距）时
+        return this.state.isReduceNavIcon || this.state.isReduceNavMargin;
+    },
     //生成主菜单
     generateMenu: function() {
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
@@ -514,19 +533,20 @@ var NavSidebar = createReactClass({
         return this.state.menus.map((menu, i) => {
             let category = menu.routePath.replace(/\//, '');
             //是否添加选中的菜单样式类
-            const addActive = !this.state.hideNavIcon && currentPageCategory === category;
+            const addActive = currentPageCategory === category;
             //选中状态类
-            let extraClass = classNames({
-                'iconfont': !this.state.hideNavIcon,
-                [`icon-${category}-ico`]: !this.state.hideNavIcon && currentPageCategory !== category,
+            let extraClass = classNames('iconfont', {
+                // 'nav-small-icon': this.isShowSmallIcon(),
+                [`icon-${category}-ico`]: !addActive,
                 [`icon-active-${category}-ico`]: addActive,
                 'active': addActive,
                 'deactivation': this.props.isShowNotificationPanel
             });
             //菜单项类
-            let routeCls = classNames({
+            let routeCls = classNames('sidebar-menu-li', {
                 [`${category}_icon_container`]: true,
-                'text-nav-li': this.state.hideNavIcon
+                // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
+                // 'reduce-nav-margin-li': this.state.isReduceNavMargin
             });
             return (
                 <li key={i} title={menu.name} className={routeCls}>
@@ -535,7 +555,7 @@ var NavSidebar = createReactClass({
                         className={extraClass}
                     >
                         {this.renderUnreadReplyTip(category)}
-                        {this.state.hideNavIcon ? (<span> {menu.shortName} </span>) : null}
+                        {/*{this.state.isReduceNavIcon ? (<span> {menu.shortName} </span>) : null}*/}
                     </NavLink>
                 </li>
             );
@@ -544,8 +564,7 @@ var NavSidebar = createReactClass({
 
     render: function() {
         var _this = this;
-        const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
-            (<i className='iconfont icon-dial-up-keybord' style={{fontSize: 24}}/>);
+        const DialIcon = <i className='iconfont icon-dial-up-keybord sidebar-bottom-icon'/>;
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
@@ -575,7 +594,8 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
-                        {this.state.isShowDialUpKeyboard ? (<DialUpKeyboard placement="right" dialIcon={DialIcon}/>) : null}
+                        {this.state.isShowDialUpKeyboard ? (
+                            <DialUpKeyboard placement="right" dialIcon={DialIcon}/>) : null}
                         {_this.getNotificationBlock()}
                         {_this.renderBackendConfigBlock()}
                         {_this.getUserInfoBlock()}

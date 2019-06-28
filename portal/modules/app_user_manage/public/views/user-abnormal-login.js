@@ -33,6 +33,7 @@ var LAYOUT_CONSTANTS = {
 };
 const IGNORE_ABNORMAL_SUCCESS = Intl.get('user.login.abnormal.success', '该条异地信息已忽略！');
 
+
 class UserAbnormalLogin extends React.Component {
     static defaultProps = {
         userId: '1',

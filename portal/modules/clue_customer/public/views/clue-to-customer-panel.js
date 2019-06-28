@@ -7,6 +7,7 @@ require('MOD_DIR/crm/public/css/contact.less');
 import { Row, Col, Button, Icon, message } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DetailCard from 'CMP_DIR/detail-card';
 //联系人表单
 const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
@@ -513,9 +514,17 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
-    //渲染客户列表
+    //渲染相似客户列表
     renderCustomerList() {
+        //相似客户列表
         const existingCustomers = this.props.existingCustomers;
+
+        //客户列表标题区域高度
+        const titleBlockHeight = 45;
+        //转为新客户按钮区域高度
+        const convertToNewCustomerBtnBlockHeight = 60;
+        //列表容器最大高度
+        const listWrapMaxHeight = $(window).height() - titleBlockHeight - convertToNewCustomerBtnBlockHeight;
 
         return (
             <div className="customer-list">
@@ -524,9 +533,13 @@ class ClueToCustomerPanel extends React.Component {
                     {Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}
                 </div>
 
-                {_.map(existingCustomers, customer => {
-                    return this.renderCustomerItem(customer);
-                })}
+                <div className="list-wrap" style={{height: listWrapMaxHeight}}>
+                    <GeminiScrollbar>
+                        {_.map(existingCustomers, customer => {
+                            return this.renderCustomerItem(customer);
+                        })}
+                    </GeminiScrollbar>
+                </div>
 
                 <div className="btn-block">
                     <Button onClick={this.props.hidePanel}>{Intl.get('common.cancel', '取消')}</Button>

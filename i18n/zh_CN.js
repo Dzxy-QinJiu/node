@@ -2126,7 +2126,7 @@ var zh_CN = {
     'errorcode.68': '没有权限',
     'errorcode.69': '迁移客户失败',
     'errorcode.70': '删除客户失败',
-    'errorcode.71': '联系方式已存在',
+    'errorcode.71': '电话号码已存在',
     'errorcode.72': '提醒时间必须大于当前时间',
     'errorcode.73': '添加联系人失败',
     'errorcode.74': '客户不存在',
@@ -3107,12 +3107,16 @@ var zh_CN = {
     'clue.close.all.noty': '关闭所有提醒？',
     'clue.fail.customer.trace.statics': '获取跟进记录的分类统计失败',
     'clue.customer.trace.clues': '跟进线索',
+    'clue.need.complete.clue.name': '请先完善线索名',
     'apply.select.search.clear.value': '修改筛选范围，已勾选的{type}将被清空',
     'apply.phone.close': '手机关机',
     'apply.select.trace.clue': '请选择要跟进的线索',
     'call.record.phone.err.msg': '电话号码错误',
     'clue.has.no.schedule.list': '该线索还没有联系计划',
     'fail.get.clue.schedule.list': '获取联系计划列表失败',
-    'clue.manage.contact.clue': '联系线索'
+    'clue.manage.contact.clue': '联系线索',
+    'crm.103': '变更负责人',
+    'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
+    'call.record.phone.err.msg': '电话号码错误'
 };
 export default zh_CN;

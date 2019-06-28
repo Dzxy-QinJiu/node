@@ -2092,7 +2092,7 @@ var en_US = {
     'errorcode.68': 'Permission denied',//没有权限
     'errorcode.69': 'Failed to migrate customer',//迁移客户失败
     'errorcode.70': 'Failed to delete customer',//删除客户失败
-    'errorcode.71': 'Contact information already exists',//联系方式已存在
+    'errorcode.71': 'The phone number already exists',//电话号码已存在
     'errorcode.72': 'The reminder time must be later than the current time',//提醒时间必须大于当前时间
     'errorcode.73': 'Failed to add the contact person',//添加联系人失败
     'errorcode.74': 'The customer does not exist',//客户不存在
@@ -2997,6 +2997,7 @@ var en_US = {
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     /*自定义审批 end*/
     'clue.customer.trace.clues': 'Trace clue',//跟进线索
+    'clue.need.complete.clue.name': 'Please complete the clue name first.',//请先完善线索名
     'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
     'apply.phone.close': 'Phone off',//手机关机
     'apply.select.trace.clue': 'Please select trace clue',//请选择要跟进的线索
@@ -3007,6 +3008,9 @@ var en_US = {
     'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
     'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
     'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
-    'clue.manage.contact.clue': 'Contact clue'//联系线索
+    'clue.manage.contact.clue': 'Contact clue',//联系线索
+    'crm.103': 'Change in charge',//变更负责人
+    'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
+    'call.record.phone.err.msg': 'Wrong phone number'//电话号码错误
 };
 export default en_US;

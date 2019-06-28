@@ -131,7 +131,7 @@ function getConfigJson(req) {
         '14007': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
         '14008': {'httpCode': 500, 'message': backendIntl.get('errorcode.69', '迁移客户失败')},
         '14009': {'httpCode': 500, 'message': backendIntl.get('errorcode.70', '删除客户失败')},
-        '14010': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '联系方式已存在')},
+        '14010': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '电话号码已存在')},
         '14011': {'httpCode': 500, 'message': backendIntl.get('errorcode.72', '提醒时间必须大于当前时间')},
         //更新内容是空不做处理
         '14012': {'httpCode': 500, 'message': ERROR_TIP.PARMAM_ERROR},//参数错误
@@ -139,7 +139,7 @@ function getConfigJson(req) {
         '14013': {'httpCode': 500, 'message': backendIntl.get('errorcode.68', '没有权限')},
         '14101': {'httpCode': 500, 'message': backendIntl.get('errorcode.73', '添加联系人失败')},
         '14102': {'httpCode': 500, 'message': backendIntl.get('errorcode.74', '客户不存在')},
-        '14103': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '联系方式已存在')},
+        '14103': {'httpCode': 500, 'message': backendIntl.get('errorcode.71', '电话号码已存在')},
         '14104': {'httpCode': 500, 'message': backendIntl.get('errorcode.75', '修改联系人失败')},
         '14105': {'httpCode': 500, 'message': backendIntl.get('errorcode.76', '设置联系人失败')},
         '14106': {'httpCode': 500, 'message': backendIntl.get('errorcode.77', '删除联系人失败')},
