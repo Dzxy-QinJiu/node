@@ -55,7 +55,6 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
-import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {

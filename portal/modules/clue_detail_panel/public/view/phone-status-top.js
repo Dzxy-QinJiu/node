@@ -359,10 +359,10 @@ class phoneStatusTop extends React.Component {
                                 <Button size="small"
                                     onClick={this.handleSetClueInvalid}>{this.state.showMarkClueInvalid ? Intl.get('clue.customer.set.invalid', '标为无效') : Intl.get('clue.cancel.set.invalid', '改为有效')}</Button>
                             </div>
-                            {/*{this.state.showMarkClueInvalid ? <div className="add-plan-info-container">*/}
-                            {/*<Button size="small"*/}
-                            {/*onClick={this.handleAddPlan}>{Intl.get('crm.214', '添加联系计划')}</Button>*/}
-                            {/*</div> : null}*/}
+                            {this.state.showMarkClueInvalid ? <div className="add-plan-info-container">
+                                <Button size="small"
+                                    onClick={this.handleAddPlan}>{Intl.get('crm.214', '添加联系计划')}</Button>
+                            </div> : null}
 
                         </div>
                         : null}

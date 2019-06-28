@@ -3111,6 +3111,10 @@ var zh_CN = {
     'apply.select.search.clear.value': '修改筛选范围，已勾选的{type}将被清空',
     'apply.phone.close': '手机关机',
     'apply.select.trace.clue': '请选择要跟进的线索',
+    'call.record.phone.err.msg': '电话号码错误',
+    'clue.has.no.schedule.list': '该线索还没有联系计划',
+    'fail.get.clue.schedule.list': '获取联系计划列表失败',
+    'clue.manage.contact.clue': '联系线索',
     'crm.103': '变更负责人',
     'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
     'call.record.phone.err.msg': '电话号码错误'
