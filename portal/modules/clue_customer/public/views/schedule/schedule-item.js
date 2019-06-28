@@ -1,4 +1,3 @@
-var React = require('react');
 /**
  * 单个日程
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -89,6 +88,7 @@ class ScheduleItem extends React.Component {
         const phoneArray = this.getContactPhoneArray(item);
         const alertTime = Intl.get('crm.alert.time', '提醒时间') + ':' + moment(item.alert_time).format(DATE_TIME_WITHOUT_SECOND_FORMAT);
         const scheduleContentId = `schedule-item-content-wrap${item.id}`;
+        var hasPhone = item.type === 'lead' && _.isArray(phoneArray) && phoneArray.length;
         return (
             <div
                 className={classNames(`schedule-item ${scheduleShowObj.timeClass}`, {'day-split-line': this.props.hasSplitLine})}>
@@ -112,7 +112,7 @@ class ScheduleItem extends React.Component {
                     </div>
                     {this.props.isMerge ? null : (
                         <div className='schedule-item-buttons'>
-                            {item.type === 'lead' && _.isArray(phoneArray) && phoneArray.length ? item.isShowContactPhone ? (
+                            {hasPhone ? item.isShowContactPhone ? (
                                 <div className='schedule-contact-phone-block'>
                                     {_.map(phoneArray, obj => {
                                         return (

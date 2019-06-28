@@ -39,6 +39,7 @@ class CrmSchedule extends React.Component {
                     clueId: nextCustomerId
                 }, () => {
                     ScheduleAction.resetState();
+                    //更新线索id成功后再获取跟进记录列表
                     this.getScheduleList();
                 });
             });
