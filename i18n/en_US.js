@@ -2643,7 +2643,7 @@ var en_US = {
     'menu.shortName.operate': 'operate', //'运营',
     'menu.shortName.schedule': 'schedule', //'日程',
     'menu.shortName.config': 'config', //'设置',
-    'clue.no.data.during.range.and.status': 'There is no relevant clue information for the current screening time period and status.',//当前筛选时间段及状态没有相关线索信息
+    'clue.no.data.during.range.and.status': 'No qualifying clues',//没有符合条件的线索
     'clue.no.data': 'There is no relevant clue information',//暂无线索信息
     'clue.filter.clue.status': 'clue status',//线索状态
     'clue.statistic.get.error': 'Failed to get clue statistic data',//获取线索统计数据失败
@@ -3012,6 +3012,7 @@ var en_US = {
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
     'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
-    'clue.customer.has.transfer': 'Has transfer'//已转化
+    'clue.customer.has.transfer': 'Has transfer',//已转化
+    'common.sales.transfer.customer': 'Transfer customer'//转为客户
 };
 export default en_US;

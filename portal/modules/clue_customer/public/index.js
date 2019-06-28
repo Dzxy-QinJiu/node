@@ -1509,7 +1509,7 @@ class ClueCustomer extends React.Component {
                 <NoDataIntro
                     renderAddAndImportBtns={this.renderAddAndImportBtns}
                     showAddBtn={false}
-                    noDataTip={Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}
+                    noDataTip={Intl.get('clue.no.data.during.range.and.status', '没有符合条件的线索')}
                 />
             );
         }

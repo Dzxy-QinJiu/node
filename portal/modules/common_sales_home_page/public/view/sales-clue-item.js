@@ -36,7 +36,7 @@ class SalesClueItem extends React.Component {
         this.state = {
             salesClueItemDetail: propsItem,
             isEdittingItem: {},//正在编辑的那一条
-            submitContent: this.getSubmitContent(propsItem),//要提交的跟进记录的内容
+            submitContent: '',//要提交的跟进记录的内容
             submitTraceErrMsg: '',//提交跟进记录出错的信息
             submitTraceLoading: false,//正在提交跟进记录
             isRemarkingItem: '',//正在标记线索是否有效的线索
@@ -52,15 +52,11 @@ class SalesClueItem extends React.Component {
         };
     }
 
-    getSubmitContent(propsItem) {
-        return _.get(propsItem, 'customer_traces[0]', '') ? propsItem.customer_traces[0].remark : '';
-    }
-
     componentWillReceiveProps(nextProps) {
         //如果只改了某些属性，也要把state上的状态更新掉
         this.setState({
             salesClueItemDetail: nextProps.salesClueItemDetail,
-            submitContent: this.getSubmitContent(nextProps.salesClueItemDetail),
+            submitContent: '',
         });
 
         if (this.state.distributeLoading !== nextProps.distributeLoading) {
@@ -86,7 +82,7 @@ class SalesClueItem extends React.Component {
         this.setState({
             submitTraceErrMsg: '',
             isEdittingItem: {},
-            submitContent: this.getSubmitContent(this.state.salesClueItemDetail)
+            submitContent: ''
         });
     };
     handleInputChange = (e) => {
@@ -96,11 +92,11 @@ class SalesClueItem extends React.Component {
     };
     updateRemarks = (remarks) => {
         var salesClueItemDetail = this.state.salesClueItemDetail;
-        salesClueItemDetail['customer_traces'] = remarks;
+        salesClueItemDetail['customer_traces'][0].remark = remarks;
         salesClueItemDetail['status'] = SELECT_TYPE.HAS_TRACE;
         this.setState({
             salesClueItemDetail,
-            submitContent: this.getSubmitContent(salesClueItemDetail)
+            submitContent: ''
         });
     };
     handleSubmitContent = (item) => {
@@ -118,8 +114,9 @@ class SalesClueItem extends React.Component {
                 subtracteGlobalClue(item);
             }
             var submitObj = {
-                'customer_id': item.id,
-                'remark': textareVal
+                'lead_id': item.id,
+                'remark': textareVal,
+                'type': 'other'
             };
             this.setState({
                 submitTraceLoading: true,
@@ -363,9 +360,6 @@ class SalesClueItem extends React.Component {
                         :
                         </span>
                         {traceContent}
-                        {canEditTrace ? <i className="iconfont icon-edit-btn"
-                            onClick={this.handleEditTrace.bind(this, salesClueItem)}
-                        ></i> : null}
                     </span> : null }</div>
                 : null}
 
@@ -410,11 +404,11 @@ class SalesClueItem extends React.Component {
                         /> : null
                     }
                 </div>
-                {!traceContent && hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
+                {hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
                     <Button className='add-trace-content'
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
-                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleAssociateCustomer.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
+                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleShowClueDetail.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('common.sales.transfer.customer','转为客户')}</Button> : null}
 
                 {avalibilityPrivilege ? (salesClueItem.availability === '1' ?
 

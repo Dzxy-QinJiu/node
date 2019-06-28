@@ -2668,7 +2668,7 @@ var zh_CN = {
     'menu.shortName.operate': '运营',
     'menu.shortName.schedule': '日程',
     'menu.shortName.config': '设置',
-    'clue.no.data.during.range.and.status': '当前筛选时间段及状态没有相关线索信息',
+    'clue.no.data.during.range.and.status': '没有符合条件的线索',
     'clue.no.data': '暂无线索信息',
     'clue.filter.clue.status': '线索状态',
     'clue.statistic.get.error': '获取线索统计数据失败',
@@ -3119,5 +3119,6 @@ var zh_CN = {
     'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
     'call.record.phone.err.msg': '电话号码错误',
     'clue.customer.has.transfer': '已转化',
+    'common.sales.transfer.customer': '转为客户'
 };
 export default zh_CN;
