@@ -340,9 +340,9 @@ var NavSidebar = createReactClass({
         return paramObj.call_params && paramObj.call_params.phonemsgObj || null;
     },
     callingRonglianBtn: function(data) {
+        var phonemsgObj = this.getPhonemsgObj(data);
         //监听推送来的消息，如果是容联的电话系统,在打通状态需要把左边导航的图标改掉
-        if (isRongLianPhoneSystem()){
-            var phonemsgObj = this.getPhonemsgObj(data);
+        if (isRongLianPhoneSystem() && _.get(phonemsgObj,'type')){
             //电话接通推过来状态
             if([CALL_TYPES.ALERT].indexOf(phonemsgObj.type) !== -1){
                 var phoneNum = '';
