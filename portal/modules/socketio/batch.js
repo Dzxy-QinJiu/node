@@ -21,7 +21,7 @@ function getOperateTextMap(lang){
         task_grant_update: backendIntl.get('user.batch.app.open','开通产品'),//开通产品
         task_grant_roles: backendIntl.get('user.batch.auth.set','权限设置'),//权限设置
         //客户管理-批量操作
-        crm_batch_change_sales: backendIntl.get('crm.18','变更销售人员'),//变更销售人员
+        crm_batch_change_sales: backendIntl.get('crm.103', '变更负责人'),//变更负责人
         crm_batch_transfer_customer: backendIntl.get('crm.customer.transfer', '转出客户'),//转出客户
         crm_batch_change_labels: backendIntl.get('crm.206','更新标签'),//变更标签
         crm_batch_add_labels: backendIntl.get('crm.205','添加标签'),//添加标签
