@@ -20,8 +20,7 @@ class TeamDataColumn extends React.Component {
     render() {
         return (
             <ColumnItem contianerClass='team-data-wrap'
-                title={Intl.get('home.page.team.data', '团队数据')}
-                titleIcon={<span className='iconfont icon-interested title-icon'/>}
+                title={Intl.get('home.page.my.data', '我的数据')}
                 content={this.renderTeamDataContent()}
             />);
     }

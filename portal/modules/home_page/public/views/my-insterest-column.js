@@ -328,7 +328,6 @@ class MyInsterestColumn extends React.Component {
         return (
             <ColumnItem contianerClass='my-insterest-wrap'
                 title={Intl.get('home.page.my.interest', '我的关注')}
-                titleIcon={<span className='iconfont icon-interested title-icon'/>}
                 content={this.renderInterestContent()}
                 width='25%'
             />);

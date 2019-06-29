@@ -337,10 +337,11 @@ var zh_CN = {
 
     //首页
     'menu.home.page': '首页',
-    'home.page.my.helper': '我的助手',
-    'home.page.helper.all': '全部事务',
+    'home.page.my.work': '我的工作',
+    'home.page.work.all': '全部事务',
     'home.page.my.interest': '我的关注',
-    'home.page.team.data': '团队数据',
+    'home.page.my.data': '我的数据',
+    'home.page.deal.handle': '待处理的订单',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/

@@ -4,7 +4,7 @@
  * Created by wangliping on 2019/6/11.
  */
 import './css/index.less';
-import MyHelperColumn from './views/my-helper-column';
+import MyWorkColumn from './views/my-work-column';
 import MyInsterestColumn from './views/my-insterest-column';
 import TeamDataColumn from './views/team-data-column';
 
@@ -16,9 +16,9 @@ class HomePage extends React.Component {
     render() {
         return (
             <div className='home-page-container'>
-                <MyHelperColumn/>
-                <MyInsterestColumn/>
+                <MyWorkColumn/>
                 <TeamDataColumn/>
+                <MyInsterestColumn/>
             </div>);
     }
 }

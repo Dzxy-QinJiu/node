@@ -10,7 +10,7 @@ exports.getMyWorkList = function(queryParams) {
     var Deferred = $.Deferred();
     getMyWorkListAjax && getMyWorkListAjax.abort();
     getMyWorkListAjax = $.ajax({
-        url: '/rest/home_page/my_works ',
+        url: '/rest/home_page/my_works',
         dataType: 'json',
         type: 'get',
         data: queryParams,
