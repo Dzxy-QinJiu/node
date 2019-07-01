@@ -13,6 +13,7 @@ import {Icon, Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
+import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -41,6 +42,7 @@ class MemberManage extends React.Component {
 
     componentDidMount = () => {
         MemberManageStore.listen(this.onChange);
+        positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberList);
         setTimeout( () => {
             this.getMemberList(); // 获取成员列表
         }, 0);
@@ -54,6 +56,11 @@ class MemberManage extends React.Component {
             status: _.get(queryParams, 'status', this.state.status), // 成员状态
             id: _.get(queryParams, 'id', ''), // 下拉加载最后一条的id
         };
+        let teamrole_id = _.get(queryParams, 'teamrole_id');
+        if (teamrole_id) {
+            MemberManageAction.setInitialData();
+            queryObj.teamrole_id = teamrole_id;
+        }
         MemberManageAction.getMemberList(queryObj, (memberTotal) => {
             this.props.getMemberCount(memberTotal);
         });
@@ -61,6 +68,7 @@ class MemberManage extends React.Component {
 
     componentWillUnmount = () => {
         MemberManageStore.unlisten(this.onChange);
+        positionEmitter.removeListener(positionEmitter.CLICK_POSITION, this.getMemberList);
     };
 
     showMemberForm = (type) => {
@@ -356,13 +364,6 @@ class MemberManage extends React.Component {
     changeMemberFieldSuccess = (member) => {
         MemberManageAction.afterEditMember(member);
     };
-    // 修改成员状态
-    updateMemberStatus = (updateObj) => {
-        let status = _.get(updateObj, 'status');
-        MemberManageAction.updateMemberStatus(updateObj);
-        // 更新列表中当前修改成员的状态
-        MemberManageAction.updateCurrentMemberStatus(status);
-    };
 
     render() {
         let height = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT;
@@ -392,17 +393,19 @@ class MemberManage extends React.Component {
                     </div>
                 </div>
                 <div className='member-right-panel'>
-                    {this.state.isShowMemberForm ? (
-                        <MemberForm
-                            formType={this.state.formType}
-                            closeRightPanel={this.closeRightPanel}
-                            returnInfoPanel={this.returnInfoPanel}
-                            showMemberInfo={this.showMemberInfo.bind(this)}
-                            showContinueAddButton={this.showContinueAddButton}
-                            member={this.state.currentMember}
-                            isShowMemberForm={this.state.isShowMemberForm}
-                        />
-                    ) : null}
+                    {
+                        this.state.isShowMemberForm ? (
+                            <MemberForm
+                                formType={this.state.formType}
+                                closeRightPanel={this.closeRightPanel}
+                                returnInfoPanel={this.returnInfoPanel}
+                                showMemberInfo={this.showMemberInfo.bind(this)}
+                                showContinueAddButton={this.showContinueAddButton}
+                                member={this.state.currentMember}
+                                isShowMemberForm={this.state.isShowMemberForm}
+                            />
+                        ) : null
+                    }
                     {
                         this.state.isShowMemberDetail ? (
                             <MemberInfo
@@ -411,7 +414,6 @@ class MemberManage extends React.Component {
                                 showEditForm={this.showMemberForm}
                                 isContinueAddButtonShow={this.state.isContinueAddButtonShow}
                                 changeMemberFieldSuccess={this.changeMemberFieldSuccess}
-                                updateMemberStatus={this.updateMemberStatus}
                                 resultType={this.state.resultType}
                                 errorMsg={this.state.errorMsg}
                                 isGetMemberDetailLoading={this.state.isGetMemberDetailLoading}
