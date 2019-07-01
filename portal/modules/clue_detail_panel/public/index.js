@@ -269,8 +269,8 @@ class ClueDetailPanel extends React.Component {
                             {
                                 _.map(phonemsgObj.leads, (item) => {
                                     //我的线索，可以查看线索详情
-                                    let myCustomer = _.find(clueInfoArr, customer => customer.id === item.id);
-                                    return this.renderCustomerCard(item, myCustomer);
+                                    let myClue = _.find(clueInfoArr, clue => clue.id === item.id);
+                                    return this.renderClueCard(item, myClue);
                                 })
                             }
                         </GeminiScrollbar>
