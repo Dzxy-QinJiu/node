@@ -52,9 +52,6 @@ class OfficeManage extends React.Component {
         });
         officeManageAjax.getPositionList().then( (result) => {
             let data = _.isArray(result) && result || [];
-            if (data.length) {
-                data[0].selected = true;
-            }
             this.setState({
                 isLoading: false,
                 positionList: data,
