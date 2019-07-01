@@ -912,7 +912,7 @@ class ClueCustomer extends React.Component {
                 {/*是有效线索并且有关联客户*/}
                 {associatedCustomer ?
                     <div className="associate-customer">
-                        {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
+                        {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_label)}>{salesClueItem.customer_label}</Tag> : null}
                         <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> :
                     <div>
                         {associatedPrivilege ? <span className="can-edit associate-btn" onClick={this.showClueDetailOut.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</span> : null}
