@@ -40,10 +40,12 @@ let BasicEditSelectField = createReactClass({
         placeholder: PropTypes.string,
         hideButtonBlock: PropTypes.bool,
         onSelectChange: PropTypes.func,
+        ignoreValueIsChangeBeforeSave: PropTypes.bool,
     },
     getDefaultProps: function() {
         return {
             id: '',
+            ignoreValueIsChangeBeforeSave: false, // 忽略 保存前 值是否修改的判断，默认false,不忽略
             //是否是多选(默认：单选)
             multiple: false,
             //是否是输入框自动提示模式
@@ -89,6 +91,7 @@ let BasicEditSelectField = createReactClass({
             loading: false,
             displayType: this.props.displayType || 'text',
             displayText: this.props.displayText,
+            ignoreValueIsChangeBeforeSave: this.props.ignoreValueIsChangeBeforeSave,
             formData: {
                 select: this.props.value
             },
@@ -106,6 +109,7 @@ let BasicEditSelectField = createReactClass({
             this.setState({
                 loading: false,
                 displayText: nextProps.displayText,
+                ignoreValueIsChangeBeforeSave: nextProps.ignoreValueIsChangeBeforeSave,
                 formData: {
                     select: nextProps.value
                 },
@@ -153,7 +157,7 @@ let BasicEditSelectField = createReactClass({
                     displayText: displayText || ''
                 });
             };
-            if (value !== this.state.value) {
+            if ( this.state.ignoreValueIsChangeBeforeSave || value !== this.state.value ) {
                 this.props.saveEditSelect(saveObj, () => {
                     //如果是可以手动输入内容的情况,就用后端提交的
                     let displayText = '';

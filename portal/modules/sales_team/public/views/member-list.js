@@ -83,6 +83,7 @@ const MemberList = createReactClass({
             memberConfirmVisible: false,
             memberListHeight: this.props.containerHeight,
             currentMember: MemberManageStore.getState().currentMember,
+            isGetMemberDetailLoading: MemberManageStore.getState().isGetMemberDetailLoading,
             isLoadingSalesGoal: this.props.isLoadingSalesGoal,
             getSalesGoalErrMsg: this.props.getSalesGoalErrMsg,
             isShowBatchChangeTeamGoal: true,//是否展示设置团队目标按钮
@@ -100,6 +101,7 @@ const MemberList = createReactClass({
             saveMemberListResult: savingFlags.saveMemberListResult,
             saveMemberListMsg: savingFlags.saveMemberListMsg,
             currentMember: MemberManageStore.getState().currentMember,
+            isGetMemberDetailLoading: MemberManageStore.getState().isGetMemberDetailLoading,
         });
     },
 
@@ -1221,11 +1223,7 @@ const MemberList = createReactClass({
     },
     // 修改成员状态
     updateMemberStatus(updateObj) {
-        let status = _.get(updateObj, 'status');
-        MemberManageAction.updateMemberStatus(updateObj);
-        // 更新列表中当前修改成员的状态
-        MemberManageAction.updateCurrentMemberStatus(status);
-        this.changeMemberFieldSuccess(updateObj);
+        SalesTeamAction.updateCurShowTeamMemberObj(updateObj);
     },
 
     //修改成员详情中部门信息后的处理
@@ -1295,6 +1293,7 @@ const MemberList = createReactClass({
                         updateMemberStatus={this.updateMemberStatus}
                         afterEditTeamSuccess={this.afterEditTeamSuccess}
                         afterEditPositionSuccess={this.afterEditPositionSuccess}
+                        isGetMemberDetailLoading={this.state.isGetMemberDetailLoading}
                     />) : null}
             </div>
         );

@@ -88,13 +88,13 @@ class MemberForm extends React.Component {
     };
 
     handleCancel = (e) => {
-        e.preventDefault();
+        e && e.preventDefault();
         this.resetValidatFlags();
         this.props.closeRightPanel();
     };
 
     handleSubmit = (e) => {
-        e.preventDefault();
+        e && e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (err) return;
             let validateFlag = this.state.userNameExist || this.state.emailExist || this.state.nickNameExist ||

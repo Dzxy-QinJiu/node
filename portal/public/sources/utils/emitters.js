@@ -198,6 +198,11 @@ const callDeviceTypeEmitter = new EventEmitter();
 callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE = 'change_call_device_type';
 export { callDeviceTypeEmitter };
 
+// 点击职务相关事件
+const positionEmitter = new EventEmitter();
+positionEmitter.CLICK_POSITION = 'click_position';
+export { positionEmitter };
+
 // 用户详情基本信息事件
 const userBasicInfoEmitter = new EventEmitter();
 userBasicInfoEmitter.GET_USER_BASIC_INFO = 'get_user_basic_info';

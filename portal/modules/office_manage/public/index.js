@@ -10,6 +10,7 @@ import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
 import OfficeForm from './office-form';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 const LAYOUT = {
     HAED_HEIGHT: 40, // tabs项的高度
@@ -46,12 +47,18 @@ class OfficeManage extends React.Component {
 
     // 获取职务列表
     getPositionList = () => {
-        officeManageAjax.getPositionList().then( (data) => {
+        this.setState({
+            isLoading: true
+        });
+        officeManageAjax.getPositionList().then( (result) => {
+            let data = _.isArray(result) && result || [];
             this.setState({
-                positionList: _.isArray(data) ? data : [],
+                isLoading: false,
+                positionList: data,
             });
         }, (xhr) => {
             this.setState({
+                isLoading: false,
                 getPositionListMsg: xhr.responseJSON
             });
         } );
@@ -131,6 +138,16 @@ class OfficeManage extends React.Component {
             mouseZoneHoverItemId: _.get(item, 'id'),
             visible: false
         });
+    };
+
+
+    handleClickPosition = (item) => {
+        _.each(this.state.positionList, (position) => {
+            delete position.selected;
+        });
+        item.selected = true;
+        let positionObj = {teamrole_id: item.id};
+        positionEmitter.emit(positionEmitter.CLICK_POSITION, positionObj);
     };
 
     handleMouseLeave = (event) => {
@@ -222,13 +239,6 @@ class OfficeManage extends React.Component {
         });
     };
 
-    // 正在添加、编辑、删除职务时，其他不能点击
-    onSelectPosition = (item, event) => {
-        event.stopPropagation();
-        if ( !this.state.isShowAddPosition || item.isEdit || item.isDelete) {
-            return;
-        }
-    };
 
     handleSubmit = (result, flag) => {
         if (flag === 'add') {
@@ -322,7 +332,11 @@ class OfficeManage extends React.Component {
         if (!this.state.isShowAddPosition) {
             scrollHeight -= LAYOUT.ADD_FORM_HEIGHT;
         }
-        if (this.state.getPositionListMsg) { // 错误提示
+        if (this.state.isLoading) {
+            return (
+                <Spinner/>
+            );
+        } else if (this.state.getPositionListMsg) { // 错误提示
             return (
                 <div className="office-list-error-tips">
                     <Alert type="error" showIcon message={this.state.getPositionListMsg}/>
@@ -343,12 +357,13 @@ class OfficeManage extends React.Component {
                                 let isEdit = _.get(item, 'isEdit');
                                 let isDelete = _.get(item, 'isDelete');
                                 let itemContainerCls = classNames('item-office-container', {
-                                    'item-office-delete-container': isDelete
+                                    'item-office-delete-container': isDelete,
+                                    'item-selected': item.selected
                                 });
                                 return (
                                     <li
                                         onMouseEnter={this.handleMouseEnter.bind(this, item)}
-                                        onClick={this.onSelectPosition.bind(this, item )}
+                                        onClick={this.handleClickPosition.bind(this, item )}
                                     >
                                         {
                                             this.state.deleteOrSetDefaultPositionId === item.id && this.state.deleteOrSetDefaultErrMsg ? (
