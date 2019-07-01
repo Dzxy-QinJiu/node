@@ -29,7 +29,6 @@ exports.toFrontObject = function(restObject) {
     frontObj.rePassword = '密码******';
     frontObj.phone = restObject.phone || ''; // 手机
     frontObj.email = restObject.email || ''; // 邮箱
-    frontObj.email = restObject.email || ''; // 邮箱
     frontObj.phoneOrder = restObject.phone_order || '';
     frontObj.positionName = restObject.teamrole_name || ''; // 职务
     frontObj.positionId = restObject.teamrole_id || ''; // 职务id

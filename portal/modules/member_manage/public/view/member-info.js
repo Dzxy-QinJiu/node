@@ -127,11 +127,15 @@ class MemberInfo extends React.Component {
         if (memberInfo.status === 1) {
             status = 0;
         }
+        let updateObj = {
+            id: _.get(this.state, 'memberInfo.id'),
+            status
+        };
+        MemberManageAction.updateMemberStatus(updateObj);
+        // 更新列表中当前修改成员的状态
+        MemberManageAction.updateCurrentMemberStatus(status);
         if (memberInfo.id && _.isFunction(this.props.updateMemberStatus)) {
-            this.props.updateMemberStatus({
-                id: _.get(this.state, 'memberInfo.id'),
-                status
-            });
+            this.props.updateMemberStatus(updateObj);
         }
     };
 
@@ -299,12 +303,6 @@ class MemberInfo extends React.Component {
         });
     };
 
-    //启用、停用
-    updateMemberStatus = (userId, status) => {
-        var updateObj = {id: userId, status: status};
-        _.isFunction(this.props.updateMemberStatus) && this.props.updateMemberStatus(updateObj);
-    };
-
     cancelEditIcon = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.upload-img-select'), '取消头像的保存');
         let memberInfo = this.state.memberInfo;
@@ -458,6 +456,11 @@ class MemberInfo extends React.Component {
             roleNames = memberInfo.roleNames.join(',');
         }
         let roleId = _.get(memberInfo, 'roleIds[0]');
+        let length = _.get(memberInfo, 'roleIds.length');
+        // 成员详情中的角色设置，由于刚开始做的时候是多选的，现在需要改成单选，在下拉选择框中，展示的是第一个角色
+        // 在组件中，有个判断，value !== this.state.value 若是直接选第一个的话，修改后不起作用
+        // 当有多个角色时，增加了一个属性判断，忽略修改后的值是否和原值相等的判断
+        let ignoreValueIsChangeBeforeSave = length > 1 ? true : false;
         // 职务的下拉列表
         let positionOptions = _.map(this.state.salesRoleList, item => <Option value={item.id} >{item.name}</Option>);
 
@@ -486,6 +489,7 @@ class MemberInfo extends React.Component {
                         saveEditSelect={this.saveEditRoles.bind(this)}
                         noDataTip={Intl.get('member.no.role', '暂无角色')}
                         addDataTip={Intl.get('user.setting.roles', '设置角色')}
+                        ignoreValueIsChangeBeforeSave={ignoreValueIsChangeBeforeSave}
                     />
                 </div>
                 {/** v8环境下，不显示所属团队*/}

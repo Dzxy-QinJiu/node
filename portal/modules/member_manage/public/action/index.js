@@ -10,7 +10,6 @@ class MemberManageAction {
             'closeRightPanel', // 关闭右侧面板
             'returnInfoPanel', // 返回详细信息展示页
             'afterEditMember', // 编辑成员后的处理
-            'updateMemberStatus', // 更新详情中成员的启停用状态
             'updateCurrentMemberStatus', // 更新列表中当前修改成员的状态
             'setCurMember', // 设置当前的成员
             'setMemberLoading', // 设置当前成员的loading
