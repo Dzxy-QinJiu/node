@@ -242,7 +242,7 @@ function handleBatchClueSalesParams(req, clueUrl) {
     }
     var bodyObj = {
         query: {...typeFilter},
-        rangeParams: rangeParams,
+        rangParams: rangeParams,
     };
     if (keyword){
         bodyObj.keyword = keyword;
