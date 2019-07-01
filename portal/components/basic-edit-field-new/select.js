@@ -91,6 +91,7 @@ let BasicEditSelectField = createReactClass({
             loading: false,
             displayType: this.props.displayType || 'text',
             displayText: this.props.displayText,
+            ignoreValueIsChangeBeforeSave: this.props.ignoreValueIsChangeBeforeSave,
             formData: {
                 select: this.props.value
             },
@@ -108,6 +109,7 @@ let BasicEditSelectField = createReactClass({
             this.setState({
                 loading: false,
                 displayText: nextProps.displayText,
+                ignoreValueIsChangeBeforeSave: nextProps.ignoreValueIsChangeBeforeSave,
                 formData: {
                     select: nextProps.value
                 },
