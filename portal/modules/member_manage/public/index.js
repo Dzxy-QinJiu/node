@@ -201,11 +201,19 @@ class MemberManage extends React.Component {
             key: 'name',
             width: '40%',
             render: (name, record) => {
-                let memberNameCls = classNames('member-name', this.memberStatusClass(_.get(record, 'status')));
+                let status = record.status;
+                let memberNameCls = classNames('member-name', this.memberStatusClass(status));
                 return (
                     <div className={memberNameCls}>
-                        <div className='accout'>{_.get(record, 'name')}</div>
-                        <div className='nickname'>{_.get(record, 'userName')}</div>
+                        <div className='account'>
+                            {record.name}
+                            {
+                                status === 0 ? (
+                                    <span className='member-stop-status'>{Intl.get('user.status.stopped', '已停用')}</span>
+                                ) : null
+                            }
+                        </div>
+                        <div className='nickname'>{record.userName}</div>
                     </div>
                 );
             }
@@ -215,7 +223,7 @@ class MemberManage extends React.Component {
             key: 'teamName',
             width: '20%',
             render: (teamName, record) => {
-                let teamCls = this.memberStatusClass(_.get(record, 'status'));
+                let teamCls = this.memberStatusClass(record.status);
                 return (
                     <div className={teamCls}>
                         {teamName}
@@ -228,7 +236,7 @@ class MemberManage extends React.Component {
             key: 'positionName',
             width: '20%',
             render: (positionName, record) => {
-                let positionCls = this.memberStatusClass(_.get(record, 'status'));
+                let positionCls = this.memberStatusClass(record.status);
                 return (
                     <div className={positionCls}>
                         {positionName}
@@ -241,7 +249,7 @@ class MemberManage extends React.Component {
             key: 'phone',
             width: '30%',
             render: (phone, record) => {
-                let phoneCls = this.memberStatusClass(_.get(record, 'status'));
+                let phoneCls = this.memberStatusClass(record.status);
                 return (
                     <div className={phoneCls}>
                         {phone}
