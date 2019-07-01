@@ -912,6 +912,9 @@ class ClueCustomer extends React.Component {
         clueFilterAction.setFilterType(selectedType);
         this.onTypeChange();
     };
+    isFireFoxBrowser = () => {
+        return navigator.userAgent.toUpperCase().indexOf('FIREFOX') > -1;
+    };
     getClueTypeTab = () => {
         var filterStore = clueFilterStore.getState();
         var filterClueStatus = filterStore.filterClueStatus;
@@ -922,7 +925,8 @@ class ClueCustomer extends React.Component {
         var hasTransfer = classNames('clue-status-tab', {'active-has-transfer': SELECT_TYPE.HAS_TRANSFER === typeFilter.status});
         var statics = this.state.agg_list;
         const clueStatusCls = classNames('clue-status-wrap',{
-            'show-clue-filter': this.state.showFilterList
+            'show-clue-filter': this.state.showFilterList,
+            'firefox-padding': this.isFireFoxBrowser()
         });
         return <span className={clueStatusCls}>
             {isSalesRole() ? null : <span className={willDistCls}
@@ -1055,7 +1059,7 @@ class ClueCustomer extends React.Component {
         //只有不是待跟进状态，才能展示操作区域
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
-        if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.HAS_TRANSFER){
+        if (typeFilter.status === SELECT_TYPE.HAS_TRACE){
             columns.push({
                 className: 'invalid-td-clue',
                 width: '150px',

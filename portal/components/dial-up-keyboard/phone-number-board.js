@@ -94,7 +94,11 @@ class PhoneNumberBoard extends React.Component {
             //     message.error(Intl.get('phone.call.error.tip', '电话号码错误！'));
             // }
         }
-    }
+    };
+    hangUpPhone = (callClient) => {
+        callClient.releaseCall(callClient);
+        this.clearInputNumber();
+    };
 
     render() {
         const suffix = this.state.inputNumber ? <Icon type="close-circle" onClick={this.clearInputNumber}/> : null;
@@ -126,7 +130,7 @@ class PhoneNumberBoard extends React.Component {
                                 onClick={this.onButtonClick.bind(this, item)}>{item}</Button>);
                     })}
                 </div>
-                <Button type='primary' className={phoneBtnWrap} onClick={isRonglianCalling && callClient.needShowAnswerView() ? callClient.releaseCall.bind(callClient) : this.dialPhoneNumber}>
+                <Button type='primary' className={phoneBtnWrap} onClick={isRonglianCalling && callClient.needShowAnswerView() ? this.hangUpPhone.bind(this, callClient) : this.dialPhoneNumber}>
                     <i className={phonePopIcon}/></Button>
             </div>);
     }
