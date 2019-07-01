@@ -34,7 +34,8 @@ class phoneStatusTop extends React.Component {
             showAddFeedbackOrAddPlan: false,//要在打完电话后才展示反馈，是否展示反馈
             isAddingMoreProdctInfo: this.props.isAddingMoreProdctInfo,
             isAddingPlanInfo: this.props.isAddingPlanInfo,//正在添加联系计划
-            showCancelBtn: false//是否展示取消保存跟进记录的按钮
+            showCancelBtn: false,//是否展示取消保存跟进记录的按钮
+            visible: false//跟进内容下拉框是否展示
         };
     }
 
@@ -152,6 +153,11 @@ class phoneStatusTop extends React.Component {
     //将输入框中的文字放在state上
     handleInputChange = (e) => {
         phoneAlertAction.setContent(e.target.value);
+        if (e.target.value){
+            this.setState({
+                visible: false
+            });
+        }
     };
     handleSelectCustomer = (customerId) => {
         this.setState({
@@ -161,6 +167,15 @@ class phoneStatusTop extends React.Component {
     onClickMenu = ({ key }) => {
         var inputContent = commonPhoneDesArray[key];
         phoneAlertAction.setContent(inputContent);
+        if (this['addTextare']) {
+            this['addTextare'].focus();
+        }
+        this.setState({
+            visible: false
+        });
+    };
+    handleVisibleChange = flag => {
+        this.setState({ visible: flag });
     };
 
     renderTraceItem(phonemsgObj) {
@@ -184,8 +199,9 @@ class phoneStatusTop extends React.Component {
             return (
                 <div className="trace-content edit-trace">
                     <div className="input-item">
-                        <Dropdown overlay={menu} trigger={['click']}>
+                        <Dropdown overlay={menu} trigger={['click']} onVisibleChange={this.handleVisibleChange} visible={this.state.visible}>
                             <TextArea
+                                ref={addTextare => this['addTextare'] = addTextare}
                                 onChange={this.handleInputChange}
                                 value={this.state.inputContent}
                                 placeholder={Intl.get('phone.status.record.content', '请填写本次跟进内容')}/>

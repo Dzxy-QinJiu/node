@@ -326,6 +326,8 @@ class SalesClueItem extends React.Component {
         let status = salesClueItem.status;
         //是待分配状态的线索，只展示分配按钮就可以
         let isWillDistributeClue = salesClueItem.status === '0';
+        //是已跟进状态的线索
+        let hasTraceClue = salesClueItem.status === '2';
         let member_id = user.user_id || '';
         //是有效线索
         let availability = salesClueItem.availability !== '1';
@@ -408,7 +410,7 @@ class SalesClueItem extends React.Component {
                     <Button className='add-trace-content'
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
-                {associatedPrivilege && !isWillDistributeClue ? <Button onClick={this.handleShowClueDetail.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('common.sales.transfer.customer','转为客户')}</Button> : null}
+                {associatedPrivilege && hasTraceClue ? <Button onClick={this.handleShowClueDetail.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('common.sales.transfer.customer','转为客户')}</Button> : null}
 
                 {avalibilityPrivilege ? (salesClueItem.availability === '1' ?
 

@@ -912,7 +912,7 @@ class ClueDetailOverview extends React.Component {
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，如果索不是无效的*/}
                         {
-                            typeFilter.status !== SELECT_TYPE.WILL_TRACE ?
+                            curClue.status === SELECT_TYPE.HAS_TRACE ?
                                 this.renderAssociatedAndInvalidClueHandle(curClue)
                                 : null 
                         }
