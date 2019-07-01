@@ -16,11 +16,11 @@ import {tabNameList, TAB_KEYS} from '../utils/crm-util';
 import BasicInfo from './basic_info';
 import BasicOverview from './basic-overview';
 import CustomerUsers from './users';
-import {isEqualArray} from 'LIB_DIR/func';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import contactUtil from '../utils/contact-util';
 const RightPanel = rightPanelUtil.RightPanel;
+import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 //权限常量
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
@@ -29,7 +29,7 @@ const PRIVILEGE_MAP = {
 
 class CrmRightPanel extends React.Component {
     state = {
-        activeKey: TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
+        activeKey: this.props.activeKey || TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
         apps: [],
         curOrder: {},
         curCustomer: this.props.curCustomer,
@@ -223,8 +223,8 @@ class CrmRightPanel extends React.Component {
                                     />
                                 ) : null}
                             </TabPane>
-                            {
-                                hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) ? (
+                            {//用合同基础角色的权限，并且开通了营收中心时，才展示合同列表
+                                hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && isOpenCash() ? (
                                     <TabPane
                                         tab={Intl.get('contract.125', '合同')}
                                         key={TAB_KEYS.CONTRACT_TAB}
@@ -289,6 +289,7 @@ class CrmRightPanel extends React.Component {
 CrmRightPanel.propTypes = {
     curCustomer: PropTypes.object,
     currentId: PropTypes.string,
+    activeKey: PropTypes.string,
     showApplyUserForm: PropTypes.func,
     hideRightPanel: PropTypes.func,
     isRepeat: PropTypes.bool,

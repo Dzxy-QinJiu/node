@@ -6,6 +6,7 @@ var UserAuditLogStore = require('../store/user_audit_log_store');
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var ShareObj = require('../util/app-id-share-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 function UserLoginAnalysisAction() {
     this.generateActions(
@@ -19,6 +20,12 @@ function UserLoginAnalysisAction() {
     this.getSingleUserAppList = function(searchObj, selectedAppId){
         this.dispatch({loading: true, appList: []});
         userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
+            const userInfo = {
+                data: result.user,
+                loading: false,
+                errorMsg: ''
+            };
+            userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
             let userOwnAppArray = result.apps;
             // 存储应用id的变量
             let userOwnAppArrayAppIdList = [];

@@ -19,7 +19,7 @@ export const commonPhoneDesArray = [
 ];
 export const cluePhoneDesArray = [
     Intl.get('call.record.state.no.answer', '未接听'),
-    Intl.get('phone.call.error.tip', '电话号码错误！'),
+    Intl.get('call.record.phone.err.msg', '电话号码错误'),
     Intl.get('apply.phone.close', '手机关机')
 ];
 //挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访

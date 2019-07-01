@@ -5,10 +5,8 @@
  */
 var FilterAction = require('../action/filter-action');
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
-var userData = require('PUB_DIR/sources/user-data');
 import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime} from '../utils/clue-customer-utils';
-import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {getStartEndTimeOfDiffRange, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueFilterStore() {
     this.setInitialData();
     //绑定action方法
@@ -17,13 +15,21 @@ function ClueFilterStore() {
 
 ClueFilterStore.prototype.setInitialData = function() {
     var filterClueStatus = _.cloneDeep(CLUE_DIFF_TYPE);
-    //是否展示分配筛选按钮要根据权限判断
-    if(hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+    //如果不是销售角色，就展示待分配
+    if(!isSalesRole()){
         filterClueStatus.push({
             name: Intl.get('clue.customer.will.distribution', '待分配'),
             value: SELECT_TYPE.WILL_DISTRIBUTE,
+            selected: true
         });
+    }else{
+        //如果是销售角色，默认展示待跟进
+        var targetObj = _.find(filterClueStatus, (item) => item.value === SELECT_TYPE.WILL_TRACE);
+        if (targetObj){
+            targetObj.selected = true;
+        }
     }
+
     //默认展示全部时间
     this.timeType = 'all';
     this.rangeParams = [{//时间范围参数
@@ -50,8 +56,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterClueUsers = [];
     //按负责人进行筛选
     this.teamMemberList = [];
-    //按 待我处理 进行筛选
-    this.filterAllotNoTraced = userData.getUserData().isCommonSales ? '0' : '';
+    //如果是销售领导或者销售角色 默认选中 待我处理 进行筛选
+    this.filterAllotNoTraced = isSalesRole() ? '0' : '';
 };
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {
@@ -83,11 +89,7 @@ ClueFilterStore.prototype.setFilterType = function(updateType) {
     this.filterClueAvailability = '';
     _.forEach(this.filterClueStatus, (item) => {
         item.selected = false;
-        if (_.isArray(updateType) && updateType.length) {
-            if (updateType[0].value === item.value) {
-                item.selected = true;
-            }
-        } else if (item.value === SELECT_TYPE.ALL) {
+        if (updateType === item.value) {
             item.selected = true;
         }
     });

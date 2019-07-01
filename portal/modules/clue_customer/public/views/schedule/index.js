@@ -10,16 +10,14 @@ import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
 var user_id = userData.getUserData().user_id;
 import Spinner from 'CMP_DIR/spinner';
-import DetailCard from 'CMP_DIR/detail-card';
 import ScheduleItem from './schedule-item';
-import RightPanelScrollBar from '../components/rightPanelScrollBar';
-import ErrorDataTip from '../components/error-data-tip';
-import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
+import RightPanelScrollBar from 'MOD_DIR/crm/public/views/components/rightPanelScrollBar';
+import ErrorDataTip from 'MOD_DIR/crm/public/views/components/error-data-tip';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 
 class CrmSchedule extends React.Component {
     state = {
-        customerId: this.props.curCustomer.id || '',
+        clueId: this.props.curClue.id || '',
         ...ScheduleStore.getState()
     };
 
@@ -33,14 +31,15 @@ class CrmSchedule extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        var nextCustomerId = nextProps.curCustomer.id || '';
-        var oldCustomerId = this.props.curCustomer.id || '';
+        var nextCustomerId = nextProps.curClue.id || '';
+        var oldCustomerId = this.props.curClue.id || '';
         if (nextCustomerId !== oldCustomerId) {
             setTimeout(() => {
                 this.setState({
-                    customerId: nextCustomerId
+                    clueId: nextCustomerId
                 }, () => {
                     ScheduleAction.resetState();
+                    //更新线索id成功后再获取跟进记录列表
                     this.getScheduleList();
                 });
             });
@@ -56,7 +55,7 @@ class CrmSchedule extends React.Component {
 
     getScheduleList = () => {
         let queryObj = {
-            customer_id: this.state.customerId || '',
+            lead_id: this.state.clueId || '',
             page_size: this.state.pageSize || 20,
         };
         if (this.state.lastScheduleId) {
@@ -67,8 +66,8 @@ class CrmSchedule extends React.Component {
 
     addSchedule = () => {
         const newSchedule = {
-            customer_id: this.props.curCustomer.id,
-            customer_name: this.props.curCustomer.name,
+            lead_id: this.props.curClue.id,
+            lead_name: this.props.curClue.name,
             start_time: '',
             end_time: '',
             alert_time: '',
@@ -162,7 +161,7 @@ class CrmSchedule extends React.Component {
                     <CrmScheduleForm
                         getScheduleList={this.getScheduleList}
                         currentSchedule={item}
-                        curCustomer={this.props.curCustomer}
+                        curCustomer={this.props.curClue}
                     />
                 </div>
             );
@@ -229,12 +228,12 @@ class CrmSchedule extends React.Component {
                 listenScrollBottom={this.state.listenScrollBottom}>
                 <div className="schedule-top-block">
                     <span className="total-tip crm-detail-total-tip">
-                        {!this.state.getScheduleListErrmsg ? null : this.state.total ? (
+                        {!this.state.getScheduleListErrmsg ? this.state.total ? (
                             <ReactIntl.FormattedMessage
                                 id="sales.frontpage.total.list"
                                 defaultMessage={'共{n}条'}
                                 values={{'n': this.state.total + ''}}/>) :
-                            Intl.get('crm.detail.no.schedule', '该客户还没有联系计划')}
+                            Intl.get('clue.has.no.schedule.list', '该线索还没有联系计划') : null}
                     </span>
                     {this.props.isMerge ? null : (
                         <Button className='crm-detail-add-btn'
@@ -249,7 +248,7 @@ class CrmSchedule extends React.Component {
     }
 }
 CrmSchedule.propTypes = {
-    curCustomer: PropTypes.object,
+    curClue: PropTypes.object,
     isMerge: PropTypes.bool
 };
 module.exports = CrmSchedule;

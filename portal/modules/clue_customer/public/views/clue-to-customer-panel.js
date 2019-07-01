@@ -7,6 +7,7 @@ require('MOD_DIR/crm/public/css/contact.less');
 import { Row, Col, Button, Icon, message } from 'antd';
 import ajax from 'ant-ajax';
 import { RightPanel } from 'CMP_DIR/rightPanel';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DetailCard from 'CMP_DIR/detail-card';
 //联系人表单
 const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
@@ -113,7 +114,7 @@ class ClueToCustomerPanel extends React.Component {
                 contactForm = $(contactForm);
 
                 //给联系人表单设置折叠效果
-                this.setFoldingEffect(contactForm);
+                this.setFormHeight(contactForm);
 
                 //隐藏滚动条
                 this.hideScrollBar(contactForm);
@@ -151,54 +152,20 @@ class ClueToCustomerPanel extends React.Component {
                     this.hideScrollBar(contactForm);
 
                     //给联系人表单设置折叠效果
-                    this.setFoldingEffect(contactForm);
+                    this.setFormHeight(contactForm);
                 });
             });
         }
     }
 
-    //给联系人表单设置折叠效果
-    setFoldingEffect(contactForm) {
-        //折叠按钮
-        let foldingBtn = contactForm.find('.folding-btn');
+    //给联系人表单设置合适的高度
+    setFormHeight(contactForm) {
+        //性别项
+        const gendarItem = contactForm.find('.contact-sex-item');
 
-        if (!foldingBtn.length) {
-            foldingBtn = $('<div/>');
-            foldingBtn.addClass('folding-btn clickable');
-            const expandBtnText = Intl.get('notification.system.more', '展开全部') + ' ∨';
-            const closeBtnText = Intl.get('crm.contact.way.hide', '收起') + ' ∧';
-            foldingBtn.text(expandBtnText);
-
-            const gendarItem = contactForm.find('.contact-sex-item');
-
-            gendarItem.before(foldingBtn);
-
-            const properHeight = gendarItem.offset().top - contactForm.offset().top; 
-
-            contactForm.height(properHeight);
-
-            foldingBtn.click(function() {
-                const self = $(this);
-
-                if (self.hasClass('expand')) {
-                    contactForm.height(properHeight);
-                    self.removeClass('expand');
-                    foldingBtn.text(expandBtnText);
-                } else {
-                    contactForm.height('auto');
-                    self.addClass('expand');
-                    foldingBtn.text(closeBtnText);
-                }
-            });
-        } else {
-            if (!foldingBtn.hasClass('expand')) {
-                const gendarItem = contactForm.find('.contact-sex-item');
-
-                const properHeight = gendarItem.offset().top - contactForm.offset().top; 
-
-                contactForm.height(properHeight);
-            }
-        }
+        //计算高度，将性别项连同其下面的表单项排除在高度之外，以达到隐藏这些表单项的效果
+        const properHeight = gendarItem.offset().top - contactForm.offset().top; 
+        contactForm.height(properHeight);
     }
 
     //联系人Store变更处理事件
@@ -479,7 +446,7 @@ class ClueToCustomerPanel extends React.Component {
                 .done(() => {
                     message.success(Intl.get('common.merge.success', '合并成功'));
 
-                    this.props.onMerged();
+                    this.props.onMerged(this.state.customerId);
                 })
                 .fail(err => {
                     const content = _.isArray(err) ? err.join('; ') : err;
@@ -547,19 +514,32 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
-    //渲染客户列表
+    //渲染相似客户列表
     renderCustomerList() {
+        //相似客户列表
         const existingCustomers = this.props.existingCustomers;
+
+        //客户列表标题区域高度
+        const titleBlockHeight = 45;
+        //转为新客户按钮区域高度
+        const convertToNewCustomerBtnBlockHeight = 60;
+        //列表容器最大高度
+        const listWrapMaxHeight = $(window).height() - titleBlockHeight - convertToNewCustomerBtnBlockHeight;
 
         return (
             <div className="customer-list">
                 <div className="title">
-                    <Icon type="exclamation-circle" /><b>{Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}</b>
+                    <Icon type="exclamation-circle" />
+                    {Intl.get('common.has.similar.customers', '有{count}个信息相似的客户', {count: existingCustomers.length})}
                 </div>
 
-                {_.map(existingCustomers, customer => {
-                    return this.renderCustomerItem(customer);
-                })}
+                <div className="list-wrap" style={{height: listWrapMaxHeight}}>
+                    <GeminiScrollbar>
+                        {_.map(existingCustomers, customer => {
+                            return this.renderCustomerItem(customer);
+                        })}
+                    </GeminiScrollbar>
+                </div>
 
                 <div className="btn-block">
                     <Button onClick={this.props.hidePanel}>{Intl.get('common.cancel', '取消')}</Button>
@@ -600,6 +580,21 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染联系人内容
     renderContactContent(contact) {
+        //当前操作的客户
+        const curCustomer = _.find(this.props.existingCustomers, customer => customer.id = this.state.customerId);
+
+        //当前操作的客户的联系人中和要渲染的联系人相同的联系人
+        const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name = contact.name);
+
+        //当前操作的客户的联系人中和要渲染的联系人相同的联系人的电话
+        const curCustomerPhone = _.get(curCustomerContact, 'phone');
+
+        //当前线索的联系人中和要渲染的联系人相同的联系人
+        const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name = contact.name);
+
+        //当前线索的联系人中和要渲染的联系人相同的联系人的电话
+        const curCluePhone = _.get(curClueContact, 'phone');
+
         return (
             <div className="contact-content">
                 <Row>
@@ -608,9 +603,18 @@ class ClueToCustomerPanel extends React.Component {
                     </Col>
                     <Col span={20}>
                         {_.map(contact.phone, (phone, phoneIndex) => {
+                            //电话是否来自线索的标识
+                            let mark = '';
+
+                            //如果当前电话在客户中不存在，在线索中存在
+                            if (!_.includes(curCustomerPhone, phone) && _.includes(curCluePhone, phone)) {
+                                //显示标识
+                                mark = <span className="clue-mark">（{Intl.get('crm.sales.clue', '线索')}）</span>;
+                            }
+
                             return (
                                 <div>
-                                    {phone}
+                                    {phone}{mark || null}
                                 </div>
                             );
                         })}
@@ -665,7 +669,7 @@ class ClueToCustomerPanel extends React.Component {
                         className="go-back clickable"
                         onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
                     >
-                        〈 {Intl.get('crm.52', '返回')}
+                        <i className="iconfont icon-left-arrow"/> {Intl.get('crm.52', '返回')}
                     </span>
                 </div>
 

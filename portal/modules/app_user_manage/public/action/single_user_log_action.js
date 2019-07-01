@@ -4,6 +4,7 @@
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 const LogAnalysisUtil = require('./log-analysis-util');
+import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 function handleLogParams(_this, getLogParam, userOwnAppList) {
     getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
@@ -31,6 +32,7 @@ function SingleUserLogAction() {
 
     // 获取单个用户的应用列表
     this.getSingleUserAppList = function(searchObj, selectedAppId, appLists) {
+
         if (_.isObject(searchObj)) {
             let getLogParam = {
                 user_id: searchObj.user_id,
@@ -46,13 +48,23 @@ function SingleUserLogAction() {
             if (searchObj.search) {
                 getLogParam.search = searchObj.search;
             }
+
             if (selectedAppId) { // 已选中应用
                 getLogParam.appid = selectedAppId;
+                this.actions.getUserBasicInfo(searchObj);
             } else { // 全部应用条件下查看
                 if (appLists.length) {
                     handleLogParams(this, getLogParam, appLists);
+                    this.actions.getUserBasicInfo(searchObj);
                 } else {
                     userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
+                        // 触发用户的基本信息
+                        const userInfo = {
+                            data: _.get(result, 'user'),
+                            loading: false,
+                            errorMsg: ''
+                        };
+                        userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
                         if (_.isObject(result) && result.apps) {
                             handleLogParams(this, getLogParam, result.apps);
                             // 日志列表信息
@@ -73,24 +85,43 @@ function SingleUserLogAction() {
         }
     };
 
+    this.getUserBasicInfo = function(searchObj) {
+        // 触发用户的基本信息
+        userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
+            const userInfo = {
+                data: _.get(result, 'user'),
+                loading: false,
+                errorMsg: ''
+            };
+            userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
+        }, (errorMsg) => {
+            const userInfo = {
+                data: null,
+                loading: false,
+                errorMsg: errorMsg || Intl.get('user.info.get.user.info.failed', '获取用户信息失败')
+            };
+            userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
+        } );
+    };
+
     // 获取单个用户的审计日志信息
-    this.getSingleAuditLogList = function (searchObj) {
+    this.getSingleAuditLogList = function(searchObj) {
         this.dispatch({ loading: true, error: false });
         let promise = null;
         //查询全部应用的日志调用另一个接口
-        if (searchObj.appid.includes(",")) {
+        if (searchObj.appid.includes(',')) {
             let data = {
                 ...searchObj,
                 app_id: searchObj.appid,
                 page_num: searchObj.page
             };
             delete data.appid;
-            promise= userAuditLogAjax.getSingleUserAllAuditLog({
+            promise = userAuditLogAjax.getSingleUserAllAuditLog({
                 params: {
                     user_id: searchObj.user_id
                 },
                 data
-            })
+            });
         } else {
             promise = userAuditLogAjax.getSingleAuditLogList(searchObj);
         }

@@ -577,8 +577,10 @@ class SystemNotification extends React.Component {
                     this.state.curShowUserId ?
                         <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default right-panel detail-v3-panel"
                             showFlag={this.state.curShowUserId}>
-                            <UserDetail userId={this.state.curShowUserId}
-                                closeRightPanel={this.closeRightUserPanel}/>
+                            <UserDetail
+                                userId={this.state.curShowUserId}
+                                closeRightPanel={this.closeRightUserPanel}
+                            />
                         </RightPanel>
                         : null
                 }

@@ -18,6 +18,7 @@ import {LEALVE_OPTION} from '../utils/weekly-report-utils';
 var WeekReportUtil = require('../utils/weekly-report-utils');
 var userData = require('PUB_DIR/sources/user-data');
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import {isOpenCaller, isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 //权限常量
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
@@ -579,10 +580,19 @@ class WeeklyReportDetail extends React.Component {
     };
 
     renderSalesBehavior() {
+        let salesBehaviorChart = customerCharts.getSalesBehaviorChart({
+            teamList: this.props.teamList
+        });
+
+        let columns = salesBehaviorChart.option.columns;
+        // 没有开通呼叫中心时，不显示日均电话时长(average_billsec)，日均电话数(average_total)这两列
+        if(!isOpenCaller()) {
+            salesBehaviorChart.option.columns = _.filter(columns, column => {
+                return !_.includes(['average_billsec','average_total'], column.dataIndex);
+            });
+        }
         const charts = [
-            customerCharts.getSalesBehaviorChart({
-                teamList: this.props.teamList
-            })
+            salesBehaviorChart
         ];
 
         return (
@@ -606,11 +616,14 @@ class WeeklyReportDetail extends React.Component {
                 <div className="tables-wrap" style={{height: divHeight}}>
                     <GeminiScrollbar>
                         {this.state.selectedItem.teamId ? this.renderSalesBehavior() : null}
-                        <div className="call-info-wrap">
-                            <AntcCardContainer title={Intl.get('weekly.report.call.statics', '电话统计')}>
-                                {this.renderDiffTypeTable('callInfo')}
-                            </AntcCardContainer>
-                        </div>
+                        {/*开通呼叫中心*/}
+                        {isOpenCaller() ? (
+                            <div className="call-info-wrap">
+                                <AntcCardContainer title={Intl.get('weekly.report.call.statics', '电话统计')}>
+                                    {this.renderDiffTypeTable('callInfo')}
+                                </AntcCardContainer>
+                            </div>
+                        ) : null}
                         <div className="customer-stage-info-wrap">
                             <AntcCardContainer title={Intl.get('weekly.report.customer.stage', '客户阶段')}>
                                 {this.renderDiffTypeTable('customerStageInfo')}
@@ -621,13 +634,15 @@ class WeeklyReportDetail extends React.Component {
                                 {this.renderDiffTypeTable('regionOverlay')}
                             </AntcCardContainer>
                         </div>
-                        {hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) ? (
+                        {/*有合同查看的权限，并且开通营收中心*/}
+                        {hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && isOpenCash() ? (
                             <div className="contract-info-wrap">
                                 <AntcCardContainer title={Intl.get('weekly.report.contract', '合同情况')}>
                                     {this.renderDiffTypeTable('contactInfo')}
                                 </AntcCardContainer>
                             </div>) : null}
-                        {hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) ? (
+                        {/*有合同查看的权限，并且开通营收中心*/}
+                        {hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && isOpenCash() ? (
                             <div className="repayment-info-wrap">
                                 <AntcCardContainer title={Intl.get('weekly.report.repayment', '回款情况')}>
                                     {this.renderDiffTypeTable('repaymentInfo')}

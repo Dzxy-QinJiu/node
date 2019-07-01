@@ -126,15 +126,7 @@ class AddApplyNodePanel extends React.Component {
             assignNextNodeApprover: e.target.checked,
         });
     };
-    handleHigherUpChange = (value) => {
-        var higher_ups = this.state.higher_ups;
-        higher_ups.candidateUsers = value;
-        var target = _.find(HIGHER_LEVEL, item => item.value === value);
-        higher_ups.showCandidateUsers = target.name;
-        this.setState({
-            higher_ups: higher_ups
-        });
-    };
+
     onChangeAdminApproveCheck = (e) => {
         var higher_ups = this.state.higher_ups;
         higher_ups.adminApproveChecked = e.target.checked;
@@ -168,23 +160,45 @@ class AddApplyNodePanel extends React.Component {
 
 
     };
+    handleHigherUpChange = (value) => {
+        var higher_ups = this.state.higher_ups;
+        var userArr = value.split('-');
+        var index = _.get(userArr,'[1]');
+        var target = _.get(HIGHER_LEVEL, `[${index}]`);
+        if (target){
+            higher_ups.candidateUsers = target.value;
+            higher_ups.showCandidateUsers = target.name;
+            this.setState({
+                higher_ups: higher_ups
+            });
+        }
+    };
     handleChangeSelectRole = (value) => {
         var setting_roles = this.state.setting_roles;
-        setting_roles.selectRole = value;
-        var target = _.find(this.state.roleList, item => item.save_role_value === value);
-        setting_roles.showSelectRole = target.role_name;
-        this.setState({
-            setting_roles: setting_roles
-        });
+        var userArr = value.split('-');
+        var index = _.get(userArr,'[1]');
+        var target = _.get(this, `state.roleList[${index}]`);
+        if (target){
+            setting_roles.selectRole = target.save_role_value;
+            setting_roles.showSelectRole = target.role_name;
+            this.setState({
+                setting_roles: setting_roles
+            });
+        }
+
     };
     handleChangeSelectUser = (value) => {
         var setting_users = this.state.setting_users;
-        setting_users.selectUser = value;
-        var target = _.find(this.state.userList, item => item.userId === value);
-        setting_users.showSelectUser = target.nickName;
-        this.setState({
-            setting_users: setting_users
-        });
+        var userArr = value.split('-');
+        var index = _.get(userArr,'[1]');
+        var target = _.get(this,`state.userList[${index}]`);
+        if (target){
+            setting_users.selectUser = target.userId;
+            setting_users.showSelectUser = target.nickName;
+            this.setState({
+                setting_users: setting_users
+            });
+        }
     };
     renderAdditonContent = (typeItem, index) => {
         var checkedRadioValue = this.state.checkedRadioValue;
@@ -195,10 +209,10 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="add-higher-up addition-condition">
                             <div className="higher-level-item addition-condition-item">
-                                <Select showSearch value={higher_ups.candidateUsers}
+                                <Select showSearch
                                     onChange={this.handleHigherUpChange}>
-                                    {_.map(HIGHER_LEVEL, (item) => {
-                                        return <Option value={item.value}>{item.name}</Option>;
+                                    {_.map(HIGHER_LEVEL, (item,index) => {
+                                        return <Option value={item.name + '-' + index} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
                             </div>
@@ -213,9 +227,9 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch value={setting_roles.selectRole} onChange={this.handleChangeSelectRole}>
-                                    {_.map(this.state.roleList, (item) => {
-                                        return <Option value={item.save_role_value}>{item.role_name}(
+                                <Select showSearch onChange={this.handleChangeSelectRole}>
+                                    {_.map(this.state.roleList, (item,index) => {
+                                        return <Option value={item.role_name + '-' + index} key={index}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
                                     })}
                                 </Select>
@@ -227,9 +241,9 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch value={setting_users.selectUser} onChange={this.handleChangeSelectUser}>
-                                    {_.map(this.state.userList, (item) => {
-                                        return <Option value={item.userId}>{item.nickName}</Option>;
+                                <Select showSearch onChange={this.handleChangeSelectUser}>
+                                    {_.map(this.state.userList, (item,index) => {
+                                        return <Option value={item.nickName + '-' + index} key={index}>{item.nickName}</Option>;
                                     })}
                                 </Select>
                             </div>

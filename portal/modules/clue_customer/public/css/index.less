@@ -174,8 +174,56 @@
       &.content-full {
         padding-left: 0;
       }
+      .clue-status-wrap{
+        position: absolute;
+        font-size: 14px;
+        color:#999;
+        left: 70px;
+        top: 10px;
+        z-index: 10;
+        &.show-clue-filter{
+          left: 400px;
+        }
+        .clue-status-tab{
+          display: inline-block;
+          padding: 0px 0 6px 0;
+          margin-right: 20px;
+          font-size: 14px;
+          cursor: pointer;
+          color:#999;
+          .clue-status-num{
+            padding-left: 5px;
+          }
+          &.active-will-distribute{
+            color:@will-distribute-color;
+            border-bottom: 2px solid @will-distribute-color;
+          }
+          &.active-will-trace{
+            color:@has-distribute-color;
+            border-bottom: 2px solid @has-distribute-color;
+          }
+          &.active-has-trace{
+            color: @has-follow-color;
+            border-bottom: 2px solid @has-follow-color;
+          }
+          &.active-has-transfer{
+            color: #666;
+            border-bottom: 2px solid #666;
+          }
+        }
+      }
       //table表格中相关样式的调整
-      #clue-content-block .clue-customer-list{
+      #clue-content-block #area.clue-customer-list{
+        td, th{
+          border-right:none !important;
+        }
+        th{
+          position: relative;
+          padding-bottom: 0!important;
+          height: 40px;
+        }
+
+
         .ant-table-tbody{
           tr{
             .icon-active-call_record-ico{
@@ -405,3 +453,4 @@
     }
   }
 }
+
