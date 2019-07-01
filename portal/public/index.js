@@ -67,6 +67,7 @@ function getUserPrivilegeAndStart() {
         getWebsiteConfig();
         const user = userData.getUserData();
         storageUtil.setUserId(user.user_id);
+        storageUtil.session.set('area_info', user.area_info);
         AppStarter.init({
             goIndex: false
         });
