@@ -85,9 +85,11 @@ exports.getClueSource = function(req, res) {
 };
 
 exports.changeClueSalesBatch = function(req, res) {
+    var queryObj = handleBatchClueSalesParams(req,restApis.changeClueSalesBatch);
+    req.body.query_param = queryObj.bodyObj;
     return restUtil.authRest.post(
         {
-            url: restApis.changeClueSalesBatch.replace(':type',req.params.type),
+            url: queryObj.url,
             req: req,
             res: res
         }, req.body);
@@ -229,6 +231,56 @@ exports.getClueTrendStatics = function(req, res) {
             res: res
         }, null);
 };
+function handleBatchClueSalesParams(req, clueUrl) {
+    var reqBody = req.body.query_param;
+    var rangeParams = _.isString(reqBody.rangeParams) ? JSON.parse(reqBody.rangeParams) : reqBody.rangeParams;
+    var typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
+    var url = clueUrl.replace(':type',req.params.type);
+    var keyword = '';
+    if (reqBody.keyword){
+        keyword = encodeURI(reqBody.keyword);
+    }
+    var bodyObj = {
+        query: {...typeFilter},
+        rangParams: rangeParams,
+    };
+    if (keyword){
+        bodyObj.keyword = keyword;
+    }
+    if (reqBody.userId){
+        bodyObj.query.userId = reqBody.userId;
+    }
+    if (reqBody.id){
+        bodyObj.query.id = reqBody.id;
+    }
+    if (reqBody.clue_source){
+        bodyObj.query.clue_source = reqBody.clue_source;
+    }
+    if (reqBody.access_channel){
+        bodyObj.query.access_channel = reqBody.access_channel;
+    }
+    if (reqBody.clue_classify){
+        bodyObj.query.clue_classify = reqBody.clue_classify;
+    }
+    if (reqBody.availability){
+        bodyObj.query.availability = reqBody.availability;
+    }
+    if (reqBody.province){
+        bodyObj.query.province = reqBody.province;
+    }
+    var exist_fields = reqBody.exist_fields ? JSON.parse(reqBody.exist_fields) : [];
+    var unexist_fields = reqBody.unexist_fields ? JSON.parse(reqBody.unexist_fields) : [];
+    if (_.isArray(exist_fields) && exist_fields.length){
+        bodyObj.exist_fields = exist_fields;
+    }
+    if (_.isArray(unexist_fields) && unexist_fields.length){
+        bodyObj.unexist_fields = unexist_fields;
+    }
+    if(reqBody.self_no_traced){
+        url += `?self_no_traced=${reqBody.self_no_traced}`;
+    }
+    return {url: url, bodyObj: bodyObj};
+}
 function handleClueParams(req, clueUrl) {
     var reqBody = req.body;
     if (_.isString(req.body.reqData)){

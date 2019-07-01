@@ -87,7 +87,7 @@ class ClueCustomer extends React.Component {
         isShowAddCustomerPanel: false,//是否展示添加客户面板
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
-        condition: {},
+        queryObj: {},
         filterClueStatus: clueFilterStore.getState().filterClueStatus,
         ...clueCustomerStore.getState()
     };
@@ -405,21 +405,6 @@ class ClueCustomer extends React.Component {
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-
-        var condition = this.getCondition();
-        delete condition.rangeParams;
-        if (_.isString(condition.typeFilter)){
-            var typeFilterObj = JSON.parse(condition.typeFilter);
-            for(var key in typeFilterObj){
-                condition[key] = typeFilterObj[key];
-            }
-            delete condition.typeFilter;
-        }
-        //去除查询条件中值为空的项
-        commonMethodUtil.removeEmptyItem(condition);
-        this.setState({
-            condition: condition
-        });
         //跟据类型筛选
         const queryObj = {
             lastClueId: this.state.lastCustomerId,
@@ -462,16 +447,24 @@ class ClueCustomer extends React.Component {
         if(_.isArray(unExistFileds) && unExistFileds.length){
             queryObj.unexist_fields = JSON.stringify(unExistFileds);
         }
+
+
         if (filterAllotNoTraced){
-            //取全部线索列表
+            //获取有待我处理条件的线索
+            var cloneQuery = _.cloneDeep(queryObj);
+            cloneQuery.self_no_traced = true;
+            this.setState({
+                queryObj: cloneQuery
+            });
+
             clueCustomerAction.getClueFulltextSelfHandle(queryObj);
         }else{
             //取全部线索列表
+            this.setState({
+                queryObj: queryObj
+            });
             clueCustomerAction.getClueFulltext(queryObj);
         }
-
-
-
     };
     //获取请求参数
     getCondition = (isGetAllClue) => {
@@ -497,7 +490,8 @@ class ClueCustomer extends React.Component {
         var queryObj = {
             keyword: keyWord,
             rangeParams: JSON.stringify(rangeParams),
-            typeFilter: JSON.stringify(typeFilter)
+            typeFilter: JSON.stringify(typeFilter),
+            availability: AVALIBILITYSTATUS.AVALIBILITY
         };
         if (!isGetAllClue){
             //选中的线索来源
@@ -1363,7 +1357,9 @@ class ClueCustomer extends React.Component {
                     });
                     //立即在界面上显示推送通知
                     //界面上立即显示一个初始化推送
-                    var totalSelectedSize = _.get(this,'state.selectedClues.length',0);
+                    //批量操作参数
+                    let is_select_all = !!this.state.selectAllMatched;
+                    var totalSelectedSize = is_select_all ? this.state.customersSize : _.get(this,'state.selectedClues.length',0);
                     batchOperate.batchOperateListener({
                         taskId: taskId,
                         total: totalSelectedSize,
@@ -1391,10 +1387,7 @@ class ClueCustomer extends React.Component {
         }
         var submitObj = this.handleBeforeSumitChangeSales(selectedClueIds);
         if (selectClueAll){
-            submitObj.query_param = {
-                query: this.state.condition,
-                rangeParams: this.state.rangeParams,
-            };
+            submitObj.query_param = {...this.state.queryObj};
         }
         if (_.isEmpty(submitObj)){
             return;
@@ -1795,7 +1788,7 @@ class ClueCustomer extends React.Component {
                     {Intl.get('crm.11', '已选当前页{count}项', { count: _.get(this, 'state.selectedClues.length') })}
                     {/*在筛选条件下可 全选 ，没有筛选条件时，后端接口不支持选 全选*/}
                     {/*如果一页可以展示全，不再展示选择全部的提示*/}
-                    {_.isEmpty(this.state.condition) || this.state.customersSize <= this.state.pageSize ? null : (
+                    {this.state.customersSize <= this.state.pageSize ? null : (
                         <a href="javascript:void(0)" onClick={this.selectAllSearchResult}>
                             {Intl.get('crm.12', '选择全部{count}项', { count: this.state.customersSize })}
                         </a>)

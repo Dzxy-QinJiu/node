@@ -162,7 +162,7 @@ class DynamicAddDelField extends React.Component {
             return (
                 <div className="item-show-container">
                     <div className="item-show-label contact-way-icon">
-                        {this.props.label}:
+                        {this.props.label}
                     </div>
                     {this.renderItemShowContent()}
                 </div>);
