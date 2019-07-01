@@ -11,12 +11,12 @@ const req = require.context('.', false, /^((?!index).)*\.js$/);
 const pages = getContextContent(req);
 
 module.exports = {
-    // title: Intl.get('common.sales.productivity.analysis', '销售生产力分析'),
-    // menuIndex: 6,
-    // privileges: [
-    //     'CUSTOMER_ANALYSIS_COMMON',
-    //     'CUSTOMER_ANALYSIS_MANAGER',
-    // ],
-    // pages,
+    title: Intl.get('common.sales.productivity.analysis', '销售生产力分析'),
+    menuIndex: 6,
+    privileges: [
+        'CUSTOMER_ANALYSIS_COMMON',
+        'CUSTOMER_ANALYSIS_MANAGER',
+    ],
+    pages,
 };
 
