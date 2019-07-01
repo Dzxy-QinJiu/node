@@ -79,6 +79,7 @@ function handleBatchOperation(data) {
 //只渲染一次提示框中的内容
 function updateNotifyContentOnce(title, content, taskId) {
     renderNotify(title, content, taskId);
+    var notify = NotificationMap[taskId];
     clearTimeout(notyCloseTimeoutMap[taskId]);
     notyCloseTimeoutMap[taskId] = setTimeout(() => {
         notify.close();
@@ -88,6 +89,7 @@ function updateNotifyContentOnce(title, content, taskId) {
 //更新两次note中的内容
 function updateNotifyContentGeneral(title, content, taskId, data) {
     renderNotify(title, content, taskId);
+    var notify = NotificationMap[taskId];
     if (data.running === 0) {
         var errTip = '';
         //获取已经存在的通知节点
