@@ -173,6 +173,7 @@ class CrmRightPanel extends React.Component {
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         curCustomer={this.state.curCustomer}
                                         disableEdit={this.props.disableEdit}
+                                        isUseCustomerContacts={this.props.isUseCustomerContacts}
                                     />
                                 ) : null}
                             </TabPane>
@@ -304,6 +305,7 @@ CrmRightPanel.propTypes = {
     showOpenAppForm: PropTypes.func,
     returnInfoPanel: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
+    isUseCustomerContacts: PropTypes.bool,
 };
 module.exports = CrmRightPanel;
 
