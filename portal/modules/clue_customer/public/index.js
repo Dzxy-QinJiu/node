@@ -1152,9 +1152,25 @@ class ClueCustomer extends React.Component {
     }
 
     //线索转为新客户完成后的回调事件
-    onConvertClueToNewCustomerDone = () => {
+    onConvertClueToNewCustomerDone = (customer) => {
         const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
         message.success(msgInfo);
+
+        const customerId = _.get(customer, '[0].id');
+
+        if (customerId) {
+            //延时1秒后再打开客户面板
+            //直接打开会有取不到客户信息的情况
+            setTimeout(() => {
+                //打开客户面板，显示合并后的客户信息
+                phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                    customer_params: {
+                        currentId: customerId,
+                        activeKey: TAB_KEYS.CONTACT_TAB
+                    }
+                });
+            }, 1000);
+        }
 
         //在列表中隐藏当前操作的线索
         this.hideCurClue();
