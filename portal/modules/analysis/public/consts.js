@@ -83,9 +83,6 @@ export const STORED_APP_ID_KEY = 'analysis_account_active_app_id';
 //历史最高客户id字段
 export const CUSTOMER_IDS_FIELD = 'highest_customer_ids';
 
-//延期帐号统计页标题
-export const DEFERRED_ACCOUNT_ANALYSIS_TITLE = '延期帐号分析';
-
 // 账号分析菜单
 export const ACCOUNT_MENUS = {
     INDEX: {
