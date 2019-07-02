@@ -162,7 +162,7 @@ var userInfoRestApis = {
     getUserLanguage: '/rest/base/v1/user/member/language/setting',
     getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
     getUserWorkFlowConfigs: '/rest/base/v1/workflow/configs',
-    getOrganizationInfoById: '/rest/base/v1/realm/organization'
+    getOrganizationInfoById: '/rest/base/v1/realm/organization',
 };
 
 exports.getPrivileges = getPrivileges;

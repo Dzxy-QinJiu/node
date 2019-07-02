@@ -544,3 +544,27 @@ exports.getTeamTreeMemberLists = function(callback) {
         });
     }
 };
+// 查询所有行政区域规划信息
+exports.getAreaInfoAll = function() {
+    return new Promise((resolve, reject) => {
+        let sessionKey = 'area_info';
+        let area_info = session.get(sessionKey);
+        if (area_info) {
+            resolve(area_info);
+        } else {
+            $.ajax({
+                url: '/rest/area_info/all',
+                type: 'get',
+                dataType: 'json',
+                success: data => {
+                    //保存到session中
+                    session.set(sessionKey, data.result);
+                    resolve(data.result);
+                },
+                error: xhr => {
+                    reject(xhr.responseJSON);
+                }
+            });
+        }
+    });
+};
