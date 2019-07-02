@@ -102,7 +102,6 @@ exports.getUserData = function(req, res) {
                     user.organization,
                     {functions: _.get(data.organization_info,'functions', [])}
                 );
-                user.area_info = data.area_info;
                 req.session.user.organization = user.organization;
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function() {

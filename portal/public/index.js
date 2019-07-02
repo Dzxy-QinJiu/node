@@ -9,6 +9,7 @@ var appDom = $('#app')[0];
 var websiteConfig = require('../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
+let commonDataUtil = require('PUB_DIR/sources/utils/common-data-util');
 
 function hideLoading(errorTip) {
     if (PrivilegeGetReact) {
@@ -67,7 +68,9 @@ function getUserPrivilegeAndStart() {
         getWebsiteConfig();
         const user = userData.getUserData();
         storageUtil.setUserId(user.user_id);
-        storageUtil.session.set('area_info', user.area_info);
+        commonDataUtil.getAreaInfoAll().then((data) => {
+            storageUtil.session.set('area_info', data);
+        });
         AppStarter.init({
             goIndex: false
         });

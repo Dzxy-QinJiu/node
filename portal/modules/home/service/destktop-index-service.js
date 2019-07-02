@@ -56,9 +56,7 @@ exports.getUserInfo = function(req, res, userId) {
     let getUserWorkflowConfigs = getDataPromise(req, res, userInfoRestApis.getUserWorkFlowConfigs,'',{page_size: 1000});
     //获取登录用户的组织信息
     let getOrgnazition = getDataPromise(req, res, userInfoRestApis.getOrganizationInfoById, {organization_id: _.get(user, 'organization.id', '')});
-    // 获取地域信息
-    let getAreaInfo = getDataPromise(req, res, userInfoRestApis.getAreaInfo);
-    let promiseList = [getUserBasicInfo, getUserRole, getUserWorkflowConfigs, getOrgnazition, getAreaInfo];
+    let promiseList = [getUserBasicInfo, getUserRole, getUserWorkflowConfigs, getOrgnazition];
     let userPrivileges = getPrivileges(req);
     //是否有获取所有团队数据的权限
     let hasGetAllTeamPrivilege = userPrivileges.indexOf('GET_TEAM_LIST_ALL') !== -1;
@@ -78,13 +76,11 @@ exports.getUserInfo = function(req, res, userId) {
             userData.workFlowConfigs = _.get(resultList, '[2].successData', []);
             // 组织信息
             userData.organization_info = _.get(resultList, '[3].successData',{});
-            // 地域信息
-            userData.area_info = _.get(resultList, '[4].successData.result', []);
             //是否是普通销售
             if (hasGetAllTeamPrivilege) {//管理员或运营人员，肯定不是普通销售
                 userData.isCommonSales = false;
             } else {//普通销售、销售主管、销售总监等，通过我所在的团队及下级团队来判断是否是普通销售
-                let teamTreeList = _.get(resultList, '[5].successData', []);
+                let teamTreeList = _.get(resultList, '[4].successData', []);
                 userData.isCommonSales = getIsCommonSalesByTeams(userData.user_id, teamTreeList);
             }
             emitter.emit('success', userData);
@@ -167,7 +163,6 @@ var userInfoRestApis = {
     getMyTeamWithSubteams: '/rest/base/v1/group/teams/tree/self',
     getUserWorkFlowConfigs: '/rest/base/v1/workflow/configs',
     getOrganizationInfoById: '/rest/base/v1/realm/organization',
-    getAreaInfo: '/rest/geo/service/v1/geo/search/eefung/all'
 };
 
 exports.getPrivileges = getPrivileges;
