@@ -235,6 +235,7 @@ class ClueCustomer extends React.Component {
         this.setState({rightPanelIsShow: false});
         //关闭右侧面板后，将当前展示线索的id置为空
         clueCustomerAction.setCurrentCustomer('');
+        $('.ant-table-row').removeClass('current-row');
     };
 
     onClueImport = (list) => {
@@ -909,6 +910,25 @@ class ClueCustomer extends React.Component {
     isFireFoxBrowser = () => {
         return navigator.userAgent.toUpperCase().indexOf('FIREFOX') > -1;
     };
+    //处理选中行的样式
+    handleRowClassName = (record, index) => {
+        if ((record.id === this.state.currentId) && rightPanelShow) {
+            return 'current-row';
+        }
+        else {
+            return '';
+        }
+    };
+    setInvalidClassName= (record, index) => {
+        var cls = '';
+        if ((record.id === this.state.currentId) && rightPanelShow){
+            cls += ' current-row';
+        }
+        if (record.availability === '1'){
+            cls += ' invalid-clue';
+        }
+        return cls;
+    };
     getClueTypeTab = () => {
         var filterStore = clueFilterStore.getState();
         var filterClueStatus = filterStore.filterClueStatus;
@@ -1161,9 +1181,7 @@ class ClueCustomer extends React.Component {
         this.hideAddCustomerPanel();
     };
 
-    setInvalidClassName= (record, index) => {
-        return (record.availability === '1' ? 'invalid-clue' : '');
-    };
+
     getRowSelection = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示选择框的处理
         let showSelectionFlag = (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales;
@@ -1218,6 +1236,7 @@ class ClueCustomer extends React.Component {
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
+
                 scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
             />);
 
