@@ -13,7 +13,16 @@ import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
-import {authType, dataType, initialTime, STORED_APP_ID_KEY, CUSTOMER_IDS_FIELD, DEFERRED_ACCOUNT_ANALYSIS_TITLE} from './consts';
+import {
+    authType,
+    dataType,
+    initialTime,
+    STORED_APP_ID_KEY,
+    CUSTOMER_IDS_FIELD,
+    NO_OPEN_CASH_SHOW_MENUS_KEY,
+    CALL_MENUS,
+    ACCOUNT_MENUS
+} from './consts';
 import {AntcAnalysis} from 'antc';
 import {Row, Col, Collapse} from 'antd';
 
@@ -44,13 +53,7 @@ class CurtaoAnalysis extends React.Component {
     constructor(props) {
         super(props);
 
-        let processedGroups = this.processMenu(groups);
-        // 没有开通营收中心时，去掉合同分析
-        if(!isOpenCash()) {
-            processedGroups = _.filter(processedGroups, item => {
-                return item.title !== '合同分析';
-            });
-        }
+        const processedGroups = this.processMenu(groups);
 
         this.state = {
             currentMenuIndex: '0,0',
@@ -155,11 +158,20 @@ class CurtaoAnalysis extends React.Component {
             if (menu.privileges) {
                 const foundPrivilege = _.find(menu.privileges, privilege => hasPrivilege(privilege));
 
+                //没有开通营收中心时，去掉对应的菜单项
+                if(!isOpenCash()) {
+                    let flag = _.includes(NO_OPEN_CASH_SHOW_MENUS_KEY, menu.key);
+                    if(flag) {
+                        return false;
+                    }
+                }
+
                 if (foundPrivilege) {
                     let subMenus = menu[subMenuField];
 
                     if (subMenus) {
-                        subMenus = this.processMenu(subMenus);
+                        // subMenus = this.processMenu(subMenus);
+                        menu[subMenuField] = this.processMenu(subMenus);
                     }
 
                     return true;
@@ -310,7 +322,7 @@ class CurtaoAnalysis extends React.Component {
             }
         }
 
-        if (group.title === '通话分析') {
+        if (group.key === CALL_MENUS.INDEX.key) {
             isCallDeviceTypeSelectorShow = true;
             adjustConditions = conditions => {
                 const callDeviceTypeCondition = _.find(conditions, condition => condition.name === 'device_type');
@@ -322,7 +334,7 @@ class CurtaoAnalysis extends React.Component {
                     });
                 }
             };
-        } else if (group.title === '账号分析') {
+        } else if (group.key === ACCOUNT_MENUS.INDEX.key) {
             isAppSelectorShow = true;
             adjustConditions = conditions => {
                 deleteCallDeviceTypeCondition(conditions);
@@ -477,7 +489,7 @@ class CurtaoAnalysis extends React.Component {
 
     //获取当前是否在延期帐号页
     getIsDeferredAccountPage(pageTitle = this.state.currentPage.title) {
-        return pageTitle === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
+        return pageTitle === ACCOUNT_MENUS.DELAYED.name;
     }
 
     render() {

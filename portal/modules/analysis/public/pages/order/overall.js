@@ -3,9 +3,11 @@
  */
 
 import orderChart from '../../charts/order';
+import {ORDER_MENUS} from '../../consts';
 
 module.exports = {
-    title: '总体分析',
+    title: ORDER_MENUS.OVERALL.name,
+    key: ORDER_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',

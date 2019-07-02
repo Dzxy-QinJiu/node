@@ -11,6 +11,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import {Button, Icon} from 'antd';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DatePickerField from 'CMP_DIR/basic-edit-field-new/date-picker';
+import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerAjax = require('../../ajax/clue-customer-ajax');
@@ -330,6 +331,40 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
+    //线索关联客户
+    handleAssociatedCustomer = (submitObj, successFunc, errorFunc) => {
+        var curClueDetail = this.state.curClue;
+        clueCustomerAction.setClueAssociatedCustomer(submitObj, (result) => {
+            if (_.isString(result)) {
+                if (_.isFunction(errorFunc)) errorFunc(result);
+            } else {
+                if (_.isFunction(successFunc)) successFunc();
+                curClueDetail.customer_id = submitObj.customer_id;
+                curClueDetail.customer_name = submitObj.customer_name;
+                if (submitObj.customer_id){
+                    //如果有客户的id，需要把线索的状态改成已跟进
+                    this.props.removeUpdateClueItem();
+                    if (curClueDetail.status !== SELECT_TYPE.HAS_TRACE){
+                        curClueDetail.status = SELECT_TYPE.HAS_TRACE;
+
+                    }
+                }else{
+                    if (!_.get(curClueDetail,'customer_traces[0].remark')){
+                        if (_.get(curClueDetail,'user_name')){
+                            curClueDetail.status = SELECT_TYPE.WILL_TRACE;
+                        }else{
+                            curClueDetail.status = SELECT_TYPE.WILL_DISTRIBUTE;
+                        }
+                    }
+                }
+                this.setState({
+                    clickAssociatedBtn: false,
+                    curClue: curClueDetail
+                });
+                clueCustomerAction.afterModifiedAssocaitedCustomer(curClueDetail);
+            }
+        });
+    };
     saveSameNoCustomerName = () => {
         this.setState({
             clickAssociatedBtn: false,
@@ -509,6 +544,8 @@ class ClueDetailOverview extends React.Component {
     renderAssociatedAndInvalidClueHandle = (curClue) => {
         //该线索无效
         var isInvalidClue = curClue.availability === '1';
+        //是否有修改线索关联客户的权利
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && !isInvalidClue;
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         return (
@@ -535,12 +572,44 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    renderAssociatedAndInvalidClueText = (isInvalidClue) => {
+    renderAssociatedAndInvalidClueText = (associatedCustomer, isInvalidClue) => {
         var curClue = this.state.curClue;
         var invalid_info = curClue.invalid_info;
+        //是否有修改线索关联客户的权利
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && !isInvalidClue;
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
-        if (isInvalidClue && invalid_info) {
+        //关联客户的按钮状态
+        var associatedDisplyType = this.state.clickAssociatedBtn ? 'edit' : 'text';
+        //如果关联了客户
+        if (this.state.clickAssociatedBtn || associatedCustomer) {
+            return (
+                <div className="clue-info-item">
+                    <div className="clue-info-label">
+                        {Intl.get('clue.customer.associate.customer', '关联客户')}：
+                    </div>
+                    <div className="clue-info-detail">
+                        <CustomerSuggest
+                            field='customer_id'
+                            hasEditPrivilege={false}
+                            displayText={associatedCustomer}
+                            displayType={associatedDisplyType}
+                            id={curClue.id}
+                            show_error={this.state.isShowCustomerError}
+                            noJumpToCrm={true}
+                            saveEditSelectCustomer={this.handleAssociatedCustomer}
+                            customer_name={associatedCustomer}
+                            customer_id={curClue.customer_id}
+                            addAssignedCustomer={this.addAssignedCustomer}
+                            noDataTip={Intl.get('clue.has.no.data', '暂无')}
+                            handleCancel={this.handleCancelCustomerSuggest}
+                            customerLable={curClue.customer_label}
+                            saveSameNoCustomerName={this.saveSameNoCustomerName}
+                        />
+                    </div>
+                </div>
+            );
+        } else if (isInvalidClue && invalid_info) {
             //如果该线索是无效的
             return (
                 <div className="clue-info-item">
@@ -894,10 +963,14 @@ class ClueDetailOverview extends React.Component {
         var curClue = this.state.curClue;
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
+        //关联客户
+        var associatedCustomer = curClue.customer_name;
         //分配线索给销售的权限
         var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        //该线索无效
+        var isInvalidClue = curClue.availability === '1';
         return (
             <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
                 <GeminiScrollbar>
@@ -911,11 +984,11 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     {this.renderTraceContent()}
                     <div className="associate-customer-detail clue-detail-block">
-                        {/*线索处理，如果索不是无效的*/}
+                        {/*线索处理，没有关联到客户并且线索不是无效的*/}
                         {
-                            curClue.status === SELECT_TYPE.HAS_TRACE ?
+                            !associatedCustomer && !isInvalidClue && !this.state.clickAssociatedBtn ?
                                 this.renderAssociatedAndInvalidClueHandle(curClue)
-                                : null 
+                                : this.renderAssociatedAndInvalidClueText(associatedCustomer, isInvalidClue)
                         }
                     </div>
                     {this.renderAppUserDetail()}

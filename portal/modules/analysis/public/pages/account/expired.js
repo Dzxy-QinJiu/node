@@ -3,9 +3,11 @@
  */
 
 import accountChart from '../../charts/account';
+import {ACCOUNT_MENUS} from '../../consts';
 
 module.exports = {
-    title: '过期账号分析',
+    title: ACCOUNT_MENUS.EXPIRED.name,
+    key: ACCOUNT_MENUS.EXPIRED.key,
     menuIndex: 3,
     privileges: [
         'USER_ANALYSIS_COMMON',

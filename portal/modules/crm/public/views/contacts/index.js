@@ -40,7 +40,12 @@ class Contacts extends React.Component {
     componentDidMount() {
         ContactStore.listen(this.onStoreChange);
         if (this.props.curCustomer) {
-            ContactAction.getContactList(this.props.curCustomer, this.props.isMerge || this.props.disableEdit);
+            //如果要用客户里的联系人列表
+            if (this.props.isUseCustomerContacts) {
+                ContactAction.getContactList(this.props.curCustomer, true);
+            } else {
+                ContactAction.getContactList(this.props.curCustomer, this.props.isMerge || this.props.disableEdit);
+            }
         }
         $(window).on('resize', this.onStoreChange);
     }
@@ -158,6 +163,7 @@ Contacts.propTypes = {
     setMergeCustomerDefaultContact: PropTypes.func,
     delMergeCustomerContact: PropTypes.func,
     disableEdit: PropTypes.bool,
+    isUseCustomerContacts: PropTypes.bool,
 };
 module.exports = Contacts;
 

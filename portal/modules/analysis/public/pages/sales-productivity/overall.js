@@ -3,9 +3,11 @@
  */
 
 import salesProductivityChart from '../../charts/sales-productivity';
+import {SALES_PRODUCTIVITY_MENUS} from '../../consts';
 
 module.exports = {
-    title: Intl.get('common.overall.analysis', '总体分析'),
+    title: SALES_PRODUCTIVITY_MENUS.OVERALL.name,
+    key: SALES_PRODUCTIVITY_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',

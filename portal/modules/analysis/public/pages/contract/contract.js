@@ -3,9 +3,11 @@
  */
 
 import { contractChart } from 'ant-chart-collection';
+import {CONTRACT_MENUS} from '../../consts';
 
 module.exports = {
-    title: '新增合同分析',
+    title: CONTRACT_MENUS.CONTRACT.name,
+    key: CONTRACT_MENUS.CONTRACT.key,
     menuIndex: 2,
     privileges: [
         'OPLATE_CONTRACT_ANALYSIS',

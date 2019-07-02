@@ -3,9 +3,12 @@
  */
 
 import clueChart from '../../charts/clue';
+import {CLUE_MENUS} from '../../consts';
+import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 
 module.exports = {
-    title: '总体分析',
+    title: CLUE_MENUS.OVERALL.name,
+    key: CLUE_MENUS.OVERALL.key,
     privileges: [
         'CRM_CLUE_STATISTICAL_SELF',
         'CRM_CLUE_STATISTICAL_ALL',
@@ -14,7 +17,7 @@ module.exports = {
 };
 
 function getCharts() {
-    return [
+    let charts = [
         //阶段统计
         clueChart.getStageChart(),
         //渠道统计
@@ -24,14 +27,24 @@ function getCharts() {
         //分类统计
         clueChart.getClueSituationChart({title: '分类统计', field: 'clue_classify'}),
         //有效性统计
-        clueChart.getAvailabilityChart(),
-        //成交额及成交数统计
-        clueChart.getClueDealChart(),
-        //成交数渠道统计
-        clueChart.getClueDealChannelChart(),
-        //成交数分类统计
-        clueChart.getClueDealClassifyChart(),
+        clueChart.getAvailabilityChart()
+    ];
+
+    if(isOpenCash()) {
+        charts.push(
+            //成交额及成交数统计
+            clueChart.getClueDealChart(),
+            //成交数渠道统计
+            clueChart.getClueDealChannelChart(),
+            //成交数分类统计
+            clueChart.getClueDealClassifyChart(),
+        );
+    }
+
+    charts.push(
         //历史同期数量统计对比
         clueChart.getClueHistoricalPeriodComparisionChart(),
-    ];
+    );
+
+    return charts;
 }
