@@ -4,10 +4,11 @@
 
 import { contractChart } from 'ant-chart-collection';
 import { isSales, isSelectedAllTeamMember, isAdminOrOpStaff } from '../../utils';
-
+import {CONTRACT_MENUS} from '../../consts';
 
 module.exports = {
-    title: '总体分析',
+    title: CONTRACT_MENUS.OVERALL.name,
+    key: CONTRACT_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
         'OPLATE_CONTRACT_ANALYSIS',

@@ -3,9 +3,11 @@
  */
 
 import chanceChart from '../../charts/chance';
+import {CHANCE_MENUS} from '../../consts';
 
 module.exports = {
-    title: '总体分析',
+    title: CHANCE_MENUS.OVERALL.name,
+    key: CHANCE_MENUS.OVERALL.key,
     privileges: [
         'CRM_CLUE_STATISTICAL_SELF',
         'CRM_CLUE_STATISTICAL_ALL',

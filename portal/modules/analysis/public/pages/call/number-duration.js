@@ -4,9 +4,11 @@
 
 import callChart from '../../charts/call';
 import Store from '../../store';
+import {CALL_MENUS} from '../../consts';
 
 module.exports = {
-    title: '数量与时长统计',
+    title: CALL_MENUS.NUMBER_DURATION.name,
+    key: CALL_MENUS.NUMBER_DURATION.key,
     menuIndex: 1,
     privileges: [
         'CUSTOMER_CALLRECORD_STATISTIC_USER',

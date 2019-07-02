@@ -3,6 +3,7 @@
  */
 
 import { getContextContent } from '../../utils';
+import {CLUE_MENUS} from '../../consts';
 
 //引入同目录下以.js结尾的并且不包含index的文件
 const req = require.context('.', false, /^((?!index).)*\.js$/);
@@ -11,7 +12,8 @@ const req = require.context('.', false, /^((?!index).)*\.js$/);
 const pages = getContextContent(req);
 
 module.exports = {
-    title: '线索分析',
+    title: CLUE_MENUS.INDEX.name,
+    key: CLUE_MENUS.INDEX.key,
     menuIndex: 4,
     privileges: [
         'CRM_CLUE_STATISTICAL_SELF',

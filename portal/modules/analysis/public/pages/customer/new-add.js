@@ -4,9 +4,11 @@
 
 import { argCallbackUnderlineTimeToTime } from '../../utils';
 import customerChart from '../../charts/customer';
+import {CUSTOMER_MENUS} from '../../consts';
 
 module.exports = {
-    title: '新开客户分析',
+    title: CUSTOMER_MENUS.NEW_ADD.name,
+    key: CUSTOMER_MENUS.NEW_ADD.key,
     menuIndex: 4,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',

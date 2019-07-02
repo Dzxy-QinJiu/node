@@ -3,11 +3,12 @@
  */
 
 import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
-
+import {CUSTOMER_MENUS} from '../../consts';
 import customerChart from '../../charts/customer';
 
 module.exports = {
-    title: '签约客户分析',
+    title: CUSTOMER_MENUS.SIGNED.name,
+    key: CUSTOMER_MENUS.SIGNED.key,
     menuIndex: 3,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',
