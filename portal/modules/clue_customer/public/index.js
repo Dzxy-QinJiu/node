@@ -36,6 +36,7 @@ var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
 import ClueToCustomerPanel from './views/clue-to-customer-panel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import ajax from 'ant-ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 var timeoutFunc;//定时方法
@@ -878,9 +879,26 @@ class ClueCustomer extends React.Component {
         );
 
     };
-    renderAvailabilityClue = (salesClueItem) => {
+    renderAssociatedCustomer = (salesClueItem) => {
         //是有效线索
         let availability = salesClueItem.availability !== '1';
+        //关联客户
+        var associatedCustomer = salesClueItem.customer_name;
+        //是否有修改线索关联客户的权利
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
+        return(
+            <div className="avalibility-container">
+                {/*是有效线索并且有关联客户*/}
+                {associatedCustomer ? (
+                    <div className="associate-customer">
+                        {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_label)}>{salesClueItem.customer_label}</Tag> : null}
+                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b>
+                    </div>
+                ) : null}
+            </div>
+        );
+    };
+    renderAvailabilityClue = (salesClueItem) => {
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         return(
@@ -900,7 +918,6 @@ class ClueCustomer extends React.Component {
                 </div>
             </div>
         );
-
     };
     handleChangeSelectedType = (selectedType) => {
         clueFilterAction.setFilterType(selectedType);
@@ -1055,6 +1072,17 @@ class ClueCustomer extends React.Component {
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         if (typeFilter.status === SELECT_TYPE.HAS_TRACE){
             columns.push({
+                dataIndex: 'assocaite_customer',
+                className: 'invalid-td-clue',
+                width: '300px',
+                render: (text, salesClueItem, index) => {
+                    return (
+                        <div className="avalibity-or-invalid-container">
+                            {this.renderAssociatedCustomer(salesClueItem)}
+                        </div>
+                    );
+                }
+            },{
                 className: 'invalid-td-clue',
                 width: '150px',
                 render: (text, salesClueItem, index) => {
@@ -1068,6 +1096,7 @@ class ClueCustomer extends React.Component {
                 }
             });
         }
+
         return columns;
     };
 
@@ -1945,7 +1974,6 @@ class ClueCustomer extends React.Component {
                                 updateClueChannel={this.updateClueChannel}
                                 updateClueClassify={this.updateClueClassify}
                             />
-                            )
                         </div> : null}
                     <ClueImportRightDetail
                         importType={Intl.get('crm.sales.clue', '线索')}
@@ -2031,6 +2059,7 @@ class ClueCustomer extends React.Component {
                             addOne={this.onConvertClueToNewCustomerDone}
                             formData={this.state.curClue}
                             isAssociateClue={true}
+                            isConvert={true}
                             phoneNum={_.get(this.state, 'curClue.phones[0]', '')}
                             isShowMadal={false}
                         />
