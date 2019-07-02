@@ -3,9 +3,11 @@
  */
 
 import { contractChart } from 'ant-chart-collection';
+import {CONTRACT_MENUS} from '../../consts';
 
 module.exports = {
-    title: '费用分析',
+    title: CONTRACT_MENUS.COST.name,
+    key: CONTRACT_MENUS.COST.key,
     menuIndex: 4,
     privileges: [
         'OPLATE_CONTRACT_ANALYSIS',

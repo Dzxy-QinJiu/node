@@ -327,7 +327,8 @@ const MemberList = createReactClass({
             key: 'nickName',
             width: '40%',
             render: (name, record) => {
-                let memberNameCls = classNames('member-name', this.memberStatusClass(record.status));
+                let status = record.status;
+                let memberNameCls = classNames('member-name', this.memberStatusClass(status));
                 let role = record.role;
                 let iconClass = classNames('iconfont', {
                     'icon-team-role': role === 'owner',
@@ -336,9 +337,14 @@ const MemberList = createReactClass({
                 });
                 return (
                     <div className={memberNameCls}>
-                        <div className='accout'>
+                        <div className='account'>
                             <i className={iconClass}/>
                             <span> {record.nickName}</span>
+                            {
+                                status === 0 ? (
+                                    <span className='member-stop-status'>{Intl.get('user.status.stopped', '已停用')}</span>
+                                ) : null
+                            }
                         </div>
                         <div className='nickname'>{record.userName}</div>
                     </div>

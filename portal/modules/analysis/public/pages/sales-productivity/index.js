@@ -3,6 +3,7 @@
  */
 
 import { getContextContent } from '../../utils';
+import {SALES_PRODUCTIVITY_MENUS} from '../../consts';
 
 //引入同目录下以.js结尾的并且不包含index的文件
 const req = require.context('.', false, /^((?!index).)*\.js$/);
@@ -11,12 +12,13 @@ const req = require.context('.', false, /^((?!index).)*\.js$/);
 const pages = getContextContent(req);
 
 module.exports = {
-    // title: Intl.get('common.sales.productivity.analysis', '销售生产力分析'),
-    // menuIndex: 6,
-    // privileges: [
-    //     'CUSTOMER_ANALYSIS_COMMON',
-    //     'CUSTOMER_ANALYSIS_MANAGER',
-    // ],
-    // pages,
+    title: SALES_PRODUCTIVITY_MENUS.INDEX.name,
+    key: SALES_PRODUCTIVITY_MENUS.INDEX.key,
+    menuIndex: 6,
+    privileges: [
+        'CUSTOMER_ANALYSIS_COMMON',
+        'CUSTOMER_ANALYSIS_MANAGER',
+    ],
+    pages,
 };
 

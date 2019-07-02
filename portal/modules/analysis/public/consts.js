@@ -83,5 +83,160 @@ export const STORED_APP_ID_KEY = 'analysis_account_active_app_id';
 //历史最高客户id字段
 export const CUSTOMER_IDS_FIELD = 'highest_customer_ids';
 
-//延期帐号统计页标题
-export const DEFERRED_ACCOUNT_ANALYSIS_TITLE = '延期帐号分析';
+// 账号分析菜单
+export const ACCOUNT_MENUS = {
+    INDEX: {
+        name: '账号分析',
+        key: 'account'
+    },
+    OVERALL: {
+        name: Intl.get('common.overall.analysis', '总体分析'),
+        key: 'account_overall'
+    },
+    DELAYED: {
+        name: '延期帐号分析',
+        key: 'delayed'
+    },
+    EXPIRED: {
+        name: '过期账号分析',
+        key: 'expired'
+    },
+    NEW_ADD: {
+        name: '新增账号分析',
+        key: 'new_add'
+    },
+    NEW_ADD_EXPIRE: {
+        name: '新增过期账号分析',
+        key: 'new_add_expire'
+    }
+};
+
+// 通话分析菜单
+export const CALL_MENUS = {
+    INDEX: {
+        name: '通话分析',
+        key: 'call'
+    },
+    NUMBER_DURATION: {
+        name: '数量与时长统计',
+        key: 'number_duration'
+    },
+    OTHER: {
+        name: '其他分析',
+        key: 'call_other'
+    }
+};
+
+// 销售机会分析菜单
+export const CHANCE_MENUS = {
+    INDEX: {
+        name: '销售机会分析',
+        key: 'chance'
+    },
+    OVERALL: {
+        name: Intl.get('common.overall.analysis', '总体分析'),
+        key: 'chance_overall'
+    }
+};
+
+// 线索分析菜单
+export const CLUE_MENUS = {
+    INDEX: {
+        name: '线索分析',
+        key: 'clue'
+    },
+    OVERALL: {
+        name: Intl.get('common.overall.analysis', '总体分析'),
+        key: 'clue_overall'
+    }
+};
+
+// 合同分析菜单
+export const CONTRACT_MENUS = {
+    INDEX: {
+        name: '合同分析',
+        key: 'contract'
+    },
+    CONTRACT: {
+        name: '新增合同分析',
+        key: 'new_contract'
+    },
+    COST: {
+        name: '费用分析',
+        key: 'cost'
+    },
+    REPAY: {
+        name: '回款分析',
+        key: 'repay'
+    },
+    OVERALL: {
+        name: Intl.get('common.overall.analysis', '总体分析'),
+        key: 'contract_overall'
+    }
+};
+
+// 客户分析菜单
+export const CUSTOMER_MENUS = {
+    INDEX: {
+        name: '客户分析',
+        key: 'customer'
+    },
+    ACTIVE: {
+        name: '客户活跃度分析',
+        key: 'active'
+    },
+    NEW_ADD: {
+        name: '新开客户分析',
+        key: 'customer_new_add'
+    },
+    OTHER: {
+        name: '其他',
+        key: 'customer_other'
+    },
+    SIGNED: {
+        name: '签约客户分析',
+        key: 'signed'
+    },
+    STAGE: {
+        name: '阶段变更分析',
+        key: 'stage'
+    },
+    TRIAL_QUALIFIED: {
+        name: '试用合格客户分析',
+        key: 'trial-qualified'
+    },
+    OVERALL: {
+        name: Intl.get('common.overall.analysis', '总体分析'),
+        key: 'customer_overall'
+    }
+};
+
+// 订单分析菜单
+export const ORDER_MENUS = {
+    INDEX: {
+        name: '订单分析',
+        key: 'order'
+    },
+    OVERALL: {
+        name: Intl.get('common.overall.analysis', '总体分析'),
+        key: 'order_overall'
+    }
+};
+
+// 销售生产力分析菜单
+export const SALES_PRODUCTIVITY_MENUS = {
+    INDEX: {
+        name: Intl.get('common.sales.productivity.analysis', '销售生产力分析'),
+        key: 'sales_productivity'
+    },
+    OVERALL: {
+        name: Intl.get('common.overall.analysis', '总体分析'),
+        key: 'sales_productivity_overall'
+    }
+};
+
+// 没有开通营收中心，不能展示的菜单
+export const NO_OPEN_CASH_SHOW_MENUS_KEY = [
+    CONTRACT_MENUS.INDEX.key,// 合同分析
+    CHANCE_MENUS.INDEX.key,// 销售机会分析
+];

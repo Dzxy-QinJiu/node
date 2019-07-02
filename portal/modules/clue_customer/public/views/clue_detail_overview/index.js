@@ -656,7 +656,7 @@ class ClueDetailOverview extends React.Component {
                 <div className="clue-basic-info">
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('common.login.time', '时间')}：
+                            {Intl.get('common.login.time', '时间')}
                         </div>
                         <div className="clue-info-detail">
                             <DatePickerField
@@ -672,7 +672,7 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('crm.sales.clue.descr', '线索描述')}：
+                            {Intl.get('crm.sales.clue.descr', '线索描述')}
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditInputField
@@ -692,10 +692,11 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('call.record.customer.source', '来源')}：
+                            {Intl.get('call.record.customer.source', '来源')}
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
                                 combobox={true}
                                 hasEditPrivilege={hasPrivilegeEdit}
                                 id={curClue.id}
@@ -714,7 +715,7 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('clue.customer.source.ip','来源IP')}：
+                            {Intl.get('clue.customer.source.ip','来源IP')}
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditInputField
@@ -730,7 +731,7 @@ class ClueDetailOverview extends React.Component {
                     {curClue.province || curClue.city ?
                         <div className="clue-info-item">
                             <div className="clue-info-label">
-                                {Intl.get('crm.96', '地域')}：
+                                {Intl.get('crm.96', '地域')}
                             </div>
                             <div className="clue-info-detail area-item">
                                 {curClue.province}
@@ -740,7 +741,7 @@ class ClueDetailOverview extends React.Component {
                         : null}
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('crm.sales.clue.access.channel', '接入渠道')}：
+                            {Intl.get('crm.sales.clue.access.channel', '接入渠道')}
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
@@ -763,7 +764,7 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
-                            {Intl.get('contract.purchase.contract.type', '分类')}：
+                            {Intl.get('contract.purchase.contract.type', '分类')}
                         </div>
                         <div className="clue-info-detail">
                             <BasicEditSelectField
@@ -790,7 +791,7 @@ class ClueDetailOverview extends React.Component {
                                 return (
                                     <div className="contact-item">
                                         <div className="contact-item-content contact-name">
-                                            <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}:</span>
+                                            <span className="clue-info-label">{Intl.get('call.record.contacts', '联系人')}</span>
                                             <div className="clue-info-detail">
                                                 <BasicEditInputField
                                                     width={EDIT_FEILD_WIDTH}
@@ -912,7 +913,7 @@ class ClueDetailOverview extends React.Component {
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，如果索不是无效的*/}
                         {
-                            typeFilter.status !== SELECT_TYPE.WILL_TRACE ?
+                            curClue.status === SELECT_TYPE.HAS_TRACE ?
                                 this.renderAssociatedAndInvalidClueHandle(curClue)
                                 : null 
                         }

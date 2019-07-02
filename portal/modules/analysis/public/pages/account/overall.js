@@ -3,9 +3,11 @@
  */
 
 import accountChart from '../../charts/account';
+import {ACCOUNT_MENUS} from '../../consts';
 
 module.exports = {
-    title: '总体分析',
+    title: ACCOUNT_MENUS.OVERALL.name,
+    key: ACCOUNT_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
         'USER_ANALYSIS_COMMON',
