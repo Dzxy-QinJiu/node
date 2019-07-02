@@ -25,6 +25,13 @@ const WORK_TYPES = {
     SCHEDULE: 'schedule',//待联系的客户:日程
     DEAL: 'deal'// 待处理的订单deal
 };
+//联系计划类型
+const SCHEDULE_TYPES = {
+    CALLS: 'calls',//打电话
+    VISIT: 'visit',//拜访
+    OTHER: 'other'//其他
+};
+
 class MyWorkColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -304,10 +311,11 @@ class MyWorkColumn extends React.Component {
     };
 
     renderCustomerName(item, index) {
-        const customer_label = _.get(item, 'detail.customer_label');
+        //客户阶段标签
+        const customer_label = _.get(item, 'details[0].tag');
         const qualify_label = _.get(item, 'detail.qualify_label');
-        const score = _.get(item, 'detail.score');
-        const customerId = _.get(item, 'customer_ids[0]');
+        const score = _.get(item, 'details[0].score');
+        const customerId = _.get(item, 'details[0].id');
         return (
             <div className='work-name'>
                 {customer_label ? (
@@ -321,7 +329,7 @@ class MyWorkColumn extends React.Component {
                             qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                 }
                 <span className='customer-name'
-                    onClick={this.openCustomerDetail.bind(this, customerId, index)}>{_.get(item, 'name', '')}</span>
+                    onClick={this.openCustomerDetail.bind(this, customerId, index)}>{_.get(item, 'details[0].name', '')}</span>
                 {score ? (
                     <span className='custmer-score'>
                         <i className='iconfont icon-customer-score'/>
@@ -332,7 +340,7 @@ class MyWorkColumn extends React.Component {
 
     //联系人及电话的渲染
     renderContactItem(item) {
-        let contacts = _.get(item, 'detail.contacts', []);
+        let contacts = _.get(item, 'details[0].contacts', []);
         //默认展示的联系人及电话(有默认联系人时展示默认联系人，没有时展示第一个联系人)
         let defaultContact = {};
         if (!_.isEmpty(contacts)) {
@@ -358,28 +366,81 @@ class MyWorkColumn extends React.Component {
         }
     }
 
+    getWorkIconCls(item) {
+        let iconCls = '';
+        switch (item.type) {
+            case WORK_TYPES.LEAD://待处理线索
+                iconCls = 'icon-clue';
+                break;
+            case WORK_TYPES.APPLY://申请消息
+                iconCls = 'icon-application-ico';
+                break;
+            case WORK_TYPES.SCHEDULE://联系计划
+                switch (item.key) {
+                    case SCHEDULE_TYPES.VISIT://拜访
+                        iconCls = 'icon-visit-briefcase';
+                        break;
+                    case SCHEDULE_TYPES.CALLS://打电话
+                        iconCls = 'icon-phone-call-out';
+                        break;
+                    case SCHEDULE_TYPES.OTHER://其他
+                        iconCls = 'icon-trace-other';
+                        break;
+                }
+                break;
+            case WORK_TYPES.DEAL://新订单
+                iconCls = 'icon-deal_manage-ico';
+                break;
+        }
+        return iconCls;
+    }
+
+    renderWorkCard(item, index) {
+        let iconCls = this.getWorkIconCls(item);
+        let priority = item.priority;
+        const title = (
+            <span className='work-item-title'>
+                <i className={'iconfont ' + iconCls}/>
+                <span className='work-title-text'>{item.name}</span>
+            </span>);
+        const content = (
+            <div className='work-content-wrap'>
+                {this.renderCustomerName(item, index)}
+                <div className='work-remark'>
+                    {_.get(item, 'remark', '')}
+                </div>
+                {this.renderContactItem(item)}
+            </div>);
+        return (<DetailCard title={title}
+            content={content}
+            className='my-work-card schedule-work'/>);
+    }
+
+
     renderMyWorkList() {
         return _.map(this.state.myWorkList, (item, index) => {
-            let workTypeCard;
-            switch (item.type) {
-                case WORK_TYPES.LEAD:
-                    //待处理线索
-                    workTypeCard = this.renderClueCard(item);
-                    break;
-                case WORK_TYPES.APPLY:
-                    //申请消息
-                    workTypeCard = this.renderApplyCard(item);
-                    break;
-                case WORK_TYPES.SCHEDULE:
-                    //待处理客户（日程）
-                    workTypeCard = this.renderScheduleWork(item, index);
-                    break;
-                case WORK_TYPES.DEAL:
-                    //待处理订单
-                    workTypeCard = this.renderDealWork(item, index);
-                    break;
-            }
-            return workTypeCard;
+            // let workTypeCard;
+            // switch (item.type) {
+            //     case WORK_TYPES.LEAD:
+            //         //待处理线索
+            //         workTypeCard = this.renderClueCard(item);
+            //         break;
+            //     case WORK_TYPES.APPLY:
+            //         //申请消息
+            //         workTypeCard = this.renderApplyCard(item);
+            //         break;
+            //     case WORK_TYPES.SCHEDULE:
+            //         //待处理客户（日程）
+            //         workTypeCard = this.renderScheduleWork(item, index);
+            //         break;
+            //     case WORK_TYPES.DEAL:
+            //         //待处理订单
+            //         workTypeCard = this.renderDealWork(item, index);
+            //         break;
+            // }
+            // return workTypeCard;
+
+            return this.renderWorkCard(item);
         });
     }
 
