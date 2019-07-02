@@ -342,14 +342,6 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    //点击关联客户按钮
-    handleClickAssociatedBtn = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clue-info-item'), '点击关联客户按钮');
-        this.setState({
-            clickAssociatedBtn: true
-        });
-    };
-
     //线索关联客户
     handleAssociatedCustomer = (submitObj, successFunc, errorFunc) => {
         var curClueDetail = this.state.curClue;
@@ -594,9 +586,6 @@ class ClueDetailOverview extends React.Component {
                     {Intl.get('clue.has.no.handle', '暂未处理')}
                 </div>
                 <div className="btn-container">
-                    {associatedPrivilege ? <Button type="primary"
-                        onClick={this.handleClickAssociatedBtn.bind(this, curClue)}>{Intl.get('clue.customer.associate.customer', '关联客户')}</Button> : null}
-
                     {avalibility ? <Button data-tracename="判定线索无效按钮" className='clue-inability-btn' disabled={this.state.isInvalidClue}
                         onClick={this.handleClickInvalidBtn.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
                         {this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button> : null}
@@ -631,7 +620,7 @@ class ClueDetailOverview extends React.Component {
                     <div className="clue-info-detail">
                         <CustomerSuggest
                             field='customer_id'
-                            hasEditPrivilege={associatedPrivilege}
+                            hasEditPrivilege={false}
                             displayText={associatedCustomer}
                             displayType={associatedDisplyType}
                             id={curClue.id}
