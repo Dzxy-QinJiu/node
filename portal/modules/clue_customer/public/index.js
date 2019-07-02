@@ -37,6 +37,8 @@ var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
 import ClueToCustomerPanel from './views/clue-to-customer-panel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import ajax from 'ant-ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 var timeoutFunc;//定时方法
@@ -910,14 +912,12 @@ class ClueCustomer extends React.Component {
         return(
             <div className="avalibility-container">
                 {/*是有效线索并且有关联客户*/}
-                {associatedCustomer ?
+                {associatedCustomer ? (
                     <div className="associate-customer">
                         {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_label)}>{salesClueItem.customer_label}</Tag> : null}
-                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> :
-                    <div>
-                        {associatedPrivilege ? <span className="can-edit associate-btn" onClick={this.showClueDetailOut.bind(this, salesClueItem)} data-tracename="点击关联客户按钮">{Intl.get('clue.customer.associate.customer', '关联客户')}</span> : null}
+                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b>
                     </div>
-                }
+                ): null}
             </div>
         );
     };
