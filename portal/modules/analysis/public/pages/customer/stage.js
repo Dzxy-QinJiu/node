@@ -3,9 +3,11 @@
  */
 
 import customerChart from '../../charts/customer';
+import {CUSTOMER_MENUS} from '../../consts';
 
 module.exports = {
-    title: '阶段变更分析',
+    title: CUSTOMER_MENUS.STAGE.name,
+    key: CUSTOMER_MENUS.STAGE.key,
     menuIndex: 6,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',

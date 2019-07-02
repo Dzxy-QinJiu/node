@@ -3,9 +3,11 @@
  */
 
 import callChart from '../../charts/call';
+import {CALL_MENUS} from '../../consts';
 
 module.exports = {
-    title: '其他分析',
+    title: CALL_MENUS.OTHER.name,
+    key: CALL_MENUS.OTHER.key,
     menuIndex: 2,
     privileges: [
         'CUSTOMER_CALLRECORD_STATISTIC_USER',

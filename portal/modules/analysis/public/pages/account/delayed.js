@@ -2,11 +2,12 @@
  * 延期帐号分析
  */
 
-import {DEFERRED_ACCOUNT_ANALYSIS_TITLE} from '../../consts';
+import {ACCOUNT_MENUS} from '../../consts';
 import accountChart from '../../charts/account';
 
 module.exports = {
-    title: DEFERRED_ACCOUNT_ANALYSIS_TITLE,
+    title: ACCOUNT_MENUS.DELAYED.name,
+    key: ACCOUNT_MENUS.DELAYED.key,
     menuIndex: 5,
     privileges: [
         'USER_ANALYSIS_COMMON',

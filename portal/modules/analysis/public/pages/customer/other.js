@@ -3,9 +3,11 @@
  */
 
 import customerChart from '../../charts/customer';
+import {CUSTOMER_MENUS} from '../../consts';
 
 module.exports = {
-    title: '其他',
+    title: CUSTOMER_MENUS.OTHER.name,
+    key: CUSTOMER_MENUS.OTHER.key,
     menuIndex: 7,
     privileges: [
         'CUSTOMER_ANALYSIS_COMMON',
