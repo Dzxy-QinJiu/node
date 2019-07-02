@@ -15,11 +15,6 @@ export function getChanceDetailChart() {
         processData: data => {
             let processedData = [];
 
-            //添加是否签单信息
-            _.each(data, item => {
-                item.is_signed = item.apply_opp_stage === 'win' ? Intl.get('user.yes', '是') : Intl.get('user.no', '否');
-            });
-
             let groupedData = _.groupBy(data, 'apply_team_name');
 
             _.each(groupedData, rows => {
@@ -59,10 +54,6 @@ export function getChanceDetailChart() {
                 }, {
                     title: '客户经理',
                     dataIndex: 'nick_name',
-                    width: 75,
-                }, {
-                    title: '是否签单',
-                    dataIndex: 'is_signed',
                     width: 75,
                 }
             ],
