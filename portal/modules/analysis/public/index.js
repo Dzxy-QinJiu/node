@@ -19,8 +19,7 @@ import {
     initialTime,
     STORED_APP_ID_KEY,
     CUSTOMER_IDS_FIELD,
-    DEFERRED_ACCOUNT_ANALYSIS_TITLE,
-    OPEN_CASH_SHOW_MENUS_KEY,
+    NO_OPEN_CASH_SHOW_MENUS_KEY,
     CALL_MENUS,
     ACCOUNT_MENUS
 } from './consts';
@@ -161,7 +160,7 @@ class CurtaoAnalysis extends React.Component {
 
                 //没有开通营收中心时，去掉对应的菜单项
                 if(!isOpenCash()) {
-                    let flag = _.includes(OPEN_CASH_SHOW_MENUS_KEY, menu.key);
+                    let flag = _.includes(NO_OPEN_CASH_SHOW_MENUS_KEY, menu.key);
                     if(flag) {
                         return false;
                     }
@@ -490,7 +489,7 @@ class CurtaoAnalysis extends React.Component {
 
     //获取当前是否在延期帐号页
     getIsDeferredAccountPage(pageTitle = this.state.currentPage.title) {
-        return pageTitle === DEFERRED_ACCOUNT_ANALYSIS_TITLE;
+        return pageTitle === ACCOUNT_MENUS.DELAYED.name;
     }
 
     render() {
