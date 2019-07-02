@@ -11,6 +11,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import {Button, Icon} from 'antd';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DatePickerField from 'CMP_DIR/basic-edit-field-new/date-picker';
+import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerAjax = require('../../ajax/clue-customer-ajax');
@@ -968,6 +969,8 @@ class ClueDetailOverview extends React.Component {
         var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        //该线索无效
+        var isInvalidClue = curClue.availability === '1';
         return (
             <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
                 <GeminiScrollbar>
@@ -981,9 +984,9 @@ class ClueDetailOverview extends React.Component {
                     </div>
                     {this.renderTraceContent()}
                     <div className="associate-customer-detail clue-detail-block">
-                        {/*线索处理，没有关联到客户并且线索已跟进*/}
+                        {/*线索处理，没有关联到客户并且线索不是无效的*/}
                         {
-                            !associatedCustomer && curClue.status === SELECT_TYPE.HAS_TRACE && !this.state.clickAssociatedBtn ?
+                            !associatedCustomer && !isInvalidClue && !this.state.clickAssociatedBtn ?
                                 this.renderAssociatedAndInvalidClueHandle(curClue)
                                 : this.renderAssociatedAndInvalidClueText(associatedCustomer, isInvalidClue)
                         }
