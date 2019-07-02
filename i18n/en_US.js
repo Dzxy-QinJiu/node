@@ -2662,6 +2662,9 @@ var en_US = {
     'clue.repeat.clue.list': 'Repeat clue',//重复线索
     'clue.has.no.relative.customer': 'Clues have not related to customer',//没有关联客户的线索
     'clue.export.clue.list': 'Export clue',//导出线索
+    'clue.extract.clue': 'Extract clue', // 提取线索
+    'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
+    'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
