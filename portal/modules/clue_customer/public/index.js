@@ -37,7 +37,6 @@ var RightContent = require('CMP_DIR/privilege/right-content');
 import classNames from 'classnames';
 import ClueToCustomerPanel from './views/clue-to-customer-panel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import ajax from 'ant-ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
