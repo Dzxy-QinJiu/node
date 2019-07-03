@@ -544,8 +544,6 @@ class ClueDetailOverview extends React.Component {
     };
 
     renderAssociatedAndInvalidClueHandle = (curClue) => {
-        //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && !isInvalidClue;
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         return (
@@ -575,8 +573,6 @@ class ClueDetailOverview extends React.Component {
     renderAssociatedAndInvalidClueText = (associatedCustomer, isInvalidClue) => {
         var curClue = this.state.curClue;
         var invalid_info = curClue.invalid_info;
-        //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && !isInvalidClue;
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         //关联客户的按钮状态
