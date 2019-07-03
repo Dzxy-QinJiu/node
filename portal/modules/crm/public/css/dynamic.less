@@ -6,18 +6,18 @@
   padding:10px;
   background-color: #ffffff;
 }
-.dynamicList {
+.dynamic-list {
   padding-top: 10px;
   border-radius: 4px;
   background: #ffffff;
   .relate-name{
     cursor: pointer;
-    color: #8da8c5;
+    color: @time_line_color;
   }
   //时间线的样式
   .time-line.group-by-day {
     .group-day {
-      left: -78px;
+      left: -80px;
     }
     .ant-timeline {
       margin-left: 92px;
@@ -27,7 +27,7 @@
         .ant-timeline-item-head {
           width: 12px;
           height: 12px;
-          margin-left: -2px;
+          margin-left: 2px;
         }
       }
       .ant-timeline-item {
@@ -40,11 +40,12 @@
         .ant-timeline-item-head {
           width: 8px;
           height: 8px;
+          margin-left: 4px;
         }
         //时间线
         .ant-timeline-item-tail {
           border-left: 1px solid @time_line_color;
-          left: 4px;
+          left: 8px;
           top: 16px;
         }
         .ant-timeline-item-content {

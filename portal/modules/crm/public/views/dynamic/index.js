@@ -88,7 +88,7 @@ class Dynamic extends React.Component {
             <RightPanelScrollBar>
                 {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
                     <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
-                    <div className="dynamicList">
+                    <div className="dynamic-list">
                         <AntcTimeLine
                             data={this.state.dynamicList}
                             groupByDay={true}
