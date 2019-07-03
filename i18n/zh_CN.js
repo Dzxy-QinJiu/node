@@ -3118,6 +3118,7 @@ var zh_CN = {
     'crm.103': '变更负责人',
     'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
     'clue.customer.has.transfer': '已转化',
-    'clue.confirm.clue.invalid': '确认无效'
+    'clue.confirm.clue.invalid': '确认无效',
+    'contract.amount.check.tip': '产品总额不能大于合同总额{amount}元，请核对',
 };
 export default zh_CN;
