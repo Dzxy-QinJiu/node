@@ -3011,8 +3011,8 @@ var en_US = {
     'clue.manage.contact.clue': 'Contact clue',//联系线索
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
-    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
     'clue.customer.has.transfer': 'Has transfer',//已转化
-    'common.sales.transfer.customer': 'Transfer customer'//转为客户
+    'common.sales.transfer.customer': 'Transfer customer',//转为客户
+    'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
 };
 export default en_US;
