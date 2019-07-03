@@ -4,6 +4,7 @@
  * Created by wangliping on 2019/6/12.
  */
 import '../css/my-work-column.less';
+import classNames from 'classnames';
 import {Dropdown, Icon, Menu, Tag} from 'antd';
 import ColumnItem from './column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -27,7 +28,8 @@ const WORK_TYPES = {
 };
 //联系计划类型
 const SCHEDULE_TYPES = {
-    CALLS: 'calls',//打电话
+    LEAD_CALLS: 'lead',//线索中打电话的联系计划
+    CALLS: 'calls',//客户中打电话的联系计划
     VISIT: 'visit',//拜访
     OTHER: 'other'//其他
 };
@@ -383,6 +385,9 @@ class MyWorkColumn extends React.Component {
                     case SCHEDULE_TYPES.CALLS://打电话
                         iconCls = 'icon-phone-call-out';
                         break;
+                    case SCHEDULE_TYPES.LEAD_CALLS://线索中打电话的联系计划
+                        iconCls = 'icon-phone-call-out';
+                        break;
                     case SCHEDULE_TYPES.OTHER://其他
                         iconCls = 'icon-trace-other';
                         break;
@@ -396,10 +401,12 @@ class MyWorkColumn extends React.Component {
     }
 
     renderWorkCard(item, index) {
-        let iconCls = this.getWorkIconCls(item);
-        let priority = item.priority;
+        const iconCls = this.getWorkIconCls(item);
+        const titleCls = classNames('work-item-title', {
+            'priority-high-work': _.get(item, 'priority') <= 1//前两级的工作标题需要高亮
+        });
         const title = (
-            <span className='work-item-title'>
+            <span className={titleCls}>
                 <i className={'iconfont ' + iconCls}/>
                 <span className='work-title-text'>{item.name}</span>
             </span>);
@@ -419,28 +426,7 @@ class MyWorkColumn extends React.Component {
 
     renderMyWorkList() {
         return _.map(this.state.myWorkList, (item, index) => {
-            // let workTypeCard;
-            // switch (item.type) {
-            //     case WORK_TYPES.LEAD:
-            //         //待处理线索
-            //         workTypeCard = this.renderClueCard(item);
-            //         break;
-            //     case WORK_TYPES.APPLY:
-            //         //申请消息
-            //         workTypeCard = this.renderApplyCard(item);
-            //         break;
-            //     case WORK_TYPES.SCHEDULE:
-            //         //待处理客户（日程）
-            //         workTypeCard = this.renderScheduleWork(item, index);
-            //         break;
-            //     case WORK_TYPES.DEAL:
-            //         //待处理订单
-            //         workTypeCard = this.renderDealWork(item, index);
-            //         break;
-            // }
-            // return workTypeCard;
-
-            return this.renderWorkCard(item);
+            return this.renderWorkCard(item, index);
         });
     }
 

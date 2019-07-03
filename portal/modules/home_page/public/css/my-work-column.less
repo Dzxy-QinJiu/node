@@ -17,6 +17,10 @@
       .work-title-text {
         margin: 0 6px;
       }
+      //待处理线索,申请消息类型标题高亮
+      > .priority-high-work {
+        color: #2196F3;
+      }
     }
     //工作内容的统一样式
     .detail-card-content {
@@ -72,7 +76,7 @@
         }
       }
       //线索名，客户名可点击样式
-      .customer-name,.clue-name {
+      .customer-name, .clue-name {
         cursor: pointer;
         &:hover {
           color: #4d96d1;
@@ -107,13 +111,6 @@
       .work-hover-show-detail {
         display: block;
       }
-    }
-  }
-
-  //待处理线索,申请消息类型标题高亮
-  .clue-work-card, .apply-work-card {
-    .detail-card-title {
-      color: #2196F3;
     }
   }
   //申请消息
