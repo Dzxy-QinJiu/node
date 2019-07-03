@@ -759,7 +759,7 @@ class ClueCustomer extends React.Component {
         );
     };
     renderShowTraceContent = (salesClueItem) => {
-        var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');//该线索的跟进内容
+        var traceContent = _.trim(_.get(salesClueItem, 'customer_traces[0].remark', ''));//该线索的跟进内容
         var traceAddTime = _.get(salesClueItem, 'customer_traces[0].call_date') || _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
         return (
             <div className="foot-text-content" key={salesClueItem.id}>
@@ -863,12 +863,8 @@ class ClueCustomer extends React.Component {
 
     };
     renderAssociatedCustomer = (salesClueItem) => {
-        //是有效线索
-        let availability = salesClueItem.availability !== '1';
         //关联客户
         var associatedCustomer = salesClueItem.customer_name;
-        //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         return(
             <div className="avalibility-container">
                 {/*是有效线索并且有关联客户*/}
@@ -1070,35 +1066,29 @@ class ClueCustomer extends React.Component {
                     );
                 }
             }];
+        columns.push({
+            dataIndex: 'assocaite_customer',
+            className: 'invalid-td-clue',
+            width: '300px',
+            render: (text, salesClueItem, index) => {
+                return (
+                    <div className="avalibity-or-invalid-container">
+                        {salesClueItem.customer_name ? this.renderAssociatedCustomer(salesClueItem) : this.renderHandleAssociateInvalidBtn(salesClueItem)}
+                    </div>
+                );
+            }
+        });
+        return columns;
+    };
+    renderHandleAssociateInvalidBtn = (salesClueItem) => {
         //只有不是待跟进状态，才能展示操作区域
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE){
-            columns.push({
-                dataIndex: 'assocaite_customer',
-                className: 'invalid-td-clue',
-                width: '300px',
-                render: (text, salesClueItem, index) => {
-                    return (
-                        <div className="avalibity-or-invalid-container">
-                            {this.renderAssociatedCustomer(salesClueItem)}
-                        </div>
-                    );
-                }
-            },{
-                className: 'invalid-td-clue',
-                width: '150px',
-                render: (text, salesClueItem, index) => {
-                    return (
-                        <div className="avalibity-or-invalid-container">
-                            {_.get(this,'state.isInvalidClue') === salesClueItem.id ? this.renderInvalidConfirm(salesClueItem) : this.renderAvailabilityClue(salesClueItem)}
-                        </div>
-                    );
-                }
-            });
+            return _.get(this,'state.isInvalidClue') === salesClueItem.id ? this.renderInvalidConfirm(salesClueItem) : this.renderAvailabilityClue(salesClueItem);
+        }else{
+            return null;
         }
-
-        return columns;
     };
 
     //转为客户按钮点击事件
