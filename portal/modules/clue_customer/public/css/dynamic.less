@@ -1,88 +1,23 @@
-@time_line_color: #8da8c5;
-.clue-customer-dynamic{
-  .dynamic-error-tip{
+@import '../../../crm/public/css/dynamic.less';
+
+.clue-customer-dynamic {
+  .dynamic-error-tip {
     display: inline-block;
     width: 100%;
     text-align: center;
-    padding:10px;
+    padding: 10px;
     background-color: #ffffff;
   }
-  .load8{
+  .load8 {
     position: absolute;
-    top:30px;
-    left:200px;
-    transform:scale(0.5, 0.5);
-    .loader8{
-      border-left-color:#394144;
+    top: 30px;
+    left: 200px;
+    transform: scale(0.5, 0.5);
+    .loader8 {
+      border-left-color: #394144;
     }
   }
-  .clue-dynamic-list {
-    padding-top: 10px;
-    border-radius: 4px;
-    background: #ffffff;
-    .relete-name{
-      cursor: pointer;
-      color:@time_line_color;
-    }
-    //时间线的样式
-    .time-line.group-by-day {
-      .group-day {
-        left: -78px;
-      }
-      .ant-timeline {
-        margin-left: 92px;
-        //一天中第一个各点的样式
-        .day-first-item.ant-timeline-item {
-          padding-top: 10px;
-          .ant-timeline-item-head {
-            width: 12px;
-            height: 12px;
-            margin-left: -2px;
-          }
-        }
-        .ant-timeline-item {
-          //时间点的样式
-          .ant-timeline-item-head-blue {
-            border-color: @time_line_color;
-            color: @time_line_color;
-            background-color: @time_line_color;
-          }
-          .ant-timeline-item-head {
-            width: 8px;
-            height: 8px;
-          }
-          //时间线
-          .ant-timeline-item-tail {
-            border-left: 1px solid @time_line_color;
-            left: 4px;
-            top: 16px;
-          }
-          .ant-timeline-item-content {
-            padding: 0 8px 0 20px;
-          }
-        }
-      }
-    }
-    //时间线的内容样式
-    ul {
-      margin-left: 7px;
-      li {
-        dl {
-          dt {
-            color: #aaafb3;
-            margin-top: 4px;
-            font-weight: normal;
-          }
-
-          dd {
-            color: #464b4e;
-            white-space: normal;
-          }
-        }
-
-      }
-
-    }
-
+  .dynamic-list {
+    &:extend(.dynamic-list);
   }
 }
