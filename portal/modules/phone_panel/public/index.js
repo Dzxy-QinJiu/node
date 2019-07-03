@@ -45,6 +45,10 @@ var phoneRecordObj = {
     callid: '',//通话的id
     received_time: ''//通话时间
 };
+
+//当前面板z-index
+let thisPanelZIndex;
+
 class PhonePanel extends React.Component {
     constructor(props) {
         super(props);
@@ -91,6 +95,8 @@ class PhonePanel extends React.Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
+
         phoneAlertStore.listen(this.onStoreChange);
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
@@ -112,6 +118,21 @@ class PhonePanel extends React.Component {
             phoneRecordObj.callid = phonemsgObj.callid;
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
         }
+
+        //增加打开线索详情面板的事件监听
+        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_CLUE_PANEL, this.adjustThisPanelZIndex.bind(this, -1));
+
+        //增加关闭线索详情面板的事件监听
+        phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.adjustThisPanelZIndex);
+
+        //增加打开客户详情面板的事件监听
+        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.adjustThisPanelZIndex);
+
+        //获取当前面板的z-index
+        thisPanelZIndex = $(ReactDOM.findDOMNode(this)).css('zIndex');
+
+        //转为数字，以便进行加减计算
+        thisPanelZIndex = _.toInteger(thisPanelZIndex);
     }
 
     setStatePhoneNumb(phoneNum) {
@@ -176,11 +197,36 @@ class PhonePanel extends React.Component {
     }
 
     componentWillUnmount() {
+        this._isMounted = false;
+
         //卸载前，重置数据
         phoneRecordObj.callid = '';
         phoneRecordObj.received_time = '';//通话时间
         phoneAlertAction.setInitialState();
         phoneAlertStore.unlisten(this.onStoreChange);
+
+        //移除打开线索详情面板的事件监听
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.adjustThisPanelZIndex);
+
+        //移除关闭线索详情面板的事件监听
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.CLOSE_CLUE_PANEL, this.adjustThisPanelZIndex);
+
+        //移除打开客户详情面板的事件监听
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.adjustThisPanelZIndex);
+    }
+
+    //调整当前面板的z-index
+    //参数addend: 被加数
+    adjustThisPanelZIndex = (addend) => {
+        let zIndex = thisPanelZIndex;
+
+        if (_.isNumber(addend)) {
+            zIndex += addend;
+        }
+
+        if (this._isMounted) {
+            $(ReactDOM.findDOMNode(this)).css('zIndex', zIndex);
+        }
     }
 
     showAddCustomerForm = () => {
