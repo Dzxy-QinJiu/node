@@ -30,7 +30,7 @@ module.exports = {
         },
     }, {//获取线索客户
         method: 'post',
-        path: '/rest/saleshome/v2/range/clue/:pageSize/:sortField/:sortOrder',
+        path: '/rest/saleshome/v2/range/clue/:type/:pageSize/:sortField/:sortOrder',
         handler: 'getSalesClueList',
         passport: {
             needLogin: true

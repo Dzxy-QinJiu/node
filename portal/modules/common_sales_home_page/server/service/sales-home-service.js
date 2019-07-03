@@ -15,19 +15,32 @@ var restApis = {
     //过期或者即将到期的客户
     getExpiredCustomers: '/rest/analysis/customer/v2/statistic/:type/expire/customer',
     //查询线索 用户查询
-    querySalesClue: '/rest/clue/v1/query/user',
+    querySalesClue: '/rest/clue/v2/query/lead/range/fulltext/',
 };
 exports.restUrls = restApis;
 exports.getSalesClueList = function(req, res) {
-    let queryObj = {};
-    queryObj.query = JSON.parse(req.body.salesClueTypeFilter);
-    if (req.body.unexist_fields){
-        queryObj.unexist_fields = JSON.parse(req.body.unexist_fields);
+
+    var reqBody = req.body;
+    if (_.isString(req.body.reqData)){
+        reqBody = JSON.parse(req.body.reqData);
     }
     let baseUrl = restApis.querySalesClue;
-    baseUrl = baseUrl + '/' + req.params.pageSize + '/' + req.params.sortField + '/' + req.params.sortOrder;
-    if (req.body.lastClueId) {
-        baseUrl += '?id=' + req.body.lastClueId;
+    var rangeParams = _.isString(reqBody.rangParams) ? JSON.parse(reqBody.rangParams) : reqBody.rangParams;
+    var typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
+
+    baseUrl = baseUrl + req.params.type + '/' + req.params.pageSize + '/' + req.params.sortField + '/' + req.params.sortOrder;
+    if (rangeParams[0].from){
+        baseUrl += `?start_time=${rangeParams[0].from}`;
+    }
+    if (rangeParams[0].to){
+        baseUrl += `&end_time=${rangeParams[0].to}`;
+    }
+
+    let queryObj = {
+        query: {...typeFilter},
+    };
+    if (req.body.unexist_fields){
+        queryObj.unexist_fields = JSON.parse(req.body.unexist_fields);
     }
     return restUtil.authRest.post(
         {

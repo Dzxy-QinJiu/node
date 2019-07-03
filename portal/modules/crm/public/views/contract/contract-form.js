@@ -227,6 +227,7 @@ class Contract extends React.Component {
                             <ProductTable
                                 appList={this.props.appList}
                                 isEdit={true}
+                                addBtnText={Intl.get('common.product', '产品')}
                                 isSaveCancelBtnShow={false}
                                 onChange={this.handleProductChange}
                             />
@@ -279,12 +280,12 @@ class Contract extends React.Component {
                     // item.total_price是字符串格式，+是为了将字符串转为数字格式
                     productTotalPrice += +item.total_price;
                 });
-                // 判断产品信息中的总额和合同额是否相同，若相同，则发请求，否则，给出信息提示
+                // 判断合同额是否大于等于产品信息中的总额，若大于等于，则发请求，否则，给出信息提示
                 // reqData.contract_amount是字符串格式，+是为了将字符串转为数字格式
                 reqData.contract_amount = +reqData.contract_amount;
-                if (productTotalPrice !== reqData.contract_amount) {
+                if (reqData.contract_amount < productTotalPrice) {
                     this.setState({
-                        errMsg: Intl.get('crm.contract.check.tips', '合同额与产品总额不相等，请核对')
+                        errMsg: Intl.get('contract.amount.check.tip', '产品总额不能大于合同总额{amount}元，请核对',{amount: reqData.contract_amount})
                     });
                     return;
                 }

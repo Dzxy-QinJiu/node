@@ -23,7 +23,7 @@ import TopNav from 'CMP_DIR/top-nav';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS, isNotHasTransferStatus} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
 import ContactItem from 'MOD_DIR/common_sales_home_page/public/view//contact-item';
@@ -236,6 +236,7 @@ class ClueCustomer extends React.Component {
         this.setState({rightPanelIsShow: false});
         //关闭右侧面板后，将当前展示线索的id置为空
         clueCustomerAction.setCurrentCustomer('');
+        $('.ant-table-row').removeClass('current-row');
     };
 
     onClueImport = (list) => {
@@ -582,16 +583,7 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
-    getSubmitContent(propsItem) {
-        return _.get(propsItem, 'customer_traces[0]', '') ? propsItem.customer_traces[0].remark : '';
-    }
 
-    afterAddClueTrace = (updateId) => {
-        var clueCustomerTypeFilter = getClueStatusValue(clueFilterStore.getState().filterClueStatus);
-        if (clueCustomerTypeFilter.status === SELECT_TYPE.WILL_TRACE){
-            clueCustomerAction.afterAddClueTrace(updateId);
-        }
-    };
 
     handleContactLists = (contact) => {
         var clipContact = false;
@@ -695,7 +687,6 @@ class ClueCustomer extends React.Component {
                     });
                 } else {
                     var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
-                    clueItem.status = SELECT_TYPE.HAS_TRACE;
                     var userId = userData.getUserData().user_id || '';
                     var userName = userData.getUserData().nick_name;
                     var addTime = moment().valueOf();
@@ -719,8 +710,8 @@ class ClueCustomer extends React.Component {
                         submitTraceErrMsg: '',
                         isEdittingItem: {},
                     });
-                    //如果是待跟进状态,需要在列表中删除并且把数字减一
-                    this.afterAddClueTrace(item.id);
+                    //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
+                    clueCustomerAction.afterAddClueTrace(item);
                 }
             });
         }
@@ -769,7 +760,7 @@ class ClueCustomer extends React.Component {
         );
     };
     renderShowTraceContent = (salesClueItem) => {
-        var traceContent = _.get(salesClueItem, 'customer_traces[0].remark', '');//该线索的跟进内容
+        var traceContent = _.trim(_.get(salesClueItem, 'customer_traces[0].remark', ''));//该线索的跟进内容
         var traceAddTime = _.get(salesClueItem, 'customer_traces[0].call_date') || _.get(salesClueItem, 'customer_traces[0].add_time');//跟进时间
         return (
             <div className="foot-text-content" key={salesClueItem.id}>
@@ -783,7 +774,7 @@ class ClueCustomer extends React.Component {
                             </span>
                         </ShearContent>
                     </div>
-                    : hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
+                    : hasPrivilege('CLUECUSTOMER_ADD_TRACE') && isNotHasTransferStatus(salesClueItem) ?
                         <span className='add-trace-content'
                             onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</span>
                         : null}
@@ -792,6 +783,7 @@ class ClueCustomer extends React.Component {
 
         );
     };
+
     showCustomerDetail = (customerId) => {
         this.setState({
             showCustomerId: customerId
@@ -823,41 +815,35 @@ class ClueCustomer extends React.Component {
             customerOfCurUser: {}
         });
     };
+    handleClickClueInvalid = (item) => {
+        this.setState({
+            isInvalidClue: item.id //正在标为无效的线索
+        });
+
+    };
     //标记线索无效或者有效
     handleClickInvalidBtn = (item, callback) => {
         var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
-        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY) {
-            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
-        }
         var submitObj = {
             id: item.id,
             availability: updateValue
         };
         this.setState({
-            isInvalidClue: item.id,
+            isInvaliding: true,
         });
 
         clueCustomerAction.updateCluecustomerDetail(submitObj, (result) => {
             if (_.isString(result)) {
                 this.setState({
-                    isInvalidClue: '',
+                    isInvaliding: false,
+                    isInvalidClue: ''
                 });
             } else {
                 _.isFunction(callback) && callback(updateValue);
-                var salesClueItemDetail = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
-                salesClueItemDetail.invalid_info = {
-                    user_name: userData.getUserData().nick_name,
-                    time: moment().valueOf()
-                };
-                salesClueItemDetail.availability = updateValue;
-                clueCustomerAction.updateClueProperty({
-                    id: item.id,
-                    availability: updateValue,
-                    status: SELECT_TYPE.HAS_TRACE
-                });
+                clueCustomerAction.deleteClueById(item);
                 this.setState({
-                    isInvalidClue: '',
-                    salesClueItemDetail: salesClueItemDetail
+                    isInvaliding: false,
+                    isInvalidClue: ''
                 });
             }
         });
@@ -865,14 +851,12 @@ class ClueCustomer extends React.Component {
     renderInavailabilityOrValidClue = (salesClueItem) => {
         //是否有标记线索无效的权限
         var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
-        var isEditting = this.state.isInvalidClue === salesClueItem.id;
-        var inValid = salesClueItem.availability === '1';
+
         return(
             <span className="valid-or-invalid-container">
-                {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}
-                    data-tracename="取消判定线索无效" disabled={isEditting}>
-                    {inValid ? <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span> : <span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span>}
-                    {isEditting ? <Icon type="loading"/> : null}
+                {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
+                    data-tracename="判定线索无效">
+                    {<span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span>}
                 </span> : null}
             </span>
 
@@ -880,12 +864,8 @@ class ClueCustomer extends React.Component {
 
     };
     renderAssociatedCustomer = (salesClueItem) => {
-        //是有效线索
-        let availability = salesClueItem.availability !== '1';
         //关联客户
         var associatedCustomer = salesClueItem.customer_name;
-        //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         return(
             <div className="avalibility-container">
                 {/*是有效线索并且有关联客户*/}
@@ -898,12 +878,31 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+
+    cancelInvalidClue = () => {
+        this.setState({
+            isInvalidClue: ''
+        });
+    };
+    renderInvalidConfirm = (salesClueItem) => {
+        var isEditting = this.state.isInvalidClue === salesClueItem.id && this.state.isInvaliding;
+        return (
+            <span className="invalid-confirm">
+                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
+                    {Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                    {isEditting ? <Icon type="loading"/> : null}
+                </Button>
+                <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
+            </span>
+        );
+    };
     renderAvailabilityClue = (salesClueItem) => {
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         return(
             <div className="avalibility-container">
                 <div className="associate-customer">
+
                     {associatedPrivilege ? (
                         <span
                             className="can-edit"
@@ -913,11 +912,11 @@ class ClueCustomer extends React.Component {
                             {Intl.get('common.convert.to.customer', '转为客户')}
                         </span> 
                     ) : null}
-
                     {this.renderInavailabilityOrValidClue(salesClueItem)}
                 </div>
             </div>
         );
+
     };
     handleChangeSelectedType = (selectedType) => {
         clueFilterAction.setFilterType(selectedType);
@@ -925,6 +924,16 @@ class ClueCustomer extends React.Component {
     };
     isFireFoxBrowser = () => {
         return navigator.userAgent.toUpperCase().indexOf('FIREFOX') > -1;
+    };
+    setInvalidClassName= (record, index) => {
+        var cls = '';
+        if ((record.id === this.state.currentId) && rightPanelShow){
+            cls += ' current-row';
+        }
+        if (record.availability === '1'){
+            cls += ' invalid-clue';
+        }
+        return cls;
     };
     getClueTypeTab = () => {
         var filterStore = clueFilterStore.getState();
@@ -966,6 +975,7 @@ class ClueCustomer extends React.Component {
            }
        });
    };
+
     getClueTableColunms = () => {
         const column_width = '80px';
         let columns = [
@@ -1033,7 +1043,7 @@ class ClueCustomer extends React.Component {
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {/*有分配权限*/}
-                            {hasAssignedPrivilege ?
+                            {hasAssignedPrivilege && isNotHasTransferStatus(salesClueItem) ?
                                 <AntcDropdown
                                     ref={changeSale => this['changesale' + salesClueItem.id] = changeSale}
                                     content={<span
@@ -1067,37 +1077,29 @@ class ClueCustomer extends React.Component {
                     );
                 }
             }];
+        columns.push({
+            dataIndex: 'assocaite_customer',
+            className: 'invalid-td-clue',
+            width: '300px',
+            render: (text, salesClueItem, index) => {
+                return (
+                    <div className="avalibity-or-invalid-container">
+                        {salesClueItem.customer_name ? this.renderAssociatedCustomer(salesClueItem) : this.renderHandleAssociateInvalidBtn(salesClueItem)}
+                    </div>
+                );
+            }
+        });
+        return columns;
+    };
+    renderHandleAssociateInvalidBtn = (salesClueItem) => {
         //只有不是待跟进状态，才能展示操作区域
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
-        if (typeFilter.status === SELECT_TYPE.HAS_TRACE){
-            columns.push({
-                dataIndex: 'assocaite_customer',
-                className: 'invalid-td-clue',
-                width: '300px',
-                render: (text, salesClueItem, index) => {
-                    return (
-                        <div className="avalibity-or-invalid-container">
-                            {this.renderAssociatedCustomer(salesClueItem)}
-                        </div>
-                    );
-                }
-            },{
-                className: 'invalid-td-clue',
-                width: '150px',
-                render: (text, salesClueItem, index) => {
-                    //是有效线索
-                    let availability = salesClueItem.availability !== '1';
-                    return (
-                        <div className="avalibity-or-invalid-container">
-                            {availability ? this.renderAvailabilityClue(salesClueItem) : this.renderInavailabilityOrValidClue(salesClueItem)}
-                        </div>
-                    );
-                }
-            });
+        if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE){
+            return _.get(this,'state.isInvalidClue') === salesClueItem.id ? this.renderInvalidConfirm(salesClueItem) : this.renderAvailabilityClue(salesClueItem);
+        }else{
+            return null;
         }
-
-        return columns;
     };
 
     //转为客户按钮点击事件
@@ -1106,10 +1108,8 @@ class ClueCustomer extends React.Component {
         //此时提示用户完善客户名
         if (!clueName) {
             message.error(Intl.get('clue.need.complete.clue.name', '请先完善线索名'));
-
             return;
         }
-
         //设置当前线索
         clueCustomerAction.setCurrentCustomer(clueId);
         
@@ -1176,7 +1176,16 @@ class ClueCustomer extends React.Component {
         const index = _.findIndex(this.state.curClueLists, item => item.id === this.state.curClue.id);
         
         $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').slideToggle(2000);
-    }
+    };
+    //转化线索成功后，在相关状态将线索数减一并在待合并统计数据中加一
+    changeClueNum = () => {
+        clueCustomerAction.afterTranferClueSuccess(this.state.curClue);
+    };
+    afterTransferClueSuccess = () => {
+        this.hideCurClue();
+        this.changeClueNum();
+    };
+
 
     //线索转为新客户完成后的回调事件
     onConvertClueToNewCustomerDone = (customers) => {
@@ -1199,19 +1208,19 @@ class ClueCustomer extends React.Component {
         }
 
         //在列表中隐藏当前操作的线索
-        this.hideCurClue();
+        this.afterTransferClueSuccess();
 
         //隐藏添加客户面板
         this.hideAddCustomerPanel();
     };
 
-    setInvalidClassName= (record, index) => {
-        return (record.availability === '1' ? 'invalid-clue' : '');
-    };
+
     getRowSelection = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示选择框的处理
         let showSelectionFlag = (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales;
-        if (showSelectionFlag){
+        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
+        var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        if (showSelectionFlag && typeFilter.status !== SELECT_TYPE.HAS_TRANSFER){
             let rowSelection = {
                 type: 'checkbox',
                 selectedRowKeys: _.map(this.state.selectedClues, 'id'),
@@ -1262,6 +1271,7 @@ class ClueCustomer extends React.Component {
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
+
                 scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
             />);
 
@@ -1350,11 +1360,9 @@ class ClueCustomer extends React.Component {
                 var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
                 if (flag && filterAllotNoTraced){
                     //需要在列表中删除
-                    clueCustomerAction.afterAddClueTrace(item.id);
+                    clueCustomerAction.afterAddClueTrace(item);
                 }
             });
-
-
         }
         if (!isWillDistribute){
             item.user_name = sale_name;
@@ -1888,7 +1896,7 @@ class ClueCustomer extends React.Component {
     //线索合并到客户后的回调事件
     onClueMergedToCustomer = (customerId) => {
         //在列表中隐藏当前操作的线索
-        this.hideCurClue();
+        this.afterTransferClueSuccess();
 
         //打开客户面板，显示合并后的客户信息
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {

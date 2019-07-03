@@ -38,7 +38,7 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
-import {handleSubmitClueItemData} from '../utils/clue-customer-utils';
+import {handleSubmitClueItemData, SELECT_TYPE, isNotHasTransferStatus} from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 class ClueRightPanel extends React.Component {
     constructor(props) {
@@ -213,7 +213,7 @@ class ClueRightPanel extends React.Component {
         });
     };
     //确认删除某条线索
-    handleConfirmDeleteClue = () => {
+    handleConfirmDeleteClue = (e) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.delete-modal'), '确认删除线索');
         this.setState({
             isDeletingClue: true
@@ -230,7 +230,7 @@ class ClueRightPanel extends React.Component {
                 this.setState({
                     isRemoveClue: {},
                 });
-                _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
+                _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel(e);
             }
         });
     };
@@ -257,6 +257,15 @@ class ClueRightPanel extends React.Component {
             }
         });
     };
+    updateClueProperty = (updateProperty) => {
+        var curClue = this.state.curClue;
+        for (var key in updateProperty){
+            curClue[key] = updateProperty[key];
+        }
+        this.setState({
+            curClue: curClue
+        });
+    };
     render() {
         var curClue = this.state.curClue;
         //是否没有权限修改线索详情
@@ -277,7 +286,7 @@ class ClueRightPanel extends React.Component {
                                 {renderClueStatus(curClue.status)}
                                 <div className="clue-name-title">
                                     <BasicEditInputField
-                                        hasEditPrivilege={hasPrivilegeEdit}
+                                        hasEditPrivilege={hasPrivilegeEdit && isNotHasTransferStatus(curClue)}
                                         id={curClue.id}
                                         saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
                                         value={curClue.name}
@@ -286,7 +295,7 @@ class ClueRightPanel extends React.Component {
                                     />
                                 </div>
                             </div>
-                            {hasPrivilege('CLUECUSTOMER_DELETE') ?
+                            {hasPrivilege('CLUECUSTOMER_DELETE') && isNotHasTransferStatus(curClue) ?
                                 <div className="remove-clue">
                                     <i className="iconfont icon-delete"
                                         onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
@@ -318,6 +327,7 @@ class ClueRightPanel extends React.Component {
                                             updateRemarks={this.props.updateRemarks}
                                             hideRightPanel={this.hideRightPanel}
                                             showClueDetailPanel={this.showClueDetailPanel}
+                                            updateClueProperty={this.updateClueProperty}
                                         />
                                     ) : null}
                                 </TabPane>
