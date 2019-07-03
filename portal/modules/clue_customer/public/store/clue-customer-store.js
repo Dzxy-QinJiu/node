@@ -246,12 +246,15 @@ ClueCustomerStore.prototype.afterAddSalesClue = function(updateObj) {
     var typeFilter = getClueStatusValue(filterClueStatus);
     //只有筛选状态是待分配 或者 没有选分配状态的时候，并且筛选时间是今天的时候，才把这个新增客户加到列表中
     if (filterClueStatus && typeFilter) {
-        if (((typeFilter.status === '0' || typeFilter.status === '')) && clueFilterStore.getState().rangeParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangeParams[0].to) {
+        if (((typeFilter.status === '0')) && clueFilterStore.getState().rangeParams[0].from <= newCustomer.start_time && newCustomer.start_time <= clueFilterStore.getState().rangeParams[0].to) {
             this.curClueLists.unshift(newCustomer);
             this.customersSize++;
+
         }
     }
-
+    //把统计数字也更新一下
+    var count = this.agg_list['willDistribute'] || 0;
+    this.agg_list['willDistribute'] = count + 1;
     if (updateObj.showDetail) {
         //新添加的是正在展示的那条线索
         this.curClue = newCustomer;
@@ -309,21 +312,38 @@ ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail
     }
 };
 //如果原来的筛选条件是在待跟进的时候，要添加完跟进记录后，该类型的线索要删除添加跟进记录的这个线索
-ClueCustomerStore.prototype.afterAddClueTrace = function(updateId) {
-    this.curClueLists = _.filter(this.curClueLists, clue => updateId !== clue.id);
-    //把统计数据中的待跟进的数据减一
-    this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
-    this.customersSize--;
+ClueCustomerStore.prototype.afterAddClueTrace = function(item) {
+    //添加跟进内容后，线索状态都变成已跟进
+    var updateId = item.id, clueStatus = item.status;
+    if (clueStatus !== SELECT_TYPE.HAS_TRACE){
+        if (_.get(this, 'curClue.id') === item.id){
+            this.curClue.status = SELECT_TYPE.HAS_TRACE;
+        }
+        this.agg_list['hasTrace'] = this.agg_list['hasTrace'] + 1;
+        if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
+            this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
+        }else if (clueStatus === SELECT_TYPE.WILL_TRACE){
+            this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
+        }
+        this.curClueLists = _.filter(this.curClueLists, clue => updateId !== clue.id);
+        this.customersSize--;
+    }
 };
 //分配销售之后
 ClueCustomerStore.prototype.afterAssignSales = function(updateItemId) {
     //这个updateItemId可能是一个id，也可能是多个id
     var clueIds = updateItemId.split(',');
+    //如果当前展示的这个线索详情的id在clueIds中，需要修改线索的状态
+    if (clueIds.indexOf(_.get(this,'curClue.id')) > -1 && _.get(this,'curClue.status') === SELECT_TYPE.WILL_DISTRIBUTE){
+        this.curClue.status = SELECT_TYPE.WILL_TRACE;
+    }
     //如果是待分配状态，分配完之后要在列表中删除一个
     this.curClueLists = _.filter(this.curClueLists, clue => {
         if (_.indexOf(clueIds, clue.id) !== -1) {
             this.customersSize--;
             this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
+            //待跟进的需要加一
+            this.agg_list['willTrace'] = this.agg_list['willTrace'] + 1;
         }
         return _.indexOf(clueIds, clue.id) === -1;
     });
@@ -338,10 +358,34 @@ ClueCustomerStore.prototype.setKeyWord = function(keyword) {
 };
 //删除某个线索
 ClueCustomerStore.prototype.deleteClueById = function(data) {
-    var clueId = data.customer_clue_ids;
-    var clueStatus = data.clueStatus;
+    var clueId = data.customer_clue_ids || data.id;
+    var clueStatus = data.clueStatus || data.status;
     this.curClueLists = _.filter(this.curClueLists, clue => clueId !== clue.id);
     this.customersSize--;
+    //删除线索后，更新线索的统计值
+    if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
+        this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
+    }else if (clueStatus === SELECT_TYPE.WILL_TRACE){
+        this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
+    }else if (clueStatus === SELECT_TYPE.HAS_TRACE){
+        this.agg_list['hasTrace'] = this.agg_list['hasTrace'] - 1;
+    }else if (clueStatus === SELECT_TYPE.HAS_TRANSFER){
+        this.agg_list['hasTransfer'] = this.agg_list['hasTransfer'] - 1;
+    }
+};
+//转化客户成功后的处理
+ClueCustomerStore.prototype.afterTranferClueSuccess = function(data) {
+    var clueStatus = data.status;
+    this.customersSize--;
+    //删除线索后，更新线索的统计值
+    if (clueStatus === SELECT_TYPE.WILL_TRACE){
+        this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
+        this.agg_list['hasTransfer'] = this.agg_list['hasTransfer'] + 1;
+    }else if (clueStatus === SELECT_TYPE.HAS_TRACE){
+        this.agg_list['hasTrace'] = this.agg_list['hasTrace'] - 1;
+        this.agg_list['hasTransfer'] = this.agg_list['hasTransfer'] + 1;
+    }
+
 };
 //更新线索列表
 ClueCustomerStore.prototype.updateClueCustomers = function(data) {

@@ -21,12 +21,9 @@ var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,handleSubmitClueItemData,handleSubmitContactData,contactNameRule,getClueStatusValue} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,handleSubmitClueItemData,handleSubmitContactData,contactNameRule,getClueStatusValue, isNotHasTransferStatus} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 const EDIT_FEILD_WIDTH = 300;
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
@@ -251,7 +248,6 @@ class ClueDetailOverview extends React.Component {
             if (result && result.error) {
                 if (_.isFunction(errorFunc)) errorFunc(result.errorMsg);
             } else {
-                curClue.status = SELECT_TYPE.HAS_TRACE;
                 var userId = userData.getUserData().user_id || '';
                 var userName = userData.getUserData().nick_name;
                 var addTime = moment().valueOf();
@@ -271,10 +267,12 @@ class ClueDetailOverview extends React.Component {
                     curClue.customer_traces[0].add_time = addTime;
                 }
                 this.props.updateRemarks(curClue.customer_traces);
-                clueCustomerAction.updateClueProperty({id: saveObj.customer_id,status: SELECT_TYPE.HAS_TRACE,customer_traces: curClue.customer_traces});
                 this.setState({
                     curClue: curClue
                 });
+                //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
+                clueCustomerAction.afterAddClueTrace(curClue);
+                this.props.updateClueProperty({status: SELECT_TYPE.HAS_TRACE,customer_traces: curClue.customer_traces});
                 if (_.isFunction(successFunc)) successFunc();
             }
         });
@@ -284,6 +282,9 @@ class ClueDetailOverview extends React.Component {
     handleChangeAssignedSales = (submitObj, successFunc, errorFunc) => {
         var user_id = _.get(this.state.curClue,'user_id');
         var curClue = this.state.curClue;
+        var clueCustomerTypeFilter = getClueStatusValue(clueFilterStore.getState().filterClueStatus);
+        //如果是待分配状态，分配完之后要在列表中删除一个,在待跟进列表中增加一个
+        var isWillDistribute = clueCustomerTypeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE;
         var targetObj = _.find(this.props.salesManList, (item) => {
             var userId = _.get(item, 'user_info.user_id');
             return userId === submitObj.user_id;
@@ -304,6 +305,7 @@ class ClueDetailOverview extends React.Component {
                 if (result && result.errorMsg) {
                     if (_.isFunction(errorFunc)) errorFunc(result.errorMsg);
                 } else {
+
                     if (_.isFunction(successFunc)) successFunc();
                     if (Oplate && Oplate.unread && curClue.status === SELECT_TYPE.WILL_TRACE) {
                         subtracteGlobalClue(curClue);
@@ -311,13 +313,20 @@ class ClueDetailOverview extends React.Component {
                     this.setState({
                         clickAssigenedBtn: false
                     });
-                    clueCustomerAction.afterEditCustomerDetail({
+                    var updateObj = {
                         'user_name': userName,
                         'user_id': submitObj.user_id,
                         'sales_team': teamName,
-                        'sales_team_id': teamId,
-                        'status': SELECT_TYPE.WILL_TRACE
-                    });
+                        'sales_team_id': teamId
+                    };
+                    clueCustomerAction.afterEditCustomerDetail(updateObj);
+                    this.props.updateClueProperty(updateObj);
+                    if (isWillDistribute) {
+                        clueCustomerAction.afterAssignSales(curClue.id);
+                        this.props.updateClueProperty({
+                            'status': SELECT_TYPE.WILL_TRACE
+                        });
+                    }
                 }
             });
         }
@@ -387,9 +396,6 @@ class ClueDetailOverview extends React.Component {
     //标记线索无效或者有效
     handleClickInvalidBtn = (item, callback) => {
         var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
-        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY) {
-            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
-        }
         var submitObj = {
             id: item.id,
             availability: updateValue
@@ -404,20 +410,10 @@ class ClueDetailOverview extends React.Component {
                 });
             } else {
                 _.isFunction(callback) && callback(updateValue);
-                var curClue = this.state.curClue;
-                curClue.invalid_info = {
-                    user_name: userData.getUserData().nick_name,
-                    time: moment().valueOf()
-                };
-                curClue.availability = updateValue;
-                clueCustomerAction.updateClueProperty({
-                    id: item.id,
-                    availability: updateValue,
-                    status: SELECT_TYPE.HAS_TRACE
-                });
+                _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
+                clueCustomerAction.deleteClueById(item);
                 this.setState({
                     isInvalidClue: false,
-                    curClue: curClue
                 });
             }
         });
@@ -466,6 +462,11 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
+    assignSalesPrivilege = () => {
+        let user = userData.getUserData();
+        var curClue = this.state.curClue;
+        return (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) && isNotHasTransferStatus(curClue);
+    };
 
     renderAssignedClueEdit = () => {
         let user = userData.getUserData();
@@ -473,7 +474,7 @@ class ClueDetailOverview extends React.Component {
         //分配的状态
         var assignedDisplayType = this.state.clickAssigenedBtn ? 'edit' : 'text';
         //分配线索给销售的权限
-        var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
+        var hasAssignedPrivilege = this.assignSalesPrivilege();
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
         //所分配的销售所属的团队
@@ -485,10 +486,11 @@ class ClueDetailOverview extends React.Component {
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label handle-clue-person">
-                    {Intl.get('crm.6', '负责人')}：
+                    {Intl.get('crm.6', '负责人')}
                 </div>
                 <div className="clue-info-detail">
                     <BasicEditSelectField
+                        width={EDIT_FEILD_WIDTH}
                         displayType={assignedDisplayType}
                         hasEditPrivilege={hasAssignedPrivilege}
                         id={curClue.id}
@@ -507,8 +509,6 @@ class ClueDetailOverview extends React.Component {
     };
 
     renderAssociatedAndInvalidClueHandle = (curClue) => {
-        //该线索无效
-        var isInvalidClue = curClue.availability === '1';
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         return (
@@ -578,9 +578,9 @@ class ClueDetailOverview extends React.Component {
 
     //渲染跟进内容
     renderTraceContent = () => {
-        //是否有添加跟进记录的权限
-        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE');
         var curClue = this.state.curClue;
+        //是否有添加跟进记录的权限
+        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE') && isNotHasTransferStatus(curClue);
         var remarkContent = _.get(curClue, 'customer_traces[0].remark');
         var remarkAddName = _.get(curClue, 'customer_traces[0].nick_name');
         var remarkAddTime = _.get(curClue, 'customer_traces[0].add_time');
@@ -650,7 +650,7 @@ class ClueDetailOverview extends React.Component {
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
-        var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
+        var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER') && isNotHasTransferStatus(curClue);
         return (
             <div className="clue-info-wrap clue-detail-block">
                 <div className="clue-basic-info">
@@ -677,7 +677,7 @@ class ClueDetailOverview extends React.Component {
                         <div className="clue-info-detail">
                             <BasicEditInputField
                                 width={EDIT_FEILD_WIDTH}
-                                hasEditPrivilege={hasPrivilegeEdit}
+                                hasEditPrivilege={hasPrivilegeEdit }
                                 id={curClue.id}
                                 saveEditInput={this.saveEditBasicInfo.bind(this, 'source')}
                                 value={curClue.source}
@@ -895,7 +895,7 @@ class ClueDetailOverview extends React.Component {
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
         //分配线索给销售的权限
-        var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
+        var hasAssignedPrivilege = this.assignSalesPrivilege();
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         return (
@@ -913,7 +913,7 @@ class ClueDetailOverview extends React.Component {
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，如果索不是无效的*/}
                         {
-                            curClue.status === SELECT_TYPE.HAS_TRACE ?
+                            curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE ?
                                 this.renderAssociatedAndInvalidClueHandle(curClue)
                                 : null 
                         }
@@ -952,6 +952,12 @@ ClueDetailOverview.defaultProps = {
     },
     showClueDetailPanel: function() {
 
+    },
+    hideRightPanel: function() {
+
+    },
+    updateClueProperty: function() {
+
     }
 
 };
@@ -967,7 +973,9 @@ ClueDetailOverview.propTypes = {
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
     updateRemarks: PropTypes.func,
-    showClueDetailPanel: PropTypes.func
+    showClueDetailPanel: PropTypes.func,
+    hideRightPanel: PropTypes.func,
+    updateClueProperty: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;
