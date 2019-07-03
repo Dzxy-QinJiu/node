@@ -334,6 +334,15 @@ var zh_CN = {
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
 
+
+    //首页
+    'menu.home.page': '首页',
+    'home.page.my.work': '我的工作',
+    'home.page.work.all': '全部事务',
+    'home.page.my.interest': '我的关注',
+    'home.page.my.data': '我的数据',
+    'home.page.deal.handle': '待处理的订单',
+
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
     'user.title': '用户管理',
@@ -3117,7 +3126,6 @@ var zh_CN = {
     'clue.manage.contact.clue': '联系线索',
     'crm.103': '变更负责人',
     'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
-    'call.record.phone.err.msg': '电话号码错误',
     'clue.customer.has.transfer': '已转化',
     'common.sales.transfer.customer': '转为客户'
 };

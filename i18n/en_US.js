@@ -327,6 +327,9 @@ var en_US = {
     'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
 
+    //首页
+    'home.page': 'Home page',//首页
+
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
     'user.title': 'Users',//用户管理
@@ -3011,7 +3014,6 @@ var en_US = {
     'clue.manage.contact.clue': 'Contact clue',//联系线索
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
-    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
     'clue.customer.has.transfer': 'Has transfer',//已转化
     'common.sales.transfer.customer': 'Transfer customer'//转为客户
 };
