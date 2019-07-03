@@ -910,15 +910,6 @@ class ClueCustomer extends React.Component {
     isFireFoxBrowser = () => {
         return navigator.userAgent.toUpperCase().indexOf('FIREFOX') > -1;
     };
-    //处理选中行的样式
-    handleRowClassName = (record, index) => {
-        if ((record.id === this.state.currentId) && rightPanelShow) {
-            return 'current-row';
-        }
-        else {
-            return '';
-        }
-    };
     setInvalidClassName= (record, index) => {
         var cls = '';
         if ((record.id === this.state.currentId) && rightPanelShow){
