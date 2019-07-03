@@ -109,7 +109,7 @@ class Dynamic extends React.Component {
                 >
                     {this.state.isLoading ? <Spinner/> : this.state.errorMsg ? (
                         <span className="dynamic-error-tip">{this.state.errorMsg}</span>) : _.get(this.state, 'dynamicList[0]') ? (
-                        <div className="clue-dynamic-list">
+                        <div className="dynamic-list">
                             <AntcTimeLine
                                 data={this.state.dynamicList}
                                 groupByDay={true}
