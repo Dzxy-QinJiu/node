@@ -3012,7 +3012,6 @@ var en_US = {
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
     'clue.customer.has.transfer': 'Has transfer',//已转化
-    'common.sales.transfer.customer': 'Transfer customer',//转为客户
     'clue.confirm.clue.invalid': 'Confirm Invalid'//确认无效
 };
 export default en_US;
