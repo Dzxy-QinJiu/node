@@ -155,7 +155,7 @@ class SalesClueItem extends React.Component {
                         salesClueItemDetail: clueItem,
                         isEdittingItem: {},
                     });
-                    _.isFunction(this.props.afterAddClueTrace) && this.props.afterAddClueTrace(item.id);
+                    _.isFunction(this.props.afterAddClueTrace) && this.props.afterAddClueTrace(item);
                 }
             });
         }

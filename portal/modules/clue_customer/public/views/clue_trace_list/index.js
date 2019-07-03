@@ -36,7 +36,7 @@ var clueCustomerAction = require('../../action/clue-customer-action');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {SELECT_TYPE, AVALIBILITYSTATUS} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS, isNotHasTransferStatus} from '../../utils/clue-customer-utils';
 class ClueTraceList extends React.Component {
     state = {
         playingItemAddr: '',//正在播放的那条记录的地址
@@ -689,7 +689,7 @@ class ClueTraceList extends React.Component {
     };
     render() {
         //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
-        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit;
+        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && isNotHasTransferStatus(this.props.curClue);
         return (
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">

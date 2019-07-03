@@ -95,6 +95,7 @@ class ClueDetailPanel extends React.Component {
             phoneRecordObj.callid = phonemsgObj.callid;
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
         }
+
     }
 
     setStatePhoneNumb(phoneNum) {
@@ -189,12 +190,7 @@ class ClueDetailPanel extends React.Component {
             this.refs.customerCardsScrollbar && this.refs.customerCardsScrollbar.update();
         });
     };
-    //关闭已有线索的右侧面板
-    hideRightPanel = () => {
-        this.setState({
-            rightPanelIsShow: false
-        });
-    };
+
 
     //渲染线索名及所属销售卡片
     renderClueCard(clue, myCustomer) {
@@ -288,7 +284,7 @@ class ClueDetailPanel extends React.Component {
                 ref={cluePanel => this.cluePanel = cluePanel}
                 currentId={customer.id}
                 curClue={customer}
-                hideRightPanel={this.hideRightPanel.bind(this)}
+                hideRightPanel={this.hideClueDetailPanel}
             />);
     }
 
@@ -376,7 +372,7 @@ class ClueDetailPanel extends React.Component {
     }
 
 
-    hideClueDetailPanel(e) {
+    hideClueDetailPanel = (e) => {
         Trace.traceEvent(e, this.state.paramObj.call_params ? '关闭拨打电话的面板' : '关闭线索详情');
         let paramObj = this.state.paramObj;
         if (paramObj.clue_params && _.isFunction(paramObj.clue_params.hideRightPanel)) {
@@ -510,8 +506,7 @@ class ClueDetailPanel extends React.Component {
                     {/*{只打开线索详情或从当前展示的线索详情中打电话时}*/}
                     {this.isOnlyOpenClueDetail(paramObj) || this.isClueDetailCall(paramObj) ? (
                         <ClueDetail ref={cluePanel => this.cluePanel = cluePanel} {...paramObj.clue_params}
-                            hideRightPanel={this.hideRightPanel.bind(this)}
-
+                            hideRightPanel={this.hideClueDetailPanel}
                         />) : null
                     }
                 </div>
