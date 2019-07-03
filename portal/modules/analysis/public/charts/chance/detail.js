@@ -55,6 +55,10 @@ export function getChanceDetailChart() {
                     title: '客户经理',
                     dataIndex: 'nick_name',
                     width: 75,
+                }, {
+                    title: '是否签单',
+                    dataIndex: 'if_sign',
+                    width: 75,
                 }
             ],
         },
