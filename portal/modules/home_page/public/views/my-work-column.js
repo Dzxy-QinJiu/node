@@ -131,148 +131,49 @@ class MyWorkColumn extends React.Component {
             </Dropdown>);
     }
 
-    renderClueCard(item) {
-        const clueTitle = (
-            <span className='clue-title work-item-title'>
-                <i className='iconfont icon-clue work-title-icon'/>
-                <span className='work-title-text'>{Intl.get('sales.home.sales.clue', '待处理的线索')}</span>
-            </span>);
-        const clueContent = (
-            <div className='clue-content-wrap'>
-                <div className='clue-name work-name'
-                    onClick={this.openClueDetail.bind(this, _.get(item, 'clue_id'))}>{_.get(item, 'name', '')}</div>
-                <div className='clue-description work-detail'>{_.get(item, 'detail.source', '')}</div>
-                {this.renderContactItem(item)}
-            </div>);
-        return (<DetailCard title={clueTitle}
-            content={clueContent}
-            className='clue-work-card'/>);
-    }
-
     openClueDetail = (clueId) => {
-        if (!clueId) return;
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
             clue_params: {
                 currentId: clueId,
-                // hideRightPanel: this.hideRightPanel,
-                // afterDeleteClue: this.afterDeleteClue,
-                // removeUpdateClueItem: this.removeUpdateClueItem,
-                // updateRemarks: this.updateRemarks
+                hideRightPanel: this.hideClueRightPanel,
+                afterDeleteClue: this.afterDeleteClue,
             }
         });
+    }
+    hideClueRightPanel = () => {
+
+    }
+    //删除线索之后
+    afterDeleteClue = () => {
+
     };
 
-
-    renderApplyCard(item) {
-        const applyTitle = (
-            <span className='work-item-title'>
-                <i className='iconfont icon-application-ico work-title-icon'/>
-                <span className='work-title-text'>{Intl.get('menu.apply.notification', '申请消息')}</span>
-            </span>);
-        const applyContent = (
-            <div className='work-content-wrap'>
-                <div className='work-name'>{_.get(item, 'name', '')}</div>
-                <div className='work-detail'>
-                    <span className='apply-person'>
-                        {Intl.get('user.apply.presenter', '申请人')} : {_.get(item, 'detail.applicant.nick_name', '')}
-                    </span>
-                    <span className='apply-time'>
-                        {_.get(item, 'detail.apply_time') ? moment(_.get(item, 'detail.apply_time')).format(oplateConsts.DATE_TIME_FORMAT) : null}
-                    </span>
-                </div>
-                {/*<div className='work-hover-show-detail'></div>*/}
-            </div>);
-        return (<DetailCard title={applyTitle}
-            content={applyContent}
-            className='apply-work-card'/>);
-    }
-
-    getScheduleShowObj(itemDetail) {
-        let scheduleShowOb = {
-            iconClass: 'icon-schedule_management-ico',
-            title: '',
-            startTime: itemDetail.start_time ? moment(itemDetail.start_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : '',
-            endTime: itemDetail.end_time ? moment(itemDetail.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) : '',
-        };
-        switch (itemDetail.schedule_type) {
-            case 'visit':
-                scheduleShowOb.iconClass = 'icon-visit-briefcase';
-                scheduleShowOb.title = Intl.get('customer.visit', '拜访');
-                break;
-            case 'calls':
-                scheduleShowOb.iconClass = 'icon-phone-call-out';
-                scheduleShowOb.title = Intl.get('crm.schedule.call', '打电话');
-                break;
-            case 'other':
-                scheduleShowOb.iconClass = 'icon-trace-other';
-                scheduleShowOb.title = Intl.get('customer.other', '其他');
-                break;
-        }
-        return scheduleShowOb;
-    }
-
-    renderScheduleWork(item, index) {
-        const scheduleObj = this.getScheduleShowObj(item.detail);
-        const title = (
-            <span className='clue-title work-item-title'>
-                <i className={'iconfont ' + scheduleObj.iconClass}/>
-                <span className='work-title-time'>{scheduleObj.startTime} - {scheduleObj.endTime}</span>
-                <span className='work-title-text'>{scheduleObj.title}</span>
-            </span>);
-        const content = (
-            <div className='work-content-wrap'>
-                {this.renderCustomerName(item, index)}
-                <div className='schedule-description work-detail'>
-                    {_.get(item, 'detail.remark', '')}
-                </div>
-                {this.renderContactItem(item)}
-            </div>);
-        return (<DetailCard title={title}
-            content={content}
-            className='my-work-card schedule-work'/>);
-    }
-
-    //待处理的订单
-    renderDealWork(item, index) {
-        const clueTitle = (
-            <span className='work-item-title'>
-                <i className='iconfont icon-deal_manage-ico work-title-icon'/>
-                <span className='work-title-text'>{Intl.get('home.page.deal.handle', '待处理的订单')}</span>
-            </span>);
-
-        let lastContactTime = _.get(item, 'detail.last_contact_time') ?
-            moment(_.get(item, 'detail.last_contact_time')).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) : null;
-        const clueContent = (
-            <div className='deal-content-wrap'>
-                {this.renderCustomerName(item, index)}
-                <div className='deal-description work-detail'>
-                    {lastContactTime ? <span className='last-contact-time'>{lastContactTime}</span> : null}
-                    {_.get(item, 'detail.customer_trace', '')}
-                </div>
-                {this.renderContactItem(item)}
-            </div>);
-        return (<DetailCard title={clueTitle}
-            content={clueContent}
-            className='deal-work-card'/>);
-    }
-
     openCustomerDetail(customerId, index) {
-        if (customerId) {
-            if (this.state.curShowUserId) {
-                this.closeRightUserPanel();
+        if (this.state.curShowUserId) {
+            this.closeRightUserPanel();
+        }
+        this.setState({
+            curShowCustomerId: customerId,
+            selectedLiIndex: index
+        });
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customerId,
+                ShowCustomerUserListPanel: this.showCustomerUserListPanel,
+                showRightPanel: this.showRightPanel,
+                hideRightPanel: this.closeRightCustomerPanel
             }
-            this.setState({
-                curShowCustomerId: customerId,
-                selectedLiIndex: index
-            });
-            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-                customer_params: {
-                    currentId: customerId,
-                    ShowCustomerUserListPanel: this.showCustomerUserListPanel,
-                    showRightPanel: this.showRightPanel,
-                    hideRightPanel: this.closeRightCustomerPanel
-                }
-            });
+        });
+    }
+
+    openCustomerOrClueDetail(id, modelType, index) {
+        if (!id) return;
+        //打开线索详情
+        if (modelType === 'lead') {
+            this.openClueDetail(id);
+        } else if (modelType === 'customer') {
+            //打开客户详情
+            this.openCustomerDetail(id, index);
         }
     }
 
@@ -312,12 +213,20 @@ class MyWorkColumn extends React.Component {
         });
     };
 
-    renderCustomerName(item, index) {
+    renderWorkName(item, index) {
         //客户阶段标签
         const customer_label = _.get(item, 'details[0].tag');
+        //客户合格标签
         const qualify_label = _.get(item, 'detail.qualify_label');
+        //分数
         const score = _.get(item, 'details[0].score');
-        const customerId = _.get(item, 'details[0].id');
+        //客户id或线索id
+        const id = _.get(item, 'details[0].id');
+        const nameCls = classNames('work-name-text', {
+            'customer-clue-name': !!id
+        });
+        //日程通过modelType来判断当前是线索还是客户
+        const modelType = _.get(item, 'details[0].model_type');
         return (
             <div className='work-name'>
                 {customer_label ? (
@@ -330,8 +239,10 @@ class MyWorkColumn extends React.Component {
                         {qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
                             qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                 }
-                <span className='customer-name'
-                    onClick={this.openCustomerDetail.bind(this, customerId, index)}>{_.get(item, 'details[0].name', '')}</span>
+                <span className={nameCls}
+                    onClick={this.openCustomerOrClueDetail.bind(this, id, modelType, index)}>
+                    {_.get(item, 'details[0].name', '')}
+                </span>
                 {score ? (
                     <span className='custmer-score'>
                         <i className='iconfont icon-customer-score'/>
@@ -412,7 +323,7 @@ class MyWorkColumn extends React.Component {
             </span>);
         const content = (
             <div className='work-content-wrap'>
-                {this.renderCustomerName(item, index)}
+                {this.renderWorkName(item, index)}
                 <div className='work-remark'>
                     {_.get(item, 'remark', '')}
                 </div>
@@ -471,7 +382,7 @@ class MyWorkColumn extends React.Component {
     }
 
     render() {
-        let title = Intl.get('home.page.my.work', '我的助手');
+        let title = Intl.get('home.page.my.work', '我的工作');
         if (this.state.totalCount) {
             title += this.state.totalCount;
         }
