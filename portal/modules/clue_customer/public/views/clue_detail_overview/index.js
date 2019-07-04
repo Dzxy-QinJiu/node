@@ -442,7 +442,7 @@ class ClueDetailOverview extends React.Component {
             if (_.isString(result)) {
                 this.setState({
                     isInvaliding: false,
-                    isInvalidClue: ''
+                    editInvalidClueId: ''
                 });
             } else {
                 _.isFunction(callback) && callback(updateValue);
@@ -450,14 +450,14 @@ class ClueDetailOverview extends React.Component {
                 clueCustomerAction.deleteClueById(item);
                 this.setState({
                     isInvaliding: false,
-                    isInvalidClue: ''
+                    editInvalidClueId: ''
                 });
             }
         });
     };
     cancelInvalidClue = () => {
         this.setState({
-            isInvalidClue: ''
+            editInvalidClueId: ''
         });
     };
     renderItemSelfSettingContent = (curClue,item) => {
@@ -551,7 +551,7 @@ class ClueDetailOverview extends React.Component {
     };
     showConfirmInvalid = (item) => {
         this.setState({
-            isInvalidClue: item.id
+            editInvalidClueId: item.id
         });
     };
     renderInvalidConfirm = (salesClueItem) => {
@@ -588,7 +588,7 @@ class ClueDetailOverview extends React.Component {
                     {Intl.get('clue.has.no.handle', '暂未处理')}
                 </div>
                 <div className="btn-container">
-                    {_.get(this,'state.isInvalidClue') === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
+                    {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
                 </div>
             </div>
         );
