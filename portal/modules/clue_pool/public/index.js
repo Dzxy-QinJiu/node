@@ -9,7 +9,7 @@ import ClueFilterPanel from './views/clue-filter-panel';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import { getClueSalesList, getLocalSalesClickCount} from './utils/clue-customer-utils';
+import { getClueSalesList, getLocalSalesClickCount} from './utils/clue-pool-utils';
 import ShearContent from 'CMP_DIR/shear-content';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import cluePoolStore from './store';
@@ -539,6 +539,12 @@ class ClueExtract extends React.Component {
             message.error(errMsg || Intl.get('clue.extract.failed', '提取失败'));
         });
     }
+    // 清空所选择的销售
+    clearSelectSales = () => {
+        cluePoolAction.setSalesMan({'salesMan': ''});
+        cluePoolAction.setSalesManName({'salesManNames': ''});
+    };
+
     // table 列
     getClueTableColunms = () => {
         return [
