@@ -3099,7 +3099,6 @@ var zh_CN = {
     'common.confirm.modify': '确认修改',
     'common.confirm.merge': '确认合并',
     'common.merge.success': '合并成功',
-
     'clue.filter.wait.me.handle': '待我处理',
     'clue.item.source.from': '来自{source}',
     'clue.item.acceess.channel': '详情：{content}',
@@ -3120,5 +3119,11 @@ var zh_CN = {
     'clue.customer.has.transfer': '已转化',
     'clue.confirm.clue.invalid': '确认无效',
     'contract.amount.check.tip': '产品总额不能大于合同总额{amount}元，请核对',
+    'apply.approve.first.higher.level': '直属上级',
+    'apply.approve.some.level': '第{n}级上级',
+    'apply.approve.level.five': '五',
+    'apply.approve.level.six': '六',
+    'apply.approve.level.eight': '八',
+    'apply.approve.level.nine': '九',
 };
 export default zh_CN;

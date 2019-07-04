@@ -218,23 +218,48 @@ exports.APPROVER_TYPE = [{
     
 {name: Intl.get('apply.add.approver.applicant.self', '申请人自己'), value: 'application_self'}
 ];
-exports.HIGHER_LEVEL = [
+exports.TEAM_HIGHER_LEVEL = [
     {
-        name: Intl.get('apply.add.approve.node.team.owner', '部门经理'),
-        value: 'teamowner'
+        name: Intl.get('apply.approve.first.higher.level', '直属上级'),
+        value: 'team_0_true'
     },
     {
-        name: Intl.get('apply.add.approve.node.team.owner.and.higher.level.owner', '团队所有者或者上级团队所有者'),
-        value: 'teamownerorseniorowner'
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('user.number.first', '一')}),
+        value: 'team_1_true'
     },
     {
-        name: Intl.get('apply.add.approve.node.higher.level.owner', '上级团队所有者'),
-        value: 'seniorteamowner'
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('user.number.second', '二')}),
+        value: 'team_2_true'
     },
     {
-        name: Intl.get('apply.add.approve.node.all.higher.level.owner', '所有上级团队所有者'),
-        value: 'allseniorteamowner'
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('user.number.three', '三')}),
+        value: 'team_3_true'
+    },
+    {
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('user.number.four', '四')}),
+        value: 'team_4_true'
+    },
+    {
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('apply.approve.level.five', '五')}),
+        value: 'team_5_true'
+    },
+    {
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('apply.approve.level.six', '六')}),
+        value: 'team_6_true'
+    }, {
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('user.num.seven', '七')}),
+        value: 'team_7_true'
+    }, {
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('apply.approve.level.eight', '八')}),
+        value: 'team_8_true'
+    }, {
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('apply.approve.level.nine', '九')}),
+        value: 'team_9_true'
+    }, {
+        name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: Intl.get('user.num.ten', '十')}),
+        value: 'team_10_true'
     }
+
 ];
 exports.ROLES_SETTING = [
     {
