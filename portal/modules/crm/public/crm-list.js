@@ -479,10 +479,6 @@ class Crm extends React.Component {
     };
 
     showRightPanel = (id) => {
-        //舆情秘书角色不让看详情
-        if (hasSecretaryAuth) {
-            return;
-        }
         rightPanelShow = true;
         CrmAction.setCurrentCustomer(id);
         setTimeout(() => {
