@@ -136,6 +136,11 @@ exports.extractClueAssignToSale = (reqData) => {
 
 // 批量提取线索
 exports.extractClueAssignToSale = (reqData) => {
+    let type = 'self';
+    if (hasPrivilege(' LEAD_EXTRACT_ALL')) {
+        type = 'all';
+    }
+    let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/clue_pool/batch/assign/sales/' + type,
         dataType: 'json',

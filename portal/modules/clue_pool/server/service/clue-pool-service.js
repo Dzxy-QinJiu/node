@@ -139,7 +139,7 @@ exports.getCluePoolClassify = (req, res) => {
 exports.getCluePoolProvince = (req, res) => {
     return restUtil.authRest.post(
         {
-            url: restApis.cluePoolFilterURL.replace(':field','access_channel'),
+            url: restApis.cluePoolFilterURL.replace(':field','province'),
             req: req,
             res: res
         }, null);

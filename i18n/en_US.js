@@ -2665,6 +2665,10 @@ var en_US = {
     'clue.extract.clue': 'Extract clue', // 提取线索
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
     'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
+    'clue.extract.former.responsible.person': 'Former responsible person', // 原负责人
+    'clue.extract': 'Extract', // 提取
+    'clue.extract.failed': 'Failed', // 提取失败
+    'clue.extract.success': 'Success', // 提取成功
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3008,7 +3012,6 @@ var en_US = {
     'common.confirm.modify': 'confirm modify',//确认修改
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
-    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
     'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
     'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
     'clue.manage.contact.clue': 'Contact clue',//联系线索
