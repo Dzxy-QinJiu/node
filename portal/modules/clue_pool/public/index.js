@@ -2,6 +2,7 @@ require('./css/index.less');
 import React from 'react';
 import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanelClose = rightPanelUtil.RightPanelClose;
+const batchOperate = require('PUB_DIR/sources/push/batch');
 import { FilterInput } from 'CMP_DIR/filter';
 import {SearchInput, AntcTable} from 'antc';
 import userData from 'PUB_DIR/sources/user-data';
@@ -9,7 +10,7 @@ import ClueFilterPanel from './views/clue-filter-panel';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import { getClueSalesList, getLocalSalesClickCount} from './utils/clue-pool-utils';
+import { getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from './utils/clue-pool-utils';
 import ShearContent from 'CMP_DIR/shear-content';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import cluePoolStore from './store';
@@ -24,6 +25,8 @@ import {Button, message} from 'antd';
 const Spinner = require('CMP_DIR/spinner');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import {batchPushEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -56,6 +59,54 @@ class ClueExtract extends React.Component {
         this.setState(cluePoolStore.getState());
     };
 
+    updateItem = (item, submitObj) => {
+        let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
+        SetLocalSalesClickCount(sale_id);
+        //member_id是跟进销售的id
+        if (Oplate && Oplate.unread) {
+            subtracteGlobalClue(item,(flag) => {
+                if (flag){
+                    //需要在列表中删除
+                    cluePoolAction.updateCluePoolList(item.id);
+                }
+            });
+        }
+    };
+
+    batchChangeTraceMan = (taskInfo, taskParams) => {
+        //如果参数不合法，不进行更新
+        if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
+            return;
+        }
+        //解析tasks
+        let {
+            tasks
+        } = taskInfo;
+        //如果tasks为空，不进行更新
+        if (!_.isArray(tasks) || !tasks.length) {
+            return;
+        }
+        //检查taskDefine
+        tasks = _.filter(tasks, (task) => typeof task.taskDefine === 'string');
+        //如果没有要更新的数据
+        if (!tasks.length) {
+            return;
+        }
+        let curClueLists = this.state.cluePoolList;
+        let clueArr = _.map(tasks, 'taskDefine');
+        // 遍历每一个线索
+        _.each(clueArr, (clueId) => {
+            //如果当前客户是需要更新的客户，才更新
+            let target = _.find(curClueLists,item => item.id === clueId);
+            if (target) {
+                this.updateItem(target, taskParams);
+            }
+        });
+        this.setState({
+            selectedClues: []
+        });
+    };
+
     componentDidMount() {
         cluePoolStore.listen(this.onStoreChange);
         this.getCluePoolLeading(); // 获取线索池的负责人
@@ -68,6 +119,7 @@ class ClueExtract extends React.Component {
             cluePoolAction.getSalesManList();
         }
         this.getCluePoolList();
+        batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
     }
 
     componentWillUnmount() {
@@ -75,6 +127,7 @@ class ClueExtract extends React.Component {
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         cluePoolAction.resetState();
+        batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
     }
 
     // 获取线索池的负责人
@@ -724,7 +777,7 @@ class ClueExtract extends React.Component {
                     taskId: taskId,
                     total: totalSelectedSize,
                     running: totalSelectedSize,
-                    typeText: Intl.get('clue.batch.change.trace.man', '变更跟进人')
+                    typeText: Intl.get('clue.extract.clue', '提取线索')
                 });
             }
 

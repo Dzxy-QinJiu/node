@@ -32,3 +32,19 @@ export const getLocalSalesClickCount = function(clueSalesIdList, sale_id) {
     }
     return clickCount;
 };
+
+export const SetLocalSalesClickCount = function(sale_id) {
+    var clueSalesIdList = getClueSalesList();
+    var targetObj = _.find(clueSalesIdList,(item) => {
+        return item.saleId === sale_id;
+    });
+    if (!_.isEmpty(targetObj)){
+        targetObj.clickCount++;
+    }else{
+        clueSalesIdList.push({
+            saleId: sale_id,
+            clickCount: 1
+        });
+    }
+    local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
+};
