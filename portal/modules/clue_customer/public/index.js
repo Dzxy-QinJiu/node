@@ -1862,8 +1862,16 @@ class ClueCustomer extends React.Component {
                  CRM_CLUE_STATISTICAL 查看线索概览的权限
                  CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
                  */}
-                {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
-                {this.renderExtractClue()}
+                {
+                    hasPrivilege('CRM_CLUE_STATISTICAL') ||
+                    hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') ||
+                    hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ?
+                        this.renderClueAnalysisBtn() : null
+                }
+                {
+                    hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF') ?
+                        this.renderExtractClue() : null
+                }
                 {this.renderExportClue()}
                 {this.renderHandleBtn()}
                 {this.renderImportClue()}

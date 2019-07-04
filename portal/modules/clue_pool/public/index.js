@@ -841,7 +841,9 @@ class ClueExtract extends React.Component {
                             hasSelectedClue ? this.renderBatchChangeClues() : null
                         }
                     </div>
-                    <RightPanelClose onClick={this.closeExtractCluePanel}/>
+                    {
+                        hasSelectedClue ? null : <RightPanelClose onClick={this.closeExtractCluePanel}/>
+                    }
                 </div>
                 <div className='extract-clue-content-container'>
                     <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
