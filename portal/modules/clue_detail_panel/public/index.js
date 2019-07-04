@@ -103,15 +103,20 @@ class ClueDetailPanel extends React.Component {
         }
 
         //增加打开客户详情面板的事件监听
+        //打开客户详情面板时，当前面板的z-index减1
+        //以使当前面板显示在后面
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.adjustThisPanelZIndex.bind(this, -1));
 
         //增加关闭客户详情面板的事件监听
+        //关闭客户详情面板时，恢复当前面板的原始z-index
         phoneMsgEmitter.on(phoneMsgEmitter.CLOSE_PHONE_PANEL, this.adjustThisPanelZIndex);
 
         //增加打开线索详情面板的事件监听
+        //从客户详情面板打开当前面板时，恢复当前面板的原始z-index
+        //以使当前面板显示在前面
         phoneMsgEmitter.on(phoneMsgEmitter.OPEN_CLUE_PANEL, this.adjustThisPanelZIndex);
 
-        //获取当前面板的z-index
+        //获取当前面板原始的z-index
         thisPanelZIndex = $(ReactDOM.findDOMNode(this)).css('zIndex');
 
         //转为数字，以便进行加减计算
