@@ -12,15 +12,15 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
 import ShearContent from 'CMP_DIR/shear-content';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
-const cluePoolStore = require('./store');
-const cluePoolAction = require('./action');
+import cluePoolStore from './store';
+import cluePoolAction from './action';
 import classNames from 'classnames';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
-import clueFilterAction from 'MOD_DIR/clue_customer/public/action/filter-action';
-import clueFilterStore from 'MOD_DIR/clue_customer/public/store/clue-filter-store';
+import clueFilterAction from './action/filter-action';
+import clueFilterStore from './store/filter-store';
 import cluePoolAjax from './ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import {Button} from 'antd';
+import {Button, message} from 'antd';
 const Spinner = require('CMP_DIR/spinner');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -36,14 +36,18 @@ class ClueExtract extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            clueLeadingArray: [], // 负责人
             accessChannelArray: accessChannelArray,// 线索渠道
             clueSourceArray: clueSourceArray,// 线索来源
             clueClassifyArray: clueClassifyArray,// 线索分类
+            clueProvinceArray: [], // 地域
             showFilterList: userData.getUserData().isCommonSales ? true : false,//是否展示线索筛选区域
             selectedClues: [],//获取批量操作选中的线索
+            singleExtractLoading: false, // 单个提取的loading
+            ...cluePoolStore.getState()
         };
     }
-
+    // 判断是否为普通销售
     isCommonSales = () => {
         return userData.getUserData().isCommonSales;
     };
@@ -54,14 +58,16 @@ class ClueExtract extends React.Component {
 
     componentDidMount() {
         cluePoolStore.listen(this.onStoreChange);
+        this.getCluePoolLeading(); // 获取线索池的负责人
         this.getCluePoolSource(); // 获取线索池来源
         this.getCluePoolChannel(); // 获取线索池接入渠道
         this.getCluePoolClassify(); // 获取线索池分类
-        cluePoolAction.getSalesManList();
-        //如果是普通销售，不需要发请求了
-        if(!this.isCommonSales()){
-            this.getClueList();
+        this.getCluePoolProvince(); // 获取线索池地域
+        // 普通销售不用获取销售人员的列表
+        if (this.isCommonSales()) {
+            cluePoolAction.getSalesManList();
         }
+        this.getCluePoolList();
     }
 
     componentWillUnmount() {
@@ -70,6 +76,20 @@ class ClueExtract extends React.Component {
         clueFilterAction.setInitialData();
         cluePoolAction.resetState();
     }
+
+    // 获取线索池的负责人
+    getCluePoolLeading = () => {
+        cluePoolAjax.getCluePoolLeading().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    clueLeadingArray: data.result
+                });
+            }
+        }, errorMsg => {
+            // eslint-disable-next-line no-console
+            console.log('获取线索负责人出错了 ' + errorMsg);
+        });
+    };
 
     // 获取线索池来源
     getCluePoolSource = () => {
@@ -113,6 +133,20 @@ class ClueExtract extends React.Component {
         });
     };
 
+    // 获取线索池地域
+    getCluePoolProvince = () => {
+        cluePoolAjax.getCluePoolProvince().then(data => {
+            if (data && _.isArray(data.result) && data.result.length) {
+                this.setState({
+                    clueProvinceArray: data.result
+                });
+            }
+        }, errorMsg => {
+            // eslint-disable-next-line no-console
+            console.log('获取线索池地域信息出错了 ' + errorMsg);
+        });
+    };
+
     // 关闭提取线索界面
     closeExtractCluePanel = () => {
         this.props.closeExtractCluePanel();
@@ -135,7 +169,7 @@ class ClueExtract extends React.Component {
         }] : filterStoreData.rangeParams;
         let keyWord = isGetAllClue ? '' : this.state.keyword;
         let filterClueStatus = filterStoreData.filterClueStatus;
-        let typeFilter = isGetAllClue ? {status: ''} : getClueStatusValue(filterClueStatus);//线索类型
+        let typeFilter = {};//线索类型
         //按销售进行筛选
         let filterClueUsers = filterStoreData.filterClueUsers;
         if (_.isArray(filterClueUsers) && filterClueUsers.length && !isGetAllClue) {
@@ -188,8 +222,7 @@ class ClueExtract extends React.Component {
     //获取线索列表
     getCluePoolList = (data) => {
         let rangeParams = _.get(data, 'rangeParams') || JSON.stringify(clueFilterStore.getState().rangeParams);
-        let filterClueStatus = clueFilterStore.getState().filterClueStatus;
-        let typeFilter = getClueStatusValue(filterClueStatus);//线索类型
+        let typeFilter = {};//线索类型
         let filterStoreData = clueFilterStore.getState();
         //按销售进行筛选
         let filterClueUsers = filterStoreData.filterClueUsers;
@@ -225,8 +258,10 @@ class ClueExtract extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
-            typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter)
         };
+        if (_.get(data, 'typeFilter')) {
+            queryObj.typeFilter = _.get(data, 'typeFilter') || JSON.stringify(typeFilter);
+        }
         if (!this.state.lastId){
             //清除线索的选择
             this.clearSelectedClue();
@@ -305,7 +340,7 @@ class ClueExtract extends React.Component {
     onTypeChange = () => {
         cluePoolAction.setClueInitialData();
         setTimeout(() => {
-            this.getClueList();
+            this.getCluePoolList();
         });
     };
 
@@ -357,7 +392,16 @@ class ClueExtract extends React.Component {
     //是否有筛选过滤条件
     hasNoFilterCondition = () => {
         let filterStoreData = clueFilterStore.getState();
-        if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields) && _.isEmpty(filterStoreData.unexist_fields) && _.isEmpty(filterStoreData.filterClueProvince)){
+        if (_.isEmpty(filterStoreData.filterClueSource) &&
+            _.isEmpty(filterStoreData.filterClueAccess) &&
+            _.isEmpty(filterStoreData.filterClueClassify) &&
+            filterStoreData.filterClueAvailability === '' &&
+            _.get(filterStoreData,'filterClueStatus[0].selected') &&
+            _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime &&
+            this.state.keyword === '' &&
+            _.isEmpty(filterStoreData.exist_fields) &&
+            _.isEmpty(filterStoreData.unexist_fields) &&
+            _.isEmpty(filterStoreData.filterClueProvince)){
             return true;
         }else{
             return false;
@@ -423,36 +467,28 @@ class ClueExtract extends React.Component {
     };
 
     getRowSelection = () => {
-        //只有有批量变更权限并且不是普通销售的时候，才展示选择框的处理
-        let showSelectionFlag = (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales;
-        if (showSelectionFlag){
-            let rowSelection = {
-                type: 'checkbox',
-                selectedRowKeys: _.map(this.state.selectedClues, 'id'),
-                onSelect: (record, selected, selectedRows) => {
-                    if (selectedRows.length !== _.get(this, 'state.cluePoolList.length')) {
-                        this.state.selectAllMatched = false;
-                    }
-                    this.setState({
-                        selectedClues: selectedRows,
-                        selectAllMatched: this.state.selectAllMatched
-                    });
-                    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中某个线索');
-                },
-                //对客户列表当前页进行全选或取消全选操作时触发
-                onSelectAll: (selected, selectedRows, changeRows) => {
-                    if (this.state.selectAllMatched && selectedRows.length === 0) {
-                        this.state.selectAllMatched = false;
-                    }
-                    this.setState({selectedClues: selectedRows, selectAllMatched: this.state.selectAllMatched});
-                    Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
+        return {
+            type: 'checkbox',
+            selectedRowKeys: _.map(this.state.selectedClues, 'id'),
+            onSelect: (record, selected, selectedRows) => {
+                if (selectedRows.length !== _.get(this, 'state.cluePoolList.length')) {
+                    this.state.selectAllMatched = false;
                 }
-            };
-            return rowSelection;
-
-        }else{
-            return null;
-        }
+                this.setState({
+                    selectedClues: selectedRows,
+                    selectAllMatched: this.state.selectAllMatched
+                });
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中某个线索');
+            },
+            //对客户列表当前页进行全选或取消全选操作时触发
+            onSelectAll: (selected, selectedRows, changeRows) => {
+                if (this.state.selectAllMatched && selectedRows.length === 0) {
+                    this.state.selectAllMatched = false;
+                }
+                this.setState({selectedClues: selectedRows, selectAllMatched: this.state.selectAllMatched});
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
+            }
+        };
     };
 
     // 下拉加载
@@ -468,9 +504,40 @@ class ClueExtract extends React.Component {
         return !this.state.isLoading &&
             this.state.cluePoolList.length >= 20 && !this.state.listenScrollBottom;
     };
+    // 单个提取线索
+    handleExtractClueAssignToSale(record, flag) {
+        let id = record.id; // 提取线索某条的id
+        let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
+        if (flag) {
+            sale_id = this.state.salesMan; // 提取给某个销售的id
+        }
+        console.log('this.state.salesMan:',this.state.salesMan);
+        let reqData = {
+            id: id,
+            sale_id: sale_id
+        };
+        this.setState({
+            singleExtractLoading: true
+        });
+        cluePoolAjax.extractClueAssignToSale(reqData).then( (result) => {
+            this.setState({
+                singleExtractLoading: false
+            });
+            if (result.code === 0) { // 提取成功
+                cluePoolAction.updateCluePoolList(id);
+                message.success(Intl.get('clue.extract.success', '提取成功'));
+            } else { // 提取失败
+                message.error(Intl.get('clue.extract.failed', '提取失败'));
+            }
+        }, (errMsg) => {
+            this.setState({
+                singleExtractLoading: false,
+            });
+            message.error(errMsg || Intl.get('clue.extract.failed', '提取失败'));
+        });
+    }
     // table 列
     getClueTableColunms = () => {
-        const column_width = '80px';
         return [
             {
                 title: Intl.get('crm.sales.clue', '线索'),
@@ -492,7 +559,6 @@ class ClueExtract extends React.Component {
                             </div>
                         </div>
                     );
-
                 }
             }, {
                 title: Intl.get('user.login.score', '分数'),
@@ -503,23 +569,71 @@ class ClueExtract extends React.Component {
                 title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'contact',
                 width: '15%',
+                render: (text, record, index) => {
+                    if (_.isArray(record.contacts)) {
+                        return (
+                            <span>{record.contacts[0] ? record.contacts[0].name : null}</span>
+                        );
+                    }
+                }
             }, {
-                title: '原负责人', //  todo 原负责人
-                dataIndex: 'trace_person',
+                title: Intl.get('clue.extract.former.responsible.person', '原负责人'),
+                dataIndex: 'user_name',
                 width: '10%',
             },{
                 title: Intl.get('call.record.follow.content', '跟进内容'),
-                dataIndex: 'trace_content',
+                dataIndex: 'customer_trace',
                 width: '20%',
+                render: (text, record, index) => {
+                    if (_.isArray(record.customer_traces)) {
+                        return (
+                            <span>{ _.get(record, 'customer_traces[0].remark', '')}</span>
+                        );
+                    }
+                }
             }, {
                 title: Intl.get('common.operate', '操作'),
                 className: 'invalid-td-clue',
                 width: '20%',
-            }];
-    };
+                render: (text, record, index) => {
+                    let user = userData.getUserData();
+                    // 提取线索分配给相关的销售人员的权限
+                    let hasAssignedPrivilege = hasPrivilege('LEAD_EXTRACT_ALL') || (hasPrivilege('LEAD_EXTRACT_SELF') && !user.isCommonSales);
+                    let assigenCls = classNames('assign-btn',{'can-edit': !text});
+                    let containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege});
+                    return (
+                        <div className={containerCls} ref='trace-person'>
+                            {
+                                hasAssignedPrivilege ?
+                                    <AntcDropdown
+                                        ref={changeSale => this['changesale' + record.id] = changeSale}
+                                        content={
+                                            <span
+                                                data-tracename="点击提取按钮"
+                                                className={assigenCls}
+                                            >
+                                                {Intl.get('clue.extract', '提取')}
+                                            </span>}
+                                        overlayTitle={Intl.get('user.salesman', '销售人员')}
+                                        okTitle={Intl.get('common.confirm', '确认')}
+                                        cancelTitle={Intl.get('common.cancel', '取消')}
+                                        isSaving={this.state.singleExtractLoading}
+                                        overlayContent={this.renderSalesBlock()}
+                                        handleSubmit={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
+                                        unSelectDataTip={this.state.unSelectDataTip}
+                                        clearSelectData={this.clearSelectSales}
+                                        btnAtTop={false}
+                                    /> : (
+                                        <span onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}>
+                                            {Intl.get('clue.extract', '提取')}
+                                        </span>
+                                    )
+                            }
 
-    setInvalidClassName= (record, index) => {
-        return (record.availability === '1' ? 'invalid-clue' : '');
+                        </div>
+                    );
+                }
+            }];
     };
 
     renderClueCustomerLists = () => {
@@ -543,10 +657,14 @@ class ClueExtract extends React.Component {
                 dataSource={customerList}
                 pagination={false}
                 columns={this.getClueTableColunms()}
-                rowClassName={this.setInvalidClassName}
                 scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
             />);
 
+    };
+
+    // 获取已选销售的id
+    onSalesmanChange = (salesMan) => {
+        cluePoolAction.setSalesMan({'salesMan': salesMan});
     };
 
     //设置已选销售的名字
@@ -572,6 +690,59 @@ class ClueExtract extends React.Component {
         );
     };
 
+    //批量提取线索完成后的处理
+    afterHandleAssignSalesBatch = (feedbackObj,submitObj) => {
+        let clue_id = _.get(submitObj,'customer_id','');//线索的id，可能是一个，也可能是多个
+        if (feedbackObj && feedbackObj.errorMsg) {
+            message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
+        } else {
+            let taskId = _.get(feedbackObj, 'taskId','');
+            if (taskId){
+                // 向任务列表id中添加taskId
+                batchOperate.addTaskIdToList(taskId);
+                // 存储批量操作参数，后续更新时使用
+                let batchParams = _.cloneDeep(submitObj);
+                batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
+                    showPop: true,
+                    urlPath: '/clue_customer'
+                });
+                //立即在界面上显示推送通知
+                //界面上立即显示一个初始化推送
+                //批量操作参数
+                let is_select_all = !!this.state.selectAllMatched;
+                var totalSelectedSize = is_select_all ? this.state.customersSize : _.get(this,'state.selectedClues.length',0);
+                batchOperate.batchOperateListener({
+                    taskId: taskId,
+                    total: totalSelectedSize,
+                    running: totalSelectedSize,
+                    typeText: Intl.get('clue.batch.change.trace.man', '变更跟进人')
+                });
+            }
+
+        }
+    };
+
+    handleSubmitAssignSalesBatch = () => {
+        //如果是选了修改全部
+        let selectedClueIds = '';
+        let selectClueAll = this.state.selectAllMatched;
+        if (!selectClueAll){
+            let cluesArr = _.map(this.state.selectedClues, item => item.id);
+            selectedClueIds = cluesArr.join(',');
+        }
+        let submitObj = this.handleBeforeSumitChangeSales(selectedClueIds);
+        if (selectClueAll){
+            submitObj.query_param = {...this.state.queryObj};
+        }
+        if (_.isEmpty(submitObj)){
+            return;
+        }else{
+            cluePoolAction.batchExtractClueAssignToSale(_.cloneDeep(submitObj), (feedbackObj) => {
+                this.afterHandleAssignSalesBatch(feedbackObj,submitObj);
+            });
+        }
+    };
+
     renderBatchChangeClues = () => {
         return (
             <div className="pull-right">
@@ -590,7 +761,7 @@ class ClueExtract extends React.Component {
                         overlayTitle={Intl.get('user.salesman', '销售人员')}
                         okTitle={Intl.get('common.confirm', '确认')}
                         cancelTitle={Intl.get('common.cancel', '取消')}
-                        isSaving={this.state.distributeBatchLoading}
+                        isSaving={this.state.batchExtractLoading}
                         overlayContent={this.renderSalesBlock()}
                         handleSubmit={this.handleSubmitAssignSalesBatch}
                         unSelectDataTip={this.state.unSelectDataTip}
@@ -636,9 +807,11 @@ class ClueExtract extends React.Component {
                     <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
                         <ClueFilterPanel
                             ref={filterPanel => this.filterPanel = filterPanel}
+                            clueLeadingArray={this.state.clueLeadingArray}
                             clueSourceArray={this.state.clueSourceArray}
                             accessChannelArray={this.state.accessChannelArray}
                             clueClassifyArray={this.state.clueClassifyArray}
+                            clueProvinceArray={this.state.clueProvinceArray}
                             salesManList={this.getSalesDataList()}
                             getClueList={this.getCluePoolList}
                             style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
