@@ -213,7 +213,9 @@ exports.APPROVER_TYPE = [{
 }, {
     name: Intl.get('apply.add.approver.setting.user', '指定成员'),
     value: 'setting_users',
-}, {name: Intl.get('apply.add.approver.applicant.setting', '申请人指定'), value: 'application_setting',},
+},
+    // {name: Intl.get('apply.add.approver.applicant.setting', '申请人指定'), value: 'application_setting'},
+    
 {name: Intl.get('apply.add.approver.applicant.self', '申请人自己'), value: 'application_self'}
 ];
 exports.HIGHER_LEVEL = [
