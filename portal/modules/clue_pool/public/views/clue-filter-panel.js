@@ -1,5 +1,3 @@
-const PropTypes = require('prop-types');
-const React = require('react');
 import { FilterList } from 'CMP_DIR/filter';
 import { AntcDatePicker as DatePicker } from 'antc';
 import FilterAction from '../action/filter-action';
@@ -44,20 +42,20 @@ class ClueFilterPanel extends React.Component {
     handleFilterChange = (data) => {
         cluePoolAction.setClueInitialData();
         data.forEach(item => {
-            if (item.groupId) {
-                // 线索来源
-                if (item.groupId === 'clue_source' && _.get(item,'data')){
-                    FilterAction.setFilterClueSoure( _.get(item,'data'));
-                }else if (item.groupId === 'clue_access'){ // 线索接入渠道
-                    FilterAction.setFilterClueAccess( _.get(item,'data'));
-                }else if (item.groupId === 'clue_classify'){ // 线索分类
-                    FilterAction.setFilterClueClassify( _.get(item,'data'));
-                }else if (item.groupId === 'clue_province'){
-                    //线索地域
-                    FilterAction.setFilterClueProvince(_.get(item,'data'));
-                } else if (item.groupId === 'user_name'){
-                    FilterAction.setFilterClueUsername( _.get(item,'data'));
-                }
+            let groupId = item.groupId;
+            let data = item.data;
+            // 线索来源
+            if (groupId === 'clue_source'){
+                FilterAction.setFilterClueSoure(data);
+            }else if (groupId === 'clue_access'){ // 线索接入渠道
+                FilterAction.setFilterClueAccess(data);
+            }else if (groupId === 'clue_classify'){ // 线索分类
+                FilterAction.setFilterClueClassify(data);
+            }else if (groupId === 'clue_province'){
+                //线索地域
+                FilterAction.setFilterClueProvince(data);
+            } else if (groupId === 'user_name'){
+                FilterAction.setFilterClueUsername(data);
             }
         });
 
@@ -73,7 +71,7 @@ class ClueFilterPanel extends React.Component {
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();
         }
-        FilterAction.setTimeRange({start_time: start_time, end_time: end_time});
+        FilterAction.setTimeRange({start_time, end_time});
         cluePoolAction.setClueInitialData();
         setTimeout(() => {
             this.props.getClueList();

@@ -1,5 +1,4 @@
 require('./css/index.less');
-import React from 'react';
 import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanelClose = rightPanelUtil.RightPanelClose;
 const batchOperate = require('PUB_DIR/sources/push/batch');
@@ -62,15 +61,8 @@ class ClueExtract extends React.Component {
     updateItem = (item, submitObj) => {
         let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
         SetLocalSalesClickCount(sale_id);
-        //member_id是跟进销售的id
-        if (Oplate && Oplate.unread) {
-            subtracteGlobalClue(item,(flag) => {
-                if (flag){
-                    //需要在列表中删除
-                    cluePoolAction.updateCluePoolList(item.id);
-                }
-            });
-        }
+        //需要在列表中删除
+        cluePoolAction.updateCluePoolList(item.id);
     };
 
     batchChangeTraceMan = (taskInfo, taskParams) => {
@@ -222,7 +214,7 @@ class ClueExtract extends React.Component {
         }] : filterStoreData.rangeParams;
         let keyWord = isGetAllClue ? '' : this.state.keyword;
         let filterClueStatus = filterStoreData.filterClueStatus;
-        let typeFilter = {};//线索类型
+        let typeFilter = {};
         //按销售进行筛选
         let filterClueUsers = filterStoreData.filterClueUsers;
         if (_.isArray(filterClueUsers) && filterClueUsers.length && !isGetAllClue) {
@@ -381,7 +373,7 @@ class ClueExtract extends React.Component {
                     {Intl.get('crm.11', '已选当前页{count}项', { count: _.get(this, 'state.selectedClues.length') })}
                     {/*在筛选条件下可 全选 ，没有筛选条件时，后端接口不支持选 全选*/}
                     {/*如果一页可以展示全，不再展示选择全部的提示*/}
-                    {_.isEmpty(this.state.condition) || this.state.cluePoolListSize <= this.state.pageSize ? null : (
+                    {this.state.cluePoolListSize <= this.state.pageSize ? null : (
                         <a href="javascript:void(0)" onClick={this.selectAllSearchResult}>
                             {Intl.get('crm.12', '选择全部{count}项', { count: this.state.cluePoolListSize })}
                         </a>)

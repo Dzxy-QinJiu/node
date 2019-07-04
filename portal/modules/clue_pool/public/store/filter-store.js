@@ -28,10 +28,6 @@ class FilterStore {
         this.filterClueClassify = [];
         //筛选线索的地域
         this.filterClueProvince = [];
-        //筛选存在的字段
-        this.exist_fields = [];
-        //筛选不存在的字段
-        this.unexist_fields = [];
         //按销售进行筛选
         this.filterClueUsers = [];
     }
@@ -55,59 +51,28 @@ class FilterStore {
         }
     }
 
-    //获取线索来源
-    setCondition(list) {
-        this.provinceList = list;
-    }
-
     // 设置筛选线索的来源
     setFilterClueSoure(updateSource) {
-        let selectedSource = [];
-        _.forEach(updateSource, (item) => {
-            selectedSource.push(item.value);
-        });
-        this.filterClueSource = selectedSource;
+        this.filterClueSource = _.map(updateSource, 'value');;
     }
 
     // 设置筛选线索的接入渠道
     setFilterClueAccess(updateAccess) {
-        let selectedAccess = [];
-        _.forEach(updateAccess, (item) => {
-            selectedAccess.push(item.value);
-        });
-        this.filterClueAccess = selectedAccess;
+        this.filterClueAccess = _.map(updateAccess, 'value');
     }
 
     // 设置筛选线索的分类
     setFilterClueClassify(updateClassify) {
-        let selectedClassify = [];
-        _.forEach(updateClassify, (item) => {
-            selectedClassify.push(item.value);
-        });
-        this.filterClueClassify = selectedClassify;
+        this.filterClueClassify = _.map(updateClassify, 'value');
     }
 
     // 设置筛选负责人
     setFilterClueUsername(updateUsers) {
-        let filterClueUsers = [];
-        _.forEach(updateUsers, (item) => {
-            if (item.selected){
-                filterClueUsers.push(item.value);
-            }
-        });
-        this.filterClueUsers = filterClueUsers;
+        this.filterClueUsers = _.map(updateUsers, 'value');
     }
     // 设置筛选地域
     setFilterClueProvince(updateProvince) {
-        let selectedProvince = [];
-        _.forEach(updateProvince, (item) => {
-            if (item.value === ''){
-                this.unexist_fields.push('province');
-            }else{
-                selectedProvince.push(item.value);
-            }
-        });
-        this.filterClueProvince = selectedProvince;
+        this.filterClueProvince = _.map(updateProvince, 'value');
     }
 }
 

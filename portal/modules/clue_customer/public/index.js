@@ -327,7 +327,7 @@ class ClueCustomer extends React.Component {
             isShowExtractCluePanel: true
         });
     };
-    // 提取线索 todo 需要加权限的判断
+    // 渲染提取线索
     renderExtractClue = () => {
         return (
             <div className="extract-clue-customer-container pull-right">
