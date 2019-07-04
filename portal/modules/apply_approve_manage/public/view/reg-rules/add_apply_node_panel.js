@@ -19,7 +19,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {
     INNER_SETTING_FLOW,
     APPROVER_TYPE,
-    TEAM_HIGHER_LEVEL,
+    getTeamHigerLevel,
     isSalesOpportunityFlow,
     isBussinessTripFlow,
     isLeaveFlow,
@@ -164,6 +164,7 @@ class AddApplyNodePanel extends React.Component {
         var higher_ups = this.state.higher_ups;
         var userArr = value.split('-');
         var index = _.get(userArr,'[1]');
+        var TEAM_HIGHER_LEVEL = getTeamHigerLevel();
         var target = _.get(TEAM_HIGHER_LEVEL, `[${index}]`);
         if (target){
             higher_ups.candidateUsers = target.value;
@@ -202,6 +203,7 @@ class AddApplyNodePanel extends React.Component {
     };
     renderAdditonContent = (typeItem, index) => {
         var checkedRadioValue = this.state.checkedRadioValue;
+        var TEAM_HIGHER_LEVEL = getTeamHigerLevel();
         if (this.state.checkedRadioValue === typeItem.value) {
             switch (typeItem.value) {
                 case 'higher_ups':
