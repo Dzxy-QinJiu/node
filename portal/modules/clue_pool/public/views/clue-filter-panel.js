@@ -5,7 +5,7 @@ import { AntcDatePicker as DatePicker } from 'antc';
 import FilterAction from '../action/filter-action';
 import clueFilterStore from '../store/filter-store';
 import cluePoolAction from '../action';
-import {clueStartTime, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {clueStartTime} from '../utils/clue-pool-utils';
 
 import userData from 'PUB_DIR/sources/user-data';
 

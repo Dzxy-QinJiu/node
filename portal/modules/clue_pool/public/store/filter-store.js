@@ -4,9 +4,8 @@
 
 import FilterAction from '../action/filter-action';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
-import {clueStartTime} from '../utils/clue-customer-utils';
-import {getStartEndTimeOfDiffRange, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
-
+import {clueStartTime} from '../utils/clue-pool-utils';
+import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 class FilterStore {
     constructor() {
         this.setInitialData();
