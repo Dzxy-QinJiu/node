@@ -40,8 +40,96 @@ class ClueDetailOverview extends React.Component {
         customerOfCurUser: {},//当前展示用户所属客户的详情
         app_user_id: '',
         curClue: $.extend(true, {}, this.props.curClue),
-        divHeight: this.props.divHeight
+        divHeight: this.props.divHeight,
+        similarClueLoading: false,//正在获取相似线索
+        similarClueErrmsg: '',//获取相似线索出错
+        similarClueLists: [],//相似线索列表
+        similarCustomerLoading: false,//正在获取相似客户
+        similarCustomerErrmsg: '',//获取相似客户出错
+        similarCustomerLists: [],//相似客户列表
     };
+
+    componentDidMount() {
+        //获取相似线索列表
+        this.getSimilarClueLists();
+        //获取相似客户列表
+        this.getSimilarCustomerLists();
+    }
+    getSimilarClueLists = () => {
+        this.setState({
+            similarClueLoading: true,
+            similarClueErrmsg: ''
+        });
+        var curClue = this.state.curClue;
+        $.ajax({
+            url: '/rest/get/similar/cluelists',
+            type: 'get',
+            dateType: 'json',
+            data: {
+                lead_id: _.get(curClue, 'id'),
+                lead_name: _.get(curClue, 'name'),
+                lead_phones: this.getCurCluePhones()
+            },
+            success: (data) => {
+                this.setState({
+                    similarClueLists: _.isArray(data.result) ? data.result : [],
+                    similarClueLoading: false,
+                    similarClueErrmsg: ''
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    similarClueLists: [],
+                    similarClueLoading: false,
+                    similarClueErrmsg: errorMsg
+                });
+            }
+        });
+
+    };
+    getCurCluePhones = () => {
+        var curClue = this.state.curClue;
+        var phones = [];
+        if (_.get(curClue,'contacts[0]')){
+            _.forEach(_.get(curClue,'contacts'), (item) => {
+                if (_.isArray(item.phone)){
+                    phones = _.concat(phones, item.phone);
+                }
+            });
+        }
+        return phones;
+    }
+    getSimilarCustomerLists = () => {
+        this.setState({
+            similarCustomerLoading: true,
+            similarCustomerErrmsg: ''
+        });
+        var curClue = this.state.curClue;
+        $.ajax({
+            url: '/rest/get/similar/customerlists',
+            type: 'get',
+            dateType: 'json',
+            data: {
+                name: _.get(curClue, 'name'),
+                phones: this.getCurCluePhones()
+            },
+            success: (data) => {
+                this.setState({
+                    similarCustomerLists: _.isArray(data.result) ? data.result : [],
+                    similarCustomerLoading: false,
+                    similarCustomerErrmsg: ''
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    similarCustomerLists: [],
+                    similarCustomerLoading: false,
+                    similarCustomerErrmsg: errorMsg
+                });
+            }
+        });
+    };
+
 
     componentWillReceiveProps(nextProps) {
         //修改某些属性时，线索的id不变，但是需要更新一下curClue所以不加 nextProps.curClue.id !== this.props.curClue.id 这个判断了

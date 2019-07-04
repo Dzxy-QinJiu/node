@@ -53,6 +53,10 @@ const restApis = {
     deleteClueById: clueBaseUrl + '/delete',
     //批量修改线索的跟进人
     changeClueSalesBatch: clueBaseUrl + '/distribute/:type/batch/new',
+    //获取相似线索
+    getSimilarClueLists: '/rest/clue/v2/query/similarity/lead',
+    //获取相似客户
+    getSimilarCustomerLists: '/rest/customer/v3/customer/query/similarity/customer'
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -396,4 +400,22 @@ exports.getClueDetailById = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+//获取相似线索
+exports.getSimilarClueLists = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getSimilarClueLists,
+            req: req,
+            res: res
+        }, req.query);
+};
+//获取相似客户
+exports.getSimilarCustomerLists = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getSimilarCustomerLists,
+            req: req,
+            res: res
+        }, req.query);
 };
