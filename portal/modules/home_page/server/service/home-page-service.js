@@ -8,7 +8,8 @@ const restUtil = require('ant-auth-request').restUtil(restLogger);
 
 const homePageRestUrls = {
     getMyWorkList: '/rest/base/v1/notice/dailyjob',
-    getMyWorkTypes: '/rest/base/v1/realm/dailyjob/types'
+    getMyWorkTypes: '/rest/base/v1/realm/dailyjob/types',
+    handleMyWorkStatus: '/rest/base/v1/notice/dailyjob/status'
 };
 
 //获取我的工作列表
@@ -29,4 +30,14 @@ exports.getMyWorkTypes = function(req, res) {
             req: req,
             res: res
         });
+};
+
+//处理我的工作状态
+exports.handleMyWorkStatus = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: homePageRestUrls.handleMyWorkStatus,
+            req: req,
+            res: res
+        }, req.body);
 };

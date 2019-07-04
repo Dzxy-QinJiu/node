@@ -24,3 +24,13 @@ exports.getMyWorkTypes = function(req, res) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
+
+//处理我的工作状态
+exports.handleMyWorkStatus = function(req, res) {
+    homPageService.handleMyWorkStatus(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};

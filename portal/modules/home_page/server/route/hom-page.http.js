@@ -23,5 +23,14 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    }, {
+        //修改我的工作状态
+        'method': 'put',
+        'path': '/rest/home_page/my_work/status',
+        'handler': 'handleMyWorkStatus',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': ['ORGANIZATION_BASE_PERMISSION']
     }]
 };

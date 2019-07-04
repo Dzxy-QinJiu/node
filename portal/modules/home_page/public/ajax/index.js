@@ -30,9 +30,27 @@ exports.getMyWorkTypes = function() {
     var Deferred = $.Deferred();
     getMyWorkTypesAjax && getMyWorkTypesAjax.abort();
     getMyWorkTypesAjax = $.ajax({
-        url: '/rest/home_page/my_work_types ',
+        url: '/rest/home_page/my_work_types',
         dataType: 'json',
         type: 'get',
+        success: function(result) {
+            Deferred.resolve(result);
+        },
+        error: function(error) {
+            Deferred.reject(error.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//将我的某个工作设为已处理
+exports.handleMyWorkStatus = function(bodyObj) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/home_page/my_work/status',
+        dataType: 'json',
+        type: 'put',
+        data: bodyObj,
         success: function(result) {
             Deferred.resolve(result);
         },

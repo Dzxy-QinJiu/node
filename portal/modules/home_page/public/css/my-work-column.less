@@ -1,7 +1,10 @@
 @import "../../../../public/css/common-variables";
 
+@btn-color: #8DA8C5;
+@btn-hover-color: #2196F3;
 .my-work-content {
   .detail-card-container {
+    position: relative;
     padding: 0;
     border-radius: 4px;
     //工作标题的统一样式
@@ -10,7 +13,7 @@
       margin-bottom: 0;
       border-bottom: none;
       background-color: #F9FBFC;
-      color: #8DA8C5;
+      color: @btn-color;
       .work-title-icon {
         padding-right: 8px;
       }
@@ -19,7 +22,7 @@
       }
       //待处理线索,申请消息类型标题高亮
       > .priority-high-work {
-        color: #2196F3;
+        color: @btn-hover-color;
       }
     }
     //工作内容的统一样式
@@ -80,13 +83,46 @@
         cursor: pointer;
         z-index: 2;
         &:hover {
-          color: #4d96d1;
+          color: @btn-hover-color;
         }
       }
       .work-remark {
         line-height: 24px;
         .last-contact-time {
           margin-right: 8px;
+        }
+      }
+      //已处理按钮
+      .handle-work-finish {
+        display: none;
+        position: absolute;
+        float: right;
+        right: 20px;
+        bottom: 20px;
+        color: @btn-color;
+        cursor: pointer;
+        line-height: 24px;
+        &:hover {
+          color: @btn-hover-color;
+        }
+        .work-finish-text {
+          display: inline-block;
+          vertical-align: top;
+          line-height: 24px;
+        }
+        .iconfont {
+          margin-right: 4px;
+        }
+        .anticon-loading{
+          margin-right: 6px;
+          font-size: 16px;
+        }
+      }
+      .alert-timer{
+        float: right;
+        margin-bottom: 20px;
+        .ant-alert-error{
+          padding-right: 20px;
         }
       }
       .work-hover-show-detail {
@@ -99,7 +135,7 @@
           padding: 3px 4px 5px 4px;
           color: #ffffff;
           border-radius: 4px;
-          background-color: #2196F3;
+          background-color: @btn-hover-color;
           //拨打电话的按钮
           .iconfont.icon-active-call_record-ico {
             visibility: visible;
@@ -110,6 +146,9 @@
     }
     &:hover {
       .work-hover-show-detail {
+        display: block;
+      }
+      .handle-work-finish {
         display: block;
       }
     }

@@ -16,6 +16,7 @@ import Spinner from 'CMP_DIR/spinner';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
+import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -45,8 +46,7 @@ class MyWorkColumn extends React.Component {
             loading: false,
             load_id: '',//用于下拉加载的id
             totalCount: 0,//共多少条工作
-            listenScrollBottom: true//是否下拉加载
-
+            listenScrollBottom: true,//是否下拉加载
         };
     }
 
@@ -322,18 +322,89 @@ class MyWorkColumn extends React.Component {
                 <span className='work-title-text'>{item.name}</span>
             </span>);
         const content = (
-            <div className='work-content-wrap'>
+            <div className='work-content-wrap' id={`home-page-work${item.id}`}>
                 {this.renderWorkName(item, index)}
                 <div className='work-remark'>
                     {_.get(item, 'remark', '')}
                 </div>
                 {this.renderContactItem(item)}
+                {this.renderHandleWorkBtn(item)}
             </div>);
         return (<DetailCard title={title}
             content={content}
             className='my-work-card schedule-work'/>);
     }
 
+    renderHandleWorkBtn(item) {
+        //当前工作是否正在编辑
+        if (item.isEidtingWorkStatus) {
+            return ( <div className='handle-work-finish'>(<Icon type="loading"/></div>);
+        } else if (item.editWorkStatusErrorMsg) {
+            return (<AlertTimer time={3000}
+                message={item.editWorkStatusErrorMsg}
+                type="error"
+                showIcon
+                onHide={this.hideEditStatusTip.bind(this, item)}/>);
+        } else {
+            return (
+                <div className='handle-work-finish' onClick={this.handleMyWork.bind(this, item)}>
+                    <i className='iconfont icon-finish icon-select-member'/>
+                    <span className='work-finish-text'>{Intl.get('notification.system.handled', '已处理')}</span>
+                </div>);
+        }
+    }
+
+    hideEditStatusTip = (item) => {
+        let myWorkList = this.state.myWorkList;
+        _.each(myWorkList, work => {
+            if (work.id === item.id) {
+                delete work.editWorkStatusErrorMsg;
+                return false;
+            }
+        });
+        this.setState({myWorkList});
+    }
+
+    handleMyWork = (item) => {
+        if (!_.get(item, 'id')) return;
+        let myWorkList = this.state.myWorkList;
+        _.each(myWorkList, work => {
+            if (work.id === item.id) {
+                work.isEidtingWorkStatus = true;
+                return false;
+            }
+        });
+        this.setState({myWorkList});
+        myWorkAjax.handleMyWorkStatus({id: item.id, status: 1}).then(result => {
+            if (result) {
+                myWorkList = _.filter(myWorkList, work => work.id !== item.id);
+                this.setState({myWorkList});
+                let workListLength = _.get(myWorkList, 'length');
+                //如果当前展示的工作个数小于一页获取的数据，并且小于总工作数时需要继续加载一页数据，以防处理完工作后下面的工作没有及时补上来
+                if (workListLength < 20 && workListLength < this.state.totalCount) {
+                    this.getMyWorkList();
+                }
+            } else {
+                _.each(myWorkList, work => {
+                    if (work.id === item.id) {
+                        work.isEidtingWorkStatus = false;
+                        work.editWorkStatusErrorMsg = Intl.get('notification.system.handled.error', '处理失败');
+                        return false;
+                    }
+                });
+                this.setState({myWorkList});
+            }
+        }, (errorMsg) => {
+            _.each(myWorkList, work => {
+                if (work.id === item.id) {
+                    work.isEidtingWorkStatus = false;
+                    work.editWorkStatusErrorMsg = errorMsg || Intl.get('notification.system.handled.error', '处理失败');
+                    return false;
+                }
+            });
+            this.setState({myWorkList});
+        });
+    }
 
     renderMyWorkList() {
         return _.map(this.state.myWorkList, (item, index) => {
