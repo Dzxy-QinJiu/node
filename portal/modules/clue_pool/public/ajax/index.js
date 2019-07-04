@@ -135,9 +135,9 @@ exports.extractClueAssignToSale = (reqData) => {
 };
 
 // 批量提取线索
-exports.extractClueAssignToSale = (reqData) => {
+exports.batchExtractClueAssignToSale = (reqData) => {
     let type = 'self';
-    if (hasPrivilege(' LEAD_EXTRACT_ALL')) {
+    if (hasPrivilege('LEAD_EXTRACT_ALL')) {
         type = 'all';
     }
     let Deferred = $.Deferred();

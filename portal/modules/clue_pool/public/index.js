@@ -9,7 +9,7 @@ import ClueFilterPanel from './views/clue-filter-panel';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS} from './utils/clue-customer-utils';
+import { getClueSalesList, getLocalSalesClickCount} from './utils/clue-customer-utils';
 import ShearContent from 'CMP_DIR/shear-content';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import cluePoolStore from './store';
@@ -64,7 +64,7 @@ class ClueExtract extends React.Component {
         this.getCluePoolClassify(); // 获取线索池分类
         this.getCluePoolProvince(); // 获取线索池地域
         // 普通销售不用获取销售人员的列表
-        if (this.isCommonSales()) {
+        if (!this.isCommonSales()) {
             cluePoolAction.getSalesManList();
         }
         this.getCluePoolList();
@@ -509,9 +509,12 @@ class ClueExtract extends React.Component {
         let id = record.id; // 提取线索某条的id
         let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
         if (flag) {
-            sale_id = this.state.salesMan; // 提取给某个销售的id
+            //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
+            let idArray = this.state.salesMan.split('&&');
+            if (_.isArray(idArray) && idArray.length) {
+                sale_id = idArray[0];// 提取给某个销售的id
+            }
         }
-        console.log('this.state.salesMan:',this.state.salesMan);
         let reqData = {
             id: id,
             sale_id: sale_id
@@ -710,7 +713,7 @@ class ClueExtract extends React.Component {
                 //界面上立即显示一个初始化推送
                 //批量操作参数
                 let is_select_all = !!this.state.selectAllMatched;
-                var totalSelectedSize = is_select_all ? this.state.customersSize : _.get(this,'state.selectedClues.length',0);
+                let totalSelectedSize = is_select_all ? this.state.customersSize : _.get(this,'state.selectedClues.length',0);
                 batchOperate.batchOperateListener({
                     taskId: taskId,
                     total: totalSelectedSize,
@@ -719,6 +722,37 @@ class ClueExtract extends React.Component {
                 });
             }
 
+        }
+    };
+
+    //批量提取,发请求前的参数处理
+    handleBeforeSumitChangeSales = (itemId) => {
+        if (!this.state.salesMan) {
+            cluePoolAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
+        } else {
+            let sale_id = '', team_id = '', sale_name = '', team_name = '';
+            //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
+            let idArray = this.state.salesMan.split('&&');
+            if (_.isArray(idArray) && idArray.length) {
+                sale_id = idArray[0];//销售的idccc
+                team_id = idArray[1];//团队的id
+            }
+            //销售的名字和团队的名字 格式是 销售名称 -团队名称
+            let nameArray = this.state.salesManNames.split('-');
+            if (_.isArray(nameArray) && nameArray.length) {
+                sale_name = nameArray[0];//销售的名字
+                team_name = _.trim(nameArray[1]);//团队的名字
+            }
+            let submitObj = {
+                'sale_id': sale_id,
+                'sale_name': sale_name,
+                'team_id': team_id,
+                'team_name': team_name,
+            };
+            if (itemId){
+                submitObj.customer_id = itemId;
+            }
+            return submitObj;
         }
     };
 

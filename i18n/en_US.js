@@ -2665,6 +2665,7 @@ var en_US = {
     'clue.extract.clue': 'Extract clue', // 提取线索
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
     'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
+    'clue.extract.batch.extract.failed': 'Failed to extract clues in bulk', // 批量提取线索失败
     'clue.extract.former.responsible.person': 'Former responsible person', // 原负责人
     'clue.extract': 'Extract', // 提取
     'clue.extract.failed': 'Failed', // 提取失败

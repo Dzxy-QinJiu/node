@@ -29,16 +29,14 @@ class CluePoolActions {
     }
 
     // 批量提取
-    extractClueAssignToSale(reqData) {
+    batchExtractClueAssignToSale(reqData, cb) {
         this.dispatch({loading: true, error: false});
-        cluePoolAjax.extractClueAssignToSale(reqData).then((result) => {
+        cluePoolAjax.batchExtractClueAssignToSale(reqData).then((result) => {
             this.dispatch({loading: false, error: false, resData: result});
+            _.isFunction(cb) && cb({taskId: _.get(result,'batch_label','')});
         }, (errorMsg) => {
-            this.dispatch({
-                loading: false,
-                error: true,
-                errorMsg: errorMsg
-            });
+            this.dispatch({loading: false, error: true});
+            _.isFunction(cb) && cb({errorMsg: errorMsg || Intl.get('clue.extract.batch.extract.failed','批量提取线索失败')});
         });
     }
 
@@ -46,7 +44,6 @@ class CluePoolActions {
     getSalesManList(cb) {
         //客户所属销售（团队）下拉列表的数据获取
         cluePoolAjax.getSalesManList().then((list) => {
-            console.log('list:',list);
             this.dispatch(list);
             if (cb) cb();
         }, (errorMsg) => {

@@ -2689,6 +2689,7 @@ var zh_CN = {
     'clue.extract.clue': '提取线索',
     'clue.pool.batch.extract.clue': '批量提取',
     'clue.extract.get.list.failed': '获取提取线索列表失败',
+    'clue.extract.batch.extract.failed': '批量提取线索失败',
     'clue.extract.former.responsible.person': '原负责人',
     'clue.extract': '提取',
     'clue.extract.failed': '提取失败',
