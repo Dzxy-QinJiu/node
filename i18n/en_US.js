@@ -3012,6 +3012,13 @@ var en_US = {
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
     'clue.customer.has.transfer': 'Has transfer',//已转化
-    'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效    'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
+    'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效
+    'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
+    'apply.approve.first.higher.level': 'Directly superior',//直属上级
+    'apply.approve.some.level': 'Level {n}',//第{n}级上级
+    'apply.approve.level.five': 'Five',//五
+    'apply.approve.level.six': 'Six',//六
+    'apply.approve.level.eight': 'Eight',//八
+    'apply.approve.level.nine': 'Nine',//九
 };
 export default en_US;

@@ -19,7 +19,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {
     INNER_SETTING_FLOW,
     APPROVER_TYPE,
-    HIGHER_LEVEL,
+    getTeamHigerLevel,
     isSalesOpportunityFlow,
     isBussinessTripFlow,
     isLeaveFlow,
@@ -164,7 +164,8 @@ class AddApplyNodePanel extends React.Component {
         var higher_ups = this.state.higher_ups;
         var userArr = value.split('-');
         var index = _.get(userArr,'[1]');
-        var target = _.get(HIGHER_LEVEL, `[${index}]`);
+        var TEAM_HIGHER_LEVEL = getTeamHigerLevel();
+        var target = _.get(TEAM_HIGHER_LEVEL, `[${index}]`);
         if (target){
             higher_ups.candidateUsers = target.value;
             higher_ups.showCandidateUsers = target.name;
@@ -202,6 +203,7 @@ class AddApplyNodePanel extends React.Component {
     };
     renderAdditonContent = (typeItem, index) => {
         var checkedRadioValue = this.state.checkedRadioValue;
+        var TEAM_HIGHER_LEVEL = getTeamHigerLevel();
         if (this.state.checkedRadioValue === typeItem.value) {
             switch (typeItem.value) {
                 case 'higher_ups':
@@ -211,15 +213,15 @@ class AddApplyNodePanel extends React.Component {
                             <div className="higher-level-item addition-condition-item">
                                 <Select showSearch
                                     onChange={this.handleHigherUpChange}>
-                                    {_.map(HIGHER_LEVEL, (item,index) => {
+                                    {_.map(TEAM_HIGHER_LEVEL, (item,index) => {
                                         return <Option value={item.name + '-' + index} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
                             </div>
-                            {/*<Radio.Group className="radio-select-list" onChange={this.onChangeAdminApproveHigherLevel} value={this.state.adminApproveHigherLevel}>*/}
-                            {/*<Radio value='higherLevelApproveChecked'>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Radio>*/}
-                            {/*<Radio value='adminApproveChecked'>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Radio>*/}
-                            {/*</Radio.Group>*/}
+                            <Radio.Group className="radio-select-list" onChange={this.onChangeAdminApproveHigherLevel} value={this.state.adminApproveHigherLevel}>
+                                <Radio value='higherLevelApproveChecked'>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Radio>
+                                {/*<Radio value='adminApproveChecked'>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Radio>*/}
+                            </Radio.Group>
                         </div>
                     );
                 case 'setting_roles' :
