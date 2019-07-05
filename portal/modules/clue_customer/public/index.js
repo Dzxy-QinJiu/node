@@ -1869,7 +1869,8 @@ class ClueCustomer extends React.Component {
                         this.renderClueAnalysisBtn() : null
                 }
                 {
-                    hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF') ?
+                    (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) &&
+                    (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isSalesRole())?
                         this.renderExtractClue() : null
                 }
                 {this.renderExportClue()}
