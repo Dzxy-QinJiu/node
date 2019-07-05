@@ -779,13 +779,16 @@ class ClueExtract extends React.Component {
     //批量提取,发请求前的参数处理
     handleBeforeSumitChangeSales = (itemId) => {
         if (this.isCommonSales()) { // 普通销售，批量提取参数处理
-            let saleLoginData = userData.getUserData();
+            let saleLoginData = _.pick(userData.getUserData(), ['user_id', 'user_name', 'team_id', 'team_name']);
+
             let submitObj = {
-                'sale_id': _.get(saleLoginData, 'user_id'),
-                'sale_name': _.get(saleLoginData, 'user_name'),
-                'team_id':  _.get(saleLoginData, 'team_id'),
-                'team_name':  _.get(saleLoginData, 'team_name')
+                'sale_id': saleLoginData.user_id,
+                'sale_name': saleLoginData.user_name,
+                ...saleLoginData
             };
+            delete submitObj.user_id;
+            delete submitObj.user_name;
+
             if (itemId){
                 submitObj.customer_id = itemId;
             }
@@ -799,7 +802,7 @@ class ClueExtract extends React.Component {
                 //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
                 let idArray = this.state.salesMan.split('&&');
                 if (_.isArray(idArray) && idArray.length) {
-                    sale_id = idArray[0];//销售的idccc
+                    sale_id = idArray[0];//销售的id
                     team_id = idArray[1];//团队的id
                 }
                 //销售的名字和团队的名字 格式是 销售名称 -团队名称
@@ -808,12 +811,7 @@ class ClueExtract extends React.Component {
                     sale_name = nameArray[0];//销售的名字
                     team_name = _.trim(nameArray[1]);//团队的名字
                 }
-                let submitObj = {
-                    'sale_id': sale_id,
-                    'sale_name': sale_name,
-                    'team_id': team_id,
-                    'team_name': team_name,
-                };
+                let submitObj = { sale_id, sale_name, team_id, team_name};
                 if (itemId){
                     submitObj.customer_id = itemId;
                 }
