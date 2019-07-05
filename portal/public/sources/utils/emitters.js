@@ -104,6 +104,8 @@ exports.batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY = 'batchtask.crm_batch_chang
 exports.batchPushEmitter.CRM_BATCH_CHANGE_LEVEL = 'batchtask.crm_batch_change_level';
 //线索管理批量-变更跟进人
 exports.batchPushEmitter.CLUE_BATCH_CHANGE_TRACE = 'batchtask.clue_user';
+// 线索池-批量提取线索
+exports.batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT = 'batchtask.lead_extract';
 //socket的emitter
 exports.socketEmitter = new EventEmitter();
 //socket的emitter的disconnect
