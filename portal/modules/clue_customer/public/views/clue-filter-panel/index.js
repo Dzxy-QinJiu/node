@@ -61,7 +61,7 @@ class ClueFilterPanel extends React.Component {
     getClueProvinceList = () => {
         const staticsPageSize = ClueAnalysisStore.getState().staticsPageSize;
         const staticsNum = ClueAnalysisStore.getState().staticsNum;
-        const rangeParams = ClueAnalysisStore.getState().rangeParams;
+        const rangeParams = _.cloneDeep(ClueAnalysisStore.getState().rangeParams);
         rangeParams[0].from = clueStartTime;
         rangeParams[0].to = moment().valueOf();
         let pathParams = {
@@ -108,6 +108,7 @@ class ClueFilterPanel extends React.Component {
                     });
                     FilterAction.setFilterClueProvince(provinceList);
                 }else if (item.groupId === COMMON_OTHER_ITEM){
+                    //如果是筛选没有关联客户的线索
                     //如果是筛选重复线索
                     if (item.value === 'repeat_id'){
                         FilterAction.setExistedFiled('repeat_id');

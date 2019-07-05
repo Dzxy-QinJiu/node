@@ -210,6 +210,9 @@ class UserBasicCard extends React.Component {
     };
 
     render() {
+        const salesName = this.props.sales_name;
+        const salesTeamName = this.props.sales_team_name;
+        const isShowHyphenFlag = salesName && salesTeamName;
         return (
             <DetailCard
                 isEdit={this.state.showEdit}
@@ -259,7 +262,11 @@ class UserBasicCard extends React.Component {
                                 </div> : <div className="sales-role">
                                     <span className="sales-team-label">{Intl.get('user.detail.belongTo', '归属')}:</span>
                                     <span className="sales-team-text">
-                                        {this.props.sales_name} - {this.props.sales_team_name}
+                                        {
+                                            isShowHyphenFlag ? (
+                                                <span>{salesName} - {salesTeamName} </span>
+                                            ) : <span> {salesName || salesTeamName} </span>
+                                        }
                                     </span>
                                 </div>
                         }

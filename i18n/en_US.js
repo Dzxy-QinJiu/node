@@ -2662,6 +2662,14 @@ var en_US = {
     'clue.repeat.clue.list': 'Repeat clue',//重复线索
     'clue.has.no.relative.customer': 'Clues have not related to customer',//没有关联客户的线索
     'clue.export.clue.list': 'Export clue',//导出线索
+    'clue.extract.clue': 'Extract clue', // 提取线索
+    'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
+    'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
+    'clue.extract.batch.extract.failed': 'Failed to extract clues in bulk', // 批量提取线索失败
+    'clue.extract.former.responsible.person': 'Former responsible person', // 原负责人
+    'clue.extract': 'Extract', // 提取
+    'clue.extract.failed': 'Failed', // 提取失败
+    'clue.extract.success': 'Success', // 提取成功
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3005,14 +3013,19 @@ var en_US = {
     'common.confirm.modify': 'confirm modify',//确认修改
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
-    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
     'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
     'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
     'clue.manage.contact.clue': 'Contact clue',//联系线索
     'crm.103': 'Change in charge',//变更负责人
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
-    'call.record.phone.err.msg': 'Wrong phone number',//电话号码错误
     'clue.customer.has.transfer': 'Has transfer',//已转化
-    'common.sales.transfer.customer': 'Transfer customer'//转为客户
+    'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效
+    'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
+    'apply.approve.first.higher.level': 'Directly superior',//直属上级
+    'apply.approve.some.level': 'Level {n}',//第{n}级上级
+    'apply.approve.level.five': 'Five',//五
+    'apply.approve.level.six': 'Six',//六
+    'apply.approve.level.eight': 'Eight',//八
+    'apply.approve.level.nine': 'Nine',//九
 };
 export default en_US;

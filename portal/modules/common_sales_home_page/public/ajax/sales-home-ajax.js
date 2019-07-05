@@ -321,9 +321,13 @@ exports.getClueCustomerList = function(constObj, unexist_fields) {
     if (constObj.id){
         data.lastClueId = constObj.id;
     }
+    var type = 'user';
+    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+        type = 'manager';
+    }
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/saleshome/v2/range/clue/' + constObj.page_size + '/' + sorter.field + '/' + sorter.order,
+        url: '/rest/saleshome/v2/range/clue/' + type + '/' + constObj.page_size + '/' + sorter.field + '/' + sorter.order,
         dataType: 'json',
         type: 'post',
         data: data,

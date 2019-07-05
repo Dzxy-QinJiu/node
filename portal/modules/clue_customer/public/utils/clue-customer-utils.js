@@ -68,6 +68,9 @@ export const SELECT_TYPE = {
     HAS_TRANSFER: '3',
     WAIT_ME_HANDLE: 'waitMeHandle'
 };
+export const isNotHasTransferStatus = function(salesClueItem){
+    return salesClueItem.status !== SELECT_TYPE.HAS_TRANSFER;
+};
 
 export const CLUE_DIFF_TYPE = [
     {

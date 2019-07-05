@@ -36,6 +36,7 @@ function ClueCustomerActions() {
         //添加、补充跟进记录后，列表中最后联系数据的更新
         'updateCustomerLastContact',
         'updateCurrentClueRemark',
+        'afterTranferClueSuccess'//转化客户成功后
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -99,15 +100,20 @@ function ClueCustomerActions() {
     };
     //删除某条线索
     this.deleteClueById = function(data,callback) {
-        var submitData = {
-            customer_clue_ids: data.customer_clue_ids
-        };
-        clueCustomerAjax.deleteClueById(submitData).then((result) => {
+        if (data.customer_clue_ids){
+            var submitData = {
+                customer_clue_ids: data.customer_clue_ids
+            };
+            clueCustomerAjax.deleteClueById(submitData).then((result) => {
+                this.dispatch(data);
+                _.isFunction(callback) && callback();
+            },(errorMsg) => {
+                _.isFunction(callback) && callback(errorMsg || Intl.get('crm.139', '删除失败'));
+            });
+        }else{
             this.dispatch(data);
-            _.isFunction(callback) && callback();
-        },(errorMsg) => {
-            _.isFunction(callback) && callback(errorMsg || Intl.get('crm.139', '删除失败'));
-        });
+        }
+
     };
 
     //线索的全文搜索

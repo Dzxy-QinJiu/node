@@ -43,6 +43,8 @@
       }
       .clue-info-detail.no-handled{
         color: #cccccc;
+        display: inline;
+        line-height: 24px;
       }
     }
     .clue-info-item.no-margin-bottom{
@@ -113,12 +115,19 @@
         top:6px;
         .ant-btn{
           margin-right:5px;
+          &.confirm-btn{
+            color:#fff;
+            border-color: #f04134;
+            background-color: #f04134;
+          }
         }
       }
       .clue-info-detail{
         padding-left: 6px;
         .customer_search_wrap{
-          top: -3px;
+          display: inline-block;
+          margin-left: 6px;
+          width: 350px;
         }
         &.has-associated-customer{
           float: left;
