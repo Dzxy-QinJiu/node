@@ -3132,5 +3132,8 @@ var zh_CN = {
     'apply.approve.level.six': '六',
     'apply.approve.level.eight': '八',
     'apply.approve.level.nine': '九',
+    'common.recent.month.daily.activity': '近一个月日活',
+    'common.recent.three.month.weekly.activity': '近三个月周活',
+    'common.recent.year.monthly.activity': '近一个年月活',
 };
 export default zh_CN;
