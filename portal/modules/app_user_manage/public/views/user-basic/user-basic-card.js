@@ -260,7 +260,7 @@ class UserBasicCard extends React.Component {
                                         errorMsg={this.state.error_message}
                                     />
                                 </div> : <div className="sales-role">
-                                    <span className="sales-team-label">{Intl.get('user.detail.belongTo', '归属')}:</span>
+                                    <span className="sales-team-label">{Intl.get('crm.6', '负责人')}:</span>
                                     <span className="sales-team-text">
                                         {
                                             isShowHyphenFlag ? (
