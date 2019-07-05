@@ -703,17 +703,17 @@ class RegRulesView extends React.Component {
                             </div>
 
                         </div>
-                        <div className="cancel-privilege rule-item">
-                            <span className="item-label">
-                                {Intl.get('apply.info.cancel.privilege', '撤销权限')}
-                            </span>
-                            <div className="rule-content">
-                                <Checkbox onChange={this.handleCancelCheckChange}
-                                    checked={_.get(this, 'state.applyRulesAndSetting.cancelAfterApprove')}>
-                                    {Intl.get('apply.workflow.cancel.approve', '通过后允许撤销（审批通过后，经审批人同意，可撤销申请）')}
-                                </Checkbox>
-                            </div>
-                        </div>
+                        {/*<div className="cancel-privilege rule-item">*/}
+                        {/*<span className="item-label">*/}
+                        {/*{Intl.get('apply.info.cancel.privilege', '撤销权限')}*/}
+                        {/*</span>*/}
+                        {/*<div className="rule-content">*/}
+                        {/*<Checkbox onChange={this.handleCancelCheckChange}*/}
+                        {/*checked={_.get(this, 'state.applyRulesAndSetting.cancelAfterApprove')}>*/}
+                        {/*{Intl.get('apply.workflow.cancel.approve', '通过后允许撤销（审批通过后，经审批人同意，可撤销申请）')}*/}
+                        {/*</Checkbox>*/}
+                        {/*</div>*/}
+                        {/*</div>*/}
                         <div className="other-wrap rule-item">
                             <span className="item-label">
                                 {Intl.get('crm.186', '其他')}

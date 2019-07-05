@@ -55,6 +55,8 @@ const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
+import ClueExtract from 'MOD_DIR/clue_pool/public';
+import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
@@ -88,6 +90,7 @@ class ClueCustomer extends React.Component {
         isShowAddCustomerPanel: false,//是否展示添加客户面板
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
+        isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
         queryObj: {},
         filterClueStatus: clueFilterStore.getState().filterClueStatus,
         ...clueCustomerStore.getState()
@@ -309,6 +312,32 @@ class ClueCustomer extends React.Component {
                         </span>
                     </Button>
                     : null}
+            </div>
+        );
+    };
+
+    // 点击关闭提取线索的界面
+    closeExtractCluePanel = () => {
+        this.setState({
+            isShowExtractCluePanel: false
+        });
+    };
+
+    // 点击显示提取线索的界面
+    showExtractCluePanel = () => {
+        this.setState({
+            isShowExtractCluePanel: true
+        });
+    };
+    // 渲染提取线索
+    renderExtractClue = () => {
+        return (
+            <div className="extract-clue-customer-container pull-right">
+                <Button onClick={this.showExtractCluePanel} className="btn-item">
+                    <span className="clue-container">
+                        {Intl.get('clue.extract.clue','提取线索')}
+                    </span>
+                </Button>
             </div>
         );
     };
@@ -1885,7 +1914,17 @@ class ClueCustomer extends React.Component {
                  CRM_CLUE_STATISTICAL 查看线索概览的权限
                  CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
                  */}
-                {hasPrivilege('CRM_CLUE_STATISTICAL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') || hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ? this.renderClueAnalysisBtn() : null}
+                {
+                    hasPrivilege('CRM_CLUE_STATISTICAL') ||
+                    hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL') ||
+                    hasPrivilege('CRM_CLUE_TREND_STATISTIC_SELF') ?
+                        this.renderClueAnalysisBtn() : null
+                }
+                {
+                    (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) &&
+                    (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isSalesRole())?
+                        this.renderExtractClue() : null
+                }
                 {this.renderExportClue()}
                 {this.renderHandleBtn()}
                 {this.renderImportClue()}
@@ -1997,6 +2036,18 @@ class ClueCustomer extends React.Component {
                         repeatAlertMessage={Intl.get('import.repeat.delete.tip', '红色标示数据已存在或不符合规则，请删除红色标示的数据后直接导入，或本地修改数据后重新导入')}
                         regRules={XLS_FILES_TYPE_RULES}
                     />
+                    {
+                        this.state.isShowExtractCluePanel ?
+                            <RightPanel
+                                className="extract-clue-panel"
+                                showFlag={this.state.isShowExtractCluePanel}
+                            >
+                                <ClueExtract
+                                    closeExtractCluePanel={this.closeExtractCluePanel}
+                                />
+                            </RightPanel>
+                            : null
+                    }
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}

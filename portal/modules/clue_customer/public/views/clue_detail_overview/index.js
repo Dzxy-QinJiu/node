@@ -436,21 +436,28 @@ class ClueDetailOverview extends React.Component {
             availability: updateValue
         };
         this.setState({
-            isInvalidClue: true,
+            isInvaliding: true,
         });
         clueCustomerAction.updateCluecustomerDetail(submitObj, (result) => {
             if (_.isString(result)) {
                 this.setState({
-                    isInvalidClue: false,
+                    isInvaliding: false,
+                    editInvalidClueId: ''
                 });
             } else {
                 _.isFunction(callback) && callback(updateValue);
                 _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
                 clueCustomerAction.deleteClueById(item);
                 this.setState({
-                    isInvalidClue: false,
+                    isInvaliding: false,
+                    editInvalidClueId: ''
                 });
             }
+        });
+    };
+    cancelInvalidClue = () => {
+        this.setState({
+            editInvalidClueId: ''
         });
     };
     renderItemSelfSettingContent = (curClue,item) => {
@@ -542,23 +549,46 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
-
-    renderAssociatedAndInvalidClueHandle = (curClue) => {
+    showConfirmInvalid = (item) => {
+        this.setState({
+            editInvalidClueId: item.id
+        });
+    };
+    renderInvalidConfirm = (salesClueItem) => {
+        var isEditting = this.state.isInvaliding;
+        return (
+            <span className="invalid-confirm">
+                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
+                    {Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                    {isEditting ? <Icon type="loading"/> : null}
+                </Button>
+                <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
+            </span>
+        );
+    };
+    renderAvailabilityClue = (curClue) => {
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
+        if (avalibility){
+            return <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
+                onClick={this.showConfirmInvalid.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
+            </Button>;
+        }else{
+            return null;
+        }
+
+    };
+    renderAssociatedAndInvalidClueHandle = (curClue) => {
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
-                    {Intl.get('clue.handle.clue', '线索处理')}：
+                    {Intl.get('clue.handle.clue', '线索处理')}
                 </div>
                 <div className="clue-info-detail no-handled">
                     {Intl.get('clue.has.no.handle', '暂未处理')}
                 </div>
                 <div className="btn-container">
-                    {avalibility ? <Button data-tracename="判定线索无效按钮" className='clue-inability-btn' disabled={this.state.isInvalidClue}
-                        onClick={this.handleClickInvalidBtn.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
-                        {this.state.isInvalidClue ? <Icon type="loading"/> : null}</Button> : null}
-
+                    {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
                 </div>
             </div>
         );
@@ -570,11 +600,8 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    renderAssociatedAndInvalidClueText = (associatedCustomer, isInvalidClue) => {
+    renderAssociatedAndInvalidClueText = (associatedCustomer) => {
         var curClue = this.state.curClue;
-        var invalid_info = curClue.invalid_info;
-        //标记线索无效的权限
-        var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         //关联客户的按钮状态
         var associatedDisplyType = this.state.clickAssociatedBtn ? 'edit' : 'text';
         //如果关联了客户
@@ -603,27 +630,6 @@ class ClueDetailOverview extends React.Component {
                             saveSameNoCustomerName={this.saveSameNoCustomerName}
                         />
                     </div>
-                </div>
-            );
-        } else if (isInvalidClue && invalid_info) {
-            //如果该线索是无效的
-            return (
-                <div className="clue-info-item">
-                    <span className="invalid-time">
-                        {moment(invalid_info.time).format(oplateConsts.DATE_FORMAT)}
-                    </span>
-                    <span className="invalid-person">
-                        {invalid_info.user_name}
-                    </span>
-                    <span className="invalid-des">
-                        {Intl.get('clue.set.invalid', '判定无效')}
-                    </span>
-                    {avalibility ?
-                        <span className="cancel-invalid" onClick={this.handleClickInvalidBtn.bind(this, curClue)}
-                            data-tracename="取消判定线索无效">
-                            {Intl.get('clue.cancel.set.invalid', '改为有效')}
-                        </span> : null}
-
                 </div>
             );
         }
@@ -965,8 +971,6 @@ class ClueDetailOverview extends React.Component {
         var hasAssignedPrivilege = this.assignSalesPrivilege();
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
-        //该线索无效
-        var isInvalidClue = curClue.availability === '1';
         return (
             <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
                 <GeminiScrollbar>
@@ -984,7 +988,7 @@ class ClueDetailOverview extends React.Component {
                         {
                             (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer ?
                                 this.renderAssociatedAndInvalidClueHandle(curClue)
-                                : this.renderAssociatedAndInvalidClueText(associatedCustomer, isInvalidClue)
+                                : this.renderAssociatedAndInvalidClueText(associatedCustomer)
                         }
                     </div>
                     {this.renderAppUserDetail()}

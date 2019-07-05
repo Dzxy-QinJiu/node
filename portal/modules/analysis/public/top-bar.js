@@ -170,8 +170,26 @@ class TopBar extends React.Component {
                 interval = 'day';
             } else if (range === 'month') {
                 interval = 'week';
-            } else {
+            } else if (range === 'quater') {
                 interval = 'month';
+            } else if (range === 'year') {
+                interval = 'quater';
+            } else if (range === 'custom') {
+                const endMoment = moment(endTime);
+
+                //如果时间跨度大于一年
+                if (endMoment.diff(startTime, 'years') > 1) {
+                    interval = 'year';
+                //如果时间跨度小于等于一年，大于一个月
+                } else if (endMoment.diff(startTime, 'years') <= 1 && endMoment.diff(startTime, 'months') > 1) {
+                    interval = 'month';
+                //如果时间跨度小于等于一个月，大于一周
+                } else if (endMoment.diff(startTime, 'months') <= 1 && endMoment.diff(startTime, 'weeks') > 1) {
+                    interval = 'week';
+                //如果时间跨度小于等于一周
+                } else {
+                    interval = 'day';
+                }
             }
         }
 
