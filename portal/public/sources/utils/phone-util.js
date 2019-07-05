@@ -16,7 +16,7 @@ import {PHONE_NOT_SETTING_TIP} from './consts';
 //初始化
 exports.initPhone = function(user) {
     let org = commonMethodUtil.getOrganization();
-    callClient = new CallcenterClient(org.id, user.user_name);
+    callClient = new CallcenterClient(org.id, user.user_id);
     callClient.init().then(() => {
         notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
         oplateConsts.SHOW_SET_PHONE_TIP = false;
