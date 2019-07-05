@@ -35,7 +35,9 @@ class ClueToCustomerPanel extends React.Component {
         //显示添加客户面板
         showAddCustomerPanel: noop,
         //合并完成后的回调事件
-        onMerged: noop
+        onMerged: noop,
+        //展示的视图类型
+        viewType: '',
     };
 
     static propTypes = {
@@ -44,7 +46,8 @@ class ClueToCustomerPanel extends React.Component {
         existingCustomers: PropTypes.array,
         hidePanel: PropTypes.func,
         showAddCustomerPanel: PropTypes.func,
-        onMerged: PropTypes.func
+        onMerged: PropTypes.func,
+        viewType: PropTypes.string,
     };
 
     constructor(props) {
@@ -52,7 +55,7 @@ class ClueToCustomerPanel extends React.Component {
 
         this.state = {
             //视图类型
-            viewType: VIEW_TYPE.CUSTOMER_LIST,
+            viewType: this.props.viewType || VIEW_TYPE.CUSTOMER_LIST,
             //当前操作的客户的id
             customerId: '',
             //当前操作的客户的名称
@@ -63,10 +66,14 @@ class ClueToCustomerPanel extends React.Component {
             isConfirmMergeBtnDisabled: false
         };
     }
-
     componentDidMount() {
         ContactStore.listen(this.onContactStoreChange);
         $(window).on('resize', this.onWindowResize);
+    }
+    componentWillMount(){
+        if (this.props.viewType){
+            this.onMergeToCustomerClick(_.get(this, 'props.existingCustomers[0]'));
+        }
     }
 
     componentWillUnmount() {
@@ -375,7 +382,12 @@ class ClueToCustomerPanel extends React.Component {
 
     //设置视图类型
     setViewType = viewType => {
-        this.setState({ viewType });
+        if (this.props.viewType){
+            this.props.hidePanel();
+        }else{
+            this.setState({ viewType });
+        }
+
     }
 
     //合并到客户
