@@ -168,8 +168,9 @@ function loginSuccess(req, res) {
                 // 组织信息中名称和id字段转为name和id字段，方便前端处理（若后端更改字段名时）
                 let userData = _.get(req, 'session.user', {});
                 userData.organization = {
-                    id: _.get(data,'realm_id', ''),
-                    name: _.get(data, 'realm_name', '')
+                    id: _.get(data,'id', ''),
+                    name: _.get(data, 'name', ''),
+                    functions: _.get(data, 'functions', []),
                 };
                 req.session.save(() => {
                     if (req.xhr) {
