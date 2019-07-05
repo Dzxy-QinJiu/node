@@ -61,7 +61,7 @@ class ClueFilterPanel extends React.Component {
     getClueProvinceList = () => {
         const staticsPageSize = ClueAnalysisStore.getState().staticsPageSize;
         const staticsNum = ClueAnalysisStore.getState().staticsNum;
-        const rangeParams = ClueAnalysisStore.getState().rangeParams;
+        const rangeParams = _.cloneDeep(ClueAnalysisStore.getState().rangeParams);
         rangeParams[0].from = clueStartTime;
         rangeParams[0].to = moment().valueOf();
         let pathParams = {
