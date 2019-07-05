@@ -285,7 +285,7 @@ const MemberList = createReactClass({
         let addMemberList = this.state.addMemberList;
         let searchValue = this.state.searchValue;
         if (searchValue) {
-            addMemberList = _.filter(addMemberList, item => item.userName.indexOf(searchValue) !== -1 || item.nickName.indexOf(searchValue) !== -1);
+            addMemberList = _.filter(addMemberList, item => _.includes(item.userName, searchValue) || _.includes(item.nickName, searchValue));
         }
         _.each(selectedRowKeys, item => {
             addMemberList[item].selected = true;
