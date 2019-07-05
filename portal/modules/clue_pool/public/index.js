@@ -779,16 +779,13 @@ class ClueExtract extends React.Component {
     //批量提取,发请求前的参数处理
     handleBeforeSumitChangeSales = (itemId) => {
         if (this.isCommonSales()) { // 普通销售，批量提取参数处理
-            let saleLoginData = _.pick(userData.getUserData(), ['user_id', 'user_name', 'team_id', 'team_name']);
-
+            let saleLoginData = userData.getUserData();
             let submitObj = {
                 'sale_id': saleLoginData.user_id,
                 'sale_name': saleLoginData.user_name,
-                ...saleLoginData
+                'team_id': saleLoginData.team_id,
+                'team_name': saleLoginData.team_name,
             };
-            delete submitObj.user_id;
-            delete submitObj.user_name;
-
             if (itemId){
                 submitObj.customer_id = itemId;
             }
