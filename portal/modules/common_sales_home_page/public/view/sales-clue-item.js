@@ -393,9 +393,24 @@ class SalesClueItem extends React.Component {
         this.setState({isShowAddCustomerPanel: false});
     };
     //线索转为新客户完成后的回调事件
-    onConvertClueToNewCustomerDone = () => {
+    onConvertClueToNewCustomerDone = (customers) => {
         const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
         message.success(msgInfo);
+
+        const curCustomer = _.get(customers, '[0]');
+        const customerId = _.get(curCustomer, 'id');
+
+        if (curCustomer) {
+            //打开客户面板，显示合并后的客户信息
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                customer_params: {
+                    curCustomer,
+                    currentId: customerId,
+                    activeKey: TAB_KEYS.CONTACT_TAB,
+                    isUseCustomerContacts: true
+                }
+            });
+        }
 
         //在列表中隐藏当前操作的线索
         this.hideCurClue();
