@@ -185,6 +185,20 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        },{
+            method: 'get',
+            path: '/rest/get/similar/cluelists',
+            handler: 'getSimilarClueLists',
+            passport: {
+                'needLogin': true
+            }
+        },{
+            method: 'get',
+            path: '/rest/get/similar/customerlists',
+            handler: 'getSimilarCustomerLists',
+            passport: {
+                'needLogin': true
+            }
         }
     ]
 };

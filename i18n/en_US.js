@@ -3021,6 +3021,8 @@ var en_US = {
     'clue.customer.has.transfer': 'Has transfer',//已转化
     'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
+    'customer.has.similar.lists': 'Similar customer',//相似客户
+    'clue.has.similar.lists': 'Similar clue',//相似线索
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级
     'apply.approve.level.five': 'Five',//五
@@ -3030,5 +3032,6 @@ var en_US = {
     'common.recent.month.daily.activity': 'recent month daily activity',//近一个月日活
     'common.recent.three.month.weekly.activity': 'recent three month weekly activity',//近三个月周活
     'common.recent.year.monthly.activity': 'recent year monthly activity',//近一个年月活
+
 };
 export default en_US;

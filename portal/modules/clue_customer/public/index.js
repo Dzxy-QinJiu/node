@@ -224,12 +224,7 @@ class ClueCustomer extends React.Component {
                     hideRightPanel: this.hideRightPanel,
                     curClue: this.state.curClue,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-
-                    // refreshCustomerList: this.refreshCustomerList,
-                    // updateCustomerDefContact: CrmAction.updateCustomerDefContact,
-                    // updateCustomerLastContact: CrmAction.updateCustomerLastContact,
-                    // handleFocusCustomer: this.handleFocusCustomer,
-
+                    afterTransferClueSuccess: this.afterTransferClueSuccess
                 }
             });
         }

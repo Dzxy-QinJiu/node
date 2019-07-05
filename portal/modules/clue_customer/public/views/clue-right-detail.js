@@ -53,7 +53,7 @@ class ClueRightPanel extends React.Component {
             isRemoveClue: {},//正在删除的那条线索
             relatedCustomer: {},//与线索相关联的客户
             isDeletingClue: false,//正在删除线索
-            tabsContainerHeight: 'auto'
+            tabsContainerHeight: 'auto',
         };
     }
 
@@ -328,6 +328,7 @@ class ClueRightPanel extends React.Component {
                                             hideRightPanel={this.hideRightPanel}
                                             showClueDetailPanel={this.showClueDetailPanel}
                                             updateClueProperty={this.updateClueProperty}
+                                            afterTransferClueSuccess={this.props.afterTransferClueSuccess}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -399,6 +400,7 @@ ClueRightPanel.defaultProps = {
     removeUpdateClueItem: noop,
     updateRemarks: noop,
     updateCustomerLastContact: noop,
+    afterTransferClueSuccess: noop,
 };
 ClueRightPanel.propTypes = {
     curClue: PropTypes.object,
@@ -411,5 +413,6 @@ ClueRightPanel.propTypes = {
     removeUpdateClueItem: PropTypes.func,
     updateRemarks: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
+    afterTransferClueSuccess: PropTypes.func,
 };
 export default ClueRightPanel;
