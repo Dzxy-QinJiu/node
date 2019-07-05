@@ -692,17 +692,37 @@ function getMessageCount(callback) {
     //     typeof callback === 'function' && callback();
     // }
     //获取待审批数
-    if(hasPrivilege('APP_USER_APPLY_LIST')){
-        getNotificationUnread({type: 'unapproved'}, callback);
+
+    let user = userData.getUserData();
+    var applyShowTabs = _.find(user.routes, item => item.id === 'application_apply_management');
+    if (applyShowTabs){
+        var applyTypeList = _.get(applyShowTabs,'routes',[]);
+        _.forEach(applyTypeList, routeItem => {
+            switch (routeItem.id) {
+                case 'sales_bussiness_apply_management':
+                    getUnapproveSalesOpportunityApply();//获取销售机会待我审批数量;
+                    break;
+                case 'app_user_manage_apply':
+                    if(hasPrivilege('APP_USER_APPLY_LIST')){
+                        getNotificationUnread({type: 'unapproved'}, callback);
+                    }
+                    break;
+                case 'bussiness_apply_management':
+                    getUnapproveBussinessTripApply(callback);//获取出差申请待我审批数量
+                    break;
+                case 'leave_apply_management':
+                    getUnapproveLeaveApply();//获取请假申请待我审批数量
+                    break;
+                case 'reportsend_apply_management':
+                    getUnapproveReportSendApply();//获取舆情报送待我审批数量
+                    break;
+                case 'documentwriting_apply_management':
+                    getUnapproveDocumentWritingApply();//获取文件撰写的待我审批数
+                    break;
+            }
+        });
     }
-    //获取待我审批的申请数
-    if (hasPrivilege('GET_MY_WORKFLOW_LIST')){
-        getUnapproveBussinessTripApply(callback);//获取出差申请待我审批数量
-        getUnapproveSalesOpportunityApply();//获取销售机会待我审批数量
-        getUnapproveLeaveApply();//获取请假申请待我审批数量
-        getUnapproveReportSendApply();//获取舆情报送待我审批数量
-        getUnapproveDocumentWritingApply();//获取文件撰写的待我审批数
-    }
+
     //获取线索未处理数的权限（除运营人员外展示）
     if (getClueUnhandledPrivilege()){
         var data = getUnhandledClueCountParams();

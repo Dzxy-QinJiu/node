@@ -53,7 +53,7 @@ var urls = {
     //登录后判断是否绑定微信
     checkLoginWechatIsBindUrl: '/auth2/rs/self/social?platform=wechat',
     //获取登录用户的组织信息
-    getOrganization: '/rest/base/v1/realm/managedrealm'
+    getOrganization: '/rest/base/v1/user/member/organization'
 };
 //验证码的高和宽
 var captcha = {
