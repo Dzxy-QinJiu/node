@@ -654,7 +654,7 @@ class ClueExtract extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = hasPrivilege('LEAD_EXTRACT_ALL') || (hasPrivilege('LEAD_EXTRACT_SELF') && !user.isCommonSales);
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
-                    let containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege});
+                    let containerCls = classNames('singl-extract-clue',{'assign-privilege': hasAssignedPrivilege});
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {
@@ -778,32 +778,47 @@ class ClueExtract extends React.Component {
 
     //批量提取,发请求前的参数处理
     handleBeforeSumitChangeSales = (itemId) => {
-        if (!this.state.salesMan) {
-            cluePoolAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
-        } else {
-            let sale_id = '', team_id = '', sale_name = '', team_name = '';
-            //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
-            let idArray = this.state.salesMan.split('&&');
-            if (_.isArray(idArray) && idArray.length) {
-                sale_id = idArray[0];//销售的idccc
-                team_id = idArray[1];//团队的id
-            }
-            //销售的名字和团队的名字 格式是 销售名称 -团队名称
-            let nameArray = this.state.salesManNames.split('-');
-            if (_.isArray(nameArray) && nameArray.length) {
-                sale_name = nameArray[0];//销售的名字
-                team_name = _.trim(nameArray[1]);//团队的名字
-            }
+        if (this.isCommonSales()) { // 普通销售，批量提取参数处理
+            let saleLoginData = userData.getUserData();
             let submitObj = {
-                'sale_id': sale_id,
-                'sale_name': sale_name,
-                'team_id': team_id,
-                'team_name': team_name,
+                'sale_id': _.get(saleLoginData, 'user_id'),
+                'sale_name': _.get(saleLoginData, 'user_name'),
+                'team_id':  _.get(saleLoginData, 'team_id'),
+                'team_name':  _.get(saleLoginData, 'team_name')
             };
             if (itemId){
                 submitObj.customer_id = itemId;
             }
             return submitObj;
+
+        } else { // 管理员或是销售领导，批量提取参数处理
+            if (!this.state.salesMan) {
+                cluePoolAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
+            } else {
+                let sale_id = '', team_id = '', sale_name = '', team_name = '';
+                //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
+                let idArray = this.state.salesMan.split('&&');
+                if (_.isArray(idArray) && idArray.length) {
+                    sale_id = idArray[0];//销售的idccc
+                    team_id = idArray[1];//团队的id
+                }
+                //销售的名字和团队的名字 格式是 销售名称 -团队名称
+                let nameArray = this.state.salesManNames.split('-');
+                if (_.isArray(nameArray) && nameArray.length) {
+                    sale_name = nameArray[0];//销售的名字
+                    team_name = _.trim(nameArray[1]);//团队的名字
+                }
+                let submitObj = {
+                    'sale_id': sale_id,
+                    'sale_name': sale_name,
+                    'team_id': team_id,
+                    'team_name': team_name,
+                };
+                if (itemId){
+                    submitObj.customer_id = itemId;
+                }
+                return submitObj;
+            }
         }
     };
 
@@ -829,33 +844,46 @@ class ClueExtract extends React.Component {
     };
 
     renderBatchChangeClues = () => {
-        return (
-            <div className="pull-right">
+        if (this.isCommonSales()) { // 普通销售批量提取线索
+            return (
+                <Button
+                    type="primary"
+                    data-tracename="点击批量提取线索按钮"
+                    className='btn-item common-sale-batch-extract'
+                    onClick={this.handleSubmitAssignSalesBatch}
+                >
+                    {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                </Button>
+            );
+        } else { // 管理员或是销售领导批量提取线索
+            return (
                 <div className="pull-right">
-                    <AntcDropdown
-                        ref='changesales'
-                        content={
-                            <Button
-                                type="primary"
-                                data-tracename="点击批量提取线索按钮"
-                                className='btn-item'
-                            >
-                                {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
-                            </Button>
-                        }
-                        overlayTitle={Intl.get('user.salesman', '销售人员')}
-                        okTitle={Intl.get('common.confirm', '确认')}
-                        cancelTitle={Intl.get('common.cancel', '取消')}
-                        isSaving={this.state.batchExtractLoading}
-                        overlayContent={this.renderSalesBlock()}
-                        handleSubmit={this.handleSubmitAssignSalesBatch}
-                        unSelectDataTip={this.state.unSelectDataTip}
-                        clearSelectData={this.clearSelectSales}
-                        btnAtTop={false}
-                    />
+                    <div className="pull-right">
+                        <AntcDropdown
+                            ref='changesales'
+                            content={
+                                <Button
+                                    type="primary"
+                                    data-tracename="点击批量提取线索按钮"
+                                    className='btn-item'
+                                >
+                                    {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                                </Button>
+                            }
+                            overlayTitle={Intl.get('user.salesman', '销售人员')}
+                            okTitle={Intl.get('common.confirm', '确认')}
+                            cancelTitle={Intl.get('common.cancel', '取消')}
+                            isSaving={this.state.batchExtractLoading}
+                            overlayContent={this.renderSalesBlock()}
+                            handleSubmit={this.handleSubmitAssignSalesBatch}
+                            unSelectDataTip={this.state.unSelectDataTip}
+                            clearSelectData={this.clearSelectSales}
+                            btnAtTop={false}
+                        />
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
     };
 
     render = () => {
