@@ -890,12 +890,12 @@ class ClueExtract extends React.Component {
             <div className="extract-clue-panel">
                 <div className='extract-clue-top-nav-wrap date-picker-wrap'>
                     <div className="search-container">
-                        <div className="search-input-wrapper">
-                            <FilterInput
-                                ref="filterinput"
-                                toggleList={this.toggleList.bind(this)}
-                            />
-                        </div>
+                        {/*<div className="search-input-wrapper">*/}
+                        {/*<FilterInput*/}
+                        {/*ref="filterinput"*/}
+                        {/*toggleList={this.toggleList.bind(this)}*/}
+                        {/*/>*/}
+                        {/*</div>*/}
                         {hasSelectedClue ? (
                             <div className="clue-list-selected-tip">
                                 <span className="iconfont icon-sys-notice" />
