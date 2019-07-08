@@ -377,7 +377,7 @@ class ClueDetailOverview extends React.Component {
                 });
                 //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                 clueCustomerAction.afterAddClueTrace(curClue);
-                clueCustomerAction.updateCustomerLastContact(saveObj);
+                this.props.updateCustomerLastContact(saveObj);
                 if (_.isFunction(successFunc)) successFunc();
             }
         });
@@ -1221,9 +1221,6 @@ ClueDetailOverview.defaultProps = {
     removeUpdateClueItem: function() {
 
     },
-    updateRemarks: function() {
-
-    },
     showClueDetailPanel: function() {
 
     },
@@ -1234,6 +1231,9 @@ ClueDetailOverview.defaultProps = {
 
     },
     afterTransferClueSuccess: function() {
+
+    },
+    updateCustomerLastContact: function() {
 
     },
 
@@ -1250,11 +1250,11 @@ ClueDetailOverview.propTypes = {
     updateClueClassify: PropTypes.func,
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
-    updateRemarks: PropTypes.func,
     showClueDetailPanel: PropTypes.func,
     hideRightPanel: PropTypes.func,
     updateClueProperty: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,
+    updateCustomerLastContact: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;
