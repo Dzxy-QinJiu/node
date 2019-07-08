@@ -94,7 +94,7 @@ class FilterList extends React.Component {
                 });
             }
         }
-        //没有常用筛选或者showAdvancedPanel为true时，自动展开高级筛选
+        //没有常用筛选或者打开筛选面板就展开高级筛选（showAdvancedPanel）为true时，自动展开高级筛选
         if ((!newProps.commonData.length && !this.props.commonData.length) || newProps.showAdvancedPanel) {
             this.setState({
                 collapsedAdvanced: false
