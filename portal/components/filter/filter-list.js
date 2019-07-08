@@ -14,9 +14,10 @@ class FilterList extends React.Component {
     constructor(props) {
         super();
         let collapsedAdvanced = true;
-        if (!props.commonData.length) {
+        if (!props.commonData.length || props.showAdvancedPanel) {
             collapsedAdvanced = false;
         }
+
         this.state = {
             rawCommonData: props.commonData,
             commonData: this.sortByClickNum(props.commonData) || [],//todo 在外部维护
@@ -95,7 +96,7 @@ class FilterList extends React.Component {
         }
 
         //没有常用筛选时，展开高级筛选
-        if (!newProps.commonData.length && !this.props.commonData.length) {
+        if ((!newProps.commonData.length && !this.props.commonData.length) || newProps.showAdvancedPanel) {
             this.setState({
                 collapsedAdvanced: false
             });
@@ -747,6 +748,7 @@ FilterList.defaultProps = {
 
     },
     setDefaultCommonSelect: false,
+    showAdvancedPanel: false
 };
 /**
  * advancedData=[
@@ -798,5 +800,6 @@ FilterList.propTypes = {
     hideAdvancedTitle: PropTypes.bool,
     setDefaultSelectCommonFilter: PropTypes.func,
     setDefaultCommonSelect: PropTypes.bool,
+    showAdvancedPanel: PropTypes.bool,
 };
 export default FilterList;

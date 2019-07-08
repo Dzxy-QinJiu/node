@@ -287,6 +287,7 @@ class ClueFilterPanel extends React.Component {
                         setDefaultCommonSelect={true}
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
+                        showAdvancedPanel={true}
                     />
                 </div>
             </div>

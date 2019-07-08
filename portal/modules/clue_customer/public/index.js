@@ -436,7 +436,7 @@ class ClueCustomer extends React.Component {
             lastClueId: this.state.lastCustomerId,
             pageSize: this.state.pageSize,
             sorter: this.state.sorter,
-            keyword: this.state.keyword,
+            keyword: _.trim(this.state.keyword),
             rangeParams: rangeParams,
             statistics_fields: 'status',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
@@ -501,7 +501,7 @@ class ClueCustomer extends React.Component {
             type: 'time',
             name: 'source_time'
         }] : filterStoreData.rangeParams;
-        var keyWord = isGetAllClue ? '' : this.state.keyword;
+        var keyWord = isGetAllClue ? '' : _.trim(this.state.keyword);
         var filterClueStatus = filterStoreData.filterClueStatus;
         var typeFilter = isGetAllClue ? {status: ''} : getClueStatusValue(filterClueStatus);//线索类型
         //按销售进行筛选
@@ -1619,7 +1619,7 @@ class ClueCustomer extends React.Component {
     searchFullTextEvent = (keyword) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
-        clueCustomerAction.setKeyWord(keyword);
+        clueCustomerAction.setKeyWord(_.trim(keyword));
         //如果keyword不存在，就用获取线索的接口
         this.onTypeChange();
     };
@@ -1917,7 +1917,7 @@ class ClueCustomer extends React.Component {
                 }
                 {
                     (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) &&
-                    (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isSalesRole())?
+                    (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isSalesRole()) ?
                         this.renderExtractClue() : null
                 }
                 {this.renderExportClue()}
