@@ -20,6 +20,8 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
+import ApplyViewDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索
@@ -34,6 +36,8 @@ const SCHEDULE_TYPES = {
     VISIT: 'visit',//拜访
     OTHER: 'other'//其他
 };
+//需要打开详情的类型
+const OPEN_DETAIL_TYPES = [WORK_TYPES.DEAL, WORK_TYPES.APPLY];
 
 class MyWorkColumn extends React.Component {
     constructor(props) {
@@ -47,6 +51,7 @@ class MyWorkColumn extends React.Component {
             load_id: '',//用于下拉加载的id
             totalCount: 0,//共多少条工作
             listenScrollBottom: true,//是否下拉加载
+            curOpenDetailWork: null,//当前需要打开详情的工作
         };
     }
 
@@ -330,9 +335,25 @@ class MyWorkColumn extends React.Component {
                 {this.renderContactItem(item)}
                 {this.renderHandleWorkBtn(item)}
             </div>);
-        return (<DetailCard title={title}
-            content={content}
-            className='my-work-card schedule-work'/>);
+        const containerCls = classNames('my-work-card-container', {
+            'open-work-detail-style': _.includes(OPEN_DETAIL_TYPES, item.type) && item.opinion === 'ongoing'
+        });
+        return (
+            <div className={containerCls} onClick={this.openWorkDetail.bind(this, item)}>
+                <DetailCard title={title}
+                    content={content}
+                    className='my-work-card'/>
+            </div>);
+    }
+
+    //打开工作详情
+    openWorkDetail = (item, event) => {
+        //点击到客户名或线索名时，打开客户或线索详情，不触发打开工作详情的处理
+        if ($(event.target).hasClass('customer-clue-name')) return;
+        //打开订单详情、申请详情
+        if (_.includes(OPEN_DETAIL_TYPES, item.type) && item.opinion === 'ongoing') {
+            this.setState({curOpenDetailWork: item});
+        }
     }
 
     renderHandleWorkBtn(item) {
@@ -449,7 +470,43 @@ class MyWorkColumn extends React.Component {
                         </RightPanel>
                         : null
                 }
+                {this.state.curOpenDetailWork ? this.renderWorkDetail() : null}
             </div>);
+    }
+
+    renderWorkDetail() {
+        const work = this.state.curOpenDetailWork;
+        let detailContent = null;
+        //待审批的申请
+        if (work.type === WORK_TYPES.APPLY && work.opinion === 'ongoing') {
+            const applyInfo = {id: work.related_id, approval_state: '0', topic: work.name};
+            detailContent = (
+                <ApplyViewDetail
+                    isHomeMyWork={true}
+                    detailItem={applyInfo}
+                    applyListType='false'//待审批状态
+                    afterApprovedFunc={this.afterFinishWork}
+                />);
+        }
+        return (
+            <RightPanelModal
+                className="my-work-detail-panel"
+                isShowMadal={false}
+                isShowCloseBtn={true}
+                onClosePanel={this.closeWorkDetailPanel}
+                content={detailContent}
+                dataTracename="申请详情"
+            />);
+    }
+
+    afterFinishWork = () => {
+        const work = this.state.curOpenDetailWork;
+        //过滤掉处理完的工作
+        const myWorkList = _.filter(this.state.myWorkList, item => item.id !== work.id);
+        this.setState({curOpenDetailWork: null, myWorkList});
+    }
+    closeWorkDetailPanel = () => {
+        this.setState({curOpenDetailWork: null});
     }
 
     render() {

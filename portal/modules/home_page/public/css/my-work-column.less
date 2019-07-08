@@ -2,7 +2,13 @@
 
 @btn-color: #8DA8C5;
 @btn-hover-color: #2196F3;
+@apply-detail-width: 700px;
 .my-work-content {
+  //可以打开详情的工作（待审批的申请、订单）
+  .open-work-detail-style{
+    cursor: pointer;
+    z-index: 1;
+  }
   .detail-card-container {
     position: relative;
     padding: 0;
@@ -160,6 +166,19 @@
     }
     .apply-time {
       float: right;
+    }
+  }
+  //申请审批详情宽度设置
+  .my-work-detail-panel:not(.show-modal) {
+    width: calc(@apply-detail-width + 24px);
+
+    .close-modal-btn{
+      right: @apply-detail-width;
+    }
+  }
+  .my-work-detail-panel{
+    .right-panel-modal-content{
+      width: @apply-detail-width;
     }
   }
 }

@@ -141,6 +141,8 @@ const ApplyViewDetail = createReactClass({
         showNoData: PropTypes.bool,
         isUnreadDetail: PropTypes.bool,
         applyListType: PropTypes.object,
+        isHomeMyWork: PropTypes.bool,
+        afterApprovedFunc: PropTypes.func
     },
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
@@ -153,7 +155,10 @@ const ApplyViewDetail = createReactClass({
         return {
             showNoData: false,
             detailItem: {},
-            isUnreadDetail: false//是否有未读回复
+            isUnreadDetail: false,//是否有未读回复
+            isHomeMyWork: false,//是否是首页我的工作中打开的详情
+            afterApprovedFunc: function() {//审批完后的外部处理方法
+            }
         };
     },
 
@@ -246,10 +251,14 @@ const ApplyViewDetail = createReactClass({
     },
 
     getApplyListDivHeight: function() {
-        if ($(window).width() < Oplate.layout['screen-md']) {
+        if (!this.props.isHomeMyWork && $(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        var height = $(window).height() - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        let height = $(window).height() - AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
+        if (!this.props.isHomeMyWork) {
+            height -= AppUserUtil.APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
+        }
         return height;
     },
 
@@ -317,12 +326,18 @@ const ApplyViewDetail = createReactClass({
 
     //获取详情高度
     getApplyDetailHeight() {
-        if ($(window).width() < Oplate.layout['screen-md']) {
+        //不是首页打开的申请详情时（申请审批列表），需要进行高度自适应的处理
+        if (!this.props.isHomeMyWork && $(window).width() < Oplate.layout['screen-md']) {
             return 'auto';
         }
-        return $(window).height() -
-            2 * AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA -
+        let height = $(window).height() -
+            AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA -
             AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.BOTTOM_DELTA;
+        //不是首页打开的申请详情时（申请审批列表），需要减去头部导航的高度
+        if (!this.props.isHomeMyWork){
+            height -= AppUserUtil.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM.TOP_DELTA;
+        }
+        return height;
     },
 
     //回复列表滚动到最后
@@ -748,10 +763,10 @@ const ApplyViewDetail = createReactClass({
     //展示手动设置密码的权限
     showPassWordPrivilege: function() {
         //有修改权限 && 是待审批状态的申请 && 能展示通过驳回按钮 && 该审批位于最后一个节点
-        return this.hasApprovalPrivilege() && this.isUnApproved() && _.get(this, 'state.detailInfoObj.info.showApproveBtn') && isFinalTask(this.state.applyNode);
+        return this.hasApprovalPrivilege() && this.isUnApproved() && (_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork) && isFinalTask(this.state.applyNode);
     },
     notShowIcon(){
-        return !this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !_.get(this, 'state.detailInfoObj.info.showApproveBtn');
+        return !this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
     },
     //选择了手动设置密码时，未输入密码，不能通过
     settingPasswordManuWithNoValue: function() {
@@ -2067,7 +2082,8 @@ const ApplyViewDetail = createReactClass({
             id: _.get(this, 'state.detailInfoObj.info.id', ''),
             user_ids: [transferCandidateId]
         };
-        var hasApprovePrivilege = _.get(this, 'state.detailInfoObj.info.showApproveBtn', false);
+        //是否展示审批按钮（首页我的工作中的申请都展示审批按钮）
+        var isShowApproveBtn = _.get(this, 'state.detailInfoObj.info.showApproveBtn', false) || this.props.isHomeMyWork;
         var candidateList = _.filter(this.state.candidateList,item => item.user_id !== transferCandidateId);
         var deleteUserIds = _.map(candidateList,'user_id');
         //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
@@ -2086,12 +2102,16 @@ const ApplyViewDetail = createReactClass({
                     message.success(Intl.get('apply.approve.transfer.success', '转出申请成功'));
                 }
                 //将待我审批的申请转审后
-                if (hasApprovePrivilege){
+                if (isShowApproveBtn){
                     //待审批数字减一
                     var count = Oplate.unread.approve - 1;
                     updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
                     //隐藏通过、驳回按钮
                     ApplyViewDetailActions.showOrHideApprovalBtns(false);
+                    //调用父组件的方法进行转成完成后的其他处理
+                    if (_.isFunction(this.props.afterApprovedFunc)) {
+                        this.props.afterApprovedFunc();
+                    }
                 }else if (memberId === transferCandidateId ){
                     var count = Oplate.unread.approve + 1;
                     updateUnapprovedCount('approve','SHOW_UNHANDLE_APPLY_COUNT',count);
@@ -2146,10 +2166,12 @@ const ApplyViewDetail = createReactClass({
         var selectedDetailItem = this.props.detailItem;
         var detailInfoObj = this.state.detailInfoObj.info;
         var showBackoutApply = detailInfoObj.presenter_id === userData.getUserData().user_id;
-        //是否显示通过驳回
-        var isRealmAdmin = detailInfoObj.showApproveBtn;
+        //是否显示通过驳回(主页我的工作中打开的详情，我的工作中打开的我都可以进行审批)
+        var isShowApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;
         //是否审批
         let isConsumed = !this.isUnApproved();
+
+        const isMyHomeWork = this.props.isHomeMyWork;
         return (
             <div className="approval_block pull-right">
                 <Row className="approval_person clearfix">
@@ -2161,18 +2183,18 @@ const ApplyViewDetail = createReactClass({
                                     {Intl.get('user.apply.detail.backout', '撤销申请')}
                                 </Button>
                                 : null}
-                            {isRealmAdmin ? (
+                            {isShowApproveBtn || isMyHomeWork ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.clickApprovalFormBtn.bind(this, '1')}>
                                     {Intl.get('user.apply.detail.button.pass', '通过')}
                                 </Button>) : null}
-                            {isRealmAdmin ? (
+                            {isShowApproveBtn || isMyHomeWork ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.clickApprovalFormBtn.bind(this, '2')}>
                                     {Intl.get('common.apply.reject', '驳回')}
                                 </Button>) : null}
                             {/*如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出*/}
-                            {(isRealmAdmin || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || this.state.isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
+                            {(isShowApproveBtn || isMyHomeWork || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || this.state.isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
                         </div>)}
                     </Col>
                 </Row>
@@ -2398,7 +2420,12 @@ const ApplyViewDetail = createReactClass({
                     obj.nick_name = this.state.formData.nick_name;
                 }
             }
-            ApplyViewDetailActions.submitApply(obj, detailInfo.type);
+            ApplyViewDetailActions.submitApply(obj, detailInfo.type, () => {
+                //调用父组件的方法进行审批完成后的其他处理
+                if (_.isFunction(this.props.afterApprovedFunc)) {
+                    this.props.afterApprovedFunc();
+                }
+            });
         };
         var validation = this.refs.validation;
         if (!validation) {
@@ -2530,7 +2557,11 @@ const ApplyViewDetail = createReactClass({
         });
         let customerOfCurUser = this.state.customerOfCurUser;
         let detailWrapWidth = $('.user_apply_page').width() - APPLY_LIST_WIDTH;
-        var divHeight = $(window).height() - TOP_NAV_HEIGHT;
+        let divHeight = $(window).height();
+        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
+        if (!this.props.isHomeMyWork) {
+            divHeight -= TOP_NAV_HEIGHT;
+        }
         return (
             <div className={cls} data-tracename="审批详情界面" style={{'width': detailWrapWidth, 'height': divHeight}}>
                 {this.renderApplyDetailLoading()}
