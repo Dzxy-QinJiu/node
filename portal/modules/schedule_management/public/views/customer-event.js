@@ -17,11 +17,11 @@ class CustomEvent extends React.Component {
     handleVisibleChange = (visible) => {
         this.setState({visible});
     };
-    handleClickEvent = (customer_id) => {
+    handleClickEvent = (item) => {
         this.setState({
-            curCustomerId: customer_id
+            curCustomerId: item.customer_id
         });
-        this.props.event.showCustomerDetail(customer_id);
+        this.props.event.showCustomerOrClueDetail(item);
     };
     renderCustomerName = () => {
         var _this = this;
@@ -29,12 +29,12 @@ class CustomEvent extends React.Component {
             <div className="customer-names-wrap">
                 {_.map(this.props.event.totalCustomerObj, (item) => {
                     var listCls = classNames('list-item', {
-                        'has-handled': item.status == 'handle',
-                        'selected-customer': item.customer_id == this.state.curCustomerId
+                        'has-handled': item.status === 'handle',
+                        'selected-customer': item.customer_id === this.state.curCustomerId
                     });
                     return (
-                        <p className={listCls} onClick={this.handleClickEvent.bind(this, item.customer_id)}>
-                            {item.customer_name}
+                        <p className={listCls} onClick={this.handleClickEvent.bind(this, item)}>
+                            {item.customer_name || item.lead_name }
                         </p>
                     );
                 })}

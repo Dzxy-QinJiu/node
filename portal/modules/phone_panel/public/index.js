@@ -751,7 +751,7 @@ class PhonePanel extends React.Component {
             rightPanelClassName += ' notification-system-customer';
         }
         return (
-            <RightPanel showFlag={this.props.showFlag}
+            <RightPanel showFlag={this.props.showFlag} id="customer-phone-status-content"
                 className={rightPanelClassName}
                 data-tracename={paramObj.call_params ? '电话弹屏' : '客户详情'}>
                 {this.isHideCloseBtn() ? <span className="close-placeholder"/> : (

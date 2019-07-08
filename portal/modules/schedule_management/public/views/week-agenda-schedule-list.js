@@ -147,7 +147,7 @@ class WeekAgendaScheduleLists extends React.Component {
                                 });
                                 return (
                                     <div className={listCls}
-                                        onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}>
+                                        onClick={this.props.showCustomerOrClueDetail.bind(this, item)}>
                                         <Row>
                                             <Col sm={4}>
                                                 <i className={cls}></i>
@@ -230,7 +230,7 @@ WeekAgendaScheduleLists.title = (date, {formats, culture}) => {
 };
 WeekAgendaScheduleLists.defaultProps = {
     curCustomerId: '',
-    showCustomerDetail: function() {}
+    showCustomerOrClueDetail: function() {}
 
 };
 export default WeekAgendaScheduleLists;
