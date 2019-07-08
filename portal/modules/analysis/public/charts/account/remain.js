@@ -51,7 +51,7 @@ export function getRemainAccountChart(paramObj = {}) {
                     {
                         title: Intl.get('common.login.time', '时间'),
                         dataIndex: 'timestamp',
-                        width: 90,
+                        width: 100,
                         align: 'left',
                         render: text => {
                             text = moment(text).format(oplateConsts.DATE_FORMAT);
