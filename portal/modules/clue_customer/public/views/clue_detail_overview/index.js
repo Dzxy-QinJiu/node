@@ -1166,7 +1166,12 @@ class ClueDetailOverview extends React.Component {
             <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
-                    {curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE ? this.renderSimilarClueCustomerLists() : null}
+                    {
+                        curClue.clue_type === 'clue_pool' ? null : (
+                            curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE ?
+                                this.renderSimilarClueCustomerLists() : null
+                        )
+                    }
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
                     <div className="assign-sales-warp clue-detail-block">
@@ -1178,9 +1183,12 @@ class ClueDetailOverview extends React.Component {
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，已跟进或待跟进的线索并且没有关联客户*/}
                         {
-                            (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer ?
-                                this.renderAssociatedAndInvalidClueHandle(curClue)
-                                : this.renderAssociatedAndInvalidClueText(associatedCustomer)
+                            curClue.clue_type === 'clue_pool' ? null : (
+                                (curClue.status === SELECT_TYPE.HAS_TRACE ||
+                                curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer ?
+                                    this.renderAssociatedAndInvalidClueHandle(curClue)
+                                    : this.renderAssociatedAndInvalidClueText(associatedCustomer)
+                            )
                         }
                     </div>
                     {this.renderAppUserDetail()}

@@ -25,6 +25,8 @@ class CluePoolStore {
         this.unSelectDataTip = '';//未选择数据就保存的提示信息
         this.batchExtractLoading = false;
         this.keyword = '';//线索全文搜索的关键字
+        this.currentId = '';//当前展示线索的id
+        this.curClue = {}; //当前展示线索详情
     }
     // 获取线索池列表
     getCluePoolList(result) {
@@ -89,6 +91,23 @@ class CluePoolStore {
     updateCluePoolList(id) {
         this.cluePoolList = _.filter(this.cluePoolList, clue => clue.id !== id);
         this.cluePoolListSize--;
+    }
+
+    // 当前线索的id
+    setCurrentClueId(id) {
+        if (id) {
+            this.currentId = id;
+            let curClue = _.find(this.curClueLists, clue => {
+                return clue.id === id;
+            });
+            if (curClue) {
+                curClue.clue_type = 'clue_pool';
+                this.curClue = curClue;
+            }
+        } else {
+            this.currentId = '';
+            this.curClue = {};
+        }
     }
 }
 

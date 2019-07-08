@@ -17,6 +17,8 @@ const restApis = {
     extractClueAssignToSale: commonUrl + 'lead/extract/:lead_id/:member_id',
     // 批量提取线索
     batchExtractClueAssignToSale: commonUrl + 'lead/:type/batch/extract',
+    // 根据线索的id获取线索的详情
+    getClueDetailById: commonUrl + '/query/lead_pool_id/:lead_pool_id',
 };
 
 // 处理线索池中列表的参数
@@ -167,4 +169,15 @@ exports.batchExtractClueAssignToSale = (req, res) => {
             req: req,
             res: res
         }, req.body);
+};
+
+
+// 根据线索的id获取线索的详情
+exports.getClueDetailById = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getClueDetailById.replace(':lead_pool_id', req.params.clueId),
+            req: req,
+            res: res
+        }, null);
 };

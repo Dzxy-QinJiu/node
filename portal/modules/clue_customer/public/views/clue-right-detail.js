@@ -40,6 +40,8 @@ import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
 import {handleSubmitClueItemData, SELECT_TYPE, isNotHasTransferStatus} from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
+
 class ClueRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -91,21 +93,41 @@ class ClueRightPanel extends React.Component {
     }
 
     getCurClue = (id) => {
-        clueCustomerAjax.getClueDetailById(id).then(resData => {
-            if (_.isObject(resData)) {
+        if (this.props.type === 'clue_pool') {
+            cluePoolAjax.getClueDetailById(id).then(resData => {
+                if (_.isObject(resData)) {
+                    resData.clue_type = 'clue_pool';
+                    this.setState({
+                        curClue: resData
+                    });
+                }else{
+                    this.setState({
+                        getClueDetailErrMsg: Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
+                    });
+                }
+            }, (errMsg) => {
                 this.setState({
-                    curClue: resData
+                    getClueDetailErrMsg: errMsg || Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
                 });
-            }else{
-                this.setState({
-                    getClueDetailErrMsg: Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
-                });
-            }
-        }, (errMsg) => {
-            this.setState({
-                getClueDetailErrMsg: errMsg || Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
             });
-        });
+        } else {
+            clueCustomerAjax.getClueDetailById(id).then(resData => {
+                if (_.isObject(resData)) {
+                    this.setState({
+                        curClue: resData
+                    });
+                }else{
+                    this.setState({
+                        getClueDetailErrMsg: Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
+                    });
+                }
+            }, (errMsg) => {
+                this.setState({
+                    getClueDetailErrMsg: errMsg || Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
+                });
+            });
+        }
+
     };
     getSaleTeamList = () => {
         clueCustomerAjax.getSalesManList().then(data => {
@@ -283,7 +305,9 @@ class ClueRightPanel extends React.Component {
                     <div className="clue-detail-wrap" data-tracename="线索详情">
                         <div className="clue-basic-info-container">
                             <div className="clue-name-wrap">
-                                {renderClueStatus(curClue.status)}
+                                {
+                                    curClue.clue_type === 'clue_pool' ? null : renderClueStatus(curClue.status)
+                                }
                                 <div className="clue-name-title">
                                     <BasicEditInputField
                                         hasEditPrivilege={hasPrivilegeEdit && isNotHasTransferStatus(curClue)}

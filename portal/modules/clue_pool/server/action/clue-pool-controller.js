@@ -76,3 +76,12 @@ exports.batchExtractClueAssignToSale = (req, res) => {
         res.status(500).json(err && err.message);
     });
 };
+
+// 根据线索的id获取线索的详情
+exports.getClueDetailById = (req, res) => {
+    cluePoolService.getClueDetailById(req, res).on('success', (data) => {
+            res.status(200).json(data.result);
+        }).on('error', (err) => {
+        res.status(500).json(err && err.message);
+    });
+};
