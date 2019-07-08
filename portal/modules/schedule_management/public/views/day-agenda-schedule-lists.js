@@ -156,7 +156,7 @@ class DayAgendaScheduleLists extends React.Component {
                 var customerContent = this.renderPopoverContent(item);
                 var phoneNum = _.get(item, 'contacts[0].phone[0]','');
                 return (
-                    <div className={listCls} onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
+                    <div className={listCls} onClick={this.props.showCustomerOrClueDetail.bind(this, item)}
                         data-tracename="日程列表">
                         <div className={itemCls}>
                             <Row>
@@ -259,7 +259,7 @@ DayAgendaScheduleLists.defaultProps = {
     curCustomerId: '',
     updateScrollBar: false,
     handleScheduleItemStatus: function() {},
-    showCustomerDetail: function() {}
+    showCustomerOrClueDetail: function() {}
 
 };
 DayAgendaScheduleLists.propTypes = {
@@ -267,7 +267,7 @@ DayAgendaScheduleLists.propTypes = {
     updateScrollBar: PropTypes.bool,
     scheduleList: PropTypes.array,
     handleScheduleItemStatus: PropTypes.func,
-    showCustomerDetail: PropTypes.func
+    showCustomerOrClueDetail: PropTypes.func
 
 };
 export default DayAgendaScheduleLists;
