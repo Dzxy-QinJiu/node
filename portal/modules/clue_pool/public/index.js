@@ -213,7 +213,6 @@ class ClueExtract extends React.Component {
             name: 'source_time'
         }] : filterStoreData.rangeParams;
         let keyWord = isGetAllClue ? '' : this.state.keyword;
-        let filterClueStatus = filterStoreData.filterClueStatus;
         let typeFilter = {};
         //按销售进行筛选
         let filterClueUsers = filterStoreData.filterClueUsers;
@@ -303,10 +302,8 @@ class ClueExtract extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
+            typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
         };
-        if (_.get(data, 'typeFilter')) {
-            queryObj.typeFilter = _.get(data, 'typeFilter') || JSON.stringify(typeFilter);
-        }
         if (!this.state.lastId){
             //清除线索的选择
             this.clearSelectedClue();
@@ -890,12 +887,12 @@ class ClueExtract extends React.Component {
             <div className="extract-clue-panel">
                 <div className='extract-clue-top-nav-wrap date-picker-wrap'>
                     <div className="search-container">
-                        {/*<div className="search-input-wrapper">*/}
-                        {/*<FilterInput*/}
-                        {/*ref="filterinput"*/}
-                        {/*toggleList={this.toggleList.bind(this)}*/}
-                        {/*/>*/}
-                        {/*</div>*/}
+                        <div className="search-input-wrapper">
+                            <FilterInput
+                                ref="filterinput"
+                                toggleList={this.toggleList.bind(this)}
+                            />
+                        </div>
                         {hasSelectedClue ? (
                             <div className="clue-list-selected-tip">
                                 <span className="iconfont icon-sys-notice" />
