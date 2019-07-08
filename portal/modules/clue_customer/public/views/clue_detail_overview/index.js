@@ -372,13 +372,12 @@ class ClueDetailOverview extends React.Component {
                     curClue.customer_traces[0].nick_name = userName;
                     curClue.customer_traces[0].add_time = addTime;
                 }
-                this.props.updateRemarks(curClue.customer_traces);
                 this.setState({
                     curClue: curClue
                 });
                 //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                 clueCustomerAction.afterAddClueTrace(curClue);
-                this.props.updateClueProperty({status: SELECT_TYPE.HAS_TRACE,customer_traces: curClue.customer_traces});
+                clueCustomerAction.updateCustomerLastContact(saveObj);
                 if (_.isFunction(successFunc)) successFunc();
             }
         });
