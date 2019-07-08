@@ -50,7 +50,7 @@ import ClueFilterPanel from './views/clue-filter-panel';
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import ShearContent from 'CMP_DIR/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
@@ -224,7 +224,8 @@ class ClueCustomer extends React.Component {
                     hideRightPanel: this.hideRightPanel,
                     curClue: this.state.curClue,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                    afterTransferClueSuccess: this.afterTransferClueSuccess
+                    afterTransferClueSuccess: this.afterTransferClueSuccess,
+                    updateCustomerLastContact: this.updateCustomerLastContact
                 }
             });
         }

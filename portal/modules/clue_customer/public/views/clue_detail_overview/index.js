@@ -372,13 +372,12 @@ class ClueDetailOverview extends React.Component {
                     curClue.customer_traces[0].nick_name = userName;
                     curClue.customer_traces[0].add_time = addTime;
                 }
-                this.props.updateRemarks(curClue.customer_traces);
                 this.setState({
                     curClue: curClue
                 });
                 //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                 clueCustomerAction.afterAddClueTrace(curClue);
-                this.props.updateClueProperty({status: SELECT_TYPE.HAS_TRACE,customer_traces: curClue.customer_traces});
+                this.props.updateCustomerLastContact(saveObj);
                 if (_.isFunction(successFunc)) successFunc();
             }
         });
@@ -1222,9 +1221,6 @@ ClueDetailOverview.defaultProps = {
     removeUpdateClueItem: function() {
 
     },
-    updateRemarks: function() {
-
-    },
     showClueDetailPanel: function() {
 
     },
@@ -1235,6 +1231,9 @@ ClueDetailOverview.defaultProps = {
 
     },
     afterTransferClueSuccess: function() {
+
+    },
+    updateCustomerLastContact: function() {
 
     },
 
@@ -1251,11 +1250,11 @@ ClueDetailOverview.propTypes = {
     updateClueClassify: PropTypes.func,
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
-    updateRemarks: PropTypes.func,
     showClueDetailPanel: PropTypes.func,
     hideRightPanel: PropTypes.func,
     updateClueProperty: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,
+    updateCustomerLastContact: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;

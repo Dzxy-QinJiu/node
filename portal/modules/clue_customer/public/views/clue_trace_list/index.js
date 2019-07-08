@@ -285,8 +285,7 @@ class ClueTraceList extends React.Component {
                 };
                 ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
                     //更新列表中的最后联系
-                    _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
-                    this.props.updateRemarks(addcontent);
+                    this.props.updateCustomerLastContact(queryObj);
                     this.toggleAddRecordPanel();
                 });
             } else {
@@ -308,7 +307,7 @@ class ClueTraceList extends React.Component {
                 ClueTraceAction.updateClueTrace(queryObj, () => {
                     //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
                     if (_.get(this.state, 'customerRecord[0].id') === item.id) {
-                        _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
+                        this.props.updateCustomerLastContact(queryObj);
                     }
                 });
             } else {
@@ -717,7 +716,6 @@ ClueTraceList.propTypes = {
     updateCustomerLastContact: PropTypes.func,
     curClue: PropTypes.object,
     showClueDetailPanel: PropTypes.func,
-    updateRemarks: PropTypes.func,
 };
 module.exports = ClueTraceList;
 
