@@ -17,13 +17,12 @@ class ShearContent extends React.Component {
 
     static defaultProps = {
         lines: 3,
-        more: '展开',
-        less: '收起'
+        more: Intl.get('shear.expand', '展开'),
+        less: Intl.get('crm.contact.way.hide', '收起')
     };
 
     constructor(...args) {
         super(...args);
-
         this.state = {
             expanded: false,
             truncated: false
@@ -55,33 +54,26 @@ class ShearContent extends React.Component {
         const {truncated, expanded} = this.state;
 
         return (
-            <span>
-                <Truncate
-                    numberOfLines={!expanded && 3}
-                    lineHeight={20}
-                    ellipsis={
-                        (<span>...{' '}<a href="#" onClick={this.toggleLines}>{more}</a></span>)
-                    }
-                    onTruncate={this.handleTruncate}
-                >
-                    <p style={{display: 'inline-block'}}>
-                        {children}
-                        {truncated && expanded && (
-                            <span>
-                                {' '}
-                                <a href="#" onClick={this.toggleLines}>{less}</a>
-                            </span> )}
-                    </p>
-                </Truncate>
-            </span>
+            <Truncate
+                numberOfLines={!expanded && lines}
+                lineHeight={20}
+                ellipsis={
+                    (<span>...{' '}<a className="more-click" href="#" onClick={this.toggleLines}>{more}</a></span>)
+                }
+                onTruncate={this.handleTruncate}
+            >
+                <p className="less-container" style={{}}>
+                    {children}
+                    {truncated && expanded && (
+                        <span>
+                            {' '}
+                            <a className="less-click" href="#" onClick={this.toggleLines}>{less}</a>
+                        </span> )}
+                </p>
+            </Truncate>
         );
     }
 }
-// ShearContent.defaultProps = {
-//     rowsNum: 3,
-//     children: null,
-//     jsx: null
-// };
 ShearContent.propTypes = {
     rowsNum: PropTypes.number,
     children: PropTypes.object,

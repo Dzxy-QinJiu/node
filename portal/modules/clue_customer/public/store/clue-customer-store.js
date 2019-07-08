@@ -398,9 +398,10 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
         if (updateTraceCustomer) {
             if (_.get(updateTraceCustomer, 'customer_traces[0]')) {
                 updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
-                updateTraceCustomer.customer_traces[0].add_time = traceObj.time;
+                updateTraceCustomer.customer_traces[0].add_time = traceObj.time || moment().valueOf();
+                updateTraceCustomer.customer_traces[0].call_date = traceObj.time || moment().valueOf();
             } else {
-                updateTraceCustomer.customer_traces = [{remark: traceObj.remark, add_time: traceObj.time}];
+                updateTraceCustomer.customer_traces = [{remark: traceObj.remark, add_time: traceObj.time || moment().valueOf(), call_date: traceObj.time || moment().valueOf()}];
             }
         }
         if (traceObj.remark) {
