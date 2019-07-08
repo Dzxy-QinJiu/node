@@ -12,11 +12,13 @@ class ShearContent extends React.Component {
         more: PropTypes.string,
         less: PropTypes.string,
         text: PropTypes.node,
-        lines: PropTypes.number
+        lines: PropTypes.number,
+        lineHeight: PropTypes.number,
     };
 
     static defaultProps = {
         lines: 3,
+        lineHeight: 20,
         more: Intl.get('shear.expand', '展开'),
         less: Intl.get('crm.contact.way.hide', '收起')
     };
@@ -49,24 +51,23 @@ class ShearContent extends React.Component {
     }
 
     render() {
-        const {lines, more, less, children} = this.props;
+        const {lines,lineHeight, more, less, children} = this.props;
 
         const {truncated, expanded} = this.state;
 
         return (
             <Truncate
                 numberOfLines={!expanded && lines}
-                lineHeight={20}
+                lineHeight={lineHeight}
                 ellipsis={
-                    (<span>...{' '}<a className="more-click" href="#" onClick={this.toggleLines}>{more}</a></span>)
+                    (<span>...<a className="more-click" href="#" onClick={this.toggleLines}>{more}</a></span>)
                 }
                 onTruncate={this.handleTruncate}
             >
-                <p className="less-container" style={{}}>
+                <p className="less-container">
                     {children}
                     {truncated && expanded && (
                         <span>
-                            {' '}
                             <a className="less-click" href="#" onClick={this.toggleLines}>{less}</a>
                         </span> )}
                 </p>
