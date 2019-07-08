@@ -60,12 +60,11 @@ function handleClueParams(req, clueUrl) {
     if (reqBody.clue_classify){
         bodyObj.query.clue_classify = reqBody.clue_classify;
     }
-    if (reqBody.availability){
-        bodyObj.query.availability = reqBody.availability;
-    }
+
     if (reqBody.province){
         bodyObj.query.province = reqBody.province;
     }
+    bodyObj.rang_params = rangeParams;
     let exist_fields = reqBody.exist_fields ? JSON.parse(reqBody.exist_fields) : [];
     let unexist_fields = reqBody.unexist_fields ? JSON.parse(reqBody.unexist_fields) : [];
     if (_.isArray(exist_fields) && exist_fields.length){
