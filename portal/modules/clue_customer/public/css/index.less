@@ -406,6 +406,10 @@
       cursor: pointer;
     }
   }
+  //添加客户和转化客户的面板的z-index设置大一些，避免被线索详情覆盖
+  .right-panel-modal.crm-add-container, .clue-right-panel.clue-to-customer-panel{
+    z-index:120
+  }
 }
 
 .ant-calendar {
@@ -462,6 +466,10 @@
     .clue-stage.has-follow {
       color: @has-follow-color;
       background: @has-follow-background;
+    }
+    .clue-stage.has-transfer {
+      color: @has-transfer-color;
+      background: @has-transfer-background;
     }
   }
 }
