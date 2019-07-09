@@ -141,7 +141,29 @@ class SalesHomePage extends React.Component {
         });
 
     };
+    openCustomerOrClueDetail = (schedule) => {
+        var showCustomerModal = _.get($('#customer-phone-status-content'),'length',0) > 0;
+        var showClueModal = _.get($('#clue_phone_panel_wrap'),'length',0) > 0;
+        if (schedule.lead_id){
+            //关闭客户详情
+            if (showCustomerModal){
+                phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
+            }
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+                clue_params: {
+                    currentId: schedule.lead_id,
+                    hideRightPanel: this.closeRightCustomerPanel
+                }
+            });
+        }else if (schedule.customer_id){
+            //关闭线索详情
+            if (showClueModal){
+                phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_CLUE_PANEL);
+            }
+            this.openCustomerDetail(schedule.customer_id);
+        }
 
+    };
     openCustomerDetail = (customer_id) => {
         if (this.state.curShowUserId) {
             this.closeRightUserPanel();
@@ -686,7 +708,7 @@ class SalesHomePage extends React.Component {
                                     scheduleType={ALL_LISTS_TYPE.SCHEDULE_TODAY}
                                     isShowTopTitle={false}
                                     isShowScheduleTimerange={true}
-                                    openCustomerDetail={this.openCustomerDetail}
+                                    openCustomerOrClueDetail={this.openCustomerOrClueDetail}
                                 />
                             );
                         })
@@ -700,7 +722,7 @@ class SalesHomePage extends React.Component {
                                     isShowTopTitle={false}
                                     scheduleType={ALL_LISTS_TYPE.SCHEDULE_TODAY}
                                     isShowScheduleTimerange={false}
-                                    openCustomerDetail={this.openCustomerDetail}
+                                    openCustomerOrClueDetail={this.openCustomerOrClueDetail}
                                 />
                             );
                         })
@@ -724,7 +746,7 @@ class SalesHomePage extends React.Component {
                                     scheduleItemDetail={item}
                                     isShowTopTitle={true}
                                     isShowScheduleTimerange={false}
-                                    openCustomerDetail={this.openCustomerDetail}
+                                    openCustomerOrClueDetail={this.openCustomerOrClueDetail}
                                 />
                             );
                         })}
@@ -747,7 +769,7 @@ class SalesHomePage extends React.Component {
                                     scheduleItemDetail={item}
                                     isShowTopTitle={false}
                                     isShowScheduleTimerange={false}
-                                    openCustomerDetail={this.openCustomerDetail}
+                                    openCustomerOrClueDetail={this.openCustomerOrClueDetail}
                                 />
                             );
                         })}

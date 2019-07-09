@@ -50,7 +50,7 @@ import ClueFilterPanel from './views/clue-filter-panel';
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import ShearContent from 'CMP_DIR/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
@@ -225,7 +225,8 @@ class ClueCustomer extends React.Component {
                     curClue: this.state.curClue,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     afterTransferClueSuccess: this.afterTransferClueSuccess,
-                    onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick
+                    onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick,
+                    updateCustomerLastContact: this.updateCustomerLastContact
                 }
             });
         }
@@ -437,7 +438,7 @@ class ClueCustomer extends React.Component {
             lastClueId: this.state.lastCustomerId,
             pageSize: this.state.pageSize,
             sorter: this.state.sorter,
-            keyword: this.state.keyword,
+            keyword: _.trim(this.state.keyword),
             rangeParams: rangeParams,
             statistics_fields: 'status',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
@@ -502,7 +503,7 @@ class ClueCustomer extends React.Component {
             type: 'time',
             name: 'source_time'
         }] : filterStoreData.rangeParams;
-        var keyWord = isGetAllClue ? '' : this.state.keyword;
+        var keyWord = isGetAllClue ? '' : _.trim(this.state.keyword);
         var filterClueStatus = filterStoreData.filterClueStatus;
         var typeFilter = isGetAllClue ? {status: ''} : getClueStatusValue(filterClueStatus);//线索类型
         //按销售进行筛选
@@ -1624,7 +1625,7 @@ class ClueCustomer extends React.Component {
     searchFullTextEvent = (keyword) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
-        clueCustomerAction.setKeyWord(keyword);
+        clueCustomerAction.setKeyWord(_.trim(keyword));
         //如果keyword不存在，就用获取线索的接口
         this.onTypeChange();
     };
