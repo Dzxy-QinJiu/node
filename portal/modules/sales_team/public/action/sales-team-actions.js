@@ -41,7 +41,11 @@ function SalesTeamAction() {
         'updateSalesGoals',
         'updateCurShowTeamMemberObj',
         'showUserInfoPanel',
-        'closeRightPanel'
+        'closeRightPanel',
+        'handleMouseEnterItemLine', // 处理鼠标移入
+        'handleMouseLeaveTreeZone', // 处理鼠标移出
+        'handleMouseHoverMoreBtn', // 处理鼠标悬停更多按钮
+        'handlePopOverVisible', // 处理popover浮层的显示
     );
 
     //获取统计团队内成员个数的列表
