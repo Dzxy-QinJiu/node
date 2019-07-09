@@ -105,7 +105,7 @@ class ClueDetailOverview extends React.Component {
                 }
             });
         }
-        return phones;
+        return phones.join(',');
     }
     getSimilarCustomerLists = () => {
         this.setState({
