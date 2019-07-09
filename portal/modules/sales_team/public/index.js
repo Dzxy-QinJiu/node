@@ -285,7 +285,7 @@ class SalesTeamPage extends React.Component {
                                                     isEditGroupFlag={this.state.isEditGroupFlag}
                                                     curEditGroup={this.state.curEditGroup}
                                                     mouseZoneHoverKey={this.state.mouseZoneHoverKey}
-                                                    visible={this.state.visible}
+                                                    isShowPopOver={this.state.isShowPopOver}
                                                 />
                                             </TabPane>
                                             <TabPane

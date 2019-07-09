@@ -193,13 +193,13 @@ class LeftTree extends React.Component {
     // 处理鼠标移入
     handleMouseEnterItemLine = (item, event) => {
         event.stopPropagation();
-        let visible = this.props.visible;
-        SalesTeamAction.handleMouseEnterItemLine({item, visible});
+        let isShowPopOver = this.props.isShowPopOver;
+        SalesTeamAction.handleMouseEnterItemLine({item, isShowPopOver});
     };
     // 处理鼠标移出
     handleMouseLeaveTreeZone = (event) => {
         event.stopPropagation();
-        if (!this.props.visible) {
+        if (!this.props.isShowPopOver) {
             SalesTeamAction.handleMouseLeaveTreeZone();
         }
     };
@@ -207,9 +207,9 @@ class LeftTree extends React.Component {
     handleMouseHoverMoreBtn = () => {
         SalesTeamAction.handleMouseHoverMoreBtn();
     };
-    // 处理鼠标悬停popover
-    handleHoverChange = (flag) => {
-        SalesTeamAction.handleHoverChange(flag);
+    // 处理popover浮层的显示
+    handlePopOverVisible = (flag) => {
+        SalesTeamAction.handlePopOverVisible(flag);
     };
 
     // 确认删除部门
@@ -284,8 +284,8 @@ class LeftTree extends React.Component {
                                             <Popover
                                                 content={this.renderOperateRootDepartment(item)}
                                                 placement="bottomRight"
-                                                onVisibleChange={this.handleHoverChange}
-                                                visible={this.props.visible}
+                                                onVisibleChange={this.handlePopOverVisible}
+                                                visible={this.props.isShowPopOver}
                                             >
                                                 <span
                                                     className='iconfont icon-more'
@@ -331,8 +331,8 @@ class LeftTree extends React.Component {
                                                 <Popover
                                                     content={this.renderOperateChildTeam(item)}
                                                     placement="bottomRight"
-                                                    onVisibleChange={this.handleHoverChange}
-                                                    visible={this.props.visible}
+                                                    onVisibleChange={this.handlePopOverVisible}
+                                                    visible={this.props.isShowPopOver}
                                                 >
                                                     <span
                                                         className='iconfont icon-more'
@@ -523,6 +523,6 @@ LeftTree.propTypes = {
     isEditGroupFlag: PropTypes.bool,
     curEditGroup: PropTypes.string,
     mouseZoneHoverKey: PropTypes.string,
-    visible: PropTypes.bool,
+    isShowPopOver: PropTypes.bool,
 };
 module.exports = LeftTree;

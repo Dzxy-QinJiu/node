@@ -34,7 +34,7 @@ function SalesTeamStore() {
     this.selectedRowIndex = -1; // 点击的行索引， 默认不选中
     this.curEditGroup = {}; // 当前编辑的部门
     this.mouseZoneHoverKey = ''; // 鼠标移入区域的key
-    this.visible = false; // 是否显示popover，默认false
+    this.isShowPopOver = false; // 是否显示popover，默认false
 
     this.bindActions(SalesTeamActions);
 }
@@ -42,8 +42,8 @@ function SalesTeamStore() {
 // 处理鼠标移入
 SalesTeamStore.prototype.handleMouseEnterItemLine = function(obj) {
     this.mouseZoneHoverKey = obj.item.key;
-    if (obj.visible) {
-        this.visible = false;
+    if (obj.isShowPopOver) {
+        this.isShowPopOver = false;
     }
 };
 
@@ -54,12 +54,12 @@ SalesTeamStore.prototype.handleMouseLeaveTreeZone = function() {
 
 // 处理鼠标悬停更多按钮
 SalesTeamStore.prototype.handleMouseHoverMoreBtn = function() {
-    this.visible = true;
+    this.isShowPopOver = true;
 };
 
-// 处理鼠标悬停popover
-SalesTeamStore.prototype.handleHoverChange = function(flag) {
-    this.visible = flag;
+// 处理popover浮层的显示
+SalesTeamStore.prototype.handlePopOverVisible = function(flag) {
+    this.isShowPopOver = flag;
 };
 
 SalesTeamStore.prototype.showUserInfoPanel = function(index) {
@@ -594,7 +594,7 @@ SalesTeamStore.prototype.hideModalDialog = function(deleteGroupItem) {
 
 SalesTeamStore.prototype.handleCancelDeleteGroup = function(item) {
     item.isDeleteGroup = false;
-    this.visible = false;
+    this.isShowPopOver = false;
 };
 
 //编辑成员
@@ -606,7 +606,7 @@ SalesTeamStore.prototype.getIsEditMember = function() {
 //取消编辑成员
 SalesTeamStore.prototype.cancelEditMember = function() {
     this.isEditMember = false;
-    this.visible = false;
+    this.isShowPopOver = false;
 };
 
 //添加成员
@@ -662,7 +662,7 @@ SalesTeamStore.prototype.saveDeleteGroup = function(result) {
             delete team.isLiSelect;
         });
         this.salesTeamTree();
-        this.visible = false;
+        this.isShowPopOver = false;
         this.mouseZoneHoverKey = '';
     }
     //删除团队失败
@@ -684,7 +684,7 @@ SalesTeamStore.prototype.editGroup = function(item) {
     this.isEditGroupFlag = true;
     item.isEditGroup = true;
     item.isShowOperationArea = false;
-    this.visible = false;
+    this.isShowPopOver = false;
     this.mouseZoneHoverKey = '';
 };
 
@@ -693,7 +693,7 @@ SalesTeamStore.prototype.cancelEditGroup = function(item) {
     item.isEditGroup = false;
     this.isEditGroupFlag = false;
     this.curEditGroup = {};
-    this.visible = false;
+    this.isShowPopOver = false;
     this.mouseZoneHoverKey = '';
 };
 
@@ -705,7 +705,7 @@ SalesTeamStore.prototype.addGroup = function(item) {
 
 //取消展示组添加表单
 SalesTeamStore.prototype.cancelAddGroup = function(item) {
-    this.visible = false;
+    this.isShowPopOver = false;
     this.mouseZoneHoverKey = '';
     if (item) {
         //关闭添加该组织添加子组织的面板
