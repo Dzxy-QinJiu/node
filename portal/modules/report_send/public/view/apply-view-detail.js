@@ -617,7 +617,7 @@ class ApplyViewDetail extends React.Component {
         if (_.get(detailInfoObj,'applicant.user_id') === user_id && detailInfoObj.status === 'ongoing'){
             uploadAndDeletePrivilege = FILES_LIMIT.TOTAL;
         }
-        if (detailInfoObj.status === 'ongoing' && detailInfoObj.showApproveBtn && hasApproved){
+        if (detailInfoObj.status === 'ongoing' && (detailInfoObj.showApproveBtn || this.props.isHomeMyWork) && hasApproved){
             uploadAndDeletePrivilege = FILES_LIMIT.SINGLE;
         }
         var fileList = uniteFileSize(_.get(detailInfoObj,'detail.file_upload_logs'));

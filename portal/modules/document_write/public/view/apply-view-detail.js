@@ -613,7 +613,7 @@ class ApplyViewDetail extends React.Component {
             uploadAndDeletePrivilege = FILES_LIMIT.TOTAL;
         }
         //确认后支持部可以继续添加或者删除上传的文件
-        if (detailInfoObj.status === 'ongoing' && _.get(this, 'state.applyNode[0].forms[0]') === 'submitFiles' && detailInfoObj.showApproveBtn){
+        if (detailInfoObj.status === 'ongoing' && _.get(this, 'state.applyNode[0].forms[0]') === 'submitFiles' && (detailInfoObj.showApproveBtn || this.props.isHomeMyWork)) {
             uploadAndDeletePrivilege = FILES_LIMIT.SINGLE;
         }
         var fileList = uniteFileSize(_.get(detailInfoObj,'detail.file_upload_logs'));
