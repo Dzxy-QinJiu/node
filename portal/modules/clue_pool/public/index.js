@@ -680,7 +680,7 @@ class ClueExtract extends React.Component {
             }, {
                 title: Intl.get('common.operate', '操作'),
                 className: 'invalid-td-clue',
-                width: '20%',
+                width: '10%',
                 render: (text, record, index) => {
                     let user = userData.getUserData();
                     // 提取线索分配给相关的销售人员的权限
