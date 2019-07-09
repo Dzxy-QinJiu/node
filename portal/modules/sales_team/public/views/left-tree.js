@@ -23,11 +23,6 @@ class LeftTree extends React.Component {
         getSalesTeamMemberList: noop
     };
 
-    state = {
-        mouseZoneHoverKey: '', // 鼠标移入区域的key
-        visible: false, // 是否显示popover，默认false
-    };
-
     showOperationArea = (item) => {
         SalesTeamAction.showOperationArea(item);
     };
@@ -195,38 +190,28 @@ class LeftTree extends React.Component {
         );
     };
 
-    handleMouseEnter = (item, event) => {
+    // 处理鼠标移入
+    handleMouseEnterItemLine = (item, event) => {
         event.stopPropagation();
-        this.setState({
-            mouseZoneHoverKey: _.get(item, 'key'),
-            visible: false
-        });
+        let visible = this.props.visible;
+        SalesTeamAction.handleMouseEnterItemLine({item, visible});
     };
-
+    // 处理鼠标移出
+    handleMouseLeaveTreeZone = (event) => {
+        event.stopPropagation();
+        if (!this.props.visible) {
+            SalesTeamAction.handleMouseLeaveTreeZone();
+        }
+    };
+    // 处理鼠标悬停更多按钮
+    handleMouseHoverMoreBtn = () => {
+        SalesTeamAction.handleMouseHoverMoreBtn();
+    };
+    // 处理鼠标悬停popover
     handleHoverChange = (flag) => {
-        if (!flag) {
-            this.setState({
-                mouseZoneHoverKey: '',
-                visible: false
-            });
-        }
+        SalesTeamAction.handleHoverChange(flag);
     };
 
-    handleMouseLeave = (event) => {
-        event.stopPropagation();
-        if (!this.state.visible) {
-            this.setState({
-                mouseZoneHoverKey: '',
-                visible: false
-            });
-        }
-    };
-
-    handleMouseEnterMoreBtn = () => {
-        this.setState({
-            visible: true
-        });
-    };
     // 确认删除部门
     handleDeleteGroup = (item) => {
         SalesTeamAction.saveDeleteGroup(_.get(item, 'key'));
@@ -264,7 +249,7 @@ class LeftTree extends React.Component {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
         let organizationName = _.get(getOrganization(), 'name', '');
         let teamMemberCount = commonMethodUtil.getTeamMemberCount(item, 0, this.props.teamMemberCountList, false);
-        let isShowMoreBtn = this.state.mouseZoneHoverKey === item.key; // 是否显示更多按钮
+        let isShowMoreBtn = this.props.mouseZoneHoverKey === item.key; // 是否显示更多按钮
         let isAddGroup = _.get(item, 'isAddGroup', false);
         let isEditGroup = _.get(item, 'isEditGroup', false);
         let isDeleteGroup = _.get(item, 'isDeleteGroup', false);
@@ -277,7 +262,7 @@ class LeftTree extends React.Component {
         return (
             <div
                 className="left-tree-item-container"
-                onMouseEnter={this.handleMouseEnter.bind(this, item)}
+                onMouseEnter={this.handleMouseEnterItemLine.bind(this, item)}
             >
                 {
                     item.title === organizationName ? (
@@ -300,11 +285,11 @@ class LeftTree extends React.Component {
                                                 content={this.renderOperateRootDepartment(item)}
                                                 placement="bottomRight"
                                                 onVisibleChange={this.handleHoverChange}
-                                                visible={this.state.visible}
+                                                visible={this.props.visible}
                                             >
                                                 <span
                                                     className='iconfont icon-more'
-                                                    onMouseEnter={this.handleMouseEnterMoreBtn}
+                                                    onMouseOver={this.handleMouseHoverMoreBtn}
                                                 ></span>
                                             </Popover>) : (
                                             <span className="member-statistic">
@@ -347,11 +332,11 @@ class LeftTree extends React.Component {
                                                     content={this.renderOperateChildTeam(item)}
                                                     placement="bottomRight"
                                                     onVisibleChange={this.handleHoverChange}
-                                                    visible={this.state.visible}
+                                                    visible={this.props.visible}
                                                 >
                                                     <span
                                                         className='iconfont icon-more'
-                                                        onMouseEnter={this.handleMouseEnterMoreBtn}
+                                                        onMouseOver={this.handleMouseHoverMoreBtn}
                                                     ></span>
                                                 </Popover>
                                             ) : (
@@ -497,7 +482,7 @@ class LeftTree extends React.Component {
                     >
                         <ul
                             className="left-tree-ul"
-                            onMouseLeave={this.handleMouseLeave}
+                            onMouseLeave={this.handleMouseLeaveTreeZone}
                         >
                             {
                                 this.props.isEditGroupFlag ? (
@@ -537,5 +522,7 @@ LeftTree.propTypes = {
     memberCount: PropTypes.number,
     isEditGroupFlag: PropTypes.bool,
     curEditGroup: PropTypes.string,
+    mouseZoneHoverKey: PropTypes.string,
+    visible: PropTypes.bool,
 };
 module.exports = LeftTree;

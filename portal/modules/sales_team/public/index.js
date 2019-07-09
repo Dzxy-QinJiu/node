@@ -284,6 +284,8 @@ class SalesTeamPage extends React.Component {
                                                     teamMemberCountList={this.state.teamMemberCountList}
                                                     isEditGroupFlag={this.state.isEditGroupFlag}
                                                     curEditGroup={this.state.curEditGroup}
+                                                    mouseZoneHoverKey={this.state.mouseZoneHoverKey}
+                                                    visible={this.state.visible}
                                                 />
                                             </TabPane>
                                             <TabPane
