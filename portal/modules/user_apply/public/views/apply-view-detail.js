@@ -2171,7 +2171,6 @@ const ApplyViewDetail = createReactClass({
         //是否审批
         let isConsumed = !this.isUnApproved();
 
-        const isMyHomeWork = this.props.isHomeMyWork;
         return (
             <div className="approval_block pull-right">
                 <Row className="approval_person clearfix">
@@ -2183,18 +2182,18 @@ const ApplyViewDetail = createReactClass({
                                     {Intl.get('user.apply.detail.backout', '撤销申请')}
                                 </Button>
                                 : null}
-                            {isShowApproveBtn || isMyHomeWork ? (
+                            {isShowApproveBtn ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.clickApprovalFormBtn.bind(this, '1')}>
                                     {Intl.get('user.apply.detail.button.pass', '通过')}
                                 </Button>) : null}
-                            {isShowApproveBtn || isMyHomeWork ? (
+                            {isShowApproveBtn ? (
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.clickApprovalFormBtn.bind(this, '2')}>
                                     {Intl.get('common.apply.reject', '驳回')}
                                 </Button>) : null}
                             {/*如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出*/}
-                            {(isShowApproveBtn || isMyHomeWork || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || this.state.isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
+                            {(isShowApproveBtn || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || this.state.isLeader) && detailInfoObj.approval_state === '0' ? this.renderAddApplyNextCandidate() : null}
                         </div>)}
                     </Col>
                 </Row>

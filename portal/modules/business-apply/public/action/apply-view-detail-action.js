@@ -77,10 +77,13 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveApplyPassOrReject = function(obj) {
+    this.approveApplyPassOrReject = function(obj, callback) {
         this.dispatch({loading: true, error: false});
         BusinessApplyAjax.approveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+            if (_.isFunction(callback)) {
+                callback();
+            }
             //更新选中的申请单类型
             LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             if (Oplate && Oplate.unread) {

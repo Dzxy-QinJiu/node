@@ -20,8 +20,14 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
-import ApplyViewDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
+import UserApplyDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
+import OpportunityApplyDetail from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
+import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
+import LeaveApplyDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail';
+import DocumentApplyDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
+import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索
@@ -477,16 +483,62 @@ class MyWorkColumn extends React.Component {
     renderWorkDetail() {
         const work = this.state.curOpenDetailWork;
         let detailContent = null;
-        //待审批的申请
-        if (work.type === WORK_TYPES.APPLY && work.opinion === 'ongoing') {
-            const applyInfo = {id: work.related_id, approval_state: '0', topic: work.name};
-            detailContent = (
-                <ApplyViewDetail
-                    isHomeMyWork={true}
-                    detailItem={applyInfo}
-                    applyListType='false'//待审批状态
-                    afterApprovedFunc={this.afterFinishWork}
-                />);
+        const applyInfo = {id: work.related_id, approval_state: '0', topic: work.name};
+        switch (work.key) {
+            case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会申请
+                detailContent = (
+                    <OpportunityApplyDetail
+                        isHomeMyWork={true}
+                        detailItem={applyInfo}
+                        applyListType='false'//待审批状态
+                        afterApprovedFunc={this.afterFinishWork}
+                    />);
+                break;
+            case APPLY_APPROVE_TYPES.CUSTOMER_VISIT://出差申请
+                detailContent = (
+                    <CustomerVisitApplyDetail
+                        isHomeMyWork={true}
+                        detailItem={applyInfo}
+                        applyListType='false'//待审批状态
+                        afterApprovedFunc={this.afterFinishWork}
+                    />);
+                break;
+            case APPLY_APPROVE_TYPES.PERSONAL_LEAVE://请假申请
+                detailContent = (
+                    <LeaveApplyDetail
+                        isHomeMyWork={true}
+                        detailItem={applyInfo}
+                        applyListType='false'//待审批状态
+                        afterApprovedFunc={this.afterFinishWork}
+                    />);
+                break;
+            case APPLY_APPROVE_TYPES.OPINION_REPORT://舆情报告申请
+                detailContent = (
+                    <ReportApplyDetail
+                        isHomeMyWork={true}
+                        detailItem={applyInfo}
+                        applyListType='false'//待审批状态
+                        afterApprovedFunc={this.afterFinishWork}
+                    />);
+                break;
+            case APPLY_APPROVE_TYPES.DOCUMENT_WRITING://文件撰写申请
+                detailContent = (
+                    <DocumentApplyDetail
+                        isHomeMyWork={true}
+                        detailItem={applyInfo}
+                        applyListType='false'//待审批状态
+                        afterApprovedFunc={this.afterFinishWork}
+                    />);
+                break;
+            default://用户申请（试用、签约用户申请、修改密码、延期、其他）
+                detailContent = (
+                    <UserApplyDetail
+                        isHomeMyWork={true}
+                        detailItem={applyInfo}
+                        applyListType='false'//待审批状态
+                        afterApprovedFunc={this.afterFinishWork}
+                    />);
+                break;
         }
         return (
             <RightPanelModal

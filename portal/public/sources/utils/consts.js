@@ -62,13 +62,21 @@ export const SYSTEM_NOTICE_TYPES = {
     LOGIN_FAILED: 'loginFailed',//登录失败
 };
 export const APPLY_APPROVE_TYPES = {
-    CUSTOMER_VISIT: 'customer_visit',//后端传到前端的出差申请的类型
+    //获取数据时，接口返回数据中用于展示的申请类型标识
+    CUSTOMER_VISIT: 'customer_visit',//出差申请，后端传到前端的出差申请的类型
+    BUSINESS_OPPORTUNITIES: 'business_opportunities',//销售机会申请，获取全部销售机会申请前端传给后端的类型，后端传到前端的销售机会的类型
+    PERSONAL_LEAVE: 'personal_leave',//请假申请，获取全部请假申请前端传给后端的类型，后端传到前端请假的类型
+    OPINION_REPORT: 'opinion_report',//舆情报告
+    DOCUMENT_WRITING: 'document_writing',//文件撰写，前端未读回复中文件撰写类型
+    //前端往后端发请求时，参数中传入的申请类型标识
     CUSTOMERVISIT: 'customervisit',//向后端传参数的出差申请类型
-    BUSINESS_OPPORTUNITIES: 'business_opportunities',//获取全部销售机会申请前端传给后端的类型，后端传到前端的销售机会的类型
     BUSINESSOPPORTUNITIES: 'businessopportunities',//向后端传参数的销售机会类型
-    PERSONAL_LEAVE: 'personal_leave',//获取全部请假申请前端传给后端的类型，后端传到前端请假的类型
     LEAVE: 'leave',//向后端传参数的请假类型
+    OPINIONREPORT: 'opinionreport',//向后端传获取待我审批的舆情报送的类型
+    DOCUMENTWRITING: 'documentwriting',//向后端传的文件撰写的类型
     MEMBER_INVITE: 'member_invite', // 向后端传参数成员申请类型
+    REPORT: 'report',//向后端传获取全部申请舆情报送的类型及后端返回的类型
+    DOCUMENT: 'document',//文件撰写的类型
     UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',//未处理的出差申请数量
     UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
     UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量
@@ -76,12 +84,6 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
-    REPORT: 'report',//向后端传获取全部申请舆情报送的类型及后端返回的类型
-    DOCUMENT: 'document',//文件撰写的类型
-    OPINIONREPORT: 'opinionreport',//向后端传获取待我审批的舆情报送的类型
-    DOCUMENTWRITING: 'documentwriting',//向后端传的文件撰写的类型
-    DOCUMENT_WRITING: 'document_writing',//前端未读回复中文件撰写类型
-    OPINION_REPORT: 'opinion_report',
 };
 
 //系统消息对应的几种类型

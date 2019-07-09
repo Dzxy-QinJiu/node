@@ -95,8 +95,8 @@ function ApplyViewDetailActions() {
                             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
                         }, timeout);
                     }
-                    _.isFunction(callback) && callback();
                 }
+                _.isFunction(callback) && callback();
             }else{
                 //更新选中的申请单类型
                 DocumentWriteUtils.emitter.emit('updateSelectedItem', {status: 'error'});
