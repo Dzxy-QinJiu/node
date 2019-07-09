@@ -1156,6 +1156,32 @@ class ClueDetailOverview extends React.Component {
         this.hideClueToCustomerPanel();
         this.props.updateClueProperty({status: SELECT_TYPE.HAS_TRANSFER,customer_name: customerName, customer_id: customerId});
     };
+    // 渲染相似客户
+    renderClueCustomerLists = (curClue) => {
+        if (curClue.clue_type === 'clue_pool') { // 线索池详情，不显示相似客户
+            return null;
+        } else { // 待跟进、已跟进显示相似客户
+            if (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) {
+                return this.renderSimilarClueCustomerLists();
+            } else {
+                return null;
+            }
+        }
+    };
+    // 渲染关联线索
+    renderAssociatedClue = (curClue, associatedCustomer ) => {
+        if (curClue.clue_type === 'clue_pool' ) { // 线索池中详情，不显示关联线索
+            return null;
+        } else {
+            if ((curClue.status === SELECT_TYPE.HAS_TRACE ||
+                curClue.status === SELECT_TYPE.WILL_TRACE) &&
+                !associatedCustomer) { // 待跟进或是已跟进，并且没有关联客户时，处理线索
+                return this.renderAssociatedAndInvalidClueHandle(curClue);
+            } else { // 显示处理线索的结果
+                return this.renderAssociatedAndInvalidClueText(associatedCustomer);
+            }
+        }
+    };
 
     render() {
         var curClue = this.state.curClue;
@@ -1169,7 +1195,7 @@ class ClueDetailOverview extends React.Component {
             <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
-                    {curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE ? this.renderSimilarClueCustomerLists() : null}
+                    {this.renderClueCustomerLists(curClue)}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
                     <div className="assign-sales-warp clue-detail-block">
@@ -1180,11 +1206,7 @@ class ClueDetailOverview extends React.Component {
                     {this.renderTraceContent()}
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，已跟进或待跟进的线索并且没有关联客户*/}
-                        {
-                            (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer ?
-                                this.renderAssociatedAndInvalidClueHandle(curClue)
-                                : this.renderAssociatedAndInvalidClueText(associatedCustomer)
-                        }
+                        {this.renderAssociatedClue(curClue,associatedCustomer)}
                     </div>
                     {this.renderAppUserDetail()}
                     {

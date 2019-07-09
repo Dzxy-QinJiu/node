@@ -68,6 +68,14 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        },
+        { //  根据线索的id获取线索的详情
+            method: 'get',
+            path: '/rest/clue_pool/clue/detail/:clueId',
+            handler: 'getClueDetailById',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };
