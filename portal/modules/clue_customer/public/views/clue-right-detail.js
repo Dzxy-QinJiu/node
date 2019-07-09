@@ -93,7 +93,8 @@ class ClueRightPanel extends React.Component {
     }
 
     getCurClue = (id) => {
-        if (this.props.type === 'clue_pool') {
+        // 线索池中获取线索详情和线索中获取详情是两个路径
+        if (this.props.type === 'clue_pool') { // 线索池中获取线索详情的请求
             cluePoolAjax.getClueDetailById(id).then(resData => {
                 if (_.isObject(resData)) {
                     resData.clue_type = 'clue_pool';
@@ -110,7 +111,7 @@ class ClueRightPanel extends React.Component {
                     getClueDetailErrMsg: errMsg || Intl.get('clue.failed.get.clue.detail','获取线索详情失败')
                 });
             });
-        } else {
+        } else { // 线索中获取详情的请求
             clueCustomerAjax.getClueDetailById(id).then(resData => {
                 if (_.isObject(resData)) {
                     this.setState({
@@ -438,5 +439,6 @@ ClueRightPanel.propTypes = {
     updateRemarks: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,
+    type: PropTypes.string,
 };
 export default ClueRightPanel;

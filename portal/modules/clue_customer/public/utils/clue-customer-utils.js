@@ -69,7 +69,7 @@ export const SELECT_TYPE = {
     WAIT_ME_HANDLE: 'waitMeHandle'
 };
 export const isNotHasTransferStatus = function(salesClueItem){
-    // 线索池查看详情时，只展示不能编辑，增加一个线索类型的判断
+    // 线索类型的判断
     return salesClueItem.status !== SELECT_TYPE.HAS_TRANSFER && salesClueItem.clue_type !== 'clue_pool';
 };
 

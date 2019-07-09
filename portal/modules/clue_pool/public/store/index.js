@@ -93,7 +93,7 @@ class CluePoolStore {
         this.cluePoolListSize--;
     }
 
-    // 当前线索的id
+    // 设置查看当前线索的id
     setCurrentClueId(id) {
         if (id) {
             this.currentId = id;
