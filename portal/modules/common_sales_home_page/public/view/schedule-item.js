@@ -27,8 +27,8 @@ class ScheduleItem extends React.Component {
         }
     }
 
-    openCustomerDetail = (customer_id) => {
-        this.props.openCustomerDetail(customer_id);
+    openCustomerOrClueDetail = (schedule) => {
+        this.props.openCustomerOrClueDetail(schedule);
     };
 
     handleFinishedSchedule(scheduleId) {
@@ -75,11 +75,11 @@ class ScheduleItem extends React.Component {
                                 moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)
                             }]
                         </span> : null}
-                        <span className="sale-home-customer-name" onClick={this.openCustomerDetail.bind(this, schedule.customer_id)} data-tracename="打开客户详情">
+                        <span className="sale-home-customer-name" onClick={this.openCustomerOrClueDetail.bind(this, schedule)} data-tracename="打开客户详情">
 
                             {schedule.topic || schedule.customer_name}
                         </span>
-                        {user_id == schedule.member_id && schedule.status !== 'handle' ?
+                        {user_id === schedule.member_id && schedule.status !== 'handle' ?
                             <Button type="primary" data-tracename="处理日程" size="small"
                                 onClick={this.handleFinishedSchedule.bind(this, schedule.id)}
                             >{Intl.get('sales.frontpage.schedule.has.finished', '完成了')}</Button> : null}
@@ -103,9 +103,14 @@ ScheduleItem.defaultProps = {
     scheduleItemDetail: {},//日程详细信息
     isShowTopTitle: true, //是否展示顶部时间样式
     isShowScheduleTimerange: true,//是否展示日程的时间范围
-    openCustomerDetail: function() {
+    openCustomerOrClueDetail: function() {
 
-    }
-
+    },
+};
+ScheduleItem.propTypes = {
+    scheduleItemDetail: PropTypes.object,//日程详细信息
+    isShowTopTitle: PropTypes.bool, //是否展示顶部时间样式
+    isShowScheduleTimerange: PropTypes.bool,//是否展示日程的时间范围
+    openCustomerOrClueDetail: PropTypes.func,
 };
 export default ScheduleItem;

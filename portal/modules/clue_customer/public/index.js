@@ -50,7 +50,7 @@ import ClueFilterPanel from './views/clue-filter-panel';
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import ShearContent from 'CMP_DIR/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
@@ -224,7 +224,9 @@ class ClueCustomer extends React.Component {
                     hideRightPanel: this.hideRightPanel,
                     curClue: this.state.curClue,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                    afterTransferClueSuccess: this.afterTransferClueSuccess
+                    afterTransferClueSuccess: this.afterTransferClueSuccess,
+                    onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick,
+                    updateCustomerLastContact: this.updateCustomerLastContact
                 }
             });
         }
@@ -436,7 +438,7 @@ class ClueCustomer extends React.Component {
             lastClueId: this.state.lastCustomerId,
             pageSize: this.state.pageSize,
             sorter: this.state.sorter,
-            keyword: this.state.keyword,
+            keyword: _.trim(this.state.keyword),
             rangeParams: rangeParams,
             statistics_fields: 'status',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
@@ -501,7 +503,7 @@ class ClueCustomer extends React.Component {
             type: 'time',
             name: 'source_time'
         }] : filterStoreData.rangeParams;
-        var keyWord = isGetAllClue ? '' : this.state.keyword;
+        var keyWord = isGetAllClue ? '' : _.trim(this.state.keyword);
         var filterClueStatus = filterStoreData.filterClueStatus;
         var typeFilter = isGetAllClue ? {status: ''} : getClueStatusValue(filterClueStatus);//线索类型
         //按销售进行筛选
@@ -1218,7 +1220,7 @@ class ClueCustomer extends React.Component {
 
         const curCustomer = _.get(customers, '[0]');
         const customerId = _.get(curCustomer, 'id');
-
+        const customerName = _.get(curCustomer, 'name');
         if (curCustomer) {
             //打开客户面板，显示合并后的客户信息
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
@@ -1230,13 +1232,17 @@ class ClueCustomer extends React.Component {
                 }
             });
         }
-
         //在列表中隐藏当前操作的线索
         this.afterTransferClueSuccess();
-
         //隐藏添加客户面板
         this.hideAddCustomerPanel();
+        this.afterMergeUpdateClueProperty(customerId,customerName);
     };
+    afterMergeUpdateClueProperty = (customerId,customerName) => {
+        //如果是打开右侧详情，需要改一下详情的状态和关联的客户
+        clueCustomerAction.afterEditCustomerDetail({status: SELECT_TYPE.HAS_TRANSFER,customer_name: customerName, customer_id: customerId});
+        this.renderClueDetail();
+    }
 
 
     getRowSelection = () => {
@@ -1619,7 +1625,7 @@ class ClueCustomer extends React.Component {
     searchFullTextEvent = (keyword) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
-        clueCustomerAction.setKeyWord(keyword);
+        clueCustomerAction.setKeyWord(_.trim(keyword));
         //如果keyword不存在，就用获取线索的接口
         this.onTypeChange();
     };
@@ -1917,7 +1923,7 @@ class ClueCustomer extends React.Component {
                 }
                 {
                     (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) &&
-                    (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isSalesRole())?
+                    (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isSalesRole()) ?
                         this.renderExtractClue() : null
                 }
                 {this.renderExportClue()}
@@ -1928,7 +1934,7 @@ class ClueCustomer extends React.Component {
     };
 
     //线索合并到客户后的回调事件
-    onClueMergedToCustomer = (customerId) => {
+    onClueMergedToCustomer = (customerId, customerName) => {
         //在列表中隐藏当前操作的线索
         this.afterTransferClueSuccess();
 
@@ -1942,6 +1948,7 @@ class ClueCustomer extends React.Component {
 
         //关闭线索转客户面板
         this.hideClueToCustomerPanel();
+        this.afterMergeUpdateClueProperty(customerId, customerName);
     }
 
     render() {

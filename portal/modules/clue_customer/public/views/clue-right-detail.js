@@ -288,6 +288,7 @@ class ClueRightPanel extends React.Component {
         this.setState({
             curClue: curClue
         });
+        clueCustomerAction.afterEditCustomerDetail(updateProperty);
     };
     render() {
         var curClue = this.state.curClue;
@@ -349,11 +350,12 @@ class ClueRightPanel extends React.Component {
                                             salesManList={this.state.salesManList}
                                             divHeight={divHeight}
                                             removeUpdateClueItem={this.props.removeUpdateClueItem}
-                                            updateRemarks={this.props.updateRemarks}
                                             hideRightPanel={this.hideRightPanel}
                                             showClueDetailPanel={this.showClueDetailPanel}
                                             updateClueProperty={this.updateClueProperty}
                                             afterTransferClueSuccess={this.props.afterTransferClueSuccess}
+                                            onConvertToCustomerBtnClick={this.props.onConvertToCustomerBtnClick}
+                                            updateCustomerLastContact={this.props.updateCustomerLastContact}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -368,7 +370,6 @@ class ClueRightPanel extends React.Component {
                                             divHeight={divHeight}
                                             updateCustomerLastContact={this.props.updateCustomerLastContact}
                                             showClueDetailPanel={this.showClueDetailPanel}
-                                            updateRemarks={this.props.updateRemarks}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -426,6 +427,7 @@ ClueRightPanel.defaultProps = {
     updateRemarks: noop,
     updateCustomerLastContact: noop,
     afterTransferClueSuccess: noop,
+    onConvertToCustomerBtnClick: noop,
 };
 ClueRightPanel.propTypes = {
     curClue: PropTypes.object,
@@ -436,9 +438,9 @@ ClueRightPanel.propTypes = {
     className: PropTypes.string,
     ShowCustomerUserListPanel: PropTypes.func,
     removeUpdateClueItem: PropTypes.func,
-    updateRemarks: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,
     type: PropTypes.string,
+    onConvertToCustomerBtnClick: PropTypes.func,
 };
 export default ClueRightPanel;

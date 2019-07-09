@@ -89,11 +89,15 @@ exports.getClueSource = function(req, res) {
 };
 
 exports.changeClueSalesBatch = function(req, res) {
-    var queryObj = handleBatchClueSalesParams(req,restApis.changeClueSalesBatch);
-    req.body.query_param = queryObj.bodyObj;
+    var url = restApis.changeClueSalesBatch.replace(':type',req.params.type);
+    if(req.body.query_param){
+        var queryObj = handleBatchClueSalesParams(req, url);
+        req.body.query_param = queryObj.bodyObj;
+        url = queryObj.url;
+    }
     return restUtil.authRest.post(
         {
-            url: queryObj.url,
+            url: url,
             req: req,
             res: res
         }, req.body);
@@ -239,7 +243,6 @@ function handleBatchClueSalesParams(req, clueUrl) {
     var reqBody = req.body.query_param;
     var rangeParams = _.isString(reqBody.rangeParams) ? JSON.parse(reqBody.rangeParams) : reqBody.rangeParams;
     var typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
-    var url = clueUrl.replace(':type',req.params.type);
     var keyword = '';
     if (reqBody.keyword){
         keyword = encodeURI(reqBody.keyword);
@@ -281,9 +284,9 @@ function handleBatchClueSalesParams(req, clueUrl) {
         bodyObj.unexist_fields = unexist_fields;
     }
     if(reqBody.self_no_traced){
-        url += `?self_no_traced=${reqBody.self_no_traced}`;
+        clueUrl += `?self_no_traced=${reqBody.self_no_traced}`;
     }
-    return {url: url, bodyObj: bodyObj};
+    return {url: clueUrl, bodyObj: bodyObj};
 }
 function handleClueParams(req, clueUrl) {
     var reqBody = req.body;

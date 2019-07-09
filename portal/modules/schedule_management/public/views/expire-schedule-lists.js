@@ -133,7 +133,7 @@ class ExpireScheduleLists extends React.Component {
                             </h4>
                             {item.customer_name || item.topic ? <p className="item-customer-content" title={item.customer_name || item.topic}>
                                 <i className={cls}></i>
-                                <span onClick={this.props.showCustomerDetail.bind(this, item.customer_id)}
+                                <span onClick={this.props.showCustomerOrClueDetail.bind(this, item)}
                                     data-tracename="点击查看客户详情">
                                     {item.customer_name || item.topic}
                                 </span>
@@ -308,14 +308,14 @@ class ExpireScheduleLists extends React.Component {
     }
 }
 ExpireScheduleLists.defaultProps = {
-    showCustomerDetail: function() {
+    showCustomerOrClueDetail: function() {
 
     },
     showAddToDo: function(){},
 };
 
 ExpireScheduleLists.propTypes = {
-    showCustomerDetail: PropTypes.func,
+    showCustomerOrClueDetail: PropTypes.func,
     showAddToDo: PropTypes.func,
 };
 
