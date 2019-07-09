@@ -265,6 +265,7 @@ class ClueRightPanel extends React.Component {
         this.setState({
             curClue: curClue
         });
+        clueCustomerAction.afterEditCustomerDetail(updateProperty);
     };
     render() {
         var curClue = this.state.curClue;
@@ -328,6 +329,7 @@ class ClueRightPanel extends React.Component {
                                             showClueDetailPanel={this.showClueDetailPanel}
                                             updateClueProperty={this.updateClueProperty}
                                             afterTransferClueSuccess={this.props.afterTransferClueSuccess}
+                                            onConvertToCustomerBtnClick={this.props.onConvertToCustomerBtnClick}
                                             updateCustomerLastContact={this.props.updateCustomerLastContact}
                                         />
                                     ) : null}
@@ -400,6 +402,7 @@ ClueRightPanel.defaultProps = {
     updateRemarks: noop,
     updateCustomerLastContact: noop,
     afterTransferClueSuccess: noop,
+    onConvertToCustomerBtnClick: noop,
 };
 ClueRightPanel.propTypes = {
     curClue: PropTypes.object,
@@ -412,5 +415,6 @@ ClueRightPanel.propTypes = {
     removeUpdateClueItem: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,
+    onConvertToCustomerBtnClick: PropTypes.func,
 };
 export default ClueRightPanel;

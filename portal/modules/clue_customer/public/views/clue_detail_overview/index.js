@@ -424,7 +424,6 @@ class ClueDetailOverview extends React.Component {
                         'sales_team': teamName,
                         'sales_team_id': teamId
                     };
-                    clueCustomerAction.afterEditCustomerDetail(updateObj);
                     this.props.updateClueProperty(updateObj);
                     if (isWillDistribute) {
                         clueCustomerAction.afterAssignSales(curClue.id);
@@ -673,15 +672,22 @@ class ClueDetailOverview extends React.Component {
     renderAvailabilityClue = (curClue) => {
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
+        //是否有修改线索关联客户的权利
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         if (avalibility){
-            return <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
-                onClick={this.showConfirmInvalid.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
-            </Button>;
+            return <div>
+                {associatedPrivilege ? <Button type="primary"
+                    onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id,curClue.name)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
+                <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
+                    onClick={this.showConfirmInvalid.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
+                </Button>
+            </div>;
         }else{
             return null;
         }
 
     };
+
     renderAssociatedAndInvalidClueHandle = (curClue) => {
         return (
             <div className="clue-info-item">
@@ -1136,7 +1142,7 @@ class ClueDetailOverview extends React.Component {
         this.setState({isShowClueToCustomerPanel: false});
     };
     //线索合并到客户后的回调事件
-    onClueMergedToCustomer = (customerId) => {
+    onClueMergedToCustomer = (customerId,customerName) => {
         //在列表中隐藏当前操作的线索
         this.props.afterTransferClueSuccess();
         //打开客户面板，显示合并后的客户信息
@@ -1148,10 +1154,10 @@ class ClueDetailOverview extends React.Component {
         });
         //关闭线索转客户面板
         this.hideClueToCustomerPanel();
+        this.props.updateClueProperty({status: SELECT_TYPE.HAS_TRANSFER,customer_name: customerName, customer_id: customerId});
     };
 
     render() {
-        let user = userData.getUserData();
         var curClue = this.state.curClue;
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
@@ -1159,8 +1165,6 @@ class ClueDetailOverview extends React.Component {
         var associatedCustomer = curClue.customer_name;
         //分配线索给销售的权限
         var hasAssignedPrivilege = this.assignSalesPrivilege();
-        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
-        var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         return (
             <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
                 <GeminiScrollbar>
@@ -1233,6 +1237,9 @@ ClueDetailOverview.defaultProps = {
     afterTransferClueSuccess: function() {
 
     },
+    onConvertToCustomerBtnClick: function() {
+
+    },
     updateCustomerLastContact: function() {
 
     },
@@ -1254,6 +1261,7 @@ ClueDetailOverview.propTypes = {
     hideRightPanel: PropTypes.func,
     updateClueProperty: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,
+    onConvertToCustomerBtnClick: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
 };
 

@@ -458,7 +458,7 @@ class ClueToCustomerPanel extends React.Component {
                 .done(() => {
                     message.success(Intl.get('common.merge.success', '合并成功'));
 
-                    this.props.onMerged(this.state.customerId);
+                    this.props.onMerged(this.state.customerId, this.state.customerName);
                 })
                 .fail(err => {
                     const content = _.isArray(err) ? err.join('; ') : err;
@@ -593,16 +593,16 @@ class ClueToCustomerPanel extends React.Component {
     //渲染联系人内容
     renderContactContent(contact) {
         //当前操作的客户
-        const curCustomer = _.find(this.props.existingCustomers, customer => customer.id = this.state.customerId);
+        const curCustomer = _.find(this.props.existingCustomers, customer => customer.id === this.state.customerId);
 
         //当前操作的客户的联系人中和要渲染的联系人相同的联系人
-        const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name = contact.name);
+        const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name === contact.name);
 
         //当前操作的客户的联系人中和要渲染的联系人相同的联系人的电话
         const curCustomerPhone = _.get(curCustomerContact, 'phone');
 
         //当前线索的联系人中和要渲染的联系人相同的联系人
-        const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name = contact.name);
+        const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name === contact.name);
 
         //当前线索的联系人中和要渲染的联系人相同的联系人的电话
         const curCluePhone = _.get(curClueContact, 'phone');
