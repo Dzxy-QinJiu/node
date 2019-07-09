@@ -15,7 +15,6 @@ import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 const TAB_HAED_HEIGHT = 40; // tabs 头部高度
 
-
 function noop() {
 }
 
@@ -34,12 +33,12 @@ class LeftTree extends React.Component {
     };
 
     editGroup = (item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-update'),'编辑子团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-update'),'编辑子部门');
         SalesTeamAction.editGroup(item);
     };
 
     addGroup = (item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'增加子团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'添加子部门');
         SalesTeamAction.addGroup(item);
     };
 
@@ -48,26 +47,13 @@ class LeftTree extends React.Component {
         SalesTeamAction.deleteGroup(item);
     };
 
-    // 显示团队信息的数字
-    showTeamGroupCount = () => {
-        this.setState({
-            mouseZoneHoverKey: '',
-            visible: false
-        });
-    };
-
     cancelEditGroup = (item) => {
-        this.showTeamGroupCount();
         if (item && item.isEditGroup) {
             SalesTeamAction.cancelEditGroup(item);
         } else {
             SalesTeamAction.cancelAddGroup(item);
             setTimeout(() => $('.sales-team-search-input-container .search-input').val(this.props.searchContent));
         }
-    };
-
-    handleSubmitTeamForm = () => {
-        this.showTeamGroupCount();
     };
 
     bodyClickFun = (e) => {
@@ -251,6 +237,29 @@ class LeftTree extends React.Component {
         SalesTeamAction.handleCancelDeleteGroup(item);
     };
 
+    // 渲染添加根部门
+    renderOperateRootDepartment = () => {
+        return (
+            <div className="tree-operation-div">
+                <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
+                    <div
+                        className="tree-operation-item-zone icon-operation tree-operation-icon"
+                        onClick={this.handleAddRootDepartment}
+                    >
+                        <i className='iconfont icon-add'></i>
+                        <span className='operation-item-text'>
+                            {Intl.get('organization.add.department', '添加部门')}
+                        </span>
+                    </div>
+                </PrivilegeChecker>
+            </div>
+        );
+    };
+
+    handleAddRootDepartment = () => {
+        SalesTeamAction.addSalesTeamRoot();
+    };
+
     element = (item, type) => {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
         let organizationName = _.get(getOrganization(), 'name', '');
@@ -275,9 +284,35 @@ class LeftTree extends React.Component {
                         <div className='member-info'>
                             <div className='member-info-name'>
                                 <span className="sales-team-name-text">{item.title}</span>
-                                <span className="member-statistic">
-                                    {Intl.get('sales.team.member.count', '{teamMemberCount}人', {teamMemberCount: this.props.memberCount})}
-                                </span>
+                                {
+                                    this.props.isAddSalesTeamRoot ? (
+                                        <div className="group-form-div group-form-no-superior">
+                                            <GroupFrom
+                                                cancelSalesTeamForm={this.cancelEditGroup}
+                                                isAddRoot={true}
+                                                salesTeamList={this.props.salesTeamList}
+                                            >
+                                            </GroupFrom>
+                                        </div>
+                                    ) : (
+                                        isShowMoreBtn ? (
+                                            <Popover
+                                                content={this.renderOperateRootDepartment(item)}
+                                                placement="bottomRight"
+                                                onVisibleChange={this.handleHoverChange}
+                                                visible={this.state.visible}
+                                            >
+                                                <span
+                                                    className='iconfont icon-more'
+                                                    onMouseEnter={this.handleMouseEnterMoreBtn}
+                                                ></span>
+                                            </Popover>) : (
+                                            <span className="member-statistic">
+                                                {Intl.get('sales.team.member.count', '{teamMemberCount}人', {teamMemberCount: this.props.memberCount})}
+                                            </span>
+                                        )
+                                    )
+                                }
                             </div>
                         </div>
                     ) : (
@@ -369,7 +404,6 @@ class LeftTree extends React.Component {
                     cancelSalesTeamForm={this.cancelEditGroup.bind(this,item )}
                     salesTeam={item}
                     salesTeamList={this.props.salesTeamList}
-                    handleSubmitTeamForm={this.handleSubmitTeamForm.bind(this, item)}
                 >
                 </GroupFrom>
             </div>
@@ -411,8 +445,8 @@ class LeftTree extends React.Component {
         }
     };
 
-    addSalesTeamRoot = (e) => {
-        Trace.traceEvent(e,'添加团队');
+    addSalesTeamRoot = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'添加部门');
         SalesTeamAction.addSalesTeamRoot();
     };
 
