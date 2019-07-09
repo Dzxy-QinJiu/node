@@ -618,7 +618,7 @@ class ClueExtract extends React.Component {
             {
                 title: Intl.get('crm.sales.clue', '线索'),
                 dataIndex: 'clue_name',
-                width: '30%',
+                width: '35%',
                 render: (text, salesClueItem, index) => {
                     return (
                         <div className="clue-top-title" >
@@ -642,12 +642,16 @@ class ClueExtract extends React.Component {
                         </div>
                     );
                 }
-            }, {
-                title: Intl.get('user.login.score', '分数'),
-                dataIndex: 'score',
-                width: '15%',
-                sorter: true,
-            }, {
+            }, /*** todo 由于后端没有这列数据，先隐藏，有了之后，在展示
+                {
+                    title: Intl.get('user.login.score', '分数'),
+                    dataIndex: 'score',
+                    width: '15%',
+                    sorter: true,
+
+                },
+             ***/
+            {
                 title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'contact',
                 width: '15%',
@@ -665,7 +669,7 @@ class ClueExtract extends React.Component {
             },{
                 title: Intl.get('call.record.follow.content', '跟进内容'),
                 dataIndex: 'customer_trace',
-                width: '20%',
+                width: '30%',
                 render: (text, record, index) => {
                     if (_.isArray(record.customer_traces)) {
                         return (
@@ -676,7 +680,7 @@ class ClueExtract extends React.Component {
             }, {
                 title: Intl.get('common.operate', '操作'),
                 className: 'invalid-td-clue',
-                width: '20%',
+                width: '10%',
                 render: (text, record, index) => {
                     let user = userData.getUserData();
                     // 提取线索分配给相关的销售人员的权限
