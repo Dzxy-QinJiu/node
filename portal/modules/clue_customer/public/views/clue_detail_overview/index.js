@@ -51,6 +51,8 @@ class ClueDetailOverview extends React.Component {
         similarCustomerLoading: false,//正在获取相似客户
         similarCustomerErrmsg: '',//获取相似客户出错
         similarCustomerLists: [],//相似客户列表
+        showLargerCustomerLists: false,//展示大于3个的客户列表
+        showLargerClueLists: false//展示大于3个的线索列表
     };
 
     componentDidMount() {
@@ -1078,6 +1080,15 @@ class ClueDetailOverview extends React.Component {
     }
     renderSimilarCustomers = () => {
         var similarCustomers = this.state.similarCustomerLists;
+        var showMore = !this.state.showLargerCustomerLists && _.get(similarCustomers,'length') > 3;
+        var showLess = this.state.showLargerCustomerLists && _.get(similarCustomers,'length') > 3;
+        if (showMore){
+            similarCustomers = _.cloneDeep(similarCustomers).splice(0,3);
+        }
+        if (showLess){
+            similarCustomers = this.state.similarCustomerLists;
+        }
+
         return (
             <div className="similar-content similar-customer-list">
                 <div className="similar-tip">
@@ -1086,45 +1097,108 @@ class ClueDetailOverview extends React.Component {
                 {_.map(similarCustomers,(customerItem) => {
                     return <div className="similar-block">
                         <div className="similar-title">
-                            {customerItem.name}
+                            <span className="customer-name" onClick={this.showCustomerDetail.bind(this, customerItem)}>{customerItem.name}</span>
                             <Button onClick={this.onMergeToCustomerClick.bind(this, customerItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button>
                         </div>
                         {_.isArray(customerItem.contacts) ? _.map(customerItem.contacts,(contactsItem) => {
                             return (
                                 <div className="similar-name-phone">
-                                    {contactsItem.name}:{_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
+                                    <span className="contact-name" title={contactsItem.name}>
+                                        {contactsItem.name }
+                                    </span>
+                                    {contactsItem.name && _.isArray(contactsItem.phone) && _.get(contactsItem, 'phone.length') ? ':' : ''}
+                                    {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
                                 </div>
                             );
                         }) : null}
                     </div>;
                 })}
+                {showMore || showLess ? <div className="show-hide-tip" onClick={this.handleToggleCustomerTip}>
+                    {showMore ? Intl.get('notification.system.more', '展开全部') : ''}
+                    {showLess ? Intl.get('crm.contact.way.hide', '收起') : ''}</div> : null}
+
             </div>
         );
 
     };
+    handleToggleCustomerTip = () => {
+        this.setState({
+            showLargerCustomerLists: !this.state.showLargerCustomerLists
+        });
+    };
+    showCustomerDetail = (customer) => {
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customer.id,
+                curCustomer: customer,
+                // ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                // hideRightPanel: this.closeRightPanel
+            }
+        });
+    };
+    showClueDetail = (item) => {
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+            clue_params: {
+                currentId: item.id,
+                curClue: item,
+
+
+                // showRightPanel: this.showClueDetailOut,
+                // hideRightPanel: this.hideRightPanel,
+                // ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
+                // afterTransferClueSuccess: this.afterTransferClueSuccess,
+                // onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick,
+                // updateCustomerLastContact: this.updateCustomerLastContact
+            }
+        });
+    }
     renderSimilarClues = () => {
         var similarClueLists = this.state.similarClueLists;
+        var showMore = !this.state.showLargerClueLists && _.get(similarClueLists,'length') > 3;
+        var showLess = this.state.showLargerClueLists && _.get(similarClueLists,'length') > 3;
+        if (showMore){
+            similarClueLists = _.cloneDeep(similarClueLists).splice(0,3);
+        }
+        if (showLess){
+            similarClueLists = this.state.similarClueLists;
+        }
         return (
             <div className="similar-content similar-customer-list">
                 <div className="similar-tip">
                     <i className="iconfont icon-phone-call-out-tip"></i>{Intl.get('clue.has.similar.lists', '相似线索')}</div>
                 {_.map(similarClueLists,(clueItem) => {
                     return <div className="similar-block">
-                        <div className="similar-title">
+                        <div className="similar-title" onClick={this.showClueDetail.bind(this, clueItem)}>
                             {renderClueStatus(clueItem.status)}{clueItem.name}
                         </div>
                         {_.isArray(clueItem.contacts) ? _.map(clueItem.contacts,(contactsItem) => {
                             return (
                                 <div className="similar-name-phone">
-                                    {contactsItem.name}:{_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
+                                    <span className="contact-name" title={contactsItem.name}>
+                                        {contactsItem.name }
+                                    </span>
+                                    {contactsItem.name && _.isArray(contactsItem.phone) && _.get(contactsItem, 'phone.length') ? ':' : ''}
+                                    {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
+
                                 </div>
                             );
                         }) : null}
                     </div>;
                 })}
+                {showMore || showLess ? <div className="show-hide-tip" onClick={this.handleToggleClueTip}>
+                    {showMore ? Intl.get('notification.system.more', '展开全部') : ''}
+                    {showLess ? Intl.get('crm.contact.way.hide', '收起') : ''}</div> : null}
+
+
             </div>
         );
     };
+    handleToggleClueTip = () => {
+        this.setState({
+            showLargerClueLists: !this.state.showLargerClueLists
+        });
+    }
     renderSimilarClueCustomerLists = () => {
         if (_.get(this,'state.similarClueLists[0]') || _.get(this, 'state.similarCustomerLists[0]')){
             return (

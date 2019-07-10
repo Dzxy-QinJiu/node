@@ -4,7 +4,7 @@
   font-size: 14px;
   .clue-detail-block{
     padding:12px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     background: #fff;
     .clue-info-item{
       overflow: hidden;
@@ -87,11 +87,14 @@
       }
   }
   .similar-wrap{
-    background: #fff;
-    padding: 12px;
     font-size: 14px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     .similar-content{
+      padding: 12px;
+      background: #fff;
+      &:not(:last-child){
+        margin-bottom: 8px;
+      }
       .similar-tip{
         color:#EFA246;
         border-bottom:1px solid #F5F5F5;
@@ -102,10 +105,16 @@
         }
       }
       .similar-block{
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f5f5;
+        &:last-child{
+          border-bottom:none;
+        }
         .similar-title{
           color: #333;
           margin:8px 0;
           overflow: hidden;
+          cursor: pointer;
           .clue-stage {
             margin-right: 8px;
             font-size: 14px;
@@ -143,7 +152,21 @@
         .similar-name-phone{
           font-size: 12px;
           color:#999;
+          .contact-name{
+            display: inline-block;
+            max-width: 200px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            position: relative;
+            top:3px;
+          }
         }
+      }
+      .show-hide-tip{
+        cursor: pointer;
+        color:#8DA8C5;
+        text-align: right;
       }
     }
   }
