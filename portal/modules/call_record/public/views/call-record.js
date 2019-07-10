@@ -1130,7 +1130,8 @@ class CallRecord extends React.Component {
 
     renderCallRecordContent = () => {
         //只有第一页的时候，显示loading和错误信息
-        if (this.state.callRecord.page === 1) {
+        // if (this.state.callRecord.page === 1) {
+        if (this.state.callRecord.page === 1 && !this.state.isFilter) {
             if (this.state.callRecord.is_loading){
                 return (
                     <div className="load-content">
@@ -1165,6 +1166,9 @@ class CallRecord extends React.Component {
             noMoreDataText: Intl.get('noMoreTip.callRecord', '没有更多通话记录了')
         };
 
+        // 是否显示过滤时的加载状态， 当前页数为1时，并且通话记录数组长度为0，显示过滤头，请求数据中
+        const isFilterLoading = this.state.callRecord.page === 1 && this.state.callRecord.data_list.length === 0 && this.state.isFilter && this.state.callRecord.is_loading;
+
         return (
             <div style={{ position: 'relative' }}>
                 <div
@@ -1181,8 +1185,10 @@ class CallRecord extends React.Component {
                         rowClassName={this.handleRowClassName}
                         onChange={this.onSortChange}
                         pagination={false}
+                        locale={{emptyText: isFilterLoading ? Intl.get('common.sales.frontpage.loading', '加载中') : Intl.get('common.no.data', '暂无数据')}}
                         scroll={{ x: this.state.isFilter ? 1450 : 1150, y: this.state.tableHeight }}
                     />
+                    { isFilterLoading ? <Spinner /> : null }
                 </div>
             </div>
         );
