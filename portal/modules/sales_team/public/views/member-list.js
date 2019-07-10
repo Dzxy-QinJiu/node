@@ -283,6 +283,10 @@ const MemberList = createReactClass({
         let userIds = [];
         let selectedRowKeys = this.state.selectedRowKeys;
         let addMemberList = this.state.addMemberList;
+        let searchValue = this.state.searchValue;
+        if (searchValue) {
+            addMemberList = _.filter(addMemberList, item => _.includes(item.userName, searchValue) || _.includes(item.nickName, searchValue));
+        }
         _.each(selectedRowKeys, item => {
             addMemberList[item].selected = true;
         });

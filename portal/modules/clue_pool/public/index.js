@@ -26,6 +26,8 @@ const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {batchPushEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import {RightPanel} from 'CMP_DIR/rightPanel';
+import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -46,6 +48,7 @@ class ClueExtract extends React.Component {
             showFilterList: userData.getUserData().isCommonSales ? true : false,//是否展示线索筛选区域
             selectedClues: [],//获取批量操作选中的线索
             singleExtractLoading: false, // 单个提取的loading
+            isShowClueDetailPanel: false, // 是否显示显示详情， 默认false
             ...cluePoolStore.getState()
         };
     }
@@ -122,6 +125,7 @@ class ClueExtract extends React.Component {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
     }
 
+
     // 获取线索池的负责人
     getCluePoolLeading = () => {
         cluePoolAjax.getCluePoolLeading().then(data => {
@@ -195,6 +199,9 @@ class ClueExtract extends React.Component {
     // 关闭提取线索界面
     closeExtractCluePanel = () => {
         this.props.closeExtractCluePanel();
+        //清空页面上的筛选条件
+        clueFilterAction.setInitialData();
+        cluePoolAction.resetState();
     };
 
     // 筛选
@@ -213,7 +220,6 @@ class ClueExtract extends React.Component {
             name: 'source_time'
         }] : filterStoreData.rangeParams;
         let keyWord = isGetAllClue ? '' : this.state.keyword;
-        let filterClueStatus = filterStoreData.filterClueStatus;
         let typeFilter = {};
         //按销售进行筛选
         let filterClueUsers = filterStoreData.filterClueUsers;
@@ -303,10 +309,8 @@ class ClueExtract extends React.Component {
             sorter: this.state.sorter,
             keyword: this.state.keyword,
             rangeParams: rangeParams,
+            typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
         };
-        if (_.get(data, 'typeFilter')) {
-            queryObj.typeFilter = _.get(data, 'typeFilter') || JSON.stringify(typeFilter);
-        }
         if (!this.state.lastId){
             //清除线索的选择
             this.clearSelectedClue();
@@ -590,17 +594,41 @@ class ClueExtract extends React.Component {
         cluePoolAction.setSalesManName({'salesManNames': ''});
     };
 
+
+    // 展示右侧详情面板
+    showClueDetailPanel = (item) => {
+        this.setState({
+            isShowClueDetailPanel: true
+        }, () => {
+            cluePoolAction.setCurrentClueId(item.id);
+        });
+
+    };
+
+    hideRightPanel = () => {
+        this.setState({isShowClueDetailPanel: false});
+        //关闭右侧面板后，将当前展示线索的id置为空
+        cluePoolAction.setCurrentClueId('');
+        $('.ant-table-row').removeClass('current-row');
+    };
+    
     // table 列
     getClueTableColunms = () => {
         return [
             {
                 title: Intl.get('crm.sales.clue', '线索'),
                 dataIndex: 'clue_name',
-                width: '30%',
+                width: '35%',
                 render: (text, salesClueItem, index) => {
                     return (
                         <div className="clue-top-title" >
-                            <span>{salesClueItem.name}</span>
+                            <span
+                                className="clue-name"
+                                data-tracename="查看线索详情"
+                                onClick={this.showClueDetailPanel.bind(this, salesClueItem)}
+                            >
+                                {salesClueItem.name}
+                            </span>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>
@@ -614,12 +642,16 @@ class ClueExtract extends React.Component {
                         </div>
                     );
                 }
-            }, {
-                title: Intl.get('user.login.score', '分数'),
-                dataIndex: 'score',
-                width: '15%',
-                sorter: true,
-            }, {
+            }, /*** todo 由于后端没有这列数据，先隐藏，有了之后，在展示
+                {
+                    title: Intl.get('user.login.score', '分数'),
+                    dataIndex: 'score',
+                    width: '15%',
+                    sorter: true,
+
+                },
+             ***/
+            {
                 title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'contact',
                 width: '15%',
@@ -637,7 +669,7 @@ class ClueExtract extends React.Component {
             },{
                 title: Intl.get('call.record.follow.content', '跟进内容'),
                 dataIndex: 'customer_trace',
-                width: '20%',
+                width: '30%',
                 render: (text, record, index) => {
                     if (_.isArray(record.customer_traces)) {
                         return (
@@ -648,7 +680,7 @@ class ClueExtract extends React.Component {
             }, {
                 title: Intl.get('common.operate', '操作'),
                 className: 'invalid-td-clue',
-                width: '20%',
+                width: '10%',
                 render: (text, record, index) => {
                     let user = userData.getUserData();
                     // 提取线索分配给相关的销售人员的权限
@@ -932,6 +964,27 @@ class ClueExtract extends React.Component {
                         {this.renderLoadingAndErrAndNodataContent()}
                     </div>
                 </div>
+                {
+                    this.state.isShowClueDetailPanel ? (
+                    <RightPanel
+                        className="clue-pool-clue-detail white-space-nowrap table-btn-fix"
+                        showFlag={this.state.isShowClueDetailPanel}
+                    >
+                        <span className="iconfont icon-close" onClick={(e) => {
+                            this.hideRightPanel();
+                        }}/>
+                        <div className="right-panel-content">
+                            <ClueDetail
+                                ref={cluePanel => this.cluePanel = cluePanel}
+                                currentId={this.state.currentId}
+                                curClue={this.state.curClue}
+                                hideRightPanel={this.hideRightPanel}
+                                type='clue_pool'
+                            />
+                        </div>
+                    </RightPanel>
+                    ) : null
+                }
             </div>
         );
     }

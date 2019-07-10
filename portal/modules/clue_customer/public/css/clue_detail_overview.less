@@ -86,6 +86,67 @@
         }
       }
   }
+  .similar-wrap{
+    background: #fff;
+    padding: 12px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    .similar-content{
+      .similar-tip{
+        color:#EFA246;
+        border-bottom:1px solid #F5F5F5;
+        padding:0 0 8px 0;
+        .iconfont{
+          margin-right: 5px;
+
+        }
+      }
+      .similar-block{
+        .similar-title{
+          color: #333;
+          margin:8px 0;
+          overflow: hidden;
+          .clue-stage {
+            margin-right: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            padding:4px;
+          }
+          .clue-stage.will-distribute {
+            background: @will-distribute-background;
+            color: @will-distribute-color;
+          }
+          .clue-stage.has-distribute {
+            background: @has-distribute-background;
+            color: @has-distribute-color;
+          }
+          .clue-stage.has-follow {
+            color: @has-follow-color;
+            background: @has-follow-background;
+          }
+          .clue-stage.has-transfer {
+            color: @has-transfer-color;
+            background: @has-transfer-background;
+          }
+          button{
+            float: right;
+            background: #fff;
+            color:#8DA8C5;
+            border: 1px solid #8DA8C5;
+            &:hover{
+              color: #fff;
+              background-color: #108ee9;
+              border-color: #108ee9;
+            }
+          }
+        }
+        .similar-name-phone{
+          font-size: 12px;
+          color:#999;
+        }
+      }
+    }
+  }
   .associate-customer-detail.clue-detail-block{
     padding: 0;
     .clue-info-item{

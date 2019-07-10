@@ -8,7 +8,7 @@ import { emailRegex } from 'PUB_DIR/sources/utils/validate-util';
 var React = require('react');
 require('../../css/clue_detail_overview.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
-import {Button, Icon} from 'antd';
+import {Button, Icon, message} from 'antd';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DatePickerField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
@@ -31,7 +31,11 @@ import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
-import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
+import ajax from 'ant-ajax';
+import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
+import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
+import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -40,14 +44,115 @@ class ClueDetailOverview extends React.Component {
         customerOfCurUser: {},//当前展示用户所属客户的详情
         app_user_id: '',
         curClue: $.extend(true, {}, this.props.curClue),
-        divHeight: this.props.divHeight
+        divHeight: this.props.divHeight,
+        similarClueLoading: false,//正在获取相似线索
+        similarClueErrmsg: '',//获取相似线索出错
+        similarClueLists: [],//相似线索列表
+        similarCustomerLoading: false,//正在获取相似客户
+        similarCustomerErrmsg: '',//获取相似客户出错
+        similarCustomerLists: [],//相似客户列表
     };
+
+    componentDidMount() {
+        var curClue = this.state.curClue;
+        if (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE){
+            //获取相似线索列表
+            this.getSimilarClueLists();
+            //获取相似客户列表
+            this.getSimilarCustomerLists();
+        }
+
+    }
+    getSimilarClueLists = () => {
+        this.setState({
+            similarClueLoading: true,
+            similarClueErrmsg: ''
+        });
+        var curClue = this.state.curClue;
+        $.ajax({
+            url: '/rest/get/similar/cluelists',
+            type: 'get',
+            dateType: 'json',
+            data: {
+                lead_id: _.get(curClue, 'id'),
+                lead_name: _.get(curClue, 'name'),
+                lead_phones: this.getCurCluePhones()
+            },
+            success: (data) => {
+                this.setState({
+                    similarClueLists: _.isArray(data.similarity_list) ? data.similarity_list : [],
+                    similarClueLoading: false,
+                    similarClueErrmsg: ''
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    similarClueLists: [],
+                    similarClueLoading: false,
+                    similarClueErrmsg: errorMsg
+                });
+            }
+        });
+
+    };
+    getCurCluePhones = () => {
+        var curClue = this.state.curClue;
+        var phones = [];
+        if (_.get(curClue,'contacts[0]')){
+            _.forEach(_.get(curClue,'contacts'), (item) => {
+                if (_.isArray(item.phone)){
+                    phones = _.concat(phones, item.phone);
+                }
+            });
+        }
+        return phones.join(',');
+    }
+    getSimilarCustomerLists = () => {
+        this.setState({
+            similarCustomerLoading: true,
+            similarCustomerErrmsg: ''
+        });
+        var curClue = this.state.curClue;
+        $.ajax({
+            url: '/rest/get/similar/customerlists',
+            type: 'get',
+            dateType: 'json',
+            data: {
+                name: _.get(curClue, 'name'),
+                phones: this.getCurCluePhones()
+            },
+            success: (data) => {
+                this.setState({
+                    similarCustomerLists: _.isArray(data.similarity_list) ? data.similarity_list : [],
+                    similarCustomerLoading: false,
+                    similarCustomerErrmsg: ''
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    similarCustomerLists: [],
+                    similarCustomerLoading: false,
+                    similarCustomerErrmsg: errorMsg
+                });
+            }
+        });
+    };
+
 
     componentWillReceiveProps(nextProps) {
         //修改某些属性时，线索的id不变，但是需要更新一下curClue所以不加 nextProps.curClue.id !== this.props.curClue.id 这个判断了
         if (_.get(nextProps.curClue,'id')) {
+            var diffClueId = _.get(nextProps,'curClue.id') !== _.get(this, 'props.curClue.id');
             this.setState({
                 curClue: $.extend(true, {}, nextProps.curClue)
+            },() => {
+                var curClue = nextProps.curClue;
+                if (diffClueId && (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE)){
+                    //获取相似线索列表
+                    this.getSimilarClueLists();
+                    //获取相似客户列表
+                    this.getSimilarCustomerLists();
+                }
             });
         }
         if (nextProps.divHeight !== this.props.divHeight){
@@ -267,13 +372,12 @@ class ClueDetailOverview extends React.Component {
                     curClue.customer_traces[0].nick_name = userName;
                     curClue.customer_traces[0].add_time = addTime;
                 }
-                this.props.updateRemarks(curClue.customer_traces);
                 this.setState({
                     curClue: curClue
                 });
                 //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                 clueCustomerAction.afterAddClueTrace(curClue);
-                this.props.updateClueProperty({status: SELECT_TYPE.HAS_TRACE,customer_traces: curClue.customer_traces});
+                this.props.updateCustomerLastContact(saveObj);
                 if (_.isFunction(successFunc)) successFunc();
             }
         });
@@ -320,7 +424,6 @@ class ClueDetailOverview extends React.Component {
                         'sales_team': teamName,
                         'sales_team_id': teamId
                     };
-                    clueCustomerAction.afterEditCustomerDetail(updateObj);
                     this.props.updateClueProperty(updateObj);
                     if (isWillDistribute) {
                         clueCustomerAction.afterAssignSales(curClue.id);
@@ -569,15 +672,22 @@ class ClueDetailOverview extends React.Component {
     renderAvailabilityClue = (curClue) => {
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
+        //是否有修改线索关联客户的权利
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
         if (avalibility){
-            return <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
-                onClick={this.showConfirmInvalid.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
-            </Button>;
+            return <div>
+                {associatedPrivilege ? <Button type="primary"
+                    onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id,curClue.name)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
+                <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
+                    onClick={this.showConfirmInvalid.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
+                </Button>
+            </div>;
         }else{
             return null;
         }
 
     };
+
     renderAssociatedAndInvalidClueHandle = (curClue) => {
         return (
             <div className="clue-info-item">
@@ -959,9 +1069,121 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
+    //合并到此客户按钮点击事件
+    onMergeToCustomerClick = customer => {
+        this.setState({
+            isShowClueToCustomerPanel: true,
+            existingCustomers: customer
+        });
+    }
+    renderSimilarCustomers = () => {
+        var similarCustomers = this.state.similarCustomerLists;
+        return (
+            <div className="similar-content similar-customer-list">
+                <div className="similar-tip">
+                    <i className="iconfont icon-phone-call-out-tip"></i>
+                    {Intl.get('customer.has.similar.lists', '相似客户')}</div>
+                {_.map(similarCustomers,(customerItem) => {
+                    return <div className="similar-block">
+                        <div className="similar-title">
+                            {customerItem.name}
+                            <Button onClick={this.onMergeToCustomerClick.bind(this, customerItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button>
+                        </div>
+                        {_.isArray(customerItem.contacts) ? _.map(customerItem.contacts,(contactsItem) => {
+                            return (
+                                <div className="similar-name-phone">
+                                    {contactsItem.name}:{_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
+                                </div>
+                            );
+                        }) : null}
+                    </div>;
+                })}
+            </div>
+        );
+
+    };
+    renderSimilarClues = () => {
+        var similarClueLists = this.state.similarClueLists;
+        return (
+            <div className="similar-content similar-customer-list">
+                <div className="similar-tip">
+                    <i className="iconfont icon-phone-call-out-tip"></i>{Intl.get('clue.has.similar.lists', '相似线索')}</div>
+                {_.map(similarClueLists,(clueItem) => {
+                    return <div className="similar-block">
+                        <div className="similar-title">
+                            {renderClueStatus(clueItem.status)}{clueItem.name}
+                        </div>
+                        {_.isArray(clueItem.contacts) ? _.map(clueItem.contacts,(contactsItem) => {
+                            return (
+                                <div className="similar-name-phone">
+                                    {contactsItem.name}:{_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
+                                </div>
+                            );
+                        }) : null}
+                    </div>;
+                })}
+            </div>
+        );
+    };
+    renderSimilarClueCustomerLists = () => {
+        if (_.get(this,'state.similarClueLists[0]') || _.get(this, 'state.similarCustomerLists[0]')){
+            return (
+                <div className="similar-wrap">
+                    {_.get(this, 'state.similarCustomerLists[0]') ? this.renderSimilarCustomers() : null}
+                    {_.get(this,'state.similarClueLists[0]') ? this.renderSimilarClues() : null}
+                </div>
+            );
+        }else{
+            return null;
+        }
+    };
+    //隐藏线索转客户面板
+    hideClueToCustomerPanel = () => {
+        this.setState({isShowClueToCustomerPanel: false});
+    };
+    //线索合并到客户后的回调事件
+    onClueMergedToCustomer = (customerId,customerName) => {
+        //在列表中隐藏当前操作的线索
+        this.props.afterTransferClueSuccess();
+        //打开客户面板，显示合并后的客户信息
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customerId,
+                activeKey: TAB_KEYS.CONTACT_TAB
+            }
+        });
+        //关闭线索转客户面板
+        this.hideClueToCustomerPanel();
+        this.props.updateClueProperty({status: SELECT_TYPE.HAS_TRANSFER,customer_name: customerName, customer_id: customerId});
+    };
+    // 渲染相似客户
+    renderClueCustomerLists = (curClue) => {
+        if (curClue.clue_type === 'clue_pool') { // 线索池详情，不显示相似客户
+            return null;
+        } else { // 待跟进、已跟进显示相似客户
+            if (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) {
+                return this.renderSimilarClueCustomerLists();
+            } else {
+                return null;
+            }
+        }
+    };
+    // 渲染关联线索
+    renderAssociatedClue = (curClue, associatedCustomer ) => {
+        if (curClue.clue_type === 'clue_pool' ) { // 线索池中详情，不显示关联线索
+            return null;
+        } else {
+            if ((curClue.status === SELECT_TYPE.HAS_TRACE ||
+                curClue.status === SELECT_TYPE.WILL_TRACE) &&
+                !associatedCustomer) { // 待跟进或是已跟进，并且没有关联客户时，处理线索
+                return this.renderAssociatedAndInvalidClueHandle(curClue);
+            } else { // 显示处理线索的结果
+                return this.renderAssociatedAndInvalidClueText(associatedCustomer);
+            }
+        }
+    };
 
     render() {
-        let user = userData.getUserData();
         var curClue = this.state.curClue;
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
@@ -969,12 +1191,11 @@ class ClueDetailOverview extends React.Component {
         var associatedCustomer = curClue.customer_name;
         //分配线索给销售的权限
         var hasAssignedPrivilege = this.assignSalesPrivilege();
-        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
-        var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         return (
             <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
+                    {this.renderClueCustomerLists(curClue)}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
                     <div className="assign-sales-warp clue-detail-block">
@@ -985,11 +1206,7 @@ class ClueDetailOverview extends React.Component {
                     {this.renderTraceContent()}
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，已跟进或待跟进的线索并且没有关联客户*/}
-                        {
-                            (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer ?
-                                this.renderAssociatedAndInvalidClueHandle(curClue)
-                                : this.renderAssociatedAndInvalidClueText(associatedCustomer)
-                        }
+                        {this.renderAssociatedClue(curClue,associatedCustomer)}
                     </div>
                     {this.renderAppUserDetail()}
                     {
@@ -1003,6 +1220,16 @@ class ClueDetailOverview extends React.Component {
                     }
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                 </GeminiScrollbar>
+                {this.state.isShowClueToCustomerPanel ? (
+                    <ClueToCustomerPanel
+                        showFlag={this.state.isShowClueToCustomerPanel}
+                        clue={this.state.curClue}
+                        existingCustomers={[this.state.existingCustomers]}
+                        hidePanel={this.hideClueToCustomerPanel}
+                        onMerged={this.onClueMergedToCustomer}
+                        viewType='customer_merge'
+                    />
+                ) : null}
             </div>
         );
     }
@@ -1020,9 +1247,6 @@ ClueDetailOverview.defaultProps = {
     removeUpdateClueItem: function() {
 
     },
-    updateRemarks: function() {
-
-    },
     showClueDetailPanel: function() {
 
     },
@@ -1031,7 +1255,17 @@ ClueDetailOverview.defaultProps = {
     },
     updateClueProperty: function() {
 
-    }
+    },
+    afterTransferClueSuccess: function() {
+
+    },
+    onConvertToCustomerBtnClick: function() {
+
+    },
+    updateCustomerLastContact: function() {
+
+    },
+
 
 };
 ClueDetailOverview.propTypes = {
@@ -1045,10 +1279,12 @@ ClueDetailOverview.propTypes = {
     updateClueClassify: PropTypes.func,
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
-    updateRemarks: PropTypes.func,
     showClueDetailPanel: PropTypes.func,
     hideRightPanel: PropTypes.func,
     updateClueProperty: PropTypes.func,
+    afterTransferClueSuccess: PropTypes.func,
+    onConvertToCustomerBtnClick: PropTypes.func,
+    updateCustomerLastContact: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;

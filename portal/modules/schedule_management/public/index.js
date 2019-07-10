@@ -118,7 +118,7 @@ class ScheduleManagement extends React.Component {
                         'end': item[0].end,//某个日程的结束时间
                         'count': item.length > 99 ? '99+' : item.length,
                         'totalCustomerObj': item,
-                        'showCustomerDetail': _this.showCustomerDetail,
+                        'showCustomerOrClueDetail': _this.showCustomerOrClueDetail,
                     }
                 );
             }
@@ -219,8 +219,29 @@ class ScheduleManagement extends React.Component {
             }
         });
     };
-
-    //查看客户的详情
+    showCustomerOrClueDetail = (schedule, event) => {
+        var showCustomerModal = _.get($('#customer-phone-status-content'),'length',0) > 0;
+        var showClueModal = _.get($('#clue_phone_panel_wrap'),'length',0) > 0;
+        if (schedule.lead_id){
+            //关闭客户详情
+            if (showCustomerModal){
+                phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
+            }
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+                clue_params: {
+                    currentId: schedule.lead_id,
+                    hideRightPanel: this.hideRightPanel
+                }
+            });
+        }else if (schedule.customer_id){
+            //关闭线索详情
+            if (showClueModal){
+                phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_CLUE_PANEL);
+            }
+            this.showCustomerDetail(schedule.customer_id, event);
+        }
+    }
+    //查看客户或者线索的详情
     showCustomerDetail = (customer_id, event) => {
         //如果点击到更改状态的按钮上，就不用展示客户详情了
         if (event && event.target.className === 'ant-btn ant-btn-primary') {
@@ -402,7 +423,7 @@ class ScheduleManagement extends React.Component {
             <div data-tracename="日程管理界面" className="schedule-list-content">
                 <ExpireScheduleLists
                     updateExpiredPanelState={this.updateExpiredPanelState}
-                    showCustomerDetail={this.showCustomerDetail}
+                    showCustomerOrClueDetail={this.showCustomerOrClueDetail}
                     showAddToDo={this.showAddToDo}
                 />
                 <div id="calendar-wrap" className={calendarCls} data-tracename="日程列表界面">
@@ -429,7 +450,7 @@ class ScheduleManagement extends React.Component {
                             scheduleList={this.state.dayLists}//日视图数据
                             weekLists={this.state.weekLists}
                             handleScheduleItemStatus={this.handleScheduleItemStatus}
-                            showCustomerDetail={this.showCustomerDetail}
+                            showCustomerOrClueDetail={this.showCustomerOrClueDetail}
                             onNavigate={this.handleNavigateChange}
                             curCustomerId={this.state.curCustomerId}
                             formats={formats}

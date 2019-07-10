@@ -186,3 +186,20 @@ exports.getSalesTeamMembers = (teamId) => {
     });
     return Deferred.promise();
 };
+
+//根据线索的id获取线索详情
+exports.getClueDetailById = (clueId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue_pool/clue/detail/' + clueId,
+        dataType: 'json',
+        type: 'get',
+        success: (list) => {
+            Deferred.resolve(list);
+        },
+        error: (errorMsg) => {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

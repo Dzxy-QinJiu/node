@@ -35,7 +35,9 @@ class ClueToCustomerPanel extends React.Component {
         //显示添加客户面板
         showAddCustomerPanel: noop,
         //合并完成后的回调事件
-        onMerged: noop
+        onMerged: noop,
+        //展示的视图类型
+        viewType: '',
     };
 
     static propTypes = {
@@ -44,7 +46,8 @@ class ClueToCustomerPanel extends React.Component {
         existingCustomers: PropTypes.array,
         hidePanel: PropTypes.func,
         showAddCustomerPanel: PropTypes.func,
-        onMerged: PropTypes.func
+        onMerged: PropTypes.func,
+        viewType: PropTypes.string,
     };
 
     constructor(props) {
@@ -52,7 +55,7 @@ class ClueToCustomerPanel extends React.Component {
 
         this.state = {
             //视图类型
-            viewType: VIEW_TYPE.CUSTOMER_LIST,
+            viewType: this.props.viewType || VIEW_TYPE.CUSTOMER_LIST,
             //当前操作的客户的id
             customerId: '',
             //当前操作的客户的名称
@@ -63,10 +66,14 @@ class ClueToCustomerPanel extends React.Component {
             isConfirmMergeBtnDisabled: false
         };
     }
-
     componentDidMount() {
         ContactStore.listen(this.onContactStoreChange);
         $(window).on('resize', this.onWindowResize);
+    }
+    componentWillMount(){
+        if (this.props.viewType){
+            this.onMergeToCustomerClick(_.get(this, 'props.existingCustomers[0]'));
+        }
     }
 
     componentWillUnmount() {
@@ -375,7 +382,12 @@ class ClueToCustomerPanel extends React.Component {
 
     //设置视图类型
     setViewType = viewType => {
-        this.setState({ viewType });
+        if (this.props.viewType){
+            this.props.hidePanel();
+        }else{
+            this.setState({ viewType });
+        }
+
     }
 
     //合并到客户
@@ -446,7 +458,7 @@ class ClueToCustomerPanel extends React.Component {
                 .done(() => {
                     message.success(Intl.get('common.merge.success', '合并成功'));
 
-                    this.props.onMerged(this.state.customerId);
+                    this.props.onMerged(this.state.customerId, this.state.customerName);
                 })
                 .fail(err => {
                     const content = _.isArray(err) ? err.join('; ') : err;
@@ -581,16 +593,16 @@ class ClueToCustomerPanel extends React.Component {
     //渲染联系人内容
     renderContactContent(contact) {
         //当前操作的客户
-        const curCustomer = _.find(this.props.existingCustomers, customer => customer.id = this.state.customerId);
+        const curCustomer = _.find(this.props.existingCustomers, customer => customer.id === this.state.customerId);
 
         //当前操作的客户的联系人中和要渲染的联系人相同的联系人
-        const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name = contact.name);
+        const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name === contact.name);
 
         //当前操作的客户的联系人中和要渲染的联系人相同的联系人的电话
         const curCustomerPhone = _.get(curCustomerContact, 'phone');
 
         //当前线索的联系人中和要渲染的联系人相同的联系人
-        const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name = contact.name);
+        const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name === contact.name);
 
         //当前线索的联系人中和要渲染的联系人相同的联系人的电话
         const curCluePhone = _.get(curClueContact, 'phone');

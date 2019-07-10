@@ -33,8 +33,35 @@ function SalesTeamStore() {
     this.isEditGroupFlag = false; // 是否编辑部门，默认false
     this.selectedRowIndex = -1; // 点击的行索引， 默认不选中
     this.curEditGroup = {}; // 当前编辑的部门
+    this.mouseZoneHoverKey = ''; // 鼠标移入区域的key
+    this.isShowPopOver = false; // 是否显示popover，默认false
+
     this.bindActions(SalesTeamActions);
 }
+
+// 处理鼠标移入
+SalesTeamStore.prototype.handleMouseEnterItemLine = function(obj) {
+    this.mouseZoneHoverKey = obj.item.key;
+    if (obj.isShowPopOver) {
+        this.isShowPopOver = false;
+    }
+};
+
+// 处理鼠标移出
+SalesTeamStore.prototype.handleMouseLeaveTreeZone = function() {
+    this.mouseZoneHoverKey = '';
+};
+
+// 处理鼠标悬停更多按钮
+SalesTeamStore.prototype.handleMouseHoverMoreBtn = function() {
+    this.isShowPopOver = true;
+};
+
+// 处理popover浮层的显示
+SalesTeamStore.prototype.handlePopOverVisible = function(flag) {
+    this.isShowPopOver = flag;
+};
+
 SalesTeamStore.prototype.showUserInfoPanel = function(index) {
     this.userInfoShow = true;
     this.userFormShow = false;
@@ -244,7 +271,9 @@ SalesTeamStore.prototype.refreshTeamListAfterAdd = function(addTeam) {
 //修改团队名称后更新列表中对应团队的名称
 SalesTeamStore.prototype.updateTeamNameAfterEdit = function(editTeam) {
     let team = _.find(this.salesTeamList, team => team.group_id === editTeam.key);
-    team.group_name = editTeam.title;
+    if (team) {
+        team.group_name = editTeam.title;
+    }
     //递归遍历树形团队列表，根据id找团队并修改名称
     this.findGroupByIdEditName(this.salesTeamListArray, editTeam);
 };
@@ -565,6 +594,7 @@ SalesTeamStore.prototype.hideModalDialog = function(deleteGroupItem) {
 
 SalesTeamStore.prototype.handleCancelDeleteGroup = function(item) {
     item.isDeleteGroup = false;
+    this.isShowPopOver = false;
 };
 
 //编辑成员
@@ -576,6 +606,7 @@ SalesTeamStore.prototype.getIsEditMember = function() {
 //取消编辑成员
 SalesTeamStore.prototype.cancelEditMember = function() {
     this.isEditMember = false;
+    this.isShowPopOver = false;
 };
 
 //添加成员
@@ -631,6 +662,8 @@ SalesTeamStore.prototype.saveDeleteGroup = function(result) {
             delete team.isLiSelect;
         });
         this.salesTeamTree();
+        this.isShowPopOver = false;
+        this.mouseZoneHoverKey = '';
     }
     //删除团队失败
     this.delTeamErrorMsg = result.errorMsg;
@@ -651,6 +684,8 @@ SalesTeamStore.prototype.editGroup = function(item) {
     this.isEditGroupFlag = true;
     item.isEditGroup = true;
     item.isShowOperationArea = false;
+    this.isShowPopOver = false;
+    this.mouseZoneHoverKey = '';
 };
 
 //取消展示组修改表单
@@ -658,6 +693,8 @@ SalesTeamStore.prototype.cancelEditGroup = function(item) {
     item.isEditGroup = false;
     this.isEditGroupFlag = false;
     this.curEditGroup = {};
+    this.isShowPopOver = false;
+    this.mouseZoneHoverKey = '';
 };
 
 //展示组添加表单
@@ -668,12 +705,15 @@ SalesTeamStore.prototype.addGroup = function(item) {
 
 //取消展示组添加表单
 SalesTeamStore.prototype.cancelAddGroup = function(item) {
+    this.isShowPopOver = false;
+    this.mouseZoneHoverKey = '';
     if (item) {
         //关闭添加该组织添加子组织的面板
         item.isAddGroup = false;
     } else {
         //关闭根组织添加面板
         this.isAddSalesTeamRoot = false;
+
     }
 };
 

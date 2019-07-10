@@ -168,7 +168,6 @@ var SalesTeamForm = createReactClass({
                         }
                     });
                 }
-                this.props.handleSubmitTeamForm();
             }
         });
     },
