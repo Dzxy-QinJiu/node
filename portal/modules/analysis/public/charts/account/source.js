@@ -14,11 +14,14 @@ export function getAccountSourceChart(type = 'total', title = '') {
         },
         processData: data => {
             return [{
-                name: '线索转化',
+                name: Intl.get('common.clue.convert', '线索转化'),
                 value: data.lead,
             }, {
-                name: '销售开发',
+                name: Intl.get('common.sales.develop', '销售开发'),
                 value: data.sales,
+            }, {
+                name: Intl.get('crm.186', '其他'),
+                value: data.other,
             }];
         },
     };
