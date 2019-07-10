@@ -41,6 +41,12 @@ export function getSingleDurationTop10Chart() {
                 delete query.start_time;
                 delete query.end_time;
             }
+
+            //在这个统计中，通话设备类型需要从data里传
+            if (query.device_type) {
+                arg.data.type = query.device_type;
+                delete query.device_type;
+            }
         },
         processData: (data) => {
             return _.get(data, 'result', []);
