@@ -24,7 +24,7 @@ export function getAverageOnlineTimeChart(type = 'all') {
         },
         conditions: [{
             name: 'interval_important',
-            value: 'hourly',
+            value: 'daily',
         }, {
             name: 'analysis_type',
             value: type
@@ -37,9 +37,7 @@ export function getAverageOnlineTimeChart(type = 'all') {
                     const cardSelectValue = data.cardSelectValue;
                     let name = data.name;
 
-                    if (cardSelectValue === 'hourly') {
-                        name = `${name} ${moment(data.timestamp).get('h')}:00`;
-                    } else if (cardSelectValue === 'weekly') {
+                    if (cardSelectValue === 'weekly') {
                         name = `${name} - ${moment().format(oplateConsts.DATE_FORMAT)}`;
                     } else if (cardSelectValue === 'monthly') {
                         name = moment(name).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
@@ -63,14 +61,6 @@ export function getAverageOnlineTimeChart(type = 'all') {
             //时间区间
             const interval = _.get(chartProps, 'cardContainer.selectors[0].activeOption');
 
-            //按小时查看时，横轴显示天和小时
-            if (interval === 'hourly') {
-                const xAxisData = _.map(chartProps.data, dataItem => {
-                    return moment(dataItem.timestamp).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT);
-                });
-                _.set(option, 'xAxis[0].data', xAxisData);
-            }
-
             //系列数据
             const serieData = _.get(option, 'series[0].data');
 
@@ -84,14 +74,13 @@ export function getAverageOnlineTimeChart(type = 'all') {
         cardContainer: {
             selectors: [{
                 options: [
-                    {name: Intl.get('common.label.hours', '小时'), value: 'hourly'},
                     {name: Intl.get('common.time.unit.day', '天'), value: 'daily'},
                     {name: Intl.get('common.time.unit.week', '周'), value: 'weekly'},
                     {name: Intl.get('common.time.unit.month', '月'), value: 'monthly'},
                     {name: Intl.get('common.time.unit.quarter', '季度'), value: 'quarterly'},
                     {name: Intl.get('common.time.unit.year', '年'), value: 'yearly'}
                 ],
-                activeOption: 'hourly',
+                activeOption: 'daily',
                 conditionName: 'interval_important',
             }],
         },
