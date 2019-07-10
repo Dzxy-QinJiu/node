@@ -1129,8 +1129,7 @@ class CallRecord extends React.Component {
     };
 
     renderCallRecordContent = () => {
-        //只有第一页的时候，显示loading和错误信息
-        // if (this.state.callRecord.page === 1) {
+        //只有第一页和过滤表头不显示的时候，显示loading和错误信息
         if (this.state.callRecord.page === 1 && !this.state.isFilter) {
             if (this.state.callRecord.is_loading){
                 return (
