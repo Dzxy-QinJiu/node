@@ -3032,7 +3032,8 @@ var en_US = {
     'common.recent.month.daily.activity': 'recent month daily activity',//近一个月日活
     'common.recent.three.month.weekly.activity': 'recent three month weekly activity',//近三个月周活
     'common.recent.year.monthly.activity': 'recent year monthly activity',//近一个年月活
-    'call.record.phone.err.msg': 'Wrong phone number!'//电话号码错误
+    'call.record.phone.err.msg': 'Wrong phone number!',//电话号码错误
+    'clue.detail.last.contact.time': 'Last trace time'//最后跟进时间
 
 };
 export default en_US;

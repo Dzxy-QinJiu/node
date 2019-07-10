@@ -1095,18 +1095,19 @@ class ClueDetailOverview extends React.Component {
                     <i className="iconfont icon-phone-call-out-tip"></i>
                     {Intl.get('customer.has.similar.lists', '相似客户')}</div>
                 {_.map(similarCustomers,(customerItem) => {
+                    var sameContact = this.getSameContactPhone(_.get(customerItem,'contacts',[]));
                     return <div className="similar-block">
                         <div className="similar-title">
                             <span className="customer-name" onClick={this.showCustomerDetail.bind(this, customerItem)}>{customerItem.name}</span>
                             <Button onClick={this.onMergeToCustomerClick.bind(this, customerItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button>
                         </div>
-                        {_.isArray(customerItem.contacts) ? _.map(customerItem.contacts,(contactsItem) => {
+                        {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
                             return (
                                 <div className="similar-name-phone">
                                     <span className="contact-name" title={contactsItem.name}>
                                         {contactsItem.name }
                                     </span>
-                                    {contactsItem.name && _.isArray(contactsItem.phone) && _.get(contactsItem, 'phone.length') ? ':' : ''}
+                                    {contactsItem.name && _.isArray(contactsItem.phone) && _.get(contactsItem, 'phone.length') ? '：' : ''}
                                     {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
                                 </div>
                             );
@@ -1153,6 +1154,21 @@ class ClueDetailOverview extends React.Component {
             }
         });
     }
+    getSameContactPhone = (contacts) => {
+        contacts = _.cloneDeep(contacts);
+        var cluePhone = this.getCurCluePhones();
+        var cluePhoneArr = cluePhone.split(',');
+        contacts = _.filter(contacts, (contactItem) => {
+            var interSectArr = _.intersection(_.get(contactItem,'phone',[]),cluePhoneArr);
+            if (_.isEmpty(interSectArr)){
+                return false;
+            }else{
+                contactItem.phone = interSectArr;
+                return true;
+            }
+        });
+        return contacts;
+    };
     renderSimilarClues = () => {
         var similarClueLists = this.state.similarClueLists;
         var showMore = !this.state.showLargerClueLists && _.get(similarClueLists,'length') > 3;
@@ -1163,34 +1179,37 @@ class ClueDetailOverview extends React.Component {
         if (showLess){
             similarClueLists = this.state.similarClueLists;
         }
+
         return (
             <div className="similar-content similar-customer-list">
                 <div className="similar-tip">
                     <i className="iconfont icon-phone-call-out-tip"></i>{Intl.get('clue.has.similar.lists', '相似线索')}</div>
                 {_.map(similarClueLists,(clueItem) => {
+                    var sameContact = this.getSameContactPhone(_.get(clueItem,'contacts',[]));
+                    var traceAddTime = _.get(clueItem, 'customer_traces[0].call_date') || _.get(clueItem, 'customer_traces[0].add_time');//跟进时间
                     return <div className="similar-block">
                         <div className="similar-title" onClick={this.showClueDetail.bind(this, clueItem)}>
                             {renderClueStatus(clueItem.status)}{clueItem.name}
                         </div>
-                        {_.isArray(clueItem.contacts) ? _.map(clueItem.contacts,(contactsItem) => {
+                        {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
                             return (
                                 <div className="similar-name-phone">
                                     <span className="contact-name" title={contactsItem.name}>
                                         {contactsItem.name }
                                     </span>
-                                    {contactsItem.name && _.isArray(contactsItem.phone) && _.get(contactsItem, 'phone.length') ? ':' : ''}
+                                    {contactsItem.name && _.isArray(contactsItem.phone) && _.get(contactsItem, 'phone.length') ? '：' : ''}
                                     {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
 
                                 </div>
                             );
                         }) : null}
+                        {traceAddTime ? <span className="trace-time">{Intl.get('clue.detail.last.contact.time', '最后跟进时间') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
+
                     </div>;
                 })}
                 {showMore || showLess ? <div className="show-hide-tip" onClick={this.handleToggleClueTip}>
                     {showMore ? Intl.get('notification.system.more', '展开全部') : ''}
                     {showLess ? Intl.get('crm.contact.way.hide', '收起') : ''}</div> : null}
-
-
             </div>
         );
     };
