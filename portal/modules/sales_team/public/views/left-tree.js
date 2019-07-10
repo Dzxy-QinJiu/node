@@ -1,7 +1,6 @@
 /**
  * Created by xiaojinfeng on 2016/04/11.
  */
-const React = require('react');
 import {Icon,Button, Popover} from 'antd';
 import commonMethodUtil from '../../../../public/sources/utils/common-method-util';
 var classNames = require('classnames');
@@ -111,6 +110,7 @@ class LeftTree extends React.Component {
             return;
         }
         let groupId = item.key;
+        this.props.getSelectedDepartmentId(groupId);
         SalesTeamAction.selectTree(groupId);
         SalesTeamAction.setTeamMemberLoading(true);
         //获取销售目标
@@ -529,5 +529,6 @@ LeftTree.propTypes = {
     curEditGroup: PropTypes.string,
     mouseZoneHoverKey: PropTypes.string,
     isShowPopOver: PropTypes.bool,
+    getSelectedDepartmentId: PropTypes.func
 };
 module.exports = LeftTree;

@@ -1,9 +1,11 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-var SalesTeamActions = require('../action/sales-team-actions');
+const SalesTeamActions = require('../action/sales-team-actions');
 //没有团队时的提示信息
-var salesTeamIsNull = 'sales-team-is-null';
+let salesTeamIsNull = 'sales-team-is-null';
+import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+
 function SalesTeamStore() {
     this.salesTeamList = [];//团队分组列表
     this.salesTeamListArray = [];//团队分组树形列表
@@ -931,12 +933,12 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
 };
 
 SalesTeamStore.prototype.salesTeamTree = function(flag) {
-    var isSelectObj = this.checkSelectTree();
-    var salesTeamList = this.salesTeamList;
-    var salesTeamArray = [];//所有根团队
-    var newSalesTeamList = [];//所有子团队
-    for (var i = 0; i < salesTeamList.length; i++) {
-        var salesTeam = salesTeamList[i];
+    let isSelectObj = this.checkSelectTree();
+    let salesTeamList = this.salesTeamList;
+    let salesTeamArray = [];//所有根团队
+    let newSalesTeamList = [];//所有子团队
+    for (let i = 0; i < salesTeamList.length; i++) {
+        let salesTeam = salesTeamList[i];
         if (!salesTeam.parent_group) {
             salesTeamArray.push({
                 title: salesTeam.group_name,
@@ -963,8 +965,8 @@ SalesTeamStore.prototype.salesTeamTree = function(flag) {
             //没有展开过销售团队，默认展开第一个销售团队
             salesTeamArray[0].isLiSelect = true;
         }
-        for (var j = 0, len = this.salesTeamList.length; j < len; j++) {
-            var item = this.salesTeamList[j];
+        for (let j = 0, len = this.salesTeamList.length; j < len; j++) {
+            let item = this.salesTeamList[j];
             if (item.group_id === salesTeamArray[0].key) {
                 item.select = salesTeamArray[0].select;
                 item.isLiSelect = salesTeamArray[0].isLiSelect;

@@ -1,9 +1,11 @@
 import {getSalesTeamRoleList} from 'MOD_DIR/common/public/ajax/role';
 
 // 获取成员列表
+let memberListAjax = null;
 exports.getMemberList = (searchObj) => {
+    memberListAjax && memberListAjax.abort();
     let Deferred = $.Deferred();
-    $.ajax({
+    memberListAjax = $.ajax({
         url: '/rest/user',
         dataType: 'json',
         type: 'get',

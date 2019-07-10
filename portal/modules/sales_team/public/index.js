@@ -283,6 +283,13 @@ class SalesTeamPage extends React.Component {
         });
     };
 
+    getSelectedDepartmentId = (id) => {
+        let organizationId = _.get(getOrganization(), 'id', '');
+        if (organizationId === id) {
+            positionEmitter.emit(positionEmitter.CLICK_POSITION, {teamroleId: ''});
+        }
+    };
+
     render() {
         let containerHeight = this.state.containerHeight;
         let containerWidth = this.state.containerWidth;
@@ -342,6 +349,7 @@ class SalesTeamPage extends React.Component {
                                                     curEditGroup={this.state.curEditGroup}
                                                     mouseZoneHoverKey={this.state.mouseZoneHoverKey}
                                                     isShowPopOver={this.state.isShowPopOver}
+                                                    getSelectedDepartmentId={this.getSelectedDepartmentId}
                                                 />
                                             </TabPane>
                                             <TabPane
