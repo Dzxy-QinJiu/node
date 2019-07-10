@@ -1,7 +1,6 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-const React = require('react');
 require('./css/index.less');
 import {Icon,Input,Button,Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
@@ -17,6 +16,7 @@ let SalesTeamAjax = require('./ajax/sales-team-ajax');
 import OfficeManage from '../../office_manage/public';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import MemberManage from '../../member_manage/public';
+import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 let CONSTANT = {
     SALES_TEAM_IS_NULL: 'sales-team-is-null',//没有团队时的提示信息
@@ -53,6 +53,7 @@ class SalesTeamPage extends React.Component {
         this.state = {
             activeKey: TAB_KEYS.DEPARTMENT_TAB,
             memberCount: 0, // 成员的数量
+            officeList: [], // 职务列表
             ...data,
         };
     }
@@ -77,10 +78,10 @@ class SalesTeamPage extends React.Component {
         $('body').css('overflow', 'hidden');
         $(window).on('resize', this.resizeWindow);
         SalesTeamStore.listen(this.onChange);
-        SalesTeamAction.getTeamMemberCountList();
+        SalesTeamAction.getTeamMemberCountList(); // 获取部门树的数量
         SalesTeamAction.setSalesTeamLoading(true);
         SalesTeamAction.getSalesTeamList();
-        SalesTeamAction.getMemberList();
+        SalesTeamAction.getMemberList(); // 获取非部门下的成员
     }
 
     componentWillUnmount() {
@@ -183,11 +184,97 @@ class SalesTeamPage extends React.Component {
         </PrivilegeChecker>);
     };
 
+    // 触发筛选职务事件
+    emitFilterPositionEvent = () => {
+        let officeList = this.state.officeList;
+        let filterOffice = _.find(officeList, item => item.selected);
+        let positionObj = {teamroleId: _.get(filterOffice, 'id')};
+        positionEmitter.emit(positionEmitter.CLICK_POSITION, positionObj);
+    };
+
     // 切换tab时的处理
     changeActiveKey = (key) => {
         this.setState({
             activeKey: key
+        }, () => {
+            // 从职务切换到部门时，并且在切换前职务，展示的是组织的成员列表，再次切换到部门时，需要再次获取组织的成员列表
+            if (key === '1') {
+                let organizationName = _.get(getOrganization(), 'name', '');
+                let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
+                if (groupName === organizationName) {
+                    positionEmitter.emit(positionEmitter.CLICK_POSITION, {teamroleId: ''});
+                }
+            } else { // 从部门切换到职务时，获取上次所选职务的成员列表
+                if (this.state.officeList.length) {
+                    this.emitFilterPositionEvent();
+                }
+            }
         });
+    };
+
+    // 切到tab为职务时，系统自动获取第一个职务的成员的处理
+    getOfficeList = (data) => {
+        this.setState({
+            officeList: data
+        }, () => {
+            this.emitFilterPositionEvent();
+        });
+    };
+
+    // 渲染成员列表
+    renderMemberList = (containerHeight, salesTeamMemberWidth) => {
+        let organizationName = _.get(getOrganization(), 'name', '');
+        let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
+        if (this.state.activeKey === '1') { // tab为部门时的成员列表
+            if (groupName === organizationName) { // 组织
+                return (
+                    <div
+                        className='member-zone'
+                        style={{
+                            height: containerHeight,
+                            width: salesTeamMemberWidth
+                        }}
+                    >
+                        <MemberManage getMemberCount={this.getMemberCount}/>
+                    </div>
+                );
+            } else {
+                return (
+                    <MemberList
+                        salesTeamMemberWidth={salesTeamMemberWidth}
+                        containerHeight={containerHeight}
+                        isLoadingTeamMember={this.state.isLoadingTeamMember}
+                        salesTeamMerberList={this.state.salesTeamMemberList}
+                        curShowTeamMemberObj={this.state.curShowTeamMemberObj}
+                        isAddMember={this.state.isAddMember}
+                        isEditMember={this.state.isEditMember}
+                        addMemberList={this.state.addMemberList}
+                        showMemberOperationBtn={this.state.showMemberOperationBtn}
+                        teamMemberListTipMsg={this.state.teamMemberListTipMsg}
+                        addMemberListTipMsg={this.state.addMemberListTipMsg}
+                        salesGoals={this.state.salesGoals}
+                        userInfoShow = {this.state.userInfoShow}
+                        userFormShow = {this.state.userFormShow}
+                        rightPanelShow={this.state.rightPanelShow}
+                        isLoadingSalesGoal={this.state.isLoadingSalesGoal}
+                        getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
+                        selectedRowIndex={this.state.selectedRowIndex}
+                    />
+                );
+            }
+        } else { // tab为职务时成员列表
+            return (
+                <div
+                    className='member-zone'
+                    style={{
+                        height: containerHeight,
+                        width: salesTeamMemberWidth
+                    }}
+                >
+                    <MemberManage/>
+                </div>
+            );
+        }
     };
 
     getMemberCount = (number) => {
@@ -195,14 +282,13 @@ class SalesTeamPage extends React.Component {
             memberCount: number
         });
     };
+
     render() {
         let containerHeight = this.state.containerHeight;
         let containerWidth = this.state.containerWidth;
         let salesTeamMemberWidth = containerWidth - 304;
         let salesTeamList = this.state.salesTeamList;
         let leftTreeData = this.state.searchContent ? this.state.searchSalesTeamTree : this.state.salesTeamListArray;
-        let organizationName = _.get(getOrganization(), 'name', '');
-        let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
         let tabHeight = containerHeight - LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
             <div
@@ -226,39 +312,9 @@ class SalesTeamPage extends React.Component {
                                     className="sales-team-table-block modal-container"
                                     style={{width: containerWidth ,height: containerHeight}}
                                 >
-                                    {
-                                        groupName === organizationName ? (
-                                            <div
-                                                className='member-zone'
-                                                style={{
-                                                    height: containerHeight,
-                                                    width: salesTeamMemberWidth
-                                                }}
-                                            >
-                                                <MemberManage getMemberCount={this.getMemberCount}/>
-                                            </div>
-                                        ) :
-                                            <MemberList
-                                                salesTeamMemberWidth={salesTeamMemberWidth}
-                                                containerHeight={containerHeight}
-                                                isLoadingTeamMember={this.state.isLoadingTeamMember}
-                                                salesTeamMerberList={this.state.salesTeamMemberList}
-                                                curShowTeamMemberObj={this.state.curShowTeamMemberObj}
-                                                isAddMember={this.state.isAddMember}
-                                                isEditMember={this.state.isEditMember}
-                                                addMemberList={this.state.addMemberList}
-                                                showMemberOperationBtn={this.state.showMemberOperationBtn}
-                                                teamMemberListTipMsg={this.state.teamMemberListTipMsg}
-                                                addMemberListTipMsg={this.state.addMemberListTipMsg}
-                                                salesGoals={this.state.salesGoals}
-                                                userInfoShow = {this.state.userInfoShow}
-                                                userFormShow = {this.state.userFormShow}
-                                                rightPanelShow={this.state.rightPanelShow}
-                                                isLoadingSalesGoal={this.state.isLoadingSalesGoal}
-                                                getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
-                                                selectedRowIndex={this.state.selectedRowIndex}
-                                            />
-                                    }
+                                    <div>
+                                        {this.renderMemberList(containerHeight, salesTeamMemberWidth)}
+                                    </div>
                                     <div className='member-group-tabs' style={{
                                         height: containerHeight,
                                     }}>
@@ -294,6 +350,7 @@ class SalesTeamPage extends React.Component {
                                             >
                                                 <OfficeManage
                                                     height={tabHeight}
+                                                    getOfficeList={this.getOfficeList}
                                                 />
                                             </TabPane>
                                         </Tabs>

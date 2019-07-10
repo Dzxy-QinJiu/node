@@ -52,9 +52,14 @@ class OfficeManage extends React.Component {
         });
         officeManageAjax.getPositionList().then( (result) => {
             let data = _.isArray(result) && result || [];
+            if (data.length) {
+                data[0].selected = true;
+            }
             this.setState({
                 isLoading: false,
                 positionList: data,
+            }, () => {
+                this.props.getOfficeList(data);
             });
         }, (xhr) => {
             this.setState({
@@ -146,7 +151,7 @@ class OfficeManage extends React.Component {
             delete position.selected;
         });
         item.selected = true;
-        let positionObj = {teamrole_id: item.id};
+        let positionObj = {teamroleId: item.id};
         positionEmitter.emit(positionEmitter.CLICK_POSITION, positionObj);
     };
 
@@ -479,7 +484,8 @@ class OfficeManage extends React.Component {
 }
 
 OfficeManage.propTypes = {
-    height: PropTypes.number
+    height: PropTypes.number,
+    getOfficeList: PropTypes.func
 };
 
 module.exports = OfficeManage;

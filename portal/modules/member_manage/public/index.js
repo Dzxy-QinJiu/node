@@ -40,9 +40,19 @@ class MemberManage extends React.Component {
         this.setState(MemberManageStore.getState());
     };
 
+    // 获取筛选成员的职务
+    getMemberPosition = (positionObj) => {
+        let teamroleId = positionObj.teamroleId;
+        MemberManageAction.setPositionId(teamroleId);
+        MemberManageAction.setInitialData();
+        setTimeout( () => {
+            this.getMemberList({teamroleId: teamroleId, id: ''});
+        },0 );
+    };
+
     componentDidMount = () => {
         MemberManageStore.listen(this.onChange);
-        positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberList);
+        positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberPosition);
         setTimeout( () => {
             this.getMemberList(); // 获取成员列表
         }, 0);
@@ -55,20 +65,16 @@ class MemberManage extends React.Component {
             roleParam: _.get(queryParams, 'role', this.state.selectRole), // 成员角色
             status: _.get(queryParams, 'status', this.state.status), // 成员状态
             id: _.get(queryParams, 'id', ''), // 下拉加载最后一条的id
+            teamrole_id: _.get(queryParams, 'teamroleId', this.state.teamroleId) // 职务id
         };
-        let teamrole_id = _.get(queryParams, 'teamrole_id');
-        if (teamrole_id) {
-            MemberManageAction.setInitialData();
-            queryObj.teamrole_id = teamrole_id;
-        }
         MemberManageAction.getMemberList(queryObj, (memberTotal) => {
-            this.props.getMemberCount(memberTotal);
+            this.props.getMemberCount && this.props.getMemberCount(memberTotal);
         });
     };
 
     componentWillUnmount = () => {
         MemberManageStore.unlisten(this.onChange);
-        positionEmitter.removeListener(positionEmitter.CLICK_POSITION, this.getMemberList);
+        positionEmitter.removeListener(positionEmitter.CLICK_POSITION, this.getMemberPosition);
     };
 
     showMemberForm = (type) => {

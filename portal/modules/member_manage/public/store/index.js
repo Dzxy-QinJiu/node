@@ -23,6 +23,7 @@ class MemberManageStore {
         this.memberRoleList = []; // 成员角色列表
         this.selectRole = ''; // 已选过滤角色,默认全部
         this.status = ''; // 成员状态，默认全部
+        this.teamroleId = ''; // 职务id
         this.setInitialData();
         this.bindActions(MemberManageAction);
     }
@@ -267,6 +268,10 @@ class MemberManageStore {
             this.currentMember.roleIds = roleObj.roleIds;
             this.currentMember.roleNames = roleObj.roleNames;
         }
+    }
+    // 设置职务id
+    setPositionId(teamroleId) {
+        this.teamroleId = teamroleId;
     }
 }
 
