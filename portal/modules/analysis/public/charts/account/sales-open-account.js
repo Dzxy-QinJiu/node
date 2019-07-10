@@ -17,8 +17,6 @@ export function getAccountSalesOpenAccountChart() {
             app_id: '!all',
         },
         option: {
-            pagination: false,
-            bordered: true,
             columns: [
                 {
                     title: Intl.get('sales.home.sales', '销售'),
@@ -30,8 +28,6 @@ export function getAccountSalesOpenAccountChart() {
                 },
             ],
         },
-        //不让表格显示纵向滚动条
-        height: 'auto',
         processChart: chartProps => {
             let data = chartProps.data;
             let option = chartProps.option;
@@ -112,7 +108,7 @@ export function getAccountSalesOpenAccountChart() {
 
             _.each(option.columns, (column, index) => {
                 //设置列宽
-                column.width = 100;
+                column.width = 300;
                 //统计数据右对齐
                 if (index > 1) column.align = 'right';
             });
