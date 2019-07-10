@@ -10,9 +10,8 @@ export function getAccountSalesOpenAccountChart() {
         url: '/rest/customer/v2/customer/:data_type/app/user/count',
         argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'table',
-        layout: {
-            sm: 24,
-        },
+        layout: { sm: 24 },
+        height: 600,
         noShowCondition: {
             app_id: '!all',
         },
@@ -21,10 +20,12 @@ export function getAccountSalesOpenAccountChart() {
                 {
                     title: Intl.get('sales.home.sales', '销售'),
                     dataIndex: 'member_name',
+                    width: 100
                 }, {
                     title: Intl.get('user.user.team', '团队'),
                     dataIndex: 'sales_team_name',
                     isSetCsvValueBlank: true,
+                    width: 100
                 },
             ],
         },
@@ -107,10 +108,13 @@ export function getAccountSalesOpenAccountChart() {
             option.dataSource = data;
 
             _.each(option.columns, (column, index) => {
-                //设置列宽
-                column.width = 300;
-                //统计数据右对齐
-                if (index > 1) column.align = 'right';
+                //产品列
+                if (index > 1) {
+                    //设置列宽
+                    column.width = 200;
+                    //统计数据右对齐
+                    column.align = 'right';
+                }
             });
         }
     };
