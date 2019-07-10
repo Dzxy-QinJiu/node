@@ -20,12 +20,12 @@ export function getAccountSalesOpenAccountChart() {
                 {
                     title: Intl.get('sales.home.sales', '销售'),
                     dataIndex: 'member_name',
-                    width: 150
+                    width: 100
                 }, {
                     title: Intl.get('user.user.team', '团队'),
                     dataIndex: 'sales_team_name',
                     isSetCsvValueBlank: true,
-                    width: 150
+                    width: 100
                 },
             ],
         },
@@ -111,7 +111,7 @@ export function getAccountSalesOpenAccountChart() {
                 //产品列
                 if (index > 1) {
                     //设置列宽
-                    column.width = 150;
+                    column.width = 90;
                     //统计数据右对齐
                     column.align = 'right';
                 }
