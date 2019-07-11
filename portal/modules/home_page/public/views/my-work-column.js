@@ -19,7 +19,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {scrollBarEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import UserApplyDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
 import OpportunityApplyDetail from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
 import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
@@ -28,12 +28,14 @@ import DocumentApplyDetail from 'MOD_DIR/document_write/public/view/apply-view-d
 import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
 //工作类型
 const WORK_TYPES = {
-    LEAD: 'lead',//待处理线索
+    LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
     APPLY: 'apply',//申请消息
     SCHEDULE: 'schedule',//待联系的客户:日程
-    DEAL: 'deal'// 待处理的订单deal
+    DEAL: 'deal',// 待处理的订单deal
+    CUSTOMER: 'customer'//用来区分日程是否是客户的类型
 };
 //联系计划类型
 const SCHEDULE_TYPES = {
@@ -41,6 +43,12 @@ const SCHEDULE_TYPES = {
     CALLS: 'calls',//客户中打电话的联系计划
     VISIT: 'visit',//拜访
     OTHER: 'other'//其他
+};
+//申请状态
+const APPLY_STATUS = {
+    ONGOING: 'ongoing',//待审批
+    REJECT: 'reject',//驳回
+    PASS: 'pass'//通过
 };
 //需要打开详情的类型
 const OPEN_DETAIL_TYPES = [WORK_TYPES.DEAL, WORK_TYPES.APPLY];
@@ -58,12 +66,38 @@ class MyWorkColumn extends React.Component {
             totalCount: 0,//共多少条工作
             listenScrollBottom: true,//是否下拉加载
             curOpenDetailWork: null,//当前需要打开详情的工作
+            handlingWork: null,//当前正在处理的工作（打电话、看详情写跟进）
         };
     }
 
     componentDidMount() {
         this.getMyWorkTypes();
         this.getMyWorkList();
+        //关闭详情前，已完成工作处理的监听
+        myWorkEmitter.on(myWorkEmitter.HANDLE_FINISHED_WORK, this.handleFinishedWork);
+        //打通电话或写了跟进、分配线索后，将当前正在处理的工作改为已完成的监听
+        myWorkEmitter.on(myWorkEmitter.SET_WORK_FINISHED, this.setWorkFinished);
+    }
+
+    componentWillUnmount() {
+        myWorkEmitter.removeListener(myWorkEmitter.HANDLE_FINISHED_WORK, this.handleFinishedWork);
+        myWorkEmitter.removeListener(myWorkEmitter.SET_WORK_FINISHED, this.setWorkFinished);
+    }
+
+    //关闭、切换详情前，已完成工作的处理
+    handleFinishedWork = () => {
+        let handlingWork = this.state.handlingWork;
+        if (handlingWork && handlingWork.isFinished_) {
+            this.handleMyWork(this.state.handlingWork);
+        }
+    }
+    //打通电话或写了跟进、分配线索后，将当前正在处理的工作改为已完成
+    setWorkFinished = () => {
+        let handlingWork = this.state.handlingWork;
+        if (handlingWork) {
+            handlingWork.isFinished = true;
+            this.setState({handlingWork});
+        }
     }
 
     getMyWorkTypes() {
@@ -142,7 +176,10 @@ class MyWorkColumn extends React.Component {
             </Dropdown>);
     }
 
-    openClueDetail = (clueId) => {
+    openClueDetail = (clueId, work) => {
+        //打开新详情前先将之前已完成的工作处理掉
+        this.handleFinishedWork();
+        this.setState({handlingWork: work});
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
             clue_params: {
                 currentId: clueId,
@@ -159,13 +196,18 @@ class MyWorkColumn extends React.Component {
 
     };
 
-    openCustomerDetail(customerId, index) {
+    openCustomerDetail(customerId, index, work) {
         if (this.state.curShowUserId) {
             this.closeRightUserPanel();
         }
+        //是否是待审批的工作
+        let isApplyWork = work.type === WORK_TYPES.APPLY && work.opinion === APPLY_STATUS.ONGOING;
+        //打开新详情前先将之前已完成的工作处理掉
+        this.handleFinishedWork();
         this.setState({
             curShowCustomerId: customerId,
-            selectedLiIndex: index
+            selectedLiIndex: index,
+            handlingWork: isApplyWork ? null : work,
         });
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
@@ -177,14 +219,14 @@ class MyWorkColumn extends React.Component {
         });
     }
 
-    openCustomerOrClueDetail(id, modelType, index) {
+    openCustomerOrClueDetail(id, modelType, index, work) {
         if (!id) return;
         //打开线索详情
-        if (modelType === 'lead') {
-            this.openClueDetail(id);
-        } else if (modelType === 'customer') {
+        if (modelType === WORK_TYPES.LEAD) {
+            this.openClueDetail(id, work);
+        } else if (modelType === WORK_TYPES.CUSTOMER) {
             //打开客户详情
-            this.openCustomerDetail(id, index);
+            this.openCustomerDetail(id, index, work);
         }
     }
 
@@ -251,7 +293,7 @@ class MyWorkColumn extends React.Component {
                             qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                 }
                 <span className={nameCls}
-                    onClick={this.openCustomerOrClueDetail.bind(this, id, modelType, index)}>
+                    onClick={this.openCustomerOrClueDetail.bind(this, id, modelType, index, item)}>
                     {_.get(item, 'details[0].name', '')}
                 </span>
                 {score ? (
@@ -277,16 +319,29 @@ class MyWorkColumn extends React.Component {
         let defaultPhone = _.get(defaultContact, 'phone[0]', '');
         if (defaultContactName || defaultPhone) {
             return (
-                <div className='clue-contacts work-hover-show-detail'>
-                    <span className='clue-contact-name work-contact-name'>{defaultContactName}</span>
+                <div className='work-hover-show-detail'>
+                    <span className='work-contact-name'>{defaultContactName}</span>
                     {defaultPhone ? (
                         <span className='work-contact-phone'>
                             <PhoneCallout
                                 phoneNumber={defaultPhone}
                                 contactName={defaultContactName}
+                                onCallSuccess={this.onCallSuccess.bind(this, item)}
                             />
                         </span>) : null}
                 </div>);
+        }
+    }
+
+    //拨打电话成功后，记住当前正在拨打电话的工作,以便打通电话写完跟进后将此项工作去掉
+    onCallSuccess(item) {
+        //线索中拨打电话时
+        if (item.type === WORK_TYPES.LEAD || _.get(item, 'details[0].model_type') === WORK_TYPES.LEAD) {
+            this.openClueDetail(_.get(item, 'details[0].id'), item);
+        } else {
+            //打开新电话弹屏前先将之前已完成的工作处理掉
+            this.handleFinishedWork();
+            this.setState({handlingWork: item});
         }
     }
 
@@ -324,8 +379,9 @@ class MyWorkColumn extends React.Component {
 
     renderWorkCard(item, index) {
         const iconCls = this.getWorkIconCls(item);
+        const priority = _.get(item, 'priority');
         const titleCls = classNames('work-item-title', {
-            'priority-high-work': _.get(item, 'priority') <= 1//前两级的工作标题需要高亮
+            'priority-high-work': priority === 0 || (priority === 1 && item.opinion === APPLY_STATUS.ONGOING)//前两级的工作标题需要高亮(待审批的申请，不是申请的回复)
         });
         const title = (
             <span className={titleCls}>
@@ -342,7 +398,7 @@ class MyWorkColumn extends React.Component {
                 {this.renderHandleWorkBtn(item)}
             </div>);
         const containerCls = classNames('my-work-card-container', {
-            'open-work-detail-style': _.includes(OPEN_DETAIL_TYPES, item.type) && item.opinion === 'ongoing'
+            'open-work-detail-style': _.includes(OPEN_DETAIL_TYPES, item.type) && item.opinion === APPLY_STATUS.ONGOING
         });
         return (
             <div className={containerCls} onClick={this.openWorkDetail.bind(this, item)}>
@@ -355,9 +411,9 @@ class MyWorkColumn extends React.Component {
     //打开工作详情
     openWorkDetail = (item, event) => {
         //点击到客户名或线索名时，打开客户或线索详情，不触发打开工作详情的处理
-        if ($(event.target).hasClass('customer-clue-name')) return;
+        if (event && $(event.target).hasClass('customer-clue-name')) return;
         //打开订单详情、申请详情
-        if (_.includes(OPEN_DETAIL_TYPES, item.type) && item.opinion === 'ongoing') {
+        if (item.type === WORK_TYPES.DEAL || (item.type === WORK_TYPES.APPLY && item.opinion === APPLY_STATUS.ONGOING)) {
             this.setState({curOpenDetailWork: item});
         }
     }
@@ -404,8 +460,14 @@ class MyWorkColumn extends React.Component {
         this.setState({myWorkList});
         myWorkAjax.handleMyWorkStatus({id: item.id, status: 1}).then(result => {
             if (result) {
+                //过滤掉已处理的工作
                 myWorkList = _.filter(myWorkList, work => work.id !== item.id);
-                this.setState({myWorkList});
+                //已处理的工作就是之前记录的正在处理的工作，将正在处理的工作置空
+                let handlingWork = this.state.handlingWork;
+                if (handlingWork && item.id === handlingWork.id) {
+                    handlingWork = null;
+                }
+                this.setState({myWorkList, handlingWork});
                 let workListLength = _.get(myWorkList, 'length');
                 //如果当前展示的工作个数小于一页获取的数据，并且小于总工作数时需要继续加载一页数据，以防处理完工作后下面的工作没有及时补上来
                 if (workListLength < 20 && workListLength < this.state.totalCount) {
@@ -482,73 +544,81 @@ class MyWorkColumn extends React.Component {
 
     renderWorkDetail() {
         const work = this.state.curOpenDetailWork;
-        let detailContent = null;
-        const applyInfo = {id: work.related_id, approval_state: '0', topic: work.name};
-        switch (work.key) {
-            case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会申请
-                detailContent = (
-                    <OpportunityApplyDetail
-                        isHomeMyWork={true}
-                        detailItem={applyInfo}
-                        applyListType='false'//待审批状态
-                        afterApprovedFunc={this.afterFinishWork}
-                    />);
-                break;
-            case APPLY_APPROVE_TYPES.CUSTOMER_VISIT://出差申请
-                detailContent = (
-                    <CustomerVisitApplyDetail
-                        isHomeMyWork={true}
-                        detailItem={applyInfo}
-                        applyListType='false'//待审批状态
-                        afterApprovedFunc={this.afterFinishWork}
-                    />);
-                break;
-            case APPLY_APPROVE_TYPES.PERSONAL_LEAVE://请假申请
-                detailContent = (
-                    <LeaveApplyDetail
-                        isHomeMyWork={true}
-                        detailItem={applyInfo}
-                        applyListType='false'//待审批状态
-                        afterApprovedFunc={this.afterFinishWork}
-                    />);
-                break;
-            case APPLY_APPROVE_TYPES.OPINION_REPORT://舆情报告申请
-                detailContent = (
-                    <ReportApplyDetail
-                        isHomeMyWork={true}
-                        detailItem={applyInfo}
-                        applyListType='false'//待审批状态
-                        afterApprovedFunc={this.afterFinishWork}
-                    />);
-                break;
-            case APPLY_APPROVE_TYPES.DOCUMENT_WRITING://文件撰写申请
-                detailContent = (
-                    <DocumentApplyDetail
-                        isHomeMyWork={true}
-                        detailItem={applyInfo}
-                        applyListType='false'//待审批状态
-                        afterApprovedFunc={this.afterFinishWork}
-                    />);
-                break;
-            default://用户申请（试用、签约用户申请、修改密码、延期、其他）
-                detailContent = (
-                    <UserApplyDetail
-                        isHomeMyWork={true}
-                        detailItem={applyInfo}
-                        applyListType='false'//待审批状态
-                        afterApprovedFunc={this.afterFinishWork}
-                    />);
-                break;
+        //订单详情
+        if (work.type === WORK_TYPES.DEAL) {
+            return (
+                <DealDetailPanel
+                    currDealId={work.related_id}
+                    hideDetailPanel={this.closeWorkDetailPanel}/>);
+        } else {//申请详情
+            let detailContent = null;
+            const applyInfo = {id: work.related_id, approval_state: '0', topic: work.name};
+            switch (work.key) {
+                case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会申请
+                    detailContent = (
+                        <OpportunityApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishWork}
+                        />);
+                    break;
+                case APPLY_APPROVE_TYPES.CUSTOMER_VISIT://出差申请
+                    detailContent = (
+                        <CustomerVisitApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishWork}
+                        />);
+                    break;
+                case APPLY_APPROVE_TYPES.PERSONAL_LEAVE://请假申请
+                    detailContent = (
+                        <LeaveApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishWork}
+                        />);
+                    break;
+                case APPLY_APPROVE_TYPES.OPINION_REPORT://舆情报告申请
+                    detailContent = (
+                        <ReportApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishWork}
+                        />);
+                    break;
+                case APPLY_APPROVE_TYPES.DOCUMENT_WRITING://文件撰写申请
+                    detailContent = (
+                        <DocumentApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishWork}
+                        />);
+                    break;
+                default://用户申请（试用、签约用户申请、修改密码、延期、其他）
+                    detailContent = (
+                        <UserApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishWork}
+                        />);
+                    break;
+            }
+            return (
+                <RightPanelModal
+                    className="my-work-detail-panel"
+                    isShowMadal={false}
+                    isShowCloseBtn={true}
+                    onClosePanel={this.closeWorkDetailPanel}
+                    content={detailContent}
+                    dataTracename="申请详情"
+                />);
         }
-        return (
-            <RightPanelModal
-                className="my-work-detail-panel"
-                isShowMadal={false}
-                isShowCloseBtn={true}
-                onClosePanel={this.closeWorkDetailPanel}
-                content={detailContent}
-                dataTracename="申请详情"
-            />);
     }
 
     afterFinishWork = () => {

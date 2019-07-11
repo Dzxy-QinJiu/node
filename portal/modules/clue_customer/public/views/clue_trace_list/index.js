@@ -28,7 +28,6 @@ import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import {getInvalidPhone, addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
 //电话类型（eefung电话类型，客套容联电话类型,客套APP电话类型）
 const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
-var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 var userData = require('PUB_DIR/sources/user-data');
@@ -36,6 +35,7 @@ var clueCustomerAction = require('../../action/clue-customer-action');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {SELECT_TYPE, AVALIBILITYSTATUS} from '../../utils/clue-customer-utils';
 class ClueTraceList extends React.Component {
     state = {
@@ -286,6 +286,10 @@ class ClueTraceList extends React.Component {
                 ClueTraceAction.addClueTrace(queryObj, (customer_trace) => {
                     //更新列表中的最后联系
                     _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
+                    //首页我的工作中，添加跟进后，需要将首页的相关工作去掉
+                    if (window.location.pathname === '/home') {
+                        myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                    }
                     this.props.updateRemarks(addcontent);
                     this.toggleAddRecordPanel();
                 });
@@ -309,6 +313,10 @@ class ClueTraceList extends React.Component {
                     //如果补充的是最后一条跟进记录（如果是电话类型的需要是打通的电话类型），更新列表中的最后联系
                     if (_.get(this.state, 'customerRecord[0].id') === item.id) {
                         _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
+                        //首页我的工作中，打通电话后，需要将首页的相关工作去掉
+                        if (window.location.pathname === '/home') {
+                            myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                        }
                     }
                 });
             } else {

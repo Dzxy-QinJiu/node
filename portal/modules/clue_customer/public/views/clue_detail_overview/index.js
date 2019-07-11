@@ -35,6 +35,7 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
 import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -319,6 +320,10 @@ class ClueDetailOverview extends React.Component {
                         'sales_team_id': teamId,
                         'status': SELECT_TYPE.WILL_TRACE
                     });
+                    //分配完线索后，需要将首页对应的工作设为已完成
+                    if (window.location.pathname === '/home') {
+                        myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                    }
                 }
             });
         }

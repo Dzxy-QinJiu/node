@@ -17,6 +17,7 @@ var ClueAction = require('MOD_DIR/clue_customer/public/action/clue-customer-acti
 var AlertTimer = require('CMP_DIR/alert-timer');
 var className = require('classnames');
 import {AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -34,7 +35,7 @@ class phoneStatusTop extends React.Component {
             isAddingPlanInfo: this.props.isAddingPlanInfo,//正在添加联系计划
             showCancelBtn: false,//是否展示取消保存跟进记录的按钮
             showMarkClueInvalid: this.props.showMarkClueInvalid,
-            visible: false//跟进内容下拉框是否展示
+            visible: false,//跟进内容下拉框是否展示
         };
     }
 
@@ -62,8 +63,12 @@ class phoneStatusTop extends React.Component {
         //如果接听后，把状态isConnected 改为true
         if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             this.setState({
-                isConnected: true
+                isConnected: true,
             });
+            //首页我的工作中，打通电话，需要将首页的相关工作改为已完成
+            if (window.location.pathname === '/home') {
+                myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+            }
         }
         var showClueModal = _.get($('#clue-phone-status-content'),'length',0) > 0;
         if ((showClueModal) && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
@@ -137,8 +142,12 @@ class phoneStatusTop extends React.Component {
             this.setState({
                 selectedClueId: '',
                 isConnected: false,
-                showCancelBtn: false
+                showCancelBtn: false,
             });
+            //写了跟进记录后，对应的首页我的工作完成
+            if (window.location.pathname === '/home') {
+                myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+            }
         });
     };
     //将输入框中的文字放在state上
