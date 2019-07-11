@@ -225,7 +225,7 @@ class SalesTeamPage extends React.Component {
     renderMemberList = (containerHeight, salesTeamMemberWidth) => {
         let organizationName = _.get(getOrganization(), 'name', '');
         let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
-        let isUnmountComponent = groupName !== organizationName;
+        let isChangeTreeDepartment = groupName !== organizationName; // true 说明是切换了， false 没有切换
         if (this.state.activeKey === '1') { // tab为部门时的成员列表
             if (groupName === organizationName) { // 组织
                 return (
@@ -238,7 +238,7 @@ class SalesTeamPage extends React.Component {
                     >
                         <MemberManage
                             getMemberCount={this.getMemberCount}
-                            isUnmountComponent={isUnmountComponent}
+                            isChangeTreeDepartment={isChangeTreeDepartment}
                         />
                     </div>
                 );
@@ -275,7 +275,7 @@ class SalesTeamPage extends React.Component {
                         width: salesTeamMemberWidth
                     }}
                 >
-                    <MemberManage isUnmountComponent={isUnmountComponent}/>
+                    <MemberManage isChangeTreeDepartment={isChangeTreeDepartment}/>
                 </div>
             );
         }
@@ -285,13 +285,6 @@ class SalesTeamPage extends React.Component {
         this.setState({
             memberCount: number
         });
-    };
-
-    getSelectedDepartmentId = (id) => {
-        let organizationId = _.get(getOrganization(), 'id', '');
-        if (organizationId === id) {
-            positionEmitter.emit(positionEmitter.CLICK_POSITION, {teamroleId: ''});
-        }
     };
 
     render() {
@@ -353,7 +346,6 @@ class SalesTeamPage extends React.Component {
                                                     curEditGroup={this.state.curEditGroup}
                                                     mouseZoneHoverKey={this.state.mouseZoneHoverKey}
                                                     isShowPopOver={this.state.isShowPopOver}
-                                                    getSelectedDepartmentId={this.getSelectedDepartmentId}
                                                 />
                                             </TabPane>
                                             <TabPane

@@ -110,7 +110,6 @@ class LeftTree extends React.Component {
             return;
         }
         let groupId = item.key;
-        this.props.getSelectedDepartmentId(groupId);
         SalesTeamAction.selectTree(groupId);
         SalesTeamAction.setTeamMemberLoading(true);
         //获取销售目标
