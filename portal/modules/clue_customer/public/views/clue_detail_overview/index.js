@@ -1159,7 +1159,7 @@ class ClueDetailOverview extends React.Component {
         var cluePhone = this.getCurCluePhones();
         var cluePhoneArr = cluePhone.split(',');
         contacts = _.filter(contacts, (contactItem) => {
-            //获取有相同电话的联系人
+            //获取相同电话
             var interSectArr = _.intersection(_.get(contactItem,'phone',[]),cluePhoneArr);
             if (_.isEmpty(interSectArr)){
                 return false;
