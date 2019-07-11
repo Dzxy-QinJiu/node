@@ -24,7 +24,7 @@ function getCharts() {
             layout: {sm: 24},
         }),
         //订单成交率趋势
-        orderChart.getOrderTurnoverRateTrendChart(),
+        //orderChart.getOrderTurnoverRateTrendChart(),
     ];
 }
 
