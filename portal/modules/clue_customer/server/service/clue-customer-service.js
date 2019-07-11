@@ -54,7 +54,7 @@ const restApis = {
     //批量修改线索的跟进人
     changeClueSalesBatch: clueBaseUrl + '/distribute/:type/batch/new',
     //获取相似线索
-    getSimilarClueLists: '/rest/clue/v2/query/similarity/lead',
+    getSimilarClueLists: '/rest/clue/v2/query/:type/similarity/lead',
     //获取相似客户
     getSimilarCustomerLists: '/rest/customer/v3/customer/query/similarity/customer'
 };
@@ -408,7 +408,7 @@ exports.getClueDetailById = function(req, res) {
 exports.getSimilarClueLists = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSimilarClueLists,
+            url: restApis.getSimilarClueLists.replace(':type', req.params.type),
             req: req,
             res: res
         }, req.query);

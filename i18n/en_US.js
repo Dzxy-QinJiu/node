@@ -3033,6 +3033,7 @@ var en_US = {
     'common.recent.three.month.weekly.activity': 'recent three month weekly activity',//近三个月周活
     'common.recent.year.monthly.activity': 'recent year monthly activity',//近一个年月活
     'call.record.phone.err.msg': 'Wrong phone number!',//电话号码错误
+    'clue.detail.last.contact.time': 'Last trace time',//最后跟进时间
     'common.sales.develop': 'sales develop',//销售开发
     'common.clue.convert': 'clue convert',//线索转化
 };
