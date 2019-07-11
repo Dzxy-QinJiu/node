@@ -54,11 +54,13 @@ class MemberManage extends React.Component {
         MemberManageStore.listen(this.onChange);
         // 判断组件是否卸载过，若是卸载过，再次加载此组件时，此方法不执行
         if (!this.props.isUnmountComponent) {
+            // 加setTImeout是为了解决 Dispatch.dispatch(...)的错误
             setTimeout( () => {
                 // 从部门切换到职务时，再次切换到部门时，若展示的是部门（团队）的数据，会卸载此组件
                 // 点击显示组织的成员时，会再次DidMount，此时职务id是存在的，所以要先置空
                 MemberManageAction.setPositionId('');
                 this.getMemberList(); // 获取成员列表
+
             }, 0);
         }
         positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberPosition);
