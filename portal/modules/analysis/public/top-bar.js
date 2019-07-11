@@ -170,10 +170,10 @@ class TopBar extends React.Component {
                 interval = 'day';
             } else if (range === 'month') {
                 interval = 'week';
-            } else if (range === 'quater') {
+            } else if (range === 'quarter') {
                 interval = 'month';
             } else if (range === 'year') {
-                interval = 'quater';
+                interval = 'quarter';
             } else if (range === 'custom') {
                 const endMoment = moment(endTime);
 
