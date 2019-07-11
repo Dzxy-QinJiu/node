@@ -225,6 +225,7 @@ class SalesTeamPage extends React.Component {
     renderMemberList = (containerHeight, salesTeamMemberWidth) => {
         let organizationName = _.get(getOrganization(), 'name', '');
         let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
+        let isUnmountComponent = groupName !== organizationName;
         if (this.state.activeKey === '1') { // tab为部门时的成员列表
             if (groupName === organizationName) { // 组织
                 return (
@@ -235,7 +236,10 @@ class SalesTeamPage extends React.Component {
                             width: salesTeamMemberWidth
                         }}
                     >
-                        <MemberManage getMemberCount={this.getMemberCount}/>
+                        <MemberManage
+                            getMemberCount={this.getMemberCount}
+                            isUnmountComponent={isUnmountComponent}
+                        />
                     </div>
                 );
             } else {
@@ -271,7 +275,7 @@ class SalesTeamPage extends React.Component {
                         width: salesTeamMemberWidth
                     }}
                 >
-                    <MemberManage/>
+                    <MemberManage isUnmountComponent={isUnmountComponent}/>
                 </div>
             );
         }

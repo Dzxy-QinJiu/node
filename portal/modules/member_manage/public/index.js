@@ -44,18 +44,24 @@ class MemberManage extends React.Component {
     getMemberPosition = (positionObj) => {
         let teamroleId = positionObj.teamroleId;
         MemberManageAction.setPositionId(teamroleId);
-        MemberManageAction.setInitialData();
-        setTimeout( () => {
+        // 筛选职务时，重新获取成员列表
+        MemberManageAction.setInitialData( () => {
             this.getMemberList({teamroleId: teamroleId, id: ''});
-        },0 );
+        } );
     };
 
     componentDidMount = () => {
         MemberManageStore.listen(this.onChange);
+        // 判断组件是否卸载过，若是卸载过，再次加载此组件时，此方法不执行
+        if (!this.props.isUnmountComponent) {
+            setTimeout( () => {
+                // 从部门切换到职务时，再次切换到部门时，若展示的是部门（团队）的数据，会卸载此组件
+                // 点击显示组织的成员时，会再次DidMount，此时职务id是存在的，所以要先置空
+                MemberManageAction.setPositionId('');
+                this.getMemberList(); // 获取成员列表
+            }, 0);
+        }
         positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberPosition);
-        setTimeout( () => {
-            this.getMemberList(); // 获取成员列表
-        }, 0);
     };
 
     getMemberList = (queryParams) => {
@@ -74,6 +80,7 @@ class MemberManage extends React.Component {
 
     componentWillUnmount = () => {
         MemberManageStore.unlisten(this.onChange);
+        MemberManageAction.setInitialData();
         positionEmitter.removeListener(positionEmitter.CLICK_POSITION, this.getMemberPosition);
     };
 
@@ -442,7 +449,8 @@ class MemberManage extends React.Component {
 }
 
 MemberManage.propTypes = {
-    getMemberCount: PropTypes.func
+    getMemberCount: PropTypes.func,
+    isUnmountComponent: PropTypes.bool
 };
 
 module.exports = MemberManage;
