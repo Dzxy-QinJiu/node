@@ -21,9 +21,9 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
 
                 if (interval === 'day') {
                     query.starttime = moment(query.endtime).subtract(1, 'months').valueOf();
-                } else if (query.endtimeinterval === 'week') {
+                } else if (interval === 'week') {
                     query.starttime = moment(query.endtime).subtract(3, 'months').valueOf();
-                } else if (query.endtimeinterval === 'month') {
+                } else if (interval === 'month') {
                     query.starttime = moment(query.endtime).subtract(1, 'years').valueOf();
                 }
             }
