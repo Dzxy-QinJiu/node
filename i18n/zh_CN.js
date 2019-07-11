@@ -3138,7 +3138,8 @@ var zh_CN = {
     'common.recent.three.month.weekly.activity': '近三个月周活',
     'common.recent.year.monthly.activity': '近一个年月活',
     'call.record.phone.err.msg': '电话号码错误',
-    'clue.detail.last.contact.time': '最后跟进时间'
-
+    'clue.detail.last.contact.time': '最后跟进时间',
+    'common.sales.develop': '销售开发',
+    'common.clue.convert': '线索转化',
 };
 export default zh_CN;

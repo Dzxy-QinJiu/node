@@ -108,17 +108,17 @@ export function getRemainAccountChart(paramObj = {}) {
                 return columns;
             })(),
         },
-        customOption: {
-            fieldName: 'actives',
-            needExtractColumns: true,
-            callback: dataItem => {
+        processData: data => {
+            _.each(data, dataItem => {
                 const actives = dataItem.actives;
 
                 _.each(actives, activeItem => {
-                    const diffDay = moment(activeItem.timestamp).diff(dataItem.timestamp, 'day');
-                    dataItem['day' + diffDay] = activeItem.active;
+                    const diffDay = moment(activeItem.timestamp).diff(dataItem.timestamp, interval);
+                    dataItem[interval + diffDay] = activeItem.active;
                 });
-            },
+            });
+
+            return data;
         },
         noShowCondition: {
             callback: conditions => {
