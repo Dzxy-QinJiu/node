@@ -71,8 +71,12 @@ class ClueDetailOverview extends React.Component {
             similarClueErrmsg: ''
         });
         var curClue = this.state.curClue;
+        var type = 'self';
+        if(hasPrivilege('LEAD_QUERY_SIMILARITY_LEAD_ALL')){
+            type = 'all';
+        }
         $.ajax({
-            url: '/rest/get/similar/cluelists',
+            url: '/rest/get/similar/cluelists/' + type,
             type: 'get',
             dateType: 'json',
             data: {
@@ -1077,29 +1081,35 @@ class ClueDetailOverview extends React.Component {
             isShowClueToCustomerPanel: true,
             existingCustomers: customer
         });
-    }
-    renderSimilarCustomers = () => {
-        var similarCustomers = this.state.similarCustomerLists;
-        var showMore = !this.state.showLargerCustomerLists && _.get(similarCustomers,'length') > 3;
-        var showLess = this.state.showLargerCustomerLists && _.get(similarCustomers,'length') > 3;
-        if (showMore){
-            similarCustomers = _.cloneDeep(similarCustomers).splice(0,3);
+    };
+    renderSimilarLists = (listType) => {
+        var isClueType = listType === 'clue';
+        var moreListShowFlag = this.state.showLargerClueLists;
+        var similarLists = this.state.similarClueLists;
+        if (!isClueType){
+            similarLists = this.state.similarCustomerLists;
+            moreListShowFlag = this.state.showLargerCustomerLists;
         }
-        if (showLess){
-            similarCustomers = this.state.similarCustomerLists;
+        var listMoreThanThree = _.get(similarLists,'length') > 3;
+        if (!moreListShowFlag && listMoreThanThree){
+            similarLists = _.cloneDeep(similarLists).splice(0,3);
         }
 
         return (
             <div className="similar-content similar-customer-list">
                 <div className="similar-tip">
                     <i className="iconfont icon-phone-call-out-tip"></i>
-                    {Intl.get('customer.has.similar.lists', '相似客户')}</div>
-                {_.map(similarCustomers,(customerItem) => {
-                    var sameContact = this.getSameContactPhone(_.get(customerItem,'contacts',[]));
+                    {isClueType ? Intl.get('clue.has.similar.lists', '相似线索') : Intl.get('customer.has.similar.lists', '相似客户')}
+                </div>
+                {_.map(similarLists,(listItem) => {
+                    var sameContact = this.getSamePhoneContact(_.get(listItem,'contacts',[]));
+                    var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
                     return <div className="similar-block">
                         <div className="similar-title">
-                            <span className="customer-name" onClick={this.showCustomerDetail.bind(this, customerItem)}>{customerItem.name}</span>
-                            <Button onClick={this.onMergeToCustomerClick.bind(this, customerItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button>
+                            {isClueType ? renderClueStatus(listItem.status) : null}
+                            <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
+                            {!isClueType ? <Button onClick={this.onMergeToCustomerClick.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+
                         </div>
                         {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
                             return (
@@ -1107,20 +1117,19 @@ class ClueDetailOverview extends React.Component {
                                     <span className="contact-name" title={contactsItem.name}>
                                         {contactsItem.name }
                                     </span>
-                                    {contactsItem.name && _.isArray(contactsItem.phone) && _.get(contactsItem, 'phone.length') ? '：' : ''}
+                                    {contactsItem.name && !_.isEmpty(contactsItem.phone) ? '：' : ''}
                                     {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
+
                                 </div>
                             );
                         }) : null}
+                        {traceAddTime && isClueType ? <span className="trace-time">{Intl.get('clue.detail.last.contact.time', '最后跟进时间') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
                     </div>;
                 })}
-                {showMore || showLess ? <div className="show-hide-tip" onClick={this.handleToggleCustomerTip}>
-                    {showMore ? Intl.get('notification.system.more', '展开全部') : ''}
-                    {showLess ? Intl.get('crm.contact.way.hide', '收起') : ''}</div> : null}
-
+                {listMoreThanThree ? <div className="show-hide-tip" onClick={isClueType ? this.handleToggleClueTip : this.handleToggleCustomerTip}>
+                    {moreListShowFlag ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
             </div>
         );
-
     };
     handleToggleCustomerTip = () => {
         this.setState({
@@ -1133,8 +1142,6 @@ class ClueDetailOverview extends React.Component {
             customer_params: {
                 currentId: customer.id,
                 curCustomer: customer,
-                // ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                // hideRightPanel: this.closeRightPanel
             }
         });
     };
@@ -1143,22 +1150,16 @@ class ClueDetailOverview extends React.Component {
             clue_params: {
                 currentId: item.id,
                 curClue: item,
-
-
-                // showRightPanel: this.showClueDetailOut,
-                // hideRightPanel: this.hideRightPanel,
-                // ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-                // afterTransferClueSuccess: this.afterTransferClueSuccess,
-                // onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick,
-                // updateCustomerLastContact: this.updateCustomerLastContact
             }
         });
-    }
-    getSameContactPhone = (contacts) => {
+    };
+    //获取该线索和查询到的相似线索或者相似客户电话一样的联系人
+    getSamePhoneContact = (contacts) => {
         contacts = _.cloneDeep(contacts);
         var cluePhone = this.getCurCluePhones();
         var cluePhoneArr = cluePhone.split(',');
         contacts = _.filter(contacts, (contactItem) => {
+            //获取有相同电话的联系人
             var interSectArr = _.intersection(_.get(contactItem,'phone',[]),cluePhoneArr);
             if (_.isEmpty(interSectArr)){
                 return false;
@@ -1169,50 +1170,7 @@ class ClueDetailOverview extends React.Component {
         });
         return contacts;
     };
-    renderSimilarClues = () => {
-        var similarClueLists = this.state.similarClueLists;
-        var showMore = !this.state.showLargerClueLists && _.get(similarClueLists,'length') > 3;
-        var showLess = this.state.showLargerClueLists && _.get(similarClueLists,'length') > 3;
-        if (showMore){
-            similarClueLists = _.cloneDeep(similarClueLists).splice(0,3);
-        }
-        if (showLess){
-            similarClueLists = this.state.similarClueLists;
-        }
 
-        return (
-            <div className="similar-content similar-customer-list">
-                <div className="similar-tip">
-                    <i className="iconfont icon-phone-call-out-tip"></i>{Intl.get('clue.has.similar.lists', '相似线索')}</div>
-                {_.map(similarClueLists,(clueItem) => {
-                    var sameContact = this.getSameContactPhone(_.get(clueItem,'contacts',[]));
-                    var traceAddTime = _.get(clueItem, 'customer_traces[0].call_date') || _.get(clueItem, 'customer_traces[0].add_time');//跟进时间
-                    return <div className="similar-block">
-                        <div className="similar-title" onClick={this.showClueDetail.bind(this, clueItem)}>
-                            {renderClueStatus(clueItem.status)}{clueItem.name}
-                        </div>
-                        {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
-                            return (
-                                <div className="similar-name-phone">
-                                    <span className="contact-name" title={contactsItem.name}>
-                                        {contactsItem.name }
-                                    </span>
-                                    {contactsItem.name && _.isArray(contactsItem.phone) && _.get(contactsItem, 'phone.length') ? '：' : ''}
-                                    {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
-
-                                </div>
-                            );
-                        }) : null}
-                        {traceAddTime ? <span className="trace-time">{Intl.get('clue.detail.last.contact.time', '最后跟进时间') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
-
-                    </div>;
-                })}
-                {showMore || showLess ? <div className="show-hide-tip" onClick={this.handleToggleClueTip}>
-                    {showMore ? Intl.get('notification.system.more', '展开全部') : ''}
-                    {showLess ? Intl.get('crm.contact.way.hide', '收起') : ''}</div> : null}
-            </div>
-        );
-    };
     handleToggleClueTip = () => {
         this.setState({
             showLargerClueLists: !this.state.showLargerClueLists
@@ -1222,8 +1180,8 @@ class ClueDetailOverview extends React.Component {
         if (_.get(this,'state.similarClueLists[0]') || _.get(this, 'state.similarCustomerLists[0]')){
             return (
                 <div className="similar-wrap">
-                    {_.get(this, 'state.similarCustomerLists[0]') ? this.renderSimilarCustomers() : null}
-                    {_.get(this,'state.similarClueLists[0]') ? this.renderSimilarClues() : null}
+                    {_.get(this, 'state.similarCustomerLists[0]') ? this.renderSimilarLists() : null}
+                    {_.get(this,'state.similarClueLists[0]') ? this.renderSimilarLists('clue') : null}
                 </div>
             );
         }else{
