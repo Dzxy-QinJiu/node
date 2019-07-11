@@ -1569,16 +1569,15 @@ class Crm extends React.Component {
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                     onClick={_this.handleFocusCustomer.bind(this, record)}></i>
-                                {/*因为添加了float：right，所以将顺序换一下，（customer_label在前，qualify_label在后）以便跟详情里及其他客户名前面的标签循序对应起来*/}
-                                {record.qualify_label ? (
-                                    <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
-                                        {record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                            record.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                                }
                                 {record.customer_label ? (
                                     <Tag
                                         className={crmUtil.getCrmLabelCls(record.customer_label)}>
                                         {record.customer_label}</Tag>) : null
+                                }
+                                {record.qualify_label ? (
+                                    <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
+                                        {record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                            record.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
                                 }
                                 {text}
                             </div>
