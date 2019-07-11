@@ -225,7 +225,9 @@ class SalesTeamPage extends React.Component {
     renderMemberList = (containerHeight, salesTeamMemberWidth) => {
         let organizationName = _.get(getOrganization(), 'name', '');
         let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
-        let isChangeTreeDepartment = groupName !== organizationName; // true 说明是切换了， false 没有切换
+        // 职务和组织上的成员列表，使用是MemberManage组件，团队的成员列表，使用的是MemberList组件
+        // 由于使用了两个组件，所以需要判断之前展示的是否是团队的成员列表数据
+        let isBeforeShowTeamList = groupName !== organizationName; // true 说明是切换了， false 没有切换
         if (this.state.activeKey === '1') { // tab为部门时的成员列表
             if (groupName === organizationName) { // 组织
                 return (
@@ -238,7 +240,7 @@ class SalesTeamPage extends React.Component {
                     >
                         <MemberManage
                             getMemberCount={this.getMemberCount}
-                            isChangeTreeDepartment={isChangeTreeDepartment}
+                            isBeforeShowTeamList={isBeforeShowTeamList}
                         />
                     </div>
                 );
@@ -275,7 +277,7 @@ class SalesTeamPage extends React.Component {
                         width: salesTeamMemberWidth
                     }}
                 >
-                    <MemberManage isChangeTreeDepartment={isChangeTreeDepartment}/>
+                    <MemberManage isBeforeShowTeamList={isBeforeShowTeamList}/>
                 </div>
             );
         }

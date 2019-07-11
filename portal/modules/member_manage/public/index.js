@@ -52,9 +52,8 @@ class MemberManage extends React.Component {
 
     componentDidMount = () => {
         MemberManageStore.listen(this.onChange);
-        
         // 判断是否从组织切换到相应的部门，若切换，此方法不执行
-        if (!this.props.isChangeTreeDepartment) {
+        if (!this.props.isBeforeShowTeamList) {
             // 加setTImeout是为了解决 Dispatch.dispatch(...)的错误
             setTimeout( () => {
                 // 从部门切换到职务时，再次切换到部门时，若展示的是部门（团队）的数据，会卸载此组件
@@ -63,7 +62,6 @@ class MemberManage extends React.Component {
                 this.getMemberList(); // 获取成员列表
             }, 0);
         }
-
         positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberPosition);
     };
 
@@ -453,7 +451,7 @@ class MemberManage extends React.Component {
 
 MemberManage.propTypes = {
     getMemberCount: PropTypes.func,
-    isChangeTreeDepartment: PropTypes.bool
+    isBeforeShowTeamList: PropTypes.bool
 };
 
 module.exports = MemberManage;
