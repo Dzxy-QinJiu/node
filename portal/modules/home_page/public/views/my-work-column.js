@@ -87,7 +87,7 @@ class MyWorkColumn extends React.Component {
     //关闭、切换详情前，已完成工作的处理
     handleFinishedWork = () => {
         let handlingWork = this.state.handlingWork;
-        if (handlingWork && handlingWork.isFinished_) {
+        if (handlingWork && handlingWork.isFinished) {
             this.handleMyWork(this.state.handlingWork);
         }
     }
