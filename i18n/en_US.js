@@ -3037,6 +3037,8 @@ var en_US = {
     'clue.detail.last.contact.time': 'Last trace time',//最后跟进时间
     'common.sales.develop': 'sales develop',//销售开发
     'common.clue.convert': 'clue convert',//线索转化
+    'common.clue.name.need.at.least.two.char.to.do.customer.convert': 'clue name need at least two char to do customer convert',//线索名称必须在两个字或以上，才能进行转为客户的操作
     'app.manege.access.no.amdin.tip': 'No user,please contact the administrator to access the user',//暂无用户，请联系管理员接入用户
+
 };
 export default en_US;
