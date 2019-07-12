@@ -40,12 +40,29 @@ class MemberManage extends React.Component {
         this.setState(MemberManageStore.getState());
     };
 
+    // 获取筛选成员的职务
+    getMemberPosition = (positionObj) => {
+        let teamroleId = positionObj.teamroleId;
+        MemberManageAction.setPositionId(teamroleId);
+        // 筛选职务时，重新获取成员列表
+        MemberManageAction.setInitialData( () => {
+            this.getMemberList({teamroleId: teamroleId, id: ''});
+        } );
+    };
+
     componentDidMount = () => {
         MemberManageStore.listen(this.onChange);
-        positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberList);
-        setTimeout( () => {
-            this.getMemberList(); // 获取成员列表
-        }, 0);
+        // 判断是否从组织切换到相应的部门，若切换，此方法不执行
+        if (!this.props.isBeforeShowTeamList) {
+            // 加setTImeout是为了解决 Dispatch.dispatch(...)的错误
+            setTimeout( () => {
+                // 从部门切换到职务时，再次切换到部门时，若展示的是部门（团队）的数据，会卸载此组件
+                // 点击显示组织的成员时，会再次DidMount，此时职务id是存在的，所以要先置空
+                MemberManageAction.setPositionId('');
+                this.getMemberList(); // 获取成员列表
+            }, 0);
+        }
+        positionEmitter.on(positionEmitter.CLICK_POSITION, this.getMemberPosition);
     };
 
     getMemberList = (queryParams) => {
@@ -55,20 +72,17 @@ class MemberManage extends React.Component {
             roleParam: _.get(queryParams, 'role', this.state.selectRole), // 成员角色
             status: _.get(queryParams, 'status', this.state.status), // 成员状态
             id: _.get(queryParams, 'id', ''), // 下拉加载最后一条的id
+            teamrole_id: _.get(queryParams, 'teamroleId', this.state.teamroleId) // 职务id
         };
-        let teamrole_id = _.get(queryParams, 'teamrole_id');
-        if (teamrole_id) {
-            MemberManageAction.setInitialData();
-            queryObj.teamrole_id = teamrole_id;
-        }
         MemberManageAction.getMemberList(queryObj, (memberTotal) => {
-            this.props.getMemberCount(memberTotal);
+            this.props.getMemberCount && this.props.getMemberCount(memberTotal);
         });
     };
 
     componentWillUnmount = () => {
         MemberManageStore.unlisten(this.onChange);
-        positionEmitter.removeListener(positionEmitter.CLICK_POSITION, this.getMemberList);
+        MemberManageAction.setInitialData();
+        positionEmitter.removeListener(positionEmitter.CLICK_POSITION, this.getMemberPosition);
     };
 
     showMemberForm = (type) => {
@@ -436,7 +450,8 @@ class MemberManage extends React.Component {
 }
 
 MemberManage.propTypes = {
-    getMemberCount: PropTypes.func
+    getMemberCount: PropTypes.func,
+    isBeforeShowTeamList: PropTypes.bool
 };
 
 module.exports = MemberManage;
