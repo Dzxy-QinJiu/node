@@ -978,6 +978,7 @@ var zh_CN = {
     'config.product.add': '添加产品',
     'config.product.modify': '修改产品',
     'config.product.input.name': '请输入产品名称',
+    'config.product.name.rule': '最少1个字符,最多10个字符',
     'config.product.code': '产品编号',
     'config.product.input.code': '请输入产品编号',
     'config.product.desc': '产品描述',

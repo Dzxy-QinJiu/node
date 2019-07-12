@@ -970,6 +970,7 @@ var en_US = {
     'config.product.add': 'Add product',//添加产品
     'config.product.modify': 'Modify product',//修改产品
     'config.product.input.name': 'Please input production name',//请输入产品名称
+    'config.product.name.rule': '1 ~ 10 characters', // 最少1个字符,最多10个字符
     'config.product.code': 'Production code',//产品编号
     'config.product.input.code': 'Please input production code',//请输入产品编号
     'config.product.desc': 'Production desc',//产品描述
