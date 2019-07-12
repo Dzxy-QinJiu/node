@@ -970,6 +970,7 @@ var en_US = {
     'config.product.add': 'Add product',//添加产品
     'config.product.modify': 'Modify product',//修改产品
     'config.product.input.name': 'Please input production name',//请输入产品名称
+    'config.product.name.rule': '1 ~ 10 characters', // 最少1个字符,最多10个字符
     'config.product.code': 'Production code',//产品编号
     'config.product.input.code': 'Please input production code',//请输入产品编号
     'config.product.desc': 'Production desc',//产品描述
@@ -3037,5 +3038,7 @@ var en_US = {
     'common.sales.develop': 'sales develop',//销售开发
     'common.clue.convert': 'clue convert',//线索转化
     'common.clue.name.need.at.least.two.char.to.do.customer.convert': 'clue name need at least two char to do customer convert',//线索名称必须在两个字或以上，才能进行转为客户的操作
+    'app.manege.access.no.amdin.tip': 'No user,please contact the administrator to access the user',//暂无用户，请联系管理员接入用户
+
 };
 export default en_US;

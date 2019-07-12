@@ -56,8 +56,6 @@ const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
-import BottomTotalCount from 'CMP_DIR/bottom-total-count';
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -1940,8 +1938,7 @@ class ClueCustomer extends React.Component {
                         this.renderClueAnalysisBtn() : null
                 }
                 {
-                    (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) &&
-                    (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isSalesRole()) ?
+                    hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF') ?
                         this.renderExtractClue() : null
                 }
                 {this.renderExportClue()}

@@ -1,7 +1,6 @@
 /**
  * Created by xiaojinfeng on 2016/04/11.
  */
-const React = require('react');
 import {Icon,Button, Popover} from 'antd';
 import commonMethodUtil from '../../../../public/sources/utils/common-method-util';
 var classNames = require('classnames');
@@ -152,8 +151,9 @@ class LeftTree extends React.Component {
         );
     };
 
-    // 添加子团队、编辑子团队、删除子团队
-    renderOperateChildTeam = (item) => {
+    // 添加子团队、编辑子团队、删除子团队, type：true含有子部门， false是最底层的部门
+    // 只有最底层部门有删除功能，因为删除部门的接口只支持删除最底层的部门
+    renderOperateChildTeam = (item, type) => {
         return (
             <div className="tree-operation-div">
                 <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
@@ -176,16 +176,20 @@ class LeftTree extends React.Component {
                         </span>
                     </div>
                 </PrivilegeChecker>
-                <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
-                    <div className="tree-operation-item-zone icon-operation tree-operation-icon"
-                        onClick={this.deleteGroup.bind(this, item)}
-                    >
-                        <i className='iconfont icon-delete'></i>
-                        <span className='operation-item-text'>
-                            {Intl.get('organization.del.department', '删除部门')}
-                        </span>
-                    </div>
-                </PrivilegeChecker>
+                {
+                    type ? null : (
+                        <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
+                            <div className="tree-operation-item-zone icon-operation tree-operation-icon"
+                                onClick={this.deleteGroup.bind(this, item)}
+                            >
+                                <i className='iconfont icon-delete'></i>
+                                <span className='operation-item-text'>
+                                    {Intl.get('organization.del.department', '删除部门')}
+                                </span>
+                            </div>
+                        </PrivilegeChecker>
+                    )
+                }
             </div>
         );
     };
@@ -329,7 +333,7 @@ class LeftTree extends React.Component {
                                         ) : (
                                             isShowMoreBtn && !isAddGroup && !isEditGroup && !isDeleteGroup ? (
                                                 <Popover
-                                                    content={this.renderOperateChildTeam(item)}
+                                                    content={this.renderOperateChildTeam(item, type)}
                                                     placement="bottomRight"
                                                     onVisibleChange={this.handlePopOverVisible}
                                                     visible={this.props.isShowPopOver}
@@ -524,5 +528,6 @@ LeftTree.propTypes = {
     curEditGroup: PropTypes.string,
     mouseZoneHoverKey: PropTypes.string,
     isShowPopOver: PropTypes.bool,
+    getSelectedDepartmentId: PropTypes.func
 };
 module.exports = LeftTree;

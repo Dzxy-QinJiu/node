@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
- * ç‰ˆæƒæ‰€æœ‰ (c) 2015-2018 æ¹–å—èšåŠè½¯ä»¶è‚¡ä»½æœ‰é™å…¬å¸ã€‚ä¿ç•™æ‰€æœ‰æƒåˆ©ã€‚
+ * °æÈ¨ËùÓĞ (c) 2015-2018 ºşÄÏÒÏ·»Èí¼ş¹É·İÓĞÏŞ¹«Ë¾¡£±£ÁôËùÓĞÈ¨Àû¡£
  * Created by zhangshujuan on 2018/4/26.
  */
 import {Checkbox,InputNumber,Icon} from 'antd';
@@ -9,16 +9,16 @@ class RadioCard extends React.Component {
         super(props);
         this.state = {
             id: this.props.id,
-            commissionRadio: this.props.commissionRadio,//ææˆæ¯”ä¾‹
-            submitCommissionRadio: '',//è¦æäº¤çš„ææˆæ¯”ä¾‹
-            newCommissionRatio: this.props.newCommissionRatio,//æ–°ç­¾ææˆæ¯”ä¾‹
-            submitNewCommissionRadio: '',//è¦æäº¤çš„æ–°ç­¾ææˆæ¯”ä¾‹
-            renewalCommissionRatio: this.props.renewalCommissionRatio,//ç»­çº¦ææˆæ¯”ä¾‹
-            submitRenewalCommissionRadio: '',//è¦æäº¤çš„ç»­çº¦ææˆæ¯”ä¾‹
+            commissionRadio: this.props.commissionRadio,//Ìá³É±ÈÀı
+            submitCommissionRadio: '',//ÒªÌá½»µÄÌá³É±ÈÀı
+            newCommissionRatio: this.props.newCommissionRatio,//ĞÂÇ©Ìá³É±ÈÀı
+            submitNewCommissionRadio: '',//ÒªÌá½»µÄĞÂÇ©Ìá³É±ÈÀı
+            renewalCommissionRatio: this.props.renewalCommissionRatio,//ĞøÔ¼Ìá³É±ÈÀı
+            submitRenewalCommissionRadio: '',//ÒªÌá½»µÄĞøÔ¼Ìá³É±ÈÀı
             memberInfo: $.extend(true,{},this.props.memberInfo),
-            isEdittingRadio: false,//æ˜¯å¦æ˜¯ç¼–è¾‘çŠ¶æ€
-            isCheckBoxChecked: false,//æ˜¯å¦é€‰ä¸­checkBox
-            submitErrorMsg: ''//ä¿å­˜å‡ºé”™åçš„ä¿®æ”¹
+            isEdittingRadio: false,//ÊÇ·ñÊÇ±à¼­×´Ì¬
+            isCheckBoxChecked: false,//ÊÇ·ñÑ¡ÖĞcheckBox
+            submitErrorMsg: ''//±£´æ³ö´íºóµÄĞŞ¸Ä
         };
     }
 
@@ -31,9 +31,9 @@ class RadioCard extends React.Component {
             id: nextProps.id
         });
     }
-    //ç‚¹å‡»ç¼–è¾‘æŒ‰é’®
+    //µã»÷±à¼­°´Å¥
     handleClickEditRadio = () => {
-        //å¦‚æœåŸæ¥çš„æ–°ç­¾æˆ–è€…ç»­çº¦ææˆæ¯”ä¾‹æœ‰ä¸€ä¸ªæœ‰æœ‰æ•ˆæ•°å­—
+        //Èç¹ûÔ­À´µÄĞÂÇ©»òÕßĞøÔ¼Ìá³É±ÈÀıÓĞÒ»¸öÓĞÓĞĞ§Êı×Ö
         if ((_.isNumber(this.state.newCommissionRatio) && this.state.newCommissionRatio > -1 ) || (_.isNumber(this.state.renewalCommissionRatio) && this.state.renewalCommissionRatio > -1)){
             this.setState({
                 isCheckBoxChecked: true
@@ -43,7 +43,7 @@ class RadioCard extends React.Component {
             isEdittingRadio: true
         });
     };
-    //ç‚¹å‡»é€‰ä¸­æˆ–è€…å–æ¶ˆé€‰ä¸­çš„checkbox
+    //µã»÷Ñ¡ÖĞ»òÕßÈ¡ÏûÑ¡ÖĞµÄcheckbox
     handleCheckChange = (e) => {
         this.setState({
             isCheckBoxChecked: e.target.checked
@@ -51,7 +51,7 @@ class RadioCard extends React.Component {
     };
     getQueryParams(){
         var user = {};
-        //å¦‚æœææˆæˆ–è€…ç›®æ ‡çš„idå­˜åœ¨ï¼Œå°±æ›´æ–°é‚£æ¡è®°å½•
+        //Èç¹ûÌá³É»òÕßÄ¿±êµÄid´æÔÚ£¬¾Í¸üĞÂÄÇÌõ¼ÇÂ¼
         if (this.state.id) {
             user.id = this.state.id;
         }
@@ -64,14 +64,14 @@ class RadioCard extends React.Component {
         }
         var submitNewCommissionRadio = this.state.submitNewCommissionRadio;
         var submitRenewalCommissionRadio = this.state.submitRenewalCommissionRadio;
-        //æäº¤æ–°ç­¾æˆ–è€…ç»­çº¦ææˆæ¯”ä¾‹çš„æ—¶å€™ï¼ŒæŠŠææˆæ¯”ä¾‹è¿™ä¸ªå­—æ®µè®¾ç½®ä¸ºè´Ÿå€¼
+        //Ìá½»ĞÂÇ©»òÕßĞøÔ¼Ìá³É±ÈÀıµÄÊ±ºò£¬°ÑÌá³É±ÈÀıÕâ¸ö×Ö¶ÎÉèÖÃÎª¸ºÖµ
         if (this.state.isCheckBoxChecked){
-            //æ–°ç­¾æ¯”ä¾‹å¦‚æœæ²¡ä¿®æ”¹ï¼Œå°±ç”¨åŸæ¥çš„propsä¼ è¿‡æ¥çš„å€¼
+            //ĞÂÇ©±ÈÀıÈç¹ûÃ»ĞŞ¸Ä£¬¾ÍÓÃÔ­À´µÄprops´«¹ıÀ´µÄÖµ
             user.new_commission_ratio = submitNewCommissionRadio || submitNewCommissionRadio === 0 ? submitNewCommissionRadio : this.state.newCommissionRatio;
             user.renewal_commission_ratio = submitRenewalCommissionRadio || submitRenewalCommissionRadio === 0 ? submitRenewalCommissionRadio : this.state.renewalCommissionRatio;
             user.commission_ratio = -1;
         }else{
-            //è®¾ç½®ææˆæ¯”ä¾‹è¿™ä¸ªå­—æ®µæ—¶ï¼ŒæŠŠæ–°ç­¾æˆ–è€…ç»­çº¦ææˆæ¯”ä¾‹è®¾ç½®æˆè´Ÿå€¼
+            //ÉèÖÃÌá³É±ÈÀıÕâ¸ö×Ö¶ÎÊ±£¬°ÑĞÂÇ©»òÕßĞøÔ¼Ìá³É±ÈÀıÉèÖÃ³É¸ºÖµ
             user.new_commission_ratio = -1;
             user.renewal_commission_ratio = -1;
             user.commission_ratio = this.state.submitCommissionRadio;
@@ -79,7 +79,7 @@ class RadioCard extends React.Component {
         return user;
 
     }
-    //ä¿å­˜ä¿®æ”¹çš„æ•°æ®
+    //±£´æĞŞ¸ÄµÄÊı¾İ
     handleSubmit(){
         this.setState({
             loading: true
@@ -108,17 +108,17 @@ class RadioCard extends React.Component {
             } else {
                 this.setState({
                     loading: false,
-                    submitErrorMsg: Intl.get('common.edit.failed', 'ä¿®æ”¹å¤±è´¥')
+                    submitErrorMsg: Intl.get('common.edit.failed', 'ĞŞ¸ÄÊ§°Ü')
                 });
             }
         },(errorMsg) => {
             this.setState({
                 loading: false,
-                submitErrorMsg: errorMsg || Intl.get('common.edit.failed', 'ä¿®æ”¹å¤±è´¥')
+                submitErrorMsg: errorMsg || Intl.get('common.edit.failed', 'ĞŞ¸ÄÊ§°Ü')
             });
         });
     }
-    //ç‚¹å‡»å–æ¶ˆæŒ‰é’®
+    //µã»÷È¡Ïû°´Å¥
     handleCancel(){
         this.setState({
             isEdittingRadio: false,
@@ -150,27 +150,27 @@ class RadioCard extends React.Component {
         return (
             <div>
                 <Checkbox onChange={this.handleCheckChange} checked={this.state.isCheckBoxChecked}>
-                    {Intl.get('sales.if.switch.type', 'æ˜¯å¦åŒºåˆ†æ–°ç­¾å’Œç»­çº¦ç±»å‹')}
+                    {Intl.get('sales.if.switch.type', 'ÊÇ·ñÇø·ÖĞÂÇ©ºÍĞøÔ¼ÀàĞÍ')}
                 </Checkbox>
                 {this.state.isCheckBoxChecked ? <div>
                     <div>
-                        {Intl.get('sales.new.write.contract.radio', 'æ–°ç­¾ææˆæ¯”ä¾‹')}:
+                        {Intl.get('sales.new.write.contract.radio', 'ĞÂÇ©Ìá³É±ÈÀı')}:
                         <InputNumber min={0} max={100} defaultValue={this.state.newCommissionRatio} onChange={this.handleChangeNewCommissionRadio}/>%
                     </div>
                     <div>
-                        {Intl.get('sales.rewrite.contract.radio', 'ç»­çº¦ææˆæ¯”ä¾‹')}:
+                        {Intl.get('sales.rewrite.contract.radio', 'ĞøÔ¼Ìá³É±ÈÀı')}:
                         <InputNumber min={0} max={100} defaultValue={this.state.renewalCommissionRatio} onChange={this.handleChangeRenewalCommissionRadio}/>%
                         {this.state.loading ? <Icon type="loading"/> : <span>
-                            <i title={Intl.get('common.update', 'ä¿®æ”¹')} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="ä¿å­˜ä¿®æ”¹æ–°ç­¾å’Œç»­çº¦ææˆæ¯”ä¾‹"></i>
-                            <i title={Intl.get('common.cancel', 'å–æ¶ˆ')} className="iconfont icon-close" onClick={(e) => {this.handleCancel(e);}} data-tracename="å–æ¶ˆä¿®æ”¹æ–°ç­¾å’Œç»­çº¦ææˆæ¯”ä¾‹"></i>
+                            <i title={Intl.get('common.update', 'ĞŞ¸Ä')} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="±£´æĞŞ¸ÄĞÂÇ©ºÍĞøÔ¼Ìá³É±ÈÀı"></i>
+                            <i title={Intl.get('common.cancel', 'È¡Ïû')} className="iconfont icon-close" onClick={(e) => {this.handleCancel(e);}} data-tracename="È¡ÏûĞŞ¸ÄĞÂÇ©ºÍĞøÔ¼Ìá³É±ÈÀı"></i>
                         </span>}
                     </div>
                 </div> : <div>
-                    {Intl.get('contract.141', 'ææˆæ¯”ä¾‹')}:
+                    {Intl.get('contract.141', 'Ìá³É±ÈÀı')}:
                     <InputNumber min={0} max={100} defaultValue={this.state.commissionRadio} onChange={this.handleRadioCount}/>%
                     {this.state.loading ? <Icon type="loading"/> : <span>
-                        <i title={Intl.get('common.update', 'ä¿®æ”¹')} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="ä¿å­˜ä¿®æ”¹ææˆæ¯”ä¾‹"></i>
-                        <i title={Intl.get('common.cancel', 'å–æ¶ˆ')} className="iconfont icon-close" onClick={(e) => {this.handleCancel(e);}} data-tracename="å–æ¶ˆä¿®æ”¹ææˆæ¯”ä¾‹"></i>
+                        <i title={Intl.get('common.update', 'ĞŞ¸Ä')} className="iconfont icon-choose" onClick={(e) => {this.handleSubmit(e);}} data-tracename="±£´æĞŞ¸ÄÌá³É±ÈÀı"></i>
+                        <i title={Intl.get('common.cancel', 'È¡Ïû')} className="iconfont icon-close" onClick={(e) => {this.handleCancel(e);}} data-tracename="È¡ÏûĞŞ¸ÄÌá³É±ÈÀı"></i>
                     </span>}
                 </div>}
                 {errorBlock}
@@ -185,15 +185,15 @@ class RadioCard extends React.Component {
                 {this.state.isEdittingRadio ? this.renderEditRadioCount() : <div className="text-show">
                     {(newCommissionRatio && newCommissionRatio > -1) || (renewalCommissionRatio && renewalCommissionRatio > -1) || newCommissionRatio === 0 || renewalCommissionRatio === 0 ? <div>
                         <p>
-                            {Intl.get('sales.new.write.contract.radio', 'æ–°ç­¾ææˆæ¯”ä¾‹')}: {newCommissionRatio}%
+                            {Intl.get('sales.new.write.contract.radio', 'ĞÂÇ©Ìá³É±ÈÀı')}: {newCommissionRatio}%
                         </p>
                         <p>
-                            {Intl.get('sales.rewrite.contract.radio', 'ç»­çº¦ææˆæ¯”ä¾‹')}: {this.state.renewalCommissionRatio}%
-                            <i className="iconfont icon-update" onClick={this.handleClickEditRadio} data-tracename="ç‚¹å‡»ä¿®æ”¹æ–°ç­¾æˆ–ç»­çº¦ææˆæ¯”ä¾‹"></i>
+                            {Intl.get('sales.rewrite.contract.radio', 'ĞøÔ¼Ìá³É±ÈÀı')}: {this.state.renewalCommissionRatio}%
+                            <i className="iconfont icon-update" onClick={this.handleClickEditRadio} data-tracename="µã»÷ĞŞ¸ÄĞÂÇ©»òĞøÔ¼Ìá³É±ÈÀı"></i>
                         </p>
                     </div> : <div>
-                        {Intl.get('contract.141', 'ææˆæ¯”ä¾‹')}: {this.state.commissionRadio}%
-                        <i className="iconfont icon-update" onClick={this.handleClickEditRadio} data-tracename="ç‚¹å‡»ä¿®æ”¹ææˆæ¯”ä¾‹"></i>
+                        {Intl.get('contract.141', 'Ìá³É±ÈÀı')}: {this.state.commissionRadio}%
+                        <i className="iconfont icon-update" onClick={this.handleClickEditRadio} data-tracename="µã»÷ĞŞ¸ÄÌá³É±ÈÀı"></i>
                     </div>}
                 </div>}
             </div>

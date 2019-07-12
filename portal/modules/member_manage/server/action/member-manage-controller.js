@@ -23,7 +23,7 @@ exports.getMemberList = (req, res) => {
         params.filter_content = filterContent;
     }
     if (roleParam) {
-        params.role_param = roleParam;
+        params.role_id = roleParam;
     }
     if (status) {
         params.status = status;

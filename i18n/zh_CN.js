@@ -978,6 +978,7 @@ var zh_CN = {
     'config.product.add': '添加产品',
     'config.product.modify': '修改产品',
     'config.product.input.name': '请输入产品名称',
+    'config.product.name.rule': '最少1个字符,最多10个字符',
     'config.product.code': '产品编号',
     'config.product.input.code': '请输入产品编号',
     'config.product.desc': '产品描述',
@@ -3142,5 +3143,7 @@ var zh_CN = {
     'common.sales.develop': '销售开发',
     'common.clue.convert': '线索转化',
     'common.clue.name.need.at.least.two.char.to.do.customer.convert': '线索名称必须在两个字或以上，才能进行转为客户的操作',
+    'app.manege.access.no.amdin.tip': '暂无用户，请联系管理员接入用户',
+
 };
 export default zh_CN;

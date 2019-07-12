@@ -614,7 +614,7 @@ class ClueExtract extends React.Component {
     
     // table 列
     getClueTableColunms = () => {
-        return [
+        let columns = [
             {
                 title: Intl.get('crm.sales.clue', '线索'),
                 dataIndex: 'clue_name',
@@ -669,7 +669,7 @@ class ClueExtract extends React.Component {
             },{
                 title: Intl.get('call.record.follow.content', '跟进内容'),
                 dataIndex: 'customer_trace',
-                width: '30%',
+                width: 'auto',
                 render: (text, record, index) => {
                     if (_.isArray(record.customer_traces)) {
                         return (
@@ -677,7 +677,9 @@ class ClueExtract extends React.Component {
                         );
                     }
                 }
-            }, {
+            }];
+        if (hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF')) {
+            columns = _.concat(columns, {
                 title: Intl.get('common.operate', '操作'),
                 className: 'invalid-td-clue',
                 width: '10%',
@@ -710,16 +712,18 @@ class ClueExtract extends React.Component {
                                         clearSelectData={this.clearSelectSales}
                                         btnAtTop={false}
                                     /> : (
-                                        <span onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}>
+                                    <span onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}>
                                             {Intl.get('clue.extract', '提取')}
                                         </span>
-                                    )
+                                )
                             }
 
                         </div>
                     );
                 }
-            }];
+            })
+        }
+        return columns;
     };
 
     renderClueCustomerLists = () => {
@@ -731,7 +735,8 @@ class ClueExtract extends React.Component {
             noMoreDataText: Intl.get('common.no.more.clue', '没有更多线索了'),
             loading: this.state.isLoading,
         };
-        let rowSelection = this.getRowSelection();
+        let rowSelection = hasPrivilege('LEAD_EXTRACT_ALL') ||
+                            hasPrivilege('LEAD_EXTRACT_SELF') ? this.getRowSelection() : null;
         function rowKey(record, index) {
             return record.id;
         }
