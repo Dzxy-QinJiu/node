@@ -945,7 +945,10 @@ class AppUserManage extends React.Component {
                 } else if (this.state.getItegrateTypeError) {
                     showView = (<NoDataIntro noDataTip={Intl.get('user.list.get.failed', '获取用户列表失败')}/>);
                 } else if (this.state.isShowAddProductView) {
-                    showView = (<IntegrateConfigView/>);
+                    // 只有管理员可以接入用户，其他不可以
+                    let isManager = this.getLoginUserRole();
+                    showView = isManager ? (<IntegrateConfigView/>) :
+                        (<NoDataIntro noDataTip={Intl.get('app.manege.access.no.amdin.tip', '暂无用户，请联系管理员接入用户')}/>);
                 } else {
                     showView = (<UserView 
                         customer_id={this.state.customer_id}
