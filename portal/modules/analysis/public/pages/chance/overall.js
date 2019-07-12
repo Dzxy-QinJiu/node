@@ -20,7 +20,7 @@ function getCharts() {
         //新机会统计
         chanceChart.getNewChanceChart('funnel'),
         //所有机会统计
-        //chanceChart.getAllChanceChart(),
+        chanceChart.getAllChanceChart(),
         //成交率趋势统计
         chanceChart.getChanceDealTrendChart(),
         //销售机会明细
