@@ -20,7 +20,6 @@ class MemberManageStore {
     constructor() {
         this.pageSize = 20;
         this.searchContent = ''; // 搜索框查询内容
-        this.memberRoleList = []; // 成员角色列表
         this.selectRole = ''; // 已选过滤角色,默认全部
         this.status = ''; // 成员状态，默认全部
         this.teamroleId = ''; // 职务id
@@ -44,9 +43,6 @@ class MemberManageStore {
         this.isContinueAddButtonShow = false; // 是否显示继续添加按钮
         this.resultType = '';
         this.errorMsg = '';
-    }
-    getRoleList(memberRoleList) {
-        this.memberRoleList = _.isArray(memberRoleList) ? memberRoleList : [];
     }
     // 获取成员列表
     getMemberList(result) {
