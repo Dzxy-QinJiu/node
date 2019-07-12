@@ -1,12 +1,12 @@
 /**
- * 所有机会统计
+ * 机会转化率统计
  */
 
 const TEAM_FIELD = 'sales_team';
 
 export function getAllChanceChart(specifyColumns) {
     return {
-        title: '所有机会统计',
+        title: '机会转化率统计',
         chartType: 'table',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/statistics',
         ajaxInstanceFlag: 'sales_opportuniry_all',
@@ -43,7 +43,7 @@ export function getAllChanceChart(specifyColumns) {
                     dataIndex: 'deal',
                     width: '20%',
                 }, {
-                    title: '成交率',
+                    title: '转化率',
                     dataIndex: 'deal_rate',
                     showAsPercent: true,
                     width: '20%',
