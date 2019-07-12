@@ -3142,5 +3142,6 @@ var zh_CN = {
     'clue.detail.last.contact.time': '最后跟进时间',
     'common.sales.develop': '销售开发',
     'common.clue.convert': '线索转化',
+    'app.manege.access.no.amdin.tip': '暂无用户，请联系管理员接入用户',
 };
 export default zh_CN;
