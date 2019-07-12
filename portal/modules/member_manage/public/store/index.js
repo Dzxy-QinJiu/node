@@ -45,6 +45,9 @@ class MemberManageStore {
         this.resultType = '';
         this.errorMsg = '';
     }
+    getRoleList(memberRoleList) {
+        this.memberRoleList = _.isArray(memberRoleList) ? memberRoleList : [];
+    }
     // 获取成员列表
     getMemberList(result) {
         if (result.loading) {
@@ -56,7 +59,6 @@ class MemberManageStore {
             } else {
                 this.getMemberListErrMsg = '';
                 let list = _.get(result, 'resData.data', []);
-                this.memberRoleList = _.get(result, 'resData.roles', 0); // 角色列表
                 this.memberList = _.concat(this.memberList, list);
                 this.memberTotal = _.get(result, 'resData.list_size', 0);
                 let length = _.get(this.memberList, 'length', 0);

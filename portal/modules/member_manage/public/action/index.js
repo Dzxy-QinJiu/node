@@ -64,6 +64,14 @@ class MemberManageAction {
             this.dispatch(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     }
+
+    //获取角色列表
+    getRoleList() {
+        MemberManageAjax.getRoleList().then((roleList) => {
+            console.log('roleList:',roleList);
+            this.dispatch(roleList);
+        });
+    }
 }
 
 export default alt.createActions(MemberManageAction);

@@ -52,6 +52,7 @@ class MemberManage extends React.Component {
 
     componentDidMount = () => {
         MemberManageStore.listen(this.onChange);
+        MemberManageAction.getRoleList(); // 获取角色列表
         // 判断是否从组织切换到相应的部门，若切换，此方法不执行
         if (!this.props.isBeforeShowTeamList) {
             // 加setTImeout是为了解决 Dispatch.dispatch(...)的错误
