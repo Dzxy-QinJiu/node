@@ -17,6 +17,8 @@ const restApis = {
     extractClueAssignToSale: commonUrl + 'lead/extract/:lead_id/:member_id',
     // 批量提取线索
     batchExtractClueAssignToSale: commonUrl + 'lead/:type/batch/extract',
+    // 根据线索的id获取线索的详情
+    getClueDetailById: commonUrl + '/query/lead_pool_id/:lead_pool_id',
 };
 
 // 处理线索池中列表的参数
@@ -60,12 +62,11 @@ function handleClueParams(req, clueUrl) {
     if (reqBody.clue_classify){
         bodyObj.query.clue_classify = reqBody.clue_classify;
     }
-    if (reqBody.availability){
-        bodyObj.query.availability = reqBody.availability;
-    }
+
     if (reqBody.province){
         bodyObj.query.province = reqBody.province;
     }
+    bodyObj.rang_params = rangeParams;
     let exist_fields = reqBody.exist_fields ? JSON.parse(reqBody.exist_fields) : [];
     let unexist_fields = reqBody.unexist_fields ? JSON.parse(reqBody.unexist_fields) : [];
     if (_.isArray(exist_fields) && exist_fields.length){
@@ -168,4 +169,15 @@ exports.batchExtractClueAssignToSale = (req, res) => {
             req: req,
             res: res
         }, req.body);
+};
+
+
+// 根据线索的id获取线索的详情
+exports.getClueDetailById = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getClueDetailById.replace(':lead_pool_id', req.params.clueId),
+            req: req,
+            res: res
+        }, null);
 };

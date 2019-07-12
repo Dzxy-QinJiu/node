@@ -2,7 +2,7 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 //联系人的ajax
-var SalesTeamAjax = require('../ajax/sales-team-ajax');
+const SalesTeamAjax = require('../ajax/sales-team-ajax');
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 
@@ -41,7 +41,11 @@ function SalesTeamAction() {
         'updateSalesGoals',
         'updateCurShowTeamMemberObj',
         'showUserInfoPanel',
-        'closeRightPanel'
+        'closeRightPanel',
+        'handleMouseEnterItemLine', // 处理鼠标移入
+        'handleMouseLeaveTreeZone', // 处理鼠标移出
+        'handleMouseHoverMoreBtn', // 处理鼠标悬停更多按钮
+        'handlePopOverVisible', // 处理popover浮层的显示
     );
 
     //获取统计团队内成员个数的列表

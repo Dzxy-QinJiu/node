@@ -1,19 +1,16 @@
 /**
- * 所有机会统计
+ * 机会转化率统计
  */
 
 const TEAM_FIELD = 'sales_team';
 
 export function getAllChanceChart(specifyColumns) {
     return {
-        title: '所有机会统计',
+        title: '机会转化率统计',
         chartType: 'table',
         url: '/rest/analysis/customer/v2/sales_opportunity/:data_type/apply/opportunity/statistics',
         ajaxInstanceFlag: 'sales_opportuniry_all',
         argCallback: arg => {
-            //因为要统计所有机会，所以将开始时间设为0，以统计截止到选择的结束时间的所有数据
-            _.set(arg, 'query.start_time', 0);
-
             const statisticsType = _.get(arg, 'query.statistics_type');
             
             //这个接口的返回类型参数和别的接口不一样，需要处理一下
@@ -43,7 +40,7 @@ export function getAllChanceChart(specifyColumns) {
                     dataIndex: 'deal',
                     width: '20%',
                 }, {
-                    title: '成交率',
+                    title: '转化率',
                     dataIndex: 'deal_rate',
                     showAsPercent: true,
                     width: '20%',

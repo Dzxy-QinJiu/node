@@ -978,6 +978,7 @@ var zh_CN = {
     'config.product.add': '添加产品',
     'config.product.modify': '修改产品',
     'config.product.input.name': '请输入产品名称',
+    'config.product.name.rule': '最少1个字符,最多10个字符',
     'config.product.code': '产品编号',
     'config.product.input.code': '请输入产品编号',
     'config.product.desc': '产品描述',
@@ -3126,6 +3127,8 @@ var zh_CN = {
     'clue.customer.has.transfer': '已转化',
     'clue.confirm.clue.invalid': '确认无效',
     'contract.amount.check.tip': '产品总额不能大于合同总额{amount}元，请核对',
+    'customer.has.similar.lists': '相似客户',
+    'clue.has.similar.lists': '相似线索',
     'apply.approve.first.higher.level': '直属上级',
     'apply.approve.some.level': '第{n}级上级',
     'apply.approve.level.five': '五',
@@ -3135,5 +3138,12 @@ var zh_CN = {
     'common.recent.month.daily.activity': '近一个月日活',
     'common.recent.three.month.weekly.activity': '近三个月周活',
     'common.recent.year.monthly.activity': '近一个年月活',
+    'call.record.phone.err.msg': '电话号码错误',
+    'clue.detail.last.contact.time': '最后跟进时间',
+    'common.sales.develop': '销售开发',
+    'common.clue.convert': '线索转化',
+    'common.clue.name.need.at.least.two.char.to.do.customer.convert': '线索名称必须在两个字或以上，才能进行转为客户的操作',
+    'app.manege.access.no.amdin.tip': '暂无用户，请联系管理员接入用户',
+
 };
 export default zh_CN;

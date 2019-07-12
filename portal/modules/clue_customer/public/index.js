@@ -50,14 +50,12 @@ import ClueFilterPanel from './views/clue-filter-panel';
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import ShearContent from 'CMP_DIR/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
-import BottomTotalCount from 'CMP_DIR/bottom-total-count';
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -224,12 +222,9 @@ class ClueCustomer extends React.Component {
                     hideRightPanel: this.hideRightPanel,
                     curClue: this.state.curClue,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
-
-                    // refreshCustomerList: this.refreshCustomerList,
-                    // updateCustomerDefContact: CrmAction.updateCustomerDefContact,
-                    // updateCustomerLastContact: CrmAction.updateCustomerLastContact,
-                    // handleFocusCustomer: this.handleFocusCustomer,
-
+                    afterTransferClueSuccess: this.afterTransferClueSuccess,
+                    onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick,
+                    updateCustomerLastContact: this.updateCustomerLastContact
                 }
             });
         }
@@ -418,7 +413,7 @@ class ClueCustomer extends React.Component {
     };
     //获取线索列表
     getClueList = (data) => {
-        var rangeParams = _.get(data, 'rangeParams') || JSON.stringify(clueFilterStore.getState().rangeParams);
+        var rangeParams = _.get(data, 'rangeParams') || clueFilterStore.getState().rangeParams;
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         var filterStoreData = clueFilterStore.getState();
@@ -436,12 +431,18 @@ class ClueCustomer extends React.Component {
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+        var sorter = this.state.sorter;
+        //如果选中的是已跟进或者已转化的线索，按最后联系时间排序
+        if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.HAS_TRANSFER){
+            rangeParams[0].name = 'last_contact_time';
+            sorter.field = 'last_contact_time';
+        }
         //跟据类型筛选
         const queryObj = {
             lastClueId: this.state.lastCustomerId,
             pageSize: this.state.pageSize,
-            sorter: this.state.sorter,
-            keyword: this.state.keyword,
+            sorter: sorter,
+            keyword: _.trim(this.state.keyword),
             rangeParams: rangeParams,
             statistics_fields: 'status',
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
@@ -506,7 +507,7 @@ class ClueCustomer extends React.Component {
             type: 'time',
             name: 'source_time'
         }] : filterStoreData.rangeParams;
-        var keyWord = isGetAllClue ? '' : this.state.keyword;
+        var keyWord = isGetAllClue ? '' : _.trim(this.state.keyword);
         var filterClueStatus = filterStoreData.filterClueStatus;
         var typeFilter = isGetAllClue ? {status: ''} : getClueStatusValue(filterClueStatus);//线索类型
         //按销售进行筛选
@@ -936,7 +937,7 @@ class ClueCustomer extends React.Component {
                         <span
                             className="can-edit"
                             style={{marginRight: 15}}
-                            onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name)}
+                            onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name, salesClueItem.phones)}
                         >
                             {Intl.get('common.convert.to.customer', '转为客户')}
                         </span> 
@@ -1132,13 +1133,27 @@ class ClueCustomer extends React.Component {
     };
 
     //转为客户按钮点击事件
-    onConvertToCustomerBtnClick = (clueId, clueName) => {
+    onConvertToCustomerBtnClick = (clueId, clueName, phones) => {
+        clueName = _.trim(clueName);
+
         //线索名为空时不能执行转为客户的操作
         //此时提示用户完善客户名
         if (!clueName) {
             message.error(Intl.get('clue.need.complete.clue.name', '请先完善线索名'));
             return;
         }
+
+        if (clueName.length < 2) {
+            message.error(Intl.get('common.clue.name.need.at.least.two.char.to.do.customer.convert', '线索名称必须在两个字或以上，才能进行转为客户的操作'));
+            return;
+        }
+
+        if (_.isArray(phones)) {
+            phones = phones.join(',');
+        } else {
+            phones = '';
+        }
+
         //设置当前线索
         clueCustomerAction.setCurrentCustomer(clueId);
         
@@ -1147,16 +1162,14 @@ class ClueCustomer extends React.Component {
 
         //根据线索名称查询相似客户
         ajax.send({
-            url: `/rest/customer/v3/customer/range/${authType}/20/1/start_time/descend`,
-            type: 'post',
-            data: {
-                query: {
-                    name: clueName
-                }
+            url: `/rest/customer/v3/customer/query/${authType}/similarity/customer`,
+            query: {
+                name: clueName,
+                phones
             }
         })
             .done(result => {
-                const existingCustomers = _.get(result, 'result');
+                const existingCustomers = _.get(result, 'similarity_list');
 
                 //若存在相似客户
                 if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
@@ -1223,7 +1236,7 @@ class ClueCustomer extends React.Component {
 
         const curCustomer = _.get(customers, '[0]');
         const customerId = _.get(curCustomer, 'id');
-
+        const customerName = _.get(curCustomer, 'name');
         if (curCustomer) {
             //打开客户面板，显示合并后的客户信息
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
@@ -1235,13 +1248,17 @@ class ClueCustomer extends React.Component {
                 }
             });
         }
-
         //在列表中隐藏当前操作的线索
         this.afterTransferClueSuccess();
-
         //隐藏添加客户面板
         this.hideAddCustomerPanel();
+        this.afterMergeUpdateClueProperty(customerId,customerName);
     };
+    afterMergeUpdateClueProperty = (customerId,customerName) => {
+        //如果是打开右侧详情，需要改一下详情的状态和关联的客户
+        clueCustomerAction.afterEditCustomerDetail({status: SELECT_TYPE.HAS_TRANSFER,customer_name: customerName, customer_id: customerId});
+        this.renderClueDetail();
+    }
 
 
     getRowSelection = () => {
@@ -1624,7 +1641,7 @@ class ClueCustomer extends React.Component {
     searchFullTextEvent = (keyword) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
-        clueCustomerAction.setKeyWord(keyword);
+        clueCustomerAction.setKeyWord(_.trim(keyword));
         //如果keyword不存在，就用获取线索的接口
         this.onTypeChange();
     };
@@ -1921,8 +1938,7 @@ class ClueCustomer extends React.Component {
                         this.renderClueAnalysisBtn() : null
                 }
                 {
-                    (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) &&
-                    (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isSalesRole())?
+                    hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF') ?
                         this.renderExtractClue() : null
                 }
                 {this.renderExportClue()}
@@ -1933,7 +1949,7 @@ class ClueCustomer extends React.Component {
     };
 
     //线索合并到客户后的回调事件
-    onClueMergedToCustomer = (customerId) => {
+    onClueMergedToCustomer = (customerId, customerName) => {
         //在列表中隐藏当前操作的线索
         this.afterTransferClueSuccess();
 
@@ -1947,6 +1963,7 @@ class ClueCustomer extends React.Component {
 
         //关闭线索转客户面板
         this.hideClueToCustomerPanel();
+        this.afterMergeUpdateClueProperty(customerId, customerName);
     }
 
     render() {

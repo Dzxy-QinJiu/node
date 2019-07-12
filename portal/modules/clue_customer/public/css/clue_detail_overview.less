@@ -4,7 +4,7 @@
   font-size: 14px;
   .clue-detail-block{
     padding:12px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     background: #fff;
     .clue-info-item{
       overflow: hidden;
@@ -85,6 +85,94 @@
           }
         }
       }
+  }
+  .similar-wrap{
+    font-size: 14px;
+    margin-bottom: 8px;
+    .similar-content{
+      padding: 12px;
+      background: #fff;
+      &:not(:last-child){
+        margin-bottom: 8px;
+      }
+      .similar-tip{
+        color:#EFA246;
+        border-bottom:1px solid #F5F5F5;
+        padding:0 0 8px 0;
+        .iconfont{
+          margin-right: 5px;
+
+        }
+      }
+      .similar-block{
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f5f5;
+        &:last-child{
+          border-bottom:none;
+        }
+        .similar-title{
+          color: #333;
+          margin:8px 0;
+          overflow: hidden;
+          cursor: pointer;
+          .clue-stage {
+            margin-right: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            padding:4px;
+          }
+          .clue-stage.will-distribute {
+            background: @will-distribute-background;
+            color: @will-distribute-color;
+          }
+          .clue-stage.has-distribute {
+            background: @has-distribute-background;
+            color: @has-distribute-color;
+          }
+          .clue-stage.has-follow {
+            color: @has-follow-color;
+            background: @has-follow-background;
+          }
+          .clue-stage.has-transfer {
+            color: @has-transfer-color;
+            background: @has-transfer-background;
+          }
+          button{
+            float: right;
+            background: #fff;
+            color:#8DA8C5;
+            border: 1px solid #8DA8C5;
+            &:hover{
+              color: #fff;
+              background-color: #108ee9;
+              border-color: #108ee9;
+            }
+          }
+        }
+        .similar-name-phone{
+          font-size: 12px;
+          color:#999;
+          .contact-name{
+            display: inline-block;
+            max-width: 200px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            position: relative;
+            top:3px;
+          }
+        }
+        .trace-time{
+          font-size: 12px;
+          color:#999;
+        }
+      }
+      .show-hide-tip{
+        cursor: pointer;
+        color:#8DA8C5;
+        text-align: right;
+      }
+    }
   }
   .associate-customer-detail.clue-detail-block{
     padding: 0;

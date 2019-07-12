@@ -1,9 +1,11 @@
 /**
  * Created by xiaojinfeng on 2016/04/08.
  */
-var SalesTeamActions = require('../action/sales-team-actions');
+const SalesTeamActions = require('../action/sales-team-actions');
 //没有团队时的提示信息
-var salesTeamIsNull = 'sales-team-is-null';
+let salesTeamIsNull = 'sales-team-is-null';
+import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+
 function SalesTeamStore() {
     this.salesTeamList = [];//团队分组列表
     this.salesTeamListArray = [];//团队分组树形列表
@@ -33,8 +35,35 @@ function SalesTeamStore() {
     this.isEditGroupFlag = false; // 是否编辑部门，默认false
     this.selectedRowIndex = -1; // 点击的行索引， 默认不选中
     this.curEditGroup = {}; // 当前编辑的部门
+    this.mouseZoneHoverKey = ''; // 鼠标移入区域的key
+    this.isShowPopOver = false; // 是否显示popover，默认false
+
     this.bindActions(SalesTeamActions);
 }
+
+// 处理鼠标移入
+SalesTeamStore.prototype.handleMouseEnterItemLine = function(obj) {
+    this.mouseZoneHoverKey = obj.item.key;
+    if (obj.isShowPopOver) {
+        this.isShowPopOver = false;
+    }
+};
+
+// 处理鼠标移出
+SalesTeamStore.prototype.handleMouseLeaveTreeZone = function() {
+    this.mouseZoneHoverKey = '';
+};
+
+// 处理鼠标悬停更多按钮
+SalesTeamStore.prototype.handleMouseHoverMoreBtn = function() {
+    this.isShowPopOver = true;
+};
+
+// 处理popover浮层的显示
+SalesTeamStore.prototype.handlePopOverVisible = function(flag) {
+    this.isShowPopOver = flag;
+};
+
 SalesTeamStore.prototype.showUserInfoPanel = function(index) {
     this.userInfoShow = true;
     this.userFormShow = false;
@@ -244,7 +273,9 @@ SalesTeamStore.prototype.refreshTeamListAfterAdd = function(addTeam) {
 //修改团队名称后更新列表中对应团队的名称
 SalesTeamStore.prototype.updateTeamNameAfterEdit = function(editTeam) {
     let team = _.find(this.salesTeamList, team => team.group_id === editTeam.key);
-    team.group_name = editTeam.title;
+    if (team) {
+        team.group_name = editTeam.title;
+    }
     //递归遍历树形团队列表，根据id找团队并修改名称
     this.findGroupByIdEditName(this.salesTeamListArray, editTeam);
 };
@@ -565,6 +596,7 @@ SalesTeamStore.prototype.hideModalDialog = function(deleteGroupItem) {
 
 SalesTeamStore.prototype.handleCancelDeleteGroup = function(item) {
     item.isDeleteGroup = false;
+    this.isShowPopOver = false;
 };
 
 //编辑成员
@@ -576,6 +608,7 @@ SalesTeamStore.prototype.getIsEditMember = function() {
 //取消编辑成员
 SalesTeamStore.prototype.cancelEditMember = function() {
     this.isEditMember = false;
+    this.isShowPopOver = false;
 };
 
 //添加成员
@@ -631,6 +664,8 @@ SalesTeamStore.prototype.saveDeleteGroup = function(result) {
             delete team.isLiSelect;
         });
         this.salesTeamTree();
+        this.isShowPopOver = false;
+        this.mouseZoneHoverKey = '';
     }
     //删除团队失败
     this.delTeamErrorMsg = result.errorMsg;
@@ -651,6 +686,8 @@ SalesTeamStore.prototype.editGroup = function(item) {
     this.isEditGroupFlag = true;
     item.isEditGroup = true;
     item.isShowOperationArea = false;
+    this.isShowPopOver = false;
+    this.mouseZoneHoverKey = '';
 };
 
 //取消展示组修改表单
@@ -658,6 +695,8 @@ SalesTeamStore.prototype.cancelEditGroup = function(item) {
     item.isEditGroup = false;
     this.isEditGroupFlag = false;
     this.curEditGroup = {};
+    this.isShowPopOver = false;
+    this.mouseZoneHoverKey = '';
 };
 
 //展示组添加表单
@@ -668,12 +707,15 @@ SalesTeamStore.prototype.addGroup = function(item) {
 
 //取消展示组添加表单
 SalesTeamStore.prototype.cancelAddGroup = function(item) {
+    this.isShowPopOver = false;
+    this.mouseZoneHoverKey = '';
     if (item) {
         //关闭添加该组织添加子组织的面板
         item.isAddGroup = false;
     } else {
         //关闭根组织添加面板
         this.isAddSalesTeamRoot = false;
+
     }
 };
 
@@ -891,12 +933,12 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
 };
 
 SalesTeamStore.prototype.salesTeamTree = function(flag) {
-    var isSelectObj = this.checkSelectTree();
-    var salesTeamList = this.salesTeamList;
-    var salesTeamArray = [];//所有根团队
-    var newSalesTeamList = [];//所有子团队
-    for (var i = 0; i < salesTeamList.length; i++) {
-        var salesTeam = salesTeamList[i];
+    let isSelectObj = this.checkSelectTree();
+    let salesTeamList = this.salesTeamList;
+    let salesTeamArray = [];//所有根团队
+    let newSalesTeamList = [];//所有子团队
+    for (let i = 0; i < salesTeamList.length; i++) {
+        let salesTeam = salesTeamList[i];
         if (!salesTeam.parent_group) {
             salesTeamArray.push({
                 title: salesTeam.group_name,
@@ -923,8 +965,8 @@ SalesTeamStore.prototype.salesTeamTree = function(flag) {
             //没有展开过销售团队，默认展开第一个销售团队
             salesTeamArray[0].isLiSelect = true;
         }
-        for (var j = 0, len = this.salesTeamList.length; j < len; j++) {
-            var item = this.salesTeamList[j];
+        for (let j = 0, len = this.salesTeamList.length; j < len; j++) {
+            let item = this.salesTeamList[j];
             if (item.group_id === salesTeamArray[0].key) {
                 item.select = salesTeamArray[0].select;
                 item.isLiSelect = salesTeamArray[0].isLiSelect;

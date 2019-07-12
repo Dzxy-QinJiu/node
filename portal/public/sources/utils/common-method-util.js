@@ -357,6 +357,10 @@ exports.renderClueStatus = function(status) {
             statusDes =
                 <span className="clue-stage has-follow">{Intl.get('clue.customer.has.follow', '已跟进')}</span>;
             break;
+        case '3':
+            statusDes =
+                <span className="clue-stage has-transfer">{Intl.get('clue.customer.has.transfer', '已转化')}</span>;
+            break;
     }
     return statusDes;
 };
@@ -627,25 +631,6 @@ exports.formatSalesmanList = function(salesManList) {
         }
     });
     return dataList;
-};
-
-exports.renderClueStatus = function(status) {
-    var statusDes = '';
-    switch (status) {
-        case '0':
-            statusDes = <span
-                className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
-            break;
-        case '1':
-            statusDes =
-                <span className="clue-stage has-distribute">{Intl.get('sales.home.will.trace', '待跟进')}</span>;
-            break;
-        case '2':
-            statusDes =
-                <span className="clue-stage has-follow">{Intl.get('clue.customer.has.follow', '已跟进')}</span>;
-            break;
-    }
-    return statusDes;
 };
 
 //是否是oplate用户，只有oplate的用户才可以进行添加、申请等操作

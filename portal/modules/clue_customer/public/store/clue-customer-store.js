@@ -281,7 +281,7 @@ ClueCustomerStore.prototype.setUnSelectDataTip = function(tip) {
 ClueCustomerStore.prototype.afterEditCustomerDetail = function(newCustomerDetail) {
     //修改客户相关的属性，直接传属性和客户的id
     //如果修改联系人相关的属性，还要把联系人的id传过去
-    var customerProperty = ['access_channel', 'clue_source', 'clue_classify', 'source', 'user_id', 'user_name', 'sales_team', 'sales_team_id', 'name', 'availability', 'source_time', 'status'];
+    var customerProperty = ['access_channel', 'clue_source', 'clue_classify', 'source', 'user_id', 'user_name', 'sales_team', 'sales_team_id', 'name', 'availability', 'source_time', 'status','customer_name','customer_id'];
     var contact_id = newCustomerDetail.contact_id || '';
     if (newCustomerDetail.contact_id) {
         delete newCustomerDetail.contact_id;
@@ -398,9 +398,10 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
         if (updateTraceCustomer) {
             if (_.get(updateTraceCustomer, 'customer_traces[0]')) {
                 updateTraceCustomer.customer_traces[0].remark = traceObj.remark;
-                updateTraceCustomer.customer_traces[0].add_time = traceObj.time;
+                updateTraceCustomer.customer_traces[0].add_time = traceObj.time || moment().valueOf();
+                updateTraceCustomer.customer_traces[0].call_date = traceObj.time || moment().valueOf();
             } else {
-                updateTraceCustomer.customer_traces = [{remark: traceObj.remark, add_time: traceObj.time}];
+                updateTraceCustomer.customer_traces = [{remark: traceObj.remark, add_time: traceObj.time || moment().valueOf(), call_date: traceObj.time || moment().valueOf()}];
             }
         }
         if (traceObj.remark) {

@@ -1,7 +1,6 @@
 /**
  * Created by xiaojinfeng on 2016/04/11.
  */
-const React = require('react');
 import {Icon,Button, Popover} from 'antd';
 import commonMethodUtil from '../../../../public/sources/utils/common-method-util';
 var classNames = require('classnames');
@@ -15,7 +14,6 @@ import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 const TAB_HAED_HEIGHT = 40; // tabs 头部高度
 
-
 function noop() {
 }
 
@@ -24,22 +22,17 @@ class LeftTree extends React.Component {
         getSalesTeamMemberList: noop
     };
 
-    state = {
-        mouseZoneHoverKey: '', // 鼠标移入区域的key
-        visible: false, // 是否显示popover，默认false
-    };
-
     showOperationArea = (item) => {
         SalesTeamAction.showOperationArea(item);
     };
 
     editGroup = (item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-update'),'编辑子团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-update'),'编辑子部门');
         SalesTeamAction.editGroup(item);
     };
 
     addGroup = (item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'增加子团队');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'添加子部门');
         SalesTeamAction.addGroup(item);
     };
 
@@ -48,26 +41,13 @@ class LeftTree extends React.Component {
         SalesTeamAction.deleteGroup(item);
     };
 
-    // 显示团队信息的数字
-    showTeamGroupCount = () => {
-        this.setState({
-            mouseZoneHoverKey: '',
-            visible: false
-        });
-    };
-
     cancelEditGroup = (item) => {
-        this.showTeamGroupCount();
         if (item && item.isEditGroup) {
             SalesTeamAction.cancelEditGroup(item);
         } else {
             SalesTeamAction.cancelAddGroup(item);
             setTimeout(() => $('.sales-team-search-input-container .search-input').val(this.props.searchContent));
         }
-    };
-
-    handleSubmitTeamForm = () => {
-        this.showTeamGroupCount();
     };
 
     bodyClickFun = (e) => {
@@ -171,8 +151,9 @@ class LeftTree extends React.Component {
         );
     };
 
-    // 添加子团队、编辑子团队、删除子团队
-    renderOperateChildTeam = (item) => {
+    // 添加子团队、编辑子团队、删除子团队, type：true含有子部门， false是最底层的部门
+    // 只有最底层部门有删除功能，因为删除部门的接口只支持删除最底层的部门
+    renderOperateChildTeam = (item, type) => {
         return (
             <div className="tree-operation-div">
                 <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
@@ -195,52 +176,46 @@ class LeftTree extends React.Component {
                         </span>
                     </div>
                 </PrivilegeChecker>
-                <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
-                    <div className="tree-operation-item-zone icon-operation tree-operation-icon"
-                        onClick={this.deleteGroup.bind(this, item)}
-                    >
-                        <i className='iconfont icon-delete'></i>
-                        <span className='operation-item-text'>
-                            {Intl.get('organization.del.department', '删除部门')}
-                        </span>
-                    </div>
-                </PrivilegeChecker>
+                {
+                    type ? null : (
+                        <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
+                            <div className="tree-operation-item-zone icon-operation tree-operation-icon"
+                                onClick={this.deleteGroup.bind(this, item)}
+                            >
+                                <i className='iconfont icon-delete'></i>
+                                <span className='operation-item-text'>
+                                    {Intl.get('organization.del.department', '删除部门')}
+                                </span>
+                            </div>
+                        </PrivilegeChecker>
+                    )
+                }
             </div>
         );
     };
 
-    handleMouseEnter = (item, event) => {
+    // 处理鼠标移入
+    handleMouseEnterItemLine = (item, event) => {
         event.stopPropagation();
-        this.setState({
-            mouseZoneHoverKey: _.get(item, 'key'),
-            visible: false
-        });
+        let isShowPopOver = this.props.isShowPopOver;
+        SalesTeamAction.handleMouseEnterItemLine({item, isShowPopOver});
     };
-
-    handleHoverChange = (flag) => {
-        if (!flag) {
-            this.setState({
-                mouseZoneHoverKey: '',
-                visible: false
-            });
+    // 处理鼠标移出
+    handleMouseLeaveTreeZone = (event) => {
+        event.stopPropagation();
+        if (!this.props.isShowPopOver) {
+            SalesTeamAction.handleMouseLeaveTreeZone();
         }
     };
-
-    handleMouseLeave = (event) => {
-        event.stopPropagation();
-        if (!this.state.visible) {
-            this.setState({
-                mouseZoneHoverKey: '',
-                visible: false
-            });
-        }
+    // 处理鼠标悬停更多按钮
+    handleMouseHoverMoreBtn = () => {
+        SalesTeamAction.handleMouseHoverMoreBtn();
+    };
+    // 处理popover浮层的显示
+    handlePopOverVisible = (flag) => {
+        SalesTeamAction.handlePopOverVisible(flag);
     };
 
-    handleMouseEnterMoreBtn = () => {
-        this.setState({
-            visible: true
-        });
-    };
     // 确认删除部门
     handleDeleteGroup = (item) => {
         SalesTeamAction.saveDeleteGroup(_.get(item, 'key'));
@@ -251,11 +226,34 @@ class LeftTree extends React.Component {
         SalesTeamAction.handleCancelDeleteGroup(item);
     };
 
+    // 渲染添加根部门
+    renderOperateRootDepartment = () => {
+        return (
+            <div className="tree-operation-div">
+                <PrivilegeChecker check="BGM_SALES_TEAM_ADD">
+                    <div
+                        className="tree-operation-item-zone icon-operation tree-operation-icon"
+                        onClick={this.handleAddRootDepartment}
+                    >
+                        <i className='iconfont icon-add'></i>
+                        <span className='operation-item-text'>
+                            {Intl.get('organization.add.department', '添加部门')}
+                        </span>
+                    </div>
+                </PrivilegeChecker>
+            </div>
+        );
+    };
+
+    handleAddRootDepartment = () => {
+        SalesTeamAction.addSalesTeamRoot();
+    };
+
     element = (item, type) => {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
         let organizationName = _.get(getOrganization(), 'name', '');
         let teamMemberCount = commonMethodUtil.getTeamMemberCount(item, 0, this.props.teamMemberCountList, false);
-        let isShowMoreBtn = this.state.mouseZoneHoverKey === item.key; // 是否显示更多按钮
+        let isShowMoreBtn = this.props.mouseZoneHoverKey === item.key; // 是否显示更多按钮
         let isAddGroup = _.get(item, 'isAddGroup', false);
         let isEditGroup = _.get(item, 'isEditGroup', false);
         let isDeleteGroup = _.get(item, 'isDeleteGroup', false);
@@ -268,16 +266,42 @@ class LeftTree extends React.Component {
         return (
             <div
                 className="left-tree-item-container"
-                onMouseEnter={this.handleMouseEnter.bind(this, item)}
+                onMouseEnter={this.handleMouseEnterItemLine.bind(this, item)}
             >
                 {
                     item.title === organizationName ? (
                         <div className='member-info'>
                             <div className='member-info-name'>
                                 <span className="sales-team-name-text">{item.title}</span>
-                                <span className="member-statistic">
-                                    {Intl.get('sales.team.member.count', '{teamMemberCount}人', {teamMemberCount: this.props.memberCount})}
-                                </span>
+                                {
+                                    this.props.isAddSalesTeamRoot ? (
+                                        <div className="group-form-div group-form-no-superior">
+                                            <GroupFrom
+                                                cancelSalesTeamForm={this.cancelEditGroup}
+                                                isAddRoot={true}
+                                                salesTeamList={this.props.salesTeamList}
+                                            >
+                                            </GroupFrom>
+                                        </div>
+                                    ) : (
+                                        isShowMoreBtn ? (
+                                            <Popover
+                                                content={this.renderOperateRootDepartment(item)}
+                                                placement="bottomRight"
+                                                onVisibleChange={this.handlePopOverVisible}
+                                                visible={this.props.isShowPopOver}
+                                            >
+                                                <span
+                                                    className='iconfont icon-more'
+                                                    onMouseOver={this.handleMouseHoverMoreBtn}
+                                                ></span>
+                                            </Popover>) : (
+                                            <span className="member-statistic">
+                                                {Intl.get('sales.team.member.count', '{teamMemberCount}人', {teamMemberCount: this.props.memberCount})}
+                                            </span>
+                                        )
+                                    )
+                                }
                             </div>
                         </div>
                     ) : (
@@ -309,14 +333,14 @@ class LeftTree extends React.Component {
                                         ) : (
                                             isShowMoreBtn && !isAddGroup && !isEditGroup && !isDeleteGroup ? (
                                                 <Popover
-                                                    content={this.renderOperateChildTeam(item)}
+                                                    content={this.renderOperateChildTeam(item, type)}
                                                     placement="bottomRight"
-                                                    onVisibleChange={this.handleHoverChange}
-                                                    visible={this.state.visible}
+                                                    onVisibleChange={this.handlePopOverVisible}
+                                                    visible={this.props.isShowPopOver}
                                                 >
                                                     <span
                                                         className='iconfont icon-more'
-                                                        onMouseEnter={this.handleMouseEnterMoreBtn}
+                                                        onMouseOver={this.handleMouseHoverMoreBtn}
                                                     ></span>
                                                 </Popover>
                                             ) : (
@@ -369,7 +393,6 @@ class LeftTree extends React.Component {
                     cancelSalesTeamForm={this.cancelEditGroup.bind(this,item )}
                     salesTeam={item}
                     salesTeamList={this.props.salesTeamList}
-                    handleSubmitTeamForm={this.handleSubmitTeamForm.bind(this, item)}
                 >
                 </GroupFrom>
             </div>
@@ -411,8 +434,8 @@ class LeftTree extends React.Component {
         }
     };
 
-    addSalesTeamRoot = (e) => {
-        Trace.traceEvent(e,'添加团队');
+    addSalesTeamRoot = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'添加部门');
         SalesTeamAction.addSalesTeamRoot();
     };
 
@@ -463,7 +486,7 @@ class LeftTree extends React.Component {
                     >
                         <ul
                             className="left-tree-ul"
-                            onMouseLeave={this.handleMouseLeave}
+                            onMouseLeave={this.handleMouseLeaveTreeZone}
                         >
                             {
                                 this.props.isEditGroupFlag ? (
@@ -503,5 +526,8 @@ LeftTree.propTypes = {
     memberCount: PropTypes.number,
     isEditGroupFlag: PropTypes.bool,
     curEditGroup: PropTypes.string,
+    mouseZoneHoverKey: PropTypes.string,
+    isShowPopOver: PropTypes.bool,
+    getSelectedDepartmentId: PropTypes.func
 };
 module.exports = LeftTree;

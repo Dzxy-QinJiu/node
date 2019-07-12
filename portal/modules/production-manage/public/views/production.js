@@ -9,7 +9,7 @@ require('../style/production-info.less');
 import { Form, Input, Icon, Radio, Button, Select, Checkbox, message } from 'antd';
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
-import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {productNameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 
@@ -337,7 +337,7 @@ class Production extends React.Component {
                             >
                                 {getFieldDecorator('name', {
                                     initialValue: this.props.info.name,
-                                    rules: [nameLengthRule]
+                                    rules: [productNameLengthRule]
                                 })(
                                     <Input name="name" id="name"
                                         placeholder={Intl.get('config.product.input.name', '请输入产品名称')}

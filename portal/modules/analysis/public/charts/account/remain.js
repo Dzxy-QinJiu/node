@@ -51,7 +51,7 @@ export function getRemainAccountChart(paramObj = {}) {
                     {
                         title: Intl.get('common.login.time', '时间'),
                         dataIndex: 'timestamp',
-                        width: 90,
+                        width: 100,
                         align: 'left',
                         render: text => {
                             text = moment(text).format(oplateConsts.DATE_FORMAT);
@@ -108,17 +108,17 @@ export function getRemainAccountChart(paramObj = {}) {
                 return columns;
             })(),
         },
-        customOption: {
-            fieldName: 'actives',
-            needExtractColumns: true,
-            callback: dataItem => {
+        processData: data => {
+            _.each(data, dataItem => {
                 const actives = dataItem.actives;
 
                 _.each(actives, activeItem => {
-                    const diffDay = moment(activeItem.timestamp).diff(dataItem.timestamp, 'day');
-                    dataItem['day' + diffDay] = activeItem.active;
+                    const diffDay = moment(activeItem.timestamp).diff(dataItem.timestamp, interval);
+                    dataItem[interval + diffDay] = activeItem.active;
                 });
-            },
+            });
+
+            return data;
         },
         noShowCondition: {
             callback: conditions => {

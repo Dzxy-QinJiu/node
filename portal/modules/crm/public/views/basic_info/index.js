@@ -428,17 +428,17 @@ class BasicData extends React.Component {
                     /> ) : (
                     <div className="basic-info-title-block">
                         <div className="basic-info-name">
+                            {basicData.qualify_label ? (
+                                <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
+                                    {basicData.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                                        basicData.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
+                            }
                             {this.hasEditCutomerLabelPrivilege() && !this.props.disableEdit ? (
                                 <Dropdown overlay={this.getCustomerLabelMenus()} trigger={['click']}>
                                     <span title={Intl.get('crm.customer.label.edit.tip', '点击修改客户阶段')}>
                                         {customerLabel}
                                     </span>
                                 </Dropdown>) : customerLabel}
-                            {basicData.qualify_label ? (
-                                <Tag className={crmUtil.getCrmLabelCls(basicData.qualify_label)}>
-                                    {basicData.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                        basicData.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                            }
                             <span className="basic-name-text">{basicData.name}</span>
                             {hasPrivilege('CUSTOMER_UPDATE_NAME') && !this.props.disableEdit ? (
                                 <DetailEditBtn title={Intl.get('common.edit', '编辑')}
