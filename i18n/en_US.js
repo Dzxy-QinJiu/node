@@ -970,6 +970,7 @@ var en_US = {
     'config.product.add': 'Add product',//添加产品
     'config.product.modify': 'Modify product',//修改产品
     'config.product.input.name': 'Please input production name',//请输入产品名称
+    'config.product.name.rule': '1 ~ 10 characters', // 最少1个字符,最多10个字符
     'config.product.code': 'Production code',//产品编号
     'config.product.input.code': 'Please input production code',//请输入产品编号
     'config.product.desc': 'Production desc',//产品描述
@@ -3032,7 +3033,9 @@ var en_US = {
     'common.recent.month.daily.activity': 'recent month daily activity',//近一个月日活
     'common.recent.three.month.weekly.activity': 'recent three month weekly activity',//近三个月周活
     'common.recent.year.monthly.activity': 'recent year monthly activity',//近一个年月活
-    'call.record.phone.err.msg': 'Wrong phone number!'//电话号码错误
-
+    'call.record.phone.err.msg': 'Wrong phone number!',//电话号码错误
+    'clue.detail.last.contact.time': 'Last trace time',//最后跟进时间
+    'common.sales.develop': 'sales develop',//销售开发
+    'common.clue.convert': 'clue convert',//线索转化
 };
 export default en_US;

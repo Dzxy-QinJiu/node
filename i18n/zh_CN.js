@@ -978,6 +978,7 @@ var zh_CN = {
     'config.product.add': '添加产品',
     'config.product.modify': '修改产品',
     'config.product.input.name': '请输入产品名称',
+    'config.product.name.rule': '最少1个字符,最多10个字符',
     'config.product.code': '产品编号',
     'config.product.input.code': '请输入产品编号',
     'config.product.desc': '产品描述',
@@ -3137,7 +3138,9 @@ var zh_CN = {
     'common.recent.month.daily.activity': '近一个月日活',
     'common.recent.three.month.weekly.activity': '近三个月周活',
     'common.recent.year.monthly.activity': '近一个年月活',
-    'call.record.phone.err.msg': '电话号码错误'
-
+    'call.record.phone.err.msg': '电话号码错误',
+    'clue.detail.last.contact.time': '最后跟进时间',
+    'common.sales.develop': '销售开发',
+    'common.clue.convert': '线索转化',
 };
 export default zh_CN;

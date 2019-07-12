@@ -187,7 +187,7 @@ module.exports = {
             },
         },{
             method: 'get',
-            path: '/rest/get/similar/cluelists',
+            path: '/rest/get/similar/cluelists/:type',
             handler: 'getSimilarClueLists',
             passport: {
                 'needLogin': true

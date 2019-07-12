@@ -2,7 +2,7 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 //联系人的ajax
-var SalesTeamAjax = require('../ajax/sales-team-ajax');
+const SalesTeamAjax = require('../ajax/sales-team-ajax');
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 

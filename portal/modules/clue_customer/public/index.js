@@ -415,7 +415,7 @@ class ClueCustomer extends React.Component {
     };
     //获取线索列表
     getClueList = (data) => {
-        var rangeParams = _.get(data, 'rangeParams') || JSON.stringify(clueFilterStore.getState().rangeParams);
+        var rangeParams = _.get(data, 'rangeParams') || clueFilterStore.getState().rangeParams;
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         var typeFilter = getClueStatusValue(filterClueStatus);//线索类型
         var filterStoreData = clueFilterStore.getState();
@@ -433,11 +433,17 @@ class ClueCustomer extends React.Component {
         }
         var unExistFileds = clueFilterStore.getState().unexist_fields;
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+        var sorter = this.state.sorter;
+        //如果选中的是已跟进或者已转化的线索，按最后联系时间排序
+        if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.HAS_TRANSFER){
+            rangeParams[0].name = 'last_contact_time';
+            sorter.field = 'last_contact_time';
+        };
         //跟据类型筛选
         const queryObj = {
             lastClueId: this.state.lastCustomerId,
             pageSize: this.state.pageSize,
-            sorter: this.state.sorter,
+            sorter: sorter,
             keyword: _.trim(this.state.keyword),
             rangeParams: rangeParams,
             statistics_fields: 'status',

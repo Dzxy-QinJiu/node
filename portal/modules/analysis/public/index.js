@@ -85,10 +85,21 @@ class CurtaoAnalysis extends React.Component {
         this.getCallSystemConfig();
 
         analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+
+        //将页面body元素的overflow样式设为hidden，以防止出现纵向滚动条
+        this.setBodyOverflow('hidden');
     }
 
     componentWillUnmount() {
         analysisCustomerListEmitter.removeListener(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+
+        //恢复页面body元素的overflow样式
+        this.setBodyOverflow('auto');
+    }
+
+    //设置页面body元素的overflow样式
+    setBodyOverflow(value = 'auto') {
+        $('body').css('overflow', value);
     }
 
     //获取订单阶段列表
