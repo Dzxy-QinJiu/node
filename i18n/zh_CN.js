@@ -3141,5 +3141,6 @@ var zh_CN = {
     'clue.detail.last.contact.time': '最后跟进时间',
     'common.sales.develop': '销售开发',
     'common.clue.convert': '线索转化',
+    'common.clue.name.need.at.least.two.char.to.do.customer.convert': '线索名称必须在两个字或以上，才能进行转为客户的操作',
 };
 export default zh_CN;

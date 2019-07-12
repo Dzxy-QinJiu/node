@@ -339,7 +339,7 @@ class SalesClueItem extends React.Component {
         }
 
         if (clueName.length < 2) {
-            message.error('线索名称必须在两个字或以上，才能进行转为客户的操作');
+            message.error(Intl.get('common.clue.name.need.at.least.two.char.to.do.customer.convert', '线索名称必须在两个字或以上，才能进行转为客户的操作'));
             return;
         }
 
