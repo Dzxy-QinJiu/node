@@ -115,28 +115,28 @@ class ClueFilterPanel extends React.Component {
         const advancedData = [
             {
                 groupName: Intl.get('clue.analysis.source', '来源'),
-                groupId: 'clue_source',
+                groupId: 'clue_pool_source',
                 data: clueSourceArray.map(x => ({
                     name: x,
                     value: x
                 }))
             },{
                 groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
-                groupId: 'clue_access',
+                groupId: 'clue_pool_access',
                 data: accessChannelArray.map(x => ({
                     name: x,
                     value: x
                 }))
             },{
                 groupName: Intl.get('clue.customer.classify', '线索分类'),
-                groupId: 'clue_classify',
+                groupId: 'clue_pool_classify',
                 data: clueClassifyArray.map(x => ({
                     name: x,
                     value: x
                 }))
             },{
                 groupName: Intl.get('crm.96', '地域'),
-                groupId: 'clue_province',
+                groupId: 'clue_pool_province',
                 data: clueProvinceList.map(x => ({
                     name: x,
                     value: x
@@ -147,7 +147,7 @@ class ClueFilterPanel extends React.Component {
             advancedData.unshift(
                 {
                     groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'user_name',
+                    groupId: 'clue_pool_user_name',
                     singleSelect: true,
                     data: _.map(clueLeadingArray, x => ({
                         name: x,

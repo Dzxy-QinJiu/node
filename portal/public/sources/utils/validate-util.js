@@ -119,3 +119,11 @@ export const productDesRule = {
     pattern: descriptionRegex,
     message: Intl.get('app.user.manage.product.des.validate', '自定义属性key只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到20（包括20）之间')
 };
+
+// 产品名称长度的验证规则
+export const productNameLengthRule = {
+    required: true,
+    min: 1,
+    max: 10,
+    message: Intl.get('config.product.name.rule', '最少1个字符,最多10个字符')
+};
