@@ -328,30 +328,43 @@ class SalesClueItem extends React.Component {
         clueCustomerAction.setSalesManName({'salesManNames': salesManNames});
     };
     //转为客户按钮点击事件
-    onConvertToCustomerBtnClick = (clueId, clueName) => {
+    onConvertToCustomerBtnClick = (clueId, clueName, phones) => {
+        clueName = _.trim(clueName);
+
         //线索名为空时不能执行转为客户的操作
         //此时提示用户完善客户名
         if (!clueName) {
             message.error(Intl.get('clue.need.complete.clue.name', '请先完善线索名'));
-
             return;
         }
 
+        if (clueName.length < 2) {
+            message.error('线索名称必须在两个字或以上，才能进行转为客户的操作');
+            return;
+        }
+
+        if (_.isArray(phones)) {
+            phones = phones.join(',');
+        } else {
+            phones = '';
+        }
+
+        //设置当前线索
+        clueCustomerAction.setCurrentCustomer(clueId);
+        
         //权限类型
         const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
 
         //根据线索名称查询相似客户
         ajax.send({
-            url: `/rest/customer/v3/customer/range/${authType}/20/1/start_time/descend`,
-            type: 'post',
-            data: {
-                query: {
-                    name: clueName
-                }
+            url: `/rest/customer/v3/customer/query/${authType}/similarity/customer`,
+            query: {
+                name: clueName,
+                phones
             }
         })
             .done(result => {
-                const existingCustomers = _.get(result, 'result');
+                const existingCustomers = _.get(result, 'similarity_list');
 
                 //若存在相似客户
                 if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
@@ -527,7 +540,7 @@ class SalesClueItem extends React.Component {
                     <Button className='add-trace-content'
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
-                {associatedPrivilege && hasTraceClue ? <Button onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id,salesClueItem.name)} data-tracename="点击关联客户按钮">{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
+                {associatedPrivilege && hasTraceClue ? <Button onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name, salesClueItem.phones)} data-tracename="点击关联客户按钮">{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
 
                 {avalibilityPrivilege ? (salesClueItem.availability === '1' ?
 

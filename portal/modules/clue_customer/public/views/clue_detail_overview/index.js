@@ -683,7 +683,7 @@ class ClueDetailOverview extends React.Component {
         if (avalibility){
             return <div>
                 {associatedPrivilege ? <Button type="primary"
-                    onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id,curClue.name)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
+                    onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id, curClue.name, curClue.phones)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
                 <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
                 </Button>
