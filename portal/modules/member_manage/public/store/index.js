@@ -20,7 +20,6 @@ class MemberManageStore {
     constructor() {
         this.pageSize = 20;
         this.searchContent = ''; // 搜索框查询内容
-        this.memberRoleList = []; // 成员角色列表
         this.selectRole = ''; // 已选过滤角色,默认全部
         this.status = ''; // 成员状态，默认全部
         this.teamroleId = ''; // 职务id
@@ -56,7 +55,6 @@ class MemberManageStore {
             } else {
                 this.getMemberListErrMsg = '';
                 let list = _.get(result, 'resData.data', []);
-                this.memberRoleList = _.get(result, 'resData.roles', 0); // 角色列表
                 this.memberList = _.concat(this.memberList, list);
                 this.memberTotal = _.get(result, 'resData.list_size', 0);
                 let length = _.get(this.memberList, 'length', 0);

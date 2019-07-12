@@ -5,6 +5,7 @@ import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Spinner from 'CMP_DIR/spinner';
 import MemberManageStore from './store';
 import MemberManageAction from './action';
+import MemberManageAjax from './ajax';
 import MemberFormAction from './action/member-form-actions';
 import MemberForm from './view/member-form';
 import MemberInfo from './view/member-info';
@@ -32,6 +33,7 @@ class MemberManage extends React.Component {
         super(props);
         this.state = {
             selectedRowIndex: null, // 点击的行索引
+            memberRoleList: [],
             ...MemberManageStore.getState(),
         };
     }
@@ -52,6 +54,13 @@ class MemberManage extends React.Component {
 
     componentDidMount = () => {
         MemberManageStore.listen(this.onChange);
+        MemberManageAjax.getRoleList().then( (result) => {
+            if ( _.isArray(result) && result.length) {
+                this.setState({
+                    memberRoleList: result
+                });
+            }
+        });
         // 判断是否从组织切换到相应的部门，若切换，此方法不执行
         if (!this.props.isBeforeShowTeamList) {
             // 加setTImeout是为了解决 Dispatch.dispatch(...)的错误
@@ -125,8 +134,12 @@ class MemberManage extends React.Component {
 
     // 角色下拉框
     getRoleOptions = () => {
-        let options = _.map(this.state.memberRoleList, roleItem => <Option key={roleItem.role_id} value={roleItem.role_define}>{roleItem.role_name}</Option>);
-        options.unshift(<Option value="" key="all">{Intl.get('member.role.select.default.role', '全部角色')}</Option>);
+        let options = _.map(this.state.memberRoleList, roleItem =>
+            <Option value={roleItem.roleId}>{roleItem.roleName}</Option>
+        );
+        options.unshift(<Option value="" key="all">
+            {Intl.get('member.role.select.default.role', '全部角色')}
+        </Option>);
         return options;
     };
     // 选择角色
