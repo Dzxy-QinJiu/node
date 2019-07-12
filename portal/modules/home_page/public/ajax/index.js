@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2019/6/21.
  */
-
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 //获取我的工作列表
 let getMyWorkListAjax = null;
 exports.getMyWorkList = function(queryParams) {
@@ -56,6 +56,75 @@ exports.handleMyWorkStatus = function(bodyObj) {
         },
         error: function(error) {
             Deferred.reject(error.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//获取业绩排名
+let getContractPerformanceAjax = null;
+exports.getContractPerformance = function(queryParams) {
+    let type = 'self';//CURTAO_SALES_REPORTS_COMMON
+    if (hasPrivilege('CURTAO_SALES_REPORTS_MANAGER')) {
+        type = 'all';
+    }
+    var Deferred = $.Deferred();
+    getContractPerformanceAjax && getContractPerformanceAjax.abort();
+    getContractPerformanceAjax = $.ajax({
+        url: `/rest/contract/performance/${type}`,
+        dataType: 'json',
+        type: 'get',
+        data: queryParams,
+        success: function(result) {
+            Deferred.resolve(result);
+        },
+        error: function(error) {
+            Deferred.reject(error.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+//获取通话时长数据
+let getCallTimeDataAjax = null;
+exports.getCallTimeData = function(reqData) {
+    var Deferred = $.Deferred();
+    getCallTimeDataAjax && getCallTimeDataAjax.abort();
+    getCallTimeDataAjax = $.ajax({
+        url: '/rest/call/time/data',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+
+//获取本周联系过的客户数
+let getContactCustomerCountAjax = null;
+exports.getContactCustomerCount = function(reqData) {
+    let type = 'user';//CRM_LIST_CUSTOMERS
+    if (hasPrivilege('CUSTOMER_ALL')) {
+        type = 'manager';
+    }
+    var Deferred = $.Deferred();
+    getContactCustomerCountAjax && getContactCustomerCountAjax.abort();
+    getContactCustomerCountAjax = $.ajax({
+        url: '/rest/contact/customer/count/' + type,
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
         }
     });
     return Deferred.promise();

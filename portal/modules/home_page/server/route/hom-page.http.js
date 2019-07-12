@@ -32,5 +32,31 @@ module.exports = {
             'needLogin': true
         },
         'privileges': ['ORGANIZATION_BASE_PERMISSION']
+    }, {
+        // 获取业绩排名
+        'method': 'get',
+        'path': '/rest/contract/performance/:type',
+        'handler': 'getContractPerformance',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': ['CURTAO_SALES_REPORTS_MANAGER', 'CURTAO_SALES_REPORTS_COMMON']
+    }, {//获取通话时长数据
+        'method': 'get',
+        'path': '/rest/call/time/data',
+        'handler': 'getCallTimeData',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
+    }, {
+        //获取联系的客户数
+        'method': 'get',
+        'path': '/rest/contact/customer/count/:type',
+        'handler': 'getContactCustomerCount',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': ['CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL']
     }]
 };

@@ -633,9 +633,9 @@ class MyWorkColumn extends React.Component {
 
     render() {
         let title = Intl.get('home.page.my.work', '我的工作');
-        if (this.state.totalCount) {
-            title += this.state.totalCount;
-        }
+        // if (this.state.totalCount) {
+        //     title += this.state.totalCount;
+        // }
         return (
             <ColumnItem contianerClass='my-work-wrap'
                 title={title}

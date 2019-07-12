@@ -34,3 +34,32 @@ exports.handleMyWorkStatus = function(req, res) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
+
+//获取业绩排名
+exports.getContractPerformance = function(req, res) {
+    homPageService.getContractPerformance(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+
+//获取通话时长数据
+exports.getCallTimeData = function(req, res) {
+    homPageService.getCallTimeData(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+//获取已联系客户数
+exports.getContactCustomerCount = function(req, res) {
+    homPageService.getContactCustomerCount(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
