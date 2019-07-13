@@ -45,16 +45,16 @@ class ClueFilterPanel extends React.Component {
             let groupId = item.groupId;
             let data = item.data;
             // 线索来源
-            if (groupId === 'clue_source'){
+            if (groupId === 'clue_pool_source'){
                 FilterAction.setFilterClueSoure(data);
-            }else if (groupId === 'clue_access'){ // 线索接入渠道
+            }else if (groupId === 'clue_pool_access'){ // 线索接入渠道
                 FilterAction.setFilterClueAccess(data);
-            }else if (groupId === 'clue_classify'){ // 线索分类
+            }else if (groupId === 'clue_pool_classify'){ // 线索分类
                 FilterAction.setFilterClueClassify(data);
-            }else if (groupId === 'clue_province'){
+            }else if (groupId === 'clue_pool_province'){
                 //线索地域
                 FilterAction.setFilterClueProvince(data);
-            } else if (groupId === 'user_name'){
+            } else if (groupId === 'clue_pool_user_name'){
                 FilterAction.setFilterClueUsername(data);
             }
         });
