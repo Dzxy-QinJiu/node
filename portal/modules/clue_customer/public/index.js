@@ -330,7 +330,7 @@ class ClueCustomer extends React.Component {
             <div className="extract-clue-customer-container pull-right">
                 <Button onClick={this.showExtractCluePanel} className="btn-item">
                     <span className="clue-container">
-                        {Intl.get('clue.extract.clue','提取线索')}
+                        {Intl.get('clue.pool','线索池')}
                     </span>
                 </Button>
             </div>
