@@ -9,7 +9,7 @@ require('../style/production-info.less');
 import { Form, Input, Icon, Radio, Button, Select, Checkbox, message } from 'antd';
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
-import {productNameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {productNameRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 
@@ -295,21 +295,6 @@ class Production extends React.Component {
         }
     }
 
-    getProductNameValidator= () => {
-        return (rule, value, callback) => {
-            let nameValue = _.trim(value); // 文本框中的值
-            if (nameValue) {
-                if (productNameLengthRule.test(value)) {
-                    callback();
-                } else {
-                    callback(new Error(Intl.get('product.name.rule', '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间')));
-                }
-            } else {
-                callback(new Error(Intl.get('product.name.input', '请填写产品名称')));
-            }
-        };
-    };
-
     renderFormContent() {
         const {getFieldDecorator} = this.props.form;
         let values = this.props.form.getFieldsValue();
@@ -352,9 +337,7 @@ class Production extends React.Component {
                             >
                                 {getFieldDecorator('name', {
                                     initialValue: this.props.info.name,
-                                    rules: [{
-                                        validator: this.getProductNameValidator()
-                                    }]
+                                    rules: [productNameRule]
                                 })(
                                     <Input
                                         name="name"
