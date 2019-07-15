@@ -16,6 +16,7 @@ var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
+import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 //挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访
 const HANG_UP_TYPES = [PHONERINGSTATUS.phone, PHONERINGSTATUS.curtao_phone, PHONERINGSTATUS.call_back];
 class phoneStatusTop extends React.Component {
@@ -35,7 +36,7 @@ class phoneStatusTop extends React.Component {
             isAddingMoreProdctInfo: this.props.isAddingMoreProdctInfo,
             isAddingPlanInfo: this.props.isAddingPlanInfo,//正在添加联系计划
             showCancelBtn: false,//是否展示取消保存跟进记录的按钮
-            visible: false//跟进内容下拉框是否展示
+            visible: false,//跟进内容下拉框是否展示
         };
     }
 
@@ -63,8 +64,11 @@ class phoneStatusTop extends React.Component {
         //如果接听后，把状态isConnected 改为true
         if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             this.setState({
-                isConnected: true
+                isConnected: true,
             });
+            if (window.location.pathname === '/home'){
+                myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+            }
         }
         var $modal = $('#phone-status-content');
         if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
@@ -146,8 +150,12 @@ class phoneStatusTop extends React.Component {
                 selectedCustomerId: '',
                 isConnected: false,
                 showAddFeedbackOrAddPlan: true,
-                showCancelBtn: false
+                showCancelBtn: false,
             });
+            if (window.location.pathname === '/home'){
+                //写了跟进记录后，对应的首页我的工作设为已完成
+                myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+            }
         });
     };
     //将输入框中的文字放在state上

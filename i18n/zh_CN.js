@@ -334,6 +334,15 @@ var zh_CN = {
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
 
+
+    //首页
+    'menu.home.page': '首页',
+    'home.page.my.work': '我的工作',
+    'home.page.work.all': '全部事务',
+    'home.page.my.interest': '我的关注',
+    'home.page.my.data': '我的数据',
+    'home.page.deal.handle': '待处理的订单',
+
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
     'user.title': '用户管理',

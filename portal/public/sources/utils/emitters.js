@@ -8,6 +8,11 @@ var EventEmitter = require('events');
 exports.scrollBarEmitter = new EventEmitter();
 exports.scrollBarEmitter.STOP_LOADED_DATA = 'stopScrollLoadedData';
 exports.scrollBarEmitter.HIDE_BOTTOM_LOADING = 'scrollBar.hideBottomLoading';
+//首页我的工作的emitter
+exports.myWorkEmitter = new EventEmitter();
+exports.myWorkEmitter.HANDLE_FINISHED_WORK = 'handleFinishedWork';
+exports.myWorkEmitter.SET_WORK_FINISHED = 'setWorkFinished';
+
 //拨打电话emitter
 exports.phoneMsgEmitter = new EventEmitter();
 //打开拨打电话的面板emitter

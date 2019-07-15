@@ -1,0 +1,185 @@
+@import "../../../../public/css/common-variables";
+
+@btn-color: #8DA8C5;
+@btn-hover-color: #2196F3;
+@apply-detail-width: 700px;
+.my-work-content {
+  //可以打开详情的工作（待审批的申请、订单）
+  .open-work-detail-style{
+    cursor: pointer;
+    z-index: 1;
+  }
+  .detail-card-container {
+    position: relative;
+    padding: 0;
+    border-radius: 4px;
+    //工作标题的统一样式
+    .detail-card-title {
+      padding: 8px;
+      margin-bottom: 0;
+      border-bottom: none;
+      background-color: #F9FBFC;
+      color: @btn-color;
+      .work-title-icon {
+        padding-right: 8px;
+      }
+      .work-title-text {
+        margin: 0 6px;
+      }
+      //待处理线索,申请消息类型标题高亮
+      > .priority-high-work {
+        color: @btn-hover-color;
+      }
+    }
+    //工作内容的统一样式
+    .detail-card-content {
+      padding: 16px 20px 20px;
+      line-height: 20px;
+      color: #999999;
+      .work-name {
+        margin-bottom: 4px;
+        line-height: 24px;
+        font-size: 16px;
+        font-weight: 400;
+        color: #333333;
+        .customer-label {
+          vertical-align: top;
+          color: #ffffff;
+        }
+        //客户标签的颜色设置
+        .customer-label.info-tag-style {
+          background-color: @info-tag-color;
+        }
+        .customer-label.intent-tag-style {
+          background-color: @intent-tag-color;
+        }
+        .customer-label.trial-tag-style {
+          background-color: @trial-tag-color;
+        }
+        .customer-label.sign-tag-style {
+          background-color: @sign-tag-color;
+        }
+        .customer-label.qualified-tag-style {
+          background-color: @qualified-tag-color;
+        }
+        .customer-label.history-qualified-tag-style {
+          background-color: @history-qualified-tag-color;
+        }
+        .customer-label.re-contract-tag-style {
+          background-color: @re-contract-color;
+        }
+        .customer-label.loss-tag-style {
+          background-color: @loss-tag-color;
+        }
+        //  客户分数
+        .custmer-score {
+          margin-left: 4px;
+          padding-right: 4px;
+          padding-left: 2px;
+          border-radius: 4px;
+          color: #EFA246;
+          background-color: #FFF0BA;
+          font-size: 14px;
+          .iconfont {
+            margin-right: 4px;
+          }
+        }
+      }
+      //线索名\客户名可点击样式
+      .customer-clue-name {
+        cursor: pointer;
+        z-index: 2;
+        &:hover {
+          color: @btn-hover-color;
+        }
+      }
+      .work-remark {
+        line-height: 24px;
+        .last-contact-time {
+          margin-right: 8px;
+        }
+      }
+      //已处理按钮
+      .handle-work-finish {
+        display: none;
+        position: absolute;
+        float: right;
+        right: 20px;
+        bottom: 20px;
+        color: @btn-color;
+        cursor: pointer;
+        line-height: 24px;
+        &:hover {
+          color: @btn-hover-color;
+        }
+        .work-finish-text {
+          display: inline-block;
+          vertical-align: top;
+          line-height: 24px;
+        }
+        .iconfont {
+          margin-right: 4px;
+        }
+        .anticon-loading{
+          margin-right: 6px;
+          font-size: 16px;
+        }
+      }
+      .alert-timer{
+        float: right;
+        margin-bottom: 20px;
+        .ant-alert-error{
+          padding-right: 20px;
+        }
+      }
+      .work-hover-show-detail {
+        display: none;
+        line-height: 24px;
+        .work-contact-name {
+          margin-right: 4px;
+        }
+        .work-contact-phone {
+          padding: 3px 4px 5px 4px;
+          color: #ffffff;
+          border-radius: 4px;
+          background-color: @btn-hover-color;
+          //拨打电话的按钮
+          .iconfont.icon-active-call_record-ico {
+            visibility: visible;
+            color: #ffffff;
+          }
+        }
+      }
+    }
+    &:hover {
+      .work-hover-show-detail {
+        display: block;
+      }
+      .handle-work-finish {
+        display: block;
+      }
+    }
+  }
+  //申请消息
+  .apply-work-card {
+    .apply-person {
+      float: left;
+    }
+    .apply-time {
+      float: right;
+    }
+  }
+  //申请审批详情宽度设置
+  .my-work-detail-panel:not(.show-modal) {
+    width: calc(@apply-detail-width + 24px);
+
+    .close-modal-btn{
+      right: @apply-detail-width;
+    }
+  }
+  .my-work-detail-panel{
+    .right-panel-modal-content{
+      width: @apply-detail-width;
+    }
+  }
+}

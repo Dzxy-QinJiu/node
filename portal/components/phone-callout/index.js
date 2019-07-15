@@ -33,6 +33,8 @@ class PhoneCallout extends React.Component {
             });
             //如果是在线索里拨打的电话，要展示线索的详情
             _.isFunction(this.props.showClueDetailPanel) && this.props.showClueDetailPanel();
+            //拨打电话成功后的回调处理
+            _.isFunction(this.props.onCallSuccess) && this.props.onCallSuccess();
         });
     };
     handleVisibleChange = (phoneNumber, contactName,visible) => {
@@ -88,6 +90,7 @@ PhoneCallout.defaultProps = {
     showPhoneIcon: false,//是否一直展示电话图标
     hidePhoneNumber: false,//是否不展示电话号码，不展示时，电话图标会一直显示
     showClueDetailPanel: function(){},
+    onCallSuccess: function(){},//打电话成功的处理（首页）
 };
 PhoneCallout.propTypes = {
     showPhoneNum: PropTypes.string,
@@ -96,5 +99,6 @@ PhoneCallout.propTypes = {
     showPhoneIcon: PropTypes.bool,
     hidePhoneNumber: PropTypes.bool,
     showClueDetailPanel: PropTypes.func,
+    onCallSuccess: PropTypes.func,
 };
 export default PhoneCallout;
