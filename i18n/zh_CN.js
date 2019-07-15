@@ -743,8 +743,8 @@ var zh_CN = {
     'member.position.delete.office': '删除职务',
     'member.position.set.default': '设为默认',
     'member.continue.add.member': '继续添加成员',
-
     //后台管理-成员end
+
     //组织管理start
     'organization.no.organization.tip': '暂无组织，请先添加',
     'organization.input.placeholder': '请输入组织名称',
@@ -776,6 +776,11 @@ var zh_CN = {
     'organization.get.add.organization.member.list.failed': '获取可加入组织的成员列表失败',
     'organization.no.realms': '还没有安全域诶..',
     //组织管理end
+
+    // 后台管理-产品start
+    'product.name.input': '请填写产品名称',
+    'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
+    // 后台管理-产品end
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': '添加竞品',

@@ -742,6 +742,7 @@ var en_US = {
     'member.position.set.default': '', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
     //后台管理-成员end
+    
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
     'organization.input.placeholder': 'Please input organization name',//请输入组织名称
@@ -773,6 +774,11 @@ var en_US = {
     'organization.get.add.organization.member.list.failed': 'Failed to get member lists that who can join  the organization',//获取可加入组织的成员列表失败
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
     //组织管理end
+
+    // 后台管理- 产品start
+    'product.name.input': 'Please enter the name of product', // 请填写产品名称
+    'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    // 后台管理- 产品end
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
