@@ -409,6 +409,9 @@ class ClueToCustomerPanel extends React.Component {
                 if (contact.isNew) {
                     contact = _.cloneDeep(this.refs[contact.id].state.formData);
 
+                    //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
+                    contact.def_contancts = 'false';
+
                     if (contact.birthday) {
                         //将moment格式的值转为时间戳
                         contact.birthday = contact.birthday.valueOf();
