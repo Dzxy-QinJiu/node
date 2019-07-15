@@ -63,6 +63,8 @@ exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocument
 
 //未处理的线索数量
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
+//更新待我处理的数据
+exports.notificationEmitter.UPDATED_MY_HANDLE_CLUE = 'updateMyHandleClue';
 //电话系统初始化成功
 exports.notificationEmitter.PHONE_INITIALIZE = 'phoneInitialize';
 //未审批申请的数量

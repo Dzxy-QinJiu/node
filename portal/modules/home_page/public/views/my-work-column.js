@@ -14,12 +14,11 @@ import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {scrollBarEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import UserApplyDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
 import OpportunityApplyDetail from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
 import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
@@ -29,6 +28,7 @@ import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -67,6 +67,7 @@ class MyWorkColumn extends React.Component {
             listenScrollBottom: true,//是否下拉加载
             curOpenDetailWork: null,//当前需要打开详情的工作
             handlingWork: null,//当前正在处理的工作（打电话、看详情写跟进）
+            isShowRefreshTip: false,//是否展示刷新数据的提示
         };
     }
 
@@ -77,11 +78,39 @@ class MyWorkColumn extends React.Component {
         myWorkEmitter.on(myWorkEmitter.HANDLE_FINISHED_WORK, this.handleFinishedWork);
         //打通电话或写了跟进、分配线索后，将当前正在处理的工作改为已完成的监听
         myWorkEmitter.on(myWorkEmitter.SET_WORK_FINISHED, this.setWorkFinished);
+        //监听推送的申请、审批消息
+        notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_COUNT);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_REPORT_SEND, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
+
+        //监听待处理线索的消息
+        notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
     }
 
     componentWillUnmount() {
         myWorkEmitter.removeListener(myWorkEmitter.HANDLE_FINISHED_WORK, this.handleFinishedWork);
         myWorkEmitter.removeListener(myWorkEmitter.SET_WORK_FINISHED, this.setWorkFinished);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_REPORT_SEND, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
+    }
+
+    //修改刷新我的工作的标识
+    updateRefreshMyWork = (data) => {
+        //不筛选类型时，再展示有新工作的提示
+        if (!this.state.curWorkType) {
+            this.setState({isShowRefreshTip: true});
+        }
     }
 
     //关闭、切换详情前，已完成工作的处理
@@ -140,6 +169,7 @@ class MyWorkColumn extends React.Component {
             }
             this.setState({
                 loading: false,
+                isShowRefreshTip: false,
                 load_id: _.get(_.last(myWorkList), 'id', ''),
                 myWorkList,
                 totalCount,
@@ -496,11 +526,51 @@ class MyWorkColumn extends React.Component {
     }
 
     renderMyWorkList() {
-        return _.map(this.state.myWorkList, (item, index) => {
-            return this.renderWorkCard(item, index);
-        });
+        //等待效果的渲染
+        if (this.state.loading && !this.state.load_id) {
+            return <Spinner/>;
+        } else {
+            let workList = [];
+            //有新工作，请刷新后再处理
+            if (this.state.isShowRefreshTip) {
+                workList.push(
+                    <div className="refresh-data-tip">
+                        <ReactIntl.FormattedMessage
+                            id="home.page.new.work.tip"
+                            defaultMessage={'有新工作，点此{refreshTip}'}
+                            values={{
+                                'refreshTip': <a
+                                    onClick={this.refreshMyworkList}>{Intl.get('common.refresh', '刷新')}</a>
+                            }}
+                        />
+                    </div>);
+            }
+            //没数据时的渲染
+            if (_.isEmpty(this.state.myWorkList)) {
+                workList.push(
+                    <NoDataIntro
+                        // noDataAndAddBtnTip={Intl.get('contract.60', '暂无客户')}
+                        // renderAddAndImportBtns={this.renderAddAndImportBtns}
+                        // showAddBtn={this.hasNoFilterCondition()}
+                        noDataTip={Intl.get('home.page.no.work.tip', '暂无工作')}
+                    />);
+            } else {//工作列表的渲染
+                _.each(this.state.myWorkList, (item, index) => {
+                    workList.push(this.renderWorkCard(item, index));
+                });
+            }
+            return workList;
+        }
     }
 
+    refreshMyworkList = () => {
+        this.setState({
+            load_id: '',
+            isShowRefreshTip: false,
+        }, () => {
+            this.getMyWorkList();
+        });
+    }
     handleScrollBottom = () => {
         this.getMyWorkList();
     }
@@ -513,7 +583,7 @@ class MyWorkColumn extends React.Component {
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom}
                     itemCssSelector=".my-work-content .detail-card-container">
-                    {this.state.loading && !this.state.load_id ? <Spinner/> : this.renderMyWorkList()}
+                    {this.renderMyWorkList()}
                 </GeminiScrollbar>
                 {/*该客户下的用户列表*/}
                 <RightPanel
