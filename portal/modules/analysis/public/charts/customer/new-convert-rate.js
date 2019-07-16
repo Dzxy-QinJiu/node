@@ -5,26 +5,35 @@
 export function getNewCustomerConvertRateChart(paramObj = {}) {
     return {
         title: '新开客户转化率统计',
-        url: '/rest/analysis/customer/stage/label/:auth_type/summary',
+        url: '/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new',
         chartType: 'funnel',
         customOption: {
             valueField: 'showValue',
             minSize: '5%',
         },
-        argCallback: paramObj.argCallback,
         processData: data => {
+            data = data.total;
+
             const customerStages = [
                 {
-                    tagName: Intl.get('common.trial', '试用'),
-                    tagValue: 'trial',
+                    tagName: '新增客户数',
+                    tagValue: 'newly_customer',
                 },
                 {
-                    tagName: Intl.get('common.qualified', '合格'),
-                    tagValue: 'qualified',
+                    tagName: '新增客户开通账号数',
+                    tagValue: 'tatol_newly_users',
                 },
                 {
-                    tagName: Intl.get('sales.stage.signed', '签约'),
-                    tagValue: 'signed',
+                    tagName: '新增客户开通账号的登录数',
+                    tagValue: 'customer_login',
+                },
+                {
+                    tagName: '新增客户开通账号登录的合格数',
+                    tagValue: 'newly_users_login_qualify',
+                },
+                {
+                    tagName: '新增客户签约数',
+                    tagValue: 'newly_customer_sign',
                 },
             ];
 
@@ -42,7 +51,7 @@ export function getNewCustomerConvertRateChart(paramObj = {}) {
                     let convertRate = '';
 
                     if (prevStageValue) {
-                        convertRate = (stageValue / prevStageValue) * 100 + '%';
+                        convertRate = ((stageValue / prevStageValue) * 100).toFixed(2) + '%';
                     }
 
                     //如果下一阶段的值比上一阶段的值大，则将下一阶段的值变得比上一阶段的值小，以便能正确排序
