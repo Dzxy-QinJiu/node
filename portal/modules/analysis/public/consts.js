@@ -186,7 +186,7 @@ export const CUSTOMER_MENUS = {
         key: 'active'
     },
     NEW_ADD: {
-        name: '新开客户分析',
+        name: '新增客户分析',
         key: 'customer_new_add'
     },
     OTHER: {
