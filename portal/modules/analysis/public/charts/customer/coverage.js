@@ -6,6 +6,9 @@ import Store from '../../store';
 import { isSales } from '../../utils';
 import { num as antUtilNum } from 'ant-utils';
 
+//判断是否在蚁坊域的方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
+
 //客户合格标签  1：当前合格  2：历史合格
 const QUALIFY_LABEL_PASS = 1;
 
@@ -27,7 +30,10 @@ export function getCustomerCoverageChart() {
             }
         },
         noShowCondition: {
-            callback: () => isSales()
+            callback: () => {
+                //在当前登录的用户是销售或用户登录的不是蚁坊域时不显示
+                return isSales() || !isOrganizationEefung();
+            }
         },
         chartType: 'table',
         option: {

@@ -2,9 +2,16 @@
  * 签约客户地域市场占有率分析
  */
 
+//判断是否在蚁坊域的方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
+
 export function getSignedCustomerZoneCoverageChart(paramObj = {}) {
     return {
         title: '签约客户地域市场占有率分析',
+        noShowCondition: {
+            //在户登录的不是蚁坊域时不显示
+            callback: () => !isOrganizationEefung()
+        },
         chartType: 'table',
         url: '/rest/analysis/customer/label/:data_type/share/region',
         argCallback: paramObj.argCallback,
