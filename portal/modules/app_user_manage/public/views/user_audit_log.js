@@ -251,6 +251,7 @@ class LogView extends React.Component {
             startTime = endTime - THIRTY_DAY_TIME_RANGE;
             message.info(SELECT_TIME_TIPS.time);
         }
+        this.props.setOperatorRecordSelectTime({ startTime, endTime, range });
         UserAuditLogAction.changeSearchTime({ startTime, endTime, range });
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         this.getAuditLog({
@@ -828,7 +829,8 @@ class LogView extends React.Component {
     }
 }
 LogView.propTypes = {
-    isShowRightPanel: PropTypes.bool
+    isShowRightPanel: PropTypes.bool,
+    setOperatorRecordSelectTime: PropTypes.func
 };
 module.exports = LogView;
 
