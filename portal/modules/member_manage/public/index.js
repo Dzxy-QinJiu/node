@@ -16,6 +16,7 @@ import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 import MemberTableList from 'MOD_DIR/member-table-list';
+import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -319,9 +320,11 @@ class MemberManage extends React.Component {
     };
 
     render() {
-        let height = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let topNavWidth = $(window).width() - LAYOUT_CONSTANTS.NAV_WIDTH -
-                LAYOUT_CONSTANTS.PADDING_WIDTH - LAYOUT_CONSTANTS.FRIST_NAV_WIDTH;
+        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
+        let topNavWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH -
+        BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH;
+        let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+
         return (
             <div className='member-container' style={{height: height}}>
                 <div className='member-wrap' style={{height: height}}>
@@ -329,7 +332,7 @@ class MemberManage extends React.Component {
                         <div className='member-top-nav' style={{width: topNavWidth}}>
                             {this.renderTopNavOperation()}
                         </div>
-                        <div className='member-content'>
+                        <div className='member-content' style={{height: contentHeight}}>
                             {
                                 this.state.loading && this.state.sortId === '' ? (
                                     <div>
