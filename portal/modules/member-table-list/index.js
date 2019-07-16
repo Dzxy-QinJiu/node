@@ -19,8 +19,9 @@ class MemberTableList extends React.Component {
     };
 
     getTableColumns = () => {
+        let isHideTableTitle = this.props.isHideTableTitle;
         return [{
-            title: Intl.get('member.member', '成员'),
+            title: isHideTableTitle ? null : Intl.get('member.member', '成员'),
             dataIndex: 'name',
             key: 'name',
             width: '40%',
@@ -51,7 +52,7 @@ class MemberTableList extends React.Component {
                 );
             }
         }, {
-            title: Intl.get('crm.113', '部门'),
+            title: isHideTableTitle ? null : Intl.get('crm.113', '部门'),
             dataIndex: 'teamName',
             key: 'teamName',
             width: '20%',
@@ -64,7 +65,7 @@ class MemberTableList extends React.Component {
                 );
             }
         }, {
-            title: Intl.get('member.position', '职务'),
+            title: isHideTableTitle ? null : Intl.get('member.position', '职务'),
             dataIndex: 'positionName',
             key: 'positionName',
             width: '20%',
@@ -77,7 +78,7 @@ class MemberTableList extends React.Component {
                 );
             }
         }, {
-            title: Intl.get('member.phone', '手机'),
+            title: isHideTableTitle ? null : Intl.get('member.phone', '手机'),
             dataIndex: 'phone',
             key: 'phone',
             width: '30%',
@@ -132,9 +133,11 @@ class MemberTableList extends React.Component {
 MemberTableList.defaultProps = {
     dataSource: [],
     doNotShow: false,
+    dropLoad: {},
     rowSelection: null,
     handleRowClick: noop,
     handleRowClassName: noop,
+    isHideTableTitle: false, // 是否隐藏table表格的标题，默认不隐藏
 };
 
 MemberTableList.propTypes = {
@@ -145,6 +148,7 @@ MemberTableList.propTypes = {
     handleRowClick: PropTypes.func,
     handleRowClassName: PropTypes.func,
     dropLoad: PropTypes.object,
+    isHideTableTitle: PropTypes.bool,
 };
 
 export default MemberTableList;

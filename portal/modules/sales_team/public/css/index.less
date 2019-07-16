@@ -40,7 +40,7 @@
         font-size: 14px;
         float: left;
         .member-top-operation-div {
-          padding: 12px 24px;
+          padding: 24px;
           height: 80px;
           .member-top-operation-div-title {
             float: left;
@@ -142,12 +142,15 @@
           // 操作区样式（销售目标、团队成员设置以及添加团队成员）
           .operation-zone, .sale-goal-zone {
             position: absolute;
-            top: 50px;
+            z-index: 1;
+            padding-top: 6px;
             padding-right: 16px
           }
           .operation-zone {
             .select-row-number {
-              padding-left: 24px;
+              color: #333;
+              margin-left: 62px;
+              padding: 8px 16px;
             }
             .set-select-member-btns {
               cursor: pointer;
@@ -160,9 +163,9 @@
           }
           .sale-goal-zone {
             .member-top-operation-div-title {
+              margin-left: 62px;
               color: #333333;
-              padding-left: 24px;
-              font-size: 16px;
+              padding: 9px 0 10px 16px;
             }
             .sales-team-goals-container {
               color: #999999;
@@ -520,14 +523,6 @@
       right: auto;
       text-align: center;
     }
-  }
-  //加为xx、删除按钮的hover事件
-  .member-btn-enable:hover {
-    color: #fff !important;
-    background-color: #F1F8FE !important;
-  }
-  .member-owner-disabled {
-    background-color: #aeb3b9;
   }
   //无团队时，添加团队的样式设置、
   .sales-team-null-add-container {
