@@ -2,11 +2,18 @@
  * 新开客户转化率统计
  */
 
+//判断是否在蚁坊域的方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
+
 export function getNewCustomerConvertRateChart(paramObj = {}) {
     return {
         title: '新开客户转化率统计',
         url: '/rest/analysis/customer/stage/label/:auth_type/summary',
         chartType: 'funnel',
+        noShowCondition: {
+            //在户登录的不是蚁坊域时不显示
+            callback: () => !isOrganizationEefung()
+        },
         customOption: {
             valueField: 'showValue',
             minSize: '5%',
