@@ -21,9 +21,29 @@ const VIEW_TYPE = {
     //合并客户视图
     CUSTOMER_MERGE: 'customer_merge'
 };
-//联系方式种类
-const CONTACT_WAY_TYPES = ['phone', 'qq', 'weChat', 'email'];
 
+//联系方式种类
+const CONTACT_WAY_TYPES = [
+    {
+        field: 'phone',
+        name: Intl.get('common.phone', '电话')
+    }, 
+    {
+        field: 'qq',
+        name: 'QQ'
+    }, 
+    {
+        field: 'weChat',
+        name: Intl.get('crm.58', '微信')
+    }, 
+    {
+        field: 'email',
+        name: Intl.get('common.email', '邮箱')
+    }
+];
+
+//联系方式种类字段
+const CONTACT_WAY_TYPE_FIELDS = _.map(CONTACT_WAY_TYPES, 'field');
 
 class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
@@ -270,10 +290,10 @@ class ClueToCustomerPanel extends React.Component {
         };
 
         //遍历联系方式类型
-        _.each(CONTACT_WAY_TYPES, type => {
+        _.each(CONTACT_WAY_TYPE_FIELDS, field => {
 
             //客户联系人中该联系方式和线索联系人中该联系方式的合集
-            const all = _.concat(customerContact[type], clueContact[type]);
+            const all = _.concat(customerContact[field], clueContact[field]);
             //去重后的该联系方式合集
             const uniqSet = _.uniq(all);
             //该联系方式是否重复
@@ -286,7 +306,7 @@ class ClueToCustomerPanel extends React.Component {
             //该联系方式是否有不同
             const isDiff = _.difference(customerContact.phone, clueContact.phone).length;
 
-            result[type] = {
+            result[field] = {
                 isDiff,
                 uniqSet
             };
@@ -329,18 +349,18 @@ class ClueToCustomerPanel extends React.Component {
                 }
 
                 //遍历联系方式类型
-                _.each(CONTACT_WAY_TYPES, type => {
+                _.each(CONTACT_WAY_TYPE_FIELDS, field => {
                     //如果联系方式有不同
-                    if (contactWayComparisonResult[type].isDiff) {
+                    if (contactWayComparisonResult[field].isDiff) {
                         //标记联系方式需要更新
                         if (_.isArray(customerContact.updateFields)) {
-                            customerContact.updateFields.push(type);
+                            customerContact.updateFields.push(field);
                         } else {
-                            customerContact.updateFields = [type];
+                            customerContact.updateFields = [field];
                         }
 
                         //将联系方式设为合并后的联系方式
-                        customerContact[type] = contactWayComparisonResult[type].uniqSet;
+                        customerContact[field] = contactWayComparisonResult[field].uniqSet;
                     }
                 });
 
@@ -463,7 +483,7 @@ class ClueToCustomerPanel extends React.Component {
                     _.each(contact, (value, key) => {
                         const keyWithoutIndex = key.substr(0, key.length - 1);
 
-                        if (_.includes(CONTACT_WAY_TYPES, keyWithoutIndex)) {
+                        if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex)) {
                             if (!contact[keyWithoutIndex]) {
                                 contact[keyWithoutIndex] = [value];
                             } else {
@@ -648,40 +668,48 @@ class ClueToCustomerPanel extends React.Component {
         //当前操作的客户的联系人中和要渲染的联系人相同的联系人
         const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name === contact.name);
 
-        //当前操作的客户的联系人中和要渲染的联系人相同的联系人的电话
-        const curCustomerPhone = _.get(curCustomerContact, 'phone');
-
         //当前线索的联系人中和要渲染的联系人相同的联系人
         const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name === contact.name);
 
-        //当前线索的联系人中和要渲染的联系人相同的联系人的电话
-        const curCluePhone = _.get(curClueContact, 'phone');
-
         return (
             <div className="contact-content">
-                <Row>
-                    <Col span={3}>
-                        {Intl.get('common.phone', '电话')}：
-                    </Col>
-                    <Col span={20}>
-                        {_.map(contact.phone, (phone, phoneIndex) => {
-                            //电话是否来自线索的标识
-                            let mark = '';
+                {_.map(CONTACT_WAY_TYPES, type => {
+                    const typeName = type.name;
+                    const typeField = type.field;
 
-                            //如果当前电话在客户中不存在，在线索中存在
-                            if (!_.includes(curCustomerPhone, phone) && _.includes(curCluePhone, phone)) {
-                                //显示标识
-                                mark = <span className="clue-mark">（{Intl.get('crm.sales.clue', '线索')}）</span>;
-                            }
+                    return (
+                        <Row>
+                            <Col span={3}>
+                                {typeName}：
+                            </Col>
+                            <Col span={20}>
+                                {_.map(contact[typeField], (item, index) => {
+                                //联系方式是否来自线索的标识
+                                    let mark = '';
 
-                            return (
-                                <div>
-                                    {phone}{mark || null}
-                                </div>
-                            );
-                        })}
-                    </Col>
-                </Row>
+                                    //当前操作的客户的联系人中和要渲染的联系人相同的联系人的联系方式
+                                    const curCustomerContactWay = _.get(curCustomerContact, typeField);
+
+                                    //当前线索的联系人中和要渲染的联系人相同的联系人的联系方式
+                                    const curClueContactWay = _.get(curClueContact, typeField);
+
+
+                                    //如果当前联系方式在客户中不存在，在线索中存在
+                                    if (!_.includes(curCustomerContactWay, item) && _.includes(curClueContactWay, item)) {
+                                    //显示标识
+                                        mark = <span className="clue-mark">（{Intl.get('crm.sales.clue', '线索')}）</span>;
+                                    }
+
+                                    return (
+                                        <div>
+                                            {item}{mark || null}
+                                        </div>
+                                    );
+                                })}
+                            </Col>
+                        </Row>
+                    );
+                })}
             </div>
         );
     }
