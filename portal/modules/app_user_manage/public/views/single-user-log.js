@@ -53,8 +53,8 @@ class SingleUserLog extends React.Component {
         SingleUserLogAction.resetLogState();
         let userId = this.props.userId;
         if (this.props.operatorRecordDateSelectTime) {
+            SingleUserLogAction.changeSearchTime(this.props.operatorRecordDateSelectTime);
             setTimeout(() => {
-                SingleUserLogAction.changeSearchTime(this.props.operatorRecordDateSelectTime);
                 this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
             });
         } else {
