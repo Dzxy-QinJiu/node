@@ -348,28 +348,28 @@ class ClueToCustomerPanel extends React.Component {
                     isConfirmMergeBtnDisabled = true;
                 }
 
-                //遍历联系方式类型
-                _.each(CONTACT_WAY_TYPE_FIELDS, field => {
-                    //如果联系方式有不同
-                    if (contactWayComparisonResult[field].isDiff) {
-                        //标记联系方式需要更新
-                        if (_.isArray(customerContact.updateFields)) {
-                            customerContact.updateFields.push(field);
-                        } else {
-                            customerContact.updateFields = [field];
-                        }
-
-                        //将联系方式设为合并后的联系方式
-                        customerContact[field] = contactWayComparisonResult[field].uniqSet;
-                    }
-                });
-
                 //联系人是否重复
                 //联系人名重复或联系方式重复都认为是联系人重复
                 const isContactDup = isContactNameDup || isContactWayDup;
 
                 //如果联系人重复
                 if (isContactDup) {
+                    //遍历联系方式类型
+                    _.each(CONTACT_WAY_TYPE_FIELDS, field => {
+                        //如果联系方式有不同
+                        if (contactWayComparisonResult[field].isDiff) {
+                            //标记联系方式需要更新
+                            if (_.isArray(customerContact.updateFields)) {
+                                customerContact.updateFields.push(field);
+                            } else {
+                                customerContact.updateFields = [field];
+                            }
+
+                            //将联系方式设为合并后的联系方式
+                            customerContact[field] = contactWayComparisonResult[field].uniqSet;
+                        }
+                    });
+
                     //将该线索联系人标记为重复联系人
                     clueContact.isDup = true;
 
