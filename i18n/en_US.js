@@ -3046,6 +3046,12 @@ var en_US = {
     'common.clue.convert': 'clue convert',//线索转化
     'common.clue.name.need.at.least.two.char.to.do.customer.convert': 'clue name need at least two char to do customer convert',//线索名称必须在两个字或以上，才能进行转为客户的操作
     'app.manege.access.no.amdin.tip': 'No user,please contact the administrator to access the user',//暂无用户，请联系管理员接入用户
+    'common.new.customer.conversion.rate.statistics': 'new customer conversion rate statistics',//新增客户转化率统计
+    'common.number.of.new.customers': 'number of new customers',//新增客户数
+    'common.number.of.open.user.customers': 'number of open user customers',//开通用户客户数
+    'common.number.of.qualified.customers': 'number of qualified customers',//合格客户数
+    'common.number.of.customers.logged.in': 'number of customers logged in',//登录过的客户数
+    'common.number.of.contracted.customers': 'number of contracted customers',//签约客户数
 
 };
 export default en_US;

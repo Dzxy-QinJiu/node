@@ -1,10 +1,10 @@
 /**
- * 新开客户转化率统计
+ * 新增客户转化率统计
  */
 
 export function getNewCustomerConvertRateChart(paramObj = {}) {
     return {
-        title: '新开客户转化率统计',
+        title: Intl.get('common.new.customer.conversion.rate.statistics', '新增客户转化率统计'),
         url: '/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new',
         chartType: 'funnel',
         customOption: {
@@ -16,23 +16,23 @@ export function getNewCustomerConvertRateChart(paramObj = {}) {
 
             const customerStages = [
                 {
-                    tagName: '新增客户数',
+                    tagName: Intl.get('common.number.of.new.customers', '新增客户数'),
                     tagValue: 'newly_customer',
                 },
                 {
-                    tagName: '新增客户开通账号数',
+                    tagName: Intl.get('common.number.of.open.user.customers', '开通用户客户数'),
                     tagValue: 'tatol_newly_users',
                 },
                 {
-                    tagName: '新增客户开通账号的登录数',
+                    tagName: Intl.get('common.number.of.qualified.customers', '合格客户数'),
                     tagValue: 'customer_login',
                 },
                 {
-                    tagName: '新增客户开通账号登录的合格数',
+                    tagName: Intl.get('common.number.of.customers.logged.in', '登录过的客户数'),
                     tagValue: 'newly_users_login_qualify',
                 },
                 {
-                    tagName: '新增客户签约数',
+                    tagName: Intl.get('common.number.of.contracted.customers', '签约客户数'),
                     tagValue: 'newly_customer_sign',
                 },
             ];
