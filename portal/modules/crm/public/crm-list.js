@@ -64,6 +64,7 @@ var LAYOUT_CONSTANTS = {
 };
 var rightPanelShow = false;
 let UNKNOWN = Intl.get('user.unknown', '未知');
+const UNKNOWN_KEY = 'unknown';
 //具备舆情秘书权限
 const hasSecretaryAuth = userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
 
@@ -561,11 +562,10 @@ class Crm extends React.Component {
         if (condition.industry && condition.industry.length) {
             //未知行业的处理
             if (condition.industry.indexOf(UNKNOWN) !== -1) {
-                unexist.push('industry');
-                delete condition.industry;
-            } else {//需精确匹配
-                term_fields.push('industry');
+                condition.industry = UNKNOWN_KEY;
             }
+            //需精确匹配
+            term_fields.push('industry');
         }
         var saleStage = '';
         if (condition.sales_opportunities && _.isArray(condition.sales_opportunities) && condition.sales_opportunities.length !== 0) {
@@ -579,11 +579,11 @@ class Crm extends React.Component {
         //未知地域的处理
         if (condition.province) {
             if (condition.province === UNKNOWN) {
-                unexist.push('province');
-                delete condition.province;
-            } else {//需精确匹配
-                term_fields.push('province');
+                condition.province = UNKNOWN_KEY;
             }
+            //需精确匹配
+            term_fields.push('province');
+
         }
         //阶段标签的处理
         if (condition.customer_label) {
@@ -608,8 +608,7 @@ class Crm extends React.Component {
         if (_.isArray(condition.labels) && condition.labels.length) {
             //未打标签的客户筛选处理
             if (_.includes(condition.labels, SPECIAL_LABEL.NON_TAGGED_CUSTOMER)) {
-                unexist.push('labels');
-                delete condition.labels;
+                condition.labels = [UNKNOWN_KEY];
             } else {
                 //线索、转出、已回访不可操作标签的筛选处理
                 if (_.includes(condition.labels, SPECIAL_LABEL.CLUE) || _.includes(condition.labels, SPECIAL_LABEL.TURN_OUT) || _.includes(condition.labels, SPECIAL_LABEL.HAS_CALL_BACK)) {
