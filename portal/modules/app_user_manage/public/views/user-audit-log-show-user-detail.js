@@ -1,11 +1,11 @@
 var React = require('react');
 import UserDetail from './user-detail';
 import {RightPanel} from '../../../../components/rightPanel';
-import LogVIew from './user_audit_log';
+import OperationRecord from './user_audit_log';
 var language = require('../../../../public/language/getLanguage');
-if (language.lan() == 'es' || language.lan() == 'en') {
+if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-audit-log-es_VE.less');
-}else if (language.lan() == 'zh'){
+}else if (language.lan() === 'zh'){
     require('../css/user-audit-log-zh_CN.less');
 }
 var UserAuditLogStore = require('../store/user_audit_log_store');
@@ -26,7 +26,7 @@ class UserAuditLog extends React.Component {
 
     state = {
         selectedUserId: this.selectedUserId,
-        isShowRightPanel: this.isShowRightPanel
+        isShowRightPanel: this.isShowRightPanel,
     };
 
     componentWillMount() {
@@ -61,18 +61,32 @@ class UserAuditLog extends React.Component {
         emitter.removeListener('user_detail_close_right_panel' , this.closeRightPanel);
     }
 
+    getSelectTime = (timeObj) => {
+        this.setState({
+            dateSelectTime: timeObj
+        });
+    };
+
     render() {
         let selectedAppId = UserAuditLogStore.getState().selectAppId;
         return (
             <div>
                 <div className="user-audit-log-wrap" ref="wrap">
-                    <LogVIew isShowRightPanel={this.state.isShowRightPanel}/>
+                    <OperationRecord
+                        isShowRightPanel={this.state.isShowRightPanel}
+                        getSelectTime={this.getSelectTime}
+                    />
                 </div>
-                <RightPanel className="right-pannel-default app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
+                <RightPanel 
+                    className="right-pannel-default app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
                     showFlag={this.state.isShowRightPanel}>
                     {
                         this.state.selectedUserId ? (
-                            <UserDetail userId={this.state.selectedUserId} selectedAppId={selectedAppId}/>
+                            <UserDetail 
+                                userId={this.state.selectedUserId} 
+                                selectedAppId={selectedAppId}
+                                dateSelectTime={this.state.dateSelectTime}
+                            />
                         ) : null
                     }
                 </RightPanel>

@@ -361,6 +361,7 @@ class UserDetail extends React.Component {
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
                             appLists={this.props.appLists}
+                            dateSelectTime={this.props.dateSelectTime}
                         />
                     </div> : null}
                 </TabPane>
@@ -534,6 +535,7 @@ UserDetail.propTypes = {
     appLists: PropTypes.array,
     userId: PropTypes.string,
     isShownExceptionTab: PropTypes.bool,
-    userConditions: PropTypes.array
+    userConditions: PropTypes.array,
+    dateSelectTime: PropTypes.object
 };
 module.exports = UserDetail;

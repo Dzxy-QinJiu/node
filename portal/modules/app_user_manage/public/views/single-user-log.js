@@ -52,7 +52,14 @@ class SingleUserLog extends React.Component {
         SingleUserLogStore.listen(this.onStateChange);
         SingleUserLogAction.resetLogState();
         let userId = this.props.userId;
-        this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
+        if (this.props.dateSelectTime) {
+            setTimeout( () => {
+                SingleUserLogAction.changeSearchTime(this.props.dateSelectTime);
+                this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
+            } );
+        } else {
+            this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -394,6 +401,7 @@ SingleUserLog.propTypes = {
     userId: PropTypes.string,
     selectedAppId: PropTypes.string,
     appLists: PropTypes.array,
-    height: PropTypes.number
+    height: PropTypes.number,
+    dateSelectTime: PropTypes.object
 };
 module.exports = SingleUserLog;
