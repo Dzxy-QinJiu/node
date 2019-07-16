@@ -361,7 +361,7 @@ class UserDetail extends React.Component {
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
                             appLists={this.props.appLists}
-                            dateSelectTime={this.props.dateSelectTime}
+                            operatorRecordDateSelectTime={this.props.operatorRecordDateSelectTime}
                         />
                     </div> : null}
                 </TabPane>
@@ -536,6 +536,6 @@ UserDetail.propTypes = {
     userId: PropTypes.string,
     isShownExceptionTab: PropTypes.bool,
     userConditions: PropTypes.array,
-    dateSelectTime: PropTypes.object
+    operatorRecordDateSelectTime: PropTypes.object // 操作记录界面，选择的时间
 };
 module.exports = UserDetail;

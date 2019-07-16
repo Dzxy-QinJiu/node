@@ -26,12 +26,11 @@ SingleUserLogStore.prototype.resetState = function() {
     this.userOwnAppArray = [];
     this.selectedLogAppId = '';
     this.searchName = '';
-    this.defaultRange = 'day';
+    this.defaultRange = 'week';
     // 默认显示审计日志（对应的是过滤掉心跳服务和角色权限），this.typeFilter = ''显示全部日志
     this.typeFilter = ['心跳服务', '角色权限'];
     this.selectLogType = ''; // 选择的日志类型
-    // 为了和操作记录时间（默认是今天）保持一致，所以改成了今天
-    const timeObj = datePickerUtils.getTodayTime(); // 今天
+    const timeObj = datePickerUtils.getThisWeekTime(); // 本周
     this.startTime = datePickerUtils.getMilliseconds(timeObj.start_time); //开始时间
     this.endTime = datePickerUtils.getMilliseconds(timeObj.end_time, true); //结束时间
     this.logInitialState();

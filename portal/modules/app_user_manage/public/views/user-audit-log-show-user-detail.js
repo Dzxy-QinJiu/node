@@ -9,6 +9,9 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-audit-log-zh_CN.less');
 }
 var UserAuditLogStore = require('../store/user_audit_log_store');
+const datePickerUtils = require('CMP_DIR/datepicker/utils');
+// 默认的今天时间
+const timeObj = datePickerUtils.getTodayTime();
 
 class UserAuditLog extends React.Component {
     selectedUserId = '';
@@ -27,6 +30,11 @@ class UserAuditLog extends React.Component {
     state = {
         selectedUserId: this.selectedUserId,
         isShowRightPanel: this.isShowRightPanel,
+        operatorRecordDateSelectTime: {
+            range: 'day',
+            startTime: datePickerUtils.getMilliseconds(timeObj.start_time),
+            endTime: datePickerUtils.getMilliseconds(timeObj.end_time, true)
+        }
     };
 
     componentWillMount() {
@@ -61,9 +69,9 @@ class UserAuditLog extends React.Component {
         emitter.removeListener('user_detail_close_right_panel' , this.closeRightPanel);
     }
 
-    getSelectTime = (timeObj) => {
+    setOperatorRecordSelectTime = (selectTimeObj) => {
         this.setState({
-            dateSelectTime: timeObj
+            operatorRecordDateSelectTime: selectTimeObj
         });
     };
 
@@ -74,7 +82,7 @@ class UserAuditLog extends React.Component {
                 <div className="user-audit-log-wrap" ref="wrap">
                     <OperationRecord
                         isShowRightPanel={this.state.isShowRightPanel}
-                        getSelectTime={this.getSelectTime}
+                        setOperatorRecordSelectTime={this.setOperatorRecordSelectTime}
                     />
                 </div>
                 <RightPanel 
@@ -85,7 +93,7 @@ class UserAuditLog extends React.Component {
                             <UserDetail 
                                 userId={this.state.selectedUserId} 
                                 selectedAppId={selectedAppId}
-                                dateSelectTime={this.state.dateSelectTime}
+                                operatorRecordDateSelectTime={this.state.operatorRecordDateSelectTime}
                             />
                         ) : null
                     }
