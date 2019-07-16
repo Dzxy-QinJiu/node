@@ -44,19 +44,21 @@ class FilterList extends React.Component {
         }
 
     }
-    setDefaultFilterSetting = () => {
+    setDefaultFilterSetting = (selfHandle) => {
         //把高级筛选的所有选中项都设置为false
         let advancedData = this.getClearSelectedAdvancedData();
         this.setState({
             advancedData
         },() => {
-            this.props.setDefaultSelectCommonFilter(this.state.commonData,(targetIndex) => {
+            this.props.setDefaultSelectCommonFilter(this.state.commonData,selfHandle,(targetIndex) => {
                 if (targetIndex !== ''){
                     this.handleCommonItemClick(this.state.commonData[targetIndex],targetIndex, true);
                     //选择的常用筛选中不包含高级筛选项, 对外和search提供两者的union
                     const allSelectedFilterData = this.unionFilterList(this.state.commonData[targetIndex].data, this.state.advancedData);
                     //发送选择筛选项事件
                     filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, allSelectedFilterData);
+                }else{
+                    filterEmitter.emit(filterEmitter.CLEAR_FILTERS);
                 }
             });
         });
@@ -99,6 +101,9 @@ class FilterList extends React.Component {
             this.setState({
                 collapsedAdvanced: false
             });
+        }
+        if (newProps.setDefaultCommonSelect !== this.props.setDefaultCommonSelect){
+            this.setDefaultFilterSetting();
         }
 
     }

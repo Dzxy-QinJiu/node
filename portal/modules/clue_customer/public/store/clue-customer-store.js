@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 var ClueCustomerAction = require('../action/clue-customer-action');
+let clueFilterAction = require('../action/filter-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import {
@@ -16,6 +17,7 @@ import {
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
+import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -48,6 +50,11 @@ ClueCustomerStore.prototype.resetState = function() {
     this.distributeBatchErrMsg = '';
     this.keyword = '';//线索全文搜索的关键字
     this.agg_list = {};//线索统计数据
+    this.showFilterList = false;//是否展示线索筛选区域
+    this.firstLogin = true;//用来记录是否是第一次登录进页面
+};
+ClueCustomerStore.prototype.changeFilterFlag = function (filterFlag) {
+    this.showFilterList = filterFlag;
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
     this.curClueLists = [];//查询到的线索列表
@@ -85,10 +92,8 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
         } else {
             this.curClueLists = this.processForList(list);
         }
-        this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
         this.customersSize = data ? data.total : 0;
         this.listenScrollBottom = this.customersSize > this.curClueLists.length;
-        this.isLoading = false;
         //把线索详情中电话，邮箱，微信，qq里的空值删掉
         _.forEach(this.curClueLists, (clueItem) => {
             if (_.isArray(clueItem.contacts) && clueItem.contacts.length) {
@@ -111,16 +116,46 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
                     var hasTrace = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRACE);
                     var hasTransfer = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRANSFER);
                     this.agg_list = {
-                        'willDistribute': _.get(willDistribute, 'total'),
-                        'willTrace': _.get(willTrace, 'total'),
-                        'hasTrace': _.get(hasTrace, 'total'),
-                        'hasTransfer': _.get(hasTransfer, 'total'),
+                        'willDistribute': _.get(willDistribute, 'total',0),
+                        'willTrace': _.get(willTrace, 'total',0),
+                        'hasTrace': _.get(hasTrace, 'total',0),
+                        'hasTransfer': _.get(hasTransfer, 'total',0),
                     };
                 }
             });
-        }
+            //需要展示待我处理
+            if(_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'yes'){
+                this.showFilterList = true;
+            }
+            //需要修改页面选中的状态
+            if(_.get(clueData,'clueCustomerObj.setting_status')){
+                setTimeout(() => {
+                    clueFilterAction.setFilterType(_.get(clueData,'clueCustomerObj.setting_status'));
+                    _.isFunction(_.get(clueData, 'callback')) && clueData.callback();
+                });
 
+            }else if (_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'no'){
+                //不需要展示待我处理，需要隐藏筛选面板
+                this.showFilterList = false;
+                setTimeout(() => {
+                    _.isFunction(_.get(clueData, 'callback')) && clueData.callback('filterAllotNoTraced');
+                });
+            }else{
+                this.isLoading = false;
+                this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
+                this.firstLogin = false;
+            }
+        }else{
+            this.isLoading = false;
+            this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
+            this.firstLogin = false;
+        }
     }
+},
+ClueCustomerStore.prototype.setLoadingFalse = function () {
+    this.isLoading = false;
+    this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
+    this.firstLogin = false;
 },
 ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
     this.handleClueData(clueData);
