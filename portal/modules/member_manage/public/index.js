@@ -15,6 +15,7 @@ import Trace from 'LIB_DIR/trace';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
+import MemberTableList from 'MOD_DIR/member-table-list';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -216,76 +217,6 @@ class MemberManage extends React.Component {
         this.getMemberList({id: this.state.sortId});
     };
 
-    memberStatusClass = (status) => {
-        return classNames({'member-status': status === 0});
-    };
-
-    getTableColumns = () => {
-        return [{
-            title: Intl.get('member.member', '成员'),
-            dataIndex: 'name',
-            className: 'member-th-head',
-            key: 'name',
-            width: '40%',
-            render: (name, record) => {
-                let status = record.status;
-                let memberNameCls = classNames('member-name', this.memberStatusClass(status));
-                return (
-                    <div className={memberNameCls}>
-                        <div className='account'>
-                            {record.name}
-                            {
-                                status === 0 ? (
-                                    <span className='member-stop-status'>{Intl.get('user.status.stopped', '已停用')}</span>
-                                ) : null
-                            }
-                        </div>
-                        <div className='nickname'>{record.userName}</div>
-                    </div>
-                );
-            }
-        }, {
-            title: Intl.get('crm.113', '部门'),
-            dataIndex: 'teamName',
-            key: 'teamName',
-            width: '20%',
-            render: (teamName, record) => {
-                let teamCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={teamCls}>
-                        {teamName}
-                    </div>
-                );
-            }
-        }, {
-            title: Intl.get('member.position', '职务'),
-            dataIndex: 'positionName',
-            key: 'positionName',
-            width: '20%',
-            render: (positionName, record) => {
-                let positionCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={positionCls}>
-                        {positionName}
-                    </div>
-                );
-            }
-        }, {
-            title: Intl.get('member.phone', '手机'),
-            dataIndex: 'phone',
-            key: 'phone',
-            width: '30%',
-            render: (phone, record) => {
-                let phoneCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={phoneCls}>
-                        {phone}
-                    </div>
-                );
-            }
-        }];
-    };
-    
     // 点击表格
     handleRowClick = (record, index) => {
         this.showMemberInfo(record);
@@ -310,7 +241,6 @@ class MemberManage extends React.Component {
         if (isLoading && this.state.sortId === '') {
             doNotShow = true;
         }
-        let columns = this.getTableColumns();
         let dataSource = this.state.memberList;
         let tableHeight = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT -
             LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT - LAYOUT_CONSTANTS.TABLE_HEAD_HEIGHT;
@@ -322,26 +252,14 @@ class MemberManage extends React.Component {
             noMoreDataText: Intl.get('member.no.more.tips', '没有更多成员信息了')
         };
         return (
-            <div
-                className="member-list-table-wrap scroll-load"
-                id="new-table"
-                style={{ display: doNotShow ? 'none' : 'block' }}
-            >
-                <div className="" style={{ height: tableHeight }} ref="tableWrap">
-                    <AntcTable
-                        dropLoad={dropLoadConfig}
-                        util={{zoomInSortArea: true}}
-                        dataSource={dataSource}
-                        rowKey={this.getRowKey}
-                        onRowClick={this.handleRowClick}
-                        columns={columns}
-                        pagination={false}
-                        rowClassName={this.handleRowClassName}
-                        locale={{ emptyText: Intl.get('common.no.member', '暂无成员') }}
-                        scroll={{ y: tableHeight }}
-                    />
-                </div>
-            </div>
+            <MemberTableList
+                doNotShow={doNotShow}
+                dropLoad={dropLoadConfig}
+                dataSource={dataSource}
+                handleRowClick={this.handleRowClick}
+                handleRowClassName={this.handleRowClassName}
+                tableHeight={tableHeight}
+            />
         );
     };
 

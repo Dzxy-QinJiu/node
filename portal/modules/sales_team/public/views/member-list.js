@@ -8,7 +8,7 @@ import {InputNumber, Button, message, Icon} from 'antd';
 const PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 const Spinner = require('../../../../components/spinner');
 const AlertTimer = require('../../../../components/alert-timer');
-import {SearchInput, AntcTable} from 'antc';
+import {SearchInput} from 'antc';
 const classNames = require('classnames');
 const SalesTeamAction = require('../action/sales-team-actions');
 const MemberListEditAction = require('../action/member-list-edit-actions');
@@ -20,6 +20,8 @@ import MemberManageStore from 'MOD_DIR/member_manage/public/store';
 import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-actions';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import MemberTableList from 'MOD_DIR/member-table-list';
+
 const tableHeadHeight = 50; // table表格头部高度
 
 //成员的类型
@@ -324,78 +326,6 @@ const MemberList = createReactClass({
         return classNames({'member-status': status === 0});
     },
 
-    getTableColumns() {
-        return [{
-            title: Intl.get('member.member', '成员'),
-            dataIndex: 'nickName',
-            key: 'nickName',
-            width: '40%',
-            render: (name, record) => {
-                let status = record.status;
-                let memberNameCls = classNames('member-name', this.memberStatusClass(status));
-                let role = record.role;
-                let iconClass = classNames('iconfont', {
-                    'icon-team-role': role === 'owner',
-                    'icon-sale-team-manager': role === 'manager',
-                    'sale-status-stop': record.status === 0
-                });
-                return (
-                    <div className={memberNameCls}>
-                        <div className='account'>
-                            <i className={iconClass}/>
-                            <span> {record.nickName}</span>
-                            {
-                                status === 0 ? (
-                                    <span className='member-stop-status'>{Intl.get('user.status.stopped', '已停用')}</span>
-                                ) : null
-                            }
-                        </div>
-                        <div className='nickname'>{record.userName}</div>
-                    </div>
-                );
-            }
-        }, {
-            title: Intl.get('crm.113', '部门'),
-            dataIndex: 'teamName',
-            key: 'teamName',
-            width: '20%',
-            render: (teamName, record) => {
-                let teamCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={teamCls}>
-                        {teamName}
-                    </div>
-                );
-            }
-        }, {
-            title: Intl.get('member.position', '职务'),
-            dataIndex: 'position',
-            key: 'position',
-            width: '20%',
-            render: (position , record) => {
-                let positionCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={positionCls}>
-                        {record.teamRoleName}
-                    </div>
-                );
-            }
-        },{
-            title: Intl.get('member.phone', '手机'),
-            dataIndex: 'phone',
-            key: 'phone',
-            width: '20%',
-            render: (phone, record) => {
-                let phoneCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={phoneCls}>
-                        {phone}
-                    </div>
-                );
-            }
-        }];
-    },
-
     // table中的数据处理
     processTableData() {
         let curShowTeamMemberObj = this.state.curShowTeamMemberObj;
@@ -437,7 +367,6 @@ const MemberList = createReactClass({
 
     // 渲染当前正在展示的团队成员列表，使用table的方式
     renderMemberList(flag, addMemberList){
-        let columns = this.getTableColumns();
         let dataSource = this.processTableData();
 
         if (flag === 'add') {
@@ -484,15 +413,12 @@ const MemberList = createReactClass({
                 }
                 <div className='member-list-table' style={{height: height}}>
                     <div style={{ height: height }}>
-                        <AntcTable
+                        <MemberTableList
                             rowSelection={rowSelection}
                             dataSource={dataSource}
-                            columns={columns}
-                            pagination={false}
-                            onRowClick={this.handleRowClick}
-                            rowClassName={this.handleRowClassName}
-                            locale={{ emptyText: Intl.get('common.no.member', '暂无成员') }}
-                            scroll={{ y: tableHeight }}
+                            handleRowClick={this.handleRowClick}
+                            handleRowClassName={this.handleRowClassName}
+                            tableHeight={tableHeight}
                         />
                     </div>
 

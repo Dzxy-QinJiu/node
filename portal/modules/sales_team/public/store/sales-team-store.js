@@ -517,6 +517,20 @@ SalesTeamStore.prototype.addTeamMemberCount = function(curTeamId, userIds) {
         this.teamMemberCountList.push(newTeamCountObj);
     }
 };
+
+function processTeamsMemberListData(resultData) {
+    return _.map(resultData, member => {
+        return {
+            userId: member.userId, // 成员id
+            name: member.nickName, // 昵称
+            userName: member.userName, // 账号
+            status: member.status, // 状态
+            positionName: member.teamRoleName, // 职务
+            phone: member.phone // 手机
+        };
+    });
+}
+
 //获取当前团队的成员列表
 SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
     this.isLoadingTeamMember = false;
@@ -525,8 +539,8 @@ SalesTeamStore.prototype.getSalesTeamMemberList = function(resultData) {
         this.teamMemberListTipMsg = resultData;
     } else {
         if (_.isArray(resultData) && resultData.length > 0) {
-            let salesTeamMemberList = resultData;
-            this.salesTeamMemberList = resultData;
+            let salesTeamMemberList = processTeamsMemberListData(resultData);
+            this.salesTeamMemberList = salesTeamMemberList;
             this.teamMemberListTipMsg = '';
             //当前展示组的信息
             let curTeamId = _.get(this.curShowTeamMemberObj, 'groupId');
@@ -828,15 +842,15 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
 
     if (nickName) { // 修改昵称
         if (ownerId === memberId) { // 修改负责人的昵称
-            owner.nickName = nickName;
+            owner.name = nickName;
         } else {
             let updateObj = findEditMember(managers, memberId);
             if (updateObj) { // 修改舆情秘书的昵称
-                updateObj.nickName = nickName;
+                updateObj.name = nickName;
             } else {
                 updateObj = findEditMember(users, memberId);
                 if (updateObj) { // 修改普通成员的昵称
-                    updateObj.nickName = nickName;
+                    updateObj.name = nickName;
                 }
             }
         }
@@ -914,17 +928,17 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
 
     } else if (position) { // 修改成员的职务
         if (ownerId === memberId) { // 修改负责人的职务
-            owner.teamRoleName = positionName;
+            owner.positionName = positionName;
             owner.teamRoleId = position;
         } else {
             let updateObj = findEditMember(managers, memberId);
             if (updateObj) { // 修改舆情秘书的职务
-                updateObj.teamRoleName = positionName;
+                updateObj.positionName = positionName;
                 updateObj.teamRoleId = position;
             } else {
                 updateObj = findEditMember(users, memberId);
                 if (updateObj) { // 修改普通成员的职务
-                    updateObj.teamRoleName = positionName;
+                    updateObj.positionName = positionName;
                     updateObj.teamRoleId = position;
                 }
             }
