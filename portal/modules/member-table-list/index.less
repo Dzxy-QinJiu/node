@@ -18,6 +18,10 @@
             font-weight: normal;
             padding: 9px 16px !important;
           }
+          // 含有选择框的表头
+          .ant-table-selection-column {
+            padding: 4px 16px !important;
+          }
         }
         // 表体
         .ant-table tbody {
@@ -26,10 +30,9 @@
             background:#fff !important;
             td {
               color: #333 !important;
-              padding: 33px 0 33px 16px !important;
               .member-name {
                 .account {
-                  padding-bottom: 9px;
+                  padding: 4px 0;
                   font-size: 16px;
                   .icon-team-role {
                     padding-right: 5px;
@@ -51,11 +54,12 @@
                     background: #999;
                     color: #fff;
                     font-size: 12px;
-                    padding: 3px 2px;
+                    padding: 2px;
                     border-radius: 2px;
                   }
                 }
                 .nickname {
+                  padding-top: 5px;
                   font-size: 12px;
                   color: #999;
                 }
@@ -64,8 +68,15 @@
                 color: #999;
               }
             }
-            .member-list-first-column {
-              padding: 16px 16px 22px 16px !important;;
+            td:first-child {
+              padding: 16px 16px 22px 16px !important;
+            }
+            td:not(:first-child) {
+              padding: 33px 0 33px 16px !important;
+            }
+            // 含有选择框的表体
+            .ant-table-selection-column + td {
+              padding: 16px 16px 22px 16px !important;
             }
           }
           .current-row {
