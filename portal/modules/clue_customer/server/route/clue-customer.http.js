@@ -194,7 +194,7 @@ module.exports = {
             }
         },{
             method: 'get',
-            path: '/rest/get/similar/customerlists',
+            path: '/rest/get/similar/customerlists/:type',
             handler: 'getSimilarCustomerLists',
             passport: {
                 'needLogin': true

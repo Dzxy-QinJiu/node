@@ -56,7 +56,7 @@ const restApis = {
     //获取相似线索
     getSimilarClueLists: '/rest/clue/v2/query/:type/similarity/lead',
     //获取相似客户
-    getSimilarCustomerLists: '/rest/customer/v3/customer/query/similarity/customer'
+    getSimilarCustomerLists: '/rest/customer/v3/customer/query/:type/similarity/customer'
 };
 //查询客户
 exports.getClueCustomerList = function(req, res) {
@@ -417,7 +417,7 @@ exports.getSimilarClueLists = function(req, res) {
 exports.getSimilarCustomerLists = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: restApis.getSimilarCustomerLists,
+            url: restApis.getSimilarCustomerLists.replace(':type', req.params.type),
             req: req,
             res: res
         }, req.query);
