@@ -119,8 +119,12 @@ class ClueDetailOverview extends React.Component {
             similarCustomerErrmsg: ''
         });
         var curClue = this.state.curClue;
+        var type = 'self';
+        if(hasPrivilege('CRM_QUERY_SIMILARITY_CUSTOMER_ALL')){
+            type = 'all';
+        }
         $.ajax({
-            url: '/rest/get/similar/customerlists',
+            url: '/rest/get/similar/customerlists/' + type,
             type: 'get',
             dateType: 'json',
             data: {
