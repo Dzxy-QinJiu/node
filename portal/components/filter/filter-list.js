@@ -37,26 +37,30 @@ class FilterList extends React.Component {
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.on(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
-        if (this.props.setDefaultCommonSelect){
+        // hasSettedDefaultCommonSelect 是否设置了展示默认搜索项待我处理
+        if (this.props.hasSettedDefaultCommonSelect){
             this.setDefaultFilterSetting();
         }else{
             this.handleChangePermitted = this.handleChangePermitted.bind(this);
         }
 
     }
-    setDefaultFilterSetting = () => {
+    setDefaultFilterSetting = (notSelfHandle) => {
+        //notSelfHandle 为true 默认不展示待我处理选项，因为销售角色进来默认展示待我处理，但是待我处理如果没有数据的话就需要取消这个筛选条件，展示全部的数据 为false，自动展示待我处理选项
         //把高级筛选的所有选中项都设置为false
         let advancedData = this.getClearSelectedAdvancedData();
         this.setState({
             advancedData
         },() => {
-            this.props.setDefaultSelectCommonFilter(this.state.commonData,(targetIndex) => {
+            this.props.setDefaultSelectCommonFilter(this.state.commonData,notSelfHandle,(targetIndex) => {
                 if (targetIndex !== ''){
                     this.handleCommonItemClick(this.state.commonData[targetIndex],targetIndex, true);
                     //选择的常用筛选中不包含高级筛选项, 对外和search提供两者的union
                     const allSelectedFilterData = this.unionFilterList(this.state.commonData[targetIndex].data, this.state.advancedData);
                     //发送选择筛选项事件
                     filterEmitter.emit(filterEmitter.SELECT_FILTERS + this.props.key, allSelectedFilterData);
+                }else{
+                    filterEmitter.emit(filterEmitter.CLEAR_FILTERS);
                 }
             });
         });
@@ -99,6 +103,10 @@ class FilterList extends React.Component {
             this.setState({
                 collapsedAdvanced: false
             });
+        }
+        //hasSettedDefaultCommonSelect 是否设置了展示默认搜索项待我处理
+        if (newProps.hasSettedDefaultCommonSelect !== this.props.hasSettedDefaultCommonSelect){
+            this.setDefaultFilterSetting();
         }
 
     }
@@ -746,7 +754,7 @@ FilterList.defaultProps = {
     setDefaultSelectCommonFilter: function() {
 
     },
-    setDefaultCommonSelect: false,
+    hasSettedDefaultCommonSelect: false,
     showAdvancedPanel: false
 };
 /**
@@ -798,7 +806,7 @@ FilterList.propTypes = {
     onDelete: PropTypes.func,
     hideAdvancedTitle: PropTypes.bool,
     setDefaultSelectCommonFilter: PropTypes.func,
-    setDefaultCommonSelect: PropTypes.bool,
+    hasSettedDefaultCommonSelect: PropTypes.bool,
     showAdvancedPanel: PropTypes.bool,
 };
 export default FilterList;

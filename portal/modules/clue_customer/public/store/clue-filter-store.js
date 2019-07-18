@@ -137,7 +137,7 @@ ClueFilterStore.prototype.setFilterClueAvailbility = function() {
 
 };
 ClueFilterStore.prototype.setFilterClueAllotNoTrace = function(updateTrace) {
-    this.filterAllotNoTraced = updateTrace;
+    this.filterAllotNoTraced = updateTrace || '';
 };
 ClueFilterStore.prototype.setFilterClueProvince = function(updateProvince) {
     var selectedProvince = [];
