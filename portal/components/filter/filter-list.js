@@ -37,8 +37,8 @@ class FilterList extends React.Component {
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.on(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
-        // setDefaultCommonSelect 是否设置了展示默认搜索项待我处理
-        if (this.props.setDefaultCommonSelect){
+        // hasSettedDefaultCommonSelect 是否设置了展示默认搜索项待我处理
+        if (this.props.hasSettedDefaultCommonSelect){
             this.setDefaultFilterSetting();
         }else{
             this.handleChangePermitted = this.handleChangePermitted.bind(this);
@@ -46,7 +46,7 @@ class FilterList extends React.Component {
 
     }
     setDefaultFilterSetting = (notSelfHandle) => {
-        //notSelfHandle 为true 不展示待我处理选项 为false，自动展示待我处理选项
+        //notSelfHandle 为true 默认不展示待我处理选项，因为销售角色进来默认展示待我处理，但是待我处理如果没有数据的话就需要取消这个筛选条件，展示全部的数据 为false，自动展示待我处理选项
         //把高级筛选的所有选中项都设置为false
         let advancedData = this.getClearSelectedAdvancedData();
         this.setState({
@@ -104,8 +104,8 @@ class FilterList extends React.Component {
                 collapsedAdvanced: false
             });
         }
-        //setDefaultCommonSelect 是否设置了展示默认搜索项待我处理
-        if (newProps.setDefaultCommonSelect !== this.props.setDefaultCommonSelect){
+        //hasSettedDefaultCommonSelect 是否设置了展示默认搜索项待我处理
+        if (newProps.hasSettedDefaultCommonSelect !== this.props.hasSettedDefaultCommonSelect){
             this.setDefaultFilterSetting();
         }
 
@@ -754,7 +754,7 @@ FilterList.defaultProps = {
     setDefaultSelectCommonFilter: function() {
 
     },
-    setDefaultCommonSelect: false,
+    hasSettedDefaultCommonSelect: false,
     showAdvancedPanel: false
 };
 /**
@@ -806,7 +806,7 @@ FilterList.propTypes = {
     onDelete: PropTypes.func,
     hideAdvancedTitle: PropTypes.bool,
     setDefaultSelectCommonFilter: PropTypes.func,
-    setDefaultCommonSelect: PropTypes.bool,
+    hasSettedDefaultCommonSelect: PropTypes.bool,
     showAdvancedPanel: PropTypes.bool,
 };
 export default FilterList;

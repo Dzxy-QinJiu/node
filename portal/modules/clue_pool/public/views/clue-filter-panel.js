@@ -166,7 +166,7 @@ class ClueFilterPanel extends React.Component {
                         advancedData={advancedData}
                         onFilterChange={this.handleFilterChange.bind(this)}
                         renderOtherDataContent={this.renderTimeRangeSelect}
-                        setDefaultCommonSelect={true}
+                        hasSettedDefaultCommonSelect={true}
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                     />

@@ -198,7 +198,7 @@ class ClueFilterPanel extends React.Component {
     setDefaultSelectCommonFilter = (commonData,notSelfHandle,callback) => {
         var targetIndex = '';
         if (isSalesRole() && !notSelfHandle){
-           targetIndex = _.findIndex(commonData, item => item.value === SELECT_TYPE.WAIT_ME_HANDLE);
+            targetIndex = _.findIndex(commonData, item => item.value === SELECT_TYPE.WAIT_ME_HANDLE);
         }
         _.isFunction(callback) && callback(targetIndex);
     };
@@ -292,7 +292,7 @@ class ClueFilterPanel extends React.Component {
                         onFilterChange={this.handleFilterChange.bind(this)}
                         renderOtherDataContent={this.renderTimeRangeSelect}
                         setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
-                        setDefaultCommonSelect={true}
+                        hasSettedDefaultCommonSelect={true}
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                         showAdvancedPanel={true}
