@@ -37,6 +37,7 @@ class FilterList extends React.Component {
         filterEmitter.on(filterEmitter.CLEAR_FILTERS + this.props.key, this.handleClearAll);
         filterEmitter.on(filterEmitter.ADD_COMMON + this.props.key, this.handleAddCommon);
         filterEmitter.on(filterEmitter.CHANGE_PERMITTED + this.props.key, this.handleChangePermitted);
+        // setDefaultCommonSelect 是否设置了展示默认搜索项待我处理
         if (this.props.setDefaultCommonSelect){
             this.setDefaultFilterSetting();
         }else{
@@ -44,13 +45,14 @@ class FilterList extends React.Component {
         }
 
     }
-    setDefaultFilterSetting = (selfHandle) => {
+    setDefaultFilterSetting = (notSelfHandle) => {
+        //notSelfHandle 为true 不展示待我处理选项 为false，自动展示待我处理选项
         //把高级筛选的所有选中项都设置为false
         let advancedData = this.getClearSelectedAdvancedData();
         this.setState({
             advancedData
         },() => {
-            this.props.setDefaultSelectCommonFilter(this.state.commonData,selfHandle,(targetIndex) => {
+            this.props.setDefaultSelectCommonFilter(this.state.commonData,notSelfHandle,(targetIndex) => {
                 if (targetIndex !== ''){
                     this.handleCommonItemClick(this.state.commonData[targetIndex],targetIndex, true);
                     //选择的常用筛选中不包含高级筛选项, 对外和search提供两者的union
@@ -102,6 +104,7 @@ class FilterList extends React.Component {
                 collapsedAdvanced: false
             });
         }
+        //setDefaultCommonSelect 是否设置了展示默认搜索项待我处理
         if (newProps.setDefaultCommonSelect !== this.props.setDefaultCommonSelect){
             this.setDefaultFilterSetting();
         }

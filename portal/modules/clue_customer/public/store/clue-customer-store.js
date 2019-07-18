@@ -51,9 +51,9 @@ ClueCustomerStore.prototype.resetState = function() {
     this.keyword = '';//线索全文搜索的关键字
     this.agg_list = {};//线索统计数据
     this.showFilterList = false;//是否展示线索筛选区域
-    this.firstLogin = true;//用来记录是否是第一次登录进页面
+    this.firstLogin = true;//用来记录是否是首次加载
 };
-ClueCustomerStore.prototype.changeFilterFlag = function (filterFlag) {
+ClueCustomerStore.prototype.changeFilterFlag = function(filterFlag) {
     this.showFilterList = filterFlag;
 };
 ClueCustomerStore.prototype.setClueInitialData = function() {
@@ -129,6 +129,7 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
             }
             //需要修改页面选中的状态
             if(_.get(clueData,'clueCustomerObj.setting_status')){
+                //因为回调中的方法会修改store中的值，如果不加延时会有Dispatch中不允许Dispacth的错误
                 setTimeout(() => {
                     clueFilterAction.setFilterType(_.get(clueData,'clueCustomerObj.setting_status'));
                     _.isFunction(_.get(clueData, 'callback')) && clueData.callback();
@@ -137,6 +138,7 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
             }else if (_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'no'){
                 //不需要展示待我处理，需要隐藏筛选面板
                 this.showFilterList = false;
+                //因为回调中的方法会修改store中的值，如果不加延时会有Dispatch中不允许Dispacth的错误
                 setTimeout(() => {
                     _.isFunction(_.get(clueData, 'callback')) && clueData.callback('filterAllotNoTraced');
                 });
@@ -152,7 +154,7 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
         }
     }
 },
-ClueCustomerStore.prototype.setLoadingFalse = function () {
+ClueCustomerStore.prototype.setLoadingFalse = function() {
     this.isLoading = false;
     this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
     this.firstLogin = false;
