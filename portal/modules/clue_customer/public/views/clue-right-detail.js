@@ -356,6 +356,7 @@ class ClueRightPanel extends React.Component {
                                             afterTransferClueSuccess={this.props.afterTransferClueSuccess}
                                             onConvertToCustomerBtnClick={this.props.onConvertToCustomerBtnClick}
                                             updateCustomerLastContact={this.props.updateCustomerLastContact}
+                                            extractClueOperator={this.props.extractClueOperator}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -442,5 +443,6 @@ ClueRightPanel.propTypes = {
     afterTransferClueSuccess: PropTypes.func,
     type: PropTypes.string,
     onConvertToCustomerBtnClick: PropTypes.func,
+    extractClueOperator: PropTypes.func,
 };
 export default ClueRightPanel;
