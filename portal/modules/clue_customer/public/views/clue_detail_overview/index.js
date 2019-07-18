@@ -35,7 +35,6 @@ import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common
 import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import classNames from 'classnames';
 
 class ClueDetailOverview extends React.Component {
     state = {
@@ -1221,11 +1220,11 @@ class ClueDetailOverview extends React.Component {
         }
     };
 
-    // 提取线索
+    // 渲染提取线索按钮
     renderExtractClueBtn = (curClue) => {
-        let user = userData.getUserData();
-        let hasAssignedPrivilege = !user.isCommonSales;
-        let assigenCls = classNames('detail-extract-clue-btn ant-btn');
+        const user = userData.getUserData();
+        const hasAssignedPrivilege = !user.isCommonSales;
+        const assigenCls = 'detail-extract-clue-btn ant-btn';
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
