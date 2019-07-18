@@ -32,10 +32,11 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
 import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
-import ajax from 'ant-ajax';
 import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import classNames from 'classnames';
+
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -1219,10 +1220,31 @@ class ClueDetailOverview extends React.Component {
             }
         }
     };
+
+    // 提取线索
+    renderExtractClueBtn = (curClue) => {
+        let user = userData.getUserData();
+        let hasAssignedPrivilege = !user.isCommonSales;
+        let assigenCls = classNames('detail-extract-clue-btn ant-btn');
+        return (
+            <div className="clue-info-item">
+                <div className="clue-info-label">
+                    {Intl.get('clue.handle.clue', '线索处理')}
+                </div>
+                <div className="btn-container">
+                    {this.props.extractClueOperator(hasAssignedPrivilege, curClue, assigenCls, true)}
+                </div>
+            </div>
+        );
+    };
     // 渲染关联线索
     renderAssociatedClue = (curClue, associatedCustomer ) => {
-        if (curClue.clue_type === 'clue_pool' ) { // 线索池中详情，不显示关联线索
-            return null;
+        if (curClue.clue_type === 'clue_pool') { // 线索池中详情，处理线索
+            if ( hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF')) {
+                return this.renderExtractClueBtn(curClue);
+            } else {
+                return null;
+            }
         } else {
             if ((curClue.status === SELECT_TYPE.HAS_TRACE ||
                 curClue.status === SELECT_TYPE.WILL_TRACE) &&
@@ -1336,6 +1358,7 @@ ClueDetailOverview.propTypes = {
     afterTransferClueSuccess: PropTypes.func,
     onConvertToCustomerBtnClick: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
+    extractClueOperator: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;
