@@ -319,7 +319,9 @@ class LeftTree extends React.Component {
                                                     )}
                                             </span>
                                         )
-                                        : null
+                                        : (
+                                            <span className="icon-tree-arrow iconfont tree-icon-disc"></span>
+                                        )
                                 }
                             </div>
                             <div className={groupCls}>

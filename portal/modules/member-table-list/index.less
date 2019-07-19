@@ -1,0 +1,92 @@
+// 表格样式
+#app {
+  .common-member-list-table-wrap {
+    .antc-table {
+      .ant-table-wrapper {
+        .ant-table{
+          td, th {
+            border-bottom:1px solid #F5F5F5 !important;
+            border-right: none !important;
+            line-height: 1;
+            font-size: 14px;
+          }
+        }
+        // 表头
+        .ant-table-thead {
+          th {
+            color: #999 !important;
+            font-weight: normal;
+            padding: 9px 16px !important;
+          }
+          // 含有选择框的表头
+          .ant-table-selection-column {
+            padding: 4px 16px !important;
+          }
+        }
+        // 表体
+        .ant-table tbody {
+          tr {
+            cursor: pointer;
+            background:#fff !important;
+            td {
+              color: #333 !important;
+              .member-name {
+                .account {
+                  padding: 4px 0;
+                  font-size: 16px;
+                  .icon-team-role {
+                    padding-right: 5px;
+                    color: #EFA246;
+                  }
+                  .icon-sale-team-manager {
+                    padding-right: 5px;
+                    color: #C44999;
+                    font-weight: bolder;
+                    width: 16px;
+                    height: 16px;
+                  }
+                  .sale-status-stop {
+                    padding-right: 5px;
+                    color: #CCCCCC;
+                  }
+                  .member-stop-status {
+                    margin-left: 6px;
+                    background: #999;
+                    color: #fff;
+                    font-size: 12px;
+                    padding: 2px;
+                    border-radius: 2px;
+                  }
+                }
+                .nickname {
+                  padding-top: 5px;
+                  font-size: 12px;
+                  color: #999;
+                }
+              }
+              .member-status {
+                color: #999;
+              }
+            }
+            td:first-child {
+              padding: 16px 16px 22px 16px !important;
+            }
+            td:not(:first-child) {
+              padding: 33px 0 33px 16px !important;
+            }
+            // 含有选择框的表体
+            .ant-table-selection-column + td {
+              padding: 16px 16px 22px 0 !important;
+            }
+          }
+          .current-row {
+            background: #E4F2FE !important;
+            &:hover {
+              background: #E4F2FE !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
