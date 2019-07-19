@@ -114,6 +114,15 @@ class ClueFilterPanel extends React.Component {
 
         const advancedData = [
             {
+                groupName: Intl.get('crm.6', '负责人'),
+                groupId: 'clue_pool_user_name',
+                singleSelect: true,
+                data: _.map(clueLeadingArray, x => ({
+                    name: x,
+                    value: x
+                }))
+            },
+            {
                 groupName: Intl.get('clue.analysis.source', '来源'),
                 groupId: 'clue_pool_source',
                 data: clueSourceArray.map(x => ({
@@ -142,20 +151,6 @@ class ClueFilterPanel extends React.Component {
                     value: x
                 }))
             }];
-        //非普通销售才有销售角色和团队
-        if (!userData.getUserData().isCommonSales) {
-            advancedData.unshift(
-                {
-                    groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'clue_pool_user_name',
-                    singleSelect: true,
-                    data: _.map(clueLeadingArray, x => ({
-                        name: x,
-                        value: x
-                    }))
-                }
-            );
-        }
 
         return (
             <div data-tracename="筛选">
