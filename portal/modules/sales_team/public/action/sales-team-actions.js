@@ -102,7 +102,7 @@ function SalesTeamAction() {
         SalesTeamAjax.getMemberList().then( (list) => {
             this.dispatch(list);
         }, (errorMsg) => {
-            _this.dispatch(errorMsg || Intl.get('common.get.member.lists.failed', '获取可添加成员列表失败'));
+            this.dispatch(errorMsg || Intl.get('common.get.member.lists.failed', '获取可添加成员列表失败'));
         });
     };
 

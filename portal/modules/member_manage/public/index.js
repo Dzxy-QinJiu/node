@@ -311,10 +311,10 @@ class MemberManage extends React.Component {
     };
 
     render() {
-        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let topNavWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH -
+        const height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
+        const topNavWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH -
         BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH;
-        let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        const contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
 
         return (
             <div className='member-container' style={{height: height}}>

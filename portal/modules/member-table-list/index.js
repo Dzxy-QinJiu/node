@@ -107,16 +107,15 @@ class MemberTableList extends React.Component {
     };
 
     render = () => {
-        let columns = this.getTableColumns();
-        let dataSource = this.props.dataSource;
-        let tableHeight = this.props.tableHeight;
+        const columns = this.getTableColumns();
+        const dataSource = this.props.dataSource;
+        const tableHeight = this.props.tableHeight;
         return (
             <div
-                className="list-table-wrap scroll-load"
-                id="new-table"
+                className="common-member-list-table-wrap scroll-load"
                 style={{ display: this.props.doNotShow ? 'none' : 'block' }}
             >
-                <div className="" style={{ height: tableHeight }} ref="tableWrap">
+                <div style={{ height: tableHeight }} ref="tableWrap">
                     <AntcTable
                         rowSelection={this.props.rowSelection}
                         dropLoad={this.props.dropLoad}
