@@ -204,6 +204,7 @@ class DayAgendaScheduleLists extends React.Component {
     }
 
     render() {
+        var scheduleLength = _.get(this,'state.scheduleList.length');
         return (
             <div id="content-block" className="content-block">
                 <div className="dayagenda-schedule-list"
@@ -211,7 +212,9 @@ class DayAgendaScheduleLists extends React.Component {
                     <div className="schedule-title">
                         <Row className="week-wrap">
                             <Col className="title-week">
-                                {curWeek}
+                                <div className="num-wrap">
+                                    {curWeek}{scheduleLength > 0 ? <div className="schedule-count">{scheduleLength}</div> : null}
+                                </div>
                             </Col>
                         </Row>
                         <Row>
