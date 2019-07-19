@@ -1122,7 +1122,7 @@ const MemberList = createReactClass({
                         (
                             memberGoal ? (
                                 <span className='self-sales-goal'>
-                                    {parseAmount(groupGoal)}
+                                    {parseAmount(memberGoal)}
                                     <i
                                         className='iconfont icon-update'
                                         onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)}

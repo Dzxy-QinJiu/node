@@ -334,7 +334,7 @@ SalesTeamStore.prototype.getMemberList = function(resultData) {
         this.addMemberListTipMsg = resultData;
     } else {
         if (_.isArray(resultData) && resultData.length > 0) {
-            this.addMemberList = resultData;
+            this.addMemberList = processTeamsMemberListData(resultData);
             this.addMemberListTipMsg = '';
         } else {
             this.addMemberList = [];
