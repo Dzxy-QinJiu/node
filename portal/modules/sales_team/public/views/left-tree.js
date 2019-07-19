@@ -320,7 +320,7 @@ class LeftTree extends React.Component {
                                             </span>
                                         )
                                         : (
-                                            <span className="icon-tree-arrow iconfont icon-disc"></span>
+                                            <span className="icon-tree-arrow iconfont tree-icon-disc"></span>
                                         )
                                 }
                             </div>

@@ -236,7 +236,7 @@ var SalesTeamForm = createReactClass({
                             label={formData.isEditGroup ? Intl.get('common.definition', '名称') : null}
                             id="title"
                             labelCol={{span: formData.isEditGroup ? 5 : 0}}
-                            wrapperCol={{span: formData.isEditGroup ? 18 : 20}}
+                            wrapperCol={{span: formData.isEditGroup ? 18 : 24}}
                             validateStatus={this.renderValidateStyle('title')}
                             help={status.title.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.title.errors && status.title.errors.join(','))}>
                             <Validator

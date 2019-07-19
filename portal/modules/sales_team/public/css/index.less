@@ -4,7 +4,7 @@
 @group-tree-name-height: 60px;
 @border-color: #f3f5f7;
 @edit-team-form-height: 130px;
-@edit-teamName-form-height: 90px;
+@edit-teamName-form-height: 86px;
 
 .sales-team-manage-container {
   padding: 12px;
@@ -260,6 +260,9 @@
                   .sales-team-group-info, .member-info {
                     position: relative;
                     min-height: 32px;
+                    .sales-team-group-name {
+                      padding-left: 24px;
+                    }
                     .sales-team-group-name , .member-info-name{
                       span {
                         line-height: 30px;
@@ -313,9 +316,12 @@
                     .icon-tree-arrow {
                       font-size: 16px;
                     }
-                    .icon-disc {
-                      color: #CCC;
-                      font-size: 6px;
+                    .tree-icon-disc {
+                      position: absolute;
+                      top: 12px;
+                      width: 8px;
+                      height: 8px;
+                      background-color: #CCC;
                     }
                     &:hover {
                       .icon-tree-arrow {
@@ -453,13 +459,13 @@
             cursor: default;
             height: @edit-team-form-height;
             .form {
+              padding-right: 10px;
               .ant-form-item {
                 margin-bottom: 6px;
                 position: relative;
-                left: 10px;
               }
               .edit-sales-team-btn-item {
-                margin-top: 4px;
+                margin-top: 2px;
                 max-width: 240px;
                 .button-container{
                   margin-top: 5px;
