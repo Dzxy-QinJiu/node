@@ -21,6 +21,8 @@ import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-actions';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import MemberTableList from 'MOD_DIR/member-table-list';
+import { num as antUtilsNum } from 'ant-utils';
+const parseAmount = antUtilsNum.parseAmount;
 
 const tableHeadHeight = 50; // table表格头部高度
 
@@ -1076,7 +1078,7 @@ const MemberList = createReactClass({
                     this.state.isShowBatchChangeTeamGoal ? (
                         groupGoal ? (
                             <span className='sales-goal-value'>
-                                {groupGoal}
+                                {parseAmount(groupGoal)}
                                 <i
                                     className='iconfont icon-update'
                                     onClick={this.toggleBatchChangeTeamGoalBtn.bind(this, false)}
@@ -1120,7 +1122,7 @@ const MemberList = createReactClass({
                         (
                             memberGoal ? (
                                 <span className='self-sales-goal'>
-                                    {memberGoal}
+                                    {parseAmount(groupGoal)}
                                     <i
                                         className='iconfont icon-update'
                                         onClick={this.toggleBatchChangeSelfGoalBtn.bind(this, false)}
