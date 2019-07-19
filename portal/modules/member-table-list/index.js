@@ -137,10 +137,13 @@ class MemberTableList extends React.Component {
 MemberTableList.defaultProps = {
     dataSource: [],
     doNotShow: false,
+    tableHeight: 0,
     dropLoad: {},
     rowSelection: null,
     handleRowClick: noop,
     isHideTableTitle: false, // 是否隐藏table表格的标题，默认不隐藏
+    isShowMemberDetail: false,
+    selectedRowIndex: -1
 };
 
 MemberTableList.propTypes = {
