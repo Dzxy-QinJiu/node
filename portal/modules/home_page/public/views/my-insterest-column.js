@@ -24,6 +24,7 @@ import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import notificationAjax from 'MOD_DIR/notification/public/ajax/notification-ajax';
 import ColumnItem from './column-item';
 import {getColumnHeight} from './common-util';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 class MyInsterestColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -74,6 +75,7 @@ class MyInsterestColumn extends React.Component {
             });
         });
     }
+
     //下拉加载
     handleScrollBarBottom = () => {
         if (this.state.totalSize > this.state.systemNotices.length) {
@@ -91,6 +93,7 @@ class MyInsterestColumn extends React.Component {
                 </GeminiScrollbar>
             </div>);
     }
+
     //是否显示没有更多数据了
     showNoMoreDataTip = () => {
         return !this.state.isLoadingSystemNotices &&
@@ -140,17 +143,15 @@ class MyInsterestColumn extends React.Component {
                 }
             </div>);
         } else if (this.state.loadSystemNoticesErrorMsg) {//错误提示
-            return ( <Alert
-                message={this.state.loadSystemNoticesErrorMsg}
-                type="error"
-                showIcon={true}
-            />);
+            return (
+                <NoDataIntro
+                    noDataTip={this.state.loadSystemNoticesErrorMsg}
+                />);
         } else {//暂无数据
-            return (<Alert
-                message={Intl.get('notification.has.no.system.data', '暂无系统消息数据')}
-                type="info"
-                showIcon={true}
-            />);
+            return (
+                <NoDataIntro
+                    noDataTip={Intl.get('common.no.data', '暂无数据')}
+                />);
         }
     };
     closeRightCustomerPanel = () => {
@@ -248,16 +249,16 @@ class MyInsterestColumn extends React.Component {
         const detailLength = _.get(notice, 'detail.length');
         if (detailLength) {
             notice.detail = _.sortBy(notice.detail, 'creat_time');
-            showItem = _.last(notice.detail);
+            showItem = _.first(notice.detail);
         }
         return (
             <div className="system-notice-item">
+                <span className="system-notice-time">
+                    {TimeUtil.transTimeFormat(showItem.create_time)}
+                </span>
                 <a onClick={this.openUserDetail.bind(this, showItem.user_id, idx)}>{showItem.user_name}</a>
                 {showItem.app_name ?
                     <span>{Intl.get('notification.system.login', '登录了') + showItem.app_name}</span> : ''}
-                <span className="system-notice-time">
-                    ，{TimeUtil.transTimeFormat(showItem.create_time)}
-                </span>
             </div>);
     };
 
@@ -282,7 +283,7 @@ class MyInsterestColumn extends React.Component {
                 <div className="system-notice-title">
                     <div className="customer-name"
                         onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>
-                        {notice.customer_name}<i className='iconfont icon-arrow'></i>
+                        <i className='iconfont icon-concern-customer-login'/>{notice.customer_name}
                     </div>
                 </div>
                 <div className="system-notice-content">

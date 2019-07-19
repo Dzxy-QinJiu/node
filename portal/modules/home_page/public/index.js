@@ -7,6 +7,7 @@ import './css/index.less';
 import MyWorkColumn from './views/my-work-column';
 import MyInsterestColumn from './views/my-insterest-column';
 import TeamDataColumn from './views/team-data-column';
+import {Row, Col} from 'antd';
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -15,11 +16,11 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <div className='home-page-container'>
-                <MyWorkColumn/>
-                <TeamDataColumn/>
-                <MyInsterestColumn/>
-            </div>);
+            <Row className='home-page-container' gutter={1}>
+                <Col span={10}><MyWorkColumn/></Col>
+                <Col span={7}><TeamDataColumn/></Col>
+                <Col span={7}><MyInsterestColumn/></Col>
+            </Row>);
     }
 }
 

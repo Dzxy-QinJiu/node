@@ -1,5 +1,5 @@
 @import "../../../../public/css/common-variables";
-
+@font-color: #333333;
 @btn-color: #8DA8C5;
 @btn-hover-color: #2196F3;
 @apply-detail-width: 700px;
@@ -14,41 +14,91 @@
     cursor: pointer;
     z-index: 1;
   }
-  .detail-card-container {
+  .my-work-card-container{
     position: relative;
     padding: 0;
     border-radius: 4px;
-    //工作标题的统一样式
-    .detail-card-title {
-      padding: 8px;
-      margin-bottom: 0;
-      border-bottom: none;
-      background-color: #F9FBFC;
-      color: @btn-color;
-      .work-title-icon {
-        padding-right: 8px;
+    .my-work-item-hover{
+      position: absolute;
+      display: none;
+      float: right;
+      top: 0;
+      right: 10px;
+      padding-left: 60px;
+      padding-right: 10px;
+      z-index: 1;
+      height: 69px;
+      background: linear-gradient(90deg,rgba(255,255,255,0) 0%,#fff 20%);//渐变背景设置
+      //已处理按钮
+      .handle-work-finish {
+        float: left;
+        line-height: 24px;
+        margin-top: 21px;
+        margin-left: 8px;
+        color: @btn-color;
+        cursor: pointer;
+        &:hover {
+          color: @btn-hover-color;
+        }
+        .work-finish-text {
+          display: inline-block;
+          line-height: 15px;
+          vertical-align: middle;
+          padding: 4px 6px;
+          border: 1px solid #cccccc;
+          border-radius: 4px;
+        }
+        .iconfont {
+          margin-right: 4px;
+        }
+        .anticon-loading{
+          margin-right: 6px;
+          font-size: 16px;
+        }
       }
-      .work-title-text {
-        margin: 0 6px;
-      }
-      //待处理线索,申请消息类型标题高亮
-      > .priority-high-work {
-        color: @btn-hover-color;
+      .work-hover-show-detail {
+        float: left;
+        margin-top: 20px;
+        line-height: 24px;
+        .work-contact-name {
+          margin-right: 8px;
+          color: @font-color;
+        }
+        .work-contact-phone {
+          padding: 3px 4px 5px 4px;
+          border-radius: 4px;
+          color: #ffffff;
+          background-color: @btn-hover-color;
+          //拨打电话的按钮
+          .iconfont.icon-active-call_record-ico {
+            visibility: visible;
+            color: #ffffff;
+          }
+        }
       }
     }
     //工作内容的统一样式
-    .detail-card-content {
-      padding: 16px 20px 20px;
+    .work-content-wrap {
+      padding: 10px;
+      border-bottom: 1px solid #f1f5f8;
       line-height: 20px;
       color: #999999;
+      &:hover{
+        box-shadow: 0 0 10px #d3d4d8;
+      }
       .work-name {
-        margin-bottom: 4px;
         line-height: 24px;
+        margin-left: 6px;
         font-size: 16px;
         font-weight: 400;
         color: #333333;
         .customer-label {
           vertical-align: top;
+          height: 18px;
+          margin-top: 4px;
+          margin-right: 4px;
+          padding: 0 4px;
+          line-height: 15px;
           color: #ffffff;
         }
         //客户标签的颜色设置
@@ -82,16 +132,25 @@
           padding-right: 4px;
           padding-left: 2px;
           border-radius: 4px;
+          line-height: 18px;
           color: #EFA246;
           background-color: #FFF0BA;
           font-size: 14px;
+          display: inline-block;
+          vertical-align: top;
+          margin-top: 4px;
           .iconfont {
-            margin-right: 4px;
+            margin-right: 2px;
           }
         }
       }
       //线索名\客户名可点击样式
       .customer-clue-name {
+        max-width: 80%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: inline-block;
         cursor: pointer;
         z-index: 2;
         &:hover {
@@ -100,34 +159,12 @@
       }
       .work-remark {
         line-height: 24px;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         .last-contact-time {
           margin-right: 8px;
-        }
-      }
-      //已处理按钮
-      .handle-work-finish {
-        display: none;
-        position: absolute;
-        float: right;
-        right: 20px;
-        bottom: 20px;
-        color: @btn-color;
-        cursor: pointer;
-        line-height: 24px;
-        &:hover {
-          color: @btn-hover-color;
-        }
-        .work-finish-text {
-          display: inline-block;
-          vertical-align: top;
-          line-height: 24px;
-        }
-        .iconfont {
-          margin-right: 4px;
-        }
-        .anticon-loading{
-          margin-right: 6px;
-          font-size: 16px;
         }
       }
       .alert-timer{
@@ -137,30 +174,9 @@
           padding-right: 20px;
         }
       }
-      .work-hover-show-detail {
-        display: none;
-        line-height: 24px;
-        .work-contact-name {
-          margin-right: 4px;
-        }
-        .work-contact-phone {
-          padding: 3px 4px 5px 4px;
-          color: #ffffff;
-          border-radius: 4px;
-          background-color: @btn-hover-color;
-          //拨打电话的按钮
-          .iconfont.icon-active-call_record-ico {
-            visibility: visible;
-            color: #ffffff;
-          }
-        }
-      }
     }
     &:hover {
-      .work-hover-show-detail {
-        display: block;
-      }
-      .handle-work-finish {
+      .my-work-item-hover{
         display: block;
       }
     }

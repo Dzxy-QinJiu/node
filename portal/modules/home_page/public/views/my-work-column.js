@@ -374,67 +374,22 @@ class MyWorkColumn extends React.Component {
             this.setState({handlingWork: item});
         }
     }
-
-    getWorkIconCls(item) {
-        let iconCls = '';
-        switch (item.type) {
-            case WORK_TYPES.LEAD://待处理线索
-                iconCls = 'icon-clue';
-                break;
-            case WORK_TYPES.APPLY://申请消息
-                iconCls = 'icon-application-ico';
-                break;
-            case WORK_TYPES.SCHEDULE://联系计划
-                switch (item.key) {
-                    case SCHEDULE_TYPES.VISIT://拜访
-                        iconCls = 'icon-visit-briefcase';
-                        break;
-                    case SCHEDULE_TYPES.CALLS://打电话
-                        iconCls = 'icon-phone-call-out';
-                        break;
-                    case SCHEDULE_TYPES.LEAD_CALLS://线索中打电话的联系计划
-                        iconCls = 'icon-phone-call-out';
-                        break;
-                    case SCHEDULE_TYPES.OTHER://其他
-                        iconCls = 'icon-trace-other';
-                        break;
-                }
-                break;
-            case WORK_TYPES.DEAL://新订单
-                iconCls = 'icon-deal_manage-ico';
-                break;
-        }
-        return iconCls;
-    }
-
     renderWorkCard(item, index) {
-        const iconCls = this.getWorkIconCls(item);
-        const priority = _.get(item, 'priority');
-        const titleCls = classNames('work-item-title', {
-            'priority-high-work': priority === 0 || (priority === 1 && item.opinion === APPLY_STATUS.ONGOING)//前两级的工作标题需要高亮(待审批的申请，不是申请的回复)
-        });
-        const title = (
-            <span className={titleCls}>
-                <i className={'iconfont ' + iconCls}/>
-                <span className='work-title-text'>{item.name}</span>
-            </span>);
-        const content = (
-            <div className='work-content-wrap' id={`home-page-work${item.id}`}>
-                {this.renderWorkName(item, index)}
-                <div className='work-remark'>
-                    {_.get(item, 'remark', '')}
-                </div>
-                {this.renderContactItem(item)}
-                {this.renderHandleWorkBtn(item)}
-            </div>);
-        const containerCls = classNames('my-work-card-container', {
+        const contentCls = classNames('work-content-wrap', {
             'open-work-detail-style': _.includes(OPEN_DETAIL_TYPES, item.type) && item.opinion === APPLY_STATUS.ONGOING
         });
         return (
-            <div className={containerCls} onClick={this.openWorkDetail.bind(this, item)}>
-                <DetailCard title={title}
-                    content={content}
-                    className='my-work-card'/>
+            <div className='my-work-card-container' onClick={this.openWorkDetail.bind(this, item)}>
+                <div className={contentCls} id={`home-page-work${item.id}`}>
+                    {this.renderWorkName(item, index)}
+                    <div className='work-remark'>
+                        【{item.name}】 {_.get(item, 'remark', '')}
+                    </div>
+                    <div className='my-work-item-hover'>
+                        {this.renderContactItem(item)}
+                        {this.renderHandleWorkBtn(item)}
+                    </div>
+                </div>
             </div>);
     }
 
@@ -461,8 +416,7 @@ class MyWorkColumn extends React.Component {
         } else {
             return (
                 <div className='handle-work-finish' onClick={this.handleMyWork.bind(this, item)}>
-                    <i className='iconfont icon-finish icon-select-member'/>
-                    <span className='work-finish-text'>{Intl.get('notification.system.handled', '已处理')}</span>
+                    <span className='work-finish-text'>{Intl.get('home.page.my.work.finished', '我已完成')}</span>
                 </div>);
         }
     }

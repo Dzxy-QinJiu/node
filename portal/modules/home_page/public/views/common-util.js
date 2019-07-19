@@ -6,7 +6,7 @@
 
 const LAYOUT_CONSTS = {
     PADDING: 10,//上下间距
-    TITLE_HEIGHT: 30,//标题的goad
+    TITLE_HEIGHT: 65,//标题的goad
     MIN_BODY_WIDTH: 768,//body宽度小于768时折行展示
 };
 

@@ -108,6 +108,7 @@ class TeamDataColumn extends React.Component {
         const performanceData = this.state.performanceData;
         const isSales = this.isSalesRole();
         const topPerformance = [];
+        let totalData = _.sumBy(performanceData.top, 'performance');
         _.each(_.get(performanceData, 'top', []), (item, index) => {
             if (index <= 2) {
                 topPerformance.push(
@@ -124,6 +125,9 @@ class TeamDataColumn extends React.Component {
                 return false;
             }
         });
+        //当前业绩占总数的百分比
+        let curPerformance = _.get(performanceData, 'own.performance', 0);
+        let percent = totalData ? (curPerformance / totalData) * 100 : 0;
         const performanceContent = (
             <div>
                 <div className='my-data-title'>本月业绩</div>
@@ -132,6 +136,10 @@ class TeamDataColumn extends React.Component {
                     {isSales ? (
                         <span className="performance-data-right">第{_.get(performanceData, 'own.order')}名</span>) : null}
                 </div>
+                {isSales ? (
+                    <div className='my-data-performance-chart'>
+                        <span className='my-performance-percent' style={{width: percent + '%'}}/>
+                    </div>) : null}
                 {isSales ? (<div className="my-data-detail-list">{topPerformance}</div>) : null}
             </div>);
         return (<DetailCard content={performanceContent}
@@ -147,6 +155,8 @@ class TeamDataColumn extends React.Component {
         let totalTime = _.sumBy(callTimeData, 'totalTime');
         let time = TimeUtil.secondsToHourMinuteSecond(totalTime || 0);
         let timeObj = this.getCallTimeObj();
+        //只展示前三条数据
+        callTimeData = _.filter(callTimeData, (item, index) => index <= 2);
         const callTimeContent = (
             <div>
                 <div className='my-data-title'>{timeObj.callTimeDescr}呼出总时长</div>
@@ -172,12 +182,13 @@ class TeamDataColumn extends React.Component {
                         if (index !== 0) {
                             percent = firstTotalTime ? (item.totalTime / firstTotalTime) * 100 : 0;
                         }
+                        let timeObj = TimeUtil.secondsToHourMinuteSecond(item.totalTime || 0);
                         return (
-                            <div>
+                            <div className="call-time-item">
                                 <span className='call-time-name'
                                     title={_.get(item, 'salesName', '')}>{_.get(item, 'salesName', '')}</span>
                                 <span className='progress-bar-wrap'>
-                                    <Tooltip title={TimeUtil.getFormatTime(item.totalTime || 0)}>
+                                    <Tooltip title={timeObj.timeDescr} placement="left">
                                         <Progress size='small' percent={percent} showInfo={false}
                                             strokeColor={{
                                                 from: '#d3eafd',

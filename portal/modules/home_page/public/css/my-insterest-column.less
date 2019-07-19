@@ -1,11 +1,6 @@
 .my-insterest-content {
   width: 100%;
   height: 100vh;
-  border: 1px solid #e9e9e9;
-  border-radius: 4px;
-  margin-top: 4px;
-  background-color: #ffffff;
-
   .system_message_list {
     .select-li-item, li:hover {
       background-color: #f8fdff;
@@ -21,10 +16,14 @@
       display: inline-block;
       width: 100%;
       border-bottom: 1px solid #f1f1f1;
-      padding: 20px 10px 20px 20px;
+      padding: 10px 15px;
       font-size: 14px;
       .system-notice-title {
-        .icon-login-failed, .icon-concern-customer-login, .icon-deactivate-customer-login, .icon-remote-login {
+        .icon-concern-customer-login{
+          margin-right: 4px;
+          color: #F9B706;
+        }
+        .icon-login-failed, .icon-deactivate-customer-login, .icon-remote-login {
           float: left;
           margin: -1px 5px 0 0;
           color: #F9B706;
@@ -38,6 +37,9 @@
           font-size: 16px;
           color: #333333;
           cursor: pointer;
+          &:hover{
+            color: #2196F3;
+          }
         }
       }
       .system-notice-type {
@@ -49,7 +51,7 @@
       }
       .system-notice-content {
         display: inline-block;
-        margin-top: 6px;
+        margin-top: 4px;
         color: #999999;
         > a {
           float: right;
@@ -81,6 +83,7 @@
             }
           }
           .system-notice-time {
+            padding-right: 5px;
             .login-count {
               color: #108ee9;
               padding: 0 2px;

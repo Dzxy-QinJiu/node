@@ -344,6 +344,7 @@ var zh_CN = {
     'home.page.deal.handle': '待处理的订单',
     'home.page.no.work.tip': '暂无工作',
     'home.page.new.work.tip': '有新工作，点此{refreshTip}',
+    'home.page.my.work.finished': '我已完成',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
