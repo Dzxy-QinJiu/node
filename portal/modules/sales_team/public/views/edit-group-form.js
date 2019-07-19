@@ -225,7 +225,8 @@ var SalesTeamForm = createReactClass({
         var formData = this.state.formData;
         var status = this.state.status;
         var formClass = classNames('edit-sales-team-form', this.props.className, {
-            'select': formData.select
+            'select': formData.select,
+            'edit-form': formData.isEditGroup
         });
         return (
             <div className={formClass} data-tracename ="编辑/添加团队表单">
