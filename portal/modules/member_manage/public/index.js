@@ -226,16 +226,6 @@ class MemberManage extends React.Component {
         });
     };
 
-    //处理选中行的样式
-    handleRowClassName = (record, index) => {
-        if (index === this.state.selectedRowIndex && this.state.isShowMemberDetail) {
-            return 'current-row';
-        }
-        else {
-            return '';
-        }
-    };
-
     renderMemberTableContent = () => {
         let isLoading = this.state.loading;
         let doNotShow = false;
@@ -258,7 +248,8 @@ class MemberManage extends React.Component {
                 dropLoad={dropLoadConfig}
                 dataSource={dataSource}
                 handleRowClick={this.handleRowClick}
-                handleRowClassName={this.handleRowClassName}
+                selectedRowIndex={this.state.selectedRowIndex}
+                isShowMemberDetail={this.state.isShowMemberDetail}
                 tableHeight={tableHeight}
             />
         );

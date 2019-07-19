@@ -98,7 +98,12 @@ class MemberTableList extends React.Component {
     };
 
     handleRowClassName = (record, index) => {
-        this.props.handleRowClassName(record, index);
+        if (index === this.props.selectedRowIndex && this.props.isShowMemberDetail) {
+            return 'current-row';
+        }
+        else {
+            return '';
+        }
     };
 
     render = () => {
@@ -136,7 +141,6 @@ MemberTableList.defaultProps = {
     dropLoad: {},
     rowSelection: null,
     handleRowClick: noop,
-    handleRowClassName: noop,
     isHideTableTitle: false, // 是否隐藏table表格的标题，默认不隐藏
 };
 
@@ -146,9 +150,10 @@ MemberTableList.propTypes = {
     tableHeight: PropTypes.number,
     rowSelection: PropTypes.object,
     handleRowClick: PropTypes.func,
-    handleRowClassName: PropTypes.func,
     dropLoad: PropTypes.object,
     isHideTableTitle: PropTypes.bool,
+    isShowMemberDetail: PropTypes.bool,
+    selectedRowIndex: PropTypes.number,
 };
 
 export default MemberTableList;

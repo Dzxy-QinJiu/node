@@ -349,16 +349,6 @@ const MemberList = createReactClass({
         this.showMemberInfo(record, index);
     },
 
-    //处理选中行的样式
-    handleRowClassName(record, index){
-        if (index === this.props.selectedRowIndex) {
-            return 'current-row';
-        }
-        else {
-            return '';
-        }
-    },
-
     onSelectChange(selectedRowKeys){
         this.setState({
             selectedRowKeys: selectedRowKeys
@@ -417,7 +407,8 @@ const MemberList = createReactClass({
                             rowSelection={rowSelection}
                             dataSource={dataSource}
                             handleRowClick={this.handleRowClick}
-                            handleRowClassName={this.handleRowClassName}
+                            selectedRowIndex={this.props.selectedRowIndex}
+                            isShowMemberDetail={this.props.rightPanelShow}
                             tableHeight={tableHeight}
                             isHideTableTitle={hasSelected !== 0 || this.state.curShowTeamMemberObj.groupName}
                         />
