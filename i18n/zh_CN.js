@@ -345,6 +345,9 @@ var zh_CN = {
     'home.page.no.work.tip': '暂无工作',
     'home.page.new.work.tip': '工作有变动，点此{refreshTip}',
     'home.page.my.work.finished': '我已完成',
+    'home.page.contacts.customers.week': '本周已联系客户总数',
+    'home.page.callout.time': '呼出总时长',
+    'home.page.performance.num': '第{n}名',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/

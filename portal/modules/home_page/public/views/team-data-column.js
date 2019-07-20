@@ -61,16 +61,16 @@ class TeamDataColumn extends React.Component {
         if (this.isSalesRole()) {
             //普通销售
             if (userData.getUserData().isCommonSales) {
-                callTimeObj.callTimeDescr = '今天';
+                callTimeObj.callTimeDescr = Intl.get('user.time.today', '今天');
                 callTimeObj.startTime = getTodayTimeStamp().start_time;
             } else {//销售总监、主管
                 //昨天
-                callTimeObj.callTimeDescr = '昨天';
+                callTimeObj.callTimeDescr = Intl.get('user.time.yesterday', '昨天');
                 callTimeObj.startTime = getTodayTimeStamp().start_time - oplateConsts.ONE_DAY_TIME_RANGE;
             }
         } else {//管理员、运营
             //本周
-            callTimeObj.callTimeDescr = '本周';
+            callTimeObj.callTimeDescr = Intl.get('common.current.week', '本周');
             callTimeObj.startTime = getThisWeekTimeStamp().start_time;
         }
         return callTimeObj;
@@ -117,7 +117,7 @@ class TeamDataColumn extends React.Component {
                             <img className="performance-image" src={performance[`image_${item.order}`]}/>
                         </span>
                         <span className="performance-data-left contact-data">
-                            {_.get(performanceData, `top[${index}].performance`)}元
+                            {Intl.get('contract.159', '{num}元', {num: _.get(performanceData, `top[${index}].performance`)})}
                         </span>
                         <span className="performance-data-right">{_.get(performanceData, `top[${index}].name`)}</span>
                     </div>);
@@ -132,9 +132,11 @@ class TeamDataColumn extends React.Component {
             <div>
                 <div className='my-data-title'>本月业绩</div>
                 <div className='my-contact-performance my-data-title-data'>
-                    <span className="performance-data-left"> {_.get(performanceData, 'own.performance')}元</span>
+                    <span
+                        className="performance-data-left"> {Intl.get('contract.159', '{num}元', {num: _.get(performanceData, 'own.performance')})}</span>
                     {isSales ? (
-                        <span className="performance-data-right">第{_.get(performanceData, 'own.order')}名</span>) : null}
+                        <span
+                            className="performance-data-right">{Intl.get('home.page.performance.num', '第{n}名', {n: _.get(performanceData, 'own.order')})}</span>) : null}
                 </div>
                 {isSales ? (
                     <div className='my-data-performance-chart'>
@@ -159,7 +161,8 @@ class TeamDataColumn extends React.Component {
         callTimeData = _.filter(callTimeData, (item, index) => index <= 2);
         const callTimeContent = (
             <div>
-                <div className='my-data-title'>{timeObj.callTimeDescr}呼出总时长</div>
+                <div
+                    className='my-data-title'>{timeObj.callTimeDescr}{Intl.get('home.page.callout.time', '呼出总时长')}</div>
                 <div className='call-time-total my-data-title-data'>
                     {time.timeDescr !== '0' ? (
                         <span className="add-data-style phone-total-time phone-total-data">
@@ -208,8 +211,10 @@ class TeamDataColumn extends React.Component {
     renderContactCustomers() {
         const contactCustomersContent = (
             <div>
-                <div className='my-data-title'>本周已联系客户总数</div>
-                <div className='contact-customer-count my-data-title-data'>{this.state.contactCustomerCount}个</div>
+                <div className='my-data-title'>{Intl.get('home.page.contacts.customers.week', '本周已联系客户总数')}</div>
+                <div className='contact-customer-count my-data-title-data'>
+                    {Intl.get('sales.home.count', '{count}个', {count: this.state.contactCustomerCount})}
+                </div>
             </div>);
         return (<DetailCard content={contactCustomersContent}
             className='my-data-contact-customers-card'/>);
