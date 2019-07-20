@@ -15,6 +15,8 @@ import Trace from 'LIB_DIR/trace';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import classNames from 'classnames';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
+import MemberTableList from 'MOD_DIR/member-table-list';
+import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -216,76 +218,6 @@ class MemberManage extends React.Component {
         this.getMemberList({id: this.state.sortId});
     };
 
-    memberStatusClass = (status) => {
-        return classNames({'member-status': status === 0});
-    };
-
-    getTableColumns = () => {
-        return [{
-            title: Intl.get('member.member', '成员'),
-            dataIndex: 'name',
-            className: 'member-th-head',
-            key: 'name',
-            width: '40%',
-            render: (name, record) => {
-                let status = record.status;
-                let memberNameCls = classNames('member-name', this.memberStatusClass(status));
-                return (
-                    <div className={memberNameCls}>
-                        <div className='account'>
-                            {record.name}
-                            {
-                                status === 0 ? (
-                                    <span className='member-stop-status'>{Intl.get('user.status.stopped', '已停用')}</span>
-                                ) : null
-                            }
-                        </div>
-                        <div className='nickname'>{record.userName}</div>
-                    </div>
-                );
-            }
-        }, {
-            title: Intl.get('crm.113', '部门'),
-            dataIndex: 'teamName',
-            key: 'teamName',
-            width: '20%',
-            render: (teamName, record) => {
-                let teamCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={teamCls}>
-                        {teamName}
-                    </div>
-                );
-            }
-        }, {
-            title: Intl.get('member.position', '职务'),
-            dataIndex: 'positionName',
-            key: 'positionName',
-            width: '20%',
-            render: (positionName, record) => {
-                let positionCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={positionCls}>
-                        {positionName}
-                    </div>
-                );
-            }
-        }, {
-            title: Intl.get('member.phone', '手机'),
-            dataIndex: 'phone',
-            key: 'phone',
-            width: '30%',
-            render: (phone, record) => {
-                let phoneCls = this.memberStatusClass(record.status);
-                return (
-                    <div className={phoneCls}>
-                        {phone}
-                    </div>
-                );
-            }
-        }];
-    };
-    
     // 点击表格
     handleRowClick = (record, index) => {
         this.showMemberInfo(record);
@@ -294,23 +226,12 @@ class MemberManage extends React.Component {
         });
     };
 
-    //处理选中行的样式
-    handleRowClassName = (record, index) => {
-        if (index === this.state.selectedRowIndex && this.state.isShowMemberDetail) {
-            return 'current-row';
-        }
-        else {
-            return '';
-        }
-    };
-
     renderMemberTableContent = () => {
         let isLoading = this.state.loading;
         let doNotShow = false;
         if (isLoading && this.state.sortId === '') {
             doNotShow = true;
         }
-        let columns = this.getTableColumns();
         let dataSource = this.state.memberList;
         let tableHeight = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT -
             LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT - LAYOUT_CONSTANTS.TABLE_HEAD_HEIGHT;
@@ -322,26 +243,15 @@ class MemberManage extends React.Component {
             noMoreDataText: Intl.get('member.no.more.tips', '没有更多成员信息了')
         };
         return (
-            <div
-                className="member-list-table-wrap scroll-load"
-                id="new-table"
-                style={{ display: doNotShow ? 'none' : 'block' }}
-            >
-                <div className="" style={{ height: tableHeight }} ref="tableWrap">
-                    <AntcTable
-                        dropLoad={dropLoadConfig}
-                        util={{zoomInSortArea: true}}
-                        dataSource={dataSource}
-                        rowKey={this.getRowKey}
-                        onRowClick={this.handleRowClick}
-                        columns={columns}
-                        pagination={false}
-                        rowClassName={this.handleRowClassName}
-                        locale={{ emptyText: Intl.get('common.no.member', '暂无成员') }}
-                        scroll={{ y: tableHeight }}
-                    />
-                </div>
-            </div>
+            <MemberTableList
+                doNotShow={doNotShow}
+                dropLoad={dropLoadConfig}
+                dataSource={dataSource}
+                handleRowClick={this.handleRowClick}
+                selectedRowIndex={this.state.selectedRowIndex}
+                isShowMemberDetail={this.state.isShowMemberDetail}
+                tableHeight={tableHeight}
+            />
         );
     };
 
@@ -401,9 +311,11 @@ class MemberManage extends React.Component {
     };
 
     render() {
-        let height = $(window).height() - LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let topNavWidth = $(window).width() - LAYOUT_CONSTANTS.NAV_WIDTH -
-                LAYOUT_CONSTANTS.PADDING_WIDTH - LAYOUT_CONSTANTS.FRIST_NAV_WIDTH;
+        const height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
+        const topNavWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH -
+        BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH;
+        const contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+
         return (
             <div className='member-container' style={{height: height}}>
                 <div className='member-wrap' style={{height: height}}>
@@ -411,7 +323,7 @@ class MemberManage extends React.Component {
                         <div className='member-top-nav' style={{width: topNavWidth}}>
                             {this.renderTopNavOperation()}
                         </div>
-                        <div className='member-content'>
+                        <div className='member-content' style={{height: contentHeight}}>
                             {
                                 this.state.loading && this.state.sortId === '' ? (
                                     <div>

@@ -99,11 +99,10 @@ function SalesTeamAction() {
     };
 
     this.getMemberList = function() {
-        var _this = this;
-        SalesTeamAjax.getMemberList().then(function(list) {
-            _this.dispatch(list);
-        }, function(errorMsg) {
-            _this.dispatch(errorMsg || Intl.get('common.get.member.lists.failed', '获取可添加成员列表失败'));
+        SalesTeamAjax.getMemberList().then( (list) => {
+            this.dispatch(list);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg || Intl.get('common.get.member.lists.failed', '获取可添加成员列表失败'));
         });
     };
 

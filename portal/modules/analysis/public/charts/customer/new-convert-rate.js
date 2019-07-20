@@ -1,30 +1,46 @@
 /**
- * 新开客户转化率统计
+ * 新增客户转化率统计
  */
+
+//判断是否在蚁坊域的方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
 
 export function getNewCustomerConvertRateChart(paramObj = {}) {
     return {
-        title: '新开客户转化率统计',
-        url: '/rest/analysis/customer/stage/label/:auth_type/summary',
+        title: Intl.get('common.new.customer.conversion.rate.statistics', '新增客户转化率统计'),
+        url: '/rest/analysis/customer/v2/statistic/:auth_type/customer/user/new',
         chartType: 'funnel',
+        noShowCondition: {
+            //在户登录的不是蚁坊域时不显示
+            callback: () => !isOrganizationEefung()
+        },
         customOption: {
             valueField: 'showValue',
             minSize: '5%',
         },
-        argCallback: paramObj.argCallback,
         processData: data => {
+            data = data.total;
+
             const customerStages = [
                 {
-                    tagName: Intl.get('common.trial', '试用'),
-                    tagValue: 'trial',
+                    tagName: Intl.get('common.number.of.new.customers', '新增客户数'),
+                    tagValue: 'newly_customer',
                 },
                 {
-                    tagName: Intl.get('common.qualified', '合格'),
-                    tagValue: 'qualified',
+                    tagName: Intl.get('common.number.of.open.user.customers', '开通用户客户数'),
+                    tagValue: 'tatol_newly_users',
                 },
                 {
-                    tagName: Intl.get('sales.stage.signed', '签约'),
-                    tagValue: 'signed',
+                    tagName: Intl.get('common.number.of.qualified.customers', '合格客户数'),
+                    tagValue: 'customer_login',
+                },
+                {
+                    tagName: Intl.get('common.number.of.customers.logged.in', '登录过的客户数'),
+                    tagValue: 'newly_users_login_qualify',
+                },
+                {
+                    tagName: Intl.get('common.number.of.contracted.customers', '签约客户数'),
+                    tagValue: 'newly_customer_sign',
                 },
             ];
 
@@ -42,7 +58,7 @@ export function getNewCustomerConvertRateChart(paramObj = {}) {
                     let convertRate = '';
 
                     if (prevStageValue) {
-                        convertRate = (stageValue / prevStageValue) * 100 + '%';
+                        convertRate = ((stageValue / prevStageValue) * 100).toFixed(2) + '%';
                     }
 
                     //如果下一阶段的值比上一阶段的值大，则将下一阶段的值变得比上一阶段的值小，以便能正确排序

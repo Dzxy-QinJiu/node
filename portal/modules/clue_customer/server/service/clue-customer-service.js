@@ -9,6 +9,8 @@ var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 const _ = require('lodash');
+const Promise = require('bluebird');
+const EventEmitter = require('events').EventEmitter;
 const clueBaseUrl = '/rest/clue/v2';
 const restApis = {
     //获取线索来源
@@ -354,23 +356,82 @@ function handleClueParams(req, clueUrl) {
     }
     return {url: url, bodyObj: bodyObj};
 }
+//获取各类线索数量的统计
+function getTypeClueLists(req, res, obj) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.post({
+            url: obj.url,
+            req: req,
+            res: res
+        }, obj.bodyObj, {
+            success: (emitter, data) => {
+                resolve(data);
+            },
+            error: (eventEmitter, errorDesc) => {
+                reject(errorDesc);
+            }
+        });
+    });
+}
+function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
+    //首次登录的时候先获取各类线索的值，然后再获取有值的那一类线索并且把有值选中的字段传到前端
+    let emitter = new EventEmitter();
+    getTypeClueLists(req, res, obj).then((data) => {
+        if (!_.get(data, 'total') && req.body.firstLogin === 'true'){
+            delete req.body.firstLogin;
+            //如果想要查询的不存在
+            var staticsData = _.get(data, 'agg_list[0].status',[]);
+            staticsData = _.sortBy(staticsData, item => item.name);
+            //如果是发我待我处理的数据并且只有已转化有数据
+            if (selfHandleFlag && (_.get(staticsData,'[0].name') === '3' || !_.get(staticsData,'[0]'))){
+                data.agg_list = [{status: []}];
+                data.filterAllotNoTraced = 'no';
+                emitter.emit('success', data);
+            }else if (!_.get(staticsData,'[0]')){
+                data.agg_list = [{status: []}];
+                emitter.emit('success', data);
+            }else{
+                if (obj.bodyObj.query){
+                    obj.bodyObj.query.status = _.get(staticsData,'[0].name');
+                    //如果是已跟进或者已转化状态，需要按跟进时间倒序排列
+                    if(_.get(staticsData,'[0].name') === '2' || _.get(staticsData,'[0].name') === '3'){
+                        if (obj.url.indexOf('source_time') > -1){
+                            obj.url = obj.url.replace('source_time','last_contact_time');
+                        }
+                    }
+                }
+                getTypeClueLists(req, res, obj).then((data) => {
+                    if (selfHandleFlag){
+                        data.filterAllotNoTraced = 'yes';
+                    }
+                    data.setting_status = _.get(staticsData,'[0].name');
+                    emitter.emit('success', data);
+                } ).catch( (errorObj) => {
+                    emitter.emit('error', errorObj);
+                });
+            }
+        }else{
+            if (selfHandleFlag){
+                data.filterAllotNoTraced = 'yes';
+            }
+            emitter.emit('success', data);
+        }
+    }).catch((errorObj) => {
+        emitter.emit('error', errorObj);
+    });
+    return emitter;
+}
+
 //线索全文搜索
 exports.getClueFulltext = function(req, res) {
     var obj = handleClueParams(req, restApis.getClueFulltext);
-    return restUtil.authRest.post({
-        url: obj.url,
-        req: req,
-        res: res
-    },obj.bodyObj);
+    return getExistTypeClueLists(req, res, obj);
 };
 //线索有待我处理筛选项时的全文搜索
 exports.getClueFulltextSelfHandle = function(req, res) {
     var obj = handleClueParams(req, restApis.getClueFullTextWithSelfHandle);
-    return restUtil.authRest.post({
-        url: obj.url,
-        req: req,
-        res: res
-    },obj.bodyObj);
+    //待我处理的，不要查已转化的线索
+    return getExistTypeClueLists(req, res, obj, true);
 };
 //获取动态列表
 exports.getDynamicList = function(req, res) {

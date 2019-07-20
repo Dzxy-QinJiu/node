@@ -742,6 +742,7 @@ var en_US = {
     'member.position.set.default': '', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
     //后台管理-成员end
+    
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
     'organization.input.placeholder': 'Please input organization name',//请输入组织名称
@@ -773,6 +774,11 @@ var en_US = {
     'organization.get.add.organization.member.list.failed': 'Failed to get member lists that who can join  the organization',//获取可加入组织的成员列表失败
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
     //组织管理end
+
+    // 后台管理- 产品start
+    'product.name.input': 'Please enter the name of product', // 请填写产品名称
+    'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    // 后台管理- 产品end
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
@@ -3040,6 +3046,12 @@ var en_US = {
     'common.clue.convert': 'clue convert',//线索转化
     'common.clue.name.need.at.least.two.char.to.do.customer.convert': 'clue name need at least two char to do customer convert',//线索名称必须在两个字或以上，才能进行转为客户的操作
     'app.manege.access.no.amdin.tip': 'No user,please contact the administrator to access the user',//暂无用户，请联系管理员接入用户
+    'common.new.customer.conversion.rate.statistics': 'new customer conversion rate statistics',//新增客户转化率统计
+    'common.number.of.new.customers': 'number of new customers',//新增客户数
+    'common.number.of.open.user.customers': 'number of open user customers',//开通用户客户数
+    'common.number.of.qualified.customers': 'number of qualified customers',//合格客户数
+    'common.number.of.customers.logged.in': 'number of customers logged in',//登录过的客户数
+    'common.number.of.contracted.customers': 'number of contracted customers',//签约客户数
 
 };
 export default en_US;

@@ -36,7 +36,9 @@ function ClueCustomerActions() {
         //添加、补充跟进记录后，列表中最后联系数据的更新
         'updateCustomerLastContact',
         'updateCurrentClueRemark',
-        'afterTranferClueSuccess'//转化客户成功后
+        'afterTranferClueSuccess',//转化客户成功后
+        'setLoadingFalse',
+        'changeFilterFlag'
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -117,14 +119,13 @@ function ClueCustomerActions() {
     };
 
     //线索的全文搜索
-    this.getClueFulltext = function(queryObj) {
+    this.getClueFulltext = function(queryObj,callback) {
         //是否是在全部状态下返回数据
         this.dispatch({error: false, loading: true
         });
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result
-            });
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback:callback});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
@@ -133,14 +134,13 @@ function ClueCustomerActions() {
             });
         });
     };
-    this.getClueFulltextSelfHandle = function(queryObj) {
+    this.getClueFulltextSelfHandle = function(queryObj,callback) {
         //是否是在全部状态下返回数据
         this.dispatch({error: false, loading: true
         });
         clueCustomerAjax.getClueFulltextSelfHandle(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result
-            });
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback:callback});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
