@@ -491,7 +491,7 @@ class MyWorkColumn extends React.Component {
                     <div className="refresh-data-tip">
                         <ReactIntl.FormattedMessage
                             id="home.page.new.work.tip"
-                            defaultMessage={'有新工作，点此{refreshTip}'}
+                            defaultMessage={'工作有变动，点此{refreshTip}'}
                             values={{
                                 'refreshTip': <a
                                     onClick={this.refreshMyworkList}>{Intl.get('common.refresh', '刷新')}</a>

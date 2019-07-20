@@ -251,9 +251,14 @@ class MyInsterestColumn extends React.Component {
             notice.detail = _.sortBy(notice.detail, 'creat_time');
             showItem = _.first(notice.detail);
         }
+        let titleTip = _.get(showItem, 'user_name', '');
+        if (showItem.app_name) {
+            titleTip += Intl.get('notification.system.login', '登录了') + showItem.app_name;
+        }
         return (
-            <div className="system-notice-item">
-                <span className="system-notice-time">
+            <div className="system-notice-item"
+                title={titleTip}>
+                < span className="system-notice-time">
                     {TimeUtil.transTimeFormat(showItem.create_time)}
                 </span>
                 <a onClick={this.openUserDetail.bind(this, showItem.user_id, idx)}>{showItem.user_name}</a>
@@ -281,45 +286,47 @@ class MyInsterestColumn extends React.Component {
         return (
             <li key={idx} className={unhandleNoticeLiItemClass}>
                 <div className="system-notice-title">
-                    <div className="customer-name"
+                    <div className="customer-name" title={notice.customer_name}
                         onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>
                         <i className='iconfont icon-concern-customer-login'/>{notice.customer_name}
                     </div>
                 </div>
                 <div className="system-notice-content">
                     {this.renderUnHandledNoticeContent(notice, idx)}
-                    {
-                        loginUserId === notice.member_id ?
-                            <Button className="notice-handled-set" disabled={this.state.noticeId === notice.id}
-                                onClick={this.handleSystemNotice.bind(this, notice)}
-                            >
-                                {Intl.get('notification.system.handled.set', '处理')}{notice.isHandling ?
-                                    <Icon type="loading"/> : null}
-                            </Button> : null
-                    }
-                    {this.state.noticeId === notice.id ? (
-                        <div className="handle-notice-tips">
-                            {this.state.handleNoticeMessageSuccessFlag ? (
-                                <AlertTimer
-                                    message={Intl.get('notification.system.handled.success', '处理成功')}
-                                    type="success"
-                                    time={3000}
-                                    showIcon
-                                    onHide={this.hideNoticeSuccessTips}
-                                />
-                            ) : null}
-                            {this.state.handleNoticeMessageErrorTips ? (
-                                <Alert
-                                    message={Intl.get('notification.system.handled.error', '处理失败')}
-                                    description={this.state.handleNoticeMessageErrorTips}
-                                    type="error"
-                                    showIcon
-                                    closable
+                    <div className='notice-handle-wrap'>
+                        {
+                            loginUserId === notice.member_id ?
+                                <Button className="notice-handled-set" disabled={this.state.noticeId === notice.id}
+                                    onClick={this.handleSystemNotice.bind(this, notice)}
                                 >
-                                </Alert>
-                            ) : null}
-                        </div>
-                    ) : null}
+                                    {Intl.get('notification.system.handled.set', '处理')}{notice.isHandling ?
+                                        <Icon type="loading"/> : null}
+                                </Button> : null
+                        }
+                        {this.state.noticeId === notice.id ? (
+                            <div className="handle-notice-tips">
+                                {this.state.handleNoticeMessageSuccessFlag ? (
+                                    <AlertTimer
+                                        message={Intl.get('notification.system.handled.success', '处理成功')}
+                                        type="success"
+                                        time={3000}
+                                        showIcon
+                                        onHide={this.hideNoticeSuccessTips}
+                                    />
+                                ) : null}
+                                {this.state.handleNoticeMessageErrorTips ? (
+                                    <Alert
+                                        message={Intl.get('notification.system.handled.error', '处理失败')}
+                                        description={this.state.handleNoticeMessageErrorTips}
+                                        type="error"
+                                        showIcon
+                                        closable
+                                    >
+                                    </Alert>
+                                ) : null}
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
             </li>
         );

@@ -3,13 +3,14 @@
   height: 100vh;
   .system_message_list {
     .select-li-item, li:hover {
-      background-color: #f8fdff;
-      .system-notice-content {
-        .notice-handled-set {
-          color: #fff;
-          background-color: #4E96D1;
-        }
-      }
+      //background: linear-gradient(90deg,rgba(255,255,255,0) 0%,#fff 20%);
+
+      //.system-notice-content {
+      //  .notice-handled-set {
+      //    color: #fff;
+      //    background-color: #4E96D1;
+      //  }
+      //}
     }
     li {
       position: relative;
@@ -18,8 +19,15 @@
       border-bottom: 1px solid #f1f1f1;
       padding: 10px 15px;
       font-size: 14px;
+      &:hover {
+        .system-notice-content {
+          .notice-handle-wrap {
+            display: block;
+          }
+        }
+      }
       .system-notice-title {
-        .icon-concern-customer-login{
+        .icon-concern-customer-login {
           margin-right: 4px;
           color: #F9B706;
         }
@@ -37,7 +45,11 @@
           font-size: 16px;
           color: #333333;
           cursor: pointer;
-          &:hover{
+          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          &:hover {
             color: #2196F3;
           }
         }
@@ -53,6 +65,22 @@
         display: inline-block;
         margin-top: 4px;
         color: #999999;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        //处理按钮的样式
+        .notice-handle-wrap {
+          display: none;
+          position: absolute;
+          float: right;
+          right: 10px;
+          padding-left: 40px;
+          top: 0px;
+          z-index: 1;
+          height: 69px;
+          background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #fff 20%); //渐变背景设置
+        }
         > a {
           float: right;
           color: #90abc7;
@@ -67,18 +95,27 @@
         }
         .notice-handled-set {
           font-size: 14px;
-          margin: 10px 0 20px;
+          margin-top: 25px;
+          margin-right: 10px;
           height: 24px;
-          color: #108ee9;
+          color: #8DA8C5;
+          border: 1px solid #cccccc;
+          &:hover {
+            color: #2196F3;
+          }
           .anticon-loading {
             padding: 0 5px;
           }
         }
         .system-notice-item {
+          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
           > a {
             padding-right: 5px;
-            color: #90abc7 ;
-            &:hover{
+            color: #90abc7;
+            &:hover {
               color: #108ee9;
             }
           }
@@ -98,9 +135,9 @@
           position: absolute;
           top: 40px;
           left: 120px;
-          .ant-alert-success,  .ant-alert-error{
+          .ant-alert-success, .ant-alert-error {
             background-color: #4E5C66;
-            .ant-alert-message, .ant-alert-description, .ant-alert-close-icon .anticon-cross{
+            .ant-alert-message, .ant-alert-description, .ant-alert-close-icon .anticon-cross {
               color: #fff;
             }
           }
