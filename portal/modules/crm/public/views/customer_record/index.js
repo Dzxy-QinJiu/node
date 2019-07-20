@@ -42,7 +42,7 @@ import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL_RECORD_TYPE.APP];
 import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
-var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
+import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 //除去固定的电话、拜访、其他以外的类型的缓存数据，获取后存起来，不用每次都取
 let extraTraceTypeList = [];
 class CustomerRecord extends React.Component {
@@ -98,6 +98,7 @@ class CustomerRecord extends React.Component {
         });*/
         this.getAppList();
     }
+
     //获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
     getExtraTraceType() {
         //未获取过额外跟进类型，需要获取一遍存起来，下次不用再取
@@ -268,6 +269,10 @@ class CustomerRecord extends React.Component {
             CustomerRecordActions.addCustomerTrace(queryObj, (customer_trace) => {
                 //更新列表中的最后联系
                 _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(customer_trace);
+                //首页我的工作中，添加跟进后，需要记录完成工做的状态，关闭详情时将首页的相关工作设为已完成
+                if (window.location.pathname === '/home') {
+                    myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                }
                 this.toggleAddRecordPanel();
             });
             // $('.add-content-input').focus();
@@ -292,6 +297,10 @@ class CustomerRecord extends React.Component {
                     //打通电话的才会更新最后联系
                     if (item.billsec === 0) return;
                     _.isFunction(this.props.updateCustomerLastContact) && this.props.updateCustomerLastContact(item);
+                    //首页我的工作中，补充最后一条跟进记录后，需要将首页的相关工作设为已完成
+                    if (window.location.pathname === '/home') {
+                        myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                    }
                 }
             });
         }

@@ -41,7 +41,10 @@ class DealDetailPanel extends React.Component {
 
     getInitStateData(props) {
         return {
-            currDeal: _.cloneDeep(props.currDeal),
+            currDealId: _.get(props, 'currDealId', ''),
+            loading: false,//正在加载订单详情
+            errorMsg: '',//获取订单详情失败的错误提示
+            currDeal: _.cloneDeep(props.currDeal) || {},
             isDelConfirmShow: false,//是否时删除订单确认状态的展示
             isDeleting: false,//是否正在删除订单
             curDealCloseStatus: '',//关闭订单的状态（win:赢单，lose:丢单）
@@ -57,13 +60,33 @@ class DealDetailPanel extends React.Component {
         this.getAppList();
         //获取订单阶段列表
         this.getDealStageList();
+        if (this.props.currDealId) {
+            this.getDealDetail(this.props.currDealId);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps, 'currDeal.id') !== _.get(this.state, 'currDeal.id')) {
+        if (_.get(nextProps, 'currDeal') && _.get(nextProps, 'currDeal.id') !== _.get(this.state, 'currDeal.id')) {
             let initData = this.getInitStateData(nextProps);
             this.setState(initData);
         }
+        if (nextProps.currDealId && nextProps.currDealId !== this.state.currDealId) {
+            this.getDealDetail(nextProps.currDealId);
+        }
+    }
+
+    getDealDetail(dealId) {
+        this.setState({loading: true});
+        dealAjax.getDealList({
+            page_size: 1,
+            page_num: 1,
+            sort_field: 'id',
+            sort_order: 'descond'
+        }, {id: dealId}).then((data) => {
+            this.setState({loading: false, errorMsg: '', currDeal: _.get(data, 'result.[0]', {})});
+        }, (errorMsg) => {
+            this.setState({loading: false, errorMsg: errorMsg || Intl.get('errorcode.118', '获取数据失败')});
+        });
     }
 
     //获取应用列表（ketao:产品列表+oplate的应用列表， curtao: 产品列表）
@@ -593,6 +616,7 @@ class DealDetailPanel extends React.Component {
 DealDetailPanel.propTypes = {
     isBoardView: PropTypes.bool,
     currDeal: PropTypes.object,
+    currDealId: PropTypes.string,
     hideDetailPanel: PropTypes.func
 };
 

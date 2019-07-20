@@ -141,6 +141,7 @@ function clueUnhandledListener(data) {
     if (_.isObject(data)) {
         if (getClueUnhandledPrivilege()){
             updateUnreadByPushMessage('unhandleClue', data.clue_list.length);
+            notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
         var clueArr = _.get(data, 'clue_list');
         var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
