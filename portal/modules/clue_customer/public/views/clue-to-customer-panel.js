@@ -643,7 +643,7 @@ class ClueToCustomerPanel extends React.Component {
                 </div>
 
                 {contact.replaceName ? (
-                    <div className="is-replace-contract-name">
+                    <div className="is-replace-contact-name">
                         {Intl.get('common.modify.name.to', '修改姓名为')}“{contact.replaceName}”？
                         <Button
                             onClick={this.onReplaceContactNameCancelBtnClick.bind(this, contactIndex)}
