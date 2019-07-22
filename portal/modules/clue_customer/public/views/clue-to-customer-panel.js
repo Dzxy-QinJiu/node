@@ -534,8 +534,6 @@ class ClueToCustomerPanel extends React.Component {
 
                     message.error(content);
                 });
-        } else {
-            message.warning(Intl.get('common.contact.info.not.change', '联系人信息无变化，无需合并'));
         }
     }
 
