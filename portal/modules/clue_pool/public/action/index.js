@@ -11,7 +11,8 @@ class CluePoolActions {
             'setKeyWord',//设置关键字
             'setSortField', // 设置排序字段
             'updateCluePoolList',//更新线索池列表
-            'setCurrentClueId' // 当前线索的id
+            'setCurrentClueId',// 当前线索的id
+            'setUnSelectDataTip', // 未选择销售的提示信息
         );
     }
     // 获取线索池列表
