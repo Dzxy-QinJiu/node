@@ -31,11 +31,11 @@ export function getNewCustomerConvertRateChart(paramObj = {}) {
                     tagValue: 'tatol_newly_users',
                 },
                 {
-                    tagName: Intl.get('common.number.of.qualified.customers', '合格客户数'),
+                    tagName: Intl.get('common.number.of.customers.logged.in', '登录过的客户数'),
                     tagValue: 'customer_login',
                 },
                 {
-                    tagName: Intl.get('common.number.of.customers.logged.in', '登录过的客户数'),
+                    tagName: Intl.get('common.number.of.qualified.customers', '合格客户数'),
                     tagValue: 'newly_users_login_qualify',
                 },
                 {
