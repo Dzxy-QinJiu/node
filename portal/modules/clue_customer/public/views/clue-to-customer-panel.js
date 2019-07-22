@@ -304,7 +304,7 @@ class ClueToCustomerPanel extends React.Component {
             if (isDup) result.isDup = true;
 
             //该联系方式是否有不同
-            const isDiff = _.difference(customerContact.phone, clueContact.phone).length;
+            const isDiff = _.difference(customerContact[field], clueContact[field]).length || _.difference(clueContact[field], customerContact[field]).length ? true : false;
 
             result[field] = {
                 isDiff,
