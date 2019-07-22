@@ -632,7 +632,7 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染联系人标题
     renderContactTitle(contact, contactIndex) {
-        let iconClassName = 'iconfont icon-contact-default is-default-contact';
+        let iconClassName = 'iconfont icon-contact-default';
 
         if (contact.def_contancts === 'true') {
             iconClassName += ' is-default-contact';
