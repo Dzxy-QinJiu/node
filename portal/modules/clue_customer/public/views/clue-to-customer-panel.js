@@ -83,8 +83,10 @@ class ClueToCustomerPanel extends React.Component {
             customerId: '',
             //当前操作的客户的名称
             customerName: '',
-            //当前操作的客户的联系人列表
+            //当前操作的客户的联系人列表，该列表在合并操作过程中被改变，最终会作为合并后的结果进行提交
             customerContacts: [],
+            //当前操作的客户的原始联系人列表，该列表在合并操作过程中不会被改变
+            rawCustomerContacts: [],
             //是否禁用“确认合并”按钮
             isConfirmMergeBtnDisabled: false
         };
@@ -274,7 +276,8 @@ class ClueToCustomerPanel extends React.Component {
                 this.setState({
                     customerId: customer.id,
                     customerName: customer.name,
-                    customerContacts: result
+                    customerContacts: result,
+                    rawCustomerContacts: _.cloneDeep(result)
                 }, this.setMergedCustomer);
             })
             .fail(err => {
@@ -667,15 +670,6 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染联系人内容
     renderContactContent(contact) {
-        //当前操作的客户
-        const curCustomer = _.find(this.props.existingCustomers, customer => customer.id === this.state.customerId);
-
-        //当前操作的客户的联系人中和要渲染的联系人相同的联系人
-        const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name === contact.name);
-
-        //当前线索的联系人中和要渲染的联系人相同的联系人
-        const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name === contact.name);
-
         return (
             <div className="contact-content">
                 {_.map(CONTACT_WAY_TYPES, type => {
@@ -689,18 +683,16 @@ class ClueToCustomerPanel extends React.Component {
                             </Col>
                             <Col span={20}>
                                 {_.map(contact[typeField], (item, index) => {
-                                //联系方式是否来自线索的标识
+                                    //联系方式是否来自线索的标识
                                     let mark = '';
 
-                                    //当前操作的客户的联系人中和要渲染的联系人相同的联系人的联系方式
-                                    const curCustomerContactWay = _.get(curCustomerContact, typeField);
-
-                                    //当前线索的联系人中和要渲染的联系人相同的联系人的联系方式
-                                    const curClueContactWay = _.get(curClueContact, typeField);
-
+                                    //当前联系方式在客户中是否存在
+                                    const contactWayInCustomer = _.find(this.state.rawCustomerContacts, contact => _.includes(contact[typeField], item));
+                                    //当前联系方式在线索中是否存在
+                                    const contactWayInClue = _.find(this.props.clue.contacts, contact => _.includes(contact[typeField], item));
 
                                     //如果当前联系方式在客户中不存在，在线索中存在
-                                    if (!_.includes(curCustomerContactWay, item) && _.includes(curClueContactWay, item)) {
+                                    if (!contactWayInCustomer && contactWayInClue) {
                                     //显示标识
                                         mark = <span className="clue-mark">（{Intl.get('crm.sales.clue', '线索')}）</span>;
                                     }
