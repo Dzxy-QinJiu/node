@@ -544,11 +544,14 @@ class ClueToCustomerPanel extends React.Component {
             customerName = <span className="high-light">{customerName}</span>;
         } else {
             const startIndex = customerName.indexOf(clueName);
-            const endIndex = startIndex + clueName.length;
-            const beginPart = customerName.substr(0, startIndex);
-            const endPart = customerName.substr(endIndex);
 
-            customerName = <span>{beginPart}<span className="high-light">{clueName}</span>{endPart}</span>;
+            if (startIndex > -1) {
+                const endIndex = startIndex + clueName.length;
+                const beginPart = customerName.substr(0, startIndex);
+                const endPart = customerName.substr(endIndex);
+
+                customerName = <span>{beginPart}<span className="high-light">{clueName}</span>{endPart}</span>;
+            }
         }
         
         const contacts = this.getDupCustomerContacts(customer, clue);
