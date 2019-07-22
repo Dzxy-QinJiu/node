@@ -469,72 +469,76 @@ class ClueToCustomerPanel extends React.Component {
         //变化了的联系人（新增或需要更新的）
         const changedContacts = _.filter(contacts, contact => contact.isNew || !_.isEmpty(contact.updateFields));
 
-        if (!_.isEmpty(changedContacts)) {
-            const promises = [];
+        //如果没有变化的联系人
+        if (_.isEmpty(changedContacts)) {
+            //将第一个联系人设置为名字需要更新，以便能合并到客户
+            _.set(contacts, '[0].updateFields', ['name']);
+        }
 
-            _.each(contacts, (contact, index) => {
-                //如果是新联系人
-                if (contact.isNew) {
-                    contact = _.cloneDeep(this.refs[contact.id].state.formData);
+        const promises = [];
 
-                    //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
-                    contact.def_contancts = 'false';
+        _.each(contacts, (contact, index) => {
+            //如果是新联系人
+            if (contact.isNew) {
+                contact = _.cloneDeep(this.refs[contact.id].state.formData);
 
-                    if (contact.birthday) {
-                        //将moment格式的值转为时间戳
-                        contact.birthday = contact.birthday.valueOf();
-                    }
+                //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
+                contact.def_contancts = 'false';
 
-                    _.each(contact, (value, key) => {
-                        const keyWithoutIndex = key.substr(0, key.length - 1);
+                if (contact.birthday) {
+                    //将moment格式的值转为时间戳
+                    contact.birthday = contact.birthday.valueOf();
+                }
 
-                        if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex)) {
-                            if (!contact[keyWithoutIndex]) {
-                                contact[keyWithoutIndex] = [value];
-                            } else {
-                                contact[keyWithoutIndex].push(value);
-                            }
+                _.each(contact, (value, key) => {
+                    const keyWithoutIndex = key.substr(0, key.length - 1);
 
-                            delete contact[key];
+                    if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex)) {
+                        if (!contact[keyWithoutIndex]) {
+                            contact[keyWithoutIndex] = [value];
+                        } else {
+                            contact[keyWithoutIndex].push(value);
                         }
-                    });
+
+                        delete contact[key];
+                    }
+                });
+
+                const promise = ajax.send({
+                    url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
+                    type: 'post',
+                    data: contact
+                });
+
+                promises.push(promise);
+            } else {
+                //遍历需要更新的字段
+                _.each(contact.updateFields, field => {
 
                     const promise = ajax.send({
-                        url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
-                        type: 'post',
+                        url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
+                        type: 'put',
                         data: contact
-                    });
+                    }, `clueToCustomer${index}${field}`);
 
                     promises.push(promise);
-                } else {
-                    //遍历需要更新的字段
-                    _.each(contact.updateFields, field => {
-
-                        const promise = ajax.send({
-                            url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
-                            type: 'put',
-                            data: contact
-                        }, `clueToCustomer${index}${field}`);
-
-                        promises.push(promise);
-                    });
-
-                    delete contact.updateFields;
-                }
-            });
-
-            $.when(...promises)
-                .done(() => {
-                    message.success(Intl.get('common.merge.success', '合并成功'));
-
-                    this.props.onMerged(this.state.customerId, this.state.customerName);
-                })
-                .fail(err => {
-                    const content = _.isArray(err) ? err.join('; ') : err;
-
-                    message.error(content);
                 });
-        }
+
+                delete contact.updateFields;
+            }
+        });
+
+        $.when(...promises)
+            .done(() => {
+                message.success(Intl.get('common.merge.success', '合并成功'));
+
+                this.props.onMerged(this.state.customerId, this.state.customerName);
+            })
+            .fail(err => {
+                const content = _.isArray(err) ? err.join('; ') : err;
+
+                message.error(content);
+            });
     }
 
     //渲染客户列表项
