@@ -412,6 +412,8 @@ class ClueToCustomerPanel extends React.Component {
         contact.name = contact.replaceName;
         //删除暂存的替换名称
         delete contact.replaceName;
+
+        if (!contact.updateFields) contact.updateFields = [];
         //在联系人需要更新的字段中加上名称
         contact.updateFields.push('name');
 
