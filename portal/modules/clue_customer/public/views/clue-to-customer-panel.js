@@ -83,8 +83,10 @@ class ClueToCustomerPanel extends React.Component {
             customerId: '',
             //当前操作的客户的名称
             customerName: '',
-            //当前操作的客户的联系人列表
+            //当前操作的客户的联系人列表，该列表在合并操作过程中被改变，最终会作为合并后的结果进行提交
             customerContacts: [],
+            //当前操作的客户的原始联系人列表，该列表在合并操作过程中不会被改变
+            rawCustomerContacts: [],
             //是否禁用“确认合并”按钮
             isConfirmMergeBtnDisabled: false
         };
@@ -274,7 +276,8 @@ class ClueToCustomerPanel extends React.Component {
                 this.setState({
                     customerId: customer.id,
                     customerName: customer.name,
-                    customerContacts: result
+                    customerContacts: result,
+                    rawCustomerContacts: _.cloneDeep(result)
                 }, this.setMergedCustomer);
             })
             .fail(err => {
@@ -304,7 +307,7 @@ class ClueToCustomerPanel extends React.Component {
             if (isDup) result.isDup = true;
 
             //该联系方式是否有不同
-            const isDiff = _.difference(customerContact.phone, clueContact.phone).length;
+            const isDiff = _.difference(customerContact[field], clueContact[field]).length || _.difference(clueContact[field], customerContact[field]).length ? true : false;
 
             result[field] = {
                 isDiff,
@@ -412,6 +415,8 @@ class ClueToCustomerPanel extends React.Component {
         contact.name = contact.replaceName;
         //删除暂存的替换名称
         delete contact.replaceName;
+
+        if (!contact.updateFields) contact.updateFields = [];
         //在联系人需要更新的字段中加上名称
         contact.updateFields.push('name');
 
@@ -464,72 +469,76 @@ class ClueToCustomerPanel extends React.Component {
         //变化了的联系人（新增或需要更新的）
         const changedContacts = _.filter(contacts, contact => contact.isNew || !_.isEmpty(contact.updateFields));
 
-        if (!_.isEmpty(changedContacts)) {
-            const promises = [];
+        //如果没有变化的联系人
+        if (_.isEmpty(changedContacts)) {
+            //将第一个联系人设置为名字需要更新，以便能合并到客户
+            _.set(contacts, '[0].updateFields', ['name']);
+        }
 
-            _.each(contacts, (contact, index) => {
-                //如果是新联系人
-                if (contact.isNew) {
-                    contact = _.cloneDeep(this.refs[contact.id].state.formData);
+        const promises = [];
 
-                    //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
-                    contact.def_contancts = 'false';
+        _.each(contacts, (contact, index) => {
+            //如果是新联系人
+            if (contact.isNew) {
+                contact = _.cloneDeep(this.refs[contact.id].state.formData);
 
-                    if (contact.birthday) {
-                        //将moment格式的值转为时间戳
-                        contact.birthday = contact.birthday.valueOf();
-                    }
+                //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
+                contact.def_contancts = 'false';
 
-                    _.each(contact, (value, key) => {
-                        const keyWithoutIndex = key.substr(0, key.length - 1);
+                if (contact.birthday) {
+                    //将moment格式的值转为时间戳
+                    contact.birthday = contact.birthday.valueOf();
+                }
 
-                        if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex)) {
-                            if (!contact[keyWithoutIndex]) {
-                                contact[keyWithoutIndex] = [value];
-                            } else {
-                                contact[keyWithoutIndex].push(value);
-                            }
+                _.each(contact, (value, key) => {
+                    const keyWithoutIndex = key.substr(0, key.length - 1);
 
-                            delete contact[key];
+                    if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex)) {
+                        if (!contact[keyWithoutIndex]) {
+                            contact[keyWithoutIndex] = [value];
+                        } else {
+                            contact[keyWithoutIndex].push(value);
                         }
-                    });
+
+                        delete contact[key];
+                    }
+                });
+
+                const promise = ajax.send({
+                    url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
+                    type: 'post',
+                    data: contact
+                });
+
+                promises.push(promise);
+            } else {
+                //遍历需要更新的字段
+                _.each(contact.updateFields, field => {
 
                     const promise = ajax.send({
-                        url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
-                        type: 'post',
+                        url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
+                        type: 'put',
                         data: contact
-                    });
+                    }, `clueToCustomer${index}${field}`);
 
                     promises.push(promise);
-                } else {
-                    //遍历需要更新的字段
-                    _.each(contact.updateFields, field => {
-
-                        const promise = ajax.send({
-                            url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
-                            type: 'put',
-                            data: contact
-                        }, `clueToCustomer${index}${field}`);
-
-                        promises.push(promise);
-                    });
-
-                    delete contact.updateFields;
-                }
-            });
-
-            $.when(...promises)
-                .done(() => {
-                    message.success(Intl.get('common.merge.success', '合并成功'));
-
-                    this.props.onMerged(this.state.customerId, this.state.customerName);
-                })
-                .fail(err => {
-                    const content = _.isArray(err) ? err.join('; ') : err;
-
-                    message.error(content);
                 });
-        }
+
+                delete contact.updateFields;
+            }
+        });
+
+        $.when(...promises)
+            .done(() => {
+                message.success(Intl.get('common.merge.success', '合并成功'));
+
+                this.props.onMerged(this.state.customerId, this.state.customerName);
+            })
+            .fail(err => {
+                const content = _.isArray(err) ? err.join('; ') : err;
+
+                message.error(content);
+            });
     }
 
     //渲染客户列表项
@@ -542,11 +551,14 @@ class ClueToCustomerPanel extends React.Component {
             customerName = <span className="high-light">{customerName}</span>;
         } else {
             const startIndex = customerName.indexOf(clueName);
-            const endIndex = startIndex + clueName.length;
-            const beginPart = customerName.substr(0, startIndex);
-            const endPart = customerName.substr(endIndex);
 
-            customerName = <span>{beginPart}<span className="high-light">{clueName}</span>{endPart}</span>;
+            if (startIndex > -1) {
+                const endIndex = startIndex + clueName.length;
+                const beginPart = customerName.substr(0, startIndex);
+                const endPart = customerName.substr(endIndex);
+
+                customerName = <span>{beginPart}<span className="high-light">{clueName}</span>{endPart}</span>;
+            }
         }
         
         const contacts = this.getDupCustomerContacts(customer, clue);
@@ -627,7 +639,7 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染联系人标题
     renderContactTitle(contact, contactIndex) {
-        let iconClassName = 'iconfont icon-contact-default is-default-contact';
+        let iconClassName = 'iconfont icon-contact-default';
 
         if (contact.def_contancts === 'true') {
             iconClassName += ' is-default-contact';
@@ -641,7 +653,7 @@ class ClueToCustomerPanel extends React.Component {
                 </div>
 
                 {contact.replaceName ? (
-                    <div className="is-replace-contract-name">
+                    <div className="is-replace-contact-name">
                         {Intl.get('common.modify.name.to', '修改姓名为')}“{contact.replaceName}”？
                         <Button
                             onClick={this.onReplaceContactNameCancelBtnClick.bind(this, contactIndex)}
@@ -662,15 +674,6 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染联系人内容
     renderContactContent(contact) {
-        //当前操作的客户
-        const curCustomer = _.find(this.props.existingCustomers, customer => customer.id === this.state.customerId);
-
-        //当前操作的客户的联系人中和要渲染的联系人相同的联系人
-        const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name === contact.name);
-
-        //当前线索的联系人中和要渲染的联系人相同的联系人
-        const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name === contact.name);
-
         return (
             <div className="contact-content">
                 {_.map(CONTACT_WAY_TYPES, type => {
@@ -684,18 +687,16 @@ class ClueToCustomerPanel extends React.Component {
                             </Col>
                             <Col span={20}>
                                 {_.map(contact[typeField], (item, index) => {
-                                //联系方式是否来自线索的标识
+                                    //联系方式是否来自线索的标识
                                     let mark = '';
 
-                                    //当前操作的客户的联系人中和要渲染的联系人相同的联系人的联系方式
-                                    const curCustomerContactWay = _.get(curCustomerContact, typeField);
-
-                                    //当前线索的联系人中和要渲染的联系人相同的联系人的联系方式
-                                    const curClueContactWay = _.get(curClueContact, typeField);
-
+                                    //当前联系方式在客户中是否存在
+                                    const contactWayInCustomer = _.find(this.state.rawCustomerContacts, contact => _.includes(contact[typeField], item));
+                                    //当前联系方式在线索中是否存在
+                                    const contactWayInClue = _.find(this.props.clue.contacts, contact => _.includes(contact[typeField], item));
 
                                     //如果当前联系方式在客户中不存在，在线索中存在
-                                    if (!_.includes(curCustomerContactWay, item) && _.includes(curClueContactWay, item)) {
+                                    if (!contactWayInCustomer && contactWayInClue) {
                                     //显示标识
                                         mark = <span className="clue-mark">（{Intl.get('crm.sales.clue', '线索')}）</span>;
                                     }
