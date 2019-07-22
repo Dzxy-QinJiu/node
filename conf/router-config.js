@@ -324,6 +324,14 @@ let routers = [
             showPrivileges: ['USER_INFO_PWD']
         }]
     },
+    //todo 申请审批代码优化后会去掉
+    {
+        id: 'APPLICATION_APPLY_MANAGEMENT1',
+        name: 'crm.109',//申请
+        routePath: '/application',
+        shortName: 'crm.109',//申请
+        component: `${MODULE_PATH}/setting_workflow_tip/public`,
+    },
     {
         id: 'NO_MATCH',
         routePath: '*',
