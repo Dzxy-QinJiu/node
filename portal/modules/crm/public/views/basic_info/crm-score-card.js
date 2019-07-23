@@ -139,6 +139,10 @@ class CrmScoreCard extends React.Component {
         this.setState({startTime, endTime, timeType: range});
         setTimeout(() => this.getHistoryScoreList());
     }
+    //时间类型修改
+    onTimeRangeChange = (startTime, endTime, timeRange) => {
+        this.setState({timeType: timeRange});
+    }
 
     showUserDetail(userId) {
         this.props.showUserDetail(userId);
@@ -161,6 +165,9 @@ class CrmScoreCard extends React.Component {
                 }
             }
         };
+        const dateWrapCls = classNames('date-selector-wrap btn-item', {
+            'select-custom-range-style': this.state.timeType === 'custom'
+        });
         return (
             <div className="crm-score-detail-wrap">
                 <div className="crm-qualified-user-blcok">
@@ -178,10 +185,11 @@ class CrmScoreCard extends React.Component {
                 </div>
                 <div className="crm-history-score-block">
                     <div className="crm-score-label">{Intl.get('crm.score.history.title', '历史分数')}</div>
-                    <div className="date-selector-wrap btn-item">
+                    <div className={dateWrapCls}>
                         <DatePicker
                             disableDateAfterToday={true}
                             range={'year'}
+                            onRadioChange={this.onTimeRangeChange}
                             onSelect={this.onSelectDate.bind(this)}>
                             <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
                             <DatePicker.Option value="month">

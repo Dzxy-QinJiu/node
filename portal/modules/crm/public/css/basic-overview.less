@@ -110,6 +110,17 @@
           padding: 6px;
         }
       }
+      //选择自定义时间时，防止时间选择框超出详情部分被覆盖的样式设置
+      .select-custom-range-style {
+        .range-datepicker {
+          .datepicker_wrap {
+            position: fixed;
+            top: auto;
+            margin-top: 13px;
+            left: -101px !important;
+          }
+        }
+      }
 
       .analysis-chart{
         float: left;
