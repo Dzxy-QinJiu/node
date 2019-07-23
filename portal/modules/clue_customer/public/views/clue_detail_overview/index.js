@@ -809,7 +809,7 @@ class ClueDetailOverview extends React.Component {
                         />
                     </div>
                 </div>
-                {remarkContent ?
+                {remarkContent && remarkAddTime ?
                     <div className="add-person-info ">
                         <div className="add-clue-info">
                             <span className="source-name">{remarkAddName}</span>
