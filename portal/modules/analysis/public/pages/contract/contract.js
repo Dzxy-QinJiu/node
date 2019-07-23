@@ -23,7 +23,5 @@ function getCharts() {
         contractChart.getContractTrendChart(),
         //合同额分段统计
         contractChart.getContractSectionChart(),
-        //成交周期分析
-        contractChart.getContractCycleChart(),
     ];
 }
