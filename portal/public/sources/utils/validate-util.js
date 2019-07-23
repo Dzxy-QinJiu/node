@@ -136,5 +136,5 @@ export const userNameRule = /^[a-zA-Z0-9_-]{1,50}$/;
 export const memberUserNameLengthRule = {
     required: true,
     pattern: userNameRule,
-    message: '长度为1-50个字母、数字、横线或下划线组成'
+    message: Intl.get('member.add.member.rule', '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间')
 };
