@@ -207,7 +207,6 @@ class MemberForm extends React.Component {
 
     resetEmailFlags = () => {
         MemberFormAction.resetEmailFlags();
-        MemberFormAction.resetUserNameFlags();
     };
     // 验证用户名的唯一性
     checkOnlyUserName = () => {
@@ -233,12 +232,6 @@ class MemberForm extends React.Component {
             return (
                 <div className="phone-email-check">
                     {Intl.get('common.username.is.unique', '用户名唯一性校验出错！')}
-                </div>
-            );
-        } else if (this.state.userNameRuleError) {
-            return (
-                <div className="phone-email-check">
-                    {Intl.get('member.add.member.rule', '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间')}
                 </div>
             );
         } else {
@@ -278,10 +271,10 @@ class MemberForm extends React.Component {
 
     //邮箱唯一性验证的展示
     renderEmailMsg = () => {
-        if (this.state.emailExist || this.state.userNameExist) {
+        if (this.state.emailExist) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.is.used"
                 defaultMessage="邮箱已被使用！"/></div>);
-        } else if (this.state.emailError || this.state.userNameError) {
+        } else if (this.state.emailError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.validate.error"
                 defaultMessage="邮箱校验失败！"/></div>);
         } else {
@@ -457,9 +450,15 @@ class MemberForm extends React.Component {
                                         id="email"
                                         type="text"
                                         placeholder={Intl.get('common.correct.email', '请输入正确的邮箱')}
+                                        className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
+                                        onBlur={(e) => {
+                                            this.checkOnlyEmail(e);
+                                        }}
+                                        onFocus={this.resetEmailFlags}
                                     />
                                 )}
                             </FormItem>
+                            {this.renderEmailMsg()}
                             <FormItem
                                 label={Intl.get('common.role', '角色')}
                                 {...formItemLayout}

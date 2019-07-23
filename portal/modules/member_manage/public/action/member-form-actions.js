@@ -120,10 +120,6 @@ class MemberFormActions {
     checkOnlyEmail(email) {
         MemberManageAjax.checkOnlyEmail(email).then((result) => {
             this.dispatch(result);
-            if (!result) {
-                //不存在邮箱为email的用户时，验证是否存在用户名为该邮箱的用户
-                this.actions.checkOnlyUserName(email);
-            }
         }, (errorMsg) => {
             this.dispatch(errorMsg || Intl.get('user.email.only.error', '邮箱唯一性验证失败'));
         });
