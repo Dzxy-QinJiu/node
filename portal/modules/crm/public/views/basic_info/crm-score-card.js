@@ -124,7 +124,19 @@ class CrmScoreCard extends React.Component {
 
     toggleScoreDetail(e) {
         Trace.traceEvent(e, this.state.isExpandDetail ? '收起客户分数详情' : '展开客户分数详情');
-        this.setState({isExpandDetail: !this.state.isExpandDetail});
+        //展开历史分数时，重置时间并重新获取数据
+        if (!this.state.isExpandDetail) {
+            this.setState({
+                isExpandDetail: !this.state.isExpandDetail,
+                timeType: 'year',
+                startTime: moment().startOf('year').valueOf(),//默认展示今年的历史趋势
+                endTime: moment().valueOf()
+            }, () => {
+                this.getHistoryScoreList();
+            });
+        } else {//收起历史分数
+            this.setState({isExpandDetail: !this.state.isExpandDetail});
+        }
     }
 
     onSelectDate(startTime, endTime, range) {
@@ -188,7 +200,7 @@ class CrmScoreCard extends React.Component {
                     <div className={dateWrapCls}>
                         <DatePicker
                             disableDateAfterToday={true}
-                            range={'year'}
+                            range={this.state.timeType}
                             onRadioChange={this.onTimeRangeChange}
                             onSelect={this.onSelectDate.bind(this)}>
                             <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
