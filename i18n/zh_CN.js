@@ -3173,6 +3173,7 @@ var zh_CN = {
     'common.number.of.contracted.customers': '签约客户数',
     'apply.approve.not.setting.workflow': '尚未配置流程，{tip}',
     'apply.approve.contact.manager': '请联系管理员',
-    'apply.approve.go.set.workflow': '去设置？'
+    'apply.approve.go.set.workflow': '去设置？',
+    'customer.select.name.tip': '请在下拉框中选择客户'
 };
 export default zh_CN;

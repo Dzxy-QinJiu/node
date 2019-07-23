@@ -71,6 +71,8 @@ class CustomerSuggest extends React.Component {
         show_tip: false,
         //联想接口错误时候的提示信息
         suggest_error_msg: '',
+        //没有选择客户的提示
+        no_select_error_msg: '',
         //销售团队
         sales_team: {
             id: '',
@@ -286,7 +288,6 @@ class CustomerSuggest extends React.Component {
         this.suggestChange(search_input_val);
     };
     getNoCustomerTip = () => {
-
         return this.props.canCreateCustomer && hasPrivilege('CRM_CUSTOMER_INFO_EDIT');
     };
     getSearchValue = () => {
@@ -319,7 +320,11 @@ class CustomerSuggest extends React.Component {
                                 id="common.retry" defaultMessage="重试"/></a>
                     </div>
                 );
-            } else {
+            } else if (this.state.no_select_error_msg){
+                return (
+                    <div className="customer_select_error_tip">{this.state.no_select_error_msg}</div>
+                );
+            }else{
                 //是否跳转到crm页面添加客户
                 var noJumpToAddCrmPanel = this.props.noJumpToCrm;
                 return (
@@ -455,7 +460,19 @@ class CustomerSuggest extends React.Component {
             customerOfCurUser: {}
         });
     };
-
+    //检查是否在下拉框中选中了客户，如果输入的值和列表中推荐客户的值是一样的，默认选中这个，如果不完全一致，
+    onCheckIfCustomerChoose = (value) => {
+        if (_.trim(value) && !_.get(this, 'state.customer.id') && _.get(this, 'state.list.length') > 0) {
+            this.setState({
+                no_select_error_msg: Intl.get('customer.select.name.tip', '请在下拉框中选择客户'),
+                show_tip: true
+            });
+        } else {
+            this.setState({
+                no_select_error_msg: '',
+            });
+        }
+    };
     render() {
         var displayCls = classNames({
             'customer_search_wrap': true,
@@ -481,7 +498,6 @@ class CustomerSuggest extends React.Component {
                         <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
                             {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
                             {this.state.displayText}
-                            <span className="arrow-right">&gt;</span>
                         </span>
                     </div>);
             } else {
@@ -506,6 +522,7 @@ class CustomerSuggest extends React.Component {
                     filterOption={false}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}
+                    onBlur={this.onCheckIfCustomerChoose.bind(this)}
                     value={this.state.customer.name}
                     dropdownMatchSelectWidth={false}
                     dropdownClassName="customer_combobox_search"
