@@ -26,8 +26,6 @@ function getCharts() {
         clueChart.getClueSituationChart({title: '来源统计', field: 'clue_source'}),
         //分类统计
         clueChart.getClueSituationChart({title: '分类统计', field: 'clue_classify'}),
-        //有效性统计
-        clueChart.getAvailabilityChart()
     ];
 
     if(isOpenCash()) {
