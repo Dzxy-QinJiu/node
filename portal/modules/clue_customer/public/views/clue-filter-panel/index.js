@@ -283,7 +283,7 @@ class ClueFilterPanel extends React.Component {
         }
 
         return (
-            <div data-tracename="筛选">
+            <div data-tracename="线索筛选">
                 <div className="clue-filter-panel">
                     <FilterList
                         ref={filterList => this.filterList = filterList}
