@@ -18,7 +18,7 @@ export function getAccountValidChart() {
         },
         processData: data => {
             return [{
-                name: '有效数',
+                name: '未收费数',
                 value: data.valid,
             }, {
                 name: '收费数',

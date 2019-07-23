@@ -167,6 +167,7 @@ class FilterList extends React.Component {
         });
     }
     clearSelect(groupName) {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.clear-btn'), `清空"${groupName}"筛选条件`);
         const advancedData = $.extend(true, [], this.state.advancedData);
         let clearGroupItem = advancedData.find(x => x.groupName === groupName);
         let { selectedCommonIndex } = this.state;
@@ -414,6 +415,7 @@ class FilterList extends React.Component {
     }
 
     handleCommonItemClick(item, index, flag) {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.common-item-content'), `选择"${item.name}"筛选条件`);
         //存在选中的客户时，切换筛选条件需要先提示，确认后再修改筛选条件
         let selectedIndex = this.state.selectedCommonIndex;
         let newSelectIndex = index;
@@ -442,6 +444,11 @@ class FilterList extends React.Component {
 
     handleAdvanedItemClick(groupItem, item) {
         const { groupName, singleSelect = false } = groupItem;
+        if (_.get(item, 'selected')){
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.titlecut'), `去掉"${groupName}"的一个筛选条件`);
+        }else{
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.titlecut'), `增加"${groupName}"的一个筛选条件`);
+        }
         const advancedData = $.extend(true, [], this.state.advancedData);
         const selectedCommonItem = this.state.commonData[this.state.selectedCommonIndex];
         const selectedGroupItem = advancedData.find(group => group.groupId === groupItem.groupId);
@@ -640,7 +647,6 @@ class FilterList extends React.Component {
                                                     <li
                                                         className={commonItemClass}
                                                         key={index}
-                                                        data-tracename="选择常用筛选"
                                                     >
                                                         <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
                                                         {
@@ -699,7 +705,6 @@ class FilterList extends React.Component {
                                                                         {
                                                                             isGroupSelected(groupItem) ?
                                                                                 <span
-                                                                                    data-tracename={`清空"${groupItem.groupName}"筛选条件`}
                                                                                     className="clear-btn"
                                                                                     onClick={this.clearSelect.bind(this, groupItem.groupName)}
                                                                                 >
@@ -715,7 +720,6 @@ class FilterList extends React.Component {
                                                                                         className={x.selected ? 'active titlecut' : 'titlecut'}
                                                                                         key={idx}
                                                                                         title={x.name}
-                                                                                        data-tracename={`选择"${groupItem.groupName}"筛选条件`}
                                                                                         onClick={this.handleAdvanedItemClick.bind(this, groupItem, x)}
                                                                                     >
                                                                                         {x.name}

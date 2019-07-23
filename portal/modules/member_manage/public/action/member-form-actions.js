@@ -46,11 +46,12 @@ class MemberFormActions {
     addUser(user) {
         MemberManageAjax.addUser(user).then( (savedUser) => {
             //保存成功后的处理
-            let email = Intl.get('member.add.member.email', '新增成员的邮箱');
-            if (savedUser && savedUser.email) {
-                email = savedUser.email;
+            let saveMsg = Intl.get('user.user.add.success', '添加成功');
+            const email = _.get(savedUser, 'email');
+            if (email) {
+                saveMsg = Intl.get('user.info.active.email', '激活邮件已发送至{email}',{email});
             }
-            this.dispatch({saveResult: 'success', saveMsg: Intl.get('user.info.active.email', '激活邮件已发送至{email}',{email}), savedUser: savedUser});
+            this.dispatch({saveResult: 'success', saveMsg: saveMsg , savedUser: savedUser});
 
         }, (errorMsg) => {
             //保存失败后的处理
@@ -119,10 +120,6 @@ class MemberFormActions {
     checkOnlyEmail(email) {
         MemberManageAjax.checkOnlyEmail(email).then((result) => {
             this.dispatch(result);
-            if (!result) {
-                //不存在邮箱为email的用户时，验证是否存在用户名为该邮箱的用户
-                this.actions.checkOnlyUserName(email);
-            }
         }, (errorMsg) => {
             this.dispatch(errorMsg || Intl.get('user.email.only.error', '邮箱唯一性验证失败'));
         });

@@ -758,6 +758,7 @@ var zh_CN = {
     'member.position.delete.office': '删除职务',
     'member.position.set.default': '设为默认',
     'member.continue.add.member': '继续添加成员',
+    'member.add.member.rule': '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间',
     //后台管理-成员end
 
     //组织管理start
@@ -2221,7 +2222,7 @@ var zh_CN = {
     'errorcode.146': '分机离线',
     'errorcode.147': '二维码已失效',
     'errorcode.148': '电话时长统计视图获取失败',
-    'errorcode.149': '该角色已经分配给销售',
+    'errorcode.149': '已有成员设置了该职务，不能删除',
     'errorcode.150': '修改线索信息失败',
     'errorcode.151': '获取销售新开客户数和新开帐号数失败',
     'errorcode.152': '线索重复',
@@ -3173,6 +3174,7 @@ var zh_CN = {
     'common.number.of.contracted.customers': '签约客户数',
     'apply.approve.not.setting.workflow': '尚未配置流程，{tip}',
     'apply.approve.contact.manager': '请联系管理员',
-    'apply.approve.go.set.workflow': '去设置？'
+    'apply.approve.go.set.workflow': '去设置？',
+    'customer.select.name.tip': '请在下拉框中选择客户'
 };
 export default zh_CN;
