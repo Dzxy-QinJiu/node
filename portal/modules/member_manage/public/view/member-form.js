@@ -9,7 +9,7 @@ import MemberFormStore from '../store/member-form-store';
 import MemberFormAction from '../action/member-form-actions';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-import {nameLengthRule, emailRegex, commonPhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {nameLengthRule, emailRegex, commonPhoneRegex, memberUserNameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
@@ -120,7 +120,6 @@ class MemberForm extends React.Component {
                 //设置正在保存中
                 MemberFormAction.setSaveFlag(true);
                 if (this.props.formType === 'add') {
-                    user.userName = user.email;
                     MemberFormAction.addUser(user);
                 }
             }
@@ -366,6 +365,21 @@ class MemberForm extends React.Component {
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <div id="user-add-form">
                             <FormItem
+                                label={Intl.get('common.username', '用户名')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('userName', {
+                                    rules: [memberUserNameLengthRule]
+                                })(
+                                    <Input
+                                        name="userName"
+                                        id="userName"
+                                        type="text"
+                                        placeholder={Intl.get('login.write.username', '请输入用户名')}
+                                    />
+                                )}
+                            </FormItem>
+                            <FormItem
                                 label={Intl.get('common.name', '姓名')}
                                 {...formItemLayout}
                             >
@@ -375,7 +389,10 @@ class MemberForm extends React.Component {
                                         message: nameLengthRule
                                     }]
                                 })(
-                                    <Input name="name" id="name" type="text"
+                                    <Input
+                                        name="name"
+                                        id="name"
+                                        type="text"
                                         placeholder={Intl.get('crm.90', '请输入姓名')}
                                         className={this.state.nickNameExist || this.state.nickNameError ? 'input-red-border' : ''}
                                         onBlur={this.checkOnlyNickName}
@@ -390,22 +407,18 @@ class MemberForm extends React.Component {
                             >
                                 {getFieldDecorator('email', {
                                     rules: [{
-                                        required: true,
                                         type: 'email',
                                         message: Intl.get('common.correct.email', '请输入正确的邮箱')
                                     }]
                                 })(
-                                    <Input name="email" id="email" type="text"
-                                        placeholder={Intl.get('member.email.extra.tip', '邮箱会作为登录时的用户名使用')}
-                                        className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
-                                        onBlur={(e) => {
-                                            this.checkOnlyEmail(e);
-                                        }}
-                                        onFocus={this.resetEmailFlags}
+                                    <Input
+                                        name="email"
+                                        id="email"
+                                        type="text"
+                                        placeholder={Intl.get('common.correct.email', '请输入正确的邮箱')}
                                     />
                                 )}
                             </FormItem>
-                            {this.renderEmailMsg()}
                             <FormItem
                                 label={Intl.get('common.role', '角色')}
                                 {...formItemLayout}

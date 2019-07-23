@@ -128,3 +128,13 @@ export const productNameRule = {
     pattern: productNameLengthRule,
     message: Intl.get('product.name.rule', '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间'),
 };
+
+// 用户名校验规则（字母、数字、横线或下划线组成的字符）
+export const userNameRule = /^[a-zA-Z0-9_-]{1,50}$/;
+
+// 添加成员时，用户名的校验规则
+export const memberUserNameLengthRule = {
+    required: true,
+    pattern: userNameRule,
+    message: '长度为1-50个字母、数字、横线或下划线组成'
+};
