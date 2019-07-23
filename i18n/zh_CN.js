@@ -2222,7 +2222,7 @@ var zh_CN = {
     'errorcode.146': '分机离线',
     'errorcode.147': '二维码已失效',
     'errorcode.148': '电话时长统计视图获取失败',
-    'errorcode.149': '该角色已经分配给销售',
+    'errorcode.149': '已有成员设置了该职务，不能删除',
     'errorcode.150': '修改线索信息失败',
     'errorcode.151': '获取销售新开客户数和新开帐号数失败',
     'errorcode.152': '线索重复',

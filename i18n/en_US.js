@@ -2188,7 +2188,7 @@ var en_US = {
     'errorcode.146': 'The phone is offline',//分机离线
     'errorcode.147': 'The qr code has expired',//二维码已失效
     'errorcode.148': 'The call duration statistics view fails to be obtained',//电话时长统计视图获取失败
-    'errorcode.149': 'The role has been allocated to sales',//该角色已经分配给销售
+    'errorcode.149': 'The post cannot be deleted because it has already been allocated',//已有成员设置了该职务，不能删除
     'errorcode.150': 'Failed to update the clue',//修改线索信息失败
     'errorcode.151': 'Failed to get sales new open accounts and new open accounts',//获取销售新开客户数和新开帐号数失败
     'errorcode.152': 'There are repeat clues!',//线索重复
