@@ -313,12 +313,13 @@ class MemberInfo extends React.Component {
     //保存修改的成员信息
     saveEditMemberInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存成员${type}的修改`);
+        const updateObj = _.cloneDeep(saveObj);
         saveObj.user_id = saveObj.id;
         delete saveObj.id;
         MemberManageAjax.editUser(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
-                this.changeMemberFieldSuccess(saveObj);
+                this.changeMemberFieldSuccess(updateObj);
                 //如果是密码的修改，取消密码框的展示
                 if (type === 'password') {
                     this.setState({isPasswordInputShow: false});
