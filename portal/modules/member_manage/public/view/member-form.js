@@ -9,7 +9,7 @@ import MemberFormStore from '../store/member-form-store';
 import MemberFormAction from '../action/member-form-actions';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule, memberUserNameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule, userNameValidationRules} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
@@ -222,20 +222,19 @@ class MemberForm extends React.Component {
 
     // 用户名唯一性验证的展示
     renderUserNameMsg = () => {
-        if (this.state.userNameExist) {
+        if (this.state.userNameExist || this.state.userNameError) {
             return (
                 <div className="phone-email-check">
-                    {Intl.get('common.is.existed', '用户名已存在！')}
-                </div>
-            );
-        } else if (this.state.userNameError) {
-            return (
-                <div className="phone-email-check">
-                    {Intl.get('common.username.is.unique', '用户名唯一性校验出错！')}
+                    {
+                        this.state.userNameExist ? Intl.get('common.is.existed', '用户名已存在！') : null
+                    }
+                    {
+                        this.state.userNameError ? Intl.get('common.username.is.unique', '用户名唯一性校验出错！') : null
+                    }
                 </div>
             );
         } else {
-            return '';
+            return null;
         }
     };
 
@@ -399,7 +398,7 @@ class MemberForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('userName', {
-                                    rules: [memberUserNameLengthRule]
+                                    rules: [userNameValidationRules]
                                 })(
                                     <Input
                                         name="userName"

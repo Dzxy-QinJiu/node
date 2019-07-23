@@ -132,8 +132,8 @@ export const productNameRule = {
 // 用户名校验规则（字母、数字、横线或下划线组成的字符）
 export const userNameRule = /^[a-zA-Z0-9_-]{1,50}$/;
 
-// 添加成员时，用户名的校验规则
-export const memberUserNameLengthRule = {
+// 用户名的校验规则
+export const userNameValidationRules = {
     required: true,
     pattern: userNameRule,
     message: Intl.get('member.add.member.rule', '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间')

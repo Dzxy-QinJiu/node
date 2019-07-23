@@ -47,7 +47,7 @@ class MemberFormActions {
         MemberManageAjax.addUser(user).then( (savedUser) => {
             //保存成功后的处理
             let saveMsg = Intl.get('user.user.add.success', '添加成功');
-            let email = _.get(savedUser, 'email');
+            const email = _.get(savedUser, 'email');
             if (email) {
                 saveMsg = Intl.get('user.info.active.email', '激活邮件已发送至{email}',{email});
             }
