@@ -141,15 +141,15 @@ export function getCallTimeIntervalChart() {
 
         _.each(days, (label, idx) => {
             options.title.push({
-                top: (idx + 0.5) * 100 / 10 + '%'
+                top: (idx + 0.5) * 100 / 7 + '%'
             });
 
             options.singleAxis.push({
                 axisLabel: {
                     show: label === Intl.get('user.time.saturday', '周六') ? true : false,
                 },
-                top: (idx * 100 / 10 + 5) + '%',
-                height: (100 / 10 - 10) + '%'
+                top: (idx * 100 / 7 + 5) + '%',
+                height: (100 / 7 - 10) + '%'
             });
         });
 
