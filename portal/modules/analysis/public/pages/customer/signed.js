@@ -44,6 +44,8 @@ function getCharts(paramObj) {
         customerChart.getSignedCustomerNewIndustryChart(paramObj),
         //新签团队分布
         customerChart.getSignedCustomerNewTeamChart(paramObj),
+        //成交周期分析
+        customerChart.getContractCycleChart(),
         //续签客户趋势
         customerChart.getRenewalCustomerTrendChart(paramObj),
         //续签客户地域统计
