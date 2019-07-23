@@ -755,6 +755,7 @@ var en_US = {
     'member.position.delete.office': '', // 删除职务
     'member.position.set.default': '', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
+    'member.add.member.rule': 'The username can only contain characters such as letters, numbers, horizontal lines, underscores, and the length is between 1 and 50 (including 50).', // 用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间
     //后台管理-成员end
     
     //组织管理start

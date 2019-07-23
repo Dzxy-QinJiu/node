@@ -9,7 +9,7 @@ import MemberFormStore from '../store/member-form-store';
 import MemberFormAction from '../action/member-form-actions';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-import {nameLengthRule, emailRegex, commonPhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule, userNameValidationRules} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
@@ -120,7 +120,6 @@ class MemberForm extends React.Component {
                 //设置正在保存中
                 MemberFormAction.setSaveFlag(true);
                 if (this.props.formType === 'add') {
-                    user.userName = user.email;
                     MemberFormAction.addUser(user);
                 }
             }
@@ -208,8 +207,35 @@ class MemberForm extends React.Component {
 
     resetEmailFlags = () => {
         MemberFormAction.resetEmailFlags();
+    };
+    // 验证用户名的唯一性
+    checkOnlyUserName = () => {
+        let userName = _.trim(this.props.form.getFieldValue('userName'));
+        if (userNameRule.test(userName)) {
+            MemberFormAction.checkOnlyUserName(userName);
+        }
+    };
+
+    resetUserNameFlags = () => {
         MemberFormAction.resetUserNameFlags();
     };
+
+    // 用户名唯一性验证的展示
+    renderUserNameMsg = () => {
+        if (this.state.userNameExist || this.state.userNameError) {
+            return (
+                <div className="phone-email-check">
+                    {
+                        this.state.userNameExist ? Intl.get('common.is.existed', '用户名已存在！') :
+                            Intl.get('common.username.is.unique', '用户名唯一性校验出错！')
+                    }
+                </div>
+            );
+        } else {
+            return null;
+        }
+    };
+
     //验证昵称（对应的是姓名）的唯一性
     checkOnlyNickName = () => {
         let userName = _.trim(this.props.form.getFieldValue('name'));
@@ -242,10 +268,10 @@ class MemberForm extends React.Component {
 
     //邮箱唯一性验证的展示
     renderEmailMsg = () => {
-        if (this.state.emailExist || this.state.userNameExist) {
+        if (this.state.emailExist) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.is.used"
                 defaultMessage="邮箱已被使用！"/></div>);
-        } else if (this.state.emailError || this.state.userNameError) {
+        } else if (this.state.emailError) {
             return (<div className="phone-email-check"><ReactIntl.FormattedMessage id="common.email.validate.error"
                 defaultMessage="邮箱校验失败！"/></div>);
         } else {
@@ -366,6 +392,25 @@ class MemberForm extends React.Component {
                     <GeminiScrollbar className="geminiScrollbar-vertical">
                         <div id="user-add-form">
                             <FormItem
+                                label={Intl.get('common.username', '用户名')}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('userName', {
+                                    rules: [userNameValidationRules]
+                                })(
+                                    <Input
+                                        name="userName"
+                                        id="userName"
+                                        type="text"
+                                        placeholder={Intl.get('login.write.username', '请输入用户名')}
+                                        className={this.state.userNameExist || this.state.userNameError || this.state.userNameRuleError ? 'input-red-border' : ''}
+                                        onBlur={this.checkOnlyUserName}
+                                        onFocus={this.resetUserNameFlags}
+                                    />
+                                )}
+                            </FormItem>
+                            {this.renderUserNameMsg()}
+                            <FormItem
                                 label={Intl.get('common.name', '姓名')}
                                 {...formItemLayout}
                             >
@@ -375,7 +420,10 @@ class MemberForm extends React.Component {
                                         message: nameLengthRule
                                     }]
                                 })(
-                                    <Input name="name" id="name" type="text"
+                                    <Input
+                                        name="name"
+                                        id="name"
+                                        type="text"
                                         placeholder={Intl.get('crm.90', '请输入姓名')}
                                         className={this.state.nickNameExist || this.state.nickNameError ? 'input-red-border' : ''}
                                         onBlur={this.checkOnlyNickName}
@@ -390,13 +438,15 @@ class MemberForm extends React.Component {
                             >
                                 {getFieldDecorator('email', {
                                     rules: [{
-                                        required: true,
                                         type: 'email',
                                         message: Intl.get('common.correct.email', '请输入正确的邮箱')
                                     }]
                                 })(
-                                    <Input name="email" id="email" type="text"
-                                        placeholder={Intl.get('member.email.extra.tip', '邮箱会作为登录时的用户名使用')}
+                                    <Input
+                                        name="email"
+                                        id="email"
+                                        type="text"
+                                        placeholder={Intl.get('common.correct.email', '请输入正确的邮箱')}
                                         className={this.state.emailExist || this.state.emailError ? 'input-red-border' : ''}
                                         onBlur={(e) => {
                                             this.checkOnlyEmail(e);
