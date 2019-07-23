@@ -234,9 +234,11 @@ function filterRoute(allRoutes) {
     //todo 申请审批代码优化后会去掉
     var targetObj = _.find(childRoutes, item => item.id === 'application_apply_management');
     if (targetObj) {
+        //如果有内置或者自定义的流程，过滤掉申请审批的提示页面
         childRoutes = _.filter(childRoutes, item => item.id !== 'application_apply_management1');
         user.routes = _.filter(user.routes, item => item.id !== 'application_apply_management1');
     }else {
+        //如果展示的是申请审批的提示页面，把申请申请页面过滤掉
         user.routes = _.filter(user.routes, item => item.id !== 'application_apply_management');
     }
     //路由配置

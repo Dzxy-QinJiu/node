@@ -9,17 +9,6 @@ require('./index.less');
 class SettingWorkflowTip extends React.Component {
     state = {
     };
-
-    onStoreChange = () => {
-    };
-
-    componentDidMount() {
-
-    }
-
-
-    componentWillUnmount() {
-    }
     renderNoSettingWorkFlowTip = () => {
         //如果是普通销售，请联系管理员，如果是管理员，需要点击跳转到配置页面
         let isCommonSales = userData.getUserData().isCommonSales;
@@ -38,12 +27,11 @@ class SettingWorkflowTip extends React.Component {
                         values={{
                             tip: <span className="set-workflow">
                                 <NavLink to="/background_management/apply_approve" activeClassName="active" data-tracename="设置流程">
-                                    <ReactIntl.FormattedMessage id="apply.approve.go.set.workflow" defaultMessage="去设置？"/>
+                                    {Intl.get('apply.approve.go.set.workflow','去设置？')}
                                 </NavLink>
                             </span>
                         }}
                     />
-
                 </div>
             );
         }
