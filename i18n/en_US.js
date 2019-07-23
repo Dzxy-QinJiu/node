@@ -3070,7 +3070,8 @@ var en_US = {
     'apply.approve.not.setting.workflow': 'Process not yet configured, {tip}',//尚未配置流程，{tip}
     'apply.approve.contact.manager': 'Please to contact administer',//请联系管理员
     'apply.approve.go.set.workflow': 'go to setting?',//去设置？
-    'customer.select.name.tip': 'Please select customer in dropdown list'//请在下拉框中选择客户
+    'customer.select.name.tip': 'Please select customer in dropdown list',//请在下拉框中选择客户
+    'contract.current.month.contract.analysis': 'current month contract analysis',//本月合同分析
 
 };
 export default en_US;
