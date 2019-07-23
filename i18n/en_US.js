@@ -3068,7 +3068,8 @@ var en_US = {
     'common.number.of.contracted.customers': 'number of contracted customers',//签约客户数
     'apply.approve.not.setting.workflow': 'Process not yet configured, {tip}',//尚未配置流程，{tip}
     'apply.approve.contact.manager': 'Please to contact administer',//请联系管理员
-    'apply.approve.go.set.workflow': 'go to setting?'//去设置？
+    'apply.approve.go.set.workflow': 'go to setting?',//去设置？
+    'customer.select.name.tip': 'Please select customer in dropdown list'//请在下拉框中选择客户
 
 };
 export default en_US;
