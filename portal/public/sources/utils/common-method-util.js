@@ -827,14 +827,16 @@ const isLeaderOfCandidate = function(candidateList, callback) {
 exports.isLeaderOfCandidate = isLeaderOfCandidate;
 //查看当前账号是否是待审批人的领导
 //如果是管理员或者我是待审批人或者我是待审批人的上级领导，我都可以把申请进行转出
-exports.checkIfLeader = function(result){
+exports.checkIfLeader = function(result, callback){
     var isLeader = false;
     if (result && result.length){
         isLeaderOfCandidate(result,(isLeaderFlag) => {
             isLeader = isLeaderFlag;
+            _.isFunction(callback) && callback(isLeader);
         });
+    }else{
+        _.isFunction(callback) && callback(isLeader);
     }
-    return isLeader;
 };
 //时间选择组件禁用的范围
 exports.disabledDate = function(startTime, endTime, value){

@@ -606,7 +606,9 @@ class ApplyViewDetailStore {
             this.candidateList = [];
         } else {
             this.candidateList = result;
-            this.isLeader = checkIfLeader(result);
+            checkIfLeader(result,(isLeader) => {
+                this.isLeader = isLeader;
+            });
         }
     }
     getApplyTaskNode(result){
@@ -618,7 +620,9 @@ class ApplyViewDetailStore {
     }
     setNextCandidate(candidateArr){
         this.candidateList = candidateArr;
-        this.isLeader = checkIfLeader(candidateArr);
+        checkIfLeader(candidateArr,(isLeader) => {
+            this.isLeader = isLeader;
+        });
     }
     //设置角色的模态框是显示还是隐藏
     setRolesNotSettingModalDialog({ show, appNames }) {
