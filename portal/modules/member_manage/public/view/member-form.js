@@ -226,10 +226,8 @@ class MemberForm extends React.Component {
             return (
                 <div className="phone-email-check">
                     {
-                        this.state.userNameExist ? Intl.get('common.is.existed', '用户名已存在！') : null
-                    }
-                    {
-                        this.state.userNameError ? Intl.get('common.username.is.unique', '用户名唯一性校验出错！') : null
+                        this.state.userNameExist ? Intl.get('common.is.existed', '用户名已存在！') :
+                            Intl.get('common.username.is.unique', '用户名唯一性校验出错！')
                     }
                 </div>
             );
