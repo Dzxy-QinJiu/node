@@ -143,7 +143,9 @@ ApplyViewDetailStore.prototype.showOrHideApprovalBtns = function(flag){
 };
 ApplyViewDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
-    this.isLeader = checkIfLeader(candidateArr);
+    checkIfLeader(candidateArr,(isLeader) => {
+        this.isLeader = isLeader;
+    });
 };
 ApplyViewDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -227,7 +229,9 @@ ApplyViewDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = [];
     }else{
         this.candidateList = result;
-        this.isLeader = checkIfLeader(result);
+        checkIfLeader(result,(isLeader) => {
+            this.isLeader = isLeader;
+        });
     }
 };
 ApplyViewDetailStore.prototype.setNextCandidateIds = function(candidateId) {

@@ -218,7 +218,9 @@ SalesOpportunityApplyDetailStore.prototype.showOrHideApprovalBtns = function(fla
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
-    this.isLeader = checkIfLeader(candidateArr);
+    checkIfLeader(candidateArr,(isLeader) => {
+        this.isLeader = isLeader;
+    });
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -238,7 +240,9 @@ SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(result) {
         this.candidateList = [];
     }else{
         this.candidateList = result;
-        this.isLeader = checkIfLeader(result);
+        checkIfLeader(result,(isLeader) => {
+            this.isLeader = isLeader;
+        });
     }
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {
