@@ -9,7 +9,7 @@ import MemberFormStore from '../store/member-form-store';
 import MemberFormAction from '../action/member-form-actions';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-import {nameLengthRule, emailRegex, commonPhoneRegex, memberUserNameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule, memberUserNameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
@@ -209,6 +209,43 @@ class MemberForm extends React.Component {
         MemberFormAction.resetEmailFlags();
         MemberFormAction.resetUserNameFlags();
     };
+    // 验证用户名的唯一性
+    checkOnlyUserName = () => {
+        let userName = _.trim(this.props.form.getFieldValue('userName'));
+        if (userNameRule.test(userName)) {
+            MemberFormAction.checkOnlyUserName(userName);
+        }
+    };
+
+    resetUserNameFlags = () => {
+        MemberFormAction.resetUserNameFlags();
+    };
+
+    // 用户名唯一性验证的展示
+    renderUserNameMsg = () => {
+        if (this.state.userNameExist) {
+            return (
+                <div className="phone-email-check">
+                    {Intl.get('common.is.existed', '用户名已存在！')}
+                </div>
+            );
+        } else if (this.state.userNameError) {
+            return (
+                <div className="phone-email-check">
+                    {Intl.get('common.username.is.unique', '用户名唯一性校验出错！')}
+                </div>
+            );
+        } else if (this.state.userNameRuleError) {
+            return (
+                <div className="phone-email-check">
+                    {Intl.get('member.add.member.rule', '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间')}
+                </div>
+            );
+        } else {
+            return '';
+        }
+    };
+
     //验证昵称（对应的是姓名）的唯一性
     checkOnlyNickName = () => {
         let userName = _.trim(this.props.form.getFieldValue('name'));
@@ -376,9 +413,13 @@ class MemberForm extends React.Component {
                                         id="userName"
                                         type="text"
                                         placeholder={Intl.get('login.write.username', '请输入用户名')}
+                                        className={this.state.userNameExist || this.state.userNameError || this.state.userNameRuleError ? 'input-red-border' : ''}
+                                        onBlur={this.checkOnlyUserName}
+                                        onFocus={this.resetUserNameFlags}
                                     />
                                 )}
                             </FormItem>
+                            {this.renderUserNameMsg()}
                             <FormItem
                                 label={Intl.get('common.name', '姓名')}
                                 {...formItemLayout}
