@@ -202,7 +202,7 @@ class MemberManageStore {
             } else if (teamName) { // 修改成员部门
                 changeMember.teamName = teamName;
                 changeMember.teamId = _.get(modifiedMember, 'team');
-            } else if (positionName) { // 修改成员职务
+            } else if (_.has(modifiedMember, 'positionName')) { // 修改成员职务
                 changeMember.positionName = positionName;
                 changeMember.positionId = _.get(modifiedMember, 'position');
             }

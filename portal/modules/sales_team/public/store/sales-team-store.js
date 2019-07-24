@@ -927,7 +927,7 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
             addInTeam.user_ids = [memberId];
         }
 
-    } else if (position) { // 修改成员的职务
+    } else if (_.has(member, 'position')) { // 修改成员的职务
         if (ownerId === memberId) { // 修改负责人的职务
             owner.positionName = positionName;
             owner.teamRoleId = position;
