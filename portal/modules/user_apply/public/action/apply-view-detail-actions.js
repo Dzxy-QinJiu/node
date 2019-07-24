@@ -6,6 +6,7 @@ import UserApplyAction from './user-apply-actions';
 import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 class ApplyViewDetailActions {
     constructor() {
         this.generateActions(
@@ -202,7 +203,9 @@ class ApplyViewDetailActions {
     getNextCandidate(queryObj) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)) {
-                this.dispatch(list);
+                checkIfLeader(list,(isLeader) => {
+                    this.dispatch({list: list, isLeader: isLeader});
+                });
             }
         }).error(this.dispatch({error: true}));
     }

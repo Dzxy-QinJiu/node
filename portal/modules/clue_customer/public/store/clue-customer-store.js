@@ -440,10 +440,11 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
             } else {
                 updateTraceCustomer.customer_traces = [{remark: traceObj.remark, add_time: traceObj.time || moment().valueOf(), call_date: traceObj.time || moment().valueOf()}];
             }
+            if (traceObj.remark) {
+                updateTraceCustomer.status = SELECT_TYPE.HAS_TRACE;
+            }
         }
-        if (traceObj.remark) {
-            updateTraceCustomer.status = SELECT_TYPE.HAS_TRACE;
-        }
+
     }
 };
 
