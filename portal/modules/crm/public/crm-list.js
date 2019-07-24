@@ -1271,7 +1271,7 @@ class Crm extends React.Component {
     };
     //是否没有筛选条件
     hasNoFilterCondition = () => {
-        if (_.get(this.refs, 'filterinput.state.filterName')) {
+        if (_.get(this.refs, 'filterinput.state.filterName') || _.get(this.refs, 'crmfilter.refs.searchInput.state.keyword')) {
             return false;
         } else {
             return true;
@@ -1734,6 +1734,7 @@ class Crm extends React.Component {
                                 ) : null}
                                 <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
                                     <CrmFilter
+                                        ref="crmfilter"
                                         search={this.search.bind(this, true)}
                                         changeTableHeight={this.changeTableHeight}
                                         crmFilterValue={this.state.crmFilterValue}
