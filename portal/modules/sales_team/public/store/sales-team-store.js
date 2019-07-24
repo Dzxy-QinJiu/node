@@ -949,13 +949,13 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
         if (ownerId === memberId) { // 修改负责人的手机
             owner.phone = phone;
         } else {
-            let updateObj = findEditMember(managers, memberId);
-            if (updateObj) { // 修改舆情秘书的手机
-                updateObj.phone = phone;
+            let updateSecretaryObj = findEditMember(managers, memberId);
+            if (updateSecretaryObj) { // 修改舆情秘书的手机
+                updateSecretaryObj.phone = phone;
             } else {
-                updateObj = findEditMember(users, memberId);
-                if (updateObj) { // 修改普通成员的手机
-                    updateObj.phone = phone;
+                let updateUserObj = findEditMember(users, memberId);
+                if (updateUserObj) { // 修改普通成员的手机
+                    updateUserObj.phone = phone;
                 }
             }
         }
