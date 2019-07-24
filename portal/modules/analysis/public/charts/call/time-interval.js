@@ -6,6 +6,21 @@ import timeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import { Radio } from 'antd';
 const RadioGroup = Radio.Group;
 
+//分段数，即将整个绘图区域划分成几段
+//因为最后一个轴线下面要显示小时数，所以让分段数比实际的轴线数多出一个
+//以防止小时数显示不全
+//实际的轴线数是7，分段数就是8
+const SEGMENT_COUNT = 8;
+
+//轴线标题的垂直方向偏移比
+const TITLE_VERTICAL_OFFSET_PERCENT = 8;
+
+//轴线的垂直方向偏移比
+const AXIS_VERTICAL_OFFSET_PERCENT = 10;
+
+//轴线上的图形的垂直方向偏移比
+const SYMBOL_VERTICAL_OFFSET_PERCENT = 13;
+
 const hours = _.range(24);
 const days = [Intl.get('user.time.sunday', '周日'), Intl.get('user.time.monday', '周一'), Intl.get('user.time.tuesday', '周二'), Intl.get('user.time.wednesday', '周三'), Intl.get('user.time.thursday', '周四'), Intl.get('user.time.friday', '周五'), Intl.get('user.time.saturday', '周六')];
 
@@ -141,15 +156,15 @@ export function getCallTimeIntervalChart() {
 
         _.each(days, (label, idx) => {
             options.title.push({
-                top: (idx * 100 / 8 + 8) + '%',
+                top: (idx * 100 / SEGMENT_COUNT + TITLE_VERTICAL_OFFSET_PERCENT) + '%',
             });
 
             options.singleAxis.push({
                 axisLabel: {
                     show: label === Intl.get('user.time.saturday', '周六') ? true : false,
                 },
-                top: (idx * 100 / 8 + 10) + '%',
-                height: (100 / 8 - 13) + '%'
+                top: (idx * 100 / SEGMENT_COUNT + AXIS_VERTICAL_OFFSET_PERCENT) + '%',
+                height: (100 / SEGMENT_COUNT - SYMBOL_VERTICAL_OFFSET_PERCENT) + '%'
             });
         });
 
