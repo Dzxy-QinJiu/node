@@ -481,8 +481,14 @@ class MemberInfo extends React.Component {
         // 当有多个角色时，增加了一个属性判断，忽略修改后的值是否和原值相等的判断
         let ignoreValueIsChangeBeforeSave = length > 1 ? true : false;
         // 职务的下拉列表
-        let positionOptions = _.map(this.state.salesRoleList, item => <Option value={item.id} >{item.name}</Option>);
-
+        let positionOptions = _.map(this.state.salesRoleList, item => {
+            if(item.name) {
+                return <Option value={item.id} >{item.name}</Option>;
+            } else {
+                return <Option value='' >&nbsp;</Option>;
+            }
+        });
+        console.log('memberInfo.positionName:',memberInfo.positionName);
         return (
             <div>
                 <div className="basic-info-item">

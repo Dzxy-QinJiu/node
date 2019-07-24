@@ -41,7 +41,6 @@ let BasicEditSelectField = createReactClass({
         hideButtonBlock: PropTypes.bool,
         onSelectChange: PropTypes.func,
         ignoreValueIsChangeBeforeSave: PropTypes.bool,
-        dropdownClassName: PropTypes.string, // 下拉菜单的 className 属性
     },
     getDefaultProps: function() {
         return {
@@ -82,8 +81,8 @@ let BasicEditSelectField = createReactClass({
             hideButtonBlock: false,
             hoverShowEdit: true,
             onSelectChange: function() {
-            },
-            dropdownClassName: ''
+
+            }
         };
     },
 
@@ -264,7 +263,6 @@ let BasicEditSelectField = createReactClass({
                                     filterOption={this.props.filterOption}
                                     name="select"
                                     className="edit-select-item"
-                                    dropdownClassName={this.props.dropdownClassName}
                                     showSearch
                                     optionFilterProp="children"
                                     searchPlaceholder={this.props.placeholder}
