@@ -21,7 +21,7 @@ class MemberManageStore {
         this.pageSize = 20;
         this.searchContent = ''; // 搜索框查询内容
         this.selectRole = ''; // 已选过滤角色,默认全部
-        this.status = ''; // 成员状态，默认全部
+        this.status = '1'; // 成员状态，默认启用
         this.teamroleId = ''; // 职务id
         this.setInitialData();
         this.bindActions(MemberManageAction);
