@@ -1553,7 +1553,7 @@ var zh_CN = {
     'crm.import.name.repeat': '导入数据中存在同名{type}',
     'crm.system.name.repeat': '系统中已存在同名{type}',
     'crm.import.phone.repeat': '导入数据中存在相同的电话',
-    'crm.system.phone.repeat': '系统中已存在相同的电话',
+    'crm.system.phone.repeat': '电话已被其他客户使用',
     'crm.import.phone.verify': '电话只能是11位手机号或11-12位带区号的座机号',
 
     // 客户详情中，合同项
