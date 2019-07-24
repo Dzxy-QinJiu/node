@@ -841,6 +841,7 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
     let team = _.get(member, 'team'); // 修改成员的部门
     let position = _.get(member, 'position'); // 修改成员的id
     let positionName = _.get(member, 'positionName'); // 修改成员的职务名称
+    let phone = member.phone; // 修改成员的手机号
 
     if (nickName) { // 修改昵称
         if (ownerId === memberId) { // 修改负责人的昵称
@@ -900,7 +901,6 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
             let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === groupId);
             let oldTeam = _.find(this.salesTeamList, item => item.group_id === team);
 
-
             if (ownerId === memberId) { // 修改负责人所在的部门
                 updateMemberCountTeam.total -= 1;
                 delete teamMemberObj.owner;
@@ -942,6 +942,20 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
                 if (updateObj) { // 修改普通成员的职务
                     updateObj.positionName = positionName;
                     updateObj.teamRoleId = position;
+                }
+            }
+        }
+    } else if (phone) { // 修改成员的手机
+        if (ownerId === memberId) { // 修改负责人的手机
+            owner.phone = phone;
+        } else {
+            let updateObj = findEditMember(managers, memberId);
+            if (updateObj) { // 修改舆情秘书的手机
+                updateObj.phone = phone;
+            } else {
+                updateObj = findEditMember(users, memberId);
+                if (updateObj) { // 修改普通成员的手机
+                    updateObj.phone = phone;
                 }
             }
         }
