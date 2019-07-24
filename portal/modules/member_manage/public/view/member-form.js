@@ -438,6 +438,7 @@ class MemberForm extends React.Component {
                             >
                                 {getFieldDecorator('email', {
                                     rules: [{
+                                        required: true,
                                         type: 'email',
                                         message: Intl.get('common.correct.email', '请输入正确的邮箱')
                                     }]

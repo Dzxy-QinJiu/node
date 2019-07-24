@@ -1163,7 +1163,6 @@ const MemberList = createReactClass({
 
     // 修改成员字段成功的处理
     changeMemberFieldSuccess(member){
-        MemberManageAction.afterEditMember(member);
         //修改用户的昵称
         SalesTeamAction.updateCurShowTeamMemberObj(member);
     },
