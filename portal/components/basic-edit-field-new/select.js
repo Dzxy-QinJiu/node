@@ -41,6 +41,7 @@ let BasicEditSelectField = createReactClass({
         hideButtonBlock: PropTypes.bool,
         onSelectChange: PropTypes.func,
         ignoreValueIsChangeBeforeSave: PropTypes.bool,
+        dropdownClassName: PropTypes.string, // 下拉菜单的 className 属性
     },
     getDefaultProps: function() {
         return {
@@ -81,8 +82,8 @@ let BasicEditSelectField = createReactClass({
             hideButtonBlock: false,
             hoverShowEdit: true,
             onSelectChange: function() {
-
-            }
+            },
+            dropdownClassName: 'edit-select-item'
         };
     },
 
@@ -257,11 +258,12 @@ let BasicEditSelectField = createReactClass({
                             help={status.select.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.select.errors && status.select.errors.join(','))}
                         >
                             <Validator rules={this.props.validators}>
-                                <Select multiple={this.props.multiple}
+                                <Select
+                                    multiple={this.props.multiple}
                                     combobox={this.props.combobox}
                                     filterOption={this.props.filterOption}
                                     name="select"
-                                    className="edit-select-item"
+                                    dropdownClassName={this.props.dropdownClassName}
                                     showSearch
                                     optionFilterProp="children"
                                     searchPlaceholder={this.props.placeholder}

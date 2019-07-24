@@ -551,6 +551,7 @@ class MemberInfo extends React.Component {
                         saveEditSelect={this.saveEditPosition.bind(this)}
                         noDataTip={Intl.get('member.no.position', '暂无职务')}
                         addDataTip={Intl.get('member.add.position', '添加职务')}
+                        dropdownClassName="member-edit-position"
                     />
                 </div>
                 <div className="basic-info-item">
