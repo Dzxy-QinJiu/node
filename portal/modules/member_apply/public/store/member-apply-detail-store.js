@@ -239,7 +239,8 @@ MemberApplyDetailStore.prototype.getNextCandidate = function(result) {
     if (result.error){
         this.candidateList = [];
     }else{
-        this.candidateList = result;
+        this.candidateList = _.get(result,'list',[]);
+        this.isLeader = _.get(result,'isLeader',false);
     }
 };
 MemberApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {
