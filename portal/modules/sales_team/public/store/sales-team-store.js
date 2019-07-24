@@ -334,7 +334,9 @@ SalesTeamStore.prototype.getMemberList = function(resultData) {
         this.addMemberListTipMsg = resultData;
     } else {
         if (_.isArray(resultData) && resultData.length > 0) {
-            this.addMemberList = processTeamsMemberListData(resultData);
+            let addMemberList = processTeamsMemberListData(resultData);
+            // 部门中，添加成员，只显示启用状态的成员
+            this.addMemberList = _.filter(addMemberList, item => item.status === 1);
             this.addMemberListTipMsg = '';
         } else {
             this.addMemberList = [];
