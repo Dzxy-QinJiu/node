@@ -1809,7 +1809,7 @@ class ClueCustomer extends React.Component {
                             } else if (this.isIncludesItem(phone_repeat_list, item)) {
                                 //系统中存在同名客户
                                 cls = classNames({'repeat-item-name': true});
-                                title = Intl.get('crm.system.phone.repeat', '系统中已存在相同的电话');
+                                title = Intl.get('crm.system.phone.repeat', '电话已被其他客户使用');
                             }
                             return (<div className={cls} title={title} key={index}>{item}</div>);
                         });
