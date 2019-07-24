@@ -102,7 +102,7 @@ class MemberInfo extends React.Component {
                 data.unshift({id: '', name: ''});
             }
             this.setState({
-                salesRoleList: data,
+                salesRoleList: data || [],
             });
         }, () => {
             this.setState({

@@ -83,7 +83,7 @@ let BasicEditSelectField = createReactClass({
             hoverShowEdit: true,
             onSelectChange: function() {
             },
-            dropdownClassName: 'edit-select-item'
+            dropdownClassName: ''
         };
     },
 
@@ -263,6 +263,7 @@ let BasicEditSelectField = createReactClass({
                                     combobox={this.props.combobox}
                                     filterOption={this.props.filterOption}
                                     name="select"
+                                    className="edit-select-item"
                                     dropdownClassName={this.props.dropdownClassName}
                                     showSearch
                                     optionFilterProp="children"
