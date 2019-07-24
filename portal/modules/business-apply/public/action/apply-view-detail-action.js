@@ -12,6 +12,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {getApplyStatusById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import applyApproveAction from './business-apply-action';
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -123,7 +124,9 @@ function ApplyViewDetailActions() {
     this.getNextCandidate = function(queryObj,callback) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)){
-                this.dispatch(list);
+                checkIfLeader(list,(isLeader) => {
+                    this.dispatch({list: list, isLeader: isLeader});
+                });
                 _.isFunction(callback) && callback(list);
             }
         }).error(

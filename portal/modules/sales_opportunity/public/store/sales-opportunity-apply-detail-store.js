@@ -239,10 +239,8 @@ SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(result) {
     if (result.error){
         this.candidateList = [];
     }else{
-        this.candidateList = result;
-        checkIfLeader(result,(isLeader) => {
-            this.isLeader = isLeader;
-        });
+        this.candidateList = _.get(result,'list',[]);
+        this.isLeader = _.get(result,'isLeader',false);
     }
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {

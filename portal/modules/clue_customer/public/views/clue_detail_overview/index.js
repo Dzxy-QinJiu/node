@@ -385,6 +385,7 @@ class ClueDetailOverview extends React.Component {
                 this.setState({
                     curClue: curClue
                 });
+
                 //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                 clueCustomerAction.afterAddClueTrace(curClue);
                 this.props.updateCustomerLastContact(saveObj);
