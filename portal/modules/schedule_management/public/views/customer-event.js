@@ -53,6 +53,7 @@ class CustomEvent extends React.Component {
                         visible={this.state.visible}
                         onVisibleChange={this.handleVisibleChange}
                         placement="right"
+                        overlayClassName="schedule-manage-popover"
                     >
                         {/*日程的数字*/}
                         <div className="schedule-count">{this.props.event.count}</div>
