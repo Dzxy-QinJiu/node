@@ -17,6 +17,7 @@ export function getActivityChart(type, title) {
 
     return {
         title: title || Intl.get('operation.report.activity', '活跃度'),
+        chartType: 'line',
         url,
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
@@ -26,8 +27,32 @@ export function getActivityChart(type, title) {
             //去掉query参数中的公共interval，以免引起迷惑
             delete arg.query.interval;
         },
-        chartType: 'line',
-        valueField: 'active',
+        processData: (data, chart) => {
+            const intervalCondition = _.find(chart.conditions, item => item.name === 'param_interval');
+            let interval = _.get(intervalCondition, 'value');
+
+            return _.map(data, dataItem => {
+                if (!interval || interval === 'daily') {
+                    dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
+                } else {
+                    if (interval === 'weekly') {
+                        //用iso格式的周开始时间，这样是从周一到周天算一周，而不是从周天到周六
+                        interval = 'isoweek';
+                    } else {
+                        interval = interval.replace('ly', '');
+                    }
+
+                    const startDate = moment(dataItem.timestamp).startOf(interval).format(oplateConsts.DATE_FORMAT);
+                    const endDate = moment(dataItem.timestamp).endOf(interval).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+
+                    dataItem.name = `${startDate}${Intl.get('contract.83', '至')}${endDate}`;
+                }
+
+                dataItem.value = dataItem.active;
+
+                return dataItem;
+            });
+        },
         cardContainer: {
             operateButtons: [{value: 'daily', name: Intl.get('operation.report.day.active', '日活')},
                 {value: 'weekly', name: Intl.get('operation.report.week.active', '周活')},
