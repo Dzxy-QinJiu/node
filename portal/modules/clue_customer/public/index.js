@@ -990,7 +990,7 @@ class ClueCustomer extends React.Component {
             'status-type-hide': isFirstLoading
         });
         //如果选中了待我审批状态，就不展示已转化
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced
+        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
             {isSalesRole() ? null : <span className={willDistCls}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
@@ -1004,7 +1004,7 @@ class ClueCustomer extends React.Component {
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
                 <span className="clue-status-num">{_.get(statics,'hasTrace','')}</span>
             </span>
-            {filterAllotNoTraced ? null :<span className={hasTransfer}
+            {filterAllotNoTraced ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num">{_.get(statics,'hasTransfer','')}</span>
             </span>}
@@ -1137,7 +1137,7 @@ class ClueCustomer extends React.Component {
     renderHandleAssociateInvalidBtn = (salesClueItem) => {
         //只有不是待跟进状态，才能展示操作区域
         var typeFilter = this.getFilterStatus();//线索类型
-        if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE){
+        if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE || typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE){
             return _.get(this,'state.isInvalidClue') === salesClueItem.id ? this.renderInvalidConfirm(salesClueItem) : this.renderAvailabilityClue(salesClueItem);
         }else{
             return null;
@@ -1975,7 +1975,7 @@ class ClueCustomer extends React.Component {
         this.afterMergeUpdateClueProperty(customerId, customerName);
     };
     isFirstLoading = () => {
-       return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
+        return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
     };
 
     render() {
@@ -1988,8 +1988,8 @@ class ClueCustomer extends React.Component {
         });
         var hasSelectedClue = this.hasSelectedClues();
         var filterCls = classNames('filter-container',{
-           'filter-close': !this.state.showFilterList || isFirstLoading
-        })
+            'filter-close': !this.state.showFilterList || isFirstLoading
+        });
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
