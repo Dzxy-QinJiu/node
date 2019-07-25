@@ -5,6 +5,9 @@
 import { argCallbackTimeToUnderlineTime, argCallbackMemberIdToMemberIds } from '../../utils';
 
 export function getCustomerTransferTrendChart() {
+    //当前查询中的时间区间参数值
+    let interval;
+    
     return {
         title: '转出客户数趋势',
         chartType: 'line',
@@ -27,9 +30,12 @@ export function getCustomerTransferTrendChart() {
                 arg.query.result_type = arg.query.statistics_type;
                 delete arg.query.statistics_type;
             }
+
+            //将时间区间参数值暂存下来以供其他回调函数使用
+            interval = _.get(arg, 'query.interval');
         },
         dataField: 'list',
-        processData: data => {
+        processData: function(data) {
             //过滤掉没有名字的数据
             return _.filter(data, item => item.name);
         },
@@ -39,7 +45,23 @@ export function getCustomerTransferTrendChart() {
 
             if (!firstDataItem) return;
 
-            const xAxisData = _.map(firstDataItem.interval_list, 'date_str');
+            let xAxisData;
+
+            if (!interval || interval === 'day') {
+                xAxisData = _.map(firstDataItem.interval_list, 'date_str');
+            } else {
+                if (interval === 'week') {
+                    //用iso格式的周开始时间，这样是从周一到周天算一周，而不是从周天到周六
+                    interval = 'isoweek';
+                }
+
+                xAxisData = _.map(firstDataItem.interval_list, item => {
+                    const startDate = moment(item.date_str).startOf(interval).format(oplateConsts.DATE_FORMAT);
+                    const endDate = moment(item.date_str).endOf(interval).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+
+                    return `${startDate}${Intl.get('contract.83', '至')}${endDate}`;
+                });
+            }
 
             let legendData = [];
             let series = [];
