@@ -35,7 +35,7 @@ export function getCustomerTransferTrendChart() {
             interval = _.get(arg, 'query.interval');
         },
         dataField: 'list',
-        processData: function(data) {
+        processData: data => {
             //过滤掉没有名字的数据
             return _.filter(data, item => item.name);
         },
