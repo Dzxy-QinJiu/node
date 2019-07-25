@@ -15,6 +15,10 @@ export function getAccountNumChart(type = 'total', title) {
             legend: {
                 data: USER_TYPES,
             },
+            yAxis: [{
+                //设置成1保证坐标轴分割刻度显示成整数
+                minInterval: 1,
+            }]
         },
         csvOption: {
             rowNames: USER_TYPES_WITH_TITLE,
