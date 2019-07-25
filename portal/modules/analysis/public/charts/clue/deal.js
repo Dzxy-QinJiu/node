@@ -20,7 +20,11 @@ export function getClueDealChart() {
                     `;
                 }
             },
-            yAxis: [{name: Intl.get('common.deal.number', '成交数')}]
+            yAxis: [{
+                name: Intl.get('common.deal.number', '成交数'),
+                //设置成1保证坐标轴分割刻度显示成整数
+                minInterval: 1,
+            }]
         },
         processCsvData: (chart, option) => {
             const csvData = [];
