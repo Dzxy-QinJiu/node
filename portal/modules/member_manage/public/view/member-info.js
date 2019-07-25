@@ -488,7 +488,6 @@ class MemberInfo extends React.Component {
                 return <Option value='' >&nbsp;</Option>;
             }
         });
-        console.log('memberInfo.positionName:',memberInfo.positionName);
         return (
             <div>
                 <div className="basic-info-item">
