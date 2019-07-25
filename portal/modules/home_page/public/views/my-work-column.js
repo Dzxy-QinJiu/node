@@ -5,7 +5,7 @@
  */
 import '../css/my-work-column.less';
 import classNames from 'classnames';
-import {Dropdown, Icon, Menu, Tag} from 'antd';
+import {Dropdown, Icon, Menu, Tag, Popover} from 'antd';
 import ColumnItem from './column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
@@ -334,31 +334,54 @@ class MyWorkColumn extends React.Component {
             </div>);
     }
 
+    //联系人和联系电话
+    renderPopoverContent(contacts,item) {
+        return (
+            <div className="contacts-containers">
+                {_.map(contacts, (contact) => {
+                    var cls = classNames('contacts-item',
+                        {'def-contact-item': contact.def_contancts === 'true'});
+                    return (
+                        <div className={cls}>
+                            <div className="contacts-name-content">
+                                <i className="iconfont icon-contact-default"/>
+                                {contact.name}
+                            </div>
+                            <div className="contacts-phone-content" data-tracename="联系人电话列表">
+                                {_.map(contact.phone, (phone) => {
+                                    return (
+                                        <div className="phone-item">
+                                            <PhoneCallout
+                                                phoneNumber={phone}
+                                                contactName={contact.name}
+                                                showPhoneIcon={true}
+                                                onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
     //联系人及电话的渲染
     renderContactItem(item) {
         let contacts = _.get(item, 'details[0].contacts', []);
-        //默认展示的联系人及电话(有默认联系人时展示默认联系人，没有时展示第一个联系人)
-        let defaultContact = {};
         if (!_.isEmpty(contacts)) {
-            defaultContact = _.find(contacts, contact => contact.def_contancts === 'true');
-            if (!defaultContact) {
-                defaultContact = contacts[0];
-            }
-        }
-        let defaultContactName = _.get(defaultContact, 'name', '');
-        let defaultPhone = _.get(defaultContact, 'phone[0]', '');
-        if (defaultContactName || defaultPhone) {
+            let contactsContent = this.renderPopoverContent(contacts,item);
             return (
                 <div className='work-hover-show-detail'>
-                    <span className='work-contact-name'>{defaultContactName}</span>
-                    {defaultPhone ? (
+                    <Popover content={contactsContent} placement="bottom"
+                        overlayClassName='contact-phone-popover'
+                        getPopupContainer={() => document.getElementById(`home-page-work${item.id}`)}>
                         <span className='work-contact-phone'>
-                            <PhoneCallout
-                                phoneNumber={defaultPhone}
-                                contactName={defaultContactName}
-                                onCallSuccess={this.onCallSuccess.bind(this, item)}
-                            />
-                        </span>) : null}
+                            <i className="iconfont icon-phone-call-out"/>
+                        </span>
+                    </Popover>
                 </div>);
         }
     }
@@ -374,6 +397,7 @@ class MyWorkColumn extends React.Component {
             this.setState({handlingWork: item});
         }
     }
+
     renderWorkCard(item, index) {
         const contentCls = classNames('work-content-wrap', {
             'open-work-detail-style': _.includes(OPEN_DETAIL_TYPES, item.type) && item.opinion === APPLY_STATUS.ONGOING
@@ -416,7 +440,9 @@ class MyWorkColumn extends React.Component {
         } else {
             return (
                 <div className='handle-work-finish' onClick={this.handleMyWork.bind(this, item)}>
-                    <span className='work-finish-text'>{Intl.get('home.page.my.work.finished', '我已完成')}</span>
+                    <span className='work-finish-text' title={Intl.get('home.page.my.work.finished', '我已完成')}>
+                        <i className="iconfont icon-select-member"/>
+                    </span>
                 </div>);
         }
     }
