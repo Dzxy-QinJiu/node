@@ -1137,7 +1137,7 @@ class ClueCustomer extends React.Component {
     renderHandleAssociateInvalidBtn = (salesClueItem) => {
         //只有不是待跟进状态，才能展示操作区域
         var typeFilter = this.getFilterStatus();//线索类型
-        if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE){
+        if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE || typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE){
             return _.get(this,'state.isInvalidClue') === salesClueItem.id ? this.renderInvalidConfirm(salesClueItem) : this.renderAvailabilityClue(salesClueItem);
         }else{
             return null;

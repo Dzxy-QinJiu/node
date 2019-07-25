@@ -1254,7 +1254,7 @@ class ClueDetailOverview extends React.Component {
                 return null;
             }
         } else {
-            if ((curClue.status === SELECT_TYPE.HAS_TRACE ||
+            if ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||
                 curClue.status === SELECT_TYPE.WILL_TRACE) &&
                 !associatedCustomer) { // 待跟进或是已跟进，并且没有关联客户时，处理线索
                 return this.renderAssociatedAndInvalidClueHandle(curClue);
