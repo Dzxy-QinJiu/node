@@ -61,6 +61,10 @@ export function getActivityChart(type, title) {
                     `;
                 },
             },
+            yAxis: [{
+                //设置成1保证坐标轴分割刻度显示成整数
+                minInterval: 1,
+            }]
         },
         customOption: {
             yAxises: [
