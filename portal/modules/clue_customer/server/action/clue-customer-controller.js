@@ -62,6 +62,7 @@ exports.getClueChannel = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
+
 //获取线索分类
 exports.getClueClassify = function(req, res) {
     clueCustomerService.getClueClassify(req, res)
@@ -378,6 +379,38 @@ exports.getSimilarClueLists = function(req, res) {
 };
 exports.getSimilarCustomerLists = function(req, res) {
     clueCustomerService.getSimilarCustomerLists(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+exports.getRecommendClueLists = function(req, res) {
+    clueCustomerService.getRecommendClueLists(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+exports.getClueIndustryLists = function(req, res) {
+    clueCustomerService.getClueIndustryLists(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+exports.getSelfClueConditionConfig = function(req, res) {
+    clueCustomerService.getSelfClueConditionConfig(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+exports.addOrEditSelfClueConditionConfig = function(req, res) {
+    clueCustomerService.addOrEditSelfClueConditionConfig(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {

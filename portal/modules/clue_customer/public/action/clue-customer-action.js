@@ -51,6 +51,21 @@ function ClueCustomerActions() {
             console.log(errorMsg);
         });
     };
+    //获取个人客户推荐配置
+    this.getSettingCustomerRecomment = function() {
+        clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
+            this.dispatch({list: list});
+        },(errorMsg) => {
+        });
+    };
+    this.getRecommendClueLists = function(obj) {
+        this.dispatch({loading: true, error: false});
+        clueCustomerAjax.getRecommendClueLists(obj).then((list) => {
+            this.dispatch({loading: false, error: false,list: list});
+        },(errorMsg) => {
+            this.dispatch({loading: false, error: true, errMsg: errorMsg});
+        });
+    };
     //添加或更新跟进内容
     this.addCluecustomerTrace = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
@@ -125,7 +140,7 @@ function ClueCustomerActions() {
         });
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback:callback});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
@@ -140,7 +155,7 @@ function ClueCustomerActions() {
         });
         clueCustomerAjax.getClueFulltextSelfHandle(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback:callback});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,

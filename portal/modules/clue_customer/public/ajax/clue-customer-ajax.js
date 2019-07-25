@@ -366,3 +366,53 @@ exports.deleteClueById = function(data) {
     });
     return Deferred.promise();
 };
+//获取个人线索推荐保存配置
+exports.getSettingCustomerRecomment = function() {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/recommend/condition',
+        dataType: 'json',
+        type: 'get',
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//添加和修改个人线索推荐保存配置
+exports.addOrEditSettingCustomerRecomment = function(data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/recommend/condition',
+        dataType: 'json',
+        type: 'post',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//获取线索的推荐列表
+exports.getRecommendClueLists = function(obj) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/clue/recommend/lists',
+        dataType: 'json',
+        type: 'post',
+        data: obj,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

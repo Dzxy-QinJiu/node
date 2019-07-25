@@ -58,8 +58,15 @@ const restApis = {
     //获取相似线索
     getSimilarClueLists: '/rest/clue/v2/query/:type/similarity/lead',
     //获取相似客户
-    getSimilarCustomerLists: '/rest/customer/v3/customer/query/:type/similarity/customer'
+    getSimilarCustomerLists: '/rest/customer/v3/customer/query/:type/similarity/customer',
+    //获取推荐的线索
+    getRecommendClueLists: '/rest/company/v1/companys/search/drop_down_load',
+    //获取行业配置
+    getClueIndustryLists: '/rest/company/v1/ent/industrys',
+    //获取个人配置
+    selfConditionConfig: '/rest/company/v1/ent/search',
 };
+
 //查询客户
 exports.getClueCustomerList = function(req, res) {
     let queryObj = {};
@@ -482,4 +489,40 @@ exports.getSimilarCustomerLists = function(req, res) {
             req: req,
             res: res
         }, req.query);
+};
+//获取行业配置
+exports.getClueIndustryLists = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getClueIndustryLists + '?load_size=1000',
+            req: req,
+            res: res
+        }, null);
+};
+//获取个人查询配置
+exports.getSelfClueConditionConfig = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.selfConditionConfig,
+            req: req,
+            res: res
+        }, null);
+};
+//添加和修改个人查询配置
+exports.addOrEditSelfClueConditionConfig = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.selfConditionConfig,
+            req: req,
+            res: res
+        }, req.body);
+};
+//获取推荐线索
+exports.getRecommendClueLists = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.getRecommendClueLists,
+            req: req,
+            res: res
+        }, req.body);
 };

@@ -52,6 +52,38 @@ ClueCustomerStore.prototype.resetState = function() {
     this.agg_list = {};//线索统计数据
     this.showFilterList = false;//是否展示线索筛选区域
     this.firstLogin = true;//用来记录是否是首次加载
+    this.settedCustomerRecommend = {
+        loading: true,
+        obj: {}
+    };
+    //所有线索的数量
+    this.allClueCount = 0;
+    //推荐线索的列表及相关状态
+    this.isLoadingRecommendClue = true;
+    this.getRecommendClueErrMsg = '';
+    this.recommendClueLists = [];
+};
+ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
+    if (result.loading) {
+        this.isLoadingRecommendClue = true;
+        this.getRecommendClueErrMsg = '';
+    } else if (result.error) {
+        this.isLoadingRecommendClue = false;
+        this.getRecommendClueErrMsg = result.errorMsg;
+    } else {
+        this.isLoadingRecommendClue = false;
+        this.getRecommendClueErrMsg = '';
+        this.recommendClueLists = result.list;
+    }
+};
+ClueCustomerStore.prototype.getSettingCustomerRecomment = function(result){
+    if (_.get(result,'list')){
+        this.settedCustomerRecommend = {
+            loading: false,
+            // list: _.get(result,'list')
+            obj: {'industrys': [],}
+        };
+    }
 };
 ClueCustomerStore.prototype.changeFilterFlag = function(filterFlag) {
     this.showFilterList = filterFlag;
@@ -123,6 +155,8 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
                     };
                 }
             });
+            //todo 暂时注销掉啊啊啊啊
+            // this.allClueCount = this.agg_list['willDistribute'] + this.agg_list['willTrace'] + this.agg_list['hasTrace'] + this.agg_list['hasTransfer'];
             //需要展示待我处理
             if(_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'yes'){
                 this.showFilterList = true;
