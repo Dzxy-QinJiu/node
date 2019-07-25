@@ -21,7 +21,10 @@ function getCharts() {
         //新增合同毛利团队分布
         contractChart.getContractNewChart(),
         //近3个月新增合同周趋势图
-        contractChart.getContractTrendChart(),
+        contractChart.getTrendChart({
+            title: Intl.get('contract.147', '近3个月新增合同周趋势图'),
+            type: 'count'
+        }),
         //合同额分段统计
         contractChart.getContractSectionChart(),
         //合同产品分布
