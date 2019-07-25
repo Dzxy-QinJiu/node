@@ -8,11 +8,11 @@ export function getActivityChart(type, title) {
     let url;
 
     if (type === 'new_added') {
-        url = '/rest/analysis/user/v1/:auth_type/new_added/users/activation/:interval';
+        url = '/rest/analysis/user/v1/:auth_type/new_added/users/activation/:param_interval';
     } else if (type === 'expired') {
-        url = '/rest/analysis/user/v1/:auth_type/expired/:app_id/users/activation/:interval';
+        url = '/rest/analysis/user/v1/:auth_type/expired/:app_id/users/activation/:param_interval';
     } else {
-        url = '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:interval';
+        url = '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:param_interval';
     }
 
     return {
@@ -33,10 +33,10 @@ export function getActivityChart(type, title) {
                 {value: 'weekly', name: Intl.get('operation.report.week.active', '周活')},
                 {value: 'monthly', name: Intl.get('operation.report.month.active', '月活')}],
             activeButton: 'daily',
-            conditionName: 'interval',
+            conditionName: 'param_interval',
         },
         conditions: [{
-            name: 'interval',
+            name: 'param_interval',
             value: 'daily',
             type: 'params',
         }],
