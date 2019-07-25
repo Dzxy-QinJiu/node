@@ -44,6 +44,7 @@ class ConfirmSwitchStatus extends React.Component {
                     onCancel={this.handleCancel}
                     title={this.props.title}
                 >
+                    {/*点击事件，放到span中，是为了解决打包时，报e.preventDefault is not a function的问题**/}
                     <span onClick={this.handleClick}>
                         <Switch
                             checked={this.props.status}
