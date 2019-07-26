@@ -65,7 +65,9 @@ export function getCustomerNumChart(paramsObj = {}) {
             option.dataSource = dataSource;
         },
         processCsvData: (chart, option) => {
-            return [_.map(option.dataSource, 'value')];
+            return _.map(option.dataSource, item => {
+                return [item.value];
+            });
         }
     };
 }
