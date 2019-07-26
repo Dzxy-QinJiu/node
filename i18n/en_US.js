@@ -1535,7 +1535,7 @@ var en_US = {
     'crm.import.name.repeat': 'There are identical {type} in the imported data',//导入数据中存在同名{type}
     'crm.system.name.repeat': 'The same name {type} already exists in the system',//系统中已存在同名{type}
     'crm.import.phone.repeat': 'The same phone exists in the imported data',//导入数据中存在相同的电话
-    'crm.system.phone.repeat': 'The same telephone already exists in the system',//系统中已存在相同的电话
+    'crm.system.phone.repeat': 'The telephone has been used by other {type}',//电话已被其他{type}使用
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
 
     // 客户详情中，合同项
