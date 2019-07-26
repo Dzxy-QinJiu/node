@@ -38,7 +38,8 @@ function ClueCustomerActions() {
         'updateCurrentClueRemark',
         'afterTranferClueSuccess',//转化客户成功后
         'setLoadingFalse',
-        'changeFilterFlag'
+        'changeFilterFlag',
+        'saveQueryObj'
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -125,7 +126,7 @@ function ClueCustomerActions() {
         });
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback:callback});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
@@ -140,7 +141,7 @@ function ClueCustomerActions() {
         });
         clueCustomerAjax.getClueFulltextSelfHandle(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback:callback});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,

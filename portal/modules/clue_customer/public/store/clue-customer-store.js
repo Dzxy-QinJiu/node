@@ -52,6 +52,7 @@ ClueCustomerStore.prototype.resetState = function() {
     this.agg_list = {};//线索统计数据
     this.showFilterList = false;//是否展示线索筛选区域
     this.firstLogin = true;//用来记录是否是首次加载
+    this.queryObj = {};//用来记录搜索条件
 };
 ClueCustomerStore.prototype.changeFilterFlag = function(filterFlag) {
     this.showFilterList = filterFlag;
@@ -132,6 +133,10 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
                 //因为回调中的方法会修改store中的值，如果不加延时会有Dispatch中不允许Dispacth的错误
                 setTimeout(() => {
                     clueFilterAction.setFilterType(_.get(clueData,'clueCustomerObj.setting_status'));
+                    //把存下来的搜索条件的值也需要改掉，避免分配线索选全部的时候有问题
+                    if (_.get(this, 'queryObj.bodyParam.query')){
+                        this.queryObj.bodyParam.query.status = _.get(clueData,'clueCustomerObj.setting_status');
+                    }
                     _.isFunction(_.get(clueData, 'callback')) && clueData.callback();
                 });
 
@@ -427,6 +432,9 @@ ClueCustomerStore.prototype.afterTranferClueSuccess = function(data) {
 //更新线索列表
 ClueCustomerStore.prototype.updateClueCustomers = function(data) {
     this.curClueLists = data;
+};
+ClueCustomerStore.prototype.saveQueryObj = function(data) {
+    this.queryObj = data;
 };
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
 ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
