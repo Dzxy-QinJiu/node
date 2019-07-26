@@ -5,9 +5,11 @@
 import { CUSTOMER_STAGE } from '../../consts';
 import { argCallbackUnderlineTimeToTime, argCallbackMemberIdToMemberIds } from '../../utils';
 
-export function getCustomerNumChart(stage) {
+export function getCustomerNumChart(paramsObj = {}) {
+    const stage = paramsObj.stage;
+
     return {
-        title: '合格客户数统计',
+        title: paramsObj.title || '客户数统计',
         chartType: 'table',
         url: '/rest/analysis/customer/stage/label/:auth_type/summary',
         argCallback: (arg) => {
@@ -32,35 +34,40 @@ export function getCustomerNumChart(stage) {
             }
         },
         processOption: (option, chartProps) => {
-            let columns = [];
+            let columns = [{dataIndex: 'value'}];
             let dataSource = [];
             let data = chartProps.data;
 
             if (_.isObject(data)) {
                 if (stage) {
-                    columns.push({
-                        title: CUSTOMER_STAGE[stage] + '客户数',
-                        dataIndex: stage,
-                    });
+                    const title = CUSTOMER_STAGE[stage] + '客户数';
+
+                    dataSource = [{
+                        value: title + ': ' + data[stage]
+                    }];
                 } else {
-                    data.total = data.message + data.intention + data.trial + data.signed + data.unknown;
+                    const titleTotal = '总客户数';
+                    const titleSigned = '签约客户数';
+                    const total = data.message + data.intention + data.trial + data.signed + data.unknown;
 
-                    columns.push({
-                        title: '总客户数',
-                        dataIndex: 'total',
-                        width: '50%',
+                    dataSource = [{
+                        value: titleTotal + ': ' + total
                     }, {
-                        title: '签约客户数',
-                        dataIndex: 'signed',
-                        width: '50%',
-                    });
+                        value: titleSigned + ': ' + data.signed
+                    }];
                 }
-
-                dataSource.push(data);
             }
+
+            //因为列数较少，按表格形式展示不太好看，所以把表头隐去，让展示上就像普通的文本行一样
+            option.showHeader = false;
 
             option.columns = columns;
             option.dataSource = dataSource;
+        },
+        processCsvData: (chart, option) => {
+            return _.map(option.dataSource, item => {
+                return [item.value];
+            });
         }
     };
 }
