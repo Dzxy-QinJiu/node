@@ -1,4 +1,3 @@
-var React = require('react');
 require('../css/single-user-log.less');
 //时间范围选择
 import { AntcDatePicker as DatePicker } from 'antc';

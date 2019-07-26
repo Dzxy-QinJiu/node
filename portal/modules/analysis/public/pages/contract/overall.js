@@ -22,18 +22,6 @@ function getCharts() {
         contractChart.getContractExpireRemindChart(),
         //合同分析统计表
         contractChart.getContractChart(),
-        //合同产品分布
-        contractChart.getContractProductChart(),
-        //行业分布
-        contractChart.getContractIndustryChart(),
-        //地域分布
-        contractChart.getContractZoneChart(),
-        //团队分布及完成率
-        contractChart.getContractTeamChart({
-            noShowCondition: {
-                callback: () => isSales()
-            }
-        }),
         //年经常性收入情况
         contractChart.getContractArrChart({
             noShowCondition: {
@@ -43,7 +31,5 @@ function getCharts() {
                 }
             }
         }),
-        //签单情况统计表
-        contractChart.getSingingChart(),
     ];
 }

@@ -8,15 +8,16 @@ export function getActivityChart(type, title) {
     let url;
 
     if (type === 'new_added') {
-        url = '/rest/analysis/user/v1/:auth_type/new_added/users/activation/:interval';
+        url = '/rest/analysis/user/v1/:auth_type/new_added/users/activation/:param_interval';
     } else if (type === 'expired') {
-        url = '/rest/analysis/user/v1/:auth_type/expired/:app_id/users/activation/:interval';
+        url = '/rest/analysis/user/v1/:auth_type/expired/:app_id/users/activation/:param_interval';
     } else {
-        url = '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:interval';
+        url = '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:param_interval';
     }
 
     return {
         title: title || Intl.get('operation.report.activity', '活跃度'),
+        chartType: 'line',
         url,
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
@@ -26,17 +27,41 @@ export function getActivityChart(type, title) {
             //去掉query参数中的公共interval，以免引起迷惑
             delete arg.query.interval;
         },
-        chartType: 'line',
-        valueField: 'active',
+        processData: (data, chart) => {
+            const intervalCondition = _.find(chart.conditions, item => item.name === 'param_interval');
+            let interval = _.get(intervalCondition, 'value');
+
+            return _.map(data, dataItem => {
+                if (!interval || interval === 'daily') {
+                    dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
+                } else {
+                    if (interval === 'weekly') {
+                        //用iso格式的周开始时间，这样是从周一到周天算一周，而不是从周天到周六
+                        interval = 'isoweek';
+                    } else {
+                        interval = interval.replace('ly', '');
+                    }
+
+                    const startDate = moment(dataItem.timestamp).startOf(interval).format(oplateConsts.DATE_FORMAT);
+                    const endDate = moment(dataItem.timestamp).endOf(interval).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+
+                    dataItem.name = `${startDate}${Intl.get('contract.83', '至')}${endDate}`;
+                }
+
+                dataItem.value = dataItem.active;
+
+                return dataItem;
+            });
+        },
         cardContainer: {
             operateButtons: [{value: 'daily', name: Intl.get('operation.report.day.active', '日活')},
                 {value: 'weekly', name: Intl.get('operation.report.week.active', '周活')},
                 {value: 'monthly', name: Intl.get('operation.report.month.active', '月活')}],
             activeButton: 'daily',
-            conditionName: 'interval',
+            conditionName: 'param_interval',
         },
         conditions: [{
-            name: 'interval',
+            name: 'param_interval',
             value: 'daily',
             type: 'params',
         }],
@@ -61,6 +86,10 @@ export function getActivityChart(type, title) {
                     `;
                 },
             },
+            yAxis: [{
+                //设置成1保证坐标轴分割刻度显示成整数
+                minInterval: 1,
+            }]
         },
         customOption: {
             yAxises: [

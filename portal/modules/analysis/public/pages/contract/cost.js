@@ -20,6 +20,9 @@ function getCharts() {
         //新增费用额团队分布
         contractChart.getCostChart(),
         //近3个月费用周趋势图
-        contractChart.getCostTrendChart(),
+        contractChart.getTrendChart({
+            title: Intl.get('contract.150', '近3个月费用周趋势图'),
+            type: 'cost'
+        }),
     ];
 }

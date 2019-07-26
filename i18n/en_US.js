@@ -327,6 +327,20 @@ var en_US = {
     'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
 
+    //首页
+    'home.page': 'Home page',//首页
+    'home.page.my.work': 'My work',//我的工作
+    'home.page.work.all': 'All works',//全部事务
+    'home.page.my.interest': 'My concern',//我的关注
+    'home.page.my.data': 'My data',//我的数据
+    'home.page.deal.handle': 'Pending orders',//待处理的订单
+    'home.page.no.work.tip': 'No job for the time being',//暂无工作
+    'home.page.new.work.tip': 'Work changes, click here {refreshTip}',//工作有变动，点此{refreshTip}
+    'home.page.my.work.finished': 'Finished',//我已完成
+    'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
+    'home.page.callout.time': 'Total call time',//呼出总时长
+    'home.page.performance.num': 'No. {n}',//第{n}名
+
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
     'user.title': 'Users',//用户管理
@@ -741,6 +755,7 @@ var en_US = {
     'member.position.delete.office': '', // 删除职务
     'member.position.set.default': '', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
+    'member.add.member.rule': 'The username can only contain characters such as letters, numbers, horizontal lines, underscores, and the length is between 1 and 50 (including 50).', // 用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间
     //后台管理-成员end
     
     //组织管理start
@@ -2173,7 +2188,7 @@ var en_US = {
     'errorcode.146': 'The phone is offline',//分机离线
     'errorcode.147': 'The qr code has expired',//二维码已失效
     'errorcode.148': 'The call duration statistics view fails to be obtained',//电话时长统计视图获取失败
-    'errorcode.149': 'The role has been allocated to sales',//该角色已经分配给销售
+    'errorcode.149': 'The post cannot be deleted because it has already been allocated',//已有成员设置了该职务，不能删除
     'errorcode.150': 'Failed to update the clue',//修改线索信息失败
     'errorcode.151': 'Failed to get sales new open accounts and new open accounts',//获取销售新开客户数和新开帐号数失败
     'errorcode.152': 'There are repeat clues!',//线索重复
@@ -3052,6 +3067,11 @@ var en_US = {
     'common.number.of.qualified.customers': 'number of qualified customers',//合格客户数
     'common.number.of.customers.logged.in': 'number of customers logged in',//登录过的客户数
     'common.number.of.contracted.customers': 'number of contracted customers',//签约客户数
+    'apply.approve.not.setting.workflow': 'Process not yet configured, {tip}',//尚未配置流程，{tip}
+    'apply.approve.contact.manager': 'Please to contact administer',//请联系管理员
+    'apply.approve.go.set.workflow': 'go to setting?',//去设置？
+    'customer.select.name.tip': 'Please select customer in dropdown list',//请在下拉框中选择客户
+    'contract.current.month.contract.analysis': 'current month contract analysis',//本月合同分析
 
 };
 export default en_US;

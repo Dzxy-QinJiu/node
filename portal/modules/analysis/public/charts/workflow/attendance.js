@@ -26,26 +26,30 @@ export function getAttendanceChart() {
             const askForLeaveDuration = _.get(data, [1]);
 
             if (_.isNumber(businessTripNum)) {
-                _.set(processedData, '[0].business_trip_num', businessTripNum);
+                processedData.push({
+                    value: '出差次数: ' + businessTripNum
+                });
             }
 
             if (_.isNumber(askForLeaveDuration)) {
-                _.set(processedData, '[0].ask_for_leave_duration', askForLeaveDuration);
+                processedData.push({
+                    value: '请假天数: ' + askForLeaveDuration
+                });
             }
 
             return processedData;
         },
+        processCsvData: (chart, option) => {
+            return _.map(option.dataSource, item => {
+                return [item.value];
+            });
+        },
         option: {
+            //因为列数较少，按表格形式展示不太好看，所以把表头隐去，让展示上就像普通的文本行一样
+            showHeader: false,
             columns: [
                 {
-                    title: '出差次数',
-                    dataIndex: 'business_trip_num',
-                    width: '50%',
-                }, {
-                    title: '请假天数',
-                    dataIndex: 'ask_for_leave_duration',
-                    align: 'right',
-                    width: '50%',
+                    dataIndex: 'value'
                 }
             ],
         },

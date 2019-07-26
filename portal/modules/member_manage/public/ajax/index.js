@@ -170,6 +170,23 @@ exports.setMemberPosition = (reqBody) => {
     return Deferred.promise();
 };
 
+// 清空成员的职务
+exports.clearMemberPosition = (memberId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/sales/role/reset/' + memberId,
+        type: 'delete',
+        dateType: 'json',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //获取角色列表
 exports.getRoleList = () => {
     let Deferred = $.Deferred();

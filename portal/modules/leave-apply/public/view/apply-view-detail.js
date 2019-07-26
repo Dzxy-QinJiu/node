@@ -34,6 +34,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 var timeoutFunc;//定时方法
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import classNames from 'classnames';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -100,7 +101,8 @@ class ApplyViewDetail extends React.Component {
             id: _.get(this, 'state.detailInfoObj.info.id',''),
             user_ids: [transferCandidateId]
         };
-        var hasApprovePrivilege = _.get(this,'state.detailInfoObj.info.showApproveBtn',false);
+        //是否展示审批按钮（首页我的工作中的申请都展示审批按钮）
+        var isShowApproveBtn = _.get(this, 'state.detailInfoObj.info.showApproveBtn', false) || this.props.isHomeMyWork;
         var candidateList = _.filter(this.state.candidateList,item => item.user_id !== transferCandidateId);
         var deleteUserIds = _.map(candidateList,'user_id');
         //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
@@ -119,12 +121,16 @@ class ApplyViewDetail extends React.Component {
                     message.success(Intl.get('apply.approve.transfer.success','转出申请成功'));
                 }
                 //将待我审批的申请转审后
-                if (hasApprovePrivilege){
+                if (isShowApproveBtn){
                     //待审批数字减一
                     var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] - 1;
                     updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
                     //隐藏通过、驳回按钮
                     LeaveApplyDetailAction.showOrHideApprovalBtns(false);
+                    //调用父组件的方法进行转成完成后的其他处理
+                    if (_.isFunction(this.props.afterApprovedFunc)) {
+                        this.props.afterApprovedFunc();
+                    }
                 }else if (memberId === transferCandidateId){
                     //将非待我审批的申请转给我审批后，展示出通过驳回按钮,不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
                     LeaveApplyDetailAction.showOrHideApprovalBtns(true);
@@ -220,7 +226,11 @@ class ApplyViewDetail extends React.Component {
     }
 
     getApplyListDivHeight() {
-        var height = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        let height = $(window).height() - APPLY_LIST_LAYOUT_CONSTANTS.BOTTOM_DELTA;
+        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
+        if (!this.props.isHomeMyWork) {
+            height -= APPLY_LIST_LAYOUT_CONSTANTS.TOP_DELTA;
+        }
         return height;
     }
 
@@ -417,7 +427,7 @@ class ApplyViewDetail extends React.Component {
                 isConsumed={isConsumed}
                 update_time={detailInfoObj.update_time}
                 approvalText={userName + approvalDes}
-                showApproveBtn={detailInfoObj.showApproveBtn}
+                showApproveBtn={detailInfoObj.showApproveBtn || this.props.isHomeMyWork}
                 showCancelBtn={detailInfoObj.showCancelBtn}
                 submitApprovalForm={this.submitApprovalForm}
                 addApplyNextCandidate={addApplyNextCandidate}
@@ -477,7 +487,12 @@ class ApplyViewDetail extends React.Component {
     };
     passOrRejectApplyApprove = (confirmType) => {
         var detailInfoObj = this.state.detailInfoObj.info;
-        LeaveApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType});
+        LeaveApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType}, () => {
+            //调用父组件的方法进行审批完成后的其他处理
+            if (_.isFunction(this.props.afterApprovedFunc)) {
+                this.props.afterApprovedFunc();
+            }
+        });
     };
     renderCancelApplyApprove = () => {
         var confirmType = this.state.showBackoutConfirmType;
@@ -577,9 +592,16 @@ class ApplyViewDetail extends React.Component {
             return null;
         }
         let customerOfCurUser = this.state.customerOfCurUser || {};
-        var divHeight = $(window).height() - TOP_NAV_HEIGHT;
+        let divHeight = $(window).height();
+        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
+        if (!this.props.isHomeMyWork) {
+            divHeight -= TOP_NAV_HEIGHT;
+        }
+        const detailWrapCls = classNames('leave_manage_apply_detail_wrap', {
+            'col-md-8': !this.props.isHomeMyWork
+        });
         return (
-            <div className='col-md-8 leave_manage_apply_detail_wrap' style={{'height': divHeight}} data-tracename="请假审批详情界面">
+            <div className={detailWrapCls} style={{'height': divHeight}} data-tracename="请假审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
@@ -615,6 +637,9 @@ ApplyViewDetail.defaultProps = {
     applyListType: '',
     isUnreadDetail: false,
     applyData: {},
+    isHomeMyWork: false,//是否是首页我的工作中打开的详情
+    afterApprovedFunc: function() {//审批完后的外部处理方法
+    }
 
 };
 ApplyViewDetail.propTypes = {
@@ -623,5 +648,7 @@ ApplyViewDetail.propTypes = {
     applyListType: PropTypes.string,
     isUnreadDetail: PropTypes.bool,
     applyData: PropTypes.object,
+    isHomeMyWork: PropTypes.bool,
+    afterApprovedFunc: PropTypes.func
 };
 module.exports = ApplyViewDetail;

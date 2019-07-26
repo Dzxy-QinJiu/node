@@ -208,7 +208,7 @@ function getConfigJson(req) {
         '16211': {'httpCode': 500, 'message': backendIntl.get('errorcode.110', '获取团队失败')},
         '16212': {'httpCode': 500, 'message': backendIntl.get('errorcode.111', '团队名已存在')},
         '16213': {'httpCode': 500, 'message': backendIntl.get('errorcode.112', '不能删除，当前团队存在下级团队')},
-        '16214': {'httpCode': 500, 'message': backendIntl.get('errorcode.149', '该角色已经分配给销售')},
+        '16214': {'httpCode': 500, 'message': backendIntl.get('errorcode.149', '已有成员设置了该职务，不能删除')},
         //组织管理
         '16220': {'httpCode': 500, 'message': backendIntl.get('errorcode.114', '删除组织失败')},
         '16221': {'httpCode': 500, 'message': backendIntl.get('errorcode.115', '修改组织失败')},

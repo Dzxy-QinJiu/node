@@ -1271,7 +1271,7 @@ class Crm extends React.Component {
     };
     //是否没有筛选条件
     hasNoFilterCondition = () => {
-        if (_.get(this.refs, 'filterinput.state.filterName')) {
+        if (_.get(this.refs, 'filterinput.state.filterName') || _.get(this.refs, 'crmfilter.refs.searchInput.state.keyword')) {
             return false;
         } else {
             return true;
@@ -1357,7 +1357,7 @@ class Crm extends React.Component {
                             } else if (this.isIncludesItem(phone_repeat_list, item)) {
                                 //系统中存在同名客户
                                 cls = classNames({'repeat-item-name': true});
-                                title = Intl.get('crm.system.phone.repeat', '系统中已存在相同的电话');
+                                title = Intl.get('crm.system.phone.repeat', '电话已被其他客户使用');
                             }
                             return (<div className={cls} title={title} key={index}>{item}</div>);
                         });
@@ -1734,6 +1734,7 @@ class Crm extends React.Component {
                                 ) : null}
                                 <div style={{ display: selectCustomerLength ? 'none' : 'block' }}>
                                     <CrmFilter
+                                        ref="crmfilter"
                                         search={this.search.bind(this, true)}
                                         changeTableHeight={this.changeTableHeight}
                                         crmFilterValue={this.state.crmFilterValue}

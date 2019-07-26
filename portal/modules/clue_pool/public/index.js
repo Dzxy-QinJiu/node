@@ -555,42 +555,47 @@ class ClueExtract extends React.Component {
     };
     // 单个提取线索
     handleExtractClueAssignToSale(record, flag, isDetailExtract) {
-        let id = record.id; // 提取线索某条的id
-        let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
-        if (flag) {
-            //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
-            let idArray = this.state.salesMan.split('&&');
-            if (_.isArray(idArray) && idArray.length) {
-                sale_id = idArray[0];// 提取给某个销售的id
-            }
-        }
-        let reqData = {
-            id: id,
-            sale_id: sale_id
-        };
-        this.setState({
-            singleExtractLoading: true
-        });
-        cluePoolAjax.extractClueAssignToSale(reqData).then( (result) => {
-            this.setState({
-                singleExtractLoading: false
-            });
-            if (result.code === 0) { // 提取成功
-                cluePoolAction.updateCluePoolList(id);
-                message.success(Intl.get('clue.extract.success', '提取成功'));
-                if (isDetailExtract) { // 详情中，提取成功后，关闭右侧面板
-                    this.hideRightPanel();
+        if (!this.state.salesMan && flag) {
+            cluePoolAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
+        } else {
+            let id = record.id; // 提取线索某条的id
+            let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
+            if (flag) {
+                //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
+                let idArray = this.state.salesMan.split('&&');
+                if (_.isArray(idArray) && idArray.length) {
+                    sale_id = idArray[0];// 提取给某个销售的id
                 }
-                this.clearSelectSales();
-            } else { // 提取失败
-                message.error(Intl.get('clue.extract.failed', '提取失败'));
             }
-        }, (errMsg) => {
+            let reqData = {
+                id: id,
+                sale_id: sale_id
+            };
             this.setState({
-                singleExtractLoading: false,
+                singleExtractLoading: true
             });
-            message.error(errMsg || Intl.get('clue.extract.failed', '提取失败'));
-        });
+            cluePoolAjax.extractClueAssignToSale(reqData).then( (result) => {
+                this.setState({
+                    singleExtractLoading: false
+                });
+                if (result.code === 0) { // 提取成功
+                    cluePoolAction.updateCluePoolList(id);
+                    message.success(Intl.get('clue.extract.success', '提取成功'));
+                    if (isDetailExtract) { // 详情中，提取成功后，关闭右侧面板
+                        this.hideRightPanel();
+                    }
+                    this.clearSelectSales();
+                } else { // 提取失败
+                    message.error(Intl.get('clue.extract.failed', '提取失败'));
+                }
+            }, (errMsg) => {
+                this.setState({
+                    singleExtractLoading: false,
+                });
+                message.error(errMsg || Intl.get('clue.extract.failed', '提取失败'));
+            });
+        }
+
     }
     // 清空所选择的销售
     clearSelectSales = () => {
@@ -720,7 +725,7 @@ class ClueExtract extends React.Component {
                 render: (text, record, index) => {
                     if (_.isArray(record.customer_traces)) {
                         return (
-                            <span>{ _.get(record, 'customer_traces[0].remark', '')}</span>
+                            <ShearContent>{ _.get(record, 'customer_traces[0].remark', '')}</ShearContent>
                         );
                     }
                 }

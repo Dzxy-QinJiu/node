@@ -19,11 +19,27 @@ export function getChanceDealTrendChart() {
                 delete arg.query.interval_important;
             }
         },
-        processData: data => {
+        processData: (data, chart) => {
             data = _.get(data, 'result.list');
 
+            const intervalCondition = _.find(chart.conditions, item => item.name === 'interval_important');
+            let interval = _.get(intervalCondition, 'value');
+
             return _.map(data, dataItem => {
-                dataItem.name = dataItem.date_str;
+                if (interval) {
+                    if (interval === 'week') {
+                        //用iso格式的周开始时间，这样是从周一到周天算一周，而不是从周天到周六
+                        interval = 'isoweek';
+                    }
+
+                    const startDate = moment(dataItem.date_str).startOf(interval).format(oplateConsts.DATE_FORMAT);
+                    const endDate = moment(dataItem.date_str).endOf(interval).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+
+                    dataItem.name = `${startDate}${Intl.get('contract.83', '至')}${endDate}`;
+                } else {
+                    dataItem.name = dataItem.date_str;
+                }
+
                 dataItem.value = dataItem.deal_rate;
 
                 return dataItem;

@@ -35,7 +35,7 @@ import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common
 import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-
+import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -442,6 +442,10 @@ class ClueDetailOverview extends React.Component {
                             'status': SELECT_TYPE.WILL_TRACE
                         });
                     }
+                    //分配完线索后，需要将首页对应的工作设为已完成
+                    if (window.location.pathname === '/home') {
+                        myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                    }
                 }
             });
         }
@@ -806,7 +810,7 @@ class ClueDetailOverview extends React.Component {
                         />
                     </div>
                 </div>
-                {remarkContent ?
+                {remarkContent && remarkAddTime ?
                     <div className="add-person-info ">
                         <div className="add-clue-info">
                             <span className="source-name">{remarkAddName}</span>

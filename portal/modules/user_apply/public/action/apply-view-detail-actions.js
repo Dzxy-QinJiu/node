@@ -95,7 +95,7 @@ class ApplyViewDetailActions {
             });
         }
     }
- 
+
     //获取回复列表
     getReplyList(id) {
         this.dispatch({loading: true, error: false, list: [], errorMsg: ''});
@@ -115,7 +115,7 @@ class ApplyViewDetailActions {
     }
 
     //提交审批
-    submitApply(obj, type) {
+    submitApply(obj, type, callback) {
         this.dispatch({loading: true, error: false});
         let promise = null;
         //延期、停用审批用新接口
@@ -129,6 +129,9 @@ class ApplyViewDetailActions {
         }
         promise.then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+            if (_.isFunction(callback)) {
+                callback();
+            }
             //更新选中的申请单类型
             AppUserUtil.emitter.emit('updateSelectedItem', {
                 id: obj.message_id,

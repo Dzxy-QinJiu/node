@@ -98,8 +98,11 @@ class MemberInfo extends React.Component {
 
     getPositionList = () => {
         MemberManageAjax.getSalesPosition().then( (data) => {
+            if ( _.isArray(data) && data.length) {
+                data.unshift({id: '', name: ''});
+            }
             this.setState({
-                salesRoleList: _.isArray(data) ? data : [],
+                salesRoleList: data || [],
             });
         }, () => {
             this.setState({
@@ -313,12 +316,13 @@ class MemberInfo extends React.Component {
     //保存修改的成员信息
     saveEditMemberInfo = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存成员${type}的修改`);
+        const updateObj = _.cloneDeep(saveObj);
         saveObj.user_id = saveObj.id;
         delete saveObj.id;
         MemberManageAjax.editUser(saveObj).then((result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
-                this.changeMemberFieldSuccess(saveObj);
+                this.changeMemberFieldSuccess(updateObj);
                 //如果是密码的修改，取消密码框的展示
                 if (type === 'password') {
                     this.setState({isPasswordInputShow: false});
@@ -426,22 +430,37 @@ class MemberInfo extends React.Component {
     };
     // 保存职务
     saveEditPosition = (saveObj, successFunc, errorFunc) => {
-        let reqBody = {
-            member_id: saveObj.id,
-            teamrole_id: saveObj.position
-        };
-        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存职务的修改');
-        MemberManageAjax.setMemberPosition(reqBody).then((result) => {
-            if (result) {
-                if (_.isFunction(successFunc)) successFunc();
-                this.afterEditPositionSuccess(saveObj);
-            } else {
-                if (_.isFunction(errorFunc)) errorFunc();
-            }
-        }, (errorMsg) => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
-        });
-
+        let position = saveObj.position; // 职务
+        let memberId = saveObj.id; // 成员id
+        if (position) { // 修改成员的职务
+            let reqBody = {
+                member_id: memberId,
+                teamrole_id: position
+            };
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '保存职务的修改');
+            MemberManageAjax.setMemberPosition(reqBody).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.afterEditPositionSuccess(saveObj);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        } else { // 成员的职务置空
+            Trace.traceEvent(ReactDOM.findDOMNode(this), '成员职务清空');
+            MemberManageAjax.clearMemberPosition(memberId).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.afterEditPositionSuccess({...saveObj, position: ''});
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        }
     };
 
     renderMemberInfoContent = () => {
@@ -462,8 +481,13 @@ class MemberInfo extends React.Component {
         // 当有多个角色时，增加了一个属性判断，忽略修改后的值是否和原值相等的判断
         let ignoreValueIsChangeBeforeSave = length > 1 ? true : false;
         // 职务的下拉列表
-        let positionOptions = _.map(this.state.salesRoleList, item => <Option value={item.id} >{item.name}</Option>);
-
+        let positionOptions = _.map(this.state.salesRoleList, item => {
+            if(item.name) {
+                return <Option value={item.id} >{item.name}</Option>;
+            } else {
+                return <Option value='' >&nbsp;</Option>;
+            }
+        });
         return (
             <div>
                 <div className="basic-info-item">

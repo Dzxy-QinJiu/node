@@ -88,7 +88,6 @@ class ClueCustomer extends React.Component {
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
         isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
-        queryObj: {},
         ...clueCustomerStore.getState()
     };
     isCommonSales = () => {
@@ -408,25 +407,30 @@ class ClueCustomer extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         return getClueStatusValue(filterClueStatus);
     };
-    //获取线索列表
-    getClueList = (data) => {
-        var rangeParams = _.get(data, 'rangeParams') || clueFilterStore.getState().rangeParams;
-        var typeFilter = _.get(data, 'typeFilter') || this.getFilterStatus();//线索类型
+    //获取查询线索的参数
+    getClueSearchCondition = (isGetAllClue) => {
         var filterStoreData = clueFilterStore.getState();
+        var rangeParams = isGetAllClue ? [{
+            from: clueStartTime,
+            to: moment().valueOf(),
+            type: 'time',
+            name: 'source_time'
+        }] : filterStoreData.rangeParams;
+        var typeFilter = isGetAllClue ? {status: ''} : this.getFilterStatus();//线索类型
+        typeFilter.availability = AVALIBILITYSTATUS.AVALIBILITY;
         //按销售进行筛选
         var filterClueUsers = filterStoreData.filterClueUsers;
-        if (_.isArray(filterClueUsers) && filterClueUsers.length) {
+        if (_.isArray(filterClueUsers) && filterClueUsers.length && !isGetAllClue) {
             typeFilter.user_name = filterClueUsers.join(',');
         }
-        var existFilelds = clueFilterStore.getState().exist_fields;
+        var existFilelds = filterStoreData.exist_fields;
         //如果是筛选的重复线索，把排序字段改成repeat_id
         if (_.indexOf(existFilelds, 'repeat_id') > -1){
             clueCustomerAction.setSortField('repeat_id');
         }else{
             clueCustomerAction.setSortField('source_time');
         }
-        var unExistFileds = clueFilterStore.getState().unexist_fields;
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+        var unExistFileds = filterStoreData.unexist_fields;
         var sorter = this.state.sorter;
         //如果选中的是已跟进或者已转化的线索，按最后联系时间排序
         if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.HAS_TRANSFER){
@@ -436,65 +440,76 @@ class ClueCustomer extends React.Component {
             rangeParams[0].name = 'source_time';
             sorter.field = 'source_time';
         }
-        //跟据类型筛选
-        const queryObj = {
-            lastClueId: this.state.lastCustomerId,
-            pageSize: this.state.pageSize,
-            sorter: sorter,
-            keyword: _.trim(this.state.keyword),
-            rangeParams: rangeParams,
-            statistics_fields: 'status',
-            typeFilter: JSON.stringify(typeFilter),
-            availability: AVALIBILITYSTATUS.AVALIBILITY,
-            firstLogin: this.state.firstLogin
-        };
         if (!this.state.lastCustomerId){
             //清除线索的选择
             this.clearSelectedClue();
         }
-        //选中的线索来源
-        var filterClueSource = filterStoreData.filterClueSource;
-        if (_.isArray(filterClueSource) && filterClueSource.length){
-            queryObj.clue_source = filterClueSource.join(',');
-        }
-        //选中的线索接入渠道
-        var filterClueAccess = filterStoreData.filterClueAccess;
-        if (_.isArray(filterClueAccess) && filterClueAccess.length){
-            queryObj.access_channel = filterClueAccess.join(',');
-        }
-        //选中的线索分类
-        var filterClueClassify = filterStoreData.filterClueClassify;
-        if (_.isArray(filterClueClassify) && filterClueClassify.length){
-            queryObj.clue_classify = filterClueClassify.join(',');
-        }
-        //选中的线索地域
-        var filterClueProvince = filterStoreData.filterClueProvince;
-        if (_.isArray(filterClueProvince) && filterClueProvince.length){
-            queryObj.province = filterClueProvince.join(',');
-        }
-        if(_.isArray(existFilelds) && existFilelds.length){
-            queryObj.exist_fields = JSON.stringify(existFilelds);
-        }
+        if (!isGetAllClue){
+            //选中的线索来源
+            var filterClueSource = filterStoreData.filterClueSource;
+            if (_.isArray(filterClueSource) && filterClueSource.length){
+                typeFilter.clue_source = filterClueSource.join(',');
+            }
+            //选中的线索接入渠道
+            var filterClueAccess = filterStoreData.filterClueAccess;
+            if (_.isArray(filterClueAccess) && filterClueAccess.length){
+                typeFilter.access_channel = filterClueAccess.join(',');
+            }
+            //选中的线索分类
+            var filterClueClassify = filterStoreData.filterClueClassify;
+            if (_.isArray(filterClueClassify) && filterClueClassify.length){
+                typeFilter.clue_classify = filterClueClassify.join(',');
+            }
+            //选中的线索地域
+            var filterClueProvince = filterStoreData.filterClueProvince;
+            if (_.isArray(filterClueProvince) && filterClueProvince.length){
+                typeFilter.province = filterClueProvince.join(',');
+            }
+            var bodyField = {};
+            if(_.isArray(existFilelds) && existFilelds.length){
+                bodyField.exist_fields = existFilelds;
+            }
 
-        if(_.isArray(unExistFileds) && unExistFileds.length){
-            queryObj.unexist_fields = JSON.stringify(unExistFileds);
+            if(_.isArray(unExistFileds) && unExistFileds.length){
+                bodyField.unexist_fields = unExistFileds;
+            }
         }
+        //查询线索列表的请求参数
+        return {
+            queryParam: {
+                rangeParams: rangeParams,
+                keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
+                id: _.isBoolean(isGetAllClue) ? '' : this.state.lastCustomerId,
+                statistics_fields: 'status',
+            },
+            bodyParam: {
+                query: {
+                    ...typeFilter
+                },
+                ...bodyField,
+            },
+            pageSize: this.state.pageSize,//路径中需要加的参数
+            sorter: sorter,
+            firstLogin: this.state.firstLogin
+        };
+    };
+    //获取线索列表
+    getClueList = () => {
+        var filterStoreData = clueFilterStore.getState();
+        //跟据类型筛选
+        const queryObj = this.getClueSearchCondition();
+        var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
         if (filterAllotNoTraced){
             //获取有待我处理条件的线索
             var cloneQuery = _.cloneDeep(queryObj);
             cloneQuery.self_no_traced = true;
-            this.setState({
-                queryObj: cloneQuery
-            });
-
+            clueCustomerAction.saveQueryObj(cloneQuery);
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
             });
         }else{
             //取全部线索列表
-            this.setState({
-                queryObj: queryObj
-            });
+            clueCustomerAction.saveQueryObj(queryObj);
             clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
             });
@@ -509,75 +524,7 @@ class ClueCustomer extends React.Component {
         }
 
     };
-    //获取请求参数
-    getCondition = (isGetAllClue) => {
-        var filterStoreData = clueFilterStore.getState();
-        var rangeParams = isGetAllClue ? [{
-            from: clueStartTime,
-            to: moment().valueOf(),
-            type: 'time',
-            name: 'source_time'
-        }] : filterStoreData.rangeParams;
-        var keyWord = isGetAllClue ? '' : _.trim(this.state.keyword);
-        var typeFilter = isGetAllClue ? {status: ''} : this.getFilterStatus();//线索类型
-        //按销售进行筛选
-        var filterClueUsers = filterStoreData.filterClueUsers;
-        if (_.isArray(filterClueUsers) && filterClueUsers.length && !isGetAllClue) {
-            typeFilter.user_name = filterClueUsers.join(',');
-        }
-        var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
-        if (filterAllotNoTraced && !isGetAllClue){
-            typeFilter.allot_no_traced = filterAllotNoTraced;
-        }
-        var queryObj = {
-            keyword: keyWord,
-            rangeParams: JSON.stringify(rangeParams),
-            typeFilter: JSON.stringify(typeFilter),
-            availability: AVALIBILITYSTATUS.AVALIBILITY
-        };
-        if (!isGetAllClue){
-            //选中的线索来源
-            var filterClueSource = filterStoreData.filterClueSource;
-            if (_.isArray(filterClueSource) && filterClueSource.length) {
-                queryObj.clue_source = filterClueSource.join(',');
-            }
-            //选中的线索接入渠道
-            var filterClueAccess = filterStoreData.filterClueAccess;
-            if (_.isArray(filterClueAccess) && filterClueAccess.length) {
-                queryObj.access_channel = filterClueAccess.join(',');
-            }
-            //选中的线索分类
-            var filterClueClassify = filterStoreData.filterClueClassify;
-            if (_.isArray(filterClueClassify) && filterClueClassify.length) {
-                queryObj.clue_classify = filterClueClassify.join(',');
-            }
-            //过滤无效线索
-            var isFilterInavalibilityClue = filterStoreData.filterClueAvailability;
-            if (isFilterInavalibilityClue) {
-                queryObj.availability = isFilterInavalibilityClue;
-            }
-            //选中的线索地域
-            var filterClueProvince = filterStoreData.filterClueProvince;
-            if (_.isArray(filterClueProvince) && filterClueProvince.length){
-                queryObj.province = filterClueProvince.join(',');
-            }
-            var existFilelds = filterStoreData.exist_fields;
-            //如果是筛选的重复线索，把排序字段改成repeat_id
-            if (_.indexOf(existFilelds, 'repeat_id') > -1){
-                clueCustomerAction.setSortField('repeat_id');
-            }else{
-                clueCustomerAction.setSortField('source_time');
-            }
-            var unExistFileds = filterStoreData.unexist_fields;
-            if(_.isArray(existFilelds) && existFilelds.length){
-                queryObj.exist_fields = JSON.stringify(existFilelds);
-            }
-            if(_.isArray(unExistFileds) && unExistFileds.length){
-                queryObj.unexist_fields = JSON.stringify(unExistFileds);
-            }
-        }
-        return queryObj;
-    };
+
     exportData = () => {
         Trace.traceEvent('线索管理', '导出线索');
         const sorter = this.state.sorter;
@@ -595,7 +542,7 @@ class ClueCustomer extends React.Component {
         const url = route.replace(pathParamRegex, function($0, $1) {
             return params[$1];
         });
-        const reqData = this.state.exportRange === 'all' ? this.getCondition(true) : this.getCondition();
+        const reqData = this.state.exportRange === 'all' ? this.getClueSearchCondition(true) : this.getClueSearchCondition(false);
         let form = $('<form>', {action: url, method: 'post'});
         form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
         //将构造的表单添加到body上
@@ -1809,7 +1756,7 @@ class ClueCustomer extends React.Component {
                             } else if (this.isIncludesItem(phone_repeat_list, item)) {
                                 //系统中存在同名客户
                                 cls = classNames({'repeat-item-name': true});
-                                title = Intl.get('crm.system.phone.repeat', '系统中已存在相同的电话');
+                                title = Intl.get('crm.system.phone.repeat', '电话已被其他客户使用');
                             }
                             return (<div className={cls} title={title} key={index}>{item}</div>);
                         });

@@ -257,7 +257,8 @@ let BasicEditSelectField = createReactClass({
                             help={status.select.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.select.errors && status.select.errors.join(','))}
                         >
                             <Validator rules={this.props.validators}>
-                                <Select multiple={this.props.multiple}
+                                <Select
+                                    multiple={this.props.multiple}
                                     combobox={this.props.combobox}
                                     filterOption={this.props.filterOption}
                                     name="select"

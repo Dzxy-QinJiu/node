@@ -334,7 +334,9 @@ SalesTeamStore.prototype.getMemberList = function(resultData) {
         this.addMemberListTipMsg = resultData;
     } else {
         if (_.isArray(resultData) && resultData.length > 0) {
-            this.addMemberList = processTeamsMemberListData(resultData);
+            let addMemberList = processTeamsMemberListData(resultData);
+            // 部门中，添加成员，只显示启用状态的成员
+            this.addMemberList = _.filter(addMemberList, item => item.status === 1);
             this.addMemberListTipMsg = '';
         } else {
             this.addMemberList = [];
@@ -839,18 +841,20 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
     let team = _.get(member, 'team'); // 修改成员的部门
     let position = _.get(member, 'position'); // 修改成员的id
     let positionName = _.get(member, 'positionName'); // 修改成员的职务名称
+    let phone = member.phone; // 修改成员的手机号
+
+    let secretary = findEditMember(managers, memberId); // 查找要编辑的秘书
+    let user = findEditMember(users, memberId); // 查找要编辑的普通成员
 
     if (nickName) { // 修改昵称
         if (ownerId === memberId) { // 修改负责人的昵称
             owner.name = nickName;
         } else {
-            let updateObj = findEditMember(managers, memberId);
-            if (updateObj) { // 修改舆情秘书的昵称
-                updateObj.name = nickName;
+            if (secretary) { // 修改舆情秘书的昵称
+                secretary.name = nickName;
             } else {
-                updateObj = findEditMember(users, memberId);
-                if (updateObj) { // 修改普通成员的昵称
-                    updateObj.name = nickName;
+                if (user) { // 修改普通成员的昵称
+                    user.name = nickName;
                 }
             }
         }
@@ -868,9 +872,8 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
                 }
             }
         } else {
-            let updateObj = findEditMember(managers, memberId);
-            if (updateObj) { // 修改舆情秘书的状态
-                updateObj.status = status;
+            if (secretary) { // 修改舆情秘书的状态
+                secretary.status = status;
                 if (_.has(updateMemberCountTeam, 'available.manager')) {
                     if (status === 1) {
                         updateMemberCountTeam.available.manager += 1;
@@ -879,9 +882,8 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
                     }
                 }
             } else {
-                updateObj = findEditMember(users, memberId);
-                if (updateObj) { // 修改普通成员的状态
-                    updateObj.status = status;
+                if (user) { // 修改普通成员的状态
+                    user.status = status;
                     if (_.has(updateMemberCountTeam, 'available.user')) {
                         if (status === 1) {
                             updateMemberCountTeam.available.user += 1;
@@ -897,7 +899,6 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
             // 更新原部门成员个数
             let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === groupId);
             let oldTeam = _.find(this.salesTeamList, item => item.group_id === team);
-
 
             if (ownerId === memberId) { // 修改负责人所在的部门
                 updateMemberCountTeam.total -= 1;
@@ -926,20 +927,30 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
             addInTeam.user_ids = [memberId];
         }
 
-    } else if (position) { // 修改成员的职务
+    } else if (_.has(member, 'position')) { // 修改成员的职务
         if (ownerId === memberId) { // 修改负责人的职务
             owner.positionName = positionName;
             owner.teamRoleId = position;
         } else {
-            let updateObj = findEditMember(managers, memberId);
-            if (updateObj) { // 修改舆情秘书的职务
-                updateObj.positionName = positionName;
-                updateObj.teamRoleId = position;
+            if (secretary) { // 修改舆情秘书的职务
+                secretary.positionName = positionName;
+                secretary.teamRoleId = position;
             } else {
-                updateObj = findEditMember(users, memberId);
-                if (updateObj) { // 修改普通成员的职务
-                    updateObj.positionName = positionName;
-                    updateObj.teamRoleId = position;
+                if (user) { // 修改普通成员的职务
+                    user.positionName = positionName;
+                    user.teamRoleId = position;
+                }
+            }
+        }
+    } else if (phone) { // 修改成员的手机
+        if (ownerId === memberId) { // 修改负责人的手机
+            owner.phone = phone;
+        } else {
+            if (secretary) { // 修改舆情秘书的手机
+                secretary.phone = phone;
+            } else {
+                if (user) { // 修改普通成员的手机
+                    user.phone = phone;
                 }
             }
         }

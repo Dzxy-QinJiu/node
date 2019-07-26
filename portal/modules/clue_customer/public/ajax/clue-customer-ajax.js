@@ -19,32 +19,6 @@ const RELATEAUTHS = {
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
 var userData = require('PUB_DIR/sources/user-data');
-//查询线索客户
-exports.getClueCustomerList = function(clueCustomerTypeFilter, rangeParams, pageSize, sorter, lastCustomerId) {
-    sorter = sorter ? sorter : {field: 'source_time', order: 'descend'};
-    var data = {
-        clueCustomerTypeFilter: JSON.stringify(clueCustomerTypeFilter),
-        rangeParams: JSON.stringify(rangeParams),
-        lastCustomerId: lastCustomerId
-    };
-    if (hasPrivilege(AUTHS.GETALL)) {
-        data.hasManageAuth = true;
-    }
-    var Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/customer/v2/customer/range/clue/' + pageSize + '/' + sorter.field + '/' + sorter.order,
-        dataType: 'json',
-        type: 'post',
-        data: data,
-        success: function(list) {
-            Deferred.resolve(list);
-        },
-        error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
 //获取线索来源列表
 exports.getClueSource = function() {
     var Deferred = $.Deferred();
