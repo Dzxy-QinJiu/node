@@ -2025,10 +2025,11 @@ class ClueCustomer extends React.Component {
             closeFocusCustomer: true
         });
     };
-    saveRecommedConditionsSuccess = () => {
+    saveRecommedConditionsSuccess = (saveCondition) => {
         //修改掉查询条件
-
         this.hideFocusCustomerPanel();
+        //将保存后的条件记录下来
+        clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
         this.showClueRecommendTemplate();
     };
     render() {

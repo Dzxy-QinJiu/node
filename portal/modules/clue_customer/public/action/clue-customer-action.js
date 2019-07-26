@@ -38,7 +38,8 @@ function ClueCustomerActions() {
         'updateCurrentClueRemark',
         'afterTranferClueSuccess',//转化客户成功后
         'setLoadingFalse',
-        'changeFilterFlag'
+        'changeFilterFlag',
+        'saveSettingCustomerRecomment'
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -55,15 +56,14 @@ function ClueCustomerActions() {
     this.getSettingCustomerRecomment = function() {
         clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
             this.dispatch({list: list});
-        },(errorMsg) => {
-        });
+        },(errorMsg) => {});
     };
     this.getRecommendClueLists = function(obj) {
         this.dispatch({loading: true, error: false});
         clueCustomerAjax.getRecommendClueLists(obj).then((list) => {
             this.dispatch({loading: false, error: false,list: list});
         },(errorMsg) => {
-            this.dispatch({loading: false, error: true, errMsg: errorMsg});
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
     //添加或更新跟进内容

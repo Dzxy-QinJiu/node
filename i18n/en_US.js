@@ -3072,6 +3072,34 @@ var en_US = {
     'apply.approve.go.set.workflow': 'go to setting?',//去设置？
     'customer.select.name.tip': 'Please select customer in dropdown list',//请在下拉框中选择客户
     'contract.current.month.contract.analysis': 'current month contract analysis',//本月合同分析
+    'clue.customer.select.focus.customer': 'Please choose the type of customer you care about',//请选择您关注的客户类型
+    'clue.customer.staff.size': 'Scale of personnel',//人员规模
+    'clue.customer.money.size': 'Capital scale',//资本规模
+    'clue.customer.select.size': 'Please choose size',//请选择规模
+    'clue.customer.company.property': 'Nature',//性质
+    'clue.customer.select.property': 'Please select the nature',//请选择性质
+    'clue.customer.clue.recommend': 'Clue recommendation',//线索推荐
+    'clue.customer.condition.staff.size': '{num} below',//{num}人以下
+    'clue.customer.condition.staff.range': '{min}-{max}',//{min}-{max}人
+    'clue.customer.staff.over.num': '{num} above',//{num}人以上
+    'clue.customer.money.size.less.num': 'Within {num} ten thousand',//{num}万以内
+    'clue.customer.conditoion.money.range': '{min}-{max} ten thousand',//{min}-{max}万
+    'clue.customer.condition.over.num': '{num} ten thousand or more',//{num}万及以上
+    'clue.customer.condition.company.limit': 'Company with limited liability',//有限责任公司
+    'clue.customer.condition.company.share': 'Limited company',//股份有限公司
+    'clue.customer.condition.company.enterprise': 'State-owned enterprise',//国企
+    'clue.customer.condition.company.nationalized': 'State-owned',//国有
+    'clue.customer.condition.company.foreign.invested': 'foreign-invested enterprise',//外商投资企业
+    'clue.customer.condition.company.sole.proprietorship': 'Sole proprietorship',//个人独资企业
+    'clue.customer.condition.company.individual.businessmen': 'Individual businessmen and businessmen',//个体工商户
+    'clue.customer.condition.company.collective.ownership': 'Collective ownership',//集体所有制
+    'clue.customer.condition.company.limited.partnership': 'Limited Partnership',//有限合伙
+    'clue.customer.condition.company.general.partnership': 'General Partnership',//普通合伙
+    'clue.customer.condition.company.other': 'Other',//其他
+    'clue.customer.condition.company.not.above.type': 'Non-aforementioned types',//非上述类型
+    'clue.customer.refresh.list': 'Change batches',//换一批
+    'clue.customer.condition.change': 'modify condition',//修改条件
+    'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
 
 };
 export default en_US;

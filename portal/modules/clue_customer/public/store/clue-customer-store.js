@@ -6,18 +6,14 @@
 var ClueCustomerAction = require('../action/clue-customer-action');
 let clueFilterAction = require('../action/filter-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
-const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import {
     SELECT_TYPE,
-    isOperation,
-    isSalesLeaderOrManager,
     getClueStatusValue,
-    AVALIBILITYSTATUS
+    deleteEmptyProperty
 } from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
-import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -76,13 +72,21 @@ ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
         this.recommendClueLists = result.list;
     }
 };
+//保存查询条件
+ClueCustomerStore.prototype.saveSettingCustomerRecomment = function(result) {
+    deleteEmptyProperty(result);
+    this.settedCustomerRecommend.obj = result;
+};
 ClueCustomerStore.prototype.getSettingCustomerRecomment = function(result){
-    if (_.get(result,'list')){
+    var data = _.get(result,'list.[0]');
+    if (data){
+        deleteEmptyProperty(data);
         this.settedCustomerRecommend = {
             loading: false,
-            // list: _.get(result,'list')
-            obj: {'industrys': [],}
+            obj: data
         };
+    }else{
+        this.settedCustomerRecommend.loading = false;
     }
 };
 ClueCustomerStore.prototype.changeFilterFlag = function(filterFlag) {
@@ -155,8 +159,7 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
                     };
                 }
             });
-            //todo 暂时注销掉啊啊啊啊
-            // this.allClueCount = this.agg_list['willDistribute'] + this.agg_list['willTrace'] + this.agg_list['hasTrace'] + this.agg_list['hasTransfer'];
+            this.allClueCount = this.agg_list['willDistribute'] + this.agg_list['willTrace'] + this.agg_list['hasTrace'] + this.agg_list['hasTransfer'];
             //需要展示待我处理
             if(_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'yes'){
                 this.showFilterList = true;

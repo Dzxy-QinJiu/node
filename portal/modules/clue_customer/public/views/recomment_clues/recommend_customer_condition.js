@@ -31,6 +31,14 @@ class RecommendCustomerCondition extends React.Component {
         this.getRecommendSelectLists();
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (_.isEmpty(this.state.hasSavedRecommendParams)){
+            this.setState({
+                hasSavedRecommendParams: _.cloneDeep(nextProps.hasSavedRecommendParams)
+            });
+        }
+
+    }
     getRecommendSelectLists = () => {
         this.getRecommendCustomerIndustry();
     };
@@ -48,10 +56,6 @@ class RecommendCustomerCondition extends React.Component {
             }
         });
     };
-
-    componentWillReceiveProps(nextProps) {
-
-    }
 
     componentWillUnmount() {
     }
@@ -111,7 +115,8 @@ class RecommendCustomerCondition extends React.Component {
                         //添加成功
                         this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                         //保存成功后跳转到推荐线索列表
-                        this.props.saveRecommedConditionsSuccess(hasSavedRecommendParams);
+                        var targetObj = _.get(data, '[0]');
+                        this.props.saveRecommedConditionsSuccess(targetObj);
                     }else{
                         this.setResultData(errTip, 'error');
                     }
@@ -125,7 +130,14 @@ class RecommendCustomerCondition extends React.Component {
             });
         });
     };
-
+    //保存结果的处理
+    setResultData(saveMsg, saveResult) {
+        this.setState({
+            isSaving: false,
+            saveMsg: saveMsg,
+            saveResult: saveResult
+        });
+    }
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
@@ -144,6 +156,17 @@ class RecommendCustomerCondition extends React.Component {
         var recommendProperty = this.state.recommendProperty;
         var hasSavedRecommendParams = this.state.hasSavedRecommendParams;
         let saveResult = this.state.saveResult;
+        //人员规模的默认展示项
+        var staffTarget = {};
+        if(hasSavedRecommendParams.staffnumMin || hasSavedRecommendParams.staffnumMax){
+            staffTarget = _.find(recommendStaffSize, item => item.staffnumMin === hasSavedRecommendParams.staffnumMin && item.staffnumMax === hasSavedRecommendParams.staffnumMax );
+        }
+        //资本规模的默认展示项
+        var capitalTarget = {};
+        if(hasSavedRecommendParams.capitalMin || hasSavedRecommendParams.capitalMax){
+            capitalTarget = _.find(recommendMoneySize, item => item.capitalMin === hasSavedRecommendParams.capitalMin && item.capitalMax === hasSavedRecommendParams.capitalMax );
+        }
+
         return (
             <div className="recommend-customer-condition">
                 <div
@@ -162,7 +185,7 @@ class RecommendCustomerCondition extends React.Component {
                                         placeholder={Intl.get('crm.22', '请选择行业')}
                                         name="industrys"
                                         getPopupContainer={() => document.getElementById('customer-recommend-form')}
-                                        defaultValue={_.get(hasSavedRecommendParams, 'industry',[])}
+                                        defaultValue={_.get(hasSavedRecommendParams, 'industrys',[])}
 
                                     >
                                         {_.isArray(recommendIndustry) && recommendIndustry.length ?
@@ -179,7 +202,7 @@ class RecommendCustomerCondition extends React.Component {
                             placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
                             provName={hasSavedRecommendParams.province}
                             cityName={hasSavedRecommendParams.city}
-                            countyName={hasSavedRecommendParams.county}
+                            countyName={hasSavedRecommendParams.district}
                             updateLocation={this.updateLocation}
                         />
                         <FormItem
@@ -188,12 +211,11 @@ class RecommendCustomerCondition extends React.Component {
                             {...formItemLayout}
                         >
                             {
-                                getFieldDecorator('staff_size')(
+                                getFieldDecorator('staff_size',{initialValue: _.isEmpty(staffTarget) ? '' : JSON.stringify(staffTarget)})(
                                     <Select
                                         placeholder={Intl.get('clue.customer.select.size', '请选择规模')}
                                         name="staff_size"
                                         getPopupContainer={() => document.getElementById('customer-recommend-form')}
-                                        defaultValue={_.get(hasSavedRecommendParams, 'industry',[])}
 
                                     >
                                         {_.isArray(recommendStaffSize) && recommendStaffSize.length ?
@@ -210,12 +232,11 @@ class RecommendCustomerCondition extends React.Component {
                             {...formItemLayout}
                         >
                             {
-                                getFieldDecorator('money_size')(
+                                getFieldDecorator('money_size',{initialValue: _.isEmpty(capitalTarget) ? '' : JSON.stringify(capitalTarget)})(
                                     <Select
                                         placeholder={Intl.get('clue.customer.select.size', '请选择规模')}
                                         name="money_size"
                                         getPopupContainer={() => document.getElementById('customer-recommend-form')}
-                                        // defaultValue={_.get(hasSavedRecommendParams, 'industry',[])}
 
                                     >
                                         {_.isArray(recommendMoneySize) && recommendMoneySize.length ?
@@ -232,13 +253,12 @@ class RecommendCustomerCondition extends React.Component {
                             {...formItemLayout}
                         >
                             {
-                                getFieldDecorator('entTypes')(
+                                getFieldDecorator('entTypes',{initialValue: _.get(hasSavedRecommendParams,'entTypes')})(
                                     <Select
                                         mode="multiple"
                                         placeholder={Intl.get('clue.customer.select.property', '请选择性质')}
                                         name="entTypes"
                                         getPopupContainer={() => document.getElementById('customer-recommend-form')}
-                                        defaultValue={_.get(hasSavedRecommendParams, 'entType',[])}
                                     >
                                         {_.isArray(recommendProperty) && recommendProperty.length ?
                                             recommendProperty.map((propertyItem, idx) => {

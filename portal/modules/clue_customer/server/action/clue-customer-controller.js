@@ -388,7 +388,15 @@ exports.getSimilarCustomerLists = function(req, res) {
 exports.getRecommendClueLists = function(req, res) {
     clueCustomerService.getRecommendClueLists(req, res)
         .on('success', function(data) {
-            res.status(200).json(data);
+            var lists = [];
+            _.forEach(data, item => {
+                lists.push({id: item.id,
+                    name: item.name,
+                    legalPerson: item.legalPerson,
+                    telephones: item.telephones
+                });
+            });
+            res.status(200).json(lists);
         }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });

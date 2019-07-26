@@ -230,6 +230,11 @@ export const contactNameRule = function() {
 };
 const TENTHOUSAND = 10000;
 export const staffSize = [
+    {
+        name: Intl.get('common.all', '全部'),
+        staffnumMin: '',
+        staffnumMax: ''
+    },
     {name: Intl.get('clue.customer.condition.staff.size', '{num}人以下', {num: 20}), staffnumMin: 0, staffnumMax: 20},
     {
         name: Intl.get('clue.customer.condition.staff.range', '{min}-{max}人', {min: 20, max: 99}),
@@ -255,6 +260,11 @@ export const staffSize = [
 ];
 
 export const moneySize = [
+    {
+        name: Intl.get('common.all', '全部'),
+        capitalMin: '',
+        capitalMax: ''
+    },
     {
         name: Intl.get('clue.customer.money.size.less.num', '{num}万以内', {num: 10}),
         capitalMin: 0,
@@ -323,4 +333,11 @@ export const companyProperty = [
         value: Intl.get('clue.customer.condition.company.not.above.type', '非上述类型')
     }
 ];
+export const deleteEmptyProperty = function(data) {
+    for (var key in data){
+        if (data[key] === null){
+            delete data[key];
+        }
+    }
+};
 
