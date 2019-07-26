@@ -4,7 +4,7 @@
 @group-tree-name-height: 60px;
 @border-color: #f3f5f7;
 @edit-team-form-height: 130px;
-@edit-teamName-form-height: 90px;
+@edit-teamName-form-height: 86px;
 
 .sales-team-manage-container {
   padding: 12px;
@@ -40,7 +40,7 @@
         font-size: 14px;
         float: left;
         .member-top-operation-div {
-          padding: 12px 24px;
+          padding: 24px;
           height: 80px;
           .member-top-operation-div-title {
             float: left;
@@ -142,12 +142,15 @@
           // 操作区样式（销售目标、团队成员设置以及添加团队成员）
           .operation-zone, .sale-goal-zone {
             position: absolute;
-            top: 50px;
+            z-index: 1; // 操作区显示的位置在表格的头部区
+            padding-top: 6px;
             padding-right: 16px
           }
           .operation-zone {
             .select-row-number {
-              padding-left: 24px;
+              color: #333;
+              margin-left: 62px;
+              padding: 8px 16px;
             }
             .set-select-member-btns {
               cursor: pointer;
@@ -160,9 +163,9 @@
           }
           .sale-goal-zone {
             .member-top-operation-div-title {
+              margin-left: 62px;
               color: #333333;
-              padding-left: 24px;
-              font-size: 16px;
+              padding: 9px 0 10px 0;
             }
             .sales-team-goals-container {
               color: #999999;
@@ -205,53 +208,6 @@
           // table表格
           .member-list-table {
             border-top: 1px solid #E5E5E5;
-            .ant-table-thead {
-              th {
-                color: #999 !important;
-              }
-            }
-            .ant-table-tbody {
-              cursor: pointer;
-              td {
-                font-size: 14px;
-                color: #333 !important;
-                .member-name {
-                  .account {
-                    font-size: 16px;
-                    .member-stop-status {
-                      margin-left: 6px;
-                      background: #999;
-                      color: #fff;
-                      font-size: 12px;
-                      padding: 3px 2px;
-                      border-radius: 2px;
-                    }
-                    .icon-team-role {
-                      padding-right: 5px;
-                      color: #EFA246;
-                    }
-                    .icon-sale-team-manager {
-                      padding-right: 5px;
-                      color: #C44999;
-                      font-weight: bolder;
-                      width: 16px;
-                      height: 16px;
-                    }
-                    .sale-status-stop {
-                      padding-right: 5px;
-                      color: #CCCCCC;
-                    }
-                  }
-                  .nickname {
-                    font-size: 12px;
-                    color: #999;
-                  }
-                }
-                .member-status {
-                  color: #999;
-                }
-              }
-            }
           }
         }
         //右侧用户详情面板
@@ -281,12 +237,16 @@
         padding-top: 80px;
         .ant-tabs {
           .ant-tabs-bar {
+            height: 32px;
             margin-bottom: 0;
           }
           border-left: 1px solid #E5E5E5;
           border-top: 1px solid #E5E5E5;
           .ant-tabs-bar .ant-tabs-nav .ant-tabs-tab{
-              padding: 10px 55px !important;
+            padding: 6px 5px !important;
+          }
+          .ant-tabs-tab {
+            margin-left: 70px;
           }
         }
         .sales-team-group {
@@ -300,16 +260,21 @@
                   .sales-team-group-info, .member-info {
                     position: relative;
                     min-height: 32px;
+                    .sales-team-group-name {
+                      padding-left: 24px;
+                    }
                     .sales-team-group-name , .member-info-name{
                       span {
                         line-height: 30px;
                       }
                       .sales-team-name-text {
+                        font-size: 14px;
                         display: inline-block;
                       }
                       .sales-team-member-statistic, .member-statistic, .icon-more{
                         float: right;
                         padding-right: 8px;
+                        font-size: 12px;
                       }
                       .icon-more {
                         color: #2196F3;
@@ -317,6 +282,7 @@
                     }
                     .member-info-name {
                       .sales-team-name-text {
+                        font-size: 16px;
                         padding-left: 8px;
                       }
                     }
@@ -348,7 +314,14 @@
                     position: relative;
                     z-index: 11;
                     .icon-tree-arrow {
-                      font-size: 10px;
+                      font-size: 16px;
+                    }
+                    .tree-icon-disc {
+                      position: absolute;
+                      top: 12px;
+                      width: 8px;
+                      height: 8px;
+                      background-color: #CCC;
                     }
                     &:hover {
                       .icon-tree-arrow {
@@ -486,13 +459,13 @@
             cursor: default;
             height: @edit-team-form-height;
             .form {
+              padding-right: 10px;
               .ant-form-item {
                 margin-bottom: 6px;
                 position: relative;
-                left: 10px;
               }
               .edit-sales-team-btn-item {
-                margin-top: 4px;
+                margin-top: 2px;
                 max-width: 240px;
                 .button-container{
                   margin-top: 5px;
@@ -527,7 +500,17 @@
                 .edit-sales-team-btn-item {
                   padding-right: 3px;
                   .button-container{
-                    margin-top: 0;
+                    margin-top: -6px;
+                  }
+                }
+              }
+            }
+            .edit-form {
+              form {
+                padding: 6px 0 0 6px;
+                .edit-sales-team-btn-item {
+                  .edit-sales-team-btn-item {
+                    padding-right: 0;
                   }
                 }
               }
@@ -567,14 +550,6 @@
       right: auto;
       text-align: center;
     }
-  }
-  //加为xx、删除按钮的hover事件
-  .member-btn-enable:hover {
-    color: #fff !important;
-    background-color: #F1F8FE !important;
-  }
-  .member-owner-disabled {
-    background-color: #aeb3b9;
   }
   //无团队时，添加团队的样式设置、
   .sales-team-null-add-container {
@@ -689,30 +664,6 @@
       &:hover {
         color: #2196F3;
         background-color: #F1F8FE;
-      }
-    }
-  }
-}
-
-// table表格样式
-#app {
-  .member-list-table {
-    .antc-table {
-      .ant-table tbody tr {
-        background:#fff !important;
-        cursor: pointer;
-      }
-      .ant-table tbody .current-row, .ant-table tbody .current-row:hover {
-        background: #E4F2FE !important;
-      }
-      .ant-table td,.ant-table th {
-        border-bottom:1px solid #F5F5F5 !important;
-        border-right: none !important;
-      }
-      .ant-table-thead {
-        th {
-          color: #999 !important;
-        }
       }
     }
   }

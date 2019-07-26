@@ -124,7 +124,19 @@ class CrmScoreCard extends React.Component {
 
     toggleScoreDetail(e) {
         Trace.traceEvent(e, this.state.isExpandDetail ? '收起客户分数详情' : '展开客户分数详情');
-        this.setState({isExpandDetail: !this.state.isExpandDetail});
+        //展开历史分数时，重置时间并重新获取数据
+        if (!this.state.isExpandDetail) {
+            this.setState({
+                isExpandDetail: !this.state.isExpandDetail,
+                timeType: 'year',
+                startTime: moment().startOf('year').valueOf(),//默认展示今年的历史趋势
+                endTime: moment().valueOf()
+            }, () => {
+                this.getHistoryScoreList();
+            });
+        } else {//收起历史分数
+            this.setState({isExpandDetail: !this.state.isExpandDetail});
+        }
     }
 
     onSelectDate(startTime, endTime, range) {
@@ -138,6 +150,10 @@ class CrmScoreCard extends React.Component {
         }
         this.setState({startTime, endTime, timeType: range});
         setTimeout(() => this.getHistoryScoreList());
+    }
+    //时间类型修改
+    onTimeRangeChange = (startTime, endTime, timeRange) => {
+        this.setState({timeType: timeRange});
     }
 
     showUserDetail(userId) {
@@ -161,6 +177,9 @@ class CrmScoreCard extends React.Component {
                 }
             }
         };
+        const dateWrapCls = classNames('date-selector-wrap btn-item', {
+            'select-custom-range-style': this.state.timeType === 'custom'
+        });
         return (
             <div className="crm-score-detail-wrap">
                 <div className="crm-qualified-user-blcok">
@@ -178,10 +197,11 @@ class CrmScoreCard extends React.Component {
                 </div>
                 <div className="crm-history-score-block">
                     <div className="crm-score-label">{Intl.get('crm.score.history.title', '历史分数')}</div>
-                    <div className="date-selector-wrap btn-item">
+                    <div className={dateWrapCls}>
                         <DatePicker
                             disableDateAfterToday={true}
-                            range={'year'}
+                            range={this.state.timeType}
+                            onRadioChange={this.onTimeRangeChange}
                             onSelect={this.onSelectDate.bind(this)}>
                             <DatePicker.Option value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
                             <DatePicker.Option value="month">

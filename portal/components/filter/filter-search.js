@@ -1,6 +1,6 @@
 var React = require('react');
 import filterEmitter from './emitter';
-import { Icon, Input, Button, Radio, Popover, Alert } from 'antd';
+import { Icon, Input, Button, Radio, Popover, Alert, message } from 'antd';
 import PropTypes from 'prop-types';
 import Trace from 'LIB_DIR/trace';
 import{FILTER_RANGE_OPTIONS as RANGE_OPTIONS, FILTER_RANGE} from 'PUB_DIR/sources/utils/consts';
@@ -121,7 +121,7 @@ class FilterSearch extends React.Component {
                 filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
             }).then(({data}) => {
                 if (!data && data.errorMsg) {                    
-                    message.error(err.message || Intl.get('common.save.failed', '保存失败'));
+                    message.error(data.errorMsg || Intl.get('common.save.failed', '保存失败'));
                 }
                 else {
                     filterEmitter.emit(filterEmitter.ADD_COMMON + this.props.key, {
@@ -147,7 +147,7 @@ class FilterSearch extends React.Component {
     }
     render() {
         //是否展示输入框形式的已选择的筛选项
-        const showInput = _.get(this.state.plainFilterList, 'length') > 0;
+        const showInput = _.get(this.state.plainFilterList, 'length') > 0 && !this.props.isFirstLoading;
         const clearPopContent = (
             <div className="clear-confirm-pop-container">
                 <h5><Icon type="info-circle" />
@@ -263,7 +263,8 @@ FilterSearch.defaultProps = {
     },
     key: '',
     showSelectChangeTip: false,
-    filterType: ''
+    filterType: '',
+    isFirstLoading: false
 };
 
 FilterSearch.propTypes = {
@@ -275,6 +276,7 @@ FilterSearch.propTypes = {
     toggleList: PropTypes.func,
     showSelectChangeTip: PropTypes.bool,
     filterType: PropTypes.string,
+    isFirstLoading: PropTypes.bool,
 };
 
 export default FilterSearch;

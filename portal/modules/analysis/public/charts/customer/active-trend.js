@@ -17,14 +17,24 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
             let query = arg.query;
 
             if (query) {
-                query.interval = interval;
+                //不显示时间区间切换按钮时
+                if (!isShowIntervalSelector) {
+                    //使用传入的时间区间，
+                    query.interval = interval;
 
-                if (interval === 'day') {
-                    query.starttime = moment(query.endtime).subtract(1, 'months').valueOf();
-                } else if (interval === 'week') {
-                    query.starttime = moment(query.endtime).subtract(3, 'months').valueOf();
-                } else if (interval === 'month') {
-                    query.starttime = moment(query.endtime).subtract(1, 'years').valueOf();
+                    //查看日活时
+                    if (interval === 'day') {
+                        //查询结束时间前推一个月的数据
+                        query.starttime = moment(query.endtime).subtract(1, 'months').valueOf();
+                    //查看周活时
+                    } else if (interval === 'week') {
+                        //查询结束时间前推三个月的数据
+                        query.starttime = moment(query.endtime).subtract(3, 'months').valueOf();
+                    //查看月活时
+                    } else if (interval === 'month') {
+                        //查询结束时间前推一年的数据
+                        query.starttime = moment(query.endtime).subtract(1, 'years').valueOf();
+                    }
                 }
             }
         },
@@ -54,6 +64,10 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
             activeButton: 'day',
             conditionName: 'interval',
         };
+
+        chart.conditions = [{
+            name: 'interval',
+        }];
     }
 
     return chart;

@@ -290,6 +290,10 @@ class ClueRightPanel extends React.Component {
         });
         clueCustomerAction.afterEditCustomerDetail(updateProperty);
     };
+    updateCustomerLastContact = () => {
+        this.updateClueProperty({status: SELECT_TYPE.HAS_TRACE});
+        this.props.updateCustomerLastContact();
+    };
     render() {
         var curClue = this.state.curClue;
         //是否没有权限修改线索详情
@@ -355,7 +359,8 @@ class ClueRightPanel extends React.Component {
                                             updateClueProperty={this.updateClueProperty}
                                             afterTransferClueSuccess={this.props.afterTransferClueSuccess}
                                             onConvertToCustomerBtnClick={this.props.onConvertToCustomerBtnClick}
-                                            updateCustomerLastContact={this.props.updateCustomerLastContact}
+                                            updateCustomerLastContact={this.updateCustomerLastContact}
+                                            extractClueOperator={this.props.extractClueOperator}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -368,7 +373,7 @@ class ClueRightPanel extends React.Component {
                                             ref={clueTraceList => this.clueTraceList = clueTraceList}
                                             curClue={curClue}
                                             divHeight={divHeight}
-                                            updateCustomerLastContact={this.props.updateCustomerLastContact}
+                                            updateCustomerLastContact={this.updateCustomerLastContact}
                                             showClueDetailPanel={this.showClueDetailPanel}
                                         />
                                     ) : null}
@@ -442,5 +447,6 @@ ClueRightPanel.propTypes = {
     afterTransferClueSuccess: PropTypes.func,
     type: PropTypes.string,
     onConvertToCustomerBtnClick: PropTypes.func,
+    extractClueOperator: PropTypes.func,
 };
 export default ClueRightPanel;

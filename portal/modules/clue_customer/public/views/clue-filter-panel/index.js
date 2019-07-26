@@ -10,7 +10,7 @@ var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import { AntcDatePicker as DatePicker } from 'antc';
-import {clueStartTime, SELECT_TYPE} from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue} from '../../utils/clue-customer-utils';
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
@@ -123,6 +123,10 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
                         FilterAction.setFilterClueAllotNoTrace('0');
+                        //如果上次选中的状态是已转化，需要把已转化改成待跟进
+                        if(this.getFilterStatus().status === SELECT_TYPE.HAS_TRANSFER){
+                            FilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
+                        }
                     }
                 }else if (item.groupId === 'user_name'){
                     FilterAction.setFilterClueUsername( _.get(item,'data'));
@@ -133,6 +137,10 @@ class ClueFilterPanel extends React.Component {
         setTimeout(() => {
             this.props.getClueList();
         });
+    };
+    getFilterStatus = () => {
+        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
+        return getClueStatusValue(filterClueStatus);
     };
     onSelectDate = (start_time, end_time) => {
         if (!start_time) {
@@ -187,10 +195,10 @@ class ClueFilterPanel extends React.Component {
         });
         return _.flattenDeep(provinceList);
     };
-    setDefaultSelectCommonFilter = (commonData,callback) => {
+    setDefaultSelectCommonFilter = (commonData,notSelfHandle,callback) => {
         var targetIndex = '';
-        if (isSalesRole()){
-            var targetIndex = _.findIndex(commonData, item => item.value === SELECT_TYPE.WAIT_ME_HANDLE);
+        if (isSalesRole() && !notSelfHandle){
+            targetIndex = _.findIndex(commonData, item => item.value === SELECT_TYPE.WAIT_ME_HANDLE);
         }
         _.isFunction(callback) && callback(targetIndex);
     };
@@ -275,7 +283,7 @@ class ClueFilterPanel extends React.Component {
         }
 
         return (
-            <div data-tracename="筛选">
+            <div data-tracename="线索筛选">
                 <div className="clue-filter-panel">
                     <FilterList
                         ref={filterList => this.filterList = filterList}
@@ -284,7 +292,7 @@ class ClueFilterPanel extends React.Component {
                         onFilterChange={this.handleFilterChange.bind(this)}
                         renderOtherDataContent={this.renderTimeRangeSelect}
                         setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
-                        setDefaultCommonSelect={true}
+                        hasSettedDefaultCommonSelect={true}
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                         showAdvancedPanel={true}

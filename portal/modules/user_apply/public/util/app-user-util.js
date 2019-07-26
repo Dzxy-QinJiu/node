@@ -35,7 +35,7 @@ exports.APPLY_DETAIL_LAYOUT_CONSTANTS_FORM = {
     //顶部距离
     TOP_DELTA: 64,
     //底部距离
-    BOTTOM_DELTA: 48,
+    BOTTOM_DELTA: 20,
     //订单号高度
     ORDER_DIV_HEIGHT: 47,
     //返回按钮高度

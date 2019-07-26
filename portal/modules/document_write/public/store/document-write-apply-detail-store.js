@@ -179,7 +179,9 @@ DocumentWriteApplyDetailStore.prototype.showOrHideApprovalBtns = function(flag){
 };
 DocumentWriteApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
-    this.isLeader = checkIfLeader(candidateArr);
+    checkIfLeader(candidateArr,(isLeader) => {
+        this.isLeader = isLeader;
+    });
 };
 DocumentWriteApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -242,8 +244,8 @@ DocumentWriteApplyDetailStore.prototype.getNextCandidate = function(result) {
     if (result.error){
         this.candidateList = [];
     }else{
-        this.candidateList = result;
-        this.isLeader = checkIfLeader(result);
+        this.candidateList = _.get(result,'list',[]);
+        this.isLeader = _.get(result,'isLeader',false);
     }
 };
 DocumentWriteApplyDetailStore.prototype.setUpdateFilesLists = function(updateLists) {

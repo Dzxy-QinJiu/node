@@ -165,16 +165,21 @@ class DayAgendaScheduleLists extends React.Component {
                                     <span className="hidden record-id">{item.id}</span>
                                 </Col>
                                 <Col sm={9}>
-                                    {item.contacts ? <Popover content={customerContent} placement="bottom">
-                                        <div className="schedule-customer-name">
-                                            {item.customer_name || item.topic ? <span><i className={iconFontCls}></i>{item.customer_name || item.topic}</span> :
-                                                phoneNum ? <p className="item-customer-content">
-                                                    {phoneNum + Intl.get('schedule.expired.call.time.at','于') + moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + Intl.get('schedule.expired.call.in.phone.num','拨打过您的电话')}
-                                                </p> : null
-                                            }
+                                    {item.contacts ?
+                                        <Popover
+                                            content={customerContent}
+                                            placement="bottom"
+                                            overlayClassName="schedule-manage-popover"
+                                        >
+                                            <div className="schedule-customer-name">
+                                                {item.customer_name || item.topic ? <span><i className={iconFontCls}></i>{item.customer_name || item.topic}</span> :
+                                                    phoneNum ? <p className="item-customer-content">
+                                                        {phoneNum + Intl.get('schedule.expired.call.time.at','于') + moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + Intl.get('schedule.expired.call.in.phone.num','拨打过您的电话')}
+                                                    </p> : null
+                                                }
 
-                                        </div>
-                                    </Popover> :
+                                            </div>
+                                        </Popover> :
                                         <div className="schedule-customer-name">
                                             <i className={iconFontCls}></i>
                                             {item.customer_name || item.topic}
@@ -204,6 +209,7 @@ class DayAgendaScheduleLists extends React.Component {
     }
 
     render() {
+        var scheduleLength = _.get(this,'state.scheduleList.length');
         return (
             <div id="content-block" className="content-block">
                 <div className="dayagenda-schedule-list"
@@ -211,7 +217,9 @@ class DayAgendaScheduleLists extends React.Component {
                     <div className="schedule-title">
                         <Row className="week-wrap">
                             <Col className="title-week">
-                                {curWeek}
+                                <div className="num-wrap">
+                                    {curWeek}{scheduleLength > 0 ? <div className="schedule-count">{scheduleLength}</div> : null}
+                                </div>
                             </Col>
                         </Row>
                         <Row>

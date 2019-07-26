@@ -9,6 +9,7 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import ApplyApproveAjax from 'MOD_DIR/common/public/ajax/apply-approve';
 import {getApplyDetailById,getApplyStatusById,getApplyCommentList,addApplyComments,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function MemberApplyDetailActions() {
     this.generateActions(
         'setInitState',
@@ -109,7 +110,9 @@ function MemberApplyDetailActions() {
     this.getNextCandidate = function(queryObj,callback) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)){
-                this.dispatch(list);
+                checkIfLeader(list,(isLeader) => {
+                    this.dispatch({list: list, isLeader: isLeader});
+                });
                 _.isFunction(callback) && callback(list);
             }
         }).error(this.dispatch({error: true}));

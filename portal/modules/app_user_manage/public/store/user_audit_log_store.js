@@ -52,7 +52,7 @@ UserAuditLogStore.prototype.resetAuditLog = function() {
 },
 UserAuditLogStore.prototype.resetState = function() {
     // 今天
-    var timeObj = DateSelectorUtils.getTodayTime();
+    const timeObj = DateSelectorUtils.getTodayTime();
     //开始时间
     this.startTime = DateSelectorUtils.getMilliseconds(timeObj.start_time);
     //结束时间

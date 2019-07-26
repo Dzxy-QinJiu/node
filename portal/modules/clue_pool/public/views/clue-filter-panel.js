@@ -45,16 +45,16 @@ class ClueFilterPanel extends React.Component {
             let groupId = item.groupId;
             let data = item.data;
             // 线索来源
-            if (groupId === 'clue_source'){
+            if (groupId === 'clue_pool_source'){
                 FilterAction.setFilterClueSoure(data);
-            }else if (groupId === 'clue_access'){ // 线索接入渠道
+            }else if (groupId === 'clue_pool_access'){ // 线索接入渠道
                 FilterAction.setFilterClueAccess(data);
-            }else if (groupId === 'clue_classify'){ // 线索分类
+            }else if (groupId === 'clue_pool_classify'){ // 线索分类
                 FilterAction.setFilterClueClassify(data);
-            }else if (groupId === 'clue_province'){
+            }else if (groupId === 'clue_pool_province'){
                 //线索地域
                 FilterAction.setFilterClueProvince(data);
-            } else if (groupId === 'user_name'){
+            } else if (groupId === 'clue_pool_user_name'){
                 FilterAction.setFilterClueUsername(data);
             }
         });
@@ -114,6 +114,15 @@ class ClueFilterPanel extends React.Component {
 
         const advancedData = [
             {
+                groupName: Intl.get('crm.6', '负责人'),
+                groupId: 'clue_pool_user_name',
+                singleSelect: true,
+                data: _.map(clueLeadingArray, x => ({
+                    name: x,
+                    value: x
+                }))
+            },
+            {
                 groupName: Intl.get('clue.analysis.source', '来源'),
                 groupId: 'clue_pool_source',
                 data: clueSourceArray.map(x => ({
@@ -142,20 +151,6 @@ class ClueFilterPanel extends React.Component {
                     value: x
                 }))
             }];
-        //非普通销售才有销售角色和团队
-        if (!userData.getUserData().isCommonSales) {
-            advancedData.unshift(
-                {
-                    groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'clue_pool_user_name',
-                    singleSelect: true,
-                    data: _.map(clueLeadingArray, x => ({
-                        name: x,
-                        value: x
-                    }))
-                }
-            );
-        }
 
         return (
             <div data-tracename="筛选">
@@ -166,7 +161,7 @@ class ClueFilterPanel extends React.Component {
                         advancedData={advancedData}
                         onFilterChange={this.handleFilterChange.bind(this)}
                         renderOtherDataContent={this.renderTimeRangeSelect}
-                        setDefaultCommonSelect={true}
+                        hasSettedDefaultCommonSelect={true}
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                     />

@@ -32,10 +32,10 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
 import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
-import ajax from 'ant-ajax';
 import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -119,8 +119,12 @@ class ClueDetailOverview extends React.Component {
             similarCustomerErrmsg: ''
         });
         var curClue = this.state.curClue;
+        var type = 'self';
+        if(hasPrivilege('CRM_QUERY_SIMILARITY_CUSTOMER_ALL')){
+            type = 'all';
+        }
         $.ajax({
-            url: '/rest/get/similar/customerlists',
+            url: '/rest/get/similar/customerlists/' + type,
             type: 'get',
             dateType: 'json',
             data: {
@@ -381,6 +385,7 @@ class ClueDetailOverview extends React.Component {
                 this.setState({
                     curClue: curClue
                 });
+
                 //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                 clueCustomerAction.afterAddClueTrace(curClue);
                 this.props.updateCustomerLastContact(saveObj);
@@ -436,6 +441,10 @@ class ClueDetailOverview extends React.Component {
                         this.props.updateClueProperty({
                             'status': SELECT_TYPE.WILL_TRACE
                         });
+                    }
+                    //分配完线索后，需要将首页对应的工作设为已完成
+                    if (window.location.pathname === '/home') {
+                        myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
                     }
                 }
             });
@@ -683,7 +692,7 @@ class ClueDetailOverview extends React.Component {
         if (avalibility){
             return <div>
                 {associatedPrivilege ? <Button type="primary"
-                    onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id,curClue.name)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
+                    onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id, curClue.name, curClue.phones)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
                 <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
                 </Button>
@@ -801,7 +810,7 @@ class ClueDetailOverview extends React.Component {
                         />
                     </div>
                 </div>
-                {remarkContent ?
+                {remarkContent && remarkAddTime ?
                     <div className="add-person-info ">
                         <div className="add-clue-info">
                             <span className="source-name">{remarkAddName}</span>
@@ -1219,12 +1228,33 @@ class ClueDetailOverview extends React.Component {
             }
         }
     };
+
+    // 渲染提取线索按钮
+    renderExtractClueBtn = (curClue) => {
+        const user = userData.getUserData();
+        const hasAssignedPrivilege = !user.isCommonSales;
+        const assigenCls = 'detail-extract-clue-btn ant-btn';
+        return (
+            <div className="clue-info-item">
+                <div className="clue-info-label">
+                    {Intl.get('clue.handle.clue', '线索处理')}
+                </div>
+                <div className="btn-container">
+                    {this.props.extractClueOperator(hasAssignedPrivilege, curClue, assigenCls, true)}
+                </div>
+            </div>
+        );
+    };
     // 渲染关联线索
     renderAssociatedClue = (curClue, associatedCustomer ) => {
-        if (curClue.clue_type === 'clue_pool' ) { // 线索池中详情，不显示关联线索
-            return null;
+        if (curClue.clue_type === 'clue_pool') { // 线索池中详情，处理线索
+            if ( hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF')) {
+                return this.renderExtractClueBtn(curClue);
+            } else {
+                return null;
+            }
         } else {
-            if ((curClue.status === SELECT_TYPE.HAS_TRACE ||
+            if ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||
                 curClue.status === SELECT_TYPE.WILL_TRACE) &&
                 !associatedCustomer) { // 待跟进或是已跟进，并且没有关联客户时，处理线索
                 return this.renderAssociatedAndInvalidClueHandle(curClue);
@@ -1336,6 +1366,7 @@ ClueDetailOverview.propTypes = {
     afterTransferClueSuccess: PropTypes.func,
     onConvertToCustomerBtnClick: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
+    extractClueOperator: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;

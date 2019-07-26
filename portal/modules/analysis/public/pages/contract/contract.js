@@ -4,6 +4,7 @@
 
 import { contractChart } from 'ant-chart-collection';
 import {CONTRACT_MENUS} from '../../consts';
+import { isSales } from '../../utils';
 
 module.exports = {
     title: CONTRACT_MENUS.CONTRACT.name,
@@ -20,10 +21,25 @@ function getCharts() {
         //新增合同毛利团队分布
         contractChart.getContractNewChart(),
         //近3个月新增合同周趋势图
-        contractChart.getContractTrendChart(),
+        contractChart.getTrendChart({
+            title: Intl.get('contract.147', '近3个月新增合同周趋势图'),
+            type: 'count'
+        }),
         //合同额分段统计
         contractChart.getContractSectionChart(),
-        //成交周期分析
-        contractChart.getContractCycleChart(),
+        //合同产品分布
+        contractChart.getContractProductChart(),
+        //行业分布
+        contractChart.getContractIndustryChart(),
+        //地域分布
+        contractChart.getContractZoneChart(),
+        //团队分布及完成率
+        contractChart.getContractTeamChart({
+            noShowCondition: {
+                callback: () => isSales()
+            }
+        }),
+        //签单情况统计表
+        contractChart.getSingingChart(),
     ];
 }

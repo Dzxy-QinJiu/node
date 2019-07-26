@@ -12,6 +12,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {getApplyStatusById,cancelApplyApprove} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import applyApproveAction from './business-apply-action';
+import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
 function ApplyViewDetailActions() {
     this.generateActions(
         'setInitState',
@@ -77,10 +78,13 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveApplyPassOrReject = function(obj) {
+    this.approveApplyPassOrReject = function(obj, callback) {
         this.dispatch({loading: true, error: false});
         BusinessApplyAjax.approveApplyPassOrReject(obj).then((data) => {
             this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+            if (_.isFunction(callback)) {
+                callback();
+            }
             //更新选中的申请单类型
             LeaveApplyUtil.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
             if (Oplate && Oplate.unread) {
@@ -123,7 +127,9 @@ function ApplyViewDetailActions() {
     this.getNextCandidate = function(queryObj,callback) {
         ApplyApproveAjax.getNextCandidate().sendRequest(queryObj).success((list) => {
             if (_.isArray(list)){
-                this.dispatch(list);
+                checkIfLeader(list,(isLeader) => {
+                    this.dispatch({list: list, isLeader: isLeader});
+                });
                 _.isFunction(callback) && callback(list);
             }
         }).error(

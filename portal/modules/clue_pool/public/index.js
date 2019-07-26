@@ -554,39 +554,48 @@ class ClueExtract extends React.Component {
             this.state.cluePoolList.length >= 20 && !this.state.listenScrollBottom;
     };
     // 单个提取线索
-    handleExtractClueAssignToSale(record, flag) {
-        let id = record.id; // 提取线索某条的id
-        let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
-        if (flag) {
-            //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
-            let idArray = this.state.salesMan.split('&&');
-            if (_.isArray(idArray) && idArray.length) {
-                sale_id = idArray[0];// 提取给某个销售的id
+    handleExtractClueAssignToSale(record, flag, isDetailExtract) {
+        if (!this.state.salesMan && flag) {
+            cluePoolAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
+        } else {
+            let id = record.id; // 提取线索某条的id
+            let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
+            if (flag) {
+                //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
+                let idArray = this.state.salesMan.split('&&');
+                if (_.isArray(idArray) && idArray.length) {
+                    sale_id = idArray[0];// 提取给某个销售的id
+                }
             }
+            let reqData = {
+                id: id,
+                sale_id: sale_id
+            };
+            this.setState({
+                singleExtractLoading: true
+            });
+            cluePoolAjax.extractClueAssignToSale(reqData).then( (result) => {
+                this.setState({
+                    singleExtractLoading: false
+                });
+                if (result.code === 0) { // 提取成功
+                    cluePoolAction.updateCluePoolList(id);
+                    message.success(Intl.get('clue.extract.success', '提取成功'));
+                    if (isDetailExtract) { // 详情中，提取成功后，关闭右侧面板
+                        this.hideRightPanel();
+                    }
+                    this.clearSelectSales();
+                } else { // 提取失败
+                    message.error(Intl.get('clue.extract.failed', '提取失败'));
+                }
+            }, (errMsg) => {
+                this.setState({
+                    singleExtractLoading: false,
+                });
+                message.error(errMsg || Intl.get('clue.extract.failed', '提取失败'));
+            });
         }
-        let reqData = {
-            id: id,
-            sale_id: sale_id
-        };
-        this.setState({
-            singleExtractLoading: true
-        });
-        cluePoolAjax.extractClueAssignToSale(reqData).then( (result) => {
-            this.setState({
-                singleExtractLoading: false
-            });
-            if (result.code === 0) { // 提取成功
-                cluePoolAction.updateCluePoolList(id);
-                message.success(Intl.get('clue.extract.success', '提取成功'));
-            } else { // 提取失败
-                message.error(Intl.get('clue.extract.failed', '提取失败'));
-            }
-        }, (errMsg) => {
-            this.setState({
-                singleExtractLoading: false,
-            });
-            message.error(errMsg || Intl.get('clue.extract.failed', '提取失败'));
-        });
+
     }
     // 清空所选择的销售
     clearSelectSales = () => {
@@ -611,10 +620,54 @@ class ClueExtract extends React.Component {
         cluePoolAction.setCurrentClueId('');
         $('.ant-table-row').removeClass('current-row');
     };
+
+    extractClueOperator = (hasAssignedPrivilege, record, assigenCls, isDetailExtract) => {
+        if (hasAssignedPrivilege) {
+            return (
+                <AntcDropdown
+                    ref={assignSale => this['assignSale' + record.id] = assignSale}
+                    content={
+                        <span
+                            data-tracename="点击提取按钮"
+                            className={assigenCls}
+                        >
+                            {Intl.get('clue.extract', '提取')}
+                        </span>}
+                    overlayTitle={Intl.get('user.salesman', '销售人员')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    isSaving={this.state.singleExtractLoading}
+                    overlayContent={this.renderSalesBlock()}
+                    handleSubmit={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
+                    unSelectDataTip={this.state.unSelectDataTip}
+                    clearSelectData={this.clearSelectSales}
+                    btnAtTop={false}
+                />
+            );
+        } else {
+            return (
+                <span
+                    onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
+                >
+                    {Intl.get('clue.extract', '提取')}
+                </span>
+            );
+        }
+    };
+
+    //处理选中行的样式
+    handleRowClassName = (record, index) => {
+        if (record.id === this.state.currentId && this.state.isShowClueDetailPanel) {
+            return 'current-row';
+        }
+        else {
+            return '';
+        }
+    };
     
     // table 列
     getClueTableColunms = () => {
-        return [
+        let columns = [
             {
                 title: Intl.get('crm.sales.clue', '线索'),
                 dataIndex: 'clue_name',
@@ -648,7 +701,6 @@ class ClueExtract extends React.Component {
                     dataIndex: 'score',
                     width: '15%',
                     sorter: true,
-
                 },
              ***/
             {
@@ -669,57 +721,35 @@ class ClueExtract extends React.Component {
             },{
                 title: Intl.get('call.record.follow.content', '跟进内容'),
                 dataIndex: 'customer_trace',
-                width: '30%',
+                width: 'auto',
                 render: (text, record, index) => {
                     if (_.isArray(record.customer_traces)) {
                         return (
-                            <span>{ _.get(record, 'customer_traces[0].remark', '')}</span>
+                            <ShearContent>{ _.get(record, 'customer_traces[0].remark', '')}</ShearContent>
                         );
                     }
                 }
-            }, {
+            }];
+        if (hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF')) {
+            columns = _.concat(columns, {
                 title: Intl.get('common.operate', '操作'),
                 className: 'invalid-td-clue',
                 width: '10%',
                 render: (text, record, index) => {
                     let user = userData.getUserData();
                     // 提取线索分配给相关的销售人员的权限
-                    let hasAssignedPrivilege = hasPrivilege('LEAD_EXTRACT_ALL') || (hasPrivilege('LEAD_EXTRACT_SELF') && !user.isCommonSales);
+                    let hasAssignedPrivilege = !user.isCommonSales;
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
                     let containerCls = classNames('singl-extract-clue',{'assign-privilege': hasAssignedPrivilege});
                     return (
                         <div className={containerCls} ref='trace-person'>
-                            {
-                                hasAssignedPrivilege ?
-                                    <AntcDropdown
-                                        ref={changeSale => this['changesale' + record.id] = changeSale}
-                                        content={
-                                            <span
-                                                data-tracename="点击提取按钮"
-                                                className={assigenCls}
-                                            >
-                                                {Intl.get('clue.extract', '提取')}
-                                            </span>}
-                                        overlayTitle={Intl.get('user.salesman', '销售人员')}
-                                        okTitle={Intl.get('common.confirm', '确认')}
-                                        cancelTitle={Intl.get('common.cancel', '取消')}
-                                        isSaving={this.state.singleExtractLoading}
-                                        overlayContent={this.renderSalesBlock()}
-                                        handleSubmit={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}
-                                        unSelectDataTip={this.state.unSelectDataTip}
-                                        clearSelectData={this.clearSelectSales}
-                                        btnAtTop={false}
-                                    /> : (
-                                        <span onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege)}>
-                                            {Intl.get('clue.extract', '提取')}
-                                        </span>
-                                    )
-                            }
-
+                            {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}
                         </div>
                     );
                 }
-            }];
+            });
+        }
+        return columns;
     };
 
     renderClueCustomerLists = () => {
@@ -731,7 +761,8 @@ class ClueExtract extends React.Component {
             noMoreDataText: Intl.get('common.no.more.clue', '没有更多线索了'),
             loading: this.state.isLoading,
         };
-        let rowSelection = this.getRowSelection();
+        let rowSelection = hasPrivilege('LEAD_EXTRACT_ALL') ||
+                            hasPrivilege('LEAD_EXTRACT_SELF') ? this.getRowSelection() : null;
         function rowKey(record, index) {
             return record.id;
         }
@@ -743,6 +774,7 @@ class ClueExtract extends React.Component {
                 dataSource={customerList}
                 pagination={false}
                 columns={this.getClueTableColunms()}
+                rowClassName={this.handleRowClassName}
                 scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
             />);
 
@@ -966,23 +998,24 @@ class ClueExtract extends React.Component {
                 </div>
                 {
                     this.state.isShowClueDetailPanel ? (
-                    <RightPanel
-                        className="clue-pool-clue-detail white-space-nowrap table-btn-fix"
-                        showFlag={this.state.isShowClueDetailPanel}
-                    >
-                        <span className="iconfont icon-close" onClick={(e) => {
-                            this.hideRightPanel();
-                        }}/>
-                        <div className="right-panel-content">
-                            <ClueDetail
-                                ref={cluePanel => this.cluePanel = cluePanel}
-                                currentId={this.state.currentId}
-                                curClue={this.state.curClue}
-                                hideRightPanel={this.hideRightPanel}
-                                type='clue_pool'
-                            />
-                        </div>
-                    </RightPanel>
+                        <RightPanel
+                            className="clue-pool-clue-detail white-space-nowrap table-btn-fix"
+                            showFlag={this.state.isShowClueDetailPanel}
+                        >
+                            <span className="iconfont icon-close" onClick={(e) => {
+                                this.hideRightPanel();
+                            }}/>
+                            <div className="right-panel-content">
+                                <ClueDetail
+                                    ref={cluePanel => this.cluePanel = cluePanel}
+                                    currentId={this.state.currentId}
+                                    curClue={this.state.curClue}
+                                    hideRightPanel={this.hideRightPanel}
+                                    type='clue_pool'
+                                    extractClueOperator={this.extractClueOperator}
+                                />
+                            </div>
+                        </RightPanel>
                     ) : null
                 }
             </div>

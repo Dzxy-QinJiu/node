@@ -10,16 +10,17 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 require('./oplate');
 const LAYOUT_CONSTS = require('../../../lib/consts').LAYOUT;
 var LeftMenu = require('../../../components/privilege/nav-sidebar');
-var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
-var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
-//窗口改变的事件emitter
-var resizeEmitter = require('../../../public/sources/utils/emitters').resizeEmitter;
-
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import{
+    myWorkEmitter,
+    notificationEmitter,
+    resizeEmitter,
+    phoneMsgEmitter,
+    audioMsgEmitter
+} from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 
 
@@ -149,6 +150,10 @@ class PageFrame extends React.Component {
         this.setState({clueDetailPanelShow: true, clueParamObj: $.extend(this.state.clueParamObj, paramObj)});
     };
     closeCluePanel = () => {
+        //首页我的工作中，打通电话或写了跟进，关闭弹屏前，需要将首页的相关工作去掉
+        if (window.location.pathname === '/home') {
+            myWorkEmitter.emit(myWorkEmitter.HANDLE_FINISHED_WORK);
+        }
         //关闭电话弹屏面板时，将系统内拨打电话时，记录的电话联系人信息清掉
         if (this.state.clueParamObj.call_params && _.isFunction(this.state.clueParamObj.call_params.setInitialPhoneObj)) {
             this.state.clueParamObj.call_params.setInitialPhoneObj();
@@ -158,6 +163,10 @@ class PageFrame extends React.Component {
 
 
     closePhonePanel = () => {
+        //首页我的工作中，打通电话或写了跟进，关闭弹屏前，需要将首页的相关工作去掉
+        if (window.location.pathname === '/home') {
+            myWorkEmitter.emit(myWorkEmitter.HANDLE_FINISHED_WORK);
+        }
         //关闭电话弹屏面板时，将系统内拨打电话时，记录的电话联系人信息清掉
         if (this.state.paramObj.call_params && _.isFunction(this.state.paramObj.call_params.setInitialPhoneObj)) {
             this.state.paramObj.call_params.setInitialPhoneObj();

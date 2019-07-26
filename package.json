@@ -22,7 +22,6 @@
     "production": "npm run build && npm run start",
     "precommit": "lint-staged",
     "eslint_fix": "eslint --fix  --ext .jsx,.js ./  -o eslint-fix.log"
-
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -37,7 +36,7 @@
   },
   "dependencies": {
     "ant-auth-request": "1.0.16",
-    "ant-chart-collection": "1.0.13",
+    "ant-chart-collection": "1.0.19",
     "ant-utils": "1.0.12",
     "app-root-path": "1.0.0",
     "babel": "6.23.0",
@@ -90,7 +89,7 @@
   "devDependencies": {
     "alt": "0.17.9",
     "ant-ajax": "1.0.2",
-    "antc": "1.0.146",
+    "antc": "1.0.147",
     "antd": "2.13.0",
     "autoprefixer": "8.3.0",
     "autosize": "3.0.17",

@@ -30,29 +30,29 @@ class WeekAgendaScheduleLists extends React.Component {
 
     switchToday(Week) {
         switch (Week) {
-        case Intl.get('schedule.user.time.monday', '星期一'):
-            Week = 'Mon';
-            break;
-        case Intl.get('schedule.user.time.tuesday', '星期二'):
-            Week = 'Tus';
-            break;
-        case Intl.get('schedule.user.time.wednesday', '星期三'):
-            Week = 'Wed';
-            break;
-        case Intl.get('schedule.user.time.thursday', '星期四'):
-            Week = 'Thur';
-            break;
-        case Intl.get('schedule.user.time.friday', '星期五'):
-            Week = 'Fri';
-            break;
-        case Intl.get('schedule.user.time.saturday', '星期六'):
-            Week = 'Sat';
-            break;
-        case Intl.get('schedule.user.time.sunday', '星期日'):
-            Week = 'Sun';
-            break;
-        default:
-            break;
+            case Intl.get('schedule.user.time.monday', '星期一'):
+                Week = 'Mon';
+                break;
+            case Intl.get('schedule.user.time.tuesday', '星期二'):
+                Week = 'Tus';
+                break;
+            case Intl.get('schedule.user.time.wednesday', '星期三'):
+                Week = 'Wed';
+                break;
+            case Intl.get('schedule.user.time.thursday', '星期四'):
+                Week = 'Thur';
+                break;
+            case Intl.get('schedule.user.time.friday', '星期五'):
+                Week = 'Fri';
+                break;
+            case Intl.get('schedule.user.time.saturday', '星期六'):
+                Week = 'Sat';
+                break;
+            case Intl.get('schedule.user.time.sunday', '星期日'):
+                Week = 'Sun';
+                break;
+            default:
+                break;
         }
         return Week;
     }
@@ -181,10 +181,13 @@ class WeekAgendaScheduleLists extends React.Component {
                     <div className="title-wrap">
                         {_.map(startDate, (item, key) => {
                             var cls = classNames('even-title',
-                                {'rbc-today': containToday.flag && key == this.state.today});
+                                {'rbc-today': containToday.flag && key === this.state.today});
+                            var scheduleLength = _.get(this, `state.weekLists[${key}].length`);
                             return (
                                 <div className={cls}>
-                                    {item}
+                                    <div className="num-wrap">
+                                        {item}{scheduleLength > 0 ? <div className="schedule-count">{scheduleLength}</div> : null}
+                                    </div>
                                 </div>
                             );
                         })}
@@ -199,13 +202,13 @@ class WeekAgendaScheduleLists extends React.Component {
 WeekAgendaScheduleLists.navigate = (date, action) => {
     //前一周，或者后一周
     switch (action) {
-    case BigCalendar.Navigate.PREVIOUS:
-        return dates.add(date, -1, 'week');
+        case BigCalendar.Navigate.PREVIOUS:
+            return dates.add(date, -1, 'week');
 
-    case BigCalendar.Navigate.NEXT:
-        return dates.add(date, 1, 'week');
-    default:
-        return date;
+        case BigCalendar.Navigate.NEXT:
+            return dates.add(date, 1, 'week');
+        default:
+            return date;
     }
 };
 WeekAgendaScheduleLists.title = (date, {formats, culture}) => {

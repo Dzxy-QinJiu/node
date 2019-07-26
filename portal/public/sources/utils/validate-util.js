@@ -120,10 +120,21 @@ export const productDesRule = {
     message: Intl.get('app.user.manage.product.des.validate', '自定义属性key只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到20（包括20）之间')
 };
 
-// 产品名称长度的验证规则
-export const productNameLengthRule = {
+// 产品名称长度的验证规则（包含大小写字母、下划线、中英文括号、点及汉字，长度1-10之间）
+export const productNameLengthRule = regex.getNameRegex(10);
+
+export const productNameRule = {
     required: true,
-    min: 1,
-    max: 10,
-    message: Intl.get('config.product.name.rule', '最少1个字符,最多10个字符')
+    pattern: productNameLengthRule,
+    message: Intl.get('product.name.rule', '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间'),
+};
+
+// 用户名校验规则（字母、数字、横线或下划线组成的字符）
+export const userNameRule = /^[a-zA-Z0-9_-]{1,50}$/;
+
+// 用户名的校验规则
+export const userNameValidationRules = {
+    required: true,
+    pattern: userNameRule,
+    message: Intl.get('member.add.member.rule', '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间')
 };

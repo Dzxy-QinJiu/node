@@ -22,6 +22,29 @@ const VIEW_TYPE = {
     CUSTOMER_MERGE: 'customer_merge'
 };
 
+//联系方式种类
+const CONTACT_WAY_TYPES = [
+    {
+        field: 'phone',
+        name: Intl.get('common.phone', '电话')
+    }, 
+    {
+        field: 'qq',
+        name: 'QQ'
+    }, 
+    {
+        field: 'weChat',
+        name: Intl.get('crm.58', '微信')
+    }, 
+    {
+        field: 'email',
+        name: Intl.get('common.email', '邮箱')
+    }
+];
+
+//联系方式种类字段
+const CONTACT_WAY_TYPE_FIELDS = _.map(CONTACT_WAY_TYPES, 'field');
+
 class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
         //面板是否显示
@@ -60,8 +83,10 @@ class ClueToCustomerPanel extends React.Component {
             customerId: '',
             //当前操作的客户的名称
             customerName: '',
-            //当前操作的客户的联系人列表
+            //当前操作的客户的联系人列表，该列表在合并操作过程中被改变，最终会作为合并后的结果进行提交
             customerContacts: [],
+            //当前操作的客户的原始联系人列表，该列表在合并操作过程中不会被改变
+            rawCustomerContacts: [],
             //是否禁用“确认合并”按钮
             isConfirmMergeBtnDisabled: false
         };
@@ -251,12 +276,46 @@ class ClueToCustomerPanel extends React.Component {
                 this.setState({
                     customerId: customer.id,
                     customerName: customer.name,
-                    customerContacts: result
+                    customerContacts: result,
+                    rawCustomerContacts: _.cloneDeep(result)
                 }, this.setMergedCustomer);
             })
             .fail(err => {
                 message.error(err);
             });
+    }
+
+    //获取联系方式对比结果
+    getContactWayComparisonResult(customerContact, clueContact) {
+        let result = {
+            //联系方式是否重复
+            isDup: false
+        };
+
+        //遍历联系方式类型
+        _.each(CONTACT_WAY_TYPE_FIELDS, field => {
+
+            //客户联系人中该联系方式和线索联系人中该联系方式的合集
+            const all = _.concat(customerContact[field], clueContact[field]);
+            //去重后的该联系方式合集
+            const uniqSet = _.uniq(all);
+            //该联系方式是否重复
+            //如果去重后该联系方式总数少了，说明该联系方式有重复
+            const isDup = all.length > uniqSet.length;
+
+            //任一联系方式有重复，都表明该联系人的联系方式有重复
+            if (isDup) result.isDup = true;
+
+            //该联系方式是否有不同
+            const isDiff = _.difference(customerContact[field], clueContact[field]).length || _.difference(clueContact[field], customerContact[field]).length ? true : false;
+
+            result[field] = {
+                isDiff,
+                uniqSet
+            };
+        });
+
+        return result;
     }
 
     //设置已合并客户
@@ -275,37 +334,47 @@ class ClueToCustomerPanel extends React.Component {
         _.each(customerContacts, customerContact => {
             //遍历线索联系人列表
             _.some(clueContacts, clueContact => {
-                //客户联系人电话和线索联系人电话的合集
-                const allPhone = _.concat(customerContact.phone, clueContact.phone);
-                //去重后的电话合集
-                const uniqPhone = _.uniq(allPhone);
-                //电话是否重复
-                //如果去重后电话总数少了，说明有重复的电话
-                const isPhoneDup = allPhone.length > uniqPhone.length;
+                //联系方式对比结果
+                const contactWayComparisonResult = this.getContactWayComparisonResult(customerContact, clueContact);
+
+                //联系方式是否重复
+                const isContactWayDup = contactWayComparisonResult.isDup;
 
                 //联系人名是否重复
                 //如果线索和客户存在同名联系人，说明联系人重复
                 const isContactNameDup = clueContact.name === customerContact.name;
 
-                //联系人名重复或电话重复都认为是联系人重复
-                const isContactDup = isContactNameDup || isPhoneDup;
+                //如果联系方式有重复但名字不重复
+                if (isContactWayDup && !isContactNameDup) {
+                    //将客户联系人的替换名字设置为线索联系人的名字，以供用户选择
+                    customerContact.replaceName = clueContact.name;
+                    isConfirmMergeBtnDisabled = true;
+                }
+
+                //联系人是否重复
+                //联系人名重复或联系方式重复都认为是联系人重复
+                const isContactDup = isContactNameDup || isContactWayDup;
 
                 //如果联系人重复
                 if (isContactDup) {
-                    //将客户联系人的电话设置为去重后的电话合集
-                    customerContact.phone = uniqPhone;
-                    //将该客户联系人标记为需要更新电话
-                    customerContact.updateFields = ['phone'];
+                    //遍历联系方式类型
+                    _.each(CONTACT_WAY_TYPE_FIELDS, field => {
+                        //如果联系方式有不同
+                        if (contactWayComparisonResult[field].isDiff) {
+                            //标记联系方式需要更新
+                            if (_.isArray(customerContact.updateFields)) {
+                                customerContact.updateFields.push(field);
+                            } else {
+                                customerContact.updateFields = [field];
+                            }
+
+                            //将联系方式设为合并后的联系方式
+                            customerContact[field] = contactWayComparisonResult[field].uniqSet;
+                        }
+                    });
 
                     //将该线索联系人标记为重复联系人
                     clueContact.isDup = true;
-
-                    //如果电话重复且客户联系人和线索联系人的名字不相同
-                    if (isPhoneDup && customerContact.name !== clueContact.name) {
-                        //将客户联系人的替换名字设置为线索联系人的名字，以供用户选择
-                        customerContact.replaceName = clueContact.name;
-                        isConfirmMergeBtnDisabled = true;
-                    }
 
                     //中止遍历
                     return true;
@@ -346,6 +415,8 @@ class ClueToCustomerPanel extends React.Component {
         contact.name = contact.replaceName;
         //删除暂存的替换名称
         delete contact.replaceName;
+
+        if (!contact.updateFields) contact.updateFields = [];
         //在联系人需要更新的字段中加上名称
         contact.updateFields.push('name');
 
@@ -398,74 +469,76 @@ class ClueToCustomerPanel extends React.Component {
         //变化了的联系人（新增或需要更新的）
         const changedContacts = _.filter(contacts, contact => contact.isNew || !_.isEmpty(contact.updateFields));
 
-        if (!_.isEmpty(changedContacts)) {
-            //已经完成的ajax请求数
-            let ajaxDoneNum = 0;
+        //如果没有变化的联系人
+        if (_.isEmpty(changedContacts)) {
+            //将第一个联系人设置为名字需要更新，以便能合并到客户
+            _.set(contacts, '[0].updateFields', ['name']);
+        }
 
-            const promises = [];
+        const promises = [];
 
-            _.each(contacts, (contact, index) => {
-                //如果是新联系人
-                if (contact.isNew) {
-                    contact = _.cloneDeep(this.refs[contact.id].state.formData);
+        _.each(contacts, (contact, index) => {
+            //如果是新联系人
+            if (contact.isNew) {
+                contact = _.cloneDeep(this.refs[contact.id].state.formData);
 
-                    if (contact.birthday) {
-                        //将moment格式的值转为时间戳
-                        contact.birthday = contact.birthday.valueOf();
-                    }
+                //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
+                contact.def_contancts = 'false';
 
-                    const fields = ['phone', 'qq', 'weChat', 'email'];
+                if (contact.birthday) {
+                    //将moment格式的值转为时间戳
+                    contact.birthday = contact.birthday.valueOf();
+                }
 
-                    _.each(contact, (value, key) => {
-                        const keyWithoutIndex = key.substr(0, key.length - 1);
+                _.each(contact, (value, key) => {
+                    const keyWithoutIndex = key.substr(0, key.length - 1);
 
-                        if (_.includes(fields, keyWithoutIndex)) {
-                            if (!contact[keyWithoutIndex]) {
-                                contact[keyWithoutIndex] = [value];
-                            } else {
-                                contact[keyWithoutIndex].push(value);
-                            }
-
-                            delete contact[key];
+                    if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex)) {
+                        if (!contact[keyWithoutIndex]) {
+                            contact[keyWithoutIndex] = [value];
+                        } else {
+                            contact[keyWithoutIndex].push(value);
                         }
-                    });
+
+                        delete contact[key];
+                    }
+                });
+
+                const promise = ajax.send({
+                    url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
+                    type: 'post',
+                    data: contact
+                });
+
+                promises.push(promise);
+            } else {
+                //遍历需要更新的字段
+                _.each(contact.updateFields, field => {
 
                     const promise = ajax.send({
-                        url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
-                        type: 'post',
+                        url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
+                        type: 'put',
                         data: contact
-                    });
+                    }, `clueToCustomer${index}${field}`);
 
                     promises.push(promise);
-                } else {
-                    //遍历需要更新的字段
-                    _.each(contact.updateFields, field => {
-
-                        const promise = ajax.send({
-                            url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
-                            type: 'put',
-                            data: contact
-                        }, `clueToCustomer${index}`);
-
-                        promises.push(promise);
-                    });
-
-                    delete contact.updateFields;
-                }
-            });
-
-            $.when(...promises)
-                .done(() => {
-                    message.success(Intl.get('common.merge.success', '合并成功'));
-
-                    this.props.onMerged(this.state.customerId, this.state.customerName);
-                })
-                .fail(err => {
-                    const content = _.isArray(err) ? err.join('; ') : err;
-
-                    message.error(content);
                 });
-        }
+
+                delete contact.updateFields;
+            }
+        });
+
+        $.when(...promises)
+            .done(() => {
+                message.success(Intl.get('common.merge.success', '合并成功'));
+
+                this.props.onMerged(this.state.customerId, this.state.customerName);
+            })
+            .fail(err => {
+                const content = _.isArray(err) ? err.join('; ') : err;
+
+                message.error(content);
+            });
     }
 
     //渲染客户列表项
@@ -478,11 +551,14 @@ class ClueToCustomerPanel extends React.Component {
             customerName = <span className="high-light">{customerName}</span>;
         } else {
             const startIndex = customerName.indexOf(clueName);
-            const endIndex = startIndex + clueName.length;
-            const beginPart = customerName.substr(0, startIndex);
-            const endPart = customerName.substr(endIndex);
 
-            customerName = <span>{beginPart}<span className="high-light">{clueName}</span>{endPart}</span>;
+            if (startIndex > -1) {
+                const endIndex = startIndex + clueName.length;
+                const beginPart = customerName.substr(0, startIndex);
+                const endPart = customerName.substr(endIndex);
+
+                customerName = <span>{beginPart}<span className="high-light">{clueName}</span>{endPart}</span>;
+            }
         }
         
         const contacts = this.getDupCustomerContacts(customer, clue);
@@ -563,15 +639,21 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染联系人标题
     renderContactTitle(contact, contactIndex) {
+        let iconClassName = 'iconfont icon-contact-default';
+
+        if (contact.def_contancts === 'true') {
+            iconClassName += ' is-default-contact';
+        }
+
         return (
             <div className="contact-title">
                 <div className="contact-name">
-                    <span className="iconfont icon-contact-default is-default-contact"></span>
+                    <span className={iconClassName}></span>
                     {contact.name}
                 </div>
 
                 {contact.replaceName ? (
-                    <div className="is-replace-contract-name">
+                    <div className="is-replace-contact-name">
                         {Intl.get('common.modify.name.to', '修改姓名为')}“{contact.replaceName}”？
                         <Button
                             onClick={this.onReplaceContactNameCancelBtnClick.bind(this, contactIndex)}
@@ -592,46 +674,43 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染联系人内容
     renderContactContent(contact) {
-        //当前操作的客户
-        const curCustomer = _.find(this.props.existingCustomers, customer => customer.id === this.state.customerId);
-
-        //当前操作的客户的联系人中和要渲染的联系人相同的联系人
-        const curCustomerContact = _.find(curCustomer.contacts, customerContact => customerContact.name === contact.name);
-
-        //当前操作的客户的联系人中和要渲染的联系人相同的联系人的电话
-        const curCustomerPhone = _.get(curCustomerContact, 'phone');
-
-        //当前线索的联系人中和要渲染的联系人相同的联系人
-        const curClueContact = _.find(this.props.clue.contacts, clueContact => clueContact.name === contact.name);
-
-        //当前线索的联系人中和要渲染的联系人相同的联系人的电话
-        const curCluePhone = _.get(curClueContact, 'phone');
-
         return (
             <div className="contact-content">
-                <Row>
-                    <Col span={3}>
-                        {Intl.get('common.phone', '电话')}：
-                    </Col>
-                    <Col span={20}>
-                        {_.map(contact.phone, (phone, phoneIndex) => {
-                            //电话是否来自线索的标识
-                            let mark = '';
+                {_.map(CONTACT_WAY_TYPES, type => {
+                    const typeName = type.name;
+                    const typeField = type.field;
 
-                            //如果当前电话在客户中不存在，在线索中存在
-                            if (!_.includes(curCustomerPhone, phone) && _.includes(curCluePhone, phone)) {
-                                //显示标识
-                                mark = <span className="clue-mark">（{Intl.get('crm.sales.clue', '线索')}）</span>;
-                            }
+                    return (
+                        <Row>
+                            <Col span={3}>
+                                {typeName}：
+                            </Col>
+                            <Col span={20}>
+                                {_.map(contact[typeField], (item, index) => {
+                                    //联系方式是否来自线索的标识
+                                    let mark = '';
 
-                            return (
-                                <div>
-                                    {phone}{mark || null}
-                                </div>
-                            );
-                        })}
-                    </Col>
-                </Row>
+                                    //当前联系方式在客户中是否存在
+                                    const contactWayInCustomer = _.find(this.state.rawCustomerContacts, contact => _.includes(contact[typeField], item));
+                                    //当前联系方式在线索中是否存在
+                                    const contactWayInClue = _.find(this.props.clue.contacts, contact => _.includes(contact[typeField], item));
+
+                                    //如果当前联系方式在客户中不存在，在线索中存在
+                                    if (!contactWayInCustomer && contactWayInClue) {
+                                    //显示标识
+                                        mark = <span className="clue-mark">（{Intl.get('crm.sales.clue', '线索')}）</span>;
+                                    }
+
+                                    return (
+                                        <div>
+                                            {item}{mark || null}
+                                        </div>
+                                    );
+                                })}
+                            </Col>
+                        </Row>
+                    );
+                })}
             </div>
         );
     }

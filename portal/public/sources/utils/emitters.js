@@ -8,6 +8,11 @@ var EventEmitter = require('events');
 exports.scrollBarEmitter = new EventEmitter();
 exports.scrollBarEmitter.STOP_LOADED_DATA = 'stopScrollLoadedData';
 exports.scrollBarEmitter.HIDE_BOTTOM_LOADING = 'scrollBar.hideBottomLoading';
+//首页我的工作的emitter
+exports.myWorkEmitter = new EventEmitter();
+exports.myWorkEmitter.HANDLE_FINISHED_WORK = 'handleFinishedWork';
+exports.myWorkEmitter.SET_WORK_FINISHED = 'setWorkFinished';
+
 //拨打电话emitter
 exports.phoneMsgEmitter = new EventEmitter();
 //打开拨打电话的面板emitter
@@ -58,6 +63,8 @@ exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocument
 
 //未处理的线索数量
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
+//更新待我处理的数据
+exports.notificationEmitter.UPDATED_MY_HANDLE_CLUE = 'updateMyHandleClue';
 //电话系统初始化成功
 exports.notificationEmitter.PHONE_INITIALIZE = 'phoneInitialize';
 //未审批申请的数量

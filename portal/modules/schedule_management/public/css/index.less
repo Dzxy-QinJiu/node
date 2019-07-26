@@ -348,8 +348,23 @@
             border-bottom:1px solid @Icon-Gray-Color;
             text-align: center;
             border-right: 1px solid @Icon-Gray-Color;
-            height: 30px;
-            line-height: 30px;
+            height: 35px;
+            line-height: 35px;
+            .num-wrap{
+              .schedule-count{
+                position: relative;
+                width: 14px;
+                height: 14px;
+                line-height: 14px;
+                background: #2097F3;
+                border-radius: 50%;
+                margin: 0 auto;
+                top: -11px;
+                display: inline-block;
+                color: #fff;
+                font-size: 7px;
+              }
+            }
           }
           .even-title:last-child{
             border-right: none;
@@ -504,8 +519,24 @@
           text-align: center;
           .title-week{
             padding-right: 120px;
+            .num-wrap{
+              .schedule-count{
+                position: relative;
+                width: 14px;
+                height: 14px;
+                line-height: 14px;
+                background: #2097F3;
+                border-radius: 50%;
+                margin: 0 auto;
+                top: -11px;
+                display: inline-block;
+                color: #fff;
+                font-size: 7px;
+              }
+            }
           }
         }
+
       }
       //右侧日程列表
       .list-item{
@@ -609,15 +640,14 @@
     background: @Background-color;
   }
 }
-.ant-popover{
+
+.schedule-manage-popover {
   z-index: 30;
+  .ant-popover-content > .ant-popover-arrow{
+    display: none;
+  }
 }
-.ant-popover-placement-right > .ant-popover-content > .ant-popover-arrow{
-  display: none;
-}
-.ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow{
-  display: none;
-}
+
 
 .ant-popover-placement-bottom, .ant-popover-placement-top {
   .ant-popover-inner-content {

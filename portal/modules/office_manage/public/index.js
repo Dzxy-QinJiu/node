@@ -120,7 +120,7 @@ class OfficeManage extends React.Component {
     };
 
     renderErrorAlert = (errorMsg, hide) => {
-        return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" showIcon onHide={hide}/>);
+        return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" onHide={hide}/>);
     };
 
     handleDeleteRoleFail = () => {
@@ -370,11 +370,6 @@ class OfficeManage extends React.Component {
                                         onMouseEnter={this.handleMouseEnter.bind(this, item)}
                                         onClick={this.handleClickPosition.bind(this, item )}
                                     >
-                                        {
-                                            this.state.deleteOrSetDefaultPositionId === item.id && this.state.deleteOrSetDefaultErrMsg ? (
-                                                this.handleDeleteRoleFail()
-                                            ) : null
-                                        }
                                         <div className={itemContainerCls}>
                                             {
                                                 isEdit && this.state.isShowEditPositionFlag ? (
@@ -436,6 +431,11 @@ class OfficeManage extends React.Component {
                                                 )
                                             }
                                         </div>
+                                        {
+                                            this.state.deleteOrSetDefaultPositionId === item.id && this.state.deleteOrSetDefaultErrMsg ? (
+                                                this.handleDeleteRoleFail()
+                                            ) : null
+                                        }
                                     </li>);
                             }
                             )}

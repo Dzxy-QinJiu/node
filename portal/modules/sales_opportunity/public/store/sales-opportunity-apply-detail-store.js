@@ -218,7 +218,9 @@ SalesOpportunityApplyDetailStore.prototype.showOrHideApprovalBtns = function(fla
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidate = function(candidateArr){
     this.candidateList = candidateArr;
-    this.isLeader = checkIfLeader(candidateArr);
+    checkIfLeader(candidateArr,(isLeader) => {
+        this.isLeader = isLeader;
+    });
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidateName = function(candidateName){
     this.detailInfoObj.info.nextCandidateName = candidateName;
@@ -237,8 +239,8 @@ SalesOpportunityApplyDetailStore.prototype.getNextCandidate = function(result) {
     if (result.error){
         this.candidateList = [];
     }else{
-        this.candidateList = result;
-        this.isLeader = checkIfLeader(result);
+        this.candidateList = _.get(result,'list',[]);
+        this.isLeader = _.get(result,'isLeader',false);
     }
 };
 SalesOpportunityApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {

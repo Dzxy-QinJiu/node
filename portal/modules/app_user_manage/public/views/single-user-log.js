@@ -1,4 +1,3 @@
-var React = require('react');
 require('../css/single-user-log.less');
 //时间范围选择
 import { AntcDatePicker as DatePicker } from 'antc';
@@ -52,7 +51,14 @@ class SingleUserLog extends React.Component {
         SingleUserLogStore.listen(this.onStateChange);
         SingleUserLogAction.resetLogState();
         let userId = this.props.userId;
-        this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
+        if (this.props.operatorRecordDateSelectTime) {
+            SingleUserLogAction.changeSearchTime(this.props.operatorRecordDateSelectTime);
+            setTimeout(() => {
+                this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
+            });
+        } else {
+            this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -394,6 +400,7 @@ SingleUserLog.propTypes = {
     userId: PropTypes.string,
     selectedAppId: PropTypes.string,
     appLists: PropTypes.array,
-    height: PropTypes.number
+    height: PropTypes.number,
+    operatorRecordDateSelectTime: PropTypes.object
 };
 module.exports = SingleUserLog;

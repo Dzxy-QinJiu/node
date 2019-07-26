@@ -334,6 +334,21 @@ var zh_CN = {
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
 
+
+    //首页
+    'menu.home.page': '首页',
+    'home.page.my.work': '我的工作',
+    'home.page.work.all': '全部事务',
+    'home.page.my.interest': '我的关注',
+    'home.page.my.data': '我的数据',
+    'home.page.deal.handle': '待处理的订单',
+    'home.page.no.work.tip': '暂无工作',
+    'home.page.new.work.tip': '工作有变动，点此{refreshTip}',
+    'home.page.my.work.finished': '我已完成',
+    'home.page.contacts.customers.week': '本周已联系客户总数',
+    'home.page.callout.time': '呼出总时长',
+    'home.page.performance.num': '第{n}名',
+
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
     'user.title': '用户管理',
@@ -743,8 +758,9 @@ var zh_CN = {
     'member.position.delete.office': '删除职务',
     'member.position.set.default': '设为默认',
     'member.continue.add.member': '继续添加成员',
-
+    'member.add.member.rule': '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间',
     //后台管理-成员end
+
     //组织管理start
     'organization.no.organization.tip': '暂无组织，请先添加',
     'organization.input.placeholder': '请输入组织名称',
@@ -776,6 +792,11 @@ var zh_CN = {
     'organization.get.add.organization.member.list.failed': '获取可加入组织的成员列表失败',
     'organization.no.realms': '还没有安全域诶..',
     //组织管理end
+
+    // 后台管理-产品start
+    'product.name.input': '请填写产品名称',
+    'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
+    // 后台管理-产品end
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': '添加竞品',
@@ -1532,7 +1553,7 @@ var zh_CN = {
     'crm.import.name.repeat': '导入数据中存在同名{type}',
     'crm.system.name.repeat': '系统中已存在同名{type}',
     'crm.import.phone.repeat': '导入数据中存在相同的电话',
-    'crm.system.phone.repeat': '系统中已存在相同的电话',
+    'crm.system.phone.repeat': '电话已被其他客户使用',
     'crm.import.phone.verify': '电话只能是11位手机号或11-12位带区号的座机号',
 
     // 客户详情中，合同项
@@ -2201,7 +2222,7 @@ var zh_CN = {
     'errorcode.146': '分机离线',
     'errorcode.147': '二维码已失效',
     'errorcode.148': '电话时长统计视图获取失败',
-    'errorcode.149': '该角色已经分配给销售',
+    'errorcode.149': '已有成员设置了该职务，不能删除',
     'errorcode.150': '修改线索信息失败',
     'errorcode.151': '获取销售新开客户数和新开帐号数失败',
     'errorcode.152': '线索重复',
@@ -2688,6 +2709,7 @@ var zh_CN = {
     'clue.has.no.relative.customer': '没有关联客户的线索',
     'clue.export.clue.list': '导出线索',
     'clue.extract.clue': '提取线索',
+    'clue.pool': '线索池',
     'clue.pool.batch.extract.clue': '批量提取',
     'clue.extract.get.list.failed': '获取提取线索列表失败',
     'clue.extract.batch.extract.failed': '批量提取线索失败',
@@ -3142,5 +3164,18 @@ var zh_CN = {
     'clue.detail.last.contact.time': '最后跟进时间',
     'common.sales.develop': '销售开发',
     'common.clue.convert': '线索转化',
+    'common.clue.name.need.at.least.two.char.to.do.customer.convert': '线索名称必须在两个字或以上，才能进行转为客户的操作',
+    'app.manege.access.no.amdin.tip': '暂无用户，请联系管理员接入用户',
+    'common.new.customer.conversion.rate.statistics': '新增客户转化率统计',
+    'common.number.of.new.customers': '新增客户数',
+    'common.number.of.open.user.customers': '开通用户客户数',
+    'common.number.of.qualified.customers': '合格客户数',
+    'common.number.of.customers.logged.in': '登录过的客户数',
+    'common.number.of.contracted.customers': '签约客户数',
+    'apply.approve.not.setting.workflow': '尚未配置流程，{tip}',
+    'apply.approve.contact.manager': '请联系管理员',
+    'apply.approve.go.set.workflow': '去设置？',
+    'customer.select.name.tip': '请在下拉框中选择客户',
+    'contract.current.month.contract.analysis': '本月合同分析',
 };
 export default zh_CN;
