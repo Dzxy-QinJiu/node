@@ -28,6 +28,8 @@ import {Row, Col, Collapse} from 'antd';
 
 const Panel = Collapse.Panel;
 
+const commonDataUtil = require('PUB_DIR/sources/utils/common-data-util');
+
 import {
     appSelectorEmitter,
     teamTreeEmitter,
@@ -81,6 +83,7 @@ class CurtaoAnalysis extends React.Component {
         this.getAppList();
         this.getClueChannelList();
         this.getClueSourceList();
+        this.getUserTypeList();
         // 获取组织电话系统配置
         this.getCallSystemConfig();
 
@@ -152,6 +155,13 @@ class CurtaoAnalysis extends React.Component {
             url: '/rest/clue/v1/clue_source/100/1'
         }).then(result => {
             Store.clueSourceList = _.get(result, 'result');
+        });
+    };
+
+    //获取用户类型列表
+    getUserTypeList = () => {
+        commonDataUtil.getUserTypeList().then(result => {
+            Store.userTypeList = result;
         });
     };
     
