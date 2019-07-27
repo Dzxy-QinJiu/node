@@ -208,32 +208,30 @@ class MemberForm extends React.Component {
     resetEmailFlags = () => {
         MemberFormAction.resetEmailFlags();
     };
-    // 验证用户名的唯一性
-    checkOnlyUserName = () => {
-        let userName = _.trim(this.props.form.getFieldValue('userName'));
-        if (userNameRule.test(userName)) {
-            MemberFormAction.checkOnlyUserName(userName);
-        }
-    };
 
-    resetUserNameFlags = () => {
-        MemberFormAction.resetUserNameFlags();
-    };
-
-    // 用户名唯一性验证的展示
-    renderUserNameMsg = () => {
-        if (this.state.userNameExist || this.state.userNameError) {
-            return (
-                <div className="phone-email-check">
-                    {
-                        this.state.userNameExist ? Intl.get('common.is.existed', '用户名已存在！') :
-                            Intl.get('common.username.is.unique', '用户名唯一性校验出错！')
+    userNameValidationRules = () => {
+        return (rule, value, callback) => {
+            if (userNameRule.test(value) || emailRegex.test(value)) {
+                MemberFormAction.checkOnlyUserName(value, data => {
+                    if (_.isString(data)) {
+                        //唯一性验证出错了
+                        callback(Intl.get('common.is.existed', '用户名已存在！'));
+                    } else {
+                        if (data === false) {
+                            callback();
+                        } else {
+                            //已存在
+                            callback(Intl.get('common.username.is.unique', '用户名唯一性校验出错！'));
+                        }
                     }
-                </div>
-            );
-        } else {
-            return null;
-        }
+                });
+            } else {
+                //延迟1秒钟后再显示错误信息，以防止一输入就报错
+                setTimeout(() => {
+                    callback(Intl.get('member.add.member.rule', '用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间'));
+                }, 1000);
+            }
+        };
     };
 
     //验证昵称（对应的是姓名）的唯一性
@@ -396,20 +394,19 @@ class MemberForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('userName', {
-                                    rules: [userNameValidationRules]
+                                    rules: [{
+                                        required: true,
+                                        validator: this.userNameValidationRules()
+                                    }]
                                 })(
                                     <Input
                                         name="userName"
                                         id="userName"
                                         type="text"
                                         placeholder={Intl.get('login.write.username', '请输入用户名')}
-                                        className={this.state.userNameExist || this.state.userNameError || this.state.userNameRuleError ? 'input-red-border' : ''}
-                                        onBlur={this.checkOnlyUserName}
-                                        onFocus={this.resetUserNameFlags}
                                     />
                                 )}
                             </FormItem>
-                            {this.renderUserNameMsg()}
                             <FormItem
                                 label={Intl.get('common.name', '姓名')}
                                 {...formItemLayout}

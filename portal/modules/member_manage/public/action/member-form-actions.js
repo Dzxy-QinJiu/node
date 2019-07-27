@@ -7,7 +7,6 @@ class MemberFormActions {
         this.generateActions(
             'setSaveFlag', //设置是否正在保存
             'resetNickNameFlags', // 重置昵称（对应的是姓名）验证的标志
-            'resetUserNameFlags', //重置用户验证的标志
             'resetEmailFlags', //重置邮箱验证的标志
             'setPositionListLoading',//正在获取职务列表
             'setRoleListLoading', //正在获取角色列表
