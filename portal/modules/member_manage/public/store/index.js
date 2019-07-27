@@ -194,7 +194,7 @@ class MemberManageStore {
                         userLogo: modifiedMember.user_logo
                     });
                 }
-            } else if (phone) { // 修改成员手机
+            } else if (_.has(modifiedMember, 'phone')) { // 修改成员手机
                 changeMember.phone = phone;
             } else if (email) { // 修改成员邮箱
                 changeMember.email = email;
