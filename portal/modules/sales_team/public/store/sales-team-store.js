@@ -942,7 +942,7 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
                 }
             }
         }
-    } else if (phone) { // 修改成员的手机
+    } else if (_.has(member, 'phone')) { // 修改成员的手机
         if (ownerId === memberId) { // 修改负责人的手机
             owner.phone = phone;
         } else {
