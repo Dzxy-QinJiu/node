@@ -37,7 +37,13 @@ const WORK_TYPES = {
     DEAL: 'deal',// 待处理的订单deal
     CUSTOMER: 'customer'//用来区分日程是否是客户的类型
 };
-const WORK_DETAIL_TAGS = {};
+const WORK_DETAIL_TAGS = {
+    SCHEDULE: 'schedule',//日程
+    APPLY: 'apply',//申请、审批
+    LEAD: 'lead',//待处理线索
+    DEAL: 'deal',//订单
+    SELLSTATEGY: 'sellStrategy'//大小循环
+};
 //联系计划类型
 const SCHEDULE_TYPES = {
     LEAD_CALLS: 'lead',//线索中打电话的联系计划
@@ -49,9 +55,9 @@ const SCHEDULE_TYPES = {
 const APPLY_STATUS = {
     ONGOING: 'ongoing',//待审批
     REJECT: 'reject',//驳回
-    PASS: 'pass'//通过
+    PASS: 'pass',//通过
+    CANCEL: 'cancel',//撤销
 };
-
 
 class MyWorkColumn extends React.Component {
     constructor(props) {
@@ -459,10 +465,39 @@ class MyWorkColumn extends React.Component {
         return typeDescr;
     }
 
+    getApplyRemark(item, tag) {
+        let remark = '';
+        let type = this.getApplyType(_.get(item, `[${tag}].applyType`, ''));
+        switch (_.get(item, `[${tag}].opinion`, '')) {
+            case APPLY_STATUS.ONGOING://待审批
+                remark = _.get(item, `[${tag}].applicant`, '') + ' ' + type;
+                break;
+            case APPLY_STATUS.PASS://通过
+                remark = Intl.get('home.page.approve.pass.tip', '{user}通过了您的{applyType}', {
+                    user: _.get(item, `[${tag}].approver`, ''),
+                    applyType: type
+                });
+                break;
+            case APPLY_STATUS.REJECT://驳回
+                remark = Intl.get('home.page.approve.reject.tip', '{user}驳回了您的{applyType}', {
+                    user: _.get(item, `[${tag}].approver`, ''),
+                    applyType: type
+                });
+                break;
+            case APPLY_STATUS.CANCEL://撤销
+                remark = Intl.get('home.page.approve.cancel.tip', '{user}撤回了{applyType}', {
+                    user: _.get(item, `[${tag}].applicant`, ''),
+                    applyType: type
+                });
+                break;
+        }
+        return remark;
+    }
+
     renderWorkRemarks(tag, item, index) {
         let tagDescr = '', remark = '', startTime = '', endTime = '', type = '';
         switch (tag) {
-            case 'schedule'://日程
+            case WORK_DETAIL_TAGS.SCHEDULE://日程
                 tagDescr = Intl.get('menu.shortName.schedule', '日程');
                 startTime = _.get(item, `[${tag}].start_time`) ? moment(item[tag].start_time).format(oplateConsts.HOUR_MUNITE_FORMAT) : '';
                 endTime = _.get(item, `[${tag}].end_time`) ? moment(item[tag].end_time).format(oplateConsts.HOUR_MUNITE_FORMAT) : '';
@@ -474,29 +509,24 @@ class MyWorkColumn extends React.Component {
                 }
                 remark += _.get(item, `[${tag}].content`);
                 break;
-            case 'apply'://申请、审批
+            case WORK_DETAIL_TAGS.APPLY://申请、审批
                 tagDescr = Intl.get('home.page.apply.type', '申请');
-                type = this.getApplyType(_.get(item, `[${tag}].applyType`, ''));
-                remark = _.get(item, `[${tag}].applicant`, '') + ' ' + type;
+                remark = this.getApplyRemark(item, tag);
                 break;
-            case 'lead'://待处理线索
+            case WORK_DETAIL_TAGS.LEAD://待处理线索
                 tagDescr = Intl.get('crm.sales.clue', '线索');
                 //TODO 线索描述
                 remark = _.get(item, `[${tag}].source`, '');
                 break;
-            case 'deal'://订单
+            case WORK_DETAIL_TAGS.DEAL://订单
                 tagDescr = Intl.get('user.apply.detail.order', '订单');
                 //订单预算
                 if (_.get(item, `[${tag}].budget`)) {
                     remark = Intl.get('leave.apply.buget.count', '预算') + ': ' + Intl.get('contract.159', '{num}元', {num: _.get(item, `[${tag}].budget`)});
                 }
                 break;
-            case 'sellStrategy'://大小循环设置的联系频率
+            case WORK_DETAIL_TAGS.SELLSTATEGY://大小循环设置的联系频率
                 tagDescr = Intl.get('customer.contact.somebody', '联系');
-                //订单预算
-                if (_.get(item, `[${tag}].budget`)) {
-                    remark = Intl.get('leave.apply.buget.count', '预算') + ': ' + Intl.get('contract.159', '{num}元', {num: _.get(item, `[${tag}].budget`)});
-                }
                 break;
         }
         return (

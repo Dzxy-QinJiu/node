@@ -349,6 +349,9 @@ var en_US = {
     'home.page.user.password.apply': 'Application for Password Modification',//修改密码申请
     'home.page.user.application.for': 'Application for {type}',//{type}申请
     'home.page.work.click.tip': 'Click to see details of {type}',//点击查看{type}详情
+    'home.page.approve.pass.tip': '{user} passes your {applyType}',//{user}通过了您的{applyType}
+    'home.page.approve.reject.tip': '{user} rejects your {applyType}',//{user}驳回了您的{applyType}
+    'home.page.approve.cancel.tip': '{user} revoked {applyType}',//{user}撤回了{applyType}
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -3024,7 +3027,7 @@ var en_US = {
     'common.merge.to.customer': 'convert to customer',//合并到此客户
     'common.modify.name.to': 'modify name to',//修改姓名为
     'common.convert.to.new.customer': 'convert to new customer',//转为新客户
-    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户 
+    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户
     'common.total.points': 'total points',//总分
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From {source}',//来自“{source}”
