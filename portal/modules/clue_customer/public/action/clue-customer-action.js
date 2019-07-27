@@ -39,6 +39,7 @@ function ClueCustomerActions() {
         'afterTranferClueSuccess',//转化客户成功后
         'setLoadingFalse',
         'changeFilterFlag',
+        'saveSettingCustomerRecomment',
         'saveQueryObj'
     );
     //获取销售列表
@@ -50,6 +51,20 @@ function ClueCustomerActions() {
         }, (errorMsg) => {
             // eslint-disable-next-line no-console
             console.log(errorMsg);
+        });
+    };
+    //获取个人客户推荐配置
+    this.getSettingCustomerRecomment = function() {
+        clueCustomerAjax.getSettingCustomerRecomment().then((list) => {
+            this.dispatch({list: list});
+        },(errorMsg) => {});
+    };
+    this.getRecommendClueLists = function(obj) {
+        this.dispatch({loading: true, error: false});
+        clueCustomerAjax.getRecommendClueLists(obj).then((list) => {
+            this.dispatch({loading: false, error: false,list: list});
+        },(errorMsg) => {
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
     //添加或更新跟进内容

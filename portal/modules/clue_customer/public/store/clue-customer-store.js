@@ -6,18 +6,14 @@
 var ClueCustomerAction = require('../action/clue-customer-action');
 let clueFilterAction = require('../action/filter-action');
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
-const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import {
     SELECT_TYPE,
-    isOperation,
-    isSalesLeaderOrManager,
     getClueStatusValue,
-    AVALIBILITYSTATUS
+    deleteEmptyProperty
 } from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
-import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -53,6 +49,46 @@ ClueCustomerStore.prototype.resetState = function() {
     this.showFilterList = false;//是否展示线索筛选区域
     this.firstLogin = true;//用来记录是否是首次加载
     this.queryObj = {};//用来记录搜索条件
+    this.settedCustomerRecommend = {
+        loading: true,
+        obj: {}
+    };
+    //所有线索的数量
+    this.allClueCount = 0;
+    //推荐线索的列表及相关状态
+    this.isLoadingRecommendClue = true;
+    this.getRecommendClueErrMsg = '';
+    this.recommendClueLists = [];
+};
+ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
+    if (result.loading) {
+        this.isLoadingRecommendClue = true;
+        this.getRecommendClueErrMsg = '';
+    } else if (result.error) {
+        this.isLoadingRecommendClue = false;
+        this.getRecommendClueErrMsg = result.errorMsg;
+    } else {
+        this.isLoadingRecommendClue = false;
+        this.getRecommendClueErrMsg = '';
+        this.recommendClueLists = result.list;
+    }
+};
+//保存查询条件
+ClueCustomerStore.prototype.saveSettingCustomerRecomment = function(result) {
+    deleteEmptyProperty(result);
+    this.settedCustomerRecommend.obj = result;
+};
+ClueCustomerStore.prototype.getSettingCustomerRecomment = function(result){
+    var data = _.get(result,'list.[0]');
+    if (data){
+        deleteEmptyProperty(data);
+        this.settedCustomerRecommend = {
+            loading: false,
+            obj: data
+        };
+    }else{
+        this.settedCustomerRecommend.loading = false;
+    }
 };
 ClueCustomerStore.prototype.changeFilterFlag = function(filterFlag) {
     this.showFilterList = filterFlag;
@@ -124,6 +160,7 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
                     };
                 }
             });
+            this.allClueCount = this.agg_list['willDistribute'] + this.agg_list['willTrace'] + this.agg_list['hasTrace'] + this.agg_list['hasTransfer'];
             //需要展示待我处理
             if(_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'yes'){
                 this.showFilterList = true;

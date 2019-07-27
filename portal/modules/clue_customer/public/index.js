@@ -63,6 +63,8 @@ var LAYOUT_CONSTANTS = {
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
     TH_MORE_HEIGHT: 20//带选择框的TH60比不带选择框的TH40多出来的高度
 };
+import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
+import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 
 class ClueCustomer extends React.Component {
     state = {
@@ -101,6 +103,8 @@ class ClueCustomer extends React.Component {
         this.getClueChannel();
         //获取线索分类
         this.getClueClassify();
+        //获取是否配置过线索推荐条件
+        this.getSettingCustomerRecomment();
         clueCustomerAction.getSalesManList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
@@ -287,6 +291,9 @@ class ClueCustomer extends React.Component {
             console.log('获取线索分类出错了 ' + errorMsg);
         });
     };
+    getSettingCustomerRecomment = () => {
+        clueCustomerAction.getSettingCustomerRecomment();
+    };
 
     //渲染导入线索的按钮
     renderImportClue = () => {
@@ -302,6 +309,32 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+    showClueRecommendTemplate = () => {
+        this.setState({
+            isShowRecommendCluePanel: true
+        });
+    };
+    closeRecommendCluePanel = () => {
+        this.setState({
+            isShowRecommendCluePanel: false
+        });
+    }
+    //渲染线索推荐按钮
+    renderClueRecommend = () => {
+        return (
+            <div className="recomend-clue-customer-container pull-right">
+                {/*todo 线索推荐权限的修改*/}
+                {hasPrivilege('CUSTOMER_ADD_CLUE') ?
+                    <Button onClick={this.showClueRecommendTemplate} className="btn-item">
+                        <span className="clue-container">
+                            {Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                        </span>
+                    </Button>
+                    : null}
+            </div>
+        );
+    };
+
 
     // 点击关闭提取线索的界面
     closeExtractCluePanel = () => {
@@ -1883,6 +1916,7 @@ class ClueCustomer extends React.Component {
     renderNotSelectClueBtns = () => {
         return (
             <div className="pull-right add-anlysis-handle-btns">
+                {this.renderClueRecommend()}
                 {/*是否有查看线索分析的权限
                  CRM_CLUE_STATISTICAL 查看线索概览的权限
                  CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
@@ -1924,7 +1958,28 @@ class ClueCustomer extends React.Component {
     isFirstLoading = () => {
         return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
     };
-
+    isShowRecommendSettingPanel = () => {
+        var hasCondition = false;
+        var settedCustomerRecommend = this.state.settedCustomerRecommend;
+        for (var key in settedCustomerRecommend.obj){
+            if (!_.isEmpty(settedCustomerRecommend.obj[key])){
+                hasCondition = true;
+            }
+        }
+        return (!this.state.isLoading && this.state.allClueCount === 0 ) && (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer;
+    };
+    hideFocusCustomerPanel = () => {
+        this.setState({
+            closeFocusCustomer: true
+        });
+    };
+    saveRecommedConditionsSuccess = (saveCondition) => {
+        //修改掉查询条件
+        this.hideFocusCustomerPanel();
+        //将保存后的条件记录下来
+        clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
+        this.showClueRecommendTemplate();
+    };
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2024,6 +2079,13 @@ class ClueCustomer extends React.Component {
                             </RightPanel>
                             : null
                     }
+                    {
+                        this.state.isShowRecommendCluePanel ?
+                            <ClueRecommedLists
+                                closeRecommendCluePanel={this.closeRecommendCluePanel}
+                            />
+                            : null
+                    }
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}
@@ -2099,6 +2161,10 @@ class ClueCustomer extends React.Component {
                             isShowMadal={false}
                         />
                     ) : null}
+                    {this.isShowRecommendSettingPanel() ? <RecommendCluesForm
+                        hideFocusCustomerPanel={this.hideFocusCustomerPanel}
+                        saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                    /> : null}
                 </div>
             </RightContent>
         );

@@ -199,6 +199,34 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{
+            method: 'post',
+            path: '/rest/clue/recommend/lists',
+            handler: 'getRecommendClueLists',
+            passport: {
+                'needLogin': true
+            }
+        },{
+            method: 'get',
+            path: '/rest/clue/condition/industries',
+            handler: 'getClueIndustryLists',
+            passport: {
+                'needLogin': true
+            }
+        },{
+            method: 'get',
+            path: '/rest/clue/recommend/condition',
+            handler: 'getSelfClueConditionConfig',
+            passport: {
+                'needLogin': true
+            }
+        },{
+            method: 'post',
+            path: '/rest/clue/recommend/condition',
+            handler: 'addOrEditSelfClueConditionConfig',
+            passport: {
+                'needLogin': true
+            }
         }
     ]
 };
