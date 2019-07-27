@@ -107,11 +107,11 @@ class MemberFormActions {
         });
     }
     //用户名唯一性的验证
-    checkOnlyUserName(userName) {
+    checkOnlyUserName(userName, callback) {
         MemberManageAjax.checkOnlyUserName(userName).then( (result) => {
-            this.dispatch(result);
+            _.isFunction(callback) && callback(result);
         }, (errorMsg) => {
-            this.dispatch(errorMsg || Intl.get('common.username.is.unique', '用户名唯一性校验出错！'));
+            _.isFunction(callback) && callback(errorMsg || Intl.get('common.username.is.unique', '用户名唯一性校验出错！'));
         });
     }
 
