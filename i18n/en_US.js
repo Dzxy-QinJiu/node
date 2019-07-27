@@ -340,6 +340,15 @@ var en_US = {
     'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
     'home.page.callout.time': 'Total call time',//呼出总时长
     'home.page.performance.num': 'No. {n}',//第{n}名
+    'home.page.apply.type': 'Apply',//申请
+    'home.page.user.formal.apply': 'Application for Formal User ',//签约用户申请
+    'home.page.user.trial.apply': 'Application for Trial User',//试用用户申请
+    'home.page.user.delay.apply': 'Application for User Delay',//用户延期申请
+    'home.page.user.status.apply': 'Application for Disable User',//禁用用户申请
+    'home.page.user.other.apply': 'Application for Other',//其他申请
+    'home.page.user.password.apply': 'Application for Password Modification',//修改密码申请
+    'home.page.user.application.for': 'Application for {type}',//{type}申请
+    'home.page.work.click.tip': 'Click to see details of {type}',//点击查看{type}详情
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -757,7 +766,7 @@ var en_US = {
     'member.continue.add.member': 'Continue', // 继续添加成员
     'member.add.member.rule': 'The username can only contain characters such as letters, numbers, horizontal lines, underscores, and the length is between 1 and 50 (including 50).', // 用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间
     //后台管理-成员end
-    
+
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
     'organization.input.placeholder': 'Please input organization name',//请输入组织名称

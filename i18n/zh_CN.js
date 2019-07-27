@@ -348,6 +348,15 @@ var zh_CN = {
     'home.page.contacts.customers.week': '本周已联系客户总数',
     'home.page.callout.time': '呼出总时长',
     'home.page.performance.num': '第{n}名',
+    'home.page.apply.type': '申请',
+    'home.page.user.formal.apply': '签约用户申请',
+    'home.page.user.trial.apply': '试用用户申请',
+    'home.page.user.delay.apply': '用户延期申请',
+    'home.page.user.status.apply': '禁用用户申请',
+    'home.page.user.other.apply': '其他申请',
+    'home.page.user.password.apply': '修改密码申请',
+    'home.page.user.application.for': '{type}申请',
+    'home.page.work.click.tip': '点击查看{type}详情',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
