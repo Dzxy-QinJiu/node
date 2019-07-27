@@ -423,7 +423,7 @@ class MyWorkColumn extends React.Component {
     //能否打开工作详情
     enableOpenWorkDetail(item) {
         //订单详情、申请详情能否打开的判断
-        return _.includes(item.tags, WORK_TYPES.DEAL) || (item.type === WORK_TYPES.APPLY && item[WORK_TYPES.APPLY].opinion === APPLY_STATUS.ONGOING);
+        return _.includes(item.tags, WORK_TYPES.DEAL) || (item.type === WORK_TYPES.APPLY && _.get(item, `[${WORK_TYPES.APPLY}].opinion`) === APPLY_STATUS.ONGOING);
     }
 
     getScheduleType(type) {

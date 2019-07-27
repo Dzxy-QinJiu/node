@@ -21,7 +21,7 @@ import Trace from 'LIB_DIR/trace';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import notificationAjax from 'MOD_DIR/notification/public/ajax/notification-ajax';
+import myInterestAjax from '../ajax';
 import ColumnItem from './column-item';
 import {getColumnHeight} from './common-util';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -35,6 +35,7 @@ class MyInsterestColumn extends React.Component {
             loadSystemNoticesErrorMsg: '',
             systemNotices: [],
             totalSize: 0,
+            page_num: 1,//翻页的页数
         };
     }
 
@@ -44,12 +45,12 @@ class MyInsterestColumn extends React.Component {
 
     getMyInsterestSystemNotice() {
         let queryObj = {
-            notice_type: 'concerCustomerLogin',//关注客户登录系统通知
             page_size: 20,
-            id: this.state.lastSystemNoticeId//用来下拉加载的id
+            page_num: this.state.page_num,//翻到第几页
+            // id: this.state.lastSystemNoticeId//用来下拉加载的id
         };
         this.setState({isLoadingSystemNotices: true});
-        notificationAjax.getSystemNotices(queryObj, STATUS.UNHANDLED).then(result => {
+        myInterestAjax.getMyInterestData(queryObj).then(result => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             let stateData = this.state;
             stateData.isLoadingSystemNotices = false;
@@ -64,6 +65,7 @@ class MyInsterestColumn extends React.Component {
                 }
                 stateData.totalSize = result.total || stateData.systemNotices.length;
                 stateData.lastSystemNoticeId = stateData.systemNotices.length ? _.last(stateData.systemNotices).id : '';
+                stateData.page_num++;
             }
             //如果当前已获取的数据还不到总数，继续监听下拉加载，否则不监听下拉加载
             stateData.listenScrollBottom = stateData.totalSize > stateData.systemNotices.length;
@@ -217,7 +219,7 @@ class MyInsterestColumn extends React.Component {
         this.setState({
             noticeId: notice.id
         });
-        notificationAjax.handleSystemNotice(notice.id).then(result => {
+        myInterestAjax.updateMyInterestStatus({id: notice.id}).then(result => {
             this.setHandlingFlag(notice, false);
             if (result) {
                 this.setState({
