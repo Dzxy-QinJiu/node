@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/7/25.
  */
 require('../../css/recommend_clues_lists.less');
-import {Button} from 'antd';
+import {Button,message} from 'antd';
 import {RightPanel, RightPanelClose} from 'CMP_DIR/rightPanel';
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerStore = require('../../store/clue-customer-store');
@@ -79,6 +79,31 @@ class RecommendCustomerRightPanel extends React.Component {
         this.hideFocusCustomerPanel();
         this.getRecommendClueLists();
     };
+    handleExtractRecommendClues = (record) => {
+        var clueId = record.id;
+        $.ajax({
+            url: '/rest/clue/extract/recommend/clue',
+            dataType: 'json',
+            type: 'get',
+            data: {
+                id: clueId
+            },
+            success: (data) => {
+                if (data){
+                    //提取成功后，把该线索在列表中删除
+                    message.success(Intl.get('clue.extract.success', '提取成功'));
+                    clueCustomerAction.filterExtractClue(record);
+                    //线索提取完后，会到待分配状态中
+                }else{
+                    message.error(Intl.get('clue.extract.failed', '提取失败'));
+                }
+            },
+            error: (xhr) => {
+                message.error(Intl.get('clue.extract.failed', '提取失败'));
+            }
+        });
+
+    };
     getRecommendClueTableColunms = () => {
         const column_width = '80px';
         let columns = [
@@ -95,23 +120,19 @@ class RecommendCustomerRightPanel extends React.Component {
                 dataIndex: 'telephones',
                 width: '300px',
             },
-            // {
-            //     title: Intl.get('common.operate', '操作'),
-            //     dataIndex: 'trace_content',
-            //     width: '300px',
-            //     render: (text, record, index) => {
-            //         let user = userData.getUserData();
-            //         // 提取线索分配给相关的销售人员的权限
-            //         let hasAssignedPrivilege = !user.isCommonSales;
-            //         let assigenCls = classNames('assign-btn',{'can-edit': !text});
-            //         let containerCls = classNames('singl-extract-clue',{'assign-privilege': hasAssignedPrivilege});
-            //         return (
-            //             <div className={containerCls} ref='trace-person'>
-            //                 {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}
-            //             </div>
-            //         );
-            //     }
-            // }
+            {
+                title: Intl.get('common.operate', '操作'),
+                dataIndex: 'oprate_btn',
+                width: '300px',
+                render: (text, record, index) => {
+                    return (
+                        <div className="extract-recommend-lists">
+                            <span onClick={this.handleExtractRecommendClues.bind(this, record)}>{Intl.get('clue.extract', '提取')}</span>
+
+                        </div>
+                    );
+                }
+            }
         ];
         return columns;
     };
