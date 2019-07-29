@@ -450,7 +450,7 @@ class ClueCustomer extends React.Component {
             name: 'source_time'
         }] : filterStoreData.rangeParams;
         var typeFilter = isGetAllClue ? {status: ''} : this.getFilterStatus();//线索类型
-        typeFilter.availability = AVALIBILITYSTATUS.AVALIBILITY;
+        typeFilter.availability = filterStoreData.filterClueAvailability;
         //按销售进行筛选
         var filterClueUsers = filterStoreData.filterClueUsers;
         if (_.isArray(filterClueUsers) && filterClueUsers.length && !isGetAllClue) {
@@ -844,6 +844,9 @@ class ClueCustomer extends React.Component {
     //标记线索无效或者有效
     handleClickInvalidBtn = (item, callback) => {
         var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
+        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
+        }
         var submitObj = {
             id: item.id,
             availability: updateValue
@@ -871,12 +874,12 @@ class ClueCustomer extends React.Component {
     renderInavailabilityOrValidClue = (salesClueItem) => {
         //是否有标记线索无效的权限
         var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
-
+        var inValid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
         return(
             <span className="valid-or-invalid-container">
                 {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
                     data-tracename="判定线索无效">
-                    {<span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span>}
+                    {inValid ? <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span> : <span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span>}
                 </span> : null}
             </span>
 
@@ -906,10 +909,11 @@ class ClueCustomer extends React.Component {
     };
     renderInvalidConfirm = (salesClueItem) => {
         var isEditting = this.state.isInvalidClue === salesClueItem.id && this.state.isInvaliding;
+        var isInvalid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
         return (
             <span className="invalid-confirm">
                 <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
-                    {Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                    {isInvalid ? Intl.get('clue.customer.confirm.valid', '确认有效') : Intl.get('clue.confirm.clue.invalid', '确认无效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
                 <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
@@ -918,7 +922,7 @@ class ClueCustomer extends React.Component {
     };
     renderAvailabilityClue = (salesClueItem) => {
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
         return(
             <div className="avalibility-container">
                 <div className="associate-customer">
@@ -939,7 +943,12 @@ class ClueCustomer extends React.Component {
 
     };
     handleChangeSelectedType = (selectedType) => {
-        clueFilterAction.setFilterType(selectedType);
+        //如果选中的是无效状态
+        if (selectedType === 'avaibility'){
+            clueFilterAction.setFilterClueAvailbility();
+        }else{
+            clueFilterAction.setFilterType(selectedType);
+        }
         this.onTypeChange();
     };
     isFireFoxBrowser = () => {
@@ -963,6 +972,8 @@ class ClueCustomer extends React.Component {
         var willTrace = classNames('clue-status-tab', {'active-will-trace': SELECT_TYPE.WILL_TRACE === typeFilter.status});
         var hasTrace = classNames('clue-status-tab', {'active-has-trace': SELECT_TYPE.HAS_TRACE === typeFilter.status});
         var hasTransfer = classNames('clue-status-tab', {'active-has-transfer': SELECT_TYPE.HAS_TRANSFER === typeFilter.status});
+        var filterStore = clueFilterStore.getState();
+        var invalidClue = classNames('clue-status-tab', {'active-invalid-clue': filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY});
         var statics = this.state.agg_list;
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
@@ -988,6 +999,10 @@ class ClueCustomer extends React.Component {
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num">{_.get(statics,'hasTransfer','')}</span>
             </span>}
+            <span className={invalidClue}
+                  onClick={this.handleChangeSelectedType.bind(this, 'avaibility')}>{Intl.get('sales.clue.is.enable', '无效')}
+                <span className="clue-status-num">{_.get(statics,'invalidClue','')}</span>
+            </span>
         </span>;
     };
    showClueDetailPanel = (salesClueItem) => {
@@ -1117,7 +1132,7 @@ class ClueCustomer extends React.Component {
     renderHandleAssociateInvalidBtn = (salesClueItem) => {
         //只有不是待跟进状态，才能展示操作区域
         var typeFilter = this.getFilterStatus();//线索类型
-        if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE || typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE){
+        if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE || typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE || typeFilter.status === SELECT_TYPE.ALL){
             return _.get(this,'state.isInvalidClue') === salesClueItem.id ? this.renderInvalidConfirm(salesClueItem) : this.renderAvailabilityClue(salesClueItem);
         }else{
             return null;
