@@ -360,6 +360,9 @@ var zh_CN = {
     'home.page.approve.pass.tip': '{user} 通过了您的 {applyType}',
     'home.page.approve.reject.tip': '{user} 驳回了您的 {applyType}',
     'home.page.approve.cancel.tip': '{user} 撤回了 {applyType}',
+    'home.page.stopped.login': '停用后登录了{app}',
+    'home.page.login.failed': '登录{app}失败',
+    'home.page.contract.expires': '{contract} 合同到期',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/

@@ -5,7 +5,7 @@
  */
 import '../css/my-insterest-column.less';
 import classNames from 'classnames';
-import {Alert, Icon, Button} from 'antd';
+import {Alert, Icon, Button, Tag} from 'antd';
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -25,6 +25,14 @@ import myInterestAjax from '../ajax';
 import ColumnItem from './column-item';
 import {getColumnHeight} from './common-util';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+
+const LOGIN_TYPES = {
+    INTEREST_LOGIN: 'interest_login_success',//关注客户登录
+    LOGIN_AFTER_STOPPED: 'login_after_stopped',//停用登录
+    LOGIN_FAIL: 'login_fail',//登录失败
+    LOGIN_LAST_DAYS: 'login_last_days'//近期登录
+};
 class MyInsterestColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +43,6 @@ class MyInsterestColumn extends React.Component {
             loadSystemNoticesErrorMsg: '',
             systemNotices: [],
             totalSize: 0,
-            page_num: 1,//翻页的页数
         };
     }
 
@@ -46,8 +53,7 @@ class MyInsterestColumn extends React.Component {
     getMyInsterestSystemNotice() {
         let queryObj = {
             page_size: 20,
-            page_num: this.state.page_num,//翻到第几页
-            // id: this.state.lastSystemNoticeId//用来下拉加载的id
+            id: this.state.lastSystemNoticeId//用来下拉加载的id
         };
         this.setState({isLoadingSystemNotices: true});
         myInterestAjax.getMyInterestData(queryObj).then(result => {
@@ -65,7 +71,6 @@ class MyInsterestColumn extends React.Component {
                 }
                 stateData.totalSize = result.total || stateData.systemNotices.length;
                 stateData.lastSystemNoticeId = stateData.systemNotices.length ? _.last(stateData.systemNotices).id : '';
-                stateData.page_num++;
             }
             //如果当前已获取的数据还不到总数，继续监听下拉加载，否则不监听下拉加载
             stateData.listenScrollBottom = stateData.totalSize > stateData.systemNotices.length;
@@ -245,7 +250,58 @@ class MyInsterestColumn extends React.Component {
         });
     };
 
-    renderUnHandledNoticeContent = (notice, idx) => {
+    getLoginAppDescr(item) {
+        let loginAppDescr = '';
+        if (item.app_name) {
+            switch (item.type) {
+                case LOGIN_TYPES.INTEREST_LOGIN://关注登录
+                case LOGIN_TYPES.LOGIN_LAST_DAYS://近期登录
+                    loginAppDescr = Intl.get('notification.system.login', '登录了') + item.app_name;
+                    break;
+                case LOGIN_TYPES.LOGIN_AFTER_STOPPED://停用登录
+                    loginAppDescr = Intl.get('home.page.stopped.login', '停用后登录了{app}', {app: item.app_name});
+                    break;
+                case LOGIN_TYPES.LOGIN_FAIL://登录失败
+                    loginAppDescr = Intl.get('home.page.login.failed', '登录{app}失败', {app: item.app_name});
+                    break;
+            }
+        }
+        return loginAppDescr;
+    }
+
+    renderLoginDetailContent = (notice, idx) => {
+        let detailList = [];
+        _.each(notice.users, (item, index) => {
+            if (item) {
+                let loginAppDescr = this.getLoginAppDescr(item);
+                let titleTip = _.get(item, 'app_user_name', '') + loginAppDescr;
+                detailList.push(
+                    <div className="system-notice-item" key={index}
+                        title={titleTip}>
+                        < span className="system-notice-time">
+                            {TimeUtil.transTimeFormat(item.time)}
+                        </span>
+                        <a onClick={this.openUserDetail.bind(this, item.app_user_id, idx)}>{item.app_user_name}</a>
+                        {item.app_name ?
+                            <span>{loginAppDescr}</span> : ''}
+                    </div>
+                );
+            }
+        });
+        _.each(notice.contracts, (item, index) => {
+            if (item) {
+                let contractDescr = Intl.get('home.page.contract.expires', '{contract} 合同到期', {contract: item.num});
+                detailList.push(
+                    <div className="system-notice-item" key={index}
+                        title={contractDescr}>
+                        < span className="system-notice-time">
+                            {TimeUtil.transTimeFormat(item.time)}
+                        </span>
+                        <span>{contractDescr}</span>
+                    </div>
+                );
+            }
+        });
         //最后一条关注客户的登录信息
         let showItem = {};
         const detailLength = _.get(notice, 'detail.length');
@@ -277,6 +333,39 @@ class MyInsterestColumn extends React.Component {
         });
         this.setState({systemNotices: this.state.systemNotices});
     };
+
+    renderCustomerName(item, index) {
+        let customer_label = _.get(item, 'customer_label');
+        //客户合格标签
+        // const qualify_label = workObj.qualify_label;
+        //分数
+        const score = item.score;
+        const interestCls = new classNames('iconfont icon-concern-customer-login', {'is-insterested-style': item.is_interested});
+        return (
+            <div className='customer-name'>
+                {customer_label ? (
+                    <Tag
+                        className={crmUtil.getCrmLabelCls(customer_label)}>
+                        {customer_label}</Tag>) : null
+                }
+                {/*qualify_label ? (
+                 <Tag className={crmUtil.getCrmLabelCls(qualify_label)}>
+                 {qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                 qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
+                 */}
+                <span className='customer-name-text'
+                    title={Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')})}
+                    onClick={this.openCustomerDetail.bind(this, item.customer_id, index)}>
+                    <i className={interestCls}/> {_.get(item, 'customer_name', '')}
+                </span>
+                {score ? (
+                    <span className='custmer-score'>
+                        <i className='iconfont icon-customer-score'/>
+                        {score}
+                    </span>) : null}
+            </div>);
+    }
+
     //未处理的系统消息
     renderUnHandledNotice = (notice, idx) => {
         let loginUser = userData.getUserData();
@@ -294,7 +383,7 @@ class MyInsterestColumn extends React.Component {
                     </div>
                 </div>
                 <div className="system-notice-content">
-                    {this.renderUnHandledNoticeContent(notice, idx)}
+                    {this.renderLoginDetailContent(notice, idx)}
                     <div className='notice-handle-wrap'>
                         {
                             loginUserId === notice.member_id ?

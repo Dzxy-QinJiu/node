@@ -352,6 +352,9 @@ var en_US = {
     'home.page.approve.pass.tip': '{user} passes your {applyType}',//{user}通过了您的{applyType}
     'home.page.approve.reject.tip': '{user} rejects your {applyType}',//{user}驳回了您的{applyType}
     'home.page.approve.cancel.tip': '{user} revoked {applyType}',//{user}撤回了{applyType}
+    'home.page.stopped.login': 'Logged in {app} after deactivation',//停用后登录了{app}
+    'home.page.login.failed': 'Logon {app} failed',//登录{app}失败
+    'home.page.contract.expires': '{contract} contract expires',//{contract}合同到期
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
