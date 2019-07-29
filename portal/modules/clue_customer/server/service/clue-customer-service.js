@@ -65,6 +65,8 @@ const restApis = {
     getClueIndustryLists: '/rest/company/v1/ent/industrys',
     //获取个人配置
     selfConditionConfig: '/rest/company/v1/ent/search',
+    //提取某条线索
+    extractRecommendClue: '/rest/company/v1/ent/clue'
 };
 
 //查询客户
@@ -95,6 +97,15 @@ exports.getClueSource = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+//提取单条线索
+exports.extractRecommendClue = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.extractRecommendClue,
+            req: req,
+            res: res
+        }, req.query);
 };
 
 exports.changeClueSalesBatch = function(req, res) {
