@@ -34,7 +34,7 @@ export function getCustomerStageChangeChart() {
                     }
 
                     const startDate = moment(dataItem.time).startOf(interval).format(oplateConsts.DATE_FORMAT);
-                    const endDate = moment(dataItem.time).endOf(interval).format(oplateConsts.DATE_FORMAT);
+                    const endDate = moment(dataItem.time).endOf(interval).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
 
                     dataItem.time = `${startDate} ${Intl.get('contract.83', '至')} ${endDate}`;
                 }
@@ -126,7 +126,7 @@ export function getCustomerStageChangeChart() {
             _.each(option.columns, column => {
                 //在当前列是日期列，同时时间区间查询参数有值且其值不是天时，将列宽设的大一些，以防止折行
                 if (column.dataIndex === 'time' && (interval && interval !== 'day')) {
-                    column.width = 200;
+                    column.width = 150;
                 } else {
                     column.width = 100;
                 }
