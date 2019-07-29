@@ -355,6 +355,11 @@ var en_US = {
     'home.page.stopped.login': 'Logged in {app} after deactivation',//停用后登录了{app}
     'home.page.login.failed': 'Logon {app} failed',//登录{app}失败
     'home.page.contract.expires': '{contract} contract expires',//{contract}合同到期
+    'home.page.distribute.new': 'New allocation',//新分配
+    'home.page.will.expire.customer': 'Will Expire',//即将到期
+    'home.page.expired.customer': 'Expired',//已过期
+    'home.page.contact.great.cycle': 'Great cycle',//大循环
+    'home.page.contact.minor.cycle': 'Minor cycle',//小循环
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/

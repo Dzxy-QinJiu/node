@@ -42,7 +42,10 @@ const WORK_DETAIL_TAGS = {
     APPLY: 'apply',//申请、审批
     LEAD: 'lead',//待处理线索
     DEAL: 'deal',//订单
-    SELLSTATEGY: 'sellStrategy'//大小循环
+    SELLSTATEGY: 'sellStrategy',//大小循环
+    DISTRIBUTION: 'distribution',//新分配未联系
+    EXPIRED: 'expired',//近期已过期的试用客户（近十天）
+    WILLEXPIRE: 'willexpire',//近期已过期的试用客户（近十天）
 };
 //联系计划类型
 const SCHEDULE_TYPES = {
@@ -526,13 +529,27 @@ class MyWorkColumn extends React.Component {
                 }
                 break;
             case WORK_DETAIL_TAGS.SELLSTATEGY://大小循环设置的联系频率
-                tagDescr = Intl.get('customer.contact.somebody', '联系');
+                //'home.page.contact.great.cycle': '大循环',
+                //'home.page.contact.minor.cycle': '小循环',
+                tagDescr = Intl.get('home.page.contact.great.cycle', '大循环');
+                //最后一次跟进时间与跟进内容
+                break;
+            case WORK_DETAIL_TAGS.DISTRIBUTION://新分配未联系
+                tagDescr = Intl.get('home.page.distribute.new', '新分配');
+                break;
+            case WORK_DETAIL_TAGS.WILLEXPIRE://即将到期
+                tagDescr = Intl.get('home.page.will.expire.customer', '即将到期');
+                //xxx时间到期
+                break;
+            case WORK_DETAIL_TAGS.EXPIRED://新分配未联系
+                tagDescr = Intl.get('home.page.expired.customer', '已过期');
+                //xxx时间已到期
                 break;
         }
         return (
-            <span className='work-remark-content'>
+            <div className='work-remark-content'>
                 【{tagDescr}】{remark}
-            </span>
+            </div>
         );
     }
 

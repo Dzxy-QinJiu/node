@@ -363,6 +363,11 @@ var zh_CN = {
     'home.page.stopped.login': '停用后登录了{app}',
     'home.page.login.failed': '登录{app}失败',
     'home.page.contract.expires': '{contract} 合同到期',
+    'home.page.distribute.new': '新分配',
+    'home.page.will.expire.customer': '即将到期',
+    'home.page.expired.customer': '已过期',
+    'home.page.contact.great.cycle': '大循环',
+    'home.page.contact.minor.cycle': '小循环',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/

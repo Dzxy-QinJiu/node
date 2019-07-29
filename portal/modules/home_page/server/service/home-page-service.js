@@ -14,7 +14,7 @@ const homePageRestUrls = {
     getContractPerformance: '/rest/analysis/contract/contract/v2/:type/performance',
     getCallTimeData: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
     queryCustomer: '/rest/customer/v3/customer/range/:type/1/1/id/descend',
-    getMyInterestData: '/rest/customer/v3/interested/:page_num/:page_size',
+    getMyInterestData: '/rest/customer/v3/interested',
     updateMyInterestStatus: '/rest/customer/v3/interested/:id',
 };
 
@@ -99,10 +99,10 @@ exports.getContactCustomerCount = function(req, res) {
 exports.getMyInterestData = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: homePageRestUrls.getMyInterestData.replace(':page_num', req.query.page_num).replace(':page_size', req.query.page_size),
+            url: homePageRestUrls.getMyInterestData,
             req: req,
             res: res
-        });
+        }, req.query);
 };
 //我关注的数据的处理
 exports.updateMyInterestStatus = function(req, res) {
