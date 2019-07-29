@@ -35,6 +35,13 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
             } else {
                 query.statistics_type = 'team';
             }
+
+            const teamList = _.get(Store, 'teamList.list');
+
+            //只有一个团队时，只会按成员筛选
+            if (teamList && teamList.length === 1) {
+                query.statistics_type = 'user';
+            }
         },
         processData: (data, chart, analysisInstance) => {
             _.set(chart, 'cardContainer.props.subTitle', renderCallTrendChartSwitch(chart, analysisInstance));

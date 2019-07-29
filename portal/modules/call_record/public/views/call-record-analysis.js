@@ -257,7 +257,7 @@ class CallRecordAnalyis extends React.Component {
         let secondOptions = [];
         if (teamList.length === 1) { // 只展示成员选择框时
             secondOptions = memberList.map((item, index) => {
-                return <Option value={item.name} key={index}>{item.name}</Option>;
+                return <Option value={item.id} key={index}>{item.name}</Option>;
             });
         } else if (teamList.length > 1) { // 展示团队和成员
             if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
@@ -339,9 +339,13 @@ class CallRecordAnalyis extends React.Component {
             valueStr = value.join(',');
         }
 
-        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM) {
+        //团队数大于一个时，才有可能按团队筛选
+        //此时若指定按团队筛选
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList > 1) {
+            //发射团队选中事件
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, valueStr);
         } else {
+            //发射成员选中事件
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_MEMBER, valueStr);
         }
 
@@ -399,7 +403,7 @@ class CallRecordAnalyis extends React.Component {
                              *  通话数量和通话时长的趋势图
                              * */}
                             <div className="duration-count-chart col-xs-12">
-                                {this.renderCallTrendChart()}
+                                {this.state.teamList.list.length ? this.renderCallTrendChart() : null}
                             </div>
                             <div style={{height: tableHeight}} className="table-list-containers">
                                 <GeminiScrollBar>
