@@ -30,7 +30,14 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
             //开始时间改为从结束时间往前推一个月
             query.start_time = moment(query.end_time).subtract(1, 'month').valueOf();
 
-            if (Store.teamMemberFilterType === 'member') {
+            const teamList = _.get(Store, 'teamList.list');
+
+            if (
+                //指定了要按成员筛选
+                Store.teamMemberFilterType === 'member' || 
+                //只有一个团队时，只会按成员筛选
+                (teamList && teamList.length === 1)
+            ) {
                 query.statistics_type = 'user';
             } else {
                 query.statistics_type = 'team';
