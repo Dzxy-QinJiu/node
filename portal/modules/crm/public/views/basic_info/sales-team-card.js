@@ -9,7 +9,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CrmAction from '../../action/crm-actions';
 import {
-    getMyTeamTreeAndFlattenList,
+    getMyTeamTreeList,
     getAllSalesUserList,
     getSalesmanList
 } from 'PUB_DIR/sources/utils/common-data-util';
@@ -53,11 +53,11 @@ class SalesTeamCard extends React.Component {
         ...this.getInitStateData(this.props),
         salesManList: [],//销售及对应团队列表
         allUserList: [],//所有的成员列表（包括销售在内）
+        myTeamTree: [],//我所在团队及下级团队树（销售领导判断负责人和联合跟进人是否能修改）
     };
 
     getInitStateData(props) {
         return {
-            list: [],//下拉列表中的数据
             displayType: DISPLAY_TYPES.TEXT,
             isLoadingList: true,//正在获取下拉列表中的数据
             isMerge: props.isMerge,
@@ -87,6 +87,12 @@ class SalesTeamCard extends React.Component {
             if (this.enableEditSales() && !isManager || this.enableEditSecondSales()) {
                 //获取销售所在团队及其下级团队和对应的成员列表
                 this.getSalesManList();
+            }
+            //销售领导获取我所在团队及下级团队树（销售领导判断负责人和联合跟进人是否能修改）
+            if (this.enableEditSales() && !isManager) {
+                getMyTeamTreeList(result => {
+                    this.setState({myTeamTree: _.get(result, 'teamTreeList', [])});
+                });
             }
         }
         //获取销售及联合跟进人
@@ -325,10 +331,10 @@ class SalesTeamCard extends React.Component {
         }
         let dataList = formatSalesmanList(userList);
         //负责人和联合跟进人不能为同一个，所以
-        if (type === SALES_EDIT_TYPES.SALES_TEAM) {
+        if (type === SALES_EDIT_TYPES.SALES_TEAM && this.state.secondUserId) {
             //修改负责人的选择框中，过滤掉联合跟人
             dataList = _.filter(dataList, item => !_.includes(item.value, this.state.secondUserId));
-        } else {
+        } else if (type === SALES_EDIT_TYPES.SECOND_SALES_TEAM && this.state.userId) {
             //修改联合跟进人的选择框中，过滤掉负责人
             dataList = _.filter(dataList, item => !_.includes(item.value, this.state.userId));
         }
@@ -364,10 +370,36 @@ class SalesTeamCard extends React.Component {
         return _.get(userObj, 'isCommonSales');
     }
 
-    //是否是我团队的人
-    isMyTeamUser(teamId) {
+    //是否是我团队或下级团队的人
+    isMyTeamOrChildUser(teamId) {
         let userObj = userData.getUserData();
-        return teamId && teamId === userObj.team_id;
+        let flag = false;
+        if (teamId) {
+            //我团队的人
+            if (teamId === userObj.team_id) {
+                flag = true;
+            } else {//下级团队的人
+                flag = this.travelMyTeamUserFlag(this.state.myTeamTree, teamId);
+            }
+        }
+        return flag;
+    }
+
+    //递归变量团队树判断是否是我下级团队
+    travelMyTeamUserFlag(treeList, teamId) {
+        let flag = false;
+        _.each(treeList, team => {
+            if (team.group_id === teamId) {
+                flag = true;
+                return false;
+            } else if (!_.isEmpty(team.child_groups)) {
+                flag = this.travelMyTeamUserFlag(team.child_groups, teamId);
+                if (flag) {
+                    return false;
+                }
+            }
+        });
+        return flag;
     }
 
     //是否可修改负责人
@@ -395,7 +427,7 @@ class SalesTeamCard extends React.Component {
                         value={this.getSelectValue(SALES_EDIT_TYPES.SALES_TEAM)}
                         field={SALES_EDIT_TYPES.SALES_TEAM}
                         selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SALES_TEAM)}
-                        hasEditPrivilege={this.enableEditSales() && (this.isMyTeamUser(this.state.salesTeamId) || this.isManager())}
+                        hasEditPrivilege={this.enableEditSales() && (this.isMyTeamOrChildUser(this.state.salesTeamId) || this.isManager())}
                         placeholder={Intl.get('contract.63', '请选择负责人')}
                         saveEditSelect={this.handleEditSalesTeam}
                         noDataTip={Intl.get('contract.64', '暂无负责人')}
@@ -413,7 +445,7 @@ class SalesTeamCard extends React.Component {
                             value={this.getSelectValue(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
                             field={SALES_EDIT_TYPES.SECOND_SALES_TEAM}
                             selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
-                            hasEditPrivilege={this.enableEditSecondSales() && (this.isMyTeamUser(this.state.secondTeamId) || this.isManager())}
+                            hasEditPrivilege={this.enableEditSecondSales() && (this.isMyTeamOrChildUser(this.state.secondTeamId) || this.isManager())}
                             placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
                             saveEditSelect={this.saveSecondSales}
                             noDataTip={Intl.get('crm.no.second.sales', '暂无联合跟进人')}
