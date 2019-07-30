@@ -20,7 +20,7 @@ module.exports = {
         },
         {
             method: 'get',
-            path: '/rest/crm/get_recommend_tags/:pageSize/:num/:type',
+            path: '/rest/crm/get_recommend_tags/:type',
             handler: 'getRecommendTags',
             passport: {
                 needLogin: true
