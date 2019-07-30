@@ -1010,7 +1010,18 @@ class ClueCustomer extends React.Component {
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <span className="clue-name" data-tracename="查看线索详情"
-                                onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}</span>
+                                onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
+                                {salesClueItem.leads ? (
+                                    <Tag className="clue-label intent-tag-style">
+                                        有相似线索
+                                    </Tag>) : null
+                                }
+                                {salesClueItem.customers ? (
+                                    <Tag className="clue-label intent-tag-style">
+                                        有相似客户
+                                    </Tag>) : null
+                                }
+                            </span>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>
