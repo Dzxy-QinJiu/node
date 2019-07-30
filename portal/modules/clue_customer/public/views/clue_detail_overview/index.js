@@ -56,13 +56,11 @@ class ClueDetailOverview extends React.Component {
     };
 
     componentDidMount() {
-        var curClue = this.state.curClue;
-        if (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE){
-            //获取相似线索列表
-            this.getSimilarClueLists();
-            //获取相似客户列表
-            this.getSimilarCustomerLists();
-        }
+        //获取相似线索列表
+        this.getSimilarClueLists();
+        //获取相似客户列表
+        this.getSimilarCustomerLists();
+
 
     }
     getSimilarClueLists = () => {
@@ -1091,6 +1089,11 @@ class ClueDetailOverview extends React.Component {
             existingCustomers: customer
         });
     };
+    showOperateBtn = () => {
+        var curClue = this.state.curClue;
+        //必须是有效线索且线索状态不能是已转化
+        return curClue.availability === AVALIBILITYSTATUS.AVALIBILITY && curClue.status !== SELECT_TYPE.HAS_TRANSFER;
+    };
     renderSimilarLists = (listType) => {
         var isClueType = listType === 'clue';
         var moreListShowFlag = this.state.showLargerClueLists;
@@ -1117,7 +1120,7 @@ class ClueDetailOverview extends React.Component {
                         <div className="similar-title">
                             {isClueType ? renderClueStatus(listItem.status) : null}
                             <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                            {!isClueType ? <Button onClick={this.onMergeToCustomerClick.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                            {!isClueType && this.showOperateBtn() ? <Button onClick={this.onMergeToCustomerClick.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
 
                         </div>
                         {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
@@ -1220,12 +1223,8 @@ class ClueDetailOverview extends React.Component {
     renderClueCustomerLists = (curClue) => {
         if (curClue.clue_type === 'clue_pool') { // 线索池详情，不显示相似客户
             return null;
-        } else { // 待跟进、已跟进显示相似客户
-            if (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) {
-                return this.renderSimilarClueCustomerLists();
-            } else {
-                return null;
-            }
+        } else {
+            return this.renderSimilarClueCustomerLists();
         }
     };
 
