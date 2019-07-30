@@ -1,6 +1,13 @@
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 var appAjaxTrans = require('../../../common/public/ajax/app');
 import ajaxPro from 'MOD_DIR/common/ajaxUtil';
+function getFilterItemPrivelegeType() {
+    let type = 'user';//CRM_CUSTOMER_FIELD_TERM_USER
+    if (hasPrivilege('CRM_CUSTOMER_FIELD_TERM_MANAGER')) {
+        type = 'manager';
+    }
+    return type;
+}
 exports.getAppList = function() {
     var Deferred = $.Deferred();
     appAjaxTrans.getGrantApplicationListAjax().sendRequest().success(function(list) {
@@ -38,15 +45,10 @@ exports.getStageList = function() {
 };
 
 exports.getTagList = function() {
-    var pageSize = 100;
-    var num = 1;
-    let type = 'user';
-    if (hasPrivilege('CUSTOMER_MANAGER_LABEL_GET')) {
-        type = 'manager';
-    }
+    let type = getFilterItemPrivelegeType();
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/crm/get_recommend_tags/' + pageSize + '/' + num + '/' + type,
+        url: '/rest/crm/get_recommend_tags/' + type,
         dataType: 'json',
         type: 'get',
         success: function(data) {
@@ -124,10 +126,7 @@ exports.getStageTagList = function() {
 };
 //获取竞品列表
 exports.getCompetitorList = function() {
-    let type = 'user';//CUSTOMER_USER_COMPETING_PRODUCTS_GET
-    if (hasPrivilege('CUSTOMER_MANAGER_COMPETING_PRODUCTS_GET')) {
-        type = 'manager';
-    }
+    let type = getFilterItemPrivelegeType();
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm/competitor_list/' + type,
@@ -145,9 +144,10 @@ exports.getCompetitorList = function() {
 
 //获取行业列表
 exports.getIndustries = function() {
+    let type = getFilterItemPrivelegeType();
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/crm_filter/industries',
+        url: '/rest/crm_filter/industries/' + type,
         dataType: 'json',
         type: 'get',
         success: function(data) {
@@ -160,7 +160,8 @@ exports.getIndustries = function() {
     return Deferred.promise();
 };
 
-exports.getFilterProvinces = function(type) {
+exports.getFilterProvinces = function() {
+    let type = getFilterItemPrivelegeType();
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm_filter/provinces/' + type,
