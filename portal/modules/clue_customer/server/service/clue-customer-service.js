@@ -65,6 +65,8 @@ const restApis = {
     getClueIndustryLists: '/rest/company/v1/ent/industrys',
     //获取个人配置
     selfConditionConfig: '/rest/company/v1/ent/search',
+    //批量提取线索
+    batchExtractRecommendLists: 'rest/company/v1/ent/clues',
 };
 
 //查询客户
@@ -96,7 +98,15 @@ exports.getClueSource = function(req, res) {
             res: res
         }, null);
 };
-
+//批量提取线索
+exports.batchExtractRecommendLists = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.batchExtractRecommendLists,
+            req: req,
+            res: res
+        }, req.body);
+};
 exports.changeClueSalesBatch = function(req, res) {
     var url = restApis.changeClueSalesBatch.replace(':type',req.params.type);
     if(req.body.query_param){

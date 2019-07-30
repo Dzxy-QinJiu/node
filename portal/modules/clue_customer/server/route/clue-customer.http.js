@@ -227,6 +227,13 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{
+            method: 'post',
+            path: '/rest/clue/batch/recommend/list',
+            handler: 'batchExtractRecommendLists',
+            passport: {
+                'needLogin': true
+            }
         }
     ]
 };

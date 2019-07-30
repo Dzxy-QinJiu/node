@@ -18,10 +18,13 @@ const LAYOUT_CONSTANTS = {
     TH_MORE_HEIGHT: 10
 };
 var classNames = require('classnames');
+var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
+import Trace from 'LIB_DIR/trace';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectedRecommendClues: [],
             ...clueCustomerStore.getState()
         };
     }
@@ -31,6 +34,7 @@ class RecommendCustomerRightPanel extends React.Component {
     };
 
     componentDidMount() {
+        batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchExtractCluesLists);
         clueCustomerStore.listen(this.onStoreChange);
         //获取推荐的线索
         this.getRecommendClueLists();
@@ -50,8 +54,33 @@ class RecommendCustomerRightPanel extends React.Component {
     componentWillReceiveProps(nextProps) {
 
     }
+    batchExtractCluesLists = (taskInfo, taskParams) => {
+        //如果参数不合法，不进行更新
+        if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
+            return;
+        }
+        //解析tasks
+        var {
+            tasks
+        } = taskInfo;
+        //如果tasks为空，不进行更新
+        if (!_.isArray(tasks) || !tasks.length) {
+            return;
+        }
+        //检查taskDefine
+        tasks = _.filter(tasks, (task) => typeof task.taskDefine === 'string');
+        //如果没有要更新的数据
+        if (!tasks.length) {
+            return;
+        }
+        clueCustomerAction.updateRecommendClueLists(_.map(tasks, 'taskDefine'));
+        this.setState({
+            selectedRecommendClues: []
+        });
+    }
 
     componentWillUnmount() {
+        batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchExtractCluesLists);
         clueCustomerStore.unlisten(this.onStoreChange);
     }
 
@@ -115,6 +144,24 @@ class RecommendCustomerRightPanel extends React.Component {
         ];
         return columns;
     };
+    getRowSelection = () => {
+        let rowSelection = {
+            type: 'checkbox',
+            selectedRowKeys: _.map(this.state.selectedRecommendClues, 'id'),
+            onSelect: (record, selected, selectedRows) => {
+                this.setState({
+                    selectedRecommendClues: selectedRows,
+                });
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中某个线索');
+            },
+            //对客户列表当前页进行全选或取消全选操作时触发
+            onSelectAll: (selected, selectedRows, changeRows) => {
+                this.setState({selectedRecommendClues: selectedRows});
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
+            }
+        };
+        return rowSelection;
+    };
     renderRecommendClueLists = () => {
         if (this.state.isLoadingRecommendClue) {
             return <Spinner/>;
@@ -126,8 +173,10 @@ class RecommendCustomerRightPanel extends React.Component {
                 </a>
             </div>);
         } else {
+            var rowSelection = this.getRowSelection();
             return (
                 <AntcTable
+                    rowSelection={rowSelection}
                     rowKey={this.getRowKey}
                     dataSource={this.state.recommendClueLists}
                     pagination={false}
@@ -137,7 +186,29 @@ class RecommendCustomerRightPanel extends React.Component {
         }
     };
     getRowKey = (record, index) => {
-        return index;
+        return record.id;
+    };
+    handleBatchAssignClues = () => {
+
+
+        $.ajax({
+            url: '/rest/customer_stage',
+            type: 'get',
+            dateType: 'json',
+
+            success: (data) => {
+                this.setState({
+                    stageList: _.isArray(data) ? data : [],
+                    isRefreshLoading: false
+                });
+            },
+            error: (errorMsg) => {
+                this.setState({
+                    isRefreshLoading: false,
+                    getErrMsg: errorMsg.responseJSON
+                });
+            }
+        });
     };
 
     render() {
@@ -151,6 +222,8 @@ class RecommendCustomerRightPanel extends React.Component {
                                 onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
                             <Button className="btn-item"
                                 onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
+                            <Button onClick={this.handleBatchAssignClues} className="btn-item" disabled={!_.get(this, 'state.selectedRecommendClues.length')}>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>
+
 
                         </div>
                     </TopNav>

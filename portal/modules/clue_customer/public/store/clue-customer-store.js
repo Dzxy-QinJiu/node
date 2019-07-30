@@ -204,6 +204,9 @@ ClueCustomerStore.prototype.setLoadingFalse = function() {
 ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
     this.handleClueData(clueData);
 },
+ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
+    
+};    
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     this.handleClueData(clueData);
