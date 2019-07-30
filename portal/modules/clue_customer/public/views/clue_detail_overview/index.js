@@ -67,6 +67,9 @@ class ClueDetailOverview extends React.Component {
         }
 
     }
+    componentWillUnmount() {
+        clueCustomerStore.unlisten(this.onClueCustomerStoreChange);
+    }
     onClueCustomerStoreChange = () => {
         let curClue = _.cloneDeep(this.state.curClue);
         curClue.contacts = clueCustomerStore.getState().curClue.contacts;
