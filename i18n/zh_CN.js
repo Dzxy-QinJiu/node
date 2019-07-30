@@ -3151,6 +3151,7 @@ var zh_CN = {
     'contract.amount.check.tip': '产品总额不能大于合同总额{amount}元，请核对',
     'customer.has.similar.lists': '相似客户',
     'clue.has.similar.lists': '相似线索',
+    'clue.similar.clue': '有相似线索或客户',
     'apply.approve.first.higher.level': '直属上级',
     'apply.approve.some.level': '第{n}级上级',
     'apply.approve.level.five': '五',

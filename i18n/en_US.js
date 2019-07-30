@@ -3046,6 +3046,7 @@ var en_US = {
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar clue',//相似线索
+    'clue.similar.clue': 'Similar clue or customer', //相似线索或客户
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级
     'apply.approve.level.five': 'Five',//五
