@@ -451,6 +451,10 @@ class ClueCustomer extends React.Component {
         }] : filterStoreData.rangeParams;
         var typeFilter = isGetAllClue ? {status: ''} : this.getFilterStatus();//线索类型
         typeFilter.availability = filterStoreData.filterClueAvailability;
+        //如果筛选的是无效的，不传status参数
+        if (typeFilter.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+            delete typeFilter.status;
+        }
         //按销售进行筛选
         var filterClueUsers = filterStoreData.filterClueUsers;
         if (_.isArray(filterClueUsers) && filterClueUsers.length && !isGetAllClue) {
@@ -513,7 +517,7 @@ class ClueCustomer extends React.Component {
                 rangeParams: rangeParams,
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
                 id: _.isBoolean(isGetAllClue) ? '' : this.state.lastCustomerId,
-                statistics_fields: 'status',
+                statistics_fields: 'status,availability',
             },
             bodyParam: {
                 query: {
@@ -985,23 +989,23 @@ class ClueCustomer extends React.Component {
         return <span className={clueStatusCls}>
             {isSalesRole() ? null : <span className={willDistCls}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
-                <span className="clue-status-num">{_.get(statics,'willDistribute','')}</span>
+                <span className="clue-status-num">{_.get(statics,'willDistribute',0)}</span>
             </span>}
             <span className={willTrace}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_TRACE)}>{Intl.get('sales.home.will.trace', '待跟进')}
-                <span className="clue-status-num">{_.get(statics,'willTrace','')}</span>
+                <span className="clue-status-num">{_.get(statics,'willTrace',0)}</span>
             </span>
             <span className={hasTrace}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
-                <span className="clue-status-num">{_.get(statics,'hasTrace','')}</span>
+                <span className="clue-status-num">{_.get(statics,'hasTrace',0)}</span>
             </span>
             {filterAllotNoTraced ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
-                <span className="clue-status-num">{_.get(statics,'hasTransfer','')}</span>
+                <span className="clue-status-num">{_.get(statics,'hasTransfer',0)}</span>
             </span>}
             <span className={invalidClue}
-                  onClick={this.handleChangeSelectedType.bind(this, 'avaibility')}>{Intl.get('sales.clue.is.enable', '无效')}
-                <span className="clue-status-num">{_.get(statics,'invalidClue','')}</span>
+                onClick={this.handleChangeSelectedType.bind(this, 'avaibility')}>{Intl.get('sales.clue.is.enable', '无效')}
+                <span className="clue-status-num">{_.get(statics,'invalidClue',0)}</span>
             </span>
         </span>;
     };
