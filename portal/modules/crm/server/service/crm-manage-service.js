@@ -31,15 +31,15 @@ var crmRestApis = {
     getCustomerById: '/rest/customer/v2/customer/query/1/name/descend',
     mergeRepeatCustomer: '/rest/customer/v3/customer/merge/customer',
     checkCustomerRepeat: '/rest/customer/v2/customer/repeat/search',
-    getFilterIndustries: '/rest/customer/v2/customer/industries',
+    getFilterIndustries: '/rest/customer/v3/customer/term/:type/field/industry',
     //获取筛选面板负责人列表
     getOwnerList: '/rest/customer/v2/customer/nickname/:type/500/1',
     //获取阶段标签列表
     getStageTagList: '/rest/customer/v2/customer/customer_label/:type/50/1',
     //获取竞品列表
-    getCompetitorList: '/rest/customer/v2/customer/competing_products/:type/100/1',
+    getCompetitorList: '/rest/customer/v3/customer/term/:type/field/competing_products',
     //type:manager(管理员调用)，type:user(非管理员调用)
-    getFilterProvinces: '/rest/customer/v2/customer/provinces/:type/40/1',
+    getFilterProvinces: '/rest/customer/v3/customer/term/:type/field/province',
     // 查询客户精确匹配（通话记录中查询客户详情）
     getCustomerByPhone: '/rest/customer/v2/customer/query/term/customer',
     //根据客户名获取行政级别
@@ -146,7 +146,7 @@ exports.getCrmUserList = function(req, res, queryObj) {
 exports.getFilterIndustries = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: crmRestApis.getFilterIndustries,
+            url: crmRestApis.getFilterIndustries.replace(':type', req.params.type),
             req: req,
             res: res
         }, null);
