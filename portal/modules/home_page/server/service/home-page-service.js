@@ -13,7 +13,9 @@ const homePageRestUrls = {
     handleMyWorkStatus: '/rest/base/v1/notice/dailyjob/status',
     getContractPerformance: '/rest/analysis/contract/contract/v2/:type/performance',
     getCallTimeData: '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
-    queryCustomer: '/rest/customer/v3/customer/range/:type/1/1/id/descend'
+    queryCustomer: '/rest/customer/v3/customer/range/:type/1/1/id/descend',
+    getMyInterestData: '/rest/customer/v3/interested',
+    updateMyInterestStatus: '/rest/customer/v3/interested/:id',
 };
 
 //获取我的工作列表
@@ -92,4 +94,22 @@ exports.getContactCustomerCount = function(req, res) {
             req: req,
             res: res
         }, req.query);
+};
+//获取我关注的数据
+exports.getMyInterestData = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: homePageRestUrls.getMyInterestData,
+            req: req,
+            res: res
+        }, req.query);
+};
+//我关注的数据的处理
+exports.updateMyInterestStatus = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: homePageRestUrls.updateMyInterestStatus.replace(':id', req.query.id),
+            req: req,
+            res: res
+        });
 };

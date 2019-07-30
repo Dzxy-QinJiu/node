@@ -16,7 +16,7 @@ class HomePage extends React.Component {
 
     render() {
         return (
-            <Row className='home-page-container' gutter={1}>
+            <Row className='home-page-container'>
                 <Col span={10}><MyWorkColumn/></Col>
                 <Col span={7}><TeamDataColumn/></Col>
                 <Col span={7}><MyInsterestColumn/></Col>

@@ -5,7 +5,7 @@
  */
 import '../css/my-insterest-column.less';
 import classNames from 'classnames';
-import {Alert, Icon, Button} from 'antd';
+import {Alert, Icon, Button, Tag, Popover} from 'antd';
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -21,10 +21,19 @@ import Trace from 'LIB_DIR/trace';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import notificationAjax from 'MOD_DIR/notification/public/ajax/notification-ajax';
+import myInterestAjax from '../ajax';
 import ColumnItem from './column-item';
 import {getColumnHeight} from './common-util';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+import PhoneCallout from 'CMP_DIR/phone-callout';
+
+const LOGIN_TYPES = {
+    INTEREST_LOGIN: 'interest_login_success',//关注客户登录
+    LOGIN_AFTER_STOPPED: 'login_after_stopped',//停用登录
+    LOGIN_FAIL: 'login_fail',//登录失败
+    LOGIN_LAST_DAYS: 'login_last_days'//近期登录
+};
 class MyInsterestColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -44,12 +53,14 @@ class MyInsterestColumn extends React.Component {
 
     getMyInsterestSystemNotice() {
         let queryObj = {
-            notice_type: 'concerCustomerLogin',//关注客户登录系统通知
-            page_size: 20,
-            id: this.state.lastSystemNoticeId//用来下拉加载的id
+            page_size: 20
         };
+        if (this.state.lastSystemNoticeId) {
+            //用来下拉加载的id
+            queryObj.id = this.state.lastSystemNoticeId;
+        }
         this.setState({isLoadingSystemNotices: true});
-        notificationAjax.getSystemNotices(queryObj, STATUS.UNHANDLED).then(result => {
+        myInterestAjax.getMyInterestData(queryObj).then(result => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             let stateData = this.state;
             stateData.isLoadingSystemNotices = false;
@@ -217,7 +228,7 @@ class MyInsterestColumn extends React.Component {
         this.setState({
             noticeId: notice.id
         });
-        notificationAjax.handleSystemNotice(notice.id).then(result => {
+        myInterestAjax.updateMyInterestStatus({id: notice.id}).then(result => {
             this.setHandlingFlag(notice, false);
             if (result) {
                 this.setState({
@@ -243,28 +254,59 @@ class MyInsterestColumn extends React.Component {
         });
     };
 
-    renderUnHandledNoticeContent = (notice, idx) => {
-        //最后一条关注客户的登录信息
-        let showItem = {};
-        const detailLength = _.get(notice, 'detail.length');
-        if (detailLength) {
-            notice.detail = _.sortBy(notice.detail, 'creat_time');
-            showItem = _.first(notice.detail);
+    getLoginAppDescr(item) {
+        let loginAppDescr = '';
+        if (item.app_name) {
+            switch (item.type) {
+                case LOGIN_TYPES.INTEREST_LOGIN://关注登录
+                case LOGIN_TYPES.LOGIN_LAST_DAYS://近期登录
+                    loginAppDescr = Intl.get('notification.system.login', '登录了') + item.app_name;
+                    break;
+                case LOGIN_TYPES.LOGIN_AFTER_STOPPED://停用登录
+                    loginAppDescr = Intl.get('home.page.stopped.login', '停用后登录了{app}', {app: item.app_name});
+                    break;
+                case LOGIN_TYPES.LOGIN_FAIL://登录失败
+                    loginAppDescr = Intl.get('home.page.login.failed', '登录{app}失败', {app: item.app_name});
+                    break;
+            }
         }
-        let titleTip = _.get(showItem, 'user_name', '');
-        if (showItem.app_name) {
-            titleTip += Intl.get('notification.system.login', '登录了') + showItem.app_name;
-        }
-        return (
-            <div className="system-notice-item"
-                title={titleTip}>
-                < span className="system-notice-time">
-                    {TimeUtil.transTimeFormat(showItem.create_time)}
-                </span>
-                <a onClick={this.openUserDetail.bind(this, showItem.user_id, idx)}>{showItem.user_name}</a>
-                {showItem.app_name ?
-                    <span>{Intl.get('notification.system.login', '登录了') + showItem.app_name}</span> : ''}
-            </div>);
+        return loginAppDescr;
+    }
+
+    renderLoginDetailContent = (notice, idx) => {
+        let detailList = [];
+        _.each(notice.users, (item, index) => {
+            if (item) {
+                let loginAppDescr = this.getLoginAppDescr(item);
+                let titleTip = _.get(item, 'app_user_name', '') + loginAppDescr;
+                detailList.push(
+                    <div className="system-notice-item" key={index}
+                        title={titleTip}>
+                        < span className="system-notice-time">
+                            {TimeUtil.transTimeFormat(item.time)}
+                        </span>
+                        <a onClick={this.openUserDetail.bind(this, item.app_user_id, idx)}>{item.app_user_name}</a>
+                        {item.app_name ?
+                            <span>{loginAppDescr}</span> : ''}
+                    </div>
+                );
+            }
+        });
+        _.each(notice.contracts, (item, index) => {
+            if (item) {
+                let contractDescr = Intl.get('home.page.contract.expires', '{contract} 合同到期', {contract: item.num});
+                detailList.push(
+                    <div className="system-notice-item" key={index}
+                        title={contractDescr}>
+                        < span className="system-notice-time">
+                            {TimeUtil.transTimeFormat(item.time)}
+                        </span>
+                        <span>{contractDescr}</span>
+                    </div>
+                );
+            }
+        });
+        return detailList;
     };
 
     setHandlingFlag = (notice, flag) => {
@@ -275,6 +317,93 @@ class MyInsterestColumn extends React.Component {
         });
         this.setState({systemNotices: this.state.systemNotices});
     };
+
+    renderCustomerName(item, index) {
+        let customer_label = _.get(item, 'customer_label');
+        //客户合格标签
+        // const qualify_label = workObj.qualify_label;
+        //分数
+        const score = item.customer_score;
+        const interestCls = classNames('iconfont icon-concern-customer-login', {'is-insterested-style': item.is_interested === 'true'});
+        return (
+            <div className='customer-name'>
+                <i className={interestCls}/>
+                {customer_label ? (
+                    <Tag
+                        className={crmUtil.getCrmLabelCls(customer_label)}>
+                        {customer_label}</Tag>) : null
+                }
+                {/*qualify_label ? (
+                 <Tag className={crmUtil.getCrmLabelCls(qualify_label)}>
+                 {qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                 qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
+                 */}
+                <span className='customer-name-text'
+                    title={Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')})}
+                    onClick={this.openCustomerDetail.bind(this, item.customer_id, index)}>
+                    {_.get(item, 'customer_name', '')}
+                </span>
+                {score ? (
+                    <span className='custmer-score'>
+                        <i className='iconfont icon-customer-score'/>
+                        {score}
+                    </span>) : null}
+            </div>);
+    }
+
+    //联系人和联系电话
+    renderPopoverContent(contacts, item) {
+        return (
+            <div className="contacts-containers">
+                {_.map(contacts, (contact) => {
+                    var cls = classNames('contacts-item',
+                        {'def-contact-item': contact.def_contancts === 'true'});
+                    return (
+                        <div className={cls}>
+                            <div className="contacts-name-content">
+                                <i className="iconfont icon-contact-default"/>
+                                {contact.name}
+                            </div>
+                            <div className="contacts-phone-content" data-tracename="联系人电话列表">
+                                {_.map(contact.phone, (phone) => {
+                                    return (
+                                        <div className="phone-item">
+                                            <PhoneCallout
+                                                phoneNumber={phone}
+                                                contactName={contact.name}
+                                                showPhoneIcon={true}
+                                                // onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
+    //联系人及电话的渲染
+    renderContactItem(item) {
+        let contacts = _.get(item, 'contacts',[]);
+        let phones = _.map(contacts, 'phone');
+        if (!_.isEmpty(contacts) && !_.isEmpty(phones)) {
+            let contactsContent = this.renderPopoverContent(contacts, item);
+            return (
+                <div className='my-insterest-contact-wrap'>
+                    <Popover content={contactsContent} placement="bottom"
+                        overlayClassName='contact-phone-popover'
+                        getPopupContainer={() => document.getElementById(`my-interest-item${item.id}`)}>
+                        <span className='work-contact-phone'>
+                            <i className="iconfont icon-phone-call-out"/>
+                        </span>
+                    </Popover>
+                </div>);
+        }
+    }
+
     //未处理的系统消息
     renderUnHandledNotice = (notice, idx) => {
         let loginUser = userData.getUserData();
@@ -284,16 +413,16 @@ class MyInsterestColumn extends React.Component {
             'select-li-item': idx === this.state.selectedLiIndex,
         });
         return (
-            <li key={idx} className={unhandleNoticeLiItemClass}>
+            <li key={idx} className={unhandleNoticeLiItemClass} id={`my-interest-item${notice.id}`}>
                 <div className="system-notice-title">
-                    <div className="customer-name" title={notice.customer_name}
-                        onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>
-                        <i className='iconfont icon-concern-customer-login'/>{notice.customer_name}
+                    <div className="customer-name" title={notice.customer_name}>
+                        {this.renderCustomerName(notice, idx)}
                     </div>
                 </div>
                 <div className="system-notice-content">
-                    {this.renderUnHandledNoticeContent(notice, idx)}
+                    {this.renderLoginDetailContent(notice, idx)}
                     <div className='notice-handle-wrap'>
+                        {this.renderContactItem(notice)}
                         {
                             loginUserId === notice.member_id ?
                                 <Button className="notice-handled-set" disabled={this.state.noticeId === notice.id}

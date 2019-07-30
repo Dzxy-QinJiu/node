@@ -5,7 +5,7 @@
  */
 import '../css/my-work-column.less';
 import classNames from 'classnames';
-import {Dropdown, Icon, Menu, Tag} from 'antd';
+import {Dropdown, Icon, Menu, Tag, Popover} from 'antd';
 import ColumnItem from './column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
@@ -37,6 +37,16 @@ const WORK_TYPES = {
     DEAL: 'deal',// 待处理的订单deal
     CUSTOMER: 'customer'//用来区分日程是否是客户的类型
 };
+const WORK_DETAIL_TAGS = {
+    SCHEDULE: 'schedule',//日程
+    APPLY: 'apply',//申请、审批
+    LEAD: 'lead',//待处理线索
+    DEAL: 'deal',//订单
+    SELLSTATEGY: 'sellStrategy',//大小循环
+    DISTRIBUTION: 'distribution',//新分配未联系
+    EXPIRED: 'expired',//近期已过期的试用客户（近十天）
+    WILLEXPIRE: 'willexpire',//近期已过期的试用客户（近十天）
+};
 //联系计划类型
 const SCHEDULE_TYPES = {
     LEAD_CALLS: 'lead',//线索中打电话的联系计划
@@ -48,10 +58,9 @@ const SCHEDULE_TYPES = {
 const APPLY_STATUS = {
     ONGOING: 'ongoing',//待审批
     REJECT: 'reject',//驳回
-    PASS: 'pass'//通过
+    PASS: 'pass',//通过
+    CANCEL: 'cancel',//撤销
 };
-//需要打开详情的类型
-const OPEN_DETAIL_TYPES = [WORK_TYPES.DEAL, WORK_TYPES.APPLY];
 
 class MyWorkColumn extends React.Component {
     constructor(props) {
@@ -231,7 +240,7 @@ class MyWorkColumn extends React.Component {
             this.closeRightUserPanel();
         }
         //是否是待审批的工作
-        let isApplyWork = work.type === WORK_TYPES.APPLY && work.opinion === APPLY_STATUS.ONGOING;
+        let isApplyWork = work.type === WORK_TYPES.APPLY && _.get(work, 'apply.opinion') === APPLY_STATUS.ONGOING;
         //打开新详情前先将之前已完成的工作处理掉
         this.handleFinishedWork();
         this.setState({
@@ -249,12 +258,12 @@ class MyWorkColumn extends React.Component {
         });
     }
 
-    openCustomerOrClueDetail(id, modelType, index, work) {
+    openCustomerOrClueDetail(id, index, work) {
         if (!id) return;
         //打开线索详情
-        if (modelType === WORK_TYPES.LEAD) {
+        if (!_.isEmpty(work.lead)) {
             this.openClueDetail(id, work);
-        } else if (modelType === WORK_TYPES.CUSTOMER) {
+        } else if (!_.isEmpty(work.customer)) {
             //打开客户详情
             this.openCustomerDetail(id, index, work);
         }
@@ -297,19 +306,29 @@ class MyWorkColumn extends React.Component {
     };
 
     renderWorkName(item, index) {
+        let workObj = {};
+        let titleTip = '';
+        if (!_.isEmpty(item.customer)) {
+            workObj = item.customer;
+            titleTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')});
+        } else if (!_.isEmpty(item.lead)) {
+            workObj = item.lead;
+            titleTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('crm.sales.clue', '线索')});
+        } else if (item.type === WORK_TYPES.APPLY && _.get(item, 'apply.applyType') === APPLY_APPROVE_TYPES.PERSONAL_LEAVE) {
+            //请假申请
+            workObj = {name: Intl.get('leave.apply.leave.application', '请假申请')};
+        }
         //客户阶段标签
-        const customer_label = _.get(item, 'details[0].tag');
+        const customer_label = workObj.tag;
         //客户合格标签
-        const qualify_label = _.get(item, 'detail.qualify_label');
+        // const qualify_label = workObj.qualify_label;
         //分数
-        const score = _.get(item, 'details[0].score');
+        const score = workObj.score;
         //客户id或线索id
-        const id = _.get(item, 'details[0].id');
+        const id = workObj.id;
         const nameCls = classNames('work-name-text', {
             'customer-clue-name': !!id
         });
-        //日程通过modelType来判断当前是线索还是客户
-        const modelType = _.get(item, 'details[0].model_type');
         return (
             <div className='work-name'>
                 {customer_label ? (
@@ -317,14 +336,14 @@ class MyWorkColumn extends React.Component {
                         className={crmUtil.getCrmLabelCls(customer_label)}>
                         {customer_label}</Tag>) : null
                 }
-                {qualify_label ? (
-                    <Tag className={crmUtil.getCrmLabelCls(qualify_label)}>
-                        {qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                            qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                }
-                <span className={nameCls}
-                    onClick={this.openCustomerOrClueDetail.bind(this, id, modelType, index, item)}>
-                    {_.get(item, 'details[0].name', '')}
+                {/*qualify_label ? (
+                 <Tag className={crmUtil.getCrmLabelCls(qualify_label)}>
+                 {qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                 qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
+                 */}
+                <span className={nameCls} title={titleTip}
+                    onClick={this.openCustomerOrClueDetail.bind(this, id, index, item)}>
+                    {_.get(workObj, 'name', '')}
                 </span>
                 {score ? (
                     <span className='custmer-score'>
@@ -334,31 +353,60 @@ class MyWorkColumn extends React.Component {
             </div>);
     }
 
+    //联系人和联系电话
+    renderPopoverContent(contacts, item) {
+        return (
+            <div className="contacts-containers">
+                {_.map(contacts, (contact) => {
+                    var cls = classNames('contacts-item',
+                        {'def-contact-item': contact.def_contancts === 'true'});
+                    return (
+                        <div className={cls}>
+                            <div className="contacts-name-content">
+                                <i className="iconfont icon-contact-default"/>
+                                {contact.name}
+                            </div>
+                            <div className="contacts-phone-content" data-tracename="联系人电话列表">
+                                {_.map(contact.phone, (phone) => {
+                                    return (
+                                        <div className="phone-item">
+                                            <PhoneCallout
+                                                phoneNumber={phone}
+                                                contactName={contact.name}
+                                                showPhoneIcon={true}
+                                                onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
     //联系人及电话的渲染
     renderContactItem(item) {
-        let contacts = _.get(item, 'details[0].contacts', []);
-        //默认展示的联系人及电话(有默认联系人时展示默认联系人，没有时展示第一个联系人)
-        let defaultContact = {};
-        if (!_.isEmpty(contacts)) {
-            defaultContact = _.find(contacts, contact => contact.def_contancts === 'true');
-            if (!defaultContact) {
-                defaultContact = contacts[0];
-            }
+        let contacts = [];
+        if (item.type === WORK_TYPES.CUSTOMER) {
+            contacts = _.get(item, 'customer.contacts', []);
+        } else if (item.type === WORK_TYPES.LEAD) {
+            contacts = _.get(item, 'lead.contacts', []);
         }
-        let defaultContactName = _.get(defaultContact, 'name', '');
-        let defaultPhone = _.get(defaultContact, 'phone[0]', '');
-        if (defaultContactName || defaultPhone) {
+        let phones = _.map(contacts, 'phone');
+        if (!_.isEmpty(contacts) && !_.isEmpty(phones)) {
+            let contactsContent = this.renderPopoverContent(contacts, item);
             return (
                 <div className='work-hover-show-detail'>
-                    <span className='work-contact-name'>{defaultContactName}</span>
-                    {defaultPhone ? (
+                    <Popover content={contactsContent} placement="bottom"
+                        overlayClassName='contact-phone-popover'
+                        getPopupContainer={() => document.getElementById(`home-page-work${item.id}`)}>
                         <span className='work-contact-phone'>
-                            <PhoneCallout
-                                phoneNumber={defaultPhone}
-                                contactName={defaultContactName}
-                                onCallSuccess={this.onCallSuccess.bind(this, item)}
-                            />
-                        </span>) : null}
+                            <i className="iconfont icon-phone-call-out"/>
+                        </span>
+                    </Popover>
                 </div>);
         }
     }
@@ -366,24 +414,163 @@ class MyWorkColumn extends React.Component {
     //拨打电话成功后，记住当前正在拨打电话的工作,以便打通电话写完跟进后将此项工作去掉
     onCallSuccess(item) {
         //线索中拨打电话时
-        if (item.type === WORK_TYPES.LEAD || _.get(item, 'details[0].model_type') === WORK_TYPES.LEAD) {
-            this.openClueDetail(_.get(item, 'details[0].id'), item);
+        if (item.type === WORK_TYPES.LEAD) {
+            this.openClueDetail(_.get(item, 'lead.id'), item);
         } else {
             //打开新电话弹屏前先将之前已完成的工作处理掉
             this.handleFinishedWork();
             this.setState({handlingWork: item});
         }
     }
+
+    //能否打开工作详情
+    enableOpenWorkDetail(item) {
+        //订单详情、申请详情能否打开的判断
+        return _.includes(item.tags, WORK_TYPES.DEAL) || (item.type === WORK_TYPES.APPLY && _.get(item, `[${WORK_TYPES.APPLY}].opinion`) === APPLY_STATUS.ONGOING);
+    }
+
+    getScheduleType(type) {
+        let typeDescr = '';
+        switch (type) {
+            case 'visit'://客户拜访的日程类型
+                typeDescr = Intl.get('customer.visit', '拜访');
+                break;
+            case 'calls'://客户打电话的日程类型
+                typeDescr = Intl.get('crm.schedule.call', '打电话');
+                break;
+            case 'lead'://线索打电话的日程类型
+                typeDescr = Intl.get('crm.schedule.call', '打电话');
+                break;
+            case 'other'://其他
+                typeDescr = '';
+                break;
+        }
+        return typeDescr;
+    }
+
+    getApplyType(type) {
+        const APPLY_TYPE_MAP = {
+            'business_opportunities': Intl.get('leave.apply.sales.oppotunity', '机会申请'),
+            'customer_visit': Intl.get('leave.apply.add.leave.apply', '出差申请'),
+            'personal_leave': Intl.get('leave.apply.leave.application', '请假申请'),
+            'opinion_report': Intl.get('home.page.user.application.for', '{type}申请', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}),
+            'document_writing': Intl.get('home.page.user.application.for', '{type}申请', {type: Intl.get('apply.approve.document.writing', '文件撰写')}),
+            'apply_user_official': Intl.get('home.page.user.formal.apply', '签约用户申请'),
+            'apply_user_trial': Intl.get('home.page.user.trial.apply', '试用用户申请'),
+            'apply_app_official': Intl.get('home.page.user.formal.apply', '签约用户申请'),
+            'apply_app_trial': Intl.get('home.page.user.trial.apply', '试用用户申请'),
+            'apply_grant_delay_multiapp': Intl.get('home.page.user.delay.apply', '用户延期申请'),
+            'apply_pwd_change': Intl.get('home.page.user.password.apply', '修改密码申请'),
+            'apply_grant_status_change_multiapp': Intl.get('home.page.user.status.apply', '禁用用户申请'),
+            'apply_sth_else': Intl.get('home.page.user.other.apply', '其他申请')
+        };
+        let typeDescr = APPLY_TYPE_MAP[type];
+        return typeDescr;
+    }
+
+    getApplyRemark(item, tag) {
+        let remark = '';
+        let type = this.getApplyType(_.get(item, `[${tag}].applyType`, ''));
+        switch (_.get(item, `[${tag}].opinion`, '')) {
+            case APPLY_STATUS.ONGOING://待审批
+                remark = _.get(item, `[${tag}].applicant`, '') + ' ' + type;
+                break;
+            case APPLY_STATUS.PASS://通过
+                remark = Intl.get('home.page.approve.pass.tip', '{user}通过了您的{applyType}', {
+                    user: _.get(item, `[${tag}].approver`, ''),
+                    applyType: type
+                });
+                break;
+            case APPLY_STATUS.REJECT://驳回
+                remark = Intl.get('home.page.approve.reject.tip', '{user}驳回了您的{applyType}', {
+                    user: _.get(item, `[${tag}].approver`, ''),
+                    applyType: type
+                });
+                break;
+            case APPLY_STATUS.CANCEL://撤销
+                remark = Intl.get('home.page.approve.cancel.tip', '{user}撤回了{applyType}', {
+                    user: _.get(item, `[${tag}].applicant`, ''),
+                    applyType: type
+                });
+                break;
+        }
+        return remark;
+    }
+
+    renderWorkRemarks(tag, item, index) {
+        let tagDescr = '', remark = '', startTime = '', endTime = '', type = '';
+        switch (tag) {
+            case WORK_DETAIL_TAGS.SCHEDULE://日程
+                tagDescr = Intl.get('menu.shortName.schedule', '日程');
+                startTime = _.get(item, `[${tag}].start_time`) ? moment(item[tag].start_time).format(oplateConsts.HOUR_MUNITE_FORMAT) : '';
+                endTime = _.get(item, `[${tag}].end_time`) ? moment(item[tag].end_time).format(oplateConsts.HOUR_MUNITE_FORMAT) : '';
+                type = this.getScheduleType(_.get(item, `[${tag}].schedule_type`, ''));
+                //xxx-xxx 打电话 联系内容的备注
+                remark = startTime + ' - ' + endTime + ' ';
+                if (type) {
+                    remark += type + ' ';
+                }
+                remark += _.get(item, `[${tag}].content`);
+                break;
+            case WORK_DETAIL_TAGS.APPLY://申请、审批
+                tagDescr = Intl.get('home.page.apply.type', '申请');
+                remark = this.getApplyRemark(item, tag);
+                break;
+            case WORK_DETAIL_TAGS.LEAD://待处理线索
+                tagDescr = Intl.get('crm.sales.clue', '线索');
+                //TODO 线索描述
+                remark = _.get(item, `[${tag}].source`, '');
+                break;
+            case WORK_DETAIL_TAGS.DEAL://订单
+                tagDescr = Intl.get('user.apply.detail.order', '订单');
+                //订单预算
+                if (_.get(item, `[${tag}].budget`)) {
+                    remark = Intl.get('leave.apply.buget.count', '预算') + ': ' + Intl.get('contract.159', '{num}元', {num: _.get(item, `[${tag}].budget`)});
+                }
+                break;
+            case WORK_DETAIL_TAGS.SELLSTATEGY://大小循环设置的联系频率
+                //'home.page.contact.great.cycle': '大循环',
+                //'home.page.contact.minor.cycle': '小循环',
+                tagDescr = Intl.get('home.page.contact.great.cycle', '大循环');
+                //最后一次跟进时间与跟进内容
+                break;
+            case WORK_DETAIL_TAGS.DISTRIBUTION://新分配未联系
+                tagDescr = Intl.get('home.page.distribute.new', '新分配');
+                break;
+            case WORK_DETAIL_TAGS.WILLEXPIRE://即将到期
+                tagDescr = Intl.get('home.page.will.expire.customer', '即将到期');
+                //xxx时间到期
+                break;
+            case WORK_DETAIL_TAGS.EXPIRED://新分配未联系
+                tagDescr = Intl.get('home.page.expired.customer', '已过期');
+                //xxx时间已到期
+                break;
+        }
+        return (
+            <div className='work-remark-content'>
+                【{tagDescr}】{remark}
+            </div>
+        );
+    }
+
     renderWorkCard(item, index) {
         const contentCls = classNames('work-content-wrap', {
-            'open-work-detail-style': _.includes(OPEN_DETAIL_TYPES, item.type) && item.opinion === APPLY_STATUS.ONGOING
+            'open-work-detail-style': this.enableOpenWorkDetail(item)
         });
+        let clickTip = '';
+        if (this.enableOpenWorkDetail(item)) {
+            if (item.type === WORK_TYPES.APPLY) {
+                clickTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('home.page.apply.type', '申请')});
+            } else if (_.includes(item.tags, WORK_TYPES.DEAL)) {
+                clickTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('user.apply.detail.order', '订单')});
+            }
+        }
         return (
-            <div className='my-work-card-container' onClick={this.openWorkDetail.bind(this, item)}>
+            <div className='my-work-card-container' onClick={this.openWorkDetail.bind(this, item)} title={clickTip}>
                 <div className={contentCls} id={`home-page-work${item.id}`}>
                     {this.renderWorkName(item, index)}
                     <div className='work-remark'>
-                        【{item.name}】 {_.get(item, 'remark', '')}
+                        {_.map(item.tags, (tag, index) => this.renderWorkRemarks(tag, item, index))}
                     </div>
                     <div className='my-work-item-hover'>
                         {this.renderContactItem(item)}
@@ -398,7 +585,7 @@ class MyWorkColumn extends React.Component {
         //点击到客户名或线索名时，打开客户或线索详情，不触发打开工作详情的处理
         if (event && $(event.target).hasClass('customer-clue-name')) return;
         //打开订单详情、申请详情
-        if (item.type === WORK_TYPES.DEAL || (item.type === WORK_TYPES.APPLY && item.opinion === APPLY_STATUS.ONGOING)) {
+        if (this.enableOpenWorkDetail(item)) {
             this.setState({curOpenDetailWork: item});
         }
     }
@@ -416,7 +603,9 @@ class MyWorkColumn extends React.Component {
         } else {
             return (
                 <div className='handle-work-finish' onClick={this.handleMyWork.bind(this, item)}>
-                    <span className='work-finish-text'>{Intl.get('home.page.my.work.finished', '我已完成')}</span>
+                    <span className='work-finish-text' title={Intl.get('home.page.my.work.finished', '我已完成')}>
+                        <i className="iconfont icon-select-member"/>
+                    </span>
                 </div>);
         }
     }
@@ -569,15 +758,19 @@ class MyWorkColumn extends React.Component {
     renderWorkDetail() {
         const work = this.state.curOpenDetailWork;
         //订单详情
-        if (work.type === WORK_TYPES.DEAL) {
+        if (_.includes(work.tags, WORK_TYPES.DEAL)) {
             return (
                 <DealDetailPanel
-                    currDealId={work.related_id}
+                    currDealId={_.get(work, 'deal.id')}
                     hideDetailPanel={this.closeWorkDetailPanel}/>);
         } else {//申请详情
             let detailContent = null;
-            const applyInfo = {id: work.related_id, approval_state: '0', topic: work.name};
-            switch (work.key) {
+            const applyInfo = {
+                id: _.get(work, 'apply.id'),
+                approval_state: '0',
+                topic: this.getApplyType(_.get(work, 'apply.applyType', ''))
+            };
+            switch (_.get(work, 'apply.applyType')) {
                 case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会申请
                     detailContent = (
                         <OpportunityApplyDetail

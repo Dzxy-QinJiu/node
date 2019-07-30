@@ -340,6 +340,26 @@ var en_US = {
     'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
     'home.page.callout.time': 'Total call time',//呼出总时长
     'home.page.performance.num': 'No. {n}',//第{n}名
+    'home.page.apply.type': 'Apply',//申请
+    'home.page.user.formal.apply': 'Application for Formal User ',//签约用户申请
+    'home.page.user.trial.apply': 'Application for Trial User',//试用用户申请
+    'home.page.user.delay.apply': 'Application for User Delay',//用户延期申请
+    'home.page.user.status.apply': 'Application for Disable User',//禁用用户申请
+    'home.page.user.other.apply': 'Application for Other',//其他申请
+    'home.page.user.password.apply': 'Application for Password Modification',//修改密码申请
+    'home.page.user.application.for': 'Application for {type}',//{type}申请
+    'home.page.work.click.tip': 'Click to see details of {type}',//点击查看{type}详情
+    'home.page.approve.pass.tip': '{user} passes your {applyType}',//{user}通过了您的{applyType}
+    'home.page.approve.reject.tip': '{user} rejects your {applyType}',//{user}驳回了您的{applyType}
+    'home.page.approve.cancel.tip': '{user} revoked {applyType}',//{user}撤回了{applyType}
+    'home.page.stopped.login': 'Logged in {app} after deactivation',//停用后登录了{app}
+    'home.page.login.failed': 'Logon {app} failed',//登录{app}失败
+    'home.page.contract.expires': '{contract} contract expires',//{contract}合同到期
+    'home.page.distribute.new': 'New allocation',//新分配
+    'home.page.will.expire.customer': 'Will Expire',//即将到期
+    'home.page.expired.customer': 'Expired',//已过期
+    'home.page.contact.great.cycle': 'Great cycle',//大循环
+    'home.page.contact.minor.cycle': 'Minor cycle',//小循环
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -757,7 +777,7 @@ var en_US = {
     'member.continue.add.member': 'Continue', // 继续添加成员
     'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 50 (including 50).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
     //后台管理-成员end
-    
+
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
     'organization.input.placeholder': 'Please input organization name',//请输入组织名称
@@ -3015,7 +3035,7 @@ var en_US = {
     'common.merge.to.customer': 'convert to customer',//合并到此客户
     'common.modify.name.to': 'modify name to',//修改姓名为
     'common.convert.to.new.customer': 'convert to new customer',//转为新客户
-    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户 
+    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户
     'common.total.points': 'total points',//总分
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From {source}',//来自“{source}”

@@ -348,6 +348,26 @@ var zh_CN = {
     'home.page.contacts.customers.week': '本周已联系客户总数',
     'home.page.callout.time': '呼出总时长',
     'home.page.performance.num': '第{n}名',
+    'home.page.apply.type': '申请',
+    'home.page.user.formal.apply': '签约用户申请',
+    'home.page.user.trial.apply': '试用用户申请',
+    'home.page.user.delay.apply': '用户延期申请',
+    'home.page.user.status.apply': '禁用用户申请',
+    'home.page.user.other.apply': '其他申请',
+    'home.page.user.password.apply': '修改密码申请',
+    'home.page.user.application.for': '{type}申请',
+    'home.page.work.click.tip': '点击查看{type}详情',
+    'home.page.approve.pass.tip': '{user} 通过了您的 {applyType}',
+    'home.page.approve.reject.tip': '{user} 驳回了您的 {applyType}',
+    'home.page.approve.cancel.tip': '{user} 撤回了 {applyType}',
+    'home.page.stopped.login': '停用后登录了{app}',
+    'home.page.login.failed': '登录{app}失败',
+    'home.page.contract.expires': '{contract} 合同到期',
+    'home.page.distribute.new': '新分配',
+    'home.page.will.expire.customer': '即将到期',
+    'home.page.expired.customer': '已过期',
+    'home.page.contact.great.cycle': '大循环',
+    'home.page.contact.minor.cycle': '小循环',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -636,7 +656,7 @@ var zh_CN = {
     'user.login.last.week': '近一周',
     'user.login.last.title': '{title} 的活跃统计',
     'user.login.last.failed': '获取用户最近登录统计信息失败',
-    
+
     // 第三方应用配置
     'third.party.app': '开放应用平台',
     'third.party.app.add': '添加开放平台应用',
@@ -1987,7 +2007,7 @@ var zh_CN = {
     'sales.home.invite.continue.btn': '继续邀请',
     'sales.home.invite.member.success': '邀请申请发送成功',
     'sales.home.invite.member.failed': '邀请成员失败！',
-    
+
     //销售首页-新增用户分析
     'sales.user.analysis': '用户分析',
     'user.analysis.total': '用户统计',
@@ -2749,7 +2769,7 @@ var zh_CN = {
     'crm.order.stage.destrip.palceholder': '请输入阶段的描述信息',
     'crm.order.stage.nodata.tips': '暂无订单阶段，请先添加',
     'crm.order.stage.name.verify': '该阶段名称已存在',
-    
+
     'leave.apply.add.leave.person': '出差人员',
     'leave.apply.add.leave.destination': '目的地',
     'leave.apply.add.leave.reason': '出差事由',
