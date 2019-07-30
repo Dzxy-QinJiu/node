@@ -1308,7 +1308,6 @@ class ClueCustomer extends React.Component {
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
-
                 scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
             />);
 

@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/7/25.
  */
 require('../../css/recommend_clues_lists.less');
-import {Button} from 'antd';
+import {Button,message} from 'antd';
 import {RightPanel, RightPanelClose} from 'CMP_DIR/rightPanel';
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerStore = require('../../store/clue-customer-store');
@@ -20,6 +20,7 @@ const LAYOUT_CONSTANTS = {
 var classNames = require('classnames');
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import Trace from 'LIB_DIR/trace';
+var batchOperate = require('PUB_DIR/sources/push/batch');
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -34,7 +35,7 @@ class RecommendCustomerRightPanel extends React.Component {
     };
 
     componentDidMount() {
-        batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchExtractCluesLists);
+        batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         clueCustomerStore.listen(this.onStoreChange);
         //获取推荐的线索
         this.getRecommendClueLists();
@@ -80,7 +81,7 @@ class RecommendCustomerRightPanel extends React.Component {
     }
 
     componentWillUnmount() {
-        batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchExtractCluesLists);
+        batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         clueCustomerStore.unlisten(this.onStoreChange);
     }
 
@@ -189,24 +190,37 @@ class RecommendCustomerRightPanel extends React.Component {
         return record.id;
     };
     handleBatchAssignClues = () => {
-
-
+        var submitObj = {companyIds: _.map(this.state.selectedRecommendClues,'id')};
         $.ajax({
-            url: '/rest/customer_stage',
-            type: 'get',
+            url: '/rest/clue/batch/recommend/list',
+            type: 'post',
             dateType: 'json',
-
+            data: submitObj,
             success: (data) => {
-                this.setState({
-                    stageList: _.isArray(data) ? data : [],
-                    isRefreshLoading: false
-                });
+                var taskId = _.get(data, 'batch_label','');
+                if (taskId){
+                    //向任务列表id中添加taskId
+                    batchOperate.addTaskIdToList(taskId);
+                    //存储批量操作参数，后续更新时使用
+                    var batchParams = _.cloneDeep(submitObj);
+                    batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
+                        showPop: true,
+                        urlPath: '/clue_customer'
+                    });
+                    //立即在界面上显示推送通知
+                    //界面上立即显示一个初始化推送
+                    //批量操作参数
+                    var totalSelectedSize = _.get(this,'state.selectedRecommendClues.length',0);
+                    batchOperate.batchOperateListener({
+                        taskId: taskId,
+                        total: totalSelectedSize,
+                        running: totalSelectedSize,
+                        typeText: Intl.get('clue.extract.clue', '提取线索')
+                    });
+                }
             },
             error: (errorMsg) => {
-                this.setState({
-                    isRefreshLoading: false,
-                    getErrMsg: errorMsg.responseJSON
-                });
+                message.error(errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
             }
         });
     };
@@ -222,7 +236,7 @@ class RecommendCustomerRightPanel extends React.Component {
                                 onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
                             <Button className="btn-item"
                                 onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
-                            <Button onClick={this.handleBatchAssignClues} className="btn-item" disabled={!_.get(this, 'state.selectedRecommendClues.length')}>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>
+                            <Button onClick={this.handleBatchAssignClues} className="btn-item" disabled={!_.get(this, 'state.selectedRecommendClues.length')}>{Intl.get('clue.pool.batch.extract.clue', '批量提取')}</Button>
 
 
                         </div>
