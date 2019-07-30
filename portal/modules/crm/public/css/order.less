@@ -47,12 +47,13 @@
     .detail-card-title, .order-item-title {
       float: left;
       width: 100%;
+      position: relative;
     }
     .order-item-title {
       .step-bar-component {
         float: left;
         width: 100%;
-        margin-left: -20px;
+        margin-left: -12px;
         .order-stage-name{
           float: left;
           width: 100%;
@@ -90,7 +91,9 @@
       }
       //操作按钮区
       .order-item-buttons {
+        position: absolute;
         float: right;
+        right: 0;
         .iconfont {
           float: right;
           font-size: 16px;
