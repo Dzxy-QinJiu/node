@@ -1013,7 +1013,7 @@ class ClueCustomer extends React.Component {
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
                                 {salesClueItem.leads || salesClueItem.customers ? (
                                     <Tag className="clue-label intent-tag-style">
-                                    有相似线索或客户
+                                        {Intl.get('clue.similar.clue', '有相似线索或客户')}
                                     </Tag>) : null
                                 }
                             </span>
