@@ -24,7 +24,7 @@ exports.doBatch = function(req,res) {
 //获取推荐标签
 exports.getRecommendTags = function(req, res) {
     var type = req.params.type;
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
             url: `/rest/customer/v3/customer/term/${type}/field/labels`,
             req: req,

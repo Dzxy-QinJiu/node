@@ -144,7 +144,7 @@ exports.getCrmUserList = function(req, res, queryObj) {
 };
 //获取筛选面板的行业列表
 exports.getFilterIndustries = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
             url: crmRestApis.getFilterIndustries.replace(':type', req.params.type),
             req: req,
@@ -163,7 +163,7 @@ exports.getFilterSalesRoleList = function(req, res) {
 
 //获取筛选面板的地域列表
 exports.getFilterProvinces = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
             url: crmRestApis.getFilterProvinces.replace(':type', req.params.type),
             req: req,
@@ -181,7 +181,7 @@ exports.getStageTagList = function(req, res) {
 };
 //获取竞品列表
 exports.getCompetitorList = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
             url: crmRestApis.getCompetitorList.replace(':type', req.params.type),
             req: req,
