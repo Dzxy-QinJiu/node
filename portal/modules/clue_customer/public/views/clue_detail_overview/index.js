@@ -31,6 +31,7 @@ import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
+var clueCustomerStore = require('../../store/clue-customer-store');
 import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
@@ -56,13 +57,24 @@ class ClueDetailOverview extends React.Component {
     };
 
     componentDidMount() {
-        //获取相似线索列表
-        this.getSimilarClueLists();
-        //获取相似客户列表
-        this.getSimilarCustomerLists();
-
+        clueCustomerStore.listen(this.onClueCustomerStoreChange);
+        var curClue = this.state.curClue;
+        if (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE){
+            //获取相似线索列表
+            this.getSimilarClueLists();
+            //获取相似客户列表
+            this.getSimilarCustomerLists();
+        }
 
     }
+    componentWillUnmount() {
+        clueCustomerStore.unlisten(this.onClueCustomerStoreChange);
+    }
+    onClueCustomerStoreChange = () => {
+        let curClue = _.cloneDeep(this.state.curClue);
+        curClue.contacts = clueCustomerStore.getState().curClue.contacts;
+        this.setState({curClue});
+    };
     getSimilarClueLists = () => {
         this.setState({
             similarClueLoading: true,
