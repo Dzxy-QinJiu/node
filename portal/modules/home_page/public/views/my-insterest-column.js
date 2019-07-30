@@ -372,7 +372,7 @@ class MyInsterestColumn extends React.Component {
                                                 phoneNumber={phone}
                                                 contactName={contact.name}
                                                 showPhoneIcon={true}
-                                                onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                                // onCallSuccess={this.onCallSuccess.bind(this, item)}
                                             />
                                         </div>
                                     );
@@ -392,7 +392,7 @@ class MyInsterestColumn extends React.Component {
         if (!_.isEmpty(contacts) && !_.isEmpty(phones)) {
             let contactsContent = this.renderPopoverContent(contacts, item);
             return (
-                <div className='work-hover-show-detail'>
+                <div className='my-insterest-contact-wrap'>
                     <Popover content={contactsContent} placement="bottom"
                         overlayClassName='contact-phone-popover'
                         getPopupContainer={() => document.getElementById(`my-interest-item${item.id}`)}>
