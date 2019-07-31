@@ -105,6 +105,7 @@ class AlwaysShowSelect extends React.Component {
             //忽略英文单词中的大小写
             let nameIgnoreCase = _.toUpper(data.name);
             let searchValIgnoreCase = _.toUpper(this.state.searchVal);
+
             return nameIgnoreCase.indexOf(searchValIgnoreCase) !== -1;
         });
         let inputVal = '';//输入框中显示的内容
