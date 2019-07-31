@@ -101,7 +101,12 @@ class AlwaysShowSelect extends React.Component {
     };
     render() {
         //获取搜索后的列表数据
-        let dataList = _.filter(this.props.dataList, data => data.name.indexOf(this.state.searchVal) !== -1);
+        let dataList = _.filter(this.props.dataList, data => {
+            //忽略英文单词中的大小写
+            let nameIgnoreCase = _.toUpper(data.name);
+            let searchValIgnoreCase = _.toUpper(this.state.searchVal);
+            return nameIgnoreCase.indexOf(searchValIgnoreCase) !== -1;
+        });
         let inputVal = '';//输入框中显示的内容
         if (this.state.isSearch) {
             //搜索状态下展示输入的搜索内容
