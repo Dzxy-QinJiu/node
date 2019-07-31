@@ -295,7 +295,9 @@ class DealForm extends React.Component {
                                         placeholder={Intl.get('leave.apply.select.product', '请选择产品')}
                                         name="apps"
                                         getPopupContainer={() => document.getElementById('deal-form')}
-
+                                        filterOption={(input, option) =>
+                                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
                                     >
                                         {_.map(this.state.appList, (appItem, idx) => {
                                             return (<Option key={idx}

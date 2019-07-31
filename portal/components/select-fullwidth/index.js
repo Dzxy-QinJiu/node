@@ -95,7 +95,13 @@ class SelectFullWidth extends React.Component {
         }
         style.width = this.state.width;
         return (
-            <Select {...props} dropdownMatchSelectWidth={false}>
+            <Select
+                {...props}
+                dropdownMatchSelectWidth={false}
+                filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+            >
                 {children}
             </Select>
         );

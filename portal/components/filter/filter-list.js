@@ -550,6 +550,9 @@ class FilterList extends React.Component {
                     onChange={this.handleSelectChange.bind(this, groupItem)}
                     optionFilterProp="children"
                     getPopupContainer={() => document.getElementById(`${groupItem.groupId}_select_container`)}
+                    filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                 >
                     {_.map(groupItem.data, (item, index) => {
                         return (<Option key={index} value={item.value}>{item.name}</Option>);

@@ -481,7 +481,9 @@ var CRMAddForm = createReactClass({
                                         this.handleSelect(e);
                                     }}
                                     getPopupContainer={() => document.getElementById('crm-add-form')}
-
+                                    filterOption={(input, option) =>
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
                                 >
                                     {industryOptions}
                                 </Select>
