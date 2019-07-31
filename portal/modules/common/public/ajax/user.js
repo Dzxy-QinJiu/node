@@ -1,8 +1,14 @@
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+
 var trans = $.ajaxTrans();
 //根据当前成员的角色，获取成员列表
 trans.register('getUserListByRole', {url: '/rest/user_list/byrole', type: 'get'});
 //根据成员id，获取成员信息
 trans.register('getUserById', {url: '/rest/global/user/:user_id', type: 'get'});
+//获取在团队树中的成员
+trans.register('getUserInTeamTree', {url: '/rest/base/v1/group/team/members/' + commonMethodUtil.getParamByPrivilege().type, type: 'get'});
+//获取所有成员
+trans.register('getAllUser', {url: '/rest/base/v1/user?page_size=9999', type: 'get'});
 
 //根据当前成员的角色，获取成员列表
 exports.getUserListByRoleAjax = function() {
@@ -12,4 +18,9 @@ exports.getUserListByRoleAjax = function() {
 //根据用户id，获取成员信息
 exports.getUserByIdAjax = function() {
     return trans.getAjax('getUserById');
+};
+
+//获取用户列表
+exports.getUserListAjax = function() {
+    return trans.getAjax('getUserInTeamTree');
 };

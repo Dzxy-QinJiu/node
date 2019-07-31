@@ -26,6 +26,8 @@ const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'common'
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 
+const getUserListAjax = require('MOD_DIR/common/public/ajax/user').getUserListAjax;
+
 //销售角色
 const SALES_ROLE = {
     sales_manager: '销售经理',
@@ -97,11 +99,7 @@ class SalesReport extends React.Component {
 
     //获取成员列表
     getMemberList = () => {
-        const reqData = commonMethodUtil.getParamByPrivilege();
-
-        ajax.send({
-            url: '/rest/base/v1/group/team/members/' + reqData.type,
-        }).then(result => {
+        getUserListAjax().sendRequest().success(result => {
             this.setState({
                 memberList: result,
             });
