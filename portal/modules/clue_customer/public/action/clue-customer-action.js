@@ -41,7 +41,6 @@ function ClueCustomerActions() {
         'changeFilterFlag',
         'saveSettingCustomerRecomment',
         'saveQueryObj',
-        'filterExtractClue',
         'updateRecommendClueLists'
     );
     //获取销售列表

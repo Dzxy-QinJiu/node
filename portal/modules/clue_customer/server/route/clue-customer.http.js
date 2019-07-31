@@ -228,7 +228,7 @@ module.exports = {
                 'needLogin': true
             }
         },{
-            method: 'get',
+            method: 'post',
             path: '/rest/clue/extract/recommend/clue',
             handler: 'extractRecommendClue',
             passport: {

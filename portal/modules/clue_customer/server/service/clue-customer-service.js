@@ -102,12 +102,12 @@ exports.getClueSource = function(req, res) {
 };
 //提取单条线索
 exports.extractRecommendClue = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
             url: restApis.extractRecommendClue,
             req: req,
             res: res
-        }, req.query);
+        }, req.body);
 };
 //批量提取线索
 exports.batchExtractRecommendLists = function(req, res) {

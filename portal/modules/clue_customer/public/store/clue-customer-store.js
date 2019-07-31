@@ -201,34 +201,12 @@ ClueCustomerStore.prototype.setLoadingFalse = function() {
     this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
     this.firstLogin = false;
 },
-ClueCustomerStore.prototype.filterExtractClue = function(clue) {
-    this.recommendClueLists = _.filter(this.recommendClueLists, item => item.id !== clue.id);
-    //看现在选中的是哪个状态的线索，如果是待分配的状态，需要把提取的这一条也加上去
-    var filterClueStatus = clueFilterStore.getState().filterClueStatus;
-    var typeFilter = getClueStatusValue(filterClueStatus);
-    if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE){
-        //统计数字上加一，线索列表中加上这个线索
-        this.agg_list['willDistribute'] += 1;
-        this.curClueLists.unshift(clue);
-    }
-},
 ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
     this.handleClueData(clueData);
 },
 ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
-    //在推荐线索列表中删除处理过的线索
-    _.each(extractClues, (clueItem) => {
-        var extractTarget = _.find(this.recommendClueLists, item => item.id === clueItem);
-        //如果当前选中的是待分配的线索，把这些提取的线索加进去
-        var filterClueStatus = clueFilterStore.getState().filterClueStatus;
-        var typeFilter = getClueStatusValue(filterClueStatus);
-        if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE){
-            //统计数字上加一，线索列表中加上这个线索
-            this.agg_list['willDistribute']++;
-            this.curClueLists.unshift(extractTarget);
-        }
-        this.recommendClueLists = _.filter(this.recommendClueLists, item => item.id !== clueItem);
-    });
+    this.recommendClueLists = _.filter(this.recommendClueLists, item => item.id !== extractClues);
+
 };    
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
