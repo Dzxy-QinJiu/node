@@ -74,7 +74,13 @@ class RecommendCustomerRightPanel extends React.Component {
         if (!tasks.length) {
             return;
         }
-        clueCustomerAction.updateRecommendClueLists(_.map(tasks, 'taskDefine'));
+        _.forEach(tasks, item => {
+            if (_.get(item,'taskDefine')){
+                var arr = _.split(_.get(item,'taskDefine'),'_');
+                item['taskId'] = arr[0];
+            }
+        });
+        clueCustomerAction.updateRecommendClueLists(_.map(tasks, 'taskId'));
         this.setState({
             selectedRecommendClues: []
         });
