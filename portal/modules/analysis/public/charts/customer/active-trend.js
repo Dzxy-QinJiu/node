@@ -52,7 +52,7 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
         },
         processData: data => {
             _.each(data, dataItem => {
-                //若时间区间查询参数有值
+                //若查询的时间区间值有值
                 if (intervalValue) {
                     if (intervalValue === 'day') {
                         dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
@@ -70,7 +70,6 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
                         let endMoment = moment(dataItem.timestamp).endOf(intervalValue);
 
                         //如果初始值为根据当前数据点所在的时间戳按指定的时间区间计算出来的结束时间大于查询参数中的结束时间
-                        //如果当前数据点结束时间
                         if (endMoment.valueOf() > endTime) {
                             //则根据查询参数中的结束时间设置结束时间moment对象
                             endMoment = moment(endTime);
@@ -105,6 +104,7 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
                 minInterval: 1
             }],
             grid: {
+                //左边距设大一些，以便横轴标签显示为 xxxx-xx-xx至xxxx-xx-xx 格式时第一个标签能显示全
                 left: 20
             }
         }
