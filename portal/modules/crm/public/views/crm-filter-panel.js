@@ -111,13 +111,7 @@ class CrmFilterPanel extends React.Component {
         FilterAction.getIndustries();
         //负责任人名称列表
         FilterAction.getOwnerList();
-        //地域列表的获取
-        let type = 'user';
-        //管理员获取地域列表的权限
-        if (hasPrivilege('CUSTOMER_MANAGER_PROVINCE_GET')) {
-            type = 'manager';
-        }
-        FilterAction.getFilterProvinces(type);
+        FilterAction.getFilterProvinces();
         setTimeout(() => {
             this.getCommonFilterList();
         });

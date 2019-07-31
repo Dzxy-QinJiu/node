@@ -1,5 +1,7 @@
 @import "../../../../public/css/common-variables";
 
+//线索标签颜色
+@white_color: #ffffff;
 @filter-width: 300px;
 .clue_customer_content {
   //线索顶部筛选区域
@@ -374,6 +376,22 @@
 
         }
 
+      }
+      //线索标签
+      .clue-label{
+        transform: translateY(-2px);
+        display: inline-block;
+        height: 20px;
+        line-height: 17px;
+        padding: 0px 3px 1px 3px;
+        margin-left: 4px;
+        margin-right: 0px;
+        font-size: 12px;
+        font-weight:normal;
+        color: @white_color;
+      }
+      .clue-label.intent-tag-style {
+        background-color: @intent-tag-color;
       }
     }
 

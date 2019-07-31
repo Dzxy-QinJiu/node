@@ -7,6 +7,7 @@ import {traversingTeamTree, getParamByPrivilege, hasCalloutPrivilege} from 'PUB_
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 
 const session = storageUtil.session;
 let appList = [];
@@ -410,7 +411,7 @@ exports.calculateRangeType = function() {
 };
 
 //获取集成配置
-exports.getIntegrationConfig = function() {
+function getIntegrationConfig() {
     return new Promise((resolve, reject) => {
         const userProperty = 'integration_config';
         //集成配置信息{type: matomo、oplate、uem}
@@ -433,7 +434,10 @@ exports.getIntegrationConfig = function() {
             });
         }
     });
-};
+}
+
+//获取集成配置
+exports.getIntegrationConfig = getIntegrationConfig;
 
 //获取已集成的产品列表
 exports.getProductList = function(cb, isRefresh) {
@@ -566,5 +570,62 @@ exports.getAreaInfoAll = function() {
                 }
             });
         }
+    });
+};
+// 获取用户类型列表
+exports.getUserTypeList = function() {
+    return new Promise((resolve, reject) => {
+        getIntegrationConfig().then(resultObj => {
+            let userTypeList = [{
+                value: '',
+                name: Intl.get('oplate_customer_analysis.type.all', '全部类型')
+            }];
+
+            let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
+
+            if (isOplateUser) {
+                userTypeList = _.concat(userTypeList, [{
+                    value: '试用用户',
+                    name: Intl.get('oplate_customer_analysis.type.trial', '试用用户')
+                },
+                {
+                    value: '正式用户',
+                    name: Intl.get('oplate_customer_analysis.type.formal', '正式用户')
+                },
+                {
+                    value: 'internal',
+                    name: Intl.get('oplate_customer_analysis.type.employee', '员工用户')
+                },
+                {
+                    value: 'special',
+                    name: Intl.get('oplate_customer_analysis.type.gift', '赠送用户')
+                },
+                {
+                    value: 'training',
+                    name: Intl.get('oplate_customer_analysis.type.training', '培训用户')
+                }]);
+
+                resolve(userTypeList);
+            } else {
+                appAjaxTrans.getUserCondition().then( (list) => {
+                    let uemUserTypeList = _.filter(list, item => {
+                        return item.key === 'user_type' && _.get(item.values,'[0]');
+                    });
+
+                    uemUserTypeList = _.map(uemUserTypeList, item => {
+                        return {
+                            name: item,
+                            value: item
+                        };
+                    });
+
+                    userTypeList = _.concat(userTypeList, uemUserTypeList);
+
+                    resolve(userTypeList);
+                },() => {
+                    resolve(userTypeList);
+                });
+            }
+        });
     });
 };

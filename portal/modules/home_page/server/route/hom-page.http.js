@@ -58,5 +58,23 @@ module.exports = {
             'needLogin': true
         },
         'privileges': ['CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL']
+    }, {
+        //获取我关注的数据
+        'method': 'get',
+        'path': '/rest/home_page/my_insterest',
+        'handler': 'getMyInterestData',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': ['CRM_GET_INTERESTED_CUSTOMER_INFO']
+    }, {
+        //修改我关注数据的状态
+        'method': 'put',
+        'path': '/rest/home_page/my_insterest/status',
+        'handler': 'updateMyInterestStatus',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': ['CRM_UPDATE_INTERESTED_CUSTOMER_INFO']
     }]
 };

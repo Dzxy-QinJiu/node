@@ -1,6 +1,7 @@
 /**
  * 销售新开客户数统计
  */
+import Store from '../../store';
 
 export function getSalesNewOpenChart(paramObj = {}) {
     return {
@@ -51,7 +52,10 @@ export function getSalesNewOpenChart(paramObj = {}) {
                 }
             ],
         },
-        processData: (data) => {
+        processData: (data, chart) => {
+            //设置图表的卡片容器属性
+            setCardContainer(chart);
+
             let list = [];
             if (data.list && data.list.length > 0) {
                 data.list.forEach(teamItem => {
@@ -81,39 +85,22 @@ export function getSalesNewOpenChart(paramObj = {}) {
 
             return list;
         },
-        cardContainer: {
-            selectors: [{
-                options: [{
-                    value: '',
-                    name: Intl.get('oplate_customer_analysis.type.all', '全部类型')
-                },
-                {
-                    value: '试用用户',
-                    name: Intl.get('oplate_customer_analysis.type.trial', '试用用户')
-                },
-                {
-                    value: '正式用户',
-                    name: Intl.get('oplate_customer_analysis.type.formal', '正式用户')
-                },
-                {
-                    value: 'internal',
-                    name: Intl.get('oplate_customer_analysis.type.employee', '员工用户')
-                },
-                {
-                    value: 'special',
-                    name: Intl.get('oplate_customer_analysis.type.gift', '赠送用户')
-                },
-                {
-                    value: 'training',
-                    name: Intl.get('oplate_customer_analysis.type.training', '培训用户')
-                }],
-                activeOption: '',
-                conditionName: 'tags',
-            }],
-        },
         conditions: [{
             name: 'tags',
             value: '',
         }],
     };
+
+    //设置图表的卡片容器属性
+    function setCardContainer(chart) {
+        const userTypeList = Store.userTypeList;
+
+        chart.cardContainer = {
+            selectors: [{
+                options: userTypeList,
+                activeOption: '',
+                conditionName: 'tags',
+            }],
+        };
+    }
 }

@@ -232,7 +232,7 @@ module.exports = {
         },
         {
             method: 'get',
-            path: '/rest/crm_filter/industries',
+            path: '/rest/crm_filter/industries/:type',
             handler: 'getFilterIndustries',
             passport: {
                 needLogin: true

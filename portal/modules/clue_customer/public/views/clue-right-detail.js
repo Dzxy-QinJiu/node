@@ -290,9 +290,9 @@ class ClueRightPanel extends React.Component {
         });
         clueCustomerAction.afterEditCustomerDetail(updateProperty);
     };
-    updateCustomerLastContact = () => {
+    updateCustomerLastContact = (saveObj) => {
         this.updateClueProperty({status: SELECT_TYPE.HAS_TRACE});
-        this.props.updateCustomerLastContact();
+        this.props.updateCustomerLastContact(saveObj);
     };
     render() {
         var curClue = this.state.curClue;

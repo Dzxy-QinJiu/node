@@ -4,7 +4,7 @@ let salesmanAjax = require('../../../common/public/ajax/salesman');
 
 const PRIVILEGES = {
     MANAGER_BATCH: 'CUSTOMER_MANAGER_UPDATE_ALL',//批量修改的管理员权限（销售：CUSTOMER_UPDATE）
-    MANAGER_RECOMMEND_LABEL: 'CUSTOMER_MANAGER_LABEL_GET'//管理员获取推荐标签的权限（销售: CUSTOMER_UER_LABEL_GET）
+    MANAGER_RECOMMEND_LABEL: 'CRM_CUSTOMER_FIELD_TERM_MANAGER'//管理员获取推荐标签的权限（销售: CRM_CUSTOMER_FIELD_TERM_USER）
 };
 
 //获取销售人员列表
@@ -82,15 +82,13 @@ exports.doBatch = function(type, condition) {
 
 //获取推荐标签
 exports.getRecommendTags = function() {
-    var pageSize = 100;
-    var num = 1;
     let type = 'user';
     if(hasPrivilege(PRIVILEGES.MANAGER_RECOMMEND_LABEL)){
         type = 'manager';
     }
     var Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/crm/get_recommend_tags/' + pageSize + '/' + num + '/' + type,
+        url: '/rest/crm/get_recommend_tags/' + type,
         dataType: 'json',
         type: 'get',
         success: function(list) {

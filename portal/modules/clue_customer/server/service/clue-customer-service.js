@@ -58,8 +58,17 @@ const restApis = {
     //获取相似线索
     getSimilarClueLists: '/rest/clue/v2/query/:type/similarity/lead',
     //获取相似客户
-    getSimilarCustomerLists: '/rest/customer/v3/customer/query/:type/similarity/customer'
+    getSimilarCustomerLists: '/rest/customer/v3/customer/query/:type/similarity/customer',
+    //获取推荐的线索
+    getRecommendClueLists: '/rest/company/v1/companys/search/drop_down_load',
+    //获取行业配置
+    getClueIndustryLists: '/rest/company/v1/ent/industrys',
+    //获取个人配置
+    selfConditionConfig: '/rest/company/v1/ent/search',
+    //提取某条线索
+    extractRecommendClue: '/rest/company/v1/ent/clue'
 };
+
 //查询客户
 exports.getClueCustomerList = function(req, res) {
     let queryObj = {};
@@ -88,6 +97,15 @@ exports.getClueSource = function(req, res) {
             req: req,
             res: res
         }, null);
+};
+//提取单条线索
+exports.extractRecommendClue = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.extractRecommendClue,
+            req: req,
+            res: res
+        }, req.query);
 };
 
 exports.changeClueSalesBatch = function(req, res) {
@@ -243,47 +261,17 @@ exports.getClueTrendStatics = function(req, res) {
 };
 function handleBatchClueSalesParams(req, clueUrl) {
     var reqBody = req.body.query_param;
-    var rangeParams = _.isString(reqBody.rangeParams) ? JSON.parse(reqBody.rangeParams) : reqBody.rangeParams;
-    var typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
-    var keyword = '';
-    if (reqBody.keyword){
-        keyword = encodeURI(reqBody.keyword);
-    }
+    var queryParams = _.get(reqBody,'queryParam');
+    var bodyParams = _.get(reqBody,'bodyParam');
     var bodyObj = {
-        query: {...typeFilter},
-        rangParams: rangeParams,
+        ...bodyParams,
+        rangParams: _.get(queryParams,'rangeParams'),
+
     };
-    if (keyword){
+
+    if (queryParams.keyword){
+        var keyword = encodeURI(queryParams.keyword);
         bodyObj.keyword = keyword;
-    }
-    if (reqBody.userId){
-        bodyObj.query.userId = reqBody.userId;
-    }
-    if (reqBody.id){
-        bodyObj.query.id = reqBody.id;
-    }
-    if (reqBody.clue_source){
-        bodyObj.query.clue_source = reqBody.clue_source;
-    }
-    if (reqBody.access_channel){
-        bodyObj.query.access_channel = reqBody.access_channel;
-    }
-    if (reqBody.clue_classify){
-        bodyObj.query.clue_classify = reqBody.clue_classify;
-    }
-    if (reqBody.availability){
-        bodyObj.query.availability = reqBody.availability;
-    }
-    if (reqBody.province){
-        bodyObj.query.province = reqBody.province;
-    }
-    var exist_fields = reqBody.exist_fields ? JSON.parse(reqBody.exist_fields) : [];
-    var unexist_fields = reqBody.unexist_fields ? JSON.parse(reqBody.unexist_fields) : [];
-    if (_.isArray(exist_fields) && exist_fields.length){
-        bodyObj.exist_fields = exist_fields;
-    }
-    if (_.isArray(unexist_fields) && unexist_fields.length){
-        bodyObj.unexist_fields = unexist_fields;
     }
     if(reqBody.self_no_traced){
         clueUrl += `?self_no_traced=${reqBody.self_no_traced}`;
@@ -292,56 +280,33 @@ function handleBatchClueSalesParams(req, clueUrl) {
 }
 function handleClueParams(req, clueUrl) {
     var reqBody = req.body;
+    //有导出的线索会用这个条件
     if (_.isString(req.body.reqData)){
         reqBody = JSON.parse(req.body.reqData);
     }
-    var rangeParams = _.isString(reqBody.rangeParams) ? JSON.parse(reqBody.rangeParams) : reqBody.rangeParams;
-    var typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
     var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':order',req.params.order);
+    var queryParams = _.get(reqBody,'queryParam');
+    var rangeParams = _.get(queryParams,'rangeParams');
     if (rangeParams[0].from){
         url += `?start_time=${rangeParams[0].from}`;
     }
     if (rangeParams[0].to){
         url += `&end_time=${rangeParams[0].to}`;
     }
-    if (reqBody.keyword){
-        var keyword = encodeURI(reqBody.keyword);
+    if (queryParams.keyword){
+        var keyword = encodeURI(queryParams.keyword);
         url += `&keyword=${keyword}`;
     }
-    if (reqBody.statistics_fields){
-        url += `&statistics_fields=${reqBody.statistics_fields}`;
+
+    if (queryParams.statistics_fields){
+        url += `&statistics_fields=${queryParams.statistics_fields}`;
     }
-    if (reqBody.lastClueId){
-        url += `&id=${reqBody.lastClueId}`;
+    if (queryParams.id){
+        url += `&id=${queryParams.id}`;
     }
-    var bodyObj = {
-        query: {...typeFilter},
-    };
-    if (reqBody.userId){
-        bodyObj.query.userId = reqBody.userId;
-    }
-    if (reqBody.id){
-        bodyObj.query.id = reqBody.id;
-    }
-    if (reqBody.clue_source){
-        bodyObj.query.clue_source = reqBody.clue_source;
-    }
-    if (reqBody.access_channel){
-        bodyObj.query.access_channel = reqBody.access_channel;
-    }
-    if (reqBody.clue_classify){
-        bodyObj.query.clue_classify = reqBody.clue_classify;
-    }
-    if (reqBody.availability){
-        bodyObj.query.availability = reqBody.availability;
-    }
-    if (reqBody.province){
-        bodyObj.query.province = reqBody.province;
-    }
-    var exist_fields = reqBody.exist_fields ? JSON.parse(reqBody.exist_fields) : [];
-    var unexist_fields = reqBody.unexist_fields ? JSON.parse(reqBody.unexist_fields) : [];
+    var bodyParams = _.get(reqBody,'bodyParam');
+    var exist_fields = _.get(bodyParams,'exist_fields',[]);
     if (_.isArray(exist_fields) && exist_fields.length){
-        bodyObj.exist_fields = exist_fields;
         //如果是查询重复线索，要按repeat_id排序
         if (_.indexOf(exist_fields,'repeat_id') > -1){
             url = url.replace(':sort_field', 'repeat_id');
@@ -351,10 +316,7 @@ function handleClueParams(req, clueUrl) {
     }else {
         url = url.replace(':sort_field',req.params.sort_field);
     }
-    if (_.isArray(unexist_fields) && unexist_fields.length){
-        bodyObj.unexist_fields = unexist_fields;
-    }
-    return {url: url, bodyObj: bodyObj};
+    return {url: url, bodyObj: bodyParams};
 }
 //获取各类线索数量的统计
 function getTypeClueLists(req, res, obj) {
@@ -482,4 +444,40 @@ exports.getSimilarCustomerLists = function(req, res) {
             req: req,
             res: res
         }, req.query);
+};
+//获取行业配置
+exports.getClueIndustryLists = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getClueIndustryLists + '?load_size=1000',
+            req: req,
+            res: res
+        }, null);
+};
+//获取个人查询配置
+exports.getSelfClueConditionConfig = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.selfConditionConfig,
+            req: req,
+            res: res
+        }, null);
+};
+//添加和修改个人查询配置
+exports.addOrEditSelfClueConditionConfig = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.selfConditionConfig,
+            req: req,
+            res: res
+        }, req.body);
+};
+//获取推荐线索
+exports.getRecommendClueLists = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.getRecommendClueLists,
+            req: req,
+            res: res
+        }, req.body);
 };

@@ -340,6 +340,26 @@ var en_US = {
     'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
     'home.page.callout.time': 'Total call time',//呼出总时长
     'home.page.performance.num': 'No. {n}',//第{n}名
+    'home.page.apply.type': 'Apply',//申请
+    'home.page.user.formal.apply': 'Application for Formal User ',//签约用户申请
+    'home.page.user.trial.apply': 'Application for Trial User',//试用用户申请
+    'home.page.user.delay.apply': 'Application for User Delay',//用户延期申请
+    'home.page.user.status.apply': 'Application for Disable User',//禁用用户申请
+    'home.page.user.other.apply': 'Application for Other',//其他申请
+    'home.page.user.password.apply': 'Application for Password Modification',//修改密码申请
+    'home.page.user.application.for': 'Application for {type}',//{type}申请
+    'home.page.work.click.tip': 'Click to see details of {type}',//点击查看{type}详情
+    'home.page.approve.pass.tip': '{user} passes your {applyType}',//{user}通过了您的{applyType}
+    'home.page.approve.reject.tip': '{user} rejects your {applyType}',//{user}驳回了您的{applyType}
+    'home.page.approve.cancel.tip': '{user} revoked {applyType}',//{user}撤回了{applyType}
+    'home.page.stopped.login': 'Logged in {app} after deactivation',//停用后登录了{app}
+    'home.page.login.failed': 'Logon {app} failed',//登录{app}失败
+    'home.page.contract.expires': '{contract} contract expires',//{contract}合同到期
+    'home.page.distribute.new': 'New allocation',//新分配
+    'home.page.will.expire.customer': 'Will Expire',//即将到期
+    'home.page.expired.customer': 'Expired',//已过期
+    'home.page.contact.great.cycle': 'Great cycle',//大循环
+    'home.page.contact.minor.cycle': 'Minor cycle',//小循环
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -755,9 +775,9 @@ var en_US = {
     'member.position.delete.office': '', // 删除职务
     'member.position.set.default': '', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
-    'member.add.member.rule': 'The username can only contain characters such as letters, numbers, horizontal lines, underscores, and the length is between 1 and 50 (including 50).', // 用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间
+    'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 50 (including 50).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
     //后台管理-成员end
-    
+
     //组织管理start
     'organization.no.organization.tip': 'No organization,please add one first',//暂无组织，请先添加
     'organization.input.placeholder': 'Please input organization name',//请输入组织名称
@@ -1535,7 +1555,7 @@ var en_US = {
     'crm.import.name.repeat': 'There are identical {type} in the imported data',//导入数据中存在同名{type}
     'crm.system.name.repeat': 'The same name {type} already exists in the system',//系统中已存在同名{type}
     'crm.import.phone.repeat': 'The same phone exists in the imported data',//导入数据中存在相同的电话
-    'crm.system.phone.repeat': 'The same telephone already exists in the system',//系统中已存在相同的电话
+    'crm.system.phone.repeat': 'The telephone has been used by other {type}',//电话已被其他{type}使用
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
 
     // 客户详情中，合同项
@@ -3015,7 +3035,7 @@ var en_US = {
     'common.merge.to.customer': 'convert to customer',//合并到此客户
     'common.modify.name.to': 'modify name to',//修改姓名为
     'common.convert.to.new.customer': 'convert to new customer',//转为新客户
-    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户 
+    'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户
     'common.total.points': 'total points',//总分
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From {source}',//来自“{source}”
@@ -3046,6 +3066,7 @@ var en_US = {
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar clue',//相似线索
+    'clue.similar.clue': 'Similar clue or customer', //相似线索或客户
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级
     'apply.approve.level.five': 'Five',//五
@@ -3072,6 +3093,34 @@ var en_US = {
     'apply.approve.go.set.workflow': 'go to setting?',//去设置？
     'customer.select.name.tip': 'Please select customer in dropdown list',//请在下拉框中选择客户
     'contract.current.month.contract.analysis': 'current month contract analysis',//本月合同分析
+    'clue.customer.select.focus.customer': 'Please choose the type of customer you care about',//请选择您关注的客户类型
+    'clue.customer.staff.size': 'Scale of personnel',//人员规模
+    'clue.customer.money.size': 'Capital scale',//资本规模
+    'clue.customer.select.size': 'Please choose size',//请选择规模
+    'clue.customer.company.property': 'Nature',//性质
+    'clue.customer.select.property': 'Please select the nature',//请选择性质
+    'clue.customer.clue.recommend': 'Clue recommendation',//线索推荐
+    'clue.customer.condition.staff.size': '{num} below',//{num}人以下
+    'clue.customer.condition.staff.range': '{min}-{max}',//{min}-{max}人
+    'clue.customer.staff.over.num': '{num} above',//{num}人以上
+    'clue.customer.money.size.less.num': 'Within {num} ten thousand',//{num}万以内
+    'clue.customer.conditoion.money.range': '{min}-{max} ten thousand',//{min}-{max}万
+    'clue.customer.condition.over.num': '{num} ten thousand or more',//{num}万及以上
+    'clue.customer.condition.company.limit': 'Company with limited liability',//有限责任公司
+    'clue.customer.condition.company.share': 'Limited company',//股份有限公司
+    'clue.customer.condition.company.enterprise': 'State-owned enterprise',//国企
+    'clue.customer.condition.company.nationalized': 'State-owned',//国有
+    'clue.customer.condition.company.foreign.invested': 'foreign-invested enterprise',//外商投资企业
+    'clue.customer.condition.company.sole.proprietorship': 'Sole proprietorship',//个人独资企业
+    'clue.customer.condition.company.individual.businessmen': 'Individual businessmen and businessmen',//个体工商户
+    'clue.customer.condition.company.collective.ownership': 'Collective ownership',//集体所有制
+    'clue.customer.condition.company.limited.partnership': 'Limited Partnership',//有限合伙
+    'clue.customer.condition.company.general.partnership': 'General Partnership',//普通合伙
+    'clue.customer.condition.company.other': 'Other',//其他
+    'clue.customer.condition.company.not.above.type': 'Non-aforementioned types',//非上述类型
+    'clue.customer.refresh.list': 'Change batches',//换一批
+    'clue.customer.condition.change': 'modify condition',//修改条件
+    'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
 
 };
 export default en_US;

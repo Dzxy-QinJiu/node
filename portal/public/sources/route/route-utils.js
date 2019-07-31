@@ -94,6 +94,13 @@ const IndexRoute = (props) => {
         } else {
             return <FirstIndexRoute/>;
         }
+        // if (hasPrivilege('GET_ALL_CALL_RECORD') || //GET_ALL_CALL_RECORD 获取所有电话统计记录的权限
+        //     hasPrivilege('GET_MY_CALL_RECORD')) {//GET_MY_CALL_RECORD 获取我的电话统计记录的权限
+        //     //客套销售首页视图的权限跳到销售主页
+        //     return <SalesIndexRoute/>;
+        // } else {
+        //     return <FirstIndexRoute/>;
+        // }
     }
 };
 
