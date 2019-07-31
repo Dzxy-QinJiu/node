@@ -3075,7 +3075,7 @@ var en_US = {
     'apply.approve.level.nine': 'Nine',//九
     'common.recent.month.daily.activity': 'recent month daily activity',//近一个月日活
     'common.recent.three.month.weekly.activity': 'recent three month weekly activity',//近三个月周活
-    'common.recent.year.monthly.activity': 'recent year monthly activity',//近一个年月活
+    'common.recent.year.monthly.activity': 'recent year monthly activity',//近一年月活
     'call.record.phone.err.msg': 'Wrong phone number!',//电话号码错误
     'clue.detail.last.contact.time': 'Last trace time',//最后跟进时间
     'common.sales.develop': 'sales develop',//销售开发

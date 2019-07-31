@@ -5,6 +5,12 @@
 import { numToPercent, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToMemberId } from '../../utils';
 
 export function getCustomerActiveTrendChart(title = '', interval = 'day', isShowIntervalSelector) {
+    //查询参数中的结束时间
+    let endTime;
+    //查询的时间区间值
+    //默认用传进来的，在显示时间区间切换按钮的情况下，切换按钮时该值会按选择的值进行赋值
+    let intervalValue = interval;
+
     let chart = {
         title,
         chartType: 'line',
@@ -17,6 +23,9 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
             let query = arg.query;
 
             if (query) {
+                //将查询参数中的结束时间记录下来以供其他回调函数使用
+                endTime = query.endtime;
+
                 //不显示时间区间切换按钮时
                 if (!isShowIntervalSelector) {
                     //使用传入的时间区间，
@@ -35,8 +44,46 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
                         //查询结束时间前推一年的数据
                         query.starttime = moment(query.endtime).subtract(1, 'years').valueOf();
                     }
+                } else {
+                    //将查询参数中的时间区间值保存下来，以供其他回调函数使用
+                    intervalValue = query.interval;
                 }
             }
+        },
+        processData: data => {
+            _.each(data, dataItem => {
+                //若时间区间查询参数有值
+                if (intervalValue) {
+                    if (intervalValue === 'day') {
+                        dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
+                    //时间区间查询参数不是天时，日期列显示为 xxxx-xx-xx至xxxx-xx-xx 的格式
+                    } else {
+                        if (intervalValue === 'week') {
+                            //用iso格式的周开始时间，这样是从周一到周天算一周，而不是从周天到周六
+                            intervalValue = 'isoweek';
+                        }
+
+                        const startDate = moment(dataItem.timestamp).startOf(intervalValue).format(oplateConsts.DATE_FORMAT);
+
+                        //结束时间moment对象
+                        //初始值为根据当前数据点所在的时间戳按指定的时间区间计算出来的结束时间的moment
+                        let endMoment = moment(dataItem.timestamp).endOf(intervalValue);
+
+                        //如果初始值为根据当前数据点所在的时间戳按指定的时间区间计算出来的结束时间大于查询参数中的结束时间
+                        //如果当前数据点结束时间
+                        if (endMoment.valueOf() > endTime) {
+                            //则根据查询参数中的结束时间设置结束时间moment对象
+                            endMoment = moment(endTime);
+                        }
+
+                        const endDate = endMoment.format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+
+                        dataItem.name = `${startDate}${Intl.get('contract.83', '至')}${endDate}`;
+                    }
+                }
+            });
+
+            return data;
         },
         option: {
             tooltip: {
@@ -52,6 +99,13 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
                         活跃率：${activeRate}
                         `;
                 }
+            },
+            yAxis: [{
+                //让纵轴数值不出现小数
+                minInterval: 1
+            }],
+            grid: {
+                left: 20
             }
         }
     };
@@ -67,6 +121,7 @@ export function getCustomerActiveTrendChart(title = '', interval = 'day', isShow
 
         chart.conditions = [{
             name: 'interval',
+            value: 'day',
         }];
     }
 
