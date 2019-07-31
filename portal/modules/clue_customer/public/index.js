@@ -323,8 +323,7 @@ class ClueCustomer extends React.Component {
     renderClueRecommend = () => {
         return (
             <div className="recomend-clue-customer-container pull-right">
-                {/*todo 线索推荐权限的修改*/}
-                {hasPrivilege('CUSTOMER_ADD_CLUE') ?
+                {hasPrivilege('COMPANYS_GET') ?
                     <Button onClick={this.showClueRecommendTemplate} className="btn-item">
                         <span className="clue-container">
                             {Intl.get('clue.customer.clue.recommend', '线索推荐')}
@@ -552,10 +551,12 @@ class ClueCustomer extends React.Component {
             });
         }
     };
-    handleFirstLoginData = (isSelfHandleFlag) => {
-        if (isSelfHandleFlag){
+    handleFirstLoginData = (flag) => {
+        if (flag === 'filterAllotNoTraced'){
             clueFilterAction.setFilterClueAllotNoTrace();
             this.filterPanel.filterList.setDefaultFilterSetting(true);
+        }else if (flag === 'avalibility'){
+            this.handleChangeSelectedType('avaibility');
         }else{
             clueCustomerAction.setLoadingFalse();
         }
@@ -1985,7 +1986,7 @@ class ClueCustomer extends React.Component {
                 hasCondition = true;
             }
         }
-        return (!this.state.isLoading && this.state.allClueCount === 0 ) && (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer;
+        return (!this.state.isLoading && !this.state.clueCustomerErrMsg && this.state.allClueCount === 0 ) && (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer && hasPrivilege('COMPANYS_GET');
     };
     hideFocusCustomerPanel = () => {
         this.setState({

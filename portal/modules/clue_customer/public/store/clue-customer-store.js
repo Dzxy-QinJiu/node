@@ -191,6 +191,13 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
                     _.isFunction(_.get(clueData, 'callback')) && clueData.callback();
                 });
 
+            }else if (_.get(clueData,'clueCustomerObj.setting_avaliability')){
+                setTimeout(() => {
+                    //设置线索为无效
+                    // clueFilterAction.setFilterClueAvailbility();
+                    _.isFunction(_.get(clueData, 'callback')) && clueData.callback('avalibility');
+
+                });
             }else if (_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'no'){
                 //不需要展示待我处理，需要隐藏筛选面板
                 this.showFilterList = false;

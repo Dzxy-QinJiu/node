@@ -268,7 +268,7 @@ function handleBatchClueSalesParams(req, clueUrl) {
     return {url: clueUrl, bodyObj: bodyObj};
 }
 function handleClueParams(req, clueUrl) {
-    var reqBody = req.body;
+    var reqBody = _.cloneDeep(req.body);
     //有导出的线索会用这个条件
     if (_.isString(req.body.reqData)){
         reqBody = JSON.parse(req.body.reqData);
@@ -331,15 +331,48 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
         if (!_.get(data, 'total') && req.body.firstLogin === 'true'){
             delete req.body.firstLogin;
             //如果想要查询的不存在
-            var staticsData = _.get(data, 'agg_list[0].status',[]);
+            var staticsData = [],avalibilityData = [];
+            _.forEach(_.get(data, 'agg_list',[]),item => {
+                if (item['status']){
+                    staticsData = item['status'];
+                }
+                if (item['availability']){
+                    avalibilityData = item['availability'];
+                }
+            });
             staticsData = _.sortBy(staticsData, item => item.name);
-            //如果是发我待我处理的数据并且只有已转化有数据
-            if (selfHandleFlag && (_.get(staticsData,'[0].name') === '3' || !_.get(staticsData,'[0]'))){
-                data.agg_list = [{status: []}];
+            //没有数据
+            var noData = !_.get(staticsData,'[0]') && !_.get(avalibilityData,'[0]');
+            if(!_.get(staticsData,'[0]') && _.get(avalibilityData,'[0]')){
+                if (selfHandleFlag){
+                    data.filterAllotNoTraced = 'yes';
+                }
+                data.setting_avaliability = '1';
+                emitter.emit('success', data);
+
+
+                if (!_.isEmpty(_.get(req,'body.bodyParam.query'))){
+
+                    emitter.emit('success', data);
+                    // //把请求参数修改一下，去掉线索的状态，设置有效无效为无效
+                    // getTypeClueLists(req, res, obj).then((data) => {
+                    //     if (selfHandleFlag){
+                    //         data.filterAllotNoTraced = 'yes';
+                    //     }
+                    //     //如果只有无效的有数据
+                    //     data.setting_avaliability = '1';
+                    //     emitter.emit('success', data);
+                    // } ).catch( (errorObj) => {
+                    //     emitter.emit('error', errorObj);
+                    // });
+                }
+            }else if (selfHandleFlag && ((_.get(staticsData,'[0].name') === '3' && !_.get(avalibilityData,'[0]')) || noData)){
+                //如果是发我待我处理的数据并且只有已转化有数据
+                data.agg_list = [{status: [], availability: []}];
                 data.filterAllotNoTraced = 'no';
                 emitter.emit('success', data);
-            }else if (!_.get(staticsData,'[0]')){
-                data.agg_list = [{status: []}];
+            }else if (noData){
+                data.agg_list = [{status: [],availability: []}];
                 emitter.emit('success', data);
             }else{
                 if (obj.bodyObj.query){
