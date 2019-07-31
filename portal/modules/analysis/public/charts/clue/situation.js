@@ -17,7 +17,11 @@ export function getClueSituationChart(paramObj = {}) {
                 type: 'scroll',
                 x: 'left',
                 pageIconSize: 10,
-            }
+            },
+            yAxis: [{
+                //设置成1保证坐标轴分割刻度显示成整数
+                minInterval: 1,
+            }]
         },
         customOption: {
             proportion: 0.6,
