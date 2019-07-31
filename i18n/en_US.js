@@ -3100,6 +3100,7 @@ var en_US = {
     'clue.customer.refresh.list': 'Change batches',//换一批
     'clue.customer.condition.change': 'modify condition',//修改条件
     'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
+    'clue.customer.confirm.valid': 'Confirm valid'//确认有效
 
 };
 export default en_US;

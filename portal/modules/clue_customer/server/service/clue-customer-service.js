@@ -349,23 +349,6 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
                 }
                 data.setting_avaliability = '1';
                 emitter.emit('success', data);
-
-
-                if (!_.isEmpty(_.get(req,'body.bodyParam.query'))){
-
-                    emitter.emit('success', data);
-                    // //把请求参数修改一下，去掉线索的状态，设置有效无效为无效
-                    // getTypeClueLists(req, res, obj).then((data) => {
-                    //     if (selfHandleFlag){
-                    //         data.filterAllotNoTraced = 'yes';
-                    //     }
-                    //     //如果只有无效的有数据
-                    //     data.setting_avaliability = '1';
-                    //     emitter.emit('success', data);
-                    // } ).catch( (errorObj) => {
-                    //     emitter.emit('error', errorObj);
-                    // });
-                }
             }else if (selfHandleFlag && ((_.get(staticsData,'[0].name') === '3' && !_.get(avalibilityData,'[0]')) || noData)){
                 //如果是发我待我处理的数据并且只有已转化有数据
                 data.agg_list = [{status: [], availability: []}];
