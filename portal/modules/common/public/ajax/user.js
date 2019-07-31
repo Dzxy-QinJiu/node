@@ -1,4 +1,5 @@
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+let userData = require('PUB_DIR/sources/user-data');
 
 var trans = $.ajaxTrans();
 //根据当前成员的角色，获取成员列表
@@ -22,5 +23,9 @@ exports.getUserByIdAjax = function() {
 
 //获取用户列表
 exports.getUserListAjax = function() {
-    return trans.getAjax('getUserInTeamTree');
+    if (userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
+        return trans.getAjax('getUserInTeamTree');
+    } else {
+        return trans.getAjax('getAllUser');
+    }
 };

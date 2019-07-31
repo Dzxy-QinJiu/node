@@ -100,6 +100,8 @@ class SalesReport extends React.Component {
     //获取成员列表
     getMemberList = () => {
         getUserListAjax().sendRequest().success(result => {
+            if (result.data) result = result.data;
+
             this.setState({
                 memberList: result,
             });
