@@ -283,14 +283,19 @@ const MemberList = createReactClass({
         this.cleanSearchInput();
     },
 
-    saveAddMember() {
-        let userIds = [];
-        let selectedRowKeys = this.state.selectedRowKeys;
+    getSearchAddMemberList() {
         let addMemberList = this.state.addMemberList;
         let searchValue = this.state.searchValue;
         if (searchValue) {
-            addMemberList = _.filter(addMemberList, item => _.includes(item.userName, searchValue) || _.includes(item.nickName, searchValue));
+            addMemberList = _.filter(addMemberList, item => _.includes(item.userName, searchValue) || _.includes(item.name, searchValue));
         }
+        return addMemberList;
+    },
+
+    saveAddMember() {
+        let userIds = [];
+        let selectedRowKeys = this.state.selectedRowKeys;
+        let addMemberList = this.getSearchAddMemberList();
         _.each(selectedRowKeys, item => {
             addMemberList[item].selected = true;
         });
@@ -819,11 +824,7 @@ const MemberList = createReactClass({
 
     renderMemberZoneData() {
         let memberListContainerH = this.state.memberListHeight - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
-        let addMemberList = this.state.addMemberList; // 添加成员的数据
-        let searchValue = this.state.searchValue;
-        if (searchValue) {
-            addMemberList = _.filter(addMemberList, item => item.userName.indexOf(searchValue) !== -1 || item.nickName.indexOf(searchValue) !== -1);
-        }
+        let addMemberList = this.getSearchAddMemberList();
         let flag = 'add';
         if (this.props.isAddMember) { // 显示添加成员的数据
             return (
