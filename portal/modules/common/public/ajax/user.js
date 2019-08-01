@@ -23,9 +23,13 @@ exports.getUserByIdAjax = function() {
 
 //获取用户列表
 exports.getUserListAjax = function() {
+    //若当前用户是销售角色
     if (userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
+        //获取在团队树中的成员
         return trans.getAjax('getUserInTeamTree');
+    //否则
     } else {
+        //获取全部的成员
         return trans.getAjax('getAllUser');
     }
 };
