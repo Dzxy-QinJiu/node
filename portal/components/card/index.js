@@ -109,7 +109,7 @@ class Card extends React.Component {
                     )}
                     {card.leftFlagDesc ? (
                         <div className="card-left-layer">
-                            <div className="building-icon">
+                            <div className={['building-icon', _.isEqual(card.leftFlagDesc, '客套') ? 'building-icon-curtao' : null].join(' ')}>
                                 {card.leftFlagDesc}
                             </div>
                             <div className="left-triangle"></div>
