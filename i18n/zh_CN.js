@@ -367,6 +367,7 @@ var zh_CN = {
     'home.page.will.expire.customer': '即将到期',
     'home.page.expired.customer': '已过期',
     'home.page.contact.great.cycle': '大循环',
+    'home.page.contact.medium.cycle': '中循环',
     'home.page.contact.minor.cycle': '小循环',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",

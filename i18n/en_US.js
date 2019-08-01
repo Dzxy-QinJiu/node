@@ -359,6 +359,7 @@ var en_US = {
     'home.page.will.expire.customer': 'Will Expire',//即将到期
     'home.page.expired.customer': 'Expired',//已过期
     'home.page.contact.great.cycle': 'Great cycle',//大循环
+    'home.page.contact.medium.cycle': 'Medium cycle',//中循环
     'home.page.contact.minor.cycle': 'Minor cycle',//小循环
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
