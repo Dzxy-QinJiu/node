@@ -24,6 +24,7 @@ var zh_CN = {
     'menu.order.stage': '订单阶段',
     'menu.industry': '行业',
     'menu.competing.product': '竞品',
+    'menu.sales.process': '销售流程',
     'menu.clue.allocation': '线索分配',
     'menu.my.company': '我的企业',
     'menu.user': '成员管理',

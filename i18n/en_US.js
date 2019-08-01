@@ -24,6 +24,7 @@ var en_US = {
     'menu.order.stage': 'Order Stage', // 订单阶段
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
+    'menu.sales.process': 'Sales Process', // 销售流程
     'menu.clue.allocation': 'Clue allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
