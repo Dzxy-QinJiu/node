@@ -18,6 +18,7 @@ var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
 const DIFCONTACTWAY = {
@@ -333,9 +334,7 @@ class ClueAddForm extends React.Component {
                                             placeholder={Intl.get('crm.clue.source.placeholder', '请选择或输入线索来源')}
                                             name="clue_source"
                                             getPopupContainer={() => document.getElementById('sales-clue-form')}
-                                            filterOption={(input, option) =>
-                                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                            }
+                                            filterOption={(input, option) => ignoreCase(input, option)}
                                         >
                                             {
                                                 _.isArray(this.props.clueSourceArray) ?
@@ -373,9 +372,7 @@ class ClueAddForm extends React.Component {
                                             name="access_channel"
                                             getPopupContainer={() => document.getElementById('sales-clue-form')}
                                             value={formData.access_channel}
-                                            filterOption={(input, option) =>
-                                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                            }
+                                            filterOption={(input, option) => ignoreCase(input, option)}
                                         >
                                             {_.isArray(this.props.accessChannelArray) ?
                                                 this.props.accessChannelArray.map((source, idx) => {
@@ -398,9 +395,7 @@ class ClueAddForm extends React.Component {
                                             name="clue_classify"
                                             value={formData.clue_classify}
                                             getPopupContainer={() => document.getElementById('sales-clue-form')}
-                                            filterOption={(input, option) =>
-                                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                            }
+                                            filterOption={(input, option) => ignoreCase(input, option)}
                                         >
                                             {_.isArray(this.props.clueClassifyArray) ?
                                                 this.props.clueClassifyArray.map((source, idx) => {
