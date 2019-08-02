@@ -820,6 +820,12 @@ var en_US = {
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
     // 后台管理-竞品end
 
+    // 后台管理-销售流程start
+    'sales.process.add.process': '', // 添加销售流程
+    'sales.process.toplimit': '', // 销售流程个数已达上限（8个）
+    'sales.process.suitable.objects': '', // 适用范围
+    // 后台管理-销售流程end
+
     //应用管理start
     'app.title': 'application management', // 应用管理
     'app.search.placeholder': 'name/describe', // 应用名/描述
