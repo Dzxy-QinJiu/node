@@ -3206,6 +3206,11 @@ var zh_CN = {
     'clue.customer.refresh.list': '换一批',
     'clue.customer.condition.change': '修改条件',
     'clue.customer.recommend.clue.lists': '推荐线索',
+    'clue.customer.customer.level': '客户分数',
+    'clue.customer.score.good': '优质',
+    'clue.customer.above.limit': '{score}以上',
+    'clue.customer.level.score': '客户评分规则',
+    'clue.customer.if.switch': '是否启用',
 
 };
 export default zh_CN;
