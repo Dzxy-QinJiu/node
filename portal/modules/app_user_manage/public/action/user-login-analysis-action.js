@@ -49,34 +49,35 @@ function UserLoginAnalysisAction() {
             } else {
                 selectedLogAppId = selectApp;
             }
-            const matchAppInfo = _.find(userOwnAppArray, appItem => appItem.app_id === selectedLogAppId );
-            let create_time = matchAppInfo && matchAppInfo.create_time || '';
-            let loginParam = {
-                appid: selectedLogAppId,
-                user_id: searchObj.user_id,
-                starttime: +create_time,
-                endtime: new Date().getTime()
-            };
-            // 用户登录分数
-            let reqData = {
-                app_id: selectedLogAppId,
-                account_id: searchObj.user_id
-            };
-            let type = 'self';
-            if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
-                type = 'all';
+            if (selectedLogAppId) {
+                const matchAppInfo = _.find(userOwnAppArray, appItem => appItem.app_id === selectedLogAppId);
+                let create_time = matchAppInfo && matchAppInfo.create_time || '';
+                let loginParam = {
+                    appid: selectedLogAppId,
+                    user_id: searchObj.user_id,
+                    starttime: +create_time,
+                    endtime: new Date().getTime()
+                };
+                // 用户登录分数
+                let reqData = {
+                    app_id: selectedLogAppId,
+                    account_id: searchObj.user_id
+                };
+                let type = 'self';
+                if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+                    type = 'all';
+                }
+                this.actions.getLoginUserScore(reqData, type);
+
+                // 用户登录信息（时长、次数、首次和最后一次登录时间）
+                this.actions.getUserLoginInfo(loginParam);
+                let lastLoginParam = {...loginParam, timeType: _.get(searchObj, 'timeType'), starttime: _.get(searchObj, 'starttime') || moment().subtract(1, 'year').valueOf()};
+                // 用户登录统计图中登录时长、登录频次
+                this.actions.getUserLoginChartInfo(lastLoginParam);
+
+                // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+                this.actions.getLoginUserActiveStatistics(lastLoginParam, type);
             }
-            this.actions.getLoginUserScore(reqData, type);
-
-            // 用户登录信息（时长、次数、首次和最后一次登录时间）
-            this.actions.getUserLoginInfo(loginParam);
-            let lastLoginParam = {...loginParam, timeType: _.get(searchObj, 'timeType'), starttime: _.get(searchObj, 'starttime') || moment().subtract(1, 'year').valueOf()};
-            // 用户登录统计图中登录时长、登录频次
-            this.actions.getUserLoginChartInfo(lastLoginParam);
-            
-            // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
-            this.actions.getLoginUserActiveStatistics(lastLoginParam, type);
-
             this.dispatch(
                 {
                     appId: selectedLogAppId,
