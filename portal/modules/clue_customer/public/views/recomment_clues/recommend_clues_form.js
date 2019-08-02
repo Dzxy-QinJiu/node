@@ -31,10 +31,10 @@ class RecommendCustomerRightPanel extends React.Component {
 
     render() {
         return (
-            <RightPanel showFlag={true} data-tracename="添加关注的客户类型" className="add-focus-customer">
+            <RightPanel showFlag={true} data-tracename="设置推荐线索条件表单" className="add-focus-customer">
                 <span className="iconfont icon-close add-focus-customer-btn"
                     onClick={this.props.hideFocusCustomerPanel}
-                    data-tracename="关闭添加关注的客户类型面板"></span>
+                    data-tracename="关闭设置推荐线索条件表单"></span>
                 <div className="add-focuse-customer-wrap">
                     <RecommendCustomerCondition
                         hasSavedRecommendParams={this.props.hasSavedRecommendParams}
