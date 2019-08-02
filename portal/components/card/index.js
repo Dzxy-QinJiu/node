@@ -9,6 +9,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
     require('./card-zh_CN.less');
 }
 let CardItem = require('./cardItem');
+let classNames = require('classnames');
 let DefaultUserLogoTitle = require('../default-user-logo-title');
 const DELETE_CREATEREALM_DELAYTIME = 4000;//超时时间
 import Trace from 'LIB_DIR/trace';
@@ -88,6 +89,10 @@ class Card extends React.Component {
         let userName = card.userName ? card.userName.value : '';
         let deleteClassName = 'iconfont icon-delete';
         let deleteTitle = Intl.get('common.delete', '删除');
+        //当显示字符串为客套时，添加特有css
+        let buildingIcon = classNames('building-icon',{
+            'building-icon-curtao': _.isEqual(card.leftFlagDesc, '客套')
+        });
         return (
             <div className="card-layout-container " style={{width: this.props.cardWidth}}>
                 <div className="card-box" onClick={this.showCardInfo}>
@@ -109,7 +114,7 @@ class Card extends React.Component {
                     )}
                     {card.leftFlagDesc ? (
                         <div className="card-left-layer">
-                            <div className={['building-icon', _.isEqual(card.leftFlagDesc, '客套') ? 'building-icon-curtao' : null].join(' ')}>
+                            <div className={buildingIcon}>
                                 {card.leftFlagDesc}
                             </div>
                             <div className="left-triangle"></div>
