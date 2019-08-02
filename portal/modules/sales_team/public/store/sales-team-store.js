@@ -605,14 +605,6 @@ function sortTeamMembers(list) {
     });
 }
 SalesTeamStore.prototype.deleteGroup = function(deleteGroupItem) {
-    const deletedItemKey = _.get(deleteGroupItem, 'key');
-    const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
-    const selectedTeamId = _.get(storedTeam, 'group_id') || '';
-    //如果删除的group与当前localstorage中存储中的是同一个
-    //清除此字段
-    if(_.isEqual(deletedItemKey, selectedTeamId)) {
-        storageUtil.local.removeItem(STORED_TEAM_KEY);
-    }
     deleteGroupItem.isDeleteGroup = true;
     this.deleteGroupItem = deleteGroupItem;
 };
@@ -683,6 +675,15 @@ SalesTeamStore.prototype.hideAllOperationArea = function() {
 //删除团队后的处理
 SalesTeamStore.prototype.saveDeleteGroup = function(result) {
     if (result.success) {
+        //清除localstorage中groupId操作
+        const deletedItemKey = _.get(result, 'groupId');
+        const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
+        const selectedTeamId = _.get(storedTeam, 'group_id') || '';
+        //如果删除的group与当前localstorage中存储中的是同一个
+        if(_.isEqual(deletedItemKey, selectedTeamId)) {
+            //清除此字段
+            storageUtil.local.removeItem(STORED_TEAM_KEY);
+        }
         //删除团队成功，过滤掉删除的团队
         this.salesTeamList = _.filter(this.salesTeamList, team => team.group_id !== result.groupId);
         //刷新团队树
