@@ -144,7 +144,7 @@ class MemberInfo extends React.Component {
 
     //获取团队下拉列表
     getTeamOptions = () => {
-        var userTeamList = this.state.userTeamList;
+        const userTeamList = this.state.userTeamList;
         if (_.isArray(userTeamList) && userTeamList.length > 0) {
             return userTeamList.map(function(team) {
                 return <Option key={team.group_id} value={team.group_id}>
@@ -201,7 +201,7 @@ class MemberInfo extends React.Component {
     getRoleSelectOptions = (memberInfo) => {
         //角色列表
         let roleOptions = [];
-        let roleList = this.state.roleList;
+        let roleList = this.props.roleList;
         if (_.isArray(roleList) && roleList.length > 0) {
             roleOptions = roleList.map(function(role) {
                 return (<Option key={role.roleId} value={role.roleId}>
@@ -917,5 +917,6 @@ MemberInfo.propTypes = {
     getMemberDetailErrMsg: PropTypes.string,
     resultType: PropTypes.string,
     errorMsg: PropTypes.string,
+    roleList: PropTypes.array,
 };
 module.exports = MemberInfo;

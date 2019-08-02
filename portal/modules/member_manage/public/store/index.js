@@ -19,13 +19,19 @@ let emptyMember = {
 class MemberManageStore {
     constructor() {
         this.pageSize = 20;
+        this.setInitialData();
+        this.setInitialConditionData();
+        this.bindActions(MemberManageAction);
+    }
+
+    // 初始化查询条件的数据
+    setInitialConditionData(){
         this.searchContent = ''; // 搜索框查询内容
         this.selectRole = ''; // 已选过滤角色,默认全部
         this.status = '1'; // 成员状态，默认启用
         this.teamroleId = ''; // 职务id
-        this.setInitialData();
-        this.bindActions(MemberManageAction);
     }
+
     // 初始化数据
     setInitialData() {
         this.loading = false; // 获取成员列表的loading

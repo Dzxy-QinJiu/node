@@ -16,6 +16,7 @@ let SalesTeamAjax = require('./ajax/sales-team-ajax');
 import OfficeManage from '../../office_manage/public';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import MemberManage from '../../member_manage/public';
+import MemberManageAjax from 'MOD_DIR/member_manage/public/ajax';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 let CONSTANT = {
@@ -54,6 +55,7 @@ class SalesTeamPage extends React.Component {
             activeKey: TAB_KEYS.DEPARTMENT_TAB,
             memberCount: 0, // 成员的数量
             officeList: [], // 职务列表
+            roleList: [], // 角色列表
             ...data,
         };
     }
@@ -82,6 +84,13 @@ class SalesTeamPage extends React.Component {
         SalesTeamAction.setSalesTeamLoading(true);
         SalesTeamAction.getSalesTeamList();
         SalesTeamAction.getMemberList(); // 获取非部门下的成员
+        MemberManageAjax.getRoleList().then( (result) => {
+            if ( _.isArray(result) && result.length) {
+                this.setState({
+                    roleList: result
+                });
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -115,27 +124,26 @@ class SalesTeamPage extends React.Component {
 
     //添加团队
     addSalesTeam = () => {
-        let _this = this;
-        _this.setState({
+        this.setState({
             isSavingSalesTeam: true
         });
         SalesTeamAjax.addGroup({
             groupName: this.state.salesTeamName
-        }).then(function(data) {
-            _this.state.isSavingSalesTeam = false;
+        }).then( (data) => {
+            this.state.isSavingSalesTeam = false;
             if (data) {
-                _this.state.saveSalesTeamMsg = CONSTANT.SAVE_SUCCESS;
-                _this.state.saveSalesTeamResult = CONSTANT.SUCCESS;
+                this.state.saveSalesTeamMsg = CONSTANT.SAVE_SUCCESS;
+                this.state.saveSalesTeamResult = CONSTANT.SUCCESS;
             } else {
-                _this.state.saveSalesTeamMsg = CONSTANT.SAVE_ERROR;
-                _this.state.saveSalesTeamResult = CONSTANT.ERROR;
+                this.state.saveSalesTeamMsg = CONSTANT.SAVE_ERROR;
+                this.state.saveSalesTeamResult = CONSTANT.ERROR;
             }
-            _this.updateSaveState();
-        }, function(errorMsg) {
-            _this.state.isSavingSalesTeam = false;
-            _this.state.saveSalesTeamMsg = errorMsg || CONSTANT.SAVE_ERROR;
-            _this.state.saveSalesTeamResult = CONSTANT.ERROR;
-            _this.updateSaveState();
+            this.updateSaveState();
+        }, (errorMsg) => {
+            this.state.isSavingSalesTeam = false;
+            this.state.saveSalesTeamMsg = errorMsg || CONSTANT.SAVE_ERROR;
+            this.state.saveSalesTeamResult = CONSTANT.ERROR;
+            this.updateSaveState();
         });
     };
 
@@ -265,6 +273,7 @@ class SalesTeamPage extends React.Component {
                         isLoadingSalesGoal={this.state.isLoadingSalesGoal}
                         getSalesGoalErrMsg={this.state.getSalesGoalErrMsg}
                         selectedRowIndex={this.state.selectedRowIndex}
+                        roleList={this.state.roleList}
                     />
                 );
             }
