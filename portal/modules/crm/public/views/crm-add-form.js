@@ -25,6 +25,7 @@ const PHONE_INPUT_ID = 'phoneInput';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {clueNameContactRule, customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const ADD_TITLE_HEIGHT = 70 + 24;//添加客户标题的高度+下边距marginBottom
 var CRMAddForm = createReactClass({
     displayName: 'CRMAddForm',
@@ -481,7 +482,7 @@ var CRMAddForm = createReactClass({
                                         this.handleSelect(e);
                                     }}
                                     getPopupContainer={() => document.getElementById('crm-add-form')}
-
+                                    filterOption={(input, option) => ignoreCase(input, option)}
                                 >
                                     {industryOptions}
                                 </Select>
