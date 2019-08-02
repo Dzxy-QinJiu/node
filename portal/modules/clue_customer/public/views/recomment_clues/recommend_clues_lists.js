@@ -31,6 +31,7 @@ class RecommendCustomerRightPanel extends React.Component {
             selectedRecommendClues: [],
             singleExtractLoading: false, // 单个提取的loading
             batchExtractLoading: false,
+            closeFocusCustomer: false,
             ...clueCustomerStore.getState()
         };
     }
@@ -45,6 +46,16 @@ class RecommendCustomerRightPanel extends React.Component {
         //获取推荐的线索
         this.getRecommendClueLists();
     }
+    isShowRecommendSettingPanel = () => {
+        var hasCondition = false;
+        var settedCustomerRecommend = this.state.settedCustomerRecommend;
+        for (var key in settedCustomerRecommend.obj){
+            if (!_.isEmpty(settedCustomerRecommend.obj[key])){
+                hasCondition = true;
+            }
+        }
+        return (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer;
+    };
 
     getRecommendClueLists = () => {
         var conditionObj = _.cloneDeep(_.get(this, 'state.settedCustomerRecommend.obj'));
@@ -100,7 +111,6 @@ class RecommendCustomerRightPanel extends React.Component {
     // 关闭提取线索界面
     closeRecommendCluePanel = () => {
         this.props.closeRecommendCluePanel();
-
     };
     handleClickRefreshBtn = () => {
         this.getRecommendClueLists();
@@ -112,6 +122,7 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     hideFocusCustomerPanel = () => {
         this.setState({
+            closeFocusCustomer: true,
             showEditConditionPanel: false
         });
     };
@@ -469,14 +480,14 @@ class RecommendCustomerRightPanel extends React.Component {
     render() {
         var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
         return (
-            <RightPanel showFlag={true} data-tracename="推荐线索列表类型" className="recommend-customer-list">
-                <RightPanelClose onClick={this.closeRecommendCluePanel}/>
+            <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
+                <RightPanelClose data-tracename="关闭推荐线索列表" onClick={this.closeRecommendCluePanel}/>
                 <div className="recommend-clue-panel">
                     <TopNav>
                         <div className='recommend-customer-top-nav-wrap'>
-                            <Button className="btn-item"
+                            <Button className="btn-item" data-tracename="点击换一批按钮"
                                 onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
-                            <Button className="btn-item"
+                            <Button className="btn-item" data-tracename="点击修改推荐条件"
                                 onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
                             {
                                 hasSelectedClue ? this.renderBatchChangeClues() : null
@@ -490,7 +501,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     </div>
 
                 </div>
-                {this.state.showEditConditionPanel ? <RecommendCluesForm
+                {this.state.showEditConditionPanel || this.isShowRecommendSettingPanel() ? <RecommendCluesForm
                     hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
                     hideFocusCustomerPanel={this.hideFocusCustomerPanel}
                     saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}

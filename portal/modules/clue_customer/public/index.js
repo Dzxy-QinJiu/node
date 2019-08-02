@@ -324,7 +324,7 @@ class ClueCustomer extends React.Component {
         return (
             <div className="recomend-clue-customer-container pull-right">
                 {hasPrivilege('COMPANYS_GET') ?
-                    <Button onClick={this.showClueRecommendTemplate} className="btn-item">
+                    <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
                         <span className="clue-container">
                             {Intl.get('clue.customer.clue.recommend', '线索推荐')}
                         </span>
