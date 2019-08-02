@@ -222,20 +222,13 @@ ClueCustomerStore.prototype.setLoadingFalse = function() {
     this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
     this.firstLogin = false;
 },
-ClueCustomerStore.prototype.filterExtractClue = function(clue) {
-    this.recommendClueLists = _.filter(this.recommendClueLists, item => item.id !== clue.id);
-    //看现在选中的是哪个状态的线索，如果是待分配的状态，需要把提取的这一条也加上去
-    var filterClueStatus = clueFilterStore.getState().filterClueStatus;
-    var typeFilter = getClueStatusValue(filterClueStatus);
-    if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE){
-        //统计数字上加一，线索列表中加上这个线索
-        this.agg_list['willDistribute'] += 1;
-        this.curClueLists.unshift(clue);
-    }
-},
 ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
     this.handleClueData(clueData);
 },
+ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
+    this.recommendClueLists = _.filter(this.recommendClueLists, item => item.id !== extractClues);
+
+};    
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     this.handleClueData(clueData);
