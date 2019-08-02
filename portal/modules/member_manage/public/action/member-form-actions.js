@@ -9,7 +9,6 @@ class MemberFormActions {
             'resetNickNameFlags', // 重置昵称（对应的是姓名）验证的标志
             'resetEmailFlags', //重置邮箱验证的标志
             'setPositionListLoading',//正在获取职务列表
-            'setRoleListLoading', //正在获取角色列表
             'setTeamListLoading' //是否正在获取销售团队列表的标志
         );
     }

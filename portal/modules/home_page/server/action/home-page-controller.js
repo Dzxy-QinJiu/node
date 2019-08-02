@@ -63,3 +63,21 @@ exports.getContactCustomerCount = function(req, res) {
             res.status(500).json(codeMessage && codeMessage.message);
         });
 };
+//获取我关注的数据
+exports.getMyInterestData = function(req, res) {
+    homPageService.getMyInterestData(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};
+//我关注的数据的处理
+exports.updateMyInterestStatus = function(req, res) {
+    homPageService.updateMyInterestStatus(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(codeMessage) {
+            res.status(500).json(codeMessage && codeMessage.message);
+        });
+};

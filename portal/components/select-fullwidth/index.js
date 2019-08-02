@@ -22,7 +22,7 @@ var React = require('react');
 var React = require('react');
 var Select = require('antd').Select;
 var measureText = require('../../public/sources/utils/measure-text');
-
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 class SelectFullWidth extends React.Component {
     static defaultProps = {
         minWidth: 120,
@@ -95,7 +95,11 @@ class SelectFullWidth extends React.Component {
         }
         style.width = this.state.width;
         return (
-            <Select {...props} dropdownMatchSelectWidth={false}>
+            <Select
+                {...props}
+                dropdownMatchSelectWidth={false}
+                filterOption={(input, option) => ignoreCase(input, option)}
+            >
                 {children}
             </Select>
         );

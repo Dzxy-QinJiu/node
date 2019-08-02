@@ -13,7 +13,6 @@ import {memberStatusList} from 'PUB_DIR/sources/utils/consts';
 import {Icon, Button} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
-import classNames from 'classnames';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 import MemberTableList from 'MOD_DIR/member-table-list';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
@@ -49,9 +48,10 @@ class MemberManage extends React.Component {
         let teamroleId = positionObj.teamroleId;
         MemberManageAction.setPositionId(teamroleId);
         // 筛选职务时，重新获取成员列表
-        MemberManageAction.setInitialData( () => {
+        MemberManageAction.setInitialData();
+        setTimeout(() => {
             this.getMemberList({teamroleId: teamroleId, id: ''});
-        } );
+        }, 0);
     };
 
     componentDidMount = () => {
@@ -65,11 +65,11 @@ class MemberManage extends React.Component {
         });
         // 判断是否从组织切换到相应的部门，若切换，此方法不执行
         if (!this.props.isBeforeShowTeamList) {
-            // 加setTImeout是为了解决 Dispatch.dispatch(...)的错误
+            // 加setTimeout是为了解决 Dispatch.dispatch(...)的错误
             setTimeout( () => {
                 // 从部门切换到职务时，再次切换到部门时，若展示的是部门（团队）的数据，会卸载此组件
-                // 点击显示组织的成员时，会再次DidMount，此时职务id是存在的，所以要先置空
-                MemberManageAction.setPositionId('');
+                // 点击显示组织的成员时，会再次DidMount，要先置空数据
+                MemberManageAction.setInitialConditionData();
                 this.getMemberList(); // 获取成员列表
             }, 0);
         }
@@ -108,9 +108,7 @@ class MemberManage extends React.Component {
             // 获取职务列表
             MemberFormAction.setPositionListLoading(true);
             MemberFormAction.getSalesPosition();
-            //获取角色列表
-            MemberFormAction.setRoleListLoading(true);
-            MemberFormAction.getRoleList();
+
             if (focusTimeout) {
                 clearTimeout(focusTimeout);
             }
@@ -295,9 +293,6 @@ class MemberManage extends React.Component {
             MemberFormAction.setTeamListLoading(true);
             MemberFormAction.getUserTeamList();
         }
-        //获取角色列表
-        MemberFormAction.setRoleListLoading(true);
-        MemberFormAction.getRoleList();
     };
 
     //显示继续添加按钮
@@ -350,6 +345,7 @@ class MemberManage extends React.Component {
                                 showContinueAddButton={this.showContinueAddButton}
                                 member={this.state.currentMember}
                                 isShowMemberForm={this.state.isShowMemberForm}
+                                roleList={this.state.memberRoleList}
                             />
                         ) : null
                     }
@@ -365,6 +361,7 @@ class MemberManage extends React.Component {
                                 errorMsg={this.state.errorMsg}
                                 isGetMemberDetailLoading={this.state.isGetMemberDetailLoading}
                                 getMemberDetailErrMsg={this.state.getMemberDetailErrMsg}
+                                roleList={this.state.memberRoleList}
                             />
                         ) : null
                     }

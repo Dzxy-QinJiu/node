@@ -9,6 +9,7 @@ import filterEmitter from './emitter';
 import Trace from 'LIB_DIR/trace';
 import { FILTER_COMMON_RATE_KEY } from './consts';
 import { storageUtil } from 'ant-utils';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const local = storageUtil.local;
 class FilterList extends React.Component {
     constructor(props) {
@@ -550,6 +551,7 @@ class FilterList extends React.Component {
                     onChange={this.handleSelectChange.bind(this, groupItem)}
                     optionFilterProp="children"
                     getPopupContainer={() => document.getElementById(`${groupItem.groupId}_select_container`)}
+                    filterOption={(input, option) => ignoreCase(input, option)}
                 >
                     {_.map(groupItem.data, (item, index) => {
                         return (<Option key={index} value={item.value}>{item.name}</Option>);

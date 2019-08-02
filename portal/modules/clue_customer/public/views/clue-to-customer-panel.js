@@ -493,7 +493,8 @@ class ClueToCustomerPanel extends React.Component {
                 _.each(contact, (value, key) => {
                     const keyWithoutIndex = key.substr(0, key.length - 1);
 
-                    if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex)) {
+                    //如果是联系方式字段，并且有值
+                    if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex) && value) {
                         if (!contact[keyWithoutIndex]) {
                             contact[keyWithoutIndex] = [value];
                         } else {

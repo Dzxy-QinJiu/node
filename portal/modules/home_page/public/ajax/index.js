@@ -129,3 +129,41 @@ exports.getContactCustomerCount = function(reqData) {
     });
     return Deferred.promise();
 };
+
+//获取我关注的数据
+let getMyInterestDataAjax = null;
+exports.getMyInterestData = function(reqData) {
+    var Deferred = $.Deferred();
+    getMyInterestDataAjax && getMyInterestDataAjax.abort();
+    getMyInterestDataAjax = $.ajax({
+        url: '/rest/home_page/my_insterest',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//修改我关注数据的状态
+exports.updateMyInterestStatus = function(reqData) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/home_page/my_insterest/status',
+        dataType: 'json',
+        type: 'put',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+

@@ -71,6 +71,7 @@ const MemberList = createReactClass({
         userInfoShow: PropTypes.bool,
         userFormShow: PropTypes.bool,
         selectedRowIndex: PropTypes.number,
+        roleList: PropTypes.array
     },
     getInitialState: function() {
         let savingFlags = MemberListEditStore.getState();
@@ -159,9 +160,6 @@ const MemberList = createReactClass({
                 MemberFormAction.setTeamListLoading(true);
                 MemberFormAction.getUserTeamList();
             }
-            //获取角色列表
-            MemberFormAction.setRoleListLoading(true);
-            MemberFormAction.getRoleList();
         });
         if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
             $('.right-panel-content').removeClass('right-panel-content-slide');
@@ -1240,6 +1238,7 @@ const MemberList = createReactClass({
                         afterEditTeamSuccess={this.afterEditTeamSuccess}
                         afterEditPositionSuccess={this.afterEditPositionSuccess}
                         isGetMemberDetailLoading={this.state.isGetMemberDetailLoading}
+                        roleList={this.props.roleList}
                     />) : null}
             </div>
         );

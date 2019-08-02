@@ -228,4 +228,116 @@ export const contactNameRule = function() {
     return [clueNameContactRule,{required: true,
         message: Intl.get('crm.90', '请输入姓名')}];
 };
+const TENTHOUSAND = 10000;
+export const staffSize = [
+    {
+        name: Intl.get('common.all', '全部'),
+        staffnumMin: '',
+        staffnumMax: ''
+    },
+    {name: Intl.get('clue.customer.condition.staff.size', '{num}人以下', {num: 20}), staffnumMin: 0, staffnumMax: 20},
+    {
+        name: Intl.get('clue.customer.condition.staff.range', '{min}-{max}人', {min: 20, max: 99}),
+        staffnumMin: 20,
+        staffnumMax: 99
+    },
+    {
+        name: Intl.get('clue.customer.condition.staff.range', '{min}-{max}人', {min: 100, max: 499}),
+        staffnumMin: 100,
+        staffnumMax: 499
+    },
+    {
+        name: Intl.get('clue.customer.condition.staff.range', '{min}-{max}人', {min: 500, max: 999}),
+        staffnumMin: 500,
+        staffnumMax: 999
+    },
+    {
+        name: Intl.get('clue.customer.condition.staff.range', '{min}-{max}人', {min: 1000, max: 9999}),
+        staffnumMin: 1000,
+        staffnumMax: 9999
+    },
+    {name: Intl.get('clue.customer.staff.over.num', '{num}人以上', {num: TENTHOUSAND}), staffnumMin: TENTHOUSAND, staffnumMax: ''}
+];
+
+export const moneySize = [
+    {
+        name: Intl.get('common.all', '全部'),
+        capitalMin: '',
+        capitalMax: ''
+    },
+    {
+        name: Intl.get('clue.customer.money.size.less.num', '{num}万以内', {num: 10}),
+        capitalMin: 0,
+        capitalMax: 10 * TENTHOUSAND
+    },
+    {
+        name: Intl.get('clue.customer.conditoion.money.range', '{min}-{max}万', {min: 10, max: 100}),
+        capitalMin: 10 * TENTHOUSAND,
+        capitalMax: 100 * TENTHOUSAND
+    },
+    {
+        name: Intl.get('clue.customer.conditoion.money.range', '{min}-{max}万', {min: 100, max: 1000}),
+        capitalMin: 100 * TENTHOUSAND,
+        capitalMax: 1000 * TENTHOUSAND
+    },
+    {
+        name: Intl.get('clue.customer.conditoion.money.range', '{min}-{max}万', {min: 1000, max: 5000}),
+        capitalMin: 1000 * TENTHOUSAND,
+        capitalMax: 5000 * TENTHOUSAND
+    },
+    {
+        name: Intl.get('clue.customer.condition.over.num', '{num}万及以上', {num: 5000}),
+        capitalMin: 5000 * TENTHOUSAND,
+        capitalMax: ''
+    },
+];
+export const companyProperty = [
+    {
+        name: Intl.get('clue.customer.condition.company.limit', '有限责任公司'),
+        value: Intl.get('clue.customer.condition.company.limit', '有限责任公司')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.share', '股份有限公司'),
+        value: Intl.get('clue.customer.condition.company.share', '股份有限公司')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.enterprise', '国企'),
+        value: Intl.get('clue.customer.condition.company.nationalized', '国有')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.foreign.invested', '外商投资企业'),
+        value: Intl.get('clue.customer.condition.company.foreign.invested', '外商投资企业')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.sole.proprietorship', '个人独资企业'),
+        value: Intl.get('clue.customer.condition.company.sole.proprietorship', '个人独资企业')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.individual.businessmen', '个体工商户'),
+        value: Intl.get('clue.customer.condition.company.individual.businessmen', '个体工商户')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.collective.ownership', '集体所有制'),
+        value: Intl.get('clue.customer.condition.company.collective.ownership', '集体所有制')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.limited.partnership', '有限合伙'),
+        value: Intl.get('clue.customer.condition.company.limited.partnership', '有限合伙')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.general.partnership', '普通合伙'),
+        value: Intl.get('clue.customer.condition.company.general.partnership', '普通合伙')
+    },
+    {
+        name: Intl.get('clue.customer.condition.company.other', '其他'),
+        value: Intl.get('clue.customer.condition.company.not.above.type', '非上述类型')
+    }
+];
+export const deleteEmptyProperty = function(data) {
+    for (var key in data){
+        if (data[key] === null){
+            delete data[key];
+        }
+    }
+};
 

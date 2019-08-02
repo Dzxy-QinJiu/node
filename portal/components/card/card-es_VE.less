@@ -94,13 +94,19 @@
     .building-icon{
       position: absolute;
       float: left;
-      top: 8px;
-      left: 0;
+      top: 13px;
+      left: -4px;
       color: #fff;
       z-index: 5;
       width: 36px;
       text-align: center;
       transform: rotate(-45deg);
+      //如果字符串为客套，其显示有单独样式
+      &.building-icon-curtao{
+        top: 8px;
+        left: -1px;
+        font-size: 14px;
+      }
     }
   }
   //卡片内容的样式

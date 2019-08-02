@@ -1,3 +1,8 @@
+@import "../../../../public/css/common-variables";
+@border-color: #e3e8ec;
+@btn-color: #8DA8C5;
+@btn-hover-color: #2196F3;
+@font-color: #333333;
 .my-insterest-content {
   width: 100%;
   height: 100vh;
@@ -16,8 +21,8 @@
       position: relative;
       display: inline-block;
       width: 100%;
-      border-bottom: 1px solid #f1f1f1;
-      padding: 10px 15px;
+      border-bottom: 1px solid @border-color;
+      padding: 10px 14px;
       font-size: 14px;
       &:hover {
         .system-notice-content {
@@ -29,14 +34,17 @@
       .system-notice-title {
         .icon-concern-customer-login {
           margin-right: 4px;
+          color: #999999;
+        }
+        .icon-concern-customer-login.is-insterested-style {
           color: #F9B706;
         }
-        .icon-login-failed, .icon-deactivate-customer-login, .icon-remote-login {
-          float: left;
-          margin: -1px 5px 0 0;
-          color: #F9B706;
-          font-size: 14px;
-        }
+        //.icon-login-failed, .icon-deactivate-customer-login, .icon-remote-login {
+        //  float: left;
+        //  margin: -1px 5px 0 0;
+        //  color: #F9B706;
+        //  font-size: 14px;
+        //}
         .icon-arrow {
           color: #ced4d6;
         }
@@ -51,6 +59,58 @@
           text-overflow: ellipsis;
           &:hover {
             color: #2196F3;
+          }
+          .customer-label {
+            vertical-align: top;
+            height: 18px;
+            margin-top: 4px;
+            margin-right: 4px;
+            padding: 0 4px;
+            line-height: 15px;
+            color: #ffffff;
+            background-color: #999999;
+          }
+          //客户标签的颜色设置
+          .customer-label.info-tag-style {
+            background-color: @info-tag-color;
+          }
+          .customer-label.intent-tag-style {
+            background-color: @intent-tag-color;
+          }
+          .customer-label.trial-tag-style {
+            background-color: @trial-tag-color;
+          }
+          .customer-label.sign-tag-style {
+            background-color: @sign-tag-color;
+          }
+          .customer-label.qualified-tag-style {
+            background-color: @qualified-tag-color;
+          }
+          .customer-label.history-qualified-tag-style {
+            background-color: @history-qualified-tag-color;
+          }
+          .customer-label.re-contract-tag-style {
+            background-color: @re-contract-color;
+          }
+          .customer-label.loss-tag-style {
+            background-color: @loss-tag-color;
+          }
+          //  客户分数
+          .custmer-score {
+            margin-left: 4px;
+            padding-right: 4px;
+            padding-left: 2px;
+            border-radius: 4px;
+            line-height: 18px;
+            color: #EFA246;
+            background-color: #FFF0BA;
+            font-size: 14px;
+            display: inline-block;
+            vertical-align: top;
+            margin-top: 4px;
+            .iconfont {
+              margin-right: 2px;
+            }
           }
         }
       }
@@ -69,6 +129,32 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        .my-insterest-contact-wrap {
+          float: left;
+          margin-top: 23px;
+          margin-right: 8px;
+          line-height: 24px;
+          .work-contact-name {
+            margin-right: 8px;
+            color: @font-color;
+          }
+          .work-contact-phone {
+            cursor: pointer;
+            height: 24px;
+            line-height: 22px;
+            vertical-align: middle;
+            padding: 0 22px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            display: inline-block;
+            color: #ffffff;
+            background-color: @btn-hover-color;
+            //拨打电话的按钮
+            .iconfont {
+              font-size: 14px;
+            }
+          }
+        }
         //处理按钮的样式
         .notice-handle-wrap {
           display: none;
@@ -163,4 +249,59 @@
     font-size: 14px;
   }
 
+}
+.contacts-containers {
+  font-size: 16px;
+  cursor: default;
+  .ant-btn {
+    float: right;
+  }
+  .icon-contact-default {
+    margin-right: 5px;
+  }
+  .contacts-item {
+    .contacts-name-content {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #333333;
+      .iconfont {
+        color: @btn-color;
+      }
+    }
+    .phone-item {
+      color: #999999;
+    }
+  }
+  .contacts-item.def-contact-item {
+    .contacts-name-content {
+      .iconfont{
+        color: @btn-hover-color;
+      }
+    }
+    .ant-btn:hover, .ant-btn:focus {
+      border-color: transparent;
+    }
+  }
+  .contacts-phone-content {
+    padding-left: 20px;
+    .phone-item {
+      margin-bottom: 5px;
+      max-width: 200px;
+      &:hover {
+        color: #333333;
+        .phone-callout-container .icon-active-call_record-ico{
+          color: @btn-hover-color;
+        }
+      }
+    }
+  }
+}
+
+.contact-phone-popover.ant-popover-placement-bottom{
+  padding-top: 0;
+  > .ant-popover-content > .ant-popover-arrow{
+    display: none;
+  }
 }

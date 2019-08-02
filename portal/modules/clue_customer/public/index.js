@@ -63,6 +63,8 @@ var LAYOUT_CONSTANTS = {
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
     TH_MORE_HEIGHT: 20//带选择框的TH60比不带选择框的TH40多出来的高度
 };
+import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
+import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 
 class ClueCustomer extends React.Component {
     state = {
@@ -101,6 +103,8 @@ class ClueCustomer extends React.Component {
         this.getClueChannel();
         //获取线索分类
         this.getClueClassify();
+        //获取是否配置过线索推荐条件
+        this.getSettingCustomerRecomment();
         clueCustomerAction.getSalesManList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
@@ -287,6 +291,9 @@ class ClueCustomer extends React.Component {
             console.log('获取线索分类出错了 ' + errorMsg);
         });
     };
+    getSettingCustomerRecomment = () => {
+        clueCustomerAction.getSettingCustomerRecomment();
+    };
 
     //渲染导入线索的按钮
     renderImportClue = () => {
@@ -302,6 +309,31 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+    showClueRecommendTemplate = () => {
+        this.setState({
+            isShowRecommendCluePanel: true
+        });
+    };
+    closeRecommendCluePanel = () => {
+        this.setState({
+            isShowRecommendCluePanel: false
+        });
+    }
+    //渲染线索推荐按钮
+    renderClueRecommend = () => {
+        return (
+            <div className="recomend-clue-customer-container pull-right">
+                {hasPrivilege('COMPANYS_GET') ?
+                    <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
+                        <span className="clue-container">
+                            {Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                        </span>
+                    </Button>
+                    : null}
+            </div>
+        );
+    };
+
 
     // 点击关闭提取线索的界面
     closeExtractCluePanel = () => {
@@ -417,7 +449,11 @@ class ClueCustomer extends React.Component {
             name: 'source_time'
         }] : filterStoreData.rangeParams;
         var typeFilter = isGetAllClue ? {status: ''} : this.getFilterStatus();//线索类型
-        typeFilter.availability = AVALIBILITYSTATUS.AVALIBILITY;
+        typeFilter.availability = filterStoreData.filterClueAvailability;
+        //如果筛选的是无效的，不传status参数
+        if (typeFilter.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+            delete typeFilter.status;
+        }
         //按销售进行筛选
         var filterClueUsers = filterStoreData.filterClueUsers;
         if (_.isArray(filterClueUsers) && filterClueUsers.length && !isGetAllClue) {
@@ -480,7 +516,7 @@ class ClueCustomer extends React.Component {
                 rangeParams: rangeParams,
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
                 id: _.isBoolean(isGetAllClue) ? '' : this.state.lastCustomerId,
-                statistics_fields: 'status',
+                statistics_fields: 'status,availability',
             },
             bodyParam: {
                 query: {
@@ -515,10 +551,12 @@ class ClueCustomer extends React.Component {
             });
         }
     };
-    handleFirstLoginData = (isSelfHandleFlag) => {
-        if (isSelfHandleFlag){
+    handleFirstLoginData = (flag) => {
+        if (flag === 'filterAllotNoTraced'){
             clueFilterAction.setFilterClueAllotNoTrace();
             this.filterPanel.filterList.setDefaultFilterSetting(true);
+        }else if (flag === 'avalibility'){
+            this.handleChangeSelectedType('avaibility');
         }else{
             clueCustomerAction.setLoadingFalse();
         }
@@ -811,6 +849,9 @@ class ClueCustomer extends React.Component {
     //标记线索无效或者有效
     handleClickInvalidBtn = (item, callback) => {
         var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
+        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
+        }
         var submitObj = {
             id: item.id,
             availability: updateValue
@@ -838,12 +879,12 @@ class ClueCustomer extends React.Component {
     renderInavailabilityOrValidClue = (salesClueItem) => {
         //是否有标记线索无效的权限
         var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
-
+        var inValid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
         return(
             <span className="valid-or-invalid-container">
                 {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
                     data-tracename="判定线索无效">
-                    {<span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span>}
+                    {inValid ? <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span> : <span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span>}
                 </span> : null}
             </span>
 
@@ -873,10 +914,11 @@ class ClueCustomer extends React.Component {
     };
     renderInvalidConfirm = (salesClueItem) => {
         var isEditting = this.state.isInvalidClue === salesClueItem.id && this.state.isInvaliding;
+        var isInvalid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
         return (
             <span className="invalid-confirm">
                 <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
-                    {Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                    {isInvalid ? Intl.get('clue.customer.confirm.valid', '确认有效') : Intl.get('clue.confirm.clue.invalid', '确认无效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
                 <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
@@ -885,7 +927,7 @@ class ClueCustomer extends React.Component {
     };
     renderAvailabilityClue = (salesClueItem) => {
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
         return(
             <div className="avalibility-container">
                 <div className="associate-customer">
@@ -906,7 +948,12 @@ class ClueCustomer extends React.Component {
 
     };
     handleChangeSelectedType = (selectedType) => {
-        clueFilterAction.setFilterType(selectedType);
+        //如果选中的是无效状态
+        if (selectedType === 'avaibility'){
+            clueFilterAction.setFilterClueAvailbility();
+        }else{
+            clueFilterAction.setFilterType(selectedType);
+        }
         this.onTypeChange();
     };
     isFireFoxBrowser = () => {
@@ -930,6 +977,8 @@ class ClueCustomer extends React.Component {
         var willTrace = classNames('clue-status-tab', {'active-will-trace': SELECT_TYPE.WILL_TRACE === typeFilter.status});
         var hasTrace = classNames('clue-status-tab', {'active-has-trace': SELECT_TYPE.HAS_TRACE === typeFilter.status});
         var hasTransfer = classNames('clue-status-tab', {'active-has-transfer': SELECT_TYPE.HAS_TRANSFER === typeFilter.status});
+        var filterStore = clueFilterStore.getState();
+        var invalidClue = classNames('clue-status-tab', {'active-invalid-clue': filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY});
         var statics = this.state.agg_list;
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
@@ -941,20 +990,24 @@ class ClueCustomer extends React.Component {
         return <span className={clueStatusCls}>
             {isSalesRole() ? null : <span className={willDistCls}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
-                <span className="clue-status-num">{_.get(statics,'willDistribute','')}</span>
+                <span className="clue-status-num">{_.get(statics,'willDistribute',0)}</span>
             </span>}
             <span className={willTrace}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_TRACE)}>{Intl.get('sales.home.will.trace', '待跟进')}
-                <span className="clue-status-num">{_.get(statics,'willTrace','')}</span>
+                <span className="clue-status-num">{_.get(statics,'willTrace',0)}</span>
             </span>
             <span className={hasTrace}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
-                <span className="clue-status-num">{_.get(statics,'hasTrace','')}</span>
+                <span className="clue-status-num">{_.get(statics,'hasTrace',0)}</span>
             </span>
             {filterAllotNoTraced ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
-                <span className="clue-status-num">{_.get(statics,'hasTransfer','')}</span>
+                <span className="clue-status-num">{_.get(statics,'hasTransfer',0)}</span>
             </span>}
+            <span className={invalidClue}
+                onClick={this.handleChangeSelectedType.bind(this, 'avaibility')}>{Intl.get('sales.clue.is.enable', '无效')}
+                <span className="clue-status-num">{_.get(statics,'invalidClue',0)}</span>
+            </span>
         </span>;
     };
    showClueDetailPanel = (salesClueItem) => {
@@ -976,8 +1029,14 @@ class ClueCustomer extends React.Component {
                     return (
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
-                            <span className="clue-name" data-tracename="查看线索详情"
-                                onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}</span>
+                            <div className="clue-name" data-tracename="查看线索详情"
+                                onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
+                                {_.get(salesClueItem, 'leads.length') || _.get(salesClueItem, 'customers.length') ? (
+                                    <Tag className="clue-label intent-tag-style">
+                                        {Intl.get('clue.similar.clue', '有相似线索或客户')}
+                                    </Tag>) : null
+                                }
+                            </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>
@@ -1084,7 +1143,7 @@ class ClueCustomer extends React.Component {
     renderHandleAssociateInvalidBtn = (salesClueItem) => {
         //只有不是待跟进状态，才能展示操作区域
         var typeFilter = this.getFilterStatus();//线索类型
-        if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE || typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE){
+        if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE || typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.WILL_TRACE || typeFilter.status === SELECT_TYPE.ALL){
             return _.get(this,'state.isInvalidClue') === salesClueItem.id ? this.renderInvalidConfirm(salesClueItem) : this.renderAvailabilityClue(salesClueItem);
         }else{
             return null;
@@ -1275,7 +1334,6 @@ class ClueCustomer extends React.Component {
                 pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
-
                 scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
             />);
 
@@ -1883,6 +1941,7 @@ class ClueCustomer extends React.Component {
     renderNotSelectClueBtns = () => {
         return (
             <div className="pull-right add-anlysis-handle-btns">
+                {this.renderClueRecommend()}
                 {/*是否有查看线索分析的权限
                  CRM_CLUE_STATISTICAL 查看线索概览的权限
                  CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
@@ -1924,7 +1983,28 @@ class ClueCustomer extends React.Component {
     isFirstLoading = () => {
         return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
     };
-
+    isShowRecommendSettingPanel = () => {
+        var hasCondition = false;
+        var settedCustomerRecommend = this.state.settedCustomerRecommend;
+        for (var key in settedCustomerRecommend.obj){
+            if (!_.isEmpty(settedCustomerRecommend.obj[key])){
+                hasCondition = true;
+            }
+        }
+        return (!this.state.isLoading && !this.state.clueCustomerErrMsg && this.state.allClueCount === 0 ) && (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer && hasPrivilege('COMPANYS_GET');
+    };
+    hideFocusCustomerPanel = () => {
+        this.setState({
+            closeFocusCustomer: true
+        });
+    };
+    saveRecommedConditionsSuccess = (saveCondition) => {
+        //修改掉查询条件
+        this.hideFocusCustomerPanel();
+        //将保存后的条件记录下来
+        clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
+        this.showClueRecommendTemplate();
+    };
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2024,6 +2104,13 @@ class ClueCustomer extends React.Component {
                             </RightPanel>
                             : null
                     }
+                    {
+                        this.state.isShowRecommendCluePanel ?
+                            <ClueRecommedLists
+                                closeRecommendCluePanel={this.closeRecommendCluePanel}
+                            />
+                            : null
+                    }
                     {this.state.clueAnalysisPanelShow ? <RightPanel
                         className="clue-analysis-panel"
                         showFlag={this.state.clueAnalysisPanelShow}
@@ -2099,6 +2186,10 @@ class ClueCustomer extends React.Component {
                             isShowMadal={false}
                         />
                     ) : null}
+                    {this.isShowRecommendSettingPanel() ? <RecommendCluesForm
+                        hideFocusCustomerPanel={this.hideFocusCustomerPanel}
+                        saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                    /> : null}
                 </div>
             </RightContent>
         );

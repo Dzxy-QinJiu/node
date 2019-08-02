@@ -6,10 +6,18 @@ import { initialTime } from '../../consts';
 import { argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getCustomerStageChangeChart() {
+    //当前查询的时间区间参数值
+    let interval;
+
     return {
         title: Intl.get('crm.sales.customerStage', '客户阶段变更统计'),
         url: '/rest/analysis/customer/v2/:data_type/customer/label/count',
-        argCallback: argCallbackUnderlineTimeToTime,
+        argCallback: arg => {
+            argCallbackUnderlineTimeToTime(arg);
+
+            //将当前查询的时间区间参数值记录下来以供其他回调函数使用
+            interval = _.get(arg, 'query.interval');
+        },
         dataField: 'result',
         chartType: 'table',
         layout: {
@@ -18,6 +26,19 @@ export function getCustomerStageChangeChart() {
         height: 'auto',
         processData: data => {
             _.each(data, dataItem => {
+                //时间区间查询参数有值且其值不是天时，日期列显示为 xxxx-xx-xx至xxxx-xx-xx 的格式
+                if (interval && interval !== 'day') {
+                    if (interval === 'week') {
+                        //用iso格式的周开始时间，这样是从周一到周天算一周，而不是从周天到周六
+                        interval = 'isoweek';
+                    }
+
+                    const startDate = moment(dataItem.time).startOf(interval).format(oplateConsts.DATE_FORMAT);
+                    const endDate = moment(dataItem.time).endOf(interval).format(oplateConsts.DATE_MONTH_DAY_FORMAT);
+
+                    dataItem.time = `${startDate} ${Intl.get('contract.83', '至')} ${endDate}`;
+                }
+
                 _.each(dataItem.map, (v, k) => {
                     //数字前显示加号
                     if (v && v > 0) {
@@ -32,17 +53,13 @@ export function getCustomerStageChangeChart() {
             return data;
         },
         option: {
-            pagination: false,
             columns: [
                 {
                     title: Intl.get('crm.146', '日期'),
                     dataIndex: 'time',
-                    key: 'time',
-                    width: 100
                 }, {
                     title: Intl.get('sales.stage.message', '信息'),
                     dataIndex: '信息',
-                    key: 'info',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -51,7 +68,6 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('sales.stage.intention', '意向'),
                     dataIndex: '意向',
-                    key: 'intention',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -60,7 +76,6 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('common.trial', '试用'),
                     dataIndex: '试用',
-                    key: 'trial',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -69,7 +84,6 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('common.trial.qualified', '试用合格'),
                     dataIndex: '试用合格',
-                    key: 'trial.qualified',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -78,8 +92,6 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('common.trial.unqualified', '试用不合格'),
                     dataIndex: '试用不合格',
-                    key: 'unqualified',
-                    width: 100,
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -88,7 +100,6 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('sales.stage.signed', '签约'),
                     dataIndex: '签约',
-                    key: 'signed',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -97,7 +108,6 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('sales.stage.lost', '流失'),
                     dataIndex: '流失',
-                    key: '流失',
                     render: (text, item, index) => {
                         return (
                             <span className="customer-stage-number">{text}</span>
@@ -106,14 +116,21 @@ export function getCustomerStageChangeChart() {
                 }, {
                     title: Intl.get('sales.home.sales', '销售'),
                     dataIndex: 'memberName',
-                    key: 'memberName'
                 }, {
                     title: Intl.get('common.belong.team', '所属团队'),
                     dataIndex: 'salesTeam',
-                    key: 'salesTeam',
-                    width: 80
                 }
             ],
         },
+        processOption: option => {
+            _.each(option.columns, column => {
+                //在当前列是日期列，同时时间区间查询参数有值且其值不是天时，将列宽设的大一些，以防止折行
+                if (column.dataIndex === 'time' && (interval && interval !== 'day')) {
+                    column.width = 150;
+                } else {
+                    column.width = 100;
+                }
+            });
+        }
     };
 }

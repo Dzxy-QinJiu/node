@@ -13,8 +13,6 @@ class MemberFormStore {
         this.emailExist = false;//邮箱是否已存在
         this.emailError = false;//邮件唯一性验证出错
         this.savedUser = {};//添加用户成功后返回的用户信息
-        this.roleList = []; //角色列表
-        this.isLoadingRoleList = false; //正在获取角色列表
         this.userTeamList = []; //团队列表
         this.isLoadingTeamList = false; //正在获取部门列表
         this.isLoadingPosition = false; // 正在获取职务列表
@@ -41,17 +39,6 @@ class MemberFormStore {
     getSalesPosition(positionList) {
         this.isLoadingPosition = false;
         this.positionList = _.isArray(positionList) ? positionList : [];
-    }
-
-    //设置是否正在获取角色列表
-    setRoleListLoading(flag) {
-        this.isLoadingRoleList = flag;
-    }
-
-    //获取角色列表
-    getRoleList(roleList) {
-        this.isLoadingRoleList = false;
-        this.roleList = _.isArray(roleList) ? roleList : [];
     }
 
     //正在保存的属性设置

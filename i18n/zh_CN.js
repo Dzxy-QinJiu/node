@@ -348,6 +348,26 @@ var zh_CN = {
     'home.page.contacts.customers.week': '本周已联系客户总数',
     'home.page.callout.time': '呼出总时长',
     'home.page.performance.num': '第{n}名',
+    'home.page.apply.type': '申请',
+    'home.page.user.formal.apply': '签约用户申请',
+    'home.page.user.trial.apply': '试用用户申请',
+    'home.page.user.delay.apply': '用户延期申请',
+    'home.page.user.status.apply': '禁用用户申请',
+    'home.page.user.other.apply': '其他申请',
+    'home.page.user.password.apply': '修改密码申请',
+    'home.page.user.application.for': '{type}申请',
+    'home.page.work.click.tip': '点击查看{type}详情',
+    'home.page.approve.pass.tip': '{user} 通过了您的 {applyType}',
+    'home.page.approve.reject.tip': '{user} 驳回了您的 {applyType}',
+    'home.page.approve.cancel.tip': '{user} 撤回了 {applyType}',
+    'home.page.stopped.login': '停用后登录了{app}',
+    'home.page.login.failed': '登录{app}失败',
+    'home.page.contract.expires': '{contract} 合同到期',
+    'home.page.distribute.new': '新分配',
+    'home.page.will.expire.customer': '即将到期',
+    'home.page.expired.customer': '已过期',
+    'home.page.contact.great.cycle': '大循环',
+    'home.page.contact.minor.cycle': '小循环',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -636,7 +656,7 @@ var zh_CN = {
     'user.login.last.week': '近一周',
     'user.login.last.title': '{title} 的活跃统计',
     'user.login.last.failed': '获取用户最近登录统计信息失败',
-    
+
     // 第三方应用配置
     'third.party.app': '开放应用平台',
     'third.party.app.add': '添加开放平台应用',
@@ -1987,7 +2007,7 @@ var zh_CN = {
     'sales.home.invite.continue.btn': '继续邀请',
     'sales.home.invite.member.success': '邀请申请发送成功',
     'sales.home.invite.member.failed': '邀请成员失败！',
-    
+
     //销售首页-新增用户分析
     'sales.user.analysis': '用户分析',
     'user.analysis.total': '用户统计',
@@ -2749,7 +2769,7 @@ var zh_CN = {
     'crm.order.stage.destrip.palceholder': '请输入阶段的描述信息',
     'crm.order.stage.nodata.tips': '暂无订单阶段，请先添加',
     'crm.order.stage.name.verify': '该阶段名称已存在',
-    
+
     'leave.apply.add.leave.person': '出差人员',
     'leave.apply.add.leave.destination': '目的地',
     'leave.apply.add.leave.reason': '出差事由',
@@ -3151,6 +3171,7 @@ var zh_CN = {
     'contract.amount.check.tip': '产品总额不能大于合同总额{amount}元，请核对',
     'customer.has.similar.lists': '相似客户',
     'clue.has.similar.lists': '相似线索',
+    'clue.similar.clue': '有相似线索或客户',
     'apply.approve.first.higher.level': '直属上级',
     'apply.approve.some.level': '第{n}级上级',
     'apply.approve.level.five': '五',
@@ -3159,7 +3180,7 @@ var zh_CN = {
     'apply.approve.level.nine': '九',
     'common.recent.month.daily.activity': '近一个月日活',
     'common.recent.three.month.weekly.activity': '近三个月周活',
-    'common.recent.year.monthly.activity': '近一个年月活',
+    'common.recent.year.monthly.activity': '近一年月活',
     'call.record.phone.err.msg': '电话号码错误',
     'clue.detail.last.contact.time': '最后跟进时间',
     'common.sales.develop': '销售开发',
@@ -3177,5 +3198,35 @@ var zh_CN = {
     'apply.approve.go.set.workflow': '去设置？',
     'customer.select.name.tip': '请在下拉框中选择客户',
     'contract.current.month.contract.analysis': '本月合同分析',
+    'clue.customer.select.focus.customer': '请选择您关注的客户类型',
+    'clue.customer.staff.size': '人员规模',
+    'clue.customer.money.size': '资本规模',
+    'clue.customer.select.size': '请选择规模',
+    'clue.customer.company.property': '性质',
+    'clue.customer.select.property': '请选择性质',
+    'clue.customer.clue.recommend': '线索推荐',
+    'clue.customer.condition.staff.size': '{num}人以下',
+    'clue.customer.condition.staff.range': '{min}-{max}人',
+    'clue.customer.staff.over.num': '{num}人以上',
+    'clue.customer.money.size.less.num': '{num}万以内',
+    'clue.customer.conditoion.money.range': '{min}-{max}万',
+    'clue.customer.condition.over.num': '{num}万及以上',
+    'clue.customer.condition.company.limit': '有限责任公司',
+    'clue.customer.condition.company.share': '股份有限公司',
+    'clue.customer.condition.company.enterprise': '国企',
+    'clue.customer.condition.company.nationalized': '国有',
+    'clue.customer.condition.company.foreign.invested': '外商投资企业',
+    'clue.customer.condition.company.sole.proprietorship': '个人独资企业',
+    'clue.customer.condition.company.individual.businessmen': '个体工商户',
+    'clue.customer.condition.company.collective.ownership': '集体所有制',
+    'clue.customer.condition.company.limited.partnership': '有限合伙',
+    'clue.customer.condition.company.general.partnership': '普通合伙',
+    'clue.customer.condition.company.other': '其他',
+    'clue.customer.condition.company.not.above.type': '非上述类型',
+    'clue.customer.refresh.list': '换一批',
+    'clue.customer.condition.change': '修改条件',
+    'clue.customer.recommend.clue.lists': '推荐线索',
+    'clue.customer.confirm.valid': '确认有效'
+
 };
 export default zh_CN;
