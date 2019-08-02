@@ -268,7 +268,7 @@ class MemberForm extends React.Component {
     renderRoleOptions = () => {
         //角色列表
         let roleOptions = '';
-        let roleList = this.state.roleList;
+        let roleList = this.props.roleList;
         if (_.isArray(roleList) && roleList.length > 0) {
             roleOptions = roleList.map(function(role) {
                 return (<Option key={role.roleId} value={role.roleId}>
@@ -347,14 +347,21 @@ class MemberForm extends React.Component {
             }
         }
         const {getFieldDecorator} = this.props.form;
-        var saveResult = this.state.saveResult;
-        var headDescr = Intl.get('member.head.logo', '头像');
-        var formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
+        const saveResult = this.state.saveResult;
+        const headDescr = Intl.get('member.head.logo', '头像');
+        const formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
         const formItemLayout = {
             colon: false,
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
+
+        let roleId = '';
+        let filterRoleObj = _.find(this.props.roleList, item => item.roleName === '销售');
+        if (filterRoleObj) {
+            roleId = filterRoleObj.roleId;
+        }
+
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
                 <FormItem id="image">
@@ -446,33 +453,25 @@ class MemberForm extends React.Component {
                                 label={Intl.get('common.role', '角色')}
                                 {...formItemLayout}
                             >
-                                {this.state.isLoadingRoleList ? (
-                                    <div className="role-list-loading">
-                                        <ReactIntl.FormattedMessage id="member.get.role.lists"
-                                            defaultMessage="正在获取角色列表"/>
-                                        <Icon type="loading"/>
-                                    </div>) : (
-                                    <div>
-                                        {getFieldDecorator('role', {
-                                            rules: [{
-                                                required: true,
-                                                message: Intl.get('member.select.role', '请选择角色')
-                                            }]
-                                        })(
-                                            <Select
-                                                size='large'
-                                                optionFilterProp="children"
-                                                placeholder={Intl.get('member.select.role', '请选择角色')}
-                                                searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
-                                                notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
-                                                onSelect={this.handleSelect}
-                                                getPopupContainer={() => document.getElementById('user-add-form')}
-                                            >
-                                                {this.renderRoleOptions()}
-                                            </Select>
-                                        )}
-                                    </div>)
-                                }
+                                {getFieldDecorator('role', {
+                                    initialValue: roleId,
+                                    rules: [{
+                                        required: true,
+                                        message: Intl.get('member.select.role', '请选择角色')
+                                    }]
+                                })(
+                                    <Select
+                                        size='large'
+                                        optionFilterProp="children"
+                                        placeholder={Intl.get('member.select.role', '请选择角色')}
+                                        searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
+                                        notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                        onSelect={this.handleSelect}
+                                        getPopupContainer={() => document.getElementById('user-add-form')}
+                                    >
+                                        {this.renderRoleOptions()}
+                                    </Select>
+                                )}
                             </FormItem>
                             <FormItem
                                 label={Intl.get('member.position', '职务')}
@@ -597,7 +596,8 @@ MemberForm.propTypes = {
     formType: PropTypes.string,
     returnInfoPanel: PropTypes.func,
     showContinueAddButton: PropTypes.func,
-    isShowMemberForm: PropTypes.bool
+    isShowMemberForm: PropTypes.bool,
+    roleList: PropTypes.array,
 };
 
 module.exports = Form.create()(MemberForm);
