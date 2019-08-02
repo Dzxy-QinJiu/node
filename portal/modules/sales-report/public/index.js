@@ -21,8 +21,8 @@ import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 const Avatar = require('CMP_DIR/Avatar');
 const Option = Select.Option;
 const TopNav = require('CMP_DIR/top-nav');
-//是否在蚁坊域
-const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung();
+//是否在蚁坊域的判断方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
 const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
 const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'common';
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
@@ -336,7 +336,7 @@ class SalesReport extends React.Component {
 
         if (
             //如果当前不是在蚁坊域
-            !isOrganizationEefung || (
+            !isOrganizationEefung() || (
             //或者成员的角色不是销售经理
                 roleName !== SALES_ROLE.sales_manager &&
             //也不是客户经理
@@ -381,7 +381,7 @@ class SalesReport extends React.Component {
         let charts = [];
 
         //蚁坊销售经理
-        if (isOrganizationEefung && roleName === SALES_ROLE.sales_manager) {
+        if (isOrganizationEefung() && roleName === SALES_ROLE.sales_manager) {
             charts.push(
                 //新销售机会统计
                 chanceCharts.getNewChanceChart('table'),
@@ -389,7 +389,7 @@ class SalesReport extends React.Component {
                 chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
             );
         //蚁坊客户经理
-        } else if (isOrganizationEefung && roleName === SALES_ROLE.customer_manager) {
+        } else if (isOrganizationEefung() && roleName === SALES_ROLE.customer_manager) {
             // 开通营收中心
             if(commonMethodUtil.isOpenCash()) {
                 charts.push(
@@ -515,7 +515,7 @@ class SalesReport extends React.Component {
         let charts = [];
 
         //蚁坊销售经理
-        if (isOrganizationEefung && roleName === SALES_ROLE.sales_manager) {
+        if (isOrganizationEefung() && roleName === SALES_ROLE.sales_manager) {
             // 开通呼叫中心
             if(commonMethodUtil.isOpenCaller()) {
                 charts.push(
@@ -539,7 +539,7 @@ class SalesReport extends React.Component {
                 customerCharts.getContactCustomerIntervalChart(),
             );
         //蚁坊客户经理
-        } else if (isOrganizationEefung && roleName === SALES_ROLE.customer_manager) {
+        } else if (isOrganizationEefung() && roleName === SALES_ROLE.customer_manager) {
             charts.push(
                 //客户数统计
                 customerCharts.getCustomerNumChart(),
