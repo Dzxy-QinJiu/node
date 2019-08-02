@@ -3226,6 +3226,7 @@ var zh_CN = {
     'clue.customer.refresh.list': '换一批',
     'clue.customer.condition.change': '修改条件',
     'clue.customer.recommend.clue.lists': '推荐线索',
+    'clue.customer.confirm.valid': '确认有效'
 
 };
 export default zh_CN;

@@ -45,7 +45,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     //筛选的线索分类
     this.filterClueClassify = [];
     //筛选线索是否有效
-    this.filterClueAvailability = '';
+    this.filterClueAvailability = AVALIBILITYSTATUS.AVALIBILITY;
     //筛选线索的地域
     this.filterClueProvince = [];
     //筛选存在的字段
@@ -86,7 +86,7 @@ ClueFilterStore.prototype.getTeamMemberList = function(list) {
 };
 //设置筛选线索的类型
 ClueFilterStore.prototype.setFilterType = function(updateType) {
-    this.filterClueAvailability = '';
+    this.filterClueAvailability = AVALIBILITYSTATUS.AVALIBILITY;
     _.forEach(this.filterClueStatus, (item) => {
         item.selected = false;
         if (updateType === item.value) {
