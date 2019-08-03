@@ -29,6 +29,8 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import BootProcess from './boot-process/';
+
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -726,6 +728,7 @@ class MyWorkColumn extends React.Component {
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom}
                     itemCssSelector=".my-work-content .detail-card-container">
+                    <BootProcess/>
                     {this.renderMyWorkList()}
                 </GeminiScrollbar>
                 {/*该客户下的用户列表*/}

@@ -12,6 +12,7 @@ var notificationEmitter = require('../../../public/sources/utils/emitters').noti
 var notificationUtil = require('./notification');
 var socketEmitter = require('../../../public/sources/utils/emitters').socketEmitter;
 var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
+var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
 import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
@@ -391,6 +392,7 @@ function phoneEventListener(phonemsgObj) {
         if ([CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back].indexOf(phonemsgObj.type) !== -1) {
             //通话结束后，可以继续拨打电话了
             Oplate.isCalling = false;
+            phoneEmitter.emit(phoneEmitter.CALL_FINISHED);
         }
         //如果原来有线索或者客户打电话的面板，判断一下推过来的数据的callId和原来的是不是一样，如果一样就更新原来的电话状态
         var cluePhonePanelShow = _.get($('#clue_phone_panel_wrap'), 'length');

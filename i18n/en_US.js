@@ -3121,6 +3121,34 @@ var en_US = {
     'clue.customer.refresh.list': 'Change batches',//换一批
     'clue.customer.condition.change': 'modify condition',//修改条件
     'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
-
+    // 引导流程
+    'guide.add.customer.title': 'Add your customer',//添加您的客户
+    'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户
+    'guide.extract.clue.title': 'Extract clues that interest you',//提取您感兴趣的线索
+    'guide.extract.clue.des': 'The system will recommend you clues based on your interests',//系统会根据您的兴趣，推荐给您线索
+    'guide.extract.clue.loading': 'Getting clues',//获取线索中
+    'guide.extract.clue.now': 'Pick up',//立即提取
+    'guide.add.organization.title': 'Refine your organizational structure',//完善您的组织架构
+    'guide.add.organization.des': 'The improved organizational structure allows you to use other functions smoothly',//完善组织架构后,有利于您顺畅的使用其他功能
+    'guide.dial.welcome.tip': 'Welcome {name}, free 60 minutes',//欢迎{name}，免费送您60分钟通话时长
+    'gudie.dial.des': 'Dial out using the test number you can call out',//拨号使用测试号码呼出，您可以
+    'guide.dial.apply.phone': 'Exclusive application number',//申请专属号码
+    'guide.finished.can': 'You can go to',//可以去
+    'guide.finished.see': 'To view',//查看
+    'guide.finished.page.see': 'Interface to view',//界面查看
+    'guide.add.member.finished': 'Adding members is complete',//添加成员已完成
+    'guide.add.customer.finished': 'Adding a customer is complete',//添加客户已完成
+    'guide.recommend.clue.finished': 'The recommendation cue has been extracted',//推荐线索已提取
+    'guide.finished.know': 'Know',//知道了
+    'guide.close.faild': 'Failed to close this process',//关闭此流程失败
+    'guide.add.member.team.tip': 'Add a new department',//添加新部门
+    'guide.add.member.team.name': 'Department name',//部门名称
+    'guide.add.member.team.name.placeholder': 'Please enter department name',//请输入部门名称
+    'guide.continue.add': 'Continue to add',//继续添加
+    'guide.see.member': 'Check the members',//查看成员
+    'guide.see.cutomer': 'View Customers',//查看客户
+    'guide.add.or.import.customer.success': 'Add or import successful',//添加/导入成功
+    'guide.continue.extract': 'Continue to extract',//继续提取
+    'guide.see.clue': 'Check the clues',//查看线索
 };
 export default en_US;
