@@ -467,7 +467,9 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
     this.curClueLists = _.filter(this.curClueLists, clue => clueId !== clue.id);
     this.customersSize--;
     //删除线索后，更新线索的统计值
-    if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
+    if (data.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+        this.agg_list['invalidClue'] = this.agg_list['invalidClue'] - 1;
+    }else if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
         this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
     }else if (clueStatus === SELECT_TYPE.WILL_TRACE){
         this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
@@ -476,6 +478,9 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
     }else if (clueStatus === SELECT_TYPE.HAS_TRANSFER){
         this.agg_list['hasTransfer'] = this.agg_list['hasTransfer'] - 1;
     }
+};
+ClueCustomerStore.prototype.addInvalidClueNum = function() {
+    this.agg_list['invalidClue'] = this.agg_list['invalidClue'] + 1;
 };
 //转化客户成功后的处理
 ClueCustomerStore.prototype.afterTranferClueSuccess = function(data) {

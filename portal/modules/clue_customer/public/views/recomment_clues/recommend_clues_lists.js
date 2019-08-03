@@ -23,7 +23,7 @@ import Trace from 'LIB_DIR/trace';
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS, isNotHasTransferStatus} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);

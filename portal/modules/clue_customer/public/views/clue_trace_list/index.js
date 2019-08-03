@@ -35,8 +35,9 @@ var clueCustomerAction = require('../../action/clue-customer-action');
 var timeoutFunc;//定时方法
 var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-import {SELECT_TYPE, AVALIBILITYSTATUS, isNotHasTransferStatus} from '../../utils/clue-customer-utils';
-import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters'; class ClueTraceList extends React.Component {
+import {SELECT_TYPE, AVALIBILITYSTATUS, editCluePrivilege} from '../../utils/clue-customer-utils';
+import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+class ClueTraceList extends React.Component {
     state = {
         playingItemAddr: '',//正在播放的那条记录的地址
         leadId: this.props.curClue.id,
@@ -445,7 +446,7 @@ import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters'; c
         //是否是编辑跟进记录，有跟进内容并且能编辑(没有跟进内容时是补充跟进记录)
         let isEditRecord = item.remark && !this.props.disableEdit;
         //是否展示编辑按钮,有跟进内容(没有跟进内容时是补充跟进记录)，能编辑，并且没有正在编辑的跟进记录，并且没有正在添加跟进记录
-        let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow;
+        let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow && editCluePrivilege(this.props.curClue);
         return (
             <div className="record-content-show">
                 {item.remark ? (<ShearContent>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
@@ -696,7 +697,7 @@ import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters'; c
     };
     render() {
         //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
-        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && isNotHasTransferStatus(this.props.curClue);
+        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
         return (
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
