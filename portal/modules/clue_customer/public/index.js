@@ -23,7 +23,7 @@ import TopNav from 'CMP_DIR/top-nav';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS, isNotHasTransferStatus} from './utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount, AVALIBILITYSTATUS, assignSalesPrivilege,editCluePrivilege} from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
 import ContactItem from 'MOD_DIR/common_sales_home_page/public/view//contact-item';
@@ -799,7 +799,7 @@ class ClueCustomer extends React.Component {
                             </span>
                         </ShearContent>
                     </div>
-                    : hasPrivilege('CLUECUSTOMER_ADD_TRACE') && isNotHasTransferStatus(salesClueItem) ?
+                    : editCluePrivilege(salesClueItem) ?
                         <span className='add-trace-content'
                             onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</span>
                         : null}
@@ -869,6 +869,9 @@ class ClueCustomer extends React.Component {
             } else {
                 _.isFunction(callback) && callback(updateValue);
                 clueCustomerAction.deleteClueById(item);
+                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
+                    clueCustomerAction.addInvalidClueNum();
+                }
                 this.setState({
                     isInvaliding: false,
                     isInvalidClue: ''
@@ -879,12 +882,11 @@ class ClueCustomer extends React.Component {
     renderInavailabilityOrValidClue = (salesClueItem) => {
         //是否有标记线索无效的权限
         var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
-        var inValid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
         return(
             <span className="valid-or-invalid-container">
                 {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
                     data-tracename="判定线索无效">
-                    {inValid ? <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span> : <span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span>}
+                    {editCluePrivilege(salesClueItem) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
                 </span> : null}
             </span>
 
@@ -1086,13 +1088,13 @@ class ClueCustomer extends React.Component {
                     let user = userData.getUserData();
                     var handlePersonName = _.get(salesClueItem,'user_name','');//当前跟进人
                     //分配线索给销售的权限
-                    var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
+                    var hasAssignedPrivilege = assignSalesPrivilege(salesClueItem);
                     var assigenCls = classNames('assign-btn',{'can-edit': !handlePersonName});
                     var containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege});
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {/*有分配权限*/}
-                            {hasAssignedPrivilege && isNotHasTransferStatus(salesClueItem) ?
+                            {hasAssignedPrivilege ?
                                 <AntcDropdown
                                     ref={changeSale => this['changesale' + salesClueItem.id] = changeSale}
                                     content={<span
@@ -1276,14 +1278,17 @@ class ClueCustomer extends React.Component {
         //如果是打开右侧详情，需要改一下详情的状态和关联的客户
         clueCustomerAction.afterEditCustomerDetail({status: SELECT_TYPE.HAS_TRANSFER,customer_name: customerName, customer_id: customerId});
         this.renderClueDetail();
-    }
-
-
+    };
+    editCluePrivilege = () => {
+        var filterStoreData = clueFilterStore.getState();
+        var typeFilter = this.getFilterStatus();//线索类型
+        return typeFilter.status !== SELECT_TYPE.HAS_TRANSFER && filterStoreData.filterClueAvailability === AVALIBILITYSTATUS.AVALIBILITY;
+    };
     getRowSelection = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示选择框的处理
         let showSelectionFlag = (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales;
         var typeFilter = this.getFilterStatus();//线索类型
-        if (showSelectionFlag && typeFilter.status !== SELECT_TYPE.HAS_TRANSFER){
+        if (showSelectionFlag && this.editCluePrivilege()){
             let rowSelection = {
                 type: 'checkbox',
                 selectedRowKeys: _.map(this.state.selectedClues, 'id'),
