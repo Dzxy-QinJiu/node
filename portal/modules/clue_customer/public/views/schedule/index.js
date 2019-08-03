@@ -14,7 +14,7 @@ import ScheduleItem from './schedule-item';
 import RightPanelScrollBar from 'MOD_DIR/crm/public/views/components/rightPanelScrollBar';
 import ErrorDataTip from 'MOD_DIR/crm/public/views/components/error-data-tip';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
-import {isNotHasTransferStatus} from '../../utils/clue-customer-utils';
+import {editCluePrivilege} from '../../utils/clue-customer-utils';
 
 class CrmSchedule extends React.Component {
     state = {
@@ -236,7 +236,7 @@ class CrmSchedule extends React.Component {
                                 values={{'n': this.state.total + ''}}/>) :
                             Intl.get('clue.has.no.schedule.list', '该线索还没有联系计划') : null}
                     </span>
-                    {this.props.isMerge || !isNotHasTransferStatus(this.props.curClue) ? null : (
+                    {this.props.isMerge || !editCluePrivilege(this.props.curClue) ? null : (
                         <Button className='crm-detail-add-btn'
                             onClick={this.addSchedule.bind(this, '')}>
                             {Intl.get('crm.214', '添加联系计划')}

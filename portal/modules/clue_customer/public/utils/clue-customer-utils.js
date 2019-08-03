@@ -72,6 +72,13 @@ export const isNotHasTransferStatus = function(salesClueItem){
     // 线索类型的判断
     return salesClueItem.status !== SELECT_TYPE.HAS_TRANSFER && salesClueItem.clue_type !== 'clue_pool';
 };
+export const editCluePrivilege = function(clueItem) {
+    return isNotHasTransferStatus(clueItem) && clueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
+};
+export const assignSalesPrivilege = (curClue) => {
+    let user = userData.getUserData();
+    return (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) && editCluePrivilege(curClue);
+};
 
 export const CLUE_DIFF_TYPE = [
     {

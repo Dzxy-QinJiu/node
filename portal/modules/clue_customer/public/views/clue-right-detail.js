@@ -38,7 +38,7 @@ import clueCustomerAjax from '../ajax/clue-customer-ajax';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import {removeSpacesAndEnter} from 'PUB_DIR/sources/utils/common-method-util';
 var clueCustomerAction = require('../action/clue-customer-action');
-import {handleSubmitClueItemData, SELECT_TYPE, isNotHasTransferStatus} from '../utils/clue-customer-utils';
+import {handleSubmitClueItemData, SELECT_TYPE, editCluePrivilege} from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
 
@@ -316,7 +316,7 @@ class ClueRightPanel extends React.Component {
                                 }
                                 <div className="clue-name-title">
                                     <BasicEditInputField
-                                        hasEditPrivilege={hasPrivilegeEdit && isNotHasTransferStatus(curClue)}
+                                        hasEditPrivilege={hasPrivilegeEdit && editCluePrivilege(curClue)}
                                         id={curClue.id}
                                         saveEditInput={this.saveEditBasicInfo.bind(this, 'name')}
                                         value={curClue.name}
@@ -325,7 +325,7 @@ class ClueRightPanel extends React.Component {
                                     />
                                 </div>
                             </div>
-                            {hasPrivilege('CLUECUSTOMER_DELETE') && isNotHasTransferStatus(curClue) ?
+                            {hasPrivilege('CLUECUSTOMER_DELETE') && editCluePrivilege(curClue) ?
                                 <div className="remove-clue">
                                     <i className="iconfont icon-delete"
                                         onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
