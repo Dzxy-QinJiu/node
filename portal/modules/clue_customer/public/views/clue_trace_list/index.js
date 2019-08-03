@@ -446,7 +446,7 @@ class ClueTraceList extends React.Component {
         //是否是编辑跟进记录，有跟进内容并且能编辑(没有跟进内容时是补充跟进记录)
         let isEditRecord = item.remark && !this.props.disableEdit;
         //是否展示编辑按钮,有跟进内容(没有跟进内容时是补充跟进记录)，能编辑，并且没有正在编辑的跟进记录，并且没有正在添加跟进记录
-        let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow;
+        let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow && editCluePrivilege(this.props.curClue);
         return (
             <div className="record-content-show">
                 {item.remark ? (<ShearContent>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
