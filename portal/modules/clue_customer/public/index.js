@@ -1028,12 +1028,13 @@ class ClueCustomer extends React.Component {
                 dataIndex: 'clue_name',
                 width: '350px',
                 render: (text, salesClueItem, index) => {
+                    let similarClue = _.get(salesClueItem, 'labels');
                     return (
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
-                                {_.get(salesClueItem, 'leads.length') || _.get(salesClueItem, 'customers.length') ? (
+                                {_.indexOf(similarClue, '有相似客户') !== -1 || _.indexOf(similarClue, '有相似线索') !== -1 ? (
                                     <Tag className="clue-label intent-tag-style">
                                         {Intl.get('clue.similar.clue', '有相似线索或客户')}
                                     </Tag>) : null
