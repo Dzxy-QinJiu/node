@@ -9,6 +9,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 var Select = require('antd').Select;
 var Icon = require('antd').Icon;
 import {Link} from 'react-router-dom';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('../../../../../public/sources/user-data');
 var classNames = require('classnames');
@@ -356,7 +357,7 @@ class CustomerSuggest extends React.Component {
                     <Select
                         combobox
                         searchPlaceholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
-                        filterOption={false}
+                        filterOption={(input, option) => ignoreCase(input, option)}
                         onSearch={this.suggestChange}
                         onChange={this.customerChoosen}
                         value={this.state.keyword}

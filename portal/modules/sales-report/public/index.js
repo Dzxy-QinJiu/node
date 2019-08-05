@@ -25,6 +25,7 @@ const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
 const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'common';
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 
 //销售角色
 const SALES_ROLE = {
@@ -240,6 +241,7 @@ class SalesReport extends React.Component {
                             value={currentMember.user_id}
                             onChange={this.onMemberChange}
                             className="btn-item"
+                            filterOption={(input, option) => ignoreCase(input, option)}
                         >
                             {_.map(memberList, (memberItem, index) => {
                                 return <Option key={index} value={memberItem.user_id}>{memberItem.nick_name}</Option>;

@@ -16,6 +16,7 @@ import {
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+
 //展示的类型
 const DISPLAY_TYPES = {
     EDIT: 'edit',//重新分配销售
