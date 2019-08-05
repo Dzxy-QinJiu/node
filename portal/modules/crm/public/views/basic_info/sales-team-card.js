@@ -371,7 +371,7 @@ class SalesTeamCard extends React.Component {
     }
 
     //是否是我团队或下级团队的人
-    isMyTeamOrChildUser(teamId) {
+    isMyTeamOrChildUser(teamId,userId) {
         let userObj = userData.getUserData();
         let flag = false;
         if (teamId) {
@@ -381,7 +381,7 @@ class SalesTeamCard extends React.Component {
             } else {//下级团队的人
                 flag = this.travelMyTeamUserFlag(this.state.myTeamTree, teamId);
             }
-        } else {//未设置时，都可以修改
+        } else if (!userId) {//未设置时，都可以修改(销售及团队都没有时才是未设置的情况，只设置了没有团队的销售时，销售主管不能修改)
             flag = true;
         }
         return flag;
@@ -429,7 +429,7 @@ class SalesTeamCard extends React.Component {
                         value={this.getSelectValue(SALES_EDIT_TYPES.SALES_TEAM)}
                         field={SALES_EDIT_TYPES.SALES_TEAM}
                         selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SALES_TEAM)}
-                        hasEditPrivilege={this.enableEditSales() && (this.isMyTeamOrChildUser(this.state.salesTeamId) || this.isManager())}
+                        hasEditPrivilege={this.enableEditSales() && (this.isMyTeamOrChildUser(this.state.salesTeamId, this.state.userId) || this.isManager())}
                         placeholder={Intl.get('contract.63', '请选择负责人')}
                         saveEditSelect={this.handleEditSalesTeam}
                         noDataTip={Intl.get('contract.64', '暂无负责人')}
@@ -447,7 +447,7 @@ class SalesTeamCard extends React.Component {
                             value={this.getSelectValue(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
                             field={SALES_EDIT_TYPES.SECOND_SALES_TEAM}
                             selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
-                            hasEditPrivilege={this.enableEditSecondSales() && (this.isMyTeamOrChildUser(this.state.secondTeamId) || this.isManager())}
+                            hasEditPrivilege={this.enableEditSecondSales() && (this.isMyTeamOrChildUser(this.state.secondTeamId, this.state.secondUserId) || this.isManager())}
                             placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
                             saveEditSelect={this.saveSecondSales}
                             noDataTip={Intl.get('crm.no.second.sales', '暂无联合跟进人')}
