@@ -10,6 +10,7 @@ import {Select} from 'antd';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const isCommonSales = require('PUB_DIR/sources/user-data').getUserData().isCommonSales;
 import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 
@@ -289,6 +290,7 @@ class TopBar extends React.Component {
                         value={this.state.selectedTeam}
                         onChange={this.onTeamChange}
                         dropdownClassName="team-member-dropdown"
+                        filterOption={(input, option) => ignoreCase(input, option)}
                     >
                         {_.map(this.state.teamList, (teamItem, index) => {
                             return <Option key={index} value={teamItem.group_id}>{teamItem.group_name}</Option>;
@@ -305,6 +307,7 @@ class TopBar extends React.Component {
                         value={this.state.selectedMember}
                         onChange={this.onMemberChange}
                         dropdownClassName="team-member-dropdown"
+                        filterOption={(input, option) => ignoreCase(input, option)}
                     >
                         {_.map(this.state.memberList, (memberItem, index) => {
                             return <Option key={index}

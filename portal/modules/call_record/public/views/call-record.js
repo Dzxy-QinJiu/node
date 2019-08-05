@@ -31,6 +31,7 @@ const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 //获取无效电话的列表  设置某个电话为无效电话
 import {getInvalidPhone,addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 //接听状态
 let CALL_STATUS_MAP = {
     'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
@@ -269,6 +270,7 @@ class CallRecord extends React.Component {
                     value={this.state.filterObj[filterKey]}
                     onChange={this.onSelectFilterObj.bind(this, filterKey)}
                     onSelect={this.handleSelect.bind(this, filterKey)}
+                    filterOption={(input, option) => ignoreCase(input, option)}
                 >
                     <Option value={CALL_STATUS_OPTION.ALL}> {Intl.get('user.online.all.status', '全部状态')} </Option>
                     <Option value={CALL_STATUS_OPTION.ANSWERED}> {Intl.get('call.record.state.answer', '已接听')} </Option>
@@ -286,6 +288,7 @@ class CallRecord extends React.Component {
                     value={this.state.callType}
                     onSelect={this.handleSelect.bind(this, filterKey)}
                     style={{minWidth: '50px'}}
+                    filterOption={(input, option) => ignoreCase(input, option)}
                 >
                     <Option value={CALL_TYPE_OPTION.ALL}>
                         <i className="iconfont  icon-all"></i>

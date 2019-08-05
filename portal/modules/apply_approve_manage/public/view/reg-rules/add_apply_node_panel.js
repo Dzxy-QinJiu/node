@@ -12,6 +12,7 @@ var Option = Select.Option;
 const FormItem = Form.Item;
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const FORMLAYOUT = {
     PADDINGTOTAL: 60
 };
@@ -212,7 +213,8 @@ class AddApplyNodePanel extends React.Component {
                         <div className="add-higher-up addition-condition">
                             <div className="higher-level-item addition-condition-item">
                                 <Select showSearch
-                                    onChange={this.handleHigherUpChange}>
+                                    onChange={this.handleHigherUpChange}
+                                    filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(TEAM_HIGHER_LEVEL, (item,index) => {
                                         return <Option value={item.name + '-' + index} key={index}>{item.name}</Option>;
                                     })}
@@ -229,7 +231,9 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch onChange={this.handleChangeSelectRole}>
+                                <Select showSearch
+                                    onChange={this.handleChangeSelectRole}
+                                    filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.roleList, (item,index) => {
                                         return <Option value={item.role_name + '-' + index} key={index}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
@@ -243,7 +247,9 @@ class AddApplyNodePanel extends React.Component {
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
-                                <Select showSearch onChange={this.handleChangeSelectUser}>
+                                <Select showSearch
+                                    onChange={this.handleChangeSelectUser}
+                                    filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.userList, (item,index) => {
                                         return <Option value={item.nickName + '-' + index} key={index}>{item.nickName}</Option>;
                                     })}

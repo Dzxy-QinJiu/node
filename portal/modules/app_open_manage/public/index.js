@@ -14,6 +14,7 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 import {USER_STATUS, APP_STATUS, MAX_PAGESIZE} from './consts';
 const Spinner = require('CMP_DIR/spinner/index');
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 
 const itemLayout = {
     labelCol: {span: 5},
@@ -168,9 +169,7 @@ class OpenApp extends React.Component {
                     onChange={this.handleSelectChange.bind(this, role)}
                     showSearch={true}
                     disabled={!role.showEdit || this.state.editRoleResult.loading}
-                    filterOption={(inputValue, option) => {
-                        return option.props.children.includes(inputValue);
-                    }}
+                    filterOption={(input, option) => ignoreCase(input, option)}
                 >
                     {
                         this.state.userList.data.map((user, index) => (
