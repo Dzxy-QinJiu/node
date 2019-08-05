@@ -29,6 +29,7 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import {getTimeStrFromNow, getFutureTimeStr} from 'PUB_DIR/sources/utils/time-format-util';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -42,7 +43,9 @@ const WORK_DETAIL_TAGS = {
     APPLY: 'apply',//申请、审批
     LEAD: 'lead',//待处理线索
     DEAL: 'deal',//订单
-    SELLSTATEGY: 'sellStrategy',//大小循环
+    MAJOR_CYCLE: 'major_cycle',//大循环
+    MEDIUM_CYCLE: 'medium_cycle',//中循环
+    MINIONR_CYCLE: 'minor_cycle',//小循环
     DISTRIBUTION: 'distribution',//新分配未联系
     EXPIRED: 'expired',//近期已过期的试用客户（近十天）
     WILLEXPIRE: 'willexpire',//近期已过期的试用客户（近十天）
@@ -497,6 +500,10 @@ class MyWorkColumn extends React.Component {
         return remark;
     }
 
+    getLastTrace(item) {
+        return moment(_.get(item, 'customer.last_contact_time')).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) + ' ' + _.get(item, 'customer.customer_trace', '');
+    }
+
     renderWorkRemarks(tag, item, index) {
         let tagDescr = '', remark = '', startTime = '', endTime = '', type = '';
         switch (tag) {
@@ -514,25 +521,34 @@ class MyWorkColumn extends React.Component {
                 break;
             case WORK_DETAIL_TAGS.APPLY://申请、审批
                 tagDescr = Intl.get('home.page.apply.type', '申请');
+                //xxx 试用用户申请
+                //xxx 驳回了您的 试用用户申请
                 remark = this.getApplyRemark(item, tag);
                 break;
             case WORK_DETAIL_TAGS.LEAD://待处理线索
                 tagDescr = Intl.get('crm.sales.clue', '线索');
-                //TODO 线索描述
+                //线索描述
                 remark = _.get(item, `[${tag}].source`, '');
                 break;
             case WORK_DETAIL_TAGS.DEAL://订单
                 tagDescr = Intl.get('user.apply.detail.order', '订单');
                 //订单预算
-                if (_.get(item, `[${tag}].budget`)) {
-                    remark = Intl.get('leave.apply.buget.count', '预算') + ': ' + Intl.get('contract.159', '{num}元', {num: _.get(item, `[${tag}].budget`)});
-                }
+                remark = Intl.get('leave.apply.buget.count', '预算') + ': ' + Intl.get('contract.159', '{num}元', {num: _.get(item, `[${tag}].budget`, '0')});
                 break;
-            case WORK_DETAIL_TAGS.SELLSTATEGY://大小循环设置的联系频率
-                //'home.page.contact.great.cycle': '大循环',
-                //'home.page.contact.minor.cycle': '小循环',
+            case WORK_DETAIL_TAGS.MAJOR_CYCLE://大循环设置的联系频率
                 tagDescr = Intl.get('home.page.contact.great.cycle', '大循环');
                 //最后一次跟进时间与跟进内容
+                remark = this.getLastTrace(item);
+                break;
+            case WORK_DETAIL_TAGS.MEDIUM_CYCLE://中循环设置的联系频率
+                tagDescr = Intl.get('home.page.contact.medium.cycle', '中循环');
+                //最后一次跟进时间与跟进内容
+                remark = this.getLastTrace(item);
+                break;
+            case WORK_DETAIL_TAGS.MINIONR_CYCLE://小循环设置的联系频率
+                tagDescr = Intl.get('home.page.contact.minor.cycle', '小循环');
+                //最后一次跟进时间与跟进内容
+                remark = this.getLastTrace(item);
                 break;
             case WORK_DETAIL_TAGS.DISTRIBUTION://新分配未联系
                 tagDescr = Intl.get('home.page.distribute.new', '新分配');
@@ -540,10 +556,12 @@ class MyWorkColumn extends React.Component {
             case WORK_DETAIL_TAGS.WILLEXPIRE://即将到期
                 tagDescr = Intl.get('home.page.will.expire.customer', '即将到期');
                 //xxx时间到期
+                remark = this.getExpireTip(item, tag);
                 break;
-            case WORK_DETAIL_TAGS.EXPIRED://新分配未联系
+            case WORK_DETAIL_TAGS.EXPIRED://已到期
                 tagDescr = Intl.get('home.page.expired.customer', '已过期');
                 //xxx时间已到期
+                remark = this.getExpireTip(item, tag);
                 break;
         }
         return (
@@ -551,6 +569,18 @@ class MyWorkColumn extends React.Component {
                 【{tagDescr}】{remark}
             </div>
         );
+    }
+
+    getExpireTip(item, tag) {
+        let time = _.get(item, `[${tag}].end_date`), timeStr = '';
+        if (tag === WORK_DETAIL_TAGS.WILLEXPIRE) {
+            //今天、明天、后天、xxx天后到期
+            timeStr = getFutureTimeStr(time);
+        } else if (tag === WORK_DETAIL_TAGS.EXPIRED) {
+            //今天、昨天、前天、xxx天前到期
+            timeStr = getTimeStrFromNow(time);
+        }
+        return _.get(item, `[${tag}].user_name`, '') + timeStr + ' ' + Intl.get('apply.delay.endTime', '到期');
     }
 
     renderWorkCard(item, index) {
