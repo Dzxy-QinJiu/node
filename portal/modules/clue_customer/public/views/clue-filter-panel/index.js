@@ -15,16 +15,11 @@ import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
-var otherFilterArray = [{
-    name: Intl.get('clue.repeat.clue.list', '重复线索'),
-    value: 'repeat_id'
-}, {
-    name: Intl.get('clue.has.no.relative.customer', '没有关联客户的线索'),
-    value: 'customer_id'
-},{
-    name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
-    value: SELECT_TYPE.WAIT_ME_HANDLE
-}
+var otherFilterArray = [
+    {
+        name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
+        value: SELECT_TYPE.WAIT_ME_HANDLE
+    }
 ];
 import userData from 'PUB_DIR/sources/user-data';
 class ClueFilterPanel extends React.Component {
