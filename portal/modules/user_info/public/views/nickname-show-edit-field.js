@@ -4,7 +4,7 @@
  * Created by sunqingfeng on 2019/8/1.
  */
 /**
- * 绑定邮箱的组件，可显示、编辑
+ * 绑定昵称的组件，可显示、编辑
  * 可切换状态
  */
 import {Form, Input, message} from 'antd';
@@ -19,8 +19,9 @@ class NicknameShowEditField extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSavingNickName: false, //是否正在修改邮箱
-            nicknameSaveErroMsg: '', //邮箱存储错误
+            nickname: this.props.userInfo.nickName,
+            isSavingNickName: false, //是否正在修改昵称
+            nicknameSaveErroMsg: '', //昵称存储错误
             nicknameShowType: 'show',//展示类型：show,edit
         };
     }
@@ -49,12 +50,15 @@ class NicknameShowEditField extends React.Component {
     //昵称提交handler
     handleSubmit(e) {
         Trace.traceEvent(e, '保存昵称的修改');
+        const form = this.props.form;
         this.props.form.validateFields((error, value) => {
-            if(error) {
-                return;
+            if (error) return;
+            let newNickname = value.nickName;
+            if (this.state.nickname === newNickname) {
+                this.nicknameResetState();
             } else {
                 this.setState({isSavingNickName: true});
-                let userInfo = _.extend(this.props.userInfo, nickname);
+                let userInfo = _.extend(this.props.userInfo, value);
                 delete userInfo.phone;
                 UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
                     //保存后的处理

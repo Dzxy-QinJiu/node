@@ -18,6 +18,7 @@ class EmailShowEditField extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            email: this.props.userInfo.email,
             isSavingEmail: false, //是否正在修改邮箱
             emailSaveErrorMsg: '', //邮箱存储错误
             emailShowType: 'show',//展示类型：show,edit
@@ -48,17 +49,16 @@ class EmailShowEditField extends React.Component {
     //邮箱提交handler
     handleSubmit(e) {
         Trace.traceEvent(e, '保存邮箱的修改');
+        const form = this.props.form;
         this.props.form.validateFields((error, value) => {
-            if(error) {
-                return;
+            if (error) return;
+            let newEmail = value.email;
+            if (this.state.email === newEmail) {
+                this.emailResetState();
             } else {
                 this.setState({isSavingEmail: true});
-                let userInfo = _.extend(this.props.userInfo, email);
+                let userInfo = _.extend(this.props.userInfo, value);
                 delete userInfo.phone;
-                if (userInfo.email !== this.props.userInfo.email) {
-                    //修改邮箱后，邮箱的激活状态改为未激活
-                    userInfo.emailEnable = false;
-                }
                 UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
                     //保存后的处理
                     this.setState({isSavingEmail: false, emailSaveErrorMsg: errorMsg});

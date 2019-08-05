@@ -14,7 +14,6 @@ import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
-import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import PhoneShowEditField from './phone-show-edit-field';
 import EmailShowEditField from './email-show-edit-field';
 import NicknameShowEditField from './nickname-show-edit-field';
@@ -46,8 +45,6 @@ class UserInfo extends React.Component{
         super(props);
         this.state = {
             formData: $.extend(true, {}, this.props.userInfo),
-            isSaving: false,
-            saveErrorMsg: '',
             lang: Oplate.lang || 'zh_CN',
             isBindWechat: true,//是否绑定微信
             isLoadingWechatBind: false,//是否正在绑定微信
@@ -67,10 +64,6 @@ class UserInfo extends React.Component{
                 userInfoFormShow: nextProps.userInfoFormShow
             });
         }
-    }
-
-    hideSaveTooltip() {
-        this.setState({saveErrorMsg: ''});
     }
 
     uploadImg(src) {
