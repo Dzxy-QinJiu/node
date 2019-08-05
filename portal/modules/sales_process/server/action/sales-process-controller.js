@@ -31,3 +31,12 @@ exports.updateSalesProcess = (req, res) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 删除销售流程
+exports.deleteSalesProcess = (req, res) => {
+    salesProcessService.deleteSalesProcess(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

@@ -825,8 +825,13 @@ var zh_CN = {
 
     // 后台管理-销售流程start
     'sales.process.add.process': '添加销售流程',
+    'sales.process.edit.process': '编辑销售流程',
     'sales.process.toplimit': '销售流程个数已达上限（8个）',
     'sales.process.suitable.objects': '适用范围',
+    'sales.process.name.verify.exist': '该销售流程已存在',
+    'sales.process.name.placeholder': '请输入销售流程名称',
+    'sales.process.destrip.palceholder': '请输入销售流程的描述信息',
+    'sales.process.status.edit.tip': '确定要{status}该销售流程？',
     // 后台管理-销售流程end
 
     //应用管理start

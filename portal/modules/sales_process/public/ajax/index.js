@@ -61,3 +61,19 @@ exports.updateSalesProcess = (upDateProcessObj) => {
     });
     return Deferred.promise();
 };
+
+// 删除销售流程
+exports.deleteSalesProcess = (id) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/delete/sales/process/' + id,
+        dataType: 'json',
+        type: 'delete',
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

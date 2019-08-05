@@ -10,6 +10,7 @@ const salesProcessRestApis = {
     getSalesProcess: commonUrl, // 获取销售流程
     addSalesProcess: commonUrl, // 添加销售流程
     updateSalesProcess: commonUrl + '/:property', // 更新销售流程
+    deleteSalesProcess: commonUrl + '/:id', // 删除销售流程
 };
 
 exports.urls = salesProcessRestApis;
@@ -39,6 +40,16 @@ exports.updateSalesProcess = (req, res) => {
     return restUtil.authRest.put(
         {
             url: salesProcessRestApis.updateSalesProcess,
+            req: req,
+            res: res
+        }, req.body);
+};
+
+// 删除销售流程
+exports.deleteSalesProcess = (req, res) => {
+    return restUtil.authRest.put(
+        {
+            url: salesProcessRestApis.deleteSalesProcess.replace(':id', 'req.params'),
             req: req,
             res: res
         }, req.body);

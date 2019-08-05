@@ -6,9 +6,11 @@ import {Button, Popover, Icon} from 'antd';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
+import SalesProcessStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import SalesProcessStore from './store';
 import SalesProcessAction from './action';
-import SalesProcessStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
+import SalesProcessForm from './views/sales-process-form';
+import SalesProcessInfo from './views/sale-process-info';
 
 class SalesProcess extends React.Component {
     constructor(props) {
@@ -24,20 +26,39 @@ class SalesProcess extends React.Component {
 
     componentDidMount = () => {
         SalesProcessStore.listen(this.onChange);
-        SalesProcessAction.getSalesProcess();
+        //SalesProcessAction.getSalesProcess();
     };
+
 
     componentWillUnmount = () => {
         SalesProcessStore.unlisten(this.onChange);
     };
 
-    showAddSalesProcessForm = () => {
+    // 显示添加销售流表单程面板
+    showAddProcessFormPanel = () => {
+        SalesProcessAction.showAddProcessFormPanel();
+    };
+    // 关闭添加销售流表单程面板
+    closeAddProcessFormPanel = () => {
+        SalesProcessAction.closeAddProcessFormPanel();
+    };
 
+    // 提交销售流程表单
+    submitSalesProcessForm = (submitObj) => {
+        SalesProcessAction.addSalesProcess(submitObj, (result) => {
+            if (result.id) { // 添加成功
+                this.closeAddProcessFormPanel();
+                SalesProcessAction.upDateSalesProcessList(result);
+                message.success(Intl.get('crm.216', '添加成功！'));
+            } else { // 添加失败
+                message.error(Intl.get('crm.154', '添加失败！'));
+            }
+        });
     };
 
     //渲染操作按钮区
     renderTopNavOperation = () => {
-        let length = _.get(this.state.salesprocessList, 'length');
+        let length = _.get(this.state.salesProcessList, 'length');
         let disabled = false;
         let title = '';
         if (length > 7) {
@@ -65,7 +86,7 @@ class SalesProcess extends React.Component {
                         ) : (
                             <Button
                                 type="ghost" className="sales-stage-top-btn btn-item"
-                                onClick={this.showAddSalesProcessForm.bind(this, 'addSalesProcess')}
+                                onClick={this.showAddProcessFormPanel}
                                 data-tracename="添加销售流程"
                             >
                                 <Icon type="plus" />
@@ -79,8 +100,8 @@ class SalesProcess extends React.Component {
     };
 
     // 处理设置销售流程
-    handleSettingSalesProcess = (item) => {
-
+    setShowCustomerStage = (item) => {
+        SalesProcessAction.setShowCustomerStage(item);
     };
 
     // 处理删除销售流程
@@ -89,13 +110,22 @@ class SalesProcess extends React.Component {
     };
 
     // 确认更改销售流程的状态
-    handleConfirm = (item) => {
+    handleConfirmChangeProcessStatus = (item) => {
 
+    };
+
+    // 显示销售流程详情面板
+    showProcessDetailPanel = (saleProcess) => {
+        SalesProcessAction.showProcessDetailPanel(saleProcess);
+    };
+    // 关闭销售流程详情面板
+    closeProcessDetailPanel = () => {
+        SalesProcessAction.closeProcessDetailPanel();
     };
 
     // 渲染销售流程
     renderSalesProcess = () => {
-        const salesProcessList = this.state.salesprocessList;
+        const salesProcessList = this.state.salesProcessList;
         return (
             <div className="content-zone">
                 {
@@ -107,17 +137,22 @@ class SalesProcess extends React.Component {
                             return (
                                 <li className="process-box" key={index}>
                                     <div className="item-content">
-                                        <div className="item item-name">{item.name}</div>
+                                        <div
+                                            className="item item-name"
+                                            onClick={this.showProcessDetailPanel.bind(this, item)}
+                                        >
+                                            {item.name}
+                                        </div>
                                         <div className="item item-description">{item.description}</div>
                                         <div className="item item-status">
                                             <span>{Intl.get('common.status', '状态')}:</span>
                                             <SalesProcessStatusSwitch
-                                                title={Intl.get('member.status.eidt.tip', '确定要{status}该销售流程？', {
-                                                    status: item.status === 0 ? Intl.get('common.enabled', '启用') :
+                                                title={Intl.get('sales.process.status.edit.tip', '确定要{status}该销售流程？', {
+                                                    status: item.status === '0' ? Intl.get('common.enabled', '启用') :
                                                         Intl.get('common.stop', '停用')
                                                 })}
-                                                handleConfirm={this.handleConfirm.bind(this, item)}
-                                                status={item.status}
+                                                handleConfirm={this.handleConfirmChangeProcessStatus.bind(this, item)}
+                                                status={item.status === '1' ? true : false}
                                             />
                                         </div>
                                         <div className="item item-suitable">
@@ -126,7 +161,7 @@ class SalesProcess extends React.Component {
                                     </div>
                                     <div className="item-operator">
                                         <span
-                                            onClick={this.handleSettingSalesProcess.bind(this, item)}
+                                            onClick={this.setShowCustomerStage.bind(this, item)}
                                             data-tracename={'点击设置' + item.name + '销售流程按钮'}
                                         >
                                             <i className="iconfont icon-role-auth-config"></i>
@@ -150,9 +185,15 @@ class SalesProcess extends React.Component {
         );
     };
 
+    // 修改销售流程字段成功的处理
+    changeSaleProcessFieldSuccess = (saleProcess) => {
+        SalesProcessAction.afterEditSaleProcess(saleProcess);
+    };
+
     render = () => {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let containerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+
         return (
             <div
                 className="sales-process-container"
@@ -166,6 +207,24 @@ class SalesProcess extends React.Component {
                     <div className="sales-process-content" style={{height: containerHeight}}>
                         {this.renderSalesProcess()}
                     </div>
+                    {
+                        this.state.isShowAddProcessFormPanel ? (
+                            <SalesProcessForm
+                                closeAddProcessFormPanel={this.closeAddProcessFormPanel}
+                                submitSalesProcessForm={this.submitSalesProcessForm}
+                                handleConfirmChangeProcessStatus={this.handleConfirmChangeProcessStatus}
+                            />
+                        ) : null
+                    }
+                    {
+                        this.state.isShowProcessInfoPanel ? (
+                            <SalesProcessInfo
+                                saleProcess={this.state.currentSaleProcess}
+                                closeProcessDetailPanel={this.closeProcessDetailPanel}
+                                changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
+                            />
+                        ) : null
+                    }
                 </div>
             </div>
         );

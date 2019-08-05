@@ -6,7 +6,13 @@ import SalesProcessAjax from '../ajax';
 class SalesProcessAction {
     constructor() {
         this.generateActions(
-
+            'showAddProcessFormPanel', // 显示添加销售流程表单程面板
+            'closeAddProcessFormPanel', // 关闭销售流程表单程面板
+            'upDateSalesProcessList', // 更新销售流程列表
+            'showProcessDetailPanel', // 显示销售流程详情面板
+            'closeProcessDetailPanel', // 关闭销售流程详情面板
+            'afterEditSaleProcessField', // 编辑销售流程字段
+            'setShowCustomerStage', // 设置显示客户阶段界面
         );
     }
     // 获取销售流程
@@ -20,22 +26,26 @@ class SalesProcessAction {
     }
 
     // 添加销售流程
-    addSalesProcess(addProcessObj) {
+    addSalesProcess(addProcessObj, cb) {
         this.dispatch({loading: true, error: false});
-        SalesProcessAjax.addSalesProcess(addProcessObj).then( (result) => {
+        SalesProcessAjax.addSalesProcess(addProcessObj, cb).then( (result) => {
             this.dispatch({loading: false, resData: result, error: false});
+            _.isFunction(cb) && cb();
         }, (errorMsg) => {
             this.dispatch({loading: false, errorMsg: errorMsg, error: true});
+            _.isFunction(cb) && cb();
         } );
     }
 
     // 更新销售流程
-    updateSalesProcess(upDateProcessObj) {
+    updateSalesProcess(upDateProcessObj, cb) {
         this.dispatch({loading: true, error: false});
         SalesProcessAjax.updateSalesProcess(upDateProcessObj).then( (result) => {
             this.dispatch({loading: false, resData: result, error: false});
+            _.isFunction(cb) && cb();
         }, (errorMsg) => {
             this.dispatch({loading: false, errorMsg: errorMsg, error: true});
+            _.isFunction(cb) && cb();
         } );
     }
 

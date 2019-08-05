@@ -25,5 +25,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'delete', // 删除销售流程
+        'path': '/rest/delete/sales/process/:id',
+        'handler': 'deleteSalesProcess',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

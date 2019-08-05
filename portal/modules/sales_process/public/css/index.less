@@ -1,3 +1,7 @@
+@font-color: #8DA8C5;
+@btn-color: #8da8c5;
+@label-color: #999999;
+
 .sales-process-container {
   padding: 12px;
   .sale-process-wrap {
@@ -27,7 +31,12 @@
                   padding-bottom: 12px;
                 }
                 .item-name {
-                  font-size: 16px;
+                  font-size: 18px;
+                  color: @font-color;
+                  cursor: pointer;
+                }
+                .item-description {
+                  color: #999;
                 }
                 .item-status {
                     div {
@@ -39,6 +48,7 @@
               .item-operator {
                 float: right;
                 .iconfont {
+                  cursor: pointer;
                   font-size: 18px;
                 }
                 .icon-delete {
@@ -48,6 +58,45 @@
             }
           }
         }
+    }
+  }
+
+  // 编辑销售流程面板
+  .sals-process-detail-container {
+    .process-content-wrap {
+      float: left;
+      width: 100%;
+      padding: 12px;
+      background: #fff;
+      .basic-info-item {
+        float: left;
+        width: 100%;
+        min-height: 24px;
+        font-size: 14px;
+        .basic-info-label {
+          float: left;
+          line-height: 24px;
+          color: @label-color;
+        }
+        //编辑按钮hover时才展示
+        .icon-edit-btn {
+          display: none;
+        }
+        &:hover {
+          .icon-edit-btn {
+            display: block;
+            float: right;
+            font-size: 16px;
+            color: @btn-color;
+            cursor: pointer;
+          }
+        }
+        form {
+          .ant-form-item {
+            padding-right: 0;
+          }
+        }
+      }
     }
   }
 }
