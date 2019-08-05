@@ -5,11 +5,12 @@
  */
 import '../css/my-work-column.less';
 import classNames from 'classnames';
-import {Dropdown, Icon, Menu, Tag, Popover} from 'antd';
+import {Dropdown, Icon, Menu, Tag, Popover, Button} from 'antd';
 import ColumnItem from './column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
+import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
@@ -31,6 +32,9 @@ import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel'
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import BootProcess from './boot-process/';
 import {getTimeStrFromNow, getFutureTimeStr} from 'PUB_DIR/sources/utils/time-format-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import RecommendClues from './boot-process/recommend_clues';
+
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -81,6 +85,8 @@ class MyWorkColumn extends React.Component {
             curOpenDetailWork: null,//当前需要打开详情的工作
             handlingWork: null,//当前正在处理的工作（打电话、看详情写跟进）
             isShowRefreshTip: false,//是否展示刷新数据的提示
+            isShowAddToDo: false,//是否展示添加日程面板
+            isShowRecormendClue: false,//是否展示推荐线索的面板
         };
     }
 
@@ -196,7 +202,7 @@ class MyWorkColumn extends React.Component {
     }
 
     onChangeWorkType = ({key}) => {
-        this.setState({curWorkType: key, myWorkList: [], load_id: ''}, () => {
+        this.setState({curWorkType: key === 'item_0' ? '' : key, myWorkList: [], load_id: ''}, () => {
             this.getMyWorkList();
         });
     }
@@ -723,9 +729,9 @@ class MyWorkColumn extends React.Component {
             if (_.isEmpty(this.state.myWorkList)) {
                 workList.push(
                     <NoDataIntro
-                        // noDataAndAddBtnTip={Intl.get('contract.60', '暂无客户')}
-                        // renderAddAndImportBtns={this.renderAddAndImportBtns}
-                        // showAddBtn={this.hasNoFilterCondition()}
+                        noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
+                        renderAddAndImportBtns={this.renderAddAndImportBtns}
+                        showAddBtn={true}
                         noDataTip={Intl.get('home.page.no.work.tip', '暂无工作')}
                     />);
             } else {//工作列表的渲染
@@ -735,6 +741,48 @@ class MyWorkColumn extends React.Component {
             }
             return workList;
         }
+    }
+    showAddSchedulePanel = () => {
+        this.setState({isShowAddToDo: true});
+    }
+    showRecommendCluePanel = () => {
+        this.setState({isShowRecormendClue: true});
+    }
+    renderAddAndImportBtns = () => {
+        if (hasPrivilege('CUSTOMER_ADD')) {
+            return (
+                <div className="btn-containers">
+                    <Button type='primary' className='import-btn'
+                        onClick={this.showAddSchedulePanel}>{Intl.get('home.page.add.schedule', '添加日程')}</Button>
+                    <Button className='add-clue-btn'
+                        onClick={this.showRecommendCluePanel}>{Intl.get('clue.customer.recommend.clue.lists', '推荐线索')}</Button>
+                </div>
+            );
+        } else {
+            return null;
+        }
+    };
+    closeGuidDetailPanel = () => {
+        this.setState({isShowRecormendClue: false});
+    };
+
+    // 提取线索
+    renderExtractClue() {
+        if (!this.state.isShowRecormendClue) return null;
+        let detailContent = (
+            <RecommendClues
+                onClosePanel={this.closeGuidDetailPanel}
+                afterSuccess={this.refreshMyworkList}
+            />);
+        return (
+            <RightPanelModal
+                isShowMadal
+                isShowCloseBtn
+                onClosePanel={this.closeGuidDetailPanel}
+                content={detailContent}
+                dataTracename="推荐线索"
+            />
+        );
     }
 
     refreshMyworkList = () => {
@@ -784,8 +832,41 @@ class MyWorkColumn extends React.Component {
                         : null
                 }
                 {this.state.curOpenDetailWork ? this.renderWorkDetail() : null}
+                {/*添加日程*/}
+                {this.state.isShowAddToDo ? (
+                    <RightPanelModal
+                        className="todo-add-container"
+                        isShowMadal={true}
+                        isShowCloseBtn={true}
+                        onClosePanel={this.handleCancel}
+                        title={Intl.get('home.page.add.schedule', '添加日程')}
+                        content={this.renderCrmFormContent()}
+                        dataTracename='添加日程'/>) : null}
+                {this.renderExtractClue()}
             </div>);
     }
+    // 渲染添加日程界面
+    renderCrmFormContent() {
+        return (
+            <DetailCard className='add-todo' content={
+                <CrmScheduleForm
+                    isAddToDoClicked
+                    handleScheduleAdd={this.refreshMyworkList}
+                    handleScheduleCancel={this.handleCancel}
+                    currentSchedule={{}}/>
+            }>
+            </DetailCard>
+
+        );
+    }
+
+    //处理添加日程的关闭事件
+    handleCancel = (e) => {
+        e && e.preventDefault();
+        this.setState({
+            isShowAddToDo: false
+        });
+    };
 
     renderWorkDetail() {
         const work = this.state.curOpenDetailWork;
