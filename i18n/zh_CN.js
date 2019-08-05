@@ -53,6 +53,7 @@ var zh_CN = {
     'menu.download.app': '客套APP',
     'menu.leave.apply.list.management': '申请审批',
     'menu.active.user.lists': '活跃用户',
+    'menu.customer.score': '客户评分',
     //公共部分提取start
     'common.actived': '已激活',
     'common.no.data': '暂无数据',
@@ -3226,6 +3227,11 @@ var zh_CN = {
     'clue.customer.refresh.list': '换一批',
     'clue.customer.condition.change': '修改条件',
     'clue.customer.recommend.clue.lists': '推荐线索',
+    'clue.customer.customer.level': '客户分数',
+    'clue.customer.score.good': '优质',
+    'clue.customer.above.limit': '{score}以上',
+    'clue.customer.level.score': '客户评分规则',
+    'clue.customer.if.switch': '是否启用',
     'clue.customer.confirm.valid': '确认有效'
 
 };
