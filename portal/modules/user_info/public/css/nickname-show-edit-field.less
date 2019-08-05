@@ -1,0 +1,40 @@
+//展示、绑定手机号的样式
+@edit-icon-color: #b6c2c9;
+.nickname-show-edit-wrap {
+  display: inline-block;
+  width: 80%;
+  //展示区域
+  .nickname-show-wrap {
+    .nickname-show-text {
+      font-size: 14px;
+      padding-left: 26px;
+    }
+    .icon-update {
+      margin: 0 0 0 10px;
+      color: @edit-icon-color;
+      cursor: pointer;
+      &:hover {
+       color: darken(@edit-icon-color, 30%);
+      }
+    }
+  }
+
+  //绑定区域
+  form{
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    margin-top: 4px;
+    .ant-form-item{
+      margin-bottom: 8px;
+      input{
+        font-size: 14px;
+      }
+    }
+    .bind-nickname-error-tip{
+      line-height: 20px;
+      font-size: 12px;
+      color: #ee5b44;
+    }
+  }
+}

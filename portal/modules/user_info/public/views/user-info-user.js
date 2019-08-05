@@ -4,6 +4,7 @@ import {Button, Form, Input, Icon, message, Popconfirm} from 'antd';
 const FormItem = Form.Item;
 var HeadIcon = require('../../../../components/headIcon');
 var AlertTimer = require('../../../../components/alert-timer');
+require('../css/email-show-edit-field.less');
 var defaultPhoneIcon = require('../../../common/public/image/user-info-phone-icon.png');
 var UserInfoAction = require('../action/user-info-actions');
 var Alert = require('antd').Alert;
@@ -15,6 +16,8 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import PhoneShowEditField from './phone-show-edit-field';
+import EmailShowEditField from './email-show-edit-field';
+import NicknameShowEditField from './nickname-show-edit-field';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -25,7 +28,6 @@ class UserInfo extends React.Component{
 
     static defaultProps = {
         editUserInfo: noop,
-        userInfoFormShow: false,
         userInfo: {
             userId: '',
             userName: '',
@@ -44,7 +46,6 @@ class UserInfo extends React.Component{
         super(props);
         this.state = {
             formData: $.extend(true, {}, this.props.userInfo),
-            userInfoFormShow: this.props.userInfoFormShow,
             isSaving: false,
             saveErrorMsg: '',
             lang: Oplate.lang || 'zh_CN',
@@ -68,41 +69,6 @@ class UserInfo extends React.Component{
         }
     }
 
-    //编辑用户信息
-    showUserInfoForm() {
-        UserInfoAction.showUserInfoForm();
-    }
-
-    //取消编辑用户信息
-    handleCancel(e) {
-        e.preventDefault();
-        UserInfoAction.hideUserInfoForm();
-    }
-
-    //保存用户信息
-    handleSubmit(e) {
-        e.preventDefault();
-        this.props.form.validateFields((err, values ) => {
-            if (err) {
-                return;
-            } else {
-                this.setState({isSaving: true});
-                let userInfo = _.extend(this.state.formData, values);
-                delete userInfo.phone;
-                if (userInfo.email !== this.props.userInfo.email) {
-                    //修改邮箱后，邮箱的激活状态改为未激活
-                    userInfo.emailEnable = false;
-                }
-                if (userInfo.nickName) {
-                    userInfo.nickName = _.trim(userInfo.nickName);
-                }
-                UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
-                    //保存后的处理
-                    this.setState({isSaving: false, saveErrorMsg: errorMsg});
-                });
-            }
-        });
-    }
     hideSaveTooltip() {
         this.setState({saveErrorMsg: ''});
     }
@@ -112,21 +78,7 @@ class UserInfo extends React.Component{
         formData.userLogo = src;
         this.setState({formData: formData});
     }
-    //激活邮箱
-    activeUserEmail() {
-        if (this.state.formData.emailEnable) {
-            return;
-        }
-        UserInfoAction.activeUserEmail((resultObj) => {
-            if (resultObj.error) {
-                message.error(resultObj.errorMsg);
-            } else {
-                message.success(
-                    Intl.get('user.info.active.email', '激活邮件已发送至{email}',{'email': this.state.formData.email})
-                );
-            }
-        });
-    }
+
     handleSubscribeCallback(resultObj) {
         if (resultObj.error) {
             message.error(resultObj.errorMsg);
@@ -144,6 +96,7 @@ class UserInfo extends React.Component{
         }
 
     }
+
     //设置邮箱订阅功能
     handleSubscribe = (e) => {
         var formData = this.state.formData;
@@ -251,36 +204,9 @@ class UserInfo extends React.Component{
                     </div>
                     <div className="user-info-item">
                         <span>
-                            <ReactIntl.FormattedMessage id="common.email" defaultMessage="邮箱"/>
+                            {Intl.get('common.email', '邮箱')}
                             ：</span>
-                        <span>
-                            {formData.email ? formData.email :
-                                <span>
-                                    <ReactIntl.FormattedMessage
-                                        id="user.info.no.email"
-                                        defaultMessage={'您还没有绑定邮箱，{add-email}'}
-                                        values={{
-                                            'add-email': <a data-tracename="点击绑定邮箱" onClick={this.showUserInfoForm.bind(this)}>{Intl.get('user.info.binding.email','绑定邮箱')}</a>,}}/>
-                                </span>}
-                        </span>
-                        {formData.email ? (formData.emailEnable ? <span>（
-                            <ReactIntl.FormattedMessage id="common.actived" defaultMessage="已激活"/>
-                            ）</span> :
-                            <span>
-                                （
-                                <ReactIntl.FormattedMessage
-                                    id="user.info.no.active"
-                                    defaultMessage={'未激活，请{active}'}
-                                    values={{
-                                        'active': <a onClick={this.activeUserEmail.bind(this)} data-tracename="激活">
-                                            <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
-                                        </a>
-                                    }}
-                                />
-
-                                ）
-
-                            </span>) : null}
+                        <EmailShowEditField userInfo = {this.state.formData}/>
                     </div>
                     <div className="user-info-item">
                         <span>
@@ -395,79 +321,18 @@ class UserInfo extends React.Component{
         return (
             <div className="user-info-container-div col-md-4">
                 <div className="user-logo-div">
-                    <Button className="user-info-btn-class icon-update iconfont"
-                        onClick={_this.showUserInfoForm}
-                        style={{display: this.props.userInfoFormShow ? 'none' : 'block'}}
-                        data-tracename="编辑个人资料"/>
                     <div className="user-info-logo">
-                        {
-                            this.props.userInfoFormShow ?
-                                (<HeadIcon headIcon={formData.userLogo} iconDescr={formData.nickName} isEdit={true}
-                                    isNotShowUserName={true}
-                                    onChange={this.uploadImg.bind(this)}
-                                    userName={formData.userName}
-                                    nickName={formData.nickName}
-                                    isUserHeadIcon={true}/>) :
-                                (<HeadIcon headIcon={formData.userLogo} iconDescr={formData.nickName}
-                                    userName={formData.userName}
-                                    nickName={formData.nickName}
-                                    isUserHeadIcon={true}/>)
-                        }
+                        <HeadIcon headIcon={formData.userLogo} iconDescr={formData.nickName} isEdit={true}
+                            onChange={this.uploadImg.bind(this)}
+                            isNotShowUserName={true}
+                            userName={formData.userName}
+                            nickName={formData.nickName}
+                            isUserHeadIcon={true}/>
+                        <div className="user-info-nickname">
+                            <NicknameShowEditField userInfo={this.state.formData}/>
+                        </div>
                     </div>
                 </div>
-
-                {this.props.userInfoFormShow ? <div className="edit-form-div">
-                    <Form layout='horizontal' className="user-info-form">
-                        <FormItem
-                            label={Intl.get('common.email', '邮箱')}
-                            labelCol={{span: 4}}
-                            wrapperCol={{span: 18}}
-                        >
-                            {getFieldDecorator('email',{
-                                initialValue: formData.email,
-                                rules: [{
-                                    required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
-                                },{
-                                    type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                }]
-                            })(
-                                <Input type="text" placeholder={Intl.get('member.input.email', '请输入邮箱')}/>
-                            )}
-                        </FormItem>
-                        <FormItem
-                            label={Intl.get('common.nickname','昵称')}
-                            id="nickName"
-                            labelCol={{span: 4}}
-                            wrapperCol={{span: 18}}
-                        >
-                            {getFieldDecorator('nickName',{
-                                initialValue: formData.nickName,
-                                rules: [nameLengthRule]
-                            })(
-                                <Input type="text" placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}/>
-                            )}
-                        </FormItem>
-                        <FormItem
-                            wrapperCol={{span: 22}}>
-                            <Button type="ghost" className="user-info-edit-cancel-btn btn-primary-cancel"
-                                onClick={this.handleCancel.bind(this)} data-tracename="取消编辑个人资料">
-                                <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                            </Button>
-                            <Button type="primary" className="user-info-edit-submit-btn btn-primary-sure"
-                                onClick={this.handleSubmit.bind(this)} data-tracename="保存个人资料">
-                                <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                            </Button>
-                            {this.state.isSaving ? (<Icon type="loading"/>) : (
-                                this.state.saveErrorMsg ? (<div className="indicator">
-                                    <AlertTimer time={3000}
-                                        message={this.state.saveErrorMsg}
-                                        type={'error'} showIcon
-                                        onHide={this.hideSaveTooltip.bind(this)}/>
-                                </div>) : null)
-                            }
-                        </FormItem>
-                    </Form>
-                </div> : null}
                 {!this.props.userInfoFormShow ? <div className="user-info-bottom">
                     {this.props.userInfoLoading ? ( <div className="user-info-tip">
                         <Spinner />
