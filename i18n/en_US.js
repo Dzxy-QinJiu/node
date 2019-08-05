@@ -84,7 +84,7 @@ var en_US = {
     'common.associate': 'Associate',//关联
     'common.image.type.tip': 'The type of image must be one of gif, jpeg, jpg, png, bmp!',//图片类型必须是gif,jpeg,jpg,png,bmp中的一种！
     'common.image.upload': 'upload',//上传
-    'common.image.upload.size': 'The size of image must be less than 10 kb!',//请上传小于10kb的图片
+    'common.image.upload.size': 'The size of image must be less than 10 M!',//请上传小于10M的图片
     'common.edit': 'Edit',//编辑
     //密码安全等级
     'common.password.low': 'Weak',//低
@@ -131,7 +131,7 @@ var en_US = {
     'common.describe': 'DESCR',//描述：
     'common.time.connector': ' to ',// // ' 至 -'至
     'common.image.default': 'Images',//图像
-    'common.image.tip.size': 'The size of image must be less than {size} kb!',//图片大小必须小于{size}kb!
+    'common.image.tip.size': 'The size of image must be less than {size} M!',//图片大小必须小于{size}M!
     'common.input.character.prompt': '1 ~ 50 characters',//最少1个字符,最多50个字符
     'common.input.character.rules': '1 ~ 8 characters',//最少1个字符,最多8个字符
     'common.phone.email.tip': 'Phone or email is required',//电话、邮箱必填其中一项
