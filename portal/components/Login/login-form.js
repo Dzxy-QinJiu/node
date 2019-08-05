@@ -260,7 +260,7 @@ class LoginForm extends React.Component {
                                 ref="username" value={this.state.username} onChange={this.userNameChange}
                                 onBlur={this.getLoginCaptcha}/>
                         </div>
-
+                        <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
                         <div className="input-item">
                             <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
                                 type="password" tabIndex="2"
@@ -272,7 +272,7 @@ class LoginForm extends React.Component {
                         {this.renderCaptchaBlock(hasWindow)}
                     </div>
 
-                    <input type="hidden" name="password" id="hidedInput" ref="password"/>
+                  
 
                     <button className={loginButtonClassName} type={this.state.loginButtonDisabled ? 'button' : 'submit'}
                         tabIndex="3"
