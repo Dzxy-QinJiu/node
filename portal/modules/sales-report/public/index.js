@@ -238,7 +238,7 @@ class SalesReport extends React.Component {
                         <Select
                             showSearch
                             optionFilterProp="children"
-                            style={{width: 100}}
+                            dropdownMatchSelectWidth={false}
                             value={currentMember.user_id}
                             onChange={this.onMemberChange}
                             className="btn-item"
