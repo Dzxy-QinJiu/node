@@ -5,7 +5,7 @@
 import '../../css/boot-process.less';
 import DialSrc from '../../images/call-system.svg';
 import FinishedSrc from '../../images/guide-finished.svg';
-import { Button, message } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import {Link} from 'react-router-dom';
 import GuideAjax from 'MOD_DIR/common/public/ajax/guide';
 import Spinner from 'CMP_DIR/spinner';
@@ -358,6 +358,25 @@ class BootProcess extends React.Component {
             description = item.finished ? item.finishedText.description : item.unfinishedText.description;
         }
 
+        let closeBtnBlock = null;
+        if(item.finished) {
+            closeBtnBlock = <i className="iconfont icon-close" onClick={this.closeGuideMark.bind(this, item)} title={Intl.get('common.app.status.close','关闭')}/>;
+        }else {
+            closeBtnBlock = (
+                <Popconfirm
+                    title={Intl.get('guide.close.tips', '关闭后此提示将不再出现，是否要关闭？')}
+                    okText={Intl.get('user.yes', '是')}
+                    cancelText={Intl.get('user.no', '否')}
+                    onConfirm={() => {
+                        this.closeGuideMark(item);
+                    }}
+                >
+                    <i className="iconfont icon-close" title={Intl.get('common.app.status.close','关闭')}/>
+                </Popconfirm>
+            );
+        }
+
+
         return (
             <div className='guide-card-container'>
                 <div className={contentCls} id={`home-page-guide${item.key}`}>
@@ -375,7 +394,7 @@ class BootProcess extends React.Component {
                     <div className='guide-btn-block'>
                         {this.renderBtnBlock(item)}
                     </div>
-                    {item.finished && !item.loading ? <i className="iconfont icon-close" onClick={this.closeGuideMark.bind(this, item)} title={Intl.get('common.app.status.close','关闭')}/> : null}
+                    {closeBtnBlock}
                 </div>
             </div>
         );
@@ -390,10 +409,8 @@ class BootProcess extends React.Component {
             if (_.get(this.state.guideConfig,'[0]')) {
                 _.each(this.state.guideConfig, (item, index) => {
                     if(item.key === BOOT_PROCESS_KEYS_MAP.dial.key) {
-                        // 判断是否有拨打电话的权限
-                        if(this.state.isShowDialUpKeyboard) {
-                            guideList.push(this.renderGuideCard(item, index));
-                        }
+                        //TODO 是否已有专属号码，有就不显示，没有显示
+                        guideList.push(this.renderGuideCard(item, index));
                     }else {
                         guideList.push(this.renderGuideCard(item, index));
                     }
@@ -601,11 +618,14 @@ class BootProcess extends React.Component {
 
     renderBtnBlock = (item) => {
         const btnCls = classNames('btn-item', {
-            'btn-finished': item.finished
+            'btn-finished': item.finished && item.key !== BOOT_PROCESS_KEYS_MAP.dial.key
         });
 
+        // 拨号的需要特殊处理
+        // 有拨打权限显示，没有不显示
         if(item.key === BOOT_PROCESS_KEYS_MAP.dial.key) {
-            if(!item.finished) {
+            // 判断是否有拨打电话的权限
+            if(this.state.isShowDialUpKeyboard) {
                 return (
                     <DialUpKeyboard
                         placement="bottomRight"
@@ -614,6 +634,8 @@ class BootProcess extends React.Component {
                         )}
                     />
                 );
+            }else {
+                return null;
             }
         }
 

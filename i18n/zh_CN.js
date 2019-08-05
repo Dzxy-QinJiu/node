@@ -3255,5 +3255,6 @@ var zh_CN = {
     'guide.add.or.import.customer.success': '添加/导入成功',
     'guide.continue.extract': '继续提取',
     'guide.see.clue': '查看线索',
+    'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
 };
 export default zh_CN;

@@ -3150,5 +3150,6 @@ var en_US = {
     'guide.add.or.import.customer.success': 'Add or import successful',//添加/导入成功
     'guide.continue.extract': 'Continue to extract',//继续提取
     'guide.see.clue': 'Check the clues',//查看线索
+    'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
 };
 export default en_US;
