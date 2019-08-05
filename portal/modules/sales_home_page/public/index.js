@@ -1,4 +1,5 @@
 require('./css/index.less');
+import callChart from 'MOD_DIR/analysis/public/charts/call';
 const Emitters = require('PUB_DIR/sources/utils/emitters');
 const dateSelectorEmitter = Emitters.dateSelectorEmitter;
 const teamTreeEmitter = Emitters.teamTreeEmitter;
@@ -243,33 +244,6 @@ class SalesHomePage extends React.Component {
         return queryParams;
     };
 
-    //通话总次数和总时长统计权限
-    getCallTotalAuth = () => {
-        let authType = 'user';//CALLRECORD_CUSTOMER_PHONE_STATISTIC_USER
-        if (hasPrivilege('CALLRECORD_CUSTOMER_PHONE_STATISTIC_MANAGER')) {
-            authType = 'manager';
-        }
-        return authType;
-    };
-
-    getPhoneTop10Params = () => {
-        let queryParams = {
-            start_time: this.state.start_time || 0,
-            end_time: this.state.end_time || moment().toDate().getTime(),
-            type: this.state.callType,
-            filter_phone: false,// 是否过滤114电话号码
-            filter_invalid_phone: false//是否过滤客服电话号码
-        };
-        if (this.state.currShowSalesman) {
-            //查看当前选择销售的统计数据
-            queryParams.member_ids = this.state.currShowSalesman.userId;
-        } else if (this.state.currShowSalesTeam) {
-            //查看当前选择销售团队内所有成员的统计数据
-            queryParams.team_ids = this.state.currShowSalesTeam.group_id;
-        }
-        return queryParams;
-    };
-
     //刷新数据
     refreshSalesListData = (isSwitchTeam) => {
         let queryParams = this.getQueryParams();
@@ -287,10 +261,6 @@ class SalesHomePage extends React.Component {
         if (!isSwitchTeam){
             this.getCallBackList();
         }
-        let callTotalAuth = this.getCallTotalAuth();
-        let top10Params = this.getPhoneTop10Params();
-        //通话总次数、总时长TOP10
-        SalesHomeAction.getCallTotalList(callTotalAuth, top10Params);
         var queryObj = {};
         if (queryParams.member_id) {
             queryObj.member_id = queryParams.member_id;
@@ -581,10 +551,6 @@ class SalesHomePage extends React.Component {
     getChangeCallTypeData = () => {
         let queryParams = this.getPhoneParams();
         SalesHomeAction.getSalesPhoneList(queryParams);
-        let callTotalAuth = this.getCallTotalAuth();
-        let top10Params = this.getPhoneTop10Params();
-        //通话总次数、总时长TOP10
-        SalesHomeAction.getCallTotalList(callTotalAuth, top10Params);
     };
 
     // 选择通话类型的值
@@ -660,6 +626,9 @@ class SalesHomePage extends React.Component {
                         <AntcAnalysis
                             charts={this.getPhoneAnalysisCharts()}
                             style={{padding: 0}}
+                            isGetDataOnMount={true}
+                            conditions={this.getConditions()}
+                            emitterConfigList={this.getEmitters()}
                         />
                     </GeminiScrollbar>
                 </div>
@@ -1030,37 +999,18 @@ class SalesHomePage extends React.Component {
                     subTitle: this.filterCallTypeSelect(),
                 },
             },
-        }, {
-            title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
-            chartType: 'table',
-            height: 'auto',
-            layout: {
-                sm: 24,
-            },
-            data: this.state.callTotalCountObj.data,
-            resultType: this.state.callTotalCountObj.loading ? 'loading' : '',
-            option: {
-                columns: this.getCallDurTopColumn({
-                    title: Intl.get('call.analysis.total.count', '通话总次数'),
-                    dataKey: 'count'
-                }),
-            },
-        }, {
-            title: Intl.get('call.analysis.total.time', '通话总时长') + 'TOP10',
-            chartType: 'table',
-            height: 'auto',
-            layout: {
-                sm: 24,
-            },
-            data: this.state.callTotalTimeObj.data,
-            resultType: this.state.callTotalTimeObj.loading ? 'loading' : '',
-            option: {
-                columns: this.getCallDurTopColumn({
-                    title: Intl.get('call.analysis.total.time', '通话总时长'),
-                    dataKey: 'sum'
-                }),
-            },
-        }];
+        }, 
+        //通话总次数TOP10
+        callChart.getTotalNumberTop10Chart({
+            layout: {sm: 24},
+            height: 'auto'
+        }),
+        //通话总时长TOP10
+        callChart.getTotalDurationTop10Chart({
+            layout: {sm: 24},
+            height: 'auto'
+        }),
+        ];
     };
     //获取激活邮箱的提示
     getEmailAlertTipMessage = () => {
