@@ -13,7 +13,11 @@ exports.getGuideConfig = function(req, res) {
 //引导步骤标注
 exports.setGuideMark = function(req , res) {
     guideService.setGuideMark(req,res).on('success' , function(data) {
-        res.json(data);
+        if(_.isNil(data)) {
+            res.status(200).json('success');
+        }else{
+            res.status(200).json(data);
+        }
     }).on('error' , function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
@@ -22,7 +26,11 @@ exports.setGuideMark = function(req , res) {
 //关闭引导标注
 exports.closeGuideMark = function(req , res) {
     guideService.closeGuideMark(req,res).on('success' , function(data) {
-        res.json(data);
+        if(_.isNil(data)) {
+            res.status(200).json('success');
+        }else{
+            res.status(200).json(data);
+        }
     }).on('error' , function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
     });

@@ -244,9 +244,10 @@ class BootProcess extends React.Component {
         GuideAjax.closeGuideMark({
             step: item.key
         }).then((data) => {
-            let guideConfig = _.filter(guideConfig, guide => item.key !== guide.key);
+            let guideConfig = _.filter(this.state.guideConfig, guide => item.key !== guide.key);
             this.setState({guideConfig});
         }, (errorMsg) => {
+            let guideConfig = this.state.guideConfig;
             _.each(guideConfig, guide => {
                 if(item.key === guide.key) {
                     guide.loading = false;
@@ -288,6 +289,7 @@ class BootProcess extends React.Component {
     // 拨号结束后，触发事件
     triggerDialFinished = () => {
         let dialGuide = _.find(this.state.guideConfig, guide => guide.key === BOOT_PROCESS_KEYS_MAP.dial.key);
+        if(dialGuide.finished) { return false;}
         // 已完成拨号流程
         this.setGuideMark(null, dialGuide);
     };

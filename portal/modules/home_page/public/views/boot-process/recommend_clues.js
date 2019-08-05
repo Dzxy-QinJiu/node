@@ -23,6 +23,7 @@ class RecommendClues extends React.Component {
             settedCustomerRecommend: {}, // 已经设置过的
             recommendClueLists: [],
             step: EXTRACT_CLUE_STEPS.SET_RECOMMEND,
+            pageSize: 20,
         };
     }
 
@@ -45,6 +46,7 @@ class RecommendClues extends React.Component {
 
     //保存成功后需要获取数据,以及展示下一步
     saveRecommedConditionsSuccess = (saveCondition) => {
+        deleteEmptyProperty(saveCondition);
         this.setState({
             settedCustomerRecommend: saveCondition,
             step: EXTRACT_CLUE_STEPS.EXTRACT_CLUE
@@ -104,7 +106,7 @@ class RecommendClues extends React.Component {
             }
             return (
                 <RecommendCustomerCondition
-                    hasSavedRecommendParams={this.state.hasSavedRecommendParams}
+                    hasSavedRecommendParams={this.state.settedCustomerRecommend}
                     saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
                 />
             );
