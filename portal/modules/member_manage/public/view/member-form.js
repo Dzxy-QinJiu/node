@@ -13,6 +13,8 @@ import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule} from 'PUB_DI
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
+import AddEditGroupForm from 'MOD_DIR/home_page/public/views/boot-process/components/add-edit-group-from';
+import classNames from 'classnames';
 
 function noop() {
 }
@@ -232,6 +234,16 @@ class MemberForm extends React.Component {
         MemberFormAction.resetNickNameFlags();
     };
 
+    // 是否展示添加部门
+    setAddGroupForm = (type) => {
+        MemberFormAction.setAddGroupForm(type);
+    };
+
+    // 添加部门成功后
+    cancelAddGroup = (addTeam) => {
+        MemberFormAction.cancelAddGroup(addTeam);
+    };
+
     //昵称（对应的是姓名）唯一性验证的展示
     renderNickNameMsg = () => {
         if (this.state.nickNameExist) {
@@ -355,6 +367,9 @@ class MemberForm extends React.Component {
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
+        const addTeamCls = classNames({
+            'show-add-group-form': this.props.isShowAddGroupFrom
+        });
 
         let roleId = '';
         let filterRoleObj = _.find(this.props.roleList, item => item.roleName === '销售');
@@ -529,7 +544,7 @@ class MemberForm extends React.Component {
                                         {Intl.get('member.is.get.department.lists', '正在获取部门列表')}
                                         <Icon type="loading"/>
                                     </div>) : (
-                                    <div>
+                                    <div className={addTeamCls}>
                                         {getFieldDecorator('team')(
                                             <Select
                                                 name="team"
@@ -547,16 +562,34 @@ class MemberForm extends React.Component {
                                                 {this.renderTeamOptions()}
                                             </Select>
                                         )}
+                                        {this.props.isShowAddGroupFrom ? <i title={Intl.get('guide.add.member.team.tip', '添加新部门')} className="iconfont icon-add" onClick={this.setAddGroupForm.bind(this, true)}/> : null}
                                     </div>)
                                 }
                             </FormItem>) : null}
-                            <FormItem>
-                                <SaveCancelButton loading={this.state.isSaving}
-                                    saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
-                                    handleSubmit={this.handleSubmit.bind(this)}
-                                    handleCancel={this.handleCancel.bind(this)}
-                                />
-                            </FormItem>
+                            {this.state.showAddGroupForm ? (
+                                <FormItem
+                                    wrapperCol={{
+                                        offset: 5,
+                                        span: 19
+                                    }}
+                                >
+                                    <AddEditGroupForm
+                                        salesTeamList={this.state.userTeamList}
+                                        onHandleClose={this.setAddGroupForm}
+                                        cancelAddGroup={this.cancelAddGroup}
+                                        getPopupContainer={() => document.getElementById('user-add-form')}
+                                    />
+                                </FormItem>
+                            ) : (
+                                <FormItem>
+                                    <SaveCancelButton
+                                        loading={this.state.isSaving}
+                                        saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
+                                        handleSubmit={this.handleSubmit.bind(this)}
+                                        handleCancel={this.handleCancel.bind(this)}
+                                    />
+                                </FormItem>
+                            )}
                             <FormItem>
                                 <div className="indicator">
                                     {saveResult === 'success' ?
@@ -598,6 +631,7 @@ MemberForm.propTypes = {
     showContinueAddButton: PropTypes.func,
     isShowMemberForm: PropTypes.bool,
     roleList: PropTypes.array,
+    isShowAddGroupFrom: PropTypes.bool
 };
 
 module.exports = Form.create()(MemberForm);

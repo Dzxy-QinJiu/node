@@ -202,6 +202,7 @@ export { listPanelEmitter };
 //拨打电话的相关事件
 const phoneEmitter = new EventEmitter();
 phoneEmitter.CALL_CLIENT_INITED = 'call_client_inited';
+phoneEmitter.CALL_FINISHED = 'call_finished';
 export { phoneEmitter };
 
 //通话设备选择的相关事件

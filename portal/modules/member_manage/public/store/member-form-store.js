@@ -17,6 +17,7 @@ class MemberFormStore {
         this.isLoadingTeamList = false; //正在获取部门列表
         this.isLoadingPosition = false; // 正在获取职务列表
         this.positionList = []; // 职务列表
+        this.showAddGroupForm = false; //是否显示添加部门
         
         this.bindActions(MemberFormActions);
     }
@@ -106,6 +107,17 @@ class MemberFormStore {
     resetEmailFlags() {
         this.emailExist = false;
         this.emailError = false;
+    }
+
+    // 改变添加部门的展示
+    setAddGroupForm(type) {
+        this.showAddGroupForm = type;
+    }
+
+    // 取消添加部门的展示
+    cancelAddGroup(addTeam) {
+        this.showAddGroupForm = false;
+        this.userTeamList.push(addTeam);
     }
 }
 

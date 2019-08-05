@@ -29,6 +29,7 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import BootProcess from './boot-process/';
 import {getTimeStrFromNow, getFutureTimeStr} from 'PUB_DIR/sources/utils/time-format-util';
 //工作类型
 const WORK_TYPES = {
@@ -756,6 +757,7 @@ class MyWorkColumn extends React.Component {
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom}
                     itemCssSelector=".my-work-content .detail-card-container">
+                    <BootProcess/>
                     {this.renderMyWorkList()}
                 </GeminiScrollbar>
                 {/*该客户下的用户列表*/}

@@ -84,6 +84,8 @@ var CRMAddForm = createReactClass({
             isShowMadal: true,
             //是否是在线索转客户的过程中添加客户
             isConvert: true,
+            // 头部标题区域
+            title: Intl.get('crm.3', '添加客户')
         };
     },
     propTypes: {
@@ -94,6 +96,7 @@ var CRMAddForm = createReactClass({
         formData: PropTypes.object,
         isShowMadal: PropTypes.bool,
         isConvert: PropTypes.bool,
+        title: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
     },
 
     componentDidMount: function() {
@@ -613,7 +616,7 @@ var CRMAddForm = createReactClass({
                 isShowMadal={this.props.isShowMadal}
                 isShowCloseBtn={true}
                 onClosePanel={this.closeAddPanel}
-                title= {Intl.get('crm.3', '添加客户')}
+                title= {this.props.title}
                 content={this.renderFormContent()}
                 dataTracename="添加客户"
             />

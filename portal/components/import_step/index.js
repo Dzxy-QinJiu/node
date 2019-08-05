@@ -205,7 +205,7 @@ class ImportTemplate extends React.Component {
                         data-tracename="点击关闭导入面板"></span>
                     <div className="clue-import-detail-wrap" style={{width: width - LAYOUT.SMALLWIDTH}}>
                         <div className="clue-top-title">
-                            {Intl.get('clue.manage.import.clue', '导入{type}',{type: this.props.importType})}
+                            {this.props.title ? this.props.title : Intl.get('clue.manage.import.clue', '导入{type}',{type: this.props.importType})}
                         </div>
                         <div className="import-title-top">
                             <Steps current={current}>
@@ -236,6 +236,7 @@ ImportTemplate.defaultProps = {
     doImportAjax: noop,//确认导入时的函数
     repeatAlertMessage: '',//有重复数据后的提示信息
     regRules: [],//文件类型的校验规则,
+    title: null,//头部标题区域
 };
 ImportTemplate.propTypes = {
     uploadActionName: PropTypes.string,
@@ -249,6 +250,7 @@ ImportTemplate.propTypes = {
     doImportAjax: PropTypes.func,
     getItemPrevList: PropTypes.func,
     repeatAlertMessage: PropTypes.string,//有重复数据后的提示信息
-    regRules: PropTypes.object
+    regRules: PropTypes.object,
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
 };
 export default ImportTemplate;
