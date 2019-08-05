@@ -15,6 +15,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
 import AddEditGroupForm from 'MOD_DIR/home_page/public/views/boot-process/components/add-edit-group-from';
 import classNames from 'classnames';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 
 function noop() {
 }
@@ -552,6 +553,7 @@ class MemberForm extends React.Component {
                                                 placeholder={Intl.get('contract.67', '请选择部门')}
                                                 notFoundContent={Intl.get('member.no.department', '暂无此部门')}
                                                 showSearch
+                                                filterOption={(input, option) => ignoreCase(input, option)}
                                                 searchPlaceholder={Intl.get('member.search.department.by.name', '输入部门名称搜索')}
                                                 optionFilterProp="children"
                                                 value={values.team}

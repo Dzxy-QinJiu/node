@@ -11,6 +11,7 @@ import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import AlertTimer from 'CMP_DIR/alert-timer';
 require('../../css/recommend-customer-condition.less');
 import {companyProperty, moneySize,staffSize} from '../../utils/clue-customer-utils';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
@@ -186,7 +187,7 @@ class RecommendCustomerCondition extends React.Component {
                                         name="industrys"
                                         getPopupContainer={() => document.getElementById('customer-recommend-form')}
                                         defaultValue={_.get(hasSavedRecommendParams, 'industrys',[])}
-
+                                        filterOption={(input, option) => ignoreCase(input, option)}
                                     >
                                         {_.isArray(recommendIndustry) && recommendIndustry.length ?
                                             recommendIndustry.map((industryItem, idx) => {
