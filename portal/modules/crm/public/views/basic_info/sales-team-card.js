@@ -381,6 +381,8 @@ class SalesTeamCard extends React.Component {
             } else {//下级团队的人
                 flag = this.travelMyTeamUserFlag(this.state.myTeamTree, teamId);
             }
+        } else {//未设置时，都可以修改
+            flag = true;
         }
         return flag;
     }
