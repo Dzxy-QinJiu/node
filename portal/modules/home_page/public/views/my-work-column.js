@@ -579,7 +579,7 @@ class MyWorkColumn extends React.Component {
     }
 
     getExpireTip(item, tag) {
-        let time = _.get(item, `[${tag}].end_date`), timeStr = '';
+        let time = _.get(item, `[${tag}][0].end_date`), timeStr = '';
         if (tag === WORK_DETAIL_TAGS.WILLEXPIRE) {
             //今天、明天、后天、xxx天后到期
             timeStr = getFutureTimeStr(time);
@@ -587,7 +587,7 @@ class MyWorkColumn extends React.Component {
             //今天、昨天、前天、xxx天前到期
             timeStr = getTimeStrFromNow(time);
         }
-        return _.get(item, `[${tag}].user_name`, '') + timeStr + ' ' + Intl.get('apply.delay.endTime', '到期');
+        return _.get(item, `[${tag}][0].user_name`, '') + ' ' + timeStr + ' ' + Intl.get('apply.delay.endTime', '到期');
     }
 
     renderWorkCard(item, index) {
@@ -640,7 +640,7 @@ class MyWorkColumn extends React.Component {
         } else {
             return (
                 <div className='handle-work-finish' onClick={this.handleMyWork.bind(this, item)}>
-                    <span className='work-finish-text' title={Intl.get('home.page.my.work.finished', '我已完成')}>
+                    <span className='work-finish-text' title={Intl.get('home.page.my.work.finished', '点击设为已完成')}>
                         <i className="iconfont icon-select-member"/>
                     </span>
                 </div>);
@@ -742,6 +742,7 @@ class MyWorkColumn extends React.Component {
             return workList;
         }
     }
+
     showAddSchedulePanel = () => {
         this.setState({isShowAddToDo: true});
     }
@@ -845,6 +846,7 @@ class MyWorkColumn extends React.Component {
                 {this.renderExtractClue()}
             </div>);
     }
+
     // 渲染添加日程界面
     renderCrmFormContent() {
         return (
