@@ -12,6 +12,7 @@ var classNames = require('classnames');
 import FieldMixin from '../antd-form-fieldmixin';
 var FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 
 let BasicEditSelectField = createReactClass({
     displayName: 'BasicEditSelectField',
@@ -225,7 +226,7 @@ let BasicEditSelectField = createReactClass({
                             <Validator rules={this.props.validators}>
                                 <Select multiple={this.props.multiple}
                                     combobox={this.props.combobox}
-                                    filterOption={this.props.filterOption}
+                                    filterOption={(input, option) => ignoreCase(input, option)}
                                     name="select"
                                     className="edit-select-item"
                                     showSearch

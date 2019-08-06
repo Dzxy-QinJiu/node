@@ -13,6 +13,7 @@ const UserData = require('PUB_DIR/sources/user-data');
 const ContractAjax = require('../../ajax/contract-ajax');
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import Trace from 'LIB_DIR/trace';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const { CategoryList, ContractLabel } = require('PUB_DIR/sources/utils/consts');
 
 class Contract extends React.Component {
@@ -164,6 +165,7 @@ class Contract extends React.Component {
                                 optionFilterProp="children"
                                 value={this.state.contractType}
                                 onChange={this.handleSelectContractType}
+                                filterOption={(input, option) => ignoreCase(input, option)}
                             >
                                 {categoryOptions}
                             </Select>
@@ -175,6 +177,7 @@ class Contract extends React.Component {
                                 value={this.state.contractLabel}
                                 notFoundContent={Intl.get('contract.71', '暂无签约类型')}
                                 onChange={this.handleSelectContractLabel}
+                                filterOption={(input, option) => ignoreCase(input, option)}
                             >
                                 {labelOptions}
                             </Select>

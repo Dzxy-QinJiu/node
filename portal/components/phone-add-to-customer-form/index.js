@@ -10,6 +10,7 @@ import SaveCancelButton from '../detail-card/save-cancel-button';
 import PhoneInput from '../phone-input';
 import {hasPrivilege} from '../privilege/checker';
 import {Form, Input, Select} from 'antd';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -255,6 +256,7 @@ class PhoneAddToCustomerForm extends React.Component {
                                 <Select size="large" placeholder={Intl.get('crm.select.add.contact', '请选择或添加联系人')}
                                     combobox
                                     getPopupContainer={() => document.getElementById('add-to-customer-form')}
+                                    filterOption={(input, option) => ignoreCase(input, option)}
                                 >
                                     {_.map(this.state.contactList, (contact, index) => {
                                         return (<Option value={contact.name} key={index}>{contact.name}</Option>);

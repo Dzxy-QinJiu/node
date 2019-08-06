@@ -11,6 +11,7 @@ import {nameLengthRule, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import userData from 'PUB_DIR/sources/user-data';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 
 class InviteMemberForm extends React.Component{
     constructor(props) {
@@ -230,6 +231,7 @@ class InviteMemberForm extends React.Component{
                                             placeholder={Intl.get('member.select.group', '请选择团队')}
                                             notFoundContent={Intl.get('member.no.group', '暂无此团队')}
                                             showSearch
+                                            filterOption={(input, option) => ignoreCase(input, option)}
                                             searchPlaceholder={Intl.get('member.search.group.by.name', '输入团队名称搜索')}
                                             optionFilterProp='children'
                                         >
