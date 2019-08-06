@@ -158,7 +158,6 @@ exports.getSystemLabelsList = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-
 //获取竞品列表
 exports.getCompetitorList = function(req, res) {
     crmService.getCompetitorList(req, res)
