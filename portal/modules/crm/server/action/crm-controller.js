@@ -149,18 +149,19 @@ exports.getStageTagList = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-//获取竞品列表
-exports.getCompetitorList = function(req, res) {
-    crmService.getCompetitorList(req, res)
+//获取系统标签列表
+exports.getSystemLabelsList = function(req, res) {
+    crmService.getSystemLabelsList(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
             res.status(500).json(err && err.message);
         });
 };
-//获取系统标签列表
-exports.getSystemLabelsList = function(req, res) {
-    crmService.getSystemLabelsList(req, res)
+
+//获取竞品列表
+exports.getCompetitorList = function(req, res) {
+    crmService.getCompetitorList(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
