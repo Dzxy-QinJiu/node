@@ -3171,6 +3171,7 @@ var zh_CN = {
     'clue.customer.has.transfer': '已转化',
     'clue.confirm.clue.invalid': '确认无效',
     'contract.amount.check.tip': '产品总额不能大于合同总额{amount}元，请核对',
+    'contract.profit.check.tip': '产品毛利不能大于合同总额{amount}元，请核对',
     'customer.has.similar.lists': '相似客户',
     'clue.has.similar.lists': '相似线索',
     'clue.similar.clue': '有相似线索或客户',

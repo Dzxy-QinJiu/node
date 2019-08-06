@@ -3066,6 +3066,7 @@ var en_US = {
     'clue.customer.has.transfer': 'Has transfer',//已转化
     'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
+    'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar clue',//相似线索
     'clue.similar.clue': 'Similar clue or customer', //相似线索或客户
