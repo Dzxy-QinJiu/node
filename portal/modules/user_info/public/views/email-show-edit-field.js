@@ -18,6 +18,7 @@ class EmailShowEditField extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            emailEnable: this.props.userInfo.emailEnable,
             email: this.props.userInfo.email,
             isSavingEmail: false, //是否正在修改邮箱
             emailSaveErrorMsg: '', //邮箱存储错误
@@ -63,6 +64,10 @@ class EmailShowEditField extends React.Component {
                     //保存后的处理
                     this.setState({isSavingEmail: false, emailSaveErrorMsg: errorMsg});
                     if(_.isEmpty(errorMsg)){
+                        //如果邮箱修改成功，邮箱设置为未激活状态
+                        this.setState({
+                            emailEnable: false
+                        });
                         this.emailResetState(userInfo.email);
                     }
                 });
@@ -100,7 +105,7 @@ class EmailShowEditField extends React.Component {
                     <i className="inline-block iconfont icon-update"
                         title={Intl.get('common.update', '修改')}
                         onClick={(e) => this.setEmailEditable(e)}/> ) : null}
-                {curEmail ? (this.props.userInfo.emailEnable ? <span>（
+                {curEmail ? (this.state.emailEnable ? <span>（
                     <ReactIntl.FormattedMessage id="common.actived" defaultMessage="已激活"/>）</span> :
                     <span>
                         （<ReactIntl.FormattedMessage
