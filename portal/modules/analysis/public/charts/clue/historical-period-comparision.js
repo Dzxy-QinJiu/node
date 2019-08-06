@@ -10,6 +10,12 @@ export function getClueHistoricalPeriodComparisionChart() {
         argCallback: arg => {
             _.set(arg, 'query.interval', 'month');
         },
+        option: {
+            yAxis: [{
+                //设置成1保证坐标轴分割刻度显示成整数
+                minInterval: 1,
+            }]
+        },
         processOption: (option, chartProps) => {
             const data = chartProps.data;
 

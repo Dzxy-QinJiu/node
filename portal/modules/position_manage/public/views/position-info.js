@@ -9,6 +9,7 @@ import PositionAction from '../action/index';
 import PositionStore from '../store/index';
 import {Form, Input, Select} from 'antd';
 import * as LANGLOBAL from '../consts';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const Validation = require('rc-form-validation-for-react16');
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -253,6 +254,7 @@ const PositionInfo = createReactClass({
                                         searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
                                         value={formData.realm_id}
                                         onChange={this.setField.bind(this, 'realm_id')}
+                                        filterOption={(input, option) => ignoreCase(input, option)}
                                     >
                                         {this.renderOrganizationOptions()}
                                     </Select>
@@ -274,6 +276,7 @@ const PositionInfo = createReactClass({
                                                 searchPlaceholder={LANGLOBAL.USER.phoneOrder} // 输入用户名称搜索
                                                 value={formData.member}
                                                 onChange={this.setField.bind(this, 'member')}
+                                                filterOption={(input, option) => ignoreCase(input, option)}
                                             >
                                                 {this.getMemberOptions()}
                                             </Select>
@@ -319,6 +322,7 @@ const PositionInfo = createReactClass({
                                             searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
                                             value={formData.realm_id}
                                             onChange={this.setField.bind(this, 'realm_id')}
+                                            filterOption={(input, option) => ignoreCase(input, option)}
                                         >
                                             {this.renderOrganizationOptions()}
                                         </Select>
@@ -338,6 +342,7 @@ const PositionInfo = createReactClass({
                                                 searchPlaceholder={LANGLOBAL.USER.phoneOrder} // 输入用户名称搜索
                                                 value={formData.member}
                                                 onChange={this.setField.bind(this, 'member')}
+                                                filterOption={(input, option) => ignoreCase(input, option)}
                                             >
                                                 {this.getMemberOptions()}
                                             </Select>

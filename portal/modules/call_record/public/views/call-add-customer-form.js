@@ -22,6 +22,7 @@ var CallRecordAction = require('../action/call-record-actions');
 var classNames = require('classnames');
 import Trace from 'LIB_DIR/trace';
 import { AntcAreaSelection } from 'antc';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 
 var CallAddCustomerForm = createReactClass({
     displayName: 'CallAddCustomerForm',
@@ -352,6 +353,7 @@ var CallAddCustomerForm = createReactClass({
                                         onChange={this.setField.bind(this, 'industry')}
                                         value={formData.industry}
                                         onSelect={this.handleSelect.bind(this, 'industry')}
+                                        filterOption={(input, option) => ignoreCase(input, option)}
                                     >
                                         {industryOptions}
                                     </Select>

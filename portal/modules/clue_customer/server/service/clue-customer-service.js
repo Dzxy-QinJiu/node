@@ -66,7 +66,9 @@ const restApis = {
     //获取个人配置
     selfConditionConfig: '/rest/company/v1/ent/search',
     //提取某条线索
-    extractRecommendClue: '/rest/company/v1/ent/clue'
+    extractRecommendClue: '/rest/company/v1/ent/clue',
+    //批量提取线索
+    batchExtractRecommendLists: 'rest/company/v1/ent/clues',
 };
 
 //查询客户
@@ -100,12 +102,21 @@ exports.getClueSource = function(req, res) {
 };
 //提取单条线索
 exports.extractRecommendClue = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
             url: restApis.extractRecommendClue,
             req: req,
             res: res
-        }, req.query);
+        }, req.body);
+};
+//批量提取线索
+exports.batchExtractRecommendLists = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.batchExtractRecommendLists,
+            req: req,
+            res: res
+        }, req.body);
 };
 
 exports.changeClueSalesBatch = function(req, res) {
@@ -279,7 +290,7 @@ function handleBatchClueSalesParams(req, clueUrl) {
     return {url: clueUrl, bodyObj: bodyObj};
 }
 function handleClueParams(req, clueUrl) {
-    var reqBody = req.body;
+    var reqBody = _.cloneDeep(req.body);
     //有导出的线索会用这个条件
     if (_.isString(req.body.reqData)){
         reqBody = JSON.parse(req.body.reqData);
@@ -342,15 +353,31 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
         if (!_.get(data, 'total') && req.body.firstLogin === 'true'){
             delete req.body.firstLogin;
             //如果想要查询的不存在
-            var staticsData = _.get(data, 'agg_list[0].status',[]);
+            var staticsData = [],avalibilityData = [];
+            _.forEach(_.get(data, 'agg_list',[]),item => {
+                if (item['status']){
+                    staticsData = item['status'];
+                }
+                if (item['availability']){
+                    avalibilityData = item['availability'];
+                }
+            });
             staticsData = _.sortBy(staticsData, item => item.name);
-            //如果是发我待我处理的数据并且只有已转化有数据
-            if (selfHandleFlag && (_.get(staticsData,'[0].name') === '3' || !_.get(staticsData,'[0]'))){
-                data.agg_list = [{status: []}];
+            //没有数据
+            var noData = !_.get(staticsData,'[0]') && !_.get(avalibilityData,'[0]');
+            if(!_.get(staticsData,'[0]') && _.get(avalibilityData,'[0]')){
+                if (selfHandleFlag){
+                    data.filterAllotNoTraced = 'yes';
+                }
+                data.setting_avaliability = '1';
+                emitter.emit('success', data);
+            }else if (selfHandleFlag && ((_.get(staticsData,'[0].name') === '3' && !_.get(avalibilityData,'[0]')) || noData)){
+                //如果是发我待我处理的数据并且只有已转化有数据
+                data.agg_list = [{status: [], availability: []}];
                 data.filterAllotNoTraced = 'no';
                 emitter.emit('success', data);
-            }else if (!_.get(staticsData,'[0]')){
-                data.agg_list = [{status: []}];
+            }else if (noData){
+                data.agg_list = [{status: [],availability: []}];
                 emitter.emit('success', data);
             }else{
                 if (obj.bodyObj.query){

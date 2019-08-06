@@ -13,6 +13,7 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 
 class CustomerSuggest extends React.Component {
     static defaultProps = {
@@ -519,7 +520,7 @@ class CustomerSuggest extends React.Component {
                     combobox
                     autoFocus = {true}
                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
-                    filterOption={false}
+                    filterOption={(input, option) => ignoreCase(input, option)}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}
                     onBlur={this.onCheckIfCustomerChoose.bind(this)}

@@ -371,17 +371,22 @@ exports.getClueUnhandledPrivilege = function() {
 };
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {
-    var data = {
-        typeFilter: JSON.stringify({status: '1'}),
-        availability: '0',
-        rangeParams: JSON.stringify([{//时间范围参数
-            from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
-            to: moment().valueOf(),
-            type: 'time',
-            name: 'source_time'
-        }]),
+    return {
+        queryParam: {
+            rangeParams: [{//时间范围参数
+                from: moment('2010-01-01 00:00:00').valueOf(),//开始时间设置为2010年
+                to: moment().valueOf(),
+                type: 'time',
+                name: 'source_time'
+            }],
+        },
+        bodyParam: {
+            query: {
+                status: '1',
+                availability: '0'
+            },
+        },
     };
-    return data;
 };
 //获取不同时间范围的开始和结束时间
 exports.getStartEndTimeOfDiffRange = function(timeRange, disableDateAfterToday) {

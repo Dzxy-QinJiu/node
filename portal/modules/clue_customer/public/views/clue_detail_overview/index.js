@@ -22,7 +22,7 @@ var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,handleSubmitClueItemData,handleSubmitContactData,contactNameRule,getClueStatusValue, isNotHasTransferStatus} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,handleSubmitClueItemData,handleSubmitContactData,contactNameRule,getClueStatusValue,editCluePrivilege,assignSalesPrivilege} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const EDIT_FEILD_WIDTH = 300;
@@ -59,12 +59,11 @@ class ClueDetailOverview extends React.Component {
     componentDidMount() {
         clueCustomerStore.listen(this.onClueCustomerStoreChange);
         var curClue = this.state.curClue;
-        if (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE){
-            //获取相似线索列表
-            this.getSimilarClueLists();
-            //获取相似客户列表
-            this.getSimilarCustomerLists();
-        }
+        //获取相似线索列表
+        this.getSimilarClueLists();
+        //获取相似客户列表
+        this.getSimilarCustomerLists();
+
 
     }
     componentWillUnmount() {
@@ -167,7 +166,7 @@ class ClueDetailOverview extends React.Component {
                 curClue: $.extend(true, {}, nextProps.curClue)
             },() => {
                 var curClue = nextProps.curClue;
-                if (diffClueId && (curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE)){
+                if (diffClueId){
                     //获取相似线索列表
                     this.getSimilarClueLists();
                     //获取相似客户列表
@@ -306,8 +305,6 @@ class ClueDetailOverview extends React.Component {
             curClue: curClue
         });
     };
-
-
     //保存修改的基本信息
     saveEditBasicInfo = (type, saveObj, successFunc, errorFunc) => {
         var item = type,contact_id = '';
@@ -559,6 +556,9 @@ class ClueDetailOverview extends React.Component {
     //标记线索无效或者有效
     handleClickInvalidBtn = (item, callback) => {
         var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
+        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
+        }
         var submitObj = {
             id: item.id,
             availability: updateValue
@@ -574,8 +574,11 @@ class ClueDetailOverview extends React.Component {
                 });
             } else {
                 _.isFunction(callback) && callback(updateValue);
-                _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
                 clueCustomerAction.deleteClueById(item);
+                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
+                    clueCustomerAction.addInvalidClueNum();
+                }
+
                 this.setState({
                     isInvaliding: false,
                     editInvalidClueId: ''
@@ -632,11 +635,7 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
-    assignSalesPrivilege = () => {
-        let user = userData.getUserData();
-        var curClue = this.state.curClue;
-        return (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) && isNotHasTransferStatus(curClue);
-    };
+
 
     renderAssignedClueEdit = () => {
         let user = userData.getUserData();
@@ -644,7 +643,7 @@ class ClueDetailOverview extends React.Component {
         //分配的状态
         var assignedDisplayType = this.state.clickAssigenedBtn ? 'edit' : 'text';
         //分配线索给销售的权限
-        var hasAssignedPrivilege = this.assignSalesPrivilege();
+        var hasAssignedPrivilege = assignSalesPrivilege(curClue);
         //所分配的销售
         var assignedSales = _.get(curClue, 'user_name');
         //所分配的销售所属的团队
@@ -684,10 +683,11 @@ class ClueDetailOverview extends React.Component {
     };
     renderInvalidConfirm = (salesClueItem) => {
         var isEditting = this.state.isInvaliding;
+        var isInvalid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
         return (
             <span className="invalid-confirm">
                 <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
-                    {Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                    {isInvalid ? Intl.get('clue.customer.confirm.valid', '确认有效') : Intl.get('clue.confirm.clue.invalid', '确认无效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
                 <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
@@ -698,13 +698,15 @@ class ClueDetailOverview extends React.Component {
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID'));
+        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         if (avalibility){
             return <div>
                 {associatedPrivilege ? <Button type="primary"
                     onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id, curClue.name, curClue.phones)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
                 <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
-                    onClick={this.showConfirmInvalid.bind(this, curClue)}>{Intl.get('sales.clue.is.enable', '无效')}
+                    onClick={this.showConfirmInvalid.bind(this, curClue)}>
+                    {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('sales.clue.is.enable', '无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
+
                 </Button>
             </div>;
         }else{
@@ -786,7 +788,7 @@ class ClueDetailOverview extends React.Component {
     renderTraceContent = () => {
         var curClue = this.state.curClue;
         //是否有添加跟进记录的权限
-        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE') && isNotHasTransferStatus(curClue);
+        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE') && editCluePrivilege(curClue);
         var remarkContent = _.get(curClue, 'customer_traces[0].remark');
         var remarkAddName = _.get(curClue, 'customer_traces[0].nick_name');
         var remarkAddTime = _.get(curClue, 'customer_traces[0].add_time');
@@ -856,7 +858,7 @@ class ClueDetailOverview extends React.Component {
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
-        var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER') && isNotHasTransferStatus(curClue);
+        var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER') && editCluePrivilege(curClue);
         return (
             <div className="clue-info-wrap clue-detail-block">
                 <div className="clue-basic-info">
@@ -1101,11 +1103,6 @@ class ClueDetailOverview extends React.Component {
             existingCustomers: customer
         });
     };
-    showOperateBtn = () => {
-        var curClue = this.state.curClue;
-        //必须是有效线索且线索状态不能是已转化
-        return curClue.availability === AVALIBILITYSTATUS.AVALIBILITY && curClue.status !== SELECT_TYPE.HAS_TRANSFER;
-    };
     renderSimilarLists = (listType) => {
         var isClueType = listType === 'clue';
         var moreListShowFlag = this.state.showLargerClueLists;
@@ -1132,7 +1129,7 @@ class ClueDetailOverview extends React.Component {
                         <div className="similar-title">
                             {isClueType ? renderClueStatus(listItem.status) : null}
                             <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                            {!isClueType && this.showOperateBtn() ? <Button onClick={this.onMergeToCustomerClick.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                            {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.onMergeToCustomerClick.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
 
                         </div>
                         {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
@@ -1282,7 +1279,7 @@ class ClueDetailOverview extends React.Component {
         //关联客户
         var associatedCustomer = curClue.customer_name;
         //分配线索给销售的权限
-        var hasAssignedPrivilege = this.assignSalesPrivilege();
+        var hasAssignedPrivilege = assignSalesPrivilege(curClue);
         return (
             <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
                 <GeminiScrollbar>

@@ -42,6 +42,7 @@ var privilegeChecker = require('../../../../components/privilege/checker');
 var AutosizeTextarea = require('../../../../components/autosize-textarea');
 var language = require('../../../../public/language/getLanguage');
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -1049,6 +1050,7 @@ var UserDetailAddApp = createReactClass({
                 optionFilterProp="children"
                 notFoundContent={!batchApps.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
                 searchPlaceholder={Intl.get('user.app.select.please', '请选择应用')}
+                filterOption={(input, option) => ignoreCase(input, option)}
             >
                 {batchApps}
             </Select>

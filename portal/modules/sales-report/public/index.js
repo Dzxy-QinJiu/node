@@ -21,10 +21,15 @@ import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 const Avatar = require('CMP_DIR/Avatar');
 const Option = Select.Option;
 const TopNav = require('CMP_DIR/top-nav');
+//是否在蚁坊域的判断方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
 const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
 const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'common';
 const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+
+const getUserListAjax = require('MOD_DIR/common/public/ajax/user').getUserListAjax;
 
 //销售角色
 const SALES_ROLE = {
@@ -97,11 +102,9 @@ class SalesReport extends React.Component {
 
     //获取成员列表
     getMemberList = () => {
-        const reqData = commonMethodUtil.getParamByPrivilege();
+        getUserListAjax().sendRequest().success(result => {
+            if (result.data) result = result.data;
 
-        ajax.send({
-            url: '/rest/base/v1/group/team/members/' + reqData.type,
-        }).then(result => {
             this.setState({
                 memberList: result,
             });
@@ -236,10 +239,11 @@ class SalesReport extends React.Component {
                         <Select
                             showSearch
                             optionFilterProp="children"
-                            style={{width: 100}}
+                            dropdownMatchSelectWidth={false}
                             value={currentMember.user_id}
                             onChange={this.onMemberChange}
                             className="btn-item"
+                            filterOption={(input, option) => ignoreCase(input, option)}
                         >
                             {_.map(memberList, (memberItem, index) => {
                                 return <Option key={index} value={memberItem.user_id}>{memberItem.nick_name}</Option>;
@@ -332,6 +336,18 @@ class SalesReport extends React.Component {
     renderOverallAnalysis = () => {
         const roleName = this.state.currentMember.role_name;
 
+        if (
+            //如果当前不是在蚁坊域
+            !isOrganizationEefung() || (
+            //或者成员的角色不是销售经理
+                roleName !== SALES_ROLE.sales_manager &&
+            //也不是客户经理
+            roleName !== SALES_ROLE.customer_manager)
+        ) {
+            //不显示总体分析
+            return null;
+        }
+
         let charts = [];
 
         if (roleName === SALES_ROLE.sales_manager) {
@@ -366,18 +382,41 @@ class SalesReport extends React.Component {
 
         let charts = [];
 
-        if (roleName === SALES_ROLE.sales_manager) {
+        //蚁坊销售经理
+        if (isOrganizationEefung() && roleName === SALES_ROLE.sales_manager) {
             charts.push(
                 //新销售机会统计
                 chanceCharts.getNewChanceChart('table'),
                 //所有销售机会统计
                 chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
             );
-        } else if (roleName === SALES_ROLE.customer_manager) {
+        //蚁坊客户经理
+        } else if (isOrganizationEefung() && roleName === SALES_ROLE.customer_manager) {
             // 开通营收中心
             if(commonMethodUtil.isOpenCash()) {
                 charts.push(
+                    //合同情况
                     reportCharts.contractChart,
+                    //回款情况
+                    reportCharts.repaymentChart,
+                );
+            }else {
+                return null;
+            }
+        } else {
+            charts.push(
+                //新销售机会统计
+                chanceCharts.getNewChanceChart('table'),
+                //所有销售机会统计
+                chanceCharts.getAllChanceChart(['total', 'deal', 'deal_rate'])
+            );
+
+            // 开通营收中心
+            if(commonMethodUtil.isOpenCash()) {
+                charts.push(
+                    //合同情况
+                    reportCharts.contractChart,
+                    //回款情况
                     reportCharts.repaymentChart,
                 );
             }else {
@@ -473,13 +512,12 @@ class SalesReport extends React.Component {
 
     //渲染销售行为
     renderSalesBehavior = () => {
-        if (!this.state.currentMember.team_id) return;
-
         const roleName = this.state.currentMember.role_name;
 
         let charts = [];
 
-        if (roleName === SALES_ROLE.sales_manager) {
+        //蚁坊销售经理
+        if (isOrganizationEefung() && roleName === SALES_ROLE.sales_manager) {
             // 开通呼叫中心
             if(commonMethodUtil.isOpenCaller()) {
                 charts.push(
@@ -502,8 +540,48 @@ class SalesReport extends React.Component {
                 //联系客户频率统计
                 customerCharts.getContactCustomerIntervalChart(),
             );
-        } else if (roleName === SALES_ROLE.customer_manager) {
+        //蚁坊客户经理
+        } else if (isOrganizationEefung() && roleName === SALES_ROLE.customer_manager) {
             charts.push(
+                //客户数统计
+                customerCharts.getCustomerNumChart(),
+                //销售行为统计
+                this.getSalesBehaviorVisitCustomerChartHandler(),
+                //订单阶段
+                orderCharts.getOrderStageChart({
+                    stageList: this.state.stageList
+                }),
+                //客户阶段
+                customerCharts.getCustomerStageChart(),
+                //联系客户频率统计
+                customerCharts.getContactCustomerIntervalChart(),
+                //客户流失率统计
+                customerCharts.getCustomerLoseRateChart(),
+                //客户活跃度统计
+                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
+            );
+        } else {
+            // 开通呼叫中心
+            if(commonMethodUtil.isOpenCaller()) {
+                charts.push(
+                    //电话量
+                    reportCharts.callVolumeChart
+                );
+            }
+            charts.push(
+                //客户阶段
+                customerCharts.getCustomerStageChart(),
+                //客户活跃度统计
+                customerCharts.getCustomerActiveTrendChart('客户活跃度统计', 'day', true),
+                //新开客户登录
+                reportCharts.newCustomerLoginChart(),
+                //合格客户数统计
+                customerCharts.getCustomerNumChart({
+                    title: '合格客户数统计',
+                    stage: 'qualified'
+                }),
+                //联系客户频率统计
+                customerCharts.getContactCustomerIntervalChart(),
                 //客户数统计
                 customerCharts.getCustomerNumChart(),
                 //销售行为统计
@@ -541,8 +619,6 @@ class SalesReport extends React.Component {
 
     //渲染出勤统计
     renderAttendance = () => {
-        if (!this.state.currentMember.team_id) return;
-
         const charts = [workflowChart.getAttendanceChart()];
 
         return (
@@ -562,7 +638,6 @@ class SalesReport extends React.Component {
     };
 
     render() {
-        const role = this.state.currentMember.role_name;
         const memberId = this.state.currentMember.user_id;
 
         return (
@@ -576,7 +651,7 @@ class SalesReport extends React.Component {
                         <Col span={21} style={{height: this.state.contentHeight}}>
                             <GeminiScrollBar>
                                 {this.renderBaseInfo()}
-                                {(role && memberId) ? (
+                                {(memberId) ? (
                                     <div>
                                         {this.renderOverallAnalysis()}
                                         {this.renderSalesPerformance()}

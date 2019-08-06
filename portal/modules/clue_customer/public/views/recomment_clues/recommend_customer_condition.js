@@ -11,6 +11,7 @@ import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import AlertTimer from 'CMP_DIR/alert-timer';
 require('../../css/recommend-customer-condition.less');
 import {companyProperty, moneySize,staffSize} from '../../utils/clue-customer-utils';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
@@ -168,7 +169,7 @@ class RecommendCustomerCondition extends React.Component {
         }
 
         return (
-            <div className="recommend-customer-condition">
+            <div className="recommend-customer-condition" data-tracename="设置推荐线索条件面板">
                 <div
                     className="recommend-top-title">{Intl.get('clue.customer.select.focus.customer', '请选择您关注的客户类型')}</div>
                 <div className="add-customer-recommend">
@@ -186,7 +187,7 @@ class RecommendCustomerCondition extends React.Component {
                                         name="industrys"
                                         getPopupContainer={() => document.getElementById('customer-recommend-form')}
                                         defaultValue={_.get(hasSavedRecommendParams, 'industrys',[])}
-
+                                        filterOption={(input, option) => ignoreCase(input, option)}
                                     >
                                         {_.isArray(recommendIndustry) && recommendIndustry.length ?
                                             recommendIndustry.map((industryItem, idx) => {
@@ -270,8 +271,7 @@ class RecommendCustomerCondition extends React.Component {
                         </FormItem>
                         <div className="submit-button-container">
                             <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                disabled={this.state.isSaving} data-tracename="点击保存添加
-                                            推荐客户">
+                                disabled={this.state.isSaving} data-tracename="点击保存推荐线索条件">
                                 {Intl.get('common.save', '保存')}
                                 {this.state.isSaving ? <Icon type="loading"/> : null}
                             </Button>

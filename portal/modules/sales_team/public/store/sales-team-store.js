@@ -5,6 +5,9 @@ const SalesTeamActions = require('../action/sales-team-actions');
 //没有团队时的提示信息
 let salesTeamIsNull = 'sales-team-is-null';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+import {storageUtil} from 'ant-utils';
+//localstorage字段key
+const STORED_TEAM_KEY = 'weekly_report_selected_team';
 
 function SalesTeamStore() {
     this.salesTeamList = [];//团队分组列表
@@ -672,6 +675,15 @@ SalesTeamStore.prototype.hideAllOperationArea = function() {
 //删除团队后的处理
 SalesTeamStore.prototype.saveDeleteGroup = function(result) {
     if (result.success) {
+        //清除localstorage中groupId操作
+        const deletedItemKey = _.get(result, 'groupId');
+        const storedTeam = storageUtil.local.get(STORED_TEAM_KEY);
+        const selectedTeamId = _.get(storedTeam, 'group_id') || '';
+        //如果删除的group与当前localstorage中存储中的是同一个
+        if(_.isEqual(deletedItemKey, selectedTeamId)) {
+            //清除此字段
+            storageUtil.local.removeItem(STORED_TEAM_KEY);
+        }
         //删除团队成功，过滤掉删除的团队
         this.salesTeamList = _.filter(this.salesTeamList, team => team.group_id !== result.groupId);
         //刷新团队树

@@ -11,6 +11,7 @@ import PositionAjax from '../ajax/index';
 import PositionStore from '../store/index';
 import PositionAction from '../action/index';
 import * as LANGLOBAL from '../consts';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const POSITION_AREA_OPTIONS = {
     CS: 'changsha',
     JN: 'jinan',
@@ -257,6 +258,7 @@ const BatchPositionForm = createReactClass({
                                     searchPlaceholder={LANGLOBAL.ORGANIZATION.placeholder} // 输入组织名称搜索
                                     value={formData.realm_id}
                                     onChange={this.setField.bind(this, 'realm_id')}
+                                    filterOption={(input, option) => ignoreCase(input, option)}
                                 >
                                     {this.renderOrganizationOptions()}
                                 </Select>
@@ -275,6 +277,7 @@ const BatchPositionForm = createReactClass({
                                     searchPlaceholder={LANGLOBAL.USER.placeholder} // 输入用户名称搜索
                                     value={formData.member}
                                     onChange={this.setField.bind(this, 'member')}
+                                    filterOption={(input, option) => ignoreCase(input, option)}
                                 >
                                     {this.renderMemberOptions()}
                                 </Select>

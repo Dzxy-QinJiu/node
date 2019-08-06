@@ -13,6 +13,9 @@ import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule} from 'PUB_DI
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
+import AddEditGroupForm from 'MOD_DIR/home_page/public/views/boot-process/components/add-edit-group-from';
+import classNames from 'classnames';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 
 function noop() {
 }
@@ -232,6 +235,16 @@ class MemberForm extends React.Component {
         MemberFormAction.resetNickNameFlags();
     };
 
+    // 是否展示添加部门
+    setAddGroupForm = (type) => {
+        MemberFormAction.setAddGroupForm(type);
+    };
+
+    // 添加部门成功后
+    cancelAddGroup = (addTeam) => {
+        MemberFormAction.cancelAddGroup(addTeam);
+    };
+
     //昵称（对应的是姓名）唯一性验证的展示
     renderNickNameMsg = () => {
         if (this.state.nickNameExist) {
@@ -268,7 +281,7 @@ class MemberForm extends React.Component {
     renderRoleOptions = () => {
         //角色列表
         let roleOptions = '';
-        let roleList = this.state.roleList;
+        let roleList = this.props.roleList;
         if (_.isArray(roleList) && roleList.length > 0) {
             roleOptions = roleList.map(function(role) {
                 return (<Option key={role.roleId} value={role.roleId}>
@@ -347,14 +360,24 @@ class MemberForm extends React.Component {
             }
         }
         const {getFieldDecorator} = this.props.form;
-        var saveResult = this.state.saveResult;
-        var headDescr = Intl.get('member.head.logo', '头像');
-        var formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
+        const saveResult = this.state.saveResult;
+        const headDescr = Intl.get('member.head.logo', '头像');
+        const formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
         const formItemLayout = {
             colon: false,
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
+        const addTeamCls = classNames({
+            'show-add-group-form': this.props.isShowAddGroupFrom
+        });
+
+        let roleId = '';
+        let filterRoleObj = _.find(this.props.roleList, item => item.roleName === '销售');
+        if (filterRoleObj) {
+            roleId = filterRoleObj.roleId;
+        }
+
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
                 <FormItem id="image">
@@ -446,33 +469,25 @@ class MemberForm extends React.Component {
                                 label={Intl.get('common.role', '角色')}
                                 {...formItemLayout}
                             >
-                                {this.state.isLoadingRoleList ? (
-                                    <div className="role-list-loading">
-                                        <ReactIntl.FormattedMessage id="member.get.role.lists"
-                                            defaultMessage="正在获取角色列表"/>
-                                        <Icon type="loading"/>
-                                    </div>) : (
-                                    <div>
-                                        {getFieldDecorator('role', {
-                                            rules: [{
-                                                required: true,
-                                                message: Intl.get('member.select.role', '请选择角色')
-                                            }]
-                                        })(
-                                            <Select
-                                                size='large'
-                                                optionFilterProp="children"
-                                                placeholder={Intl.get('member.select.role', '请选择角色')}
-                                                searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
-                                                notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
-                                                onSelect={this.handleSelect}
-                                                getPopupContainer={() => document.getElementById('user-add-form')}
-                                            >
-                                                {this.renderRoleOptions()}
-                                            </Select>
-                                        )}
-                                    </div>)
-                                }
+                                {getFieldDecorator('role', {
+                                    initialValue: roleId,
+                                    rules: [{
+                                        required: true,
+                                        message: Intl.get('member.select.role', '请选择角色')
+                                    }]
+                                })(
+                                    <Select
+                                        size='large'
+                                        optionFilterProp="children"
+                                        placeholder={Intl.get('member.select.role', '请选择角色')}
+                                        searchPlaceholder={Intl.get('member.select.role', '请选择角色')}
+                                        notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                        onSelect={this.handleSelect}
+                                        getPopupContainer={() => document.getElementById('user-add-form')}
+                                    >
+                                        {this.renderRoleOptions()}
+                                    </Select>
+                                )}
                             </FormItem>
                             <FormItem
                                 label={Intl.get('member.position', '职务')}
@@ -530,7 +545,7 @@ class MemberForm extends React.Component {
                                         {Intl.get('member.is.get.department.lists', '正在获取部门列表')}
                                         <Icon type="loading"/>
                                     </div>) : (
-                                    <div>
+                                    <div className={addTeamCls}>
                                         {getFieldDecorator('team')(
                                             <Select
                                                 name="team"
@@ -538,6 +553,7 @@ class MemberForm extends React.Component {
                                                 placeholder={Intl.get('contract.67', '请选择部门')}
                                                 notFoundContent={Intl.get('member.no.department', '暂无此部门')}
                                                 showSearch
+                                                filterOption={(input, option) => ignoreCase(input, option)}
                                                 searchPlaceholder={Intl.get('member.search.department.by.name', '输入部门名称搜索')}
                                                 optionFilterProp="children"
                                                 value={values.team}
@@ -548,16 +564,34 @@ class MemberForm extends React.Component {
                                                 {this.renderTeamOptions()}
                                             </Select>
                                         )}
+                                        {this.props.isShowAddGroupFrom ? <i title={Intl.get('guide.add.member.team.tip', '添加新部门')} className="iconfont icon-add" onClick={this.setAddGroupForm.bind(this, true)}/> : null}
                                     </div>)
                                 }
                             </FormItem>) : null}
-                            <FormItem>
-                                <SaveCancelButton loading={this.state.isSaving}
-                                    saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
-                                    handleSubmit={this.handleSubmit.bind(this)}
-                                    handleCancel={this.handleCancel.bind(this)}
-                                />
-                            </FormItem>
+                            {this.state.showAddGroupForm ? (
+                                <FormItem
+                                    wrapperCol={{
+                                        offset: 5,
+                                        span: 19
+                                    }}
+                                >
+                                    <AddEditGroupForm
+                                        salesTeamList={this.state.userTeamList}
+                                        onHandleClose={this.setAddGroupForm}
+                                        cancelAddGroup={this.cancelAddGroup}
+                                        getPopupContainer={() => document.getElementById('user-add-form')}
+                                    />
+                                </FormItem>
+                            ) : (
+                                <FormItem>
+                                    <SaveCancelButton
+                                        loading={this.state.isSaving}
+                                        saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
+                                        handleSubmit={this.handleSubmit.bind(this)}
+                                        handleCancel={this.handleCancel.bind(this)}
+                                    />
+                                </FormItem>
+                            )}
                             <FormItem>
                                 <div className="indicator">
                                     {saveResult === 'success' ?
@@ -597,7 +631,9 @@ MemberForm.propTypes = {
     formType: PropTypes.string,
     returnInfoPanel: PropTypes.func,
     showContinueAddButton: PropTypes.func,
-    isShowMemberForm: PropTypes.bool
+    isShowMemberForm: PropTypes.bool,
+    roleList: PropTypes.array,
+    isShowAddGroupFrom: PropTypes.bool
 };
 
 module.exports = Form.create()(MemberForm);

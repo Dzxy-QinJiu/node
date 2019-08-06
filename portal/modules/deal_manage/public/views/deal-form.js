@@ -19,6 +19,7 @@ import dealAction from '../action';
 import dealBoardAction from '../action/deal-board-action';
 
 import {num as antUtilsNum} from 'ant-utils';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const parseAmount = antUtilsNum.parseAmount;
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 
@@ -295,7 +296,7 @@ class DealForm extends React.Component {
                                         placeholder={Intl.get('leave.apply.select.product', '请选择产品')}
                                         name="apps"
                                         getPopupContainer={() => document.getElementById('deal-form')}
-
+                                        filterOption={(input, option) => ignoreCase(input, option)}
                                     >
                                         {_.map(this.state.appList, (appItem, idx) => {
                                             return (<Option key={idx}

@@ -5,11 +5,12 @@
  */
 import '../css/my-work-column.less';
 import classNames from 'classnames';
-import {Dropdown, Icon, Menu, Tag, Popover} from 'antd';
+import {Dropdown, Icon, Menu, Tag, Popover, Button} from 'antd';
 import ColumnItem from './column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
 import myWorkAjax from '../ajax';
+import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
@@ -29,6 +30,11 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import BootProcess from './boot-process/';
+import {getTimeStrFromNow, getFutureTimeStr} from 'PUB_DIR/sources/utils/time-format-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import RecommendClues from './boot-process/recommend_clues';
+
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -42,7 +48,9 @@ const WORK_DETAIL_TAGS = {
     APPLY: 'apply',//申请、审批
     LEAD: 'lead',//待处理线索
     DEAL: 'deal',//订单
-    SELLSTATEGY: 'sellStrategy',//大小循环
+    MAJOR_CYCLE: 'major_cycle',//大循环
+    MEDIUM_CYCLE: 'medium_cycle',//中循环
+    MINIONR_CYCLE: 'minor_cycle',//小循环
     DISTRIBUTION: 'distribution',//新分配未联系
     EXPIRED: 'expired',//近期已过期的试用客户（近十天）
     WILLEXPIRE: 'willexpire',//近期已过期的试用客户（近十天）
@@ -77,6 +85,8 @@ class MyWorkColumn extends React.Component {
             curOpenDetailWork: null,//当前需要打开详情的工作
             handlingWork: null,//当前正在处理的工作（打电话、看详情写跟进）
             isShowRefreshTip: false,//是否展示刷新数据的提示
+            isShowAddToDo: false,//是否展示添加日程面板
+            isShowRecormendClue: false,//是否展示推荐线索的面板
         };
     }
 
@@ -192,7 +202,7 @@ class MyWorkColumn extends React.Component {
     }
 
     onChangeWorkType = ({key}) => {
-        this.setState({curWorkType: key, myWorkList: [], load_id: ''}, () => {
+        this.setState({curWorkType: key === 'item_0' ? '' : key, myWorkList: [], load_id: ''}, () => {
             this.getMyWorkList();
         });
     }
@@ -497,6 +507,10 @@ class MyWorkColumn extends React.Component {
         return remark;
     }
 
+    getLastTrace(item) {
+        return moment(_.get(item, 'customer.last_contact_time')).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) + ' ' + _.get(item, 'customer.customer_trace', '');
+    }
+
     renderWorkRemarks(tag, item, index) {
         let tagDescr = '', remark = '', startTime = '', endTime = '', type = '';
         switch (tag) {
@@ -514,25 +528,34 @@ class MyWorkColumn extends React.Component {
                 break;
             case WORK_DETAIL_TAGS.APPLY://申请、审批
                 tagDescr = Intl.get('home.page.apply.type', '申请');
+                //xxx 试用用户申请
+                //xxx 驳回了您的 试用用户申请
                 remark = this.getApplyRemark(item, tag);
                 break;
             case WORK_DETAIL_TAGS.LEAD://待处理线索
                 tagDescr = Intl.get('crm.sales.clue', '线索');
-                //TODO 线索描述
+                //线索描述
                 remark = _.get(item, `[${tag}].source`, '');
                 break;
             case WORK_DETAIL_TAGS.DEAL://订单
                 tagDescr = Intl.get('user.apply.detail.order', '订单');
                 //订单预算
-                if (_.get(item, `[${tag}].budget`)) {
-                    remark = Intl.get('leave.apply.buget.count', '预算') + ': ' + Intl.get('contract.159', '{num}元', {num: _.get(item, `[${tag}].budget`)});
-                }
+                remark = Intl.get('leave.apply.buget.count', '预算') + ': ' + Intl.get('contract.159', '{num}元', {num: _.get(item, `[${tag}].budget`, '0')});
                 break;
-            case WORK_DETAIL_TAGS.SELLSTATEGY://大小循环设置的联系频率
-                //'home.page.contact.great.cycle': '大循环',
-                //'home.page.contact.minor.cycle': '小循环',
+            case WORK_DETAIL_TAGS.MAJOR_CYCLE://大循环设置的联系频率
                 tagDescr = Intl.get('home.page.contact.great.cycle', '大循环');
                 //最后一次跟进时间与跟进内容
+                remark = this.getLastTrace(item);
+                break;
+            case WORK_DETAIL_TAGS.MEDIUM_CYCLE://中循环设置的联系频率
+                tagDescr = Intl.get('home.page.contact.medium.cycle', '中循环');
+                //最后一次跟进时间与跟进内容
+                remark = this.getLastTrace(item);
+                break;
+            case WORK_DETAIL_TAGS.MINIONR_CYCLE://小循环设置的联系频率
+                tagDescr = Intl.get('home.page.contact.minor.cycle', '小循环');
+                //最后一次跟进时间与跟进内容
+                remark = this.getLastTrace(item);
                 break;
             case WORK_DETAIL_TAGS.DISTRIBUTION://新分配未联系
                 tagDescr = Intl.get('home.page.distribute.new', '新分配');
@@ -540,10 +563,12 @@ class MyWorkColumn extends React.Component {
             case WORK_DETAIL_TAGS.WILLEXPIRE://即将到期
                 tagDescr = Intl.get('home.page.will.expire.customer', '即将到期');
                 //xxx时间到期
+                remark = this.getExpireTip(item, tag);
                 break;
-            case WORK_DETAIL_TAGS.EXPIRED://新分配未联系
+            case WORK_DETAIL_TAGS.EXPIRED://已到期
                 tagDescr = Intl.get('home.page.expired.customer', '已过期');
                 //xxx时间已到期
+                remark = this.getExpireTip(item, tag);
                 break;
         }
         return (
@@ -551,6 +576,18 @@ class MyWorkColumn extends React.Component {
                 【{tagDescr}】{remark}
             </div>
         );
+    }
+
+    getExpireTip(item, tag) {
+        let time = _.get(item, `[${tag}].end_date`), timeStr = '';
+        if (tag === WORK_DETAIL_TAGS.WILLEXPIRE) {
+            //今天、明天、后天、xxx天后到期
+            timeStr = getFutureTimeStr(time);
+        } else if (tag === WORK_DETAIL_TAGS.EXPIRED) {
+            //今天、昨天、前天、xxx天前到期
+            timeStr = getTimeStrFromNow(time);
+        }
+        return _.get(item, `[${tag}].user_name`, '') + timeStr + ' ' + Intl.get('apply.delay.endTime', '到期');
     }
 
     renderWorkCard(item, index) {
@@ -692,9 +729,9 @@ class MyWorkColumn extends React.Component {
             if (_.isEmpty(this.state.myWorkList)) {
                 workList.push(
                     <NoDataIntro
-                        // noDataAndAddBtnTip={Intl.get('contract.60', '暂无客户')}
-                        // renderAddAndImportBtns={this.renderAddAndImportBtns}
-                        // showAddBtn={this.hasNoFilterCondition()}
+                        noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
+                        renderAddAndImportBtns={this.renderAddAndImportBtns}
+                        showAddBtn={true}
                         noDataTip={Intl.get('home.page.no.work.tip', '暂无工作')}
                     />);
             } else {//工作列表的渲染
@@ -704,6 +741,48 @@ class MyWorkColumn extends React.Component {
             }
             return workList;
         }
+    }
+    showAddSchedulePanel = () => {
+        this.setState({isShowAddToDo: true});
+    }
+    showRecommendCluePanel = () => {
+        this.setState({isShowRecormendClue: true});
+    }
+    renderAddAndImportBtns = () => {
+        if (hasPrivilege('CUSTOMER_ADD')) {
+            return (
+                <div className="btn-containers">
+                    <Button type='primary' className='import-btn'
+                        onClick={this.showAddSchedulePanel}>{Intl.get('home.page.add.schedule', '添加日程')}</Button>
+                    <Button className='add-clue-btn'
+                        onClick={this.showRecommendCluePanel}>{Intl.get('clue.customer.recommend.clue.lists', '推荐线索')}</Button>
+                </div>
+            );
+        } else {
+            return null;
+        }
+    };
+    closeGuidDetailPanel = () => {
+        this.setState({isShowRecormendClue: false});
+    };
+
+    // 提取线索
+    renderExtractClue() {
+        if (!this.state.isShowRecormendClue) return null;
+        let detailContent = (
+            <RecommendClues
+                onClosePanel={this.closeGuidDetailPanel}
+                afterSuccess={this.refreshMyworkList}
+            />);
+        return (
+            <RightPanelModal
+                isShowMadal
+                isShowCloseBtn
+                onClosePanel={this.closeGuidDetailPanel}
+                content={detailContent}
+                dataTracename="推荐线索"
+            />
+        );
     }
 
     refreshMyworkList = () => {
@@ -726,6 +805,7 @@ class MyWorkColumn extends React.Component {
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom}
                     itemCssSelector=".my-work-content .detail-card-container">
+                    <BootProcess/>
                     {this.renderMyWorkList()}
                 </GeminiScrollbar>
                 {/*该客户下的用户列表*/}
@@ -752,8 +832,41 @@ class MyWorkColumn extends React.Component {
                         : null
                 }
                 {this.state.curOpenDetailWork ? this.renderWorkDetail() : null}
+                {/*添加日程*/}
+                {this.state.isShowAddToDo ? (
+                    <RightPanelModal
+                        className="todo-add-container"
+                        isShowMadal={true}
+                        isShowCloseBtn={true}
+                        onClosePanel={this.handleCancel}
+                        title={Intl.get('home.page.add.schedule', '添加日程')}
+                        content={this.renderCrmFormContent()}
+                        dataTracename='添加日程'/>) : null}
+                {this.renderExtractClue()}
             </div>);
     }
+    // 渲染添加日程界面
+    renderCrmFormContent() {
+        return (
+            <DetailCard className='add-todo' content={
+                <CrmScheduleForm
+                    isAddToDoClicked
+                    handleScheduleAdd={this.refreshMyworkList}
+                    handleScheduleCancel={this.handleCancel}
+                    currentSchedule={{}}/>
+            }>
+            </DetailCard>
+
+        );
+    }
+
+    //处理添加日程的关闭事件
+    handleCancel = (e) => {
+        e && e.preventDefault();
+        this.setState({
+            isShowAddToDo: false
+        });
+    };
 
     renderWorkDetail() {
         const work = this.state.curOpenDetailWork;

@@ -228,9 +228,16 @@ module.exports = {
                 'needLogin': true
             }
         },{
-            method: 'get',
+            method: 'post',
             path: '/rest/clue/extract/recommend/clue',
             handler: 'extractRecommendClue',
+            passport: {
+                'needLogin': true
+            }
+        },{
+            method: 'post',
+            path: '/rest/clue/batch/recommend/list',
+            handler: 'batchExtractRecommendLists',
             passport: {
                 'needLogin': true
             }

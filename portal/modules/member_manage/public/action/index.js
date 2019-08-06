@@ -19,13 +19,10 @@ class MemberManageAction {
             'updateMemberTeam', // 修改成员部门(所属团队)
             'updateMemberPosition', // 修改成员职务
             'updateMemberRoles', // 修改成员角色
-            'setPositionId' // 设置职务id
+            'setPositionId', // 设置职务id
+            'setInitialConditionData',
+            'setInitialData'
         );
-    }
-
-    setInitialData(cb) {
-        this.dispatch();
-        _.isFunction(cb) && cb();
     }
 
     // 获取成员列表

@@ -23,7 +23,7 @@ function getCharts() {
         //近一季度活跃客户周活趋势
         customerChart.getCustomerActiveTrendChart(Intl.get('common.recent.three.month.weekly.activity', '近三个月周活'), 'week'),
         //近一年活跃客户月活趋势
-        customerChart.getCustomerActiveTrendChart(Intl.get('common.recent.year.monthly.activity', '近一个年月活'), 'month'),
+        customerChart.getCustomerActiveTrendChart(Intl.get('common.recent.year.monthly.activity', '近一年月活'), 'month'),
         //有效客户活跃率统计
         customerChart.getCustomerEffectiveChart(),
         //成交活跃客户统计

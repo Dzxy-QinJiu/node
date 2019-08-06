@@ -9,20 +9,21 @@ class MemberFormActions {
             'resetNickNameFlags', // 重置昵称（对应的是姓名）验证的标志
             'resetEmailFlags', //重置邮箱验证的标志
             'setPositionListLoading',//正在获取职务列表
-            'setRoleListLoading', //正在获取角色列表
-            'setTeamListLoading' //是否正在获取销售团队列表的标志
+            'setTeamListLoading', //是否正在获取销售团队列表的标志
+            'setAddGroupForm', // 是否展示添加部门
+            'cancelAddGroup',// 取消添加部门的展示
         );
     }
 
     //获取团队列表
-    getUserTeamList() {
+    getUserTeamList(isReload) {
         getMyTeamTreeAndFlattenList(data => {
             if(data.errorMsg) {
                 this.dispatch(data.errorMsg || Intl.get('common.get.team.list.failed', '获取团队列表失败'));
             } else {
                 this.dispatch(data.teamList);
             }
-        });
+        }, isReload);
     }
 
     // 获取职务列表

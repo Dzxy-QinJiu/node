@@ -25,6 +25,7 @@ const PHONE_INPUT_ID = 'phoneInput';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {clueNameContactRule, customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const ADD_TITLE_HEIGHT = 70 + 24;//添加客户标题的高度+下边距marginBottom
 var CRMAddForm = createReactClass({
     displayName: 'CRMAddForm',
@@ -83,6 +84,8 @@ var CRMAddForm = createReactClass({
             isShowMadal: true,
             //是否是在线索转客户的过程中添加客户
             isConvert: true,
+            // 头部标题区域
+            title: Intl.get('crm.3', '添加客户')
         };
     },
     propTypes: {
@@ -93,6 +96,7 @@ var CRMAddForm = createReactClass({
         formData: PropTypes.object,
         isShowMadal: PropTypes.bool,
         isConvert: PropTypes.bool,
+        title: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
     },
 
     componentDidMount: function() {
@@ -481,7 +485,7 @@ var CRMAddForm = createReactClass({
                                         this.handleSelect(e);
                                     }}
                                     getPopupContainer={() => document.getElementById('crm-add-form')}
-
+                                    filterOption={(input, option) => ignoreCase(input, option)}
                                 >
                                     {industryOptions}
                                 </Select>
@@ -612,7 +616,7 @@ var CRMAddForm = createReactClass({
                 isShowMadal={this.props.isShowMadal}
                 isShowCloseBtn={true}
                 onClosePanel={this.closeAddPanel}
-                title= {Intl.get('crm.3', '添加客户')}
+                title= {this.props.title}
                 content={this.renderFormContent()}
                 dataTracename="添加客户"
             />

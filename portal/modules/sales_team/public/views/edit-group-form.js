@@ -17,6 +17,7 @@ var Icon = require('antd').Icon;
 var SalesTeamActions = require('../action/sales-team-actions');
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 
 function noop() {
 }
@@ -275,6 +276,7 @@ var SalesTeamForm = createReactClass({
                                             value={formData.superiorTeam}
                                             placeholder={Intl.get('sales.team.select.sub.group', '请选择上级团队')}
                                             showSearch
+                                            filterOption={(input, option) => ignoreCase(input, option)}
                                             optionFilterProp="children"
                                             notFoundContent={Intl.get('common.not.found', '无法找到')}
                                             searchPlaceholder={Intl.get('common.input.keyword', '输入关键词')}

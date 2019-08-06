@@ -113,6 +113,8 @@ exports.batchPushEmitter.CRM_BATCH_CHANGE_LEVEL = 'batchtask.crm_batch_change_le
 exports.batchPushEmitter.CLUE_BATCH_CHANGE_TRACE = 'batchtask.clue_user';
 // 线索池-批量提取线索
 exports.batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT = 'batchtask.lead_extract';
+//推荐线索-批量提取线索
+exports.batchPushEmitter.CLUE_BATCH_ENT_CLUE = 'batchtask.ent_clue';
 //socket的emitter
 exports.socketEmitter = new EventEmitter();
 //socket的emitter的disconnect
@@ -200,6 +202,7 @@ export { listPanelEmitter };
 //拨打电话的相关事件
 const phoneEmitter = new EventEmitter();
 phoneEmitter.CALL_CLIENT_INITED = 'call_client_inited';
+phoneEmitter.CALL_FINISHED = 'call_finished';
 export { phoneEmitter };
 
 //通话设备选择的相关事件

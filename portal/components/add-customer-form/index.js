@@ -19,6 +19,7 @@ var batchChangeAction = require('MOD_DIR/crm/public/action/batch-change-actions'
 require('./index.less');
 import PhoneInput from 'CMP_DIR/phone-input';
 import {AntcAreaSelection} from 'antc';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const userData = require('PUB_DIR/sources/user-data');
 const noop = function() {
 };
@@ -500,6 +501,7 @@ class AddCustomerForm extends React.Component {
                                                     searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
                                                     optionFilterProp="children"
                                                     notFoundContent={!industryList.length ? Intl.get('crm.24', '暂无行业') : Intl.get('crm.23', '无相关行业')}
+                                                    filterOption={(input, option) => ignoreCase(input, option)}
                                                 >
                                                     {industryOptions}
                                                 </Select>

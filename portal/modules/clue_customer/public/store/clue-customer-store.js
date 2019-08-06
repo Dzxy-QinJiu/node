@@ -9,7 +9,8 @@ import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import {
     SELECT_TYPE,
     getClueStatusValue,
-    deleteEmptyProperty
+    deleteEmptyProperty,
+    AVALIBILITYSTATUS
 } from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
@@ -146,21 +147,34 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
         });
         if (_.isArray(_.get(data, 'agg_list'))) {
             _.forEach(_.get(data, 'agg_list'), item => {
-                if (_.isArray(_.get(item, 'status'))) {
+                //如果是选中的无效的线索，前面的统计值不要改，因为选择了无效，统计的status是统计的无效状态下的各种status的数值
+                var filterClueAvaliability = clueFilterStore.getState().filterClueAvailability;
+                if (_.isArray(_.get(item, 'status')) && filterClueAvaliability === AVALIBILITYSTATUS.AVALIBILITY) {
                     var arr = _.get(item, 'status');
                     var willDistribute = _.find(arr, item => item.name === SELECT_TYPE.WILL_DISTRIBUTE);
                     var willTrace = _.find(arr, item => item.name === SELECT_TYPE.WILL_TRACE);
                     var hasTrace = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRACE);
                     var hasTransfer = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRANSFER);
-                    this.agg_list = {
+                    var statusStatics = {
                         'willDistribute': _.get(willDistribute, 'total',0),
                         'willTrace': _.get(willTrace, 'total',0),
                         'hasTrace': _.get(hasTrace, 'total',0),
                         'hasTransfer': _.get(hasTransfer, 'total',0),
                     };
+                    this.agg_list = _.assign({},this.agg_list, statusStatics);
+                }
+                if (_.isArray(_.get(item, 'availability'))) {
+                    var arr = _.get(item, 'availability');
+                    var invalidClue = _.find(arr, item => item.name === AVALIBILITYSTATUS.INAVALIBILITY);
+                    var availabilityObj = {
+                        'invalidClue': _.get(invalidClue, 'total',0),
+                    };
+                    this.agg_list = _.assign(this.agg_list, availabilityObj);
                 }
             });
-            this.allClueCount = this.agg_list['willDistribute'] + this.agg_list['willTrace'] + this.agg_list['hasTrace'] + this.agg_list['hasTransfer'];
+            for (var key in this.agg_list){
+                this.allClueCount += this.agg_list[key];
+            }
             //需要展示待我处理
             if(_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'yes'){
                 this.showFilterList = true;
@@ -177,6 +191,13 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
                     _.isFunction(_.get(clueData, 'callback')) && clueData.callback();
                 });
 
+            }else if (_.get(clueData,'clueCustomerObj.setting_avaliability')){
+                setTimeout(() => {
+                    //设置线索为无效
+                    // clueFilterAction.setFilterClueAvailbility();
+                    _.isFunction(_.get(clueData, 'callback')) && clueData.callback('avalibility');
+
+                });
             }else if (_.get(clueData,'clueCustomerObj.filterAllotNoTraced') === 'no'){
                 //不需要展示待我处理，需要隐藏筛选面板
                 this.showFilterList = false;
@@ -201,20 +222,13 @@ ClueCustomerStore.prototype.setLoadingFalse = function() {
     this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
     this.firstLogin = false;
 },
-ClueCustomerStore.prototype.filterExtractClue = function(clue) {
-    this.recommendClueLists = _.filter(this.recommendClueLists, item => item.id !== clue.id);
-    //看现在选中的是哪个状态的线索，如果是待分配的状态，需要把提取的这一条也加上去
-    var filterClueStatus = clueFilterStore.getState().filterClueStatus;
-    var typeFilter = getClueStatusValue(filterClueStatus);
-    if (typeFilter.status === SELECT_TYPE.WILL_DISTRIBUTE){
-        //统计数字上加一，线索列表中加上这个线索
-        this.agg_list['willDistribute'] += 1;
-        this.curClueLists.unshift(clue);
-    }
-},
 ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
     this.handleClueData(clueData);
 },
+ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
+    this.recommendClueLists = _.filter(this.recommendClueLists, item => item.id !== extractClues);
+
+};    
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
     this.handleClueData(clueData);
@@ -453,7 +467,9 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
     this.curClueLists = _.filter(this.curClueLists, clue => clueId !== clue.id);
     this.customersSize--;
     //删除线索后，更新线索的统计值
-    if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
+    if (data.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+        this.agg_list['invalidClue'] = this.agg_list['invalidClue'] - 1;
+    }else if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
         this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
     }else if (clueStatus === SELECT_TYPE.WILL_TRACE){
         this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
@@ -462,6 +478,9 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
     }else if (clueStatus === SELECT_TYPE.HAS_TRANSFER){
         this.agg_list['hasTransfer'] = this.agg_list['hasTransfer'] - 1;
     }
+};
+ClueCustomerStore.prototype.addInvalidClueNum = function() {
+    this.agg_list['invalidClue'] = this.agg_list['invalidClue'] + 1;
 };
 //转化客户成功后的处理
 ClueCustomerStore.prototype.afterTranferClueSuccess = function(data) {
