@@ -100,7 +100,7 @@ class EmailShowEditField extends React.Component {
                     <i className="inline-block iconfont icon-update"
                         title={Intl.get('common.update', '修改')}
                         onClick={(e) => this.setEmailEditable(e)}/> ) : null}
-                {curEmail ? (this.state.emailEnable ? <span>（
+                {curEmail ? (this.props.userInfo.emailEnable ? <span>（
                     <ReactIntl.FormattedMessage id="common.actived" defaultMessage="已激活"/>）</span> :
                     <span>
                         （<ReactIntl.FormattedMessage
