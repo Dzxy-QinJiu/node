@@ -84,7 +84,7 @@ var zh_CN = {
     'common.associate': '关联',
     'common.image.type.tip': '图片类型必须是gif,jpeg,jpg,png,bmp中的一种！',
     'common.image.upload': '上传',
-    'common.image.upload.size': '请上传小于10kb的图片',
+    'common.image.upload.size': '请上传小于100KB的图片',
     'common.edit': '编辑',
     //密码安全等级
     'common.password.low': '低',
@@ -129,7 +129,7 @@ var zh_CN = {
     'common.describe': '描述',
     'common.time.connector': '至', // " 至 -"
     'common.image.default': '图像',
-    'common.image.tip.size': '图片大小必须小于{size}kb!',
+    'common.image.tip.size': '图片大小必须小于{size}KB!',
     'common.input.character.prompt': '最少1个字符,最多50个字符',
     'common.input.character.rules': '最少1个字符,最多8个字符',
     'common.phone.email.tip': '电话、邮箱必填其中一项',
