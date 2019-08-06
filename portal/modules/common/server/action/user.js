@@ -15,3 +15,12 @@ exports.getUserById = function(req , res) {
         res.status(500).json(codeMessage && codeMessage.message || '获取成员信息失败');
     });
 };
+
+// 根据角色id，获取启用状态的下成员列表
+exports.getEnableMemberListByRoleId = (req, res) => {
+    userService.getEnableMemberListByRoleId(req, res).on('success', (data) => {
+        res.json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

@@ -66,13 +66,50 @@ exports.updateSalesProcess = (upDateProcessObj) => {
 exports.deleteSalesProcess = (id) => {
     let Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/delete/sales/process/' + id,
+        url: `/rest/delete/sales/process/${id}`,
         dataType: 'json',
         type: 'delete',
         success: (result) => {
             Deferred.resolve(result);
         }, error: (errorInfo) => {
             Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+// 根据销售流程id获取客户阶段
+exports.getCustomerStageBySaleProcessId = (id) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/get/sales/process/customer/stage/${id}`,
+        dataType: 'json',
+        type: 'get',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+// 添加客户阶段
+exports.addCustomerStage = (addCustomerStage) => {
+    let Deferred = $.Deferred();
+    addSalesProcessAjax = $.ajax({
+        url: '/rest/add/customer/stage',
+        dataType: 'json',
+        type: 'post',
+        data: addCustomerStage,
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
         }
     });
     return Deferred.promise();

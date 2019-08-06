@@ -11,6 +11,13 @@ import SalesProcessStore from './store';
 import SalesProcessAction from './action';
 import SalesProcessForm from './views/sales-process-form';
 import SalesProcessInfo from './views/sale-process-info';
+import CustomerStage from './views/customer-stage';
+import rightPanelUtil from 'CMP_DIR/rightPanel';
+const RightPanel = rightPanelUtil.RightPanel;
+import CONSTS from 'LIB_DIR/consts';
+
+const saleId = CONSTS.ROLE_ID_CONSTANS.SALE_ID;
+const pageSize = 1000;
 
 class SalesProcess extends React.Component {
     constructor(props) {
@@ -24,8 +31,21 @@ class SalesProcess extends React.Component {
         this.setState(SalesProcessStore.getState());
     };
 
+    // 获取销售角色的成员列表
+    getSalesRoleMemberList = () => {
+        let queryobj = {
+            status: 1, // 启用
+            with_extentions: true,
+            role_id: saleId,
+            page_size: pageSize
+        };
+        SalesProcessAction.getSalesRoleMemberList(queryobj);
+    };
+
     componentDidMount = () => {
         SalesProcessStore.listen(this.onChange);
+        this.getSalesRoleMemberList(); // 获取销售角色的成员列表
+        SalesProcessAction.getSalesTeamList(); // 获取销售团队
         //SalesProcessAction.getSalesProcess();
     };
 
@@ -99,9 +119,14 @@ class SalesProcess extends React.Component {
         );
     };
 
-    // 处理设置销售流程
-    setShowCustomerStage = (item) => {
-        SalesProcessAction.setShowCustomerStage(item);
+    // 显示客户阶段面板
+    showCustomerStagePanel = (item) => {
+        SalesProcessAction.showCustomerStagePanel(item);
+    };
+
+    // 关闭客户阶段面板
+    closeCustomerStagePanel = () => {
+        SalesProcessAction.closeCustomerStagePanel();
     };
 
     // 处理删除销售流程
@@ -161,7 +186,7 @@ class SalesProcess extends React.Component {
                                     </div>
                                     <div className="item-operator">
                                         <span
-                                            onClick={this.setShowCustomerStage.bind(this, item)}
+                                            onClick={this.showCustomerStagePanel.bind(this, item)}
                                             data-tracename={'点击设置' + item.name + '销售流程按钮'}
                                         >
                                             <i className="iconfont icon-role-auth-config"></i>
@@ -193,7 +218,9 @@ class SalesProcess extends React.Component {
     render = () => {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let containerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
-
+        const treeSelectData = _.concat(this.state.salesTeamTree, this.state.salesNoBelongToTeamList);
+        let containerWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
+            BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH + 24;
         return (
             <div
                 className="sales-process-container"
@@ -208,22 +235,47 @@ class SalesProcess extends React.Component {
                         {this.renderSalesProcess()}
                     </div>
                     {
+                        /**
+                         * isShowAddProcessFormPanel true 打开添加销售流程面板
+                         **/
                         this.state.isShowAddProcessFormPanel ? (
                             <SalesProcessForm
                                 closeAddProcessFormPanel={this.closeAddProcessFormPanel}
                                 submitSalesProcessForm={this.submitSalesProcessForm}
                                 handleConfirmChangeProcessStatus={this.handleConfirmChangeProcessStatus}
+                                treeSelectData={treeSelectData}
                             />
                         ) : null
                     }
                     {
+                        /**
+                         * isShowProcessInfoPanel true 打开销售流程详情面板
+                         **/
                         this.state.isShowProcessInfoPanel ? (
                             <SalesProcessInfo
                                 saleProcess={this.state.currentSaleProcess}
                                 closeProcessDetailPanel={this.closeProcessDetailPanel}
                                 changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
+                                treeSelectData={treeSelectData}
                             />
                         ) : null
+                    }
+                </div>
+                <div className="customer-stage-wrap" style={{width: containerWidth}}>
+                    {
+                        this.state.isShowCustomerStage ?
+                            <RightPanel
+                                className="customer-stage-panel"
+                                showFlag={this.state.isShowCustomerStage}
+                                style={{width: containerWidth}}
+                            >
+                                <CustomerStage
+                                    closeCustomerStagePanel={this.closeCustomerStagePanel}
+                                    salesProcessId={this.state.salesProcessId}
+                                    containerWidth={containerWidth}
+                                />
+                            </RightPanel>
+                            : null
                     }
                 </div>
             </div>

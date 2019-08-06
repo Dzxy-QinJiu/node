@@ -1,7 +1,10 @@
 /**
  * Created by hzl on 2019/8/1.
+ * 销售流程-action
  */
 import SalesProcessAjax from '../ajax';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
+import userAjax from 'MOD_DIR/common/public/ajax/user';
 
 class SalesProcessAction {
     constructor() {
@@ -12,9 +15,31 @@ class SalesProcessAction {
             'showProcessDetailPanel', // 显示销售流程详情面板
             'closeProcessDetailPanel', // 关闭销售流程详情面板
             'afterEditSaleProcessField', // 编辑销售流程字段
-            'setShowCustomerStage', // 设置显示客户阶段界面
+            'showCustomerStagePanel', // 显示客户阶段面板
+            'closeCustomerStagePanel' // 关闭客户界阶段面板
         );
     }
+    // 获取销售团队
+    getSalesTeamList() {
+        getMyTeamTreeList(data => {
+            if(data.errorMsg){
+                this.dispatch({ error: true, errorMsg: data.errorMsg});
+            }else{
+                this.dispatch({error: false, resData: data.teamTreeList});
+            }
+        });
+    }
+    // 获取销售角色的成员列表
+    getSalesRoleMemberList(queryObj) {
+        userAjax.getEnableMemberListByRoleId().sendRequest(queryObj).success((list) => {
+            if (list && list.data){
+                this.dispatch({error: false, resData: list.data});
+            }
+        }).error( (errMsg) => {
+            this.dispatch({error: true, errMsg: errMsg});
+        } );
+    }
+
     // 获取销售流程
     getSalesProcess() {
         this.dispatch({loading: true, error: false});

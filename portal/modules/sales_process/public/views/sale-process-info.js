@@ -79,7 +79,7 @@ class SalesProcessInfo extends React.Component {
                         value={saleProcess.name}
                         field='name'
                         type="text"
-                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        hasEditPrivilege={true || hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
                         placeholder={Intl.get('sales.process.name.placeholder', '请输入销售流程名称')}
                         saveEditInput={this.saveEditSaleProcess.bind(this, 'name')}
                     />
@@ -103,7 +103,7 @@ class SalesProcessInfo extends React.Component {
                         value={saleProcess.description}
                         field='description'
                         type="text"
-                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        hasEditPrivilege={true || hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
                         placeholder={Intl.get('sales.process.destrip.palceholder', '请输入销售流程的描述信息')}
                         saveEditInput={this.saveEditSaleProcess.bind(this, 'description')}
                     />

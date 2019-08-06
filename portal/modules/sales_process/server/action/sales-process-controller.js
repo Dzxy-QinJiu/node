@@ -40,3 +40,21 @@ exports.deleteSalesProcess = (req, res) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 根据销售流程id获取客户阶段
+exports.getCustomerStageBySaleProcessId = (req, res) => {
+    salesProcessService.getCustomerStageBySaleProcessId(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 添加客户阶段
+exports.addCustomerStage = (req, res) => {
+    salesProcessService.addCustomerStage(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

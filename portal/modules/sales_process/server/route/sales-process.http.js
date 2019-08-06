@@ -32,5 +32,19 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'get', // 根据销售流程id获取客户阶段
+        'path': '/rest/get/sales/process/customer/stage/:id',
+        'handler': 'getCustomerStageBySaleProcessId',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        'method': 'post', // 添加客户阶段
+        'path': '/rest/add/customer/stage',
+        'handler': 'addCustomerStage',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

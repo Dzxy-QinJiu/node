@@ -2,7 +2,7 @@
  * Created by hzl on 2019/8/5.
  * 销售流程的添加表单
  */
-import {Form, Input, Switch} from 'antd';
+import {Form, Input, Switch, TreeSelect} from 'antd';
 const FormItem = Form.Item;
 const {TextArea} = Input;
 import Trace from 'LIB_DIR/trace';
@@ -43,6 +43,7 @@ class SalesProcessForm extends React.Component {
         event.preventDefault();
         Trace.traceEvent(event, '保存销售流程的信息');
         this.props.form.validateFields((err, values) => {
+            // TODO 需要处理选择适用范围的数据
             if (err) return;
             let submitObj = {
                 name: _.trim(values.name),
@@ -122,7 +123,14 @@ class SalesProcessForm extends React.Component {
                     {...formItemLayout}
                     label={Intl.get('sales.process.suitable.objects', '适用范围')}
                 >
-
+                    {getFieldDecorator('scope', {
+                    })(
+                        <TreeSelect
+                            treeData={this.props.treeSelectData}
+                            treeCheckable={true}
+                            treeDefaultExpandAll={true}
+                        />
+                    )}
                 </FormItem>
                 <FormItem>
                     <SaveCancelButton
@@ -152,13 +160,16 @@ class SalesProcessForm extends React.Component {
 function noop() {
 }
 SalesProcessForm.defaultProps = {
+    form: {},
     submitSalesProcessForm: noop,
     closeAddProcessFormPanel: noop,
+    treeSelectData: [],
 };
 SalesProcessForm.propTypes = {
     form: PropTypes.object,
     closeAddProcessFormPanel: PropTypes.func,
     submitSalesProcessForm: PropTypes.func,
+    treeSelectData: PropTypes.array
 };
 
 export default Form.create()(SalesProcessForm);
