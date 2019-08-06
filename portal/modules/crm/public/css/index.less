@@ -195,11 +195,15 @@
         margin: 0 22px;
     }
     .search-input-wrapper {
-        margin-top: 18px;
+        margin-top: @filter_area_margin_top;
         margin-left: @container_padding;
         display: inline-block;
+        vertical-align: top;
         .collapsed.search-wrapper{
-            top: -18px;
+            top: 0;
+            .icon-container{
+               padding-top: 0;
+            }
         }
         .search-wrapper {
             margin-right: @btn-margin;

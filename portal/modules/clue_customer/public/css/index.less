@@ -21,14 +21,20 @@
       .search-input-wrapper {
         float: left;
         .search-wrapper.collapsed {
-          top: -4px;
+          top: 0;
         }
         .hide-filter-input{
           width: 0;
         }
         .search-wrapper {
-          top: -1px;
-          margin-right: 10px;
+          top:0;
+          margin-right: 12px;
+          .btn-item {
+            margin-right: 0 !important;
+          }
+          .icon-container {
+            padding-top: 0;
+          }
           .filter-contianer .show-zone ul.collapse {
             padding: 2px 0;
             margin-top: 0px;
@@ -44,7 +50,8 @@
         width: auto;
         float: left;
         .search-input {
-          font-size: @SEARCH-INPUT-PLACEHOLDER
+          font-size: @SEARCH-INPUT-PLACEHOLDER;
+          border: 1px solid #DEDFE2;
         }
       }
       //已选xx项的提示
