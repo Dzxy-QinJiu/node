@@ -834,7 +834,7 @@ var zh_CN = {
     'sales.process.status.edit.tip': '确定要{status}该销售流程？',
     'sales.process.add.customer.stage': '添加客户阶段',
     'sales.process.edit.customer.stage': '编辑客户阶段',
-    'sales.process.customer.stage.nodata.tips': '',
+    'sales.process.customer.stage.nodata.tips': '暂无客户阶段，请先添加',
     // 后台管理-销售流程end
 
     //应用管理start
