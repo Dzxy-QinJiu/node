@@ -19,6 +19,7 @@ function FilterStore() {
     this.teamList = [];
     this.ownerList = [];//有客户的负责人名称列表
     this.stageList = [];
+    this.systemTagList = []; //系统标签
     this.tagList = [];
     this.stageTagList = [];//阶段标签
     this.competitorList = [];//竞品列表
@@ -38,6 +39,7 @@ FilterStore.prototype.setInitialCondition = function() {
         industry: '',
         province: '',
         app_ids: [''],
+        immutable_labels: [''], //系统标签
         labels: [''],//标签的筛选
         customer_label: '',//阶段标签
         qualify_label: '',//合格标签（合格、曾经合格）
@@ -105,6 +107,10 @@ FilterStore.prototype.getSalesRoleList = function(data) {
     this.salesRoleList = salesRoleList;
 };
 
+FilterStore.prototype.getSystemTagList = function(list) {
+    this.systemTagList = list;
+};
+
 FilterStore.prototype.getTagList = function(list) {
     this.tagList = list;
 };
@@ -123,6 +129,10 @@ FilterStore.prototype.setTeam = function(value) {
 
 FilterStore.prototype.setStage = function(value) {
     this.condition.sales_opportunities[0].sale_stages = value;
+};
+
+FilterStore.prototype.setSystemTag = function(value) {
+    this.condition.immutable_labels = value;
 };
 
 FilterStore.prototype.setTag = function(value) {
@@ -261,6 +271,12 @@ const getFilterItemFromConditionItem = function(item) {
                 item = filterLevelArray.find(x => x.id === value);
                 if (item) {
                     nameObj.name = item.level;
+                }
+                break;
+            case 'immutable_labels' :
+                item = this.systemTagList.find(x => x.name === value);
+                if (item) {
+                    nameObj.name = item.show_name;
                 }
                 break;
             case 'labels':

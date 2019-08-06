@@ -38,6 +38,8 @@ var crmRestApis = {
     getStageTagList: '/rest/customer/v2/customer/customer_label/:type/50/1',
     //获取竞品列表
     getCompetitorList: '/rest/customer/v3/customer/term/:type/field/competing_products',
+    //获取系统标签列表
+    getSystemLabelsList: '/rest/customer/v3/customer/term/:type/field/immutable_labels',
     //type:manager(管理员调用)，type:user(非管理员调用)
     getFilterProvinces: '/rest/customer/v3/customer/term/:type/field/province',
     // 查询客户精确匹配（通话记录中查询客户详情）
@@ -189,6 +191,15 @@ exports.getCompetitorList = function(req, res) {
         }, null);
 };
 
+//获取系统标签列表
+exports.getSystemLabelsList = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: crmRestApis.getSystemLabelsList.replace(':type', req.params.type),
+            req: req,
+            res: res
+        }, null);
+};
 //获取筛选面板的负责人列表
 exports.getOwnerList = function(req, res) {
     return restUtil.authRest.get(

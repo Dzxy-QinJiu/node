@@ -1381,6 +1381,7 @@ var zh_CN = {
     'crm.administrative.level.placeholder': '请选择行政级别',
     'crm.address.placeholder': '请选择地域',
     'crm.detail.address.placeholder': '请输入详细地址',
+    'crm.system.labels': '系统标签',
     'crm.sales.clue.add': '添加销售线索',
     'crm.sales.add.clue': '添加线索',
     'crm.sales.clue.source': '线索来源',
