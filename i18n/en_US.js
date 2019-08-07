@@ -1540,6 +1540,8 @@ var en_US = {
     'crm.select.second.sales': 'Please seletct second sales',//请选择联合跟进人
     'crm.no.second.sales': 'No second sales',//暂无联合跟进人
     'crm.set.second.sales': 'Set second sales',//设置联合跟进人
+    'crm.second.sale.delete': '{user} will be deleted after save', //保存后，联合跟进人{user}将删除
+    'crm.already.sale.error': '{user} has already been sales, cannot set to second sales',//{user}已是负责人，不能再设置联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放

@@ -124,6 +124,7 @@ let BasicEditSelectField = createReactClass({
         } else {
             this.setState({
                 selectOptions: nextProps.selectOptions,
+                displayText: nextProps.displayText,
             });
         }
     },

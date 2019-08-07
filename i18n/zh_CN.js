@@ -1558,6 +1558,8 @@ var zh_CN = {
     'crm.select.second.sales': '请选择联合跟进人',
     'crm.no.second.sales': '暂无联合跟进人',
     'crm.set.second.sales': '设置联合跟进人',
+    'crm.second.sale.delete': '保存后，联合跟进人中{user}将被删除',
+    'crm.already.sale.error': '{user}已是负责人，不能再设置为联合跟进人',
     'crm.apply.active.email.tip': '您的邮箱未激活，请先{aciveEmail}',
     'crm.this.week.contact': '本周联系过的客户',
     'crm.record.unupload.phone': '未上传通话录音，无法播放',
