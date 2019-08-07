@@ -103,17 +103,7 @@ class ClueFilterPanel extends React.Component {
                     });
                     FilterAction.setFilterClueProvince(provinceList);
                 }else if (item.groupId === COMMON_OTHER_ITEM){
-                    //如果是筛选没有关联客户的线索
-                    //如果是筛选重复线索
-                    if (item.value === 'repeat_id'){
-                        FilterAction.setExistedFiled('repeat_id');
-                        FilterAction.setUnexistedFiled();
-                        FilterAction.setFilterClueAllotNoTrace();
-                    }else if (item.value === 'customer_id'){
-                        FilterAction.setExistedFiled();
-                        FilterAction.setUnexistedFiled('customer_id');
-                        FilterAction.setFilterClueAllotNoTrace();
-                    }else if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
+                    if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
                         //如果筛选的是待我处理的线索
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
