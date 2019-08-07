@@ -54,6 +54,11 @@ class CustomerStageStore {
                 name: '222核心客户信息',
                 description: '22fdfdfddddddd',
                 stage_id: 'ad'
+            },{
+                id: 's2',
+                name: '333核心客户信息',
+                description: '3322fdfdfddddddd',
+                stage_id: 'ad1'
             }]
         }];
         this.loading = true;
@@ -81,6 +86,10 @@ class CustomerStageStore {
                 this.customerStageList = result.resData;
             }
         }
+    }
+    // 展开收起客户阶段详情（剧本、销售行为）
+    toggleCustomerStageDetail(customerStage) {
+        customerStage.isShowMore = !customerStage.isShowMore;
     }
     // 显示客户阶段表单
     showCustomerStageForm(customerStage) {

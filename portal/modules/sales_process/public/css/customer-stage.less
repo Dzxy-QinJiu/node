@@ -94,7 +94,7 @@
               border: 1px solid #edf1f2;
               margin-left: 44px;
               top: -24px;
-              height: 80px;
+              min-height: 80px;
               &:hover {
                 background: #F1F8FE;
               }
@@ -109,12 +109,27 @@
                   padding-bottom: 5px;
                   color: #333;
                   &:extend(.overhidden-public);
+                  .iconfont {
+                    margin-left: 16px;
+                  }
                 }
 
                 .customer-stage-content-describe {
                   color: #999;
                   font-size: 14px;
                   &:extend(.overhidden-public);
+                }
+                .customer-stage-content-more {
+                  padding-bottom: 5px;
+                  color: #333;
+                  font-size: 14px;
+                  &:extend(.overhidden-public);
+                  .customer-stage-content-paly {
+                    padding: 5px 0;
+                  }
+                  .customer-stage-content-activity {
+                    padding-bottom: 5px;
+                  }
                 }
               }
 

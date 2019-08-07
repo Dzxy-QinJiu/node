@@ -17,6 +17,8 @@ import CustomerStageForm from './customer-stage-form';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import ModalDialog from 'CMP_DIR/ModalDialog';
+import classNames from 'classnames';
+
 class CustomerStage extends React.Component {
     constructor(props) {
         super(props);
@@ -241,6 +243,11 @@ class CustomerStage extends React.Component {
         );
     };
 
+    // 展开收起客户阶段详情（剧本、销售行为）
+    toggleCustomerStageDetail = (item) => {
+        CustomerStageAction.toggleCustomerStageDetail(item);
+    };
+
     render() {
         let customerStageList = this.state.customerStageList;
         let length = _.get(customerStageList, 'length');
@@ -282,6 +289,14 @@ class CustomerStage extends React.Component {
                                 <ul className="customer-stage-timeline">
                                     {
                                         _.map(customerStageList, (item, idx) => {
+                                            let saleActivity = _.get(item, 'sales_activities');
+                                            let activity = saleActivity.length ? _.map(saleActivity, 'name') : [];
+                                            let twoLineClass = classNames('iconfont', {
+                                                'icon-down-twoline': !item.isShowMore,
+                                                'icon-up-twoline': item.isShowMore
+                                            });
+                                            let twoLineTitle = item.isShowMore ? Intl.get('crm.basic.detail.hide', '收起详情') :
+                                                Intl.get('crm.basic.detail.show', '展开详情');
                                             return (
                                                 <li className="customer-stage-timeline-item" key={idx}>
                                                     <div className="customer-stage-timeline-item-tail"></div>
@@ -298,8 +313,29 @@ class CustomerStage extends React.Component {
                                                             className="customer-stage-content"
                                                             style={{width: customerStageContainerWidth - 160}}
                                                         >
-                                                            <div className="customer-stage-content-name">{item.name}</div>
+                                                            <div className="customer-stage-content-name">
+                                                                <span>{item.name}</span>
+                                                                <span
+                                                                    className={twoLineClass}
+                                                                    title={twoLineTitle}
+                                                                    onClick={this.toggleCustomerStageDetail.bind(this, item)}
+                                                                />
+                                                            </div>
                                                             <div className="customer-stage-content-describe">{item.description}</div>
+                                                            {
+                                                                item.isShowMore ? (
+                                                                    <div className="customer-stage-content-more">
+                                                                        <div className="customer-stage-content-paly">
+                                                                            <span>{Intl.get('sales.process.customer.stage.play', '剧本')}:</span>
+                                                                            <span>{item.play_books}</span>
+                                                                        </div>
+                                                                        <div className="customer-stage-content-activity">
+                                                                            <span>{Intl.get('sales.process.customer.stage.activity', '销售行为')}:</span>
+                                                                            <span>{activity.join('、')}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                ) : null
+                                                            }
                                                         </div>
                                                         {
                                                             this.state.customerStageEditOrder ?
