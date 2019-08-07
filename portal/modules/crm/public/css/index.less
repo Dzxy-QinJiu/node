@@ -131,6 +131,9 @@
         width: 280px;
         .search-input-container {
             display: inline-block;
+            .ant-select-selection{
+                border: 1px solid #DEDFE2;
+            }
         }
         .ant-btn {
             .filter_btn;
@@ -195,12 +198,10 @@
         margin: 0 22px;
     }
     .search-input-wrapper {
-        margin-top: 18px;
+        margin-top: @filter_area_margin_top;
         margin-left: @container_padding;
         display: inline-block;
-        .collapsed.search-wrapper{
-            top: -18px;
-        }
+        vertical-align: top;
         .search-wrapper {
             margin-right: @btn-margin;
             .btn-item {
