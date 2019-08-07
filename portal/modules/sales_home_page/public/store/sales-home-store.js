@@ -62,18 +62,6 @@ SalesHomeStore.prototype.setInitState = function() {
     this.setWebConfigStatus = '';//设置个人配置的状态
     this.setWebConfigClientStatus = '';//设置个人配置的坐席号状态
     this.salesCallStatus = {};//各销售对应的状态
-    // 获取通话总次数TOP10的数据
-    this.callTotalCountObj = {
-        loading: false,
-        data: [],
-        errMsg: ''
-    };
-    // 获取通话总时长TOP10的数据
-    this.callTotalTimeObj = {
-        loading: false,
-        data: [],
-        errMsg: ''
-    };
     //统计团队内成员个数的列表
     this.teamMemberCountList = [];
     this.emailShowObj = {
@@ -109,38 +97,6 @@ SalesHomeStore.prototype.resetCallBackRecord = function() {
         sortOrder: 'descend'
     };
 };
-// 获取通话总次数、总时长TOP10的数据
-SalesHomeStore.prototype.getCallTotalList = function(dataObj) {
-    let callTotalCountObj = this.callTotalCountObj;
-    let callTotalTimeObj = this.callTotalTimeObj;
-    callTotalCountObj.loading = dataObj.loading;
-    callTotalTimeObj.loading = dataObj.loading;
-    if (dataObj.error) {
-        callTotalCountObj.errMsg = dataObj.errMsg || Intl.get('call.analysis.total.count.failed', '获取通话总次数TOP10失败');
-        callTotalTimeObj.errMsg = dataObj.errMsg || Intl.get('call.analysis.total.time.failed', '获取通话总时长TOP10失败');
-    } else {
-        callTotalCountObj.errMsg = '';
-        callTotalTimeObj.errMsg = '';
-        if (dataObj.resData) {
-            let data = dataObj.resData.list;
-            if (_.isObject(data)) {
-                //总时长
-                if (_.isArray(data.sum) && data.sum.length) {
-                    callTotalTimeObj.data = data.sum;
-                } else {
-                    callTotalTimeObj.data = [];
-                }
-                //总次数
-                if (_.isArray(data.count) && data.count.length) {
-                    callTotalCountObj.data = data.count;
-                } else {
-                    callTotalCountObj.data = [];
-                }
-            }
-        }
-    }
-};
-
 
 //销售团队列表对象数据
 SalesHomeStore.prototype.resetSalesTeamListObj = function() {

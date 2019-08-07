@@ -48,16 +48,6 @@ function SalesHomeActions() {
         }
         );
     };
-    //获取通话时长、次数TOP10
-    this.getCallTotalList = function(reqData, reqBody) {
-        this.dispatch({loading: true, error: false});
-        salesHomeAjax.getCallTotalList(reqData, reqBody).then((resData) => {
-            this.dispatch({loading: false, error: false, resData: resData});
-        }, (errMsg) => {
-            this.dispatch({loading: false, error: true, errMsg: errMsg});
-        }
-        );
-    };
     //获取销售团队列表
     this.getSalesTeamList = function(type) {
         this.dispatch({loading: true, error: false});
