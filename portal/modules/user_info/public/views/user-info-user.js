@@ -11,6 +11,8 @@ var Alert = require('antd').Alert;
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Spinner = require('../../../../components/spinner');
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
+import BasicEditField from 'CMP_DIR/basic-edit-field-new/input';
+import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
@@ -48,6 +50,7 @@ class UserInfo extends React.Component{
             lang: Oplate.lang || 'zh_CN',
             isBindWechat: true,//是否绑定微信
             isLoadingWechatBind: false,//是否正在绑定微信
+            isEmailEdit: 'edit', //'text'/'edit'
             //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
             weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : ''//微信账号绑定的错误提示
         };
@@ -168,9 +171,62 @@ class UserInfo extends React.Component{
             return '';
         }
     }
+
+    //激活邮箱
+    activeUserEmail() {
+        if (this.state.emailEnable) {
+            return;
+        }
+        UserInfoAction.activeUserEmail((resultObj) => {
+            if (resultObj.error) {
+                message.error(resultObj.errorMsg);
+            } else {
+                message.success(
+                    Intl.get('user.info.active.email', '激活邮件已发送至{email},请前往激活',{'email': _.get(this.props.userInfo, 'email')})
+                );
+            }
+        });
+    }
+
+    //保存邮箱操作
+    saveEmailEditInput = (saveObj, successFunc, errorFunc) => {
+        let email = _.get(saveObj, 'email');
+        console.log(email);
+    }
+
+    //设置邮箱编辑状态
+    setEmailEditable = () => {
+        this.setState({
+            isEmailEdit: 'edit'
+        });
+    }
+
     renderUserInfo() {
         var _this = this;
         var formData = this.state.formData;
+        let emailInfo = formData.email ? formData.email :
+            <span>
+                <ReactIntl.FormattedMessage
+                    id="user.info.no.email"
+                    defaultMessage={'您还没有绑定邮箱，{add-email}'}
+                    values={{'add-email':
+                         <a
+                             data-tracename="点击绑定邮箱"
+                             onClick={(e) => this.setEmailEditable(e)}>
+                             {Intl.get('user.info.binding.email','绑定邮箱')}
+                         </a>,
+                    }}/>
+            </span>;
+        let isEnable = formData.email ? (formData.emailEnable ? (<span>{Intl.get('common.actived', '已激活')}</span>) :
+            (<ReactIntl.FormattedMessage
+                id="user.info.no.active"
+                defaultMessage={'未激活，请{active}'}
+                values={{
+                    'active': <a onClick={this.activeUserEmail.bind(this)} data-tracename="激活">
+                        <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
+                    </a>
+                }}/>)) : null;
+        let isEditable = formData.email ? true : false;
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo.bind(this)}
                 style={{marginLeft: '20px', marginTop: '20px'}}>
@@ -200,6 +256,22 @@ class UserInfo extends React.Component{
                             {Intl.get('common.email', '邮箱')}
                             ：</span>
                         <EmailShowEditField userInfo = {this.state.formData}/>
+                        <BasicEditField
+                            id={formData.id}
+                            displayType={this.state.isEmailEdit}
+                            field="email"
+                            value={emailInfo}
+                            displayText={formData.email}
+                            hasEditPrivilege={isEditable}
+                            hoverShowEdit={false}
+                            validators={{rules: [{
+                                required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
+                            },{
+                                type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                            }]}}
+                            afterTextTip={isEnable}
+                            saveEditInput={this.saveEmailEditInput}
+                        />
                     </div>
                     <div className="user-info-item">
                         <span>
@@ -306,6 +378,21 @@ class UserInfo extends React.Component{
             }
         });
     }
+
+    //保存昵称操作
+    saveNicknameEditInput = (saveObj, successFunc, errorFunc) => {
+        let nickname = _.get(saveObj, 'nickname');
+        let userInfo = _.extend(this.props.userInfo, {nickName: nickname});
+        delete userInfo.phone;
+        UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
+            if(_.isEmpty(errorMsg)){
+                successFunc();
+            } else {
+                errorFunc(errorMsg);
+            }
+        });
+    }
+
     render() {
         const {getFieldDecorator} = this.props.form;
         var _this = this;
@@ -323,6 +410,16 @@ class UserInfo extends React.Component{
                             isUserHeadIcon={true}/>
                         <div className="user-info-nickname">
                             <NicknameShowEditField userInfo={this.state.formData}/>
+                            <BasicEditField
+                                id={formData.id}
+                                field="nickname"
+                                value={formData.nickName}
+                                displayText={formData.nickName}
+                                hasEditPrivilege={true}
+                                hoverShowEdit={false}
+                                validators={[nameLengthRule]}
+                                saveEditInput={this.saveNicknameEditInput}
+                            />
                         </div>
                     </div>
                 </div>
