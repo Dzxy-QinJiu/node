@@ -23,6 +23,7 @@ import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-ac
 import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import { hasCalloutPrivilege } from 'PUB_DIR/sources/utils/common-method-util';
 import {storageUtil} from 'ant-utils';
+import {BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
 
 /**
  *  引导流程键值对，以及对应的角色
@@ -36,7 +37,7 @@ const BOOT_PROCESS_KEYS_MAP = {
     // 拨号
     dial: {
         index: 0,
-        key: 'dial',
+        key: BOOT_PROCESS_KEYS.DIAL,
         unfinishedText: {
             title: Intl.get('guide.dial.welcome.tip', '欢迎{name}，免费送您60分钟通话时长',{name: _.get(userData.getUserData(), 'nick_name', '###')}),
             /* eslint-disable */
@@ -53,7 +54,7 @@ const BOOT_PROCESS_KEYS_MAP = {
     // 完成组织结构
     perfact_organization: {
         index: 1,
-        key: 'perfact_organization',
+        key: BOOT_PROCESS_KEYS.PERFACT_ORGANIZATION,
         unfinishedText: {
             title: Intl.get('guide.add.organization.title', '完善您的组织架构'),
             description: Intl.get('guide.add.organization.des', '完善组织架构后,有利于您顺畅的使用其他功能')
@@ -62,11 +63,13 @@ const BOOT_PROCESS_KEYS_MAP = {
             title: Intl.get('guide.add.member.finished', '添加成员已完成'),
             /* eslint-disable */
             description: (
-                <span>
-                    <span>{Intl.get('guide.finished.can', '可以去')}</span>
-                    <Link to="/background_management/member">{Intl.get('menu.user', '成员管理')}</Link>
-                    <span>{Intl.get('guide.finished.see', '查看')}</span>
-                </span>
+                <ReactIntl.FormattedMessage
+                    id="guide.finished.can.see"
+                    defaultMessage={'可以去{page}界面查看'}
+                    values={{
+                        'page': <Link to="/background_management/member">{Intl.get('menu.user', '成员管理')}</Link>
+                    }}
+                />
             ),
         },
 
@@ -77,7 +80,7 @@ const BOOT_PROCESS_KEYS_MAP = {
     // 添加客户
     add_customer: {
         index: 2,
-        key: 'add_customer',
+        key: BOOT_PROCESS_KEYS.ADD_CUSTOMER,
         unfinishedText: {
             title: Intl.get('guide.add.customer.title', '添加您的客户'),
             description: Intl.get('guide.add.customer.des', '添加客户后，可以轻松跟进您的客户')
@@ -86,11 +89,13 @@ const BOOT_PROCESS_KEYS_MAP = {
             title: Intl.get('guide.add.customer.finished', '添加客户已完成'),
             /* eslint-disable */
             description: (
-                <span>
-                    <span>{Intl.get('guide.finished.can', '可以去')}</span>
-                    <Link to="/crm">{Intl.get('sales.home.customer', '客户')}</Link>
-                    <span>{Intl.get('guide.finished.page.see', '界面查看')}</span>
-                </span>
+                <ReactIntl.FormattedMessage
+                    id="guide.finished.can.see"
+                    defaultMessage={'可以去{page}界面查看'}
+                    values={{
+                        'page': <Link to="/crm">{Intl.get('sales.home.customer', '客户')}</Link>
+                    }}
+                />
             ),
         },
         icon: 'icon-add-customer',
@@ -100,7 +105,7 @@ const BOOT_PROCESS_KEYS_MAP = {
     // 提取线索
     extract_clue: {
         index: 3,
-        key: 'extract_clue',
+        key: BOOT_PROCESS_KEYS.EXTRACT_CLUE,
         unfinishedText: {
             title: Intl.get('guide.extract.clue.title', '提取您感兴趣的线索'),
             description: Intl.get('guide.extract.clue.des', '系统会根据您的兴趣，推荐给您线索')
@@ -109,11 +114,13 @@ const BOOT_PROCESS_KEYS_MAP = {
             title: Intl.get('guide.recommend.clue.finished', '推荐线索已提取'),
             /* eslint-disable */
             description: (
-                <span>
-                    <span>{Intl.get('guide.finished.can', '可以去')}</span>
-                    <Link to="/clue_customer">{Intl.get('crm.sales.clue', '线索')}</Link>
-                    <span>{Intl.get('guide.finished.page.see', '界面查看')}</span>
-                </span>
+                <ReactIntl.FormattedMessage
+                    id="guide.finished.can.see"
+                    defaultMessage={'可以去{page}界面查看'}
+                    values={{
+                        'page': <Link to="/clue_customer">{Intl.get('crm.sales.clue', '线索')}</Link>
+                    }}
+                />
             ),
         },
         icon: 'icon-clue_customer-ico',
@@ -134,17 +141,12 @@ const MEMBER_ADD_TYPES = {
     FINISHED: 'finished', //完成
 };
 
-const CLUE_EXTRACT_TYPES = {
-    EXTRACT: 'extract', //提取
-    FINISHED: 'finished'
-};
-
 class BootProcess extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
-            guideConfig: [],
+            guideConfig: this.dealGuideConfig(props.guideConfig),
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
             ...this.getInitialState()
         };
@@ -155,12 +157,26 @@ class BootProcess extends React.Component {
             curGuideItem: null, // 当前点击的引导流程项
             curCustomerAddType: CUSTOMER_ADD_TYPES.ADD, // 当前添加客户的方式
             curMemberAddType: MEMBER_ADD_TYPES.ADD, // 当前添加成员的方式
-            curClueExtractType: CLUE_EXTRACT_TYPES.EXTRACT, //当前提取线索的方式
         };
     }
 
+    // 处理引导列表数据
+    dealGuideConfig(data) {
+        // 处理数据
+        return _.chain(data)
+            .map(item => {
+                let guide = BOOT_PROCESS_KEYS_MAP[item.content];
+
+                if(guide) {
+                    return _.extend(_.cloneDeep(guide), {finished: item.finished});
+                }
+            })
+            .sortBy('index')
+            .value();
+    }
+
     componentDidMount() {
-        this.getGuideConfig();
+        // this.getGuideConfig();
         let isShowDialUpKeyboard = storageUtil.session.get('isShowDialUpKeyboard');
         this.setState({
             isShowDialUpKeyboard
@@ -220,7 +236,16 @@ class BootProcess extends React.Component {
                     curGuideItem.finished = true;
                 }
             });
-            this.setState({guideConfig});
+            this.setState({guideConfig}, () => {
+                // 需要更新userData中的数据
+                let guideConfig = _.map(this.props.guideConfig,guide => {
+                    if(guide.content === curGuideItem.key) {
+                        guide.finished = true;
+                    }
+                    return guide;
+                });
+                userData.setUserData('guideConfig', guideConfig);
+            });
             _.isFunction(cb) && cb(curGuideItem);
         }, (errorMsg) => {
             _.isFunction(cb) && cb(curGuideItem);
@@ -244,6 +269,7 @@ class BootProcess extends React.Component {
         GuideAjax.closeGuideMark({
             step: item.key
         }).then((data) => {
+            _.isFunction(this.props.closeGuideMark) && this.props.closeGuideMark(item.key);
             let guideConfig = _.filter(this.state.guideConfig, guide => item.key !== guide.key);
             this.setState({guideConfig});
         }, (errorMsg) => {
@@ -322,8 +348,7 @@ class BootProcess extends React.Component {
         let clueGuide = _.find(this.state.guideConfig, guide => guide.key === BOOT_PROCESS_KEYS_MAP.extract_clue.key);
         this.setGuideMark((curGuideItem) => {
             this.setState({
-                curGuideItem,
-                curClueExtractType: CLUE_EXTRACT_TYPES.FINISHED
+                curGuideItem
             });
         }, clueGuide);
     };
@@ -409,8 +434,11 @@ class BootProcess extends React.Component {
             if (_.get(this.state.guideConfig,'[0]')) {
                 _.each(this.state.guideConfig, (item, index) => {
                     if(item.key === BOOT_PROCESS_KEYS_MAP.dial.key) {
-                        //TODO 是否已有专属号码，有就不显示，没有显示
-                        guideList.push(this.renderGuideCard(item, index));
+                        //TODO 是否已有专属号码，有就不显示，没有显示(default)
+                        let isDefault = !_.get(userData.getUserData(), 'hasExcluesiveNumber', false);
+                        if(isDefault) {
+                            guideList.push(this.renderGuideCard(item, index));
+                        }
                     }else {
                         guideList.push(this.renderGuideCard(item, index));
                     }
@@ -428,7 +456,7 @@ class BootProcess extends React.Component {
               <p>{finishedObj.text}</p>
               <div className="btn-wrapper">
                   <Button type="primary" onClick={finishedObj.continueFn}>{finishedObj.continueText || Intl.get('guide.continue.add', '继续添加')}</Button>
-                  <Button onClick={finishedObj.goFn}>{finishedObj.goText || Intl.get()}</Button>
+                  <Button onClick={finishedObj.goFn}>{finishedObj.goText || Intl.get('user.apply.check', '查看')}</Button>
               </div>
           </div>
         );
@@ -560,42 +588,17 @@ class BootProcess extends React.Component {
 
     // 提取线索
     renderExtractClue() {
-        let {curClueExtractType} = this.state;
-        let detailContent = null;
-        switch (curClueExtractType) {
-            case CLUE_EXTRACT_TYPES.EXTRACT:
-                detailContent = (
-                    <RecommendClues
-                        onClosePanel={this.closeGuidDetailPanel}
-                        afterSuccess={this.extractClueFinished}
-                    />
-                );
-                break;
-            case CLUE_EXTRACT_TYPES.FINISHED:
-                detailContent = this.renderFinishedBlock({
-                    text: Intl.get('clue.extract.success', '提取成功'),
-                    continueText: Intl.get('guide.continue.extract', '继续提取'),
-                    goText: Intl.get('guide.see.clue', '查看线索'),
-                    // 继续提取函数
-                    continueFn: () => {
-                        this.setState({
-                            curClueExtractType: CLUE_EXTRACT_TYPES.EXTRACT
-                        });
-                    },
-                    // 查看线索
-                    goFn: () => {
-                        history.push('/clue_customer');
-                    }
-                });
-                break;
-        }
-
         return (
             <RightPanelModal
                 isShowMadal
                 isShowCloseBtn
                 onClosePanel={this.closeGuidDetailPanel}
-                content={detailContent}
+                content={(
+                    <RecommendClues
+                        onClosePanel={this.closeGuidDetailPanel}
+                        afterSuccess={this.extractClueFinished}
+                    />
+                )}
                 dataTracename="引导流程"
             />
         );
@@ -658,4 +661,12 @@ class BootProcess extends React.Component {
     }
 }
 
+BootProcess.defaultProps = {
+    guideConfig: [],
+    closeGuideMark: function() {}
+};
+BootProcess.propTypes = {
+    guideConfig: PropTypes.array,
+    closeGuideMark: PropTypes.func
+};
 export default BootProcess;

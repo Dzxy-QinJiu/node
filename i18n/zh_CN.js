@@ -3244,6 +3244,7 @@ var zh_CN = {
     'guide.finished.can': '可以去',
     'guide.finished.see': '查看',
     'guide.finished.page.see': '界面查看',
+    'guide.finished.can.see': '可以去{page}界面查看',
     'guide.add.member.finished': '添加成员已完成',
     'guide.add.customer.finished': '添加客户已完成',
     'guide.recommend.clue.finished': '推荐线索已提取',

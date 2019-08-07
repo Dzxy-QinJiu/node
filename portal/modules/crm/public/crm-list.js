@@ -41,11 +41,12 @@ import CrmOverviewActions from './action/basic-overview-actions';
 var userData = require('PUB_DIR/sources/user-data');
 const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
-import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
+import { OTHER_FILTER_ITEMS, DAY_TIME, BOOT_PROCESS_KEYS } from 'PUB_DIR/sources/utils/consts';
 import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -514,6 +515,7 @@ class Crm extends React.Component {
     };
 
     addOne = (customer) => {
+        this.upDateGuideMark();
         this.state.isAddFlag = false;
         this.state.isScrollTop = true;
         this.setState(this.state);
@@ -946,6 +948,11 @@ class Crm extends React.Component {
         this.setState({ isScrollTop: false });
     };
 
+    // 更新引导流程
+    upDateGuideMark() {
+        updateGuideMark(BOOT_PROCESS_KEYS.ADD_CUSTOMER);
+    }
+
     showMergePanel = () => {
         if (_.isArray(this.state.selectedCustomer) && this.state.selectedCustomer.length > 1) {
             this.setState({ mergePanelIsShow: true });
@@ -1064,6 +1071,8 @@ class Crm extends React.Component {
         ajax(arg).then(result => {
             //刷新客户列表
             this.search();
+            // 更新引导流程
+            this.upDateGuideMark();
             _.isFunction(successCallback) && successCallback();
         }, (errorMsg) => {
             _.isFunction(errCallback) && errCallback(errorMsg);

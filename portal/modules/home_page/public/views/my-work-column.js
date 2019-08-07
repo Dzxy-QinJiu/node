@@ -34,6 +34,7 @@ import BootProcess from './boot-process/';
 import {getTimeStrFromNow, getFutureTimeStr} from 'PUB_DIR/sources/utils/time-format-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import RecommendClues from './boot-process/recommend_clues';
+import userData from 'PUB_DIR/sources/user-data';
 
 //工作类型
 const WORK_TYPES = {
@@ -87,10 +88,12 @@ class MyWorkColumn extends React.Component {
             isShowRefreshTip: false,//是否展示刷新数据的提示
             isShowAddToDo: false,//是否展示添加日程面板
             isShowRecormendClue: false,//是否展示推荐线索的面板
+            guideConfig: [], // 引导流程列表
         };
     }
 
     componentDidMount() {
+        this.getGuideConfig();
         this.getMyWorkTypes();
         this.getMyWorkList();
         //关闭详情前，已完成工作处理的监听
@@ -146,6 +149,11 @@ class MyWorkColumn extends React.Component {
             handlingWork.isFinished = true;
             this.setState({handlingWork});
         }
+    }
+
+    getGuideConfig() {
+        let guideConfig = _.get(userData.getUserData(), 'guideConfig', []);
+        this.setState({guideConfig});
     }
 
     getMyWorkTypes() {
@@ -725,15 +733,18 @@ class MyWorkColumn extends React.Component {
                         />
                     </div>);
             }
-            //没数据时的渲染
+            //没数据时的渲染,
             if (_.isEmpty(this.state.myWorkList)) {
-                workList.push(
-                    <NoDataIntro
-                        noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
-                        renderAddAndImportBtns={this.renderAddAndImportBtns}
-                        showAddBtn={true}
-                        noDataTip={Intl.get('home.page.no.work.tip', '暂无工作')}
-                    />);
+                //需判断是否还有引导流程,没有时才显示无数据
+                if(_.isEmpty(this.state.guideConfig)) {
+                    workList.push(
+                        <NoDataIntro
+                            noDataAndAddBtnTip={Intl.get('home.page.no.work.tip', '暂无工作')}
+                            renderAddAndImportBtns={this.renderAddAndImportBtns}
+                            showAddBtn={true}
+                            noDataTip={Intl.get('home.page.no.work.tip', '暂无工作')}
+                        />);
+                }
             } else {//工作列表的渲染
                 _.each(this.state.myWorkList, (item, index) => {
                     workList.push(this.renderWorkCard(item, index));
@@ -772,7 +783,6 @@ class MyWorkColumn extends React.Component {
         let detailContent = (
             <RecommendClues
                 onClosePanel={this.closeGuidDetailPanel}
-                afterSuccess={this.refreshMyworkList}
             />);
         return (
             <RightPanelModal
@@ -797,6 +807,27 @@ class MyWorkColumn extends React.Component {
         this.getMyWorkList();
     }
 
+    // 关闭引导
+    closeGuideMark = (key) => {
+        let list = _.filter(this.state.guideConfig, guide => key !== guide.content);
+        this.setState({guideConfig: list}, () => {
+            userData.setUserData('guideConfig', list);
+        });
+    };
+
+    renderBootProcessBlock = () => {
+        if(_.isEmpty(this.state.guideConfig)) {
+            return null;
+        }else {
+            return (
+                <BootProcess
+                    guideConfig={this.state.guideConfig}
+                    closeGuideMark={this.closeGuideMark}
+                />
+            );
+        }
+    };
+
     renderWorkContent() {
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
@@ -805,7 +836,7 @@ class MyWorkColumn extends React.Component {
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom}
                     itemCssSelector=".my-work-content .detail-card-container">
-                    <BootProcess/>
+                    {this.renderBootProcessBlock()}
                     {this.renderMyWorkList()}
                 </GeminiScrollbar>
                 {/*该客户下的用户列表*/}

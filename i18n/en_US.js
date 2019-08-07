@@ -3139,6 +3139,7 @@ var en_US = {
     'guide.finished.can': 'You can go to',//可以去
     'guide.finished.see': 'To view',//查看
     'guide.finished.page.see': 'Interface to view',//界面查看
+    'guide.finished.can.see': 'You can check it in the {page} interface',//可以去{page}界面查看
     'guide.add.member.finished': 'Adding members is complete',//添加成员已完成
     'guide.add.customer.finished': 'Adding a customer is complete',//添加客户已完成
     'guide.recommend.clue.finished': 'The recommendation cue has been extracted',//推荐线索已提取
