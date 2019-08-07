@@ -162,11 +162,12 @@ class RecommendCustomerRightPanel extends React.Component {
 
     };
     // 获取待分配人员列表
-    getSalesDataList = () => {
+    getSalesDataList = (isAllUserList = false) => {
         let dataList = [];
         let clueSalesIdList = getClueSalesList();
+        let salesManList = isAllUserList ? this.state.allUserList : this.state.salesManList;
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        _.each(this.state.salesManList, (salesman) => {
+        _.each(salesManList, (salesman) => {
             let teamArray = salesman.user_groups;
             let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'user_info.user_id'));
             //一个销售属于多个团队的处理（旧数据中存在这种情况）
@@ -180,6 +181,12 @@ class RecommendCustomerRightPanel extends React.Component {
                         value: _.get(salesman, 'user_info.user_id', '') + teamId,
                         clickCount: clickCount
                     });
+                });
+            }else if(isAllUserList) {
+                dataList.push({
+                    name: `${_.get(salesman, 'user_info.nick_name', '')}`,
+                    value: `${_.get(salesman, 'user_info.user_id', '')}`,
+                    clickCount: clickCount
                 });
             }
         });
@@ -198,7 +205,7 @@ class RecommendCustomerRightPanel extends React.Component {
         clueCustomerAction.setSalesManName({'salesManNames': salesManNames});
     };
     renderSalesBlock = () => {
-        let dataList = this.getSalesDataList();
+        let dataList = this.getSalesDataList(this.state.isManager);
         //按点击的次数进行排序
         dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
         return (
@@ -331,13 +338,13 @@ class RecommendCustomerRightPanel extends React.Component {
                 let idArray = this.state.salesMan.split('&&');
                 if (_.isArray(idArray) && idArray.length) {
                     user_id = idArray[0];//销售的id
-                    sales_team_id = idArray[1];//团队的id
+                    sales_team_id = idArray[1] || '';//团队的id
                 }
                 //销售的名字和团队的名字 格式是 销售名称 -团队名称
                 let nameArray = this.state.salesManNames.split('-');
                 if (_.isArray(nameArray) && nameArray.length) {
                     user_name = nameArray[0];//销售的名字
-                    sales_team = _.trim(nameArray[1]);//团队的名字
+                    sales_team = _.trim(nameArray[1]) || '';//团队的名字
                 }
                 let submitObj = {user_id, user_name, sales_team_id, sales_team};
                 if (itemId){

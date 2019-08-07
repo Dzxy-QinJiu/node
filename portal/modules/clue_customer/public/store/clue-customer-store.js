@@ -60,6 +60,8 @@ ClueCustomerStore.prototype.resetState = function() {
     this.isLoadingRecommendClue = true;
     this.getRecommendClueErrMsg = '';
     this.recommendClueLists = [];
+    this.isManager = false; //是否是管理员或者运营人员
+    this.allUserList = []; //所有的用户人员
 };
 ClueCustomerStore.prototype.getRecommendClueLists = function(result) {
     if (result.loading) {
@@ -521,6 +523,11 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
         }
 
     }
+};
+// 获取所有人员
+ClueCustomerStore.prototype.getAllSalesUserList = function(list) {
+    this.allUserList = _.isArray(list) ? list : [];
+    this.isManager = true;
 };
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

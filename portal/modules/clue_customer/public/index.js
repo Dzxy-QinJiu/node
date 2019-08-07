@@ -105,9 +105,19 @@ class ClueCustomer extends React.Component {
         this.getClueClassify();
         //获取是否配置过线索推荐条件
         this.getSettingCustomerRecomment();
-        clueCustomerAction.getSalesManList();
+        this.getSalesmanList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
+    }
+    // 获取销售人员
+    getSalesmanList() {
+        clueCustomerAction.getSalesManList();
+        if(!this.isCommonSales()) {
+            // 管理员，运营获取所有人
+            if(userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+                clueCustomerAction.getAllSalesUserList();
+            }
+        }
     }
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
@@ -1349,11 +1359,12 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.setSalesMan({'salesMan': ''});
         clueCustomerAction.setSalesManName({'salesManNames': ''});
     };
-    getSalesDataList = () => {
+    getSalesDataList = (isAllUserList = false) => {
         let dataList = [];
         var clueSalesIdList = getClueSalesList();
+        let salesManList = isAllUserList ? this.state.allUserList : this.state.salesManList;
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        this.state.salesManList.forEach((salesman) => {
+        salesManList.forEach((salesman) => {
             let teamArray = salesman.user_groups;
             var clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'user_info.user_id'));
             //一个销售属于多个团队的处理（旧数据中存在这种情况）
@@ -1368,12 +1379,18 @@ class ClueCustomer extends React.Component {
                         clickCount: clickCount
                     });
                 });
+            }else if(isAllUserList) {
+                dataList.push({
+                    name: `${_.get(salesman, 'user_info.nick_name', '')}`,
+                    value: `${_.get(salesman, 'user_info.user_id', '')}`,
+                    clickCount: clickCount
+                });
             }
         });
         return dataList;
     };
     renderSalesBlock = () => {
-        var dataList = this.getSalesDataList();
+        var dataList = this.getSalesDataList(this.state.isManager);
         //按点击的次数进行排序
         dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
         return (
@@ -1399,13 +1416,13 @@ class ClueCustomer extends React.Component {
             let idArray = this.state.salesMan.split('&&');
             if (_.isArray(idArray) && idArray.length) {
                 sale_id = idArray[0];//销售的id
-                team_id = idArray[1];//团队的id
+                team_id = idArray[1] || '';//团队的id
             }
             //销售的名字和团队的名字 格式是 销售名称 -团队名称
             let nameArray = this.state.salesManNames.split('-');
             if (_.isArray(nameArray) && nameArray.length) {
                 sale_name = nameArray[0];//销售的名字
-                team_name = _.trim(nameArray[1]);//团队的名字
+                team_name = _.trim(nameArray[1]) || '';//团队的名字
             }
             var submitObj = {
                 'sale_id': sale_id,

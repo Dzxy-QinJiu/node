@@ -7,6 +7,7 @@ var clueCustomerAjax = require('../ajax/clue-customer-ajax');
 var clueTraceAjax = require('../ajax/clue-trace-ajax');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {handleSubmitClueItemData} from '../utils/clue-customer-utils';
+import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 function ClueCustomerActions() {
     this.generateActions(
         'resetState',
@@ -165,6 +166,13 @@ function ClueCustomerActions() {
                 loading: false,
                 errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
             });
+        });
+    };
+    // 获取所有成员
+    this.getAllSalesUserList = function(cb) {
+        getAllSalesUserList((allUserList) => {
+            this.dispatch(allUserList);
+            if (cb) cb();
         });
     };
 }
