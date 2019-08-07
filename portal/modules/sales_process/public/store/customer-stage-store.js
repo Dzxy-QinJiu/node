@@ -66,6 +66,7 @@ class CustomerStageStore {
         this.currentCustomerStage = emptyCustomerStage;
         this.currentCustomerStageList = [];
         this.isShowCustomerStageForm = false; // 是否显示客户阶段表单，默认false
+        this.isShowCustomerStageTransferOrder = false; // 是否显示客户阶段变更，默认false
         this.isShowDeleteModalDialog = false; // 是否显示删除客户阶段的模态框，默认false
         this.customerStageEditOrder = false;
         this.isSavingCustomerStage = false;
@@ -73,6 +74,7 @@ class CustomerStageStore {
         this.saveStageErrMsg = '';
         this.deleteStageErrMsg = '';
     }
+
     // 获取客户阶段列表
     getCustomerStageList(result) {
         if (result.loading) {
@@ -86,11 +88,67 @@ class CustomerStageStore {
                 this.customerStageList = result.resData;
             }
         }
+        this.currentCustomerStageList = _.cloneDeep(this.customerStageList); //返回对象的深拷贝
     }
+
     // 展开收起客户阶段详情（剧本、销售行为）
     toggleCustomerStageDetail(customerStage) {
         customerStage.isShowMore = !customerStage.isShowMore;
     }
+
+    // 显示客户阶段变更顺序
+    showCustomerStageTransferOrder() {
+        this.isShowCustomerStageTransferOrder = true;
+    }
+
+    // 关闭客户阶段变更顺序
+    closeCustomerStageTransferOrder() {
+        this.isShowCustomerStageTransferOrder = false;
+    }
+
+    // 上移客户阶段
+    customerStageOrderUp(customerStage) {
+        let oldOrder = parseInt(customerStage.order);
+        this.customerStageList = _.filter(this.customerStageList, item => {
+            let order = item.order;
+            if (parseInt(item.order) === oldOrder) {
+                order = (parseInt(item.order) - 1).toString();
+            }
+
+            if (parseInt(item.order) === (oldOrder - 1)) {
+                order = (parseInt(item.order) + 1).toString();
+            }
+
+            item.order = order;
+            return true;
+        });
+
+        this.customerStageList = this.customerStageList.sort((item1, item2) => {
+            return item1.order - item2.order;
+        });
+    }
+
+    // 下移客户阶段
+    customerStageOrderDown(customerStage) {
+        let oldOrder = parseInt(customerStage.order);
+        this.customerStageList = _.filter(this.customerStageList, item => {
+            let order = item.order;
+            if (parseInt(item.order) === oldOrder) {
+                order = (parseInt(item.order) + 1).toString();
+            }
+
+            if (parseInt(item.order) === (oldOrder + 1)) {
+                order = (parseInt(item.order) - 1).toString();
+            }
+            item.order = order;
+            return true;
+        });
+
+        this.customerStageList = this.customerStageList.sort((item1, item2) => {
+            return item1.order - item2.order;
+        });
+    }
+
     // 显示客户阶段表单
     showCustomerStageForm(customerStage) {
         this.isShowCustomerStageForm = true;

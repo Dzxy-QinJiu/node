@@ -107,26 +107,30 @@ class CustomerStage extends React.Component {
 
     };
 
-    showCustomerStagEditOrder = () => {
+    // 显示客户阶段变更顺序
+    showCustomerStageTransferOrder = () => {
         if (this.state.isSavingCustomerStag) {
             return;
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-div:first-child span'), '变更销售阶段顺序');
-        CustomerStageAction.showCustomerStagEditOrder();
+        CustomerStageAction.showCustomerStageTransferOrder();
     };
 
-    hideCustomerStagEditOrder = () => {
+    // 关闭客户阶段变更顺序
+    closeCustomerStageTransferOrder = () => {
         if (this.state.isSavingCustomerStag) {
             return;
         }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-btn:last-child span'), '取消对销售阶段顺序更改的保存');
-        CustomerStageAction.hideCustomerStagEditOrder();
+        CustomerStageAction.closeCustomerStageTransferOrder();
     };
 
+    // 上移客户阶段
     customerStageOrderUp = (customerStage) => {
         CustomerStageAction.customerStageOrderUp(customerStage);
     };
 
+    // 下移客户阶段
     customerStageOrderDown = (customerStage) => {
         CustomerStageAction.customerStageOrderDown(customerStage);
     };
@@ -166,7 +170,8 @@ class CustomerStage extends React.Component {
                         </Popover>
                     ) : (
                         <Button
-                            type="ghost" className="customer-stage-top-btn btn-item"
+                            type="ghost"
+                            className="customer-stage-top-btn btn-item"
                             onClick={this.showCustomerStageForm.bind(this, 'addCustomerStage')}
                             data-tracename="添加客户阶段"
                         >
@@ -177,13 +182,13 @@ class CustomerStage extends React.Component {
                 </PrivilegeChecker>
                 <div className="customer-stage-change-order">
                     {
-                        this.state.customerStageEditOrder ?
+                        this.state.isShowCustomerStageTransferOrder ?
                             (<div className="customer-stage-top-div-group">
                                 <div className="customer-stage-top-div">
                                     <Button
                                         type="ghost"
                                         className="customer-stage-top-btn btn-item"
-                                        onClick={this.hideCustomerStagEditOrder.bind(this)}
+                                        onClick={this.closeCustomerStageTransferOrder.bind(this)}
                                     >
                                         <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
                                     </Button>
@@ -203,8 +208,8 @@ class CustomerStage extends React.Component {
                                 >
                                     <Button
                                         type="ghost"
-                                        className="customer-stage-top-btn btn-item btn-m-r-2"
-                                        onClick={this.showCustomerStagEditOrder.bind(this)}
+                                        className="customer-stage-top-btn btn-item"
+                                        onClick={this.showCustomerStageTransferOrder.bind(this)}
                                     >
                                         <i className='iconfont icon-transfer'></i>
                                         {Intl.get('sales.stage.change.sort', '变更顺序')}
@@ -218,7 +223,8 @@ class CustomerStage extends React.Component {
     };
 
     retryGetOrderList = () => {
-        CustomerStageAction.getCustomerStagList();
+        let salesProcessId = this.props.salesProcessId;
+        CustomerStageAction.getCustomerStageList(salesProcessId);
     };
 
     renderMsgTips = (errMsg) => {
@@ -234,7 +240,7 @@ class CustomerStage extends React.Component {
 
     renderNoDataTipsOrErrMsg = () => {
         let noDataTips = Intl.get('sales.process.customer.stage.nodata.tips', '暂无客户阶段，请先添加');
-        let errMsg = this.state.getCustomerStagListErrMsg;
+        let errMsg = this.state.getCustomerStageListErrMsg;
         if (errMsg) {
             noDataTips = this.renderMsgTips(errMsg);
         }
@@ -276,12 +282,14 @@ class CustomerStage extends React.Component {
                                 ) : null
                             }
                             {
-                                !this.state.loading && (length === 0 || this.state.getCustomerStagListErrMsg) ?
-                                    this.renderNoDataTipsOrErrMsg() : null
+                                /**
+                                 * !this.state.loading && (length === 0 || this.state.getCustomerStageListErrMsg) ?
+                                 this.renderNoDataTipsOrErrMsg() : null
+                                 * */
                             }
                             <div className="customer-stage-table-block">
                                 {
-                                    this.state.isSavingCustomerStagHome ? (
+                                    this.state.isSavingCustomerStageHome ? (
                                         <div className="customer-stage-block">
                                             <Spinner className="customer-stage-saving"/>
                                         </div>) : null
@@ -338,7 +346,7 @@ class CustomerStage extends React.Component {
                                                             }
                                                         </div>
                                                         {
-                                                            this.state.customerStageEditOrder ?
+                                                            this.state.isShowCustomerStageTransferOrder ?
                                                                 (
                                                                     <div className="customer-stage-btn-div order-arrow">
                                                                         <Button
@@ -410,7 +418,6 @@ class CustomerStage extends React.Component {
                             />) : null
                     }
                 </div>
-
             </RightPanel>
         );
     }
