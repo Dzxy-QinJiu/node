@@ -341,7 +341,7 @@ class CallRecordAnalyis extends React.Component {
 
         //团队数大于一个时，才有可能按团队筛选
         //此时若指定按团队筛选
-        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && this.state.teamList > 1) {
+        if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && _.get(this.state.teamList, 'list.length') > 1) {
             //发射团队选中事件
             teamTreeEmitter.emit(teamTreeEmitter.SELECT_TEAM, valueStr);
         } else {
