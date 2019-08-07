@@ -12,8 +12,6 @@ import SalesProcessAction from './action';
 import SalesProcessForm from './views/sales-process-form';
 import SalesProcessInfo from './views/sale-process-info';
 import CustomerStage from './views/customer-stage';
-import rightPanelUtil from 'CMP_DIR/rightPanel';
-const RightPanel = rightPanelUtil.RightPanel;
 import CONSTS from 'LIB_DIR/consts';
 
 const saleId = CONSTS.ROLE_ID_CONSTANS.SALE_ID;
@@ -263,19 +261,14 @@ class SalesProcess extends React.Component {
                 </div>
                 <div className="customer-stage-wrap" style={{width: containerWidth}}>
                     {
-                        this.state.isShowCustomerStage ?
-                            <RightPanel
-                                className="customer-stage-panel"
-                                showFlag={this.state.isShowCustomerStage}
-                                style={{width: containerWidth}}
-                            >
-                                <CustomerStage
-                                    closeCustomerStagePanel={this.closeCustomerStagePanel}
-                                    salesProcessId={this.state.salesProcessId}
-                                    containerWidth={containerWidth}
-                                />
-                            </RightPanel>
-                            : null
+                        this.state.isShowCustomerStage ? (
+                            <CustomerStage
+                                closeCustomerStagePanel={this.closeCustomerStagePanel}
+                                salesProcessId={this.state.salesProcessId}
+                                containerWidth={containerWidth}
+                                isShowCustomerStage={this.state.isShowCustomerStage}
+                            />
+                        ) : null
                     }
                 </div>
             </div>

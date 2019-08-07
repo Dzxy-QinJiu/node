@@ -7,8 +7,10 @@ import SalesProcessAjax from '../ajax';
 class CustomerStageAction {
     constructor() {
         this.generateActions(
-            'showCustomerStageForm',
-            'closeCustomerStageForm',
+            'showCustomerStageForm', // 显示客户阶段表单
+            'closeCustomerStageForm', // 关闭客户阶段表单
+            'showCustomerStageModalDialog', // 显示客户阶段模态框
+            'closeCustomerStageModalDialog', // 关闭客户阶段模态
         );
     }
     // 获取客户阶段列表

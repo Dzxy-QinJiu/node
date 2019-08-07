@@ -60,7 +60,8 @@ class CustomerStageStore {
         this.getCustomerStageListErrMsg = '';
         this.currentCustomerStage = emptyCustomerStage;
         this.currentCustomerStageList = [];
-        this.isShowCustomerStagePanel = false;
+        this.isShowCustomerStageForm = false; // 是否显示客户阶段表单，默认false
+        this.isShowDeleteModalDialog = false; // 是否显示删除客户阶段的模态框，默认false
         this.customerStageEditOrder = false;
         this.isSavingCustomerStage = false;
         this.isSavingCustomerStageHome = false;
@@ -76,19 +77,14 @@ class CustomerStageStore {
             this.loading = false;
             if (result.error) {
                 this.getCustomerStageListErrMsg = result.errorMsg;
-                this.customerStageList = [];
             } else {
                 this.customerStageList = result.resData;
             }
         }
     }
-    // 添加客户阶段
-    addCustomerStage() {
-
-    }
-
+    // 显示客户阶段表单
     showCustomerStageForm(customerStage) {
-        this.isShowCustomerStagePanel = true;
+        this.isShowCustomerStageForm = true;
         if (customerStage === 'addCustomerStage') {
             this.currentCustomerStage = emptyCustomerStage;
         } else {
@@ -96,8 +92,24 @@ class CustomerStageStore {
         }
     }
 
+    // 关闭客户阶段表单
     closeCustomerStageForm() {
-        this.isShowCustomerStagePanel = false;
+        this.isShowCustomerStageForm = false;
+    }
+
+    // 添加客户阶段
+    addCustomerStage() {
+
+    }
+
+    // 显示客户阶段模态框
+    showCustomerStageModalDialog() {
+        this.isShowDeleteModalDialog = true;
+    }
+
+    // 关闭客户阶段模态
+    closeCustomerStageModalDialog() {
+        this.isShowDeleteModalDialog = false;
     }
 }
 

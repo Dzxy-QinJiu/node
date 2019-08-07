@@ -114,3 +114,20 @@ exports.addCustomerStage = (addCustomerStage) => {
     });
     return Deferred.promise();
 };
+
+// 更新客户阶段
+exports.updateCustomerStage = (upDateCustomerStageObj) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/update/customer/stage',
+        dataType: 'json',
+        type: 'put',
+        data: upDateCustomerStageObj,
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

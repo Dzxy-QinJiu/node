@@ -13,6 +13,7 @@ const salesProcessRestApis = {
     deleteSalesProcess: commonUrl + '/:id', // 删除销售流程
     getCustomerStageBySaleProcessId: commonUrl + '/stage/:sales_process_id', // 根据销售流程id获取客户阶段
     addCustomerStage: commonUrl + 'stage/:sales_process_id', // 添加客户阶段
+    updateCustomerStage: commonUrl + 'stage/:sales_process_id', // 更新客户阶段
 };
 
 exports.urls = salesProcessRestApis;
@@ -73,6 +74,17 @@ exports.addCustomerStage = (req, res) => {
     return restUtil.authRest.post(
         {
             url: salesProcessRestApis.addCustomerStage.replace(':sales_process_id', sales_process_id),
+            req: req,
+            res: res
+        }, req.body);
+};
+
+// 更新客户阶段
+exports.updateCustomerStage = (req, res) => {
+    let sales_process_id = _.get(req.body, 'sales_process_id');
+    return restUtil.authRest.put(
+        {
+            url: salesProcessRestApis.updateCustomerStage.replace(':sales_process_id', sales_process_id),
             req: req,
             res: res
         }, req.body);

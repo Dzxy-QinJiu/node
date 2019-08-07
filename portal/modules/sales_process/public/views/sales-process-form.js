@@ -43,11 +43,12 @@ class SalesProcessForm extends React.Component {
         event.preventDefault();
         Trace.traceEvent(event, '保存销售流程的信息');
         this.props.form.validateFields((err, values) => {
+            console.log('values:',values);
             // TODO 需要处理选择适用范围的数据
             if (err) return;
             let submitObj = {
                 name: _.trim(values.name),
-                status: values.status,
+                status: values.status === true ? '1' : '0',
                 description: values.description,
                 teams: [],
                 users: []
@@ -97,6 +98,7 @@ class SalesProcessForm extends React.Component {
                     label={Intl.get('common.status', '状态')}
                 >
                     {getFieldDecorator('status', {
+                        initialValue: false
                     })(
                         <Switch/>
                     )}

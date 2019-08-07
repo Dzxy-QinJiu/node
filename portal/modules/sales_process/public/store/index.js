@@ -33,6 +33,7 @@ class SalesProcessStore {
         this.currentSaleProcess = {}; // 当前销售流程信息
         this.salesTeamTree = []; // 销售团队
         this.salesNoBelongToTeamList = []; // 不属于任何团队的销售列表
+        this.salesMemberList = []; // 销售角色的成员列表
         this.isShowAddProcessFormPanel = false; // 是否显示添加销售流程表单面板，默认false
         this.isShowProcessInfoPanel = false; // 是否显示销售流程详情面板，默认false
         this.isShowCustomerStage = false; // 是否显示客户阶段，默认是false
@@ -76,6 +77,7 @@ class SalesProcessStore {
             this.salesNoBelongToTeamList = [];
         } else {
             let salesNoBelongToTeamList = _.filter(result.resData, item => !item.team_id);
+            this.salesMemberList = salesNoBelongToTeamList;
             if (salesNoBelongToTeamList.length) {
                 _.each(salesNoBelongToTeamList, (memberInfo) => {
                     let data = {
