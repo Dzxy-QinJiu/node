@@ -20,6 +20,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import {phoneEmitter} from 'PUB_DIR/sources/utils/emitters';
 import MemberForm from 'MOD_DIR/member_manage/public/view/member-form';
 import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-actions';
+import MemberMangeAjax from 'MOD_DIR/member_manage/public/ajax';
 import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import { hasCalloutPrivilege } from 'PUB_DIR/sources/utils/common-method-util';
 import {storageUtil} from 'ant-utils';
@@ -148,6 +149,7 @@ class BootProcess extends React.Component {
             loading: false,
             guideConfig: this.dealGuideConfig(props.guideConfig),
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
+            roleList: [], //角色列表
             ...this.getInitialState()
         };
     }
@@ -364,7 +366,13 @@ class BootProcess extends React.Component {
         MemberFormAction.setPositionListLoading(true);
         MemberFormAction.getSalesPosition();
         //获取角色列表
-        MemberFormAction.setRoleListLoading(true);
+        MemberMangeAjax.getRoleList().then( (result) => {
+            if ( _.isArray(result) && result.length) {
+                this.setState({
+                    roleList: result
+                });
+            }
+        });
         MemberFormAction.getRoleList();
         MemberManageAction.showMemberForm('add');
         MemberFormAction.setAddGroupForm(false);
@@ -483,6 +491,7 @@ class BootProcess extends React.Component {
                         formType='add'
                         isShowAddGroupFrom
                         member={emptyMember}
+                        roleList={this.state.roleList}
                         returnInfoPanel={this.addMemberFinished}
                         showContinueAddButton={this.showContinueAddButton}
                         closeRightPanel={this.closeGuidDetailPanel}
