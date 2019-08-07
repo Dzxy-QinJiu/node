@@ -402,6 +402,9 @@ class CurtaoAnalysis extends React.Component {
             isAppSelectorShow,
             isCallDeviceTypeSelectorShow,
             adjustConditions
+        }, () => {
+            //状态变更完成后，触发一下窗口大小变更事件，使分析组件重新计算其显示区域的高度，以解决显示或隐藏应用选择下拉菜单时，分析组件高度计算不准确的问题
+            $(window).resize();
         });
     }
 
