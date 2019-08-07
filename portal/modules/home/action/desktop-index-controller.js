@@ -98,6 +98,7 @@ exports.getUserData = function(req, res) {
                 user.lang = lang;
                 user.isCommonSales = data.isCommonSales;//是否是普通销售
                 user.workFlowConfigs = data.workFlowConfigs;//配置过的流程列表
+                user.guideConfig = data.guideConfig;//引导流程
                 req.session.user.nickname = data.nick_name;
                 req.session.save(function() {
                     res.header('Content-Type', 'application/javascript');
