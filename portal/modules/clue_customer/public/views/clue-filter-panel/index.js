@@ -15,16 +15,11 @@ import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
-var otherFilterArray = [{
-    name: Intl.get('clue.repeat.clue.list', '重复线索'),
-    value: 'repeat_id'
-}, {
-    name: Intl.get('clue.has.no.relative.customer', '没有关联客户的线索'),
-    value: 'customer_id'
-},{
-    name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
-    value: SELECT_TYPE.WAIT_ME_HANDLE
-}
+var otherFilterArray = [
+    {
+        name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
+        value: SELECT_TYPE.WAIT_ME_HANDLE
+    }
 ];
 import userData from 'PUB_DIR/sources/user-data';
 class ClueFilterPanel extends React.Component {
@@ -108,17 +103,7 @@ class ClueFilterPanel extends React.Component {
                     });
                     FilterAction.setFilterClueProvince(provinceList);
                 }else if (item.groupId === COMMON_OTHER_ITEM){
-                    //如果是筛选没有关联客户的线索
-                    //如果是筛选重复线索
-                    if (item.value === 'repeat_id'){
-                        FilterAction.setExistedFiled('repeat_id');
-                        FilterAction.setUnexistedFiled();
-                        FilterAction.setFilterClueAllotNoTrace();
-                    }else if (item.value === 'customer_id'){
-                        FilterAction.setExistedFiled();
-                        FilterAction.setUnexistedFiled('customer_id');
-                        FilterAction.setFilterClueAllotNoTrace();
-                    }else if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
+                    if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
                         //如果筛选的是待我处理的线索
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
