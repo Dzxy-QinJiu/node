@@ -24,6 +24,7 @@ const LAYOUT_CONSTANTS = {
     ADD_ORDER_HEIGHHT: 155,//添加订单面板的高度
     TOP_TOTAL_HEIGHT: 30//共xxx条的高度
 };
+const HAS_ADD = 'SALESOPPORTUNITY_ADD';//添加权限的常量
 //用户类型的转换对象
 const userTypeMap = {
     '正式用户': Intl.get('common.official', '签约'),
@@ -244,7 +245,7 @@ class OrderIndex extends React.Component {
                             Intl.get('crm.no.order.tip', '该客户还没有订单')}
                     </span>
                     {this.props.isMerge || this.props.disableEdit ? null : (
-                        <PrivilegeChecker check="SALESOPPORTUNITY_ADD">
+                        <PrivilegeChecker check={HAS_ADD}>
                             <Button className='crm-detail-add-btn'
                                 onClick={this.showForm.bind(this, '')}>
                                 {Intl.get('crm.161', '添加订单')}
