@@ -107,10 +107,6 @@ FilterStore.prototype.getSalesRoleList = function(data) {
     this.salesRoleList = salesRoleList;
 };
 
-FilterStore.prototype.getSystemTagList = function(list) {
-    this.systemTagList = list;
-};
-
 FilterStore.prototype.getTagList = function(list) {
     this.tagList = list;
 };
@@ -129,10 +125,6 @@ FilterStore.prototype.setTeam = function(value) {
 
 FilterStore.prototype.setStage = function(value) {
     this.condition.sales_opportunities[0].sale_stages = value;
-};
-
-FilterStore.prototype.setSystemTag = function(value) {
-    this.condition.immutable_labels = value;
 };
 
 FilterStore.prototype.setTag = function(value) {
