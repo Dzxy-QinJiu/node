@@ -5,7 +5,7 @@ const contractDto = require('../dto/contract');
 
 const restApis = {
     // 根据客户id获取合同信息
-    getContractByCustomerId: '/rest/contract/v2/contract/range/:page_size/:sort_field/:order',
+    getContractByCustomerId: '/rest/contract/v2/contract/sales/range/:page_size/:sort_field/:order',
     // 添加/更新 合同的url
     urlContract: '/rest/contract/v2/contract/:type',
     // 删除待审合同
