@@ -51,11 +51,14 @@ exports.addContract = (req, res) => {
 
 // 删除待审合同
 exports.deletePendingContract = (req, res) => {
-    let url = restApis.deletePendingContract;
     let params = req.params;
+    let url = restApis.deletePendingContract.replace(':id', params.id);
+    if (req.body.type) {
+        url += `?type=${req.body.type}`;
+    }
     return restUtil.authRest.del(
         {
-            url: url.replace(':id', params.id),
+            url: url,
             req: req,
             res: res
         }, null);
