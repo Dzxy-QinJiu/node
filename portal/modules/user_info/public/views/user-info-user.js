@@ -50,7 +50,7 @@ class UserInfo extends React.Component{
             lang: Oplate.lang || 'zh_CN',
             isBindWechat: true,//是否绑定微信
             isLoadingWechatBind: false,//是否正在绑定微信
-            isEmailEdit: 'edit', //'text'/'edit'
+            isEmailEdit: 'text', //'text'/'edit'
             //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
             weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : ''//微信账号绑定的错误提示
         };
@@ -256,22 +256,24 @@ class UserInfo extends React.Component{
                             {Intl.get('common.email', '邮箱')}
                             ：</span>
                         <EmailShowEditField userInfo = {this.state.formData}/>
-                        <BasicEditField
-                            id={formData.id}
-                            displayType={this.state.isEmailEdit}
-                            field="email"
-                            value={emailInfo}
-                            displayText={formData.email}
-                            hasEditPrivilege={isEditable}
-                            hoverShowEdit={false}
-                            validators={{rules: [{
-                                required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
-                            },{
-                                type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                            }]}}
-                            afterTextTip={isEnable}
-                            saveEditInput={this.saveEmailEditInput}
-                        />
+                        <span className="user-email-item">
+                            <BasicEditField
+                                id={formData.id}
+                                displayType={this.state.isEmailEdit}
+                                field="email"
+                                value={emailInfo}
+                                displayText={formData.email}
+                                hasEditPrivilege={isEditable}
+                                hoverShowEdit={false}
+                                validators={{rules: [{
+                                    required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
+                                },{
+                                    type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                }]}}
+                                afterTextTip={isEnable}
+                                saveEditInput={this.saveEmailEditInput}
+                            />
+                        </span>
                     </div>
                     <div className="user-info-item">
                         <span>
@@ -409,7 +411,6 @@ class UserInfo extends React.Component{
                             nickName={formData.nickName}
                             isUserHeadIcon={true}/>
                         <div className="user-info-nickname">
-                            <NicknameShowEditField userInfo={this.state.formData}/>
                             <BasicEditField
                                 id={formData.id}
                                 field="nickname"
