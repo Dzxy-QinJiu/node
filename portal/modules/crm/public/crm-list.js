@@ -1030,13 +1030,15 @@ class Crm extends React.Component {
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
-                    title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}>
+                    title={isWebMini ? Intl.get(ADD, '添加客户') : ''}>
                     {    
-                        isWebMini ? (<Dropdown overlay={this.dropList()} placement="bottomCenter" overlayClassName='mini-add-dropdown'>
-                            <Icon type="plus" className="add-btn"/> 
-                        </Dropdown>
+                        isWebMini ? (<Dropdown  overlay={this.dropList()} placement="bottomCenter" 
+                                                overlayClassName='mini-add-dropdown'>
+                                        <Icon type="plus" className="add-btn"/> 
+                                    </Dropdown>
                         ) : (
-                            <Dropdown overlay={this.dropList()} placement="bottomCenter" overlayClassName='norm-add-dropdown' >
+                            <Dropdown   overlay={this.dropList()} placement="bottomCenter" 
+                                        overlayClassName='norm-add-dropdown' >
                                 <Button type="primary">
                                     {Intl.get(this.state.btnContent, '添加客户')}
                                     <Icon type="down" />
