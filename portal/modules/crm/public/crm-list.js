@@ -979,7 +979,7 @@ class Crm extends React.Component {
         }
     }
 
-    //添加线索的按钮列表渲染
+    //添加客户的按钮列表渲染
     dropList = () => {
         let menu = (
             <Menu onClick={this.handleButtonClick.bind(this)}>
