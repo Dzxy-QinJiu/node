@@ -1,6 +1,7 @@
 
 import cluePoolAjax from '../ajax';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
+import { getAllSalesUserList } from 'PUB_DIR/sources/utils/common-data-util';
 class CluePoolActions {
     constructor() {
         this.generateActions(
@@ -51,6 +52,14 @@ class CluePoolActions {
         }, (errorMsg) => {
             // eslint-disable-next-line no-console
             console.log(errorMsg);
+        });
+    }
+
+    //获取所有成员
+    getAllSalesUserList(cb) {
+        getAllSalesUserList((allUserList) => {
+            this.dispatch(allUserList);
+            if (cb) cb(allUserList);
         });
     }
 }

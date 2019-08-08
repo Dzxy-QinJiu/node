@@ -56,7 +56,7 @@ const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
-import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -111,14 +111,17 @@ class ClueCustomer extends React.Component {
     }
     // 获取销售人员
     getSalesmanList() {
-        clueCustomerAction.getSalesManList();
-        if(!this.isCommonSales()) {
-            // 管理员，运营获取所有人
-            if(userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
-                clueCustomerAction.getAllSalesUserList();
-            }
+        // 管理员，运营获取所有人
+        if(this.isManagerOrOperation()) {
+            clueCustomerAction.getAllSalesUserList();
+        }else {
+            clueCustomerAction.getSalesManList();
         }
     }
+    // 是否是管理员或者运营人员
+    isManagerOrOperation = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    };
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
@@ -1359,38 +1362,21 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.setSalesMan({'salesMan': ''});
         clueCustomerAction.setSalesManName({'salesManNames': ''});
     };
-    getSalesDataList = (isAllUserList = false) => {
-        let dataList = [];
+    getSalesDataList = () => {
         var clueSalesIdList = getClueSalesList();
-        let salesManList = isAllUserList ? this.state.allUserList : this.state.salesManList;
+        let salesManList = this.state.salesManList;
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        salesManList.forEach((salesman) => {
-            let teamArray = salesman.user_groups;
-            var clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'user_info.user_id'));
-            //一个销售属于多个团队的处理（旧数据中存在这种情况）
-            if (_.isArray(teamArray) && teamArray.length) {
-                //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                teamArray.forEach(team => {
-                    let teamName = _.get(team, 'group_name') ? ` - ${team.group_name}` : '';
-                    let teamId = _.get(team, 'group_id') ? `&&${team.group_id}` : '';
-                    dataList.push({
-                        name: _.get(salesman, 'user_info.nick_name', '') + teamName,
-                        value: _.get(salesman, 'user_info.user_id', '') + teamId,
-                        clickCount: clickCount
-                    });
-                });
-            }else if(isAllUserList) {
-                dataList.push({
-                    name: `${_.get(salesman, 'user_info.nick_name', '')}`,
-                    value: `${_.get(salesman, 'user_info.user_id', '')}`,
-                    clickCount: clickCount
-                });
-            }
+        let dataList = _.map(formatSalesmanList(salesManList),salesman => {
+            let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'value'));
+            return {
+                ...salesman,
+                clickCount
+            };
         });
         return dataList;
     };
     renderSalesBlock = () => {
-        var dataList = this.getSalesDataList(this.state.isManager);
+        var dataList = this.getSalesDataList();
         //按点击的次数进行排序
         dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
         return (

@@ -172,7 +172,7 @@ function ClueCustomerActions() {
     this.getAllSalesUserList = function(cb) {
         getAllSalesUserList((allUserList) => {
             this.dispatch(allUserList);
-            if (cb) cb();
+            if (cb) cb(allUserList);
         });
     };
 }
