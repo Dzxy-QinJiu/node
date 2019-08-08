@@ -235,9 +235,10 @@ class ClueDetailOverview extends React.Component {
         //按点击的次数进行排序
         var dataList = _.sortBy(this.props.salesManList,(item) => {return -item.clickCount;});
         return dataList.map((sales, idx) => {
+            let teamName = _.get(sales, 'user_groups[0].group_name') ? ` - ${sales.user_groups[0].group_name}` : '';
+            let name = _.get(sales, 'user_info.nick_name', '') + teamName;
             return (<Option key={idx}
-                value={_.get(sales, 'user_info.user_id')}>
-                {_.get(sales, 'user_info.nick_name')} - {_.get(sales, 'user_groups[0].group_name')}</Option>);
+                value={_.get(sales, 'user_info.user_id')}>{name}</Option>);
         });
     };
 

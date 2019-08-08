@@ -14,7 +14,7 @@ import RecommendCluesForm from '../recomment_clues/recommend_clues_form';
 import {AntcTable} from 'antc';
 import TopNav from 'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
-import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
+import { formatSalesmanList, getTableContainerHeight } from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 const LAYOUT_CONSTANTS = {
     TH_MORE_HEIGHT: 10
@@ -168,25 +168,14 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     // 获取待分配人员列表
     getSalesDataList = () => {
-        let dataList = [];
         let clueSalesIdList = getClueSalesList();
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        _.each(this.state.salesManList, (salesman) => {
-            let teamArray = salesman.user_groups;
-            let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'user_info.user_id'));
-            //一个销售属于多个团队的处理（旧数据中存在这种情况）
-            if (_.isArray(teamArray) && teamArray.length) {
-                //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                _.each(teamArray, team => {
-                    let teamName = _.get(team, 'group_name') ? ` - ${team.group_name}` : '';
-                    let teamId = _.get(team, 'group_id') ? `&&${team.group_id}` : '';
-                    dataList.push({
-                        name: _.get(salesman, 'user_info.nick_name', '') + teamName,
-                        value: _.get(salesman, 'user_info.user_id', '') + teamId,
-                        clickCount: clickCount
-                    });
-                });
-            }
+        let dataList = _.map(formatSalesmanList(this.state.salesManList), salesman => {
+            let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'value'));
+            return {
+                ...salesman,
+                clickCount
+            };
         });
         return dataList;
     };
@@ -336,13 +325,13 @@ class RecommendCustomerRightPanel extends React.Component {
                 let idArray = this.state.salesMan.split('&&');
                 if (_.isArray(idArray) && idArray.length) {
                     user_id = idArray[0];//销售的id
-                    sales_team_id = idArray[1];//团队的id
+                    sales_team_id = idArray[1] || '';//团队的id
                 }
                 //销售的名字和团队的名字 格式是 销售名称 -团队名称
                 let nameArray = this.state.salesManNames.split('-');
                 if (_.isArray(nameArray) && nameArray.length) {
                     user_name = nameArray[0];//销售的名字
-                    sales_team = _.trim(nameArray[1]);//团队的名字
+                    sales_team = _.trim(nameArray[1]) || '';//团队的名字
                 }
                 let submitObj = {user_id, user_name, sales_team_id, sales_team};
                 if (itemId){

@@ -1,15 +1,16 @@
 require('./css/index.less');
 import rightPanelUtil from 'CMP_DIR/rightPanel/index';
+
 const RightPanelClose = rightPanelUtil.RightPanelClose;
 const batchOperate = require('PUB_DIR/sources/push/batch');
 import { FilterInput } from 'CMP_DIR/filter';
-import {SearchInput, AntcTable} from 'antc';
+import { SearchInput, AntcTable } from 'antc';
 import userData from 'PUB_DIR/sources/user-data';
 import ClueFilterPanel from './views/clue-filter-panel';
-import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
-import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
+import { clueSourceArray, accessChannelArray, clueClassifyArray } from 'PUB_DIR/sources/utils/consts';
+import { removeSpacesAndEnter, getTableContainerHeight } from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import { getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from './utils/clue-pool-utils';
+import { getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount } from './utils/clue-pool-utils';
 import ShearContent from 'CMP_DIR/shear-content';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import cluePoolStore from './store';
@@ -20,13 +21,14 @@ import clueFilterAction from './action/filter-action';
 import clueFilterStore from './store/filter-store';
 import cluePoolAjax from './ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
-import {Button, message} from 'antd';
+import { Button, message } from 'antd';
+
 const Spinner = require('CMP_DIR/spinner');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import {batchPushEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
-import {RightPanel} from 'CMP_DIR/rightPanel';
+import { batchPushEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { subtracteGlobalClue } from 'PUB_DIR/sources/utils/common-method-util';
+import { RightPanel } from 'CMP_DIR/rightPanel';
 import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 
 //用于布局的高度
@@ -52,9 +54,15 @@ class ClueExtract extends React.Component {
             ...cluePoolStore.getState()
         };
     }
+
     // 判断是否为普通销售
     isCommonSales = () => {
         return userData.getUserData().isCommonSales;
+    };
+
+    // 是否是管理员或者运营人员
+    isManagerOrOperation = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     };
 
     onStoreChange = () => {
@@ -62,7 +70,8 @@ class ClueExtract extends React.Component {
     };
 
     updateItem = (item, submitObj) => {
-        let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
+        let sale_id = _.get(submitObj, 'sale_id', ''), team_id = _.get(submitObj, 'team_id', ''),
+            sale_name = _.get(submitObj, 'sale_name', ''), team_name = _.get(submitObj, 'team_name', '');
         SetLocalSalesClickCount(sale_id);
         //需要在列表中删除
         cluePoolAction.updateCluePoolList(item.id);
@@ -92,7 +101,7 @@ class ClueExtract extends React.Component {
         // 遍历每一个线索
         _.each(clueArr, (clueId) => {
             //如果当前客户是需要更新的客户，才更新
-            let target = _.find(curClueLists,item => item.id === clueId);
+            let target = _.find(curClueLists, item => item.id === clueId);
             if (target) {
                 this.updateItem(target, taskParams);
             }
@@ -111,7 +120,11 @@ class ClueExtract extends React.Component {
         this.getCluePoolProvince(); // 获取线索池地域
         // 普通销售不用获取销售人员的列表
         if (!this.isCommonSales()) {
-            cluePoolAction.getSalesManList();
+            if (this.isManagerOrOperation()) {
+                cluePoolAction.getAllSalesUserList();
+            } else {
+                cluePoolAction.getSalesManList();
+            }
         }
         this.getCluePoolList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
@@ -124,7 +137,6 @@ class ClueExtract extends React.Component {
         cluePoolAction.resetState();
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
     }
-
 
     // 获取线索池的负责人
     getCluePoolLeading = () => {
@@ -231,7 +243,7 @@ class ClueExtract extends React.Component {
             rangeParams: JSON.stringify(rangeParams),
             typeFilter: JSON.stringify(typeFilter)
         };
-        if (!isGetAllClue){
+        if (!isGetAllClue) {
             // 选中的线索来源
             let filterClueSource = filterStoreData.filterClueSource;
             if (_.isArray(filterClueSource) && filterClueSource.length) {
@@ -249,21 +261,21 @@ class ClueExtract extends React.Component {
             }
             //选中的线索地域
             let filterClueProvince = filterStoreData.filterClueProvince;
-            if (_.isArray(filterClueProvince) && filterClueProvince.length){
+            if (_.isArray(filterClueProvince) && filterClueProvince.length) {
                 queryObj.province = filterClueProvince.join(',');
             }
             let existFilelds = filterStoreData.exist_fields;
             //如果是筛选的重复线索，把排序字段改成repeat_id
-            if (_.indexOf(existFilelds, 'repeat_id') > -1){
+            if (_.indexOf(existFilelds, 'repeat_id') > -1) {
                 cluePoolAction.setSortField('repeat_id');
-            }else{
+            } else {
                 cluePoolAction.setSortField('source_time');
             }
             let unExistFileds = filterStoreData.unexist_fields;
-            if(_.isArray(existFilelds) && existFilelds.length){
+            if (_.isArray(existFilelds) && existFilelds.length) {
                 queryObj.exist_fields = JSON.stringify(existFilelds);
             }
-            if(_.isArray(unExistFileds) && unExistFileds.length){
+            if (_.isArray(unExistFileds) && unExistFileds.length) {
                 queryObj.unexist_fields = JSON.stringify(unExistFileds);
             }
         }
@@ -282,17 +294,17 @@ class ClueExtract extends React.Component {
         }
         let existFilelds = clueFilterStore.getState().exist_fields;
         //如果是筛选的重复线索，把排序字段改成repeat_id
-        if (_.indexOf(existFilelds, 'repeat_id') > -1){
+        if (_.indexOf(existFilelds, 'repeat_id') > -1) {
             cluePoolAction.setSortField('repeat_id');
-        }else{
+        } else {
             cluePoolAction.setSortField('source_time');
         }
         let unExistFileds = clueFilterStore.getState().unexist_fields;
         let condition = this.getCondition();
         delete condition.rangeParams;
-        if (_.isString(condition.typeFilter)){
+        if (_.isString(condition.typeFilter)) {
             let typeFilterObj = JSON.parse(condition.typeFilter);
-            for(let key in typeFilterObj){
+            for (let key in typeFilterObj) {
                 condition[key] = typeFilterObj[key];
             }
             delete condition.typeFilter;
@@ -311,35 +323,35 @@ class ClueExtract extends React.Component {
             rangeParams: rangeParams,
             typeFilter: _.get(data, 'typeFilter') || JSON.stringify(typeFilter),
         };
-        if (!this.state.lastId){
+        if (!this.state.lastId) {
             //清除线索的选择
             this.clearSelectedClue();
         }
         //选中的线索来源
         let filterClueSource = filterStoreData.filterClueSource;
-        if (_.isArray(filterClueSource) && filterClueSource.length){
+        if (_.isArray(filterClueSource) && filterClueSource.length) {
             queryObj.clue_source = filterClueSource.join(',');
         }
         //选中的线索接入渠道
         let filterClueAccess = filterStoreData.filterClueAccess;
-        if (_.isArray(filterClueAccess) && filterClueAccess.length){
+        if (_.isArray(filterClueAccess) && filterClueAccess.length) {
             queryObj.access_channel = filterClueAccess.join(',');
         }
         //选中的线索分类
         let filterClueClassify = filterStoreData.filterClueClassify;
-        if (_.isArray(filterClueClassify) && filterClueClassify.length){
+        if (_.isArray(filterClueClassify) && filterClueClassify.length) {
             queryObj.clue_classify = filterClueClassify.join(',');
         }
         //选中的线索地域
         let filterClueProvince = filterStoreData.filterClueProvince;
-        if (_.isArray(filterClueProvince) && filterClueProvince.length){
+        if (_.isArray(filterClueProvince) && filterClueProvince.length) {
             queryObj.province = filterClueProvince.join(',');
         }
-        if(_.isArray(existFilelds) && existFilelds.length){
+        if (_.isArray(existFilelds) && existFilelds.length) {
             queryObj.exist_fields = JSON.stringify(existFilelds);
         }
 
-        if(_.isArray(unExistFileds) && unExistFileds.length){
+        if (_.isArray(unExistFileds) && unExistFileds.length) {
             queryObj.unexist_fields = JSON.stringify(unExistFileds);
         }
         //取全部线索列表
@@ -367,19 +379,19 @@ class ClueExtract extends React.Component {
         if (this.state.selectAllMatched) {
             return (
                 <span>
-                    {Intl.get('crm.8', '已选择全部{count}项', { count: this.state.cluePoolListSize })}
+                    {Intl.get('crm.8', '已选择全部{count}项', {count: this.state.cluePoolListSize})}
                     <a href="javascript:void(0)"
-                        onClick={this.clearSelectAllSearchResult}>{Intl.get('crm.10', '只选当前展示项')}</a>
+                       onClick={this.clearSelectAllSearchResult}>{Intl.get('crm.10', '只选当前展示项')}</a>
                 </span>);
         } else {//只选择了当前页时，展示：已选当前页xxx项, <a>选择全部xxx项</a>
             return (
                 <span>
-                    {Intl.get('crm.11', '已选当前页{count}项', { count: _.get(this, 'state.selectedClues.length') })}
+                    {Intl.get('crm.11', '已选当前页{count}项', {count: _.get(this, 'state.selectedClues.length')})}
                     {/*在筛选条件下可 全选 ，没有筛选条件时，后端接口不支持选 全选*/}
                     {/*如果一页可以展示全，不再展示选择全部的提示*/}
                     {this.state.cluePoolListSize <= this.state.pageSize ? null : (
                         <a href="javascript:void(0)" onClick={this.selectAllSearchResult}>
-                            {Intl.get('crm.12', '选择全部{count}项', { count: this.state.cluePoolListSize })}
+                            {Intl.get('crm.12', '选择全部{count}项', {count: this.state.cluePoolListSize})}
                         </a>)
                     }
                 </span>);
@@ -403,25 +415,13 @@ class ClueExtract extends React.Component {
 
     // 获取待分配人员列表
     getSalesDataList = () => {
-        let dataList = [];
         let clueSalesIdList = getClueSalesList();
-        //销售领导、域管理员,展示其所有（子）团队的成员列表
-        _.each(this.state.salesManList, (salesman) => {
-            let teamArray = salesman.user_groups;
-            let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'user_info.user_id'));
-            //一个销售属于多个团队的处理（旧数据中存在这种情况）
-            if (_.isArray(teamArray) && teamArray.length) {
-                //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                _.each(teamArray, team => {
-                    let teamName = _.get(team, 'group_name') ? ` - ${team.group_name}` : '';
-                    let teamId = _.get(team, 'group_id') ? `&&${team.group_id}` : '';
-                    dataList.push({
-                        name: _.get(salesman, 'user_info.nick_name', '') + teamName,
-                        value: _.get(salesman, 'user_info.user_id', '') + teamId,
-                        clickCount: clickCount
-                    });
-                });
-            }
+        let dataList = _.map(commonMethodUtil.formatSalesmanList(this.state.salesManList), salesman => {
+            let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman, 'value'));
+            return {
+                ...salesman,
+                clickCount
+            };
         });
         return dataList;
     };
@@ -445,14 +445,14 @@ class ClueExtract extends React.Component {
             _.isEmpty(filterStoreData.filterClueAccess) &&
             _.isEmpty(filterStoreData.filterClueClassify) &&
             filterStoreData.filterClueAvailability === '' &&
-            _.get(filterStoreData,'filterClueStatus[0].selected') &&
+            _.get(filterStoreData, 'filterClueStatus[0].selected') &&
             _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime &&
             this.state.keyword === '' &&
             _.isEmpty(filterStoreData.exist_fields) &&
             _.isEmpty(filterStoreData.unexist_fields) &&
-            _.isEmpty(filterStoreData.filterClueProvince)){
+            _.isEmpty(filterStoreData.filterClueProvince)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     };
@@ -463,7 +463,7 @@ class ClueExtract extends React.Component {
         if (this.state.isLoading && !this.state.lastId) {
             return (
                 <div className="load-content">
-                    <Spinner />
+                    <Spinner/>
                     <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
                 </div>
             );
@@ -479,7 +479,7 @@ class ClueExtract extends React.Component {
             //如果有筛选条件时
             return (
                 <NoDataIntro
-                    noDataAndAddBtnTip={Intl.get('clue.no.data','暂无线索信息')}
+                    noDataAndAddBtnTip={Intl.get('clue.no.data', '暂无线索信息')}
                     renderAddAndImportBtns={this.renderAddAndImportBtns}
                     showAddBtn={this.hasNoFilterCondition()}
                     noDataTip={Intl.get('clue.no.data.during.range.and.status', '当前筛选时间段及状态没有相关线索信息')}
@@ -499,8 +499,8 @@ class ClueExtract extends React.Component {
             return (
                 <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
-                        style={{height: divHeight + LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
-                        id="area"
+                         style={{height: divHeight + LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                         id="area"
                     >
                         {this.renderClueCustomerLists()}
                     </div>
@@ -510,7 +510,7 @@ class ClueExtract extends React.Component {
                         : null}
                 </div>
             );
-        }else{
+        } else {
             return null;
         }
     };
@@ -553,6 +553,7 @@ class ClueExtract extends React.Component {
         return !this.state.isLoading &&
             this.state.cluePoolList.length >= 20 && !this.state.listenScrollBottom;
     };
+
     // 单个提取线索
     handleExtractClueAssignToSale(record, flag, isDetailExtract) {
         if (!this.state.salesMan && flag) {
@@ -574,7 +575,7 @@ class ClueExtract extends React.Component {
             this.setState({
                 singleExtractLoading: true
             });
-            cluePoolAjax.extractClueAssignToSale(reqData).then( (result) => {
+            cluePoolAjax.extractClueAssignToSale(reqData).then((result) => {
                 this.setState({
                     singleExtractLoading: false
                 });
@@ -597,12 +598,12 @@ class ClueExtract extends React.Component {
         }
 
     }
+
     // 清空所选择的销售
     clearSelectSales = () => {
         cluePoolAction.setSalesMan({'salesMan': ''});
         cluePoolAction.setSalesManName({'salesManNames': ''});
     };
-
 
     // 展示右侧详情面板
     showClueDetailPanel = (item) => {
@@ -659,12 +660,11 @@ class ClueExtract extends React.Component {
     handleRowClassName = (record, index) => {
         if (record.id === this.state.currentId && this.state.isShowClueDetailPanel) {
             return 'current-row';
-        }
-        else {
+        } else {
             return '';
         }
     };
-    
+
     // table 列
     getClueTableColunms = () => {
         let columns = [
@@ -674,7 +674,7 @@ class ClueExtract extends React.Component {
                 width: '35%',
                 render: (text, salesClueItem, index) => {
                     return (
-                        <div className="clue-top-title" >
+                        <div className="clue-top-title">
                             <span
                                 className="clue-name"
                                 data-tracename="查看线索详情"
@@ -685,9 +685,10 @@ class ClueExtract extends React.Component {
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>
-                                        <span className="clue_source_time">{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}&nbsp;</span>
+                                        <span
+                                            className="clue_source_time">{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}&nbsp;</span>
 
-                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '描述：{content}',{content: salesClueItem.source}) : null}</span>
+                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '描述：{content}', {content: salesClueItem.source}) : null}</span>
 
                                     </span>
                                 </ShearContent>
@@ -696,7 +697,7 @@ class ClueExtract extends React.Component {
                     );
                 }
             }, /*** todo 由于后端没有这列数据，先隐藏，有了之后，在展示
-                {
+             {
                     title: Intl.get('user.login.score', '分数'),
                     dataIndex: 'score',
                     width: '15%',
@@ -718,14 +719,14 @@ class ClueExtract extends React.Component {
                 title: Intl.get('clue.extract.former.responsible.person', '原负责人'),
                 dataIndex: 'user_name',
                 width: '10%',
-            },{
+            }, {
                 title: Intl.get('call.record.follow.content', '跟进内容'),
                 dataIndex: 'customer_trace',
                 width: 'auto',
                 render: (text, record, index) => {
                     if (_.isArray(record.customer_traces)) {
                         return (
-                            <ShearContent>{ _.get(record, 'customer_traces[0].remark', '')}</ShearContent>
+                            <ShearContent>{_.get(record, 'customer_traces[0].remark', '')}</ShearContent>
                         );
                     }
                 }
@@ -739,8 +740,8 @@ class ClueExtract extends React.Component {
                     let user = userData.getUserData();
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !user.isCommonSales;
-                    let assigenCls = classNames('assign-btn',{'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue',{'assign-privilege': hasAssignedPrivilege});
+                    let assigenCls = classNames('assign-btn', {'can-edit': !text});
+                    let containerCls = classNames('singl-extract-clue', {'assign-privilege': hasAssignedPrivilege});
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}
@@ -762,10 +763,12 @@ class ClueExtract extends React.Component {
             loading: this.state.isLoading,
         };
         let rowSelection = hasPrivilege('LEAD_EXTRACT_ALL') ||
-                            hasPrivilege('LEAD_EXTRACT_SELF') ? this.getRowSelection() : null;
+        hasPrivilege('LEAD_EXTRACT_SELF') ? this.getRowSelection() : null;
+
         function rowKey(record, index) {
             return record.id;
         }
+
         return (
             <AntcTable
                 rowSelection={rowSelection}
@@ -793,7 +796,7 @@ class ClueExtract extends React.Component {
     renderSalesBlock = () => {
         let dataList = this.getSalesDataList();
         //按点击的次数进行排序
-        dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
+        dataList = _.sortBy(dataList, (item) => {return -item.clickCount;});
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
@@ -809,13 +812,13 @@ class ClueExtract extends React.Component {
     };
 
     //批量提取线索完成后的处理
-    afterHandleAssignSalesBatch = (feedbackObj,submitObj) => {
-        let clue_id = _.get(submitObj,'customer_id','');//线索的id，可能是一个，也可能是多个
+    afterHandleAssignSalesBatch = (feedbackObj, submitObj) => {
+        let clue_id = _.get(submitObj, 'customer_id', '');//线索的id，可能是一个，也可能是多个
         if (feedbackObj && feedbackObj.errorMsg) {
             message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
         } else {
-            let taskId = _.get(feedbackObj, 'taskId','');
-            if (taskId){
+            let taskId = _.get(feedbackObj, 'taskId', '');
+            if (taskId) {
                 // 向任务列表id中添加taskId
                 batchOperate.addTaskIdToList(taskId);
                 // 存储批量操作参数，后续更新时使用
@@ -828,7 +831,7 @@ class ClueExtract extends React.Component {
                 //界面上立即显示一个初始化推送
                 //批量操作参数
                 let is_select_all = !!this.state.selectAllMatched;
-                let totalSelectedSize = is_select_all ? this.state.customersSize : _.get(this,'state.selectedClues.length',0);
+                let totalSelectedSize = is_select_all ? this.state.customersSize : _.get(this, 'state.selectedClues.length', 0);
                 batchOperate.batchOperateListener({
                     taskId: taskId,
                     total: totalSelectedSize,
@@ -850,7 +853,7 @@ class ClueExtract extends React.Component {
                 'team_id': saleLoginData.team_id,
                 'team_name': saleLoginData.team_name,
             };
-            if (itemId){
+            if (itemId) {
                 submitObj.customer_id = itemId;
             }
             return submitObj;
@@ -864,16 +867,16 @@ class ClueExtract extends React.Component {
                 let idArray = this.state.salesMan.split('&&');
                 if (_.isArray(idArray) && idArray.length) {
                     sale_id = idArray[0];//销售的id
-                    team_id = idArray[1];//团队的id
+                    team_id = idArray[1] || '';//团队的id
                 }
                 //销售的名字和团队的名字 格式是 销售名称 -团队名称
                 let nameArray = this.state.salesManNames.split('-');
                 if (_.isArray(nameArray) && nameArray.length) {
                     sale_name = nameArray[0];//销售的名字
-                    team_name = _.trim(nameArray[1]);//团队的名字
+                    team_name = _.trim(nameArray[1]) || '';//团队的名字
                 }
-                let submitObj = { sale_id, sale_name, team_id, team_name};
-                if (itemId){
+                let submitObj = {sale_id, sale_name, team_id, team_name};
+                if (itemId) {
                     submitObj.customer_id = itemId;
                 }
                 return submitObj;
@@ -885,19 +888,19 @@ class ClueExtract extends React.Component {
         //如果是选了修改全部
         let selectedClueIds = '';
         let selectClueAll = this.state.selectAllMatched;
-        if (!selectClueAll){
+        if (!selectClueAll) {
             let cluesArr = _.map(this.state.selectedClues, item => item.id);
             selectedClueIds = cluesArr.join(',');
         }
         let submitObj = this.handleBeforeSumitChangeSales(selectedClueIds);
-        if (selectClueAll){
+        if (selectClueAll) {
             submitObj.query_param = {...this.state.queryObj};
         }
-        if (_.isEmpty(submitObj)){
+        if (_.isEmpty(submitObj)) {
             return;
-        }else{
+        } else {
             cluePoolAction.batchExtractClueAssignToSale(_.cloneDeep(submitObj), (feedbackObj) => {
-                this.afterHandleAssignSalesBatch(feedbackObj,submitObj);
+                this.afterHandleAssignSalesBatch(feedbackObj, submitObj);
             });
         }
     };
@@ -946,7 +949,7 @@ class ClueExtract extends React.Component {
     };
 
     render = () => {
-        const contentClassName = classNames('content-container',{
+        const contentClassName = classNames('content-container', {
             'content-full': !this.state.showFilterList
         });
         const hasSelectedClue = this.hasSelectedClues();
@@ -962,12 +965,12 @@ class ClueExtract extends React.Component {
                         </div>
                         {hasSelectedClue ? (
                             <div className="clue-list-selected-tip">
-                                <span className="iconfont icon-sys-notice" />
+                                <span className="iconfont icon-sys-notice"/>
                                 {this.renderSelectClueTips()}
                             </div>
                         ) : <SearchInput
                             searchEvent={this.searchFullTextEvent}
-                            searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}
+                            searchPlaceHolder={Intl.get('clue.search.full.text', '全文搜索')}
                         />}
                         {
                             hasSelectedClue ? this.renderBatchChangeClues() : null
@@ -988,7 +991,10 @@ class ClueExtract extends React.Component {
                             clueProvinceArray={this.state.clueProvinceArray}
                             salesManList={this.getSalesDataList()}
                             getClueList={this.getCluePoolList}
-                            style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
+                            style={{
+                                width: LAYOUT_CONSTANTS.FILTER_WIDTH,
+                                height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT
+                            }}
                             showSelectTip={_.get(this.state.selectedClues, 'length')}
                         />
                     </div>
@@ -1020,7 +1026,7 @@ class ClueExtract extends React.Component {
                 }
             </div>
         );
-    }
+    };
 }
 
 ClueExtract.propTypes = {
