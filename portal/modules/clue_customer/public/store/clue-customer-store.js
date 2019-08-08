@@ -118,11 +118,9 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
     if (clueData.loading) {
         this.isLoading = true;
         this.clueCustomerErrMsg = '';
-        this.listenScrollBottom = false;
     } else if (clueData.error) {
         this.isLoading = false;
         this.clueCustomerErrMsg = clueData.errorMsg;
-        this.listenScrollBottom = false;
     } else {
         let data = clueData.clueCustomerObj;
         let list = data ? data.result : [];

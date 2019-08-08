@@ -441,7 +441,7 @@ class ClueCustomer extends React.Component {
         return getClueStatusValue(filterClueStatus);
     };
     //获取查询线索的参数
-    getClueSearchCondition = (isGetAllClue, lastClueId) => {
+    getClueSearchCondition = (isGetAllClue) => {
         var filterStoreData = clueFilterStore.getState();
         var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
@@ -516,7 +516,7 @@ class ClueCustomer extends React.Component {
             queryParam: {
                 rangeParams: rangeParams,
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
-                id: lastClueId ? lastClueId : (_.isBoolean(isGetAllClue) ? '' : this.state.lastCustomerId),
+                id: _.isBoolean(isGetAllClue) ? '' : this.state.lastCustomerId,
                 statistics_fields: 'status,availability',
             },
             bodyParam: {
@@ -531,10 +531,10 @@ class ClueCustomer extends React.Component {
         };
     };
     //获取线索列表
-    getClueList = (lastClueId) => {
+    getClueList = () => {
         var filterStoreData = clueFilterStore.getState();
         //跟据类型筛选
-        const queryObj = this.getClueSearchCondition(false, lastClueId);
+        const queryObj = this.getClueSearchCondition();
         var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
         if (filterAllotNoTraced){
             //获取有待我处理条件的线索
@@ -1541,11 +1541,9 @@ class ClueCustomer extends React.Component {
     };
 
     handleScrollBarBottom = () => {
-        var currListLength = _.isArray(this.state.curClueLists) ? this.state.curClueLists.length : 0;
         // 判断加载的条件
-        if (currListLength <= this.state.customersSize) {
-            console.log(11);
-            this.getClueList(_.get(_.last(this.state.curClueLists),'id'));
+        if (this.state.listenScrollBottom && !this.state.isLoading) {
+            this.getClueList();
         }
     };
 
