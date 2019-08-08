@@ -1,24 +1,18 @@
 var React = require('react');
 const PropTypes = require('prop-types');
-import {Button, Form, Input, Icon, message, Popconfirm} from 'antd';
-const FormItem = Form.Item;
+import {Form, Icon, message, Popconfirm} from 'antd';
 var HeadIcon = require('../../../../components/headIcon');
-var AlertTimer = require('../../../../components/alert-timer');
-require('../css/email-show-edit-field.less');
-var defaultPhoneIcon = require('../../../common/public/image/user-info-phone-icon.png');
 var UserInfoAction = require('../action/user-info-actions');
 var Alert = require('antd').Alert;
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Spinner = require('../../../../components/spinner');
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
-import BasicEditField from 'CMP_DIR/basic-edit-field-new/input';
+import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
-import EmailShowEditField from './email-show-edit-field';
-import NicknameShowEditField from './nickname-show-edit-field';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -50,7 +44,7 @@ class UserInfo extends React.Component{
             lang: Oplate.lang || 'zh_CN',
             isBindWechat: true,//是否绑定微信
             isLoadingWechatBind: false,//是否正在绑定微信
-            isEmailEdit: 'text', //'text'/'edit'
+            emailEditType: 'text', //text或edit
             //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
             weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : ''//微信账号绑定的错误提示
         };
@@ -191,42 +185,65 @@ class UserInfo extends React.Component{
     //保存邮箱操作
     saveEmailEditInput = (saveObj, successFunc, errorFunc) => {
         let email = _.get(saveObj, 'email');
-        console.log(email);
+        let userInfo = _.extend(this.props.userInfo, {email: email});
+        delete userInfo.phone;
+        UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
+            if(_.isEmpty(errorMsg)){
+                //邮箱修改成功，恢复为未激活
+                let formData = _.extend(this.state.formData, {emailEnable: false});
+                this.setState({
+                    formData
+                });
+                successFunc();
+            } else {
+                errorFunc(errorMsg);
+            }
+        });
     }
 
     //设置邮箱编辑状态
     setEmailEditable = () => {
         this.setState({
-            isEmailEdit: 'edit'
+            emailEditType: 'edit'
+        });
+    }
+
+    //更新邮箱编辑状态
+    onEmailDisplayTypeChange = (type) => {
+        this.setState({
+            emailEditType: type
         });
     }
 
     renderUserInfo() {
         var _this = this;
         var formData = this.state.formData;
-        let emailInfo = formData.email ? formData.email :
-            <span>
-                <ReactIntl.FormattedMessage
-                    id="user.info.no.email"
-                    defaultMessage={'您还没有绑定邮箱，{add-email}'}
-                    values={{'add-email':
-                         <a
-                             data-tracename="点击绑定邮箱"
-                             onClick={(e) => this.setEmailEditable(e)}>
-                             {Intl.get('user.info.binding.email','绑定邮箱')}
-                         </a>,
-                    }}/>
-            </span>;
-        let isEnable = formData.email ? (formData.emailEnable ? (<span>{Intl.get('common.actived', '已激活')}</span>) :
-            (<ReactIntl.FormattedMessage
+        //根据是否拥有邮箱改变渲染input默认文字
+        let emailInputInfo = formData.email ? formData.email : ' ';
+        //根据是否拥有邮箱改变编辑状态
+        let isEditable = formData.email ? true : false;
+        //根据邮箱状态是否激活改变渲染afterTextTip文字
+        let displaInfo = formData.email ? (formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
+            (<span className="active-info">(<ReactIntl.FormattedMessage
                 id="user.info.no.active"
                 defaultMessage={'未激活，请{active}'}
                 values={{
                     'active': <a onClick={this.activeUserEmail.bind(this)} data-tracename="激活">
                         <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
                     </a>
-                }}/>)) : null;
-        let isEditable = formData.email ? true : false;
+                }}/>)</span>)) :
+            (<span>
+                <ReactIntl.FormattedMessage
+                    id="user.info.no.email"
+                    defaultMessage={'您还没有绑定邮箱，{add-email}'}
+                    values={{'add-email':
+                            <a
+                                data-tracename="点击绑定邮箱"
+                                onClick={(e) => this.setEmailEditable(e)}>
+                                {Intl.get('user.info.binding.email','绑定邮箱')}
+                            </a>,
+                    }}/>
+            </span>);
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo.bind(this)}
                 style={{marginLeft: '20px', marginTop: '20px'}}>
@@ -255,14 +272,12 @@ class UserInfo extends React.Component{
                         <span>
                             {Intl.get('common.email', '邮箱')}
                             ：</span>
-                        <EmailShowEditField userInfo = {this.state.formData}/>
                         <span className="user-email-item">
-                            <BasicEditField
+                            <BasicEditInputField
                                 id={formData.id}
-                                displayType={this.state.isEmailEdit}
+                                displayType={this.state.emailEditType}
                                 field="email"
-                                value={emailInfo}
-                                displayText={formData.email}
+                                value={emailInputInfo}
                                 hasEditPrivilege={isEditable}
                                 hoverShowEdit={false}
                                 validators={{rules: [{
@@ -270,8 +285,9 @@ class UserInfo extends React.Component{
                                 },{
                                     type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
                                 }]}}
-                                afterTextTip={isEnable}
+                                afterTextTip={displaInfo}
                                 saveEditInput={this.saveEmailEditInput}
+                                onDisplayTypeChange={this.onEmailDisplayTypeChange}
                             />
                         </span>
                     </div>
@@ -411,11 +427,11 @@ class UserInfo extends React.Component{
                             nickName={formData.nickName}
                             isUserHeadIcon={true}/>
                         <div className="user-info-nickname">
-                            <BasicEditField
+                            <BasicEditInputField
+                                displayType="text"
                                 id={formData.id}
                                 field="nickname"
                                 value={formData.nickName}
-                                displayText={formData.nickName}
                                 hasEditPrivilege={true}
                                 hoverShowEdit={false}
                                 validators={[nameLengthRule]}
