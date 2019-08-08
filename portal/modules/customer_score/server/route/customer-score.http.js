@@ -23,6 +23,13 @@ module.exports = {
             passport: {
                 needLogin: true
             }
+        }, { // 保存客户规则
+            method: 'post',
+            path: '/rest/save/customer/rules',
+            handler: 'saveCustomerRules',
+            passport: {
+                needLogin: true
+            }
         }
     ]
 };

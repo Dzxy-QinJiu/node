@@ -22,6 +22,15 @@ class CustomerScoreStore {
         this.minValue = 0;//分数尺子上的最小刻度
         this.maxValue = 0;//分数尺子上的最大刻度
         this.marks = {};//尺子上的下标
+        this.customerIndicator = [];//客户评分规则
+        this.customerLevelObj = {
+            loading: true,
+            errMsg: '',
+            obj: {}
+        };//已保存的客户评分规则
+        //正在保存客户规则
+        this.isSavingRules = false;
+        this.saveRulesErr = '';
     }
 
 
@@ -30,7 +39,7 @@ class CustomerScoreStore {
         this.maxValue = updateValue;
         var range = updateValue / 5;
         this.marks = {};
-        for (var i = 0; i < 6; i++) {
+        for (var i = 0; i < 5; i++) {
             this.marks[i * range] = i * range;
         }
     }
@@ -50,34 +59,41 @@ class CustomerScoreStore {
     getCustomerScoreRules(result) {
         if (_.isArray(result.resData)) {
             this.customerLevelRules = result.resData;
-            _.forEach(this.customerLevelRules, item => {
-                if (item.from && item.from.toFixed(0)) {
-                    this.rangeHandleValue.push(+item.from.toFixed(0));
-                }
-
-                if (item.to && item.to.toFixed(0)) {
-                    this.rangeHandleValue.push(+item.to.toFixed(0));
-                }
-                
-                if (item.level_name === 'cold') {
-                    this.lowerHandlePoint = +item.to.toFixed(0);
-                }
-                if (item.level_name === 'warm') {
-                    this.largerHandlePoint = +item.to.toFixed(0);
-                }
-            });
-            this.rangeHandleValue = _.uniq(this.rangeHandleValue);
-            //把最大值的范围修改一下
-            var max = _.max(this.rangeHandleValue) + (_.max(this.rangeHandleValue) - _.get(this, 'rangeHandleValue[1]'));
-            this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
-            var range = this.maxValue / 5;
-            this.marks = {};
-            for (var i = 1; i < 6; i++) {
-                this.marks[i * range] = i * range;
-            }
+            this.setInitialRangeValue();
 
         }
     }
+
+    setInitialRangeValue(){
+        this.rangeHandleValue = [];
+        _.forEach(this.customerLevelRules, item => {
+            if (item.from && item.from.toFixed(0)) {
+                this.rangeHandleValue.push(+item.from.toFixed(0));
+            }
+
+            if (item.to && item.to.toFixed(0)) {
+                this.rangeHandleValue.push(+item.to.toFixed(0));
+            }
+
+            if (item.level_name === 'cold') {
+                this.lowerHandlePoint = +item.to.toFixed(0);
+            }
+            if (item.level_name === 'warm') {
+                this.largerHandlePoint = +item.to.toFixed(0);
+            }
+        });
+        this.rangeHandleValue = _.uniq(this.rangeHandleValue);
+        //把最大值的范围修改一下
+        var max = _.max(this.rangeHandleValue) + (_.max(this.rangeHandleValue) - _.get(this, 'rangeHandleValue[1]'));
+        this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
+        var range = this.maxValue / 5;
+        this.marks = {};
+        for (var i = 1; i < 5; i++) {
+            this.marks[i * range] = i * range;
+        }
+    }
+
+
 
     changeLowerHandlePoint(updateValue) {
         this.lowerHandlePoint = updateValue;
@@ -89,23 +105,45 @@ class CustomerScoreStore {
 
     getCustomerScoreLevel(result) {
         if (result.loading) {
-            this.isLoading = result.loading;
-        } else {
-            this.isLoading = false;
-            if (result.error) {
-                this.cluePoolGetErrMsg = result.errMsg;
-            } else {
-                this.cluePoolGetErrMsg = '';
-                let list = _.get(result, 'resData.result', []);
-                this.cluePoolListSize = _.get(result, 'resData.total', 0);
-                this.cluePoolList = _.concat(this.cluePoolList, list);
-                let length = _.get(this.cluePoolList, 'length', 0);
-                this.listenScrollBottom = length < this.cluePoolListSize ? true : false;
-                this.lastId = length > 0 ? this.cluePoolList[length - 1].id : '';
-            }
+            this.customerLevelObj.loading = true;
+            this.customerLevelObj.errMsg = '';
+        } else if (result.error){
+            this.customerLevelObj.loading = false;
+            this.customerLevelObj.errMsg = result.errorMsg;
+        }else{
+            this.customerLevelObj.loading = false;
+            this.customerLevelObj.errMsg = '';
+            this.customerLevelObj.obj = result.resData;
+
         }
     }
+    getCustomerScoreIndicator(result) {
+        if (_.isArray(result.resData)) {
+            this.customerIndicator = result.resData;
+        }
+    }
+    saveCustomerRules(result){
+        if (result.loading){
+            this.isSavingRules = true;
+            this.saveRulesErr = '';
+        }else if (result.error){
+            this.isSavingRules = false;
+            this.saveRulesErr = result.errorMsg;
+        }else{
+            this.isSavingRules = false;
+            this.saveRulesErr = '';
 
+        }
+    }
+    hideSaveErrMsg(){
+        this.saveRulesErr = '';
+    }
+    updateCustomerScoreRange(updateObj){
+        this.customerLevelRules = updateObj;
+    }
+    updateCustomerRule(updateObj){
+        this.customerLevelObj.obj = updateObj;
+    }
 
 }
 

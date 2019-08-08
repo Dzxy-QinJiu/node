@@ -307,6 +307,13 @@ let routers = [
                 component: `${MODULE_PATH}customer_score/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
+            },{
+                id: 'USER_SCORE',
+                name: 'menu.user.score',// 用户评分
+                routePath: '/background_management/user_score',
+                component: `${MODULE_PATH}user_score/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['CRM_COMPETING_PRODUCT']
             }
         ]
     },

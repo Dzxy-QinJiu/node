@@ -12,10 +12,8 @@ const restApis = {
     getCustomerScoreLevel: '/rest/rule/sales_auto/config/customer_score/rule',
     //获取客户评分配置指标列表
     getCustomerScoreIndicator: '/rest/rule/sales_auto/config/customer_score/rule/config',
-    //获取用户评分配置指标列表
-    getUserScoreIndicator: '/rest/rule/sales_auto/config/user-score/rule/config',
-    //查询参与度规则
-    getUserEngagementRule: '/rest/rule/sales_auto/config/user_engagement/rule'
+    //保存客户的相关参数
+    saveCustomerRules: '/rest/rule/sales_auto/config/customer/rule',
 };
 //获取客户评分的规则
 exports.getCustomerScoreRules = (req, res) => {
@@ -43,4 +41,13 @@ exports.getCustomerScoreIndicator = (req, res) => {
             req: req,
             res: res
         }, null);
+};
+//保存客户的相关规则
+exports.saveCustomerRules = (req, res) => {
+    return restUtil.authRest.post(
+        {
+            url: restApis.saveCustomerRules,
+            req: req,
+            res: res
+        }, req.body);
 };

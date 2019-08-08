@@ -54,6 +54,7 @@ var zh_CN = {
     'menu.leave.apply.list.management': '申请审批',
     'menu.active.user.lists': '活跃用户',
     'menu.customer.score': '客户评分',
+    'menu.user.score': '用户评分',
     //公共部分提取start
     'common.actived': '已激活',
     'common.no.data': '暂无数据',
@@ -3232,7 +3233,31 @@ var zh_CN = {
     'clue.customer.above.limit': '{score}以上',
     'clue.customer.level.score': '客户评分规则',
     'clue.customer.if.switch': '是否启用',
-    'clue.customer.confirm.valid': '确认有效'
+    'clue.customer.confirm.valid': '确认有效',
+    'clue.customer.score.behaviour': '用户行为',
+    'clue.customer.hang.phone.count': '打通电话次数',
+    'clue.customer.visit.customer.count': '拜访客户次数',
+    'clue.customer.user.score': '用户评分',
+    'clue.customer.media.number': '中位数',
+    'clue.customer.score.indicator': '指标',
+    'clue.customer.this.week': '本周',
+    'clue.customer.this.month': '本月',
+    'clue.customer.this.quarter': '本季度',
+    'clue.customer.this.year': '今年',
+    'clue.customer.last.week': '近一周',
+    'clue.customer.last.month': '近一月',
+    'clue.customer.last.quarter': '近一季度',
+    'clue.customer.last.year': '近一年',
+    'user.score.level.rule': '用户评分规则',
+    'user.score.basic.score': '基础评分',
+    'user.score.particate.in.score': '参与度评分',
+    'user.score.nearly.active.days': '近期活跃天数分数',
+    'user.score.online.score': '近期在线时长分数',
+    'customer.score.total.count': '总次数',
+    'user.score.total.minutes': '总分钟数',
+    'user.score.total.hours': '总小时数',
+    'user.score.total.days': '总天数'
+
 
 };
 export default zh_CN;
