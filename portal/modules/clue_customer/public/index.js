@@ -310,8 +310,8 @@ class ClueCustomer extends React.Component {
    
     //渲染导入线索或添加线索按钮
     renderAddBtn = () => {
-        let menu = (<Menu onClick = {this.handleButtonClick.bind(this)}>
-            <Menu.Item key="addForm">
+        let menu = (<Menu onClick = {this.handleButtonClick.bind(this)} >
+            <Menu.Item key="addForm" >
                 {Intl.get('crm.sales.manual_add.clue','手动添加')}
             </Menu.Item>
                         
@@ -323,7 +323,7 @@ class ClueCustomer extends React.Component {
             <div className="recomend-clue-customer-container pull-right">
                 {
                     hasPrivilege('CUSTOMER_ADD_CLUE') ?
-                        <Dropdown overlay={menu} >
+                        <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
                             <Button className="ant-btn ant-btn-primary manual-add-btn" >
                                 {(this.state.btnContent === 'clue.manage.import.clue') ?
                                     Intl.get(this.state.btnContent,'添加线索',{type: Intl.get('crm.sales.clue', '线索')}) :
