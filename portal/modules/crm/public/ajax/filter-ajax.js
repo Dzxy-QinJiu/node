@@ -106,10 +106,7 @@ exports.getOwnerList = function() {
 };
 
 exports.getStageTagList = function() {
-    let type = 'user';//CRM_USER_GET_CUSTOMER_CUSTOMER_LABEL
-    if (hasPrivilege('CRM_MANAGER_GET_CUSTOMER_CUSTOMER_LABEL')) {
-        type = 'manager';
-    }
+    let type = getFilterItemPrivelegeType();
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm/stage_tag/' + type,
