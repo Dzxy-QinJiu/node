@@ -63,7 +63,8 @@ var LAYOUT_CONSTANTS = {
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
     TH_MORE_HEIGHT: 20//带选择框的TH60比不带选择框的TH40多出来的高度
 };
-
+const ADD = 'crm.sales.manual_add.clue';//手动添加线索
+const IMPORT = 'crm.sales.manual.import.clue';//导入线索
 class ClueCustomer extends React.Component {
     state = {
         clueAddFormShow: false,//
@@ -296,13 +297,13 @@ class ClueCustomer extends React.Component {
     handleButtonClick = (e) => {
         if(e.key === 'addForm'){
             this.setState({
-                btnContent: 'crm.sales.manual_add.clue',
+                btnContent: ADD,//手动添加
                 clueAddFormShow: true
                 
             });
         }else if(e.key === 'import'){
             this.setState({
-                btnContent: 'clue.manage.import.clue',
+                btnContent: IMPORT,
                 clueImportTemplateFormShow: true
             });
         }
@@ -312,11 +313,11 @@ class ClueCustomer extends React.Component {
     renderAddBtn = () => {
         let menu = (<Menu onClick = {this.handleButtonClick.bind(this)} >
             <Menu.Item key="addForm" >
-                {Intl.get('crm.sales.manual_add.clue','手动添加')}
+                {Intl.get(ADD,'手动添加')}
             </Menu.Item>
                         
             <Menu.Item key="import" >
-                {Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}
+                {Intl.get(IMPORT,'导入线索')}
             </Menu.Item>
         </Menu>);
         return (
@@ -325,10 +326,7 @@ class ClueCustomer extends React.Component {
                     hasPrivilege('CUSTOMER_ADD_CLUE') ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
                             <Button className="ant-btn ant-btn-primary manual-add-btn" >
-                                {(this.state.btnContent === 'clue.manage.import.clue') ?
-                                    Intl.get(this.state.btnContent,'添加线索',{type: Intl.get('crm.sales.clue', '线索')}) :
-                                    Intl.get(this.state.btnContent)
-                                }
+                                {Intl.get(this.state.btnContent)}
                                 <Icon type="down" />
                             </Button>
                         </Dropdown> : null

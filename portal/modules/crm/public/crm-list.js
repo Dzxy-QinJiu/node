@@ -46,6 +46,8 @@ import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+const ADD = 'crm.sales.manual_add.clue';
+const IMPORT = 'crm.2';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -968,12 +970,12 @@ class Crm extends React.Component {
     handleButtonClick = (e) => {
         if(e.key === 'addForm'){
             this.setState({
-                btnContent: 'crm.sales.manual_add.clue',
+                btnContent: ADD,
                 isAddFlag: true 
             });
         }else if(e.key === 'import'){
             this.setState({
-                btnContent: 'crm.2',
+                btnContent: IMPORT,
                 crmTemplateRightPanelShow: true
             });
         }
@@ -984,11 +986,11 @@ class Crm extends React.Component {
         let menu = (
             <Menu onClick={this.handleButtonClick.bind(this)}>
                 <Menu.Item key="addForm" >
-                    {Intl.get('crm.sales.manual_add.clue','手动添加')}
+                    {Intl.get(ADD,'手动添加')}
                 </Menu.Item>
             
                 <Menu.Item key="import" >
-                    {Intl.get('crm.2', '导入客户')}
+                    {Intl.get(IMPORT, '导入客户')}
                 </Menu.Item>
             </Menu>
         );
@@ -1030,10 +1032,10 @@ class Crm extends React.Component {
                     className={btnClass}
                     title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}>
                     {    
-                        isWebMini ? (<Dropdown overlay={this.dropList()}  placement="bottomCenter" overlayClassName='mini-add-dropdown'>
-                                        <Icon type="plus" className="add-btn"/> 
-                                    </Dropdown>
-                                    ): (
+                        isWebMini ? (<Dropdown overlay={this.dropList()} placement="bottomCenter" overlayClassName='mini-add-dropdown'>
+                            <Icon type="plus" className="add-btn"/> 
+                        </Dropdown>
+                        ) : (
                             <Dropdown overlay={this.dropList()} placement="bottomCenter" overlayClassName='norm-add-dropdown' >
                                 <Button type="primary">
                                     {Intl.get(this.state.btnContent, '添加客户')}
