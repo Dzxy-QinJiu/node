@@ -387,7 +387,7 @@ class MyInsterestColumn extends React.Component {
 
     //联系人及电话的渲染
     renderContactItem(item) {
-        let contacts = _.get(item, 'contacts',[]);
+        let contacts = _.get(item, 'contacts', []);
         let phones = _.map(contacts, 'phone');
         if (!_.isEmpty(contacts) && !_.isEmpty(phones)) {
             let contactsContent = this.renderPopoverContent(contacts, item);
@@ -427,9 +427,10 @@ class MyInsterestColumn extends React.Component {
                             loginUserId === notice.member_id ?
                                 <Button className="notice-handled-set" disabled={this.state.noticeId === notice.id}
                                     onClick={this.handleSystemNotice.bind(this, notice)}
+                                    title={Intl.get('home.page.my.interest.handled', '点击设为已处理')}
                                 >
-                                    {Intl.get('notification.system.handled.set', '处理')}{notice.isHandling ?
-                                        <Icon type="loading"/> : null}
+                                    <i className="iconfont icon-select-member"/>
+                                    {notice.isHandling ? <Icon type="loading"/> : null}
                                 </Button> : null
                         }
                         {this.state.noticeId === notice.id ? (

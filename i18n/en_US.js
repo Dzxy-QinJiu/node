@@ -337,6 +337,7 @@ var en_US = {
     'home.page.no.work.tip': 'No job for the time being',//暂无工作
     'home.page.new.work.tip': 'Work changes, click here {refreshTip}',//工作有变动，点此{refreshTip}
     'home.page.my.work.finished': 'Click Set to Completed',//点击设为已完成
+    'home.page.my.interest.handled': 'Click Set to Processed',//点击设为已处理
     'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
     'home.page.callout.time': 'Total call time',//呼出总时长
     'home.page.performance.num': 'No. {n}',//第{n}名
