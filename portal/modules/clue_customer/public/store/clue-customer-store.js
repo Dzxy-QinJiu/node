@@ -33,7 +33,6 @@ ClueCustomerStore.prototype.resetState = function() {
     this.submitTraceErrMsg = '';//提交跟进内容报错的情况
     this.submitTraceLoading = false;//正在提交跟进内容
     this.lastCustomerId = '';//用于下拉加载的客户的id
-    this.listenScrollBottom = true;//
     this.sorter = {
         field: 'source_time',
         order: 'descend'
@@ -119,9 +118,11 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
     if (clueData.loading) {
         this.isLoading = true;
         this.clueCustomerErrMsg = '';
+        this.listenScrollBottom = false;
     } else if (clueData.error) {
         this.isLoading = false;
         this.clueCustomerErrMsg = clueData.errorMsg;
+        this.listenScrollBottom = false;
     } else {
         let data = clueData.clueCustomerObj;
         let list = data ? data.result : [];

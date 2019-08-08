@@ -148,6 +148,7 @@ class ClueCustomer extends React.Component {
             //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况  checkAllotNoTraced： 选中了待我审批  checkedAdvance： 还有其他筛选项
             if((!checkAllotNoTraced || (checkAllotNoTraced && checkedAdvance))){
                 delete nextProps.location.state.clickUnhandleNum;
+
                 clueCustomerAction.setClueInitialData();
                 this.getUnhandledClue();
             }
@@ -440,7 +441,7 @@ class ClueCustomer extends React.Component {
         return getClueStatusValue(filterClueStatus);
     };
     //获取查询线索的参数
-    getClueSearchCondition = (isGetAllClue) => {
+    getClueSearchCondition = (isGetAllClue, lastClueId) => {
         var filterStoreData = clueFilterStore.getState();
         var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
@@ -515,7 +516,7 @@ class ClueCustomer extends React.Component {
             queryParam: {
                 rangeParams: rangeParams,
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
-                id: _.isBoolean(isGetAllClue) ? '' : this.state.lastCustomerId,
+                id: lastClueId ? lastClueId : (_.isBoolean(isGetAllClue) ? '' : this.state.lastCustomerId),
                 statistics_fields: 'status,availability',
             },
             bodyParam: {
@@ -530,10 +531,10 @@ class ClueCustomer extends React.Component {
         };
     };
     //获取线索列表
-    getClueList = () => {
+    getClueList = (lastClueId) => {
         var filterStoreData = clueFilterStore.getState();
         //跟据类型筛选
-        const queryObj = this.getClueSearchCondition();
+        const queryObj = this.getClueSearchCondition(false, lastClueId);
         var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
         if (filterAllotNoTraced){
             //获取有待我处理条件的线索
@@ -1543,7 +1544,8 @@ class ClueCustomer extends React.Component {
         var currListLength = _.isArray(this.state.curClueLists) ? this.state.curClueLists.length : 0;
         // 判断加载的条件
         if (currListLength <= this.state.customersSize) {
-            this.getClueList();
+            console.log(11);
+            this.getClueList(_.get(_.last(this.state.curClueLists),'id'));
         }
     };
 
