@@ -521,5 +521,9 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
 
     }
 };
+// 获取所有人员
+ClueCustomerStore.prototype.getAllSalesUserList = function(list) {
+    this.salesManList = _.isArray(list) ? list : [];
+};
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

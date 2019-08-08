@@ -41,6 +41,8 @@ var clueCustomerAction = require('../action/clue-customer-action');
 import {handleSubmitClueItemData, SELECT_TYPE, editCluePrivilege} from '../utils/clue-customer-utils';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
+import userData from 'PUB_DIR/sources/user-data';
+import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 
 class ClueRightPanel extends React.Component {
     constructor(props) {
@@ -130,12 +132,24 @@ class ClueRightPanel extends React.Component {
         }
 
     };
+    // 是否是管理员或者运营人员
+    isManagerOrOperation = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    };
     getSaleTeamList = () => {
-        clueCustomerAjax.getSalesManList().then(data => {
-            this.setState({
-                salesManList: _.filter(data, sales => sales && sales.user_info && sales.user_info.status === 1)
+        if(this.isManagerOrOperation()) {
+            getAllSalesUserList((list) => {
+                this.setState({
+                    salesManList: list
+                });
             });
-        });
+        }else {
+            clueCustomerAjax.getSalesManList().then(data => {
+                this.setState({
+                    salesManList: _.filter(data, sales => sales && sales.user_info && sales.user_info.status === 1)
+                });
+            });
+        }
     };
     getClueSource = () => {
         clueCustomerAjax.getClueSource().then(data => {
