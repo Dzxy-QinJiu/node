@@ -15,7 +15,7 @@ class SalesProcessAction {
             'upDateSalesProcessList', // 更新销售流程列表
             'showProcessDetailPanel', // 显示销售流程详情面板
             'closeProcessDetailPanel', // 关闭销售流程详情面板
-            'afterEditSaleProcessField', // 编辑销售流程字段
+            'changeSaleProcessFieldSuccess', // 修改销售流程字段
             'showCustomerStagePanel', // 显示客户阶段面板
             'closeCustomerStagePanel' // 关闭客户界阶段面板
         );

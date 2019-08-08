@@ -47,7 +47,7 @@ class SalesProcessInfo extends React.Component {
     saveEditSaleProcess = (type, saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存销售流程${type}的修改`);
         SalesProcessAjax.updateSalesProcess(saveObj).then((result) => {
-            if (result === 'true') {
+            if (result) {
                 if (_.isFunction(successFunc)) successFunc();
                 this.changeSaleProcessFieldSuccess(saveObj);
             } else {
@@ -93,7 +93,7 @@ class SalesProcessInfo extends React.Component {
                                     status: saleProcess.status === '0' ? Intl.get('common.enabled', '启用') :
                                         Intl.get('common.stop', '停用')
                                 })}
-                                handleConfirm={this.saveEditSaleProcess.bind(this, 'status')}
+                                handleConfirm={this.props.handleConfirmChangeProcessStatus(saleProcess)}
                                 status={saleProcess.status === '1' ? true : false}
                             />
                         ) : null
@@ -138,12 +138,14 @@ function noop() {
 SalesProcessInfo.defaultProps = {
     saleProcess: {},
     changeSaleProcessFieldSuccess: noop,
-    closeProcessDetailPanel: noop
+    closeProcessDetailPanel: noop,
+    handleConfirmChangeProcessStatus: noop
 };
 SalesProcessInfo.propTypes = {
     saleProcess: PropTypes.object,
     changeSaleProcessFieldSuccess: PropTypes.func,
     closeProcessDetailPanel: PropTypes.func,
+    handleConfirmChangeProcessStatus: PropTypes.func,
 };
 
 export default SalesProcessInfo;

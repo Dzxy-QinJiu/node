@@ -71,9 +71,9 @@ class CustomerStageForm extends React.Component {
     }
 
     validatorOrderName = (orderValue, callback) => {
-        let existOrderStageList = this.state.salesStageList; // 已存在的订单阶段
+        let existOrderStageList = this.state.customerStageList; // 已存在的客户阶段
         let isExist = _.find(existOrderStageList, item => item.name === orderValue);
-        if (isExist) { // 和已存在的订单阶段名称是相同
+        if (isExist) { // 和已存在的客户阶段名称是相同
             callback(Intl.get('crm.order.stage.name.verify', '该阶段名称已存在'));
         } else {
             callback();
@@ -81,18 +81,18 @@ class CustomerStageForm extends React.Component {
     };
 
 
-    // 订单阶段唯一性校验
+    // 客户阶段唯一性校验
     getValidator = () => {
         return (rule, value, callback) => {
             let orderValue = _.trim(value); // 文本框中的值
             let formData = this.state.formData;
-            if (_.get(formData, 'id')) { // 编辑订单阶段
+            if (_.get(formData, 'id')) { // 编辑客户阶段
                 if (_.get(formData, 'name') === orderValue) { // 没有修改阶段名称
                     callback();
                 } else {
                     this.validatorOrderName(orderValue, callback);
                 }
-            } else { // 添加订单阶段
+            } else { // 添加客户阶段
                 this.validatorOrderName(orderValue, callback);
             }
         };

@@ -119,7 +119,7 @@ class SalesProcessStore {
         this.isShowProcessInfoPanel = false;
     }
 
-    afterEditSaleProcessField(saleProcess) {
+    changeSaleProcessFieldSuccess(saleProcess) {
         let upDateProcess = _.find(this.salesProcessList, item => item.id === saleProcess.id);
         let name = _.get(saleProcess, 'name'); // 修改销售流程名称
         let description = _.get(saleProcess, 'description'); // 修改销售流程描述
@@ -131,8 +131,6 @@ class SalesProcessStore {
             upDateProcess.status = status;
         } else if (description) {
             upDateProcess.description = description;
-        } else if (scope) {
-
         }
     }
 

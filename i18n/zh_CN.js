@@ -835,7 +835,7 @@ var zh_CN = {
     'sales.process.destrip.placeholder': '请输入销售流程的描述信息',
     'sales.process.set.customer.stage': '设置客户阶段',
     'sales.process.status.edit.tip': '确定要{status}该销售流程？',
-    'sales.process.delete.tips': '请先启用一个销售流程，再删除！',
+    'sales.process.delete.tips': '请先启用一个销售流程',
     'sales.process.add.customer.stage': '添加客户阶段',
     'sales.process.edit.customer.stage': '编辑客户阶段',
     'sales.process.customer.stage.nodata.tips': '暂无客户阶段，请先添加',

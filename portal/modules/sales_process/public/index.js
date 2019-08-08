@@ -165,31 +165,63 @@ class SalesProcess extends React.Component {
         SalesProcessAction.closeCustomerStagePanel();
     };
 
-    // 处理删除销售流程
-    handleDeleteSaleProcess = (saleProcess) => {
+    // 在删除或是停用之前，先判断其他销售流程的状态，是否是全部停用
+    isSalesProcessDisable(saleProcess) {
+        let isOtherProcessAllDisable = false; // 默认false
         const id = saleProcess.id;
         const otherSalesProcessList = _.filter(this.state.salesProcessList, item => item.id !== id);
         const status = _.map(otherSalesProcessList, 'status');
         let statusArray = _.uniq(status);
         if (statusArray.length === 1 && status[0] === '0') {
-            saleProcess.noDelete = true;
-            return;
+            isOtherProcessAllDisable = true;
         }
-        SalesProcessAjax.deleteSalesProcess(id).then((result) => {
-            if (result === true) { // 删除成功
-                saleProcess.flag = 'delete'; // 增加一个删除标志，可以合和添加流程，更新列表区分开
-                SalesProcessAction.upDateSalesProcessList(saleProcess);
-                message.success(Intl.get('crm.138', '删除成功！'));
-            } else {
-                message.error(Intl.get('crm.139', '删除失败！'));
-            }
-        }, (errMsg) => {
-            message.error(errMsg || Intl.get('crm.139', '删除失败！'));
-        });
+        return isOtherProcessAllDisable;
+    }
+
+    // 处理删除销售流程
+    handleDeleteSaleProcess = (saleProcess) => {
+        const id = saleProcess.id;
+        const isSalesProcessDisable = this.isSalesProcessDisable(saleProcess); // 判断其他销售流程是否全部停用
+        if (isSalesProcessDisable) {
+            message.warn(Intl.get('sales.process.delete.tips', '请先启用一个销售流程'));
+        } else {
+            SalesProcessAjax.deleteSalesProcess(id).then((result) => {
+                if (result === true) { // 删除成功
+                    saleProcess.flag = 'delete'; // 增加一个删除标志，可以合和添加流程，更新列表区分开
+                    SalesProcessAction.upDateSalesProcessList(saleProcess);
+                    message.success(Intl.get('crm.138', '删除成功！'));
+                } else {
+                    message.error(Intl.get('crm.139', '删除失败！'));
+                }
+            }, (errMsg) => {
+                message.error(errMsg || Intl.get('crm.139', '删除失败！'));
+            });
+        }
     };
 
     // 确认更改销售流程的状态
     handleConfirmChangeProcessStatus = (item) => {
+        if (item.status === '0') { // 要启用的处理
+            let upDateProcess = {
+                id: item.id,
+                status: '1'
+            };
+            SalesProcessAjax.updateSalesProcess(upDateProcess).then((result) => {
+                if (result) {
+                    this.changeSaleProcessFieldSuccess(upDateProcess);
+                    message.success(Intl.get('crm.218', '修改成功！'));
+                } else {
+                    message.success(Intl.get('crm.219', '修改失败！'));
+                }
+            }, (errorMsg) => {
+                message.success(errorMsg || Intl.get('crm.219', '修改失败！'));
+            });
+        } else if (item.status === '1'){ // 要停用的处理
+            const isSalesProcessDisable = this.isSalesProcessDisable(item); // 判断其他销售流程是否全部停用
+            if (isSalesProcessDisable) {
+                message.warn(Intl.get('sales.process.delete.tips', '请先启用一个销售流程'));
+            }
+        }
 
     };
 
@@ -270,13 +302,6 @@ class SalesProcess extends React.Component {
                                             <i className="iconfont icon-role-auth-config"></i>
                                         </span>
                                         {
-                                            item.noDelete ? (
-                                                <span>
-                                                    {Intl.get('sales.process.delete.tips', '请先启用一个销售流程，再删除！')}
-                                                </span>
-                                            ) : null
-                                        }
-                                        {
                                             hasPrivilege('CRM_DELETE_SALES_PROCESS') && item.type === 'custom' ? (
                                                 <span
                                                     onClick={this.handleDeleteSaleProcess.bind(this, item)}
@@ -297,7 +322,7 @@ class SalesProcess extends React.Component {
 
     // 修改销售流程字段成功的处理
     changeSaleProcessFieldSuccess = (saleProcess) => {
-        SalesProcessAction.afterEditSaleProcess(saleProcess);
+        SalesProcessAction.changeSaleProcessFieldSuccess(saleProcess);
     };
 
     render = () => {
@@ -345,6 +370,7 @@ class SalesProcess extends React.Component {
                                 closeProcessDetailPanel={this.closeProcessDetailPanel}
                                 changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
                                 treeSelectData={treeSelectData}
+                                handleConfirmChangeProcessStatus={this.handleConfirmChangeProcessStatus}
                             />
                         ) : null
                     }

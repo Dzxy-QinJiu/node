@@ -16,51 +16,7 @@ class CustomerStageStore {
         this.bindActions(CustomerStageAction);
     }
     setInitialData() {
-        this.customerStageList = [{
-            sales_process_id: '1',
-            id: '11',
-            order: 1,
-            name: '信息',
-            description: '初始录入的客户初始录入的客户初始录入的客户初始录入的客户初始录入的客户初始录入的客户',
-            play_books: '大多数非法发范德萨范德萨范德萨佛挡杀佛',
-            sales_activities: [{
-                id: 's1',
-                name: '核心客户信息',
-                description: 'fdfdfddddddd',
-                stage_id: 'ad'
-            }]
-        }, {
-            sales_process_id: '1',
-            id: '12',
-            order: 2,
-            name: '意向',
-            description: '22意向客户初始录入的客户初始录入的客户初始录入的客户初始录入的客户初始录入的客户',
-            play_books: '222大多数非法发范德萨范德萨范德萨佛挡杀佛',
-            sales_activities: [{
-                id: 's1',
-                name: '222核心客户信息',
-                description: '22fdfdfddddddd',
-                stage_id: 'ad'
-            }]
-        }, {
-            sales_process_id: '1',
-            id: '13',
-            order: 3,
-            name: '试用',
-            description: '33意向客户初始录入的客户初始录入的客户初始录入的客户初始录入的客户初始录入的客户',
-            play_books: '333大多数非法发范德萨范德萨范德萨佛挡杀佛',
-            sales_activities: [{
-                id: 's1',
-                name: '222核心客户信息',
-                description: '22fdfdfddddddd',
-                stage_id: 'ad'
-            },{
-                id: 's2',
-                name: '333核心客户信息',
-                description: '3322fdfdfddddddd',
-                stage_id: 'ad1'
-            }]
-        }];
+        this.customerStageList = [];
         this.loading = true;
         this.getCustomerStageListErrMsg = '';
         this.currentCustomerStage = emptyCustomerStage;
