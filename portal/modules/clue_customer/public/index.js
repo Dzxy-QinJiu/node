@@ -148,6 +148,7 @@ class ClueCustomer extends React.Component {
             //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况  checkAllotNoTraced： 选中了待我审批  checkedAdvance： 还有其他筛选项
             if((!checkAllotNoTraced || (checkAllotNoTraced && checkedAdvance))){
                 delete nextProps.location.state.clickUnhandleNum;
+
                 clueCustomerAction.setClueInitialData();
                 this.getUnhandledClue();
             }
@@ -1540,9 +1541,8 @@ class ClueCustomer extends React.Component {
     };
 
     handleScrollBarBottom = () => {
-        var currListLength = _.isArray(this.state.curClueLists) ? this.state.curClueLists.length : 0;
         // 判断加载的条件
-        if (currListLength <= this.state.customersSize) {
+        if (this.state.listenScrollBottom && !this.state.isLoading) {
             this.getClueList();
         }
     };
