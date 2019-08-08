@@ -1029,15 +1029,22 @@ class ClueCustomer extends React.Component {
                 width: '350px',
                 render: (text, salesClueItem, index) => {
                     let similarClue = _.get(salesClueItem, 'labels');
+                    let availability = _.get(salesClueItem, 'availability');
+                    let status = _.get(salesClueItem, 'status');
+                    //判断是否为无效客户或者已转化客户
+                    let isInvalidClients = _.isEqual(availability, '1') || _.isEqual(status, '3');
+                    //判断是否有相似线索或者相似客户
+                    let isHasSimilar = _.indexOf(similarClue, '有相似客户') !== -1 || _.indexOf(similarClue, '有相似线索') !== -1;
                     return (
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
-                                {_.indexOf(similarClue, '有相似客户') !== -1 || _.indexOf(similarClue, '有相似线索') !== -1 ? (
-                                    <Tag className="clue-label intent-tag-style">
-                                        {Intl.get('clue.similar.clue', '有相似线索或客户')}
-                                    </Tag>) : null
+                                { isInvalidClients ? null :
+                                    isHasSimilar ? (
+                                        <Tag className="clue-label intent-tag-style">
+                                            {Intl.get('clue.similar.clue', '有相似线索或客户')}
+                                        </Tag>) : null
                                 }
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
