@@ -344,7 +344,7 @@ var zh_CN = {
     'home.page.deal.handle': '待处理的订单',
     'home.page.no.work.tip': '暂无工作',
     'home.page.new.work.tip': '工作有变动，点此{refreshTip}',
-    'home.page.my.work.finished': '我已完成',
+    'home.page.my.work.finished': '点击设为已完成',
     'home.page.contacts.customers.week': '本周已联系客户总数',
     'home.page.callout.time': '呼出总时长',
     'home.page.performance.num': '第{n}名',
