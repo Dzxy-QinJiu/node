@@ -24,27 +24,6 @@ exports.getSalesType = function() {
     });
     return Deferred.promise();
 };
-//获取通话总次数、总时长Top10列表
-let callTotalAjax = null;
-exports.getCallTotalList = function(authType, reqData) {
-    callTotalAjax && callTotalAjax.abort();
-    var Deferred = $.Deferred();
-    callTotalAjax = $.ajax({
-        url: `/rest/call/total/count_time/${authType}`,
-        dataType: 'json',
-        type: 'get',
-        data: reqData,
-        success: function(data) {
-            Deferred.resolve(data);
-        },
-        error: function(xhr, textStatus) {
-            if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};
 
 //获取统计团队内成员个数的列表
 let teamMemberCountAjax;

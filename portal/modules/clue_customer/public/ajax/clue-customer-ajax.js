@@ -218,6 +218,7 @@ exports.updateClueItemDetail = function(data) {
     return Deferred.promise();
 };
 //获取全文搜索的线索
+var getClueFulltextAjax;
 exports.getClueFulltext = function(queryObj) {
     var pageSize = queryObj.pageSize;
     delete queryObj.pageSize;
@@ -229,7 +230,8 @@ exports.getClueFulltext = function(queryObj) {
     }
     var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order + '/' + type;
     var Deferred = $.Deferred();
-    $.ajax({
+    getClueFulltextAjax && getClueFulltextAjax.abort();
+    getClueFulltextAjax = $.ajax({
         url: url ,
         dataType: 'json',
         type: 'post',
@@ -244,6 +246,7 @@ exports.getClueFulltext = function(queryObj) {
     return Deferred.promise();
 };
 //有待我处理筛选项是获取全文搜索的线索
+var getClueFulltextSelfHandleAjax;
 exports.getClueFulltextSelfHandle = function(queryObj) {
     var pageSize = queryObj.pageSize;
     delete queryObj.pageSize;
@@ -255,7 +258,8 @@ exports.getClueFulltextSelfHandle = function(queryObj) {
     }
     var url = '/rest/get/clue/selfhandle/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order + '/' + type;
     var Deferred = $.Deferred();
-    $.ajax({
+    getClueFulltextSelfHandleAjax && getClueFulltextSelfHandleAjax.abort();
+    getClueFulltextSelfHandleAjax = $.ajax({
         url: url ,
         dataType: 'json',
         type: 'post',

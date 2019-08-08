@@ -3,6 +3,8 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/7/25.
  */
+import { BOOT_PROCESS_KEYS } from 'PUB_DIR/sources/utils/consts';
+
 require('../../css/recommend_clues_lists.less');
 import {Button,message} from 'antd';
 import {RightPanel, RightPanelClose} from 'CMP_DIR/rightPanel';
@@ -23,6 +25,7 @@ import Trace from 'LIB_DIR/trace';
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
@@ -143,6 +146,8 @@ class RecommendCustomerRightPanel extends React.Component {
                     singleExtractLoading: false,
                 });
                 if (data){
+                    // 更新引导流程
+                    this.upDateGuideMark();
                     //提取成功后，把该线索在列表中删除
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     this.clearSelectSales();
@@ -391,6 +396,9 @@ class RecommendCustomerRightPanel extends React.Component {
     getRowKey = (record, index) => {
         return record.id;
     };
+    upDateGuideMark = () => {
+        updateGuideMark(BOOT_PROCESS_KEYS.EXTRACT_CLUE);
+    };
     handleBatchAssignClues = (submitObj) => {
         this.setState({
             batchExtractLoading: true,
@@ -406,6 +414,8 @@ class RecommendCustomerRightPanel extends React.Component {
                 });
                 var taskId = _.get(data, 'batch_label','');
                 if (taskId){
+                    // 更新引导流程
+                    this.upDateGuideMark();
                     //向任务列表id中添加taskId
                     batchOperate.addTaskIdToList(taskId);
                     //存储批量操作参数，后续更新时使用

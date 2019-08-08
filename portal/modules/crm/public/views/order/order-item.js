@@ -25,6 +25,8 @@ const ORDER_STATUS = {
     WIN: 'win',//赢单
     LOSE: 'lose'//丢单
 };
+const HAS_DELETE = 'CRM_SALESOPPORTUNITY_DELETE';//删除权限的常量
+const HAS_UPDATA = 'SALESOPPORTUNITY_UPDATE';//修改权限的常量
 //展示申请签约用户的阶段
 const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')];
 //展示申请试用用户的阶段
@@ -56,7 +58,7 @@ class OrderItem extends React.Component {
             closeOrderErrorMsg: '',//关闭订单失败的错误提示
             curOrderCloseStatus: '',//当前选择的订单的关闭状态
             isExpandDetail: false,//关闭的订单是否展示详情
-            hasUpdata: 'SALESOPPORTUNITY_UPDATE',
+           
         };
     }
 
@@ -356,7 +358,7 @@ class OrderItem extends React.Component {
         }
         const EDIT_FEILD_WIDTH = 350;
         //订单关闭或回收站中打开客户详情时，不可修改
-        let hasEditPrivilege = !(order.oppo_status || this.props.disableEdit) && hasPrivilege(this.state.hasUpdata);
+        let hasEditPrivilege = !(order.oppo_status || this.props.disableEdit) && hasPrivilege(HAS_UPDATA);
         return (
             <div className="order-item modal-container">
                 {
@@ -415,65 +417,56 @@ class OrderItem extends React.Component {
                                             </div>
                                         );
                                     })}
-                                    {hasEditPrivilege && hasPrivilege(this.state.hasUpdata) ? <DetailEditBtn onClick={this.showAppPanel}/> : null}
+                                    {hasEditPrivilege && hasPrivilege(HAS_UPDATA) ? <DetailEditBtn onClick={this.showAppPanel}/> : null}
                                 </div>
                             )}
                         </div>
                         <div className="order-item-content">
                             <span className="order-key">{Intl.get('crm.148', '预算金额')}:</span>
-                            { 
-                                <BasicEditInputField
-                                    width={EDIT_FEILD_WIDTH}
-                                    id={order.id}
-                                    type="number"
-                                    field="budget"
-                                    value={order.budget}
-                                    afterValTip={Intl.get('contract.82', '元')}
-                                    placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
-                                    hasEditPrivilege={hasEditPrivilege}
-                                    validators={[{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')}]}
-                                    saveEditInput={this.saveOrderBasicInfo.bind(this, 'budget')}
-                                    noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
-                                    addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
-                                /> 
-                            }
-                            
-                            
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={order.id}
+                                type="number"
+                                field="budget"
+                                value={order.budget}
+                                afterValTip={Intl.get('contract.82', '元')}
+                                placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                validators={[{required: true, message: Intl.get('crm.order.budget.input', '请输入预算金额')}]}
+                                saveEditInput={this.saveOrderBasicInfo.bind(this, 'budget')}
+                                noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
+                                addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
+                            />   
                         </div>
                         <div className="order-item-content">
                             <span className="order-key">{Intl.get('crm.order.expected.deal', '预计成交')}:</span>
-                            {
-                                <BasicEditDateField
-                                    width={EDIT_FEILD_WIDTH}
-                                    id={order.id}
-                                    field="predict_finish_time"
-                                    value={order.predict_finish_time}
-                                    placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
-                                    hasEditPrivilege={hasEditPrivilege}
-                                    saveEditDateInput={this.saveOrderBasicInfo.bind(this, 'predict_finish_time')}
-                                    noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
-                                    addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
-                                />
-                            }
+                            <BasicEditDateField
+                                width={EDIT_FEILD_WIDTH}
+                                id={order.id}
+                                field="predict_finish_time"
+                                value={order.predict_finish_time}
+                                placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditDateInput={this.saveOrderBasicInfo.bind(this, 'predict_finish_time')}
+                                noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
+                                addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
+                            />
                         </div>
                         <div className="order-item-content">
                             <span className="order-key">{Intl.get('crm.order.remarks', '订单备注')}:</span>
-                            {
-                                <BasicEditInputField
-                                    width={EDIT_FEILD_WIDTH}
-                                    id={order.id}
-                                    type="textarea"
-                                    field="remarks"
-                                    value={order.remarks}
-                                    editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
-                                    placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                    hasEditPrivilege={hasEditPrivilege}
-                                    saveEditInput={this.saveOrderBasicInfo.bind(this, 'remarks')}
-                                    noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
-                                    addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
-                                />
-                            }
-
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={order.id}
+                                type="textarea"
+                                field="remarks"
+                                value={order.remarks}
+                                editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
+                                placeholder={Intl.get('user.input.remark', '请输入备注')}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditInput={this.saveOrderBasicInfo.bind(this, 'remarks')}
+                                noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                                addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
+                            />
                         </div>
                     </div>) : null}
                 {/*<div className="order-introduce">*/}
@@ -577,7 +570,7 @@ class OrderItem extends React.Component {
     };
 
     onClickStep = (event) => {
-        if(this.props.disableEdit || !hasPrivilege(this.state.hasUpdata)) return;
+        if(this.props.disableEdit || !hasPrivilege(HAS_UPDATA)) return;
         $(event.target).parents('.step-item').find('.order-stage-name').trigger('click');
     };
 
@@ -635,7 +628,7 @@ class OrderItem extends React.Component {
                                             {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                         </Button>
                                     </span>
-                                ) : this.props.disableEdit || !hasPrivilege('CRM_SALESOPPORTUNITY_DELETE') ? null 
+                                ) : this.props.disableEdit || !hasPrivilege(HAS_DELETE) ? null 
                                     : (<span className="iconfont icon-delete" 
                                         title={Intl.get('common.delete', '删除')}
                                         data-tracename="点击删除订单按钮" 

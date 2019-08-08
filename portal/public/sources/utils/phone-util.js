@@ -17,11 +17,12 @@ import {PHONE_NOT_SETTING_TIP} from './consts';
 exports.initPhone = function(user) {
     let org = commonMethodUtil.getOrganization();
     callClient = new CallcenterClient(org.id, user.user_id);
-    callClient.init().then(() => {
+    callClient.init().then((phoneType) => {
         notificationEmitter.emit(notificationEmitter.PHONE_INITIALIZE, false);
         oplateConsts.SHOW_SET_PHONE_TIP = false;
         console.log('可以打电话了!');
-        phoneEmitter.emit(phoneEmitter.CALL_CLIENT_INITED);
+        commonMethodUtil.setExclusiveNumber(phoneType);
+        phoneEmitter.emit(phoneEmitter.CALL_CLIENT_INITED, {phoneType});
     }, (error) => {
         //未绑定坐席号和获取坐席号失败都会走到error里面，只能根据error的内容进行判断
         if (error === PHONE_NOT_SETTING_TIP){

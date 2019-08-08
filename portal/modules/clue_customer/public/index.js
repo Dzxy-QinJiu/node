@@ -148,6 +148,7 @@ class ClueCustomer extends React.Component {
             //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况  checkAllotNoTraced： 选中了待我审批  checkedAdvance： 还有其他筛选项
             if((!checkAllotNoTraced || (checkAllotNoTraced && checkedAdvance))){
                 delete nextProps.location.state.clickUnhandleNum;
+
                 clueCustomerAction.setClueInitialData();
                 this.getUnhandledClue();
             }
@@ -1029,12 +1030,18 @@ class ClueCustomer extends React.Component {
                 width: '350px',
                 render: (text, salesClueItem, index) => {
                     let similarClue = _.get(salesClueItem, 'labels');
+                    let availability = _.get(salesClueItem, 'availability');
+                    let status = _.get(salesClueItem, 'status');
+                    //判断是否为无效客户或者已转化客户
+                    let isInvalidClients = _.isEqual(availability, '1') || _.isEqual(status, '3');
+                    //判断是否有相似线索或者相似客户
+                    let isHasSimilar = _.indexOf(similarClue, '有相似客户') !== -1 || _.indexOf(similarClue, '有相似线索') !== -1;
                     return (
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
-                                {_.indexOf(similarClue, '有相似客户') !== -1 || _.indexOf(similarClue, '有相似线索') !== -1 ? (
+                                { !isInvalidClients && isHasSimilar ? (
                                     <Tag className="clue-label intent-tag-style">
                                         {Intl.get('clue.similar.clue', '有相似线索或客户')}
                                     </Tag>) : null
@@ -1540,9 +1547,8 @@ class ClueCustomer extends React.Component {
     };
 
     handleScrollBarBottom = () => {
-        var currListLength = _.isArray(this.state.curClueLists) ? this.state.curClueLists.length : 0;
         // 判断加载的条件
-        if (currListLength <= this.state.customersSize) {
+        if (this.state.listenScrollBottom && !this.state.isLoading) {
             this.getClueList();
         }
     };

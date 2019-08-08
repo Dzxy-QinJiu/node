@@ -29,6 +29,8 @@ const TOP_STAGE_HEIGHT = 110;//头部阶段
 const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')];
 //展示申请试用用户的阶段
 const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')];
+const HAS_UPDATA = 'SALESOPPORTUNITY_UPDATE';//修改权限的常量
+const HAS_DELETE = 'CRM_SALESOPPORTUNITY_DELETE';//删除权限的常量
 class DealDetailPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -53,7 +55,6 @@ class DealDetailPanel extends React.Component {
             applyType: Intl.get('common.trial.user', '试用用户'),//申请用户的类型：试用用户、正式用户
             applyUserApps: [],//申请用户对应的应用列表
             isAddAppTipShow: false,//是否展示请先添加应用的提示
-            hasUpdata: 'SALESOPPORTUNITY_UPDATE',
         };
     }
 
@@ -245,7 +246,7 @@ class DealDetailPanel extends React.Component {
         let currentStageIndex = _.findIndex(stageList, stage => stage.name === curStage);
         let stageStepList = _.map(stageList, (stage, index) => {
             const stageName = stage.name ? stage.name.split('阶段')[0] : '';
-            if (index === currentStageIndex || !hasPrivilege(this.state.hasUpdata)) {
+            if (index === currentStageIndex || !hasPrivilege(HAS_UPDATA)) {
                 return {title: stageName};
             } else {
                 return {
@@ -280,7 +281,7 @@ class DealDetailPanel extends React.Component {
                         <span className="deal-stage-win"/>
                     </Popconfirm>) : (<span className="deal-stage-name"/>)}
             </Dropdown>);
-        hasPrivilege(this.state.hasUpdata) ?
+        hasPrivilege(HAS_UPDATA) ?
             stageStepList.push({
                 title: Intl.get('crm.order.close.step', '关闭订单'), 
                 stepHandleElement: closeDealStep,}) : null;
@@ -352,7 +353,7 @@ class DealDetailPanel extends React.Component {
                                         {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                     </Button>
                                 </span>) : (
-                                <PrivilegeChecker check="CRM_SALESOPPORTUNITY_DELETE">
+                                <PrivilegeChecker check={HAS_DELETE}>
                                     <span className="iconfont icon-delete" 
                                         title={Intl.get('common.delete', '删除')}
                                         onClick={this.showDelConfirmTip}/>
@@ -481,7 +482,7 @@ class DealDetailPanel extends React.Component {
         const deal = this.state.currDeal;
         const EDIT_FEILD_WIDTH = 350;
         //确认删除状态下和处于关闭状态时，不可修改订单的信息
-        let hasEditPrivilege = !this.state.isDelConfirmShow && !deal.oppo_status && hasPrivilege(this.state.hasUpdata);
+        let hasEditPrivilege = !this.state.isDelConfirmShow && !deal.oppo_status && hasPrivilege(HAS_UPDATA);
         return (
             <div className="deal-item modal-container">
                 {deal.oppo_status === DEAL_STATUS.LOSE ? (
@@ -527,57 +528,51 @@ class DealDetailPanel extends React.Component {
                 </div>
                 <div className="deal-item-content">
                     <span className="deal-key">{Intl.get('crm.148', '预算金额')}:</span>
-                    {
-                        <BasicEditInputField
-                            width={EDIT_FEILD_WIDTH}
-                            id={deal.id}
-                            type="number"
-                            field="budget"
-                            value={formatNumHasDotToFixed(deal.budget, 1)}
-                            afterValTip={Intl.get('contract.82', '元')}
-                            afterTextTip={Intl.get('contract.82', '元')}
-                            placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
-                            hasEditPrivilege={hasEditPrivilege}
-                            saveEditInput={this.saveDealBasicInfo.bind(this, 'budget')}
-                            noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
-                            addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
-                        /> 
-                    }          
+                    <BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
+                        id={deal.id}
+                        type="number"
+                        field="budget"
+                        value={formatNumHasDotToFixed(deal.budget, 1)}
+                        afterValTip={Intl.get('contract.82', '元')}
+                        afterTextTip={Intl.get('contract.82', '元')}
+                        placeholder={Intl.get('crm.order.budget.input', '请输入预算金额')}
+                        hasEditPrivilege={hasEditPrivilege}
+                        saveEditInput={this.saveDealBasicInfo.bind(this, 'budget')}
+                        noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
+                        addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
+                    />         
                 </div>
                 <div className="deal-item-content">
                     <span className="deal-key">{Intl.get('crm.order.expected.deal', '预计成交')}:</span>
-                    {
-                        <BasicEditDateField
-                            width={EDIT_FEILD_WIDTH}
-                            id={deal.id}
-                            field="predict_finish_time"
-                            value={deal.predict_finish_time}
-                            placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
-                            hasEditPrivilege={hasEditPrivilege}
-                            saveEditDateInput={this.saveDealBasicInfo.bind(this, 'predict_finish_time')}
-                            disabledDate={disabledBeforeToday}
-                            noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
-                            addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
-                        /> 
-                    }
+                    <BasicEditDateField
+                        width={EDIT_FEILD_WIDTH}
+                        id={deal.id}
+                        field="predict_finish_time"
+                        value={deal.predict_finish_time}
+                        placeholder={Intl.get('crm.order.expected.deal.placeholder', '请选择预计成交时间')}
+                        hasEditPrivilege={hasEditPrivilege}
+                        saveEditDateInput={this.saveDealBasicInfo.bind(this, 'predict_finish_time')}
+                        disabledDate={disabledBeforeToday}
+                        noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
+                        addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
+                    /> 
                 </div>
                 <div className="deal-item-content">
                     <span className="deal-key">{Intl.get('crm.order.remarks', '订单备注')}:</span>
-                    {
-                        <BasicEditInputField
-                            width={EDIT_FEILD_WIDTH}
-                            id={deal.id}
-                            type="textarea"
-                            field="remarks"
-                            value={deal.remarks}
-                            editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
-                            placeholder={Intl.get('user.input.remark', '请输入备注')}
-                            hasEditPrivilege={hasEditPrivilege}
-                            saveEditInput={this.saveDealBasicInfo.bind(this, 'remarks')}
-                            noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
-                            addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
-                        /> 
-                    } 
+                    <BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
+                        id={deal.id}
+                        type="textarea"
+                        field="remarks"
+                        value={deal.remarks}
+                        editBtnTip={Intl.get('user.remark.set.tip', '设置备注')}
+                        placeholder={Intl.get('user.input.remark', '请输入备注')}
+                        hasEditPrivilege={hasEditPrivilege}
+                        saveEditInput={this.saveDealBasicInfo.bind(this, 'remarks')}
+                        noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                        addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
+                    /> 
                 </div>
             </div>
         );

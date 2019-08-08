@@ -1,4 +1,5 @@
 /** Created by 2019-07-31 21:43 */
+import 'MOD_DIR/home_page/public/css/recommend-clues.less';
 import RecommendCustomerCondition from 'MOD_DIR/clue_customer/public/views/recomment_clues/recommend_customer_condition';
 import bootProcessAjax from '../../ajax/boot-process';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
@@ -6,12 +7,17 @@ import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ExtractClues from './extract-clue';
 import { Button } from 'antd';
+import FinishedSrc from '../../images/guide-finished.svg';
 import { deleteEmptyProperty } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import { getAllSalesUserList } from 'PUB_DIR/sources/utils/common-data-util';
+import userData from 'PUB_DIR/sources/user-data';
+import history from 'PUB_DIR/sources/history';
 
 // 提取线索的步骤
 const EXTRACT_CLUE_STEPS = {
     SET_RECOMMEND: 'set_recommend',//设置推荐客户
     EXTRACT_CLUE: 'extract_clue',// 提取线索
+    FINISHED: 'finished', // 完成提取
 };
 
 class RecommendClues extends React.Component {
@@ -28,8 +34,44 @@ class RecommendClues extends React.Component {
     }
 
     componentDidMount() {
+        this.getSalesManList();
         //获取个人线索推荐保存设置
         this.getSettingCustomerRecomment();
+    }
+
+    // 判断是否为普通销售
+    isCommonSales = () => {
+        return userData.getUserData().isCommonSales;
+    };
+
+    // 获取销售列表
+    getSalesManList() {
+        // 不是普通销售时，获取销售列表
+        if(!this.isCommonSales()) {
+            // 管理员，运营获取所有人
+            if(userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+                getAllSalesUserList((allUserList) => {
+                    if (_.isEmpty(allUserList)) {
+                        this.setState({
+                            salesManList: []
+                        });
+                    } else {
+                        this.setState({salesManList: allUserList});
+                    }
+                });
+            }
+            // 销售领导获取所在团队及其下级团队的销售
+            else {
+                clueCustomerAjax.getSalesManList().then((list) => {
+                    list = _.isArray(list) ? list : [];
+                    //客户所属销售下拉列表，过滤掉停用的成员
+                    let salesManList = _.filter(list, sales => sales && sales.user_info && sales.user_info.status === 1);
+                    this.setState({salesManList});
+                }, (errorMsg) => {
+                    console.log(errorMsg);
+                });
+            }
+        }
     }
 
     //获取个人线索推荐保存配置
@@ -80,6 +122,13 @@ class RecommendClues extends React.Component {
         this.setState({
             step: EXTRACT_CLUE_STEPS.SET_RECOMMEND,
             recommendClueLists: []
+        });
+    };
+
+    afterSuccess = () => {
+        this.props.afterSuccess();
+        this.setState({
+            step: EXTRACT_CLUE_STEPS.FINISHED
         });
     };
 
@@ -139,14 +188,32 @@ class RecommendClues extends React.Component {
                 return (
                     <ExtractClues
                         hasShowBackBtn
+                        salesManList={this.state.salesManList}
                         handleBackClick={this.changeFilter}
                         recommendClueLists={this.state.recommendClueLists}
                         getRecommendClueLists={this.getRecommendClueLists}
-                        afterSuccess={this.props.afterSuccess}
+                        afterSuccess={this.afterSuccess}
                         onClosePanel={this.props.onClosePanel}
                     />
                 );
             }
+        }else if(step === EXTRACT_CLUE_STEPS.FINISHED){ // 完成提取
+            return (
+                <div className="guide-finished-wrapper">
+                    <img src={FinishedSrc} alt=""/>
+                    <p>{Intl.get('clue.extract.success', '提取成功')}</p>
+                    <div className="btn-wrapper">
+                        <Button type="primary" onClick={() => {
+                            this.setState({
+                                step: EXTRACT_CLUE_STEPS.SET_RECOMMEND
+                            });
+                        }}>{Intl.get('guide.continue.extract', '继续提取')}</Button>
+                        <Button onClick={() => {
+                            history.push('/clue_customer');
+                        }}>{Intl.get('guide.see.clue', '查看线索')}</Button>
+                    </div>
+                </div>
+            );
         }
     };
 

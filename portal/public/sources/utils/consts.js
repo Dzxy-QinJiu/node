@@ -552,3 +552,11 @@ export const ORGANIZATION_APP_TYPES = {
     CALLER: 'call', // 呼叫中心
     CASH: 'cash', // 营收中心
 };
+
+// 引导流程类型
+export const BOOT_PROCESS_KEYS = {
+    DIAL: 'dial', // 拨号
+    PERFACT_ORGANIZATION: 'perfact_organization',// 完善组织架构
+    ADD_CUSTOMER: 'add_customer',//添加客户
+    EXTRACT_CLUE: 'extract_clue',//提取线索
+};
