@@ -1040,11 +1040,10 @@ class ClueCustomer extends React.Component {
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
-                                { isInvalidClients ? null :
-                                    isHasSimilar ? (
-                                        <Tag className="clue-label intent-tag-style">
-                                            {Intl.get('clue.similar.clue', '有相似线索或客户')}
-                                        </Tag>) : null
+                                { !isInvalidClients && isHasSimilar ? (
+                                    <Tag className="clue-label intent-tag-style">
+                                        {Intl.get('clue.similar.clue', '有相似线索或客户')}
+                                    </Tag>) : null
                                 }
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
