@@ -1360,6 +1360,7 @@ var zh_CN = {
     'crm.detail.address.placeholder': '请输入详细地址',
     'crm.sales.clue.add': '添加销售线索',
     'crm.sales.add.clue': '添加线索',
+    'crm.sales.manual_add.clue': '手动添加',
     'crm.sales.clue.source': '线索来源',
     'crm.sales.clue.access.channel': '接入渠道',
     'crm.sales.clue.descr': '线索描述',

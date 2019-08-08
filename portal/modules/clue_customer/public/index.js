@@ -15,7 +15,7 @@ var userData = require('../../../public/sources/user-data');
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {SearchInput, AntcTable} from 'antc';
-import {message, Icon, Row, Col, Button, Alert, Select, Modal, Radio, Input,Tag} from 'antd';
+import {message, Icon, Row, Col, Button, Alert, Select, Modal, Radio, Input,Tag,Menu, Dropdown,} from 'antd';
 const {TextArea} = Input;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
@@ -89,6 +89,8 @@ class ClueCustomer extends React.Component {
         selectedClues: [],//获取批量操作选中的线索
         isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
         queryObj: {},
+        btnContent: 'crm.sales.add.clue',//添加按钮的初始
+        //显示内容
         ...clueCustomerStore.getState()
     };
     isCommonSales = () => {
@@ -289,17 +291,48 @@ class ClueCustomer extends React.Component {
         });
     };
 
-    //渲染导入线索的按钮
-    renderImportClue = () => {
+
+    //根据按钮选择导入或添加线索
+    handleButtonClick = (e) => {
+        if(e.key === 'addForm'){
+            this.setState({
+                btnContent: 'crm.sales.manual_add.clue',
+                clueAddFormShow: true
+                
+            });
+        }else if(e.key === 'import'){
+            this.setState({
+                btnContent: 'clue.manage.import.clue',
+                clueImportTemplateFormShow: true
+            });
+        }
+    }
+   
+    //渲染导入线索或添加线索按钮
+    renderAddBtn = () => {
+        let menu = (<Menu onClick = {this.handleButtonClick.bind(this)}>
+            <Menu.Item key="addForm">
+                {Intl.get('crm.sales.manual_add.clue','手动添加')}
+            </Menu.Item>
+                        
+            <Menu.Item key="import" >
+                {Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}
+            </Menu.Item>
+        </Menu>);
         return (
-            <div className="import-clue-customer-container pull-right">
-                {hasPrivilege('CUSTOMER_ADD_CLUE') ?
-                    <Button type="primary" onClick={this.showImportClueTemplate} className="btn-item">
-                        <span className="clue-container">
-                            {Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}
-                        </span>
-                    </Button>
-                    : null}
+            <div className="recomend-clue-customer-container pull-right">
+                {
+                    hasPrivilege('CUSTOMER_ADD_CLUE') ?
+                        <Dropdown overlay={menu} >
+                            <Button className="ant-btn ant-btn-primary manual-add-btn" >
+                                {(this.state.btnContent === 'clue.manage.import.clue') ?
+                                    Intl.get(this.state.btnContent,'添加线索',{type: Intl.get('crm.sales.clue', '线索')}) :
+                                    Intl.get(this.state.btnContent)
+                                }
+                                <Icon type="down" />
+                            </Button>
+                        </Dropdown> : null
+                }
             </div>
         );
     };
@@ -384,20 +417,6 @@ class ClueCustomer extends React.Component {
         });
     };
 
-    renderHandleBtn = () => {
-        return (
-            <div className="add-clue-customer-container pull-right">
-                {hasPrivilege('CUSTOMER_ADD_CLUE') ?
-                    <Button onClick={this.showClueAddForm}
-                        className="btn-item"
-                        title={Intl.get('crm.sales.add.clue', '添加线索')}>
-                        <span className="button-container">{Intl.get('crm.sales.add.clue', '添加线索')}</span>
-                    </Button> :
-                    null
-                }
-            </div>
-        );
-    };
     clearSelectedClue = () => {
         this.setState({
             selectedClues: [],
@@ -990,7 +1009,7 @@ class ClueCustomer extends React.Component {
             'status-type-hide': isFirstLoading
         });
         //如果选中了待我审批状态，就不展示已转化
-        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced
+        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
             {isSalesRole() ? null : <span className={willDistCls}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
@@ -1004,7 +1023,7 @@ class ClueCustomer extends React.Component {
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
                 <span className="clue-status-num">{_.get(statics,'hasTrace','')}</span>
             </span>
-            {filterAllotNoTraced ? null :<span className={hasTransfer}
+            {filterAllotNoTraced ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num">{_.get(statics,'hasTransfer','')}</span>
             </span>}
@@ -1951,8 +1970,7 @@ class ClueCustomer extends React.Component {
                         this.renderExtractClue() : null
                 }
                 {this.renderExportClue()}
-                {this.renderHandleBtn()}
-                {this.renderImportClue()}
+                {this.renderAddBtn()}
             </div>
         );
     };
@@ -1975,7 +1993,7 @@ class ClueCustomer extends React.Component {
         this.afterMergeUpdateClueProperty(customerId, customerName);
     };
     isFirstLoading = () => {
-       return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
+        return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
     };
 
     render() {
@@ -1988,8 +2006,8 @@ class ClueCustomer extends React.Component {
         });
         var hasSelectedClue = this.hasSelectedClues();
         var filterCls = classNames('filter-container',{
-           'filter-close': !this.state.showFilterList || isFirstLoading
-        })
+            'filter-close': !this.state.showFilterList || isFirstLoading
+        });
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">

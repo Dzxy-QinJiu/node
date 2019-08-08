@@ -2340,6 +2340,7 @@ var en_US = {
     'crm.save.customertrace.first': 'Please save or cancel the editing customer trace record first',//请先保存或取消正在编辑的跟进记录内容
     'sales.add.email.info': 'Please add the E-mail address on the {userinfo} page, otherwise you will be unable to receive the email from ketao',//请到{userinfo}页面添加邮箱，否则将会无法收到客套向您发送的邮件。
     'crm.sales.add.clue': 'Add clue',//添加线索
+    'crm.sales.manual_add.clue': 'Manual addition',//手动添加
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
