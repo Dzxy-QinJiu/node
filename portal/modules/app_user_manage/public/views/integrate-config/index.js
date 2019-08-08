@@ -3,9 +3,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/12/13.
  */
-require('./index.less');
-
 import {Input, Button, Form, Icon, message} from 'antd';
+require('./index.less');
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 const FormItem = Form.Item;
 import Logo from 'CMP_DIR/Logo';
 import {Link} from 'react-router-dom';
@@ -13,6 +13,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
 import classNames from 'classnames';
 import CustomVariable from './custom-variable';
+import AccessUserTemplate from './access-user-template';
 const matomoSrc = require('./matomo.png');
 const oplateSrc = require('./oplate.png');
 
@@ -26,6 +27,7 @@ class IntegrateConfigView extends React.Component {
             jsCopied: false,
             testResult: '',//测试结果success、error
             custom_variable: {}, // 自定义属性
+            isAccessUserTemplateShow: false //接入用户模块展示
         };
     }
 
@@ -138,6 +140,30 @@ class IntegrateConfigView extends React.Component {
         });
     };
 
+    //接入用户按钮
+    renderAccessUserBtn = () => {
+        return (
+            <Button
+                type='primary'
+                onClick={this.displayAccessPanel}
+            >{Intl.get('app.manage.access.user', '接入用户')}</Button>
+        );
+    };
+
+    //接入用户panel展示操作
+    displayAccessPanel = () => {
+        this.setState({
+            isAccessUserTemplateShow: true
+        });
+    }
+
+    //关闭接入用户panel
+    closeAccessUserTemplatePanel = () => {
+        this.setState({
+            isAccessUserTemplateShow: false
+        });
+    }
+
     render() {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {colon: false};
@@ -149,6 +175,15 @@ class IntegrateConfigView extends React.Component {
         });
         return (
             <div className={integrateConfigCls}>
+                <NoDataIntro
+                    noDataAndAddBtnTip={Intl.get('app.manage.no.user.info', '暂无用户信息')}
+                    showAddBtn={true}
+                    renderAddAndImportBtns={this.renderAccessUserBtn}
+                />
+                <AccessUserTemplate
+                    showFlag={this.state.isAccessUserTemplateShow}
+                    closeTemplatePanel={this.closeAccessUserTemplatePanel}
+                />
                 <div className="access-step-tip">{Intl.get('user.access.steps.tip', '您还没有接入用户，请按照下面流程接入用户')}</div>
                 <div className="curtao-access-wrap">
                     {_.get(addProduct, 'name') ? (

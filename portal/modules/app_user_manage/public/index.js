@@ -940,6 +940,8 @@ class AppUserManage extends React.Component {
         var showView = null;
         switch (currentView) {
             case 'user':
+                showView = <IntegrateConfigView/>;
+                break;
                 if (this.state.isGettingIntegrateType) {
                     showView = (<Spinner />);
                 } else if (this.state.getItegrateTypeError) {
