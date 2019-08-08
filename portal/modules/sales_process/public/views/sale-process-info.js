@@ -79,21 +79,25 @@ class SalesProcessInfo extends React.Component {
                         value={saleProcess.name}
                         field='name'
                         type="text"
-                        hasEditPrivilege={true || hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
                         placeholder={Intl.get('sales.process.name.placeholder', '请输入销售流程名称')}
                         saveEditInput={this.saveEditSaleProcess.bind(this, 'name')}
                     />
                 </div>
                 <div className="basic-info-item">
                     <span className="basic-info-label">{Intl.get('common.status', '状态')}:</span>
-                    <SalesProcessStatusSwitch
-                        title={Intl.get('sales.process.status.edit.tip', '确定要{status}该销售流程？', {
-                            status: saleProcess.status === '0' ? Intl.get('common.enabled', '启用') :
-                                Intl.get('common.stop', '停用')
-                        })}
-                        handleConfirm={this.saveEditSaleProcess.bind(this, 'status')}
-                        status={saleProcess.status === '1' ? true : false}
-                    />
+                    {
+                        hasPrivilege('CRM_UPDATE_CUSTOMER_SALES') ? (
+                            <SalesProcessStatusSwitch
+                                title={Intl.get('sales.process.status.edit.tip', '确定要{status}该销售流程？', {
+                                    status: saleProcess.status === '0' ? Intl.get('common.enabled', '启用') :
+                                        Intl.get('common.stop', '停用')
+                                })}
+                                handleConfirm={this.saveEditSaleProcess.bind(this, 'status')}
+                                status={saleProcess.status === '1' ? true : false}
+                            />
+                        ) : null
+                    }
                 </div>
                 <div className="basic-info-item">
                     <span className="basic-info-label">{Intl.get('common.describe', '描述')}:</span>
@@ -103,10 +107,13 @@ class SalesProcessInfo extends React.Component {
                         value={saleProcess.description}
                         field='description'
                         type="text"
-                        hasEditPrivilege={true || hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
-                        placeholder={Intl.get('sales.process.destrip.palceholder', '请输入销售流程的描述信息')}
+                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        placeholder={Intl.get('sales.process.destrip.placeholder', '请输入销售流程的描述信息')}
                         saveEditInput={this.saveEditSaleProcess.bind(this, 'description')}
                     />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">{Intl.get('sales.process.suitable.objects', '适用范围')}:</span>
                 </div>
             </div>
         );

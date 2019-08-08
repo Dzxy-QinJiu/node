@@ -306,8 +306,7 @@ let routers = [
                 name: 'menu.sales.process',// 销售流程
                 routePath: '/background_management/sales_process',
                 component: `${MODULE_PATH}sales_process/public`,
-                // todo 需要改为自己本身的权限CRM_GET_SALES_PROCESS 暂借权限，有这个权限，才显示入口图标
-                showPrivileges: ['USER_MANAGE_LIST_USERS']
+                showPrivileges: ['CRM_GET_SALES_PROCESS']
             },
         ]
     },

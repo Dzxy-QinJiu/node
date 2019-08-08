@@ -2,17 +2,19 @@
  * Created by hzl on 2019/8/1.
  */
 require('./css/index.less');
-import {Button, Popover, Icon} from 'antd';
+import {Button, Popover, Icon, message} from 'antd';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
-import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
+import {PrivilegeChecker, hasPrivilege } from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import SalesProcessStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import SalesProcessStore from './store';
 import SalesProcessAction from './action';
+import SalesProcessAjax from './ajax';
 import SalesProcessForm from './views/sales-process-form';
 import SalesProcessInfo from './views/sale-process-info';
 import CustomerStage from './views/customer-stage';
 import CONSTS from 'LIB_DIR/consts';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 
 const saleId = CONSTS.ROLE_ID_CONSTANS.SALE_ID;
 const pageSize = 1000;
@@ -21,6 +23,8 @@ class SalesProcess extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            addProcessLoading: false, // 添加流程的loading
+            addProcessResult: '', // 添加流程是否成功，成功：success， 失败：error
             ...SalesProcessStore.getState(),
         };
     }
@@ -44,7 +48,7 @@ class SalesProcess extends React.Component {
         SalesProcessStore.listen(this.onChange);
         this.getSalesRoleMemberList(); // 获取销售角色的成员列表
         SalesProcessAction.getSalesTeamList(); // 获取销售团队
-        //SalesProcessAction.getSalesProcess();
+        SalesProcessAction.getSalesProcess(); // 获取销售流程
     };
 
 
@@ -61,17 +65,54 @@ class SalesProcess extends React.Component {
         SalesProcessAction.closeAddProcessFormPanel();
     };
 
+    // 处理添加销售流程的数据，转为后端需要的数据
+    handleProcessSubmitData(saleProcess) {
+        let salesMemberList = this.state.salesMemberList; // 销售人员
+        let salesTeamList = this.state.salesTeamList; // 销售团队
+        let scope = saleProcess.scope; // 选择的流程的适用范围的数据
+        if (scope.length) {
+            saleProcess.teams = [];
+            saleProcess.users = [];
+            _.each(scope, id => {
+                let selectTeam = _.find(salesTeamList, item => item.group_id === id);
+                if (selectTeam) {
+                    saleProcess.teams.push({id: id, name: selectTeam.group_name});
+                    // 已经找到的数据，从原数组中删除，remove是为了减少遍历的数据
+                    _.remove(salesTeamList, item => item.group_id === id);
+                } else {
+                    let selectUser = _.find(salesMemberList, item => item.user_id === id);
+                    saleProcess.users.push({id: id, name: selectUser.nick_name});
+                    _.remove(salesMemberList, item => item.user_id === id);
+                }
+            });
+        }
+        delete saleProcess.scope;
+        return saleProcess;
+    }
+
     // 提交销售流程表单
-    submitSalesProcessForm = (submitObj) => {
-        SalesProcessAction.addSalesProcess(submitObj, (result) => {
-            if (result.id) { // 添加成功
-                this.closeAddProcessFormPanel();
-                SalesProcessAction.upDateSalesProcessList(result);
-                message.success(Intl.get('crm.216', '添加成功！'));
-            } else { // 添加失败
-                message.error(Intl.get('crm.154', '添加失败！'));
-            }
+    submitSalesProcessForm = (saleProcess) => {
+        let submitObj = this.handleProcessSubmitData(saleProcess);
+        this.setState({
+            addProcessLoading: true
         });
+        SalesProcessAjax.addSalesProcess(submitObj).then( (result) => {
+            let addProcessResult = 'success';
+            if (result && result.id) { // 添加成功
+                SalesProcessAction.upDateSalesProcessList(result);
+            } else { // 添加失败
+                addProcessResult = 'error';
+            }
+            this.setState({
+                addProcessLoading: false,
+                addProcessResult: addProcessResult
+            });
+        }, () => {
+            this.setState({
+                addProcessLoading: false,
+                addProcessResult: 'error'
+            });
+        } );
     };
 
     //渲染操作按钮区
@@ -86,10 +127,7 @@ class SalesProcess extends React.Component {
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
-                    {/**
-                     * todo 现在后端还没有实现，先用原来的权限，选更改为CRM_ADD_SALES_PROCESS
-                     * */}
-                    <PrivilegeChecker check="BGM_SALES_STAGE_ADD">
+                    <PrivilegeChecker check="CRM_ADD_SALES_PROCESS">
                         {title ? (
                             <Popover content={title}>
                                 <Button
@@ -128,8 +166,26 @@ class SalesProcess extends React.Component {
     };
 
     // 处理删除销售流程
-    handleDeleteSaleProcess = (item) => {
-        
+    handleDeleteSaleProcess = (saleProcess) => {
+        const id = saleProcess.id;
+        const otherSalesProcessList = _.filter(this.state.salesProcessList, item => item.id !== id);
+        const status = _.map(otherSalesProcessList, 'status');
+        let statusArray = _.uniq(status);
+        if (statusArray.length === 1 && status[0] === '0') {
+            saleProcess.noDelete = true;
+            return;
+        }
+        SalesProcessAjax.deleteSalesProcess(id).then((result) => {
+            if (result === true) { // 删除成功
+                saleProcess.flag = 'delete'; // 增加一个删除标志，可以合和添加流程，更新列表区分开
+                SalesProcessAction.upDateSalesProcessList(saleProcess);
+                message.success(Intl.get('crm.138', '删除成功！'));
+            } else {
+                message.error(Intl.get('crm.139', '删除失败！'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.139', '删除失败！'));
+        });
     };
 
     // 确认更改销售流程的状态
@@ -146,17 +202,37 @@ class SalesProcess extends React.Component {
         SalesProcessAction.closeProcessDetailPanel();
     };
 
+    renderMsgTips = (errMsg) => {
+        return (
+            <div>
+                <span>{errMsg},</span>
+                <a className="retry-btn" onClick={this.retryGetOrderList}>
+                    {Intl.get('user.info.retry', '请重试')}
+                </a>
+            </div>
+        );
+    };
+
     // 渲染销售流程
     renderSalesProcess = () => {
         const salesProcessList = this.state.salesProcessList;
+        const length = _.get(salesProcessList, 'length');
+        const errorMsg = this.state.errorMsg;
         return (
             <div className="content-zone">
                 {
                     this.state.loading ? <Spinner/> : null
                 }
+                {
+                    !this.state.loading && (length === 0 || errorMsg) ?
+                        <NoDataIntro noDataTip={this.renderMsgTips(errorMsg)}/> : null
+                }
                 <ul>
                     {
                         _.map(salesProcessList, (item, index) => {
+                            let teams = _.map(item.teams, 'name');
+                            let users = _.map(item.users, 'name');
+                            let scope = _.concat(teams, users);
                             return (
                                 <li className="process-box" key={index}>
                                     <div className="item-content">
@@ -180,6 +256,10 @@ class SalesProcess extends React.Component {
                                         </div>
                                         <div className="item item-suitable">
                                             <span>{Intl.get('sales.process.suitable.objects', '适用范围')}:</span>
+                                            {
+                                                scope.length ? <span className="scope-teams-users">{_.join(scope, '、')}</span> : null
+                                            }
+
                                         </div>
                                     </div>
                                     <div className="item-operator">
@@ -190,7 +270,14 @@ class SalesProcess extends React.Component {
                                             <i className="iconfont icon-role-auth-config"></i>
                                         </span>
                                         {
-                                            item.type === 'custom' ? (
+                                            item.noDelete ? (
+                                                <span>
+                                                    {Intl.get('sales.process.delete.tips', '请先启用一个销售流程，再删除！')}
+                                                </span>
+                                            ) : null
+                                        }
+                                        {
+                                            hasPrivilege('CRM_DELETE_SALES_PROCESS') && item.type === 'custom' ? (
                                                 <span
                                                     onClick={this.handleDeleteSaleProcess.bind(this, item)}
                                                     data-tracename={'点击删除' + item.name + '销售流程按钮'}
@@ -242,6 +329,9 @@ class SalesProcess extends React.Component {
                                 submitSalesProcessForm={this.submitSalesProcessForm}
                                 handleConfirmChangeProcessStatus={this.handleConfirmChangeProcessStatus}
                                 treeSelectData={treeSelectData}
+                                isLoading={this.state.addProcessLoading}
+                                saveResult={this.state.addProcessResult}
+                                containerWidth={containerWidth}
                             />
                         ) : null
                     }

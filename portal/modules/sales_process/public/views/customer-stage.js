@@ -282,10 +282,8 @@ class CustomerStage extends React.Component {
                                 ) : null
                             }
                             {
-                                /**
-                                 * !this.state.loading && (length === 0 || this.state.getCustomerStageListErrMsg) ?
-                                 this.renderNoDataTipsOrErrMsg() : null
-                                 * */
+                                !this.state.loading && (length === 0 || this.state.getCustomerStageListErrMsg) ?
+                                    this.renderNoDataTipsOrErrMsg() : null
                             }
                             <div className="customer-stage-table-block">
                                 {

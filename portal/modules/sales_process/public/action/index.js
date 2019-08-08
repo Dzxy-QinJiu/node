@@ -2,8 +2,9 @@
  * Created by hzl on 2019/8/1.
  * 销售流程-action
  */
+
 import SalesProcessAjax from '../ajax';
-import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
+import { getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import userAjax from 'MOD_DIR/common/public/ajax/user';
 
 class SalesProcessAction {
@@ -21,14 +22,12 @@ class SalesProcessAction {
     }
     // 获取销售团队
     getSalesTeamList() {
-        getMyTeamTreeList(data => {
-            if(data.errorMsg){
-                this.dispatch({ error: true, errorMsg: data.errorMsg});
-            }else{
-                this.dispatch({error: false, resData: data.teamTreeList});
-            }
+        getMyTeamTreeAndFlattenList(data => {
+            let list = data.teamList || [];
+            this.dispatch({teamList: list, teamTreeList: data.teamTreeList || []});
         });
     }
+
     // 获取销售角色的成员列表
     getSalesRoleMemberList(queryObj) {
         userAjax.getEnableMemberListByRoleId().sendRequest(queryObj).success((list) => {

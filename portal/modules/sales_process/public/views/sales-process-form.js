@@ -3,6 +3,7 @@
  * 销售流程的添加表单
  */
 import {Form, Input, Switch, TreeSelect} from 'antd';
+const { SHOW_PARENT } = TreeSelect;
 const FormItem = Form.Item;
 const {TextArea} = Input;
 import Trace from 'LIB_DIR/trace';
@@ -43,15 +44,12 @@ class SalesProcessForm extends React.Component {
         event.preventDefault();
         Trace.traceEvent(event, '保存销售流程的信息');
         this.props.form.validateFields((err, values) => {
-            console.log('values:',values);
-            // TODO 需要处理选择适用范围的数据
             if (err) return;
             let submitObj = {
                 name: _.trim(values.name),
                 status: values.status === true ? '1' : '0',
                 description: values.description,
-                teams: [],
-                users: []
+                scope: values.scope
             };
             this.props.submitSalesProcessForm(submitObj);
         });
@@ -98,9 +96,9 @@ class SalesProcessForm extends React.Component {
                     label={Intl.get('common.status', '状态')}
                 >
                     {getFieldDecorator('status', {
-                        initialValue: false
+                        initialValue: true
                     })(
-                        <Switch/>
+                        <Switch defaultChecked />
                     )}
                 </FormItem>
                 <FormItem
@@ -117,7 +115,7 @@ class SalesProcessForm extends React.Component {
                     })(
                         <TextArea
                             autosize={{minRows: 2, maxRows: 6}}
-                            placeholder={Intl.get('sales.process.destrip.palceholder', '请输入销售流程的描述信息')}
+                            placeholder={Intl.get('sales.process.destrip.placeholder', '请输入销售流程的描述信息')}
                         />
                     )}
                 </FormItem>
@@ -128,16 +126,20 @@ class SalesProcessForm extends React.Component {
                     {getFieldDecorator('scope', {
                     })(
                         <TreeSelect
+                            allowClear={true}
                             treeData={this.props.treeSelectData}
                             treeCheckable={true}
                             treeDefaultExpandAll={true}
+                            showCheckedStrategy={SHOW_PARENT}
+                            searchPlaceholder={Intl.get('sales.process.suitable.objects.placeholder', '请选择适用该流程的团队或个人')}
+                            dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
                         />
                     )}
                 </FormItem>
                 <FormItem>
                     <SaveCancelButton
-                        loading={this.state.isSavingSalesStage}
-                        saveErrorMsg={this.state.saveStageErrMsg}
+                        loading={this.props.isLoading}
+                        saveErrorMsg={this.props.saveResult === 'error' ? Intl.get('common.save.failed', '保存失败!') : null}
                         handleSubmit={this.handleSubmit.bind(this)}
                         handleCancel={this.handleCancel.bind(this)}
                     />
@@ -153,9 +155,9 @@ class SalesProcessForm extends React.Component {
                 isShowMadal={true}
                 isShowCloseBtn={true}
                 onClosePanel={this.handleCancel.bind(this)}
-                title='添加销售流程'
+                title={Intl.get('sales.process.add.process', '添加销售流程')}
                 content={this.renderFormContent()}
-                dataTracename='添加销售流程'
+                dataTracename={Intl.get('sales.process.add.process', '添加销售流程')}
             />);
     }
 }
@@ -166,12 +168,16 @@ SalesProcessForm.defaultProps = {
     submitSalesProcessForm: noop,
     closeAddProcessFormPanel: noop,
     treeSelectData: [],
+    isLoading: false,
+    saveResult: ''
 };
 SalesProcessForm.propTypes = {
     form: PropTypes.object,
     closeAddProcessFormPanel: PropTypes.func,
     submitSalesProcessForm: PropTypes.func,
-    treeSelectData: PropTypes.array
+    treeSelectData: PropTypes.array,
+    isLoading: PropTypes.boolean,
+    saveResult: PropTypes.string,
 };
 
 export default Form.create()(SalesProcessForm);

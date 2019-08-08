@@ -12,26 +12,10 @@ class SalesProcessStore {
     setInitialData() {
         this.loading = false; // 获取销售流程的loading
         this.errorMsg = ''; // 获取销售流程失败的信息
-        this.salesProcessList = [{
-            'id': '1',
-            'name': '默认销售流程',
-            'description': '系统提供的默认销售流程',
-            'status': '1',
-            'type': 'default',
-            'teams': [{'name': '西部公安'},{'name': '西部网信'}],
-            'users': [{'name': '张三'},{'name': '李四'}],
-        }, {
-            'id': '2',
-            'name': '自定义销售流程',
-            'description': '自定义销售流程',
-            'status': '0',
-            'type': 'custom',
-            'teams': [{'name': '北部公安'},{'name': '北部网信'}],
-            'users': [{'name': '张三'},{'name': '李四'}],
-        }
-        ];
+        this.salesProcessList = [];
         this.currentSaleProcess = {}; // 当前销售流程信息
-        this.salesTeamTree = []; // 销售团队
+        this.salesTeamTree = []; // 销售团队树结构
+        this.salesTeamList = []; // 销售团队列表
         this.salesNoBelongToTeamList = []; // 不属于任何团队的销售列表
         this.salesMemberList = []; // 销售角色的成员列表
         this.isShowAddProcessFormPanel = false; // 是否显示添加销售流程表单面板，默认false
@@ -64,11 +48,8 @@ class SalesProcessStore {
 
     // 获取销售团队
     getSalesTeamList(result) {
-        if (result.error) {
-            this.salesTeamTree = [];
-        } else {
-            this.salesTeamTree = this.traversTeamTree(result.resData);
-        }
+        this.salesTeamTree = this.traversTeamTree(result.teamTreeList);
+        this.salesTeamList = result.teamList;
     }
 
     // 获取销售角色的成员列表
@@ -98,7 +79,7 @@ class SalesProcessStore {
         } else {
             this.loading = false;
             if (result.error) {
-                this.errorMsg = result.errMsg || Intl.get('errorcode.1', '获取成员列表失败');
+                this.errorMsg = result.errMsg || Intl.get('sales.process.get.failed', '获取销售流程失败');
             } else {
                 this.errorMsg = '';
                 this.salesProcessList = result.resData;
@@ -119,7 +100,11 @@ class SalesProcessStore {
 
     // 更新销售流程列表
     upDateSalesProcessList(saleProcess) {
-        this.salesProcessList.unshift(saleProcess);
+        if (saleProcess.flag === 'delete') { // 删除
+            this.salesProcessList = _.filter(this.salesProcessList, item => item.id !== saleProcess.id);
+        } else { // 添加
+            this.salesProcessList.unshift(saleProcess);
+        }
     }
 
     // 显示销售流程详情面板

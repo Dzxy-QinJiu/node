@@ -5,6 +5,7 @@
 const restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 const restUtil = require('ant-auth-request').restUtil(restLogger);
 const commonUrl = '/rest/customer/v3/salesprocess';
+const _ = require('lodash');
 
 const salesProcessRestApis = {
     getSalesProcess: commonUrl, // 获取销售流程
@@ -50,9 +51,10 @@ exports.updateSalesProcess = (req, res) => {
 
 // 删除销售流程
 exports.deleteSalesProcess = (req, res) => {
-    return restUtil.authRest.put(
+    let id = _.get(req, 'params.id');
+    return restUtil.authRest.del(
         {
-            url: salesProcessRestApis.deleteSalesProcess.replace(':id', 'req.params'),
+            url: salesProcessRestApis.deleteSalesProcess.replace(':id', id),
             req: req,
             res: res
         }, req.body);

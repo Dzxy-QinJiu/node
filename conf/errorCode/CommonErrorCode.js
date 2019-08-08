@@ -377,7 +377,16 @@ function getConfigJson(req) {
         '30610': {'httpCode': 500, 'message': backendIntl.get('contract.add.error', '添加合同失败')},
         '30008': {'httpCode': 500, 'message': backendIntl.get('contract.invocie.delete.faild', '删除发票额失败')},
         /*周报统计*/
-        '90008': {'httpCode': 500, 'message': backendIntl.get('errorcode.148', '电话时长统计视图获取失败')},        
+        '90008': {'httpCode': 500, 'message': backendIntl.get('errorcode.148', '电话时长统计视图获取失败')},
+        /*销售流程*/
+        '100001': {'httpCode': 500, 'message': backendIntl.get('errorcode.153', '添加销售流程失败')},
+        '100002': {'httpCode': 500, 'message': backendIntl.get('errorcode.154', '获取销售流程失败')},
+        '100003': {'httpCode': 500, 'message': backendIntl.get('errorcode.155', '添加客户阶段失败')},
+        '100004': {'httpCode': 500, 'message': backendIntl.get('errorcode.156', '获取客户阶段失败')},
+        '100005': {'httpCode': 500, 'message': backendIntl.get('errorcode.157', '更新销售流程失败')},
+        '100006': {'httpCode': 500, 'message': backendIntl.get('errorcode.158', '更新客户流程失败')},
+        '100007': {'httpCode': 500, 'message': backendIntl.get('errorcode.159', '删除销售流程失败')},
+        '100008': {'httpCode': 500, 'message': backendIntl.get('errorcode.160', '删除客户流程失败')},
         /*其他*/
         'error-code-not-found': {'httpCode': 500, 'message': backendIntl.get('errorcode.132', '未知错误')},
         'request-timeout': {'httpCode': 500, 'message': backendIntl.get('errorcode.133', '服务器繁忙或网络不正常，请稍后再试')},
