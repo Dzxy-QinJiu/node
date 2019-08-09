@@ -1,6 +1,13 @@
 /** Created by 2019-05-29 14:53 */
 .custom-variable-container{
   margin-top: 4px;
+  .icon-add {
+    float: right;
+    color: #8DA8C5;
+    &:hover {
+      color: darken(#8DA8C5 , 30%);
+    }
+  }
   .custom-label{
     display: inline-block;
     line-height: 28px;
@@ -18,7 +25,6 @@
   }
   // 自定义属性添加，编辑展示区
   .custom-variables-wrapper{
-    margin: 10px 0;
     &.editing{
       margin-bottom: 25px;
       .button-container{
@@ -47,9 +53,16 @@
     // 编辑时样式
     .custom-variable-wrap{
       position: relative;
+      background-color: #F1F8FE;
+      padding: 10px 0;
+      border: 1px solid #eef0ef;
       .ant-form{
         .ant-form-item{
+          width: 100%;
           margin-bottom: 15px;
+          .ant-input {
+            width: 100%;
+          }
         }
         .ant-form-item-label{
           text-align: left;
@@ -58,6 +71,22 @@
       .custom-form-item{
         float: left;
         width: calc(100% - 25px);
+        vertical-align: top;
+        .icon-minus {
+          display: inline-block;
+        }
+        .properties-form-item {
+          display: inline-block;
+          width: 48%;
+          margin-left: 8px;
+        }
+        .icon-minus{
+          font-weight: bold;
+          color: #8DA8C5;
+          &:hover {
+            color: darken(#8DA8C5 , 30%);
+          }
+        }
       }
       .circle-button{
         position: relative;
@@ -65,7 +94,6 @@
         z-index: 1;
         cursor: pointer;
         top: 3px;
-        right: -10px;
       }
       .circle-button-minus, .circle-button-plus {
         float: left;

@@ -3,22 +3,20 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by sunqingfeng on 2018/8/20.
  */
-const PropTypes = require('prop-types');
 var React = require('react');
 import {Button, Steps, message, Alert, Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-var rightPanelUtil = require('CMP_DIR/rightPanel');
-var RightPanel = rightPanelUtil.RightPanel;
+const PropTypes = require('prop-types');
 require('./access-user-template.less');
 const Step = Steps.Step;
-import {AntcTable} from 'antc';
 import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from 'MOD_DIR/crm/public/views/components/rightPanelScrollBar';
-import Logo from 'CMP_DIR/Logo';
 import DefaultUserLogoTitle from 'CMP_DIR/default-user-logo-title';
 import CustomVariable from './custom-variable';
+import rightPanelUtil from 'CMP_DIR/rightPanel';
+var RightPanel = rightPanelUtil.RightPanel;
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
     LOADING_TIME: 1500//避免在第三步时关闭太快，加上延时展示loading效果
@@ -266,6 +264,7 @@ class AccessUserTemplate extends React.Component {
                         content={this.renderAccessTitle()}
                     />
                     <DetailCard
+                        className="add-user-data-card"
                         title={`${Intl.get('config.product.js.collect.user','使用JS脚本采集用户数据')}:`}
                         content={this.renderCustomVariable()}
                     />

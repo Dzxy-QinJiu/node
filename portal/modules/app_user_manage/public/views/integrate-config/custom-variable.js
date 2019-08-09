@@ -1,13 +1,15 @@
 /** Created by 2019-05-28 16:23 */
 // 自定义属性的添加，编辑
 import './custom-variable.less';
-import { Form, Button, Icon, Input, Col} from 'antd';
+import { Form, Button, Icon, Input, Row, Col} from 'antd';
 const FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
+import {AntcTable} from 'antc';
 import classNames from 'classnames';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {productKeyRule, productDesRule} from 'PUB_DIR/sources/utils/validate-util';
+import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 
 // 自定义属性变量的字段名
 const CUSTOM_VARIABLE_FIELD = 'custom_variable';
@@ -49,6 +51,7 @@ class CustomVariable extends React.Component {
             displayType: props.displayType || 'text',
             value: this.dealCustomVariable(props.value),
             submitErrorMsg: '',
+            customer_variables: FIXED_CUSTOM_VARIABLES
         };
     }
 
@@ -195,6 +198,32 @@ class CustomVariable extends React.Component {
         });
     };
 
+    getUserPropertiesColumns = () => {
+        let columns = [
+            {
+                title: 'key',
+                dataIndex: 'key',
+                width: '194px',
+            }, {
+                title: Intl.get('common.describe', '描述'),
+                dataIndex: 'description',
+                width: '220px',
+            }
+        ];
+        return columns;
+    }
+
+    renderFixedBlick = () => {
+        return (
+            <AntcTable
+                dataSource={this.state.customer_variables}
+                bordered
+                pagination={false}
+                columns={this.getUserPropertiesColumns()}
+            />
+        );
+    }
+
     render() {
         let displayCls = classNames({
             'clearfix': true,
@@ -242,15 +271,14 @@ class CustomVariable extends React.Component {
                     </div>
                 );
             } else {// 添加按钮
-                textBlock = (
-                    <span>
-                        {this.props.hasEditPrivilege ? (
-                            <Button type="primary" onClick={this.setEditable.bind(this, 'add')}>
-                                {this.props.addBtnTip}
-                            </Button>
-                        ) : null}
-                    </span>
-                );
+                textBlock = null;
+                /*textBlock = (
+                    _.get(this.props, 'hasEditPrivilege') ? (
+                        <i className="iconfont icon-add"
+                            title={Intl.get('common.update', '修改')}
+                            onClick={this.setEditable.bind(this, 'add')}
+                        /> ) : null
+                );*/
             }
         }
         let inputBlock = this.state.displayType === 'edit' ? (
@@ -262,13 +290,11 @@ class CustomVariable extends React.Component {
                             // 展示删除按钮， 自定义属性数组长度不为1时展示
                             const isShowDeleteBtn = itemSize !== 1;
                             return (
-                                <div className="custom-form-item ant-row">
-                                    <Col span={11}>
+                                <Row align="top" className="custom-form-item ant-row">
+                                    <Col className="properties-form-item">
                                         <FormItem
                                             key={index}
                                             className='custom-key'
-                                            label='key'
-                                            {...this.props.editFormLayout}
                                         >
                                             {getFieldDecorator(fieldName + CUSTOM_TYPES.key, {
                                                 initialValue: item.key,
@@ -285,13 +311,10 @@ class CustomVariable extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                    <Col span={1}/>
-                                    <Col span={11}>
+                                    <Col className="properties-form-item">
                                         <FormItem
                                             key={index}
                                             className='custom-des'
-                                            label={Intl.get('common.describe', '描述')}
-                                            {...this.props.editFormLayout}
                                         >
                                             {getFieldDecorator(fieldName + CUSTOM_TYPES.desc, {
                                                 initialValue: item.description,
@@ -308,26 +331,24 @@ class CustomVariable extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                    {isShowDeleteBtn ? (
-                                        <div className="circle-button circle-button-minus"
-                                            title={Intl.get('common.delete', '删除')}
-                                            onClick={this.deleteCustomVariable.bind(this, index)}>
-                                            <Icon type="minus"/>
-                                        </div>
-                                    ) : null}
-                                </div>
+                                    <Col className="iconfont icon-minus">
+                                        {isShowDeleteBtn ? (
+                                            <Icon
+                                                title={Intl.get('common.delete', '删除')}
+                                                type="minus"
+                                                onClick={this.deleteCustomVariable.bind(this, index)}/>)
+                                            : null}
+                                    </Col>
+                                </Row>
                             );
                         })
                     }
                     {
                         displayText.length < maxCustomVariableCount ? (
-                            <div
-                                className="circle-button circle-button-plus"
+                            <i className="iconfont icon-add"
                                 title={Intl.get('common.add', '添加')}
-                                onClick={this.addCustomVariable}>
-                                <Icon type="plus"/>
-                            </div>
-                        ) : null
+                                onClick={this.addCustomVariable}
+                            /> ) : null
                     }
                 </Form>
                 <div className="buttons">
@@ -344,10 +365,15 @@ class CustomVariable extends React.Component {
         return (
             <div className='custom-variable-container'>
                 <div className="custom-label-container">
+                    {_.get(this.props, 'hasEditPrivilege') && _.isEqual(this.state.displayType, 'text') ? (
+                        <i className="iconfont icon-add"
+                            title={Intl.get('common.update', '修改')}
+                            onClick={this.setEditable.bind(this, 'add')}
+                        /> ) : null}
                     <span className="custom-label">{Intl.get('app.user.manage.user.attributes', '用户属性')}：</span>
                 </div>
                 <div className="custom-variable-content">
-                    {fixedBlock}
+                    {this.renderFixedBlick()}
                     <div className={displayCls}>
                         {textBlock}
                         {inputBlock}
