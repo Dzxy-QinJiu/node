@@ -26,6 +26,7 @@ import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import { num as antUtilsNum } from 'ant-utils';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const parseAmount = antUtilsNum.parseAmount;
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 class AddSalesOpportunityApply extends React.Component {
@@ -272,7 +273,7 @@ class AddSalesOpportunityApply extends React.Component {
                                                     placeholder={Intl.get('leave.apply.select.product','请选择产品')}
                                                     name="apps"
                                                     getPopupContainer={() => document.getElementById('add-sales-opportunity-apply-form')}
-
+                                                    filterOption={(input, option) => ignoreCase(input, option)}
                                                 >
                                                     {_.isArray(this.state.appList) && this.state.appList.length ?
                                                         this.state.appList.map((appItem, idx) => {

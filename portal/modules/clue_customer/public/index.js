@@ -15,7 +15,7 @@ var userData = require('../../../public/sources/user-data');
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {SearchInput, AntcTable} from 'antc';
-import {message, Icon, Row, Col, Button, Alert, Select, Modal, Radio, Input,Tag} from 'antd';
+import {message, Icon, Row, Col, Button, Alert, Select, Modal, Radio, Input,Tag,Menu, Dropdown,} from 'antd';
 const {TextArea} = Input;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
@@ -90,6 +90,8 @@ class ClueCustomer extends React.Component {
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
         isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
+        addType: 'start',//添加按钮的初始
+        //显示内容
         ...clueCustomerStore.getState()
     };
     isCommonSales = () => {
@@ -309,17 +311,48 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.getSettingCustomerRecomment();
     };
 
-    //渲染导入线索的按钮
-    renderImportClue = () => {
+
+    //根据按钮选择导入或添加线索
+    handleButtonClick = (e) => {
+        if(e.key === 'add'){
+            this.setState({
+                addType: e.key,//手动添加
+                clueAddFormShow: true
+                
+            });
+        }else if(e.key === 'import'){
+            this.setState({
+                addType: e.key,
+                clueImportTemplateFormShow: true
+            });
+        }
+    }
+   
+    //渲染导入线索或添加线索按钮
+    renderAddBtn = () => {
+        let menu = (<Menu onClick = {this.handleButtonClick.bind(this)} >
+            <Menu.Item key="add" >
+                {Intl.get('crm.sales.manual_add.clue','手动添加')}
+            </Menu.Item>
+                        
+            <Menu.Item key="import" >
+                {Intl.get('crm.sales.manual.import.clue','导入线索')}
+            </Menu.Item>
+        </Menu>);
         return (
-            <div className="import-clue-customer-container pull-right">
-                {hasPrivilege('CUSTOMER_ADD_CLUE') ?
-                    <Button type="primary" onClick={this.showImportClueTemplate} className="btn-item">
-                        <span className="clue-container">
-                            {Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}
-                        </span>
-                    </Button>
-                    : null}
+            <div className="recomend-clue-customer-container pull-right">
+                {
+                    hasPrivilege('CUSTOMER_ADD_CLUE') ?
+                        <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
+                            <Button className="ant-btn ant-btn-primary manual-add-btn" >
+                                {(this.state.addType === 'start') ? (Intl.get('crm.sales.add.clue', '添加线索')) : (
+                                    (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue','手动添加') :
+                                        Intl.get('crm.sales.manual.import.clue','导入线索')
+                                )}
+                                <Icon type="down" />
+                            </Button>
+                        </Dropdown> : null
+                }
             </div>
         );
     };
@@ -429,20 +462,6 @@ class ClueCustomer extends React.Component {
         });
     };
 
-    renderHandleBtn = () => {
-        return (
-            <div className="add-clue-customer-container pull-right">
-                {hasPrivilege('CUSTOMER_ADD_CLUE') ?
-                    <Button onClick={this.showClueAddForm}
-                        className="btn-item"
-                        title={Intl.get('crm.sales.add.clue', '添加线索')}>
-                        <span className="button-container">{Intl.get('crm.sales.add.clue', '添加线索')}</span>
-                    </Button> :
-                    null
-                }
-            </div>
-        );
-    };
     clearSelectedClue = () => {
         this.setState({
             selectedClues: [],
@@ -1970,8 +1989,7 @@ class ClueCustomer extends React.Component {
                         this.renderExtractClue() : null
                 }
                 {this.renderExportClue()}
-                {this.renderHandleBtn()}
-                {this.renderImportClue()}
+                {this.renderAddBtn()}
             </div>
         );
     };

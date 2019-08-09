@@ -15,6 +15,7 @@ var OrganizationActions = require('../action/organization-actions');
 var language = require('PUB_DIR/language/getLanguage');
 import {FormattedMessage,defineMessages,injectIntl} from 'react-intl';
 import reactIntlMixin from '../../../../components/react-intl-mixin';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const CATEGORY_TYPE = oplateConsts.CATEGORY_TYPE;
 const messages = defineMessages({
     common_is_validiting: {id: 'common.is.validiting'},//正在校验中..
@@ -298,6 +299,7 @@ var OrganizationForm = createReactClass({
                                             optionFilterProp="children"
                                             notFoundContent={this.formatMessage(messages.common_not_found)}
                                             searchPlaceholder={this.formatMessage(messages.common_input_keyword)}
+                                            filterOption={(input, option) => ignoreCase(input, option)}
                                         >
                                             {this.renderSuperiorTeam()}
                                         </Select>

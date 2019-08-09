@@ -171,12 +171,12 @@
             }
         } //缩小浏览器时，操作按钮变图标后的样式设置
         .handle-btn-mini {
-            float: right;
             width: 40px;
             height: @btn-height;
             line-height: @btn-height;
             text-align: center;
             color: #4d96d1;
+            margin-right: 24px;
             cursor: pointer;
             .iconfont,
             .anticon-plus {
@@ -434,5 +434,20 @@
         line-height: 28px;
         color: red;
         font-size: 14px;
+    }
+}
+
+.mini-add-dropdown.ant-dropdown{
+
+    width: 72px !important;
+   li{
+    font-size: 14px;
+    text-align: center;
+}
+}
+.norm-add-dropdown{
+    li{
+        font-size: 14px;
+        text-align: center;
     }
 }

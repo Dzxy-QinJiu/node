@@ -14,6 +14,7 @@ var FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 import {DetailEditBtn} from '../rightPanel';
 import SaveCancelButton from '../detail-card/save-cancel-button';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 
 let BasicEditSelectField = createReactClass({
     displayName: 'BasicEditSelectField',
@@ -123,6 +124,7 @@ let BasicEditSelectField = createReactClass({
         } else {
             this.setState({
                 selectOptions: nextProps.selectOptions,
+                displayText: nextProps.displayText,
             });
         }
     },
@@ -260,7 +262,7 @@ let BasicEditSelectField = createReactClass({
                                 <Select
                                     multiple={this.props.multiple}
                                     combobox={this.props.combobox}
-                                    filterOption={this.props.filterOption}
+                                    filterOption={(input, option) => ignoreCase(input, option)}
                                     name="select"
                                     className="edit-select-item"
                                     showSearch

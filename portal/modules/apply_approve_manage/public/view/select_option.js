@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2019/5/16.
  */
 import {Input, Select, Radio, Checkbox} from 'antd';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 
@@ -11,7 +12,7 @@ class SelectOption extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedRadioValue:''
+            selectedRadioValue: ''
         };
     }
 
@@ -25,7 +26,7 @@ class SelectOption extends React.Component {
             </RadioGroup>
         );
     };
-    handleRadioChange = (e) =>{
+    handleRadioChange = (e) => {
         this.setState({
             selectedRadioValue: e.target.value
         });
@@ -40,6 +41,7 @@ class SelectOption extends React.Component {
             <Select
                 showSearch
                 placeholder={this.props.placeholder}
+                filterOption={(input, option) => ignoreCase(input, option)}
             >
                 {_.map(selectArr,(item) => {
                     return <Option value={item.value}>{item.name}</Option>;
@@ -48,11 +50,11 @@ class SelectOption extends React.Component {
         );
     };
     onSaveAllData = () => {
-       if (this.props.type === 'radio'){
-           var submitObj = {}, label = this.props.labelKey;
-           submitObj[label + ''] = this.state.selectedRadioValue;
-           return submitObj;
-       }
+        if (this.props.type === 'radio'){
+            var submitObj = {}, label = this.props.labelKey;
+            submitObj[label + ''] = this.state.selectedRadioValue;
+            return submitObj;
+        }
     };
 
     render = () => {

@@ -64,7 +64,19 @@ function FilterAction() {
             console.log(errorMsg);
         });
     };
-
+    //获取系统标签列表
+    this.getSystemTagList = function() {
+        FilterAjax.getSystemTagList().then((list) => {
+            let systemTagList = _.isArray(list) ? list : [];
+            systemTagList = systemTagList.map(tag => {
+                return {name: tag, show_name: tag};
+            });
+            systemTagList.unshift({name: '', show_name: Intl.get('common.all', '全部')});
+            this.dispatch(systemTagList);
+        }, (errorMsg) => {
+            this.dispatch([{name: '', show_name: Intl.get('common.all', '全部')}]);
+        });
+    };
     this.getTagList = function() {
         var _this = this;
         FilterAjax.getTagList().then(function(list) {

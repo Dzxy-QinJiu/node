@@ -84,7 +84,7 @@ var en_US = {
     'common.associate': 'Associate',//关联
     'common.image.type.tip': 'The type of image must be one of gif, jpeg, jpg, png, bmp!',//图片类型必须是gif,jpeg,jpg,png,bmp中的一种！
     'common.image.upload': 'upload',//上传
-    'common.image.upload.size': 'The size of image must be less than 10 kb!',//请上传小于10kb的图片
+    'common.image.upload.size': 'The size of image must be less than 100 KB!',//请上传小于100KB的图片
     'common.edit': 'Edit',//编辑
     //密码安全等级
     'common.password.low': 'Weak',//低
@@ -131,7 +131,7 @@ var en_US = {
     'common.describe': 'DESCR',//描述：
     'common.time.connector': ' to ',// // ' 至 -'至
     'common.image.default': 'Images',//图像
-    'common.image.tip.size': 'The size of image must be less than {size} kb!',//图片大小必须小于{size}kb!
+    'common.image.tip.size': 'The size of image must be less than {size} KB!',//图片大小必须小于{size}KB!
     'common.input.character.prompt': '1 ~ 50 characters',//最少1个字符,最多50个字符
     'common.input.character.rules': '1 ~ 8 characters',//最少1个字符,最多8个字符
     'common.phone.email.tip': 'Phone or email is required',//电话、邮箱必填其中一项
@@ -359,7 +359,9 @@ var en_US = {
     'home.page.will.expire.customer': 'Will Expire',//即将到期
     'home.page.expired.customer': 'Expired',//已过期
     'home.page.contact.great.cycle': 'Great cycle',//大循环
+    'home.page.contact.medium.cycle': 'Medium cycle',//中循环
     'home.page.contact.minor.cycle': 'Minor cycle',//小循环
+    'home.page.add.schedule': 'Add schedule',//添加日程
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -861,7 +863,7 @@ var en_US = {
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
     'user.info.login.browser': 'Browser',//浏览器
-    'user.info.active.email': 'Activation email has been sent to {email}',//激活邮件已发送至{email}
+    'user.info.active.email': 'Activation email has been sent to {email}, please go to active',//激活邮件已发送至{email},请前往激活
     'user.info.retry': 'Please try again',//请重试
     'user.info.no.active': 'Please {active}',//未激活，请{active}
     'user.info.active': 'active',//激活
@@ -1365,6 +1367,7 @@ var en_US = {
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
     'crm.address.placeholder': 'Please select the region',//请选择地域
     'crm.detail.address.placeholder': 'Please enter a full address',//请输入详细地址
+    'crm.system.labels': 'System Label', //系统标签
     'crm.sales.clue.add': 'Add sales leads',//添加销售线索
     'crm.sales.clue.source': 'Clue source',//线索来源
     'crm.sales.clue.access.channel': 'Access channel',//接入渠道
@@ -1538,6 +1541,8 @@ var en_US = {
     'crm.select.second.sales': 'Please seletct second sales',//请选择联合跟进人
     'crm.no.second.sales': 'No second sales',//暂无联合跟进人
     'crm.set.second.sales': 'Set second sales',//设置联合跟进人
+    'crm.second.sale.delete': '{user} will be deleted after save', //保存后，联合跟进人{user}将删除
+    'crm.already.sale.error': '{user} has already been sales, cannot set to second sales',//{user}已是负责人，不能再设置联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
@@ -2361,6 +2366,8 @@ var en_US = {
     'crm.save.customertrace.first': 'Please save or cancel the editing customer trace record first',//请先保存或取消正在编辑的跟进记录内容
     'sales.add.email.info': 'Please add the E-mail address on the {userinfo} page, otherwise you will be unable to receive the email from ketao',//请到{userinfo}页面添加邮箱，否则将会无法收到客套向您发送的邮件。
     'crm.sales.add.clue': 'Add clue',//添加线索
+    'crm.sales.manual_add.clue': 'Manual addition',//手动添加
+    'crm.sales.manual.import.clue': 'Import clue',//导入线索
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
@@ -3064,6 +3071,7 @@ var en_US = {
     'clue.customer.has.transfer': 'Has transfer',//已转化
     'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
+    'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar clue',//相似线索
     'clue.similar.clue': 'Similar clue or customer', //相似线索或客户
@@ -3121,7 +3129,38 @@ var en_US = {
     'clue.customer.refresh.list': 'Change batches',//换一批
     'clue.customer.condition.change': 'modify condition',//修改条件
     'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
-    'clue.customer.confirm.valid': 'Confirm valid'//确认有效
-
+    'clue.customer.confirm.valid': 'Confirm valid',//确认有效
+    // 引导流程
+    'guide.add.customer.title': 'Add your customer',//添加您的客户
+    'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户
+    'guide.extract.clue.title': 'Extract clues that interest you',//提取您感兴趣的线索
+    'guide.extract.clue.des': 'The system will recommend you clues based on your interests',//系统会根据您的兴趣，推荐给您线索
+    'guide.extract.clue.loading': 'Getting clues',//获取线索中
+    'guide.extract.clue.now': 'Pick up',//立即提取
+    'guide.add.organization.title': 'Refine your organizational structure',//完善您的组织架构
+    'guide.add.organization.des': 'The improved organizational structure allows you to use other functions smoothly',//完善组织架构后,有利于您顺畅的使用其他功能
+    'guide.dial.welcome.tip': 'Welcome {name}, free 60 minutes',//欢迎{name}，免费送您60分钟通话时长
+    'gudie.dial.des': 'Dial out using the test number you can call out',//拨号使用测试号码呼出，您可以
+    'guide.dial.apply.phone': 'Exclusive application number',//申请专属号码
+    'guide.finished.can': 'You can go to',//可以去
+    'guide.finished.see': 'To view',//查看
+    'guide.finished.page.see': 'Interface to view',//界面查看
+    'guide.finished.can.see': 'You can check it in the {page} interface',//可以去{page}界面查看
+    'guide.add.member.finished': 'Adding members is complete',//添加成员已完成
+    'guide.add.customer.finished': 'Adding a customer is complete',//添加客户已完成
+    'guide.recommend.clue.finished': 'The recommendation cue has been extracted',//推荐线索已提取
+    'guide.finished.know': 'Know',//知道了
+    'guide.close.faild': 'Failed to close this process',//关闭此流程失败
+    'guide.add.member.team.tip': 'Add a new department',//添加新部门
+    'guide.add.member.team.name': 'Department name',//部门名称
+    'guide.add.member.team.name.placeholder': 'Please enter department name',//请输入部门名称
+    'guide.continue.add': 'Continue to add',//继续添加
+    'guide.see.member': 'Check the members',//查看成员
+    'guide.see.cutomer': 'View Customers',//查看客户
+    'guide.add.or.import.customer.success': 'Add or import successful',//添加/导入成功
+    'guide.continue.extract': 'Continue to extract',//继续提取
+    'guide.see.clue': 'Check the clues',//查看线索
+    'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
+    'guide.import.customer.success': 'Import Success',//导入成功
 };
 export default en_US;

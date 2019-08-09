@@ -57,6 +57,14 @@ module.exports = {
                 'CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL'
             ]
         },
+        {//获取系统标签列表
+            method: 'get',
+            path: '/rest/crm/immutable_labels/:type',
+            handler: 'getSystemLabelsList',
+            passport: {
+                needLogin: true
+            }
+        },
         {
             method: 'get',
             path: '/rest/crm/competitor_list/:type',

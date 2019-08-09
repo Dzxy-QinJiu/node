@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "ant-auth-request": "1.0.16",
-    "ant-chart-collection": "1.0.20",
+    "ant-chart-collection": "1.0.21",
     "ant-utils": "1.0.12",
     "app-root-path": "1.0.0",
     "babel": "6.23.0",
@@ -104,7 +104,7 @@
     "bootstrap-filestyle": "1.2.1",
     "bootstrap-webpack": "0.0.6",
     "calculatorjs": "0.1.7",
-    "callcenter-sdk-client": "1.0.16",
+    "callcenter-sdk-client": "1.0.17",
     "classnames": "2.2.1",
     "clean-webpack-plugin": "0.1.19",
     "color": "0.11.1 ",

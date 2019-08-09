@@ -10,6 +10,7 @@ import { RightPanelClose, RightPanelReturn } from 'CMP_DIR/rightPanel';
 import AppUserUtil from '../../util/app-user-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import OperationStepsFooter from 'CMP_DIR/user_manage_components/operation-steps-footer';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 var PrivilegeChecker = require('CMP_DIR/privilege/checker').PrivilegeChecker;
 var HeadIcon = require('CMP_DIR/headIcon');
 const FormItem = Form.Item;
@@ -188,7 +189,7 @@ class ThirdAppEdit extends React.Component {
                             rules: [{ required: true, message: Intl.get('user.third.thirdapp.platform.reuqired', '请选择或填写应用平台') }]
                         })(
                             <Select combobox
-                                filterOption={false}
+                                filterOption={(input, option) => ignoreCase(input, option)}
                                 searchPlaceholder={Intl.get('user.third.thirdapp.platform.reuqired', '请选择或填写应用平台')}
                             >
                                 {

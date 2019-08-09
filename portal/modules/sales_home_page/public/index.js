@@ -38,6 +38,7 @@ import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import InviteMember from 'MOD_DIR/invite_member/public';
 import AlertTip from 'CMP_DIR/alert-tip';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -572,6 +573,7 @@ class SalesHomePage extends React.Component {
                     showSearch
                     value={this.state.callType}
                     onChange={this.selectCallTypeValue}
+                    filterOption={(input, option) => ignoreCase(input, option)}
                 >
                     <Option value={CALL_TYPE_OPTION.ALL}>
                         <span>{Intl.get('user.online.all.type', '全部类型')}</span>

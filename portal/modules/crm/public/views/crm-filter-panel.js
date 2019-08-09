@@ -104,6 +104,8 @@ class CrmFilterPanel extends React.Component {
         FilterAction.getTeamList();
         FilterAction.getSalesRoleList();
         FilterAction.getStageList();
+        //获取系统标签的列表
+        FilterAction.getSystemTagList();
         FilterAction.getTagList();
         FilterAction.getStageTagList();
         //获取竞品的列表
@@ -525,6 +527,18 @@ class CrmFilterPanel extends React.Component {
                         value: x.value,
                         selected: x.value === _.get(this.state, 'condition.qualify_label', '')
                     };
+                })
+            },
+            {
+                groupName: Intl.get('crm.system.labels', '系统标签'),
+                groupId: 'immutable_labels',
+                data: _.drop(this.state.systemTagList).map(x => {
+                    const item = {
+                        name: x.show_name,
+                        value: x.name,
+                        selected: _.indexOf(selectedLabels, x.name) !== -1
+                    };
+                    return item;
                 })
             },
             {

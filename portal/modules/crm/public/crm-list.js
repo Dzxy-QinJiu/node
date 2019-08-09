@@ -1,6 +1,6 @@
 var React = require('react');
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon } from 'antd';
+import { Tag, Modal, message, Button, Icon, Dropdown, Menu,} from 'antd';
 import { AntcTable } from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -41,11 +41,12 @@ import CrmOverviewActions from './action/basic-overview-actions';
 var userData = require('PUB_DIR/sources/user-data');
 const userInfo = userData.getUserData();
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
-import {OTHER_FILTER_ITEMS, DAY_TIME} from 'PUB_DIR/sources/utils/consts';
+import { OTHER_FILTER_ITEMS, DAY_TIME, BOOT_PROCESS_KEYS } from 'PUB_DIR/sources/utils/consts';
 import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
+import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -141,6 +142,7 @@ class Crm extends React.Component {
             pageValue: 0,//两次点击时的页数差
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
+            addType: 'start',//添加按钮的初始显示内容
         };
     };
 
@@ -514,6 +516,7 @@ class Crm extends React.Component {
     };
 
     addOne = (customer) => {
+        this.upDateGuideMark();
         this.state.isAddFlag = false;
         this.state.isScrollTop = true;
         this.setState(this.state);
@@ -946,6 +949,11 @@ class Crm extends React.Component {
         this.setState({ isScrollTop: false });
     };
 
+    // 更新引导流程
+    upDateGuideMark() {
+        updateGuideMark(BOOT_PROCESS_KEYS.ADD_CUSTOMER);
+    }
+
     showMergePanel = () => {
         if (_.isArray(this.state.selectedCustomer) && this.state.selectedCustomer.length > 1) {
             this.setState({ mergePanelIsShow: true });
@@ -961,6 +969,37 @@ class Crm extends React.Component {
     afterMergeCustomer = (mergeObj) => {
         this.setState({ selectedCustomer: [], mergePanelIsShow: false });//清空选择的客户
         CrmAction.afterMergeCustomer(mergeObj);
+    };
+
+    //根据按钮选择添加或导入客户
+    handleButtonClick = (e) => {
+        if(e.key === 'add'){
+            this.setState({
+                addType: e.key,
+                isAddFlag: true 
+            });
+        }else if(e.key === 'import'){
+            this.setState({
+                addType: e.key,
+                crmTemplateRightPanelShow: true
+            });
+        }
+    }
+
+    //添加客户的按钮列表渲染
+    dropList = () => {
+        let menu = (
+            <Menu onClick={this.handleButtonClick.bind(this)}>
+                <Menu.Item key="add" >
+                    {Intl.get('crm.sales.manual_add.clue','手动添加')}
+                </Menu.Item>
+            
+                <Menu.Item key="import" >
+                    {Intl.get('crm.2', '导入客户')}
+                </Menu.Item>
+            </Menu>
+        );
+        return menu;
     };
 
     //渲染操作按钮
@@ -992,21 +1031,30 @@ class Crm extends React.Component {
             </div>);
         } else {
             return (<div className="top-btn-wrapper">
+
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
-                    title={isWebMini ? Intl.get('crm.2', '导入客户') : ''}
-                    onClick={this.showCrmTemplateRightPanel}
-                >
-                    {isWebMini ? <i className="iconfont icon-import-btn" /> : <Button type='primary'>{Intl.get('crm.2', '导入客户')}</Button>}
+                    title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}>
+                    {    
+                        isWebMini ? (<Dropdown overlay={this.dropList()} placement="bottomCenter" 
+                            overlayClassName='mini-add-dropdown'>
+                            <Icon type="plus" className="add-btn"/> 
+                        </Dropdown>
+                        ) : (
+                            <Dropdown overlay={this.dropList()} placement="bottomCenter" 
+                                overlayClassName='norm-add-dropdown' >
+                                <Button type="primary">
+                                    {(this.state.addType === 'start') ? Intl.get('crm.3', '添加客户') : (
+                                        (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue', '手动添加') :
+                                            Intl.get('crm.2', '导入客户')
+                                    )}
+                                    <Icon type="down" />
+                                </Button>
+                            </Dropdown>)
+                    }
                 </PrivilegeChecker>
-                <PrivilegeChecker
-                    check="CUSTOMER_ADD"
-                    className={btnClass}
-                    title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}
-                    onClick={this.showAddForm}>
-                    {isWebMini ? <Icon type="plus" /> : <Button>{Intl.get('crm.3', '添加客户')}</Button>}
-                </PrivilegeChecker>
+
                 <PrivilegeChecker
                     check="CRM_REPEAT"
                     className={btnClass + ' customer-repeat-btn btn-m-r-2'}
@@ -1064,6 +1112,8 @@ class Crm extends React.Component {
         ajax(arg).then(result => {
             //刷新客户列表
             this.search();
+            // 更新引导流程
+            this.upDateGuideMark();
             _.isFunction(successCallback) && successCallback();
         }, (errorMsg) => {
             _.isFunction(errCallback) && errCallback(errorMsg);

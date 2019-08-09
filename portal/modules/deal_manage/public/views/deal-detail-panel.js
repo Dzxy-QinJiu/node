@@ -22,12 +22,15 @@ import dealBoardAction from '../action/deal-board-action';
 import dealAction from '../action';
 import dealAjax from '../ajax';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
+import { PrivilegeChecker,hasPrivilege } from 'CMP_DIR/privilege/checker';
 
 const TOP_STAGE_HEIGHT = 110;//头部阶段
 //展示申请签约用户的阶段
 const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')];
 //展示申请试用用户的阶段
 const APPLY_TIAL_STAGES = [Intl.get('crm.143', '试用阶段'), Intl.get('crm.144', '立项报价阶段'), Intl.get('crm.145', '谈判阶段')];
+const HAS_UPDATA = 'SALESOPPORTUNITY_UPDATE';//修改权限的常量
+const HAS_DELETE = 'CRM_SALESOPPORTUNITY_DELETE';//删除权限的常量
 class DealDetailPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -243,17 +246,18 @@ class DealDetailPanel extends React.Component {
         let currentStageIndex = _.findIndex(stageList, stage => stage.name === curStage);
         let stageStepList = _.map(stageList, (stage, index) => {
             const stageName = stage.name ? stage.name.split('阶段')[0] : '';
-            if (index === currentStageIndex) {
+            if (index === currentStageIndex || !hasPrivilege(HAS_UPDATA)) {
                 return {title: stageName};
             } else {
                 return {
                     title: stageName,
-                    //该步骤的处理元素渲染
+                    //该步骤的处理元素渲染             
                     stepHandleElement: (
                         <Popconfirm title={Intl.get('crm.order.update.confirm', '确定要修改订单阶段？')}
                             onConfirm={this.editDealStage.bind(this, stage.name)} key={index}>
                             <span className="deal-stage-name"/>
-                        </Popconfirm>)
+                        </Popconfirm>
+                    )
                 };
             }
         });
@@ -277,7 +281,10 @@ class DealDetailPanel extends React.Component {
                         <span className="deal-stage-win"/>
                     </Popconfirm>) : (<span className="deal-stage-name"/>)}
             </Dropdown>);
-        stageStepList.push({title: Intl.get('crm.order.close.step', '关闭订单'), stepHandleElement: closeDealStep,});
+        hasPrivilege(HAS_UPDATA) ?
+            stageStepList.push({
+                title: Intl.get('crm.order.close.step', '关闭订单'), 
+                stepHandleElement: closeDealStep,}) : null;
         return (
             <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
                 onClickStep={this.onClickStep.bind(this)}/>);
@@ -346,8 +353,12 @@ class DealDetailPanel extends React.Component {
                                         {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                     </Button>
                                 </span>) : (
-                                <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
-                                    onClick={this.showDelConfirmTip}/>)
+                                <PrivilegeChecker check={HAS_DELETE}>
+                                    <span className="iconfont icon-delete" 
+                                        title={Intl.get('common.delete', '删除')}
+                                        onClick={this.showDelConfirmTip}/>
+                                </PrivilegeChecker>
+                            )
                             }
                         </span>
                     </span>
@@ -471,7 +482,7 @@ class DealDetailPanel extends React.Component {
         const deal = this.state.currDeal;
         const EDIT_FEILD_WIDTH = 350;
         //确认删除状态下和处于关闭状态时，不可修改订单的信息
-        let hasEditPrivilege = !this.state.isDelConfirmShow && !deal.oppo_status;
+        let hasEditPrivilege = !this.state.isDelConfirmShow && !deal.oppo_status && hasPrivilege(HAS_UPDATA);
         return (
             <div className="deal-item modal-container">
                 {deal.oppo_status === DEAL_STATUS.LOSE ? (
@@ -493,26 +504,27 @@ class DealDetailPanel extends React.Component {
                     </div>) : null}
                 <div className="deal-item-content deal-application-list">
                     <span className="deal-key">{Intl.get('call.record.application.product', '应用产品')}:</span>
-                    {_.get(this.state, 'appList[0]') ? (
-                        <BasicEditSelectField
-                            width={EDIT_FEILD_WIDTH}
-                            id={deal.id}
-                            displayText={this.getSelectAppNames(deal.apps)}
-                            value={_.get(deal, 'apps', [])}
-                            multiple={true}
-                            field="apps"
-                            selectOptions={this.getAppOptions()}
-                            hasEditPrivilege={hasEditPrivilege}
-                            validators={[{
-                                required: true,
-                                message: Intl.get('leave.apply.select.atleast.one.app', '请选择至少一个产品'),
-                                type: 'array'
-                            }]}
-                            placeholder={Intl.get('leave.apply.select.product', '请选择产品')}
-                            saveEditSelect={this.saveDealBasicInfo.bind(this, 'apps')}
-                            noDataTip={Intl.get('deal.detail.no.products', '暂无产品')}
-                            addDataTip={Intl.get('config.product.add', '添加产品')}
-                        />) : null}
+                    {
+                        _.get(this.state, 'appList[0]') ? (
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                id={deal.id}
+                                displayText={this.getSelectAppNames(deal.apps)}
+                                value={_.get(deal, 'apps', [])}
+                                multiple={true}
+                                field="apps"
+                                selectOptions={this.getAppOptions()}
+                                hasEditPrivilege={hasEditPrivilege}
+                                validators={[{
+                                    required: true,
+                                    message: Intl.get('leave.apply.select.atleast.one.app', '请选择至少一个产品'),
+                                    type: 'array'
+                                }]}
+                                placeholder={Intl.get('leave.apply.select.product', '请选择产品')}
+                                saveEditSelect={this.saveDealBasicInfo.bind(this, 'apps')}
+                                noDataTip={Intl.get('deal.detail.no.products', '暂无产品')}
+                                addDataTip={Intl.get('config.product.add', '添加产品')}/>) : null
+                    }
                 </div>
                 <div className="deal-item-content">
                     <span className="deal-key">{Intl.get('crm.148', '预算金额')}:</span>
@@ -529,7 +541,7 @@ class DealDetailPanel extends React.Component {
                         saveEditInput={this.saveDealBasicInfo.bind(this, 'budget')}
                         noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
                         addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
-                    />
+                    />         
                 </div>
                 <div className="deal-item-content">
                     <span className="deal-key">{Intl.get('crm.order.expected.deal', '预计成交')}:</span>
@@ -544,7 +556,7 @@ class DealDetailPanel extends React.Component {
                         disabledDate={disabledBeforeToday}
                         noDataTip={Intl.get('crm.order.no.expected.deal.time', '暂无预计成交时间')}
                         addDataTip={Intl.get('crm.order.add.expected.deal.time', '添加预计成交时间')}
-                    />
+                    /> 
                 </div>
                 <div className="deal-item-content">
                     <span className="deal-key">{Intl.get('crm.order.remarks', '订单备注')}:</span>
@@ -560,7 +572,7 @@ class DealDetailPanel extends React.Component {
                         saveEditInput={this.saveDealBasicInfo.bind(this, 'remarks')}
                         noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                         addDataTip={Intl.get('crm.basic.add.remark', '添加备注')}
-                    />
+                    /> 
                 </div>
             </div>
         );

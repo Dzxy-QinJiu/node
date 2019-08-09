@@ -1,5 +1,6 @@
 var React = require('react');
 import {message, Select, Button, Icon} from 'antd';
+import classNames from 'classnames';
 let Option = Select.Option;
 let userData = require('../../../../../public/sources/user-data');
 let CrmBasicAjax = require('../../ajax/index');
@@ -16,6 +17,7 @@ import {
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+
 //展示的类型
 const DISPLAY_TYPES = {
     EDIT: 'edit',//重新分配销售
@@ -51,6 +53,7 @@ class SalesTeamCard extends React.Component {
 
     state = {
         ...this.getInitStateData(this.props),
+        duplicateSalesWarning: false, //联合跟进人设置为负责人提示
         salesManList: [],//销售及对应团队列表
         allUserList: [],//所有的成员列表（包括销售在内）
         myTeamTree: [],//我所在团队及下级团队树（销售领导判断负责人和联合跟进人是否能修改）
@@ -259,6 +262,19 @@ class SalesTeamCard extends React.Component {
                         salesTeamId: submitData.sales_team_id,
                         salesTeam: submitData.sales_team
                     });
+                    //如果有"联合跟进人将删除"提示
+                    if(_.get(this.state,'duplicateSalesWarning')){
+                        this.setState({
+                            duplicateSalesWarning: false
+                        });
+                        //将联合跟进人的状态清空
+                        this.setState({
+                            secondUserId: '',
+                            secondUserName: '',
+                            secondTeamId: '',
+                            secondTeamName: ''
+                        });
+                    }
                 }
             }, errorMsg => {
                 if (_.isFunction(errorFunc)) errorFunc(errorMsg || Intl.get('crm.172', '修改客户负责人失败'));
@@ -330,14 +346,6 @@ class SalesTeamCard extends React.Component {
             userList = this.state.allUserList;
         }
         let dataList = formatSalesmanList(userList);
-        //负责人和联合跟进人不能为同一个，所以
-        if (type === SALES_EDIT_TYPES.SALES_TEAM && this.state.secondUserId) {
-            //修改负责人的选择框中，过滤掉联合跟人
-            dataList = _.filter(dataList, item => !_.includes(item.value, this.state.secondUserId));
-        } else if (type === SALES_EDIT_TYPES.SECOND_SALES_TEAM && this.state.userId) {
-            //修改联合跟进人的选择框中，过滤掉负责人
-            dataList = _.filter(dataList, item => !_.includes(item.value, this.state.userId));
-        }
         //销售人员与销售团队下拉列表的填充内容
         let salesmanOptions = dataList.map(function(item) {
             return (<Option value={item.value} key={item.value}>{item.name}</Option>);
@@ -416,10 +424,55 @@ class SalesTeamCard extends React.Component {
         return hasPrivilege(EDIT_PRIVILIGES.EDIT_SECOND_SALES) && !this.props.disableEdit && !this.isCommonSales();
     }
 
+    //负责人选择改变时
+    handleChangeSalesTeam = (selectVal) => {
+        let userId = _.split(selectVal, '&&')[0];
+        let secondUserId = _.get(this.state, 'secondUserId');
+        //如果联合跟进人加为负责人
+        if(_.isEqual(userId, secondUserId)) {
+            //提示信息
+            this.setState({
+                duplicateSalesWarning: true
+            });
+        } else {
+            //如果不是同一个人并且duplicateSalesWarning为true
+            if(_.get(this.state, 'duplicateSalesWarning')){
+                this.setState({
+                    duplicateSalesWarning: false
+                });
+            }
+        }
+    }
+
+    //负责人选择取消时
+    handleCancelSalesTeam = () => {
+        //如果有"联合跟进人将删除"提示
+        if(_.get(this.state,'duplicateSalesWarning')){
+            this.setState({
+                duplicateSalesWarning: false
+            });
+        }
+    }
+
+    //联合跟进人验证
+    checkSecondSales = (rule, value, callback) => {
+        value = _.trim(value);
+        let secondUserId = _.split(value, '&&')[0];
+        let userId = _.get(this.state, 'userId');
+        //如果负责人设置为联合跟进人
+        if(_.isEqual(userId, secondUserId)) {
+            let userName = _.get(this.state, 'userName');
+            callback(Intl.get('crm.already.sale.error', '{user}已是负责人，不能再设置联合跟进人', {user: userName}));
+        } else {
+            callback();
+        }
+    };
     renderContent = () => {
+        let secondUserName = _.get(this.state, 'secondUserName');
+        let salesTeam = classNames('sales-team',{'duplicate-sales-warning': this.state.duplicateSalesWarning});
         return (
             <div className="sales-team-show-block">
-                <div className="sales-team">
+                <div className={salesTeam}>
                     <span className="sales-team-label">{Intl.get('crm.6', '负责人')}:</span>
                     <BasicEditSelectField
                         width={EDIT_FEILD_WIDTH.SALES}
@@ -429,12 +482,17 @@ class SalesTeamCard extends React.Component {
                         value={this.getSelectValue(SALES_EDIT_TYPES.SALES_TEAM)}
                         field={SALES_EDIT_TYPES.SALES_TEAM}
                         selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SALES_TEAM)}
+                        onSelectChange={this.handleChangeSalesTeam}
                         hasEditPrivilege={this.enableEditSales() && (this.isMyTeamOrChildUser(this.state.salesTeamId, this.state.userId) || this.isManager())}
                         placeholder={Intl.get('contract.63', '请选择负责人')}
                         saveEditSelect={this.handleEditSalesTeam}
+                        cancelEditField={this.handleCancelSalesTeam}
                         noDataTip={Intl.get('contract.64', '暂无负责人')}
                         addDataTip={Intl.get('contract.206', '设置负责人')}
                     />
+                    { this.state.duplicateSalesWarning ?
+                        <span className="select-warning">{Intl.get('crm.second.sale.delete','保存后，联合跟进人中{user}将被删除', {user: secondUserName})}</span> : null
+                    }
                 </div>
                 <div className="sales-team">
                     <span className="sales-team-label">{Intl.get('crm.second.sales', '联合跟进人')}:</span>
@@ -450,6 +508,7 @@ class SalesTeamCard extends React.Component {
                             hasEditPrivilege={this.enableEditSecondSales() && (this.isMyTeamOrChildUser(this.state.secondTeamId, this.state.secondUserId) || this.isManager())}
                             placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
                             saveEditSelect={this.saveSecondSales}
+                            validators={[{ validator: this.checkSecondSales }]}
                             noDataTip={Intl.get('crm.no.second.sales', '暂无联合跟进人')}
                             addDataTip={Intl.get('crm.set.second.sales', '设置联合跟进人')}
                         />}

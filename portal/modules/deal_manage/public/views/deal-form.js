@@ -19,7 +19,7 @@ import dealAction from '../action';
 import dealBoardAction from '../action/deal-board-action';
 
 import {num as antUtilsNum} from 'ant-utils';
-import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const parseAmount = antUtilsNum.parseAmount;
 const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
 

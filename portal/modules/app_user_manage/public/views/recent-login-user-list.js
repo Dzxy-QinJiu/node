@@ -42,6 +42,7 @@ const PAGE_SIZE = 20;//一页获取20条数据
 const ALL_MEMBER_VALUE = 'ALL_MEMBER';
 import {isEqualArray} from 'LIB_DIR/func';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -503,9 +504,7 @@ class RecentLoginUsers extends React.Component {
                     onChange={this.onMemberChange}
                     showSearch={true}
                     className="team-member-select-options"
-                    filterOption={(inputValue, option) => {
-                        return option.props.children.includes(inputValue);
-                    }}
+                    filterOption={(input, option) => ignoreCase(input, option)}
                 >
                     {
                         memberOptions

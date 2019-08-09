@@ -15,7 +15,7 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: []
+        privileges: ['SALESOPPORTUNITY_ADD']
     }, {
         method: 'put',
         path: '/rest/deal',
@@ -23,7 +23,7 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: []
+        privileges: ['SALESOPPORTUNITY_UPDATE']
     }, {
         method: 'delete',
         path: '/rest/deal/:deal_id',
@@ -31,7 +31,7 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: []
+        privileges: ['CRM_SALESOPPORTUNITY_DELETE']
     }, {
         method: 'get',
         path: '/rest/deal/:type/stage/total_budget',

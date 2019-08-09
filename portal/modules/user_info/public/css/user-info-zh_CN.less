@@ -1,4 +1,6 @@
 @import "../../../../public/css/common-variables.less";
+//编辑按钮主色
+@edit-icon-color: #b6c2c9;
 .user-info-manage-container {
   //展示区域样式
   padding: 20px @container_padding 30px @container_padding;
@@ -29,7 +31,6 @@
 
     .user-logo-div {
       //头像区域样式
-      height: 138px;
       border-bottom: 1px #edf0f0 solid;
 
       //编辑按钮图标样式
@@ -87,7 +88,50 @@
             white-space: normal;
           }
         }
-
+        //用户名下nickname样式
+        .user-info-nickname {
+          font-size: 14px;
+          margin-top: -38px;
+          margin-bottom: 24px;
+          .basic-edit-field-input {
+            display: inline-block;
+            width: 100%;
+            vertical-align: top;
+            margin-top: 4px;
+            width: 100%;
+          }
+          .ant-input {
+            font-size: 14px;
+          }
+          .basic-info-text {
+            margin-left: 0px;
+            color: #81939e;
+            font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
+          }
+          .edit-container {
+            overflow: hidden;
+            display: inline-block;
+            text-align: center;
+            margin-left: 26px;
+            .iconfont {
+              color: @edit-icon-color;
+              cursor: pointer;
+              float: right;
+            }
+            .icon-edit-btn {
+              float: right;
+              margin: 0 0 0 10px;
+              color: @edit-icon-color;
+              cursor: pointer;
+              &:hover {
+                color: darken(@edit-icon-color, 30%);
+              }
+              &:before {
+                content: "\E60F";
+              }
+            }
+          }
+        }
       }
     }
 
@@ -137,6 +181,53 @@
           }
           .error-msg-tip{
             color: @error_tips_color;
+          }
+          //邮箱input样式
+          .user-email-item {
+            display: inline-block;
+            width: 82%;
+            .basic-edit-field-input {
+              display: inline-block;
+              width: 100%;
+              vertical-align: top;
+              width: 100%;
+              &.editing {
+                margin-top: 4px;
+              }
+            }
+            .active-info {
+              margin-left: 10px;
+            }
+            .ant-input {
+              font-size: 14px;
+            }
+            .basic-info-text {
+              margin-bottom: 4px;
+              margin-left: 0px;
+              color: #81939e;
+              font-family: 'Noto Sans CJK SC', 'Noto Sans CJK', 'Source Han Sans', source-han-sans-simplified-c, sans-serif !important;
+            }
+            .edit-container {
+              display: inline-block;
+              text-align: center;
+              .iconfont {
+                color: @edit-icon-color;
+                cursor: pointer;
+                float: right;
+              }
+              .icon-edit-btn {
+                float: right;
+                margin: 0 0 0 10px;
+                color: @edit-icon-color;
+                cursor: pointer;
+                &:hover {
+                  color: darken(@edit-icon-color, 30%);
+                }
+                &:before {
+                  content: "\E60F";
+                }
+              }
+            }
           }
         }
         // 修改语言的样式

@@ -20,6 +20,7 @@ var Spinner = require('../../../../components/spinner');
 import { Select, Alert } from 'antd';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import ShearContent from '../../../../components/shear-content';
+import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 var Option = Select.Option;
 
 //高度常量
@@ -270,7 +271,8 @@ class UserDetailChangeRecord extends React.Component {
             return (
                 <div>
                     <Select showSearch value={this.state.app} style={{ width: width }}
-                        onChange={this.handleChange}>
+                        onChange={this.handleChange}
+                        filterOption={(input, option) => ignoreCase(input, option)}>
                         {this.getSelectOptions()}
                     </Select>
                     <Alert
@@ -285,7 +287,9 @@ class UserDetailChangeRecord extends React.Component {
             return (
                 <div id="change-record-area">
                     <Select showSearch value={this.state.app} style={{ width: width }}
-                        onChange={this.handleChange} getPopupContainer={() => document.getElementById('change-record-area')}>
+                        onChange={this.handleChange}
+                        getPopupContainer={() => document.getElementById('change-record-area')}
+                        filterOption={(input, option) => ignoreCase(input, option)}>
                         {this.getSelectOptions()}
                     </Select>
                     <AntcTimeLine

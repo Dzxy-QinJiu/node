@@ -956,3 +956,8 @@ exports.isOpenCash = () => {
     return _.includes(_.get(organization,'functions', []), ORGANIZATION_APP_TYPES.CASH);
 };
 
+// 设置是否已有专属号码
+exports.setExclusiveNumber = (phoneType) => {
+    let isDefault = _.isEqual(phoneType, 'default');
+    userData.setUserData('hasExcluesiveNumber', !isDefault);
+};

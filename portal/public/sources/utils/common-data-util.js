@@ -2,12 +2,13 @@ import {getUserData, setUserData} from '../user-data';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
+import guideAjax from 'MOD_DIR/common/public/ajax/guide';
 import {storageUtil} from 'ant-utils';
 import {traversingTeamTree, getParamByPrivilege, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
-import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import { INTEGRATE_TYPES } from 'PUB_DIR/sources/utils/consts';
 
 const session = storageUtil.session;
 let appList = [];
@@ -628,4 +629,23 @@ exports.getUserTypeList = function() {
             }
         });
     });
+};
+// 更新引导流程
+exports.updateGuideMark = function(key) {
+    // 判断是否完成此引导，没有则请求接口
+    let userProperty = 'guideConfig';
+    let guideConfig = _.get(getUserData(), userProperty, []);
+    let curGuide = _.find(guideConfig, guide => guide.content === key);
+    if(curGuide && !curGuide.finished) {
+        guideAjax.setGuideMark({
+            step: key
+        }).then((data) => {
+            _.each(guideConfig, guide => {
+                if(guide.content === key) {
+                    guide.finished = true;
+                }
+            });
+            setUserData(userProperty, guideConfig);
+        }, (errMsg) => {console.log(errMsg);});
+    }
 };
