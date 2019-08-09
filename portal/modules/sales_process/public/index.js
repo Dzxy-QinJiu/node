@@ -293,6 +293,7 @@ class SalesProcess extends React.Component {
                                     </div>
                                     <div className="item-operator">
                                         <span
+                                            title={Intl.get('sales.process.set.customer.stage', '设置客户阶段')}
                                             onClick={this.showCustomerStagePanel.bind(this, item)}
                                             data-tracename={'点击设置' + item.name + '销售流程按钮'}
                                         >
@@ -301,6 +302,7 @@ class SalesProcess extends React.Component {
                                         {
                                             hasPrivilege('CRM_DELETE_SALES_PROCESS') && item.type === 'custom' ? (
                                                 <span
+                                                    title={Intl.get('sales.process.delete.process', '删除销售流程')}
                                                     onClick={this.handleDeleteSaleProcess.bind(this, item)}
                                                     data-tracename={'点击删除' + item.name + '销售流程按钮'}
                                                 >

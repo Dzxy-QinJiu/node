@@ -826,6 +826,7 @@ var zh_CN = {
     // 后台管理-销售流程start
     'sales.process.add.process': '添加销售流程',
     'sales.process.edit.process': '编辑销售流程',
+    'sales.process.delete.process': '删除销售流程',
     'sales.process.get.failed': '获取销售流程失败',
     'sales.process.toplimit': '销售流程个数已达上限（8个）',
     'sales.process.suitable.objects': '适用范围',
