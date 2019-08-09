@@ -336,7 +336,8 @@ var en_US = {
     'home.page.deal.handle': 'Pending orders',//待处理的订单
     'home.page.no.work.tip': 'No job for the time being',//暂无工作
     'home.page.new.work.tip': 'Work changes, click here {refreshTip}',//工作有变动，点此{refreshTip}
-    'home.page.my.work.finished': 'Finished',//我已完成
+    'home.page.my.work.finished': 'Click Set to Completed',//点击设为已完成
+    'home.page.my.interest.handled': 'Click Set to Processed',//点击设为已处理
     'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
     'home.page.callout.time': 'Total call time',//呼出总时长
     'home.page.performance.num': 'No. {n}',//第{n}名
@@ -362,6 +363,7 @@ var en_US = {
     'home.page.contact.medium.cycle': 'Medium cycle',//中循环
     'home.page.contact.minor.cycle': 'Minor cycle',//小循环
     'home.page.add.schedule': 'Add schedule',//添加日程
+    'home.page.apply.approve': 'Approval',//审批
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/

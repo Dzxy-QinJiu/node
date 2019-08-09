@@ -30,7 +30,7 @@ class AntcDropdown extends React.Component {
     handleVisibleChange(flag) {
         //如果content内容中有下拉框的时候，选中某一项之后，会把AntcDropdown组件也隐藏掉
         //加上stopContentHide 这个属性，打开内容区域后设置为true，关闭后设置为false，避免内容区有select下拉框，选中选项后会关闭content内容区域
-        if (this.props.stopContentHide){
+        if (this.props.stopContentHide) {
             return;
         }
         this.setState({menuVisible: flag});
@@ -90,8 +90,10 @@ class AntcDropdown extends React.Component {
                             onClick={this.handleCancel.bind(this)} data-tracename="点击关闭按钮">{this.props.cancelTitle}
 
                         </Button>
-                        <Button type='primary' className="inline-block icon-choose" disabled={this.props.isSaving || this.props.isDisabled}
-                            onClick={this.props.handleSubmit.bind(this)} data-tracename="点击保存按钮">{this.props.okTitle}
+                        <Button type='primary' className="inline-block icon-choose"
+                            disabled={this.props.isSaving || this.props.isDisabled}
+                            onClick={this.props.handleSubmit.bind(this)}
+                            data-tracename="点击保存按钮">{this.props.okTitle}
                             {this.props.isSaving ? <Icon type="loading"/> : null}</Button>
                     </div> : null}
                 </Menu.Item>
@@ -103,13 +105,22 @@ class AntcDropdown extends React.Component {
         }
         return (
             <Dropdown overlay={menu} visible={this.props.isShowDropDownContent || this.state.menuVisible}
-                placement={this.props.placement} trigger={['click']}
+                placement={this.props.placement} trigger={[this.props.triggerEventStr || 'click']}
                 onVisibleChange={this.handleVisibleChange.bind(this)}
                 overlayClassName={overLayClass}
+                getPopupContainer={this.getPopupContainer}
             >
                 {this.props.content}
             </Dropdown>
         );
+    }
+
+    getPopupContainer = () => {
+        if (this.props.popupContainerId) {
+            return document.getElementById(this.props.popupContainerId);
+        } else {
+            return document.body;
+        }
     }
 }
 AntcDropdown.defaultProps = {
@@ -133,7 +144,9 @@ AntcDropdown.defaultProps = {
     isShowDropDownContent: false, // 是否显示dropdown中的内容
     showDropDownContent: function() { // 保存、取消时，dropdown不显示的处理
 
-    }
+    },
+    triggerEventStr: 'click',//触发事件hover、click
+    popupContainerId: ''//渲染到哪个元素上默认body上
 };
 AntcDropdown.propTypes = {
     showMenu: PropTypes.bool,
@@ -141,7 +154,7 @@ AntcDropdown.propTypes = {
     overlayTitle: PropTypes.string,
     overlayContent: PropTypes.string,
     okTitle: PropTypes.string,
-    cancelTitle: PropTypes.string ,
+    cancelTitle: PropTypes.string,
     unSelectDataTip: PropTypes.string,
     isSaving: PropTypes.bool,
     handleSubmit: PropTypes.func,
@@ -152,6 +165,8 @@ AntcDropdown.propTypes = {
     overlayClassName: PropTypes.string,
     placement: PropTypes.string,
     isShowDropDownContent: PropTypes.bool,
-    showDropDownContent: PropTypes.func
+    showDropDownContent: PropTypes.func,
+    popupContainerId: PropTypes.string,
+    triggerEventStr: PropTypes.string
 };
 export default AntcDropdown;
