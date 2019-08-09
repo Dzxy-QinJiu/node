@@ -108,7 +108,7 @@ exports.getMyInterestData = function(req, res) {
 exports.updateMyInterestStatus = function(req, res) {
     return restUtil.authRest.put(
         {
-            url: homePageRestUrls.updateMyInterestStatus.replace(':id', req.query.id),
+            url: homePageRestUrls.updateMyInterestStatus.replace(':id', req.body.id),
             req: req,
             res: res
         });
