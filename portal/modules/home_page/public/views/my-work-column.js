@@ -673,12 +673,14 @@ class MyWorkColumn extends React.Component {
             }
         }
         return (
-            <div className='my-work-card-container' onClick={openWorkDetailFunc.bind(this, item)}
-                title={clickTip}>
+            <div className='my-work-card-container'>
                 <div className={contentCls} id={`home-page-work${item.id}`}>
-                    {this.renderWorkName(item, index)}
-                    <div className='work-remark'>
-                        {_.map(item.tags, (tag, index) => this.renderWorkRemarks(tag, item, index))}
+                    <div onClick={openWorkDetailFunc.bind(this, item)}
+                        title={clickTip}>
+                        {this.renderWorkName(item, index)}
+                        <div className='work-remark'>
+                            {_.map(item.tags, (tag, index) => this.renderWorkRemarks(tag, item, index))}
+                        </div>
                     </div>
                     <div className='my-work-item-hover'>
                         {this.renderContactItem(item)}
