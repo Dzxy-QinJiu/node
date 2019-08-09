@@ -63,8 +63,6 @@ var LAYOUT_CONSTANTS = {
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
     TH_MORE_HEIGHT: 20//带选择框的TH60比不带选择框的TH40多出来的高度
 };
-const ADD = 'crm.sales.manual_add.clue';//手动添加线索
-const IMPORT = 'crm.sales.manual.import.clue';//导入线索
 class ClueCustomer extends React.Component {
     state = {
         clueAddFormShow: false,//
@@ -90,7 +88,7 @@ class ClueCustomer extends React.Component {
         selectedClues: [],//获取批量操作选中的线索
         isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
         queryObj: {},
-        btnContent: 'crm.sales.add.clue',//添加按钮的初始
+        addType: 'start',//添加按钮的初始
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -295,15 +293,15 @@ class ClueCustomer extends React.Component {
 
     //根据按钮选择导入或添加线索
     handleButtonClick = (e) => {
-        if(e.key === 'addForm'){
+        if(e.key === 'add'){
             this.setState({
-                btnContent: ADD,//手动添加
+                addType: e.key,//手动添加
                 clueAddFormShow: true
                 
             });
         }else if(e.key === 'import'){
             this.setState({
-                btnContent: IMPORT,
+                addType: e.key,
                 clueImportTemplateFormShow: true
             });
         }
@@ -312,12 +310,12 @@ class ClueCustomer extends React.Component {
     //渲染导入线索或添加线索按钮
     renderAddBtn = () => {
         let menu = (<Menu onClick = {this.handleButtonClick.bind(this)} >
-            <Menu.Item key="addForm" >
-                {Intl.get(ADD,'手动添加')}
+            <Menu.Item key="add" >
+                {Intl.get('crm.sales.manual_add.clue','手动添加')}
             </Menu.Item>
                         
             <Menu.Item key="import" >
-                {Intl.get(IMPORT,'导入线索')}
+                {Intl.get('crm.sales.manual.import.clue','导入线索')}
             </Menu.Item>
         </Menu>);
         return (
@@ -326,7 +324,10 @@ class ClueCustomer extends React.Component {
                     hasPrivilege('CUSTOMER_ADD_CLUE') ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
                             <Button className="ant-btn ant-btn-primary manual-add-btn" >
-                                {Intl.get(this.state.btnContent)}
+                                {(this.state.addType === 'start') ? (Intl.get('crm.sales.add.clue', '添加线索')) : (
+                                    (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue','手动添加') :
+                                        Intl.get('crm.sales.manual.import.clue','导入线索')
+                                )}
                                 <Icon type="down" />
                             </Button>
                         </Dropdown> : null

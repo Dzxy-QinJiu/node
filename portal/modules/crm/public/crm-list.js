@@ -46,8 +46,6 @@ import {getStartTime, getEndTime} from 'PUB_DIR/sources/utils/time-format-util';
 import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
-const ADD = 'crm.sales.manual_add.clue';
-const IMPORT = 'crm.2';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -143,7 +141,7 @@ class Crm extends React.Component {
             pageValue: 0,//两次点击时的页数差
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
-            btnContent: 'crm.3',//添加按钮的初始显示内容
+            addType: 'start',//添加按钮的初始显示内容
         };
     };
 
@@ -968,14 +966,14 @@ class Crm extends React.Component {
 
     //根据按钮选择添加或导入客户
     handleButtonClick = (e) => {
-        if(e.key === 'addForm'){
+        if(e.key === 'add'){
             this.setState({
-                btnContent: ADD,
+                addType: e.key,
                 isAddFlag: true 
             });
         }else if(e.key === 'import'){
             this.setState({
-                btnContent: IMPORT,
+                addType: e.key,
                 crmTemplateRightPanelShow: true
             });
         }
@@ -985,12 +983,12 @@ class Crm extends React.Component {
     dropList = () => {
         let menu = (
             <Menu onClick={this.handleButtonClick.bind(this)}>
-                <Menu.Item key="addForm" >
-                    {Intl.get(ADD,'手动添加')}
+                <Menu.Item key="add" >
+                    {Intl.get('crm.sales.manual_add.clue','手动添加')}
                 </Menu.Item>
             
                 <Menu.Item key="import" >
-                    {Intl.get(IMPORT, '导入客户')}
+                    {Intl.get('crm.2', '导入客户')}
                 </Menu.Item>
             </Menu>
         );
@@ -1030,17 +1028,20 @@ class Crm extends React.Component {
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
-                    title={isWebMini ? Intl.get(ADD, '添加客户') : ''}>
+                    title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}>
                     {    
-                        isWebMini ? (<Dropdown  overlay={this.dropList()} placement="bottomCenter" 
-                                                overlayClassName='mini-add-dropdown'>
-                                        <Icon type="plus" className="add-btn"/> 
-                                    </Dropdown>
+                        isWebMini ? (<Dropdown overlay={this.dropList()} placement="bottomCenter" 
+                            overlayClassName='mini-add-dropdown'>
+                            <Icon type="plus" className="add-btn"/> 
+                        </Dropdown>
                         ) : (
-                            <Dropdown   overlay={this.dropList()} placement="bottomCenter" 
-                                        overlayClassName='norm-add-dropdown' >
+                            <Dropdown overlay={this.dropList()} placement="bottomCenter" 
+                                overlayClassName='norm-add-dropdown' >
                                 <Button type="primary">
-                                    {Intl.get(this.state.btnContent, '添加客户')}
+                                    {(this.state.addType === 'start') ? Intl.get('crm.3', '添加客户') : (
+                                        (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue', '手动添加') :
+                                            Intl.get('crm.2', '导入客户')
+                                    )}
                                     <Icon type="down" />
                                 </Button>
                             </Dropdown>)
