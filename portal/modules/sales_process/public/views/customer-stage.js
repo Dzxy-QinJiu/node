@@ -48,9 +48,6 @@ class CustomerStage extends React.Component {
 
     // 显示客户阶段表单
     showCustomerStageForm = (customerStage) => {
-        if (this.state.isSavingCustomerStage) {
-            return;
-        }
         CustomerStageAction.showCustomerStageForm(customerStage);
     };
 
@@ -128,19 +125,13 @@ class CustomerStage extends React.Component {
 
     // 显示客户阶段变更顺序
     showCustomerStageTransferOrder = () => {
-        if (this.state.isSavingCustomerStag) {
-            return;
-        }
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-div:first-child span'), '变更销售阶段顺序');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-div:first-child span'), '变更客户阶段顺序');
         CustomerStageAction.showCustomerStageTransferOrder();
     };
 
     // 关闭客户阶段变更顺序
     closeCustomerStageTransferOrder = () => {
-        if (this.state.isSavingCustomerStag) {
-            return;
-        }
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-btn:last-child span'), '取消对销售阶段顺序更改的保存');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-btn:last-child span'), '取消对客户阶段顺序更改的保存');
         CustomerStageAction.closeCustomerStageTransferOrder();
     };
 
@@ -154,13 +145,15 @@ class CustomerStage extends React.Component {
         CustomerStageAction.customerStageOrderDown(customerStage);
     };
 
-    saveCustomerStagOrder = () => {
-        if (this.state.isSavingCustomerStag) {
-            return;
-        }
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-btn:last-child span'), '保存对销售阶段的更改');
-        CustomerStageAction.changeIsSavingCustomerStag();
-        CustomerStageAction.saveCustomerStagOrder(this.state.customerStageList);
+    handleChangeCustomerStageOrder = () => {
+        let saleProcessId = this.props.saleProcessId;
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-btn:last-child span'), '保存对客户阶段的更改');
+        CustomerStageAjax.changeCustomerStageOrder(this.state.customerStageList, saleProcessId).then( (result) => {
+            this.closeCustomerStageTransferOrder();
+        }, (errMsg) => {
+            this.closeCustomerStageTransferOrder();
+            message.error(errMsg || Intl.get('sales.process.change.order.failed', '变更客户阶段顺序失败'));
+        } );
     };
 
     //渲染操作按钮区
@@ -215,7 +208,7 @@ class CustomerStage extends React.Component {
                                     <Button
                                         type="ghost"
                                         className="customer-stage-top-btn btn-item"
-                                        onClick={this.saveCustomerStagOrder.bind(this)}
+                                        onClick={this.handleChangeCustomerStageOrder.bind(this)}
                                     >
                                         <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
                                     </Button>
@@ -302,12 +295,6 @@ class CustomerStage extends React.Component {
                                     this.renderNoDataTipsOrErrMsg() : null
                             }
                             <div className="customer-stage-table-block">
-                                {
-                                    this.state.isSavingCustomerStageHome ? (
-                                        <div className="customer-stage-block">
-                                            <Spinner className="customer-stage-saving"/>
-                                        </div>) : null
-                                }
                                 <ul className="customer-stage-timeline">
                                     {
                                         _.map(customerStageList, (item, idx) => {

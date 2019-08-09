@@ -147,3 +147,20 @@ exports.deleteCustomerStage = (id) => {
     });
     return Deferred.promise();
 };
+
+// 变更客户阶段顺序
+exports.changeCustomerStageOrder = (stageList, saleProcessId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/change/customer/stage/order/${saleProcessId}`,
+        dataType: 'json',
+        type: 'put',
+        data: stageList,
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

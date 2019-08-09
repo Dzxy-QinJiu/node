@@ -60,5 +60,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'put', // 变更客户阶段顺序
+        'path': '/rest/change/customer/stage/order/:id',
+        'handler': 'changeCustomerStageOrder',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

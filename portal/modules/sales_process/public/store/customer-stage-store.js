@@ -17,17 +17,13 @@ class CustomerStageStore {
     }
     setInitialData() {
         this.customerStageList = [];
-        this.loading = true;
+        this.loading = false;
         this.getCustomerStageListErrMsg = '';
         this.currentCustomerStage = emptyCustomerStage;
         this.currentCustomerStageList = [];
         this.isShowCustomerStageForm = false; // 是否显示客户阶段表单，默认false
         this.isShowCustomerStageTransferOrder = false; // 是否显示客户阶段变更，默认false
         this.customerStageEditOrder = false;
-        this.isSavingCustomerStage = false;
-        this.isSavingCustomerStageHome = false;
-        this.saveStageErrMsg = '';
-        this.deleteStageErrMsg = '';
     }
 
     // 获取客户阶段列表
@@ -100,11 +96,9 @@ class CustomerStageStore {
             if (parseInt(item.order) === oldOrder) {
                 order = (parseInt(item.order) - 1).toString();
             }
-
             if (parseInt(item.order) === (oldOrder - 1)) {
                 order = (parseInt(item.order) + 1).toString();
             }
-
             item.order = order;
             return true;
         });
@@ -112,6 +106,7 @@ class CustomerStageStore {
         this.customerStageList = this.customerStageList.sort((item1, item2) => {
             return item1.order - item2.order;
         });
+
     }
 
     // 下移客户阶段
@@ -122,7 +117,6 @@ class CustomerStageStore {
             if (parseInt(item.order) === oldOrder) {
                 order = (parseInt(item.order) + 1).toString();
             }
-
             if (parseInt(item.order) === (oldOrder + 1)) {
                 order = (parseInt(item.order) - 1).toString();
             }
