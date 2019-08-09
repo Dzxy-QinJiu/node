@@ -1367,6 +1367,7 @@ var en_US = {
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
     'crm.address.placeholder': 'Please select the region',//请选择地域
     'crm.detail.address.placeholder': 'Please enter a full address',//请输入详细地址
+    'crm.system.labels': 'System Label', //系统标签
     'crm.sales.clue.add': 'Add sales leads',//添加销售线索
     'crm.sales.clue.source': 'Clue source',//线索来源
     'crm.sales.clue.access.channel': 'Access channel',//接入渠道
