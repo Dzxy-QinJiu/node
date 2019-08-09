@@ -363,6 +363,7 @@ var en_US = {
     'home.page.contact.medium.cycle': 'Medium cycle',//中循环
     'home.page.contact.minor.cycle': 'Minor cycle',//小循环
     'home.page.add.schedule': 'Add schedule',//添加日程
+    'home.page.apply.approve': 'Approval',//审批
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/

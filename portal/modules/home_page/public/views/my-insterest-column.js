@@ -467,7 +467,6 @@ class MyInsterestColumn extends React.Component {
             <ColumnItem contianerClass='my-insterest-wrap'
                 title={Intl.get('home.page.my.interest', '我的关注')}
                 content={this.renderInterestContent()}
-                width='25%'
             />);
     }
 }

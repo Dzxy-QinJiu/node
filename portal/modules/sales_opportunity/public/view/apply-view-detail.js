@@ -602,13 +602,13 @@ class ApplyViewDetail extends React.Component {
             if ((submitObj.assigned_candidate_users || submitObj.user_ids)) {
                 if (flag) {
                     this.viewApprovalResult();
-                    //调用父组件的方法进行审批完成后的其他处理
-                    if (_.isFunction(this.props.afterApprovedFunc)) {
-                        this.props.afterApprovedFunc();
-                    }
                 } else {
                     message.error(Intl.get('failed.distribute.sales.opportunity', '分配销售机会失败！'));
                 }
+            }
+            //调用父组件的方法进行审批完成后的其他处理
+            if (flag && _.isFunction(this.props.afterApprovedFunc)) {
+                this.props.afterApprovedFunc();
             }
         });
         //关闭下拉框
