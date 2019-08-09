@@ -23,7 +23,6 @@ class CustomerStageStore {
         this.currentCustomerStageList = [];
         this.isShowCustomerStageForm = false; // 是否显示客户阶段表单，默认false
         this.isShowCustomerStageTransferOrder = false; // 是否显示客户阶段变更，默认false
-        this.isShowDeleteModalDialog = false; // 是否显示删除客户阶段的模态框，默认false
         this.customerStageEditOrder = false;
         this.isSavingCustomerStage = false;
         this.isSavingCustomerStageHome = false;
@@ -137,13 +136,13 @@ class CustomerStageStore {
     }
 
     // 显示客户阶段模态框
-    showCustomerStageModalDialog() {
-        this.isShowDeleteModalDialog = true;
+    showCustomerStageModalDialog(customerStage) {
+        customerStage.isShowDeleteModalDialog = true;
     }
 
     // 关闭客户阶段模态
-    closeCustomerStageModalDialog() {
-        this.isShowDeleteModalDialog = false;
+    closeCustomerStageModalDialog(customerStage) {
+        customerStage.isShowDeleteModalDialog = false;
     }
 }
 

@@ -17,8 +17,7 @@ import CustomerStageAjax from '../ajax';
 import CustomerStageForm from './customer-stage-form';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
-import ModalDialog from 'CMP_DIR/ModalDialog';
-import classNames from 'classnames';
+import CustomerStageInfo from './customer-stage-info';
 
 class CustomerStage extends React.Component {
     constructor(props) {
@@ -43,7 +42,7 @@ class CustomerStage extends React.Component {
     }
 
     // 显示客户阶段详情
-    showCustomerStageDetail() {
+    showCustomerStageDetail(customerStage) {
 
     }
 
@@ -71,9 +70,13 @@ class CustomerStage extends React.Component {
                     CustomerStageAction.closeCustomerStageForm();
                     message.success(Intl.get('crm.218', '修改成功！'));
                 } else {
-
+                    CustomerStageAction.closeCustomerStageForm();
+                    message.success(Intl.get('crm.219', '修改失败！'));
                 }
-            }, () => {} );
+            }, (errMsg) => {
+                CustomerStageAction.closeCustomerStageForm();
+                message.success(errMsg || Intl.get('crm.219', '修改失败！'));
+            } );
         } else { // 添加客户阶段
             let order = _.get(this.state.customerStageList, 'length');
             customerStage.order = order + 1; // 需要传客户阶段的序号
@@ -94,32 +97,31 @@ class CustomerStage extends React.Component {
     };
 
     // 显示客户阶段模态框
-    showCustomerStageModalDialog = () => {
-        CustomerStageAction.showCustomerStageModalDialog();
+    showCustomerStageModalDialog = (customerStage) => {
+        CustomerStageAction.showCustomerStageModalDialog(customerStage);
     };
 
     // 关闭客户阶段模态
-    closeCustomerStageModalDialog = () => {
-        CustomerStageAction.closeCustomerStageModalDialog();
+    closeCustomerStageModalDialog = (customerStage) => {
+        CustomerStageAction.closeCustomerStageModalDialog(customerStage);
     };
 
     // 删除客户阶段
     deleteCustomerStage = (customerStage) => {
         let id = customerStage.id;
-        console.log('删除客户阶段：',customerStage);
-        console.log('删除客户阶段id:',id);
+        let deleteStage = _.cloneDeep(customerStage);
         CustomerStageAjax.deleteCustomerStage(id).then( (result) => {
             if (result) {
                 customerStage.flag = 'delete';
                 CustomerStageAction.updateCustomerStageList(customerStage);
-                this.closeCustomerStageModalDialog();
+                this.closeCustomerStageModalDialog(deleteStage);
                 message.success(Intl.get('crm.138', '删除成功！'));
             } else {
-                this.closeCustomerStageModalDialog();
+                this.closeCustomerStageModalDialog(customerStage);
                 message.error(Intl.get('crm.139', '删除失败！'));
             }
         }, (errMsg) => {
-            this.closeCustomerStageModalDialog();
+            this.closeCustomerStageModalDialog(customerStage);
             message.error(errMsg || Intl.get('crm.139', '删除失败！'));
         });
     };
@@ -275,9 +277,7 @@ class CustomerStage extends React.Component {
         let length = _.get(customerStageList, 'length');
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let containerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
-        const modalContent = Intl.get('sales.process.delete.customer.stage.tips', '确定删除这个客户阶段么') + '?';
-        let customerStageContainerWidth = this.props.containerWidth - 100;
-
+        const width = this.props.containerWidth - 100;
         return (
             <RightPanel
                 showFlag={this.props.isShowCustomerStage}
@@ -311,14 +311,6 @@ class CustomerStage extends React.Component {
                                 <ul className="customer-stage-timeline">
                                     {
                                         _.map(customerStageList, (item, idx) => {
-                                            let saleActivity = _.get(item, 'sales_activities');
-                                            let activity = saleActivity && saleActivity.length ? _.map(saleActivity, 'name') : [];
-                                            let twoLineClass = classNames('iconfont', {
-                                                'icon-down-twoline': !item.isShowMore,
-                                                'icon-up-twoline': item.isShowMore
-                                            });
-                                            let twoLineTitle = item.isShowMore ? Intl.get('crm.basic.detail.hide', '收起详情') :
-                                                Intl.get('crm.basic.detail.show', '展开详情');
                                             return (
                                                 <li className="customer-stage-timeline-item" key={idx}>
                                                     <div className="customer-stage-timeline-item-tail"></div>
@@ -326,94 +318,19 @@ class CustomerStage extends React.Component {
                                                         <i className='iconfont icon-order-arrow-down'></i>
                                                     </div>
                                                     <div className="customer-stage-timeline-item-right"></div>
-                                                    <div
-                                                        className="customer-stage-timeline-item-content modal-container"
-                                                        style={{width: customerStageContainerWidth}}
-                                                        data-tracename="客户阶段列表"
-                                                    >
-                                                        <div
-                                                            className="customer-stage-content"
-                                                            style={{width: customerStageContainerWidth - 160}}
-                                                        >
-                                                            <div className="customer-stage-content-name">
-                                                                <span>{item.name}</span>
-                                                                <span
-                                                                    className={twoLineClass}
-                                                                    title={twoLineTitle}
-                                                                    onClick={this.toggleCustomerStageDetail.bind(this, item)}
-                                                                />
-                                                            </div>
-                                                            <div className="customer-stage-content-describe">{item.description}</div>
-                                                            {
-                                                                item.isShowMore ? (
-                                                                    <div className="customer-stage-content-more">
-                                                                        <div className="customer-stage-content-paly">
-                                                                            <span>{Intl.get('sales.process.customer.stage.play', '剧本')}:</span>
-                                                                            <span>{item.play_books}</span>
-                                                                        </div>
-                                                                        <div className="customer-stage-content-activity">
-                                                                            <span>{Intl.get('sales.process.customer.stage.activity', '销售行为')}:</span>
-                                                                            <span>{activity.join('、')}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                ) : null
-                                                            }
-                                                        </div>
-                                                        {
-                                                            this.state.isShowCustomerStageTransferOrder ?
-                                                                (
-                                                                    <div className="customer-stage-btn-div order-arrow">
-                                                                        <Button
-                                                                            className="customer-stage-btn-class up-arrow"
-                                                                            onClick={this.customerStageOrderUp}
-                                                                            data-tracename="上移客户阶段"
-                                                                        >
-                                                                        </Button>
-                                                                        <Button
-                                                                            className="customer-stage-btn-class down-arrow"
-                                                                            onClick={this.customerStageOrderDown}
-                                                                            data-tracename="下移客户阶段"
-                                                                        >
-                                                                        </Button>
-                                                                    </div>
-                                                                ) :
-                                                                (
-                                                                    <div className="customer-stage-btn-div operation-btn">
-                                                                        <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
-                                                                            <Button
-                                                                                className="customer-stage-btn-class icon-delete iconfont"
-                                                                                onClick={this.showCustomerStageModalDialog}
-                                                                                data-tracename="删除客户阶段"
-                                                                            >
-                                                                            </Button>
-                                                                        </PrivilegeChecker>
-                                                                        <PrivilegeChecker check="BGM_SALES_STAGE__EDIT">
-                                                                            <Button
-                                                                                className="customer-stage-btn-class icon-update iconfont"
-                                                                                onClick={this.showCustomerStageForm.bind(this, item)}
-                                                                                data-tracename="编辑客户阶段"
-                                                                            >
-                                                                            </Button>
-                                                                        </PrivilegeChecker>
-                                                                        <PrivilegeChecker check="BGM_SALES_STAGE__EDIT">
-                                                                            <Button
-                                                                                className="customer-stage-btn-class icon-role-auth-config iconfont"
-                                                                                onClick={this.showCustomerStageDetail.bind(this, item)}
-                                                                                data-tracename="设置客户阶段"
-                                                                            >
-                                                                            </Button>
-                                                                        </PrivilegeChecker>
-                                                                    </div>
-                                                                )
-                                                        }
-                                                        <ModalDialog
-                                                            modalContent={modalContent}
-                                                            modalShow={this.state.isShowDeleteModalDialog}
-                                                            hideModalDialog={this.closeCustomerStageModalDialog}
-                                                            delete={this.deleteCustomerStage.bind(this, item)}
-                                                            container={this}
-                                                        />
-                                                    </div>
+                                                    <CustomerStageInfo
+                                                        width={width}
+                                                        customerStage={item}
+                                                        toggleCustomerStageDetail={this.toggleCustomerStageDetail}
+                                                        showCustomerStageModalDialog={this.showCustomerStageModalDialog}
+                                                        closeCustomerStageModalDialog={this.closeCustomerStageModalDialog}
+                                                        showCustomerStageForm={this.showCustomerStageForm}
+                                                        deleteCustomerStage={this.deleteCustomerStage}
+                                                        customerStageOrderUp={this.customerStageOrderUp}
+                                                        customerStageOrderDown={this.customerStageOrderDown}
+                                                        isShowCustomerStageTransferOrder={this.state.isShowCustomerStageTransferOrder}
+                                                        showCustomerStageDetail={this.showCustomerStageDetail}
+                                                    />
                                                 </li>
                                             );
                                         })
