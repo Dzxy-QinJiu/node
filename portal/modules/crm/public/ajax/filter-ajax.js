@@ -44,6 +44,24 @@ exports.getStageList = function() {
     return Deferred.promise();
 };
 
+//获取系统标签列表
+exports.getSystemTagList = function() {
+    let type = getFilterItemPrivelegeType();
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/crm/immutable_labels/' + type,
+        dataType: 'json',
+        type: 'get',
+        success: function(data) {
+            Deferred.resolve(data.result);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 exports.getTagList = function() {
     let type = getFilterItemPrivelegeType();
     var Deferred = $.Deferred();

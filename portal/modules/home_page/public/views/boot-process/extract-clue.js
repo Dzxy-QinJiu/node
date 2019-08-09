@@ -14,6 +14,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import Trace from 'LIB_DIR/trace';
 
 const LAYOUT_CONSTANCE = {
     TITLE_HEIGHT: 70,// 顶部标题区域高度
@@ -257,8 +258,10 @@ class ExtractClues extends React.Component {
         let checked = e.target.checked;
         let selectedRecommendClues = this.state.selectedRecommendClues;
         if(checked) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.extract-clue-item .ant-checkbox-wrapper'), '点击选中某个线索');
             selectedRecommendClues.push(item);
         }else {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.extract-clue-item .ant-checkbox-wrapper'), '点击取消选中某个线索');
             selectedRecommendClues = _.filter(selectedRecommendClues, recommend => {
                 return recommend.id !== item.id;
             });
@@ -301,6 +304,7 @@ class ExtractClues extends React.Component {
                         ref="changeSales"
                         content={
                             <Button
+                                data-tracename="点击批量提取线索按钮"
                                 type="primary"
                                 className="button-save"
                             >
@@ -326,7 +330,10 @@ class ExtractClues extends React.Component {
                     loading={this.state.batchExtractLoading}
                     saveErrorMsg={this.state.saveErrorMsg}
                     okBtnText={Intl.get('guide.extract.clue.now', '立即提取')}
-                    handleSubmit={this.handleSubmitAssignSalesBatch}
+                    handleSubmit={(e) => {
+                        Trace.traceEvent(e, '点击立即提取线索按钮');
+                        this.handleSubmitAssignSalesBatch();
+                    }}
                     handleCancel={this.props.onClosePanel}
                 />
             );
@@ -340,11 +347,11 @@ class ExtractClues extends React.Component {
             - LAYOUT_CONSTANCE.BTN_PADDING;
 
         return (
-            <div className="extract-clues-wrapper">
+            <div className="extract-clues-wrapper" data-tracename="批量提取线索操作面板">
                 <div className="extract-clues-title-wrapper">
                     <div className="extract-clues-title">
                         <span>{Intl.get('clue.extract.clue', '提取线索')}</span>
-                        <a className="float-r" style={{fontWeight: 400}} href="javascript:void(0);" onClick={this.props.getRecommendClueLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
+                        <a className="float-r" style={{fontWeight: 400}} href="javascript:void(0);" data-tracename="点击换一批按钮" onClick={this.props.getRecommendClueLists}>{Intl.get('clue.customer.refresh.list', '换一批')}</a>
                     </div>
                 </div>
                 <div className="extract-clues-content" style={{height: divHeight}}>
@@ -353,7 +360,7 @@ class ExtractClues extends React.Component {
                     </GeminiScrollbar>
                 </div>
                 <div className="extract-btn-wrapper">
-                    <Button className="back-btn" onClick={this.props.handleBackClick}>{Intl.get('user.user.add.back', '上一步')}</Button>
+                    <Button className="back-btn" data-tracename="点击返回上一步" onClick={this.props.handleBackClick}>{Intl.get('user.user.add.back', '上一步')}</Button>
                     {this.renderExtractOperator()}
                 </div>
             </div>

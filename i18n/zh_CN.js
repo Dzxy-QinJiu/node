@@ -866,7 +866,7 @@ var zh_CN = {
     'user.info.log.record.tip': '以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}',
     'user.info.login.address': '地点',
     'user.info.login.browser': '浏览器',
-    'user.info.active.email': '激活邮件已发送至{email}',
+    'user.info.active.email': '激活邮件已发送至{email}，请前往激活',
     'user.info.retry': '请重试',
     'user.info.no.active': '未激活，请{active}',
     'user.info.active': '激活',
@@ -1381,6 +1381,7 @@ var zh_CN = {
     'crm.administrative.level.placeholder': '请选择行政级别',
     'crm.address.placeholder': '请选择地域',
     'crm.detail.address.placeholder': '请输入详细地址',
+    'crm.system.labels': '系统标签',
     'crm.sales.clue.add': '添加销售线索',
     'crm.sales.add.clue': '添加线索',
     'crm.sales.clue.source': '线索来源',
@@ -3263,5 +3264,6 @@ var zh_CN = {
     'guide.continue.extract': '继续提取',
     'guide.see.clue': '查看线索',
     'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
+    'guide.import.customer.success': '导入成功',
 };
 export default zh_CN;

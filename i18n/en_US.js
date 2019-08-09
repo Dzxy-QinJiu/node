@@ -863,7 +863,7 @@ var en_US = {
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
     'user.info.login.browser': 'Browser',//浏览器
-    'user.info.active.email': 'Activation email has been sent to {email}',//激活邮件已发送至{email}
+    'user.info.active.email': 'Activation email has been sent to {email}, please go to active',//激活邮件已发送至{email},请前往激活
     'user.info.retry': 'Please try again',//请重试
     'user.info.no.active': 'Please {active}',//未激活，请{active}
     'user.info.active': 'active',//激活
@@ -1367,6 +1367,7 @@ var en_US = {
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
     'crm.address.placeholder': 'Please select the region',//请选择地域
     'crm.detail.address.placeholder': 'Please enter a full address',//请输入详细地址
+    'crm.system.labels': 'System Label', //系统标签
     'crm.sales.clue.add': 'Add sales leads',//添加销售线索
     'crm.sales.clue.source': 'Clue source',//线索来源
     'crm.sales.clue.access.channel': 'Access channel',//接入渠道
@@ -3158,5 +3159,6 @@ var en_US = {
     'guide.continue.extract': 'Continue to extract',//继续提取
     'guide.see.clue': 'Check the clues',//查看线索
     'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
+    'guide.import.customer.success': 'Import Success',//导入成功
 };
 export default en_US;

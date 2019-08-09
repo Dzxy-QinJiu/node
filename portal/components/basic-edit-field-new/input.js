@@ -140,6 +140,9 @@ const BasicEditField = createReactClass({
                 }
             });
         }
+        if(this.state.displayType !== nextProps.displayType){
+            this.setState({displayType: nextProps.displayType});
+        }
     },
 
     setEditable: function(e) {

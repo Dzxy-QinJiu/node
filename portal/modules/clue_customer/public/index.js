@@ -484,10 +484,8 @@ class ClueCustomer extends React.Component {
         var sorter = this.state.sorter;
         //如果选中的是已跟进或者已转化的线索，按最后联系时间排序
         if (typeFilter.status === SELECT_TYPE.HAS_TRACE || typeFilter.status === SELECT_TYPE.HAS_TRANSFER){
-            rangeParams[0].name = 'last_contact_time';
             sorter.field = 'last_contact_time';
         }else{
-            rangeParams[0].name = 'source_time';
             sorter.field = 'source_time';
         }
         if (!this.state.lastCustomerId){

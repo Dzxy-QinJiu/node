@@ -92,7 +92,6 @@ var UserInfoPage = createReactClass({
             <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
                 <div className="user-info-manage-container">
                     <UserInfo
-                        userInfoFormShow={this.state.userInfoFormShow}
                         userInfo={this.state.userInfo}
                         managedRealm={managedRealm}
                         userInfoErrorMsg={this.state.userInfoErrorMsg}
