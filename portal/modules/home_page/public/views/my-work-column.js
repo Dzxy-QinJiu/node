@@ -452,15 +452,16 @@ class MyWorkColumn extends React.Component {
         }
     }
 
-    //是否是待审批的申请
-    isUnApproveApply(item) {
-        return item.type === WORK_TYPES.APPLY && _.get(item, `[${WORK_TYPES.APPLY}].opinion`) === APPLY_STATUS.ONGOING;
+    //是否是已审批的申请
+    isApprovedApply(item) {
+        let applyStatus = _.get(item, `[${WORK_TYPES.APPLY}].opinion`);
+        return item.type === WORK_TYPES.APPLY && applyStatus === APPLY_STATUS.PASS || applyStatus === APPLY_STATUS.REJECT;
     }
 
     //能否打开工作详情
     enableOpenWorkDetail(item) {
-        //订单详情、申请详情能否打开的判断
-        return _.includes(item.tags, WORK_TYPES.DEAL) || this.isUnApproveApply(item);
+        //订单详情、已审批的申请详情能否打开的判断
+        return _.includes(item.tags, WORK_TYPES.DEAL) || this.isApprovedApply(item);
     }
 
     getScheduleType(type) {
@@ -614,25 +615,25 @@ class MyWorkColumn extends React.Component {
         return _.get(item, `[${tag}][0].user_name`, '') + ' ' + timeStr + ' ' + Intl.get('apply.delay.endTime', '到期');
     }
 
-    openDealDetail = (item, isDealWork, event) => {
-        //点击到客户名或线索名时，打开客户或线索详情，不触发打开工作详情的处理
-        if (!isDealWork || event && $(event.target).hasClass('customer-clue-name')) return;
-        //打开订单详情
-        this.setState({curOpenDetailWork: item});
-    }
-
     renderWorkCard(item, index) {
-        const isDealWork = _.includes(item.tags, WORK_TYPES.DEAL);
         const contentCls = classNames('work-content-wrap', {
-            'open-deal-detail-style': isDealWork
+            'open-work-detail-style': this.enableOpenWorkDetail(item)
         });
         let clickTip = '';
-        //订单工作需要点击工作打开订单详情
-        if (isDealWork) {
-            clickTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('user.apply.detail.order', '订单')});
+        let openWorkDetailFunc = () => {
+        };
+        if (this.enableOpenWorkDetail(item)) {
+            openWorkDetailFunc = this.openWorkDetail;
+            const isDealWork = _.includes(item.tags, WORK_TYPES.DEAL);
+            //订单、通过、驳回工作需要点击工作打开订单详情
+            if (isDealWork) {
+                clickTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('user.apply.detail.order', '订单')});
+            } else {
+                clickTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('home.page.apply.type', '申请')});
+            }
         }
         return (
-            <div className='my-work-card-container' onClick={this.openDealDetail.bind(this, item, isDealWork)}
+            <div className='my-work-card-container' onClick={openWorkDetailFunc.bind(this, item)}
                 title={clickTip}>
                 <div className={contentCls} id={`home-page-work${item.id}`}>
                     {this.renderWorkName(item, index)}
@@ -647,8 +648,8 @@ class MyWorkColumn extends React.Component {
             </div>);
     }
 
-    //打开申请详情
-    openApplyDetail = (item, event) => {
+    //打开工作详情
+    openWorkDetail = (item, event) => {
         //点击到客户名或线索名时，打开客户或线索详情，不触发打开工作详情的处理
         if (event && $(event.target).hasClass('customer-clue-name')) return;
         //打开申请详情
@@ -677,7 +678,7 @@ class MyWorkColumn extends React.Component {
                 //待审批的申请
                 if (applyStatus === APPLY_STATUS.ONGOING) {
                     // 展示审批按钮
-                    handleFunc = this.openApplyDetail;
+                    handleFunc = this.openWorkDetail;
                     btnDesc = Intl.get('home.page.apply.approve', '审批');
                 } else {//已审批的申请（通过、驳回、撤销），展示知道了按钮
                     handleFunc = this.handleMyWork;
