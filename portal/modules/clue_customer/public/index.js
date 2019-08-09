@@ -56,7 +56,7 @@ const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
-import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -105,10 +105,23 @@ class ClueCustomer extends React.Component {
         this.getClueClassify();
         //获取是否配置过线索推荐条件
         this.getSettingCustomerRecomment();
-        clueCustomerAction.getSalesManList();
+        this.getSalesmanList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
     }
+    // 获取销售人员
+    getSalesmanList() {
+        // 管理员，运营获取所有人
+        if(this.isManagerOrOperation()) {
+            clueCustomerAction.getAllSalesUserList();
+        }else {
+            clueCustomerAction.getSalesManList();
+        }
+    }
+    // 是否是管理员或者运营人员
+    isManagerOrOperation = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    };
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
@@ -148,6 +161,7 @@ class ClueCustomer extends React.Component {
             //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况  checkAllotNoTraced： 选中了待我审批  checkedAdvance： 还有其他筛选项
             if((!checkAllotNoTraced || (checkAllotNoTraced && checkedAdvance))){
                 delete nextProps.location.state.clickUnhandleNum;
+
                 clueCustomerAction.setClueInitialData();
                 this.getUnhandledClue();
             }
@@ -1029,12 +1043,18 @@ class ClueCustomer extends React.Component {
                 width: '350px',
                 render: (text, salesClueItem, index) => {
                     let similarClue = _.get(salesClueItem, 'labels');
+                    let availability = _.get(salesClueItem, 'availability');
+                    let status = _.get(salesClueItem, 'status');
+                    //判断是否为无效客户或者已转化客户
+                    let isInvalidClients = _.isEqual(availability, '1') || _.isEqual(status, '3');
+                    //判断是否有相似线索或者相似客户
+                    let isHasSimilar = _.indexOf(similarClue, '有相似客户') !== -1 || _.indexOf(similarClue, '有相似线索') !== -1;
                     return (
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
-                                {_.indexOf(similarClue, '有相似客户') !== -1 || _.indexOf(similarClue, '有相似线索') !== -1 ? (
+                                { !isInvalidClients && isHasSimilar ? (
                                     <Tag className="clue-label intent-tag-style">
                                         {Intl.get('clue.similar.clue', '有相似线索或客户')}
                                     </Tag>) : null
@@ -1350,25 +1370,15 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.setSalesManName({'salesManNames': ''});
     };
     getSalesDataList = () => {
-        let dataList = [];
         var clueSalesIdList = getClueSalesList();
+        let salesManList = this.state.salesManList;
         //销售领导、域管理员,展示其所有（子）团队的成员列表
-        this.state.salesManList.forEach((salesman) => {
-            let teamArray = salesman.user_groups;
-            var clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'user_info.user_id'));
-            //一个销售属于多个团队的处理（旧数据中存在这种情况）
-            if (_.isArray(teamArray) && teamArray.length) {
-                //销售与所属团队的组合数据，用来区分哪个团队中的销售
-                teamArray.forEach(team => {
-                    let teamName = _.get(team, 'group_name') ? ` - ${team.group_name}` : '';
-                    let teamId = _.get(team, 'group_id') ? `&&${team.group_id}` : '';
-                    dataList.push({
-                        name: _.get(salesman, 'user_info.nick_name', '') + teamName,
-                        value: _.get(salesman, 'user_info.user_id', '') + teamId,
-                        clickCount: clickCount
-                    });
-                });
-            }
+        let dataList = _.map(formatSalesmanList(salesManList),salesman => {
+            let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'value'));
+            return {
+                ...salesman,
+                clickCount
+            };
         });
         return dataList;
     };
@@ -1399,13 +1409,13 @@ class ClueCustomer extends React.Component {
             let idArray = this.state.salesMan.split('&&');
             if (_.isArray(idArray) && idArray.length) {
                 sale_id = idArray[0];//销售的id
-                team_id = idArray[1];//团队的id
+                team_id = idArray[1] || '';//团队的id
             }
             //销售的名字和团队的名字 格式是 销售名称 -团队名称
             let nameArray = this.state.salesManNames.split('-');
             if (_.isArray(nameArray) && nameArray.length) {
                 sale_name = nameArray[0];//销售的名字
-                team_name = _.trim(nameArray[1]);//团队的名字
+                team_name = _.trim(nameArray[1]) || '';//团队的名字
             }
             var submitObj = {
                 'sale_id': sale_id,
@@ -1540,9 +1550,8 @@ class ClueCustomer extends React.Component {
     };
 
     handleScrollBarBottom = () => {
-        var currListLength = _.isArray(this.state.curClueLists) ? this.state.curClueLists.length : 0;
         // 判断加载的条件
-        if (currListLength <= this.state.customersSize) {
+        if (this.state.listenScrollBottom && !this.state.isLoading) {
             this.getClueList();
         }
     };

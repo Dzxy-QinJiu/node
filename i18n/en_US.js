@@ -84,7 +84,7 @@ var en_US = {
     'common.associate': 'Associate',//关联
     'common.image.type.tip': 'The type of image must be one of gif, jpeg, jpg, png, bmp!',//图片类型必须是gif,jpeg,jpg,png,bmp中的一种！
     'common.image.upload': 'upload',//上传
-    'common.image.upload.size': 'The size of image must be less than 10 kb!',//请上传小于10kb的图片
+    'common.image.upload.size': 'The size of image must be less than 100 KB!',//请上传小于100KB的图片
     'common.edit': 'Edit',//编辑
     //密码安全等级
     'common.password.low': 'Weak',//低
@@ -131,7 +131,7 @@ var en_US = {
     'common.describe': 'DESCR',//描述：
     'common.time.connector': ' to ',// // ' 至 -'至
     'common.image.default': 'Images',//图像
-    'common.image.tip.size': 'The size of image must be less than {size} kb!',//图片大小必须小于{size}kb!
+    'common.image.tip.size': 'The size of image must be less than {size} KB!',//图片大小必须小于{size}KB!
     'common.input.character.prompt': '1 ~ 50 characters',//最少1个字符,最多50个字符
     'common.input.character.rules': '1 ~ 8 characters',//最少1个字符,最多8个字符
     'common.phone.email.tip': 'Phone or email is required',//电话、邮箱必填其中一项
@@ -1540,6 +1540,8 @@ var en_US = {
     'crm.select.second.sales': 'Please seletct second sales',//请选择联合跟进人
     'crm.no.second.sales': 'No second sales',//暂无联合跟进人
     'crm.set.second.sales': 'Set second sales',//设置联合跟进人
+    'crm.second.sale.delete': '{user} will be deleted after save', //保存后，联合跟进人{user}将删除
+    'crm.already.sale.error': '{user} has already been sales, cannot set to second sales',//{user}已是负责人，不能再设置联合跟进人
     'crm.apply.active.email.tip': 'Your mailbox is not activated. Please {activeEmail} first',//您的邮箱未激活，请先{aciveEmail}
     'crm.this.week.contact': 'Customers contacted this week',//本周联系过的客户
     'crm.record.unupload.phone': 'Unuploaded voice recordings, unable to play',//未上传通话录音，无法播放
@@ -3066,6 +3068,7 @@ var en_US = {
     'clue.customer.has.transfer': 'Has transfer',//已转化
     'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
+    'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar clue',//相似线索
     'clue.similar.clue': 'Similar clue or customer', //相似线索或客户
@@ -3139,6 +3142,7 @@ var en_US = {
     'guide.finished.can': 'You can go to',//可以去
     'guide.finished.see': 'To view',//查看
     'guide.finished.page.see': 'Interface to view',//界面查看
+    'guide.finished.can.see': 'You can check it in the {page} interface',//可以去{page}界面查看
     'guide.add.member.finished': 'Adding members is complete',//添加成员已完成
     'guide.add.customer.finished': 'Adding a customer is complete',//添加客户已完成
     'guide.recommend.clue.finished': 'The recommendation cue has been extracted',//推荐线索已提取

@@ -25,6 +25,8 @@ const ORDER_STATUS = {
     WIN: 'win',//赢单
     LOSE: 'lose'//丢单
 };
+const HAS_DELETE = 'CRM_SALESOPPORTUNITY_DELETE';//删除权限的常量
+const HAS_UPDATA = 'SALESOPPORTUNITY_UPDATE';//修改权限的常量
 //展示申请签约用户的阶段
 const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')];
 //展示申请试用用户的阶段
@@ -56,6 +58,7 @@ class OrderItem extends React.Component {
             closeOrderErrorMsg: '',//关闭订单失败的错误提示
             curOrderCloseStatus: '',//当前选择的订单的关闭状态
             isExpandDetail: false,//关闭的订单是否展示详情
+           
         };
     }
 
@@ -355,7 +358,7 @@ class OrderItem extends React.Component {
         }
         const EDIT_FEILD_WIDTH = 350;
         //订单关闭或回收站中打开客户详情时，不可修改
-        let hasEditPrivilege = !(order.oppo_status || this.props.disableEdit);
+        let hasEditPrivilege = !(order.oppo_status || this.props.disableEdit) && hasPrivilege(HAS_UPDATA);
         return (
             <div className="order-item modal-container">
                 {
@@ -363,23 +366,26 @@ class OrderItem extends React.Component {
                         (<Spinner className="isloading"/>) :
                         (null)
                 }
-                {order.oppo_status === ORDER_STATUS.LOSE ? (
-                    <div className="order-item-content">
-                        <span
-                            className="order-key order-lose-reason">{Intl.get('crm.order.lose.reason', '丢单原因')}:</span>
-                        <BasicEditInputField
-                            width={EDIT_FEILD_WIDTH}
-                            id={order.id}
-                            type="textarea"
-                            field="lose_reason"
-                            value={order.lose_reason}
-                            placeholder={Intl.get('crm.order.lose.reason.input', '请输入丢单原因')}
-                            hasEditPrivilege={true}
-                            saveEditInput={this.saveOrderBasicInfo.bind(this, 'lose_reason')}
-                            noDataTip={Intl.get('crm.no.order.lose.reason', '暂无丢单原因')}
-                            addDataTip={Intl.get('crm.fill.order.lose.reason', '补充丢单原因')}
-                        />
-                    </div>) : null}
+
+                {
+                    order.oppo_status === ORDER_STATUS.LOSE ? (
+                        <div className="order-item-content">
+                            <span
+                                className="order-key order-lose-reason">{Intl.get('crm.order.lose.reason', '丢单原因')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={order.id}
+                                type="textarea"
+                                field="lose_reason"
+                                value={order.lose_reason}
+                                placeholder={Intl.get('crm.order.lose.reason.input', '请输入丢单原因')}
+                                hasEditPrivilege={true}
+                                saveEditInput={this.saveOrderBasicInfo.bind(this, 'lose_reason')}
+                                noDataTip={Intl.get('crm.no.order.lose.reason', '暂无丢单原因')}
+                                addDataTip={Intl.get('crm.fill.order.lose.reason', '补充丢单原因')}
+                            />
+                        </div>) : null
+                }
                 {!order.oppo_status || (order.oppo_status && this.state.isExpandDetail) ? (//订单未关闭、订单关闭并且展示详情的状态下
                     <div>
                         <div className="order-item-content order-application-list">
@@ -411,7 +417,7 @@ class OrderItem extends React.Component {
                                             </div>
                                         );
                                     })}
-                                    {hasEditPrivilege ? <DetailEditBtn onClick={this.showAppPanel}/> : null}
+                                    {hasEditPrivilege && hasPrivilege(HAS_UPDATA) ? <DetailEditBtn onClick={this.showAppPanel}/> : null}
                                 </div>
                             )}
                         </div>
@@ -430,7 +436,7 @@ class OrderItem extends React.Component {
                                 saveEditInput={this.saveOrderBasicInfo.bind(this, 'budget')}
                                 noDataTip={Intl.get('crm.order.no.budget', '暂无预算')}
                                 addDataTip={Intl.get('crm.order.add.budget', '添加预算')}
-                            />
+                            />   
                         </div>
                         <div className="order-item-content">
                             <span className="order-key">{Intl.get('crm.order.expected.deal', '预计成交')}:</span>
@@ -556,12 +562,15 @@ class OrderItem extends React.Component {
             stageStepList.push({title: Intl.get('crm.order.close.step', '关闭订单'), stepHandleElement: closeOrderStep});
         }
         return (
-            <StepsBar stepDataList={stageStepList} currentStepIndex={currentStageIndex}
-                onClickStep={this.onClickStep.bind(this)}/>);
+            
+            <StepsBar stepDataList={stageStepList} 
+                currentStepIndex={currentStageIndex}
+                onClickStep={this.onClickStep.bind(this)}/> 
+        );
     };
 
     onClickStep = (event) => {
-        if(this.props.disableEdit) return;
+        if(this.props.disableEdit || !hasPrivilege(HAS_UPDATA)) return;
         $(event.target).parents('.step-item').find('.order-stage-name').trigger('click');
     };
 
@@ -607,19 +616,23 @@ class OrderItem extends React.Component {
                         {this.state.curOrderCloseStatus === ORDER_STATUS.LOSE ? this.renderLoseOrderForm(order) :
                             this.state.modalDialogFlag ? null : this.renderOrderStage(order.sale_stages)}
                         <span className="order-item-buttons">
-                            {this.state.modalDialogFlag ? (
-                                <span className="item-delete-buttons">
-                                    <Button className="item-delete-cancel delete-button-style"
-                                        onClick={this.hideModalDialog.bind(this, order)}>
-                                        {Intl.get('common.cancel', '取消')}
-                                    </Button>
-                                    <Button className="item-delete-confirm delete-button-style"
-                                        onClick={this.handleModalOK.bind(this, order)}>
-                                        {Intl.get('crm.contact.delete.confirm', '确认删除')}
-                                    </Button>
-                                </span>) : this.props.disableEdit ? null : (
-                                <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
-                                    data-tracename="点击删除订单按钮" onClick={this.showDelModalDialog}/>)
+                            {
+                                this.state.modalDialogFlag ? (
+                                    <span className="item-delete-buttons">
+                                        <Button className="item-delete-cancel delete-button-style"
+                                            onClick={this.hideModalDialog.bind(this, order)}>
+                                            {Intl.get('common.cancel', '取消')}
+                                        </Button>
+                                        <Button className="item-delete-confirm delete-button-style"
+                                            onClick={this.handleModalOK.bind(this, order)}>
+                                            {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                        </Button>
+                                    </span>
+                                ) : this.props.disableEdit || !hasPrivilege(HAS_DELETE) ? null 
+                                    : (<span className="iconfont icon-delete" 
+                                        title={Intl.get('common.delete', '删除')}
+                                        data-tracename="点击删除订单按钮" 
+                                        onClick={this.showDelModalDialog}/>)
                             }
                         </span>
                     </span>

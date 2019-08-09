@@ -15,7 +15,8 @@ import Trace from 'LIB_DIR/trace';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 import MemberTableList from 'MOD_DIR/member-table-list';
-import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import {BACKGROUG_LAYOUT_CONSTANTS, BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
+import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -259,8 +260,14 @@ class MemberManage extends React.Component {
         MemberManageAction.hideContinueAddButton();
     };
 
+    // 更新引导流程
+    upDateGuideMark = () => {
+        updateGuideMark(BOOT_PROCESS_KEYS.PERFACT_ORGANIZATION);
+    };
+
     // 由编辑页面返回信息展示页面
     returnInfoPanel = (newMember) => {
+        this.upDateGuideMark();
         MemberManageAction.returnInfoPanel(newMember);
         this.props.getMemberCount(this.state.memberTotal);
     };

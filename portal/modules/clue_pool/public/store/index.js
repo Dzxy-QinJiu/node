@@ -109,6 +109,10 @@ class CluePoolStore {
             this.curClue = {};
         }
     }
+
+    getAllSalesUserList(list) {
+        this.salesManList = _.isArray(list) ? list : [];
+    }
 }
 
 export default alt.createStore(CluePoolStore, 'CluePoolStore');

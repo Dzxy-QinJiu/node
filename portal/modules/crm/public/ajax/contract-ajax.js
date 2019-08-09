@@ -45,12 +45,13 @@ exports.addContract = function(reqData, reqBody) {
 };
 
 // 删除待审合同
-exports.deletePendingContract = function(id) {
+exports.deletePendingContract = function(id,queryParams) {
     let Deferred = $.Deferred();
     $.ajax({
         url: '/rest/crm/delete/contract/' + id,
         dataType: 'json',
         type: 'delete',
+        data: queryParams,
         success: (data) => {
             Deferred.resolve(data);
         },

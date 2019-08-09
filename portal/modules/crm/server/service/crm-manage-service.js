@@ -35,7 +35,7 @@ var crmRestApis = {
     //获取筛选面板负责人列表
     getOwnerList: '/rest/customer/v2/customer/nickname/:type/500/1',
     //获取阶段标签列表
-    getStageTagList: '/rest/customer/v2/customer/customer_label/:type/50/1',
+    getStageTagList: '/rest/customer/v3/customer/term/:type/field/customer_label',
     //获取竞品列表
     getCompetitorList: '/rest/customer/v3/customer/term/:type/field/competing_products',
     //type:manager(管理员调用)，type:user(非管理员调用)
@@ -172,7 +172,7 @@ exports.getFilterProvinces = function(req, res) {
 };
 //获取阶段标签列表
 exports.getStageTagList = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
             url: crmRestApis.getStageTagList.replace(':type', req.params.type),
             req: req,

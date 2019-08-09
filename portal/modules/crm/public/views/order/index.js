@@ -15,6 +15,7 @@ import Spinner from 'CMP_DIR/spinner';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import classNames from 'classnames';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import { PrivilegeChecker } from 'CMP_DIR/privilege/checker';
 //高度常量
 const LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -23,6 +24,7 @@ const LAYOUT_CONSTANTS = {
     ADD_ORDER_HEIGHHT: 155,//添加订单面板的高度
     TOP_TOTAL_HEIGHT: 30//共xxx条的高度
 };
+const HAS_ADD = 'SALESOPPORTUNITY_ADD';//添加权限的常量
 //用户类型的转换对象
 const userTypeMap = {
     '正式用户': Intl.get('common.official', '签约'),
@@ -243,10 +245,12 @@ class OrderIndex extends React.Component {
                             Intl.get('crm.no.order.tip', '该客户还没有订单')}
                     </span>
                     {this.props.isMerge || this.props.disableEdit ? null : (
-                        <Button className='crm-detail-add-btn'
-                            onClick={this.showForm.bind(this, '')}>
-                            {Intl.get('crm.161', '添加订单')}
-                        </Button>
+                        <PrivilegeChecker check={HAS_ADD}>
+                            <Button className='crm-detail-add-btn'
+                                onClick={this.showForm.bind(this, '')}>
+                                {Intl.get('crm.161', '添加订单')}
+                            </Button>
+                        </PrivilegeChecker>
                     )}
                 </div>)
                 }

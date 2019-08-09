@@ -2,13 +2,18 @@
  * 通话总次数TOP10
  */
 
+import { argCallbackTimeToUnderlineTime, argCallbackMemberIdToMemberIds } from '../../utils';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 
-export function getTotalNumberTop10Chart() {
-    return {
+export function getTotalNumberTop10Chart(paramObj = {}) {
+    let chart = {
         title: Intl.get('call.analysis.total.count', '通话总次数') + 'TOP10',
         chartType: 'table',
         url: '/rest/analysis/callrecord/v1/callrecord/statistics/top/sum/count',
+        argCallback: arg => {
+            argCallbackMemberIdToMemberIds(arg);
+            argCallbackTimeToUnderlineTime(arg);
+        },
         conditions: [{
             name: 'filter_phone',
             value: false 
@@ -48,4 +53,14 @@ export function getTotalNumberTop10Chart() {
             ]
         }
     };
+
+    if (paramObj.height) {
+        chart.height = paramObj.height;
+    }
+
+    if (paramObj.layout) {
+        chart.layout = paramObj.layout;
+    }
+
+    return chart;
 }

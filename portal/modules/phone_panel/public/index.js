@@ -414,7 +414,7 @@ class PhonePanel extends React.Component {
         return (
             <CustomerDetail currentId={customer.id}
                 curCustomer={customer}
-                editCustomerBasic={this.editCustomerBasic}
+                editCustomerBasic={this.editCustomerBasic.bind(this, customer)}
                 hideRightPanel={this.hideRightPanel.bind(this)}
                 ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                 showApplyUserForm={this.showApplyUserForm.bind(this)}
@@ -424,12 +424,13 @@ class PhonePanel extends React.Component {
     }
 
     //修改客户的基本信息
-    editCustomerBasic = (newBasic) => {
+    editCustomerBasic = (updateCustomer, newBasic) => {
         if (newBasic && newBasic.id) {
-            let updateCustomer = _.find(this.state.customerInfoArr, customer => customer.id === newBasic.id);
-            for (var key in newBasic) {
-                if (newBasic[key] || newBasic[key] === '') {
-                    updateCustomer[key] = newBasic[key];
+            if (updateCustomer && updateCustomer.id === newBasic.id) {
+                for (var key in newBasic) {
+                    if (newBasic[key] || newBasic[key] === '') {
+                        updateCustomer[key] = newBasic[key];
+                    }
                 }
             }
         }
@@ -767,6 +768,7 @@ class PhonePanel extends React.Component {
                             showApplyUserForm={this.showApplyUserForm.bind(this)}
                             showOpenAppForm={this.showOpenAppForm.bind(this)}
                             returnInfoPanel={this.returnInfoPanel.bind(this)}
+                            editCustomerBasic={this.editCustomerBasic.bind(this,_.get(paramObj,'customer_params.curCustomer'))}
                         />) : null
                     }
                 </div>

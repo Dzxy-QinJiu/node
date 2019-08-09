@@ -292,6 +292,13 @@ class Contract extends React.Component {
                     });
                     return;
                 }
+                if(reqData.contract_amount < reqData.gross_profit) {
+                    this.setState({
+                        errMsg: Intl.get('contract.profit.check.tip', '毛利不能大于合同总额{amount}元，请核对',{amount: reqData.contract_amount}),
+                    });
+                    return;
+                }
+                
                 reqData.products = products; // 产品信息
                 reqData.customers = [{customer_name: reqData.customer_name, customer_id: this.props.customerId}]; // 客户信息
                 this.addContractAjax(reqData);

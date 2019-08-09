@@ -35,6 +35,7 @@ function getCharts() {
         contractChart.getContractZoneChart(),
         //团队分布及完成率
         contractChart.getContractTeamChart({
+            contractType: 'added',
             noShowCondition: {
                 callback: () => isSales()
             }

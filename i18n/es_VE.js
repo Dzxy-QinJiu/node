@@ -113,7 +113,7 @@ var en_VE = {
 
     'common.image.upload': 'Subir',//上传
 
-    'common.image.upload.size': 'Nota:El tamaño de foto menos de 300kb',//注：请上传小于300kb的图片
+    'common.image.upload.size': 'Nota:El tamaño de foto menos de 100KB',//注：请上传小于100KB的图片
 
     'common.edit': 'Editar',//编辑
 
@@ -206,7 +206,7 @@ var en_VE = {
 
     'common.image.default': 'Imagen',//图像
 
-    'common.image.tip.size': 'El tamaño de imagen debe ser menos de {size}kb',//图片大小必须小于{size}kb!
+    'common.image.tip.size': 'El tamaño de imagen debe ser menos de {size}KB',//图片大小必须小于{size}KB!
 
     'common.input.character.prompt': 'La longitud de carácteres debe ser ≥1 y ≤50',//最少1个字符,最多50个字符
 

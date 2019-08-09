@@ -8,7 +8,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 } else if (language.lan() === 'zh') {
     require('./headIcon-zh_CN.less');
 }
-var limitSize = 10;//图片大小限制10kb
+var limitSize = 100;//图片大小限制100KB
 var message = require('antd').message;
 var DefaultUserLogoTitle = require('../default-user-logo-title');
 
@@ -36,7 +36,7 @@ class HeadIcon extends React.Component {
                 event.target.value = '';
             } else if (file.size > limitSize * 1024) {
                 message.warn(
-                    Intl.get('common.image.tip.size', '图片大小必须小于{size}kb!', {'size': limitSize}));
+                    Intl.get('common.image.tip.size', '图片大小必须小于{size}KB!', {'size': limitSize}));
                 event.target.value = '';
             } else {
                 var reader = new FileReader();
@@ -63,7 +63,7 @@ class HeadIcon extends React.Component {
         return (
             <div className="head-image-container">
                 <div className="cirle-image">
-                    {this.props.isEdit ? ( <div className="upload-img-container" title={Intl.get('common.image.upload.size','请上传小于10kb的图片')}>
+                    {this.props.isEdit ? ( <div className="upload-img-container" title={Intl.get('common.image.upload.size','请上传小于100KB的图片')}>
                         <div className="update-logo-desr"> {Intl.get('common.upload.img.change','更改')}</div>
                         <input className="upload-img-select" type="file" name="imgUpload" data-tracename="上传头像"
                             onChange={this.uploadImg}
