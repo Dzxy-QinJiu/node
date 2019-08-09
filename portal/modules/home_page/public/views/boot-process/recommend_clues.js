@@ -137,6 +137,7 @@ class RecommendClues extends React.Component {
             <Button
                 type='primary'
                 className='back-btn'
+                data-tracename="点击修改推荐条件"
                 onClick={this.changeFilter}
             >{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
         );
@@ -171,7 +172,7 @@ class RecommendClues extends React.Component {
                 return (
                     <div className="errmsg-container">
                         <span className="errmsg-tip">{this.state.errMsg},</span>
-                        <a className="retry-btn" onClick={this.getRecommendClueLists}>
+                        <a className="retry-btn" data-tracename="点击重新获取推荐线索按钮" onClick={this.getRecommendClueLists}>
                             {Intl.get('user.info.retry', '请重试')}
                         </a>
                     </div>
@@ -203,12 +204,12 @@ class RecommendClues extends React.Component {
                     <img src={FinishedSrc} alt=""/>
                     <p>{Intl.get('clue.extract.success', '提取成功')}</p>
                     <div className="btn-wrapper">
-                        <Button type="primary" onClick={() => {
+                        <Button type="primary" data-tracename="继续提取" onClick={() => {
                             this.setState({
                                 step: EXTRACT_CLUE_STEPS.SET_RECOMMEND
                             });
                         }}>{Intl.get('guide.continue.extract', '继续提取')}</Button>
-                        <Button onClick={() => {
+                        <Button data-tracename="查看线索" onClick={() => {
                             history.push('/clue_customer');
                         }}>{Intl.get('guide.see.clue', '查看线索')}</Button>
                     </div>
@@ -219,7 +220,7 @@ class RecommendClues extends React.Component {
 
     render() {
         return (
-            <div className="extract-clue-container">
+            <div className="extract-clue-container" data-tracename="提取线索">
                 {this.renderStepBlock()}
             </div>
         );
