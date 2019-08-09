@@ -344,7 +344,8 @@ var zh_CN = {
     'home.page.deal.handle': '待处理的订单',
     'home.page.no.work.tip': '暂无工作',
     'home.page.new.work.tip': '工作有变动，点此{refreshTip}',
-    'home.page.my.work.finished': '我已完成',
+    'home.page.my.work.finished': '点击设为已完成',
+    'home.page.my.interest.handled': '点击设为已处理',
     'home.page.contacts.customers.week': '本周已联系客户总数',
     'home.page.callout.time': '呼出总时长',
     'home.page.performance.num': '第{n}名',
@@ -370,6 +371,7 @@ var zh_CN = {
     'home.page.contact.medium.cycle': '中循环',
     'home.page.contact.minor.cycle': '小循环',
     'home.page.add.schedule': '添加日程',
+    'home.page.apply.approve': '审批',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
