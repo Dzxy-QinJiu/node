@@ -222,7 +222,7 @@ class TeamDataColumn extends React.Component {
 
     renderTeamDataContent() {
         return (
-            <div>
+            <div data-tracename="我的数据">
                 {this.renderPerformanceData()}
                 {this.renderCallTime()}
                 {this.renderContactCustomers()}
