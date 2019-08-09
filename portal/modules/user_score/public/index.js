@@ -257,7 +257,7 @@ class userScore extends React.Component {
     renderBasicScoreRules() {
         var spanLength = '6';
         return (
-            <div className="basic-score-rule">
+            <div className="basic-score-rule" data-tracename="基础评分">
                 <p>
                     {Intl.get('clue.customer.if.switch', '是否启用')}
                     <Switch size="small" onChange={this.handleUserScoreRuleStatus}
@@ -306,7 +306,7 @@ class userScore extends React.Component {
                 <div className="user-engagement-container">
                     <div>
                         {_.get(this, 'state.userEngagementFormData.user_engagements.length') || this.state.showUserEngagementPanel ? this.renderUserEngagementForm() :
-                            <Button
+                            <Button data-tracename="添加参与度"
                                 onClick={this.handleShowUserEngagementPanel}>{Intl.get('common.add', '添加')}</Button>}
                     </div>
                 </div>
@@ -610,7 +610,7 @@ class userScore extends React.Component {
                                     {this.renderBasicScoreRules()}
                                 </TabPane>
                                 <TabPane tab={Intl.get('user.score.particate.in.score', '参与度评分')} key="2">
-                                    <div className="particepate-container-warp">
+                                    <div className="particepate-container-warp" data-tracename="参与度评分">
                                         {this.renderParticateScoreRules()}
                                     </div>
 
