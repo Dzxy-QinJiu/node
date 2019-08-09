@@ -48,15 +48,22 @@ class CustomerScoreStore {
     setRangeValue(value) {
         if (_.isArray(value)) {
             //需要先按大小排一下顺序
+            value = value.sort((a, b) => {return a - b;});
             this.rangeHandleValue = value;
             this.lowerHandlePoint = _.get(value, '[1]');
             this.largerHandlePoint = _.get(value, '[2]');
         } else {
             this.rangeHandleValue = [0, this.lowerHandlePoint, this.largerHandlePoint];
+            //重新计算尺子的最大长度 todo
+            var max = this.largerHandlePoint + (this.largerHandlePoint - this.lowerHandlePoint);
+            this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
+            var range = this.maxValue / 5;
+            this.marks = {};
+            for (var i = 1; i < 5; i++) {
+                this.marks[i * range] = i * range;
+            }
         }
-        //重新计算尺子的最大长度
-        var max = _.max(this.rangeHandleValue) + (_.max(this.rangeHandleValue) - _.get(this, 'rangeHandleValue[1]'));
-        this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
+
     }
 
     getCustomerScoreRules(result) {
@@ -68,26 +75,31 @@ class CustomerScoreStore {
     }
 
     setInitialRangeValue(){
-        this.rangeHandleValue = [];
+        this.rangeHandleValue = [0];
         _.forEach(this.customerLevelRules, item => {
-            if (item.from && item.from.toFixed(0)) {
-                this.rangeHandleValue.push(+item.from.toFixed(0));
-            }
-
-            if (item.to && item.to.toFixed(0)) {
-                this.rangeHandleValue.push(+item.to.toFixed(0));
-            }
+            // if (item.from && item.from.toFixed(0)) {
+            //     this.rangeHandleValue.push(+item.from.toFixed(0));
+            // }
+            //
+            // if (item.to && item.to.toFixed(0)) {
+            //     this.rangeHandleValue.push(+item.to.toFixed(0));
+            // }
 
             if (item.level_name === 'cold') {
                 this.lowerHandlePoint = +item.to.toFixed(0);
+                this.rangeHandleValue.push(+item.to.toFixed(0));
             }
             if (item.level_name === 'warm') {
                 this.largerHandlePoint = +item.to.toFixed(0);
+                this.rangeHandleValue.push(+item.to.toFixed(0));
             }
         });
+        this.rangeHandleValue = this.rangeHandleValue.sort((a, b) => {return a - b;});
         this.rangeHandleValue = _.uniq(this.rangeHandleValue);
+        //排序
+        this.rangeHandleValue = this.rangeHandleValue.sort((a, b) => {return a - b;});
         //把最大值的范围修改一下
-        var max = _.max(this.rangeHandleValue) + (_.max(this.rangeHandleValue) - _.get(this, 'rangeHandleValue[1]'));
+        var max = this.largerHandlePoint + (this.largerHandlePoint - this.lowerHandlePoint);
         this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
         var range = this.maxValue / 5;
         this.marks = {};

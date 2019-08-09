@@ -306,14 +306,14 @@ let routers = [
                 routePath: '/background_management/customer_score',
                 component: `${MODULE_PATH}customer_score/public`,
                 //有这个权限，才显示入口图标
-                showPrivileges: ['CRM_COMPETING_PRODUCT']
+                showPrivileges: ['CURTAO_RULE_MANAGE']
             },{
                 id: 'USER_SCORE',
                 name: 'menu.user.score',// 用户评分
                 routePath: '/background_management/user_score',
                 component: `${MODULE_PATH}user_score/public`,
                 //有这个权限，才显示入口图标
-                showPrivileges: ['CRM_COMPETING_PRODUCT']
+                showPrivileges: ['CURTAO_RULE_MANAGE']
             }
         ]
     },

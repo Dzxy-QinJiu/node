@@ -79,9 +79,10 @@ class customerScore extends React.Component {
 
     };
     afterHandleChange = () => {
+        //滑动完成后再修改最大值
         var value = this.state.rangeHandleValue;
         var max = _.last(value) + (_.last(value) - value[1]);
-        customerScoreAction.setRangeMaxValue(Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5);
+        customerScoreAction.setRangeMaxValue(Math.ceil(max / 5) * 5);
     };
     handleCustomerScoreUnqualified = (value) => {
         customerScoreAction.changeLowerHandlePoint(value);
@@ -292,9 +293,9 @@ class customerScore extends React.Component {
         var defaultSource = '', defaultIndicator = '', defaultInterval = '', defaultScore = 1;
         if (!customerScoreLists.length) {
             customerScoreLists.push({
-                source: _.get(this, 'state.customerIndicator[0].source'),
-                indicator: _.get(this, 'state.customerIndicator[0].indicator_details[0].indicator'),
-                interval: 'last_month',
+                source: '',
+                indicator: '',
+                interval: '',
                 score: '1',
                 randomId: uuid()
             });
@@ -346,7 +347,9 @@ class customerScore extends React.Component {
                 return (
                     <Row>
                         <Col span={spanLength}>
-                            <Select value={item.source}
+                            <Select
+                                style={{width: 100 }}
+                                value={item.source}
                                 onChange={this.handleCustomerProperty.bind(this,item.id || item.randomId, 'source')}>
                                 {_.map(sourceLists, (item) => {
                                     return <Option value={item.source}>{item.source_desc}</Option>;
@@ -354,7 +357,9 @@ class customerScore extends React.Component {
                             </Select>
                         </Col>
                         <Col span={spanLength}>
-                            <Select value={item.indicator}
+                            <Select
+                                style={{width: 130 }}
+                                value={item.indicator}
                                 onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'indicator')}>
                                 {_.map(subIndicator, (item) => {
                                     return <Option value={item.indicator}>{item.indicator_desc}</Option>;
@@ -362,7 +367,9 @@ class customerScore extends React.Component {
                             </Select>
                         </Col>
                         <Col span={spanLength}>
-                            <Select value={item.interval}
+                            <Select
+                                style={{width: 100 }}
+                                value={item.interval}
                                 onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'interval')}>
                                 {_.map(TimeRangeSelect, item => {
                                     return <Option value={item.value}>{item.name}</Option>;
@@ -373,6 +380,7 @@ class customerScore extends React.Component {
                             {item.user_option ?
                                 <span>
                                     <Select value={item.user_option}
+                                        style={{width: 100 }}
                                         onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'user_option')}>
                                         {_.map(numberSelect, (item) => {
                                             return <Option value={item.value}>{item.name}</Option>;
@@ -482,6 +490,7 @@ class customerScore extends React.Component {
                 item.to = this.state.largerHandlePoint;
             } else {
                 item.from = this.state.largerHandlePoint;
+                delete item.to;
             }
         });
         var customerRulesFormData = _.cloneDeep(this.state.customerRulesFormData);

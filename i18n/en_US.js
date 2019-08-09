@@ -3121,7 +3121,37 @@ var en_US = {
     'clue.customer.refresh.list': 'Change batches',//换一批
     'clue.customer.condition.change': 'modify condition',//修改条件
     'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
-    'clue.customer.confirm.valid': 'Confirm valid'//确认有效
+    'clue.customer.confirm.valid': 'Confirm valid',//确认有效
+    'clue.customer.customer.level': 'Customer score',//客户分数
+    'clue.customer.score.good': 'high quality',//优质
+    'clue.customer.above.limit': '{score} above',//{score}以上
+    'clue.customer.level.score': 'Customer rating rules',//客户评分规则
+    'clue.customer.if.switch': 'Whether to enable',//是否启用
+    'clue.customer.score.behaviour': 'user behavior',//用户行为
+    'clue.customer.hang.phone.count': 'Number of calls',//打通电话次数
+    'clue.customer.visit.customer.count': 'Visiting customers',//拜访客户次数
+    'clue.customer.user.score': 'User rating',//用户评分
+    'clue.customer.media.number': 'median',//中位数
+    'clue.customer.score.indicator': 'index',//指标
+    'clue.customer.this.week': 'This week',//本周
+    'clue.customer.this.month': 'This month',//本月
+    'clue.customer.this.quarter': 'This quarter',//本季度
+    'clue.customer.this.year': 'This year',//今年
+    'clue.customer.last.week': 'Last week',//近一周
+    'clue.customer.last.month': 'Last month',//近一月
+    'clue.customer.last.quarter': 'Last quarter',//近一季度
+    'clue.customer.last.year': 'Last year',//近一年
+    'user.score.level.rule': 'User rating rules',//用户评分规则
+    'user.score.basic.score': 'Basic rating',//基础评分
+    'user.score.particate.in.score': 'Participation score',//参与度评分
+    'user.score.nearly.active.days': 'Recent active days score',//近期活跃天数分数
+    'user.score.online.score': 'Recent online time score',//近期在线时长分数
+    'customer.score.total.count': 'Total number of times',//总次数
+    'user.score.total.minutes': 'Total minutes',//总分钟数
+    'user.score.total.hours': 'Total hours',//总小时数
+    'user.score.total.days': 'Total number of days',//总天数
+    'user.score.choose.interval': 'Please select the period',//请选择周期
+
 
 };
 export default en_US;

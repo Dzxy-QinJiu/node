@@ -148,9 +148,9 @@ class userScore extends React.Component {
         var userScoreDetailList = _.get(userScoreFormData, 'detail', []);
         if (!userScoreDetailList.length) {
             userScoreDetailList.push({
-                'indicator': 'online_time',
-                'interval': 'last_month',
-                'online_unit': 'min',
+                'indicator': '',
+                'interval': '',
+                'online_unit': '',
                 'score': '1',
                 'randomId': uuid()
             });
@@ -170,7 +170,7 @@ class userScore extends React.Component {
                     showIcon
                 />
             );
-        } else if (_.get(userIndicator, 'length')) {
+        } else if (_.isArray(userIndicator) && _.get(userIndicator, 'length')) {
             return <div>
                 {_.map(userScoreDetailList, (item, index) => {
                     var userIndicatorList = _.cloneDeep(userIndicator),
@@ -184,6 +184,7 @@ class userScore extends React.Component {
                         <Row>
                             <Col span={spanLength}>
                                 <Select
+                                    style={{width: 100 }}
                                     value={item['indicator']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'indicator')}
                                 >
@@ -194,22 +195,26 @@ class userScore extends React.Component {
                             </Col>
                             <Col span={spanLength}>
                                 <Select
+                                    style={{width: 100 }}
                                     value={item['interval']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'interval')}
                                 >
-                                    {userIndicatorRangeList[item['indicator']].map((item, index) => (
+                                    {_.isArray(userIndicatorRangeList[item['indicator']]) ? userIndicatorRangeList[item['indicator']].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.name}</Option>
-                                    ))}
+                                    )) : null}
+
                                 </Select>
                             </Col>
                             <Col span={spanLength}>
                                 <Select
-                                    value={item['online_unit'] || 'day'}
+                                    style={{width: 100 }}
+                                    value={item['online_unit']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'online_unit')}
                                 >
-                                    {userIndicatorTypeList[item['indicator']].map((item, index) => (
+                                    {_.isArray(userIndicatorTypeList[item['indicator']]) ? userIndicatorTypeList[item['indicator']].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.name}</Option>
-                                    ))}
+                                    )) : null}
+
                                 </Select>
                                 <span className="start-icon">*</span>
                                 <InputNumber value={item.score}
@@ -384,11 +389,11 @@ class userScore extends React.Component {
 
                                     var detailId = operateItem.id || operateItem.randomId;
                                     return <div>
-                                        <Row>
+                                        {idx === 0 ? <Row>
                                             <Col span={spanLength}>{Intl.get('common.operate', '操作')}</Col>
                                             <Col span={spanLength}>{Intl.get('user.apply.detail.table.time', '周期')}</Col>
                                             <Col span={spanLength}>{Intl.get('user.login.score', '分数')}</Col>
-                                        </Row>
+                                        </Row> : null}
                                         <Row>
                                             <Col span={spanLength}>
                                                 <Input value={operateItem.operate} onChange={this.handleUserEngaegementProperty.bind(this,engageId, detailId, 'operate')}/>
@@ -396,7 +401,7 @@ class userScore extends React.Component {
                                             <Col span={spanLength}>
                                                 <Select
                                                     value={operateItem.interval}
-                                                    style={{ width: 100 }}
+                                                    style={{width: 100 }}
                                                     placeholder={Intl.get('user.score.choose.interval', '请选择周期')}
                                                     onChange={this.handleUserEngaegementProperty.bind(this,engageId, detailId, 'interval')}
                                                 >
@@ -605,7 +610,10 @@ class userScore extends React.Component {
                                     {this.renderBasicScoreRules()}
                                 </TabPane>
                                 <TabPane tab={Intl.get('user.score.particate.in.score', '参与度评分')} key="2">
-                                    {this.renderParticateScoreRules()}
+                                    <div className="particepate-container-warp">
+                                        {this.renderParticateScoreRules()}
+                                    </div>
+
                                 </TabPane>
                             </Tabs>
                         </div>
