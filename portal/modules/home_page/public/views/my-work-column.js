@@ -41,6 +41,7 @@ import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import clueAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import Trace from 'LIB_DIR/trace';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -461,7 +462,7 @@ class MyWorkColumn extends React.Component {
         if (!_.isEmpty(contacts) && !_.isEmpty(phones)) {
             let contactsContent = this.renderPopoverContent(contacts, item);
             return (
-                <div className='work-hover-show-detail'>
+                <div className='work-hover-show-detail' onClick={this.preventOpenDetail}>
                     <Popover content={contactsContent} placement="bottom"
                         overlayClassName='contact-phone-popover'
                         getPopupContainer={() => document.getElementById(`home-page-work${item.id}`)}>
@@ -470,6 +471,12 @@ class MyWorkColumn extends React.Component {
                         </span>
                     </Popover>
                 </div>);
+        }
+    }
+
+    preventOpenDetail = (event) => {
+        if (event) {
+            event.stopPropagation();
         }
     }
 
@@ -666,12 +673,14 @@ class MyWorkColumn extends React.Component {
             }
         }
         return (
-            <div className='my-work-card-container' onClick={openWorkDetailFunc.bind(this, item)}
-                title={clickTip}>
+            <div className='my-work-card-container'>
                 <div className={contentCls} id={`home-page-work${item.id}`}>
-                    {this.renderWorkName(item, index)}
-                    <div className='work-remark'>
-                        {_.map(item.tags, (tag, index) => this.renderWorkRemarks(tag, item, index))}
+                    <div onClick={openWorkDetailFunc.bind(this, item)}
+                        title={clickTip}>
+                        {this.renderWorkName(item, index)}
+                        <div className='work-remark'>
+                            {_.map(item.tags, (tag, index) => this.renderWorkRemarks(tag, item, index))}
+                        </div>
                     </div>
                     <div className='my-work-item-hover'>
                         {this.renderContactItem(item)}
@@ -684,7 +693,11 @@ class MyWorkColumn extends React.Component {
     //打开工作详情
     openWorkDetail = (item, event) => {
         //点击到客户名或线索名时，打开客户或线索详情，不触发打开工作详情的处理
-        if (event && $(event.target).hasClass('customer-clue-name')) return;
+        if (event) {
+            event.stopPropagation();
+            if ($(event.target).hasClass('customer-clue-name')) return;
+            Trace.traceEvent(event, '点击审批按钮');
+        }
         //打开申请详情
         this.setState({curOpenDetailWork: item});
     }
@@ -773,7 +786,7 @@ class MyWorkColumn extends React.Component {
             //不是普通销售的线索类型，需要展示分配按钮
             if (item.type === WORK_TYPES.LEAD && !userData.getUserData().isCommonSales) {
                 const distributeBtn = (
-                    <div className='handle-work-finish' data-tracename="点击分配线索客户按钮">
+                    <div className='handle-work-finish' data-tracename="点击分配线索按钮">
                         <span className='work-finish-text approval-btn'>
                             {Intl.get('clue.customer.distribute', '分配')}
                         </span>
@@ -834,7 +847,11 @@ class MyWorkColumn extends React.Component {
         this.setState({myWorkList});
     }
 
-    handleMyWork = (item) => {
+    handleMyWork = (item, event) => {
+        if (event) {
+            event.stopPropagation();
+            Trace.traceEvent(event, '点击我已完成的按钮');
+        }
         if (!_.get(item, 'id')) return;
         let myWorkList = this.state.myWorkList;
         _.each(myWorkList, work => {
@@ -922,10 +939,16 @@ class MyWorkColumn extends React.Component {
         }
     }
 
-    showAddSchedulePanel = () => {
+    showAddSchedulePanel = (event) => {
+        if (event) {
+            Trace.traceEvent(event, '点击添加日程');
+        }
         this.setState({isShowAddToDo: true});
     }
-    showRecommendCluePanel = () => {
+    showRecommendCluePanel = (event) => {
+        if (event) {
+            Trace.traceEvent(event, '点击推荐线索');
+        }
         this.setState({isShowRecormendClue: true});
     }
     renderAddAndImportBtns = () => {
@@ -1000,7 +1023,7 @@ class MyWorkColumn extends React.Component {
     renderWorkContent() {
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
-            <div className='my-work-content' style={{height: getColumnHeight()}}>
+            <div className='my-work-content' style={{height: getColumnHeight()}} data-tracename="我的工作列表">
                 <GeminiScrollbar className="srollbar-out-card-style"
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom}
