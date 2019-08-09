@@ -59,9 +59,18 @@ exports.addCustomerStage = (req, res) => {
     });
 };
 
-// 更新客户阶段
-exports.updateCustomerStage = (req, res) => {
-    salesProcessService.updateCustomerStage(req, res).on('success', (data) => {
+// 编辑客户阶段
+exports.editCustomerStage = (req, res) => {
+    salesProcessService.editCustomerStage(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 删除客户阶段
+exports.deleteCustomerStage = (req, res) => {
+    salesProcessService.deleteCustomerStage(req, res).on('success', (data) => {
         res.status(200).json(data);
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);

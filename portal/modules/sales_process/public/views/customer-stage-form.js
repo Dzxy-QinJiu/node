@@ -46,27 +46,24 @@ class CustomerStageForm extends React.Component {
     handleCancel(e) {
         e.preventDefault();
         Trace.traceEvent(e, _.get(this.state, 'formData.id') ? '关闭添加客户阶段面板' : '关闭编辑客户阶段面板');
-        this.props.cancelCustomerStagForm();
+        this.props.cancelCustomerStageForm();
     }
 
     //保存客户阶段
-    handleSubmit(e) {
-        e.preventDefault();
-        Trace.traceEvent(e, '保存客户阶段的信息');
+    handleSubmit(event) {
+        event.preventDefault();
+        Trace.traceEvent(event, '保存客户阶段的信息');
         this.props.form.validateFields((err, values) => {
             if (err) return;
             let formData = this.state.formData;
             let submitObj = {
                 name: _.trim(values.name),
-                status: values.status,
                 description: values.description,
-                teams: [],
-                users: []
             };
             if (formData.id) {
                 submitObj.id = formData.id;
             }
-            this.props.submitSalesProcessForm(submitObj);
+            this.props.submitCustomerStageForm(submitObj);
         });
     }
 
@@ -172,10 +169,7 @@ class CustomerStageForm extends React.Component {
 function noop() {
 }
 CustomerStageForm.defaultProps = {
-    submitSalesProcessForm: noop,
-    closeProcessSalesProcessPanel: noop,
-    handleConfirmChangeProcessStatus: noop,
-    cancelCustomerStagForm: noop,
+    cancelCustomerStageForm: noop,
     isShowCustomerStagePanel: false,
     customerStage: {
         id: '', // 客户阶段id
@@ -187,9 +181,7 @@ CustomerStageForm.propTypes = {
     form: PropTypes.object,
     customerStage: PropTypes.object,
     isShowCustomerStagePanel: PropTypes.bool,
-    closeProcessSalesProcessPanel: PropTypes.func,
-    submitSalesProcessForm: PropTypes.func,
-    handleConfirmChangeProcessStatus: PropTypes.func,
-    cancelCustomerStagForm: PropTypes.func,
+    submitCustomerStageForm: PropTypes.func,
+    cancelCustomerStageForm: PropTypes.func,
 };
 export default Form.create()(CustomerStageForm);

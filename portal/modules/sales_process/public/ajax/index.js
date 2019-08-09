@@ -96,13 +96,13 @@ exports.getCustomerStageBySaleProcessId = (id) => {
 };
 
 // 添加客户阶段
-exports.addCustomerStage = (addCustomerStage) => {
+exports.addCustomerStage = (addStage, saleProcessId) => {
     let Deferred = $.Deferred();
     addSalesProcessAjax = $.ajax({
-        url: '/rest/add/customer/stage',
+        url: `/rest/add/customer/stage/${saleProcessId}`,
         dataType: 'json',
         type: 'post',
-        data: addCustomerStage,
+        data: addStage,
         success: (result) => {
             Deferred.resolve(result);
         },
@@ -115,14 +115,30 @@ exports.addCustomerStage = (addCustomerStage) => {
     return Deferred.promise();
 };
 
-// 更新客户阶段
-exports.updateCustomerStage = (upDateCustomerStageObj) => {
+// 编辑客户阶段
+exports.editCustomerStage = (editStage,saleProcessId) => {
     let Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/update/customer/stage',
+        url: `/rest/edit/customer/stage/${saleProcessId}`,
         dataType: 'json',
         type: 'put',
-        data: upDateCustomerStageObj,
+        data: editStage,
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+// 删除客户阶段
+exports.deleteCustomerStage = (id) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/delete/customer/stage/${id}`,
+        dataType: 'json',
+        type: 'delete',
         success: (result) => {
             Deferred.resolve(result);
         }, error: (errorInfo) => {

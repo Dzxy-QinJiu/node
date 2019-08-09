@@ -49,30 +49,6 @@ class SalesProcessAction {
         } );
     }
 
-    // 添加销售流程
-    addSalesProcess(addProcessObj, cb) {
-        this.dispatch({loading: true, error: false});
-        SalesProcessAjax.addSalesProcess(addProcessObj, cb).then( (result) => {
-            this.dispatch({loading: false, resData: result, error: false});
-            _.isFunction(cb) && cb();
-        }, (errorMsg) => {
-            this.dispatch({loading: false, errorMsg: errorMsg, error: true});
-            _.isFunction(cb) && cb();
-        } );
-    }
-
-    // 更新销售流程
-    updateSalesProcess(upDateProcessObj, cb) {
-        this.dispatch({loading: true, error: false});
-        SalesProcessAjax.updateSalesProcess(upDateProcessObj).then( (result) => {
-            this.dispatch({loading: false, resData: result, error: false});
-            _.isFunction(cb) && cb();
-        }, (errorMsg) => {
-            this.dispatch({loading: false, errorMsg: errorMsg, error: true});
-            _.isFunction(cb) && cb();
-        } );
-    }
-
 }
 
 export default alt.createActions(SalesProcessAction);

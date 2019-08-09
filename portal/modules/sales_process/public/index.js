@@ -375,7 +375,7 @@ class SalesProcess extends React.Component {
                         this.state.isShowCustomerStage ? (
                             <CustomerStage
                                 closeCustomerStagePanel={this.closeCustomerStagePanel}
-                                salesProcessId={this.state.salesProcessId}
+                                saleProcessId={this.state.saleProcessId}
                                 containerWidth={containerWidth}
                                 isShowCustomerStage={this.state.isShowCustomerStage}
                             />

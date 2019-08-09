@@ -136,13 +136,13 @@ class SalesProcessStore {
 
     // 显示客户阶段面板
     showCustomerStagePanel(saleProcess) {
-        this.salesProcessId = saleProcess.id;
+        this.saleProcessId = saleProcess.id;
         this.isShowCustomerStage = true;
     }
 
     // 关闭客户界阶段面板
     closeCustomerStagePanel() {
-        this.salesProcessId = '';
+        this.saleProcessId = '';
         this.isShowCustomerStage = false;
     }
    

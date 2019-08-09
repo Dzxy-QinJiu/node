@@ -13,6 +13,7 @@ import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import CustomerStageAction from '../action/customer-stage-action';
 import CustomerStageStore from '../store/customer-stage-store';
+import CustomerStageAjax from '../ajax';
 import CustomerStageForm from './customer-stage-form';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
@@ -33,8 +34,8 @@ class CustomerStage extends React.Component {
 
     componentDidMount() {
         CustomerStageStore.listen(this.onChange);
-        let salesProcessId = this.props.salesProcessId;
-        CustomerStageAction.getCustomerStageList(salesProcessId);
+        let saleProcessId = this.props.saleProcessId;
+        CustomerStageAction.getCustomerStageList(saleProcessId);
     }
 
     componentWillUnmount() {
@@ -59,27 +60,35 @@ class CustomerStage extends React.Component {
         CustomerStageAction.closeCustomerStageForm();
     };
 
-    submitCustomerStagForm = (customerStage) => {
-        if (customerStage.id) {
-            let id = _.get(customerStage, 'id');
-            let customerStageList = this.state.customerStageList;
-            let index = _.findIndex(customerStageList, item => item.id === id);
-            customerStage.index = index + 1;
-            CustomerStageAction.editCustomerStage(customerStage, () => {
+    // 提交客户阶段表单数据（添加客户阶段和编辑客户阶段）
+    submitCustomerStageForm = (customerStage) => {
+        let saleProcessId = this.props.saleProcessId;
+        if (customerStage.id) { // 编辑客户阶段
+            CustomerStageAjax.editCustomerStage(customerStage, saleProcessId).then( (result) => {
+                if (result) {
+                    customerStage.flag = 'edit';
+                    CustomerStageAction.updateCustomerStageList(customerStage);
+                    CustomerStageAction.closeCustomerStageForm();
+                    message.success(Intl.get('crm.218', '修改成功！'));
+                } else {
+
+                }
+            }, () => {} );
+        } else { // 添加客户阶段
+            let order = _.get(this.state.customerStageList, 'length');
+            customerStage.order = order + 1; // 需要传客户阶段的序号
+            CustomerStageAjax.addCustomerStage(customerStage, saleProcessId).then( (result) => {
+                if (result && result.id) {
+                    CustomerStageAction.updateCustomerStageList(result);
+                    CustomerStageAction.closeCustomerStageForm();
+                    message.success(Intl.get('crm.216', '添加成功！'));
+                } else {
+                    CustomerStageAction.closeCustomerStageForm();
+                    message.error(Intl.get('member.add.failed', '添加失败！'));
+                }
+            }, (errMsg) => {
                 CustomerStageAction.closeCustomerStageForm();
-                message.success(Intl.get('crm.218', '修改成功！'));
-            });
-        } else {
-            let length = _.get(this.state.customerStageList, 'length');
-            // 更改客户阶段的顺序，从1开始，依次增加
-            _.each(this.state.customerStageList, (item, index) => {
-                item.index = index + 1;
-            });
-            let currentCustomerStageeList = _.cloneDeep(this.state.customerStageList);
-            currentCustomerStageeList.push({...customerStage, index: length + 1});
-            CustomerStageAction.addCustomerStage(currentCustomerStageeList, () => {
-                CustomerStageAction.closeCustomerStageForm();
-                message.success(Intl.get('crm.216', '添加成功！'));
+                message.error(errMsg || Intl.get('member.add.failed', '添加失败！'));
             });
         }
     };
@@ -96,15 +105,23 @@ class CustomerStage extends React.Component {
 
     // 删除客户阶段
     deleteCustomerStage = (customerStage) => {
-        CustomerStageAction.deleteCustomerStage(customerStage, (result) => {
-            this.closeCustomerStageModalDialog();
-            if (!result.error) {
+        let id = customerStage.id;
+        console.log('删除客户阶段：',customerStage);
+        console.log('删除客户阶段id:',id);
+        CustomerStageAjax.deleteCustomerStage(id).then( (result) => {
+            if (result) {
+                customerStage.flag = 'delete';
+                CustomerStageAction.updateCustomerStageList(customerStage);
+                this.closeCustomerStageModalDialog();
                 message.success(Intl.get('crm.138', '删除成功！'));
             } else {
+                this.closeCustomerStageModalDialog();
                 message.error(Intl.get('crm.139', '删除失败！'));
             }
+        }, (errMsg) => {
+            this.closeCustomerStageModalDialog();
+            message.error(errMsg || Intl.get('crm.139', '删除失败！'));
         });
-
     };
 
     // 显示客户阶段变更顺序
@@ -153,10 +170,9 @@ class CustomerStage extends React.Component {
             disabled = true;
             title = Intl.get('sales.process.customer.stage.toplimit', '客户阶段个数已达上限（8个）');
         }
-        // TODO 需要更改 添加客户阶段权限 CRM_ADD_CUSTOMER_SALES 变更客户阶段权限CRM_UPDATE_CUSTOMER_SALES
         return (
             <div className='condition-operator'>
-                <PrivilegeChecker check="BGM_SALES_STAGE_ADD" className="add-customer-stage-btn">
+                <PrivilegeChecker check="CRM_ADD_CUSTOMER_SALES" className="add-customer-stage-btn">
                     {title ? (
                         <Popover content={title}>
                             <Button
@@ -204,7 +220,7 @@ class CustomerStage extends React.Component {
                                 </div>
                             </div>) : (
                                 <PrivilegeChecker
-                                    check="BGM_SALES_STAGE_SORT"
+                                    check="CRM_UPDATE_CUSTOMER_SALES"
                                 >
                                     <Button
                                         type="ghost"
@@ -223,8 +239,8 @@ class CustomerStage extends React.Component {
     };
 
     retryGetOrderList = () => {
-        let salesProcessId = this.props.salesProcessId;
-        CustomerStageAction.getCustomerStageList(salesProcessId);
+        let saleProcessId = this.props.saleProcessId;
+        CustomerStageAction.getCustomerStageList(saleProcessId);
     };
 
     renderMsgTips = (errMsg) => {
@@ -296,7 +312,7 @@ class CustomerStage extends React.Component {
                                     {
                                         _.map(customerStageList, (item, idx) => {
                                             let saleActivity = _.get(item, 'sales_activities');
-                                            let activity = saleActivity.length ? _.map(saleActivity, 'name') : [];
+                                            let activity = saleActivity && saleActivity.length ? _.map(saleActivity, 'name') : [];
                                             let twoLineClass = classNames('iconfont', {
                                                 'icon-down-twoline': !item.isShowMore,
                                                 'icon-up-twoline': item.isShowMore
@@ -363,7 +379,7 @@ class CustomerStage extends React.Component {
                                                                 ) :
                                                                 (
                                                                     <div className="customer-stage-btn-div operation-btn">
-                                                                        <PrivilegeChecker check="BGM_SALES_STAGE_DELETE">
+                                                                        <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
                                                                             <Button
                                                                                 className="customer-stage-btn-class icon-delete iconfont"
                                                                                 onClick={this.showCustomerStageModalDialog}
@@ -411,8 +427,8 @@ class CustomerStage extends React.Component {
                             <CustomerStageForm
                                 customerStage={this.state.currentCustomerStage}
                                 isShowCustomerStageForm={this.state.isShowCustomerStageForm}
-                                cancelCustomerStagForm={this.closeCustomerStageForm}
-                                submitCustomerStagForm={this.submitCustomerStagForm}
+                                cancelCustomerStageForm={this.closeCustomerStageForm}
+                                submitCustomerStageForm={this.submitCustomerStageForm}
                             />) : null
                     }
                 </div>
@@ -422,7 +438,7 @@ class CustomerStage extends React.Component {
 }
 
 CustomerStage.propTypes = {
-    salesProcessId: PropTypes.string,
+    saleProcessId: PropTypes.string,
     closeCustomerStagePanel: PropTypes.func,
     containerWidth: PropTypes.number,
     isShowCustomerStage: PropTypes.bool,

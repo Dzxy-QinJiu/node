@@ -41,15 +41,22 @@ module.exports = {
         }
     }, {
         'method': 'post', // 添加客户阶段
-        'path': '/rest/add/customer/stage',
+        'path': '/rest/add/customer/stage/:id',
         'handler': 'addCustomerStage',
         'passport': {
             'needLogin': true
         }
     }, {
-        'method': 'put', // 更新客户阶段
-        'path': '/rest/update/customer/stage',
-        'handler': 'updateCustomerStage',
+        'method': 'put', // 编辑客户阶段
+        'path': '/rest/edit/customer/stage/:id',
+        'handler': 'editCustomerStage',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        'method': 'delete', // 删除客户阶段
+        'path': '/rest/delete/customer/stage/:id',
+        'handler': 'deleteCustomerStage',
         'passport': {
             'needLogin': true
         }

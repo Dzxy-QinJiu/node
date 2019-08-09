@@ -52,6 +52,37 @@ class CustomerStageStore {
         customerStage.isShowMore = !customerStage.isShowMore;
     }
 
+    // 显示客户阶段表单
+    showCustomerStageForm(customerStage) {
+        this.isShowCustomerStageForm = true;
+        if (customerStage === 'addCustomerStage') {
+            this.currentCustomerStage = emptyCustomerStage;
+        } else {
+            this.currentCustomerStage = customerStage;
+        }
+    }
+
+    // 关闭客户阶段表单
+    closeCustomerStageForm() {
+        this.isShowCustomerStageForm = false;
+    }
+
+    // 更新客户阶段列表
+    updateCustomerStageList(customerStage) {
+        let flag = customerStage.flag;
+        if (flag) {
+            if (flag === 'delete') { //删除
+                _.remove(this.customerStageList, customerStage);
+            } else if (flag === 'edit') {
+                let upDateStage = _.find(this.customerStageList, item => item.id === customerStage.id);
+                upDateStage.name = customerStage.name;
+                upDateStage.description = customerStage.description;
+            }
+        } else { // 添加
+            this.customerStageList.push(customerStage);
+        }
+    }
+
     // 显示客户阶段变更顺序
     showCustomerStageTransferOrder() {
         this.isShowCustomerStageTransferOrder = true;
@@ -103,26 +134,6 @@ class CustomerStageStore {
         this.customerStageList = this.customerStageList.sort((item1, item2) => {
             return item1.order - item2.order;
         });
-    }
-
-    // 显示客户阶段表单
-    showCustomerStageForm(customerStage) {
-        this.isShowCustomerStageForm = true;
-        if (customerStage === 'addCustomerStage') {
-            this.currentCustomerStage = emptyCustomerStage;
-        } else {
-            this.currentCustomerStage = customerStage;
-        }
-    }
-
-    // 关闭客户阶段表单
-    closeCustomerStageForm() {
-        this.isShowCustomerStageForm = false;
-    }
-
-    // 添加客户阶段
-    addCustomerStage() {
-
     }
 
     // 显示客户阶段模态框
