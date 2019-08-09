@@ -25,6 +25,7 @@ import MemberManageAction from 'MOD_DIR/member_manage/public/action';
 import { hasCalloutPrivilege } from 'PUB_DIR/sources/utils/common-method-util';
 import {storageUtil} from 'ant-utils';
 import {BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
+import Trace from 'LIB_DIR/trace';
 
 /**
  *  引导流程键值对，以及对应的角色
@@ -255,7 +256,8 @@ class BootProcess extends React.Component {
     };
 
     // 关闭引导流程
-    closeGuideMark = (item) => {
+    closeGuideMark = (item, e) => {
+        Trace.traceEvent(e, '点击关闭'+ item.btnText +'引导流程');
         let {guideConfig} = this.state;
         let hasLoading = _.find(guideConfig, guide => guide.loading);
         // 如果有正在关闭的流程，需等待
@@ -286,10 +288,12 @@ class BootProcess extends React.Component {
         });
     };
 
-    onHandleClick = (item) => {
+    onHandleClick = (item, e) => {
         if(item.finished) {
+            Trace.traceEvent(e, '点击关闭'+ item.btnText +'引导流程');
             this.closeGuideMark(item);
         }else {
+            Trace.traceEvent(e, '点击了' + item.btnText);
             this.setState({
                 curGuideItem: item,
                 // curCustomerAddType: CUSTOMER_ADD_TYPES.ADD
@@ -304,15 +308,13 @@ class BootProcess extends React.Component {
 
     // 关闭右侧面板时
     closeGuidDetailPanel = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '关闭引导面板');
         this.setState({...this.getInitialState()});
     };
 
     handleCustomerChange = (type) => {
         this.setState({curCustomerAddType: type});
     };
-
-    //显示继续添加按钮
-    showContinueAddButton = () => {};
 
     // 拨号结束后，触发事件
     triggerDialFinished = () => {
@@ -325,7 +327,6 @@ class BootProcess extends React.Component {
     // 添加成员成功后
     addMemberFinished = () => {
         let memberGuide = _.find(this.state.guideConfig, guide => guide.key === BOOT_PROCESS_KEYS_MAP.perfact_organization.key);
-
         this.setGuideMark((curGuideItem) => {
             this.setState({
                 curGuideItem,
@@ -400,9 +401,7 @@ class BootProcess extends React.Component {
                     title={Intl.get('guide.close.tips', '关闭后此提示将不再出现，是否要关闭？')}
                     okText={Intl.get('user.yes', '是')}
                     cancelText={Intl.get('user.no', '否')}
-                    onConfirm={() => {
-                        this.closeGuideMark(item);
-                    }}
+                    onConfirm={this.closeGuideMark.bind(this, item)}
                 >
                     <i className="iconfont icon-close" title={Intl.get('common.app.status.close','关闭')}/>
                 </Popconfirm>
@@ -499,10 +498,11 @@ class BootProcess extends React.Component {
                 );
             case MEMBER_ADD_TYPES.FINISHED:
                 let FinishedBlock = this.renderFinishedBlock({
-                    text: Intl.get('guide.add.or.import.customer.success', '添加/导入成功'),
+                    text: Intl.get('user.user.add.success', '添加成功'),
                     goText: Intl.get('guide.see.member', '查看成员'),
                     // 继续添加函数
-                    continueFn: () => {
+                    continueFn: (e) => {
+                        Trace.traceEvent(e, '继续添加成员');
                         this.setState({
                             curMemberAddType: MEMBER_ADD_TYPES.ADD
                         });
@@ -519,7 +519,6 @@ class BootProcess extends React.Component {
                         isShowCloseBtn
                         onClosePanel={this.closeGuidDetailPanel}
                         content={FinishedBlock}
-                        dataTracename="引导流程"
                     />
                 );
         }
@@ -533,10 +532,11 @@ class BootProcess extends React.Component {
         switch (curCustomerAddType) {
             case CUSTOMER_ADD_TYPES.FINISHED:
                 let FinishedBlock =  this.renderFinishedBlock({
-                    text: Intl.get('user.user.add.success', '添加成功'),
+                    text: Intl.get('guide.add.or.import.customer.success', '添加/导入成功'),
                     goText: Intl.get('guide.see.cutomer', '查看客户'),
                     // 继续添加函数
-                    continueFn: () => {
+                    continueFn: (e) => {
+                        Trace.traceEvent(e, '继续添加/导入客户');
                         this.setState({
                             curCustomerAddType: CUSTOMER_ADD_TYPES.ADD
                         });
@@ -552,7 +552,6 @@ class BootProcess extends React.Component {
                         isShowCloseBtn
                         onClosePanel={this.closeGuidDetailPanel}
                         content={FinishedBlock}
-                        dataTracename="引导流程"
                     />
                 );
             case CUSTOMER_ADD_TYPES.ADD:
@@ -562,6 +561,7 @@ class BootProcess extends React.Component {
                         <span
                             className="customer-title-btn"
                             title={Intl.get('crm.2', '导入客户')}
+                            data-tracename="点击导入客户按钮"
                             onClick={this.handleCustomerChange.bind(this, CUSTOMER_ADD_TYPES.IMPORT)}
                         >{Intl.get('crm.2', '导入客户')}</span>
                     </div>
@@ -581,6 +581,7 @@ class BootProcess extends React.Component {
                         <span
                             className="customer-title-btn"
                             title={Intl.get('crm.3', '添加客户')}
+                            data-tracename="点击添加客户按钮"
                             onClick={this.handleCustomerChange.bind(this, CUSTOMER_ADD_TYPES.ADD)}
                         >{Intl.get('crm.3', '添加客户')}</span>
                     </div>
@@ -608,7 +609,6 @@ class BootProcess extends React.Component {
                         afterSuccess={this.extractClueFinished}
                     />
                 )}
-                dataTracename="引导流程"
             />
         );
     }
@@ -642,7 +642,7 @@ class BootProcess extends React.Component {
                     <DialUpKeyboard
                         placement="bottomRight"
                         dialIcon={(
-                            <Button className={btnCls}>{item.btnText}</Button>
+                            <Button data-tracename="点击拨号按钮" className={btnCls}>{item.btnText}</Button>
                         )}
                     />
                 );
@@ -662,7 +662,7 @@ class BootProcess extends React.Component {
 
     render() {
         return (
-            <div className="boot-process-content">
+            <div className="boot-process-content" data-tracename="引导流程">
                 {this.renderContent()}
                 {this.state.curGuideItem ? this.renderGuideDetail() : null}
             </div>
