@@ -3256,7 +3256,9 @@ var zh_CN = {
     'customer.score.total.count': '总次数',
     'user.score.total.minutes': '总分钟数',
     'user.score.total.hours': '总小时数',
-    'user.score.total.days': '总天数'
+    'user.score.total.days': '总天数',
+    'user.score.choose.interval': '请选择周期',
+
 
 
 };

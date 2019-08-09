@@ -54,6 +54,9 @@ class CustomerScoreStore {
         } else {
             this.rangeHandleValue = [0, this.lowerHandlePoint, this.largerHandlePoint];
         }
+        //重新计算尺子的最大长度
+        var max = _.max(this.rangeHandleValue) + (_.max(this.rangeHandleValue) - _.get(this, 'rangeHandleValue[1]'));
+        this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
     }
 
     getCustomerScoreRules(result) {
@@ -92,8 +95,6 @@ class CustomerScoreStore {
             this.marks[i * range] = i * range;
         }
     }
-
-
 
     changeLowerHandlePoint(updateValue) {
         this.lowerHandlePoint = updateValue;

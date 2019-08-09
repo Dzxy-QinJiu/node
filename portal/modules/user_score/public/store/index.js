@@ -28,6 +28,10 @@ class UserScoreStore {
             errMsg: '',
             obj: {}
         };//已保存的用户评分规则
+        this.appListErrorMsg = '';//获取应用列表出错的信息
+        this.appList = [];//获取应用列表
+        this.isSavingEngagement = false;//正在保存用户参与度
+        this.saveEngagementErr = '';//保存用户参与度出错
     }
     getUserScoreLists(result) {
         if (result.loading) {
@@ -78,6 +82,9 @@ class UserScoreStore {
     updateUserRule(updateObj){
         this.userLevelObj.obj = updateObj;
     }
+    updateUserEngagement(updateObj){
+        this.userEngagementObj.obj = updateObj;
+    }
     saveUserScoreLists(result){
         if (result.loading){
             this.isSavingRules = true;
@@ -89,6 +96,27 @@ class UserScoreStore {
             this.isSavingRules = false;
             this.saveRulesErr = '';
 
+        }
+    }
+    saveUserEngagementRule(result){
+        if (result.loading){
+            this.isSavingEngagement = true;
+            this.saveEngagementErr = '';
+        }else if (result.error){
+            this.isSavingEngagement = false;
+            this.saveEngagementErr = result.errorMsg;
+        }else{
+            this.isSavingEngagement = false;
+            this.saveEngagementErr = '';
+        }
+    }
+    getAppList(obj) {
+        if(obj.loading) {
+            this.appList = [];
+        } else if(!obj.error) {
+            this.appList = obj.result;
+        }else if (obj.error){
+            this.appListErrorMsg = obj.result;
         }
     }
 

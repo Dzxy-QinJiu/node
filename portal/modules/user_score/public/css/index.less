@@ -41,16 +41,66 @@
               border-left-color: #394144;
             }
           }
-          .save-btns{
-            text-align: right;
-            padding-right: 424px;
-            margin-top:10px;
-            .ant-btn{
-              margin-left: 20px;
+        }
+
+      }
+      //参与度配置
+      .user-engagement-container{
+        padding: 12px 0;
+        .user-engagement-panel{
+          p{
+            margin-bottom: 10px;
+            .ant-switch{
+              display: inline-block;
+              margin-left: 10px;
+            }
+          }
+          .user-engagement-item-wrap{
+
+            .user-engagement-and-add{
+              overflow: hidden;
+              position: relative;
+              .user-engagement-item{
+                width: 900px;
+                float: left;
+                border: 1px solid #ddd;
+                padding: 12px;
+                margin: 8px 0;
+                .ant-row{
+                  margin-bottom:10px;
+                  .ant-input{
+                    width: 160px;
+                  }
+                  .add-operate-item{
+                    font-size: 20px;
+                    span{
+                      cursor: pointer;
+                      padding-left: 10px;
+                    }
+                  }
+                }
+              }
+              .add-user-engagement-item{
+                font-size: 20px;
+                position: absolute;
+                bottom: 0;
+                left: 900px;
+                span{
+                  cursor: pointer;
+                  padding-left: 10px;
+                }
+              }
             }
           }
         }
-
+      }
+      .save-btns{
+        text-align: right;
+        padding-right: 424px;
+        margin-top:10px;
+        .ant-btn{
+          margin-left: 20px;
+        }
       }
     }
   }
