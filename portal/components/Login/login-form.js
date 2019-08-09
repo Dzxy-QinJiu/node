@@ -260,8 +260,8 @@ class LoginForm extends React.Component {
                                 ref="username" value={this.state.username} onChange={this.userNameChange}
                                 onBlur={this.getLoginCaptcha}/>
                         </div>
-                        <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
                         <div className="input-item">
+                            <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
                             <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
                                 type="password" tabIndex="2"
                                 ref="password_input"
