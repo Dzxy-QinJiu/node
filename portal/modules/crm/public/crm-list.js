@@ -1,6 +1,6 @@
 var React = require('react');
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon } from 'antd';
+import { Tag, Modal, message, Button, Icon, Dropdown, Menu,} from 'antd';
 import { AntcTable } from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -142,6 +142,7 @@ class Crm extends React.Component {
             pageValue: 0,//两次点击时的页数差
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
+            addType: 'start',//添加按钮的初始显示内容
         };
     };
 
@@ -970,6 +971,37 @@ class Crm extends React.Component {
         CrmAction.afterMergeCustomer(mergeObj);
     };
 
+    //根据按钮选择添加或导入客户
+    handleButtonClick = (e) => {
+        if(e.key === 'add'){
+            this.setState({
+                addType: e.key,
+                isAddFlag: true 
+            });
+        }else if(e.key === 'import'){
+            this.setState({
+                addType: e.key,
+                crmTemplateRightPanelShow: true
+            });
+        }
+    }
+
+    //添加客户的按钮列表渲染
+    dropList = () => {
+        let menu = (
+            <Menu onClick={this.handleButtonClick.bind(this)}>
+                <Menu.Item key="add" >
+                    {Intl.get('crm.sales.manual_add.clue','手动添加')}
+                </Menu.Item>
+            
+                <Menu.Item key="import" >
+                    {Intl.get('crm.2', '导入客户')}
+                </Menu.Item>
+            </Menu>
+        );
+        return menu;
+    };
+
     //渲染操作按钮
     renderHandleBtn = () => {
         let isWebMini = $(window).width() < LAYOUT_CONSTANTS.SCREEN_WIDTH;//浏览器是否缩小到按钮展示改成图标展示
@@ -999,21 +1031,30 @@ class Crm extends React.Component {
             </div>);
         } else {
             return (<div className="top-btn-wrapper">
+
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
-                    title={isWebMini ? Intl.get('crm.2', '导入客户') : ''}
-                    onClick={this.showCrmTemplateRightPanel}
-                >
-                    {isWebMini ? <i className="iconfont icon-import-btn" /> : <Button type='primary'>{Intl.get('crm.2', '导入客户')}</Button>}
+                    title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}>
+                    {    
+                        isWebMini ? (<Dropdown overlay={this.dropList()} placement="bottomCenter" 
+                            overlayClassName='mini-add-dropdown'>
+                            <Icon type="plus" className="add-btn"/> 
+                        </Dropdown>
+                        ) : (
+                            <Dropdown overlay={this.dropList()} placement="bottomCenter" 
+                                overlayClassName='norm-add-dropdown' >
+                                <Button type="primary">
+                                    {(this.state.addType === 'start') ? Intl.get('crm.3', '添加客户') : (
+                                        (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue', '手动添加') :
+                                            Intl.get('crm.2', '导入客户')
+                                    )}
+                                    <Icon type="down" />
+                                </Button>
+                            </Dropdown>)
+                    }
                 </PrivilegeChecker>
-                <PrivilegeChecker
-                    check="CUSTOMER_ADD"
-                    className={btnClass}
-                    title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}
-                    onClick={this.showAddForm}>
-                    {isWebMini ? <Icon type="plus" /> : <Button>{Intl.get('crm.3', '添加客户')}</Button>}
-                </PrivilegeChecker>
+
                 <PrivilegeChecker
                     check="CRM_REPEAT"
                     className={btnClass + ' customer-repeat-btn btn-m-r-2'}
