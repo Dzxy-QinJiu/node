@@ -155,7 +155,10 @@ class BootProcess extends React.Component {
         };
     }
 
+    addCustomerType = CUSTOMER_ADD_TYPES.ADD;
+
     getInitialState() {
+        this.addCustomerType = CUSTOMER_ADD_TYPES.ADD;
         return {
             curGuideItem: null, // 当前点击的引导流程项
             curCustomerAddType: CUSTOMER_ADD_TYPES.ADD, // 当前添加客户的方式
@@ -313,6 +316,7 @@ class BootProcess extends React.Component {
     };
 
     handleCustomerChange = (type) => {
+        this.addCustomerType = type;
         this.setState({curCustomerAddType: type});
     };
 
@@ -338,6 +342,7 @@ class BootProcess extends React.Component {
     // 添加/导入客户成功
     addCustomerFinished = () => {
         let customerGuide = _.find(this.state.guideConfig, guide => guide.key === BOOT_PROCESS_KEYS_MAP.add_customer.key);
+
         this.setGuideMark((curGuideItem) => {
             this.setState({
                 curGuideItem,
@@ -531,12 +536,13 @@ class BootProcess extends React.Component {
 
         switch (curCustomerAddType) {
             case CUSTOMER_ADD_TYPES.FINISHED:
+                let title = this.addCustomerType === CUSTOMER_ADD_TYPES.ADD ? Intl.get('user.user.add.success', '添加成功') : Intl.get('guide.import.customer.success', '导入成功');
                 let FinishedBlock =  this.renderFinishedBlock({
-                    text: Intl.get('guide.add.or.import.customer.success', '添加/导入成功'),
+                    text: title,
                     goText: Intl.get('guide.see.cutomer', '查看客户'),
                     // 继续添加函数
                     continueFn: (e) => {
-                        Trace.traceEvent(e, '继续添加/导入客户');
+                        Trace.traceEvent(e, '继续添加客户');
                         this.setState({
                             curCustomerAddType: CUSTOMER_ADD_TYPES.ADD
                         });
