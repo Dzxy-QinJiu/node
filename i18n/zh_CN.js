@@ -866,7 +866,7 @@ var zh_CN = {
     'user.info.log.record.tip': '以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}',
     'user.info.login.address': '地点',
     'user.info.login.browser': '浏览器',
-    'user.info.active.email': '激活邮件已发送至{email}',
+    'user.info.active.email': '激活邮件已发送至{email}，请前往激活',
     'user.info.retry': '请重试',
     'user.info.no.active': '未激活，请{active}',
     'user.info.active': '激活',
