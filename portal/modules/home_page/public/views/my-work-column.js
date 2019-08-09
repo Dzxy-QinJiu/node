@@ -5,7 +5,7 @@
  */
 import '../css/my-work-column.less';
 import classNames from 'classnames';
-import {Dropdown, Icon, Menu, Tag, Popover, Button} from 'antd';
+import {Dropdown, Icon, Menu, Tag, Popover, Button, message} from 'antd';
 import ColumnItem from './column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
@@ -35,7 +35,12 @@ import {getTimeStrFromNow, getFutureTimeStr} from 'PUB_DIR/sources/utils/time-fo
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import RecommendClues from './boot-process/recommend_clues';
 import userData from 'PUB_DIR/sources/user-data';
-
+import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
+import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import clueAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
+import AntcDropdown from 'CMP_DIR/antc-dropdown';
+import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -71,6 +76,11 @@ const APPLY_STATUS = {
     CANCEL: 'cancel',//撤销
 };
 
+const DISTRIBUTEAUTHS = {
+    'DISTRIBUTEALL': 'CLUECUSTOMER_DISTRIBUTE_MANAGER',
+    'DISTRIBUTESELF': 'CLUECUSTOMER_DISTRIBUTE_USER'
+};
+
 class MyWorkColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -89,10 +99,12 @@ class MyWorkColumn extends React.Component {
             isShowAddToDo: false,//是否展示添加日程面板
             isShowRecormendClue: false,//是否展示推荐线索的面板
             guideConfig: [], // 引导流程列表
+            userList: [],//分配线索的成员列表
         };
     }
 
     componentDidMount() {
+        this.getUserList();
         this.getGuideConfig();
         this.getMyWorkTypes();
         this.getMyWorkList();
@@ -126,6 +138,27 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
     }
+
+    // 获取销售人员
+    getUserList() {
+        // 管理员，运营获取所有人
+        if (this.isManagerOrOperation()) {
+            getAllSalesUserList((allUserList) => {
+                this.setState({userList: allUserList});
+            });
+        } else if (!userData.getUserData().isCommonSales) {//销售领导获取我所在团队及下级团队的销售
+            salesmanAjax.getSalesmanListAjax().sendRequest({filter_manager: true})
+                .success(list => {
+                    this.setState({userList: list});
+                }).error((xhr) => {
+                });
+        }
+    }
+
+    // 是否是管理员或者运营人员
+    isManagerOrOperation = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+    };
 
     //修改刷新我的工作的标识
     updateRefreshMyWork = (data) => {
@@ -655,6 +688,76 @@ class MyWorkColumn extends React.Component {
         //打开申请详情
         this.setState({curOpenDetailWork: item});
     }
+    //获取已选销售的id
+    onSalesmanChange = (salesMan) => {
+        this.setState({salesMan});
+    };
+    setSelectContent = (salesManNames) => {
+        this.setState({salesManNames});
+    };
+    clearSelectSales = () => {
+        this.setState({salesMan: '', salesManNames: ''});
+    };
+    renderSalesBlock = () => {
+        let dataList = formatSalesmanList(this.state.userList);
+        return (
+            <div className="op-pane change-salesman">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('sales.team.search', '搜索')}
+                    value={this.state.salesMan}
+                    onChange={this.onSalesmanChange}
+                    getSelectContent={this.setSelectContent}
+                    notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
+                    dataList={dataList}
+                />
+            </div>
+        );
+    };
+    //分配线索时，发请求前的处理
+    handleBeforeSumitChangeSales = (itemId) => {
+        if (!this.state.salesMan) {
+            this.setState({unSelectDataTip: Intl.get('crm.17', '请选择销售人员')});
+        } else {
+            let sale_id = '', team_id = '', sale_name = '', team_name = '';
+            //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
+            let idArray = this.state.salesMan.split('&&');
+            if (_.isArray(idArray) && idArray.length) {
+                sale_id = idArray[0];//销售的id
+                team_id = idArray[1] || '';//团队的id
+            }
+            //销售的名字和团队的名字 格式是 销售名称 -团队名称
+            let nameArray = this.state.salesManNames.split('-');
+            if (_.isArray(nameArray) && nameArray.length) {
+                sale_name = nameArray[0];//销售的名字
+                team_name = _.trim(nameArray[1]) || '';//团队的名字
+            }
+            var submitObj = {
+                'sale_id': sale_id,
+                'sale_name': sale_name,
+                'team_id': team_id,
+                'team_name': team_name,
+            };
+            if (itemId) {
+                submitObj.customer_id = itemId;
+            }
+            return submitObj;
+        }
+    };
+    handleSubmitAssignSales = (item) => {
+        let submitObj = this.handleBeforeSumitChangeSales(item.lead.id);
+        if (_.isEmpty(submitObj)) {
+            return;
+        } else {
+            this.setState({distributeLoading: true});
+            clueAjax.distributeCluecustomerToSale(submitObj).then((result) => {
+                this.setState({distributeLoading: false});
+                this.handleMyWork(item);
+            }, (errorMsg) => {
+                this.setState({distributeLoading: false});
+                message.error(errorMsg || Intl.get('failed.distribute.cluecustomer.to.sales', '把线索客户分配给对应的销售失败'));
+            });
+        }
+    };
 
     renderHandleWorkBtn(item) {
         //当前工作是否正在编辑
@@ -667,34 +770,56 @@ class MyWorkColumn extends React.Component {
                 showIcon
                 onHide={this.hideEditStatusTip.bind(this, item)}/>);
         } else {
-            let handleFunc = null;
-            let btnCls = 'work-finish-text';
-            let btnTitle = '';
-            let btnDesc = '';
-            //申请、审批
-            if (item.type === WORK_TYPES.APPLY) {
-                let applyStatus = _.get(item, `[${WORK_TYPES.APPLY}].opinion`);
-                btnCls += ' approval-btn';
-                //待审批的申请
-                if (applyStatus === APPLY_STATUS.ONGOING) {
-                    // 展示审批按钮
-                    handleFunc = this.openWorkDetail;
-                    btnDesc = Intl.get('home.page.apply.approve', '审批');
-                } else {//已审批的申请（通过、驳回、撤销），展示知道了按钮
+            //不是普通销售的线索类型，需要展示分配按钮
+            if (item.type === WORK_TYPES.LEAD && !userData.getUserData().isCommonSales) {
+                const distributeBtn = (
+                    <div className='handle-work-finish' data-tracename="点击分配线索客户按钮">
+                        <span className='work-finish-text approval-btn'>
+                            {Intl.get('clue.customer.distribute', '分配')}
+                        </span>
+                    </div>);
+                return (<AntcDropdown content={distributeBtn} key={`antc-dropdwon${item.id}`}
+                    triggerEventStr='hover'
+                    popupContainerId={`home-page-work${item.id}`}
+                    overlayTitle={Intl.get('user.salesman', '销售人员')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    isSaving={this.state.distributeLoading}
+                    overlayContent={this.renderSalesBlock()}
+                    handleSubmit={this.handleSubmitAssignSales.bind(this, item)}
+                    unSelectDataTip={this.state.unSelectDataTip}
+                    clearSelectData={this.clearSelectSales}
+                    btnAtTop={false}/>);
+            } else {
+                let handleFunc = null;
+                let btnCls = 'work-finish-text';
+                let btnTitle = '';
+                let btnDesc = '';
+                //申请、审批
+                if (item.type === WORK_TYPES.APPLY) {
+                    let applyStatus = _.get(item, `[${WORK_TYPES.APPLY}].opinion`);
+                    btnCls += ' approval-btn';
+                    //待审批的申请
+                    if (applyStatus === APPLY_STATUS.ONGOING) {
+                        // 展示审批按钮
+                        handleFunc = this.openWorkDetail;
+                        btnDesc = Intl.get('home.page.apply.approve', '审批');
+                    } else {//已审批的申请（通过、驳回、撤销），展示知道了按钮
+                        handleFunc = this.handleMyWork;
+                        btnDesc = Intl.get('guide.finished.know', '知道了');
+                    }
+                } else {//其他的展示对号已完成的按钮
                     handleFunc = this.handleMyWork;
-                    btnDesc = Intl.get('guide.finished.know', '知道了');
+                    btnTitle = Intl.get('home.page.my.work.finished', '点击设为已完成');
+                    btnDesc = (<i className="iconfont icon-select-member"/>);
                 }
-            } else {//其他的展示对号已完成的按钮
-                handleFunc = this.handleMyWork;
-                btnTitle = Intl.get('home.page.my.work.finished', '点击设为已完成');
-                btnDesc = (<i className="iconfont icon-select-member"/>);
+                return (
+                    <div className='handle-work-finish' onClick={handleFunc.bind(this, item)}>
+                        <span className={btnCls} title={btnTitle}>
+                            {btnDesc}
+                        </span>
+                    </div>);
             }
-            return (
-                <div className='handle-work-finish' onClick={handleFunc.bind(this, item)}>
-                    <span className={btnCls} title={btnTitle}>
-                        {btnDesc}
-                    </span>
-                </div>);
         }
     }
 
@@ -876,7 +1001,7 @@ class MyWorkColumn extends React.Component {
         let customerOfCurUser = this.state.customerOfCurUser;
         return (
             <div className='my-work-content' style={{height: getColumnHeight()}}>
-                <GeminiScrollbar
+                <GeminiScrollbar className="srollbar-out-card-style"
                     listenScrollBottom={this.state.listenScrollBottom}
                     handleScrollBottom={this.handleScrollBottom}
                     itemCssSelector=".my-work-content .detail-card-container">

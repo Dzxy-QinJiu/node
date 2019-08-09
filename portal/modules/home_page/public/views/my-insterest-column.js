@@ -98,6 +98,7 @@ class MyInsterestColumn extends React.Component {
         return (
             <div className='my-insterest-content' style={{height: getColumnHeight()}}>
                 <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}
+                    className="srollbar-out-card-style"
                     listenScrollBottom={this.state.listenScrollBottom}
                     itemCssSelector=".my-insterest-content .system_message_list >li">
                     {this.renderNoticeList()}
