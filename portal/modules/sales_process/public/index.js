@@ -201,10 +201,13 @@ class SalesProcess extends React.Component {
 
     // 确认更改销售流程的状态
     handleConfirmChangeProcessStatus = (item) => {
-        if (item.status === '0') { // 要启用的处理
+        const isSalesProcessDisable = this.isSalesProcessDisable(item); // 判断其他销售流程是否全部停用
+        if (isSalesProcessDisable) { // 若其他流程全部停用，则提示开启流程
+            message.warn(Intl.get('sales.process.delete.tips', '请先启用一个销售流程'));
+        } else {
             let upDateProcess = {
                 id: item.id,
-                status: '1'
+                status: item.status === '0' ? '1' : '0'
             };
             SalesProcessAjax.updateSalesProcess(upDateProcess).then((result) => {
                 if (result) {
@@ -216,13 +219,7 @@ class SalesProcess extends React.Component {
             }, (errorMsg) => {
                 message.success(errorMsg || Intl.get('crm.219', '修改失败！'));
             });
-        } else if (item.status === '1'){ // 要停用的处理
-            const isSalesProcessDisable = this.isSalesProcessDisable(item); // 判断其他销售流程是否全部停用
-            if (isSalesProcessDisable) {
-                message.warn(Intl.get('sales.process.delete.tips', '请先启用一个销售流程'));
-            }
         }
-
     };
 
     // 显示销售流程详情面板
@@ -352,11 +349,9 @@ class SalesProcess extends React.Component {
                             <SalesProcessForm
                                 closeAddProcessFormPanel={this.closeAddProcessFormPanel}
                                 submitSalesProcessForm={this.submitSalesProcessForm}
-                                handleConfirmChangeProcessStatus={this.handleConfirmChangeProcessStatus}
                                 treeSelectData={treeSelectData}
                                 isLoading={this.state.addProcessLoading}
                                 saveResult={this.state.addProcessResult}
-                                containerWidth={containerWidth}
                             />
                         ) : null
                     }
@@ -370,7 +365,7 @@ class SalesProcess extends React.Component {
                                 closeProcessDetailPanel={this.closeProcessDetailPanel}
                                 changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
                                 treeSelectData={treeSelectData}
-                                handleConfirmChangeProcessStatus={this.handleConfirmChangeProcessStatus}
+                                changeProcessStatus={this.handleConfirmChangeProcessStatus}
                             />
                         ) : null
                     }

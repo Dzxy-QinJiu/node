@@ -64,6 +64,10 @@ class SalesProcessInfo extends React.Component {
         this.props.closeProcessDetailPanel();
     };
 
+    changeProcessStatus = (saleProcess) => {
+        this.props.changeProcessStatus(saleProcess);
+    };
+
     renderContent(){
         const saleProcess = this.state.saleProcess;
         const id = saleProcess.id;
@@ -88,14 +92,16 @@ class SalesProcessInfo extends React.Component {
                     <span className="basic-info-label">{Intl.get('common.status', '状态')}:</span>
                     {
                         hasPrivilege('CRM_UPDATE_CUSTOMER_SALES') ? (
-                            <SalesProcessStatusSwitch
-                                title={Intl.get('sales.process.status.edit.tip', '确定要{status}该销售流程？', {
-                                    status: saleProcess.status === '0' ? Intl.get('common.enabled', '启用') :
-                                        Intl.get('common.stop', '停用')
-                                })}
-                                handleConfirm={this.props.handleConfirmChangeProcessStatus(saleProcess)}
-                                status={saleProcess.status === '1' ? true : false}
-                            />
+                            <div className="process-status">
+                                <SalesProcessStatusSwitch
+                                    title={Intl.get('sales.process.status.edit.tip', '确定要{status}该销售流程？', {
+                                        status: saleProcess.status === '0' ? Intl.get('common.enabled', '启用') :
+                                            Intl.get('common.stop', '停用')
+                                    })}
+                                    handleConfirm={this.changeProcessStatus.bind(this, saleProcess)}
+                                    status={saleProcess.status === '1' ? true : false}
+                                />
+                            </div>
                         ) : null
                     }
                 </div>
@@ -139,13 +145,13 @@ SalesProcessInfo.defaultProps = {
     saleProcess: {},
     changeSaleProcessFieldSuccess: noop,
     closeProcessDetailPanel: noop,
-    handleConfirmChangeProcessStatus: noop
+    changeProcessStatus: noop
 };
 SalesProcessInfo.propTypes = {
     saleProcess: PropTypes.object,
     changeSaleProcessFieldSuccess: PropTypes.func,
     closeProcessDetailPanel: PropTypes.func,
-    handleConfirmChangeProcessStatus: PropTypes.func,
+    changeProcessStatus: PropTypes.func,
 };
 
 export default SalesProcessInfo;
