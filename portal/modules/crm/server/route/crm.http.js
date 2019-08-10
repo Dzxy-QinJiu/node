@@ -332,6 +332,30 @@ module.exports = {
                 needLogin: true
             },
             privileges: ['CRM_ASSERT_CUSTOMER_SALES']
+        },{
+            method: 'put',
+            path: '/rest/customer/release',
+            handler: 'releaseCustomer',
+            passport: {
+                needLogin: true
+            },
+            privileges: []
+        }, {//获取客户池中的客户
+            method: 'get',
+            path: '/rest/customer_pool/customer',
+            handler: 'getPoolCustomer',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CUSTOMER_POOL_MANAGE']
+        }, {//提取客户
+            method: 'post',
+            path: '/rest/customer_pool/customer',
+            handler: 'extractCustomer',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CUSTOMER_POOL_MANAGE']
         }
     ]
 };

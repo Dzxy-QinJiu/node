@@ -1584,6 +1584,12 @@ var zh_CN = {
     'crm.import.phone.repeat': '导入数据中存在相同的电话',
     'crm.system.phone.repeat': '电话已被其他{type}使用',
     'crm.import.phone.verify': '电话只能是11位手机号或11-12位带区号的座机号',
+    'crm.customer.release': '释放',
+    'crm.customer.release.pool': '释放到客户池',
+    'crm.customer.release.confirm.tip': '释放到客户池后，其他人也可以查看、提取，您确认释放吗？',
+    'crm.customer.release.failed': '释放客户失败',
+    'crm.customer.pool.failed': '获取客户池客户失败',
+    'crm.customer.extract.failed': '提取客户失败',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
