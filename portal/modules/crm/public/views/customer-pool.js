@@ -167,16 +167,12 @@ class CustomerPool extends React.Component {
     renderCustomerDetail = () => {
         //触发打开带拨打电话状态的客户详情面板
         if (this.state.currentId) {
-            let curCustomer = _.find(this.state.customerList, item => item.unique_id === this.state.currentId);
+            let curCustomer = _.find(this.state.poolCustomerList, item => item.id === this.state.currentId);
             if (curCustomer) {
-                let customerInfo = {
-                    ...curCustomer,
-                    id: curCustomer.unique_id//客户真实的id, 获取客户详情中的数据时需要用此id
-                };
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
                         currentId: this.state.currentId,
-                        curCustomer: customerInfo,
+                        curCustomer: curCustomer,
                         hideRightPanel: this.colseRightPanel,
                         disableEdit: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)
                     }
@@ -213,13 +209,14 @@ class CustomerPool extends React.Component {
                     return (
                         <span>
                             <span>{text}</span>
-                            <span className="hidden record-id">{record.unique_id}</span>
+                            <span className="hidden record-id">{record.id}</span>
                         </span>);
                 }
             }, {
                 title: Intl.get('weekly.report.customer.stage', '客户阶段'),
                 width: column_width,
                 dataIndex: 'customer_stage',
+                className: 'has-filter',
             }, {
                 title: Intl.get('crm.customer.label', '客户标签'),
                 width: 130,
@@ -263,6 +260,7 @@ class CustomerPool extends React.Component {
                 title: Intl.get('crm.customer.extract.time', '释放时间'),
                 width: 100,
                 dataIndex: 'push_time',
+                className: 'has-filter',
             }
         ];
         return columns;
