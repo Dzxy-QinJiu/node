@@ -141,7 +141,8 @@ class CustomerPool extends React.Component {
             let poolCustomerList = this.state.poolCustomerList;
             let customerIds = _.map(this.state.selectedCustomer, 'id');
             poolCustomerList = _.filter(poolCustomerList, item => !_.includes(customerIds, item.id));
-            this.setState({isExtracting: false, salesMan: '', poolCustomerList});
+            let totalSize = this.state.totalSize - _.get(customerIds, 'length', 0);
+            this.setState({isExtracting: false, salesMan: '', poolCustomerList, totalSize});
             message.success(Intl.get('clue.extract.success', '提取成功'));
         }, (errorMsg) => {
             this.setState({isExtracting: false, salesMan: ''});
