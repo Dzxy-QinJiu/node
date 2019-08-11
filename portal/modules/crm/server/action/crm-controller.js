@@ -469,7 +469,7 @@ exports.releaseCustomer = function(req, res) {
 
 //获取客户池中的客户
 exports.getPoolCustomer = function(req, res) {
-    crmService.releaseCustomer(req, res).on('success', function(data) {
+    crmService.getPoolCustomer(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -477,7 +477,7 @@ exports.getPoolCustomer = function(req, res) {
 };
 //提取客户
 exports.extractCustomer = function(req, res) {
-    crmService.releaseCustomer(req, res).on('success', function(data) {
+    crmService.extractCustomer(req, res).on('success', function(data) {
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);

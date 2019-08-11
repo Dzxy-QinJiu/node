@@ -1590,6 +1590,9 @@ var zh_CN = {
     'crm.customer.release.failed': '释放客户失败',
     'crm.customer.pool.failed': '获取客户池客户失败',
     'crm.customer.extract.failed': '提取客户失败',
+    'crm.customer.pool': '客户池',
+    'crm.customer.label': '客户标签',
+    'crm.customer.extract.time': '释放时间',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',

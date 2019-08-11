@@ -1570,6 +1570,9 @@ var en_US = {
     'crm.customer.release.failed': 'Customer Release Failed',//释放客户失败
     'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
     'crm.customer.extract.failed': 'Failure to extract customer',//提取客户失败
+    'crm.customer.pool': 'Customer pool',//客户池
+    'crm.customer.label': 'Customer label',//客户标签
+    'crm.customer.extract.time': 'Extract time',//释放时间
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期

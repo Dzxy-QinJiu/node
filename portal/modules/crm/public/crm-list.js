@@ -1005,6 +1005,7 @@ class Crm extends React.Component {
     };
     //释放客户
     releaseCustomer = (customerId) => {
+        if(this.state.isReleasingCustomer) return;
         this.setState({isReleasingCustomer: true});
         crmAjax.releaseCustomer({id: customerId}).then(result => {
             this.setState({isReleasingCustomer: false});
@@ -1052,7 +1053,6 @@ class Crm extends React.Component {
             </div>);
         } else {
             return (<div className="top-btn-wrapper">
-
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
@@ -1094,6 +1094,7 @@ class Crm extends React.Component {
                                 <Button>{Intl.get('crm.customer.recycle.bin', '回收站')}</Button>}
                         </div>) : null
                 }
+                <Button className='btn-item customer-pool-btn' onClick={this.props.showCustomerPool}>{Intl.get('crm.customer.pool', '客户池')}</Button>
             </div>);
         }
     };
@@ -1969,16 +1970,20 @@ Crm.defaultProps = {
     location: {},
     fromSalesHome: false,
     showRepeatCustomer: function() {
-
     },
     params: {},
+    showCustomerRecycleBin: function() {
+    },
+    showCustomerPool: function() {
+    },
 };
 Crm.propTypes = {
     location: PropTypes.object,
     fromSalesHome: PropTypes.bool,
     showRepeatCustomer: PropTypes.func,
     params: PropTypes.object,
-    showCustomerRecycleBin: PropTypes.func
+    showCustomerRecycleBin: PropTypes.func,
+    showCustomerPool: PropTypes.func,
 };
 
 module.exports = Crm;
