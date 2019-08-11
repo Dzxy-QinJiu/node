@@ -1,0 +1,116 @@
+@font-color: #8DA8C5;
+@btn-color: #8da8c5;
+@label-color: #999999;
+
+.sales-process-container {
+  padding: 12px;
+  .sale-process-wrap {
+    background: #fff;
+    .sale-process-top-nav {
+      padding: 24px;
+      height: 80px;
+      border-bottom: 1px solid #E5E5E5;
+    }
+    .sales-process-content {
+        .content-zone {
+          ul {
+            padding-top: 8px;
+            padding-left: 24px;
+            .process-box {
+              position: relative;
+              width: 300px;
+              border: 1px solid #E5E5E5;
+              border-radius:4px;
+              color: #333;
+              margin: 16px 16px 0 0;
+              display: inline-block;
+              padding: 16px 16px 8px 16px;
+              .item-content {
+                .item {
+                  font-size: 14px;
+                  padding-bottom: 12px;
+                }
+                .item-name {
+                  font-size: 18px;
+                  color: @font-color;
+                  cursor: pointer;
+                }
+                .item-description {
+                  color: #999;
+                }
+                .item-status {
+                    div {
+                      display: inline-block;
+                      margin-left: 10px;
+                    }
+                }
+                .item-customer-stage-number {
+                  .stage-number {
+                    margin-left: 10px;
+                  }
+                }
+                .item-suitable {
+                  .scope-teams-users {
+                    margin-left: 10px;
+                  }
+                }
+              }
+              .item-operator {
+                float: right;
+                .iconfont {
+                  cursor: pointer;
+                  font-size: 18px;
+                }
+                .icon-delete {
+                  margin-left: 16px;
+                }
+              }
+            }
+          }
+        }
+    }
+  }
+
+  // 编辑销售流程面板
+  .sals-process-detail-container {
+    .process-content-wrap {
+      float: left;
+      width: 100%;
+      padding: 12px 24px;
+      background: #fff;
+      .basic-info-item {
+        float: left;
+        width: 100%;
+        min-height: 24px;
+        font-size: 14px;
+        .basic-info-label {
+          float: left;
+          line-height: 24px;
+          color: @label-color;
+          margin-right: 10px;
+        }
+        .process-status {
+          margin-left: 10px;
+        }
+        //编辑按钮hover时才展示
+        .icon-edit-btn {
+          display: none;
+        }
+        &:hover {
+          .icon-edit-btn {
+            display: block;
+            float: right;
+            font-size: 16px;
+            color: @btn-color;
+            cursor: pointer;
+          }
+        }
+        form {
+          .ant-form-item {
+            padding-right: 0;
+          }
+        }
+      }
+    }
+  }
+}

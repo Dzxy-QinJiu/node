@@ -24,6 +24,7 @@ var en_US = {
     'menu.order.stage': 'Order Stage', // 订单阶段
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
+    'menu.sales.process': 'Sales Process', // 销售流程
     'menu.clue.allocation': 'Clue allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
@@ -822,6 +823,12 @@ var en_US = {
     // 后台管理-竞品start
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
     // 后台管理-竞品end
+
+    // 后台管理-销售流程start
+    'sales.process.add.process': '', // 添加销售流程
+    'sales.process.toplimit': '', // 销售流程个数已达上限（8个）
+    'sales.process.suitable.objects': '', // 适用范围
+    // 后台管理-销售流程end
 
     //应用管理start
     'app.title': 'application management', // 应用管理

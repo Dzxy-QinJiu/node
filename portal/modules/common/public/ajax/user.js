@@ -11,6 +11,9 @@ trans.register('getUserInTeamTree', {url: '/rest/base/v1/group/team/members/' + 
 //获取所有成员
 trans.register('getAllUser', {url: '/rest/base/v1/user?page_size=9999', type: 'get'});
 
+// 根据角色id，获取启用状态的下成员列表
+trans.register('getEnableMemberListByRoleId', {url: '/rest/get/enable/member/by/role', type: 'get'});
+
 //根据当前成员的角色，获取成员列表
 exports.getUserListByRoleAjax = function() {
     return trans.getAjax('getUserListByRole');
@@ -20,7 +23,10 @@ exports.getUserListByRoleAjax = function() {
 exports.getUserByIdAjax = function() {
     return trans.getAjax('getUserById');
 };
-
+// 根据角色id，获取启用状态的下成员列表
+exports.getEnableMemberListByRoleId = (reqParams) => {
+    return trans.getAjax('getEnableMemberListByRoleId', reqParams);
+};
 //获取用户列表
 exports.getUserListAjax = function() {
     //若当前用户是销售角色
