@@ -42,8 +42,28 @@ class CustomerStage extends React.Component {
     }
 
     // 显示客户阶段详情
-    showCustomerStageDetail(customerStage) {
+    showCustomerStageDetail() {
+        CustomerStageAction.showCustomerStageDetail();
+    }
 
+    // 关闭客户阶段详情
+    closeCustomerStageDetail() {
+        CustomerStageAction.closeCustomerStageDetail();
+    }
+
+    saveCustomerStageSettingPlay = (type, saveObj, successFunc, errorFunc) => {
+        let saleProcessId = this.props.saleProcessId;
+        CustomerStageAjax.editCustomerStage(saveObj, saleProcessId).then( (result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                saveObj.flag = 'edit';
+                CustomerStageAction.updateCustomerStageList(saveObj);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errMsg);
+        } );
     }
 
     // 显示客户阶段表单
@@ -317,6 +337,9 @@ class CustomerStage extends React.Component {
                                                         customerStageOrderDown={this.customerStageOrderDown}
                                                         isShowCustomerStageTransferOrder={this.state.isShowCustomerStageTransferOrder}
                                                         showCustomerStageDetail={this.showCustomerStageDetail}
+                                                        closeCustomerStageDetail={this.closeCustomerStageDetail}
+                                                        isShowCustomerStageDetailPanel={this.state.isShowCustomerStageDetailPanel}
+                                                        saveCustomerStageSettingPlay={this.saveCustomerStageSettingPlay}
                                                     />
                                                 </li>
                                             );

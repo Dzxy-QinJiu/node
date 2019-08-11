@@ -50,12 +50,11 @@ class SalesProcess extends React.Component {
         SalesProcessAction.getSalesTeamList(); // 获取销售团队
         SalesProcessAction.getSalesProcess(); // 获取销售流程
     };
-
-
+    
     componentWillUnmount = () => {
         SalesProcessStore.unlisten(this.onChange);
     };
-
+    
     // 显示添加销售流表单程面板
     showAddProcessFormPanel = () => {
         SalesProcessAction.showAddProcessFormPanel();
@@ -70,7 +69,7 @@ class SalesProcess extends React.Component {
         let salesMemberList = this.state.salesMemberList; // 销售人员
         let salesTeamList = this.state.salesTeamList; // 销售团队
         let scope = saleProcess.scope; // 选择的流程的适用范围的数据
-        if (scope.length) {
+        if (scope && scope.length) {
             saleProcess.teams = [];
             saleProcess.users = [];
             _.each(scope, id => {
@@ -231,14 +230,29 @@ class SalesProcess extends React.Component {
         SalesProcessAction.closeProcessDetailPanel();
     };
 
+    // 重新获取销售流程
+    retryGetSalesProcess = () => {
+        SalesProcessAction.getSalesProcess(); // 获取销售流程
+    };
+
     renderMsgTips = (errMsg) => {
         return (
             <div>
                 <span>{errMsg},</span>
-                <a className="retry-btn" onClick={this.retryGetOrderList}>
+                <a className="retry-btn" onClick={this.retryGetSalesProcess}>
                     {Intl.get('user.info.retry', '请重试')}
                 </a>
             </div>
+        );
+    };
+
+    renderNoDataTipsOrErrMsg = (errMsg) => {
+        let noDataTips = Intl.get('sales.process.nodata.tips', '暂无销售流程，请先添加');
+        if (errMsg) {
+            noDataTips = this.renderMsgTips(errMsg);
+        }
+        return (
+            <NoDataIntro noDataTip={noDataTips}/>
         );
     };
 
@@ -254,7 +268,7 @@ class SalesProcess extends React.Component {
                 }
                 {
                     !this.state.loading && (length === 0 || errorMsg) ?
-                        <NoDataIntro noDataTip={this.renderMsgTips(errorMsg)}/> : null
+                        this.renderNoDataTipsOrErrMsg(errorMsg) : null
                 }
                 <ul>
                     {
@@ -380,6 +394,7 @@ class SalesProcess extends React.Component {
                                 saleProcessId={this.state.saleProcessId}
                                 containerWidth={containerWidth}
                                 isShowCustomerStage={this.state.isShowCustomerStage}
+                                saleProcesTitle={this.state.currentSaleProcess.name}
                             />
                         ) : null
                     }

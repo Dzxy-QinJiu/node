@@ -20,10 +20,9 @@ class CustomerStageStore {
         this.loading = false;
         this.getCustomerStageListErrMsg = '';
         this.currentCustomerStage = emptyCustomerStage;
-        this.currentCustomerStageList = [];
         this.isShowCustomerStageForm = false; // 是否显示客户阶段表单，默认false
         this.isShowCustomerStageTransferOrder = false; // 是否显示客户阶段变更，默认false
-        this.customerStageEditOrder = false;
+        this.isShowCustomerStageDetailPanel = false; // 是否显示客户阶段详情面板，默认false
     }
 
     // 获取客户阶段列表
@@ -39,7 +38,6 @@ class CustomerStageStore {
                 this.customerStageList = result.resData;
             }
         }
-        this.currentCustomerStageList = _.cloneDeep(this.customerStageList); //返回对象的深拷贝
     }
 
     // 展开收起客户阶段详情（剧本、销售行为）
@@ -72,6 +70,9 @@ class CustomerStageStore {
                 let upDateStage = _.find(this.customerStageList, item => item.id === customerStage.id);
                 upDateStage.name = customerStage.name;
                 upDateStage.description = customerStage.description;
+                if (customerStage.play_books) {
+                    upDateStage.play_books = customerStage.play_books;
+                }
             }
         } else { // 添加
             this.customerStageList.push(customerStage);
@@ -137,6 +138,16 @@ class CustomerStageStore {
     // 关闭客户阶段模态
     closeCustomerStageModalDialog(customerStage) {
         customerStage.isShowDeleteModalDialog = false;
+    }
+
+    // 显示客户阶段详情
+    showCustomerStageDetail() {
+        this.isShowCustomerStageDetailPanel = true;
+    }
+
+    // 关闭客户阶段详情
+    closeCustomerStageDetail() {
+        this.isShowCustomerStageDetailPanel = false;
     }
 }
 

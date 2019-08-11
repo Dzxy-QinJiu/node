@@ -114,7 +114,7 @@ class DynamicAddDelField extends React.Component {
                         validateTrigger: ['onChange'],
                         rules: this.props.validateRules || [{}],
                         initialValue: initValue || ''
-                    })(<Input placeholder={this.props.placeholder}/>)}
+                    })(<Input placeholder={this.props.placeholder} type="textarea"/>)}
                 </FormItem>
             );
         }

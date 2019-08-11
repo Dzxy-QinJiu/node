@@ -828,6 +828,7 @@ var zh_CN = {
     'sales.process.edit.process': '编辑销售流程',
     'sales.process.delete.process': '删除销售流程',
     'sales.process.get.failed': '获取销售流程失败',
+    'sales.process.nodata.tips': '暂无销售流程，请先添加',
     'sales.process.toplimit': '销售流程个数已达上限（8个）',
     'sales.process.suitable.objects': '适用范围',
     'sales.process.suitable.objects.placeholder': '请选择适用该流程的团队或个人',
@@ -844,7 +845,11 @@ var zh_CN = {
     'sales.process.delete.customer.stage.tips': '确定删除这个客户阶段么',
     'sales.process.change.order.failed': '变更客户阶段顺序失败',
     'sales.process.customer.stage.play': '剧本',
+    'sales.process.customer.stage.play.placeholder': '请输入剧本',
+    'sales.process.customer.stage.no.play': '暂无剧本',
+    'sales.process.customer.stage.add.play': '添加剧本',
     'sales.process.customer.stage.activity': '销售行为',
+    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本。', // 、销售行为、自动变更条件。
     // 后台管理-销售流程end
 
     //应用管理start

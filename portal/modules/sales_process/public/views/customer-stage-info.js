@@ -5,12 +5,15 @@ import { Button } from 'antd';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import ModalDialog from 'CMP_DIR/ModalDialog';
 import classNames from 'classnames';
+import CustomerStageDetail from './stage-detail';
 import Trace from 'LIB_DIR/trace';
 
 class CustomerStageInfo extends React.Component {
-
     constructor(props) {
         super(props);
+        this.state = {
+            customerStage: this.props.customerStage
+        };
     }
     
     // 确定删除客户阶段
@@ -51,8 +54,8 @@ class CustomerStageInfo extends React.Component {
     };
 
     // 显示客户阶段详情
-    showCustomerStageDetail = (customerStage) => {
-        this.props.showCustomerStageDetail(customerStage);
+    showCustomerStageDetail = () => {
+        this.props.showCustomerStageDetail();
     };
 
     render() {
@@ -68,6 +71,7 @@ class CustomerStageInfo extends React.Component {
         });
         let twoLineTitle = isShowMore ? Intl.get('crm.basic.detail.hide', '收起详情') :
             Intl.get('crm.basic.detail.show', '展开详情');
+        let playBooks = customerStage.play_books; // 剧本
         return (
             <div
                 className="customer-stage-timeline-item-content modal-container"
@@ -92,11 +96,25 @@ class CustomerStageInfo extends React.Component {
                             <div className="customer-stage-content-more">
                                 <div className="customer-stage-content-paly">
                                     <span>{Intl.get('sales.process.customer.stage.play', '剧本')}:</span>
-                                    <span>{customerStage.play_books}</span>
+                                    {
+                                        _.isArray(playBooks) && playBooks.length ? (
+                                            <ul className="customer-stage-playbooks">
+                                                {
+                                                    _.map(playBooks, (item, idx) => {
+                                                        return (
+                                                            <li className="play-item" key={idx}>
+                                                                {item}
+                                                            </li>
+                                                        );
+                                                    })
+                                                }
+                                            </ul>
+                                        ) : null
+                                    }
                                 </div>
                                 <div className="customer-stage-content-activity">
                                     <span>{Intl.get('sales.process.customer.stage.activity', '销售行为')}:</span>
-                                    <span>{activity.join('、')}</span>
+                                    <span>{activity.join(',')}</span>
                                 </div>
                             </div>
                         ) : null
@@ -141,13 +159,22 @@ class CustomerStageInfo extends React.Component {
                                 <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
                                     <Button
                                         className="customer-stage-btn-class icon-role-auth-config iconfont"
-                                        onClick={this.showCustomerStageDetail.bind(this, customerStage)}
+                                        onClick={this.showCustomerStageDetail}
                                         data-tracename="设置客户阶段"
                                     >
                                     </Button>
                                 </PrivilegeChecker>
                             </div>
                         )
+                }
+                {
+                    this.props.isShowCustomerStageDetailPanel ? (
+                        <CustomerStageDetail
+                            closeCustomerStageDetail={this.props.closeCustomerStageDetail}
+                            customerStage={customerStage}
+                            saveCustomerStageSettingPlay={this.props.saveCustomerStageSettingPlay}
+                        />
+                    ) : null
                 }
                 <ModalDialog
                     modalContent={modalContent}
@@ -173,6 +200,10 @@ CustomerStageInfo.propTypes = {
     width: PropTypes.number,
     customerStage: PropTypes.object,
     isShowCustomerStageTransferOrder: PropTypes.bool,
+    isShowCustomerStageDetailPanel: PropTypes.bool,
+    closeCustomerStageDetail: PropTypes.func,
+    saveCustomerStageSettingPlay: PropTypes.func,
+
 };
 
 export default CustomerStageInfo;

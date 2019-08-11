@@ -19,6 +19,9 @@ class CustomerStageAction {
             'showCustomerStageInfoPanel', // 显示客户阶段信息面板
             'closeCustomerStageInfoPanel', // 关闭客户阶段信息面板
             'updateCustomerStageList', // 更新客户阶段列表
+            'showCustomerStageDetail', // 显示客户阶段详情
+            'closeCustomerStageDetail' // 关闭客户阶段详情
+
         );
     }
     // 获取客户阶段列表
