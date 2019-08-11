@@ -277,14 +277,22 @@ class SalesProcess extends React.Component {
                             let teams = _.map(item.teams, 'name');
                             let users = _.map(item.users, 'name');
                             let scope = _.concat(teams, users);
+                            let processName = item.name;
                             return (
                                 <li className="process-box" key={index}>
                                     <div className="item-content">
                                         <div
+                                            title={processName}
                                             className="item item-name"
                                             onClick={this.showProcessDetailPanel.bind(this, item)}
                                         >
-                                            {item.name}
+                                            {
+                                                processName.length > 6 ? <span>
+                                                    {processName.substring(0, 6)}...
+                                                </span> : <span>
+                                                    {processName}
+                                                </span>
+                                            }
                                         </div>
                                         <div className="item item-description">{item.description}</div>
                                         <div className="item item-status">
