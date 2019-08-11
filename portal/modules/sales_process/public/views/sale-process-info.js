@@ -118,9 +118,14 @@ class SalesProcessInfo extends React.Component {
                         saveEditInput={this.saveEditSaleProcess.bind(this, 'description')}
                     />
                 </div>
-                <div className="basic-info-item">
-                    <span className="basic-info-label">{Intl.get('sales.process.suitable.objects', '适用范围')}:</span>
-                </div>
+                {
+                    /***
+                     * toTO: 暂时隐藏
+                     * <div className="basic-info-item">
+                     <span className="basic-info-label">{Intl.get('sales.process.suitable.objects', '适用范围')}:</span>
+                     </div>
+                     * */
+                }
             </div>
         );
     }

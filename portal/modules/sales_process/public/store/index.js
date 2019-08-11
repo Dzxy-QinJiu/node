@@ -21,7 +21,8 @@ class SalesProcessStore {
         this.isShowAddProcessFormPanel = false; // 是否显示添加销售流程表单面板，默认false
         this.isShowProcessInfoPanel = false; // 是否显示销售流程详情面板，默认false
         this.isShowCustomerStage = false; // 是否显示客户阶段，默认是false
-        this.salesProcessId = ''; // 销售流程id
+        this.saleProcessId = ''; // 销售流程id
+        this.saleProcessName = ''; // 销售流程名称
     }
 
     // 遍历团队树，返回要显示的树选择结构数据
@@ -137,12 +138,14 @@ class SalesProcessStore {
     // 显示客户阶段面板
     showCustomerStagePanel(saleProcess) {
         this.saleProcessId = saleProcess.id;
+        this.saleProcessName = saleProcess.name;
         this.isShowCustomerStage = true;
     }
 
     // 关闭客户界阶段面板
     closeCustomerStagePanel() {
         this.saleProcessId = '';
+        this.saleProcessName = '';
         this.isShowCustomerStage = false;
     }
    

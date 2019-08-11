@@ -11,6 +11,7 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import SalesProcessStore from '../store';
+import {saleProcessNameRule} from 'PUB_DIR/sources/utils/validate-util';
 
 class SalesProcessForm extends React.Component {
     constructor(props) {
@@ -47,9 +48,9 @@ class SalesProcessForm extends React.Component {
             if (err) return;
             let submitObj = {
                 name: _.trim(values.name),
-                status: values.status === true ? '1' : '0',
+                status: '1', // values.status === true ? '1' : '0',
                 description: values.description,
-                scope: values.scope
+                // scope: values.scope
             };
             this.props.submitSalesProcessForm(submitObj);
         });
@@ -84,23 +85,26 @@ class SalesProcessForm extends React.Component {
                 >
                     {getFieldDecorator('name', {
                         rules: [{
-                            required: true,
                             validator: this.getValidator()
-                        }, nameLengthRule]
+                        }, saleProcessNameRule]
                     })(
                         <Input placeholder={Intl.get('sales.process.name.placeholder', '请输入销售流程名称')}/>
                     )}
                 </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get('common.status', '状态')}
-                >
-                    {getFieldDecorator('status', {
-                        initialValue: true
-                    })(
-                        <Switch defaultChecked />
-                    )}
-                </FormItem>
+                {/**
+                 * todo  暂时隐藏
+                 * <FormItem
+                 {...formItemLayout}
+                 label={Intl.get('common.status', '状态')}
+                 >
+                 {getFieldDecorator('status', {
+                     initialValue: true
+                 })(
+                     <Switch defaultChecked />
+                 )}
+                 </FormItem>
+                 *
+                 */}
                 <FormItem
                     {...formItemLayout}
                     label={Intl.get('common.describe', '描述')}
@@ -119,23 +123,28 @@ class SalesProcessForm extends React.Component {
                         />
                     )}
                 </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get('sales.process.suitable.objects', '适用范围')}
-                >
-                    {getFieldDecorator('scope', {
-                    })(
-                        <TreeSelect
-                            allowClear={true}
-                            treeData={this.props.treeSelectData}
-                            treeCheckable={true}
-                            treeDefaultExpandAll={true}
-                            showCheckedStrategy={SHOW_PARENT}
-                            searchPlaceholder={Intl.get('sales.process.suitable.objects.placeholder', '请选择适用该流程的团队或个人')}
-                            dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
-                        />
-                    )}
-                </FormItem>
+                {
+                    /**
+                     * todo 暂时隐藏
+                     * <FormItem
+                     {...formItemLayout}
+                     label={Intl.get('sales.process.suitable.objects', '适用范围')}
+                     >
+                     {getFieldDecorator('scope', {
+                     })(
+                         <TreeSelect
+                             allowClear={true}
+                             treeData={this.props.treeSelectData}
+                             treeCheckable={true}
+                             treeDefaultExpandAll={true}
+                             showCheckedStrategy={SHOW_PARENT}
+                             searchPlaceholder={Intl.get('sales.process.suitable.objects.placeholder', '请选择适用该流程的团队或个人')}
+                             dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
+                         />
+                     )}
+                     </FormItem>
+                     * */
+                }
                 <FormItem>
                     <SaveCancelButton
                         loading={this.props.isLoading}

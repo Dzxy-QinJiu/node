@@ -6,6 +6,7 @@ import {Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 
 class CustomerStageDetail extends React.Component {
@@ -41,11 +42,12 @@ class CustomerStageDetail extends React.Component {
                                     id={customerStage.id}
                                     field='play_books'
                                     value={playBooks}
-                                    hasEditPrivilege={true}
+                                    hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
                                     placeholder={Intl.get('sales.process.customer.stage.play.placeholder', '请输入剧本')}
                                     saveEditData={this.saveCustomerStageSettingPlay.bind(this, {editItem: 'play_books',id: customerStage.id})}
                                     noDataTip={Intl.get('sales.process.customer.stage.no.play', '暂无剧本')}
                                     addDataTip={Intl.get('sales.process.customer.stage.add.play', '添加剧本')}
+                                    inputBoxType="textarea"
                                 />
                             </div> : null}
                         </TabPane>

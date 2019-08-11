@@ -138,3 +138,12 @@ export const userNameValidationRules = {
     pattern: userNameRule,
     message: Intl.get('member.add.member.rule', '用户名只能包含字母、数字、横线、下划线，且长度在1到50（包括50）之间')
 };
+
+// 销售流程长度的验证规则（包含大小写字母、下划线、中英文括号、点及汉字，长度1-50之间）
+export const saleProcessNameLengthRule = regex.getNameRegex(50);
+
+export const saleProcessNameRule = {
+    required: true,
+    pattern: saleProcessNameLengthRule,
+    message: Intl.get('sale.process.name.rule', '销售流程名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间'),
+};

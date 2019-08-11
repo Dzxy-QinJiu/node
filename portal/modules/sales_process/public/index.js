@@ -46,8 +46,8 @@ class SalesProcess extends React.Component {
 
     componentDidMount = () => {
         SalesProcessStore.listen(this.onChange);
-        this.getSalesRoleMemberList(); // 获取销售角色的成员列表
-        SalesProcessAction.getSalesTeamList(); // 获取销售团队
+        // this.getSalesRoleMemberList(); // 获取销售角色的成员列表
+        // SalesProcessAction.getSalesTeamList(); // 获取销售团队
         SalesProcessAction.getSalesProcess(); // 获取销售流程
     };
     
@@ -99,6 +99,7 @@ class SalesProcess extends React.Component {
             let addProcessResult = 'success';
             if (result && result.id) { // 添加成功
                 SalesProcessAction.upDateSalesProcessList(result);
+                this.closeAddProcessFormPanel();
             } else { // 添加失败
                 addProcessResult = 'error';
             }
@@ -297,13 +298,20 @@ class SalesProcess extends React.Component {
                                                 status={item.status === '1' ? true : false}
                                             />
                                         </div>
-                                        <div className="item item-suitable">
-                                            <span>{Intl.get('sales.process.suitable.objects', '适用范围')}:</span>
-                                            {
-                                                scope.length ? <span className="scope-teams-users">{_.join(scope, '、')}</span> : null
-                                            }
-
+                                        <div className="item item-customer-stage-number">
+                                            <span>{Intl.get('sales.process.customer.stage.number', '客户阶段数')}:</span>
+                                            <span className="stage-number">{item.stage_num || 0}</span>
                                         </div>
+                                        {/**
+                                         * todo 先隐藏，先展示客户阶段数
+                                         * <div className="item item-suitable">
+                                         <span>{Intl.get('sales.process.suitable.objects', '适用范围')}:</span>
+                                         {
+                                             scope.length ? <span className="scope-teams-users">{_.join(scope, '、')}</span> : null
+                                         }
+
+                                         </div>
+                                         */}
                                     </div>
                                     <div className="item-operator">
                                         <span
@@ -394,7 +402,7 @@ class SalesProcess extends React.Component {
                                 saleProcessId={this.state.saleProcessId}
                                 containerWidth={containerWidth}
                                 isShowCustomerStage={this.state.isShowCustomerStage}
-                                saleProcesTitle={this.state.currentSaleProcess.name}
+                                saleProcesTitle={this.state.saleProcessName}
                             />
                         ) : null
                     }

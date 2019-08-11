@@ -187,67 +187,72 @@ class CustomerStage extends React.Component {
         }
         return (
             <div className='condition-operator'>
-                <PrivilegeChecker check="CRM_ADD_CUSTOMER_SALES" className="add-customer-stage-btn">
-                    {title ? (
-                        <Popover content={title}>
+                <div className="customer-stage-title">
+                    {this.props.saleProcesTitle}
+                </div>
+                <div className="customer-stage-operator">
+                    <PrivilegeChecker check="CRM_ADD_CUSTOMER_SALES" className="add-customer-stage-btn">
+                        {title ? (
+                            <Popover content={title}>
+                                <Button
+                                    type="ghost"
+                                    className="customer-stage-top-btn btn-item"
+                                    disabled={disabled}
+                                >
+                                    <Icon type="plus" />
+                                    {Intl.get('sales.process.add.customer.stage', '添加客户阶段')}
+                                </Button>
+                            </Popover>
+                        ) : (
                             <Button
                                 type="ghost"
                                 className="customer-stage-top-btn btn-item"
-                                disabled={disabled}
+                                onClick={this.showCustomerStageForm.bind(this, 'addCustomerStage')}
+                                data-tracename="添加客户阶段"
                             >
                                 <Icon type="plus" />
                                 {Intl.get('sales.process.add.customer.stage', '添加客户阶段')}
                             </Button>
-                        </Popover>
-                    ) : (
-                        <Button
-                            type="ghost"
-                            className="customer-stage-top-btn btn-item"
-                            onClick={this.showCustomerStageForm.bind(this, 'addCustomerStage')}
-                            data-tracename="添加客户阶段"
-                        >
-                            <Icon type="plus" />
-                            {Intl.get('sales.process.add.customer.stage', '添加客户阶段')}
-                        </Button>
-                    )}
-                </PrivilegeChecker>
-                <div className="customer-stage-change-order">
-                    {
-                        this.state.isShowCustomerStageTransferOrder ?
-                            (<div className="customer-stage-top-div-group">
-                                <div className="customer-stage-top-div">
-                                    <Button
-                                        type="ghost"
-                                        className="customer-stage-top-btn btn-item"
-                                        onClick={this.closeCustomerStageTransferOrder.bind(this)}
+                        )}
+                    </PrivilegeChecker>
+                    <div className="customer-stage-change-order">
+                        {
+                            this.state.isShowCustomerStageTransferOrder ?
+                                (<div className="customer-stage-top-div-group">
+                                    <div className="customer-stage-top-div">
+                                        <Button
+                                            type="ghost"
+                                            className="customer-stage-top-btn btn-item"
+                                            onClick={this.closeCustomerStageTransferOrder.bind(this)}
+                                        >
+                                            <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
+                                        </Button>
+                                    </div>
+                                    <div className="customer-stage-top-div">
+                                        <Button
+                                            type="ghost"
+                                            className="customer-stage-top-btn btn-item"
+                                            onClick={this.handleChangeCustomerStageOrder.bind(this)}
+                                        >
+                                            <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
+                                        </Button>
+                                    </div>
+                                </div>) : (
+                                    <PrivilegeChecker
+                                        check="CRM_UPDATE_CUSTOMER_SALES"
                                     >
-                                        <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
-                                    </Button>
-                                </div>
-                                <div className="customer-stage-top-div">
-                                    <Button
-                                        type="ghost"
-                                        className="customer-stage-top-btn btn-item"
-                                        onClick={this.handleChangeCustomerStageOrder.bind(this)}
-                                    >
-                                        <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
-                                    </Button>
-                                </div>
-                            </div>) : (
-                                <PrivilegeChecker
-                                    check="CRM_UPDATE_CUSTOMER_SALES"
-                                >
-                                    <Button
-                                        type="ghost"
-                                        className="customer-stage-top-btn btn-item"
-                                        onClick={this.showCustomerStageTransferOrder.bind(this)}
-                                    >
-                                        <i className='iconfont icon-transfer'></i>
-                                        {Intl.get('sales.stage.change.sort', '变更顺序')}
-                                    </Button>
-                                </PrivilegeChecker>
-                            )
-                    }
+                                        <Button
+                                            type="ghost"
+                                            className="customer-stage-top-btn btn-item"
+                                            onClick={this.showCustomerStageTransferOrder.bind(this)}
+                                        >
+                                            <i className='iconfont icon-transfer'></i>
+                                            {Intl.get('sales.stage.change.sort', '变更顺序')}
+                                        </Button>
+                                    </PrivilegeChecker>
+                                )
+                        }
+                    </div>
                 </div>
             </div>
         );
@@ -369,6 +374,7 @@ CustomerStage.propTypes = {
     closeCustomerStagePanel: PropTypes.func,
     containerWidth: PropTypes.number,
     isShowCustomerStage: PropTypes.bool,
+    saleProcesTitle: PropTypes.string,
 };
 
 export default CustomerStage;
