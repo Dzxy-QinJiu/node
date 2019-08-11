@@ -330,7 +330,7 @@ class MyInsterestColumn extends React.Component {
                  */}
                 <span className='customer-name-text'
                     title={Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')})}
-                    onClick={this.openCustomerDetail.bind(this, item.customer_id, index)}>
+                    onClick={this.openCustomerDetail.bind(this, item.id, index)}>
                     {_.get(item, 'customer_name', '')}
                 </span>
                 {score ? (
