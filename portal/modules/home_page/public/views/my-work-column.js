@@ -1069,13 +1069,18 @@ class MyWorkColumn extends React.Component {
             </div>);
     }
 
+    afterAddSchedule = () => {
+        setTimeout(() => {
+            this.refreshMyworkList();
+        }, 1000);
+    }
     // 渲染添加日程界面
     renderCrmFormContent() {
         return (
             <DetailCard className='add-todo' content={
                 <CrmScheduleForm
                     isAddToDoClicked
-                    handleScheduleAdd={this.refreshMyworkList}
+                    handleScheduleAdd={this.afterAddSchedule}
                     handleScheduleCancel={this.handleCancel}
                     currentSchedule={{}}/>
             }>
