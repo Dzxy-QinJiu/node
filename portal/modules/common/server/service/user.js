@@ -8,6 +8,7 @@ let userDto = require('../dto/user');
 var _ = require('lodash');
 let getUserListByRoleUrl = '/rest/base/v1/user/byrole';
 let getUserInfoById = '/rest/base/v1/user/id/:user_id';
+const getEnableMemberListByRoleId = '/rest/base/v1/user';
 //根据角色，获取成员列表
 exports.getUserListByRole = function(req, res, queryParams) {
     return restUtil.authRest.get({
@@ -38,4 +39,13 @@ exports.getUserById = function(req,res,userId) {
             emitter.emit('success', transferUser);
         }
     });
+};
+
+// 根据角色id，获取启用状态的下成员列表
+exports.getEnableMemberListByRoleId = (req, res) => {
+    return restUtil.authRest.get({
+        url: getEnableMemberListByRoleId,
+        req: req,
+        res: res
+    }, req.query);
 };

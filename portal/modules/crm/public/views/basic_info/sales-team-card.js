@@ -330,8 +330,8 @@ class SalesTeamCard extends React.Component {
 
     //获取销售-团队的展示内容
     getSalesTeamText(userName, salesTeam) {
-        let text = userName;
-        if (salesTeam) {
+        let text = userName || '';
+        if (salesTeam && salesTeam !== 'unknown') {
             text += ` - ${salesTeam}`;
         }
         return text;

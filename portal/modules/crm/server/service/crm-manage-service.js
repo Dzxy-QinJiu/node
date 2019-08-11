@@ -87,7 +87,13 @@ var crmRestApis = {
     //获取客户所属销售及联合跟进人
     getSalesByCustomerId: '/rest/customer/v3/customer/customer/users/:customer_id',
     //修改客户的联合跟进人
-    editSecondSales: '/rest/customer/v3/customer/customer/assert/user'
+    editSecondSales: '/rest/customer/v3/customer/customer/assert/user',
+    //释放客户
+    releaseCustomer: '/rest/customer/v3/customer/customer/pool/:id',
+    //获取客户池中的客户
+    getPoolCustomer: '/customerpool/resource/customers',
+    //提取客户
+    extractCustomer: '/customerpool/resource/customers/pull',
 };
 exports.urls = crmRestApis;
 
@@ -551,6 +557,35 @@ exports.editSecondSales = function(req, res) {
     return restUtil.authRest.put(
         {
             url: crmRestApis.editSecondSales,
+            req: req,
+            res: res,
+        }, req.body);
+};
+
+//释放客户
+exports.releaseCustomer = function(req, res) {
+    return restUtil.authRest.put(
+        {
+            url: crmRestApis.releaseCustomer.replace(':id',req.body.id),
+            req: req,
+            res: res,
+        });
+};
+
+//获取客户池中的客户
+exports.getPoolCustomer = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getPoolCustomer,
+            req: req,
+            res: res,
+        }, req.query);
+};
+//提取客户
+exports.extractCustomer = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: crmRestApis.extractCustomer,
             req: req,
             res: res,
         }, req.body);

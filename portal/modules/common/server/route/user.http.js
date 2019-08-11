@@ -18,5 +18,12 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    }, { // 根据角色id，获取启用状态的下成员列表
+        'method': 'get',
+        'path': '/rest/get/enable/member/by/role',
+        'handler': 'getEnableMemberListByRoleId',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

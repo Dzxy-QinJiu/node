@@ -116,7 +116,6 @@ class MultiContactField extends React.Component {
                                         })}
                                     </div>
                                 );
-
                             })}
                         </div>
                         {this.props.hasEditPrivilege ? (
