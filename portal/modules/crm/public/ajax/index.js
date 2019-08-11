@@ -431,3 +431,61 @@ exports.getHistoryScoreList = function(reqData) {
     });
     return Deferred.promise();
 };
+
+//释放客户
+exports.releaseCustomer = function(reqData) {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/customer/release',
+        dataType: 'json',
+        type: 'put',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl('crm.customer.release.failed', '释放客户失败'));
+            }
+        }
+    });
+    return Deferred.promise();
+};
+//获取客户池中的客户
+exports.getPoolCustomer = function(reqData) {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/customer_pool/customer',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl('crm.customer.pool.failed', '获取客户池客户失败'));
+            }
+        }
+    });
+    return Deferred.promise();
+};
+//提取客户
+exports.extractCustomer = function(reqData) {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/customer_pool/customer',
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl('crm.customer.extract.failed', '提取客户失败'));
+            }
+        }
+    });
+    return Deferred.promise();
+};

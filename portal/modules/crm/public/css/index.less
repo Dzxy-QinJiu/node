@@ -51,14 +51,11 @@
                 float: left;
             }
             .crm-merge-btn{
-                float: right;
-                position: relative;
-                top: -34px;
-                right: 6px;
+                line-height: 1;
             }
             .batch-btn-wrapper {
+                float: left;
                 overflow: hidden;
-                padding-right: 114px;
                 .crm-batch-change-container {
                     float: left;
                     margin-top: 0;
@@ -153,7 +150,7 @@
             padding-left: 15px;
             height: 30px;
             line-height: 30px;
-            margin-top: 20px;
+            margin-top: 17px;
             .icon-sys-notice {
                 color: #4d96d1;
                 font-size: 18px;
@@ -264,6 +261,20 @@
         span:focus {
             outline: 0;
         }
+    }
+    //释放客户
+    .release-customer{
+        float: left;
+        line-height: 28px;
+        color: #B6C2C9;
+        cursor: pointer;
+        &:hover {
+            color: #9BA4A8;
+        }
+    }
+    .ant-btn:not(.ant-btn-circle):not(.ant-btn-circle-outline).ant-btn-icon-only.delete-btn {
+        float: left;
+        padding: 0;
     }
     .order-btn-class {
         border: 0px;
