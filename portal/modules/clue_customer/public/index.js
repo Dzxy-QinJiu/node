@@ -1288,7 +1288,7 @@ class ClueCustomer extends React.Component {
         
         $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').slideToggle(2000);
     };
-    //转化线索成功后，在相关状态将线索数减一并在待{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
+    //转化线索成功后，在相关状态将线索数减一并在待合并统计数据中加一
     changeClueNum = () => {
         clueCustomerAction.afterTranferClueSuccess(this.state.curClue);
     };
@@ -1307,7 +1307,7 @@ class ClueCustomer extends React.Component {
         const customerId = _.get(curCustomer, 'id');
         const customerName = _.get(curCustomer, 'name');
         if (curCustomer) {
-            //打开客户面板，显示{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
+            //打开客户面板，显示合并后的客户信息
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                 customer_params: {
                     curCustomer,
@@ -2007,12 +2007,12 @@ class ClueCustomer extends React.Component {
         );
     };
 
-    //线索{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
+    //线索合并到客户后的回调事件
     onClueMergedToCustomer = (customerId, customerName) => {
         //在列表中隐藏当前操作的线索
         this.afterTransferClueSuccess();
 
-        //打开客户面板，显示{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
+        //打开客户面板，显示合并后的客户信息
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
                 currentId: customerId,
@@ -2050,7 +2050,7 @@ class ClueCustomer extends React.Component {
         this.showClueRecommendTemplate();
     };
 
-    //{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
+    //合并到其他客户
     mergeToExistingCustomer = () => {
         this.setState({
             //显示线索转客户面板

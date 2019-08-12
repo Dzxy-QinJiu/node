@@ -1096,11 +1096,6 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
-    showOperateBtn = () => {
-        var curClue = this.state.curClue;
-        //必须是有效线索且线索状态不能是已转化
-        return curClue.availability === AVALIBILITYSTATUS.AVALIBILITY && curClue.status !== SELECT_TYPE.HAS_TRANSFER;
-    };
     renderSimilarLists = (listType) => {
         var isClueType = listType === 'clue';
         var moreListShowFlag = this.state.showLargerClueLists;
