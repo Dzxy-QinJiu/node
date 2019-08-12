@@ -125,11 +125,19 @@ class CustomerPool extends React.Component {
         };
         if (userData.getUserData().isCommonSales) {
             paramObj.ownerId = userData.getUserData().user_id;
+            if(_.get(paramObj, 'customerIds.length') > 20){
+                message.error(Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户'));
+                return;
+            }
         } else {
             if (!this.state.salesMan) {
                 this.setState({unSelectDataTip: Intl.get('crm.17', '请选择销售人员')});
                 return;
             } else {
+                if(_.get(paramObj, 'customerIds.length') > 20){
+                    this.setState({unSelectDataTip: Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户')});
+                    return;
+                }
                 //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
                 let idArray = this.state.salesMan.split('&&');
                 paramObj.ownerId = _.get(idArray, '[0]');

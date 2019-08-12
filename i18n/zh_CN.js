@@ -1628,6 +1628,7 @@ var zh_CN = {
     'crm.customer.label': '客户标签',
     'crm.customer.extract.time': '释放时间',
     'crm.customer.release.customer': '释放客户',
+    'crm.customer.extract.limit.tip': '一次最多提取20个客户',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
