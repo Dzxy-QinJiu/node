@@ -401,15 +401,13 @@ var NavSidebar = createReactClass({
         return (
             <ul className="ul-unstyled">
                 {
-                    backendConfigLinks.map(function(obj) {
-                        return (
-                            <li key={obj.id}>
-                                <NavLink to={obj.routePath} activeClassName="active">
-                                    {obj.name}
-                                </NavLink>
-                            </li>
-                        );
-                    })
+                    _.map( backendConfigLinks, obj =>
+                        <li key={obj.id} onClick={this.closeNotificationPanel}>
+                            <NavLink to={obj.routePath} activeClassName="active">
+                                {obj.name}
+                            </NavLink>
+                        </li>
+                    )
                 }
             </ul>
         );
@@ -454,15 +452,13 @@ var NavSidebar = createReactClass({
         return (
             <ul className="ul-unstyled">
                 {
-                    userInfoLinkList.routes.map(function(obj) {
-                        return (
-                            <li key={obj.id}>
-                                <NavLink to={obj.routePath} activeClassName="active">
-                                    {obj.name}
-                                </NavLink>
-                            </li>
-                        );
-                    })
+                    _.map(userInfoLinkList.routes, obj =>
+                        <li key={obj.id} onClick={this.closeNotificationPanel}>
+                            <NavLink to={obj.routePath} activeClassName="active">
+                                {obj.name}
+                            </NavLink>
+                        </li>
+                    )
                 }
                 <li>
                     <LogOut/>
@@ -474,9 +470,12 @@ var NavSidebar = createReactClass({
     getUserInfoBlock: function() {
         return (
             <div className="sidebar-userinfo">
-                <Popover content={this.getUserInfoLinks()} trigger="hover"
+                <Popover
+                    content={this.getUserInfoLinks()}
+                    trigger="hover"
                     placement="rightBottom"
-                    overlayClassName="nav-sidebar-userinfo">
+                    overlayClassName="nav-sidebar-userinfo"
+                >
                     <div className="avatar_container">
                         <Avatar
                             className="avatar"
@@ -594,8 +593,7 @@ var NavSidebar = createReactClass({
     },
 
     render: function() {
-        var _this = this;
-        var iconCls = classNames('iconfont ',{
+        const iconCls = classNames('iconfont ',{
             'icon-dial-up-keybord': !this.state.ronglianNum,
             'icon-active-call_record-ico': this.state.ronglianNum,
         });
@@ -612,11 +610,15 @@ var NavSidebar = createReactClass({
                         <div className="collapse navbar-collapse">
                             <ul className="nav navbar-nav" id="menusLists">
                                 {
-                                    _this.generateMenu()
+                                    this.generateMenu()
                                 }
                             </ul>
-                            <Popover content={_this.getNavbarLists()} trigger="hover" placement="rightTop"
-                                overlayClassName="nav-sidebar-lists">
+                            <Popover
+                                content={this.getNavbarLists()}
+                                trigger="hover"
+                                placement="rightTop"
+                                overlayClassName="nav-sidebar-lists"
+                            >
                                 <div className="hamburger" id="hamburger">
                                     <span className="line"></span>
                                     <span className="line"></span>
@@ -624,16 +626,23 @@ var NavSidebar = createReactClass({
                                 </div>
                             </Popover>
                         </div>
-
                     </div>
 
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
-                        {this.state.isShowDialUpKeyboard ? (<DialUpKeyboard placement="right" dialIcon={DialIcon} inputNumber={this.state.ronglianNum}/>) : null}
-                        {_this.getNotificationBlock()}
-                        {_this.renderBackendConfigBlock()}
-                        {_this.getUserInfoBlock()}
+                        {
+                            this.state.isShowDialUpKeyboard ? (
+                                <DialUpKeyboard
+                                    placement="right"
+                                    dialIcon={DialIcon}
+                                    inputNumber={this.state.ronglianNum}
+                                />
+                            ) : null
+                        }
+                        {this.getNotificationBlock()}
+                        {this.renderBackendConfigBlock()}
+                        {this.getUserInfoBlock()}
                     </div>
                 </div>
                 {/*暂时将引导的功能都去掉*/}
