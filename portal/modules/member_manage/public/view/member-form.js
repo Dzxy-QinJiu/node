@@ -202,13 +202,13 @@ class MemberForm extends React.Component {
                     MemberFormAction.checkOnlyUserName(userName, data => {
                         if (_.isString(data)) {
                             //唯一性验证出错了
-                            callback(Intl.get('common.is.existed', '用户名已存在！'));
+                            callback(Intl.get('common.username.is.unique', '用户名唯一性校验出错！'));
                         } else {
                             if (data === false) {
                                 callback();
                             } else {
                                 //已存在
-                                callback(Intl.get('common.username.is.unique', '用户名唯一性校验出错！'));
+                                callback(Intl.get('common.is.existed', '用户名已存在！'));
                             }
                         }
                     });

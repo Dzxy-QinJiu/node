@@ -712,7 +712,7 @@ class MemberInfo extends React.Component {
 
     renderTitle() {
         let memberInfo = this.state.memberInfo;
-        const TITLE_INPUT_WIDTH = 280;
+        const TITLE_INPUT_WIDTH = 270;
         return (
             <div className="member-detail-title">
                 <Popconfirm title={Intl.get('member.save.logo.tip', '是否保存上传的头像？')}
@@ -756,7 +756,7 @@ class MemberInfo extends React.Component {
                         />
                     </div>
                 ) : (
-                    <div className="memeber-name-container">
+                    <div className="member-name-container">
                         <div className="member-info-label">
                             {memberInfo.userName || ''}
                         </div>
