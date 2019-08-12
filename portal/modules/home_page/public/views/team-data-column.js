@@ -80,8 +80,8 @@ class TeamDataColumn extends React.Component {
     getCallTimeData() {
         let timeObj = this.getCallTimeObj();
         let phoneParams = {
-            start_time: timeObj.start_time,
-            end_time: timeObj.end_time,
+            start_time: timeObj.startTime,
+            end_time: timeObj.endTime,
             device_type: 'all'
         };
         myDataAjax.getCallTimeData(phoneParams).then((data) => {
