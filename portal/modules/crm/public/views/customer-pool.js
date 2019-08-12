@@ -144,6 +144,9 @@ class CustomerPool extends React.Component {
             let totalSize = this.state.totalSize - _.get(customerIds, 'length', 0);
             this.setState({isExtracting: false, salesMan: '', poolCustomerList, totalSize});
             message.success(Intl.get('clue.extract.success', '提取成功'));
+            if (poolCustomerList.length < 20) {
+                this.getPoolCustomer();
+            }
         }, (errorMsg) => {
             this.setState({isExtracting: false, salesMan: ''});
             message.error(errorMsg);
