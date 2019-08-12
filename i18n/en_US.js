@@ -1580,6 +1580,8 @@ var en_US = {
     'crm.customer.pool': 'Customer pool',//客户池
     'crm.customer.label': 'Customer label',//客户标签
     'crm.customer.extract.time': 'Extract time',//释放时间
+    'crm.customer.release.customer': 'Release customer',//释放客户
+    'crm.customer.extract.limit.tip': 'Up to 20 customers at a time',//一次最多提取20个客户
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期

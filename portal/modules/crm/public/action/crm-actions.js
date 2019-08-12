@@ -34,7 +34,9 @@ function CrmActions() {
         //添加、补充跟进记录后，列表中最后联系数据的更新
         'updateCustomerLastContact',
         //释放客户后的处理
-        'afterReleaseCustomer'
+        'afterReleaseCustomer',
+        //批量释放客户
+        'batchReleaseCustomer'
     );
 
     this.queryCustomer = function(params, pageSize, pageNum, sorter) {
