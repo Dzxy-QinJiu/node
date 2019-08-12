@@ -266,6 +266,7 @@ var zh_CN = {
     'common.before': '前',
     'common.download.template.filename': '下载{type}模板',
     'common.import.template': '模板',
+    'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
 
     //公共部分--end
     'login.login': '登录',
@@ -833,7 +834,6 @@ var zh_CN = {
     'sales.process.add.process': '添加销售流程',
     'sales.process.edit.process': '编辑销售流程',
     'sales.process.delete.process': '删除销售流程',
-    'sale.process.name.rule': '销售流程名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'sales.process.get.failed': '获取销售流程失败',
     'sales.process.nodata.tips': '暂无销售流程，请先添加',
     'sales.process.toplimit': '销售流程个数已达上限（8个）',
@@ -2303,9 +2303,9 @@ var zh_CN = {
     'errorcode.155': '添加客户阶段失败',
     'errorcode.156': '获取客户阶段失败',
     'errorcode.157': '更新销售流程失败',
-    'errorcode.158': '更新客户流程失败',
+    'errorcode.158': '更新客户阶段失败',
     'errorcode.159': '删除销售流程失败',
-    'errorcode.160': '删除客户流程失败',
+    'errorcode.160': '删除客户阶段失败',
     'errorcode.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
     'errorcode.get.call.statistics.failed': '获取通话记录统计失败',

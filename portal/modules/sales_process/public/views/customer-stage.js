@@ -225,7 +225,7 @@ class CustomerStage extends React.Component {
                                             className="customer-stage-top-btn btn-item"
                                             onClick={this.closeCustomerStageTransferOrder.bind(this)}
                                         >
-                                            <ReactIntl.FormattedMessage id="common.cancel" defaultMessage="取消"/>
+                                            {Intl.get('common.cancel', '取消')}
                                         </Button>
                                     </div>
                                     <div className="customer-stage-top-div">
@@ -234,7 +234,7 @@ class CustomerStage extends React.Component {
                                             className="customer-stage-top-btn btn-item"
                                             onClick={this.handleChangeCustomerStageOrder.bind(this)}
                                         >
-                                            <ReactIntl.FormattedMessage id="common.save" defaultMessage="保存"/>
+                                            {Intl.get('common.save', '保存')}
                                         </Button>
                                     </div>
                                 </div>) : (
