@@ -425,7 +425,7 @@ exports.getHistoryScoreList = function(reqData) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl('crm.get.score.history.error', '获取历史分数失败'));
+                Deferred.reject(xhr.responseJSON || Intl.get('crm.get.score.history.error', '获取历史分数失败'));
             }
         }
     });
@@ -445,12 +445,13 @@ exports.releaseCustomer = function(reqData) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl('crm.customer.release.failed', '释放客户失败'));
+                Deferred.reject(xhr.responseJSON || Intl.get('crm.customer.release.failed', '释放客户失败'));
             }
         }
     });
     return Deferred.promise();
 };
+
 //获取客户池中的客户
 exports.getPoolCustomer = function(reqData) {
     let Deferred = $.Deferred();
@@ -464,7 +465,7 @@ exports.getPoolCustomer = function(reqData) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl('crm.customer.pool.failed', '获取客户池客户失败'));
+                Deferred.reject(xhr.responseJSON || Intl.get('crm.customer.pool.failed', '获取客户池客户失败'));
             }
         }
     });
@@ -483,7 +484,7 @@ exports.extractCustomer = function(reqData) {
         },
         error: function(xhr, textStatus) {
             if (textStatus !== 'abort') {
-                Deferred.reject(xhr.responseJSON || Intl('crm.customer.extract.failed', '提取客户失败'));
+                Deferred.reject(xhr.responseJSON || Intl.get('crm.customer.extract.failed', '提取客户失败'));
             }
         }
     });

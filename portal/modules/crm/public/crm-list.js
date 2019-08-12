@@ -48,6 +48,8 @@ import ShearContent from 'CMP_DIR/shear-content';
 import {setWebsiteConfig} from 'LIB_DIR/utils/websiteConfig';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
+const batchOperate = require('PUB_DIR/sources/push/batch');
+import batchAjax from './ajax/batch-change-ajax';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -182,6 +184,8 @@ class Crm extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_LEVEL, this.batchChangeLevel);
         //批量更新地域
         batchPushEmitter.on(batchPushEmitter.CRM_BATCH_CHANGE_TERRITORY, this.batchChangeTerritory);
+        //批量释放客户
+        batchPushEmitter.on(batchPushEmitter.CRM_BATCH_RELEASE_POOL, this.afterBatchReleseCustomer);
         CrmStore.listen(this.onChange);
         OrderAction.getSysStageList();
         const query = queryString.parse(this.props.location.search);
@@ -435,6 +439,22 @@ class Crm extends React.Component {
         var curCustomers = this.state.originCustomerList;
         CrmStore.batchChangeLevel({ taskInfo, taskParams, curCustomers });
         this.delayRenderBatchUpdate();
+    };
+
+    //批量释放客户后的数据更新
+    afterBatchReleseCustomer = (taskInfo, taskParams) => {
+        // var curCustomers = this.state.originCustomerList;
+        CrmAction.batchReleaseCustomer({taskInfo, taskParams});
+        let releaseCustomerIds = _.map(taskInfo.tasks, 'taskDefine');
+        let selectedCustomer = _.filter(this.state.selectedCustomer, customer => !_.includes(releaseCustomerIds, customer.id));
+        this.setState({selectedCustomer});
+        clearTimeout(this.batchRenderTimeout);
+        this.batchRenderTimeout = setTimeout(() => {
+            //不是选全部，且当前页展示的客户全部释放完后，需要重新获取数据
+            if (!this.state.selectAllMatched && !_.get(this.state, 'originCustomerList.length')) {
+                this.search();
+            }
+        }, 1000);
     };
 
     //批量变更地域的处理,调用store进行数据更新
@@ -1015,6 +1035,53 @@ class Crm extends React.Component {
             message.error(errorMsg);
         });
     };
+
+    //批量释放客户
+    batchReleaseCustomer = () => {
+        if(this.state.isReleasingCustomer) return;
+        let condition = {
+            query_param: {},
+            update_param: {release_customer: true}
+        };
+        //选中全部搜索结果时，将搜索条件传给后端
+        //后端会将符合这个条件的客户释放
+        if (this.state.selectAllMatched) {
+            condition.query_param = this.state.condition;
+        } else {
+            //只在当前页进行选择时，将选中项的id传给后端
+            //后端检测到传递的id后，将会对这些id的客户进行迁移
+            condition.query_param.id = _.map(this.state.selectedCustomer, 'id');
+        }
+        this.setState({isReleasingCustomer: true});
+        batchAjax.doBatch('release_pool', condition).then((taskId) => {
+            this.setState({isReleasingCustomer: false});
+            //批量操作参数
+            var is_select_all = this.state.selectAllMatched;
+            //全部记录的个数
+            var totalSelectedSize = is_select_all ? this.state.customersSize : this.state.selectedCustomer.length;
+            //构造批量操作参数
+            var batchParams = {};
+            //向任务列表id中添加taskId
+            batchOperate.addTaskIdToList(taskId);
+            //存储批量操作参数，后续更新时使用
+            batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
+                showPop: true,
+                urlPath: '/crm'
+            });
+            //立即在界面上显示推送通知
+            //界面上立即显示一个初始化推送
+            batchOperate.batchOperateListener({
+                taskId: taskId,
+                total: totalSelectedSize,
+                running: totalSelectedSize,
+                typeText: Intl.get('crm.customer.release.customer', '释放客户')
+            });
+        }, (errorMsg) => {
+            this.setState({isReleasingCustomer: false});
+            message.error(errorMsg);
+        });
+    };
+
     //渲染操作按钮
     renderHandleBtn = () => {
         let isWebMini = $(window).width() < LAYOUT_CONSTANTS.SCREEN_WIDTH;//浏览器是否缩小到按钮展示改成图标展示
@@ -1041,15 +1108,15 @@ class Crm extends React.Component {
                 >
                     <Button>{Intl.get('crm.0', '合并客户')}</Button>
                 </PrivilegeChecker>
-                {/*{//除了运营不能释放客户，管理员、销售都可以释放*/}
-                {/*userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (*/}
-                {/*<Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}*/}
-                {/*title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>*/}
-                {/*<Button className='btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>*/}
-                {/*{Intl.get('crm.customer.release', '释放')}*/}
-                {/*</Button>*/}
-                {/*</Popconfirm>*/}
-                {/*)}*/}
+                {//除了运营不能释放客户，管理员、销售都可以释放
+                    userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                        <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}
+                            title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>
+                            <Button className='btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
+                                {Intl.get('crm.customer.release', '释放')}
+                            </Button>
+                        </Popconfirm>
+                    )}
             </div>);
         } else {
             return (<div className="top-btn-wrapper">
