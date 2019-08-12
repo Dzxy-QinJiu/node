@@ -20,7 +20,8 @@ function CrmStore() {
         batchChangeTags: this.batchChangeTags,
         batchChangeIndustry: this.batchChangeIndustry,
         batchChangeLevel: this.batchChangeLevel,
-        batchChangeTerritory: this.batchChangeTerritory
+        batchChangeTerritory: this.batchChangeTerritory,
+        batchReleaseCustomer: this.batchReleaseCustomer
     });
 }
 //设置初始值
@@ -528,6 +529,31 @@ CrmStore.prototype.batchChangeLevel = function({taskInfo, taskParams, curCustome
         }
         customerInfo.administrative_level = administrative_level;
     });
+};
+//批量释放客户以后，同步列表数据
+CrmStore.prototype.batchReleaseCustomer = function({taskInfo, taskParams}) {
+    //如果参数不合法，不进行更新
+    if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
+        return;
+    }
+    //解析tasks
+    let {
+        tasks
+    } = taskInfo;
+    //如果tasks为空，不进行更新
+    if (!_.isArray(tasks) || !tasks.length) {
+        return;
+    }
+    //检查taskDefine
+    tasks = _.filter(tasks, (task) => typeof task.taskDefine === 'string');
+    //如果没有要更新的数据
+    if (!tasks.length) {
+        return;
+    }
+    let targetCustomers = _.map(tasks, 'taskDefine');
+    //过滤掉释放的客户
+    this.curCustomers = _.filter(this.curCustomers, item => !_.includes(targetCustomers, item.id));
+    this.customersSize -= _.get(targetCustomers, 'length');
 };
 //批量变更地域以后，同步列表数据
 CrmStore.prototype.batchChangeTerritory = function({taskInfo, taskParams, curCustomers}) {
