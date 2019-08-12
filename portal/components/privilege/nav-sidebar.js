@@ -396,8 +396,8 @@ var NavSidebar = createReactClass({
         );
     },
 
-    // 渲染二级子菜单，flag用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
-    renderSubMenuLinks(linkList, flag) {
+    // 渲染二级子菜单，isShowLogOut用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
+    renderSubMenuLinks(linkList, isShowLogOut) {
         return (
             <ul className="ul-unstyled">
                 {
@@ -410,7 +410,7 @@ var NavSidebar = createReactClass({
                     )
                 }
                 {
-                    flag ? (
+                    isShowLogOut ? (
                         <li>
                             <LogOut/>
                         </li>
@@ -420,18 +420,12 @@ var NavSidebar = createReactClass({
         );
     },
 
-    //后台管理的二级菜单
-    getBackendConfigLinks: function(backendConfigLinks) {
-        return this.renderSubMenuLinks(backendConfigLinks);
-    },
-
     //后台管理配置模块
     renderBackendConfigBlock: function() {
         let backendConfigMenu = menuUtil.getMenuById(MENU.BACK_CONFIG);
         if (!backendConfigMenu || !backendConfigMenu.routes) {
             return null;
         }
-        let backendConfigList = this.getBackendConfigLinks(backendConfigMenu.routes);
         let wrapperCls = classNames('sidebar-menu-li',{
             'sidebar-backend-config': true,
             // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
@@ -446,8 +440,12 @@ var NavSidebar = createReactClass({
         // });
         return (
             <div className={wrapperCls}>
-                <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                    overlayClassName="nav-sidebar-backend-config">
+                <Popover
+                    content={this.renderSubMenuLinks(backendConfigMenu.routes)}
+                    trigger="hover"
+                    placement="rightBottom"
+                    overlayClassName="nav-sidebar-backend-config"
+                >
                     <NavLink to={backendConfigMenu.routePath} activeClassName="active">
                         <i className={backendConfigCls} title={backendConfigMenu.name}/>
                     </NavLink>
@@ -463,12 +461,10 @@ var NavSidebar = createReactClass({
         if (!userInfoLinkList || !userInfoLinkList.routes) {
             return;
         }
-        const userLinkList = this.renderSubMenuLinks(userInfoLinkList.routes, true);
-
         return (
             <div className="sidebar-userinfo">
                 <Popover
-                    content={userLinkList}
+                    content={this.renderSubMenuLinks(userInfoLinkList.routes, true)}
                     trigger="hover"
                     placement="rightBottom"
                     overlayClassName="nav-sidebar-userinfo"
