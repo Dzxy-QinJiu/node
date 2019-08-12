@@ -24,6 +24,7 @@ var en_US = {
     'menu.order.stage': 'Order Stage', // 订单阶段
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
+    'menu.sales.process': 'Sales Process', // 销售流程
     'menu.clue.allocation': 'Clue allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
@@ -336,7 +337,8 @@ var en_US = {
     'home.page.deal.handle': 'Pending orders',//待处理的订单
     'home.page.no.work.tip': 'No job for the time being',//暂无工作
     'home.page.new.work.tip': 'Work changes, click here {refreshTip}',//工作有变动，点此{refreshTip}
-    'home.page.my.work.finished': 'Finished',//我已完成
+    'home.page.my.work.finished': 'Click Set to Completed',//点击设为已完成
+    'home.page.my.interest.handled': 'Click Set to Processed',//点击设为已处理
     'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
     'home.page.callout.time': 'Total call time',//呼出总时长
     'home.page.performance.num': 'No. {n}',//第{n}名
@@ -362,6 +364,7 @@ var en_US = {
     'home.page.contact.medium.cycle': 'Medium cycle',//中循环
     'home.page.contact.minor.cycle': 'Minor cycle',//小循环
     'home.page.add.schedule': 'Add schedule',//添加日程
+    'home.page.apply.approve': 'Approval',//审批
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -821,6 +824,12 @@ var en_US = {
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
     // 后台管理-竞品end
 
+    // 后台管理-销售流程start
+    'sales.process.add.process': '', // 添加销售流程
+    'sales.process.toplimit': '', // 销售流程个数已达上限（8个）
+    'sales.process.suitable.objects': '', // 适用范围
+    // 后台管理-销售流程end
+
     //应用管理start
     'app.title': 'application management', // 应用管理
     'app.search.placeholder': 'name/describe', // 应用名/描述
@@ -863,7 +872,7 @@ var en_US = {
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
     'user.info.login.browser': 'Browser',//浏览器
-    'user.info.active.email': 'Activation email has been sent to {email}',//激活邮件已发送至{email}
+    'user.info.active.email': 'Activation email has been sent to {email}, please go to active',//激活邮件已发送至{email},请前往激活
     'user.info.retry': 'Please try again',//请重试
     'user.info.no.active': 'Please {active}',//未激活，请{active}
     'user.info.active': 'active',//激活
@@ -1367,6 +1376,7 @@ var en_US = {
     'crm.administrative.level.placeholder': 'Please select the administrative level',//请选择行政级别
     'crm.address.placeholder': 'Please select the region',//请选择地域
     'crm.detail.address.placeholder': 'Please enter a full address',//请输入详细地址
+    'crm.system.labels': 'System Label', //系统标签
     'crm.sales.clue.add': 'Add sales leads',//添加销售线索
     'crm.sales.clue.source': 'Clue source',//线索来源
     'crm.sales.clue.access.channel': 'Access channel',//接入渠道
@@ -1561,6 +1571,15 @@ var en_US = {
     'crm.import.phone.repeat': 'The same phone exists in the imported data',//导入数据中存在相同的电话
     'crm.system.phone.repeat': 'The telephone has been used by other {type}',//电话已被其他{type}使用
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
+    'crm.customer.release': 'Release',//释放
+    'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
+    'crm.customer.release.confirm.tip': 'After release to the customer pool, other people can view and extract. Do you confirm the release?',//释放到客户池后，其他人也可以查看、提取，您确认释放吗？
+    'crm.customer.release.failed': 'Customer Release Failed',//释放客户失败
+    'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
+    'crm.customer.extract.failed': 'Failure to extract customer',//提取客户失败
+    'crm.customer.pool': 'Customer pool',//客户池
+    'crm.customer.label': 'Customer label',//客户标签
+    'crm.customer.extract.time': 'Extract time',//释放时间
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -2365,6 +2384,8 @@ var en_US = {
     'crm.save.customertrace.first': 'Please save or cancel the editing customer trace record first',//请先保存或取消正在编辑的跟进记录内容
     'sales.add.email.info': 'Please add the E-mail address on the {userinfo} page, otherwise you will be unable to receive the email from ketao',//请到{userinfo}页面添加邮箱，否则将会无法收到客套向您发送的邮件。
     'crm.sales.add.clue': 'Add clue',//添加线索
+    'crm.sales.manual_add.clue': 'Manual addition',//手动添加
+    'crm.sales.manual.import.clue': 'Import clue',//导入线索
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
@@ -3127,6 +3148,35 @@ var en_US = {
     'clue.customer.condition.change': 'modify condition',//修改条件
     'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
     'clue.customer.confirm.valid': 'Confirm valid',//确认有效
+    'clue.customer.customer.level': 'Customer score',//客户分数
+    'clue.customer.score.good': 'high quality',//优质
+    'clue.customer.above.limit': '{score} above',//{score}以上
+    'clue.customer.level.score': 'Customer rating rules',//客户评分规则
+    'clue.customer.if.switch': 'Whether to enable',//是否启用
+    'clue.customer.score.behaviour': 'user behavior',//用户行为
+    'clue.customer.hang.phone.count': 'Number of calls',//打通电话次数
+    'clue.customer.visit.customer.count': 'Visiting customers',//拜访客户次数
+    'clue.customer.user.score': 'User rating',//用户评分
+    'clue.customer.media.number': 'median',//中位数
+    'clue.customer.score.indicator': 'index',//指标
+    'clue.customer.this.week': 'This week',//本周
+    'clue.customer.this.month': 'This month',//本月
+    'clue.customer.this.quarter': 'This quarter',//本季度
+    'clue.customer.this.year': 'This year',//今年
+    'clue.customer.last.week': 'Last week',//近一周
+    'clue.customer.last.month': 'Last month',//近一月
+    'clue.customer.last.quarter': 'Last quarter',//近一季度
+    'clue.customer.last.year': 'Last year',//近一年
+    'user.score.level.rule': 'User rating rules',//用户评分规则
+    'user.score.basic.score': 'Basic rating',//基础评分
+    'user.score.particate.in.score': 'Participation score',//参与度评分
+    'user.score.nearly.active.days': 'Recent active days score',//近期活跃天数分数
+    'user.score.online.score': 'Recent online time score',//近期在线时长分数
+    'customer.score.total.count': 'Total number of times',//总次数
+    'user.score.total.minutes': 'Total minutes',//总分钟数
+    'user.score.total.hours': 'Total hours',//总小时数
+    'user.score.total.days': 'Total number of days',//总天数
+    'user.score.choose.interval': 'Please select the period',//请选择周期
     // 引导流程
     'guide.add.customer.title': 'Add your customer',//添加您的客户
     'guide.add.customer.des': 'After adding customers, you can easily follow up with your customers',//添加客户后，可以轻松跟进您的客户
@@ -3158,5 +3208,7 @@ var en_US = {
     'guide.continue.extract': 'Continue to extract',//继续提取
     'guide.see.clue': 'Check the clues',//查看线索
     'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
+    'guide.import.customer.success': 'Import Success',//导入成功
+
 };
 export default en_US;

@@ -115,7 +115,7 @@ class DynamicAddDelField extends React.Component {
                         validateTrigger: ['onChange'],
                         rules: this.props.validateRules || [{}],
                         initialValue: initValue || ''
-                    })(<Input placeholder={this.props.placeholder}/>)}
+                    })(<Input placeholder={this.props.placeholder} type={this.props.inputBoxType}/>)}
                 </FormItem>
             );
         }
@@ -219,6 +219,7 @@ DynamicAddDelField.propTypes = {
     saveEditData: PropTypes.func,
     renderItemSelfSettingContent: PropTypes.func,
     renderItemSelfSettingForm: PropTypes.func,
+    inputBoxType: PropTypes.string,
 
 };
 DynamicAddDelField.defaultProps = {
@@ -268,6 +269,7 @@ DynamicAddDelField.defaultProps = {
     renderItemSelfSettingForm: function() {
 
     },
+    inputBoxType: 'text', // 输入框内容
 };
 export default Form.create()(DynamicAddDelField);
 

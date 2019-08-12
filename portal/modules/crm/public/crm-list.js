@@ -1,6 +1,6 @@
 var React = require('react');
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon } from 'antd';
+import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm} from 'antd';
 import { AntcTable } from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -27,6 +27,7 @@ import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { crmEmitter } from 'OPLATE_EMITTER';
 import routeList from 'MOD_DIR/common/route';
 import ajax from 'MOD_DIR/common/ajax';
+import crmAjax from './ajax/index';
 import Trace from 'LIB_DIR/trace';
 import crmUtil from './utils/crm-util';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
@@ -142,6 +143,8 @@ class Crm extends React.Component {
             pageValue: 0,//两次点击时的页数差
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
+            addType: 'start',//添加按钮的初始显示内容
+            isReleasingCustomer: false,//正在释放客户
         };
     };
 
@@ -970,13 +973,55 @@ class Crm extends React.Component {
         CrmAction.afterMergeCustomer(mergeObj);
     };
 
+    //根据按钮选择添加或导入客户
+    handleButtonClick = (e) => {
+        if(e.key === 'add'){
+            this.setState({
+                addType: e.key,
+                isAddFlag: true
+            });
+        }else if(e.key === 'import'){
+            this.setState({
+                addType: e.key,
+                crmTemplateRightPanelShow: true
+            });
+        }
+    }
+
+    //添加客户的按钮列表渲染
+    dropList = () => {
+        let menu = (
+            <Menu onClick={this.handleButtonClick.bind(this)}>
+                <Menu.Item key="add" >
+                    {Intl.get('crm.sales.manual_add.clue','手动添加')}
+                </Menu.Item>
+
+                <Menu.Item key="import" >
+                    {Intl.get('crm.2', '导入客户')}
+                </Menu.Item>
+            </Menu>
+        );
+        return menu;
+    };
+    //释放客户
+    releaseCustomer = (customerId) => {
+        if(this.state.isReleasingCustomer) return;
+        this.setState({isReleasingCustomer: true});
+        crmAjax.releaseCustomer({id: customerId}).then(result => {
+            this.setState({isReleasingCustomer: false});
+            CrmAction.afterReleaseCustomer(customerId);
+        }, (errorMsg) => {
+            this.setState({isReleasingCustomer: false});
+            message.error(errorMsg);
+        });
+    };
     //渲染操作按钮
     renderHandleBtn = () => {
         let isWebMini = $(window).width() < LAYOUT_CONSTANTS.SCREEN_WIDTH;//浏览器是否缩小到按钮展示改成图标展示
         let btnClass = 'block ';
         btnClass += isWebMini ? 'handle-btn-mini' : 'btn-item';
         if (this.state.selectedCustomer.length) {
-            //选择客户后，展示合并和批量变更的按钮
+            //选择客户后，展示合并和批量变更、释放的按钮
             return (<div className="top-btn-wrapper">
                 <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className="batch-btn-wrapper">
                     <CrmBatchChange isWebMini={isWebMini}
@@ -991,29 +1036,46 @@ class Crm extends React.Component {
                 </PrivilegeChecker>
                 <PrivilegeChecker
                     check="CUSTOMER_MERGE_CUSTOMER"
-                    className='block crm-merge-btn btn-item'
+                    className='crm-merge-btn btn-item'
                     onClick={this.showMergePanel}
                 >
                     <Button>{Intl.get('crm.0', '合并客户')}</Button>
                 </PrivilegeChecker>
+                {/*{//除了运营不能释放客户，管理员、销售都可以释放*/}
+                {/*userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (*/}
+                {/*<Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}*/}
+                {/*title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>*/}
+                {/*<Button className='btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>*/}
+                {/*{Intl.get('crm.customer.release', '释放')}*/}
+                {/*</Button>*/}
+                {/*</Popconfirm>*/}
+                {/*)}*/}
             </div>);
         } else {
             return (<div className="top-btn-wrapper">
                 <PrivilegeChecker
                     check="CUSTOMER_ADD"
                     className={btnClass}
-                    title={isWebMini ? Intl.get('crm.2', '导入客户') : ''}
-                    onClick={this.showCrmTemplateRightPanel}
-                >
-                    {isWebMini ? <i className="iconfont icon-import-btn" /> : <Button type='primary'>{Intl.get('crm.2', '导入客户')}</Button>}
+                    title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}>
+                    {
+                        isWebMini ? (<Dropdown overlay={this.dropList()} placement="bottomCenter"
+                            overlayClassName='mini-add-dropdown'>
+                            <Icon type="plus" className="add-btn"/>
+                        </Dropdown>
+                        ) : (
+                            <Dropdown overlay={this.dropList()} placement="bottomCenter"
+                                overlayClassName='norm-add-dropdown' >
+                                <Button type="primary">
+                                    {(this.state.addType === 'start') ? Intl.get('crm.3', '添加客户') : (
+                                        (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue', '手动添加') :
+                                            Intl.get('crm.2', '导入客户')
+                                    )}
+                                    <Icon type="down" />
+                                </Button>
+                            </Dropdown>)
+                    }
                 </PrivilegeChecker>
-                <PrivilegeChecker
-                    check="CUSTOMER_ADD"
-                    className={btnClass}
-                    title={isWebMini ? Intl.get('crm.3', '添加客户') : ''}
-                    onClick={this.showAddForm}>
-                    {isWebMini ? <Icon type="plus" /> : <Button>{Intl.get('crm.3', '添加客户')}</Button>}
-                </PrivilegeChecker>
+
                 <PrivilegeChecker
                     check="CRM_REPEAT"
                     className={btnClass + ' customer-repeat-btn btn-m-r-2'}
@@ -1032,6 +1094,7 @@ class Crm extends React.Component {
                                 <Button>{Intl.get('crm.customer.recycle.bin', '回收站')}</Button>}
                         </div>) : null
                 }
+                <Button className='btn-item customer-pool-btn' onClick={this.props.showCustomerPool}>{Intl.get('crm.customer.pool', '客户池')}</Button>
             </div>);
         }
     };
@@ -1671,7 +1734,7 @@ class Crm extends React.Component {
             },
             {
                 title: Intl.get('common.operate', '操作'),
-                width: 50,
+                width: 60,
                 render: (text, record, index) => {
                     //是否是重复的客户
                     const isRepeat = record.repeat;
@@ -1685,12 +1748,23 @@ class Crm extends React.Component {
                     const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
 
                     return (
-                        <span className="cus-op" data-tracename="删除客户">
-                            {isDeleteBtnShow ? (
-                                <Button className="order-btn-class" icon="delete"
-                                    onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
-                                    title={Intl.get('common.delete', '删除')} />
-                            ) : null}
+                        <span>
+                            <span className="cus-op" data-tracename="删除客户">
+                                {isDeleteBtnShow ? (
+                                    <Button className="order-btn-class delete-btn" icon="delete"
+                                        onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
+                                        title={Intl.get('common.delete', '删除')} />
+                                ) : null}
+                            </span>
+                            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                                <Popconfirm placement="topRight" onConfirm={this.releaseCustomer.bind(this, record.id)}
+                                    title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确认释放吗？')}>
+                                    <a className='release-customer'
+                                        title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
+                                        {Intl.get('crm.customer.release', '释放')}
+                                    </a>
+                                </Popconfirm>)
+                            }
                         </span>
                     );
                 }
@@ -1700,8 +1774,8 @@ class Crm extends React.Component {
             columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
         }
 
-        //只对域管理员开放删除功能
-        if (!userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
+        //运营人员不展示操作列，管理员展示删除、释放，销售展示释放
+        if (userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
             columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));
         }
         const tableScrollX = hasSecretaryAuth ? 1000 : 1080;
@@ -1896,16 +1970,20 @@ Crm.defaultProps = {
     location: {},
     fromSalesHome: false,
     showRepeatCustomer: function() {
-
     },
     params: {},
+    showCustomerRecycleBin: function() {
+    },
+    showCustomerPool: function() {
+    },
 };
 Crm.propTypes = {
     location: PropTypes.object,
     fromSalesHome: PropTypes.bool,
     showRepeatCustomer: PropTypes.func,
     params: PropTypes.object,
-    showCustomerRecycleBin: PropTypes.func
+    showCustomerRecycleBin: PropTypes.func,
+    showCustomerPool: PropTypes.func,
 };
 
 module.exports = Crm;

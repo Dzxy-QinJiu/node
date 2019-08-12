@@ -167,7 +167,10 @@ CrmStore.prototype.addCustomer = function(added) {
     this.curCustomers.unshift(added);
     this.customersSize += 1;
 };
-
+//释放客户后的处理
+CrmStore.prototype.afterReleaseCustomer = function(id) {
+    this.deleteCustomer(id);
+};
 //监听Action的deleteCustomer方法
 CrmStore.prototype.deleteCustomer = function(id) {
     //从列表中移除已删除项

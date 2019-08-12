@@ -32,7 +32,9 @@ function CrmActions() {
         //设置关注客户是否置顶
         'setConcernCustomerTop',
         //添加、补充跟进记录后，列表中最后联系数据的更新
-        'updateCustomerLastContact'
+        'updateCustomerLastContact',
+        //释放客户后的处理
+        'afterReleaseCustomer'
     );
 
     this.queryCustomer = function(params, pageSize, pageNum, sorter) {

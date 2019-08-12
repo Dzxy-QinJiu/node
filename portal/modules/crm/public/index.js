@@ -4,11 +4,13 @@ let CustomerRepeat = require('./views/customer-repeat');
 let CrmList = require('./crm-list');
 import Trace from 'LIB_DIR/trace';
 import CustomerRecycleBin from './views/customer-recycle-bin';
+import CustomerPool from './views/customer-pool';
 //各视图类型常量
 const VIEW_TYPE = {
     CUSTOMER: 'customer',//客户列表视图
     REPEAT_CUSTOMER: 'repeat_customer',//重复客户视图
-    RECYCLE_BIN_CUSTOMER: 'recycle_bin_customer'//回收站视图
+    RECYCLE_BIN_CUSTOMER: 'recycle_bin_customer',//回收站视图
+    CUSTOMER_POOL: 'customer_pool'//客户池
 };
 class CrmIndex extends React.Component {
     state = {
@@ -37,6 +39,13 @@ class CrmIndex extends React.Component {
             customerViewType: VIEW_TYPE.RECYCLE_BIN_CUSTOMER
         });
     };
+    //展示客户池
+    showCustomerPool = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.filter-block .customer-pool-btn'), '点击客户池');
+        this.setState({
+            customerViewType: VIEW_TYPE.CUSTOMER_POOL
+        });
+    };
 
     //返回客户列表视图
     returnCustomerView = () => {
@@ -52,6 +61,7 @@ class CrmIndex extends React.Component {
                 currView = (
                     <div data-tracename="客户管理">
                         <CrmList {...this.props} showRepeatCustomer={this.showRepeatCustomer}
+                            showCustomerPool={this.showCustomerPool}
                             showCustomerRecycleBin={this.showCustomerRecycleBin}/>
                     </div>);
                 break;
@@ -65,6 +75,12 @@ class CrmIndex extends React.Component {
                 currView = (
                     <div data-tracename="客户回收站">
                         <CustomerRecycleBin closeRecycleBin={this.returnCustomerView}/>
+                    </div>);
+                break;
+            case VIEW_TYPE.CUSTOMER_POOL:
+                currView = (
+                    <div data-tracename="客户回收站">
+                        <CustomerPool closeCustomerPool={this.returnCustomerView}/>
                     </div>);
                 break;
         }

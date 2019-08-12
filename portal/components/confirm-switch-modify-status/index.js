@@ -16,7 +16,7 @@ class ConfirmSwitchStatus extends React.Component {
         this.setState({
             visible: false
         }, () => {
-            this.props.handleConfirm();
+            this.props.handleConfirm && this.props.handleConfirm();
         });
     };
 

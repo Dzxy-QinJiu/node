@@ -1,0 +1,117 @@
+.customer-score-container {
+  padding: 12px;
+  .customer-score-wrap {
+    background: #fff;
+    .customer-score-content {
+      font-size: 14px;
+      .customer-score-content-wrap {
+        padding: 12px;
+        .slider-container {
+          display: inline-block;
+          width: calc(100% - 450px);
+          padding: 30px 0 0 30px;
+          .rc-slider {
+            div.rc-slider-handle:first-of-type, div.rc-slider-handle:last-of-type {
+              visibility: hidden;
+            }
+            //todo 待修改
+            .rc-slider-handle-1, .rc-slider-handle-4 {
+              visibility: hidden;
+              display: none;
+            }
+            .rc-slider-handle-2, .rc-slider-handle-3 {
+              background: #fff;
+              margin-top: -8px;
+              width: 10px;
+              height: 23px;
+              border-radius: 0;
+            }
+            .rc-slider-handle {
+
+            }
+            .rc-slider-step {
+              .rc-slider-dot {
+                display: none;
+              }
+            }
+          }
+
+        }
+        .customer-level-score {
+          margin: 30px 0 0 80px;
+          .customer_level {
+            display: inline-block;
+            width: 30%;
+            .input-groups {
+              width: auto;
+              display: inline-block;
+              margin: 0 5px;
+              &.good-level{
+                margin-right: 5px;
+              }
+              .mini-number {
+                width:50px;
+              }
+              .min-between-max {
+                width: 20px;
+                border-left: 0;
+                background-color: #fff;
+              }
+              .max-number {
+                width: 50px;
+                border-left: 0
+              }
+            }
+          }
+        }
+      }
+      .customer-rules-container{
+        padding: 12px;
+        .customer-rule-tip{
+          margin: 10px 0;
+        }
+
+        .customer-rule-score-level{
+          padding: 12px;
+          .customer-rule-status{
+            margin-bottom: 12px;
+            .switch-tip{
+              margin-right: 10px;
+            }
+          }
+          .customer-rule-table{
+              .ant-row{
+                margin-bottom: 12px;
+                min-height: 24px;
+                .add-minus-btns{
+                  font-size: 22px;
+                  cursor: pointer;
+                  display: inline-block;
+                  width: 100px;
+                  text-align: right;
+                }
+              }
+          }
+
+        }
+        //保存或者取消按钮
+        .save-btns{
+          padding: 12px 69px 0 12px;
+          text-align: right;
+          button{
+            margin-left: 10px;
+          }
+        }
+
+      }
+
+    }
+  }
+  .ant-alert.ant-alert-error{
+    width: 200px;
+    margin:40px auto;
+  }
+  .ant-input-number-input{
+    height: 25px;
+  }
+}

@@ -301,6 +301,28 @@ let routers = [
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
             },
+            {
+                id: 'CUSTOMER_SCORE',
+                name: 'menu.customer.score',// 客户评分
+                routePath: '/background_management/customer_score',
+                component: `${MODULE_PATH}customer_score/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['CURTAO_RULE_MANAGE']
+            },{
+                id: 'USER_SCORE',
+                name: 'menu.user.score',// 用户评分
+                routePath: '/background_management/user_score',
+                component: `${MODULE_PATH}user_score/public`,
+                //有这个权限，才显示入口图标
+                showPrivileges: ['CURTAO_RULE_MANAGE']
+            },
+            {
+                id: 'SALES_PROCESS', // 唯一标识
+                name: 'menu.sales.process',// 销售流程
+                routePath: '/background_management/sales_process',
+                component: `${MODULE_PATH}sales_process/public`,
+                showPrivileges: ['CRM_GET_SALES_PROCESS']
+            },
         ]
     },
     {

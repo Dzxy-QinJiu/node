@@ -175,7 +175,10 @@ class TeamDataColumn extends React.Component {
                                 className="total-data-desc">{Intl.get('user.time.second', '秒')} </span></span> : null}
                             {time.timeDescr === 0 ? time.timeDescr : null}
                         </span>
-                    ) : null}
+                    ) : (
+                        <span className="add-data-style phone-total-time phone-total-data">
+                            <span className='num'>0</span>
+                        </span>)}
                 </div>
                 <div className='call-time-list my-data-detail-list'>
                     {_.map(callTimeData, (item, index) => {
@@ -222,7 +225,7 @@ class TeamDataColumn extends React.Component {
 
     renderTeamDataContent() {
         return (
-            <div>
+            <div data-tracename="我的数据">
                 {this.renderPerformanceData()}
                 {this.renderCallTime()}
                 {this.renderContactCustomers()}

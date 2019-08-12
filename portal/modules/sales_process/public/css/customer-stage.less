@@ -1,0 +1,277 @@
+/**
+* 客户阶段面板样式
+**/
+@import "../../../../public/css/common-variables";
+
+.overhidden-public {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.customer-stage-panel.right-pannel-default {
+  width: auto;
+  top: 24px;
+  transform: translateX(100%);
+  -webkit-transform: translateX(100%);
+  background-color: #fff;
+  display: block;
+  .customer-stage-container {
+    padding: 12px;
+    .icon-close {
+      color: #fff;
+    }
+    .customer-stage-content {
+      .customer-stage-top-nav {
+        padding: 0 24px 24px 24px ;
+        height: 80px;
+        border-bottom: 1px solid #E5E5E5;
+        .condition-operator {
+          .customer-stage-title {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 24px;
+            padding-left: 0;
+          }
+          .customer-stage-operator {
+            .add-customer-stage-btn {
+              float: left;
+            }
+          }
+        }
+      }
+      .customer-stage-table-block {
+        padding: 48px 24px 0;
+        .customer-stage-block {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          margin: auto;
+          z-index: 10;
+          .customer-stage-saving {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            margin: auto;
+          }
+        }
+        .customer-stage-timeline {
+          .customer-stage-timeline-item {
+            position: relative;
+            padding-bottom: 12px;
+            float: left;
+            //线
+            .customer-stage-timeline-item-tail {
+              position: absolute;
+              left: 14px;
+              top: 0;
+              height: 100%;
+              border-left: 4px dotted #8DA8C5;
+            }
+            //序号
+            .customer-stage-timeline-item-head {
+              position: absolute;
+              width: 30px;
+              height: 30px;
+              background-color: #8DA8C5;
+              border-radius: 100px;
+              color: #fff;
+              text-align: center;
+              line-height: 30px;
+              font-size: 14px;
+            }
+
+            .customer-stage-timeline-item-right {
+              width:14px;
+              border: 2px solid #8DA8C5;
+              position: relative;
+              top: 15px;
+              left: 30px;
+            }
+
+            //内容
+            .customer-stage-timeline-item-content {
+              font-size: 12px;
+              position: relative;
+              border: 1px solid #edf1f2;
+              margin-left: 44px;
+              top: -24px;
+              min-height: 80px;
+              &:hover {
+                background: #F1F8FE;
+              }
+
+              .customer-stage-content {
+                float: left;
+                padding-top: 16px;
+                padding-left: 16px;
+                .customer-stage-content-name {
+                  font-size: 16px;
+                  font-weight: bold;
+                  padding-bottom: 5px;
+                  color: #333;
+                  &:extend(.overhidden-public);
+                  .iconfont {
+                    margin-left: 16px;
+                  }
+                }
+
+                .customer-stage-content-describe {
+                  color: #999;
+                  font-size: 14px;
+                  &:extend(.overhidden-public);
+                }
+                .customer-stage-content-more {
+                  padding-bottom: 5px;
+                  color: #333;
+                  font-size: 14px;
+                  &:extend(.overhidden-public);
+                  .customer-stage-content-paly {
+                    padding: 5px 0;
+                  }
+                  .customer-stage-content-activity {
+                    padding-bottom: 5px;
+                  }
+                }
+              }
+
+              .customer-stage-btn-div {
+                width: 150px;
+                float: right;
+                padding-top: 18px;
+
+                &.operation-btn {
+                  display: none;
+                }
+
+                .customer-stage-btn-class {
+                  border: 0;
+                  width: 28px;
+                  float: right;
+                  background-color: #b6c2c9;
+                  margin-right: 12px;
+                  text-align: center;
+                  padding: 0px;
+                  color: #fff;
+                  font-size: 16px;
+                  border-radius: 100px;
+                }
+                .up-arrow {
+                  background-image: url("../../../common/public/image/up.png");
+                  &:hover {
+                    background-image: url("../../../common/public/image/up_hover.png");
+                  }
+                }
+                .down-arrow {
+                  background-image: url("../../../common/public/image/down.png");
+                  &:hover {
+                    background-image: url("../../../common/public/image/down_hover.png");
+                  }
+                }
+              }
+
+              &:hover {
+                .operation-btn {
+                  display: block;
+                }
+              }
+
+              .modal-dialog {
+                height: 60px;
+
+                .modal-header {
+                  padding-right: 5px;
+                  padding-top: 0;
+                  float: right;
+                }
+
+                .modal-footer {
+                  padding: 5px 20px 4px 20px;
+                }
+              }
+
+            }
+
+            &:last-child {
+              .customer-stage-timeline-item-tail {
+                display: none;
+              }
+              .order-arrow {
+                .down-arrow {
+                  display: none;
+                }
+              }
+            }
+
+            &:first-child {
+              .order-arrow {
+                .up-arrow {
+                  visibility: hidden;
+                }
+              }
+            }
+
+          }
+        }
+      }
+    }
+  }
+
+  // 客户阶段详情面板（剧本、销售行为、自动变更）
+  .customer-stage-detail-container {
+    .right-panel-modal-content {
+      .right-panel-modal-title {
+        margin-bottom: 0;
+        .customer-stage-basic-info {
+          .sub-title {
+            font-weight: 500;
+            margin-left: 16px;
+          }
+        }
+      }
+      .right-panel-wrapper {
+          .customer-stage-detail-content {
+            margin: 0 24px;
+            .customer-stage-play {
+              height: 100%;
+              background-color: #fff;
+              .item-show-container {
+                .item-show-content {
+                    padding-left: 12px;
+                }
+              }
+              .ant-form {
+                .ant-form-item-label {
+                  width: 0;
+                }
+                .ant-form-item {
+                  padding-right: 0;
+                  margin: 20px 0 10px 20px;
+                  .ant-col-20 {
+                    width: 350px;
+                  }
+                }
+                .item-minus-button, .item-plus-button {
+                  margin-top: 20px;
+                }
+                .button-cancel, .button-save {
+                  margin-top: 10px;
+                  margin-bottom: 10px;
+                  cursor: pointer;
+                }
+                .button-cancel {
+                  margin-right: 10px;
+                }
+              }
+            }
+          }
+      }
+    }
+  }
+}

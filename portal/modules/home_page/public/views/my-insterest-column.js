@@ -5,7 +5,7 @@
  */
 import '../css/my-insterest-column.less';
 import classNames from 'classnames';
-import {Alert, Icon, Button, Tag, Popover} from 'antd';
+import {Alert, Icon, Button, Tag, Popover, message} from 'antd';
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -27,7 +27,6 @@ import {getColumnHeight} from './common-util';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import PhoneCallout from 'CMP_DIR/phone-callout';
-
 const LOGIN_TYPES = {
     INTEREST_LOGIN: 'interest_login_success',//关注客户登录
     LOGIN_AFTER_STOPPED: 'login_after_stopped',//停用登录
@@ -82,7 +81,7 @@ class MyInsterestColumn extends React.Component {
         }, errorMsg => {
             this.setState({
                 isLoadingSystemNotices: false,
-                loadSystemNoticesErrorMsg: errorMsg || Intl.get('notification.system.notice.failed', '获取系统消息列表失败')
+                loadSystemNoticesErrorMsg: errorMsg || Intl.get('errorcode.118','获取数据失败')
             });
         });
     }
@@ -96,8 +95,9 @@ class MyInsterestColumn extends React.Component {
 
     renderInterestContent() {
         return (
-            <div className='my-insterest-content' style={{height: getColumnHeight()}}>
+            <div className='my-insterest-content' style={{height: getColumnHeight()}} data-tracename="我的关注列表">
                 <GeminiScrollbar handleScrollBottom={this.handleScrollBarBottom}
+                    className="srollbar-out-card-style"
                     listenScrollBottom={this.state.listenScrollBottom}
                     itemCssSelector=".my-insterest-content .system_message_list >li">
                     {this.renderNoticeList()}
@@ -127,7 +127,7 @@ class MyInsterestColumn extends React.Component {
                 <NoMoreDataTip
                     fontSize="12"
                     show={this.showNoMoreDataTip}
-                    message={Intl.get('common.no.more.system.message', '没有更多系统消息了')}
+                    message={Intl.get('common.no.more.data', '没有更多数据了')}
                 />
                 {/*该客户下的用户列表*/}
                 <RightPanel
@@ -220,37 +220,25 @@ class MyInsterestColumn extends React.Component {
     };
     //处理系统消息
     handleSystemNotice = (notice, e) => {
-        Trace.traceEvent(e, '处理系统消息');
+        Trace.traceEvent(e, '处理我的关注');
         if (notice.isHandling) {
             return;
         }
         this.setHandlingFlag(notice, true);
-        this.setState({
-            noticeId: notice.id
-        });
         myInterestAjax.updateMyInterestStatus({id: notice.id}).then(result => {
-            this.setHandlingFlag(notice, false);
             if (result) {
+                let systemNotices = this.state.systemNotices;
+                //处理成功后，将该消息从未处理消息中删除,随处理失败的提示消失
+                systemNotices = _.filter(systemNotices, item => item.id !== notice.id);
+                let totalSize = this.state.totalSize - 1;
                 this.setState({
-                    systemNotices: this.state.systemNotices,
-                    totalSize: this.state.totalSize - 1,
-                    handleNoticeMessageSuccessFlag: true
+                    systemNotices,
+                    totalSize
                 });
             }
         }, errorMsg => {
             this.setHandlingFlag(notice, false);
-            this.setState({
-                handleNoticeMessageErrorTips: errorMsg || Intl.get('notification.system.handle.failed', '将系统消息设为已处理失败')
-            });
-        });
-    };
-    hideNoticeSuccessTips = () => {
-        let systemNotices = this.state.systemNotices;
-        //处理成功后，将该消息从未处理消息中删除,随处理失败的提示消失
-        systemNotices = _.filter(systemNotices, item => item.id !== this.state.noticeId);
-        this.setState({
-            handleNoticeMessageSuccessFlag: false,
-            systemNotices
+            message.error(errorMsg || Intl.get('notification.system.handled.error', '处理失败'));
         });
     };
 
@@ -310,12 +298,14 @@ class MyInsterestColumn extends React.Component {
     };
 
     setHandlingFlag = (notice, flag) => {
-        _.some(this.state.systemNotices, item => {
+        let systemNotices = this.state.systemNotices;
+        _.each(systemNotices, item => {
             if (item.id === notice.id) {
                 item.isHandling = flag;
+                return false;
             }
         });
-        this.setState({systemNotices: this.state.systemNotices});
+        this.setState({systemNotices});
     };
 
     renderCustomerName(item, index) {
@@ -340,7 +330,7 @@ class MyInsterestColumn extends React.Component {
                  */}
                 <span className='customer-name-text'
                     title={Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')})}
-                    onClick={this.openCustomerDetail.bind(this, item.customer_id, index)}>
+                    onClick={this.openCustomerDetail.bind(this, item.id, index)}>
                     {_.get(item, 'customer_name', '')}
                 </span>
                 {score ? (
@@ -387,7 +377,7 @@ class MyInsterestColumn extends React.Component {
 
     //联系人及电话的渲染
     renderContactItem(item) {
-        let contacts = _.get(item, 'contacts',[]);
+        let contacts = _.get(item, 'contacts', []);
         let phones = _.map(contacts, 'phone');
         if (!_.isEmpty(contacts) && !_.isEmpty(phones)) {
             let contactsContent = this.renderPopoverContent(contacts, item);
@@ -425,36 +415,14 @@ class MyInsterestColumn extends React.Component {
                         {this.renderContactItem(notice)}
                         {
                             loginUserId === notice.member_id ?
-                                <Button className="notice-handled-set" disabled={this.state.noticeId === notice.id}
+                                <Button className="notice-handled-set" disabled={notice.isHandling}
                                     onClick={this.handleSystemNotice.bind(this, notice)}
+                                    title={Intl.get('home.page.my.interest.handled', '点击设为已处理')}
                                 >
-                                    {Intl.get('notification.system.handled.set', '处理')}{notice.isHandling ?
-                                        <Icon type="loading"/> : null}
+                                    <i className="iconfont icon-select-member"/>
+                                    {notice.isHandling ? <Icon type="loading"/> : null}
                                 </Button> : null
                         }
-                        {this.state.noticeId === notice.id ? (
-                            <div className="handle-notice-tips">
-                                {this.state.handleNoticeMessageSuccessFlag ? (
-                                    <AlertTimer
-                                        message={Intl.get('notification.system.handled.success', '处理成功')}
-                                        type="success"
-                                        time={3000}
-                                        showIcon
-                                        onHide={this.hideNoticeSuccessTips}
-                                    />
-                                ) : null}
-                                {this.state.handleNoticeMessageErrorTips ? (
-                                    <Alert
-                                        message={Intl.get('notification.system.handled.error', '处理失败')}
-                                        description={this.state.handleNoticeMessageErrorTips}
-                                        type="error"
-                                        showIcon
-                                        closable
-                                    >
-                                    </Alert>
-                                ) : null}
-                            </div>
-                        ) : null}
                     </div>
                 </div>
             </li>
@@ -466,7 +434,6 @@ class MyInsterestColumn extends React.Component {
             <ColumnItem contianerClass='my-insterest-wrap'
                 title={Intl.get('home.page.my.interest', '我的关注')}
                 content={this.renderInterestContent()}
-                width='25%'
             />);
     }
 }
