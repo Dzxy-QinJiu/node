@@ -8,7 +8,7 @@ const {TextArea} = Input;
 import Trace from 'LIB_DIR/trace';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
-import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
 import CustomerStageStore from '../store/customer-stage-store';
 
 class CustomerStageForm extends React.Component {
@@ -112,9 +112,8 @@ class CustomerStageForm extends React.Component {
                     {getFieldDecorator('name', {
                         initialValue: formData.name,
                         rules: [{
-                            required: true,
                             validator: this.getValidator()
-                        }, nameLengthRule]
+                        }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))]
                     })(
                         <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
                     )}
