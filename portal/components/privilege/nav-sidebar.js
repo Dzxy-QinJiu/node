@@ -396,12 +396,12 @@ var NavSidebar = createReactClass({
         );
     },
 
-    //后台管理的二级菜单
-    getBackendConfigLinks: function(backendConfigLinks) {
+    // 渲染二级子菜单，flag用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
+    renderSubMenuLinks(linkList, flag) {
         return (
             <ul className="ul-unstyled">
                 {
-                    _.map( backendConfigLinks, obj =>
+                    _.map(linkList, obj =>
                         <li key={obj.id} onClick={this.closeNotificationPanel}>
                             <NavLink to={obj.routePath} activeClassName="active">
                                 {obj.name}
@@ -409,9 +409,22 @@ var NavSidebar = createReactClass({
                         </li>
                     )
                 }
+                {
+                    flag ? (
+                        <li>
+                            <LogOut/>
+                        </li>
+                    ) : null
+                }
             </ul>
         );
     },
+
+    //后台管理的二级菜单
+    getBackendConfigLinks: function(backendConfigLinks) {
+        return this.renderSubMenuLinks(backendConfigLinks);
+    },
+
     //后台管理配置模块
     renderBackendConfigBlock: function() {
         let backendConfigMenu = menuUtil.getMenuById(MENU.BACK_CONFIG);
@@ -442,36 +455,20 @@ var NavSidebar = createReactClass({
             </div>
         );
     },
-    //个人信息部分右侧弹框
-    getUserInfoLinks: function() {
+
+    //侧边导航左下个人信息
+    getUserInfoBlock: function() {
         //个人资料部分
         let userInfoLinkList = menuUtil.getMenuById(MENU.USER_INFO);
         if (!userInfoLinkList || !userInfoLinkList.routes) {
             return;
         }
-        return (
-            <ul className="ul-unstyled">
-                {
-                    _.map(userInfoLinkList.routes, obj =>
-                        <li key={obj.id} onClick={this.closeNotificationPanel}>
-                            <NavLink to={obj.routePath} activeClassName="active">
-                                {obj.name}
-                            </NavLink>
-                        </li>
-                    )
-                }
-                <li>
-                    <LogOut/>
-                </li>
-            </ul>
-        );
-    },
-    //侧边导航左下个人信息
-    getUserInfoBlock: function() {
+        const userLinkList = this.renderSubMenuLinks(userInfoLinkList.routes, true);
+
         return (
             <div className="sidebar-userinfo">
                 <Popover
-                    content={this.getUserInfoLinks()}
+                    content={userLinkList}
                     trigger="hover"
                     placement="rightBottom"
                     overlayClassName="nav-sidebar-userinfo"
