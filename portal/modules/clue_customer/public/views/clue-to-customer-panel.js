@@ -4,9 +4,11 @@
 
 require('../css/clue-to-customer-panel.less');
 require('MOD_DIR/crm/public/css/contact.less');
-import { Row, Col, Button, Icon, message } from 'antd';
+import { storageUtil } from 'ant-utils';
+import userData from 'PUB_DIR/sources/user-data';
+import { Row, Col, Button, Icon, message, Select } from 'antd';
 import ajax from 'ant-ajax';
-import { RightPanel } from 'CMP_DIR/rightPanel';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DetailCard from 'CMP_DIR/detail-card';
 //联系人表单
@@ -18,6 +20,8 @@ const noop = function() {};
 const VIEW_TYPE = {
     //相似客户列表视图
     CUSTOMER_LIST: 'customer_list',
+    //客户搜索视图
+    CUSTOMER_SEARCH: 'customer_search',
     //合并客户视图
     CUSTOMER_MERGE: 'customer_merge'
 };
@@ -45,6 +49,8 @@ const CONTACT_WAY_TYPES = [
 //联系方式种类字段
 const CONTACT_WAY_TYPE_FIELDS = _.map(CONTACT_WAY_TYPES, 'field');
 
+let queryCustomerTimeout = null;
+
 class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
         //面板是否显示
@@ -60,7 +66,7 @@ class ClueToCustomerPanel extends React.Component {
         //合并完成后的回调事件
         onMerged: noop,
         //展示的视图类型
-        viewType: '',
+        viewType: VIEW_TYPE.CUSTOMER_LIST,
     };
 
     static propTypes = {
@@ -76,9 +82,13 @@ class ClueToCustomerPanel extends React.Component {
     constructor(props) {
         super(props);
 
+        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+
         this.state = {
             //视图类型
-            viewType: this.props.viewType || VIEW_TYPE.CUSTOMER_LIST,
+            viewType: this.props.viewType,
+            //前一个视图类型
+            prevViewType: '',
             //当前操作的客户的id
             customerId: '',
             //当前操作的客户的名称
@@ -88,15 +98,19 @@ class ClueToCustomerPanel extends React.Component {
             //当前操作的客户的原始联系人列表，该列表在合并操作过程中不会被改变
             rawCustomerContacts: [],
             //是否禁用“确认合并”按钮
-            isConfirmMergeBtnDisabled: false
+            isConfirmMergeBtnDisabled: false,
+            //客户搜索结果
+            customerList: [],
+            //是否显示合并到客户后线索将消失的提示
+            isShowClueWillDisappearTip: !websiteConfig.no_longer_tips_clue_will_disappear
         };
     }
     componentDidMount() {
         ContactStore.listen(this.onContactStoreChange);
         $(window).on('resize', this.onWindowResize);
-    }
-    componentWillMount(){
-        if (this.props.viewType){
+
+        //从线索详情面板点合并到此客户按钮打开线索转客户面板时，直接显示合并界面
+        if (this.props.viewType === VIEW_TYPE.CUSTOMER_MERGE){
             this.onMergeToCustomerClick(_.get(this, 'props.existingCustomers[0]'));
         }
     }
@@ -268,7 +282,9 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     //合并到此客户按钮点击事件
-    onMergeToCustomerClick = customer => {
+    onMergeToCustomerClick = (customer, e) => {
+        Trace.traceEvent(e, '点击合并客户面板中的"合并到此客户"按钮');
+
         ajax.send({
             url: `/rest/customer/v3/contacts/${customer.id}`,
         })
@@ -396,11 +412,17 @@ class ClueToCustomerPanel extends React.Component {
         //将这些不重复的联系人合并到客户联系人
         customerContacts = _.concat( noneDupClueContacts, customerContacts);
 
-        this.setState({
+        let state = {
             customerContacts,
             isConfirmMergeBtnDisabled,
-            viewType: VIEW_TYPE.CUSTOMER_MERGE
-        });
+            viewType: VIEW_TYPE.CUSTOMER_MERGE,
+        };
+
+        if (this.props.viewType !== VIEW_TYPE.CUSTOMER_MERGE){
+            state.prevViewType = this.state.viewType;
+        }
+
+        this.setState(state);
     }
 
     //替换联系人名称确认按钮点击事件
@@ -452,17 +474,34 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     //设置视图类型
-    setViewType = viewType => {
-        if (this.props.viewType){
-            this.props.hidePanel();
-        }else{
-            this.setState({ viewType });
+    setViewType = (viewType, prevViewType) => {
+        let state = {viewType};
+
+        if (!_.isUndefined(prevViewType)) {
+            state.prevViewType = prevViewType;
         }
 
+        this.setState(state);
+    }
+
+    //处理返回按钮点击事件
+    handleGoBack = () => {
+        const prevViewType = this.state.prevViewType;
+
+        if (prevViewType) {
+            this.setState({
+                prevViewType: '',
+                viewType: prevViewType,
+            });
+        } else {
+            this.props.hidePanel();
+        }
     }
 
     //合并到客户
-    mergeToCustomer = () => {
+    mergeToCustomer = (e) => {
+        Trace.traceEvent(e, '点击合并客户面板中的"确认合并"按钮');
+
         const contacts = this.state.customerContacts;
         const clueId = this.props.clue.id;
 
@@ -632,10 +671,72 @@ class ClueToCustomerPanel extends React.Component {
 
                 <div className="btn-block">
                     <Button onClick={this.props.hidePanel}>{Intl.get('common.cancel', '取消')}</Button>
-                    <Button type="primary" onClick={this.props.showAddCustomerPanel}>{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
+
+                    {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                        <Button type="primary" onClick={this.props.showAddCustomerPanel}>{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
+                    )}
                 </div>
             </div>
         );
+    }
+
+    // 查询客户
+    queryCustomer = keyword => {
+        //更新输入框内容
+
+        if (queryCustomerTimeout) {
+            clearTimeout(queryCustomerTimeout);
+        }
+
+        queryCustomerTimeout = setTimeout(() => {
+            ajax.send({
+                url: '/rest/customer/v3/customer/range/manager/10/1/start_time/descend',
+                type: 'post',
+                data: {
+                    query: {
+                        name: keyword
+                    }
+                }
+            })
+                .done(result => {
+                    this.setState({customerList: result.result});
+                });
+        }, 500);
+    }
+
+    // 客户选择触发事件
+    onCustomerChoosen = customerId => {
+        const customer = _.find(this.state.customerList, item => item.id === customerId);
+
+        this.onMergeToCustomerClick(customer);
+    }
+
+    //渲染客户搜索界面
+    renderCustomerSearch = () => {
+        return (
+            <div className="customer-search">
+                <Select
+                    combobox
+                    filterOption={false}
+                    placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
+                    optionLabelProp='children'
+                    onSearch={this.queryCustomer}
+                    onSelect={this.onCustomerChoosen}
+                >
+                    {this.state.customerList.map((customer, index) => {
+                        return <Option key={index} value={customer.id}>{customer.name}</Option>;
+                    })}
+                </Select>
+            </div>
+        );
+    }
+
+    //合并到已有客户
+    mergeToExistingCustomer = () => {
+        this.setState({
+            viewType: VIEW_TYPE.CUSTOMER_SEARCH,
+            prevViewType: this.state.viewType
+        });
     }
 
     //渲染联系人标题
@@ -752,22 +853,84 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
+    //取消合并
+    handleCancelMerge = () => {
+        const prevViewType = this.state.prevViewType;
+
+        if (prevViewType) {
+            this.setViewType(prevViewType, '');
+        } else {
+            this.props.hidePanel();
+        }
+    }
+
+    //渲染面板标题
+    renderPanelTitle() {
+        const viewType = this.state.viewType;
+        let title = '';
+        let opBtnClickHandler = function() {};
+        let opBtnText = '';
+
+        if (viewType === VIEW_TYPE.CUSTOMER_LIST) {
+            title = Intl.get('common.convert.to.customer', '转为客户');
+            opBtnText = Intl.get('common.merge.to.other.customer', '合并到其他客户');
+            opBtnClickHandler = this.mergeToExistingCustomer;
+        } else if (viewType === VIEW_TYPE.CUSTOMER_SEARCH) {
+            title = Intl.get('common.merge.to.other.customer', '合并到其他客户');
+            opBtnText = Intl.get('crm.52', '返回');
+            opBtnClickHandler = this.handleGoBack;
+        } else if (viewType === VIEW_TYPE.CUSTOMER_MERGE) {
+            title = Intl.get('common.merge.to.customer', '合并到此客户');
+            opBtnText = Intl.get('crm.52', '返回');
+            opBtnClickHandler = this.handleGoBack;
+        }
+
+        return (
+            <div>
+                <span className="panel-title">{title}</span>
+                <span className="op-btn" onClick={opBtnClickHandler}>{opBtnText}</span>
+            </div>
+        );
+    }
+
+    //不再提示按钮点击事件
+    handleNoLongerTipsBtnClick = () => {
+        ajax.send({
+            url: '/rest/base/v1/user/website/config/personnel',
+            type: 'post',
+            data: {
+                no_longer_tips_clue_will_disappear: true
+            }
+        })
+            .done(result => {
+                this.setState({
+                    isShowClueWillDisappearTip: false
+                });
+            })
+            .fail(err => {
+                message.error(err);
+            });
+    }
+
     //渲染客户合并
     renderCustomerMerge() {
         return (
             <div className="customer-merge">
-                <div className="title">
-                    <span
-                        className="go-back clickable"
-                        onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
-                    >
-                        <i className="iconfont icon-left-arrow"/> {Intl.get('crm.52', '返回')}
-                    </span>
-                </div>
-
                 <div className="customer-name">
                     {this.state.customerName}
                 </div>
+
+                {this.state.isShowClueWillDisappearTip ? (
+                    <div className="clue-will-disappear-tip">
+                        <i className="iconfont icon-phone-call-out-tip"></i>
+                        <span className="tip-content">
+                    转为客户后，线索相关内容都将转入客户，线索将消失。
+                        </span>
+                        <span className="no-longer-tips clickable" onClick={this.handleNoLongerTipsBtnClick}>
+                    不再提示
+                        </span>
+                    </div>
+                ) : null}
 
                 <div className="contact-list-wrap">
                     <div className="contact-list">
@@ -783,7 +946,7 @@ class ClueToCustomerPanel extends React.Component {
 
                 <div className="btn-block">
                     <Button
-                        onClick={this.setViewType.bind(this, VIEW_TYPE.CUSTOMER_LIST)}
+                        onClick={this.handleCancelMerge}
                     >
                         {Intl.get('common.cancel', '取消')}
                     </Button>
@@ -800,23 +963,30 @@ class ClueToCustomerPanel extends React.Component {
         );
     }
 
-    render() {
+    renderPanelContent() {
         return (
-            <RightPanel
-                className="clue-right-panel clue-to-customer-panel"
-                showFlag={this.props.showFlag}
-                data-tracename="线索转客户面板"
-            >
-                <span className="iconfont icon-close clue-right-btn" onClick={this.props.hidePanel} data-tracename="关闭线索转客户面板"></span>
-                <div className="right-panel-content">
-                    <div className="clue-detail-wrap">
-                        <div className="panel-content">
-                            {this.state.viewType === VIEW_TYPE.CUSTOMER_LIST ? this.renderCustomerList() : null}
-                            {this.state.viewType === VIEW_TYPE.CUSTOMER_MERGE ? this.renderCustomerMerge() : null}
-                        </div>
+            <div className="right-panel-content">
+                <div className="clue-detail-wrap">
+                    <div className="panel-content">
+                        {this.state.viewType === VIEW_TYPE.CUSTOMER_LIST ? this.renderCustomerList() : null}
+                        {this.state.viewType === VIEW_TYPE.CUSTOMER_SEARCH ? this.renderCustomerSearch() : null}
+                        {this.state.viewType === VIEW_TYPE.CUSTOMER_MERGE ? this.renderCustomerMerge() : null}
                     </div>
                 </div>
-            </RightPanel>
+            </div>
+        );
+    }
+
+    render() {
+        return (
+            <RightPanelModal
+                className="clue-right-panel clue-to-customer-panel"
+                isShowCloseBtn={true}
+                onClosePanel={this.props.hidePanel}
+                title={this.renderPanelTitle()}
+                content={this.renderPanelContent()}
+                data-tracename="线索转客户面板"
+            />
         );
     }
 }

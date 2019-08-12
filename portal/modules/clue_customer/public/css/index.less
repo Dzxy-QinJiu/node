@@ -436,9 +436,13 @@
       cursor: pointer;
     }
   }
-  //添加客户和转化客户的面板的z-index设置大一些，避免被线索详情覆盖
-  .right-panel-modal.crm-add-container, .clue-right-panel.clue-to-customer-panel{
-    z-index:120
+  //添加客户的面板的z-index设置大一些，避免被线索详情覆盖
+  .right-panel-modal.crm-add-container{
+    z-index:120;
+  }
+  //转化客户的面板的z-index设置大一些，避免被线索详情覆盖
+  .clue-right-panel.clue-to-customer-panel{
+    z-index:121;
   }
 }
 

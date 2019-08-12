@@ -1,4 +1,24 @@
 .clue-to-customer-panel {
+    .icon-phone-call-out-tip {
+        color: #EFA246;
+    }
+    .clue-will-disappear-tip {
+        background: #fff;
+        height: 32px;
+        line-height: 32px;
+        font-size: 0 12px 12px;
+        padding: 0 8px;
+        margin-top: 8px;
+        border-radius: 4px;
+        .tip-content {
+            margin-left: 8px;
+            color: #333;
+        }
+        .no-longer-tips {
+            float: right;
+            color: #8DA8C5;
+        }
+    }
     .ant-btn {
         color: #8DA8C5;
     }
@@ -25,22 +45,18 @@
         font-weight: bold;
     }
     .panel-content {
-        padding: 12px;
+        padding: 0 12px 12px;
         font-size: 14px;
-        .customer-list,
-        .customer-merge {
-            .title {
-                overflow: hidden;
-                margin-bottom: 10px;
-                color: #999;
-               .icon-left-arrow {
-                   font-size: 13px;
-               }
+        .customer-search {
+            .ant-select {
+                width: 435px;
+                margin-left: 12px;
             }
         }
         .customer-list {
             margin-right: -10px;
             .title {
+                margin-bottom: 10px;
                 .anticon-exclamation-circle {
                     font-size: 15px;
                     margin-right: 5px;
@@ -81,6 +97,14 @@
             .btn-block {
                 padding-right: 10px;
             }
+            .merge-to-existing-customer-btn {
+                color: #8da8c5;
+                cursor: pointer;
+                font-size: 14px;
+                font-weight: normal;
+                float: right;
+                margin-right: 10px;
+            }
         }
         .customer-merge {
             .contact-list-wrap {
@@ -106,7 +130,7 @@
                 }
             }
             .is-replace-contact-name {
-                margin: 5px -12px -10px;
+                margin: 5px -0 12px 12px -10px;
                 padding: 5px 10px;
                 overflow: hidden;
                 background: #E4F2FE;
@@ -135,7 +159,7 @@
                     box-shadow: none;
                 }
                 .folding-btn {
-                    font-size: 12px;
+                    font-size: 0 12px 12px;
                     color: #999;
                 }
             }

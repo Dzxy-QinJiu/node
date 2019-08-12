@@ -373,6 +373,7 @@ class ClueRightPanel extends React.Component {
                                             updateClueProperty={this.updateClueProperty}
                                             afterTransferClueSuccess={this.props.afterTransferClueSuccess}
                                             onConvertToCustomerBtnClick={this.props.onConvertToCustomerBtnClick}
+                                            showClueToCustomerPanel={this.props.showClueToCustomerPanel}
                                             updateCustomerLastContact={this.updateCustomerLastContact}
                                             extractClueOperator={this.props.extractClueOperator}
                                         />

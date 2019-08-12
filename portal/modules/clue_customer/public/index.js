@@ -86,6 +86,7 @@ class ClueCustomer extends React.Component {
         showCustomerId: '',//正在展示客户详情的客户id
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
         isShowClueToCustomerPanel: false,//是否展示线索转客户面板
+        clueToCustomerPanelViewType: 'customer_list',//线索转客户面板视图
         isShowAddCustomerPanel: false,//是否展示添加客户面板
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
@@ -231,6 +232,7 @@ class ClueCustomer extends React.Component {
                 clue_params: {
                     currentId: this.state.currentId,
                     showRightPanel: this.showClueDetailOut,
+                    showClueToCustomerPanel: this.showClueToCustomerPanel,
                     hideRightPanel: this.hideRightPanel,
                     curClue: this.state.curClue,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
@@ -1191,7 +1193,9 @@ class ClueCustomer extends React.Component {
     };
 
     //转为客户按钮点击事件
-    onConvertToCustomerBtnClick = (clueId, clueName, phones) => {
+    onConvertToCustomerBtnClick = (clueId, clueName, phones, e) => {
+        Trace.traceEvent(e, '点击客户列表中的转为客户按钮');
+
         clueName = _.trim(clueName);
 
         //线索名为空时不能执行转为客户的操作
@@ -1229,26 +1233,21 @@ class ClueCustomer extends React.Component {
             .done(result => {
                 const existingCustomers = _.get(result, 'similarity_list');
 
+                let state = {
+                };
+
                 //若存在相似客户
                 if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
-                    this.setState({
-                        //显示线索转客户面板
-                        isShowClueToCustomerPanel: true,
-                        //不显示添加客户面板
-                        isShowAddCustomerPanel: false,
-                        //保存相似客户
-                        existingCustomers
-                    });
+                    state.isShowClueToCustomerPanel = true;
+                    state.isShowAddCustomerPanel = false;
+                    state.existingCustomers = existingCustomers;
+                    state.clueToCustomerPanelViewType = 'customer_list';
                 } else {
-                    this.setState({
-                        //不显示线索转客户面板
-                        isShowClueToCustomerPanel: false,
-                        //显示添加客户面板
-                        isShowAddCustomerPanel: true,
-                        //清空相似客户
-                        existingCustomers: []
-                    });
+                    state.isShowClueToCustomerPanel = false;
+                    state.isShowAddCustomerPanel = true;
                 }
+
+                this.setState(state);
             })
             .fail(err => {
                 const errMsg = Intl.get('member.apply.approve.tips', '操作失败') + Intl.get('user.info.retry', '请重试');
@@ -1256,9 +1255,21 @@ class ClueCustomer extends React.Component {
             });
     };
 
+    //显示线索转客户面板
+    showClueToCustomerPanel = (customer) => {
+        this.setState({
+            isShowClueToCustomerPanel: true,
+            existingCustomers: [customer],
+            clueToCustomerPanelViewType: 'customer_merge'
+        });
+    };
+
     //隐藏线索转客户面板
     hideClueToCustomerPanel = () => {
-        this.setState({isShowClueToCustomerPanel: false});
+        this.setState({
+            isShowClueToCustomerPanel: false,
+            clueToCustomerPanelViewType: 'customer_list'
+        });
     };
 
     //显示添加客户面板
@@ -1277,7 +1288,7 @@ class ClueCustomer extends React.Component {
         
         $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').slideToggle(2000);
     };
-    //转化线索成功后，在相关状态将线索数减一并在待合并统计数据中加一
+    //转化线索成功后，在相关状态将线索数减一并在待{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
     changeClueNum = () => {
         clueCustomerAction.afterTranferClueSuccess(this.state.curClue);
     };
@@ -1296,7 +1307,7 @@ class ClueCustomer extends React.Component {
         const customerId = _.get(curCustomer, 'id');
         const customerName = _.get(curCustomer, 'name');
         if (curCustomer) {
-            //打开客户面板，显示合并后的客户信息
+            //打开客户面板，显示{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                 customer_params: {
                     curCustomer,
@@ -1310,6 +1321,8 @@ class ClueCustomer extends React.Component {
         this.afterTransferClueSuccess();
         //隐藏添加客户面板
         this.hideAddCustomerPanel();
+        //隐藏线索转客户面板
+        this.hideClueToCustomerPanel();
         this.afterMergeUpdateClueProperty(customerId,customerName);
     };
     afterMergeUpdateClueProperty = (customerId,customerName) => {
@@ -1994,12 +2007,12 @@ class ClueCustomer extends React.Component {
         );
     };
 
-    //线索合并到客户后的回调事件
+    //线索{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
     onClueMergedToCustomer = (customerId, customerName) => {
         //在列表中隐藏当前操作的线索
         this.afterTransferClueSuccess();
 
-        //打开客户面板，显示合并后的客户信息
+        //打开客户面板，显示{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
                 currentId: customerId,
@@ -2036,6 +2049,17 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
         this.showClueRecommendTemplate();
     };
+
+    //{Intl.get(common.merge.to.other.customer, 合并到其他客户)}
+    mergeToExistingCustomer = () => {
+        this.setState({
+            //显示线索转客户面板
+            isShowClueToCustomerPanel: true,
+            //显示线索转客户面板上的搜索界面
+            clueToCustomerPanelViewType: 'customer_search',
+        });
+    }
+
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2048,6 +2072,7 @@ class ClueCustomer extends React.Component {
         var filterCls = classNames('filter-container',{
             'filter-close': !this.state.showFilterList || isFirstLoading
         });
+
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -2198,6 +2223,7 @@ class ClueCustomer extends React.Component {
                     {this.state.isShowClueToCustomerPanel ? (
                         <ClueToCustomerPanel
                             showFlag={this.state.isShowClueToCustomerPanel}
+                            viewType={this.state.clueToCustomerPanelViewType}
                             clue={this.state.curClue}
                             existingCustomers={this.state.existingCustomers}
                             hidePanel={this.hideClueToCustomerPanel}
@@ -2215,6 +2241,16 @@ class ClueCustomer extends React.Component {
                             isConvert={true}
                             phoneNum={_.get(this.state, 'curClue.phones[0]', '')}
                             isShowMadal={false}
+                            title={(
+                                <div>
+                                    <span className="panel-title">
+                                        {Intl.get('common.convert.to.new.customer', ' 转为新客户')}
+                                    </span>
+                                    <span className="op-btn" onClick={this.mergeToExistingCustomer}>
+                                        {Intl.get('common.merge.to.other.customer', '合并到其他客户')}
+                                    </span>
+                                </div>
+                            )}
                         />
                     ) : null}
                     {this.isShowRecommendSettingPanel() ? <RecommendCluesForm
