@@ -39,7 +39,8 @@ ClueFilterStore.prototype.setInitialData = function() {
         name: 'source_time'
     }];
     this.filterClueStatus = filterClueStatus;
-    this.filterClueSource = [];//筛选的线索来源
+    //筛选的线索来源
+    this.filterClueSource = [];
     //筛选的线索接入渠道
     this.filterClueAccess = [];
     //筛选的线索分类
@@ -56,6 +57,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterClueUsers = [];
     //按负责人进行筛选
     this.teamMemberList = [];
+    //筛选相似线索
+    this.filterLabels = [];
     //如果是销售领导或者销售角色 默认选中 待我处理 进行筛选
     this.filterAllotNoTraced = isSalesRole() ? '0' : '';
 };
@@ -150,6 +153,7 @@ ClueFilterStore.prototype.setFilterClueProvince = function(updateProvince) {
     });
     this.filterClueProvince = selectedProvince;
 };
+//筛选存在的字段
 ClueFilterStore.prototype.setExistedFiled = function(existedItem) {
     if (existedItem){
         this.exist_fields = [existedItem];
@@ -157,6 +161,7 @@ ClueFilterStore.prototype.setExistedFiled = function(existedItem) {
         this.exist_fields = [];
     }
 };
+//筛选不存在的字段
 ClueFilterStore.prototype.setUnexistedFiled = function(unexistedItem) {
     if (unexistedItem){
         this.unexist_fields = [unexistedItem];
@@ -164,6 +169,14 @@ ClueFilterStore.prototype.setUnexistedFiled = function(unexistedItem) {
         this.unexist_fields = [];
     }
 };
-
+//筛选相似（labels）的字段
+ClueFilterStore.prototype.setSimilarFiled = function(similarItem){
+    if (similarItem){
+        console.log(similarItem);
+        this.filterLabels = [similarItem];
+    }else{
+        this.filterLabels = [];
+    }
+};
 
 module.exports = alt.createStore(ClueFilterStore, 'ClueFilterStore');
