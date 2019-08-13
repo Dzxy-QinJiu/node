@@ -532,6 +532,11 @@ class ClueCustomer extends React.Component {
             if (_.isArray(filterClueProvince) && filterClueProvince.length){
                 typeFilter.province = filterClueProvince.join(',');
             }
+            //相似客户和线索
+            let filterLabels = filterStoreData.filterLabels;
+            if(_.isArray(filterLabels) && filterLabels.length){
+                typeFilter.labels = filterLabels;
+            }
             var bodyField = {};
             if(_.isArray(existFilelds) && existFilelds.length){
                 bodyField.exist_fields = existFilelds;
@@ -1621,7 +1626,16 @@ class ClueCustomer extends React.Component {
     //是否有筛选过滤条件
     hasNoFilterCondition = () => {
         var filterStoreData = clueFilterStore.getState();
-        if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields) && _.isEmpty(filterStoreData.unexist_fields) && _.isEmpty(filterStoreData.filterClueProvince)){
+        if (_.isEmpty(filterStoreData.filterClueSource) 
+            && _.isEmpty(filterStoreData.filterClueAccess) 
+            && _.isEmpty(filterStoreData.filterClueClassify) 
+            && filterStoreData.filterClueAvailability === '' 
+            && _.get(filterStoreData,'filterClueStatus[0].selected') 
+            && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime 
+            && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields) 
+            && _.isEmpty(filterStoreData.unexist_fields) 
+            && _.isEmpty(filterStoreData.filterClueProvince
+            && _.isEmpty(filterStoreData.filterLabels))){
             return true;
         }else{
             return false;

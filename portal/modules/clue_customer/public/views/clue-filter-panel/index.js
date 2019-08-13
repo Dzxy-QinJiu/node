@@ -15,10 +15,18 @@ import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 const COMMON_OTHER_ITEM = 'otherSelectedItem';
+const SIMILAR_CUSTOMER = '有相似客户';
+const SIMILAR_CLUE = '有相似线索';
 var otherFilterArray = [
     {
         name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
         value: SELECT_TYPE.WAIT_ME_HANDLE
+    },{
+        name: Intl.get( 'clue.similar.customer','有相似客户的线索'), 
+        value: SIMILAR_CUSTOMER
+    },{
+        name: Intl.get( 'clue.has.similar.clue','相似线索'),
+        value: SIMILAR_CLUE
     }
 ];
 import userData from 'PUB_DIR/sources/user-data';
@@ -103,12 +111,23 @@ class ClueFilterPanel extends React.Component {
                     });
                     FilterAction.setFilterClueProvince(provinceList);
                 }else if (item.groupId === COMMON_OTHER_ITEM){
-                    if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
+                    if(item.value === SIMILAR_CUSTOMER){
+                        FilterAction.setExistedFiled();
+                        FilterAction.setUnexistedFiled();
+                        FilterAction.setFilterClueAllotNoTrace();
+                        FilterAction.setSimilarFiled(SIMILAR_CUSTOMER);
+                    }else if(item.value === SIMILAR_CLUE){
+                        FilterAction.setExistedFiled();
+                        FilterAction.setUnexistedFiled();
+                        FilterAction.setFilterClueAllotNoTrace();
+                        FilterAction.setSimilarFiled(SIMILAR_CLUE);
+                    }else if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
                         //如果筛选的是待我处理的线索
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
-                        FilterAction.setFilterClueAllotNoTrace('0');
                         //如果上次选中的状态是已转化，需要把已转化改成待跟进
+                        FilterAction.setFilterClueAllotNoTrace('0');
+                        FilterAction.setSimilarFiled();
                         if(this.getFilterStatus().status === SELECT_TYPE.HAS_TRANSFER){
                             FilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
                         }
