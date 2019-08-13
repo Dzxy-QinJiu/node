@@ -7,6 +7,7 @@ import CustomerStageAjax from '../ajax';
 class CustomerStageAction {
     constructor() {
         this.generateActions(
+            'setInitialData', // 初始化数据
             'toggleCustomerStageDetail', // 展开收起客户阶段详情（剧本、销售行为）
             'showCustomerStageForm', // 显示客户阶段表单
             'closeCustomerStageForm', // 关闭客户阶段表单

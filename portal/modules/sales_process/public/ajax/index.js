@@ -149,13 +149,14 @@ exports.deleteCustomerStage = (id) => {
 };
 
 // 变更客户阶段顺序
-exports.changeCustomerStageOrder = (stageList, saleProcessId) => {
+exports.changeCustomerStageOrder = (stageList) => {
     let Deferred = $.Deferred();
     $.ajax({
-        url: `/rest/change/customer/stage/order/${saleProcessId}`,
+        url: '/rest/change/customer/stage/order',
         dataType: 'json',
+        contentType: 'application/json',
         type: 'put',
-        data: stageList,
+        data: JSON.stringify(stageList),
         success: (result) => {
             Deferred.resolve(result);
         }, error: (errorInfo) => {

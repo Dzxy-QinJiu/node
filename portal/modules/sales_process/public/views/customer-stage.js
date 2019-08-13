@@ -150,9 +150,9 @@ class CustomerStage extends React.Component {
     };
 
     // 关闭客户阶段变更顺序
-    closeCustomerStageTransferOrder = () => {
+    closeCustomerStageTransferOrder = (isTransferOrderSuccess) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-btn:last-child span'), '取消对客户阶段顺序更改的保存');
-        CustomerStageAction.closeCustomerStageTransferOrder();
+        CustomerStageAction.closeCustomerStageTransferOrder(isTransferOrderSuccess);
     };
 
     // 上移客户阶段
@@ -166,10 +166,13 @@ class CustomerStage extends React.Component {
     };
 
     handleChangeCustomerStageOrder = () => {
-        let saleProcessId = this.props.saleProcessId;
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-btn:last-child span'), '保存对客户阶段的更改');
-        CustomerStageAjax.changeCustomerStageOrder(this.state.customerStageList, saleProcessId).then( (result) => {
-            this.closeCustomerStageTransferOrder();
+        CustomerStageAjax.changeCustomerStageOrder(this.state.customerStageList).then( (result) => {
+            if (result) {
+                this.closeCustomerStageTransferOrder(true);
+            } else {
+                this.closeCustomerStageTransferOrder();
+            }
         }, (errMsg) => {
             this.closeCustomerStageTransferOrder();
             message.error(errMsg || Intl.get('sales.process.change.order.failed', '变更客户阶段顺序失败'));
@@ -290,6 +293,11 @@ class CustomerStage extends React.Component {
         CustomerStageAction.toggleCustomerStageDetail(item);
     };
 
+    closeCustomerStagePanel = () => {
+        CustomerStageAction.setInitialData();
+        this.props.closeCustomerStagePanel();
+    };
+
     render() {
         let customerStageList = this.state.customerStageList;
         let length = _.get(customerStageList, 'length');
@@ -303,7 +311,7 @@ class CustomerStage extends React.Component {
                 data-tracename="客户阶段管理"
                 style={{height: height, width: this.props.containerWidth}}
             >
-                <RightPanelClose onClick={this.props.closeCustomerStagePanel}/>
+                <RightPanelClose onClick={this.closeCustomerStagePanel}/>
                 <div className="customer-stage-container">
                     <div className="customer-stage-content" style={{height: height}}>
                         <div className="customer-stage-top-nav">
