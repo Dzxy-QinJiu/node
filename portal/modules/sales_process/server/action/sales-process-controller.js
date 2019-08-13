@@ -85,3 +85,12 @@ exports.changeCustomerStageOrder = (req, res) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 获取客户阶段的销售行为
+exports.getCustomerStageSaleBehavior = (req, res) => {
+    salesProcessService.getCustomerStageSaleBehavior(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
