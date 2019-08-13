@@ -141,14 +141,14 @@ window.closeAllNoty = function() {
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
         if (getClueUnhandledPrivilege()){
-            updateUnreadByPushMessage('unhandleClue', data.clue_list.length);
+            updateUnreadByPushMessage('unhandleClue', _.get(data, 'clue_list.length'));
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
-        var clueArr = _.get(data, 'clue_list');
+        var clueArr = _.get(data, 'clue_list',[]);
         var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
         if (canPopDesktop()) {
             _.each(clueArr, (clueItem) => {
-                tipContent += clueItem.name + '\n';
+                tipContent += _.get(clueItem, 'name','') + '\n';
             });
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true);
@@ -156,7 +156,7 @@ function clueUnhandledListener(data) {
             var clueHtml = '',titleHtml = '';
             titleHtml += '<p class=\'clue-title\'>' + '<i class=\'iconfont icon-clue\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
             _.each(clueArr, (clueItem) => {
-                clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(clueItem.id) + ')\'>' + '<span class=\'clue-item-name\'>' + clueItem.name + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
+                clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' + '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
             });
             tipContent = `<div>${clueHtml}</div>`;
             var largerText = 0;
