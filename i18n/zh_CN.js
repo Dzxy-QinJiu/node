@@ -3204,6 +3204,7 @@ var zh_CN = {
     'common.sales.productivity.analysis': '销售生产力分析',
     'common.convert.to.customer': '转为客户',
     'common.merge.to.customer': '合并到此客户',
+    'common.merge.to.other.customer': '合并到其他客户',
     'common.modify.name.to': '修改姓名为',
     'common.convert.to.new.customer': '转为新客户',
     'common.has.similar.customers': '有{count}个信息相似的客户',
@@ -3351,7 +3352,7 @@ var zh_CN = {
     'guide.see.clue': '查看线索',
     'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
     'guide.import.customer.success': '导入成功',
-
+    'common.clue.will.disappear.after.convert.to.customer': '转为客户后，线索相关内容都将转入客户，线索将消失。',
 
 
 };
