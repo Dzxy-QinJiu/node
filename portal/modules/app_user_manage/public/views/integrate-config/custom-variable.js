@@ -9,7 +9,6 @@ import classNames from 'classnames';
 import { DetailEditBtn } from 'CMP_DIR/rightPanel';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {productKeyRule, productDesRule} from 'PUB_DIR/sources/utils/validate-util';
-import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 
 // 自定义属性变量的字段名
 const CUSTOM_VARIABLE_FIELD = 'custom_variable';
@@ -48,10 +47,11 @@ class CustomVariable extends React.Component {
         super(props);
         this.state = {
             loading: false,
-            displayType: props.displayType || 'text',
+            displayType: this.props.displayType || 'text',
             value: this.dealCustomVariable(props.value),
             submitErrorMsg: '',
-            customer_variables: FIXED_CUSTOM_VARIABLES
+            customer_variables: FIXED_CUSTOM_VARIABLES,
+            jsCopied: false,
         };
     }
 
@@ -203,19 +203,24 @@ class CustomVariable extends React.Component {
             {
                 title: 'key',
                 dataIndex: 'key',
-                width: '194px',
+                width: '198px',
             }, {
                 title: Intl.get('common.describe', '描述'),
                 dataIndex: 'description',
-                width: '220px',
+                width: '214px',
             }
         ];
         return columns;
     }
 
     renderFixedBlick = () => {
+        let displayText = this.state.value;
+        let bottonBorderNone = classNames({
+            'table-bottom-border-none': displayText.length !== 0
+        });
         return (
             <AntcTable
+                className={bottonBorderNone}
                 dataSource={this.state.customer_variables}
                 bordered
                 pagination={false}
@@ -247,39 +252,29 @@ class CustomVariable extends React.Component {
         let {getFieldDecorator} = this.props.form;
         let itemSize = _.get(displayText, 'length');
 
-        if (this.state.displayType === 'text') {
-            if (_.get(displayText, '[0]')) {
-                textBlock = (
-                    <div className={cls}>
-                        <div className="edit-text-wrapper">
-                            {
-                                _.map(displayText, item => {
-                                    return (
-                                        <div className="custom-variable-item">
-                                            <span className="custom-variable-key">key：{item.key}</span>
-                                            <span>{Intl.get('common.describe', '描述')}：{item.description}</span>
-                                        </div>
-                                    );
-                                })
-                            }
-                        </div>
-                        {this.props.hasEditPrivilege ? (
-                            <DetailEditBtn
-                                title={Intl.get('common.update', '修改')}
-                                onClick={this.setEditable.bind(this, 'edit')}
-                            />) : null}
-                    </div>
-                );
-            } else {// 添加按钮
-                textBlock = null;
-                /*textBlock = (
-                    _.get(this.props, 'hasEditPrivilege') ? (
-                        <i className="iconfont icon-add"
-                            title={Intl.get('common.update', '修改')}
-                            onClick={this.setEditable.bind(this, 'add')}
-                        /> ) : null
-                );*/
-            }
+        if (this.state.displayType === 'text'){
+            textBlock = (
+                <div className={cls}>
+                    {
+                        displayText.length ? <div className="edit-text-wrapper">
+                            {_.map(displayText, item => {
+                                return (
+                                    <div className="custom-variable-item">
+                                        <span className="custom-variable">{item.key}</span>
+                                        <span className="custom-variable custom-variable-value">{item.description}</span>
+                                    </div>
+                                );
+                            })}
+                            {this.props.hasEditPrivilege ? (
+                                <DetailEditBtn
+                                    title={Intl.get('common.update', '修改')}
+                                    onClick={this.setEditable.bind(this, 'edit')}
+                                />) : null}
+                        </div> : null
+                    }
+
+                </div>
+            );
         }
         let inputBlock = this.state.displayType === 'edit' ? (
             <div className="custom-variable-wrap">
@@ -291,7 +286,7 @@ class CustomVariable extends React.Component {
                             const isShowDeleteBtn = itemSize !== 1;
                             return (
                                 <Row align="top" className="custom-form-item ant-row">
-                                    <Col className="properties-form-item">
+                                    <Col className="properties-form-item left">
                                         <FormItem
                                             key={index}
                                             className='custom-key'
@@ -331,24 +326,23 @@ class CustomVariable extends React.Component {
                                             )}
                                         </FormItem>
                                     </Col>
-                                    <Col className="iconfont icon-minus">
-                                        {isShowDeleteBtn ? (
+                                    {isShowDeleteBtn ? (
+                                        <Col className="iconfont icon-minus icon-button right">
                                             <Icon
                                                 title={Intl.get('common.delete', '删除')}
                                                 type="minus"
-                                                onClick={this.deleteCustomVariable.bind(this, index)}/>)
-                                            : null}
-                                    </Col>
+                                                onClick={this.deleteCustomVariable.bind(this, index)}/>
+                                        </Col>) : null}
+                                    {displayText.length < maxCustomVariableCount ? (
+                                        <Col className="icon-button right">
+                                            <i className="iconfont icon-add"
+                                                title={Intl.get('common.add', '添加')}
+                                                onClick={this.addCustomVariable}
+                                            />
+                                        </Col>) : null}
                                 </Row>
                             );
                         })
-                    }
-                    {
-                        displayText.length < maxCustomVariableCount ? (
-                            <i className="iconfont icon-add"
-                                title={Intl.get('common.add', '添加')}
-                                onClick={this.addCustomVariable}
-                            /> ) : null
                     }
                 </Form>
                 <div className="buttons">
@@ -362,10 +356,12 @@ class CustomVariable extends React.Component {
                 </div>
             </div>
         ) : null;
+        //当前不为编辑状态并且value为空时展示修改
+        let isEditShow = _.isEqual(this.state.displayType, 'text') && _.get(this.state, 'value').length === 0;
         return (
             <div className='custom-variable-container'>
                 <div className="custom-label-container">
-                    {_.get(this.props, 'hasEditPrivilege') && _.isEqual(this.state.displayType, 'text') ? (
+                    {_.get(this.props, 'hasEditPrivilege') && isEditShow ? (
                         <i className="iconfont icon-add"
                             title={Intl.get('common.update', '修改')}
                             onClick={this.setEditable.bind(this, 'add')}

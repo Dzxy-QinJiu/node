@@ -9,10 +9,14 @@ const FormItem = Form.Item;
 const PropTypes = require('prop-types');
 require('./access-user-template.less');
 const Step = Steps.Step;
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
 import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
 import Trace from 'LIB_DIR/trace';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import RightPanelScrollBar from 'MOD_DIR/crm/public/views/components/rightPanelScrollBar';
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import DefaultUserLogoTitle from 'CMP_DIR/default-user-logo-title';
 import CustomVariable from './custom-variable';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
@@ -25,14 +29,12 @@ const LAYOUT = {
     INITIALWIDTH: 504,
     SMALLWIDTH: 24,
     LARGEWIDTH: 75,
-    TOP_DISTANCE: 150,
-    BOTTOM_DISTANCE: 90,
+    TOP_DISTANCE: 120,
+    BOTTOM_DISTANCE: 80,
     TABLE_TOP: 40
-
 };
 function noop() {}
-import {isEqualArray} from 'LIB_DIR/func';
-var className = require('classnames');
+let className = require('classnames');
 const steps = [{
     title: Intl.get('config.product.add', '添加产品'),
     content: 'First-content',
@@ -40,57 +42,28 @@ const steps = [{
     title: Intl.get('app.manage.configure.access.info', '配置接入信息'),
     content: 'Second-content',
 }];
-const addProduct = {
-    create_time: 1565255704592,
-    id: 'e883f442-e4af-4047-8eee-2db0ae3fc8',
-    integration_id: '187',
-    integration_type: 'uem',
-    name: 'test_add',
-    realm_id: '36553nnfjC'
-};
+
 class AccessUserTemplate extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            current: 1,//进度条的步骤
-            isLoading: false,//正在上传
-            previewList: this.props.previewList,//预览列表
-            isImporting: false,//正在导入
+            current: 0,//进度条的步骤
             isAddingProduct: false, //正在添加产品
             addErrorMsg: '', //添加失败信息
-            addProduct: addProduct,//添加的产品
-            tableHeight: this.calculateTableHeight()
+            addProduct: null,//添加的产品
+            testResult: '',//测试结果返回值 'success' 'error'
+            isTesting: false, //正在测试
+            custom_variable: [] //用户自定义变量
         };
     }
 
-    componentDidMount = () => {
-        $(window).on('resize', e => this.changeTableHeight());
-    };
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.previewList && !isEqualArray(nextProps.previewList, this.state.previewList)) {
-            this.setState({
-                previewList: nextProps.previewList
-            });
-        }
-    }
-    componentWillUnmount = () => {
-        $(window).off('resize', this.changeTableHeight);
-    };
-
-    onItemListImport = (list) => {
-        this.props.onItemListImport(list);
-        this.setState({
-            isPreviewShow: true,
-        });
-    };
+    //关闭模板面板
     handleCancel = (e) => {
         this.props.closeTemplatePanel();
         setTimeout(() => {
             this.setState({
                 current: 0,
                 isLoading: false,
-                isPreviewShow: false,
-                isImporting: false,
             });
             e && e.preventDefault();
         },SET_TIME_OUT.TRANSITION_TIME);
@@ -132,6 +105,7 @@ class AccessUserTemplate extends React.Component {
         });
     }
 
+    //渲染第一步内容区
     renderFirstStepContent = () => {
         const formItemLayout = {colon: false};
         const {getFieldDecorator} = this.props.form;
@@ -170,44 +144,7 @@ class AccessUserTemplate extends React.Component {
             </div>
         );
     };
-    doImport =(e) => {
-        Trace.traceEvent(e, '确定导入');
-        this.setState({
-            current: 2,
-            isImporting: true
-        });
-        this.props.doImportAjax(() => {
-            setTimeout(() => {
-                message.success(Intl.get('clue.customer.import.clue.suceess', '导入{type}成功',{type: this.props.importType}));
-                this.handleCancel();
-            },SET_TIME_OUT.LOADING_TIME);
-        },(errMsg) => {
-            this.setState({isImporting: false});
-            message.error(errMsg || Intl.get('clue.customer.import.clue.failed', '导入{type}失败',{type: this.props.importType}));
-        });
-    };
-    renderImportFooter = () => {
-        const disabledImportBtn = _.find(this.state.previewList, item => (item.repeat)) || _.isEmpty(this.state.previewList);
-        return (
-            <div className="prev-foot">
-                {this.state.isImporting ? <div className="is-importing">
-                    <Spinner/>
-                </div> : <Button type="primary" onClick={this.doImport} disabled={disabledImportBtn}>
-                    {Intl.get('common.import', '导入')}
-                </Button>}
-                <Button type="ghost" onClick={this.handleCancel} data-tracename="取消导入">
-                    {Intl.get('common.cancel', '取消')}
-                </Button>
-            </div>
-        );
-    };
-    calculateTableHeight = () => {
-        return $(window).height() - LAYOUT.TOP_DISTANCE - LAYOUT.BOTTOM_DISTANCE;
-    }
-    changeTableHeight = () => {
-        var tableHeight = this.calculateTableHeight();
-        this.setState({tableHeight});
-    };
+
     // 添加自定义属性
     saveCustomVariable = (saveObj, successFunc, errorFunc) => {
         //是否修改基本信息
@@ -235,47 +172,165 @@ class AccessUserTemplate extends React.Component {
             }
         });
     }
-    renderCustomVariable = () => {
+
+    //复制Js代码
+    copyJSCode = () => {
+        this.setState({jsCopied: true});
+        setTimeout(() => {
+            this.setState({jsCopied: false});
+        }, 1000);
+    }
+
+    testUemProduct = () => {
+        let integration_id = _.get(this.state, 'addProduct.integration_id');
+        if (!integration_id) return;
+        this.setState({isTesting: true});
+        $.ajax({
+            url: '/rest/product/uem/test',
+            type: 'get',
+            dataType: 'json',
+            data: {integration_id},
+            success: (result) => {
+                if (result) {
+                    this.setState({
+                        testResult: 'success',
+                        isTesting: false,
+                    });
+                } else {
+                    this.setState({
+                        testResult: 'error',
+                        isTesting: false,
+                    });
+                }
+            },
+            error: (xhr) => {
+                this.setState({
+                    testResult: 'error',
+                    isTesting: false,
+                });
+            }
+        });
+    }
+
+    //渲染使用JS脚本采集用户数据card
+    renderCustomVariable = (jsCode) => {
         return (
-            <CustomVariable
-                id={_.get(this.state.addProduct,'id')}
-                value={this.state.custom_variable}
-                hasEditPrivilege={true}
-                addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
-                saveEditInput={this.saveCustomVariable}
-            />
+            <div className="add-user-data-warp">
+                <CustomVariable
+                    id={_.get(this.state.addProduct,'id')}
+                    value={this.state.custom_variable}
+                    hasEditPrivilege={true}
+                    addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
+                    saveEditInput={this.saveCustomVariable}
+                />
+                <div className="access-step-tip margin-style js-code-contianer">
+                    {jsCode ? (
+                        <span>
+                            <CopyToClipboard text={jsCode}
+                                onCopy={this.copyJSCode}>
+                                <a className='copy-btn'>
+                                    {Intl.get('user.jscode.copy', '复制')}
+                                </a>
+                            </CopyToClipboard>
+                            {this.state.jsCopied ? (
+                                <span className="copy-success-tip">
+                                    <Icon type="check-circle" theme="filled" />
+                                    {Intl.get('user.copy.success.tip', '复制成功！')}
+                                </span>) : null}
+                        </span>) : (
+                        <span className="js-code-label">{Intl.get('clue.has.no.data', '暂无')}</span>)
+                    }
+                    <span className="js-code-label">{Intl.get('common.trace.code', '跟踪代码')}： </span>
+                    {jsCode ? (
+                        <div className="access-step-tip margin-style js-code-contianer pre-code" style={{height: 200}}>
+                            <GeminiScrollbar>
+                                <pre id='matomo-js-code'>{jsCode}</pre>
+                            </GeminiScrollbar>
+                        </div>) : null}
+                </div>
+            </div>
         );
     }
+
+    //渲染接入用户title card
     renderAccessTitle = () => {
         return (
             <div className='access-title' >
                 <DefaultUserLogoTitle
-                    nickName={this.state.addProduct.name}
+                    nickName={_.get(this.state,'addProduct.name')}
                 />
-                <span>{this.state.addProduct.name} </span>
+                <span>{_.get(this.state,'addProduct.name')} </span>
             </div>
         );
     }
+
+    renderTestFooter = (jsCode) => {
+        let testFooter = null;
+        let testResult = _.get(this.state, 'testResult');
+        let isLoading = _.get(this.state, 'isTesting');
+        if(jsCode && _.isEqual(testResult, '')) {
+            //当没有测试结果时
+            testFooter = (<div className="js-code-user-tip">
+                <ReactIntl.FormattedMessage
+                    id="user.jscode.use.tip"
+                    defaultMessage={'请{copyAndTraceCode}到产品页面的header中后测试'}
+                    values={{
+                        'copyAndTraceCode':
+                            <CopyToClipboard text={jsCode} onCopy={this.copyJSCode}>
+                                <a className='copy-btn'>
+                                    <ReactIntl.FormattedMessage id="user.jscode.copy.trace" defaultMessage="复制跟踪代码"/>
+                                </a>
+                            </CopyToClipboard>
+                    }}/>
+                {isLoading ? <span className="test-loading"><Icon type="loading" /></span> : null}
+                <Button size='default' type="primary" onClick={this.testUemProduct}>{Intl.get('user.jscode.test.btn', '测试')}</Button>
+            </div>);
+        } else if(jsCode && _.isEqual(testResult, 'success')) {
+            //当测试成功时
+            testFooter = (<div className="js-code-user-tip">
+                <Icon type="check-circle" theme="filled" />
+                <span className="test-success-tip">
+                    {Intl.get('user.user.add.success', '添加成功')},
+                    <a href="/user/list">{Intl.get('user.list.check.refresh', '刷新查看用户列表')}</a>
+                </span>
+            </div>);
+        } else if(jsCode && _.isEqual(testResult, 'error')) {
+            //当测试失败时
+            testFooter = (<div className="js-code-user-tip">
+                <Icon type="exclamation-circle" theme="filled" />
+                <span className="test-error-tip">{Intl.get('user.test.error.tip', '测试失败')}</span>
+                {isLoading ? <span className="test-loading"><Icon type="loading" /></span> : null}
+                <Button size='default' type="primary" onClick={this.testUemProduct}>{Intl.get('user.jscode.test.btn', '测试')}</Button>
+            </div>);
+        }
+        return testFooter;
+    }
+
+    //渲染第二步内容区
     renderSecondStepContent = () => {
+        let jsCode = getUemJSCode(_.get(this.state, 'addProduct.integration_id'), this.state.custom_variable);
+        let height = $(window).height() - LAYOUT.BOTTOM_DISTANCE - LAYOUT.TOP_DISTANCE;
         return (
-            <div className="second-step-content">
-                <RightPanelScrollBar>
+            <div className="second-step-content" style ={{height: height}}>
+                <GeminiScrollBar>
                     <DetailCard
                         content={this.renderAccessTitle()}
                     />
                     <DetailCard
                         className="add-user-data-card"
                         title={`${Intl.get('config.product.js.collect.user','使用JS脚本采集用户数据')}:`}
-                        content={this.renderCustomVariable()}
+                        content={this.renderCustomVariable(jsCode)}
                     />
-                </RightPanelScrollBar>
+                </GeminiScrollBar>
+                {this.renderTestFooter(jsCode)}
             </div>
         );
 
     };
+
     //不同步骤渲染不同的内容
     renderStepsContent = (current) => {
-        var stepContent = null;
+        let stepContent = null;
         switch (current) {
             case 0:
                 stepContent = this.renderFirstStepContent();
@@ -286,10 +341,12 @@ class AccessUserTemplate extends React.Component {
         }
         return stepContent;
     };
+
     render() {
-        var current = this.state.current;
-        var width = LAYOUT.INITIALWIDTH;
-        var cls = className('access-user-step-container',{
+        let current = this.state.current;
+        let width = LAYOUT.INITIALWIDTH;
+        let integrateConfigUrl = '/background_management/integration';
+        let cls = className('access-user-step-container',{
             'show-modal': this.props.showFlag
         });
         return (
@@ -298,13 +355,16 @@ class AccessUserTemplate extends React.Component {
                     showFlag={this.props.showFlag} data-tracename="导入模板"
                     style={{width: width}}
                 >
-                    <span className="iconfont icon-close clue-import-btn" onClick={this.handleCancel}
-                        data-tracename="点击关闭导入面板"></span>
+                    <span className="iconfont icon-close access-user-btn" onClick={this.handleCancel}
+                        data-tracename="点击关闭接入用戶面板"></span>
                     <div className="access-user-detail-wrap" style={{width: width - LAYOUT.SMALLWIDTH}}>
                         <div className="access-top-title">
-                            <div className='other-access-way'>
-                                <a>{Intl.get('user.access.way.other.tip', '其他方式接入')}</a>
-                            </div>
+                            {/*
+                                <div className='other-access-way'>
+                                    <Link
+                                        to={integrateConfigUrl}>{Intl.get('user.access.way.other.tip', '其他方式接入')}</Link>
+                                </div>
+                            */}
                             {Intl.get('app.manage.access.user', '接入用户')}
                         </div>
                         <div className="access-title-top">
@@ -323,33 +383,12 @@ class AccessUserTemplate extends React.Component {
 }
 
 AccessUserTemplate.defaultProps = {
-    uploadActionName: '',//导入类型的英文描述
-    uploadHref: '',//导入的url
-    importType: '',//导入类型的中文描述
-    templateHref: '',//下载导入模板的url
-    //todo 导入的表格传入时，一定把标识重复的字段设置为repeat，在重复item的名称上加类名时，统一加成repeat-item-name
-    previewList: [],//展示的内容
     showFlag: false,//控制导入面板是否展示
-    getItemPrevList: noop,//获取要展示的列
     closeTemplatePanel: noop,//关闭面板的回调
-    onItemListImport: noop,//导入时的函数
-    doImportAjax: noop,//确认导入时的函数
-    repeatAlertMessage: '',//有重复数据后的提示信息
-    regRules: [],//文件类型的校验规则,
 };
 AccessUserTemplate.propTypes = {
-    uploadActionName: PropTypes.string,
-    uploadHref: PropTypes.string,
-    importType: PropTypes.string,
-    templateHref: PropTypes.string,
     showFlag: PropTypes.bool,
     closeTemplatePanel: PropTypes.func,
-    previewList: PropTypes.object,
-    onItemListImport: PropTypes.func,
-    doImportAjax: PropTypes.func,
-    getItemPrevList: PropTypes.func,
-    repeatAlertMessage: PropTypes.string,//有重复数据后的提示信息
-    regRules: PropTypes.object,
     form: PropTypes.object
 };
 export default Form.create()(AccessUserTemplate);

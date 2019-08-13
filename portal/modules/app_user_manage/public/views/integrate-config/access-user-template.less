@@ -1,11 +1,13 @@
 @import '../../../../../public/css/common-variables';
+@success-tip-color: #06ae06;
+@error-tip-color: #f5222d;
 //接入用户
 .access-user-step-container{
   .access-user-template-panel.right-pannel-default {
     transform: translateX(100%);
     font-size: 14px;
     background-color: transparent!important;
-    .iconfont.icon-close.clue-import-btn{
+    .iconfont.icon-close.access-user-btn{
       color: #fff;
       background-color: #8ea9c4;
       border-radius: 0 !important;
@@ -86,74 +88,98 @@
           }
         }
         .second-step-content {
-          .right-pannel-scrollbar {
-            //接入的用户title
-            .access-title {
-              .no-user-logo-div {
-                margin-right: 8px;
-                font-size: 16px;
-                height: 24px;
-                width: 24px;
-                line-height: 24px;
-              }
-              span {
-                color: @title-color;
-                font-size: 16px;
-                font-weight: bold;
-              }
+          //接入的用户title
+          .access-title {
+            .no-user-logo-div {
+              margin-right: 8px;
+              font-size: 16px;
+              height: 24px;
+              width: 24px;
+              line-height: 24px;
+              border-radius: 4px;
             }
-            //用户属性
-            .add-user-data-card {
-              .detail-card-title {
-                color: @title-color;
+            span {
+              color: @title-color;
+              font-size: 16px;
+              font-weight: bold;
+            }
+          }
+          //用户属性
+          .add-user-data-card {
+            .detail-card-title {
+              color: @title-color;
+            }
+            .add-user-data-warp {
+              .access-step-tip {
+                width: 100%;
+                font-size: 14px;
+                margin-top: 10px;
+                .js-code-label {
+                  display: inline-block;
+                  line-height: 28px;
+                  color: #999999;
+                  font-size: 14px;
+                }
+                //复制成功的提示
+                .copy-success-tip {
+                  float: right;
+                  display: inline-block;
+                  margin-left: 10px;
+                  line-height: 28px;
+                  color: @title-color;
+                  .anticon-check-circle {
+                    margin-right: 5px;
+                    color: @success-tip-color;
+                  }
+                }
+                .copy-btn {
+                  float: right;
+                  color: #8DA8C5;
+                  line-height: 28px;
+                  &:hover {
+                    color: darken(#8DA8C5 , 30%);
+                  }
+                }
+                //代码段
+                .pre-code{
+                  margin-top: 0;
+                  #matomo-js-code {
+                    white-space:pre-wrap;
+                    padding: 12px;
+                    font-size: 12px;
+                    background-color: #fff;
+                    color: #999;
+                  }
+                }
               }
             }
           }
-          .import-warning{
-            background: #fff;
-            .ant-alert.ant-alert-warning{
-              border: 1px solid #fff;
-              background-color: #fff;
-              position: relative;
-              top: 0;
-              left: 0;
-              .ant-alert-icon{
-                color:@error_tips_color;
-              }
-              .ant-alert-message{
-                font-size: 13px;
-                color:@error_tips_color;
-              }
-            }
 
-          }
-          .ant-table-body{
-            background: #fff;
-            tr td{
-              white-space: normal;
-              .repeat-item-name{
-                color:@error_tips_color;
-              }
+          //测试footer
+          .js-code-user-tip {
+            display: flex;
+            align-items: center;
+            float: right;
+            margin-top: 25px;
+            font-size: 14px;
+            color: @title-color;
+            .ant-btn {
+              margin-left: 12px;
             }
-          }
-          .prev-foot{
-            text-align: right;
-            margin-top:10px;
-            .ant-btn{
-              margin-left:10px;
+            .test-loading {
+              display: inline-block;
+              margin-left: 5px;
             }
-            .ant-btn[disabled]{
-              color: #fff;
-              background-color: #CBE4F8;
-              border-color: #CBE4F8;
+            .anticon-check-circle {
+              color: @success-tip-color;
             }
-            .is-importing{
-              position: absolute;
-              top: 150px;
-              left: 700px;
-              .load8 {
-                transform: scale(0.8, 0.8);
-              }
+            .anticon-exclamation-circle {
+              color: @error-tip-color;
+            }
+            .test-error-tip,.test-success-tip{
+              display: inline-block;
+              margin-left: 10px;
+              line-height: 24px;
             }
           }
         }

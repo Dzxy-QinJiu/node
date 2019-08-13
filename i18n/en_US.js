@@ -640,8 +640,9 @@ var en_US = {
     'user.copy.success.tip': 'Copied success',//复制成功！
     'user.access.way.tip': 'If you use the following products, you can also access users in the following ways',//您如果使用了以下产品，还可以通过以下方式接入用户
     'user.access.way.other.tip': 'Acess user in other ways', //其他方式接入
-    'user.jscode.test.btn': 'Click test',//点击测试
-    'user.jscode.use.tip': 'Please add the above JS code to the header of the application page if it has been added ',//请将以上js代码添加到应用页面的header中，如已添加
+    'user.jscode.test.btn': 'Test',//测试
+    'user.jscode.use.tip': 'Please {copyAndTraceCode}to your product page header and test',//请{copyAndTraceCode}到产品页面的header中后测试
+    'user.jscode.copy.trace': 'copy the trace code',//复制跟踪代码
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
     // 用户分析

@@ -7,8 +7,6 @@
   margin-top: -40px;
 }
 .integrate-config-wrap {
-  position: absolute;
-  display: inline-block;
   &:extend(.margin-style);
   margin-left: 30px;
   margin-bottom: 20px;
@@ -23,17 +21,7 @@
   .curtao-product-name {
     margin-top: 10px;
   }
-  .test-success-tip{
-    color: @success-tip-color;
-  }
-  .test-error-tip{
-    color: @error-tip-color;
-  }
-  .test-error-tip,.test-success-tip{
-    display: inline-block;
-    margin-left: 10px;
-    line-height: 24px;
-  }
+
   .integrate-config-form {
     width: 400px;
     &:extend(.margin-style);
@@ -67,13 +55,10 @@
     .copy-btn {
       float: right;
     }
-    //复制成功的提示
-    .copy-success-tip {
-      float: right;
-      display: inline-block;
-      margin-left: 10px;
-      line-height: 28px;
-      color: @success-tip-color;
+    .no-data-intro {
+      .no-data-container {
+        text-laign: left;
+      }
     }
     .js-code-label {
       display: inline-block;
