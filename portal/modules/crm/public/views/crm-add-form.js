@@ -96,7 +96,10 @@ var CRMAddForm = createReactClass({
         formData: PropTypes.object,
         isShowMadal: PropTypes.bool,
         isConvert: PropTypes.bool,
-        title: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+        title: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.element
+        ])
     },
 
     componentDidMount: function() {
@@ -616,7 +619,7 @@ var CRMAddForm = createReactClass({
                 isShowMadal={this.props.isShowMadal}
                 isShowCloseBtn={true}
                 onClosePanel={this.closeAddPanel}
-                title= {this.props.title}
+                title={this.props.title}
                 content={this.renderFormContent()}
                 dataTracename="添加客户"
             />
