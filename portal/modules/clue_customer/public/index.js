@@ -933,7 +933,7 @@ class ClueCustomer extends React.Component {
                 {associatedCustomer ? (
                     <div className="associate-customer">
                         {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_label)}>{salesClueItem.customer_label}</Tag> : null}
-                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b>
+                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}</b>
                     </div>
                 ) : null}
             </div>
@@ -1053,11 +1053,11 @@ class ClueCustomer extends React.Component {
    };
 
     getClueTableColunms = () => {
-        const column_width = '80px';
+        const column_width = '110px';
         let columns = [
             {
                 dataIndex: 'clue_name',
-                width: '350px',
+                width: '240px',
                 render: (text, salesClueItem, index) => {
                     let similarClue = _.get(salesClueItem, 'labels');
                     let availability = _.get(salesClueItem, 'availability');
@@ -1121,7 +1121,7 @@ class ClueCustomer extends React.Component {
                 }
             },{
                 dataIndex: 'trace_person',
-                width: '100px',
+                width: column_width,
                 render: (text, salesClueItem, index) => {
                     let user = userData.getUserData();
                     var handlePersonName = _.get(salesClueItem,'user_name','');//当前跟进人
@@ -1155,7 +1155,7 @@ class ClueCustomer extends React.Component {
                 }
             },{
                 dataIndex: 'trace_content',
-                width: '300px',
+                width: '150px',
                 render: (text, salesClueItem, index) => {
                     return(
                         <div className="clue-foot" id="clue-foot">
@@ -1169,7 +1169,7 @@ class ClueCustomer extends React.Component {
         columns.push({
             dataIndex: 'assocaite_customer',
             className: 'invalid-td-clue',
-            width: '300px',
+            width: '150px',
             render: (text, salesClueItem, index) => {
                 return (
                     <div className="avalibity-or-invalid-container">
