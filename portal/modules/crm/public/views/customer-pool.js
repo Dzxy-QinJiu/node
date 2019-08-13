@@ -227,12 +227,22 @@ class CustomerPool extends React.Component {
             }, {
                 title: Intl.get('weekly.report.customer.stage', '客户阶段'),
                 width: column_width,
-                dataIndex: 'customer_stage',
+                dataIndex: 'customer_label',
                 className: 'has-filter',
+                render: (text, record, index) => {
+                    return (
+                        <span>
+                            {record.customer_label ? (
+                                <Tag
+                                    className={crmUtil.getCrmLabelCls(record.customer_label)}>
+                                    {record.customer_label}</Tag>) : null
+                            }
+                        </span>);
+                }
             }, {
                 title: Intl.get('crm.customer.label', '客户标签'),
                 width: 130,
-                dataIndex: 'customer_label',
+                dataIndex: 'labels',
                 className: 'has-filter',
                 render: (text, record, index) => {
                     var tagsArray = _.isArray(record.labels) ? record.labels : [];
@@ -246,11 +256,6 @@ class CustomerPool extends React.Component {
 
                     return (
                         <span>
-                            {record.customer_label ? (
-                                <Tag
-                                    className={crmUtil.getCrmLabelCls(record.customer_label)}>
-                                    {record.customer_label}</Tag>) : null
-                            }
                             {record.qualify_label ? (
                                 <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
                                     {record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
