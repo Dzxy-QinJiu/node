@@ -172,7 +172,6 @@ ClueFilterStore.prototype.setUnexistedFiled = function(unexistedItem) {
 //筛选相似（labels）的字段
 ClueFilterStore.prototype.setSimilarFiled = function(similarItem){
     if (similarItem){
-        console.log(similarItem);
         this.filterLabels = [similarItem];
     }else{
         this.filterLabels = [];

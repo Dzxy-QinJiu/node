@@ -535,7 +535,7 @@ class ClueCustomer extends React.Component {
             //相似客户和线索
             let filterLabels = filterStoreData.filterLabels;
             if(_.isArray(filterLabels) && filterLabels.length){
-                typeFilter.labels = filterLabels.join(',');
+                typeFilter.labels = filterLabels;
             }
             var bodyField = {};
             if(_.isArray(existFilelds) && existFilelds.length){

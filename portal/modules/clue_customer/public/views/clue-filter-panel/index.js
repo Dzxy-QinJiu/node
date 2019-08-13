@@ -121,17 +121,12 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setUnexistedFiled();
                         FilterAction.setFilterClueAllotNoTrace();
                         FilterAction.setSimilarFiled(SIMILAR_CLUE);
-                    }else if(item.value === SIMILAR_ALL){
-                        FilterAction.setExistedFiled(SIMILAR_ALL);
-                        FilterAction.setUnexistedFiled();
-                        FilterAction.setFilterClueAllotNoTrace();
-                        FilterAction.setSimilarFiled();
                     }else if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
                         //如果筛选的是待我处理的线索
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
-                        FilterAction.setFilterClueAllotNoTrace('0');
                         //如果上次选中的状态是已转化，需要把已转化改成待跟进
+                        FilterAction.setFilterClueAllotNoTrace('0');
                         FilterAction.setSimilarFiled();
                         if(this.getFilterStatus().status === SELECT_TYPE.HAS_TRANSFER){
                             FilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
