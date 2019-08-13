@@ -5,6 +5,7 @@
 require('../css/clue-to-customer-panel.less');
 require('MOD_DIR/crm/public/css/contact.less');
 import { storageUtil } from 'ant-utils';
+import { CLUE_TO_CUSTOMER_VIEW_TYPE } from '../consts';
 import userData from 'PUB_DIR/sources/user-data';
 import { Row, Col, Button, Icon, message, Select } from 'antd';
 import ajax from 'ant-ajax';
@@ -17,15 +18,6 @@ const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
 const ContactStore = require('MOD_DIR/crm/public/store/contact-store');
 const noop = function() {};
 //视图类型
-const VIEW_TYPE = {
-    //相似客户列表视图
-    CUSTOMER_LIST: 'customer_list',
-    //客户搜索视图
-    CUSTOMER_SEARCH: 'customer_search',
-    //合并客户视图
-    CUSTOMER_MERGE: 'customer_merge'
-};
-
 //联系方式种类
 const CONTACT_WAY_TYPES = [
     {
@@ -66,7 +58,7 @@ class ClueToCustomerPanel extends React.Component {
         //合并完成后的回调事件
         onMerged: noop,
         //展示的视图类型
-        viewType: VIEW_TYPE.CUSTOMER_LIST,
+        viewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST,
     };
 
     static propTypes = {
@@ -110,7 +102,7 @@ class ClueToCustomerPanel extends React.Component {
         $(window).on('resize', this.onWindowResize);
 
         //从线索详情面板点合并到此客户按钮打开线索转客户面板时，直接显示合并界面
-        if (this.props.viewType === VIEW_TYPE.CUSTOMER_MERGE){
+        if (this.props.viewType === CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_MERGE){
             this.onMergeToCustomerClick(_.get(this, 'props.existingCustomers[0]'));
         }
     }
@@ -123,7 +115,7 @@ class ClueToCustomerPanel extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.clue.id !== this.props.clue.id) {
             this.setState({
-                viewType: VIEW_TYPE.CUSTOMER_LIST,
+                viewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST,
             });
         }
     }
@@ -415,10 +407,10 @@ class ClueToCustomerPanel extends React.Component {
         let state = {
             customerContacts,
             isConfirmMergeBtnDisabled,
-            viewType: VIEW_TYPE.CUSTOMER_MERGE,
+            viewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_MERGE,
         };
 
-        if (this.props.viewType !== VIEW_TYPE.CUSTOMER_MERGE){
+        if (this.props.viewType !== CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_MERGE){
             state.prevViewType = this.state.viewType;
         }
 
@@ -734,7 +726,7 @@ class ClueToCustomerPanel extends React.Component {
     //合并到已有客户
     mergeToExistingCustomer = () => {
         this.setState({
-            viewType: VIEW_TYPE.CUSTOMER_SEARCH,
+            viewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_SEARCH,
             prevViewType: this.state.viewType
         });
     }
@@ -871,15 +863,15 @@ class ClueToCustomerPanel extends React.Component {
         let opBtnClickHandler = function() {};
         let opBtnText = '';
 
-        if (viewType === VIEW_TYPE.CUSTOMER_LIST) {
+        if (viewType === CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST) {
             title = Intl.get('common.convert.to.customer', '转为客户');
             opBtnText = Intl.get('common.merge.to.other.customer', '合并到其他客户');
             opBtnClickHandler = this.mergeToExistingCustomer;
-        } else if (viewType === VIEW_TYPE.CUSTOMER_SEARCH) {
+        } else if (viewType === CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_SEARCH) {
             title = Intl.get('common.merge.to.other.customer', '合并到其他客户');
             opBtnText = Intl.get('crm.52', '返回');
             opBtnClickHandler = this.handleGoBack;
-        } else if (viewType === VIEW_TYPE.CUSTOMER_MERGE) {
+        } else if (viewType === CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_MERGE) {
             title = Intl.get('common.merge.to.customer', '合并到此客户');
             opBtnText = Intl.get('crm.52', '返回');
             opBtnClickHandler = this.handleGoBack;
@@ -968,9 +960,9 @@ class ClueToCustomerPanel extends React.Component {
             <div className="right-panel-content">
                 <div className="clue-detail-wrap">
                     <div className="panel-content">
-                        {this.state.viewType === VIEW_TYPE.CUSTOMER_LIST ? this.renderCustomerList() : null}
-                        {this.state.viewType === VIEW_TYPE.CUSTOMER_SEARCH ? this.renderCustomerSearch() : null}
-                        {this.state.viewType === VIEW_TYPE.CUSTOMER_MERGE ? this.renderCustomerMerge() : null}
+                        {this.state.viewType === CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST ? this.renderCustomerList() : null}
+                        {this.state.viewType === CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_SEARCH ? this.renderCustomerSearch() : null}
+                        {this.state.viewType === CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_MERGE ? this.renderCustomerMerge() : null}
                     </div>
                 </div>
             </div>

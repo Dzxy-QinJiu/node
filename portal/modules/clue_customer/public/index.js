@@ -5,6 +5,7 @@
  */
 var React = require('react');
 var rightPanelShow = false;
+import { CLUE_TO_CUSTOMER_VIEW_TYPE } from './consts';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import { AUTHS, TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 var clueCustomerStore = require('./store/clue-customer-store');
@@ -86,7 +87,7 @@ class ClueCustomer extends React.Component {
         showCustomerId: '',//正在展示客户详情的客户id
         isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
         isShowClueToCustomerPanel: false,//是否展示线索转客户面板
-        clueToCustomerPanelViewType: 'customer_list',//线索转客户面板视图
+        clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST,//线索转客户面板视图
         isShowAddCustomerPanel: false,//是否展示添加客户面板
         customerOfCurUser: {},//当前展示用户所属客户的详情
         selectedClues: [],//获取批量操作选中的线索
@@ -1241,7 +1242,7 @@ class ClueCustomer extends React.Component {
                     state.isShowClueToCustomerPanel = true;
                     state.isShowAddCustomerPanel = false;
                     state.existingCustomers = existingCustomers;
-                    state.clueToCustomerPanelViewType = 'customer_list';
+                    state.clueToCustomerPanelViewType = CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST;
                 } else {
                     state.isShowClueToCustomerPanel = false;
                     state.isShowAddCustomerPanel = true;
@@ -1260,7 +1261,7 @@ class ClueCustomer extends React.Component {
         this.setState({
             isShowClueToCustomerPanel: true,
             existingCustomers: [customer],
-            clueToCustomerPanelViewType: 'customer_merge'
+            clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_MERGE
         });
     };
 
@@ -1268,7 +1269,7 @@ class ClueCustomer extends React.Component {
     hideClueToCustomerPanel = () => {
         this.setState({
             isShowClueToCustomerPanel: false,
-            clueToCustomerPanelViewType: 'customer_list'
+            clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST
         });
     };
 
@@ -2056,7 +2057,7 @@ class ClueCustomer extends React.Component {
             //显示线索转客户面板
             isShowClueToCustomerPanel: true,
             //显示线索转客户面板上的搜索界面
-            clueToCustomerPanelViewType: 'customer_search',
+            clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_SEARCH,
         });
     }
 
