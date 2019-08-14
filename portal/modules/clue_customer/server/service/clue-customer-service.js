@@ -60,15 +60,15 @@ const restApis = {
     //获取相似客户
     getSimilarCustomerLists: '/rest/customer/v3/customer/query/:type/similarity/customer',
     //获取推荐的线索
-    getRecommendClueLists: '/rest/company/v1/companys/search/drop_down_load',
+    getRecommendClueLists: '/rest/clue/v2/companys/search/drop_down_load',
     //获取行业配置
     getClueIndustryLists: '/rest/company/v1/ent/industrys',
     //获取个人配置
-    selfConditionConfig: '/rest/company/v1/ent/search',
+    selfConditionConfig: '/rest/clue/v2/ent/search',
     //提取某条线索
-    extractRecommendClue: '/rest/company/v1/ent/clue',
+    extractRecommendClue: '/rest/clue/v2/ent/clue',
     //批量提取线索
-    batchExtractRecommendLists: 'rest/company/v1/ent/clues',
+    batchExtractRecommendLists: '/rest/clue/v2/ent/clues',
 };
 
 //查询客户
