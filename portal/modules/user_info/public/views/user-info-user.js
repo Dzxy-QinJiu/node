@@ -67,9 +67,7 @@ class UserInfo extends React.Component{
     uploadImg(src) {
         let formData = this.state.formData;
         formData.userLogo = src;
-        let userInfo = _.extend(this.props.userInfo, {userLogo: formData.userLogo});
-        delete userInfo.phone;
-        UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
+        UserInfoAction.editUserInfo({user_logo: src}, (errorMsg) => {
             if(_.isEmpty(errorMsg)){
                 this.setState({
                     formData
@@ -198,9 +196,7 @@ class UserInfo extends React.Component{
     //保存邮箱操作
     saveEmailEditInput = (saveObj, successFunc, errorFunc) => {
         let email = _.get(saveObj, 'email');
-        let userInfo = _.extend(this.props.userInfo, {email: email});
-        delete userInfo.phone;
-        UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
+        UserInfoAction.editUserInfo({email: email}, (errorMsg) => {
             if(_.isEmpty(errorMsg)){
                 //邮箱修改成功，恢复为未激活
                 let formData = _.extend(this.state.formData, {emailEnable: false});
@@ -413,9 +409,7 @@ class UserInfo extends React.Component{
     //保存昵称操作
     saveNicknameEditInput = (saveObj, successFunc, errorFunc) => {
         let nickname = _.get(saveObj, 'nickname');
-        let userInfo = _.extend(this.props.userInfo, {nickName: nickname});
-        delete userInfo.phone;
-        UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
+        UserInfoAction.editUserInfo({nick_name: nickname}, (errorMsg) => {
             if(_.isEmpty(errorMsg)){
                 successFunc();
             } else {

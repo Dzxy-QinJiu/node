@@ -35,16 +35,7 @@ exports.activeUserEmail = function(req, res) {
 };
 //修改用户信息
 exports.editUserInfo = function(req, res) {
-
-    var userInfo = {
-        user_id: req.body.id,
-        phone: req.body.phone,
-        email: req.body.email,
-        nick_name: req.body.nickName,
-        user_logo: req.body.userLogo
-    };
-
-    userInfoManageServic.editUserInfo(req, res, userInfo)
+    userInfoManageServic.editUserInfo(req, res, req.body)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(codeMessage) {

@@ -116,13 +116,20 @@ UserInfoStore.prototype.hideUserInfoForm = function() {
 };
 //修改个人资料后的处理
 UserInfoStore.prototype.editUserInfo = function(modifiedUser) {
+    let modifiedInfo = {};
     if (_.isObject(modifiedUser)) {
-        _.extend(this.userInfo, modifiedUser);
+        if(modifiedUser.hasOwnProperty('nick_name')) {
+            modifiedInfo.nameName = modifiedUser.nick_name;
+        }
+        if(modifiedUser.hasOwnProperty('user_logo')) {
+            modifiedInfo.userLogo = modifiedUser.user_logo;
+        }
+        _.extend(this.userInfo, modifiedInfo);
     }
     this.userInfoFormShow = false;
     userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
-        nickName: modifiedUser.nickName,
-        userLogo: modifiedUser.userLogo
+        nickName: modifiedInfo.nickName,
+        userLogo: modifiedInfo.userLogo
     });
 };
 UserInfoStore.prototype.editUserInfoPwd = function(result) {
