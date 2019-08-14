@@ -84,6 +84,7 @@ function FilterAction() {
             list = list.map(tag => {
                 return {name: tag, show_name: tag};
             });
+            _.remove(list, item => _.isEqual(_.get(item, 'name'), '线索') || _.isEqual(_.get(item, 'name'), '转出'));
             list.unshift({
                 name: Intl.get('crm.tag.unknown', '未打标签的客户'),
                 show_name: Intl.get('crm.tag.unknown', '未打标签的客户')

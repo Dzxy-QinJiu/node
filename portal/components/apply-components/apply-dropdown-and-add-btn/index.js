@@ -8,26 +8,56 @@ var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 require('./index.less');
 var classNames = require('classnames');
 import {getUnreadReplyTitle} from 'PUB_DIR/sources/utils/common-method-util';
+let userData = require('PUB_DIR/sources/user-data');
+import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
+import UserInfoStore from '../../../modules/user_info/public/store/user-info-store';
+import UserInfoAction from '../../../modules/user_info/public/action/user-info-actions';
+const CC_INFO = {
+    APPLY: 'apply', //提交申请时抄送
+    APPLY_AND_APPROVE: 'apply_and_approve', //审批通过后抄送
+    APPROVE: 'approve' //提交申请和审批通过后都抄送
+};
 class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
-
+            workFlowConfigs: null,
+            userApplyType: this.props.userApplyType,
+            hasPrivilege: false, //用户是否有申请权限
+            ccInfo: '',
+            ...UserInfoStore.getState()
         };
     }
-
     onStoreChange = () => {
-
+        this.setState(UserInfoStore.getState());
     };
-    componentDidMount = () => {
 
+    componentWillMount = () => {
+
+    }
+    componentDidMount = () => {
+        UserInfoStore.listen(this.onStoreChange);
+        UserInfoAction.getUserInfo();
+        let workFlowConfigs = userData.getUserData().workFlowConfigs;
+        let type = _.filter(workFlowConfigs, item => {
+            let type = _.get(item, 'type');
+            if(_.isEqual(type, this.state.userApplyType)) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        let ccInfo = _.get(type, 'applyRulesAndSetting.ccInformation');
+        return {
+            workFlowConfigs: workFlowConfigs,
+            ccInfo: ccInfo
+        };
     };
     componentWillReceiveProps = (nextProps) => {
 
     };
     componentWillUnmount = () => {
-
+        UserInfoStore.unlisten(this.onStoreChange);
     };
     renderApplyMessage = () => {
         var showUnreadTip = this.props.showUnreadTip;
@@ -125,6 +155,7 @@ ApplyDropdownAndAddBtn.propTypes = {
     toggleUnreadApplyList: PropTypes.func,
     showUnreadTip: PropTypes.bool,
     isCheckUnreadApplyList: PropTypes.bool,
+    userApplyType: PropTypes.string
 };
 
 export default ApplyDropdownAndAddBtn;

@@ -8,7 +8,14 @@ var ReportSendApplyStore = require('./store/report-send-apply-store');
 var ReportSendApplyDetailAction = require('./action/report-send-apply-detail-action');
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
 import AddReportSendApplyPanel from 'CMP_DIR/add-send-document-template';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,REPORT_TYPE,APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
+import {
+    selectMenuList,
+    APPLY_LIST_LAYOUT_CONSTANTS,
+    APPLY_APPROVE_TYPES,
+    REPORT_TYPE,
+    APPLY_TYPE_STATUS_CONST,
+    APPLY_TYPE
+} from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -302,6 +309,7 @@ class ReportSendApplyManagement extends React.Component {
                 <div className="report-send-apply-list-detail-wrap">
                     <div className="col-md-4 report-send-apply-list" data-tracename="舆情报送申请列表">
                         <ApplyDropdownAndAddBtn
+                            userApplyType={APPLY_TYPE.OPINION_REPORT}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_REPORT_APPLY'

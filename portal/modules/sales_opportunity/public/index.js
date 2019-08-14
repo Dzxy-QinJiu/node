@@ -26,7 +26,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 var NoData = require('CMP_DIR/analysis-nodata');
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
-import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
@@ -316,6 +316,7 @@ class SalesOpportunityApplyManagement extends React.Component {
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="销售机会申请列表">
                         <ApplyDropdownAndAddBtn
+                            userApplyType={APPLY_TYPE.BUSINESS_OPPORTUNITIES}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_BUSINESSOPPO_APPLY'

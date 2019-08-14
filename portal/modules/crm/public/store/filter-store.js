@@ -119,6 +119,10 @@ FilterStore.prototype.setApp = function(value) {
     this.condition.sales_opportunities[0].apps = [value];
 };
 
+FilterStore.prototype.getSystemTagList = function(list) {
+    this.systemTagList = list;
+};
+
 FilterStore.prototype.setTeam = function(value) {
     this.condition.sales_team_id = value;
 };
