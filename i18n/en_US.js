@@ -2761,8 +2761,8 @@ var en_US = {
     'common.telephone.statistics': 'Telephone statistics',//电话量统计
     'common.ketao.app.telephone.statistics': 'Ketao app telephone statistics',//客套APP电话量统计
     'common.trial.qualified.customer.statistics': 'Trial qualified customer statistics',//试用合格客户数统计
-    'clue.similar.customer': 'similar customer',//有相似客户的线索
-    'clue.has.similar.clue': 'similar clue',//相似线索
+    'clue.similar.customer': 'similar customer',//有相似客户
+    'clue.has.similar.clue': 'similar clue',//有相似线索
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.extract.clue': 'Extract clue', // 提取线索
     'clue.pool': 'Clue Pool', // 线索池
