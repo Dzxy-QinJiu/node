@@ -172,12 +172,30 @@
           clear: both;
           overflow: hidden;
           width: 100%;
+          background-color: #EEF7FE;
+          .add-plan-info-container {
+            margin: 8px;
+            .contact-tip{
+              position: relative;
+              padding: 10px 0 10px 0;
+            }
+            .indicator{
+              position: absolute;
+              right: 200px;
+              top: 0;
+            }
+            .btn-wrap{
+              .ant-btn{
+                margin-right: 10px;
+              }
+            }
+
+          }
           .ant-select {
             width: 100%;
           }
           .trace-content {
             padding: 8px 8px 4px 8px;
-            background-color: #EEF7FE;
             line-height: 18px;
             font-size: 12px;
             &:extend(.overflow-break);
@@ -245,9 +263,7 @@
             float: left;
             margin: 8px;
           }
-          .add-plan-info-container {
-            margin: 8px;
-          }
+
         }
 
       }

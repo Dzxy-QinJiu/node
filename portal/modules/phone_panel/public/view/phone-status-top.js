@@ -5,7 +5,7 @@
  */
 const PropTypes = require('prop-types');
 var React = require('react');
-import {Button, Tag, Select,Menu, Dropdown,Input} from 'antd';
+import {Button, Tag, Select,Menu, Dropdown,Input, Icon} from 'antd';
 const {TextArea} = Input;
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
@@ -14,11 +14,13 @@ import {getCallClient, AcceptButton, ReleaseButton} from 'PUB_DIR/sources/utils/
 
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
+var ScheduleAction = require('MOD_DIR/crm/public/action/schedule-action');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 //挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访
 const HANG_UP_TYPES = [PHONERINGSTATUS.phone, PHONERINGSTATUS.curtao_phone, PHONERINGSTATUS.call_back];
+import {TIME_CONSTS} from 'PUB_DIR/sources/utils/consts';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -37,6 +39,10 @@ class phoneStatusTop extends React.Component {
             isAddingPlanInfo: this.props.isAddingPlanInfo,//正在添加联系计划
             showCancelBtn: false,//是否展示取消保存跟进记录的按钮
             visible: false,//跟进内容下拉框是否展示
+            addCustomerSchedule: false,//正在添加联系计划
+            addCustomerScheduleMsg: '',//添加联系计划的提示
+            hasAddedSchedlue: false,//已经添加了联系计划就不可以再添加了
+            messageType: ''
         };
     }
 
@@ -313,8 +319,51 @@ class phoneStatusTop extends React.Component {
             getCallClient().releaseCall();
         }
     };
+    addScheduleItem = (startTimeValue) => {
+        var submitObj = {
+            start_time: startTimeValue,
+            end_time: startTimeValue + TIME_CONSTS.THIRTY * 60 * 1000,
+            alert_time: startTimeValue,
+            topic: _.get(this, 'state.customerInfoArr[0].name'),
+            scheduleType: 'calls',
+            socketio_notice: true,
+            content: '',
+            customer_id: _.get(this, 'state.customerInfoArr[0].id')
+        };
+        if (!submitObj.customer_id) {
+            return;
+        }
+        
+        this.setState({
+            addCustomerSchedule: true
+        });
+        ScheduleAction.addSchedule(submitObj, (resData) => {
+            if (resData.id) {
+                this.setState({
+                    hasAddedSchedlue: true
+                });
+                this.showMessage(Intl.get('user.user.add.success', '添加成功'), 'success');
+            } else {
+                this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
+            }
+        });
+    };
+    showMessage = (content, type) => {
+        this.setState({
+            addCustomerSchedule: false,
+            messageType: type,
+            addCustomerScheduleMsg: content || '',
+        });
+    };
+    hideSaveTooltip = () => {
+        this.setState({
+            messageType: '',
+            addCustomerScheduleMsg: '',
+        });
+    };
 
     render() {
+        var saveResult = this.state.messageType;
         var iconFontCls = 'modal-icon iconfont';
         var phonemsgObj = this.state.phonemsgObj;
         var phoneStatusContainer = 'contact-info-detail';
@@ -350,16 +399,43 @@ class phoneStatusTop extends React.Component {
                 <div className="trace-and-handle-btn">
                     <div className="trace-content-container">
                         {this.renderTraceItem(phonemsgObj)}
+                        <div className="add-plan-info-container">
+                            <div className="contact-tip">{Intl.get('crm.clue.next.contact.time', '下次联系时间')}
+                                <div className="indicator">
+                                    {saveResult ?
+                                        (
+                                            <AlertTimer
+                                                time='3000'
+                                                message={this.state.addCustomerScheduleMsg}
+                                                type={saveResult} showIcon
+                                                onHide={this.hideSaveTooltip}/>
+                                        ) : ''
+                                    }
+                                </div>
+                            </div>
+                            <div className="btn-wrap">
+                                <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.TWO, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}
+                                </Button>
+                                <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.SIX, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
+                                <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
+                                <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                    onClick={this.addScheduleItem.bind(this, moment().add(3 * TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
+                                <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                    onClick={this.addScheduleItem.bind(this, moment().add(5 * TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
+                                <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                    onClick={this.handleAddPlan}>{Intl.get('user.time.custom', '自定义')}</Button>
+                                {this.state.addCustomerSchedule ? <Icon type="loading"/> : null}
+                            </div>
+                        </div>
                     </div>
                     {this.state.showAddFeedbackOrAddPlan && (!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo) ?
                         <div className="add-trace-and-plan">
                             <div className="add-more-info-container">
                                 <Button size="small"
                                     onClick={this.handleAddProductFeedback}>{Intl.get('call.record.add.product.feedback', '添加产品反馈')}</Button>
-                            </div>
-                            <div className="add-plan-info-container">
-                                <Button size="small"
-                                    onClick={this.handleAddPlan}>{Intl.get('crm.214', '添加联系计划')}</Button>
                             </div>
                         </div>
                         : null}

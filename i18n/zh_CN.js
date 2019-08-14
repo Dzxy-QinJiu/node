@@ -2481,10 +2481,8 @@ var zh_CN = {
     'crm.alert.topic': '标题',
     'crm.contact.time': '联系时间',
     'crm.alert.time': '提醒时间',
-    'crm.alert.after.1.hours': '1小时后',
-    'crm.alert.after.2.hours': '2小时后',
-    'crm.alert.after.5.hours': '5小时后',
-    'crm.alert.after.1.day': '1天后',
+    'crm.schedule.n.hour.later': '{n}小时后',
+    'crm.alert.after.n.day': '{n}天后',
     'crm.alert.after.1.week': '1周后',
     'crm.not.alert': '不提醒',
     'crm.alert.not.finish': '未完成',
@@ -3352,7 +3350,8 @@ var zh_CN = {
     'guide.see.clue': '查看线索',
     'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
     'guide.import.customer.success': '导入成功',
-
+    'crm.clue.phone.on.meeting': '在开会，不方便接听',
+    'crm.clue.next.contact.time': '下次联系时间'
 
 
 };

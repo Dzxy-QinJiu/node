@@ -17,56 +17,14 @@ import 'react-date-picker/index.css';
 import BootstrapDatepicker from '../../../../../components/bootstrap-datepicker';
 import ValidateMixin from '../../../../../mixins/ValidateMixin';
 import Trace from 'LIB_DIR/trace';
-import {SELECT_FULL_OPTIONS, NO_SELECT_FULL_OPTIONS} from 'PUB_DIR/sources/utils/consts';
+import {SELECT_FULL_OPTIONS, NO_SELECT_FULL_OPTIONS, CONTACT_TIMES, TIME_TYPE_CONSTS, TIME_CONSTS} from 'PUB_DIR/sources/utils/consts';
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 const HOUR_MUNITE_FORMAT = oplateConsts.HOUR_MUNITE_FORMAT;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-const TIME_CONSTS = {
-    'ZERO': 0,
-    'ZERO_POINT_FIVE': 0.5,
-    'ONE': 1,
-    'TWO': 2,
-    'TWO_POINT_FIVE': 2.5,
-    'THREE': 3,
-    'ONE_POINT_FIVE': 1.5,
-    'FIVE': 5,
-    'FIVE_POINT_FIVE': 5.5,
-    'SEVERN': 7,
-    'TEN': 10,
-    'FIFTeen': 15,
-    'TWENTY_FOUR': 24,
-    'TWENTY_FOUR_POINT_FIVE': 24.5,
-    'THIRTY': 30,
-    'SIXTY': 60
-};
-const TIME_TYPE_CONSTS = {
-    'NOT_REMIND': 'not_remind',
-    'ONE_HOUR': '1h',
-    'TWO_HOURS': '2h',
-    'FIVE_HOURS': '5h',
-    'ONE_DAY': '1d',
-    'ONE_WEEK': '1w',
-    'AHEAD_5_MIN': 'ahead_5min',
-    'AHEAD_10_MIN': 'ahead_10min',
-    'AHEAD_15_MIN': 'ahead_15min',
-    'AHEAD_30_MIN': 'ahead_30min',
-    'AHEAD_1_H': 'ahead_1h',
-    'THATDAY_10': 'thatday_10',
-    'AHEAD_1DAY_10': 'ahead_1day_10',
-    'AHEAD_2DAY_10': 'ahead_2day_10',
-    'AHEAD_3DAY_10': 'ahead_3day_10',
 
-};
-const CONTACT_TIMES = {
-    '1h': Intl.get('crm.alert.after.1.hours', '1小时后'),
-    '2h': Intl.get('crm.alert.after.2.hours', '2小时后'),
-    '5h': Intl.get('crm.alert.after.5.hours', '5小时后'),
-    '1d': Intl.get('crm.alert.after.1.day', '1天后'),
-    '1w': Intl.get('crm.alert.after.1.week', '1周后'),
-    'custom': Intl.get('user.time.custom', '自定义')
-};
+
 
 //日程类型
 const SCHEDULE_TYPES = [

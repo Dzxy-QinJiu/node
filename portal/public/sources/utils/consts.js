@@ -560,3 +560,49 @@ export const BOOT_PROCESS_KEYS = {
     ADD_CUSTOMER: 'add_customer',//添加客户
     EXTRACT_CLUE: 'extract_clue',//提取线索
 };
+export const CONTACT_TIMES = {
+    '1h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 1}),
+    '2h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 2}),
+    '5h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 5}),
+    '1d': Intl.get('crm.alert.after.n.day', '{n}天后',{n: 1}),
+    '1w': Intl.get('crm.alert.after.1.week', '1周后'),
+    'custom': Intl.get('user.time.custom', '自定义')
+};
+
+export const TIME_TYPE_CONSTS = {
+    'NOT_REMIND': 'not_remind',
+    'ONE_HOUR': '1h',
+    'TWO_HOURS': '2h',
+    'FIVE_HOURS': '5h',
+    'ONE_DAY': '1d',
+    'ONE_WEEK': '1w',
+    'AHEAD_5_MIN': 'ahead_5min',
+    'AHEAD_10_MIN': 'ahead_10min',
+    'AHEAD_15_MIN': 'ahead_15min',
+    'AHEAD_30_MIN': 'ahead_30min',
+    'AHEAD_1_H': 'ahead_1h',
+    'THATDAY_10': 'thatday_10',
+    'AHEAD_1DAY_10': 'ahead_1day_10',
+    'AHEAD_2DAY_10': 'ahead_2day_10',
+    'AHEAD_3DAY_10': 'ahead_3day_10',
+};
+
+export const TIME_CONSTS = {
+    'ZERO': 0,
+    'ZERO_POINT_FIVE': 0.5,
+    'ONE': 1,
+    'TWO': 2,
+    'TWO_POINT_FIVE': 2.5,
+    'THREE': 3,
+    'ONE_POINT_FIVE': 1.5,
+    'FIVE': 5,
+    'SIX': 6,
+    'FIVE_POINT_FIVE': 5.5,
+    'SEVERN': 7,
+    'TEN': 10,
+    'FIFTeen': 15,
+    'TWENTY_FOUR': 24,
+    'TWENTY_FOUR_POINT_FIVE': 24.5,
+    'THIRTY': 30,
+    'SIXTY': 60
+};
