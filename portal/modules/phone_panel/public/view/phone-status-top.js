@@ -16,11 +16,13 @@ var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var ScheduleAction = require('MOD_DIR/crm/public/action/schedule-action');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
+var basicOverviewAction = require('MOD_DIR/crm/public/action/basic-overview-actions');
 var AlertTimer = require('CMP_DIR/alert-timer');
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 //挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访
 const HANG_UP_TYPES = [PHONERINGSTATUS.phone, PHONERINGSTATUS.curtao_phone, PHONERINGSTATUS.call_back];
 import {TIME_CONSTS} from 'PUB_DIR/sources/utils/consts';
+import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -342,6 +344,12 @@ class phoneStatusTop extends React.Component {
                 this.setState({
                     hasAddedSchedlue: true
                 });
+                var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
+                //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
+                resData.contacts = _.get(this, 'state.customerInfoArr[0].contacts');
+                if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
+                    basicOverviewAction.afterAddSchedule(resData);
+                }
                 this.showMessage(Intl.get('user.user.add.success', '添加成功'), 'success');
             } else {
                 this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');

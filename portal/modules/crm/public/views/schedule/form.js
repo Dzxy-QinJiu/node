@@ -23,9 +23,6 @@ const HOUR_MUNITE_FORMAT = oplateConsts.HOUR_MUNITE_FORMAT;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-
-
-
 //日程类型
 const SCHEDULE_TYPES = [
     {name: Intl.get('schedule.phone.connect', '电联'), value: 'calls', iconCls: 'icon-phone-call-out'},
