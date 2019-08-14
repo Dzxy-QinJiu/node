@@ -21,13 +21,24 @@ class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            workFlowConfigs: null,
             userApplyType: this.props.userApplyType,
-            hasPrivilege: false, //用户是否有申请权限
-            ccInfo: '',
-            ...UserInfoStore.getState()
+            ccInfo: this.getCCInfo(),
         };
     }
+
+    getCCInfo = () => {
+        let workFlowConfigs = userData.getUserData().workFlowConfigs;
+        let type = _.filter(workFlowConfigs, item => {
+            let type = _.get(item, 'type');
+            if(_.isEqual(type, this.props.userApplyType)) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        return _.get(type[0], 'applyRulesAndSetting.ccInformation');
+    }
+
     onStoreChange = () => {
         this.setState(UserInfoStore.getState());
     };
@@ -38,20 +49,6 @@ class ApplyDropdownAndAddBtn extends React.Component {
     componentDidMount = () => {
         UserInfoStore.listen(this.onStoreChange);
         UserInfoAction.getUserInfo();
-        let workFlowConfigs = userData.getUserData().workFlowConfigs;
-        let type = _.filter(workFlowConfigs, item => {
-            let type = _.get(item, 'type');
-            if(_.isEqual(type, this.state.userApplyType)) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        let ccInfo = _.get(type, 'applyRulesAndSetting.ccInformation');
-        return {
-            workFlowConfigs: workFlowConfigs,
-            ccInfo: ccInfo
-        };
     };
     componentWillReceiveProps = (nextProps) => {
 
