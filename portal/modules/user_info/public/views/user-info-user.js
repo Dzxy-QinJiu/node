@@ -46,7 +46,8 @@ class UserInfo extends React.Component{
             isLoadingWechatBind: false,//是否正在绑定微信
             emailEditType: 'text', //text或edit
             //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
-            weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : ''//微信账号绑定的错误提示
+            weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : '',//微信账号绑定的错误提示
+            iconSaveError: ''//头像修改失败错误提示
         };
     }
 
@@ -66,7 +67,19 @@ class UserInfo extends React.Component{
     uploadImg(src) {
         let formData = this.state.formData;
         formData.userLogo = src;
-        this.setState({formData: formData});
+        let userInfo = _.extend(this.props.userInfo, {userLogo: formData.userLogo});
+        delete userInfo.phone;
+        UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
+            if(_.isEmpty(errorMsg)){
+                this.setState({
+                    formData
+                });
+            } else {
+                this.setState({
+                    iconSaveError: errorMsg
+                });
+            }
+        });
     }
 
     handleSubscribeCallback(resultObj) {
@@ -427,6 +440,7 @@ class UserInfo extends React.Component{
                             nickName={formData.nickName}
                             isUserHeadIcon={true}/>
                         <div className="user-info-nickname">
+                            {_.get(this.state, 'iconSaveError') ? <span className="icon-save-error">{_.get(this.state, 'iconSaveError')}</span> : null}
                             <BasicEditInputField
                                 displayType="text"
                                 id={formData.id}
