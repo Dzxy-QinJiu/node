@@ -61,9 +61,14 @@ class ClueDetailOverview extends React.Component {
         //获取相似线索列表
         this.getSimilarClueLists();
         //获取相似客户列表
-        this.getSimilarCustomerLists();
-
-
+        //如果是已转化的客户，不需要展示相似客户
+        if (!this.isHasTransferClue()){
+            this.getSimilarCustomerLists();
+        }
+    }
+    //线索的状态是已转化的线索
+    isHasTransferClue = () => {
+        return _.get(this, 'state.curClue.status') === SELECT_TYPE.HAS_TRANSFER;
     }
     componentWillUnmount() {
         clueCustomerStore.unlisten(this.onClueCustomerStoreChange);
@@ -169,7 +174,9 @@ class ClueDetailOverview extends React.Component {
                     //获取相似线索列表
                     this.getSimilarClueLists();
                     //获取相似客户列表
-                    this.getSimilarCustomerLists();
+                    if (!this.isHasTransferClue()){
+                        this.getSimilarCustomerLists();
+                    }
                 }
             });
         }
@@ -1194,7 +1201,7 @@ class ClueDetailOverview extends React.Component {
         if (_.get(this,'state.similarClueLists[0]') || _.get(this, 'state.similarCustomerLists[0]')){
             return (
                 <div className="similar-wrap">
-                    {_.get(this, 'state.similarCustomerLists[0]') ? this.renderSimilarLists() : null}
+                    {_.get(this, 'state.similarCustomerLists[0]') && !this.isHasTransferClue() ? this.renderSimilarLists() : null}
                     {_.get(this,'state.similarClueLists[0]') ? this.renderSimilarLists('clue') : null}
                 </div>
             );
@@ -1318,6 +1325,9 @@ ClueDetailOverview.defaultProps = {
     updateCustomerLastContact: function() {
 
     },
+    showClueToCustomerPanel: function() {
+
+    },
 
 
 };
@@ -1339,6 +1349,7 @@ ClueDetailOverview.propTypes = {
     onConvertToCustomerBtnClick: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     extractClueOperator: PropTypes.func,
+    showClueToCustomerPanel: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;
