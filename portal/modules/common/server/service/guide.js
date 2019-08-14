@@ -6,9 +6,9 @@ var urls = {
     setGuideMark: '/rest/base/v1/user/member/guide/mark/:step',
     closeGuideMark: '/rest/base/v1/user/member/guide/close/:step',
     //获取推荐的线索
-    getRecommendClueLists: '/rest/company/v1/companys/search/drop_down_load',
+    getRecommendClueLists: '/rest/clue/v2/companys/search/drop_down_load',
     //批量提取线索
-    batchExtractRecommendLists: 'rest/company/v1/ent/clues',
+    batchExtractRecommendLists: '/rest/clue/v2/ent/clues',
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
