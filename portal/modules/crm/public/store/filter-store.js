@@ -115,6 +115,11 @@ FilterStore.prototype.getCompetitorList = function(list) {
     this.competitorList = list;
 };
 
+//获取系统标签列表
+FilterStore.prototype.getSystemTagList = function(list) {
+    this.systemTagList = list;
+};
+
 FilterStore.prototype.setApp = function(value) {
     this.condition.sales_opportunities[0].apps = [value];
 };
