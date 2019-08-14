@@ -201,7 +201,8 @@ class UserInfo extends React.Component{
                 //邮箱修改成功，恢复为未激活
                 let formData = _.extend(this.state.formData, {emailEnable: false});
                 this.setState({
-                    formData
+                    formData,
+                    emailEditType: 'text'
                 });
                 successFunc();
             } else {
