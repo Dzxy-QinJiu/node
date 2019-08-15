@@ -93,6 +93,10 @@ export const ACCOUNT_MENUS = {
         name: Intl.get('common.overall.analysis', '总体分析'),
         key: 'account_overall'
     },
+    SIGNED: {
+        name: '签约帐号分析',
+        key: 'signed'
+    },
     DELAYED: {
         name: '延期帐号分析',
         key: 'delayed'
