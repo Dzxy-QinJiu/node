@@ -1087,7 +1087,7 @@ class ClueCustomer extends React.Component {
                                     </Tag> : null}
                                 {ifShowTags && _.indexOf(similarClue, '有相似客户') !== -1 ?
                                     <Tag className="clue-label intent-tag-style">
-                                        {Intl.get('clue.has.similar.client', '有相似客户')}
+                                        {Intl.get('clue.has.similar.customer', '有相似客户')}
                                     </Tag> : null}
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>

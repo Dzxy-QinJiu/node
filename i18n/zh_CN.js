@@ -2786,7 +2786,7 @@ var zh_CN = {
     'common.telephone.statistics': '电话量统计',
     'common.ketao.app.telephone.statistics': '客套APP电话量统计',
     'common.trial.qualified.customer.statistics': '试用合格客户数统计', 
-    'clue.similar.customer': '有相似客户',
+    'clue.has.similar.customer': '有相似客户',
     'clue.has.similar.clue': '有相似线索',
     'clue.export.clue.list': '导出线索',
     'clue.extract.clue': '提取线索',
@@ -3235,8 +3235,6 @@ var zh_CN = {
     'customer.has.similar.lists': '相似客户',
     'clue.has.similar.lists': '相似线索',
     'clue.similar.clue': '有相似线索或客户',
-    'clue.has.similar.clue': '有相似线索',
-    'clue.has.similar.client': '有相似客户',
     'apply.approve.first.higher.level': '直属上级',
     'apply.approve.some.level': '第{n}级上级',
     'apply.approve.level.five': '五',
@@ -3354,9 +3352,9 @@ var zh_CN = {
     'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
     'guide.import.customer.success': '导入成功',
     'common.clue.will.disappear.after.convert.to.customer': '转为客户后，线索相关内容都将转入客户，线索将消失。',
+    'common.report.num': '报送数量',
+    'common.signed.customer.public.opinion.report.statistics': '签约客户舆情报送统计',
     'crm.clue.phone.on.meeting': '在开会，不方便接听',
     'crm.clue.next.contact.time': '下次联系时间',
-
-
 };
 export default zh_CN;

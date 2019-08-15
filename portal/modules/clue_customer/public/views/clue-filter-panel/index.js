@@ -22,7 +22,7 @@ var otherFilterArray = [
         name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
         value: SELECT_TYPE.WAIT_ME_HANDLE
     },{
-        name: Intl.get( 'clue.similar.customer','有相似客户'), 
+        name: Intl.get( 'clue.has.similar.customer','有相似客户'),
         value: SIMILAR_CUSTOMER
     },{
         name: Intl.get( 'clue.has.similar.clue','有相似线索'),

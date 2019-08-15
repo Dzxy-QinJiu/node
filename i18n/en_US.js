@@ -2759,7 +2759,7 @@ var en_US = {
     'common.telephone.statistics': 'Telephone statistics',//电话量统计
     'common.ketao.app.telephone.statistics': 'Ketao app telephone statistics',//客套APP电话量统计
     'common.trial.qualified.customer.statistics': 'Trial qualified customer statistics',//试用合格客户数统计
-    'clue.similar.customer': 'similar customer',//有相似客户
+    'clue.has.similar.customer': 'similar customer',//有相似客户
     'clue.has.similar.clue': 'similar clue',//有相似线索
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.extract.clue': 'Extract clue', // 提取线索
@@ -3127,8 +3127,6 @@ var en_US = {
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar clue',//相似线索
     'clue.similar.clue': 'Similar clue or customer', //相似线索或客户
-    'clue.has.similar.clue': 'Contains similar clues',//有相似线索
-    'clue.has.similar.client': 'Contains similar clients',//有相似客户
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级
     'apply.approve.level.five': 'Five',//五
@@ -3247,6 +3245,7 @@ var en_US = {
     'guide.import.customer.success': 'Import Success',//导入成功
     'common.clue.will.disappear.after.convert.to.customer': 'Clue will disappear after convert to customer',//转为客户后，线索相关内容都将转入客户，线索将消失。
     'crm.clue.phone.on.meeting': 'In a meeting, it is not convenient to answer',//在开会，不方便接听
-
+    'common.report.num': 'report numer',//报送数量
+    'common.signed.customer.public.opinion.report.statistics': 'Signed customer public opinion report statistics',//签约客户舆情报送统计,
 };
 export default en_US;
