@@ -18,42 +18,44 @@ class NoDataIntro extends React.Component {
         super();
         this.state = {};
     }
+    renderNodataAddIntro = () => {
+        return (
+            <div className="no-data-add-and-import-intro">
+                <div className="no-data-container-warp">
+                    <div className="add-data-wrap">
+                        <div className="add-data-tip">
+                            {this.props.renderAddDataContent()}
+                        </div>
+                        <span className="add-data-background"></span>
+                    </div>
+                    <div className="import-data-wrap">
+                        <span className="import-data-background"></span>
+                        <div className="import-data-tip">
+                            {this.props.renderImportDataContent()}
+                        </div>
 
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    renderNodataTip = () => {
+        return (
+            <div className="no-data-add-and-import">
+                <i className="iconfont icon-no-data"></i>
+                <p className="abnornal-status-tip">{this.props.noDataTip}</p>
+            </div>
+        );
+    }
     render() {
-        if (this.props.showAddBtn) {
-            return (
-                <div className="no-data-add-and-import-intro">
-                    <div className="no-data-container-warp">
-                        <div className="add-data-wrap">
-                            <div className="add-data-tip">
-                                {this.props.renderAddDataContent()}
-                            </div>
-                            <span className="add-data-background"></span>
-                        </div>
-                        <div className="import-data-wrap">
-                            <span className="import-data-background"></span>
-                            <div className="import-data-tip">
-                                {this.props.renderImportDataContent()}
-                            </div>
-
-                        </div>
-                    </div>
-                    <div className="add-other-operation">
-                        {this.props.renderOtherOperation()}
-                    </div>
+        return (
+            <div className="no-data-add-and-import-intro-wrap">
+                {this.props.showAddBtn ? this.renderNodataAddIntro() : this.renderNodataTip()}
+                <div className="add-other-operation">
+                    {this.props.renderOtherOperation()}
                 </div>
-            );
-        } else {
-            return (
-                <div className="no-data-add-and-import">
-                    <i className="iconfont icon-no-data"></i>
-                    <p className="abnornal-status-tip">{this.props.noDataTip}</p>
-                    <div className="add-other-operation">
-                        {this.props.renderOtherOperation()}
-                    </div>
-                </div>
-            );
-        }
+            </div>
+        );
     }
 }
 
