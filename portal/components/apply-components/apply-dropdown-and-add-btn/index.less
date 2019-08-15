@@ -4,6 +4,20 @@
   height: @apply-top-height;
   padding: 16px 20px 0 20px;
   border-bottom: 1px solid @bordercolor;
+  //申请时错误提示
+  .apply-error-tip {
+    color: @error_tips_color;
+    display: inline-block;
+    font-size: 14px;
+    float: right;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 10px;
+    .apply-error-text {
+      color: #000;
+      margin-left: 5px;
+    }
+  }
   //申请类型筛选
   .apply-type-filter {
     position: relative;
