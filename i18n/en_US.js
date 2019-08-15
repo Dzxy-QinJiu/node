@@ -3246,5 +3246,9 @@ var en_US = {
     'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
     'guide.import.customer.success': 'Import Success',//导入成功
     'common.clue.will.disappear.after.convert.to.customer': 'Clue will disappear after convert to customer',//转为客户后，线索相关内容都将转入客户，线索将消失。
+    'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
+    'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
+    'import.excel.no.data': 'I have no clues? Try to give you a set of {recommend}',//自己没有线索？试下让客套给您{recommend}
+    'import.recommend.clue.lists': 'Recommended clue',//推荐线索
 };
 export default en_US;

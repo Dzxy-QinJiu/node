@@ -3354,6 +3354,10 @@ var zh_CN = {
     'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
     'guide.import.customer.success': '导入成功',
     'common.clue.will.disappear.after.convert.to.customer': '转为客户后，线索相关内容都将转入客户，线索将消失。',
+    'no.data.add.import.tip': '向客套中添加{type}',
+    'import.excel.data.ketao': '将excel中的{type}导入到客套中',
+    'import.excel.no.data': '自己没有线索？试下让客套给您{recommend}',
+    'import.recommend.clue.lists': '推荐线索',
 
 
 };
