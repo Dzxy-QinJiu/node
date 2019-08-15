@@ -2,8 +2,7 @@
  * 签约客户舆情报送统计
  */
 
-
-export function getSignedCustomerPublicOpinionReportChart(paramObj = {}) {
+export function getSignedCustomerPublicOpinionReportChart() {
     return {
         title: Intl.get('common.signed.customer.public.opinion.report.statistics', '签约客户舆情报送统计'),
         chartType: 'table',
