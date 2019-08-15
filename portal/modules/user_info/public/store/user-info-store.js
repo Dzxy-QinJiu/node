@@ -117,23 +117,21 @@ UserInfoStore.prototype.hideUserInfoForm = function() {
 //修改个人资料后的处理
 UserInfoStore.prototype.editUserInfo = function(modifiedUser) {
     if (_.isObject(modifiedUser)) {
-        let modifiedInfo = {};
-        if(modifiedUser.hasOwnProperty('nick_name')) {
-            modifiedInfo.nameName = modifiedUser.nick_name;
-            delete modifiedUser.nick_name;
+        if(_.has(modifiedUser, 'nick_name')) {
+            _.extend(this.userInfo, {nickName: modifiedUser.nick_name});
+            userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
+                nickName: modifiedUser.nick_name,
+            });
+        }else if(_.has(modifiedUser, 'user_logo')) {
+            _.extend(this.userInfo, {userLogo: modifiedUser.user_logo});
+            userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
+                userLogo: modifiedUser.user_logo,
+            });
+        } else {
+            _.extend(this.userInfo, modifiedUser);
         }
-        if(modifiedUser.hasOwnProperty('user_logo')) {
-            modifiedInfo.userLogo = modifiedUser.user_logo;
-            delete modifiedUser.user_logo;
-        }
-        _.extend(modifiedUser, modifiedInfo);
-        _.extend(this.userInfo, modifiedUser);
     }
     this.userInfoFormShow = false;
-    userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
-        nickName: modifiedUser.nickName,
-        userLogo: modifiedUser.userLogo
-    });
 };
 UserInfoStore.prototype.editUserInfoPwd = function(result) {
 
