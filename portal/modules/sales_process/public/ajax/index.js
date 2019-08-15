@@ -165,3 +165,45 @@ exports.changeCustomerStageOrder = (stageList) => {
     });
     return Deferred.promise();
 };
+
+// 获取客户阶段的销售行为
+exports.getCustomerStageSaleBehavior = () => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/customer/stage/sale/behavior',
+        dataType: 'json',
+        type: 'get',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 添加客户阶段的销售行为
+exports.addCustomerStageSaleBehavior = (addSaleBehaviorArray, paramsObj) => {
+    let saleProcessId = paramsObj.saleProcessId;
+    let stageId = paramsObj.stageId;
+    let Deferred = $.Deferred();
+    addSalesProcessAjax = $.ajax({
+        url: `/rest/add/customer/stage/sale/behavior/${saleProcessId}/${stageId}`,
+        dataType: 'json',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify(addSaleBehaviorArray),
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};

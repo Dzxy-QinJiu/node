@@ -74,5 +74,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'post', // 添加客户阶段的销售行为
+        'path': '/rest/add/customer/stage/sale/behavior/:processId/:stageId',
+        'handler': 'addCustomerStageSaleBehavior',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

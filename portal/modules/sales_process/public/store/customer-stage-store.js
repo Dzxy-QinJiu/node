@@ -22,8 +22,9 @@ class CustomerStageStore {
         this.currentCustomerStage = emptyCustomerStage;
         this.isShowCustomerStageForm = false; // 是否显示客户阶段表单，默认false
         this.isShowCustomerStageTransferOrder = false; // 是否显示客户阶段变更，默认false
-        this.isShowCustomerStageDetailPanel = false; // 是否显示客户阶段详情面板，默认false
         this.currentcustomerStageList = [];
+        this.salesBehaviorList = []; // 销售行为列表
+        this.getsalesBehaviorListErrMsg = ''; // 获取销售行为失败的信息
     }
 
     // 获取客户阶段列表
@@ -143,17 +144,27 @@ class CustomerStageStore {
 
     // 关闭客户阶段模态
     closeCustomerStageModalDialog(customerStage) {
-        customerStage.isShowDeleteModalDialog = false;
+        delete customerStage.isShowDeleteModalDialog;
     }
 
     // 显示客户阶段详情
-    showCustomerStageDetail() {
-        this.isShowCustomerStageDetailPanel = true;
+    showCustomerStageDetail(customerStage) {
+        customerStage.isShowCustomerStageDetailPanel = true;
     }
 
     // 关闭客户阶段详情
-    closeCustomerStageDetail() {
-        this.isShowCustomerStageDetailPanel = false;
+    closeCustomerStageDetail(customerStage) {
+        delete customerStage.isShowCustomerStageDetailPanel;
+    }
+
+    // 获取客户阶段的销售行为
+    getCustomerStageSaleBehavior(result) {
+        if (result.error) {
+            this.getsalesBehaviorListErrMsg = result.errorMsg;
+        } else {
+            this.getsalesBehaviorListErrMsg = '';
+            this.salesBehaviorList = result.resData;
+        }
     }
 }
 

@@ -34,6 +34,14 @@ class CustomerStageAction {
             this.dispatch({loading: false, errorMsg: errorMsg, error: true});
         } );
     }
+    getCustomerStageSaleBehavior() {
+        this.dispatch({error: false});
+        CustomerStageAjax.getCustomerStageSaleBehavior().then( (result) => {
+            this.dispatch({resData: result, error: false});
+        }, (errorMsg) => {
+            this.dispatch({errorMsg: errorMsg, error: true});
+        } );
+    }
 }
 
 export default alt.createActions(CustomerStageAction);

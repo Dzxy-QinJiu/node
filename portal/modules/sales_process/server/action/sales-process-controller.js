@@ -94,3 +94,12 @@ exports.getCustomerStageSaleBehavior = (req, res) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 添加客户阶段的销售行为
+exports.addCustomerStageSaleBehavior = (req, res) => {
+    salesProcessService.addCustomerStageSaleBehavior(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

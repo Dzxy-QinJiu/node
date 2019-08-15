@@ -7,6 +7,7 @@ const TabPane = Tabs.TabPane;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import SaleBehavior from './sale-behavior';
 import Trace from 'LIB_DIR/trace';
 
 class CustomerStageDetail extends React.Component {
@@ -28,6 +29,14 @@ class CustomerStageDetail extends React.Component {
     saveCustomerStageSettingPlay = (type, saveObj, successFunc, errorFunc) => {
         this.props.saveCustomerStageSettingPlay(type, saveObj, successFunc, errorFunc);
     }
+
+
+    changeTab = (key) => {
+        this.setState({
+            activeKey: key
+        });
+    }
+
     // 渲染面板的内容
     renderContent = () => {
         const customerStage = this.props.customerStage;
@@ -37,7 +46,7 @@ class CustomerStageDetail extends React.Component {
                 <div className="customer-stage-detail-content" ref="wrap">
                     <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
                         <TabPane tab={Intl.get('sales.process.customer.stage.play', '剧本')} key="1">
-                            {this.state.activeKey === '1' ? <div className="customer-stage-play">
+                            <div className="customer-stage-play">
                                 <DynamicAddDelField
                                     id={customerStage.id}
                                     field='play_books'
@@ -49,7 +58,17 @@ class CustomerStageDetail extends React.Component {
                                     addDataTip={Intl.get('sales.process.customer.stage.add.play', '添加剧本')}
                                     inputBoxType="textarea"
                                 />
-                            </div> : null}
+                            </div>
+                        </TabPane>
+                        <TabPane tab={Intl.get('common.sales.behavior', '销售行为')} key="2">
+                            <div className="customer-stage-sale-behavior">
+                                <SaleBehavior
+                                    salesBehaviorList={this.props.salesBehaviorList}
+                                    customerStage={this.props.customerStage}
+                                    closeCustomerStageDetail={this.props.closeCustomerStageDetail}
+                                    saleProcessId={this.props.saleProcessId}
+                                />
+                            </div>
                         </TabPane>
                     </Tabs>
                 </div>
@@ -86,11 +105,14 @@ CustomerStageDetail.defaultProps = {
     closeCustomerStageDetail: noop,
     saveCustomerStageSettingPlay: noop,
     customerStage: {},
+    salesBehaviorList: [],
 };
 CustomerStageDetail.propTypes = {
     closeCustomerStageDetail: PropTypes.bool,
     saveCustomerStageSettingPlay: PropTypes.bool,
     customerStage: PropTypes.string,
+    salesBehaviorList: PropTypes.array,
+    saleProcessId: PropTypes.string,
 };
 
 export default CustomerStageDetail;
