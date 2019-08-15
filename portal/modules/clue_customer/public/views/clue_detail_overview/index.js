@@ -53,9 +53,10 @@ class ClueDetailOverview extends React.Component {
         similarCustomerErrmsg: '',//获取相似客户出错
         similarCustomerLists: [],//相似客户列表
         showLargerCustomerLists: false,//展示大于3个的客户列表
-        showLargerClueLists: false//展示大于3个的线索列表
+        showLargerClueLists: false,//展示大于3个的线索列表
+        isShowButton : false,
     };
-
+    
     componentDidMount() {
         clueCustomerStore.listen(this.onClueCustomerStoreChange);
         var curClue = this.state.curClue;
@@ -696,6 +697,7 @@ class ClueDetailOverview extends React.Component {
         );
     };
     renderAvailabilityClue = (curClue) => {
+        
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         //是否有修改线索关联客户的权利
@@ -717,16 +719,19 @@ class ClueDetailOverview extends React.Component {
     };
 
     renderAssociatedAndInvalidClueHandle = (curClue) => {
+             console.log(curClue)
         return (
-            <div className="clue-info-item">
-                <div className="clue-info-label">
-                    {Intl.get('clue.handle.clue', '线索处理')}
-                </div>
-                <div className="clue-info-detail no-handled">
-                    {Intl.get('clue.has.no.handle', '暂未处理')}
+            <div>
+                <div className="clue-info-item">
+                    <div className="clue-info-label">
+                        {Intl.get('clue.handle.clue', '线索处理')}
+                    </div>
+                    <div className="clue-info-detail no-handled">
+                        {Intl.get('clue.has.no.handle', '暂未处理')}
+                    </div>
                 </div>
                 <div className="btn-container">
-                    {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
+                        {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
                 </div>
             </div>
         );
@@ -1262,7 +1267,7 @@ class ClueDetailOverview extends React.Component {
             } else {
                 return null;
             }
-        } else {
+        } else {  
             if ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||
                 curClue.status === SELECT_TYPE.WILL_TRACE) &&
                 !associatedCustomer) { // 待跟进或是已跟进，并且没有关联客户时，处理线索

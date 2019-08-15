@@ -25,7 +25,8 @@ var noop = function() {
 
 };
 const DYNAMICHEIGHT = {
-    LAYOUT: 117
+    LAYOUT: 117,
+    BUTTON: 40,
 };
 import PropTypes from 'prop-types';
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
@@ -313,6 +314,7 @@ class ClueRightPanel extends React.Component {
         //是否没有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
         var divHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        var clueDivHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT -DYNAMICHEIGHT.BUTTON;
         var cls = 'clue_customer_rightpanel white-space-nowrap';
         if (this.props.className){
             cls += ` ${this.props.className}`;
@@ -366,7 +368,7 @@ class ClueRightPanel extends React.Component {
                                             updateClueChannel={this.updateClueChannel}
                                             updateClueClassify={this.updateClueClassify}
                                             salesManList={this.state.salesManList}
-                                            divHeight={divHeight}
+                                            divHeight={clueDivHeight}
                                             removeUpdateClueItem={this.props.removeUpdateClueItem}
                                             hideRightPanel={this.hideRightPanel}
                                             showClueDetailPanel={this.showClueDetailPanel}
