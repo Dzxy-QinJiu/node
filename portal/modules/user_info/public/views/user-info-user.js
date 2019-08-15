@@ -46,7 +46,8 @@ class UserInfo extends React.Component{
             isLoadingWechatBind: false,//是否正在绑定微信
             emailEditType: 'text', //text或edit
             //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
-            weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : ''//微信账号绑定的错误提示
+            weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : '',//微信账号绑定的错误提示
+            iconSaveError: ''//头像修改失败错误提示
         };
     }
 
@@ -66,7 +67,17 @@ class UserInfo extends React.Component{
     uploadImg(src) {
         let formData = this.state.formData;
         formData.userLogo = src;
-        this.setState({formData: formData});
+        UserInfoAction.editUserInfo({user_logo: src}, (errorMsg) => {
+            if(_.isEmpty(errorMsg)){
+                this.setState({
+                    formData
+                });
+            } else {
+                this.setState({
+                    iconSaveError: errorMsg
+                });
+            }
+        });
     }
 
     handleSubscribeCallback(resultObj) {
@@ -185,14 +196,13 @@ class UserInfo extends React.Component{
     //保存邮箱操作
     saveEmailEditInput = (saveObj, successFunc, errorFunc) => {
         let email = _.get(saveObj, 'email');
-        let userInfo = _.extend(this.props.userInfo, {email: email});
-        delete userInfo.phone;
-        UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
+        UserInfoAction.editUserInfo({email: email}, (errorMsg) => {
             if(_.isEmpty(errorMsg)){
                 //邮箱修改成功，恢复为未激活
                 let formData = _.extend(this.state.formData, {emailEnable: false});
                 this.setState({
-                    formData
+                    formData,
+                    emailEditType: 'text'
                 });
                 successFunc();
             } else {
@@ -400,9 +410,7 @@ class UserInfo extends React.Component{
     //保存昵称操作
     saveNicknameEditInput = (saveObj, successFunc, errorFunc) => {
         let nickname = _.get(saveObj, 'nickname');
-        let userInfo = _.extend(this.props.userInfo, {nickName: nickname});
-        delete userInfo.phone;
-        UserInfoAction.editUserInfo(userInfo, (errorMsg) => {
+        UserInfoAction.editUserInfo({nick_name: nickname}, (errorMsg) => {
             if(_.isEmpty(errorMsg)){
                 successFunc();
             } else {
@@ -427,6 +435,7 @@ class UserInfo extends React.Component{
                             nickName={formData.nickName}
                             isUserHeadIcon={true}/>
                         <div className="user-info-nickname">
+                            {_.get(this.state, 'iconSaveError') ? <span className="icon-save-error">{_.get(this.state, 'iconSaveError')}</span> : null}
                             <BasicEditInputField
                                 displayType="text"
                                 id={formData.id}
