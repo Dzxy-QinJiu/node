@@ -8,7 +8,7 @@ import {isUnmodifiableTag} from '../utils/crm-util';
 var basicOverviewStore = require('../store/basic-overview-store');
 var basicOverviewAction = require('../action/basic-overview-actions');
 var SalesTeamStore = require('../../../sales_team/public/store/sales-team-store');
-import {message, Button, Icon} from 'antd';
+import {message, Button, Popover} from 'antd';
 var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
@@ -60,7 +60,8 @@ class BasicOverview extends React.Component {
             competitorList: [],
             isOplateUser: false,
             ccInfo: this.getCCInfo(),
-            applyErrorMsg: null
+            applyErrorMsg: null,
+            popoverErrorVisible: false
         };
     }
 
@@ -97,19 +98,6 @@ class BasicOverview extends React.Component {
                 });
             }
         }
-    }
-    //获取用户发送邮件权限
-    getCCInfo = () => {
-        let workFlowConfigs = userData.getUserData().workFlowConfigs;
-        let type = _.filter(workFlowConfigs, item => {
-            let type = _.get(item, 'type');
-            if(_.isEqual(type, APPLY_TYPE.USER_APPLY)) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        return _.get(type[0], 'applyRulesAndSetting.ccInformation');
     }
 
     getIntegrateConfig(){
@@ -362,24 +350,67 @@ class BasicOverview extends React.Component {
             return null;
         }
     };
-    //渲染申请时错误信息
-    renderApplyErrorMsg = () => {
+    //获取用户发送邮件权限
+    getCCInfo = () => {
+        let workFlowConfigs = userData.getUserData().workFlowConfigs;
+        let type = _.filter(workFlowConfigs, item => {
+            let type = _.get(item, 'type');
+            if(_.isEqual(type, APPLY_TYPE.USER_APPLY)) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        return _.get(type[0], 'applyRulesAndSetting.ccInformation');
+    }
+    handleVisibleChange = popoverErrorVisible => {
+        this.setState({ popoverErrorVisible });
+    };
+    //根据是否绑定激活渲染带Popover的button和不带Popover的button
+    renderApplyButton = () => {
         let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
         return (
-            _.get(applyErrorMsg, 'needBind') ?
-                (<ReactIntl.FormattedMessage
-                    className="apply-error-text"
-                    id="apply.error.bind"
-                    defaultMessage={'请{clickHere}绑定邮箱'}
-                    values={{
-                        'clickHere': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.click.here" defaultMessage="点击此处"/></Link>
-                    }}/>) : (_.get(applyErrorMsg, 'needActive') ?
-                    <ReactIntl.FormattedMessage
-                        id="apply.error.active"
-                        defaultMessage={'请{clickHere}激活邮箱'}
-                        values={{
-                            'clickHere': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.click.here" defaultMessage="点击此处"/></Link>
-                        }}/> : null)
+            _.isNull(applyErrorMsg) ? (
+                <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
+                    {Intl.get('crm.apply.user.new', '申请新用户')}
+                </Button>) :
+                (<Popover
+                    placement="bottomRight"
+                    content={this.renderPopoverContent()}
+                    visible={this.state.popoverErrorVisible}
+                    onVisibleChange={this.handleVisibleChange}
+                    trigger="click">
+                    <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
+                        {Intl.get('crm.apply.user.new', '申请新用户')}
+                    </Button>
+                </Popover>)
+        );
+    }
+    //渲染popover内的错误信息
+    renderPopoverContent = () => {
+        let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
+        //先判断是否绑定邮箱，再判断是否激活邮箱
+        let ifActiveEmail = (_.get(applyErrorMsg, 'needActive') ?
+            <ReactIntl.FormattedMessage
+                id="apply.error.active"
+                defaultMessage={'您还没有激活邮箱，请先{activeEmail}'}
+                values={{
+                    'activeEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.active.email.tips" defaultMessage="激活邮箱"/></Link>
+                }}/> : null);
+        return (
+            <span className="apply-error-tip">
+                <span className="iconfont icon-warn-icon"></span>
+                <span className="apply-error-text">
+                    {_.get(applyErrorMsg, 'needBind') ?
+                        (<ReactIntl.FormattedMessage
+                            className="apply-error-text"
+                            id="apply.error.bind"
+                            defaultMessage={'您还没有绑定邮箱，请先{bindEmail}'}
+                            values={{
+                                'bindEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.bind.email.tips" defaultMessage="绑定邮箱"/></Link>
+                            }}/>) : ifActiveEmail}
+                </span>
+            </span>
         );
     }
     //渲染申请用户的提示\面板
@@ -410,16 +441,7 @@ class BasicOverview extends React.Component {
                             {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                         </span>
                         {hasEmailPrivilege ?
-                            <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
-                                {Intl.get('crm.apply.user.new', '申请新用户')}
-                            </Button> : null}
-                        {errorMessage ? (
-                            <span className="apply-error-tip">
-                                <span className="iconfont icon-warn-icon"></span>
-                                <span className="apply-error-text">
-                                    {this.renderApplyErrorMsg()}
-                                </span>
-                            </span>) : null}
+                            this.renderApplyButton() : null}
                     </div>);
                 return <DetailCard content={tip} className="apply-user-tip-contianer"/>;
             }
@@ -433,14 +455,16 @@ class BasicOverview extends React.Component {
         if(_.isEmpty(email)) {
             this.setState({
                 applyErrorMsg: {
-                    needBind: true
+                    needBind: true,
+                    popoverErrorVisible: true
                 }
             });
             return false;
         } else if(!emailEnable) {
             this.setState({
                 applyErrorMsg: {
-                    needActive: true
+                    needActive: true,
+                    popoverErrorVisible: true
                 }
             });
             return false;

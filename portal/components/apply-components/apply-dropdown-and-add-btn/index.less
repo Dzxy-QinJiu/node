@@ -4,22 +4,6 @@
   height: @apply-top-height;
   padding: 16px 20px 0 20px;
   border-bottom: 1px solid @bordercolor;
-  //申请时错误提示
-  .apply-error-tip {
-    display: inline-block;
-    font-size: 14px;
-    float: right;
-    height: 30px;
-    line-height: 30px;
-    margin-left: 10px;
-    .icon-warn-icon {
-      color: @error_tips_color;
-    }
-    .apply-error-text {
-      color: #333333;
-      margin-left: 5px;
-    }
-  }
   //申请类型筛选
   .apply-type-filter {
     position: relative;
@@ -98,5 +82,23 @@
     font-size: 14px;
     height: 32px;
     margin-left: 10px;
+  }
+}
+//popover错误提示框
+.ant-popover-inner-content {
+  overflow: hidden;
+  //申请时错误提示
+  .apply-error-tip {
+    font-size: 14px;
+    .icon-warn-icon {
+      position: relative;
+      top: 1px;
+      color: @reply-message-tip-color;
+      margin-right:4px;
+    }
+    .apply-error-text {
+      margin-left: 5px;
+      color: #333333;
+    }
   }
 }

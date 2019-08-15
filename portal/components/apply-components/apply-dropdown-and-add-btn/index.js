@@ -20,7 +20,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
             applyErrorMsg: null,
             userApplyType: this.props.userApplyType,
             ccInfo: this.getCCInfo(),
-            popoverErrorVisibility: false
+            popoverErrorVisible: false
         };
     }
     onStoreChange = () => {
@@ -70,6 +70,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
         let emailEnable = _.get(this.state, 'userInfo.emailEnable');
         if(_.isEmpty(email)) {
             this.setState({
+                popoverErrorVisible: true,
                 applyErrorMsg: {
                     needBind: true
                 }
@@ -77,17 +78,53 @@ class ApplyDropdownAndAddBtn extends React.Component {
             return false;
         } else if(!emailEnable) {
             this.setState({
+                popoverErrorVisible: true,
                 applyErrorMsg: {
                     needActive: true
                 }
             });
             return false;
         } else {
+            this.setState({
+                popoverErrorVisible: false,
+            });
             this.props.showAddApplyPanel();
         }
     }
+
+    handleVisibleChange = popoverErrorVisible => {
+        this.setState({ popoverErrorVisible });
+    };
+    //根据是否绑定激活渲染带Popover的button和不带Popover的button
+    renderApplyButton = () => {
+        let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
+        return (
+            _.isNull(applyErrorMsg) ? (
+                <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
+                >{this.props.addApplyMessage}</Button>) : (
+                <Popover
+                    placement="bottomRight"
+                    content={this.renderPopoverContent()}
+                    visible={this.state.popoverErrorVisible}
+                    onVisibleChange={this.handleVisibleChange}
+                    trigger="click"
+                >
+                    <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
+                    >{this.props.addApplyMessage}</Button>
+                </Popover>)
+        );
+    }
+    //渲染popover内的错误信息
     renderPopoverContent = () => {
         let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
+        //先判断是否绑定邮箱，再判断是否激活邮箱
+        let ifActiveEmail = (_.get(applyErrorMsg, 'needActive') ?
+            <ReactIntl.FormattedMessage
+                id="apply.error.active"
+                defaultMessage={'您还没有激活邮箱，请先{activeEmail}'}
+                values={{
+                    'activeEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.active.email.tips" defaultMessage="激活邮箱"/></Link>
+                }}/> : null);
         return (
             <span className="apply-error-tip">
                 <span className="iconfont icon-warn-icon"></span>
@@ -99,13 +136,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
                             defaultMessage={'您还没有绑定邮箱，请先{bindEmail}'}
                             values={{
                                 'bindEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.bind.email.tips" defaultMessage="绑定邮箱"/></Link>
-                            }}/>) : (_.get(applyErrorMsg, 'needActive') ?
-                            <ReactIntl.FormattedMessage
-                                id="apply.error.active"
-                                defaultMessage={'您还没有激活邮箱，请先{activeEmail}'}
-                                values={{
-                                    'activeEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.active.email.tips" defaultMessage="激活邮箱"/></Link>
-                                }}/> : null)}
+                            }}/>) : ifActiveEmail}
                 </span>
             </span>
         );
@@ -124,11 +155,8 @@ class ApplyDropdownAndAddBtn extends React.Component {
                 })}
             </Menu>
         );
-
         //判断是否有发邮件权限
         let hasEmailPrivilege = _.indexOf(_.values(CC_INFO), this.state.ccInfo) !== -1;
-        // 判断是否有申请错误信息
-        let errorMessage = _.get(this.state, 'applyErrorMsg');
         return (
             <div className="apply-searchbar clearfix">
                 <div className="apply-type-filter btn-item" id="apply-type-container">
@@ -143,13 +171,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
                     }
                 </div>
                 {hasPrivilege(this.props.addPrivilege) && hasEmailPrivilege ?
-                    <Popover
-                        content={this.renderPopoverContent}
-                        visible={this.state.popoverErrorVisibility}
-                    >
-                        <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
-                        >{this.props.addApplyMessage}</Button>
-                    </Popover>
+                    this.renderApplyButton()
                     : null}
                 <div className="pull-right search-btns">
                     {this.props.showApplyMessageIcon ? this.renderApplyMessage() : null}
