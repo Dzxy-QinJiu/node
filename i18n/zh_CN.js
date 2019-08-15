@@ -3354,7 +3354,7 @@ var zh_CN = {
     'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
     'guide.import.customer.success': '导入成功',
     'common.clue.will.disappear.after.convert.to.customer': '转为客户后，线索相关内容都将转入客户，线索将消失。',
-
-
+    'common.report.num': '报送数量',
+    'common.signed.customer.public.opinion.report.statistics': '签约客户舆情报送统计',
 };
 export default zh_CN;
