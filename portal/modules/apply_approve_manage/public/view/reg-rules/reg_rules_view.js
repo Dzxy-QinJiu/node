@@ -25,6 +25,7 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 260,
 };
 import {FLOW_TYPES, ADDTIONPROPERTIES, ASSIGEN_APPROVER, isSalesOpportunityFlow} from '../../utils/apply-approve-utils';
+import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 class RegRulesView extends React.Component {
     constructor(props) {
         super(props);
@@ -695,10 +696,10 @@ class RegRulesView extends React.Component {
                             <div className="rule-content info-container">
                                 <RadioGroup onChange={this.onRadioChange}
                                     value={_.get(this, 'state.applyRulesAndSetting.ccInformation')}>
-                                    <Radio value='apply'>{Intl.get('apply.cc.when,submit', '提交申请时抄送')}</Radio>
-                                    <Radio value='approve'>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送')}</Radio>
+                                    <Radio value={CC_INFO.APPLY}>{Intl.get('apply.cc.when,submit', '提交申请时抄送')}</Radio>
+                                    <Radio value={CC_INFO.APPROVE}>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送')}</Radio>
                                     <Radio
-                                        value='apply_and_approve'>{Intl.get('apply.cc.when.submit.and.approve', '提交申请和审批通过后都抄送')}</Radio>
+                                        value={CC_INFO.APPLY_AND_APPROVE}>{Intl.get('apply.cc.when.submit.and.approve', '提交申请和审批通过后都抄送')}</Radio>
                                 </RadioGroup>
                             </div>
 

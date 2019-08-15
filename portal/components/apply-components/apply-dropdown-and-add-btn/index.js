@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/27.
  */
-import {Button, Menu, Dropdown, Icon} from 'antd';
+import {Button, Menu, Dropdown, Popover} from 'antd';
 import {Link} from 'react-router-dom';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 require('./index.less');
@@ -12,11 +12,7 @@ import {getUnreadReplyTitle} from 'PUB_DIR/sources/utils/common-method-util';
 let userData = require('PUB_DIR/sources/user-data');
 import UserInfoStore from '../../../modules/user_info/public/store/user-info-store';
 import UserInfoAction from '../../../modules/user_info/public/action/user-info-actions';
-const CC_INFO = {
-    APPLY: 'apply', //提交申请时抄送
-    APPLY_AND_APPROVE: 'apply_and_approve', //审批通过后抄送
-    APPROVE: 'approve' //提交申请和审批通过后都抄送
-};
+import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
         super(props);
@@ -24,22 +20,9 @@ class ApplyDropdownAndAddBtn extends React.Component {
             applyErrorMsg: null,
             userApplyType: this.props.userApplyType,
             ccInfo: this.getCCInfo(),
+            popoverErrorVisibility: false
         };
     }
-
-    getCCInfo = () => {
-        let workFlowConfigs = userData.getUserData().workFlowConfigs;
-        let type = _.filter(workFlowConfigs, item => {
-            let type = _.get(item, 'type');
-            if(_.isEqual(type, this.props.userApplyType)) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        return _.get(type[0], 'applyRulesAndSetting.ccInformation');
-    }
-
     onStoreChange = () => {
         this.setState(UserInfoStore.getState());
     };
@@ -57,6 +40,19 @@ class ApplyDropdownAndAddBtn extends React.Component {
     componentWillUnmount = () => {
         UserInfoStore.unlisten(this.onStoreChange);
     };
+    //获取用户发送邮件权限
+    getCCInfo = () => {
+        let workFlowConfigs = userData.getUserData().workFlowConfigs;
+        let type = _.filter(workFlowConfigs, item => {
+            let type = _.get(item, 'type');
+            if(_.isEqual(type, this.props.userApplyType)) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        return _.get(type[0], 'applyRulesAndSetting.ccInformation');
+    }
     renderApplyMessage = () => {
         var showUnreadTip = this.props.showUnreadTip;
         var isCheckUnreadApplyList = this.props.isCheckUnreadApplyList;
@@ -90,26 +86,31 @@ class ApplyDropdownAndAddBtn extends React.Component {
             this.props.showAddApplyPanel();
         }
     }
-    renderApplyErrorMsg = () => {
+    renderPopoverContent = () => {
         let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
-        console.log(_.get(applyErrorMsg, 'needBind'), _.get(applyErrorMsg, 'needActive'));
         return (
-            _.get(applyErrorMsg, 'needBind') ?
-                (<ReactIntl.FormattedMessage
-                    className="apply-error-text"
-                    id="apply.error.bind"
-                    defaultMessage={'请{clickHere}绑定邮箱'}
-                    values={{
-                        'clickHere': <Link to={'#'}><ReactIntl.FormattedMessage id="apply.click.here" defaultMessage="点击此处"/></Link>
-                    }}/>) : (_.get(applyErrorMsg, 'needActive') ?
-                    <ReactIntl.FormattedMessage
-                        id="apply.error.active"
-                        defaultMessage={'请{clickHere}激活邮箱'}
-                        values={{
-                            'clickHere': <Link to={'#'}><ReactIntl.FormattedMessage id="apply.click.here" defaultMessage="点击此处"/></Link>
-                        }}/> : null)
+            <span className="apply-error-tip">
+                <span className="iconfont icon-warn-icon"></span>
+                <span className="apply-error-text">
+                    {_.get(applyErrorMsg, 'needBind') ?
+                        (<ReactIntl.FormattedMessage
+                            className="apply-error-text"
+                            id="apply.error.bind"
+                            defaultMessage={'您还没有绑定邮箱，请先{bindEmail}'}
+                            values={{
+                                'bindEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.bind.email.tips" defaultMessage="绑定邮箱"/></Link>
+                            }}/>) : (_.get(applyErrorMsg, 'needActive') ?
+                            <ReactIntl.FormattedMessage
+                                id="apply.error.active"
+                                defaultMessage={'您还没有激活邮箱，请先{activeEmail}'}
+                                values={{
+                                    'activeEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.active.email.tips" defaultMessage="激活邮箱"/></Link>
+                                }}/> : null)}
+                </span>
+            </span>
         );
     }
+
     render(){
         // 筛选菜单
         var menuList = (
@@ -126,6 +127,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
 
         //判断是否有发邮件权限
         let hasEmailPrivilege = _.indexOf(_.values(CC_INFO), this.state.ccInfo) !== -1;
+        // 判断是否有申请错误信息
         let errorMessage = _.get(this.state, 'applyErrorMsg');
         return (
             <div className="apply-searchbar clearfix">
@@ -141,16 +143,14 @@ class ApplyDropdownAndAddBtn extends React.Component {
                     }
                 </div>
                 {hasPrivilege(this.props.addPrivilege) && hasEmailPrivilege ?
-                    <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
-                    >{this.props.addApplyMessage}</Button>
+                    <Popover
+                        content={this.renderPopoverContent}
+                        visible={this.state.popoverErrorVisibility}
+                    >
+                        <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
+                        >{this.props.addApplyMessage}</Button>
+                    </Popover>
                     : null}
-                {errorMessage ? (
-                    <span className="apply-error-tip">
-                        <Icon type="exclamation-circle" theme="filled" />
-                        <span className="apply-error-text">
-                            {this.renderApplyErrorMsg()}
-                        </span>
-                    </span>) : null}
                 <div className="pull-right search-btns">
                     {this.props.showApplyMessageIcon ? this.renderApplyMessage() : null}
                     {this.props.showRefreshIcon ? <span onClick={this.props.refreshPage}

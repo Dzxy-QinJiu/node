@@ -2786,9 +2786,10 @@ var en_US = {
     'user.info.binding.phone': 'Bind phone',//绑定手机号
     'user.info.no.set.phone': 'You have not bound your phone yet, {bindPhone}',//您还没有绑定手机号，{bindPhone}
     'apply.delay.endTime': 'End time',//'到期',
-    'apply.error.bind': 'Please {clickHere} to bind your email', //请{clickHere}绑定邮箱
-    'apply.error.active': 'Please {clickHere} to active your email',//请{clickHere}激活邮箱
-    'apply.click.here': 'click here',//点击此处
+    'apply.error.bind': 'You have not bind email yet, please {bindEmail}', //您还没有绑定邮箱，请先绑定邮箱
+    'apply.error.active': 'You have not active email yet, please {activeEmail}',//您还没有激活邮箱，请先激活邮箱
+    'apply.bind.email.tips': 'bind email',//绑定邮箱
+    'apply.active.email.tips': 'active email',//激活邮箱
     'shear.expand': 'expand', //'展开'
     'crm.order.stage.manage': 'Order stage management',//订单阶段管理
     'crm.order.stage.add': 'Add Order stage',//添加订单阶段

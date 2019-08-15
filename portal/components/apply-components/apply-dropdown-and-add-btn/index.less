@@ -6,15 +6,17 @@
   border-bottom: 1px solid @bordercolor;
   //申请时错误提示
   .apply-error-tip {
-    color: @error_tips_color;
     display: inline-block;
     font-size: 14px;
     float: right;
     height: 30px;
     line-height: 30px;
     margin-left: 10px;
+    .icon-warn-icon {
+      color: @error_tips_color;
+    }
     .apply-error-text {
-      color: #000;
+      color: #333333;
       margin-left: 5px;
     }
   }

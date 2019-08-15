@@ -3,6 +3,7 @@
 @label_color: #999999;
 @btn_color: #8da8c5;
 @card_margin: 8px;
+@error_tips_color: #f04134;
 //选项框提示
 @select_warning_color: #efa246;
 .basic-overview-contianer {
@@ -15,6 +16,19 @@
     line-height: 22px;
     font-size: 14px;
     color: @font_color;
+    //申请时错误提示
+    .apply-error-tip {
+      float: right;
+      display: inline-block;
+      font-size: 14px;
+      .icon-warn-icon {
+        color: @error_tips_color;
+      }
+      .apply-error-text {
+        color: #333333;
+        margin-right: 10px;
+      }
+    }
     .icon-warn-icon {
       float: left;
       margin-right: 4px;
