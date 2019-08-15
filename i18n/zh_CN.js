@@ -3235,6 +3235,8 @@ var zh_CN = {
     'customer.has.similar.lists': '相似客户',
     'clue.has.similar.lists': '相似线索',
     'clue.similar.clue': '有相似线索或客户',
+    'clue.has.similar.clue': '有相似线索',
+    'clue.has.similar.client': '有相似客户',
     'apply.approve.first.higher.level': '直属上级',
     'apply.approve.some.level': '第{n}级上级',
     'apply.approve.level.five': '五',

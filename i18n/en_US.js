@@ -3127,6 +3127,8 @@ var en_US = {
     'customer.has.similar.lists': 'Similar customer',//相似客户
     'clue.has.similar.lists': 'Similar clue',//相似线索
     'clue.similar.clue': 'Similar clue or customer', //相似线索或客户
+    'clue.has.similar.clue': 'Contains similar clues',//有相似线索
+    'clue.has.similar.client': 'Contains similar clients',//有相似客户
     'apply.approve.first.higher.level': 'Directly superior',//直属上级
     'apply.approve.some.level': 'Level {n}',//第{n}级上级
     'apply.approve.level.five': 'Five',//五
