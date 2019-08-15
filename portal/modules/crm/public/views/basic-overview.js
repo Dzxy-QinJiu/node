@@ -416,7 +416,8 @@ class BasicOverview extends React.Component {
     //渲染申请用户的提示\面板
     renderApplyUserBlock = () => {
         //判断是否有发邮件权限
-        let hasEmailPrivilege = _.indexOf(_.values(CC_INFO), this.state.ccInfo) !== -1;
+        let privilegedType = [CC_INFO.APPROVE, CC_INFO.APPLY_AND_APPROVE];
+        let hasEmailPrivilege = _.indexOf(privilegedType, this.state.ccInfo) !== -1;
         // 判断是否有申请错误信息
         let errorMessage = _.get(this.state, 'applyErrorMsg');
         //只有销售和销售主管才会申请

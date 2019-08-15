@@ -156,7 +156,8 @@ class ApplyDropdownAndAddBtn extends React.Component {
             </Menu>
         );
         //判断是否有发邮件权限
-        let hasEmailPrivilege = _.indexOf(_.values(CC_INFO), this.state.ccInfo) !== -1;
+        let privilegedType = [CC_INFO.APPROVE, CC_INFO.APPLY_AND_APPROVE];
+        let hasEmailPrivilege = _.indexOf(privilegedType, this.state.ccInfo) !== -1;
         return (
             <div className="apply-searchbar clearfix">
                 <div className="apply-type-filter btn-item" id="apply-type-container">
