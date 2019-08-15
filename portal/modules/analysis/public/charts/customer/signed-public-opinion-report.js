@@ -14,6 +14,8 @@ export function getSignedCustomerPublicOpinionReportChart() {
             }
         },
         processData: data => {
+            //按报送数量从小到大排序
+            data = _.sortBy(data, 'report_num');
             //计算报送数量总计
             const total = _.sumBy(data, 'report_num');
             //将总计加入数据集
