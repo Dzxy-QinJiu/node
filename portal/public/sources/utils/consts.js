@@ -560,7 +560,6 @@ export const BOOT_PROCESS_KEYS = {
     ADD_CUSTOMER: 'add_customer',//添加客户
     EXTRACT_CLUE: 'extract_clue',//提取线索
 };
-
 // 用户申请类型
 export const APPLY_TYPE = {
     USER_APPLY: 'userapply',//用户审批
