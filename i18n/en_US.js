@@ -2437,10 +2437,8 @@ var en_US = {
     'crm.alert.topic': 'Title',//标题
     'crm.contact.time': 'Contact time',//联系时间
     'crm.alert.time': 'Alert time',//提醒时间
-    'crm.alert.after.1.hours': '1 hour later',//1小时后
-    'crm.alert.after.2.hours': '2 hours later',//2小时后
-    'crm.alert.after.5.hours': '5 hours later',//5小时后
-    'crm.alert.after.1.day': '1 day later',//1天后
+    'crm.schedule.n.hour.later': '{n} hours later',//{n}小时后
+    'crm.alert.after.n.day': '{n} days later',//{n}天后
     'crm.alert.after.1.week': '1 week later',//1周后
     'crm.not.alert': 'Not remind',//不提醒
     'crm.alert.not.finish': 'Not finish',//未完成
@@ -3246,5 +3244,7 @@ var en_US = {
     'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
     'guide.import.customer.success': 'Import Success',//导入成功
     'common.clue.will.disappear.after.convert.to.customer': 'Clue will disappear after convert to customer',//转为客户后，线索相关内容都将转入客户，线索将消失。
+    'crm.clue.phone.on.meeting': 'In a meeting, it is not convenient to answer',//在开会，不方便接听
+
 };
 export default en_US;

@@ -489,6 +489,7 @@ class ClueDetailPanel extends React.Component {
                         isAddingPlanInfo={this.state.isAddingPlanInfo}
                         commonPhoneDesArray={cluePhoneDesArray}
                         showMarkClueInvalid={showMarkClueInvalid}
+                        curClue={_.get(this,'state.paramObj.clue_params.curClue',{})}
                     />
                     {this.renderMainContent()}
                     {!this.isClueDetailCall(this.state.paramObj) ? //不是从线索详情中拨打的电话时
