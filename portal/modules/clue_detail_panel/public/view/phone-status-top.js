@@ -19,7 +19,7 @@ var AlertTimer = require('CMP_DIR/alert-timer');
 var className = require('classnames');
 import {AVALIBILITYSTATUS, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {TIME_CONSTS} from 'PUB_DIR/sources/utils/consts';
+import {TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -358,7 +358,7 @@ class phoneStatusTop extends React.Component {
     addScheduleItem = (startTimeValue) => {
         var submitObj = {
             start_time: startTimeValue,
-            end_time: startTimeValue + TIME_CONSTS.THIRTY * 60 * 1000,
+            end_time: startTimeValue + TIME_CALCULATE_CONSTS.THIRTY * 60 * 1000,
             alert_time: startTimeValue,
             topic: _.get(this, 'state.curClue.name'),
             scheduleType: 'lead',
@@ -462,17 +462,17 @@ class phoneStatusTop extends React.Component {
 
                                 <div className="btn-wrap">
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.TWO, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}
+                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWO, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}
 
                                     </Button>
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.SIX, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
+                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.SIX, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
+                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(3 * TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
+                                        onClick={this.addScheduleItem.bind(this, moment().add(3 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(5 * TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
+                                        onClick={this.addScheduleItem.bind(this, moment().add(5 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
                                         onClick={this.handleAddPlan}>{Intl.get('user.time.custom', '自定义')}</Button>
                                     {this.state.addClueSchedule ? <Icon type="loading"/> : null}

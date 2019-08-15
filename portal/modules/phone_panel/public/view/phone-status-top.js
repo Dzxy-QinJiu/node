@@ -21,7 +21,7 @@ var AlertTimer = require('CMP_DIR/alert-timer');
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 //挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访
 const HANG_UP_TYPES = [PHONERINGSTATUS.phone, PHONERINGSTATUS.curtao_phone, PHONERINGSTATUS.call_back];
-import {TIME_CONSTS} from 'PUB_DIR/sources/utils/consts';
+import {TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 class phoneStatusTop extends React.Component {
     constructor(props) {
@@ -324,7 +324,7 @@ class phoneStatusTop extends React.Component {
     addScheduleItem = (startTimeValue) => {
         var submitObj = {
             start_time: startTimeValue,
-            end_time: startTimeValue + TIME_CONSTS.THIRTY * 60 * 1000,
+            end_time: startTimeValue + TIME_CALCULATE_CONSTS.THIRTY * 60 * 1000,
             alert_time: startTimeValue,
             topic: _.get(this, 'state.customerInfoArr[0].name'),
             scheduleType: 'calls',
@@ -344,10 +344,10 @@ class phoneStatusTop extends React.Component {
                 this.setState({
                     hasAddedSchedlue: true
                 });
-                var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
                 //如果添加的是今天的电联联系计划，就在基本资料的日程列表中加一个计划
+                var todayTimeObj = TimeStampUtil.getTodayTimeStamp();
                 resData.contacts = _.get(this, 'state.customerInfoArr[0].contacts');
-                if (resData.type === 'calls' && resData.start_time > todayTimeObj.start_time && resData.end_time < todayTimeObj.end_time){
+                if (resData.type === 'calls' && resData.start_time >= todayTimeObj.start_time && resData.end_time <= todayTimeObj.end_time){
                     basicOverviewAction.afterAddSchedule(resData);
                 }
                 this.showMessage(Intl.get('user.user.add.success', '添加成功'), 'success');
@@ -423,16 +423,16 @@ class phoneStatusTop extends React.Component {
                             </div>
                             <div className="btn-wrap">
                                 <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.TWO, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}
+                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWO, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}
                                 </Button>
                                 <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.SIX, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
+                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.SIX, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
                                 <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
+                                    onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
                                 <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                    onClick={this.addScheduleItem.bind(this, moment().add(3 * TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
+                                    onClick={this.addScheduleItem.bind(this, moment().add(3 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
                                 <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                    onClick={this.addScheduleItem.bind(this, moment().add(5 * TIME_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
+                                    onClick={this.addScheduleItem.bind(this, moment().add(5 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
                                 <Button disabled={this.state.hasAddedSchedlue} size="small"
                                     onClick={this.handleAddPlan}>{Intl.get('user.time.custom', '自定义')}</Button>
                                 {this.state.addCustomerSchedule ? <Icon type="loading"/> : null}

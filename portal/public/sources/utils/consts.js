@@ -560,7 +560,7 @@ export const BOOT_PROCESS_KEYS = {
     ADD_CUSTOMER: 'add_customer',//添加客户
     EXTRACT_CLUE: 'extract_clue',//提取线索
 };
-export const CONTACT_TIMES = {
+export const CONTACT_TIMES_CONSTS = {
     '1h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 1}),
     '2h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 2}),
     '5h': Intl.get('crm.schedule.n.hour.later', '{n}小时后',{n: 5}),
@@ -587,7 +587,7 @@ export const TIME_TYPE_CONSTS = {
     'AHEAD_3DAY_10': 'ahead_3day_10',
 };
 
-export const TIME_CONSTS = {
+export const TIME_CALCULATE_CONSTS = {
     'ZERO': 0,
     'ZERO_POINT_FIVE': 0.5,
     'ONE': 1,
