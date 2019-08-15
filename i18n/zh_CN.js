@@ -376,6 +376,8 @@ var zh_CN = {
     'home.page.contact.minor.cycle': '小循环',
     'home.page.add.schedule': '添加日程',
     'home.page.apply.approve': '审批',
+    'home.page.return.old': '返回旧版',
+    'home.page.try.new': '试用新版',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/

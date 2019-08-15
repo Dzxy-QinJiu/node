@@ -1080,6 +1080,13 @@ class SalesHomePage extends React.Component {
             return null;
         }
     };
+    //试用新版
+    tryNewPage = () => {
+        if (event) {
+            Trace.traceEvent(event, '试用新版');
+        }
+        this.props.history && this.props.history.push('/home');
+    };
 
     render() {
         var crmSaleList = classNames('sale-list-zone', {
@@ -1173,13 +1180,15 @@ class SalesHomePage extends React.Component {
                             </div>
                         ) : null}
                     </div>}
-
+                <div onClick={this.tryNewPage} className='try-new-btn'>{Intl.get('home.page.try.new', '试用新版')}</div>
             </div>
             <CustomerListPanel/>
             <UserListPanel location='home'/>
         </RightContent>);
     }
 }
-
+SalesHomePage.propTypes = {
+    history: PropTypes.obj
+};
 module.exports = SalesHomePage;
 
