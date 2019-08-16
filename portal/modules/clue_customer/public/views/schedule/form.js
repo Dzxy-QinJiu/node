@@ -17,57 +17,12 @@ import 'react-date-picker/index.css';
 import BootstrapDatepicker from '../../../../../components/bootstrap-datepicker';
 import ValidateMixin from '../../../../../mixins/ValidateMixin';
 import Trace from 'LIB_DIR/trace';
-import {SELECT_FULL_OPTIONS, NO_SELECT_FULL_OPTIONS} from 'PUB_DIR/sources/utils/consts';
+import {SELECT_FULL_OPTIONS, NO_SELECT_FULL_OPTIONS, CONTACT_TIMES_CONSTS, TIME_TYPE_CONSTS, TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
 const HOUR_MUNITE_FORMAT = oplateConsts.HOUR_MUNITE_FORMAT;
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-const TIME_CONSTS = {
-    'ZERO': 0,
-    'ZERO_POINT_FIVE': 0.5,
-    'ONE': 1,
-    'TWO': 2,
-    'TWO_POINT_FIVE': 2.5,
-    'THREE': 3,
-    'ONE_POINT_FIVE': 1.5,
-    'FIVE': 5,
-    'FIVE_POINT_FIVE': 5.5,
-    'SEVERN': 7,
-    'TEN': 10,
-    'FIFTeen': 15,
-    'TWENTY_FOUR': 24,
-    'TWENTY_FOUR_POINT_FIVE': 24.5,
-    'THIRTY': 30,
-    'SIXTY': 60
-};
-const TIME_TYPE_CONSTS = {
-    'NOT_REMIND': 'not_remind',
-    'ONE_HOUR': '1h',
-    'TWO_HOURS': '2h',
-    'FIVE_HOURS': '5h',
-    'ONE_DAY': '1d',
-    'ONE_WEEK': '1w',
-    'AHEAD_5_MIN': 'ahead_5min',
-    'AHEAD_10_MIN': 'ahead_10min',
-    'AHEAD_15_MIN': 'ahead_15min',
-    'AHEAD_30_MIN': 'ahead_30min',
-    'AHEAD_1_H': 'ahead_1h',
-    'THATDAY_10': 'thatday_10',
-    'AHEAD_1DAY_10': 'ahead_1day_10',
-    'AHEAD_2DAY_10': 'ahead_2day_10',
-    'AHEAD_3DAY_10': 'ahead_3day_10',
-
-};
-const CONTACT_TIMES = {
-    '1h': Intl.get('crm.alert.after.1.hours', '1小时后'),
-    '2h': Intl.get('crm.alert.after.2.hours', '2小时后'),
-    '5h': Intl.get('crm.alert.after.5.hours', '5小时后'),
-    '1d': Intl.get('crm.alert.after.1.day', '1天后'),
-    '1w': Intl.get('crm.alert.after.1.week', '1周后'),
-    'custom': Intl.get('user.time.custom', '自定义')
-};
-
 //日程类型
 const SCHEDULE_TYPES = [
     {name: Intl.get('schedule.phone.connect', '电联'), value: 'lead', iconCls: 'icon-phone-call-out'},
@@ -110,11 +65,11 @@ var CrmAlertForm = createReactClass({
         //时间的默认值，用于编辑时使用
         formData.scheduleType = formData.scheduleType || 'lead';
         //联系的开始时间
-        formData.start_time = formData.start_time || moment().add(TIME_CONSTS.ONE, 'h').valueOf();
+        formData.start_time = formData.start_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
         //联系的结束时间
-        formData.end_time = formData.end_time || moment().add(TIME_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
+        formData.end_time = formData.end_time || moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
         //提醒时间
-        formData.alert_time = formData.alert_time || moment().add(TIME_CONSTS.ONE, 'h').subtract(TIME_CONSTS.TEN, 'm').valueOf();
+        formData.alert_time = formData.alert_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
         return formData;
     },
 
@@ -163,7 +118,7 @@ var CrmAlertForm = createReactClass({
 
                 //自定义的时候 修改开始时间的时候，把结束时间设置成比开始时间晚一分钟
                 formData.start_time = newTime;
-                formData.end_time = moment(newTime).add(TIME_CONSTS.ONE, 'm').valueOf();
+                formData.end_time = moment(newTime).add(TIME_CALCULATE_CONSTS.ONE, 'm').valueOf();
             }
         }
         this.setState({formData, selectedAlertTimeRange});
@@ -183,7 +138,7 @@ var CrmAlertForm = createReactClass({
         }
         let formData = this.state.formData;
         formData.start_time = newTime;
-        formData.end_time = moment(newTime).add(TIME_CONSTS.ONE, 'm').valueOf();
+        formData.end_time = moment(newTime).add(TIME_CALCULATE_CONSTS.ONE, 'm').valueOf();
         this.setState({formData});
         Trace.traceEvent(ReactDOM.findDOMNode(this), '修改开始时间');
 
@@ -340,35 +295,35 @@ var CrmAlertForm = createReactClass({
         switch (value) {
             case TIME_TYPE_CONSTS.NOT_REMIND:
             //选择不提醒的时候，设置socketio_notice为false，alert_time字段也必须要传，所以传一个当前时间之后，结束时间之前的时间
-                alert_time = moment(end_time).subtract(TIME_CONSTS.ONE, 's').valueOf();
+                alert_time = moment(end_time).subtract(TIME_CALCULATE_CONSTS.ONE, 's').valueOf();
                 formObj.socketio_notice = false;
                 break;
             case TIME_TYPE_CONSTS.AHEAD_5_MIN:
-                alert_time = moment(start_time).subtract(TIME_CONSTS.FIVE, 'm').valueOf();
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.FIVE, 'm').valueOf();
                 break;
             case TIME_TYPE_CONSTS.AHEAD_10_MIN:
-                alert_time = moment(start_time).subtract(TIME_CONSTS.TEN, 'm').valueOf();
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
                 break;
             case TIME_TYPE_CONSTS.AHEAD_15_MIN:
-                alert_time = moment(start_time).subtract(TIME_CONSTS.FIFTeen, 'm').valueOf();
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.FIFTeen, 'm').valueOf();
                 break;
             case TIME_TYPE_CONSTS.AHEAD_30_MIN:
-                alert_time = moment(start_time).subtract(TIME_CONSTS.THIRTY, 'm').valueOf();
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.THIRTY, 'm').valueOf();
                 break;
             case TIME_TYPE_CONSTS.AHEAD_1_H:
-                alert_time = moment(start_time).subtract(TIME_CONSTS.ONE, 'h').valueOf();
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
                 break;
             case TIME_TYPE_CONSTS.THATDAY_10:
-                alert_time = moment(start_time).set('hour', TIME_CONSTS.TEN).set('minute', TIME_CONSTS.ZERO).set('second', TIME_CONSTS.ZERO).valueOf();
+                alert_time = moment(start_time).set('hour', TIME_CALCULATE_CONSTS.TEN).set('minute', TIME_CALCULATE_CONSTS.ZERO).set('second', TIME_CALCULATE_CONSTS.ZERO).valueOf();
                 break;
             case TIME_TYPE_CONSTS.AHEAD_1DAY_10:
-                alert_time = moment(start_time).subtract(TIME_CONSTS.ONE, 'days').set('hour', TIME_CONSTS.TEN).set('minute', TIME_CONSTS.ZERO).set('second', TIME_CONSTS.ZERO).valueOf();
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.ONE, 'days').set('hour', TIME_CALCULATE_CONSTS.TEN).set('minute', TIME_CALCULATE_CONSTS.ZERO).set('second', TIME_CALCULATE_CONSTS.ZERO).valueOf();
                 break;
             case TIME_TYPE_CONSTS.AHEAD_2DAY_10:
-                alert_time = moment(start_time).subtract(TIME_CONSTS.TWO, 'days').set('hour', TIME_CONSTS.TEN).set('minute', TIME_CONSTS.ZERO).set('second', TIME_CONSTS.ZERO).valueOf();
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.TWO, 'days').set('hour', TIME_CALCULATE_CONSTS.TEN).set('minute', TIME_CALCULATE_CONSTS.ZERO).set('second', TIME_CALCULATE_CONSTS.ZERO).valueOf();
                 break;
             case TIME_TYPE_CONSTS.AHEAD_3DAY_10:
-                alert_time = moment(start_time).subtract(TIME_CONSTS.THREE, 'days').set('hour', TIME_CONSTS.TEN).set('minute', TIME_CONSTS.ZERO).set('second', TIME_CONSTS.ZERO).valueOf();
+                alert_time = moment(start_time).subtract(TIME_CALCULATE_CONSTS.THREE, 'days').set('hour', TIME_CALCULATE_CONSTS.TEN).set('minute', TIME_CALCULATE_CONSTS.ZERO).set('second', TIME_CALCULATE_CONSTS.ZERO).valueOf();
                 break;
         }
         formObj.alert_time = alert_time;
@@ -393,24 +348,24 @@ var CrmAlertForm = createReactClass({
             switch (this.state.selectedTimeRange) {
             //根据不同的选择的不同的时间段类型，计算不同的开始时间
                 case TIME_TYPE_CONSTS.ONE_HOUR:
-                    formData.start_time = moment().add(TIME_CONSTS.ONE, 'h').valueOf();
-                    formData.end_time = moment().add(TIME_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
+                    formData.start_time = moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
+                    formData.end_time = moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
                     break;
                 case TIME_TYPE_CONSTS.TWO_HOURS:
-                    formData.start_time = moment().add(TIME_CONSTS.TWO, 'h').valueOf();
-                    formData.end_time = moment().add(TIME_CONSTS.TWO_POINT_FIVE, 'h').valueOf();
+                    formData.start_time = moment().add(TIME_CALCULATE_CONSTS.TWO, 'h').valueOf();
+                    formData.end_time = moment().add(TIME_CALCULATE_CONSTS.TWO_POINT_FIVE, 'h').valueOf();
                     break;
                 case TIME_TYPE_CONSTS.FIVE_HOURS:
-                    formData.start_time = moment().add(TIME_CONSTS.FIVE, 'h').valueOf();
-                    formData.end_time = moment().add(TIME_CONSTS.FIVE_POINT_FIVE, 'h').valueOf();
+                    formData.start_time = moment().add(TIME_CALCULATE_CONSTS.FIVE, 'h').valueOf();
+                    formData.end_time = moment().add(TIME_CALCULATE_CONSTS.FIVE_POINT_FIVE, 'h').valueOf();
                     break;
                 case TIME_TYPE_CONSTS.ONE_DAY:
-                    formData.start_time = moment().add(TIME_CONSTS.TWENTY_FOUR, 'h').valueOf();
-                    formData.end_time = moment().add(TIME_CONSTS.TWENTY_FOUR_POINT_FIVE, 'h').valueOf();
+                    formData.start_time = moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf();
+                    formData.end_time = moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR_POINT_FIVE, 'h').valueOf();
                     break;
                 case TIME_TYPE_CONSTS.ONE_WEEK:
-                    formData.start_time = moment().add(TIME_CONSTS.TWENTY_FOUR * TIME_CONSTS.SEVERN, 'h').valueOf();
-                    formData.end_time = moment().add((TIME_CONSTS.TWENTY_FOUR * TIME_CONSTS.SEVERN + TIME_CONSTS.ZERO_POINT_FIVE), 'h').valueOf();
+                    formData.start_time = moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR * TIME_CALCULATE_CONSTS.SEVERN, 'h').valueOf();
+                    formData.end_time = moment().add((TIME_CALCULATE_CONSTS.TWENTY_FOUR * TIME_CALCULATE_CONSTS.SEVERN + TIME_CALCULATE_CONSTS.ZERO_POINT_FIVE), 'h').valueOf();
                     break;
             }
         }
@@ -483,7 +438,7 @@ var CrmAlertForm = createReactClass({
             var start_time = this.state.formData.start_time;
             //选择全天后的下拉框选项,要根据具体时间，显示合理的提醒时间下拉框
             let CLONE_SELECT_FULL_OPTIONS = _.clone(SELECT_FULL_OPTIONS);
-            const isAfter10 = moment().hour() - TIME_CONSTS.TEN;
+            const isAfter10 = moment().hour() - TIME_CALCULATE_CONSTS.TEN;
             for (var i = 0; i <= 3; i++) {
                 //是否是1天后
                 if (this.isNDayLater(start_time, i)) {
@@ -678,7 +633,7 @@ var CrmAlertForm = createReactClass({
                         label={Intl.get('common.login.time', '时间')}
                     >
                         {<Select onChange={this.handleTimeRangeChange} value={this.state.selectedTimeRange} getPopupContainer={() => document.getElementById('schedule-form')}>
-                            {_.map(CONTACT_TIMES, (key, value) => {
+                            {_.map(CONTACT_TIMES_CONSTS, (key, value) => {
                                 return (<Option value={value}>{key}</Option>);
                             })}
                         </Select>}

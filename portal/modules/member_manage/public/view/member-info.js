@@ -44,7 +44,6 @@ class MemberInfo extends React.Component {
         modalStr: '',//模态框提示内容
         isDel: false,//是否删除
         userTeamList: MemberFormStore.getState().userTeamList,
-        roleList: MemberFormStore.getState().roleList,
         isPasswordInputShow: false,//是否展示修改密码的输入框
         activeKey: TAB_KEYS.BASIC_INFO_TAB,
         resultType: this.props.resultType,
@@ -71,7 +70,6 @@ class MemberInfo extends React.Component {
     onChange = () => {
         this.setState({
             userTeamList: MemberFormStore.getState().userTeamList,
-            roleList: MemberFormStore.getState().roleList,
             ...MemberInfoStore.getState()
         });
     };
@@ -184,7 +182,7 @@ class MemberInfo extends React.Component {
 
     afterEditRoleSuccess = (user) => {
         //更新详情中的角色
-        let roleList = this.state.roleList;
+        let roleList = this.props.roleList;
         let curRole = _.find(roleList, role => role.roleId === user.role);
         let roleObj = {roleIds: [_.get(curRole, 'roleId')], roleNames: [_.get(curRole, 'roleName')]};
         MemberManageAction.updateMemberRoles(roleObj); 
@@ -282,12 +280,14 @@ class MemberInfo extends React.Component {
         this.setState({showSaveIconTip: false});
         let memberInfo = this.state.memberInfo;
         if (memberInfo.image && memberInfo.image !== this.props.memberInfo.image) {
+            const updateObj = {id: memberInfo.id, user_logo: memberInfo.image};
             let editObj = {user_id: memberInfo.id, user_logo: memberInfo.image};
+
             MemberManageAjax.editUser(editObj).then(function(result) {
                 //上传成功
                 if (result) {
                     message.success(Intl.get('common.upload.success', '上传成功！'));
-                    MemberManageAction.afterEditUser(editObj);
+                    MemberManageAction.afterEditMember(updateObj);
                 }
             }, function(errorObj) {
                 //上传失败
@@ -712,7 +712,7 @@ class MemberInfo extends React.Component {
 
     renderTitle() {
         let memberInfo = this.state.memberInfo;
-        const TITLE_INPUT_WIDTH = 280;
+        const TITLE_INPUT_WIDTH = 270;
         return (
             <div className="member-detail-title">
                 <Popconfirm title={Intl.get('member.save.logo.tip', '是否保存上传的头像？')}
@@ -756,7 +756,7 @@ class MemberInfo extends React.Component {
                         />
                     </div>
                 ) : (
-                    <div className="memeber-name-container">
+                    <div className="member-name-container">
                         <div className="member-info-label">
                             {memberInfo.userName || ''}
                         </div>

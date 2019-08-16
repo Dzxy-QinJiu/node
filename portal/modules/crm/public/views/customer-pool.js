@@ -125,11 +125,19 @@ class CustomerPool extends React.Component {
         };
         if (userData.getUserData().isCommonSales) {
             paramObj.ownerId = userData.getUserData().user_id;
+            if(_.get(paramObj, 'customerIds.length') > 20){
+                message.error(Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户'));
+                return;
+            }
         } else {
             if (!this.state.salesMan) {
                 this.setState({unSelectDataTip: Intl.get('crm.17', '请选择销售人员')});
                 return;
             } else {
+                if(_.get(paramObj, 'customerIds.length') > 20){
+                    this.setState({unSelectDataTip: Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户')});
+                    return;
+                }
                 //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
                 let idArray = this.state.salesMan.split('&&');
                 paramObj.ownerId = _.get(idArray, '[0]');
@@ -144,6 +152,9 @@ class CustomerPool extends React.Component {
             let totalSize = this.state.totalSize - _.get(customerIds, 'length', 0);
             this.setState({isExtracting: false, salesMan: '', poolCustomerList, totalSize});
             message.success(Intl.get('clue.extract.success', '提取成功'));
+            if (poolCustomerList.length < 20) {
+                this.getPoolCustomer();
+            }
         }, (errorMsg) => {
             this.setState({isExtracting: false, salesMan: ''});
             message.error(errorMsg);
@@ -216,12 +227,22 @@ class CustomerPool extends React.Component {
             }, {
                 title: Intl.get('weekly.report.customer.stage', '客户阶段'),
                 width: column_width,
-                dataIndex: 'customer_stage',
+                dataIndex: 'customer_label',
                 className: 'has-filter',
+                render: (text, record, index) => {
+                    return (
+                        <span>
+                            {record.customer_label ? (
+                                <Tag
+                                    className={crmUtil.getCrmLabelCls(record.customer_label)}>
+                                    {record.customer_label}</Tag>) : null
+                            }
+                        </span>);
+                }
             }, {
                 title: Intl.get('crm.customer.label', '客户标签'),
                 width: 130,
-                dataIndex: 'customer_label',
+                dataIndex: 'labels',
                 className: 'has-filter',
                 render: (text, record, index) => {
                     var tagsArray = _.isArray(record.labels) ? record.labels : [];
@@ -235,11 +256,6 @@ class CustomerPool extends React.Component {
 
                     return (
                         <span>
-                            {record.customer_label ? (
-                                <Tag
-                                    className={crmUtil.getCrmLabelCls(record.customer_label)}>
-                                    {record.customer_label}</Tag>) : null
-                            }
                             {record.qualify_label ? (
                                 <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
                                     {record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :

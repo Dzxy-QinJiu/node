@@ -153,7 +153,7 @@ class SalesTeamCard extends React.Component {
             dateType: 'json',
             success: (salesList) => {
                 //不是所属销售的即为联合跟进人
-                let secondSales = _.find(salesList, sales => sales.user_id !== this.state.userId);
+                let secondSales = salesList[0];
                 this.setState({
                     isLoadingSecondSales: false,
                     secondUserId: _.get(secondSales, 'user_id', ''),//联合跟进人

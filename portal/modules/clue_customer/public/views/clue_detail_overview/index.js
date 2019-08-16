@@ -33,7 +33,6 @@ import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerStore = require('../../store/clue-customer-store');
 import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
-import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -62,9 +61,14 @@ class ClueDetailOverview extends React.Component {
         //获取相似线索列表
         this.getSimilarClueLists();
         //获取相似客户列表
-        this.getSimilarCustomerLists();
-
-
+        //如果是已转化的客户，不需要展示相似客户
+        if (!this.isHasTransferClue()){
+            this.getSimilarCustomerLists();
+        }
+    }
+    //线索的状态是已转化的线索
+    isHasTransferClue = () => {
+        return _.get(this, 'state.curClue.status') === SELECT_TYPE.HAS_TRANSFER;
     }
     componentWillUnmount() {
         clueCustomerStore.unlisten(this.onClueCustomerStoreChange);
@@ -170,7 +174,9 @@ class ClueDetailOverview extends React.Component {
                     //获取相似线索列表
                     this.getSimilarClueLists();
                     //获取相似客户列表
-                    this.getSimilarCustomerLists();
+                    if (!this.isHasTransferClue()){
+                        this.getSimilarCustomerLists();
+                    }
                 }
             });
         }
@@ -1097,13 +1103,6 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
-    //合并到此客户按钮点击事件
-    onMergeToCustomerClick = customer => {
-        this.setState({
-            isShowClueToCustomerPanel: true,
-            existingCustomers: customer
-        });
-    };
     renderSimilarLists = (listType) => {
         var isClueType = listType === 'clue';
         var moreListShowFlag = this.state.showLargerClueLists;
@@ -1130,7 +1129,7 @@ class ClueDetailOverview extends React.Component {
                         <div className="similar-title">
                             {isClueType ? renderClueStatus(listItem.status) : null}
                             <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                            {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.onMergeToCustomerClick.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                            {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
 
                         </div>
                         {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
@@ -1202,32 +1201,13 @@ class ClueDetailOverview extends React.Component {
         if (_.get(this,'state.similarClueLists[0]') || _.get(this, 'state.similarCustomerLists[0]')){
             return (
                 <div className="similar-wrap">
-                    {_.get(this, 'state.similarCustomerLists[0]') ? this.renderSimilarLists() : null}
+                    {_.get(this, 'state.similarCustomerLists[0]') && !this.isHasTransferClue() ? this.renderSimilarLists() : null}
                     {_.get(this,'state.similarClueLists[0]') ? this.renderSimilarLists('clue') : null}
                 </div>
             );
         }else{
             return null;
         }
-    };
-    //隐藏线索转客户面板
-    hideClueToCustomerPanel = () => {
-        this.setState({isShowClueToCustomerPanel: false});
-    };
-    //线索合并到客户后的回调事件
-    onClueMergedToCustomer = (customerId,customerName) => {
-        //在列表中隐藏当前操作的线索
-        this.props.afterTransferClueSuccess();
-        //打开客户面板，显示合并后的客户信息
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-            customer_params: {
-                currentId: customerId,
-                activeKey: TAB_KEYS.CONTACT_TAB
-            }
-        });
-        //关闭线索转客户面板
-        this.hideClueToCustomerPanel();
-        this.props.updateClueProperty({status: SELECT_TYPE.HAS_TRANSFER,customer_name: customerName, customer_id: customerId});
     };
     // 渲染相似客户
     renderClueCustomerLists = (curClue) => {
@@ -1310,16 +1290,6 @@ class ClueDetailOverview extends React.Component {
                     }
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                 </GeminiScrollbar>
-                {this.state.isShowClueToCustomerPanel ? (
-                    <ClueToCustomerPanel
-                        showFlag={this.state.isShowClueToCustomerPanel}
-                        clue={this.state.curClue}
-                        existingCustomers={[this.state.existingCustomers]}
-                        hidePanel={this.hideClueToCustomerPanel}
-                        onMerged={this.onClueMergedToCustomer}
-                        viewType='customer_merge'
-                    />
-                ) : null}
             </div>
         );
     }
@@ -1355,6 +1325,9 @@ ClueDetailOverview.defaultProps = {
     updateCustomerLastContact: function() {
 
     },
+    showClueToCustomerPanel: function() {
+
+    },
 
 
 };
@@ -1376,6 +1349,7 @@ ClueDetailOverview.propTypes = {
     onConvertToCustomerBtnClick: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     extractClueOperator: PropTypes.func,
+    showClueToCustomerPanel: PropTypes.func,
 };
 
 module.exports = ClueDetailOverview;

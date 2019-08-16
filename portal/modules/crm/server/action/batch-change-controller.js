@@ -11,27 +11,11 @@ exports.getGroupList = function(req, res) {
 
 //客户批量操作
 exports.doBatch = function(req, res) {
-    var type = req.query.type;
-    var errorMsg = '';
-    switch (type) {
-    case 'user':
-        errorMsg = '变更销售人员失败';
-        break;
-    case 'label':
-        errorMsg = '变更标签失败';
-        break;
-    case 'industry':
-        errorMsg = '变更行业失败';
-        break;
-    case 'address':
-        errorMsg = '变更地域失败';
-        break;
-    }
     batchChangeService.doBatch(req, res)
         .on('success', function(data) {
             res.json(data);
         }).on('error', function(err) {
-            res.status(500).json(err.message || errorMsg);
+            res.status(500).json(err && err.message);
         });
 };
 

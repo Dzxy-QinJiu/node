@@ -259,6 +259,7 @@ var en_US = {
     'common.before': 'Before', // 前
     'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
     'common.import.template': 'Template',//模板
+    'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -771,14 +772,14 @@ var en_US = {
     'member.search.position.by.name': 'Enter position name for searching', // 输入职务名称搜索
     'member.add.position': 'Add', // 添加职务
     'member.position.name.label': 'Name', // 职务名称
-    'member.position.name.placeholder': '', // 请输入职务名称
+    'member.position.name.placeholder': 'Please enter the name of position', // 请输入职务名称
     'member.team.add.child.department': 'Add sub department', // 添加子部门
     'member.group.sales.goal': 'Department Sales Target', // 部门销售目标
     'member.selected.member.count': '{count} selected', // 已选{count}
-    'member.position.set.default.failed': '', // 设置默认角色失败
-    'member.position.edit.office': '', // 编辑职务
-    'member.position.delete.office': '', // 删除职务
-    'member.position.set.default': '', // 设为默认
+    'member.position.set.default.failed': 'Failed to set default role', // 设置默认角色失败
+    'member.position.edit.office': 'Edit position', // 编辑职务
+    'member.position.delete.office': 'Delete position', // 删除职务
+    'member.position.set.default': 'Setting default', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
     'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 50 (including 50).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
     //后台管理-成员end
@@ -825,9 +826,33 @@ var en_US = {
     // 后台管理-竞品end
 
     // 后台管理-销售流程start
-    'sales.process.add.process': '', // 添加销售流程
-    'sales.process.toplimit': '', // 销售流程个数已达上限（8个）
-    'sales.process.suitable.objects': '', // 适用范围
+    'sales.process.add.process': 'Add Sale Process', // 添加销售流程
+    'sales.process.edit.process': 'Edit Sale Process', // 编辑销售流程
+    'sales.process.delete.process': 'Delete', // 删除销售流程
+    'sales.process.get.failed': 'Failed to get sale process', // 获取销售流程失败
+    'sales.process.nodata.tips': 'No sale process, please add first', // 暂无销售流程，请先添加
+    'sales.process.toplimit': 'The number of sale processes has reached the upper limit(8).', // 销售流程个数已达上限（8个）
+    'sales.process.suitable.objects': 'Usable Range', // 适用范围
+    'sales.process.customer.stage.number': 'Number of customer stage', // 客户阶段数
+    'sales.process.suitable.objects.placeholder': 'Select the team or individual that use the process', // 请选择适用该流程的团队或个人
+    'sales.process.name.verify.exist': 'The name of sale process was existed', // 该销售流程已存在
+    'sales.process.name.placeholder': 'Please enter the name of sale process', // 请输入销售流程名称
+    'sales.process.destrip.placeholder': 'Please enter the description of sale process', // 请输入销售流程的描述信息
+    'sales.process.set.customer.stage': 'Set up customer stage', // 设置客户阶段
+    'sales.process.status.edit.tip': 'Are you sure you want to {status} the sale process?', // 确定要{status}该销售流程？
+    'sales.process.delete.tips': 'Please Start with a sales process', // 请先启用一个销售流程
+    'sales.process.add.customer.stage': 'Add Customer Stage', // 添加客户阶段
+    'sales.process.edit.customer.stage': 'Edit Customer Stage', // 编辑客户阶段
+    'sales.process.customer.stage.nodata.tips': 'No customer stage, please add first', // 暂无客户阶段，请先添加
+    'sales.process.customer.stage.toplimit': 'The number of customer stages has reached the upper limit(8).', // 客户阶段个数已达上限（8个）
+    'sales.process.delete.customer.stage.tips': 'Are you sure to delete the customer stage?', // 确定删除这个客户阶段么
+    'sales.process.change.order.failed': 'Failed to change the order of customer stages', // 变更客户阶段顺序失败
+    'sales.process.customer.stage.play': 'Play', // 剧本
+    'sales.process.customer.stage.play.placeholder': 'Please enter scenarios', // 请输入剧本
+    'sales.process.customer.stage.no.play': 'No scenarios', // 暂无剧本
+    'sales.process.customer.stage.add.play': 'Add Scenarios', // 添加剧本
+    'sales.process.customer.stage.activity': 'sales behaviors', // 销售行为
+    'sales.process.customer.stage.detail.title': 'Set up scenarios, sales behaviors, and automatic change conditions for the information phase.', // 设置信息阶段的剧本、销售行为、自动变更条件。
     // 后台管理-销售流程end
 
     //应用管理start
@@ -1580,6 +1605,8 @@ var en_US = {
     'crm.customer.pool': 'Customer pool',//客户池
     'crm.customer.label': 'Customer label',//客户标签
     'crm.customer.extract.time': 'Extract time',//释放时间
+    'crm.customer.release.customer': 'Release customer',//释放客户
+    'crm.customer.extract.limit.tip': 'Up to 20 customers at a time',//一次最多提取20个客户
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -2235,6 +2262,14 @@ var en_US = {
     'errorcode.150': 'Failed to update the clue',//修改线索信息失败
     'errorcode.151': 'Failed to get sales new open accounts and new open accounts',//获取销售新开客户数和新开帐号数失败
     'errorcode.152': 'There are repeat clues!',//线索重复
+    'errorcode.153': 'Failed to add sale process', // 添加销售流程失败
+    'errorcode.154': 'Failed to get sale process', // 获取销售流程失败
+    'errorcode.155': 'Failed to add customer stage', // 添加客户阶段失败
+    'errorcode.156': 'Failed to get customer stage', // 获取客户阶段失败
+    'errorcode.157': 'Failed to update sale process', // 更新销售流程失败
+    'errorcode.158': 'Failed to update customer stage', // 更新客户阶段失败
+    'errorcode.159': 'Failed to delete sale process', // 删除销售流程失败
+    'errorcode.160': 'Failed to delete customer stage', // 删除客户阶段失败
     'errorcode.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败
@@ -2402,10 +2437,8 @@ var en_US = {
     'crm.alert.topic': 'Title',//标题
     'crm.contact.time': 'Contact time',//联系时间
     'crm.alert.time': 'Alert time',//提醒时间
-    'crm.alert.after.1.hours': '1 hour later',//1小时后
-    'crm.alert.after.2.hours': '2 hours later',//2小时后
-    'crm.alert.after.5.hours': '5 hours later',//5小时后
-    'crm.alert.after.1.day': '1 day later',//1天后
+    'crm.schedule.n.hour.later': '{n} hours later',//{n}小时后
+    'crm.alert.after.n.day': '{n} days later',//{n}天后
     'crm.alert.after.1.week': '1 week later',//1周后
     'crm.not.alert': 'Not remind',//不提醒
     'crm.alert.not.finish': 'Not finish',//未完成
@@ -2726,8 +2759,8 @@ var en_US = {
     'common.telephone.statistics': 'Telephone statistics',//电话量统计
     'common.ketao.app.telephone.statistics': 'Ketao app telephone statistics',//客套APP电话量统计
     'common.trial.qualified.customer.statistics': 'Trial qualified customer statistics',//试用合格客户数统计
-    'clue.repeat.clue.list': 'Repeat clue',//重复线索
-    'clue.has.no.relative.customer': 'Clues have not related to customer',//没有关联客户的线索
+    'clue.has.similar.customer': 'similar customer',//有相似客户
+    'clue.has.similar.clue': 'similar clue',//有相似线索
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.extract.clue': 'Extract clue', // 提取线索
     'clue.pool': 'Clue Pool', // 线索池
@@ -3058,6 +3091,7 @@ var en_US = {
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
     'common.convert.to.customer': 'convert to customer',//转为客户
     'common.merge.to.customer': 'convert to customer',//合并到此客户
+    'common.merge.to.other.customer': 'convert to existing customer',//合并到其他客户
     'common.modify.name.to': 'modify name to',//修改姓名为
     'common.convert.to.new.customer': 'convert to new customer',//转为新客户
     'common.has.similar.customers': 'Has {count} similar customers',//有{count}个信息相似的客户
@@ -3209,6 +3243,13 @@ var en_US = {
     'guide.see.clue': 'Check the clues',//查看线索
     'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
     'guide.import.customer.success': 'Import Success',//导入成功
-
+    'common.clue.will.disappear.after.convert.to.customer': 'Clue will disappear after convert to customer',//转为客户后，线索相关内容都将转入客户，线索将消失。
+    'crm.clue.phone.on.meeting': 'In a meeting, it is not convenient to answer',//在开会，不方便接听
+    'common.report.num': 'report numer',//报送数量
+    'common.signed.customer.public.opinion.report.statistics': 'Signed customer public opinion report statistics',//签约客户舆情报送统计,
+    'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
+    'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
+    'import.excel.no.data': 'I have no clues? Try to give you a set of {recommend}',//自己没有线索？试下让客套给您{recommend}
+    'import.recommend.clue.lists': 'Recommended clue',//推荐线索
 };
 export default en_US;

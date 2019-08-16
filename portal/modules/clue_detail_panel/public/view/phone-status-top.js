@@ -5,7 +5,7 @@
  */
 const PropTypes = require('prop-types');
 var React = require('react');
-import {Button, Tag, Select, Input, Menu, Dropdown} from 'antd';
+import {Button, Tag, Select, Input, Menu, Dropdown, Icon} from 'antd';
 const {TextArea} = Input;
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
@@ -14,10 +14,12 @@ import {getCallClient, AcceptButton, ReleaseButton} from 'PUB_DIR/sources/utils/
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var ClueAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
+var ScheduleAction = require('MOD_DIR/clue_customer/public/action/schedule-action');
 var AlertTimer = require('CMP_DIR/alert-timer');
 var className = require('classnames');
-import {AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {AVALIBILITYSTATUS, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -36,6 +38,11 @@ class phoneStatusTop extends React.Component {
             showCancelBtn: false,//是否展示取消保存跟进记录的按钮
             showMarkClueInvalid: this.props.showMarkClueInvalid,
             visible: false,//跟进内容下拉框是否展示
+            curClue: this.props.curClue,
+            addClueSchedule: false,//正在添加联系计划
+            addClueScheduleMsg: '',//添加联系计划的提示
+            hasAddedSchedlue: false,//已经添加了联系计划就不可以再添加了
+            messageType: ''
         };
     }
 
@@ -60,6 +67,11 @@ class phoneStatusTop extends React.Component {
             isAddingMoreProdctInfo: nextProps.isAddingMoreProdctInfo,
             isAddingPlanInfo: nextProps.isAddingPlanInfo
         });
+        if (!_.isEmpty(nextProps.curClue)) {
+            this.setState({
+                curClue: nextProps.curClue
+            });
+        }
         //如果接听后，把状态isConnected 改为true
         if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             this.setState({
@@ -70,7 +82,7 @@ class phoneStatusTop extends React.Component {
                 myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
             }
         }
-        var showClueModal = _.get($('#clue-phone-status-content'),'length',0) > 0;
+        var showClueModal = _.get($('#clue-phone-status-content'), 'length', 0) > 0;
         if ((showClueModal) && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
             this.setInitialData(phonemsgObj);
         }
@@ -92,7 +104,7 @@ class phoneStatusTop extends React.Component {
     };
 
     //获取添加跟进记录的线索id
-    getSaveTraceClueId(){
+    getSaveTraceClueId() {
         let clueInfoArr = this.state.clueInfoArr;
         //默认保存到获取的客户列表中的第一个客户上
         let clue_id = _.isArray(clueInfoArr) && clueInfoArr[0] ? clueInfoArr[0].id : '';
@@ -122,7 +134,7 @@ class phoneStatusTop extends React.Component {
             phoneAlertAction.setSubmitErrMsg(Intl.get('phone.delay.save', '通话记录正在同步，请稍等再保存！'));
             return;
         }
-        if (!_.trim(this.state.inputContent)){
+        if (!_.trim(this.state.inputContent)) {
             phoneAlertAction.setSubmitErrMsg(Intl.get('customer.trace.content', '跟进记录内容不能为空'));
             return;
         }
@@ -153,7 +165,7 @@ class phoneStatusTop extends React.Component {
     //将输入框中的文字放在state上
     handleInputChange = (e) => {
         phoneAlertAction.setContent(e.target.value);
-        if (e.target.value){
+        if (e.target.value) {
             this.setState({
                 visible: false
             });
@@ -162,20 +174,20 @@ class phoneStatusTop extends React.Component {
     handleSelectCustomer = (clueId) => {
         this.setState({
             selectedClueId: clueId
-        },() => {
+        }, () => {
             var item = _.find(this.state.clueInfoArr, item => item.id === clueId);
-            if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+            if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY) {
                 this.setState({
                     showMarkClueInvalid: false
                 });
-            }else{
+            } else {
                 this.setState({
                     showMarkClueInvalid: true
                 });
             }
         });
     };
-    onClickMenu = ({ key }) => {
+    onClickMenu = ({key}) => {
         var commonPhoneDesArray = this.props.commonPhoneDesArray;
         var inputContent = commonPhoneDesArray[key];
         phoneAlertAction.setContent(inputContent);
@@ -188,8 +200,9 @@ class phoneStatusTop extends React.Component {
 
     };
     handleVisibleChange = flag => {
-        this.setState({ visible: flag });
+        this.setState({visible: flag});
     };
+
     renderTraceItem(phonemsgObj) {
         var onHide = function() {
             phoneAlertAction.setSubmitErrMsg('');
@@ -198,7 +211,7 @@ class phoneStatusTop extends React.Component {
             <Option value={item.id} key={item.id}>{item.name}</Option>
         ));
         var commonPhoneDesArray = this.props.commonPhoneDesArray;
-        var saveCls = className('modal-submit-btn',{
+        var saveCls = className('modal-submit-btn', {
             'showCls': this.isFinishedCall(phonemsgObj)
         });
         const menu =
@@ -209,13 +222,14 @@ class phoneStatusTop extends React.Component {
                 }
                 return (<Menu.Item key={idx} value={Des}>{Des}</Menu.Item>);
             }) : null}</Menu>
-           ;
+        ;
         //通话记录的编辑状态
         if (this.state.isEdittingTrace) {
             return (
                 <div className="trace-content edit-trace">
                     <div className="input-item">
-                        <Dropdown overlay={menu} trigger={['click']} onVisibleChange={this.handleVisibleChange} visible={this.state.visible}>
+                        <Dropdown overlay={menu} trigger={['click']} onVisibleChange={this.handleVisibleChange}
+                            visible={this.state.visible}>
                             <TextArea
                                 ref={addTextare => this['addTextare'] = addTextare}
                                 onChange={this.handleInputChange}
@@ -271,6 +285,7 @@ class phoneStatusTop extends React.Component {
             );
         }
     }
+
     //通话结束
     isFinishedCall = (phonemsgObj) => {
         return phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back;
@@ -299,7 +314,8 @@ class phoneStatusTop extends React.Component {
                 desTipObj.tip = (<AcceptButton callClient={callClient}></AcceptButton>);
             } else {
                 let tip = `${Intl.get('call.record.phone.alerting', '已振铃，等待对方接听')}`;
-                desTipObj.tip = (<ReleaseButton callClient={callClient} tip={tip} phoneNumber={phoneNum}> </ReleaseButton>);
+                desTipObj.tip = (
+                    <ReleaseButton callClient={callClient} tip={tip} phoneNumber={phoneNum}> </ReleaseButton>);
             }
         } else if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
             let tip = `${Intl.get('call.record.phone.answered', '正在通话中')}`;
@@ -313,16 +329,16 @@ class phoneStatusTop extends React.Component {
     //将线索标为无效
     handleSetClueInvalid = () => {
         var item = {};
-        if (this.state.selectedClueId){
+        if (this.state.selectedClueId) {
             item = _.find(this.state.clueInfoArr, item => item.id === this.state.selectedClueId);
         }
-        this.props.handleSetClueInvalid(item,(updateValue) => {
+        this.props.handleSetClueInvalid(item, (updateValue) => {
             item.availability = updateValue;
-            if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
+            if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY) {
                 this.setState({
                     showMarkClueInvalid: false
                 });
-            }else{
+            } else {
                 this.setState({
                     showMarkClueInvalid: true
                 });
@@ -339,8 +355,51 @@ class phoneStatusTop extends React.Component {
             getCallClient().releaseCall();
         }
     };
+    addScheduleItem = (startTimeValue) => {
+        var submitObj = {
+            start_time: startTimeValue,
+            end_time: startTimeValue + TIME_CALCULATE_CONSTS.THIRTY * 60 * 1000,
+            alert_time: startTimeValue,
+            topic: _.get(this, 'state.curClue.name'),
+            scheduleType: 'lead',
+            socketio_notice: true,
+            content: '',
+            lead_id: _.get(this, 'state.curClue.id')
+        };
+        if (!submitObj.lead_id) {
+            return;
+        }
+        
+        this.setState({
+            addClueSchedule: true
+        });
+        ScheduleAction.addSchedule(submitObj, (resData) => {
+            if (resData.id) {
+                this.setState({
+                    hasAddedSchedlue: true
+                });
+                this.showMessage(Intl.get('user.user.add.success', '添加成功'), 'success');
+            } else {
+                this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
+            }
+        });
+    };
+    showMessage = (content, type) => {
+        this.setState({
+            addClueSchedule: false,
+            messageType: type,
+            addClueScheduleMsg: content || '',
+        });
+    };
+    hideSaveTooltip = () => {
+        this.setState({
+            messageType: '',
+            addClueScheduleMsg: '',
+        });
+    };
 
     render() {
+        var saveResult = this.state.messageType;
         var iconFontCls = 'modal-icon iconfont';
         var phonemsgObj = this.state.phonemsgObj;
         var phoneStatusContainer = 'contact-info-detail';
@@ -379,15 +438,47 @@ class phoneStatusTop extends React.Component {
                             this.getSaveTraceClueId() ? this.renderTraceItem(phonemsgObj) : null
                         }
                     </div>
-                    {!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo ?
+                    {/*已转化的线索和无效线索不能展示这两个按钮*/}
+                    {!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo && ![SELECT_TYPE.HAS_TRANSFER].includes(_.get(this, 'state.curClue.status')) && _.get(this, 'state.curClue.availability') === AVALIBILITYSTATUS.AVALIBILITY ?
                         <div className="add-trace-and-plan">
                             <div className="add-more-info-container">
                                 <Button size="small"
                                     onClick={this.handleSetClueInvalid}>{this.state.showMarkClueInvalid ? Intl.get('clue.customer.set.invalid', '标为无效') : Intl.get('clue.cancel.set.invalid', '改为有效')}</Button>
                             </div>
                             {this.state.showMarkClueInvalid ? <div className="add-plan-info-container">
-                                <Button size="small"
-                                    onClick={this.handleAddPlan}>{Intl.get('crm.214', '添加联系计划')}</Button>
+                                <div className="contact-tip">{Intl.get('crm.clue.next.contact.time', '下次联系时间')}
+                                    <div className="indicator">
+                                        {saveResult ?
+                                            (
+                                                <AlertTimer
+                                                    time='3000'
+                                                    message={this.state.addClueScheduleMsg}
+                                                    type={saveResult} showIcon
+                                                    onHide={this.hideSaveTooltip}/>
+                                            ) : ''
+                                        }
+                                    </div>
+                                </div>
+
+                                <div className="btn-wrap">
+                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWO, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}
+
+                                    </Button>
+                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.SIX, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
+                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
+                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                        onClick={this.addScheduleItem.bind(this, moment().add(3 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
+                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                        onClick={this.addScheduleItem.bind(this, moment().add(5 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
+                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
+                                        onClick={this.handleAddPlan}>{Intl.get('user.time.custom', '自定义')}</Button>
+                                    {this.state.addClueSchedule ? <Icon type="loading"/> : null}
+                                </div>
+
+
                             </div> : null}
 
                         </div>
@@ -415,7 +506,8 @@ phoneStatusTop.defaultProps = {
     commonPhoneDesArray: [],
     showMarkClueInvalid: function() {
 
-    }
+    },
+    curClue: {}
 };
 phoneStatusTop.propTypes = {
     addMoreInfoCls: PropTypes.string,
@@ -430,5 +522,6 @@ phoneStatusTop.propTypes = {
     handleAddPlan: PropTypes.bool,
     commonPhoneDesArray: PropTypes.object,
     showMarkClueInvalid: PropTypes.func,
+    curClue: PropTypes.object,
 };
 export default phoneStatusTop;

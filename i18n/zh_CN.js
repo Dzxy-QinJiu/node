@@ -266,6 +266,7 @@ var zh_CN = {
     'common.before': '前',
     'common.download.template.filename': '下载{type}模板',
     'common.import.template': '模板',
+    'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
 
     //公共部分--end
     'login.login': '登录',
@@ -833,7 +834,6 @@ var zh_CN = {
     'sales.process.add.process': '添加销售流程',
     'sales.process.edit.process': '编辑销售流程',
     'sales.process.delete.process': '删除销售流程',
-    'sale.process.name.rule': '销售流程名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'sales.process.get.failed': '获取销售流程失败',
     'sales.process.nodata.tips': '暂无销售流程，请先添加',
     'sales.process.toplimit': '销售流程个数已达上限（8个）',
@@ -1627,6 +1627,8 @@ var zh_CN = {
     'crm.customer.pool': '客户池',
     'crm.customer.label': '客户标签',
     'crm.customer.extract.time': '释放时间',
+    'crm.customer.release.customer': '释放客户',
+    'crm.customer.extract.limit.tip': '一次最多提取20个客户',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
@@ -2303,9 +2305,9 @@ var zh_CN = {
     'errorcode.155': '添加客户阶段失败',
     'errorcode.156': '获取客户阶段失败',
     'errorcode.157': '更新销售流程失败',
-    'errorcode.158': '更新客户流程失败',
+    'errorcode.158': '更新客户阶段失败',
     'errorcode.159': '删除销售流程失败',
-    'errorcode.160': '删除客户流程失败',
+    'errorcode.160': '删除客户阶段失败',
     'errorcode.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
     'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
@@ -2479,10 +2481,8 @@ var zh_CN = {
     'crm.alert.topic': '标题',
     'crm.contact.time': '联系时间',
     'crm.alert.time': '提醒时间',
-    'crm.alert.after.1.hours': '1小时后',
-    'crm.alert.after.2.hours': '2小时后',
-    'crm.alert.after.5.hours': '5小时后',
-    'crm.alert.after.1.day': '1天后',
+    'crm.schedule.n.hour.later': '{n}小时后',
+    'crm.alert.after.n.day': '{n}天后',
     'crm.alert.after.1.week': '1周后',
     'crm.not.alert': '不提醒',
     'crm.alert.not.finish': '未完成',
@@ -2785,8 +2785,9 @@ var zh_CN = {
     'common.ranking': '排名',
     'common.telephone.statistics': '电话量统计',
     'common.ketao.app.telephone.statistics': '客套APP电话量统计',
-    'common.trial.qualified.customer.statistics': '试用合格客户数统计', 'clue.repeat.clue.list': '重复线索',
-    'clue.has.no.relative.customer': '没有关联客户的线索',
+    'common.trial.qualified.customer.statistics': '试用合格客户数统计', 
+    'clue.has.similar.customer': '有相似客户',
+    'clue.has.similar.clue': '有相似线索',
     'clue.export.clue.list': '导出线索',
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',
@@ -3202,6 +3203,7 @@ var zh_CN = {
     'common.sales.productivity.analysis': '销售生产力分析',
     'common.convert.to.customer': '转为客户',
     'common.merge.to.customer': '合并到此客户',
+    'common.merge.to.other.customer': '合并到其他客户',
     'common.modify.name.to': '修改姓名为',
     'common.convert.to.new.customer': '转为新客户',
     'common.has.similar.customers': '有{count}个信息相似的客户',
@@ -3349,8 +3351,14 @@ var zh_CN = {
     'guide.see.clue': '查看线索',
     'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
     'guide.import.customer.success': '导入成功',
-
-
-
+    'common.clue.will.disappear.after.convert.to.customer': '转为客户后，线索相关内容都将转入客户，线索将消失。',
+    'common.report.num': '报送数量',
+    'common.signed.customer.public.opinion.report.statistics': '签约客户舆情报送统计',
+    'crm.clue.phone.on.meeting': '在开会，不方便接听',
+    'crm.clue.next.contact.time': '下次联系时间',
+    'no.data.add.import.tip': '向客套中添加{type}',
+    'import.excel.data.ketao': '将excel中的{type}导入到客套中',
+    'import.excel.no.data': '自己没有线索？试下让客套给您{recommend}',
+    'import.recommend.clue.lists': '推荐线索',
 };
 export default zh_CN;

@@ -11,7 +11,7 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import SalesProcessStore from '../store';
-import {saleProcessNameRule} from 'PUB_DIR/sources/utils/validate-util';
+import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
 
 class SalesProcessForm extends React.Component {
     constructor(props) {
@@ -86,7 +86,7 @@ class SalesProcessForm extends React.Component {
                     {getFieldDecorator('name', {
                         rules: [{
                             validator: this.getValidator()
-                        }, saleProcessNameRule]
+                        }, nameRule(Intl.get('menu.sales.process', '销售流程'))]
                     })(
                         <Input placeholder={Intl.get('sales.process.name.placeholder', '请输入销售流程名称')}/>
                     )}

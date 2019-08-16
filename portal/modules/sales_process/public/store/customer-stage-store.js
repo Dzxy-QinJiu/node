@@ -23,6 +23,7 @@ class CustomerStageStore {
         this.isShowCustomerStageForm = false; // 是否显示客户阶段表单，默认false
         this.isShowCustomerStageTransferOrder = false; // 是否显示客户阶段变更，默认false
         this.isShowCustomerStageDetailPanel = false; // 是否显示客户阶段详情面板，默认false
+        this.currentcustomerStageList = [];
     }
 
     // 获取客户阶段列表
@@ -36,6 +37,7 @@ class CustomerStageStore {
                 this.getCustomerStageListErrMsg = result.errorMsg;
             } else {
                 this.customerStageList = result.resData;
+                this.currentcustomerStageList = _.cloneDeep(this.customerStageList);
             }
         }
     }
@@ -77,6 +79,7 @@ class CustomerStageStore {
         } else { // 添加
             this.customerStageList.push(customerStage);
         }
+        this.currentcustomerStageList = _.cloneDeep(this.customerStageList);
     }
 
     // 显示客户阶段变更顺序
@@ -85,8 +88,11 @@ class CustomerStageStore {
     }
 
     // 关闭客户阶段变更顺序
-    closeCustomerStageTransferOrder() {
+    closeCustomerStageTransferOrder(isTransferOrderSuccess) {
         this.isShowCustomerStageTransferOrder = false;
+        if (isTransferOrderSuccess !== true) {
+            this.customerStageList = _.cloneDeep(this.currentcustomerStageList);
+        }
     }
 
     // 上移客户阶段
