@@ -14,6 +14,7 @@ class SaleBehaviorPanel extends React.Component {
         this.state = {
             customerStage: props.customerStage, // 客户阶段
             itemKeys: this.getInitItemKeys(props.customerStage),// 用来处理增删数据的key
+            sourceSalesBehaviorList: _.cloneDeep(props.salesBehaviorList),
             salesBehaviorList: props.salesBehaviorList, // 销售行为列表
             taskNames: this.getInitTaskNames(props.customerStage), // 选择的任务名称
             actionNames: this.getInitActionNames(props.customerStage), // 选择的动作名称
@@ -61,8 +62,7 @@ class SaleBehaviorPanel extends React.Component {
         let customerStage = this.state.customerStage;
         let salesActivities = customerStage.sales_activities;
         salesActivities.splice(key, 1);
-
-        let salesBehaviorList = this.state.salesBehaviorList;
+        let salesBehaviorList = _.cloneDeep(this.state.sourceSalesBehaviorList);
         let length = salesActivities.length;
         if (length) {
             _.each(salesActivities, taskItem => {
@@ -72,10 +72,19 @@ class SaleBehaviorPanel extends React.Component {
                 }
             });
         }
+        let taskNames = this.state.taskNames;
+        taskNames.splice(key, 1);
+
+        let actionNames = this.state.actionNames;
+        actionNames.splice(key, 1);
+
         this.setState({
             itemKeys: itemKeys,
             customerStage: customerStage,
-            salesBehaviorList: salesBehaviorList
+            salesBehaviorList: salesBehaviorList,
+            taskNames: taskNames,
+            actionNames: actionNames
+
         });
     };
 
@@ -88,7 +97,7 @@ class SaleBehaviorPanel extends React.Component {
         let addItemKey = lastItemKey + 1;
         let customerStage = this.state.customerStage;
         let salesActivities = customerStage.sales_activities;
-        let salesBehaviorList = this.state.salesBehaviorList;
+        let salesBehaviorList = _.cloneDeep(this.state.sourceSalesBehaviorList);
         let length = salesActivities.length;
         if (length) {
             _.each(salesActivities, taskItem => {
@@ -137,19 +146,22 @@ class SaleBehaviorPanel extends React.Component {
                 this.state.taskNames[key] = value;
                 salesActivities.push({name: value, sales_actions: []});
             } else if (property === 'action') {
-                let length = salesActivities.length;
-                this.state.actionNames[key].name = value;
+                this.state.actionNames.push({name: value});
                 // 获取需要遍历的销售行为列表
                 let salesBehaviorList = this.state.salesBehaviorList;
+                salesActivities[key].sales_actions.push({name: value});
+
                 // 查找选中的销售任务项，是为了根据选中的动作找到对应action的值
-                let matchTaskObj = _.find(salesBehaviorList, item => item.name === this.state.taskName[key]);
-                salesActivities[length - 1].sales_actions.push({name: value});
+                let matchTaskObj = _.find(salesBehaviorList, item => item.name === this.state.taskNames[key]);
+                console.log('matchTaskObj matchTaskObj');
+
                 let salesActions = matchTaskObj && matchTaskObj.sales_action_templates || [];
+                console.log('salesActions:',salesActions);
                 if (salesActions.length) {
                     let actionObj = _.find(salesActions, item => item.name === value);
                     if (actionObj) {
                         this.state.actionNames[key].action = actionObj.action;
-                        salesActivities[length - 1].sales_actions[0].action = actionObj.action;
+                        salesActivities[key].sales_actions[0].action = actionObj.action;
                     }
                 }
             }
@@ -239,28 +251,14 @@ class SaleBehaviorPanel extends React.Component {
                             )
                         }
                     </Select>
-                    {
-                        this.state.taskNames[key] ? (
-                            <Select
-                                value={this.state.actionNames[key].name}
-                                style={{width: 150 }}
-                                onChange={this.handleSelectTask.bind(this, 'action', '', key)}
-                                className="select-action"
-                            >
-                                {this.getSalesActionOptions(this.state.taskName)}
-                            </Select>
-                        ) : (
-                            <Select
-                                style={{width: 150 }}
-                                placeholder={Intl.get('sales.process.select.action.placeholder', '请选择动作')}
-                                onChange={this.handleSelectTask.bind(this, 'action', '', key)}
-                                className="select-action"
-                            >
-                                {this.getSalesActionOptions(this.state.taskName)}
-                            </Select>
-                        )
-                    }
-
+                    <Select
+                        style={{width: 150 }}
+                        placeholder={Intl.get('sales.process.select.action.placeholder', '请选择动作')}
+                        onChange={this.handleSelectTask.bind(this, 'action', '', key)}
+                        className="select-action"
+                    >
+                        {this.getSalesActionOptions(this.state.taskName)}
+                    </Select>
                 </div>
             );
         }
