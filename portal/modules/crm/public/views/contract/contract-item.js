@@ -163,11 +163,11 @@ class ContractItem extends React.Component {
         return showUnit ? value + Intl.get('contract.155', '元') : value;
     };
 
-    saveContractBasicInfo = (saveObj, successFunc, errorFunc) => {
+    saveContractBasicInfo = (updateField, saveObj, successFunc, errorFunc) => {
         let contract = this.state.formData;
         // 客户信息
         saveObj.customers = [{customer_name: contract.customer_name, customer_id: this.props.customerId}];
-        ContractAjax.editPendingContract({type: 'sell'}, saveObj).then( (resData) => {
+        ContractAjax.editPendingContract({type: 'sell', property: updateField}, saveObj).then( (resData) => {
             if (resData && resData.code === 0) {
                 message.success(Intl.get('user.edit.success', '修改成功'));
                 if (_.isFunction(successFunc)) successFunc();
@@ -199,7 +199,7 @@ class ContractItem extends React.Component {
             });
         };
 
-        this.saveContractBasicInfo(saveObj, successFunc, errorCallback);
+        this.saveContractBasicInfo('start_time',saveObj, successFunc, errorCallback);
     };
 
     handleProductSave = (data, successFunc, errorFunc) => {
@@ -208,7 +208,7 @@ class ContractItem extends React.Component {
             id: this.state.formData.id
         };
 
-        this.saveContractBasicInfo(saveObj, successFunc, errorFunc);
+        this.saveContractBasicInfo('products', saveObj, successFunc, errorFunc);
     };
 
     renderContractContent = () => {
@@ -238,7 +238,7 @@ class ContractItem extends React.Component {
                         field='buyer'
                         value={contract.buyer}
                         hasEditPrivilege={hasEditPrivilege}
-                        saveEditInput={this.saveContractBasicInfo}
+                        saveEditInput={this.saveContractBasicInfo.bind(this, 'buyer')}
                         placeholder={Intl.get('crm.contract.party.name', '请输入甲方名称')}
                     />
                 </div>
@@ -265,7 +265,7 @@ class ContractItem extends React.Component {
                         afterValTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.contract.enter.contract.money', '请输入合同额')}
                         hasEditPrivilege={hasEditPrivilege}
-                        saveEditInput={this.saveContractBasicInfo}
+                        saveEditInput={this.saveContractBasicInfo.bind(this, 'contract_amount')}
                         noDataTip={Intl.get('crm.contract.no.contract.money', '暂无合同额')}
                     />
                 </div>
@@ -280,7 +280,7 @@ class ContractItem extends React.Component {
                         afterValTip={Intl.get('contract.82', '元')}
                         placeholder={Intl.get('crm.contract.enter.gross', '请输入毛利')}
                         hasEditPrivilege={hasEditPrivilege}
-                        saveEditInput={this.saveContractBasicInfo}
+                        saveEditInput={this.saveContractBasicInfo.bind(this, 'cost_price')}
                         noDataTip={Intl.get('crm.contract.no.gross', '暂无毛利额')}
                     />
                 </div>
@@ -295,7 +295,7 @@ class ContractItem extends React.Component {
                         selectOptions={categoryOptions}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('contract.72', '请选择合同类型')}
-                        saveEditSelect={this.saveContractBasicInfo}
+                        saveEditSelect={this.saveContractBasicInfo.bind(this, 'category')}
                     />
                 </div>
                 <div className={itemClassName}>
@@ -309,7 +309,7 @@ class ContractItem extends React.Component {
                         selectOptions={labelOptions}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('crm.contract.select.sign.type', '请选择签约类型')}
-                        saveEditSelect={this.saveContractBasicInfo}
+                        saveEditSelect={this.saveContractBasicInfo.bind(this, 'label')}
                     />
                 </div>
                 {
@@ -342,7 +342,7 @@ class ContractItem extends React.Component {
                                     field='remarks'
                                     value={contract.remarks}
                                     hasEditPrivilege={hasEditPrivilege}
-                                    saveEditInput={this.saveContractBasicInfo}
+                                    saveEditInput={this.saveContractBasicInfo.bind(this, 'remarks')}
                                 />
                             </div>
                         ) : null

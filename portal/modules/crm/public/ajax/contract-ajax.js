@@ -66,7 +66,7 @@ exports.deletePendingContract = function(id,queryParams) {
 let editPendingContractAjax = null;
 exports.editPendingContract = function(reqData, reqBody) {
     editPendingContractAjax && editPendingContractAjax.abort();
-    let url = '/rest/crm/edit/contract/' + reqData.type;
+    let url = '/rest/crm/edit/contract/' + reqData.type + '/' + reqData.property;
     const Deferred = $.Deferred();
     editPendingContractAjax = $.ajax({
         url: url,

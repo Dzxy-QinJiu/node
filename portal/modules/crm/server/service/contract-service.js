@@ -66,11 +66,11 @@ exports.deletePendingContract = (req, res) => {
 
 // 编辑待审合同
 exports.editPendingContract = (req, res) => {
-    let url = restApis.urlContract;
+    let url = restApis.urlContract + '/:property';
     let params = req.params;
     return restUtil.authRest.put(
         {
-            url: url.replace(':type', params.type),
+            url: url.replace(':type', params.type).replace(':property', params.property),
             req: req,
             res: res
         }, JSON.parse(req.body.rangParams));
