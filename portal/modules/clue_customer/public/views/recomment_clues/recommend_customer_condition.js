@@ -180,19 +180,21 @@ class RecommendCustomerCondition extends React.Component {
                             {...formItemLayout}
                         >
                             {
-                                getFieldDecorator('industrys')(
+                                getFieldDecorator('industrys',
+                                    {initialValue: _.get(hasSavedRecommendParams,'industrys',[])}
+                                )(
                                     <Select
                                         mode="multiple"
                                         placeholder={Intl.get('crm.22', '请选择行业')}
                                         name="industrys"
                                         getPopupContainer={() => document.getElementById('customer-recommend-form')}
-                                        defaultValue={_.get(hasSavedRecommendParams, 'industrys',[])}
-                                        filterOption={(input, option) => ignoreCase(input, option)}
                                     >
                                         {_.isArray(recommendIndustry) && recommendIndustry.length ?
                                             recommendIndustry.map((industryItem, idx) => {
                                                 return (<Option key={idx} value={industryItem}>{industryItem}</Option>);
-                                            }) : null
+                                            }) : (_.map(_.get(hasSavedRecommendParams,'industrys',[]), (item,idx) => {
+                                                return (<Option key={idx} value={item}>{item}</Option>);
+                                            }))
                                         }
                                     </Select>
                                 )}

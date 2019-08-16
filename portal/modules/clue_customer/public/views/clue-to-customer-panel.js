@@ -306,7 +306,7 @@ class ClueToCustomerPanel extends React.Component {
             //客户联系人中该联系方式和线索联系人中该联系方式的合集
             const all = _.concat(customerContact[field], clueContact[field]);
             //去重后的该联系方式合集
-            const uniqSet = _.uniq(all);
+            let uniqSet = _.uniq(all);
             //该联系方式是否重复
             //如果去重后该联系方式总数少了，说明该联系方式有重复
             const isDup = all.length > uniqSet.length;
@@ -317,6 +317,12 @@ class ClueToCustomerPanel extends React.Component {
             //该联系方式是否有不同
             const isDiff = _.difference(customerContact[field], clueContact[field]).length || _.difference(clueContact[field], customerContact[field]).length ? true : false;
 
+            //除了当前正在比较的客户联系人外的其他客户联系人相关联系方式的合集
+            const otherCustomerContactWay = _.chain(this.state.customerContacts).filter(contact => contact.id !== customerContact.id).map(field).flatten().value();
+            
+            //在当前客户联系人和线索联系人的相关联系方式的不重复的合集中去掉和其他客户联系人相关联系方式重复的项
+            uniqSet = _.filter(uniqSet, item => !_.includes(otherCustomerContactWay, item));
+            
             result[field] = {
                 isDiff,
                 uniqSet

@@ -11,6 +11,8 @@ export function getActivityChart(type, title) {
         url = '/rest/analysis/user/v1/:auth_type/new_added/users/activation/:param_interval';
     } else if (type === 'expired') {
         url = '/rest/analysis/user/v1/:auth_type/expired/:app_id/users/activation/:param_interval';
+    } else if (type === 'signed') {
+        url = '/rest/analysis/user/v3/:auth_type/active_percent/trend';
     } else {
         url = '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:param_interval';
     }
@@ -24,8 +26,16 @@ export function getActivityChart(type, title) {
             argCallbackTeamIdsToTeamId(arg);
             argCallbackMemberIdsToSalesId(arg);
 
-            //去掉query参数中的公共interval，以免引起迷惑
-            delete arg.query.interval;
+            //如果统计的是签约用户的
+            if (type === 'signed') {
+                //统计用户类型
+                arg.query.analysis_type = '正式用户';
+                //统计时间间隔用图上选择的而非公共参数里的
+                arg.query.interval = arg.params.param_interval;
+            } else {
+                //去掉query参数中的公共interval，以免引起迷惑
+                delete arg.query.interval;
+            }
         },
         processData: (data, chart) => {
             const intervalCondition = _.find(chart.conditions, item => item.name === 'param_interval');

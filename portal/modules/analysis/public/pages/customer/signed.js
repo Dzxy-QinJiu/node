@@ -38,6 +38,8 @@ function getCharts(paramObj) {
         customerChart.getSignedCustomerTotalIndustryChart(paramObj),
         //签约客户团队分布
         customerChart.getSignedCustomerTotalTeamChart(paramObj),
+        //签约客户舆情报送统计
+        customerChart.getSignedCustomerPublicOpinionReportChart(),
         //新签客户趋势
         customerChart.getSignedCustomerNewTrendChart(paramObj),
         //新签行业分布

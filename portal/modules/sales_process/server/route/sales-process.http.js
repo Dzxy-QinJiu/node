@@ -62,7 +62,7 @@ module.exports = {
         }
     }, {
         'method': 'put', // 变更客户阶段顺序
-        'path': '/rest/change/customer/stage/order/:id',
+        'path': '/rest/change/customer/stage/order',
         'handler': 'changeCustomerStageOrder',
         'passport': {
             'needLogin': true

@@ -396,31 +396,36 @@ var NavSidebar = createReactClass({
         );
     },
 
-    //后台管理的二级菜单
-    getBackendConfigLinks: function(backendConfigLinks) {
+    // 渲染二级子菜单，isShowLogOut用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
+    renderSubMenuLinks(linkList, isShowLogOut) {
         return (
             <ul className="ul-unstyled">
                 {
-                    backendConfigLinks.map(function(obj) {
-                        return (
-                            <li key={obj.id}>
-                                <NavLink to={obj.routePath} activeClassName="active">
-                                    {obj.name}
-                                </NavLink>
-                            </li>
-                        );
-                    })
+                    _.map(linkList, obj =>
+                        <li key={obj.id} onClick={this.closeNotificationPanel}>
+                            <NavLink to={obj.routePath} activeClassName="active">
+                                {obj.name}
+                            </NavLink>
+                        </li>
+                    )
+                }
+                {
+                    isShowLogOut ? (
+                        <li>
+                            <LogOut/>
+                        </li>
+                    ) : null
                 }
             </ul>
         );
     },
+
     //后台管理配置模块
     renderBackendConfigBlock: function() {
         let backendConfigMenu = menuUtil.getMenuById(MENU.BACK_CONFIG);
         if (!backendConfigMenu || !backendConfigMenu.routes) {
             return null;
         }
-        let backendConfigList = this.getBackendConfigLinks(backendConfigMenu.routes);
         let wrapperCls = classNames('sidebar-menu-li',{
             'sidebar-backend-config': true,
             // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
@@ -435,8 +440,12 @@ var NavSidebar = createReactClass({
         // });
         return (
             <div className={wrapperCls}>
-                <Popover content={backendConfigList} trigger="hover" placement="rightBottom"
-                    overlayClassName="nav-sidebar-backend-config">
+                <Popover
+                    content={this.renderSubMenuLinks(backendConfigMenu.routes)}
+                    trigger="hover"
+                    placement="rightBottom"
+                    overlayClassName="nav-sidebar-backend-config"
+                >
                     <NavLink to={backendConfigMenu.routePath} activeClassName="active">
                         <i className={backendConfigCls} title={backendConfigMenu.name}/>
                     </NavLink>
@@ -444,39 +453,22 @@ var NavSidebar = createReactClass({
             </div>
         );
     },
-    //个人信息部分右侧弹框
-    getUserInfoLinks: function() {
+
+    //侧边导航左下个人信息
+    getUserInfoBlock: function() {
         //个人资料部分
         let userInfoLinkList = menuUtil.getMenuById(MENU.USER_INFO);
         if (!userInfoLinkList || !userInfoLinkList.routes) {
             return;
         }
         return (
-            <ul className="ul-unstyled">
-                {
-                    userInfoLinkList.routes.map(function(obj) {
-                        return (
-                            <li key={obj.id}>
-                                <NavLink to={obj.routePath} activeClassName="active">
-                                    {obj.name}
-                                </NavLink>
-                            </li>
-                        );
-                    })
-                }
-                <li>
-                    <LogOut/>
-                </li>
-            </ul>
-        );
-    },
-    //侧边导航左下个人信息
-    getUserInfoBlock: function() {
-        return (
             <div className="sidebar-userinfo">
-                <Popover content={this.getUserInfoLinks()} trigger="hover"
+                <Popover
+                    content={this.renderSubMenuLinks(userInfoLinkList.routes, true)}
+                    trigger="hover"
                     placement="rightBottom"
-                    overlayClassName="nav-sidebar-userinfo">
+                    overlayClassName="nav-sidebar-userinfo"
+                >
                     <div className="avatar_container">
                         <Avatar
                             className="avatar"
@@ -594,8 +586,7 @@ var NavSidebar = createReactClass({
     },
 
     render: function() {
-        var _this = this;
-        var iconCls = classNames('iconfont ',{
+        const iconCls = classNames('iconfont ',{
             'icon-dial-up-keybord': !this.state.ronglianNum,
             'icon-active-call_record-ico': this.state.ronglianNum,
         });
@@ -612,11 +603,15 @@ var NavSidebar = createReactClass({
                         <div className="collapse navbar-collapse">
                             <ul className="nav navbar-nav" id="menusLists">
                                 {
-                                    _this.generateMenu()
+                                    this.generateMenu()
                                 }
                             </ul>
-                            <Popover content={_this.getNavbarLists()} trigger="hover" placement="rightTop"
-                                overlayClassName="nav-sidebar-lists">
+                            <Popover
+                                content={this.getNavbarLists()}
+                                trigger="hover"
+                                placement="rightTop"
+                                overlayClassName="nav-sidebar-lists"
+                            >
                                 <div className="hamburger" id="hamburger">
                                     <span className="line"></span>
                                     <span className="line"></span>
@@ -624,16 +619,23 @@ var NavSidebar = createReactClass({
                                 </div>
                             </Popover>
                         </div>
-
                     </div>
 
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
-                        {this.state.isShowDialUpKeyboard ? (<DialUpKeyboard placement="right" dialIcon={DialIcon} inputNumber={this.state.ronglianNum}/>) : null}
-                        {_this.getNotificationBlock()}
-                        {_this.renderBackendConfigBlock()}
-                        {_this.getUserInfoBlock()}
+                        {
+                            this.state.isShowDialUpKeyboard ? (
+                                <DialUpKeyboard
+                                    placement="right"
+                                    dialIcon={DialIcon}
+                                    inputNumber={this.state.ronglianNum}
+                                />
+                            ) : null
+                        }
+                        {this.getNotificationBlock()}
+                        {this.renderBackendConfigBlock()}
+                        {this.getUserInfoBlock()}
                     </div>
                 </div>
                 {/*暂时将引导的功能都去掉*/}

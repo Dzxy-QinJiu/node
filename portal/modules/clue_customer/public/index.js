@@ -46,7 +46,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import {FilterInput} from 'CMP_DIR/filter';
-import NoDataIntro from 'CMP_DIR/no-data-intro';
+import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
@@ -93,6 +93,7 @@ class ClueCustomer extends React.Component {
         selectedClues: [],//获取批量操作选中的线索
         isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
         addType: 'start',//添加按钮的初始
+        showRecommendCustomerCondition: false,
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -475,6 +476,23 @@ class ClueCustomer extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         return getClueStatusValue(filterClueStatus);
     };
+    //是否有筛选过滤条件
+    hasNoFilterCondition = () => {
+        var filterStoreData = clueFilterStore.getState();
+        if (_.isEmpty(filterStoreData.filterClueSource)
+            && _.isEmpty(filterStoreData.filterClueAccess)
+            && _.isEmpty(filterStoreData.filterClueClassify)
+            && filterStoreData.filterClueAvailability === AVALIBILITYSTATUS.AVALIBILITY
+            && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime
+            && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields)
+            && _.isEmpty(filterStoreData.unexist_fields)
+            && _.isEmpty(filterStoreData.filterClueProvince
+                && _.isEmpty(filterStoreData.filterLabels))){
+            return true;
+        }else{
+            return false;
+        }
+    };
     //获取查询线索的参数
     getClueSearchCondition = (isGetAllClue) => {
         var filterStoreData = clueFilterStore.getState();
@@ -534,6 +552,11 @@ class ClueCustomer extends React.Component {
             var filterClueProvince = filterStoreData.filterClueProvince;
             if (_.isArray(filterClueProvince) && filterClueProvince.length){
                 typeFilter.province = filterClueProvince.join(',');
+            }
+            //相似客户和线索
+            let filterLabels = filterStoreData.filterLabels;
+            if(_.isArray(filterLabels) && filterLabels.length){
+                typeFilter.labels = filterLabels;
             }
             var bodyField = {};
             if(_.isArray(existFilelds) && existFilelds.length){
@@ -936,7 +959,7 @@ class ClueCustomer extends React.Component {
                 {associatedCustomer ? (
                     <div className="associate-customer">
                         {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_label)}>{salesClueItem.customer_label}</Tag> : null}
-                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b>
+                        <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}</b>
                     </div>
                 ) : null}
             </div>
@@ -1056,11 +1079,11 @@ class ClueCustomer extends React.Component {
    };
 
     getClueTableColunms = () => {
-        const column_width = '80px';
+        const column_width = '110px';
         let columns = [
             {
                 dataIndex: 'clue_name',
-                width: '350px',
+                width: '240px',
                 render: (text, salesClueItem, index) => {
                     let similarClue = _.get(salesClueItem, 'labels');
                     let availability = _.get(salesClueItem, 'availability');
@@ -1082,7 +1105,7 @@ class ClueCustomer extends React.Component {
                                     </Tag> : null}
                                 {ifShowTags && _.indexOf(similarClue, '有相似客户') !== -1 ?
                                     <Tag className="clue-label intent-tag-style">
-                                        {Intl.get('clue.has.similar.client', '有相似客户')}
+                                        {Intl.get('clue.has.similar.customer', '有相似客户')}
                                     </Tag> : null}
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
@@ -1129,7 +1152,7 @@ class ClueCustomer extends React.Component {
                 }
             },{
                 dataIndex: 'trace_person',
-                width: '100px',
+                width: column_width,
                 render: (text, salesClueItem, index) => {
                     let user = userData.getUserData();
                     var handlePersonName = _.get(salesClueItem,'user_name','');//当前跟进人
@@ -1163,7 +1186,7 @@ class ClueCustomer extends React.Component {
                 }
             },{
                 dataIndex: 'trace_content',
-                width: '300px',
+                width: '150px',
                 render: (text, salesClueItem, index) => {
                     return(
                         <div className="clue-foot" id="clue-foot">
@@ -1177,7 +1200,7 @@ class ClueCustomer extends React.Component {
         columns.push({
             dataIndex: 'assocaite_customer',
             className: 'invalid-td-clue',
-            width: '300px',
+            width: '150px',
             render: (text, salesClueItem, index) => {
                 return (
                     <div className="avalibity-or-invalid-container">
@@ -1623,29 +1646,41 @@ class ClueCustomer extends React.Component {
             this.getClueList();
         });
     };
-
-    renderAddAndImportBtns = () => {
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')){
+    renderAddDataContent = () => {
+        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
             return (
                 <div className="btn-containers">
-                    <Button type='primary' className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}</Button>
-                    <Button className='add-clue-btn' onClick={this.showClueAddForm}>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
+                    <div>
+                        <Button type='primary' className='add-clue-btn' onClick={this.showClueAddForm}>{Intl.get('crm.sales.add.clue', '添加线索')}</Button>
+                    </div>
+                    <div>
+                        {Intl.get('no.data.add.import.tip', '向客套中添加{type}',{type: Intl.get('crm.sales.clue', '线索')})}
+                    </div>
                 </div>
             );
-        }else{
+        } else {
             return null;
         }
-
     };
-    //是否有筛选过滤条件
-    hasNoFilterCondition = () => {
-        var filterStoreData = clueFilterStore.getState();
-        if (_.isEmpty(filterStoreData.filterClueSource) && _.isEmpty(filterStoreData.filterClueAccess) && _.isEmpty(filterStoreData.filterClueClassify) && filterStoreData.filterClueAvailability === '' && _.get(filterStoreData,'filterClueStatus[0].selected') && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields) && _.isEmpty(filterStoreData.unexist_fields) && _.isEmpty(filterStoreData.filterClueProvince)){
-            return true;
-        }else{
-            return false;
+    renderImportDataContent = () => {
+        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
+            return (
+                <div className="btn-containers">
+                    <div>
+                        <Button className='import-btn' onClick={this.showImportClueTemplate}>{Intl.get('clue.manage.import.clue', '导入{type}',{type: Intl.get('crm.sales.clue', '线索')})}</Button>
+                    </div>
+                    <div>
+                        {Intl.get('import.excel.data.ketao', '将excel中的{type}导入到客套中',{type: Intl.get('crm.sales.clue', '线索')})}
+                    </div>
+
+                </div>
+            );
+        } else {
+            return null;
         }
     };
+
+
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent = () => {
         //加载中的展示
@@ -1666,12 +1701,15 @@ class ClueCustomer extends React.Component {
             );
         }
         else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
-            //如果有筛选条件时
+            //总的线索不存在并且没有筛选条件时
+            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && hasPrivilege('CUSTOMER_ADD_CLUE');
             return (
-                <NoDataIntro
-                    renderAddAndImportBtns={this.renderAddAndImportBtns}
-                    showAddBtn={false}
-                    noDataTip={Intl.get('clue.no.data.during.range.and.status', '没有符合条件的线索')}
+                <NoDataAddAndImportIntro
+                    renderOtherOperation={this.renderOtherOperation}
+                    renderAddDataContent={this.renderAddDataContent}
+                    renderImportDataContent={this.renderImportDataContent}
+                    showAddBtn={showAddBtn}
+                    noDataTip={this.hasNoFilterCondition() ? Intl.get('clue.no.data', '暂无线索信息') : Intl.get('clue.no.data.during.range.and.status', '没有符合条件的线索') }
                 />
             );
         }
@@ -1679,6 +1717,25 @@ class ClueCustomer extends React.Component {
             //渲染线索列表
             return this.renderClueCustomerBlock();
         }
+    };
+    openRecommendClues = () => {
+        this.setState({
+            showRecommendCustomerCondition: true
+        });
+    }
+    renderOtherOperation = () => {
+        return (
+            <div className="intro-recommend-list">
+                <ReactIntl.FormattedMessage
+                    id="import.excel.no.data"
+                    defaultMessage={'自己没有线索？试下让客套给您{recommend}'}
+                    values={{
+                        'recommend': <a onClick={this.openRecommendClues} data-tracename="点击推荐线索">
+                            {Intl.get('import.recommend.clue.lists', '推荐线索')}
+                        </a>
+                    }}/>
+            </div>
+        );
     };
 
     //点击展开线索分析面板
@@ -2034,18 +2091,12 @@ class ClueCustomer extends React.Component {
         return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
     };
     isShowRecommendSettingPanel = () => {
-        var hasCondition = false;
         var settedCustomerRecommend = this.state.settedCustomerRecommend;
-        for (var key in settedCustomerRecommend.obj){
-            if (!_.isEmpty(settedCustomerRecommend.obj[key])){
-                hasCondition = true;
-            }
-        }
-        return (!this.state.isLoading && !this.state.clueCustomerErrMsg && this.state.allClueCount === 0 ) && (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer && hasPrivilege('COMPANYS_GET');
+        return (!this.state.isLoading && !this.state.clueCustomerErrMsg) && !settedCustomerRecommend.loading && this.state.showRecommendCustomerCondition && hasPrivilege('COMPANYS_GET');
     };
     hideFocusCustomerPanel = () => {
         this.setState({
-            closeFocusCustomer: true
+            showRecommendCustomerCondition: false
         });
     };
     saveRecommedConditionsSuccess = (saveCondition) => {
@@ -2122,7 +2173,7 @@ class ClueCustomer extends React.Component {
                             />
                         </div>
                         <div className={contentClassName}>
-                            {this.getClueTypeTab()}
+                            {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
                     </div>

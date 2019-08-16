@@ -1,0 +1,93 @@
+@import "../../public/css/common-variables";
+.no-data-add-and-import-intro-wrap {
+  overflow: hidden;
+  font-size: 20px;
+  color: #cecece;
+  padding-top: 200px;
+  .icon-no-data {
+    font-size: 96px;
+  }
+  .add-other-operation{
+    color: #999;
+    font-size: 14px;
+    margin: 50px auto;
+    text-align: center;
+  }
+  .no-data-container-warp {
+    margin: 0px auto;
+    font-size: 16px;
+    color: #999;
+    width: 880px;
+    .add-data-wrap {
+      display: inline-block;
+      width: 440px;
+      overflow: hidden;
+      padding: 26px;
+      border-right: 1px solid #DEDFE2;
+      .add-data-tip {
+        float: right;
+        padding-top: 24px;
+        .btn-containers > div {
+          text-align: left;
+        }
+        button.ant-btn {
+          margin-bottom: 10px;
+        }
+      }
+      .add-data-background {
+        height: 144px;
+        width: 144px;
+        float: right;
+        margin-right: 24px;
+        background: transparent url("../../static/images/add-data.png") 0 0;
+      }
+    }
+    .import-data-wrap {
+      display: inline-block;
+      width: 440px;
+      padding: 26px;
+      overflow: hidden;
+      .import-data-tip {
+        float: left;
+        padding-top: 24px;
+        .btn-containers > div {
+          text-align: left;
+        }
+        button.ant-btn {
+          margin-bottom: 10px;
+        }
+      }
+      .import-data-background {
+        float: left;
+        height: 144px;
+        width: 144px;
+        margin-right: 24px;
+        background: transparent url("../../static/images/import-data.png") 0 0;
+      }
+    }
+  }
+  .abnornal-status-tip {
+    text-align: center;
+    color: #999;
+    font-size: 20px;
+  }
+  .ant-btn {
+    font-size: 16px;
+    margin-right: 12px;
+    color: @FILTER-BUTTON;
+    border-color: @SEARCH-INPUT-BORDER;
+    &:hover {
+      color: @BUTTON-HOVER;
+      border-color: @BUTTON-HOVER;
+    }
+  }
+  .ant-btn.ant-btn-primary {
+    background-color: @BORDER-BLUE;
+    border-color: @BORDER-BLUE;
+    color: #fff;
+    &:hover {
+      background-color: @BUTTON-HOVER;
+      border-color: @BUTTON-HOVER;
+    }
+  }
+}

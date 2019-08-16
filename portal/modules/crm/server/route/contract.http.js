@@ -33,7 +33,7 @@ module.exports = {
     },{
         // 编辑待审合同
         'method': 'put',
-        'path': '/rest/crm/edit/contract/:type',
+        'path': '/rest/crm/edit/contract/:type/:property',
         'handler': 'editPendingContract',
         'passport': {
             'needLogin': true

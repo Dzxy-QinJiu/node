@@ -66,7 +66,7 @@ class MemberFormActions {
                 //保存成功后的处理
                 this.dispatch({saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功！')});
                 //修改成功后刷新左侧列表对应成员卡片及其详情的数据
-                MemberManageAction.afterEditUser(user);
+                MemberManageAction.afterEditMember(user);
             } else {
                 this.dispatch({saveResult: 'error', saveMsg: Intl.get('common.save.failed', '保存失败!')});
             }
