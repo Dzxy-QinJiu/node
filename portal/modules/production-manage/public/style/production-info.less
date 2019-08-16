@@ -8,6 +8,52 @@
 @success-tip-color: #06ae06;
 //添加成员面版样式
 .product-add-container {
+  .product-details-content {
+    //产品顶部信息
+    .product-info-title{
+      height: 114px;
+      overflow: hidden;
+      background: #ffffff;
+      padding: 24px;
+      .product-icon{
+        float: left;
+        .head-image-container{
+          height: 100%;
+          margin-top: 0px;
+          margin-bottom: 0px;
+          .cirle-image{
+            margin-left: 0px;
+          }
+        }
+      }
+      .product-info{
+        margin-left: 24px;
+        float: left;
+        .product-title {
+          margin-bottom: 8px;
+          line-height: 16px;
+          font-size: 16px;
+          color: #506470;
+          display: inline-block;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          width: 100%;
+          overflow: hidden;
+          word-wrap: initial;
+        }
+        .product-item {
+          width: 100%;
+          font-size: 14px;
+          height: 20px;
+          line-height: 18px;
+          color: #81939e;
+          &.product-version {
+            margin-bottom: 5px;
+          }
+        }
+      }
+    }
+  }
   form {
     .head-image-container {
       margin-bottom: 0;

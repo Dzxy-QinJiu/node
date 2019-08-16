@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
- * Created by sunqingfeng on 2018/8/20.
+ * Created by sunqingfeng on 2019/8/12.
  */
 var React = require('react');
 import {Button, Steps, message, Alert, Form, Input, Icon} from 'antd';

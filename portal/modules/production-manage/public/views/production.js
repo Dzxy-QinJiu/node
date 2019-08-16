@@ -12,6 +12,7 @@ import Trace from 'LIB_DIR/trace';
 import {productNameRule} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 
 let HeadIcon = require('../../../../components/headIcon');
 let FormItem = Form.Item;
@@ -26,6 +27,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import CustomVariable from 'MOD_DIR/app_user_manage/public/views/integrate-config/custom-variable';
+import DetailCard from 'CMP_DIR/detail-card';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -532,11 +534,65 @@ class Production extends React.Component {
         );
     }
 
+    renderProductDetails = () => {
+        const {getFieldDecorator} = this.props.form;
+        let values = this.props.form.getFieldsValue();
+        let headDescr = Intl.get('common.product', '产品');
+        let saveResult = this.state.saveResult;
+        let formHeight = $('body').height() - LAYOUT_CONST.HEADICON_H - LAYOUT_CONST.TITLE_H;
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 5},
+            wrapperCol: {span: 19},
+        };
+        let jsCode = '';
+        if(this.state.uemSiteId && values.useJS !== false) {
+            jsCode = getUemJSCode(this.state.uemSiteId, _.get(this.props.info,'custom_variable',{}));
+        }
+        //渲染产品单价
+        let productPrice = <span></span>;
+        //渲染访问地址
+        let accessAdress = <span></span>;
+        //渲染产品描述
+        let productDescription = <span></span>;
+        //
+
+        return (<div className="product-details-content" style ={{height: formHeight}}>
+            <GeminiScrollBar>
+                <div className="product-info-title">
+                    <div className="product-icon">
+                        <HeadIcon
+                            headIcon={this.props.info.preview_image || values.preview_image}
+                            isNotShowUserName={true}
+                            iconDescr={values.name || headDescr}
+                            isEdit={true}
+                            onChange={this.uploadImg}
+                            isUserHeadIcon={true}
+                        />
+                    </div>
+                    <div className="product-info">
+                        <div className="product-title">{this.props.info.name}</div>
+                        <div className="product-item product-version">规格/版本</div>
+                        <div className="product-item product-identifier">编号</div>
+                    </div>
+                </div>
+                <DetailCard
+                    content={this.renderProductPrice()}
+                />
+
+                {/*<DetailCard*/}
+                {/*    className="add-user-data-card"*/}
+                {/*    title={`${Intl.get('config.product.js.collect.user','使用JS脚本采集用户数据')}:`}*/}
+                {/*    content={this.renderCustomVariable(jsCode)}*/}
+                {/*/>*/}
+            </GeminiScrollBar>
+        </div>);
+    }
     render() {
         let isShowModal = true;
         let title = Intl.get('config.product.add', '添加产品');
         let dataTracename = Intl.get('config.product.add', '添加产品');
-        let content = this.renderFormContent();
+        let content = this.renderProductDetails();
         if (this.props.formType === util.CONST.EDIT) {
             isShowModal = false;
             title = Intl.get('config.product.modify', '修改产品');
@@ -548,7 +604,6 @@ class Production extends React.Component {
                 isShowMadal={isShowModal}
                 isShowCloseBtn={true}
                 onClosePanel={this.handleCancel.bind(this)}
-                title={title}
                 content={content}
                 dataTracename={dataTracename}
             />);
