@@ -36,7 +36,7 @@ const extend = require('extend');
 import { FilterInput } from 'CMP_DIR/filter';
 var classNames = require('classnames');
 import queryString from 'query-string';
-import NoDataIntro from 'CMP_DIR/no-data-intro';
+import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import CrmOverviewActions from './action/basic-overview-actions';
 var userData = require('PUB_DIR/sources/user-data');
@@ -1416,19 +1416,39 @@ class Crm extends React.Component {
             return true;
         }
     };
-    renderAddAndImportBtns = () => {
+    renderAddDataContent = () => {
         if (hasPrivilege('CUSTOMER_ADD')) {
             return (
                 <div className="btn-containers">
-                    <Button type='primary' className='import-btn'
-                        onClick={this.showCrmTemplateRightPanel}>{Intl.get('crm.2', '导入客户')}</Button>
-                    <Button className='add-clue-btn' onClick={this.showAddForm}>{Intl.get('crm.3', '添加客户')}</Button>
+                    <div>
+                        <Button type='primary' className='add-clue-btn' onClick={this.showAddForm}>{Intl.get('crm.3', '添加客户')}</Button>
+                    </div>
+                    <div>
+                        {Intl.get('no.data.add.import.tip', '向客套中添加{type}',{type: Intl.get('call.record.customer', '客户')})}
+                    </div>
                 </div>
             );
         } else {
             return null;
         }
+    };
+    renderImportDataContent = () => {
+        if (hasPrivilege('CUSTOMER_ADD')) {
+            return (
+                <div className="btn-containers">
+                    <div>
+                        <Button className='import-btn'
+                            onClick={this.showCrmTemplateRightPanel}>{Intl.get('crm.2', '导入客户')}</Button>
+                    </div>
+                    <div>
+                        {Intl.get('import.excel.data.ketao', '将excel中的{type}导入到客套中',{type: Intl.get('call.record.customer', '客户')})}
+                    </div>
 
+                </div>
+            );
+        } else {
+            return null;
+        }
     };
 
     //获取导入预览中的列
@@ -1956,11 +1976,11 @@ class Crm extends React.Component {
                                 locale={{
                                     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
                                 }}
-                            /> : <NoDataIntro
-                                noDataAndAddBtnTip={Intl.get('contract.60', '暂无客户')}
-                                renderAddAndImportBtns={this.renderAddAndImportBtns}
-                                showAddBtn={this.hasNoFilterCondition()}
-                                noDataTip={Intl.get('common.no.filter.crm', '没有符合条件的客户')}
+                            /> : <NoDataAddAndImportIntro
+                                renderAddDataContent={this.renderAddDataContent}
+                                renderImportDataContent={this.renderImportDataContent}
+                                showAddBtn={this.hasNoFilterCondition() && hasPrivilege('CUSTOMER_ADD')}
+                                noDataTip={this.hasNoFilterCondition() ? Intl.get('contract.60', '暂无客户') : Intl.get('common.no.filter.crm', '没有符合条件的客户')}
                             />}
                         </div>
 

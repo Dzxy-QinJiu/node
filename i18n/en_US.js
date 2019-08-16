@@ -3247,5 +3247,9 @@ var en_US = {
     'crm.clue.phone.on.meeting': 'In a meeting, it is not convenient to answer',//在开会，不方便接听
     'common.report.num': 'report numer',//报送数量
     'common.signed.customer.public.opinion.report.statistics': 'Signed customer public opinion report statistics',//签约客户舆情报送统计,
+    'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
+    'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
+    'import.excel.no.data': 'I have no clues? Try to give you a set of {recommend}',//自己没有线索？试下让客套给您{recommend}
+    'import.recommend.clue.lists': 'Recommended clue',//推荐线索
 };
 export default en_US;

@@ -3356,5 +3356,9 @@ var zh_CN = {
     'common.signed.customer.public.opinion.report.statistics': '签约客户舆情报送统计',
     'crm.clue.phone.on.meeting': '在开会，不方便接听',
     'crm.clue.next.contact.time': '下次联系时间',
+    'no.data.add.import.tip': '向客套中添加{type}',
+    'import.excel.data.ketao': '将excel中的{type}导入到客套中',
+    'import.excel.no.data': '自己没有线索？试下让客套给您{recommend}',
+    'import.recommend.clue.lists': '推荐线索',
 };
 export default zh_CN;
