@@ -37,6 +37,7 @@ import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-cust
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+const HAS_BTN_HEIGHT = 40;//为按钮预留空间
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -45,7 +46,8 @@ class ClueDetailOverview extends React.Component {
         customerOfCurUser: {},//当前展示用户所属客户的详情
         app_user_id: '',
         curClue: $.extend(true, {}, this.props.curClue),
-        divHeight: this.props.divHeight,
+        divHeight: this.props.divHeight,//没有按钮时高度
+        btnDivHeight:this.props.divHeight-HAS_BTN_HEIGHT,//有按钮时高度
         similarClueLoading: false,//正在获取相似线索
         similarClueErrmsg: '',//获取相似线索出错
         similarClueLists: [],//相似线索列表
@@ -54,7 +56,6 @@ class ClueDetailOverview extends React.Component {
         similarCustomerLists: [],//相似客户列表
         showLargerCustomerLists: false,//展示大于3个的客户列表
         showLargerClueLists: false,//展示大于3个的线索列表
-        isShowButton : false,
     };
     
     componentDidMount() {
@@ -177,7 +178,8 @@ class ClueDetailOverview extends React.Component {
         }
         if (nextProps.divHeight !== this.props.divHeight){
             this.setState({
-                divHeight: nextProps.divHeight
+                divHeight: nextProps.divHeight,
+                btnDivHeight:nextProps.divHeight-HAS_BTN_HEIGHT
             });
         }
     }
@@ -697,7 +699,6 @@ class ClueDetailOverview extends React.Component {
         );
     };
     renderAvailabilityClue = (curClue) => {
-        
         //标记线索无效的权限
         var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
         //是否有修改线索关联客户的权利
@@ -719,7 +720,6 @@ class ClueDetailOverview extends React.Component {
     };
 
     renderAssociatedAndInvalidClueHandle = (curClue) => {
-             console.log(curClue)
         return (
             <div>
                 <div className="clue-info-item">
@@ -736,6 +736,18 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
+    //判断是否显示按钮控制tab高度
+    hasButton = (curClue, associatedCustomer ) =>{
+        var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
+                            ||  (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
+        var associatedClue = (curClue.clue_type !== 'clue_pool')
+                                && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||curClue.status === SELECT_TYPE.WILL_TRACE) &&!associatedCustomer);                                             
+        if(avalibility && associatedClue){
+            return ({height:this.state.btnDivHeight})
+        }else{
+            return ({height:this.state.divHeight})
+        }                  
+    }
 
     handleCancelCustomerSuggest = () => {
         this.setState({
@@ -1287,7 +1299,7 @@ class ClueDetailOverview extends React.Component {
         //分配线索给销售的权限
         var hasAssignedPrivilege = assignSalesPrivilege(curClue);
         return (
-            <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
+            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButton(curClue, associatedCustomer )}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
                     {this.renderClueCustomerLists(curClue)}
