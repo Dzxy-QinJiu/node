@@ -69,12 +69,17 @@ class CustomerStageStore {
         if (flag) {
             if (flag === 'delete') { //删除
                 _.remove(this.customerStageList, customerStage);
-            } else if (flag === 'edit') {
+            } else {
                 let upDateStage = _.find(this.customerStageList, item => item.id === customerStage.id);
-                upDateStage.name = customerStage.name;
-                upDateStage.description = customerStage.description;
-                if (customerStage.play_books) {
-                    upDateStage.play_books = customerStage.play_books;
+                if (flag === 'edit') { // 编辑客户阶段的名称和描述
+                    upDateStage.name = customerStage.name;
+                    upDateStage.description = customerStage.description;
+                } else if (flag === 'editPlay') { // 更新剧本
+                    if (customerStage.play_books) {
+                        upDateStage.play_books = customerStage.play_books;
+                    }
+                } else if (flag === 'editBehavior') { // 更新销售行为
+                    upDateStage.sales_activities = customerStage.salesActivities;
                 }
             }
         } else { // 添加

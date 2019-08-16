@@ -57,7 +57,7 @@ class CustomerStage extends React.Component {
         CustomerStageAjax.editCustomerStage(saveObj, saleProcessId).then( (result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
-                saveObj.flag = 'edit';
+                saveObj.flag = 'editPlay';
                 CustomerStageAction.updateCustomerStageList(saveObj);
             } else {
                 if (_.isFunction(errorFunc)) errorFunc();

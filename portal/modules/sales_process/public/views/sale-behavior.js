@@ -6,6 +6,7 @@ import {Icon, Select } from 'antd';
 const { Option } = Select;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerStageAjax from '../ajax';
+import CustomerStageAction from '../action/customer-stage-action';
 
 class SaleBehaviorPanel extends React.Component {
     constructor(props) {
@@ -267,10 +268,11 @@ class SaleBehaviorPanel extends React.Component {
 
     handleSubmitSaleBehavior = () => {
         let customerStage = this.state.customerStage;
-        let salesActivities = customerStage.sales_activities;
-        let params = {
+        const salesActivities = customerStage.sales_activities;
+        const stageId = customerStage.id;
+        const params = {
             saleProcessId: this.props.saleProcessId,
-            stageId: customerStage.id
+            stageId: stageId
         };
         this.setState({
             loading: true,
@@ -279,10 +281,23 @@ class SaleBehaviorPanel extends React.Component {
             this.setState({
                 loading: false,
             });
+            if (_.isArray(result)) {
+                const updateSalesActivitiesObj = {
+                    id: stageId,
+                    flag: 'editBehavior',
+                    salesActivities: result
+                };
+                CustomerStageAction.updateCustomerStageList(updateSalesActivitiesObj);
+            } else {
+                this.setState({
+                    submitErrorMsg: Intl.get('sales.process.add.activity.failed', '添加销售行为失败')
+                });
+            }
+
         }, (errMsg) => {
             this.setState({
                 loading: false,
-                submitErrorMsg: errMsg || '添加销售行为失败'
+                submitErrorMsg: errMsg || Intl.get('sales.process.add.activity.failed', '添加销售行为失败')
             });
         } );
     };
