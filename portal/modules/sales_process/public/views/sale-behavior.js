@@ -153,10 +153,8 @@ class SaleBehaviorPanel extends React.Component {
 
                 // 查找选中的销售任务项，是为了根据选中的动作找到对应action的值
                 let matchTaskObj = _.find(salesBehaviorList, item => item.name === this.state.taskNames[key]);
-                console.log('matchTaskObj matchTaskObj');
 
                 let salesActions = matchTaskObj && matchTaskObj.sales_action_templates || [];
-                console.log('salesActions:',salesActions);
                 if (salesActions.length) {
                     let actionObj = _.find(salesActions, item => item.name === value);
                     if (actionObj) {

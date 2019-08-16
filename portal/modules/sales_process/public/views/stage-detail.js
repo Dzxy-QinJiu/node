@@ -25,17 +25,16 @@ class CustomerStageDetail extends React.Component {
         this.props.closeCustomerStageDetail();
     }
 
-
     saveCustomerStageSettingPlay = (type, saveObj, successFunc, errorFunc) => {
         this.props.saveCustomerStageSettingPlay(type, saveObj, successFunc, errorFunc);
-    }
+    };
 
-
+    // 切换tab项
     changeTab = (key) => {
         this.setState({
             activeKey: key
         });
-    }
+    };
 
     // 渲染面板的内容
     renderContent = () => {
@@ -86,6 +85,7 @@ class CustomerStageDetail extends React.Component {
             </div>
         );
     };
+
     render() {
         return (
             <RightPanelModal
@@ -99,6 +99,7 @@ class CustomerStageDetail extends React.Component {
             />);
     }
 }
+
 function noop() {
 }
 CustomerStageDetail.defaultProps = {

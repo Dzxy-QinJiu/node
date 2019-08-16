@@ -159,6 +159,7 @@ class CustomerStageStore {
 
     // 关闭客户阶段详情
     closeCustomerStageDetail(customerStage) {
+        // isShowCustomerStageDetailPanel 是针对指定的客户阶段增加的属性，所以关闭的时候要delete
         delete customerStage.isShowCustomerStageDetailPanel;
     }
 
