@@ -26,7 +26,8 @@ class SaleBehaviorPanel extends React.Component {
     // 用来处理增删数据的key
     getInitItemKeys = (customerStage) => {
         let salesActivities = customerStage.sales_activities;
-        if (salesActivities.length) {
+        let length = _.get(salesActivities, 'length');
+        if (length) {
             return _.map(salesActivities, (item, index) => index);
         } else {
             return [0];
@@ -35,7 +36,8 @@ class SaleBehaviorPanel extends React.Component {
 
     getInitTaskNames = (customerStage) => {
         let salesActivities = customerStage.sales_activities;
-        if (salesActivities.length) {
+        let length = _.get(salesActivities, 'length');
+        if (length) {
             return _.map(salesActivities, 'name');
         } else {
             return [];
@@ -44,7 +46,8 @@ class SaleBehaviorPanel extends React.Component {
 
     getInitActionNames = (customerStage) => {
         let salesActivities = customerStage.sales_activities;
-        if (salesActivities.length) {
+        let length = _.get(salesActivities, 'length');
+        if (length) {
             let salesActions = _.map(salesActivities, 'sales_actions');
             return _.flatten(salesActions);
         } else {
@@ -56,8 +59,7 @@ class SaleBehaviorPanel extends React.Component {
     handleDelItem = (key, index, size) => {
         if (index === 0 && size === 1) return;
         let itemKeys = this.state.itemKeys;
-        // 过滤调要删除元素的key
-        itemKeys = _.filter(itemKeys, item => item !== key);
+        itemKeys.splice(key, 1);
         // 删除选中的销售行为
         let customerStage = this.state.customerStage;
         let salesActivities = customerStage.sales_activities;
@@ -77,7 +79,6 @@ class SaleBehaviorPanel extends React.Component {
 
         let actionNames = this.state.actionNames;
         actionNames.splice(key, 1);
-
         this.setState({
             itemKeys: itemKeys,
             customerStage: customerStage,
@@ -117,12 +118,12 @@ class SaleBehaviorPanel extends React.Component {
     handleSelectTask = (property, id, key, value) => {
         let customerStage = this.state.customerStage;
         let salesActivities = _.get(customerStage, 'sales_activities');
-
         if (id) { // 修改
             let target = _.find(salesActivities, item => item.id === id);
             if (target) {
                 if (property === 'task') {
                     target.name = value;
+                    target.sales_actions[0].name = '';
                     this.state.taskNames[key] = value;
                 } else if (property === 'action'){
                     target.sales_actions[0].name = value;
@@ -136,6 +137,7 @@ class SaleBehaviorPanel extends React.Component {
                         let actionObj = _.find(salesActions, item => item.name === value);
                         if (actionObj) {
                             target.sales_actions[0].action = actionObj.action;
+                            this.state.actionNames[key].action = actionObj.action;
                         }
                     }
                 }
@@ -146,10 +148,10 @@ class SaleBehaviorPanel extends React.Component {
                 this.state.taskNames[key] = value;
                 salesActivities.push({name: value, sales_actions: []});
             } else if (property === 'action') {
-                this.state.actionNames.push({name: value});
+                this.state.actionNames.push({name: value, action: ''});
                 // 获取需要遍历的销售行为列表
                 let salesBehaviorList = this.state.salesBehaviorList;
-                salesActivities[key].sales_actions.push({name: value});
+                salesActivities[key].sales_actions.push({name: value, action: ''});
 
                 // 查找选中的销售任务项，是为了根据选中的动作找到对应action的值
                 let matchTaskObj = _.find(salesBehaviorList, item => item.name === this.state.taskNames[key]);
@@ -205,11 +207,11 @@ class SaleBehaviorPanel extends React.Component {
         let salesActivities = this.state.customerStage.sales_activities;
         let salesBehaviorList = this.state.salesBehaviorList;
         let length = salesActivities.length;
-        if (key < length && length !== 0) {
+        let id = _.get(salesActivities[key], 'id');
+        if (key < length && id) {
             let taskName = this.state.taskNames[key];
-            let id = salesActivities[key].id;
             let salesActionOptions = this.getSalesActionOptions(taskName); // 销售动作下拉框
-            let actionName = _.get(this.state.actionNames[key], 'name');
+            let actionName = _.get(salesActivities[key], 'sales_actions[0].name');
             return (
                 <div className="item-select">
                     <Select
@@ -255,7 +257,7 @@ class SaleBehaviorPanel extends React.Component {
                         onChange={this.handleSelectTask.bind(this, 'action', '', key)}
                         className="select-action"
                     >
-                        {this.getSalesActionOptions(this.state.taskName)}
+                        {this.getSalesActionOptions(this.state.taskNames[key])}
                     </Select>
                 </div>
             );
