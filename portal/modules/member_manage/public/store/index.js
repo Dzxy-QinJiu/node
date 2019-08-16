@@ -176,43 +176,55 @@ class MemberManageStore {
         if (_.isObject(modifiedMember)) {
             let memberList = this.memberList;
             let changeMember = _.find(memberList, item => item.id === modifiedMember.id);
-            let status = _.get(modifiedMember, 'status'); // 成员启停状态
-            let nick_name = _.get(modifiedMember, 'nick_name'); // 昵称
-            let user_logo = _.get(modifiedMember, 'user_logo'); // 头像
-            let phone = _.get(modifiedMember, 'phone'); // 手机
-            let email = _.get(modifiedMember, 'email'); // 邮箱
-            let teamName = _.get(modifiedMember, 'teamName'); // 部门
-            let positionName = _.get(modifiedMember, 'positionName'); // 职务
+            if (changeMember) { // 组织中修改成员信息
+                let status = _.get(modifiedMember, 'status'); // 成员启停状态
+                let nick_name = _.get(modifiedMember, 'nick_name'); // 昵称
+                let user_logo = _.get(modifiedMember, 'user_logo'); // 头像
+                let phone = _.get(modifiedMember, 'phone'); // 手机
+                let email = _.get(modifiedMember, 'email'); // 邮箱
+                let teamName = _.get(modifiedMember, 'teamName'); // 部门
+                let positionName = _.get(modifiedMember, 'positionName'); // 职务
 
-            if (status) { // 修改成员状态
-                changeMember.status = status;
-            } else if (nick_name) { // 修改成员昵称
-                changeMember.name = nick_name;
-                //如果修改当前登录的用户时 修改完成后刷新左下角用户头像(没有头像的是通过昵称的第一个字来代替头像)
-                userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
-                    nickName: modifiedMember.name
-                });
-            } else if (user_logo) { // 修改头像
-                changeMember.image = user_logo;
+                if (status) { // 修改成员状态
+                    changeMember.status = status;
+                } else if (nick_name) { // 修改成员昵称
+                    changeMember.name = nick_name;
+                    //如果修改当前登录的用户时 修改完成后刷新左下角用户头像(没有头像的是通过昵称的第一个字来代替头像)
+                    userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
+                        nickName: modifiedMember.name
+                    });
+                } else if (user_logo) { // 修改头像
+                    changeMember.image = user_logo;
+                    if (userData.getUserData().user_id === modifiedMember.id) {
+                        //如果修改当前登录的用户时 修改完成后刷新左下角用户头像
+                        userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
+                            userLogo: modifiedMember.user_logo
+                        });
+                    }
+                } else if (_.has(modifiedMember, 'phone')) { // 修改成员手机
+                    changeMember.phone = phone;
+                } else if (email) { // 修改成员邮箱
+                    changeMember.email = email;
+                    changeMember.emailEnable = false; // 修改邮箱后，邮箱的激活状态改为未激活
+                } else if (teamName) { // 修改成员部门
+                    changeMember.teamName = teamName;
+                    changeMember.teamId = _.get(modifiedMember, 'team');
+                } else if (_.has(modifiedMember, 'positionName')) { // 修改成员职务
+                    changeMember.positionName = positionName;
+                    changeMember.positionId = _.get(modifiedMember, 'position');
+                }
+                this.currentMember = changeMember;
+            } else { // 团队中修改成员的头像信息
+                let user_logo = _.get(modifiedMember, 'user_logo'); // 头像
                 if (userData.getUserData().user_id === modifiedMember.id) {
                     //如果修改当前登录的用户时 修改完成后刷新左下角用户头像
                     userInfoEmitter.emit(userInfoEmitter.CHANGE_USER_LOGO, {
                         userLogo: modifiedMember.user_logo
                     });
                 }
-            } else if (_.has(modifiedMember, 'phone')) { // 修改成员手机
-                changeMember.phone = phone;
-            } else if (email) { // 修改成员邮箱
-                changeMember.email = email;
-                changeMember.emailEnable = false; // 修改邮箱后，邮箱的激活状态改为未激活
-            } else if (teamName) { // 修改成员部门
-                changeMember.teamName = teamName;
-                changeMember.teamId = _.get(modifiedMember, 'team');
-            } else if (_.has(modifiedMember, 'positionName')) { // 修改成员职务
-                changeMember.positionName = positionName;
-                changeMember.positionId = _.get(modifiedMember, 'position');
+                this.currentMember.image = user_logo;
             }
-            this.currentMember = changeMember;
+
         }
     }
     // 修改成员状态
