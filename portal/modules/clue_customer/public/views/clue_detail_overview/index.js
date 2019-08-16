@@ -36,6 +36,7 @@ import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+const HAS_BTN_HEIGHT = 40;//为按钮预留空间
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -44,7 +45,7 @@ class ClueDetailOverview extends React.Component {
         customerOfCurUser: {},//当前展示用户所属客户的详情
         app_user_id: '',
         curClue: $.extend(true, {}, this.props.curClue),
-        divHeight: this.props.divHeight,
+        divHeight: this.props.divHeight,//没有按钮时高度
         similarClueLoading: false,//正在获取相似线索
         similarClueErrmsg: '',//获取相似线索出错
         similarClueLists: [],//相似线索列表
@@ -52,9 +53,9 @@ class ClueDetailOverview extends React.Component {
         similarCustomerErrmsg: '',//获取相似客户出错
         similarCustomerLists: [],//相似客户列表
         showLargerCustomerLists: false,//展示大于3个的客户列表
-        showLargerClueLists: false//展示大于3个的线索列表
+        showLargerClueLists: false,//展示大于3个的线索列表
     };
-
+    
     componentDidMount() {
         clueCustomerStore.listen(this.onClueCustomerStoreChange);
         var curClue = this.state.curClue;
@@ -182,7 +183,7 @@ class ClueDetailOverview extends React.Component {
         }
         if (nextProps.divHeight !== this.props.divHeight){
             this.setState({
-                divHeight: nextProps.divHeight
+                divHeight: nextProps.divHeight,
             });
         }
     }
@@ -724,19 +725,33 @@ class ClueDetailOverview extends React.Component {
 
     renderAssociatedAndInvalidClueHandle = (curClue) => {
         return (
-            <div className="clue-info-item">
-                <div className="clue-info-label">
-                    {Intl.get('clue.handle.clue', '线索处理')}
-                </div>
-                <div className="clue-info-detail no-handled">
-                    {Intl.get('clue.has.no.handle', '暂未处理')}
+            <div>
+                <div className="clue-info-item">
+                    <div className="clue-info-label">
+                        {Intl.get('clue.handle.clue', '线索处理')}
+                    </div>
+                    <div className="clue-info-detail no-handled">
+                        {Intl.get('clue.has.no.handle', '暂未处理')}
+                    </div>
                 </div>
                 <div className="btn-container">
-                    {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
+                        {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
                 </div>
             </div>
         );
     };
+    //判断是否显示按钮控制tab高度
+    hasButtonTabHeight = (curClue, associatedCustomer ) => {
+        var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
+                            ||  (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
+        var associatedClue = (curClue.clue_type !== 'clue_pool')
+                                && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||curClue.status === SELECT_TYPE.WILL_TRACE) &&!associatedCustomer);                                             
+        if(avalibility && associatedClue){
+            return ({height: this.state.divHeight - HAS_BTN_HEIGHT})
+        }else{
+            return ({height: this.state.divHeight})
+        }                  
+    }
 
     handleCancelCustomerSuggest = () => {
         this.setState({
@@ -1242,7 +1257,7 @@ class ClueDetailOverview extends React.Component {
             } else {
                 return null;
             }
-        } else {
+        } else {  
             if ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||
                 curClue.status === SELECT_TYPE.WILL_TRACE) &&
                 !associatedCustomer) { // 待跟进或是已跟进，并且没有关联客户时，处理线索
@@ -1262,7 +1277,7 @@ class ClueDetailOverview extends React.Component {
         //分配线索给销售的权限
         var hasAssignedPrivilege = assignSalesPrivilege(curClue);
         return (
-            <div className="clue-detail-container" data-tracename="线索基本信息" style={{height: this.state.divHeight}}>
+            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer )}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
                     {this.renderClueCustomerLists(curClue)}
