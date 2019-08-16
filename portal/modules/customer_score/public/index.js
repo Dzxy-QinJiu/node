@@ -96,7 +96,7 @@ class customerScore extends React.Component {
     renderCustomerScoreList = () => {
         const {rangeHandleValue, minValue, maxValue, rangeValue, lowerHandlePoint, largerHandlePoint} = this.state;
         return (<div className="customer-score-content-wrap">
-            <span className="customer-score-lable"> {Intl.get('clue.customer.customer.level', '客户分数')}</span>
+            <div className="customer-score-lable"> {Intl.get('clue.customer.customer.level', '客户评级')}</div>
             <div className="slider-container">
                 <Range
                     min={minValue}
@@ -303,7 +303,6 @@ class customerScore extends React.Component {
 
         return (<div>
             <Row>
-                <Col span={spanLength}>{Intl.get('call.record.customer.source', '来源')}</Col>
                 <Col span={spanLength}>{Intl.get('clue.customer.score.indicator', '指标')}</Col>
                 <Col span={spanLength}>{Intl.get('user.apply.detail.table.time', '周期')}</Col>
                 <Col span={spanLength}>{Intl.get('user.login.score', '分数')}</Col>
@@ -346,16 +345,6 @@ class customerScore extends React.Component {
                 }
                 return (
                     <Row>
-                        <Col span={spanLength}>
-                            <Select
-                                style={{width: 100 }}
-                                value={item.source}
-                                onChange={this.handleCustomerProperty.bind(this,item.id || item.randomId, 'source')}>
-                                {_.map(sourceLists, (item) => {
-                                    return <Option value={item.source}>{item.source_desc}</Option>;
-                                })}
-                            </Select>
-                        </Col>
                         <Col span={spanLength}>
                             <Select
                                 style={{width: 130 }}
@@ -513,19 +502,16 @@ class customerScore extends React.Component {
 
 
     render() {
-        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         return (
-            <div className="customer-score-container" data-tracename="客户评分" style={{height: height}}>
+            <div className="customer-score-container" data-tracename="客户评分">
                 <div className="customer-score-wrap">
-                    <GeminiScrollBar style={{height: height}}>
-                        <div className="customer-score-content">
-                            {_.get(this, 'state.rangeHandleValue.length') ? this.renderCustomerScoreList() : null}
-                            <div className="customer-rules-container">
-                                <p className="customer-rule-tip">{Intl.get('clue.customer.level.score', '客户评分规则')}</p>
-                                {this.renderCustomerScore()}
-                            </div>
+                    <div className="customer-score-content">
+                        {_.get(this, 'state.rangeHandleValue.length') ? this.renderCustomerScoreList() : null}
+                        <div className="customer-rules-container">
+                            <p className="customer-rule-tip">{Intl.get('clue.customer.level.score', '客户评分规则')}</p>
+                            {this.renderCustomerScore()}
                         </div>
-                    </GeminiScrollBar>
+                    </div>
 
                 </div>
             </div>

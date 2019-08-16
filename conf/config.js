@@ -187,20 +187,20 @@ var config = {
     appId: 'COM.ANTFACT.OPLATE.NOTIFY',//从协调服务中获取推送服务地址时所需的id
     loginParams: {
         //安全域Id,客套正式:34pj27enfq, 客套测试:34suklsvlP, curtao:34pj27enfq
-        realm: process.env.LOGIN_REALM || '34suklsvlP',
+        realm: process.env.LOGIN_REALM || '34pj27enfq',
         //应用Id, ketao:3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9 ,curtao:34pj27enfq34pj1oe3c4h91VbdhG4zxccX0Z3i2Z6eN
         clientId: process.env.LOGIN_CLIENT_ID || '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9',
         //应用密钥, 客套正式:477qpz3uC5fZcaz0w1YloKWA, 客套测试:41yhR18RW4nebW305HAvf23t, curtao:0bMfdndoR4jPcH70Mm7SS1kg
-        clientSecret: process.env.LOGIN_CLIENT_SECRET || '41yhR18RW4nebW305HAvf23t',
+        clientSecret: process.env.LOGIN_CLIENT_SECRET || '477qpz3uC5fZcaz0w1YloKWA',
         grantType: process.env.LOGIN_GRANT_TYPE || 'client_credentials'//授权类型
     },
     //服务网关,测试环境：http://172.19.103.21:9191,正式：'http://gateway-ketao.antfact.com', curtao：http://gateway.curtao.com
-    gateway: getGateway() || 'http://172.19.103.21:9191',
+    gateway: getGateway() || 'http://10.20.2.57:9090',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的
     errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用
     siteID: process.env.SITE_ID || '1',//piwik需配置site_id,1:oplate,4:ketao
-    pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://172.19.103.211:9093',//推送的服务地址（测试： http://172.19.103.211:9093，正式:http://notify-ketao.antfact.com:80）
+    pushServerAddress: 'http://notify-ketao.antfact.com:80' || 'http://172.19.103.211:9093',//推送的服务地址（测试： http://172.19.103.211:9093，正式:http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG, //语言环境(优先)
     useSso: process.env.USESSO,//是否使用sso
     storageKey: process.env.storageKey || 'ketao-storage',//在localstorage中存储的key

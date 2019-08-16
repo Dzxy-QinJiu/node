@@ -3292,7 +3292,7 @@ var zh_CN = {
     'clue.customer.condition.change': '修改条件',
     'clue.customer.recommend.clue.lists': '推荐线索',
     'clue.customer.confirm.valid': '确认有效',
-    'clue.customer.customer.level': '客户分数',
+    'clue.customer.customer.level': '客户评级',
     'clue.customer.score.good': '优质',
     'clue.customer.above.limit': '{score}以上',
     'clue.customer.level.score': '客户评分规则',
@@ -3358,6 +3358,7 @@ var zh_CN = {
     'import.excel.data.ketao': '将excel中的{type}导入到客套中',
     'import.excel.no.data': '自己没有线索？试下让客套给您{recommend}',
     'import.recommend.clue.lists': '推荐线索',
+    'menu.sales.auto.manage.config': '销售自动化'
 
 
 };
