@@ -47,7 +47,6 @@ class ClueDetailOverview extends React.Component {
         app_user_id: '',
         curClue: $.extend(true, {}, this.props.curClue),
         divHeight: this.props.divHeight,//没有按钮时高度
-        btnDivHeight:this.props.divHeight-HAS_BTN_HEIGHT,//有按钮时高度
         similarClueLoading: false,//正在获取相似线索
         similarClueErrmsg: '',//获取相似线索出错
         similarClueLists: [],//相似线索列表
@@ -179,7 +178,6 @@ class ClueDetailOverview extends React.Component {
         if (nextProps.divHeight !== this.props.divHeight){
             this.setState({
                 divHeight: nextProps.divHeight,
-                btnDivHeight:nextProps.divHeight-HAS_BTN_HEIGHT
             });
         }
     }
@@ -737,15 +735,15 @@ class ClueDetailOverview extends React.Component {
         );
     };
     //判断是否显示按钮控制tab高度
-    hasButtonTabHeight = (curClue, associatedCustomer ) =>{
+    hasButtonTabHeight = (curClue, associatedCustomer ) => {
         var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
                             ||  (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         var associatedClue = (curClue.clue_type !== 'clue_pool')
                                 && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||curClue.status === SELECT_TYPE.WILL_TRACE) &&!associatedCustomer);                                             
         if(avalibility && associatedClue){
-            return ({height:this.state.btnDivHeight})
+            return ({height: this.state.divHeight - HAS_BTN_HEIGHT})
         }else{
-            return ({height:this.state.divHeight})
+            return ({height: this.state.divHeight})
         }                  
     }
 
