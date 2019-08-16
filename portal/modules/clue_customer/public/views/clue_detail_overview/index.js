@@ -737,7 +737,7 @@ class ClueDetailOverview extends React.Component {
         );
     };
     //判断是否显示按钮控制tab高度
-    hasButton = (curClue, associatedCustomer ) =>{
+    hasButtonTabHeight = (curClue, associatedCustomer ) =>{
         var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
                             ||  (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         var associatedClue = (curClue.clue_type !== 'clue_pool')
@@ -1299,7 +1299,7 @@ class ClueDetailOverview extends React.Component {
         //分配线索给销售的权限
         var hasAssignedPrivilege = assignSalesPrivilege(curClue);
         return (
-            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButton(curClue, associatedCustomer )}>
+            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer )}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
                     {this.renderClueCustomerLists(curClue)}
