@@ -23,7 +23,33 @@ export function getStageChart() {
         }],
         processData: (data, chart) => {
             const stageData = data[0];
-            const channelData = data[1];
+            const channelData = _.get(data, '[1].result');
+            let channelList = [];
+
+            _.each(channelData, item => {
+                channelList = _.concat(channelList, _.keys(item));
+            });
+
+            chart.cardContainer.selectors.unshift({
+                optionsCallback: () => {
+                    let options = [{
+                        name: '全部渠道',
+                        value: '',
+                    }];
+
+                    _.map(channelList, item => {
+                        options.push({
+                            name: item,
+                            value: item
+                        });
+                    });
+
+                    return options;
+                },
+                activeOption: '',
+                conditionName: 'access_channel',
+            });
+
             const func = getFunnelWithConvertRateProcessDataFunc([
                 {
                     key: 'total',
@@ -60,24 +86,6 @@ export function getStageChart() {
         },
         cardContainer: {
             selectors: [{
-                optionsCallback: () => {
-                    let options = [{
-                        name: '全部渠道',
-                        value: '',
-                    }];
-
-                    _.map(Store.clueChannelList, item => {
-                        options.push({
-                            name: item,
-                            value: item
-                        });
-                    });
-
-                    return options;
-                },
-                activeOption: '',
-                conditionName: 'access_channel',
-            }, {
                 optionsCallback: () => {
                     let options = [{
                         name: '全部来源',
