@@ -10,7 +10,10 @@ export function getStageChart() {
     return {
         title: Intl.get('clue.stage.statics', '线索阶段统计'),
         chartType: 'funnel',
-        url: '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
+        url: [
+            '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
+            '/rest/analysis/customer/v2/clue/:data_type/statistical/field/access_channel'
+        ],
         conditions: [{
             name: 'access_channel',
             value: '',
@@ -18,32 +21,73 @@ export function getStageChart() {
             name: 'clue_source',
             value: '',
         }],
-        processData: getFunnelWithConvertRateProcessDataFunc([
-            {
-                key: 'total',
-                name: Intl.get('common.all', '全部')
-            },
-            {
-                key: 'vailid',
-                name: Intl.get('clue.analysis.ability', '有效')
-            },
-            {
-                key: 'information',
-                name: Intl.get('sales.stage.message', '信息')
-            },
-            {
-                key: 'intention',
-                name: Intl.get('sales.stage.intention', '意向')
-            },
-            {
-                key: 'trial',
-                name: Intl.get('common.trial', '试用')
-            },
-            {
-                key: 'sign',
-                name: Intl.get('common.official', '签约')
+        processData: (data, chart) => {
+            const stageData = data[0];
+
+            const channelSelector = _.find(chart.cardContainer.selectors, item => item.conditionName === 'access_channel');
+
+            if (!channelSelector) {
+                //渠道数据
+                let channelData = _.get(data, '[1].result');
+                //将渠道数据按值从小到大排序，以和渠道统计中的图例顺序保持一致
+                channelData = _.sortBy(channelData, item => _.values(item)[0]);
+                //渠道名列表
+                let channelList = [];
+    
+                _.each(channelData, item => {
+                    channelList = _.concat(channelList, _.keys(item));
+                });
+    
+                chart.cardContainer.selectors.unshift({
+                    optionsCallback: () => {
+                        let options = [{
+                            name: '全部渠道',
+                            value: '',
+                        }];
+    
+                        _.map(channelList, item => {
+                            options.push({
+                                name: item,
+                                value: item
+                            });
+                        });
+    
+                        return options;
+                    },
+                    activeOption: '',
+                    conditionName: 'access_channel',
+                });
             }
-        ], '', 'STAGE_NAME'),
+
+            const func = getFunnelWithConvertRateProcessDataFunc([
+                {
+                    key: 'total',
+                    name: Intl.get('common.all', '全部')
+                },
+                {
+                    key: 'vailid',
+                    name: Intl.get('clue.analysis.ability', '有效')
+                },
+                {
+                    key: 'information',
+                    name: Intl.get('sales.stage.message', '信息')
+                },
+                {
+                    key: 'intention',
+                    name: Intl.get('sales.stage.intention', '意向')
+                },
+                {
+                    key: 'trial',
+                    name: Intl.get('common.trial', '试用')
+                },
+                {
+                    key: 'sign',
+                    name: Intl.get('common.official', '签约')
+                }
+            ], '', 'STAGE_NAME');
+
+            return func(stageData);
+        },
         processCsvData: funnelWithConvertRateProcessCsvData,
         customOption: {
             valueField: 'showValue',
@@ -51,24 +95,6 @@ export function getStageChart() {
         },
         cardContainer: {
             selectors: [{
-                optionsCallback: () => {
-                    let options = [{
-                        name: '全部渠道',
-                        value: '',
-                    }];
-
-                    _.map(Store.clueChannelList, item => {
-                        options.push({
-                            name: item,
-                            value: item
-                        });
-                    });
-
-                    return options;
-                },
-                activeOption: '',
-                conditionName: 'access_channel',
-            }, {
                 optionsCallback: () => {
                     let options = [{
                         name: '全部来源',

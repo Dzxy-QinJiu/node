@@ -81,7 +81,6 @@ class CurtaoAnalysis extends React.Component {
         this.getStageList();
         this.getIndustryList();
         this.getAppList();
-        this.getClueChannelList();
         this.getClueSourceList();
         this.getUserTypeList();
         // 获取组织电话系统配置
@@ -137,15 +136,6 @@ class CurtaoAnalysis extends React.Component {
                 app_id: 'all',
                 app_name: '全部应用',
             });
-        });
-    };
-
-    //线索渠道列表
-    getClueChannelList = () => {
-        ajax.send({
-            url: '/rest/clue/v1/access_channel/100/1'
-        }).then(result => {
-            Store.clueChannelList = _.get(result, 'result');
         });
     };
 
