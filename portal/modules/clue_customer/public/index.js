@@ -482,12 +482,13 @@ class ClueCustomer extends React.Component {
         if (_.isEmpty(filterStoreData.filterClueSource)
             && _.isEmpty(filterStoreData.filterClueAccess)
             && _.isEmpty(filterStoreData.filterClueClassify)
-            && filterStoreData.filterClueAvailability === AVALIBILITYSTATUS.AVALIBILITY
             && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime
-            && this.state.keyword === '' && _.isEmpty(filterStoreData.exist_fields)
+            && this.state.keyword === ''
+            && _.isEmpty(filterStoreData.exist_fields)
             && _.isEmpty(filterStoreData.unexist_fields)
-            && _.isEmpty(filterStoreData.filterClueProvince
-                && _.isEmpty(filterStoreData.filterLabels))){
+            && _.isEmpty(filterStoreData.filterClueProvince)
+            && _.isEmpty(filterStoreData.filterLabels)
+            && _.isEmpty(filterStoreData.filterClueUsers)){
             return true;
         }else{
             return false;
@@ -1728,7 +1729,7 @@ class ClueCustomer extends React.Component {
             <div className="intro-recommend-list">
                 <ReactIntl.FormattedMessage
                     id="import.excel.no.data"
-                    defaultMessage={'自己没有线索？试下让客套给您{recommend}'}
+                    defaultMessage={'试下客套给您{recommend}的功能'}
                     values={{
                         'recommend': <a onClick={this.openRecommendClues} data-tracename="点击推荐线索">
                             {Intl.get('import.recommend.clue.lists', '推荐线索')}

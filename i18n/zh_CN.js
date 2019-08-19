@@ -2450,8 +2450,7 @@ var zh_CN = {
     'call.record.input.feedback.content': '请输入反馈内容',
     'call.record.input.feedback.topic': '请输入反馈主题',
     'call.record.failed.add.app.feedback': '添加产品反馈内容失败',
-    'sales.lead.customer': '线索客户',
-    'failed.to.get.clue.customer.list': '获取线索客户列表失败',
+    'failed.to.get.clue.customer.list': '获取线索列表失败',
     'sales.frontpage.active.info': '请激活邮箱，以免影响收取审批邮件！',
     'sales.frontpage.active.email': '激活邮箱',
     'crm.customer.user': '{customer}客户的用户',
@@ -3360,7 +3359,7 @@ var zh_CN = {
     'crm.clue.next.contact.time': '下次联系时间',
     'no.data.add.import.tip': '向客套中添加{type}',
     'import.excel.data.ketao': '将excel中的{type}导入到客套中',
-    'import.excel.no.data': '自己没有线索？试下让客套给您{recommend}',
+    'import.excel.no.data': '试下客套给您{recommend}的功能',
     'import.recommend.clue.lists': '推荐线索',
 };
 export default zh_CN;
