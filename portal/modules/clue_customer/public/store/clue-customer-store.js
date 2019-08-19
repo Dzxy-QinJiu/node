@@ -146,9 +146,8 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
         });
         if (_.isArray(_.get(data, 'agg_list'))) {
             _.forEach(_.get(data, 'agg_list'), item => {
-                //如果是选中的无效的线索，前面的统计值不要改，因为选择了无效，统计的status是统计的无效状态下的各种status的数值
                 var filterClueAvaliability = clueFilterStore.getState().filterClueAvailability;
-                if (_.isArray(_.get(item, 'status')) && filterClueAvaliability === AVALIBILITYSTATUS.AVALIBILITY) {
+                if (_.isArray(_.get(item, 'status'))) {
                     var arr = _.get(item, 'status');
                     var willDistribute = _.find(arr, item => item.name === SELECT_TYPE.WILL_DISTRIBUTE);
                     var willTrace = _.find(arr, item => item.name === SELECT_TYPE.WILL_TRACE);

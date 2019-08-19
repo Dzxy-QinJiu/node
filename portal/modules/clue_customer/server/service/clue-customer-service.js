@@ -348,8 +348,22 @@ function getTypeClueLists(req, res, obj) {
 }
 function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
     //首次登录的时候先获取各类线索的值，然后再获取有值的那一类线索并且把有值选中的字段传到前端
+    //如果筛选相中有无效线索，需要再发个请求，请求相同条件下有效线索的统计值，这样可以避免选中无效线索后，切换左边的筛选后，统计值不对的问题,统计字段只统计无效的字段
     let emitter = new EventEmitter();
-    getTypeClueLists(req, res, obj).then((data) => {
+    let promiseList = [getTypeClueLists(req, res, obj)];
+    var searchInvalidClue = _.get(obj,'bodyObj.query.availability') === '1';
+    if (searchInvalidClue){
+        var cloneObj = _.cloneDeep(obj);
+        cloneObj.bodyObj.query.availability = '0';
+        promiseList.push(getTypeClueLists(req, res, cloneObj));
+    }
+    Promise.all(promiseList).then((dataList) => {
+        var data = dataList[0] || {};
+        var avalibilityData = dataList[1] || {};
+        if(searchInvalidClue && !_.isEmpty(avalibilityData) && _.get(data,'agg_list.length') === 1){
+            var targetObj = _.find(_.get(avalibilityData,'agg_list'), item => item.status);
+            data['agg_list'].unshift(targetObj);
+        }
         if (!_.get(data, 'total') && req.body.firstLogin === 'true'){
             delete req.body.firstLogin;
             //如果想要查询的不存在
@@ -405,8 +419,8 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
             }
             emitter.emit('success', data);
         }
-    }).catch((errorObj) => {
-        emitter.emit('error', errorObj);
+    }, function(errorMsg) {
+        emitter.emit('error', errorMsg);
     });
     return emitter;
 }
