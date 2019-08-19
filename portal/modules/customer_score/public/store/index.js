@@ -59,7 +59,7 @@ class CustomerScoreStore {
             this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
             var range = this.maxValue / 5;
             this.marks = {};
-            for (var i = 1; i < 5; i++) {
+            for (var i = 0; i < 5; i++) {
                 this.marks[i * range] = i * range;
             }
         }
@@ -103,7 +103,7 @@ class CustomerScoreStore {
         this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
         var range = this.maxValue / 5;
         this.marks = {};
-        for (var i = 1; i < 5; i++) {
+        for (var i = 0; i < 5; i++) {
             this.marks[i * range] = i * range;
         }
     }
