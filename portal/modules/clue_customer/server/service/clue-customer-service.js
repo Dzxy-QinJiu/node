@@ -12,6 +12,7 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const clueBaseUrl = '/rest/clue/v2';
+const ROLE_CONSTANTS = require('../../../../lib/consts').ROLE_CONSTANS;
 const restApis = {
     //获取线索来源
     getClueSource: clueBaseUrl + '/clue_source/100/1',
@@ -366,10 +367,15 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
         }
         if (!_.get(data, 'total') && req.body.firstLogin === 'true'){
             delete req.body.firstLogin;
-            //如果想要查询的不存在
+            //如果想要查询线索类型的不存在，需要找统计值中有值的发请求
             var staticsData = [],avalibilityData = [];
             _.forEach(_.get(data, 'agg_list',[]),item => {
                 if (item['status']){
+                    //如果不是管理员也不是运营人员，需要把已转化的去掉
+                    if (!(auth.hasRole(req, ROLE_CONSTANTS.OPERATION_PERSON) ||
+                        auth.hasRole(req, ROLE_CONSTANTS.REALM_ADMIN))){
+                        item['status'] = _.filter(item['status'], status => status.name !== '3');
+                    }
                     staticsData = item['status'];
                 }
                 if (item['availability']){
