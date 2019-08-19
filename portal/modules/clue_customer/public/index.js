@@ -515,12 +515,6 @@ class ClueCustomer extends React.Component {
             typeFilter.user_name = filterClueUsers.join(',');
         }
         var existFilelds = filterStoreData.exist_fields;
-        //如果是筛选的重复线索，把排序字段改成repeat_id
-        if (_.indexOf(existFilelds, 'repeat_id') > -1){
-            clueCustomerAction.setSortField('repeat_id');
-        }else{
-            clueCustomerAction.setSortField('source_time');
-        }
         var unExistFileds = filterStoreData.unexist_fields;
         var sorter = this.state.sorter;
         //如果选中的是已跟进或者已转化的线索，按最后联系时间排序
@@ -597,16 +591,17 @@ class ClueCustomer extends React.Component {
             //获取有待我处理条件的线索
             var cloneQuery = _.cloneDeep(queryObj);
             cloneQuery.self_no_traced = true;
-            clueCustomerAction.saveQueryObj(cloneQuery);
+
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
             });
+            clueCustomerAction.saveQueryObj(cloneQuery);
         }else{
             //取全部线索列表
-            clueCustomerAction.saveQueryObj(queryObj);
             clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
             });
+            clueCustomerAction.saveQueryObj(queryObj);
         }
     };
     handleFirstLoginData = (flag) => {
@@ -1024,21 +1019,18 @@ class ClueCustomer extends React.Component {
         if ((record.id === this.state.currentId) && rightPanelShow){
             cls += ' current-row';
         }
-        if (record.availability === '1'){
-            cls += ' invalid-clue';
-        }
         return cls;
     };
 
     getClueTypeTab = () => {
         var isFirstLoading = this.isFirstLoading();
         var typeFilter = this.getFilterStatus();//线索类型
-        var willDistCls = classNames('clue-status-tab', {'active-will-distribute': SELECT_TYPE.WILL_DISTRIBUTE === typeFilter.status});
-        var willTrace = classNames('clue-status-tab', {'active-will-trace': SELECT_TYPE.WILL_TRACE === typeFilter.status});
-        var hasTrace = classNames('clue-status-tab', {'active-has-trace': SELECT_TYPE.HAS_TRACE === typeFilter.status});
-        var hasTransfer = classNames('clue-status-tab', {'active-has-transfer': SELECT_TYPE.HAS_TRANSFER === typeFilter.status});
+        var willDistCls = classNames('clue-status-tab', {'active-tab': SELECT_TYPE.WILL_DISTRIBUTE === typeFilter.status});
+        var willTrace = classNames('clue-status-tab', {'active-tab': SELECT_TYPE.WILL_TRACE === typeFilter.status});
+        var hasTrace = classNames('clue-status-tab', {'active-tab': SELECT_TYPE.HAS_TRACE === typeFilter.status});
+        var hasTransfer = classNames('clue-status-tab', {'active-tab': SELECT_TYPE.HAS_TRANSFER === typeFilter.status});
         var filterStore = clueFilterStore.getState();
-        var invalidClue = classNames('clue-status-tab', {'active-invalid-clue': filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY});
+        var invalidClue = classNames('clue-status-tab', {'active-tab': filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY});
         var statics = this.state.agg_list;
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
@@ -1060,7 +1052,7 @@ class ClueCustomer extends React.Component {
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
                 <span className="clue-status-num">{_.get(statics,'hasTrace',0)}</span>
             </span>
-            {filterAllotNoTraced ? null : <span className={hasTransfer}
+            {filterAllotNoTraced || isSalesRole() ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num">{_.get(statics,'hasTransfer',0)}</span>
             </span>}
