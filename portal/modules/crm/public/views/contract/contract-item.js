@@ -253,6 +253,7 @@ class ContractItem extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo.bind(this, 'buyer')}
                         placeholder={Intl.get('crm.contract.party.name', '请输入甲方名称')}
+                        noDataTip={Intl.get('contract.62', '暂无甲方')}
                         addDataTip={Intl.get('crm.contract.add.buyer', '添加甲方')}
                     />
                 </div>
@@ -311,6 +312,8 @@ class ContractItem extends React.Component {
                         selectOptions={categoryOptions}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('contract.72', '请选择合同类型')}
+                        addDataTip={Intl.get('crm.contract.add.category', '添加合同类型')}
+                        noDataTip={Intl.get('contract.73', '暂无合同类型')}
                         saveEditSelect={this.saveContractBasicInfo.bind(this, 'category')}
                     />
                 </div>
@@ -325,6 +328,8 @@ class ContractItem extends React.Component {
                         selectOptions={labelOptions}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('crm.contract.select.sign.type', '请选择签约类型')}
+                        addDataTip={Intl.get('crm.contract.add.label', '添加签约类型')}
+                        noDataTip={Intl.get('crm.contract.no.label', '暂无签约类型')}
                         saveEditSelect={this.saveContractBasicInfo.bind(this, 'label')}
                     />
                 </div>
@@ -364,6 +369,7 @@ class ContractItem extends React.Component {
                                     value={contract.remarks}
                                     hasEditPrivilege={hasEditPrivilege}
                                     saveEditInput={this.saveContractBasicInfo.bind(this, 'remarks')}
+                                    noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
                                     addDataTip={Intl.get('crm.contract.add.remarks', '添加备注')}
                                 />
                             </div>
