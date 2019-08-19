@@ -27,7 +27,11 @@ export function getStageChart() {
             const channelSelector = _.find(chart.cardContainer.selectors, item => item.conditionName === 'access_channel');
 
             if (!channelSelector) {
-                const channelData = _.get(data, '[1].result');
+                //渠道数据
+                let channelData = _.get(data, '[1].result');
+                //将渠道数据按值从小到大排序，以和渠道统计中的图例顺序保持一致
+                channelData = _.sortBy(channelData, item => _.values(item)[0]);
+                //渠道名列表
                 let channelList = [];
     
                 _.each(channelData, item => {
