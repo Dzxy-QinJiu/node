@@ -2275,6 +2275,7 @@ var en_US = {
     'errorcode.158': 'Failed to update customer stage', // 更新客户阶段失败
     'errorcode.159': 'Failed to delete sale process', // 删除销售流程失败
     'errorcode.160': 'Failed to delete customer stage', // 删除客户阶段失败
+    'errorcode.161': 'Failed to upload files',//文件上传失败
     'errorcode.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败

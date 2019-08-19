@@ -2313,6 +2313,7 @@ var zh_CN = {
     'errorcode.158': '更新客户阶段失败',
     'errorcode.159': '删除销售流程失败',
     'errorcode.160': '删除客户阶段失败',
+    'errorcode.161': '文件上传失败',
     'errorcode.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
     'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
