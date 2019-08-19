@@ -352,15 +352,15 @@ class CurtaoAnalysis extends React.Component {
 
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
-                //当前是否在延期帐号页
-                const isDeferredAccountPage = this.getIsDeferredAccountPage(page.title);
+                //当前页是否只能选择单个应用
+                const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
         
                 if (defaultAppId) {
-                    if (isDeferredAccountPage && defaultAppId === 'all') {
+                    if (isCanOnlySelectSingleApp && defaultAppId === 'all') {
                         defaultAppId = [_.get(Store.appList, '[1].app_id')];
                     }
                 } else {
-                    if (isDeferredAccountPage) {
+                    if (isCanOnlySelectSingleApp) {
                         defaultAppId = _.get(Store.appList, '[1].app_id');
                     } else {
                         defaultAppId = 'all';
@@ -501,24 +501,19 @@ class CurtaoAnalysis extends React.Component {
         }];
     }
 
-    //获取当前是否在延期帐号页
-    getIsDeferredAccountPage(pageTitle = this.state.currentPage.title) {
-        return pageTitle === ACCOUNT_MENUS.DELAYED.name;
-    }
-
     render() {
-        //当前是否在延期帐号页
-        const isDeferredAccountPage = this.getIsDeferredAccountPage();
+        //当前页是否只能选择单个应用
+        const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
 
         let appList = _.cloneDeep(Store.appList);
         //应用选择模式
         let appSelectMode = 'multiple';
 
-        //延期用户分析页不让选全部应用
-        if (isDeferredAccountPage) {
+        //如果当前页配置中设置了只能选择单个应用
+        if (this.state.currentPage.isCanOnlySelectSingleApp) {
             //去掉全部应用项
             appList.splice(0, 1);
-            //在延期帐号统计页上时由于后端处理问题，不能同时查询多个应用的数据，所以需要设成只能单选
+            //设成只能单选
             appSelectMode = '';
         }
 
@@ -529,11 +524,11 @@ class CurtaoAnalysis extends React.Component {
         if (storedAppId) {
             defaultAppId = storedAppId.split(',');
 
-            if (isDeferredAccountPage && storedAppId === 'all') {
+            if (isCanOnlySelectSingleApp && storedAppId === 'all') {
                 defaultAppId = [_.get(Store.appList, '[1].app_id')];
             }
         } else {
-            if (isDeferredAccountPage) {
+            if (isCanOnlySelectSingleApp) {
                 defaultAppId = [_.get(Store.appList, '[1].app_id')];
             } else {
                 defaultAppId = ['all'];

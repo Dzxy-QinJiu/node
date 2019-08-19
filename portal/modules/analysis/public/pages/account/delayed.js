@@ -13,6 +13,8 @@ module.exports = {
         'USER_ANALYSIS_COMMON',
         'USER_ANALYSIS_MANAGER',
     ],
+    //是否只能选择一个应用
+    isCanOnlySelectSingleApp: true,
     charts: getCharts()
 };
 
