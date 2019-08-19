@@ -70,6 +70,7 @@ var en_US = {
     'common.password.unequal': 'Passwords do not match',//两次输入密码不一致！
     'common.correct.email': 'Please enter the correct email account',//请输入正确的邮箱Please input the correct email
     'common.correct.qq': 'Please enter the correct QQ account',//请输入正确的QQ号
+    'common.correct.wechat':'please enter the correct WeChat account',//请输入正确的微信号
     'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
     'common.password.validate.rule': 'Please enter the password with 6-18 digits, letters and symbols',//请输入6-18位数字、字母、符号组成的密码,

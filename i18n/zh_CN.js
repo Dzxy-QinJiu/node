@@ -72,6 +72,7 @@ var zh_CN = {
     'common.password.unequal': '两次输入密码不一致！',
     'common.correct.email': '请输入正确的邮箱',
     'common.correct.qq': '请输入正确的QQ号',
+    'common.correct.wechat':'请输入正确的微信号',
     'common.password.length': '密码长度应大于6位小于18位',
     'common.password.compose.rule': '6-18位数字、字母、符号的组合',
     'common.password.validate.rule': '请输入6-18位数字、字母、符号组成的密码',
