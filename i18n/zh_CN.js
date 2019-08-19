@@ -859,7 +859,10 @@ var zh_CN = {
     'sales.process.customer.stage.no.play': '暂无剧本',
     'sales.process.customer.stage.add.play': '添加剧本',
     'sales.process.customer.stage.activity': '销售行为',
-    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本。', // 、销售行为、自动变更条件。
+    'sales.process.select.task.placeholder': '请选择任务',
+    'sales.process.select.action.placeholder': '请选择动作',
+    'sales.process.add.activity.failed': '添加销售行为失败',
+    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本、销售行为、自动变更条件', //
     // 后台管理-销售流程end
 
     //应用管理start

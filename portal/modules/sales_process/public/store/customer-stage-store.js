@@ -22,8 +22,9 @@ class CustomerStageStore {
         this.currentCustomerStage = emptyCustomerStage;
         this.isShowCustomerStageForm = false; // 是否显示客户阶段表单，默认false
         this.isShowCustomerStageTransferOrder = false; // 是否显示客户阶段变更，默认false
-        this.isShowCustomerStageDetailPanel = false; // 是否显示客户阶段详情面板，默认false
         this.currentcustomerStageList = [];
+        this.salesBehaviorList = []; // 销售行为列表
+        this.getsalesBehaviorListErrMsg = ''; // 获取销售行为失败的信息
     }
 
     // 获取客户阶段列表
@@ -68,12 +69,17 @@ class CustomerStageStore {
         if (flag) {
             if (flag === 'delete') { //删除
                 _.remove(this.customerStageList, customerStage);
-            } else if (flag === 'edit') {
+            } else {
                 let upDateStage = _.find(this.customerStageList, item => item.id === customerStage.id);
-                upDateStage.name = customerStage.name;
-                upDateStage.description = customerStage.description;
-                if (customerStage.play_books) {
-                    upDateStage.play_books = customerStage.play_books;
+                if (flag === 'edit') { // 编辑客户阶段的名称和描述
+                    upDateStage.name = customerStage.name;
+                    upDateStage.description = customerStage.description;
+                } else if (flag === 'editPlay') { // 更新剧本
+                    if (customerStage.play_books) {
+                        upDateStage.play_books = customerStage.play_books;
+                    }
+                } else if (flag === 'editBehavior') { // 更新销售行为
+                    upDateStage.sales_activities = customerStage.salesActivities;
                 }
             }
         } else { // 添加
@@ -143,17 +149,28 @@ class CustomerStageStore {
 
     // 关闭客户阶段模态
     closeCustomerStageModalDialog(customerStage) {
-        customerStage.isShowDeleteModalDialog = false;
+        delete customerStage.isShowDeleteModalDialog;
     }
 
     // 显示客户阶段详情
-    showCustomerStageDetail() {
-        this.isShowCustomerStageDetailPanel = true;
+    showCustomerStageDetail(customerStage) {
+        customerStage.isShowCustomerStageDetailPanel = true;
     }
 
     // 关闭客户阶段详情
-    closeCustomerStageDetail() {
-        this.isShowCustomerStageDetailPanel = false;
+    closeCustomerStageDetail(customerStage) {
+        // isShowCustomerStageDetailPanel 是针对指定的客户阶段增加的属性，所以关闭的时候要delete
+        delete customerStage.isShowCustomerStageDetailPanel;
+    }
+
+    // 获取客户阶段的销售行为
+    getCustomerStageSaleBehavior(result) {
+        if (result.error) {
+            this.getsalesBehaviorListErrMsg = result.errorMsg;
+        } else {
+            this.getsalesBehaviorListErrMsg = '';
+            this.salesBehaviorList = result.resData;
+        }
     }
 }
 

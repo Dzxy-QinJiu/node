@@ -854,6 +854,9 @@ var en_US = {
     'sales.process.customer.stage.no.play': 'No scenarios', // 暂无剧本
     'sales.process.customer.stage.add.play': 'Add Scenarios', // 添加剧本
     'sales.process.customer.stage.activity': 'sales behaviors', // 销售行为
+    'sales.process.select.task.placeholder': 'Please select sale task', // 请选择任务
+    'sales.process.select.action.placeholder': 'Please select sale action', // 请选择动作
+    'sales.process.add.activity.failed': 'Failed to add the sales behaviors', // 添加销售行为失败
     'sales.process.customer.stage.detail.title': 'Set up scenarios, sales behaviors, and automatic change conditions for the information phase.', // 设置信息阶段的剧本、销售行为、自动变更条件。
     // 后台管理-销售流程end
 
