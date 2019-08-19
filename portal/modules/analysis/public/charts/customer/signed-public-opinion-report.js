@@ -13,16 +13,20 @@ export function getSignedCustomerPublicOpinionReportChart() {
                 arg.query.sales_teamd_id = arg.query.team_ids;
             }
         },
-        processData: data => {
+        processData: (data, chart) => {
             //按报送数量从小到大排序
             data = _.sortBy(data, 'report_num');
             //计算报送数量总计
             const total = _.sumBy(data, 'report_num');
-            //将总计加入数据集
-            data.push({
-                customer_name: Intl.get('sales.home.total.compute', '总计'),
-                report_num: total
-            });
+            //在表格底部显示总计
+            chart.option.footer = () => {
+                return (
+                    <div style={{background: '#fff', margin: '-16px -8px', padding: '5px 8px 4px'}}>
+                        <div style={{display: 'inline-block', width: '50%'}}>{Intl.get('sales.home.total.compute', '总计')}</div>
+                        <div style={{display: 'inline-block', width: '50%', textAlign: 'right'}}>{total}</div>
+                    </div>
+                );
+            };
 
             return data;
         },
