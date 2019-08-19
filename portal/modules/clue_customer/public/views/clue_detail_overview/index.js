@@ -36,7 +36,7 @@ import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
-const HAS_BTN_HEIGHT = 40;//为按钮预留空间
+const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
