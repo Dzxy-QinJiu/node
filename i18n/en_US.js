@@ -3250,7 +3250,6 @@ var en_US = {
     'common.signed.customer.public.opinion.report.statistics': 'Signed customer public opinion report statistics',//签约客户舆情报送统计,
     'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
     'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
-    'import.excel.no.data': 'I have no clues? Try to give you a set of {recommend}',//自己没有线索？试下让客套给您{recommend}
-    'import.recommend.clue.lists': 'Recommended clue',//推荐线索
+    'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
 };
 export default en_US;

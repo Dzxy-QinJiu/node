@@ -3359,7 +3359,7 @@ var zh_CN = {
     'crm.clue.next.contact.time': '下次联系时间',
     'no.data.add.import.tip': '向客套中添加{type}',
     'import.excel.data.ketao': '将excel中的{type}导入到客套中',
-    'import.excel.no.data': '自己没有线索？试下让客套给您{recommend}',
+    'import.excel.no.data': '试下客套给您{recommend}的功能',
     'import.recommend.clue.lists': '推荐线索',
 };
 export default zh_CN;

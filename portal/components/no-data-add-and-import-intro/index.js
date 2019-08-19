@@ -36,6 +36,9 @@ class NoDataIntro extends React.Component {
 
                     </div>
                 </div>
+                <div className="add-other-operation">
+                    {this.props.renderOtherOperation()}
+                </div>
             </div>
         );
     }
@@ -51,9 +54,6 @@ class NoDataIntro extends React.Component {
         return (
             <div className="no-data-add-and-import-intro-wrap">
                 {this.props.showAddBtn ? this.renderNodataAddIntro() : this.renderNodataTip()}
-                <div className="add-other-operation">
-                    {this.props.renderOtherOperation()}
-                </div>
             </div>
         );
     }
