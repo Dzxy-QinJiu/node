@@ -1652,6 +1652,10 @@ var zh_CN = {
     'crm.customer.label.edit.tip': '点击修改客户阶段',
     'crm.filter.team.customer': '团队客户',
     'crm.trace.statistic.unit': '{count}次',
+    'crm.contract.add.buyer': '添加甲方',
+    'crm.contract.add.gross': '添加毛利',
+    'crm.contract.add.money': '添加合同额',
+    'crm.contract.add.remarks': '添加备注',
     // 客户管理end
 
     // 客户分析start
