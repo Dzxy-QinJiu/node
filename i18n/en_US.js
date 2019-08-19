@@ -1630,6 +1630,13 @@ var en_US = {
     'crm.customer.label.edit.tip': 'Click to edit customer stage',//点击修改客户阶段
     'crm.filter.team.customer': 'Team customers',//团队客户
     'crm.trace.statistic.unit': '{count} times',//{count}次
+    'crm.contract.add.buyer': 'Add buyer',//添加甲方
+    'crm.contract.add.gross': 'Add gross profit',//添加毛利
+    'crm.contract.add.money': 'Add contract amount',//添加合同额
+    'crm.contract.add.remarks': 'Add remarks',//添加备注
+    'crm.contract.add.category': 'Add contract type',//添加合同类型
+    'crm.contract.add.label': 'Add signing type',//添加签约类型
+    'crm.contract.no.label': 'No signing type',//暂无签约类型
     // 客户管理end
 
     //客户分析 start
