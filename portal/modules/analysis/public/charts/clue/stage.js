@@ -10,7 +10,10 @@ export function getStageChart() {
     return {
         title: Intl.get('clue.stage.statics', '线索阶段统计'),
         chartType: 'funnel',
-        url: '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
+        url: [
+            '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
+            '/rest/analysis/customer/v2/clue/:data_type/statistical/field/access_channel'
+        ],
         conditions: [{
             name: 'access_channel',
             value: '',
@@ -18,32 +21,38 @@ export function getStageChart() {
             name: 'clue_source',
             value: '',
         }],
-        processData: getFunnelWithConvertRateProcessDataFunc([
-            {
-                key: 'total',
-                name: Intl.get('common.all', '全部')
-            },
-            {
-                key: 'vailid',
-                name: Intl.get('clue.analysis.ability', '有效')
-            },
-            {
-                key: 'information',
-                name: Intl.get('sales.stage.message', '信息')
-            },
-            {
-                key: 'intention',
-                name: Intl.get('sales.stage.intention', '意向')
-            },
-            {
-                key: 'trial',
-                name: Intl.get('common.trial', '试用')
-            },
-            {
-                key: 'sign',
-                name: Intl.get('common.official', '签约')
-            }
-        ], '', 'STAGE_NAME'),
+        processData: (data, chart) => {
+            const stageData = data[0];
+            const channelData = data[1];
+            const func = getFunnelWithConvertRateProcessDataFunc([
+                {
+                    key: 'total',
+                    name: Intl.get('common.all', '全部')
+                },
+                {
+                    key: 'vailid',
+                    name: Intl.get('clue.analysis.ability', '有效')
+                },
+                {
+                    key: 'information',
+                    name: Intl.get('sales.stage.message', '信息')
+                },
+                {
+                    key: 'intention',
+                    name: Intl.get('sales.stage.intention', '意向')
+                },
+                {
+                    key: 'trial',
+                    name: Intl.get('common.trial', '试用')
+                },
+                {
+                    key: 'sign',
+                    name: Intl.get('common.official', '签约')
+                }
+            ], '', 'STAGE_NAME');
+
+            return func(stageData);
+        },
         processCsvData: funnelWithConvertRateProcessCsvData,
         customOption: {
             valueField: 'showValue',
