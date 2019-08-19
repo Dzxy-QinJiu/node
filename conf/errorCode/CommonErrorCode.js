@@ -368,6 +368,7 @@ function getConfigJson(req) {
         '19400': {'httpCode': 500, 'message': backendIntl.get('errorcode.130', '没有操作权限')},
         '20001': {'httpCode': 500, 'message': backendIntl.get('errorcode.122', '网络请求异常')},
         '20002': {'httpCode': 500, 'message': ERROR_TIP.ILLEGAL_REQUEST},//非法请求，界面上不提示此类错误，展示具体的错误描述
+        '20004': {'httpCode': 500, 'message': backendIntl.get('errorcode.161', '文件上传失败')},
         /*扫码登录*/
         '11058': {'httpCode': 500, 'message': ''},//请用APP扫描二维码的错误码，界面上不需要提示此错误
         '11059': {'httpCode': 500, 'message': backendIntl.get('errorcode.147', '二维码已失效')},
