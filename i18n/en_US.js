@@ -2403,8 +2403,7 @@ var en_US = {
     'call.record.input.feedback.content': 'Please fill in feedback content',//请输入反馈内容
     'call.record.input.feedback.topic': 'Please fill in feedback topic',//请输入反馈主题
     'call.record.failed.add.app.feedback': 'Failed to add feedback content',//添加产品反馈内容失败
-    'sales.lead.customer': 'Clue customers',//线索客户
-    'failed.to.get.clue.customer.list': 'Failed to get clue customers',//获取线索客户列表失败
+    'failed.to.get.clue.customer.list': 'Failed to get clue',//获取线索列表失败
     'sales.frontpage.active.info': 'Please activate your mailbox, so as not to affect the receipt of approval emails!',//请激活邮箱，以免影响收取审批邮件！
     'sales.frontpage.active.email': 'Activate mailbox',//激活邮箱
     'crm.customer.user': 'users of {customer}',//{customer}客户的用户
