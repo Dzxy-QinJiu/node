@@ -80,7 +80,7 @@ class CustomerStageDetail extends React.Component {
             <div className="customer-stage-basic-info">
                 <div className="title">{Intl.get('sales.stage.message', '信息')}</div>
                 <div className="sub-title">
-                    {Intl.get('sales.process.customer.stage.detail.title', '设置信息阶段的剧本')}
+                    {Intl.get('sales.process.customer.stage.detail.title', '设置信息阶段的剧本、销售行为、自动变更条件')}
                 </div>
             </div>
         );
