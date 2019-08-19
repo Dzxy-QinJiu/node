@@ -29,6 +29,7 @@ class ContractItem extends React.Component {
         formData: JSON.parse(JSON.stringify(this.props.contract)),
         isLoading: false,
         errMsg: '', // 删除错误的信息提示
+        isShowProductEdit: false, //是否显示添加产品
     };
 
     componentWillReceiveProps(nextProps) {
@@ -170,7 +171,7 @@ class ContractItem extends React.Component {
         ContractAjax.editPendingContract({type: 'sell', property: updateField}, saveObj).then( (resData) => {
             if (resData && resData.code === 0) {
                 message.success(Intl.get('user.edit.success', '修改成功'));
-                if (_.isFunction(successFunc)) successFunc();
+                if (_.isFunction(successFunc)) successFunc(resData.result);
             } else {
                 if (_.isFunction(errorFunc)) {
                     errorFunc(Intl.get('common.edit.failed', '修改失败'));
@@ -208,7 +209,19 @@ class ContractItem extends React.Component {
             id: this.state.formData.id
         };
 
-        this.saveContractBasicInfo('products', saveObj, successFunc, errorFunc);
+        const successFn = (result) => {
+            let formData = this.state.formData;
+            formData.products = _.get(result, 'products', []);
+            this.setState({formData}, () => {
+                _.isFunction(successFunc) && successFunc();
+            });
+        };
+
+        this.saveContractBasicInfo('products', saveObj, successFn, errorFunc);
+    };
+
+    handleShowAddProduct = (flag) => {
+        this.setState({isShowProductEdit: flag});
     };
 
     renderContractContent = () => {
@@ -240,6 +253,8 @@ class ContractItem extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo.bind(this, 'buyer')}
                         placeholder={Intl.get('crm.contract.party.name', '请输入甲方名称')}
+                        noDataTip={Intl.get('contract.62', '暂无甲方')}
+                        addDataTip={Intl.get('crm.contract.add.buyer', '添加甲方')}
                     />
                 </div>
                 <div className={itemClassName}>
@@ -267,6 +282,7 @@ class ContractItem extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo.bind(this, 'contract_amount')}
                         noDataTip={Intl.get('crm.contract.no.contract.money', '暂无合同额')}
+                        addDataTip={Intl.get('crm.contract.add.money', '添加合同额')}
                     />
                 </div>
                 <div className={itemClassName}>
@@ -282,6 +298,7 @@ class ContractItem extends React.Component {
                         hasEditPrivilege={hasEditPrivilege}
                         saveEditInput={this.saveContractBasicInfo.bind(this, 'cost_price')}
                         noDataTip={Intl.get('crm.contract.no.gross', '暂无毛利额')}
+                        addDataTip={Intl.get('crm.contract.add.gross', '添加毛利')}
                     />
                 </div>
                 <div className={itemClassName}>
@@ -295,6 +312,8 @@ class ContractItem extends React.Component {
                         selectOptions={categoryOptions}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('contract.72', '请选择合同类型')}
+                        addDataTip={Intl.get('crm.contract.add.category', '添加合同类型')}
+                        noDataTip={Intl.get('contract.73', '暂无合同类型')}
                         saveEditSelect={this.saveContractBasicInfo.bind(this, 'category')}
                     />
                 </div>
@@ -309,6 +328,8 @@ class ContractItem extends React.Component {
                         selectOptions={labelOptions}
                         hasEditPrivilege={hasEditPrivilege}
                         placeholder={Intl.get('crm.contract.select.sign.type', '请选择签约类型')}
+                        addDataTip={Intl.get('crm.contract.add.label', '添加签约类型')}
+                        noDataTip={Intl.get('crm.contract.no.label', '暂无签约类型')}
                         saveEditSelect={this.saveContractBasicInfo.bind(this, 'label')}
                     />
                 </div>
@@ -317,15 +338,20 @@ class ContractItem extends React.Component {
                         <div className={itemClassName}>
                             <span className='contract-label'>{Intl.get('contract.95', '产品信息')}:</span>
                             <span className='contract-value'>
-                                {_.get(contract.products, '[0]') ? (
+                                {_.get(contract.products, '[0]') || this.state.isShowProductEdit ? (
                                     <ProductTable
                                         appList={this.props.appList}
                                         dataSource={contract.products}
                                         totalAmount={contract.contract_amount}
                                         isEditBtnShow={hasEditPrivilege}
+                                        isEdit={this.state.isShowProductEdit}
                                         onSave={this.handleProductSave}
+                                        handleCancel={this.handleShowAddProduct.bind(this, false)}
                                     />
-                                ) : Intl.get('crm.contract.no.product.info', '暂无产品信息')}
+                                ) : (
+                                    hasEditPrivilege ? <a className="no-data-descr__link" onClick={this.handleShowAddProduct.bind(this, true)}>{Intl.get('config.product.add', '添加产品')}</a>
+                                        : Intl.get('crm.contract.no.product.info', '暂无产品信息')
+                                )}
                             </span>
                         </div>
                     ) : null
@@ -343,6 +369,8 @@ class ContractItem extends React.Component {
                                     value={contract.remarks}
                                     hasEditPrivilege={hasEditPrivilege}
                                     saveEditInput={this.saveContractBasicInfo.bind(this, 'remarks')}
+                                    noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                                    addDataTip={Intl.get('crm.contract.add.remarks', '添加备注')}
                                 />
                             </div>
                         ) : null
