@@ -79,7 +79,7 @@ class CrmIndex extends React.Component {
                 break;
             case VIEW_TYPE.CUSTOMER_POOL:
                 currView = (
-                    <div data-tracename="客户回收站">
+                    <div data-tracename="客户池">
                         <CustomerPool closeCustomerPool={this.returnCustomerView}/>
                     </div>);
                 break;
