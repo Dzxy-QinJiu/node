@@ -102,6 +102,7 @@ class CustomerStageDetail extends React.Component {
     // 渲染面板的内容
     renderContent = () => {
         const customerStage = this.props.customerStage;
+        const id = customerStage.id;
         let playBooks = customerStage.play_books; // 剧本
         let autoConditions = customerStage.auto_conditions; // 自动变更
         let autoId = _.get(autoConditions, '[0].id');
@@ -116,7 +117,7 @@ class CustomerStageDetail extends React.Component {
                         <TabPane tab={Intl.get('sales.process.customer.stage.play', '剧本')} key="1">
                             <div className="customer-stage-play">
                                 <DynamicAddDelField
-                                    id={customerStage.id}
+                                    id={id}
                                     field='play_books'
                                     value={playBooks}
                                     hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
@@ -149,7 +150,7 @@ class CustomerStageDetail extends React.Component {
                                             {Intl.get('sales.process.auto.conditions.label', '选择条件')}:
                                         </span>
                                         <BasicEditSelectField
-                                            id={autoId}
+                                            id={id}
                                             displayText={autoName}
                                             value={autoName}
                                             field="conditions"
