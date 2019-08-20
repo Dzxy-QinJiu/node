@@ -54,8 +54,8 @@ export function getSalesOpenAccountLoginChart() {
 
             const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
-            //选择全部应用时显示应用名
-            if (storedAppId === 'all') {
+            //选择全部或多个应用时显示应用名
+            if (storedAppId === 'all' || _.includes(storedAppId, ',')) {
                 const appColumn = {
                     title: Intl.get('common.app', '应用'),
                     dataIndex: 'app_name',
