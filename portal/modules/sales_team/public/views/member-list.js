@@ -466,7 +466,7 @@ const MemberList = createReactClass({
         };
     },
 
-    //删除团队成员的处理
+    //移除团队成员的处理
     delMember() {
         if (!$('#del-member-btn').hasClass('member-btn-enable')) {
             return;
@@ -477,7 +477,7 @@ const MemberList = createReactClass({
             operate: 'delete'
         };
         let curMemberList = this.handleEditTeamData();
-        //删除负责人
+        //移除负责人
         let owner = _.get(curShowTeamMemberObj, 'owner');
         if (owner) {
             _.each(curMemberList, item => {
@@ -489,7 +489,7 @@ const MemberList = createReactClass({
                 }
             });
         }
-        //删除秘书
+        //移除秘书
         if (_.isArray(curShowTeamMemberObj.managers) && curShowTeamMemberObj.managers.length > 0) {
             let managerIds = [];
             _.each(curMemberList, item => {
@@ -504,7 +504,7 @@ const MemberList = createReactClass({
                 delObj.type = MEMBER_TYPE.MANAGER;
             }
         }
-        //删除成员
+        //移除成员
         if (_.isArray(curShowTeamMemberObj.users) && curShowTeamMemberObj.users.length > 0) {
             let userIds = [];
             _.each(curMemberList, item => {
@@ -718,14 +718,14 @@ const MemberList = createReactClass({
             'member-btn-enable': addUserEnable
         });
         let delBtnEnable = true;
-        //只能选一种角色的人进行删除
+        //只能选一种角色的人进行移除
         if (selectSizeObj.selectedSize === 0
             || (selectSizeObj.selectedOwnerSize && selectSizeObj.selectedUserSize)
             || (selectSizeObj.selectedOwnerSize && selectSizeObj.selectedManagerSize)
             || (selectSizeObj.selectedManagerSize && selectSizeObj.selectedUserSize)) {
             delBtnEnable = false;
         }
-        //删除按钮样式设置
+        //移除按钮样式设置
         let delMemberBtnCls = classNames('add-member-btn', {
             'member-btn-enable': delBtnEnable
         });
@@ -773,9 +773,9 @@ const MemberList = createReactClass({
                             id="del-member-btn"
                             className={delMemberBtnCls}
                             onClick={this.delMember}
-                            data-tracename="删除成员"
+                            data-tracename="移除成员"
                         >
-                            {Intl.get('common.delete', '删除')}
+                            {Intl.get('sales.team.del.select.member', '移除')}
                         </div>
                     ) : null
                 }
