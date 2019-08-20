@@ -925,7 +925,7 @@ class ClueToCustomerPanel extends React.Component {
                     <div className="clue-will-disappear-tip">
                         <i className="iconfont icon-phone-call-out-tip"></i>
                         <span className="tip-content">
-                            {Intl.get('common.clue.will.disappear.after.convert.to.customer', '转为客户后，线索相 关内容都将转入客户，线索将消失。')}
+                            {Intl.get('common.after.convert.to.customer.tip', '转为客户后，线索相关内容都将转入客户。')}
                         </span>
                         <span className="no-longer-tips clickable" onClick={this.handleNoLongerTipsBtnClick}>
                             {Intl.get('sale.homepage.no.tip.more', '不再提示')}
