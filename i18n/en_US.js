@@ -3255,7 +3255,7 @@ var en_US = {
     'guide.see.clue': 'Check the clues',//查看线索
     'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
     'guide.import.customer.success': 'Import Success',//导入成功
-    'common.clue.will.disappear.after.convert.to.customer': 'Clue will disappear after convert to customer',//转为客户后，线索相关内容都将转入客户，线索将消失。
+    'common.after.convert.to.customer.tip': 'Clue content will shift to customer after convert to customer',//转为客户后，线索相关内容都将转入客户。
     'crm.clue.phone.on.meeting': 'In a meeting, it is not convenient to answer',//在开会，不方便接听
     'common.report.num': 'report numer',//报送数量
     'common.signed.customer.public.opinion.report.statistics': 'Signed customer public opinion report statistics',//签约客户舆情报送统计,
