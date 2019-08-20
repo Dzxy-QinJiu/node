@@ -36,7 +36,6 @@ export function getSignedCustomerActivityChart() {
                     dataItem.name = `${startDate}${Intl.get('contract.83', '至')}${endDate}`;
                 }
 
-                dataItem.value = dataItem.active;
 
                 return dataItem;
             });
@@ -56,6 +55,9 @@ export function getSignedCustomerActivityChart() {
             value: '签约',
         }],
         option: {
+            grid: {
+                left: 20
+            },
             tooltip: {
                 formatter: params => {
                     const data = params[0].data;
@@ -84,7 +86,7 @@ export function getSignedCustomerActivityChart() {
         customOption: {
             yAxises: [
                 {
-                    name: Intl.get('operation.report.user.count', '用户数'),
+                    name: Intl.get('contract.169', '客户数'),
                 },
                 {
                     name: Intl.get('operation.report.active', '活跃率'),
