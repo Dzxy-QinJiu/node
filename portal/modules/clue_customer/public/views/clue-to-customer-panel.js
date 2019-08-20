@@ -7,6 +7,7 @@ require('MOD_DIR/crm/public/css/contact.less');
 import { storageUtil } from 'ant-utils';
 import { CLUE_TO_CUSTOMER_VIEW_TYPE } from '../consts';
 import userData from 'PUB_DIR/sources/user-data';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { Row, Col, Button, Icon, message, Select } from 'antd';
 import ajax from 'ant-ajax';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -687,8 +688,10 @@ class ClueToCustomerPanel extends React.Component {
         }
 
         queryCustomerTimeout = setTimeout(() => {
+            const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'user';
+
             ajax.send({
-                url: '/rest/customer/v3/customer/range/manager/10/1/start_time/descend',
+                url: `/rest/customer/v3/customer/range/${authType}/10/1/start_time/descend`,
                 type: 'post',
                 data: {
                     query: {
