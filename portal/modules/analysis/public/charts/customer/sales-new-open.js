@@ -39,7 +39,7 @@ export function getSalesNewOpenChart(paramObj = {}) {
                     width: 80
                 },
                 {
-                    title: Intl.get('oplate_customer_analysis.tatolNewCustomerCount', '新开账号数总数'),
+                    title: Intl.get('common.number.of.new.user.customer', '新开用户客户数'),
                     dataIndex: 'tatol_newly_users',
                     align: 'right',
                     width: 80
