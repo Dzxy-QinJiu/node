@@ -36,7 +36,6 @@ export function getSignedCustomerActivityChart() {
                     dataItem.name = `${startDate}${Intl.get('contract.83', '至')}${endDate}`;
                 }
 
-
                 return dataItem;
             });
         },
@@ -52,7 +51,7 @@ export function getSignedCustomerActivityChart() {
             value: 'daily',
         }, {
             name: 'customer_label',
-            value: '签约',
+            value: '签约,续约',
         }],
         option: {
             grid: {
