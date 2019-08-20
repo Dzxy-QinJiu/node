@@ -2076,9 +2076,11 @@ class ClueCustomer extends React.Component {
             }
         });
 
-        //关闭线索转客户面板
-        this.hideClueToCustomerPanel();
-        this.afterMergeUpdateClueProperty(customerId, customerName);
+        //关闭线索转客户及添加客户面板
+        this.setState({
+            isShowClueToCustomerPanel: false,
+            isShowAddCustomerPanel: false,
+        });
     };
     isFirstLoading = () => {
         return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
