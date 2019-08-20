@@ -1013,6 +1013,12 @@ var en_US = {
     'config.product.manage': 'Product manage',//产品管理
     'config.product.reload': 'Reload product',//重新获取产品
     'config.product.add': 'Add product',//添加产品
+    'config.product.add.code': 'Add product code',//添加产品编号
+    'config.product.add.spec': 'Add product specifications',//添加规格/版本
+    'config.product.add.price': 'Add product price',//添加产品单价
+    'config.product.add.sales_unit': 'Add sales unit',//添加计价单位
+    'config.product.add.address': 'Add access address',//添加访问地址
+    'config.product.add.desc': 'Add product description',//添加产品描述
     'config.product.modify': 'Modify product',//修改产品
     'config.product.input.name': 'Please input production name',//请输入产品名称
     'config.product.name.rule': '1 ~ 10 characters', // 最少1个字符,最多10个字符

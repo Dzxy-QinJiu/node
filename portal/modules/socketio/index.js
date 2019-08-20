@@ -368,7 +368,7 @@ module.exports.startSocketio = function(nodeServer) {
     }
     );
     //创建与后台的连接
-    createBackendClient();
+    // createBackendClient();
     //添加session过期的监听
     sessionExpireEmitter.on(sessionExpireEmitter.SESSION_EXPIRED, sessionExpired);
 };

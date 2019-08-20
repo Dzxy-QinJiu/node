@@ -36,8 +36,9 @@ function ProductionFormActions() {
             _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('member.add.failed', '添加失败！')});
         });
     };
+
     //编辑
-    this.editProduction = function(production) {
+    this.editProduction = function(production, callback) {
         var _this = this;
         productionAjax.editProduction(production).then(function(data) {
             //修改成功{editBasicSuccess: true, editTypeSuccess:true}
@@ -48,12 +49,21 @@ function ProductionFormActions() {
                     saveMsg: Intl.get('common.save.success', '保存成功！'),
                     value: production
                 });
+                if(typeof callback === 'function') {
+                    callback('');
+                }
             } else {
                 _this.dispatch({saveResult: 'error', saveMsg: Intl.get('common.save.failed', '保存失败!')});
+                if(typeof callback === 'function') {
+                    callback(errorMsg || Intl.get('common.save.failed', '保存失败!'));
+                }
             }
         }, function(errorMsg) {
             //保存失败后的处理
             _this.dispatch({saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败!')});
+            if(typeof callback === 'function') {
+                callback(errorMsg || Intl.get('common.save.failed', '保存失败!'));
+            }
         });
     };
 

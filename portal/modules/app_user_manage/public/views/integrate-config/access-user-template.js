@@ -223,7 +223,7 @@ class AccessUserTemplate extends React.Component {
                     addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
                     saveEditInput={this.saveCustomVariable}
                 />
-                <div className="access-step-tip margin-style js-code-contianer">
+                <div className="access-step-tip margin-style js-code-container">
                     {jsCode ? (
                         <span>
                             <CopyToClipboard text={jsCode}
