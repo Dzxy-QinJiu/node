@@ -61,6 +61,13 @@ module.exports = {
             'USER_MANAGE_EDIT_USER'
         ]
     }, {
+        'method': 'delete',
+        'path': '/rest/member/department/reset/:memberId',
+        'handler': 'clearMemberDepartment',
+        'passport': {
+            'needLogin': true
+        },
+    },{
         'method': 'put',
         'path': '/rest/user/user_roles',
         'handler': 'updateUserRoles',

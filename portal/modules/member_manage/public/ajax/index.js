@@ -124,6 +124,23 @@ exports.updateMemberTeam = function(user) {
     return Deferred.promise();
 };
 
+// 清空成员的部门
+exports.clearMemberDepartment = (memberId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/member/department/reset/' + memberId,
+        type: 'delete',
+        dateType: 'json',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //修改成员的角色
 exports.updateMemberRoles = (user) => {
     let Deferred = $.Deferred();

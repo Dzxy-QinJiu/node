@@ -93,6 +93,16 @@ exports.updateUserTeam = function(req, res) {
     });
 };
 
+// 清空成员的部门
+exports.clearMemberDepartment = (req, res) => {
+    memberManageService.clearMemberDepartment(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+
 exports.updateUserRoles = function(req, res) {
     let user = {
         user_id: req.body.user_id,

@@ -140,18 +140,17 @@ class MemberInfo extends React.Component {
         }
     };
 
-    //获取团队下拉列表
+    //获取部门下拉列表
     getTeamOptions = () => {
-        const userTeamList = this.state.userTeamList;
-        if (_.isArray(userTeamList) && userTeamList.length > 0) {
-            return userTeamList.map(function(team) {
+        return _.map(this.state.userTeamList, team => {
+            if(team.group_name) {
                 return <Option key={team.group_id} value={team.group_id}>
                     {team.group_name}
                 </Option>;
-            });
-        } else {
-            return [];
-        }
+            } else {
+                return <Option value='' >&nbsp;</Option>;
+            }
+        });
     };
 
     //团队的选择事件
@@ -174,8 +173,8 @@ class MemberInfo extends React.Component {
         let updateTeam = _.find(this.state.userTeamList, team => team.group_id === member.team);
         if (_.isFunction(this.props.afterEditTeamSuccess)) {
             this.props.afterEditTeamSuccess(member);
-        } else {
             MemberManageAction.updateMemberTeam(updateTeam);
+        } else {
             this.props.changeMemberFieldSuccess({...member, teamName: _.get(updateTeam, 'group_name')});
         }
     };
@@ -387,16 +386,30 @@ class MemberInfo extends React.Component {
     //保存编辑的团队
     saveEditTeam = (saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员部门的修改');
-        MemberManageAjax.updateMemberTeam(saveObj).then((result) => {
-            if (result) {
-                if (_.isFunction(successFunc)) successFunc();
-                this.afterEditTeamSuccess(saveObj);
-            } else {
-                if (_.isFunction(errorFunc)) errorFunc();
-            }
-        }, (errorMsg) => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
-        });
+        if (saveObj.team) { // 修改成员的部门
+            MemberManageAjax.updateMemberTeam(saveObj).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.afterEditTeamSuccess(saveObj);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        } else { // 清空成员的部门
+            MemberManageAjax.clearMemberDepartment(saveObj.id).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.afterEditTeamSuccess(saveObj);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        }
+
     };
 
     // 职务选择事件
@@ -422,8 +435,8 @@ class MemberInfo extends React.Component {
         };
         if (_.isFunction(this.props.afterEditPositionSuccess)) {
             this.props.afterEditPositionSuccess(updateMember);
-        } else {
             MemberManageAction.updateMemberPosition(updatePosition);
+        } else {
             this.props.changeMemberFieldSuccess(updateMember);
         }
 
