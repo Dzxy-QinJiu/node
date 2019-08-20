@@ -3262,5 +3262,6 @@ var en_US = {
     'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
     'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
     'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
+    'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
 };
 export default en_US;
