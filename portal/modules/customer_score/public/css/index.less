@@ -1,11 +1,18 @@
 .customer-score-container {
   padding: 12px;
   .customer-score-wrap {
-    background: #fff;
     .customer-score-content {
       font-size: 14px;
       .customer-score-content-wrap {
         padding: 24px;
+        background: #fff;
+        min-height: 172px;
+        position: relative;
+        .load8 {
+          position: absolute;
+          top: 35%;
+          left: 45%;
+        }
         .customer-score-lable{
           color:#333;
           font-size: 16px;
@@ -75,6 +82,7 @@
         }
         .customer-level-score {
           margin: 30px 0 0 0;
+          overflow: hidden;
           .customer_level {
             display: inline-block;
             width: 30%;
@@ -83,6 +91,10 @@
             }
             &:nth-child(2){
               text-align: center;
+            }
+            &.edit_customer-level{
+              width: 20%;
+              text-align: left;
             }
             .customer-level-quarter{
               display: inline-block;
@@ -97,6 +109,17 @@
               }
               &.perfect-icon{
                 background: #4662EF;
+              }
+            }
+            .above-certain-level{
+              background: #F5F5F5;
+              color: #999;
+              font-size: 14px;
+              border:1px solid #d9d9d9;
+              border-left: none;
+              padding: 0px 5px 0 0;
+              .ant-input{
+                margin-right: 5px;
               }
             }
             .input-groups {
@@ -120,26 +143,66 @@
               }
             }
           }
+          .customer-level-save-btns-container{
+            float: right;
+            .ant-btn{
+              margin-left: 8px;
+            }
+          }
         }
       }
       .customer-rules-container{
-        padding: 12px;
+        margin-top:8px;
+        padding: 24px;
+        background: #fff;
+        min-height: 160px;
+        position:relative;
         .customer-rule-tip{
-          margin: 10px 0;
+          color: #333;
+          font-size: 16px;
+          overflow: hidden;
+          .ant-switch{
+            float: right;
+            position: relative;
+            top: 5px;
+          }
+          .icon-update{
+            float: right;
+            visibility: hidden;
+            margin-right: 10px;
+            cursor: pointer;
+
+          }
+          &:hover{
+            .icon-update{
+              visibility: visible;
+            }
+          }
         }
 
         .customer-rule-score-level{
-          padding: 12px;
-          .customer-rule-status{
-            margin-bottom: 12px;
-            .switch-tip{
-              margin-right: 10px;
-            }
-          }
           .customer-rule-table{
+            border: 1px solid #E5E5E5;
+            margin-top:5px;
+            .thead-title{
+              background: #F5F5F5;
+              font-size: 14px;
+              color: #999999;
+              text-align: left;
+            }
+            .customer-score-datalists{
               .ant-row{
-                margin-bottom: 12px;
-                min-height: 24px;
+                &:hover{
+                  background: #F1F8FE;
+                }
+              }
+            }
+              .ant-row{
+                height: 40px;
+                line-height: 40px;
+                >div{
+                  padding-left: 16px;
+                }
                 .add-minus-btns{
                   font-size: 22px;
                   cursor: pointer;
@@ -147,13 +210,14 @@
                   width: 100px;
                   text-align: right;
                 }
+
               }
           }
 
         }
         //保存或者取消按钮
         .save-btns{
-          padding: 12px 69px 0 12px;
+          padding: 17px 0 0 0;
           text-align: right;
           button{
             margin-left: 10px;
@@ -165,10 +229,16 @@
     }
   }
   .ant-alert.ant-alert-error{
-    width: 200px;
+    width: 400px;
     margin:40px auto;
   }
   .ant-input-number-input{
     height: 25px;
+  }
+  .load8 {
+    transform: scale(0.5, 0.5);
+    .loader8 {
+      border-left-color: #394144;
+    }
   }
 }

@@ -15,6 +15,8 @@ class CustomerScoreStore {
 
     // 初始化数据
     resetState() {
+        this.customerLevelLoading = true;//客户不同等级加载中
+        this.customerLevelErrMsg = '';//客户不同等级获取错误信息
         this.customerLevelRules = [];//客户不同等级对应的分数,后端获取来的
         this.rangeHandleValue = [];//默认区分不同类型的点的数组
         this.lowerHandlePoint = 0;//不合格和合格直接的节点值
@@ -31,6 +33,9 @@ class CustomerScoreStore {
         //正在保存客户规则
         this.isSavingRules = false;
         this.saveRulesErr = '';
+        //正在保存客户等级
+        this.isSavingLevels = false;
+        this.saveLevelsErr = '';
     }
 
 
@@ -67,7 +72,15 @@ class CustomerScoreStore {
     }
 
     getCustomerScoreRules(result) {
-        if (_.isArray(result.resData)) {
+        if(result.loading){
+            this.customerLevelLoading = true;
+            this.customerLevelErrMsg = '';
+        }else if (result.error){
+            this.customerLevelErrMsg = result.errorMsg;
+            this.customerLevelLoading = false;
+        }if (_.isArray(result.resData)) {
+            this.customerLevelLoading = false;
+            this.customerLevelErrMsg = '';
             this.customerLevelRules = result.resData;
             this.setInitialRangeValue();
 
@@ -147,6 +160,22 @@ class CustomerScoreStore {
             this.saveRulesErr = '';
 
         }
+    }
+    saveCustomerLevels(result){
+        if (result.loading){
+            this.isSavingLevels = true;
+            this.saveLevelsErr = '';
+        }else if (result.error){
+            this.isSavingLevels = false;
+            this.saveLevelsErr = result.errorMsg;
+        }else{
+            this.isSavingLevels = false;
+            this.saveLevelsErr = '';
+
+        }
+    }
+    hideSaveLevelErrMsg(){
+        this.saveLevelsErr = '';
     }
     hideSaveErrMsg(){
         this.saveRulesErr = '';
