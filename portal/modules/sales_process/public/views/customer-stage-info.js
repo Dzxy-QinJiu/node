@@ -180,6 +180,7 @@ class CustomerStageInfo extends React.Component {
                             saveCustomerStageSettingPlay={this.props.saveCustomerStageSettingPlay}
                             salesBehaviorList={this.props.salesBehaviorList}
                             saleProcessId={this.props.saleProcessId}
+                            autoConditionsList={this.props.autoConditionsList}
                         />
                     ) : null
                 }
@@ -211,6 +212,7 @@ CustomerStageInfo.propTypes = {
     saveCustomerStageSettingPlay: PropTypes.func,
     salesBehaviorList: PropTypes.array,
     saleProcessId: PropTypes.string,
+    autoConditionsList: PropTypes.array,
 };
 
 export default CustomerStageInfo;

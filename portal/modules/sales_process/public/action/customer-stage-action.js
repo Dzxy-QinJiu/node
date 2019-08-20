@@ -34,9 +34,19 @@ class CustomerStageAction {
             this.dispatch({loading: false, errorMsg: errorMsg, error: true});
         } );
     }
+    // 获取客户阶段的销售行为
     getCustomerStageSaleBehavior() {
         this.dispatch({error: false});
         CustomerStageAjax.getCustomerStageSaleBehavior().then( (result) => {
+            this.dispatch({resData: result, error: false});
+        }, (errorMsg) => {
+            this.dispatch({errorMsg: errorMsg, error: true});
+        } );
+    }
+    // 获取客户阶段的自动变更条件
+    getCustomerStageAutoConditions() {
+        this.dispatch({error: false});
+        CustomerStageAjax.getCustomerStageAutoConditions().then( (result) => {
             this.dispatch({resData: result, error: false});
         }, (errorMsg) => {
             this.dispatch({errorMsg: errorMsg, error: true});

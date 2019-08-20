@@ -858,6 +858,12 @@ var en_US = {
     'sales.process.select.action.placeholder': 'Please select sale action', // 请选择动作
     'sales.process.add.activity.failed': 'Failed to add the sales behaviors', // 添加销售行为失败
     'sales.process.customer.stage.detail.title': 'Set up scenarios, sales behaviors, and automatic change conditions for the information phase.', // 设置信息阶段的剧本、销售行为、自动变更条件。
+    'sales.process.customer.stage.auto.conditions': 'Automatically changes', // 自动变更
+    'sales.process.customer.stage.auto.conditions.title': 'The customer automatically changes to the phase when the following conditions', // 当符合以下条件时，客户自动变更为该阶段
+    'sales.process.auto.conditions.label': 'Selection condition', // 选择条件
+    'sales.process.auto.conditions.placeholder': 'Please select the conditions of the automatically change', // 请选择自动变更的条件
+    'sales.process.auto.conditions.no.conditions': 'Unconditional', // 暂无条件
+    'sales.process.status.auto.conditions.tip': 'Are you sure you want to {status} the automatically changes of the customer stage?', // 确定要{status}该客户阶段的自动变更条件吗？
     // 后台管理-销售流程end
 
     //应用管理start

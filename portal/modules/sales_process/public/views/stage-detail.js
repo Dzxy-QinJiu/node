@@ -2,13 +2,20 @@
  * Created by hzl on 2019/8/9.
  * 客户阶段详情- 剧本、销售行为、自动变更
  */
-import {Tabs} from 'antd';
+import {Tabs, message} from 'antd';
 const TabPane = Tabs.TabPane;
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import SaleBehavior from './sale-behavior';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
+import CustomerStageAjax from '../ajax';
+import AutoConditionsStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
+import CustomerStageAction from '../action/customer-stage-action';
+
 import Trace from 'LIB_DIR/trace';
+const EDIT_FEILD_LESS_WIDTH = 310;
+
 
 class CustomerStageDetail extends React.Component {
     constructor(props) {
@@ -36,10 +43,72 @@ class CustomerStageDetail extends React.Component {
         });
     };
 
+    // 保存编辑自动变更条件
+    saveEditAutoConditions = (saveObj, successFunc, errorFunc) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '保存自动变更条件的修改');
+        let customerStage = this.props.customerStage;
+        const stageId = customerStage.id;
+        const params = {
+            saleProcessId: this.props.saleProcessId,
+            stageId: stageId
+        };
+        const conditions = saveObj.conditions;
+        const autoConditionsList = this.props.autoConditionsList;
+        const submitObj = _.filter(autoConditionsList, item => item.name === conditions);
+        if (submitObj) {
+            CustomerStageAjax.editCustomerStageAutoConditions(submitObj, params).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        } else {
+            errorFunc(errorMsg);
+        }
+    };
+
+    // 修改自动变更的条件
+    handleConfirmAutoStatusConditions = (conditionsObj) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '修改自动变更的状态');
+        let customerStage = this.props.customerStage;
+        const stageId = customerStage.id;
+        const params = {
+            saleProcessId: this.props.saleProcessId,
+            stageId: stageId,
+            status: conditionsObj.status === '0' ? '1' : '0'
+        };
+        const submitObj = {id: conditionsObj.id};
+        CustomerStageAjax.changeAutoConditionsStatus(submitObj, params).then((result) => {
+            if (result && result.id) {
+                message.success(Intl.get('crm.218', '修改成功！'));
+                const updateStatusObj = {
+                    id: stageId,
+                    flag: 'autoConditionsStatus',
+                    autoConditions: [result]
+                };
+                CustomerStageAction.updateCustomerStageList(updateStatusObj);
+            } else {
+                message.error(Intl.get('crm.218', '修改成功！'));
+            }
+        }, (errorMsg) => {
+            message.error(errorMsg || Intl.get('crm.219', '修改失败！'));
+        });
+    };
+
     // 渲染面板的内容
     renderContent = () => {
         const customerStage = this.props.customerStage;
         let playBooks = customerStage.play_books; // 剧本
+        let autoConditions = customerStage.auto_conditions; // 自动变更
+        let autoId = _.get(autoConditions, '[0].id');
+        let autoName = _.get(autoConditions, '[0].name');
+        let status = _.get(autoConditions, '[0].status');
+        const autoConditionsList = this.props.autoConditionsList;
+        const autoConditionsOptions = _.map(autoConditionsList, autoItem => <Option value={autoItem.name}>{autoItem.name}</Option>);
         return (
             <div className="right-panel-wrapper">
                 <div className="customer-stage-detail-content" ref="wrap">
@@ -67,6 +136,51 @@ class CustomerStageDetail extends React.Component {
                                     closeCustomerStageDetail={this.props.closeCustomerStageDetail}
                                     saleProcessId={this.props.saleProcessId}
                                 />
+                            </div>
+                        </TabPane>
+                        <TabPane tab={Intl.get('sales.process.customer.stage.auto.conditions', '自动变更')} key="3">
+                            <div className="customer-stage-auto-conditions">
+                                <div className="auto-conditions-title">
+                                    {Intl.get('sales.process.customer.stage.auto.conditions.title', '当符合以下条件时，客户自动变更为该阶段')}
+                                </div>
+                                <div className="auto-conditions-content">
+                                    <div className="basic-info-conditions">
+                                        <span className="basic-info-label">
+                                            {Intl.get('sales.process.auto.conditions.label', '选择条件')}:
+                                        </span>
+                                        <BasicEditSelectField
+                                            id={autoId}
+                                            displayText={autoName}
+                                            value={autoName}
+                                            field="conditions"
+                                            selectOptions={autoConditionsOptions}
+                                            placeholder={Intl.get('sales.process.auto.conditions.placeholder', '请选择自动变更的条件')}
+                                            validators={[{message: Intl.get('sales.process.auto.conditions.placeholder', '请选择自动变更的条件')}]}
+                                            width={EDIT_FEILD_LESS_WIDTH}
+                                            hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                                            saveEditSelect={this.saveEditAutoConditions.bind(this)}
+                                            noDataTip={Intl.get('sales.process.auto.conditions.no.conditions', '暂无条件')}
+                                            addDataTip={Intl.get('apply.add.apply.condition', '添加条件')}
+                                        />
+                                    </div>
+                                    {
+                                        status ? (
+                                            <div className="basic-info-status">
+                                                <span className="basic-info-label">
+                                                    {Intl.get('clue.customer.if.switch', '是否启用')}:
+                                                </span>
+                                                <AutoConditionsStatusSwitch
+                                                    title={Intl.get('sales.process.status.auto.conditions.tip', '确定要{status}该客户阶段的自动变更条件吗？', {
+                                                        status: status === '0' ? Intl.get('common.enabled', '启用') :
+                                                            Intl.get('common.stop', '停用')
+                                                    })}
+                                                    handleConfirm={this.handleConfirmAutoStatusConditions.bind(this, autoConditions[0])}
+                                                    status={status === '1' ? true : false}
+                                                />
+                                            </div>
+                                        ) : null
+                                    }
+                                </div>
                             </div>
                         </TabPane>
                     </Tabs>
@@ -107,6 +221,7 @@ CustomerStageDetail.defaultProps = {
     saveCustomerStageSettingPlay: noop,
     customerStage: {},
     salesBehaviorList: [],
+    autoConditionsList: []
 };
 CustomerStageDetail.propTypes = {
     closeCustomerStageDetail: PropTypes.bool,
@@ -114,6 +229,7 @@ CustomerStageDetail.propTypes = {
     customerStage: PropTypes.string,
     salesBehaviorList: PropTypes.array,
     saleProcessId: PropTypes.string,
+    autoConditionsList: PropTypes.array,
 };
 
 export default CustomerStageDetail;

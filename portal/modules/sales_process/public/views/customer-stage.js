@@ -36,6 +36,7 @@ class CustomerStage extends React.Component {
         let saleProcessId = this.props.saleProcessId;
         CustomerStageAction.getCustomerStageList(saleProcessId);
         CustomerStageAction.getCustomerStageSaleBehavior(); // 获取销售行为
+        CustomerStageAction.getCustomerStageAutoConditions();// 获取客户阶段的自动变更条件
     }
 
     componentWillUnmount() {
@@ -355,6 +356,7 @@ class CustomerStage extends React.Component {
                                                         saveCustomerStageSettingPlay={this.saveCustomerStageSettingPlay}
                                                         salesBehaviorList={this.state.salesBehaviorList}
                                                         saleProcessId={this.props.saleProcessId}
+                                                        autoConditionsList={this.state.autoConditionsList}
                                                     />
                                                 </li>
                                             );

@@ -862,7 +862,13 @@ var zh_CN = {
     'sales.process.select.task.placeholder': '请选择任务',
     'sales.process.select.action.placeholder': '请选择动作',
     'sales.process.add.activity.failed': '添加销售行为失败',
-    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本、销售行为、自动变更条件', //
+    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本、销售行为、自动变更条件',
+    'sales.process.customer.stage.auto.conditions': '自动变更',
+    'sales.process.customer.stage.auto.conditions.title': '当符合以下条件时，客户自动变更为该阶段',
+    'sales.process.auto.conditions.label': '选择条件',
+    'sales.process.auto.conditions.placeholder': '请选择自动变更的条件',
+    'sales.process.auto.conditions.no.conditions': '暂无条件',
+    'sales.process.status.auto.conditions.tip': '确定要{status}该客户阶段的自动变更条件吗？',
     // 后台管理-销售流程end
 
     //应用管理start
