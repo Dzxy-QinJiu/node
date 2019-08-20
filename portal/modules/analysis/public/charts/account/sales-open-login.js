@@ -3,6 +3,8 @@
  */
 
 import { isSales, argCallbackUnderlineTimeToTime } from '../../utils';
+import {storageUtil} from 'ant-utils';
+import {STORED_APP_ID_KEY} from '../../consts';
 
 export function getSalesOpenAccountLoginChart() {
     return {
@@ -29,26 +31,41 @@ export function getSalesOpenAccountLoginChart() {
                 }
             }
         },
-        option: {
-            columns: [
+        processOption: option => {
+            let columns = [
                 {
                     title: Intl.get('sales.home.sales', '销售'),
                     dataIndex: 'member_name',
-                    width: '40%',
+                    width: '25%',
                 },
                 {
                     title: Intl.get('user.analysis.account.count', '开通账号数'),
                     dataIndex: 'new_users',
                     align: 'right',
-                    width: '30%',
+                    width: '25%',
                 },
                 {
                     title: Intl.get('user.analysis.account.login.count', '实际登录数'),
                     dataIndex: 'login_user',
                     align: 'right',
-                    width: '30%',
+                    width: '25%',
                 }
-            ],
+            ];
+
+            const storedAppId = storageUtil.local.get(STORED_APP_ID_KEY);
+
+            //选择全部应用时显示应用名
+            if (storedAppId === 'all') {
+                const appColumn = {
+                    title: Intl.get('common.app', '应用'),
+                    dataIndex: 'app_name',
+                    width: '25%',
+                };
+
+                columns.splice(1, 0, appColumn);
+            }
+
+            option.columns = columns;
         },
     };
 }
