@@ -23,6 +23,11 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
+import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
+import {FilterInput} from 'CMP_DIR/filter';
+import CustomerPoolFilter from './customer-pool-filter';
+import classNames from 'classnames';
+
 const PAGE_SIZE = 20;
 class CustomerPool extends React.Component {
     constructor(props) {
@@ -42,6 +47,7 @@ class CustomerPool extends React.Component {
             selectedCustomer: [],
             distributeUser: '',
             userList: [],
+            showFilterList: false
         };
     }
 
@@ -78,7 +84,7 @@ class CustomerPool extends React.Component {
         }
     }
 
-    getPoolCustomer() {
+    getPoolCustomer(condition) {
         let queryObj = {
             page_size: PAGE_SIZE,
             sort_field: 'push_time',
@@ -89,6 +95,9 @@ class CustomerPool extends React.Component {
         }
         if (this.state.searchValue) {
             queryObj.name = this.state.searchValue;
+        }
+        if (!_.isEmpty(condition)) {
+            queryObj = {...queryObj, ...condition};
         }
         this.setState({isLoading: true, loadErrorMsg: ''});
         crmAjax.getPoolCustomer(queryObj).then(result => {
@@ -125,7 +134,7 @@ class CustomerPool extends React.Component {
         };
         if (userData.getUserData().isCommonSales) {
             paramObj.ownerId = userData.getUserData().user_id;
-            if(_.get(paramObj, 'customerIds.length') > 20){
+            if (_.get(paramObj, 'customerIds.length') > 20) {
                 message.error(Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户'));
                 return;
             }
@@ -134,7 +143,7 @@ class CustomerPool extends React.Component {
                 this.setState({unSelectDataTip: Intl.get('crm.17', '请选择销售人员')});
                 return;
             } else {
-                if(_.get(paramObj, 'customerIds.length') > 20){
+                if (_.get(paramObj, 'customerIds.length') > 20) {
                     this.setState({unSelectDataTip: Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户')});
                     return;
                 }
@@ -342,7 +351,6 @@ class CustomerPool extends React.Component {
                         loading={this.state.isLoading}
                         dataSource={this.getTableData()}
                         util={{zoomInSortArea: true}}
-                        // onChange={this.onTableChange}
                         pagination={false}
                         scroll={{y: getTableContainerHeight()}}
                         dropLoad={{
@@ -393,14 +401,29 @@ class CustomerPool extends React.Component {
             </div>
         );
     };
+    toggleList = () => {
+        this.setState({
+            showFilterList: !this.state.showFilterList
+        });
+    };
+    search = (condition) => {
+        this.setState({lastId: ''}, () => {
+            this.getPoolCustomer(condition);
+        });
+    };
 
     render() {
+        let tableWrapHeight = getTableContainerHeight();
         return (
             <div className="customer-pool" data-tracename="客户池列表">
                 <TopNav>
-                    <div className="return-btn-container" onClick={this.returnCustomerList}>
-                        <span className="iconfont icon-return-btn"/>
-                        <span className="return-btn-font">{Intl.get('crm.52', '返回')}</span>
+                    <div className="search-input-wrapper">
+                        <FilterInput
+                            ref="filterinput"
+                            showSelectChangeTip={_.get(this.state.selectedCustomer, 'length')}
+                            toggleList={this.toggleList.bind(this)}
+                            filterType={Intl.get('call.record.customer', '客户')}
+                        />
                     </div>
                     <div className="customer-search-block">
                         <SearchInput
@@ -410,6 +433,7 @@ class CustomerPool extends React.Component {
                             searchEvent={this.onSearchInputChange}
                         />
                     </div>
+                    <RightPanelClose onClick={this.returnCustomerList}/>
                     {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || !_.get(this.state, 'selectedCustomer.length') ? null :
                         userData.getUserData().isCommonSales ? (
                             <Button className="btn-item extract-btn"
@@ -427,8 +451,22 @@ class CustomerPool extends React.Component {
                             btnAtTop={false}/>)}
                 </TopNav>
                 <div className="customer-table-container customer-pool-table"
-                    style={{height: getTableContainerHeight()}}>
-                    {this.renderTableContent()}
+                    style={{height: tableWrapHeight}}>
+                    <div
+                        className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
+                        <CustomerPoolFilter
+                            ref="crmfilterpanel"
+                            search={this.search}
+                            showSelectTip={_.get(this.state.selectedCustomer, 'length')}
+                            style={{width: 300, height: tableWrapHeight}}
+                            // filterPanelHeight={tableWrapHeight}
+                            // changeTableHeight={this.changeTableHeight}
+                        />
+                    </div>
+                    <div
+                        className={classNames('customer-pool-table-wrap', {'filter-panel-show': this.state.showFilterList})}>
+                        {this.renderTableContent()}
+                    </div>
                 </div>
             </div>);
     }
