@@ -23,11 +23,13 @@ import {TimeRangeSelect, numberSelect} from './utils/customer_score_util';
 import Spinner from 'CMP_DIR/spinner';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
+var className = require('classnames');
 class customerScore extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             customerRulesFormData: {},
+            isEditCustomerLevel: false,
             ...customerScoreStore.getState()
         };
     }
@@ -93,11 +95,22 @@ class customerScore extends React.Component {
     handleCustomerRangeValues = () => {
         customerScoreAction.setRangeValue();
     };
+    handleClickCustomerLevel = () => {
+        this.setState({
+            isEditCustomerLevel: true
+        });
+    };
     renderCustomerScoreList = () => {
-        const {rangeHandleValue, minValue, maxValue, rangeValue, lowerHandlePoint, largerHandlePoint} = this.state;
+        const {rangeHandleValue, minValue, maxValue, rangeValue, lowerHandlePoint, largerHandlePoint, isEditCustomerLevel} = this.state;
+        var rangeCls = className('slider-container',{
+            'not-edit-customer-level': !isEditCustomerLevel
+        });
         return (<div className="customer-score-content-wrap">
-            <span className="customer-score-lable"> {Intl.get('clue.customer.customer.level', '客户分数')}</span>
-            <div className="slider-container">
+            <div className="customer-score-lable">{Intl.get('clue.customer.customer.level', '客户评级')}
+                {isEditCustomerLevel ? null : <i className="iconfont icon-update" onClick={this.handleClickCustomerLevel}></i>}
+
+            </div>
+            <div className={rangeCls}>
                 <Range
                     min={minValue}
                     max={maxValue}
@@ -106,16 +119,17 @@ class customerScore extends React.Component {
                     onAfterChange={this.afterHandleChange}
                     value={rangeHandleValue}
                     marks={this.state.marks}
-                    trackStyle={[{backgroundColor: 'blue'}, {backgroundColor: 'yellow'}]}
+                    trackStyle={[{backgroundColor: '#EFA246'}, {backgroundColor: '#00C2C4'}]}
                     handleStyle={[{backgroundColor: '#fff'}, {backgroundColor: '#fff'}]}
-                    railStyle={{backgroundColor: 'red'}}
+                    railStyle={{backgroundColor: '#4662EF'}}
 
                 />
             </div>
             <div className="customer-level-score">
                 <span className="customer_level">
-                    {Intl.get('common.unqualified', '不合格')}
-                    <InputGroup className="input-groups" compact>
+                    <i className="customer-level-quarter unqualified-icon"></i>
+                    {Intl.get('common.unqualified', '不合格')}：
+                    {isEditCustomerLevel ? <InputGroup className="input-groups" compact>
                         <Input className='mini-number' disabled value='0'/>
                         <Input
                             className='min-between-max'
@@ -125,10 +139,14 @@ class customerScore extends React.Component {
                         <Input type="number" min="1" className='max-number' value={lowerHandlePoint} onChange={(e) => {
                             this.handleCustomerScoreUnqualified(+e.target.value);
                         }} onBlur={this.handleCustomerRangeValues}/>
-                    </InputGroup>
+                    </InputGroup> : `0~${lowerHandlePoint}`}
+
+
                 </span>
-                <span className="customer_level"> {Intl.get('common.qualified', '合格')}
-                    <InputGroup className="input-groups" compact>
+                <span className="customer_level">
+                    <i className="customer-level-quarter qualified-icon"></i>
+                    {Intl.get('common.qualified', '合格')}：
+                    {isEditCustomerLevel ? <InputGroup className="input-groups" compact>
                         <Input type="number" min="0" className='mini-number' value={lowerHandlePoint + 1}
                             onBlur={this.handleCustomerRangeValues} onChange={(e) => {
                                 this.handleCustomerScoreUnqualified(+e.target.value - 1);
@@ -141,10 +159,13 @@ class customerScore extends React.Component {
                         <Input type="number" min="0" className='max-number' value={largerHandlePoint} onChange={(e) => {
                             this.handleCustomerScoreQualified(+e.target.value);
                         }} onBlur={this.handleCustomerRangeValues}/>
-                    </InputGroup>
+                    </InputGroup> : `${lowerHandlePoint + 1}~${largerHandlePoint}`}
+
                 </span>
-                <span className="customer_level">{Intl.get('clue.customer.score.good', '优质')}
-                    <InputGroup className="input-groups good-level" compact>
+                <span className="customer_level">
+                    <i className="customer-level-quarter perfect-icon"></i>
+                    {Intl.get('clue.customer.score.good', '优质')}：
+                    {isEditCustomerLevel ? <InputGroup className="input-groups good-level" compact>
                         <ReactIntl.FormattedMessage
                             id="clue.customer.above.limit"
                             defaultMessage={'{score}以上'}
@@ -156,7 +177,8 @@ class customerScore extends React.Component {
                                     }}/>
                             }}
                         />
-                    </InputGroup>
+                    </InputGroup> : Intl.get('clue.customer.above.limit','{score}以上',{score: largerHandlePoint + 1})}
+
                 </span>
             </div>
         </div>);
@@ -303,7 +325,6 @@ class customerScore extends React.Component {
 
         return (<div>
             <Row>
-                <Col span={spanLength}>{Intl.get('call.record.customer.source', '来源')}</Col>
                 <Col span={spanLength}>{Intl.get('clue.customer.score.indicator', '指标')}</Col>
                 <Col span={spanLength}>{Intl.get('user.apply.detail.table.time', '周期')}</Col>
                 <Col span={spanLength}>{Intl.get('user.login.score', '分数')}</Col>
@@ -346,16 +367,6 @@ class customerScore extends React.Component {
                 }
                 return (
                     <Row>
-                        <Col span={spanLength}>
-                            <Select
-                                style={{width: 100 }}
-                                value={item.source}
-                                onChange={this.handleCustomerProperty.bind(this,item.id || item.randomId, 'source')}>
-                                {_.map(sourceLists, (item) => {
-                                    return <Option value={item.source}>{item.source_desc}</Option>;
-                                })}
-                            </Select>
-                        </Col>
                         <Col span={spanLength}>
                             <Select
                                 style={{width: 130 }}
@@ -443,7 +454,7 @@ class customerScore extends React.Component {
                         <Switch size="small" onChange={this.handleCustomerScoreRuleStatus} checked={_.get(this, 'state.customerRulesFormData.status') === 'enable'}/>
                     </div>
                     <div className="customer-rule-table">
-                        {this.renderCustomerRuleTable()}
+                        {/*{this.renderCustomerRuleTable()}*/}
                     </div>
                     <div className="save-btns">
                         <div className="indicator">
@@ -513,19 +524,16 @@ class customerScore extends React.Component {
 
 
     render() {
-        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         return (
-            <div className="customer-score-container" data-tracename="客户评分" style={{height: height}}>
+            <div className="customer-score-container" data-tracename="客户评分">
                 <div className="customer-score-wrap">
-                    <GeminiScrollBar style={{height: height}}>
-                        <div className="customer-score-content">
-                            {_.get(this, 'state.rangeHandleValue.length') ? this.renderCustomerScoreList() : null}
-                            <div className="customer-rules-container">
-                                <p className="customer-rule-tip">{Intl.get('clue.customer.level.score', '客户评分规则')}</p>
-                                {this.renderCustomerScore()}
-                            </div>
+                    <div className="customer-score-content">
+                        {_.get(this, 'state.rangeHandleValue.length') ? this.renderCustomerScoreList() : null}
+                        <div className="customer-rules-container">
+                            <p className="customer-rule-tip">{Intl.get('clue.customer.level.score', '客户评分规则')}</p>
+                            {this.renderCustomerScore()}
                         </div>
-                    </GeminiScrollBar>
+                    </div>
 
                 </div>
             </div>

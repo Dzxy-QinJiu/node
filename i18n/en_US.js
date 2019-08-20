@@ -3194,7 +3194,7 @@ var en_US = {
     'clue.customer.condition.change': 'modify condition',//修改条件
     'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
     'clue.customer.confirm.valid': 'Confirm valid',//确认有效
-    'clue.customer.customer.level': 'Customer score',//客户分数
+    'clue.customer.customer.level': 'Customer level',//客户评级
     'clue.customer.score.good': 'high quality',//优质
     'clue.customer.above.limit': '{score} above',//{score}以上
     'clue.customer.level.score': 'Customer rating rules',//客户评分规则

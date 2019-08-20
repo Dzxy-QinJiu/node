@@ -5,27 +5,53 @@
     .customer-score-content {
       font-size: 14px;
       .customer-score-content-wrap {
-        padding: 12px;
+        padding: 24px;
+        .customer-score-lable{
+          color:#333;
+          font-size: 16px;
+          overflow: hidden;
+          .iconfont.icon-update{
+            float: right;
+            cursor: pointer;
+            visibility: hidden;
+          }
+          &:hover{
+            .iconfont.icon-update{
+              visibility: visible;
+            }
+          }
+        }
         .slider-container {
           display: inline-block;
-          width: calc(100% - 450px);
-          padding: 30px 0 0 30px;
+          width: 100%;
+          padding: 30px 0 0 0;
+          &.not-edit-customer-level{
+            .rc-slider{
+              .rc-slider-handle-2, .rc-slider-handle-3{
+                visibility: hidden;
+              }
+            }
+
+          }
           .rc-slider {
             div.rc-slider-handle:first-of-type, div.rc-slider-handle:last-of-type {
               visibility: hidden;
             }
+
+
             //todo 待修改
             .rc-slider-handle-1, .rc-slider-handle-4 {
               visibility: hidden;
               display: none;
             }
             .rc-slider-handle-2, .rc-slider-handle-3 {
-              background: #fff;
+              background-color: #fff;
               margin-top: -8px;
               width: 10px;
               height: 23px;
               border-radius: 0;
             }
+
             .rc-slider-handle {
 
             }
@@ -34,14 +60,45 @@
                 display: none;
               }
             }
+            .rc-slider-rail{
+              height: 8px;
+              -webkit-border-radius:4px;
+              -moz-border-radius:4px;
+              border-radius:4px;
+            }
+            .rc-slider-track{
+              height: 8px;
+
+            }
           }
 
         }
         .customer-level-score {
-          margin: 30px 0 0 80px;
+          margin: 30px 0 0 0;
           .customer_level {
             display: inline-block;
             width: 30%;
+            &:last-child{
+              text-align: right;
+            }
+            &:nth-child(2){
+              text-align: center;
+            }
+            .customer-level-quarter{
+              display: inline-block;
+              width: 12px;
+              height: 12px;
+              margin-right: 5px;
+              &.unqualified-icon{
+                background: #EFA246;
+              }
+              &.qualified-icon{
+                background: #00C2C4;
+              }
+              &.perfect-icon{
+                background: #4662EF;
+              }
+            }
             .input-groups {
               width: auto;
               display: inline-block;

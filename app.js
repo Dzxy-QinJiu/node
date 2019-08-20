@@ -114,9 +114,9 @@ var server = app.listen(app.get('port'), function() {
 
 //初始化coordinator
 if (auth.getLang() !== 'es_VE') {
-    coordinator(function() {
-        //Coordinator启动后，创建socketIO,启动推送
-        require('./portal/modules/socketio').startSocketio(server);
-    });
+    // coordinator(function() {
+    //Coordinator启动后，创建socketIO,启动推送
+    require('./portal/modules/socketio').startSocketio(server);
+    // });
 }
 

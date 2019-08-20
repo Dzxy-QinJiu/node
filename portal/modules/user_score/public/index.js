@@ -598,27 +598,23 @@ class userScore extends React.Component {
     };
 
     render() {
-        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         return (
-            <div className="user-score-container" data-tracename="用户评分" style={{height: height}}>
+            <div className="user-score-container" data-tracename="用户评分">
                 <div className="user-score-wrap">
-                    <GeminiScrollBar style={{height: height}}>
-                        <div className="user-score-content">
-                            <p className="level-rule-tip">{Intl.get('user.score.level.rule', '用户评分规则')}</p>
-                            <Tabs onChange={this.handleChangeTab} type="card">
-                                <TabPane tab={Intl.get('user.score.basic.score', '基础评分')} key="1">
-                                    {this.renderBasicScoreRules()}
-                                </TabPane>
-                                <TabPane tab={Intl.get('user.score.particate.in.score', '参与度评分')} key="2">
-                                    <div className="particepate-container-warp" data-tracename="参与度评分">
-                                        {this.renderParticateScoreRules()}
-                                    </div>
+                    <div className="user-score-content">
+                        <p className="level-rule-tip">{Intl.get('user.score.level.rule', '用户评分规则')}</p>
+                        <Tabs onChange={this.handleChangeTab} type="card">
+                            <TabPane tab={Intl.get('user.score.basic.score', '基础评分')} key="1">
+                                {this.renderBasicScoreRules()}
+                            </TabPane>
+                            <TabPane tab={Intl.get('user.score.particate.in.score', '参与度评分')} key="2">
+                                <div className="particepate-container-warp" data-tracename="参与度评分">
+                                    {this.renderParticateScoreRules()}
+                                </div>
 
-                                </TabPane>
-                            </Tabs>
-                        </div>
-                    </GeminiScrollBar>
-
+                            </TabPane>
+                        </Tabs>
+                    </div>
                 </div>
             </div>
         );
