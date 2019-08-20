@@ -40,9 +40,6 @@ var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import ajax from 'ant-ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-var timeoutFunc;//定时方法
-var timeout = 1000;//1秒后刷新未读数
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import {FilterInput} from 'CMP_DIR/filter';
@@ -594,14 +591,16 @@ class ClueCustomer extends React.Component {
 
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
+                clueCustomerAction.saveQueryObj(cloneQuery);
             });
-            clueCustomerAction.saveQueryObj(cloneQuery);
+
         }else{
             //取全部线索列表
             clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
+                clueCustomerAction.saveQueryObj(queryObj);
             });
-            clueCustomerAction.saveQueryObj(queryObj);
+
         }
     };
     handleFirstLoginData = (flag) => {
@@ -2303,10 +2302,13 @@ class ClueCustomer extends React.Component {
                             )}
                         />
                     ) : null}
-                    {this.isShowRecommendSettingPanel() ? <RecommendCluesForm
-                        hideFocusCustomerPanel={this.hideFocusCustomerPanel}
-                        saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
-                    /> : null}
+                    {this.isShowRecommendSettingPanel() ?
+                        <div className="right-panel-modal show-modal">
+                            <RecommendCluesForm
+                                hideFocusCustomerPanel={this.hideFocusCustomerPanel}
+                                saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                            />
+                        </div> : null}
                 </div>
             </RightContent>
         );
