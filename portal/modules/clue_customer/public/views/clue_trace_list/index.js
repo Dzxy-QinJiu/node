@@ -722,7 +722,7 @@ ClueTraceList.propTypes = {
     updateCustomerLastContact: PropTypes.func,
     curClue: PropTypes.object,
     showClueDetailPanel: PropTypes.func,
-    isOverViewPanel: PropTypes.func,
+    isOverViewPanel: PropTypes.bool,
     changeActiveKey: PropTypes.func
 };
 module.exports = ClueTraceList;
