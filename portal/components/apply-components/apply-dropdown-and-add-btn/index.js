@@ -9,50 +9,36 @@ var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 require('./index.less');
 var classNames = require('classnames');
 import {getUnreadReplyTitle} from 'PUB_DIR/sources/utils/common-method-util';
-let userData = require('PUB_DIR/sources/user-data');
-import UserInfoStore from '../../../modules/user_info/public/store/user-info-store';
-import UserInfoAction from '../../../modules/user_info/public/action/user-info-actions';
-import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
+
 class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            applyErrorMsg: null,
-            userApplyType: this.props.userApplyType,
-            ccInfo: this.getCCInfo(),
+            applyType: this.props.applyType,
+            applyState: {
+                isApplyButtonShow: false
+            },
             popoverErrorVisible: false
-        };
+        }
+        ;
     }
-    onStoreChange = () => {
-        this.setState(UserInfoStore.getState());
-    };
 
     componentWillMount = () => {
-
+        getApplyState(this.props.applyType).then(applyState => {
+            this.setState({
+                applyState
+            });
+        });
     }
+
     componentDidMount = () => {
-        UserInfoStore.listen(this.onStoreChange);
-        UserInfoAction.getUserInfo();
     };
     componentWillReceiveProps = (nextProps) => {
-
     };
     componentWillUnmount = () => {
-        UserInfoStore.unlisten(this.onStoreChange);
     };
-    //获取用户发送邮件权限
-    getCCInfo = () => {
-        let workFlowConfigs = userData.getUserData().workFlowConfigs;
-        let type = _.filter(workFlowConfigs, item => {
-            let type = _.get(item, 'type');
-            if(_.isEqual(type, this.props.userApplyType)) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        return _.get(type[0], 'applyRulesAndSetting.ccInformation');
-    }
+
     renderApplyMessage = () => {
         var showUnreadTip = this.props.showUnreadTip;
         var isCheckUnreadApplyList = this.props.isCheckUnreadApplyList;
@@ -66,28 +52,12 @@ class ApplyDropdownAndAddBtn extends React.Component {
         );
     };
     checkPrivilege = () => {
-        let email = _.get(this.state, 'userInfo.email');
-        let emailEnable = _.get(this.state, 'userInfo.emailEnable');
-        if(_.isEmpty(email)) {
+        if(!_.get(this.state, 'applyState.applyPrivileged')) {
             this.setState({
-                popoverErrorVisible: true,
-                applyErrorMsg: {
-                    needBind: true
-                }
-            });
-            return false;
-        } else if(!emailEnable) {
-            this.setState({
-                popoverErrorVisible: true,
-                applyErrorMsg: {
-                    needActive: true
-                }
+                popoverErrorVisible: true
             });
             return false;
         } else {
-            this.setState({
-                popoverErrorVisible: false,
-            });
             this.props.showAddApplyPanel();
         }
     }
@@ -95,16 +65,16 @@ class ApplyDropdownAndAddBtn extends React.Component {
     handleVisibleChange = popoverErrorVisible => {
         this.setState({ popoverErrorVisible });
     };
-    //根据是否绑定激活渲染带Popover的button和不带Popover的button
+    //根据返回的状态信息渲染带Popover的button和不带Popover的button
     renderApplyButton = () => {
-        let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         return (
-            _.isNull(applyErrorMsg) ? (
+            applyPrivileged ? (
                 <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
                 >{this.props.addApplyMessage}</Button>) : (
                 <Popover
                     placement="bottomRight"
-                    content={this.renderPopoverContent()}
+                    content={_.get(this.state, 'applyState.applyMessage')}
                     visible={this.state.popoverErrorVisible}
                     onVisibleChange={this.handleVisibleChange}
                     trigger="click"
@@ -112,33 +82,6 @@ class ApplyDropdownAndAddBtn extends React.Component {
                     <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
                     >{this.props.addApplyMessage}</Button>
                 </Popover>)
-        );
-    }
-    //渲染popover内的错误信息
-    renderPopoverContent = () => {
-        let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
-        //先判断是否绑定邮箱，再判断是否激活邮箱
-        let ifActiveEmail = (_.get(applyErrorMsg, 'needActive') ?
-            <ReactIntl.FormattedMessage
-                id="apply.error.active"
-                defaultMessage={'您还没有激活邮箱，请先{activeEmail}'}
-                values={{
-                    'activeEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.active.email.tips" defaultMessage="激活邮箱"/></Link>
-                }}/> : null);
-        return (
-            <span className="apply-error-tip">
-                <span className="iconfont icon-warn-icon"></span>
-                <span className="apply-error-text">
-                    {_.get(applyErrorMsg, 'needBind') ?
-                        (<ReactIntl.FormattedMessage
-                            className="apply-error-text"
-                            id="apply.error.bind"
-                            defaultMessage={'您还没有绑定邮箱，请先{bindEmail}'}
-                            values={{
-                                'bindEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.bind.email.tips" defaultMessage="绑定邮箱"/></Link>
-                            }}/>) : ifActiveEmail}
-                </span>
-            </span>
         );
     }
 
@@ -156,8 +99,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
             </Menu>
         );
         //判断是否有发邮件权限
-        let privilegedType = [CC_INFO.APPROVE, CC_INFO.APPLY_AND_APPROVE];
-        let hasEmailPrivilege = _.indexOf(privilegedType, this.state.ccInfo) !== -1;
+        let hasEmailPrivilege = _.get(this.state, 'applyState.isApplyButtonShow');
         return (
             <div className="apply-searchbar clearfix">
                 <div className="apply-type-filter btn-item" id="apply-type-container">
@@ -226,7 +168,7 @@ ApplyDropdownAndAddBtn.propTypes = {
     toggleUnreadApplyList: PropTypes.func,
     showUnreadTip: PropTypes.bool,
     isCheckUnreadApplyList: PropTypes.bool,
-    userApplyType: PropTypes.string
+    applyType: PropTypes.string
 };
 
 export default ApplyDropdownAndAddBtn;

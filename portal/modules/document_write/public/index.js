@@ -301,7 +301,7 @@ class DocumentWriteApplyManagement extends React.Component {
                 <div className="document-write-apply-list-detail-wrap">
                     <div className="col-md-4 document-write-apply-list" data-tracename="文件撰写申请列表">
                         <ApplyDropdownAndAddBtn
-                            userApplyType={APPLY_TYPE.DOCUMENT_WRITING}
+                            applyType={APPLY_TYPE.DOCUMENT_WRITING}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_REPORT_APPLY'

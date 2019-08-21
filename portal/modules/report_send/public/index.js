@@ -309,7 +309,7 @@ class ReportSendApplyManagement extends React.Component {
                 <div className="report-send-apply-list-detail-wrap">
                     <div className="col-md-4 report-send-apply-list" data-tracename="舆情报送申请列表">
                         <ApplyDropdownAndAddBtn
-                            userApplyType={APPLY_TYPE.OPINION_REPORT}
+                            applyType={APPLY_TYPE.OPINION_REPORT}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_REPORT_APPLY'

@@ -5,7 +5,7 @@ var React = require('react');
  * Created by wangliping on 2018/4/17.
  */
 require('../../css/customer-users.less');
-import {Button, Checkbox, Alert} from 'antd';
+import {Button, Checkbox, Alert, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import Spinner from 'CMP_DIR/spinner';
 import {RightPanel} from 'CMP_DIR/rightPanel';
@@ -22,6 +22,8 @@ import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -61,8 +63,20 @@ class CustomerUsers extends React.Component {
             applyType: '',//申请用户的类型
             listenScrollBottom: true,//是否监听滚动
             appList: [],
+            applyState: {
+                isApplyButtonShow: false
+            },
+            popoverErrorVisible: false,
             ... this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
+    }
+
+    componentWillMount = () => {
+        getApplyState(APPLY_TYPE.USER_APPLY).then(applyState => {
+            this.setState({
+                applyState
+            });
+        });
     }
 
     componentDidMount() {
@@ -272,26 +286,33 @@ class CustomerUsers extends React.Component {
     }
 
     handleMenuClick(applyType) {
-        let traceDescr = '';
-        if (applyType === APPLY_TYPES.STOP_USE) {
-            traceDescr = '打开申请停用面板';
-        } else if (applyType === APPLY_TYPES.EDIT_PASSWORD) {
-            traceDescr = '打开申请修改密码面板';
-        } else if (applyType === APPLY_TYPES.DELAY) {
-            traceDescr = '打开申请延期面板';
-        } else if (applyType === APPLY_TYPES.OTHER) {
-            traceDescr = '打开申请其他类型面板';
-        } else if (applyType === APPLY_TYPES.OPEN_APP) {
-            traceDescr = '打开申请开通应用面板';
-            // if (_.isFunction(this.props.showOpenAppForm)) {
-            //     this.props.showOpenAppForm(applyType);
-            // }
+        if(!_.get(this.state, 'applyState.applyPrivileged') && applyType === APPLY_TYPES.NEW_USERS) {
+            this.setState({
+                popoverErrorVisible: true
+            });
+            return false;
+        } else {
+            let traceDescr = '';
+            if (applyType === APPLY_TYPES.STOP_USE) {
+                traceDescr = '打开申请停用面板';
+            } else if (applyType === APPLY_TYPES.EDIT_PASSWORD) {
+                traceDescr = '打开申请修改密码面板';
+            } else if (applyType === APPLY_TYPES.DELAY) {
+                traceDescr = '打开申请延期面板';
+            } else if (applyType === APPLY_TYPES.OTHER) {
+                traceDescr = '打开申请其他类型面板';
+            } else if (applyType === APPLY_TYPES.OPEN_APP) {
+                traceDescr = '打开申请开通应用面板';
+                // if (_.isFunction(this.props.showOpenAppForm)) {
+                //     this.props.showOpenAppForm(applyType);
+                // }
+            }
+            Trace.traceEvent('客户详情', traceDescr);
+            this.setState({applyType: applyType});
+            setTimeout(() => {
+                this.setState(this.getLayoutHeight());
+            });
         }
-        Trace.traceEvent('客户详情', traceDescr);
-        this.setState({applyType: applyType});
-        setTimeout(() => {
-            this.setState(this.getLayoutHeight());
-        });
     }
 
     //发邮件使用的参数
@@ -312,24 +333,52 @@ class CustomerUsers extends React.Component {
         };
     }
 
+    handleVisibleChange = popoverErrorVisible => {
+        this.setState({ popoverErrorVisible });
+    };
+
+    //根据返回的状态信息渲染带Popover的button和不带Popover的button
+    renderApplyButton = () => {
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        return (
+            applyPrivileged ? (
+                <div className="crm-user-apply-btns" data-tracename="申请新用户">
+                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
+                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
+                        {Intl.get('crm.apply.user.new', '申请新用户')}
+                    </Button>
+                </div>) : (
+                <Popover
+                    placement="bottomRight"
+                    content={_.get(this.state, 'applyState.applyMessage')}
+                    visible={this.state.popoverErrorVisible}
+                    onVisibleChange={this.handleVisibleChange}
+                    trigger="click"
+                >
+                    <div className="crm-user-apply-btns" data-tracename="申请新用户">
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
+                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
+                            {Intl.get('crm.apply.user.new', '申请新用户')}
+                        </Button>
+                    </div>
+                </Popover>)
+        );
+    }
+
     renderApplyBtns() {
         //是否可以批量申请（停用、延期、修改密码、其他）的操作，只要有选择的用户或应用就可以
         let batchApplyFlag = this.getBatchApplyFlag();
         //开通应用，只有选择用户后才可用
         let openAppFlag = false;
         let crmUserList = this.state.crmUserList;
+        //判断是否有发邮件权限
+        let hasEmailPrivilege = _.get(this.state, 'applyState.isApplyButtonShow');
         if (_.isArray(crmUserList) && crmUserList.length) {
             openAppFlag = _.some(crmUserList, userObj => userObj && userObj.user && userObj.user.checked);
         }
         if (!batchApplyFlag && !openAppFlag) {
             //申请新用户
-            return (
-                <div className="crm-user-apply-btns" data-tracename="申请新用户">
-                    <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
-                        onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
-                        {Intl.get('crm.apply.user.new', '申请新用户')}
-                    </Button>
-                </div>);
+            return hasEmailPrivilege ? this.renderApplyButton() : null;
         } else {//其他申请
             return (
                 <div className="crm-user-apply-btns">

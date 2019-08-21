@@ -303,7 +303,7 @@ class BusinessApplyManagement extends React.Component {
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="出差申请列表">
                         <ApplyDropdownAndAddBtn
-                            userApplyType={APPLY_TYPE.BUSINESS_TRIP}
+                            applyType={APPLY_TYPE.BUSINESS_TRIP}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='BUSINESS_TRIP_APPLY'

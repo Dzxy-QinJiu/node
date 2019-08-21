@@ -28,12 +28,10 @@ import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
-import {Link} from 'react-router-dom';
-import {APPLY_TYPE, CC_INFO} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 import UserInfoStore from '../../../user_info/public/store/user-info-store';
-import UserInfoAction from '../../../user_info/public/action/user-info-actions';
-import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
     CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
@@ -59,8 +57,6 @@ class BasicOverview extends React.Component {
             applyFormShowFlag: false,
             competitorList: [],
             isOplateUser: false,
-            ccInfo: this.getCCInfo(),
-            applyErrorMsg: null,
             popoverErrorVisible: false
         };
     }
@@ -68,7 +64,6 @@ class BasicOverview extends React.Component {
     onChange = () => {
         this.setState({
             ...basicOverviewStore.getState(),
-            ...UserInfoStore.getState()
         });
     };
 
@@ -80,9 +75,15 @@ class BasicOverview extends React.Component {
         });
     };
 
+    componentWillMount = () => {
+        getApplyState(APPLY_TYPE.USER_APPLY).then(applyState => {
+            this.setState({
+                applyState
+            });
+        });
+    }
+
     componentDidMount() {
-        UserInfoStore.listen(this.onChange);
-        UserInfoAction.getUserInfo();
         basicOverviewStore.listen(this.onChange);
         CustomerRecordStore.listen(this.onRecordStoreChange);
         basicOverviewAction.getBasicData(this.props.curCustomer);
@@ -350,33 +351,21 @@ class BasicOverview extends React.Component {
             return null;
         }
     };
-    //获取用户发送邮件权限
-    getCCInfo = () => {
-        let workFlowConfigs = userData.getUserData().workFlowConfigs;
-        let type = _.filter(workFlowConfigs, item => {
-            let type = _.get(item, 'type');
-            if(_.isEqual(type, APPLY_TYPE.USER_APPLY)) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-        return _.get(type[0], 'applyRulesAndSetting.ccInformation');
-    }
+
     handleVisibleChange = popoverErrorVisible => {
         this.setState({ popoverErrorVisible });
     };
     //根据是否绑定激活渲染带Popover的button和不带Popover的button
     renderApplyButton = () => {
-        let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         return (
-            _.isNull(applyErrorMsg) ? (
+            applyPrivileged ? (
                 <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
                     {Intl.get('crm.apply.user.new', '申请新用户')}
                 </Button>) :
                 (<Popover
                     placement="bottomRight"
-                    content={this.renderPopoverContent()}
+                    content={_.get(this.state, 'applyState.applyMessage')}
                     visible={this.state.popoverErrorVisible}
                     onVisibleChange={this.handleVisibleChange}
                     trigger="click">
@@ -386,40 +375,11 @@ class BasicOverview extends React.Component {
                 </Popover>)
         );
     }
-    //渲染popover内的错误信息
-    renderPopoverContent = () => {
-        let applyErrorMsg = _.get(this.state, 'applyErrorMsg');
-        //先判断是否绑定邮箱，再判断是否激活邮箱
-        let ifActiveEmail = (_.get(applyErrorMsg, 'needActive') ?
-            <ReactIntl.FormattedMessage
-                id="apply.error.active"
-                defaultMessage={'您还没有激活邮箱，请先{activeEmail}'}
-                values={{
-                    'activeEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.active.email.tips" defaultMessage="激活邮箱"/></Link>
-                }}/> : null);
-        return (
-            <span className="apply-error-tip">
-                <span className="iconfont icon-warn-icon"></span>
-                <span className="apply-error-text">
-                    {_.get(applyErrorMsg, 'needBind') ?
-                        (<ReactIntl.FormattedMessage
-                            className="apply-error-text"
-                            id="apply.error.bind"
-                            defaultMessage={'您还没有绑定邮箱，请先{bindEmail}'}
-                            values={{
-                                'bindEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.bind.email.tips" defaultMessage="绑定邮箱"/></Link>
-                            }}/>) : ifActiveEmail}
-                </span>
-            </span>
-        );
-    }
+
     //渲染申请用户的提示\面板
     renderApplyUserBlock = () => {
         //判断是否有发邮件权限
-        let privilegedType = [CC_INFO.APPROVE, CC_INFO.APPLY_AND_APPROVE];
-        let hasEmailPrivilege = _.indexOf(privilegedType, this.state.ccInfo) !== -1;
-        // 判断是否有申请错误信息
-        let errorMessage = _.get(this.state, 'applyErrorMsg');
+        let hasEmailPrivilege = _.get(this.state, 'applyState.isApplyButtonShow');
         //只有销售和销售主管才会申请
         let hasApplyPrivilege = userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
         if (hasApplyPrivilege && !this.props.isMerge && this.state.isOplateUser) {
@@ -451,22 +411,9 @@ class BasicOverview extends React.Component {
     };
 
     toggleApplyForm = () => {
-        let email = _.get(this.state, 'userInfo.email');
-        let emailEnable = _.get(this.state, 'userInfo.emailEnable');
-        if(_.isEmpty(email)) {
+        if(!_.get(this.state, 'applyState.applyPrivileged')) {
             this.setState({
-                applyErrorMsg: {
-                    needBind: true,
-                    popoverErrorVisible: true
-                }
-            });
-            return false;
-        } else if(!emailEnable) {
-            this.setState({
-                applyErrorMsg: {
-                    needActive: true,
-                    popoverErrorVisible: true
-                }
+                popoverErrorVisible: true
             });
             return false;
         } else {

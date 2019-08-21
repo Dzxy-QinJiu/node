@@ -303,7 +303,7 @@ class LeaveApplyManagement extends React.Component {
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="请假申请列表">
                         <ApplyDropdownAndAddBtn
-                            userApplyType={APPLY_TYPE.LEAVE}
+                            applyType={APPLY_TYPE.LEAVE}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_LEAVE_APPLY'
