@@ -347,7 +347,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []//'CUSTOMER_POOL_MANAGE'
+            privileges: ['CUSTOMER_POOL_MANAGE']
         }, {//提取客户
             method: 'post',
             path: '/rest/customer_pool/customer',
@@ -355,7 +355,15 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: []//'CUSTOMER_POOL_MANAGE'
+            privileges: ['CUSTOMER_POOL_MANAGE']
+        }, {//获取客户池中聚合的筛选项
+            method: 'get',
+            path: '/rest/customer_pool/filter/items',
+            handler: 'getCustomerPoolFilterItems',
+            passport: {
+                needLogin: true
+            },
+            privileges: ['CUSTOMER_POOL_MANAGE']
         }
     ]
 };
