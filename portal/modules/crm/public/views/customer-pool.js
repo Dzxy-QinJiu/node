@@ -23,6 +23,13 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
+import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
+import {FilterInput} from 'CMP_DIR/filter';
+import CustomerPoolFilter from './customer-pool-filter';
+import classNames from 'classnames';
+import {COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
+import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
+
 const PAGE_SIZE = 20;
 class CustomerPool extends React.Component {
     constructor(props) {
@@ -42,6 +49,7 @@ class CustomerPool extends React.Component {
             selectedCustomer: [],
             distributeUser: '',
             userList: [],
+            showFilterList: false
         };
     }
 
@@ -77,18 +85,41 @@ class CustomerPool extends React.Component {
                 });
         }
     }
-
+    getFilterParams(){
+        let filterParams = {};
+        if(this.customerPoolFilterRef){
+            let condition = _.get(this.customerPoolFilterRef, 'state.condition', {});
+            _.each(condition, (val, key) => {
+                if (val) {
+                    //常用筛选
+                    if (key === COMMON_OTHER_ITEM) {
+                        //超15天未联系
+                        if (val === 'fifteen_uncontact') {
+                            filterParams.contact_end = moment().valueOf() - DAY_TIME.FIFTEEN_DAY;
+                        }
+                    } else {//高级筛选
+                        filterParams[key] = val;
+                    }
+                }
+            });
+        }
+        return filterParams;
+    }
     getPoolCustomer() {
         let queryObj = {
             page_size: PAGE_SIZE,
             sort_field: 'push_time',
-            order: 'descend'
+            order: 'descend',
         };
         if (this.state.lastId) {
             queryObj.sort_id = this.state.lastId;
         }
         if (this.state.searchValue) {
             queryObj.name = this.state.searchValue;
+        }
+        let filterParams = this.getFilterParams();
+        if (!_.isEmpty(filterParams)) {
+            queryObj = {...queryObj, ...filterParams};
         }
         this.setState({isLoading: true, loadErrorMsg: ''});
         crmAjax.getPoolCustomer(queryObj).then(result => {
@@ -125,7 +156,7 @@ class CustomerPool extends React.Component {
         };
         if (userData.getUserData().isCommonSales) {
             paramObj.ownerId = userData.getUserData().user_id;
-            if(_.get(paramObj, 'customerIds.length') > 20){
+            if (_.get(paramObj, 'customerIds.length') > 20) {
                 message.error(Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户'));
                 return;
             }
@@ -134,7 +165,7 @@ class CustomerPool extends React.Component {
                 this.setState({unSelectDataTip: Intl.get('crm.17', '请选择销售人员')});
                 return;
             } else {
-                if(_.get(paramObj, 'customerIds.length') > 20){
+                if (_.get(paramObj, 'customerIds.length') > 20) {
                     this.setState({unSelectDataTip: Intl.get('crm.customer.extract.limit.tip', '一次最多提取20个客户')});
                     return;
                 }
@@ -342,7 +373,6 @@ class CustomerPool extends React.Component {
                         loading={this.state.isLoading}
                         dataSource={this.getTableData()}
                         util={{zoomInSortArea: true}}
-                        // onChange={this.onTableChange}
                         pagination={false}
                         scroll={{y: getTableContainerHeight()}}
                         dropLoad={{
@@ -393,14 +423,30 @@ class CustomerPool extends React.Component {
             </div>
         );
     };
+    toggleList = () => {
+        this.setState({
+            showFilterList: !this.state.showFilterList
+        });
+    };
+    search = () => {
+        this.setState({lastId: ''}, () => {
+            this.getPoolCustomer();
+        });
+    };
 
     render() {
+        let tableWrapHeight = getTableContainerHeight();
+        let selectCustomerLength = _.get(this.state.selectedCustomer, 'length');
         return (
             <div className="customer-pool" data-tracename="客户池列表">
                 <TopNav>
-                    <div className="return-btn-container" onClick={this.returnCustomerList}>
-                        <span className="iconfont icon-return-btn"/>
-                        <span className="return-btn-font">{Intl.get('crm.52', '返回')}</span>
+                    <div className="search-input-wrapper">
+                        <FilterInput
+                            ref="filterinput"
+                            showSelectChangeTip={selectCustomerLength}
+                            toggleList={this.toggleList.bind(this)}
+                            filterType={Intl.get('call.record.customer', '客户')}
+                        />
                     </div>
                     <div className="customer-search-block">
                         <SearchInput
@@ -410,7 +456,8 @@ class CustomerPool extends React.Component {
                             searchEvent={this.onSearchInputChange}
                         />
                     </div>
-                    {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || !_.get(this.state, 'selectedCustomer.length') ? null :
+                    <RightPanelClose onClick={this.returnCustomerList}/>
+                    {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || !selectCustomerLength ? null :
                         userData.getUserData().isCommonSales ? (
                             <Button className="btn-item extract-btn"
                                 onClick={this.extractCustomer}>{Intl.get('clue.extract', '提取')}</Button>
@@ -427,8 +474,20 @@ class CustomerPool extends React.Component {
                             btnAtTop={false}/>)}
                 </TopNav>
                 <div className="customer-table-container customer-pool-table"
-                    style={{height: getTableContainerHeight()}}>
-                    {this.renderTableContent()}
+                    style={{height: tableWrapHeight}}>
+                    <div
+                        className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
+                        <CustomerPoolFilter
+                            ref={filterRef => this.customerPoolFilterRef = filterRef}
+                            search={this.search}
+                            showSelectTip={selectCustomerLength}
+                            style={{width: 300, height: tableWrapHeight}}
+                        />
+                    </div>
+                    <div
+                        className={classNames('customer-pool-table-wrap', {'filter-panel-show': this.state.showFilterList})}>
+                        {this.renderTableContent()}
+                    </div>
                 </div>
             </div>);
     }

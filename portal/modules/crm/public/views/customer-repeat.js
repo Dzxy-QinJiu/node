@@ -332,7 +332,7 @@ class CustomerRepeat extends React.Component {
                     </ShearContent>
                 </Col>
                 <Col span={1}>
-                    <PrivilegeChecker check="CUSTOMER_DELETE">
+                    <PrivilegeChecker check="CRM_DELETE_CUSTOMER">
                         <Popconfirm title={this.getModalContent(customer)}
                             onConfirm={this.delRepeatCustomer.bind(this, customer)}
                             okText={Intl.get('common.sure', '确认')}
