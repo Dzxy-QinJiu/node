@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2019/7/24.
  */
 import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
+const { RangePicker } = DatePicker;
 var Option = Select.Option;
 const FormItem = Form.Item;
 import {AntcAreaSelection} from 'antc';
@@ -15,12 +16,15 @@ import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
+        var hasSavedRecommendParams = _.cloneDeep(this.props.hasSavedRecommendParams);
         this.state = {
             recommendIndustry: [],
             recommendMoneySize: moneySize,
             recommendStaffSize: staffSize,
             recommendProperty: companyProperty,
-            hasSavedRecommendParams: _.cloneDeep(this.props.hasSavedRecommendParams)
+            registerStartTime: hasSavedRecommendParams.startTime || '',
+            registerEndTime: hasSavedRecommendParams.endTime || '',
+            hasSavedRecommendParams: hasSavedRecommendParams
         };
     }
 
@@ -98,6 +102,14 @@ class RecommendCustomerCondition extends React.Component {
                 hasSavedRecommendParams.capitalMin = _.get(moneyObj,'capitalMin');
                 hasSavedRecommendParams.capitalMax = _.get(moneyObj,'capitalMax');
             }
+            const {registerStartTime, registerEndTime} = this.state;
+            if (registerStartTime && registerEndTime){
+                hasSavedRecommendParams.startTime = registerStartTime;
+                hasSavedRecommendParams.endTime = registerEndTime;
+            }else{
+                delete hasSavedRecommendParams.startTime;
+                delete hasSavedRecommendParams.endTime;
+            }
             if (err) return;
             this.setState({
                 isSaving: true,
@@ -131,6 +143,22 @@ class RecommendCustomerCondition extends React.Component {
             });
         });
     };
+    onDateChange = (dates, dateStrings) => {
+        if (_.get(dateStrings,'[0]') && _.get(dateStrings,'[1]')){
+            //开始时间要取那天早上的00:00:00
+            //结束时间要取那天晚上的23:59:59
+            this.setState({
+                registerStartTime: moment(_.get(dateStrings,'[0]')).startOf('day').valueOf(),
+                registerEndTime: moment(_.get(dateStrings,'[1]')).endOf('day').valueOf(),
+            });
+        }else{
+            this.setState({
+                registerStartTime: '',
+                registerEndTime: '',
+            });
+        }
+    }
+
     //保存结果的处理
     setResultData(saveMsg, saveResult) {
         this.setState({
@@ -140,6 +168,7 @@ class RecommendCustomerCondition extends React.Component {
         });
     }
     render() {
+        const { registerStartTime, registerEndTime} = this.state;
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
             labelCol: {
@@ -167,6 +196,10 @@ class RecommendCustomerCondition extends React.Component {
         if(hasSavedRecommendParams.capitalMin || hasSavedRecommendParams.capitalMax){
             capitalTarget = _.find(recommendMoneySize, item => item.capitalMin === hasSavedRecommendParams.capitalMin && item.capitalMax === hasSavedRecommendParams.capitalMax );
         }
+        var defaultValue = [];
+        if (registerStartTime && registerEndTime){
+            defaultValue = [moment(registerStartTime), moment(registerEndTime)];
+        }
 
         return (
             <div className="recommend-customer-condition" data-tracename="设置推荐线索条件面板">
@@ -174,6 +207,15 @@ class RecommendCustomerCondition extends React.Component {
                     className="recommend-top-title">{Intl.get('clue.customer.select.focus.customer', '请选择您关注的客户类型')}</div>
                 <div className="add-customer-recommend">
                     <Form layout='horizontal' className="customer-recommend-form" id="customer-recommend-form">
+                        <div className="ant-row ant-form-item">
+                            <div className="ant-form-item-label ant-col-xs-24 ant-col-sm-4">
+                                <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
+                            <div className="ant-form-item-control-wrapper ant-col-xs-24 ant-col-sm-20">
+                                <div className="ant-form-item-control has-success">
+                                    <RangePicker defaultValue={defaultValue} onChange={this.onDateChange}/>
+                                </div>
+                            </div>
+                        </div>
                         <FormItem
                             label={Intl.get('menu.industry', '行业')}
                             id="industrys"
