@@ -4,7 +4,6 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {FilterList} from 'CMP_DIR/filter';
 import {FILTER_RANGE, COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
 import filterAJax from '../ajax/filter-ajax';
-import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 const otherFilterArray = [
     {
         name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 15}),
@@ -12,18 +11,13 @@ const otherFilterArray = [
     }
 ];
 //合格标签的筛选
-const qualifiedTagList = [{//合格
+const qualifyLabelList = [{//合格
     name: CUSTOMER_TAGS.QUALIFIED, value: '1'
 }, {//曾经合格
     name: CUSTOMER_TAGS.HISTORY_QUALIFIED, value: '2'
 }, {//从未合格
     name: CUSTOMER_TAGS.NEVER_QUALIFIED, value: '3'
 }];
-const qualifyLabelMap = {
-    [ CUSTOMER_TAGS.QUALIFIED]: '1',//合格
-    [ CUSTOMER_TAGS.HISTORY_QUALIFIED]: '2',//曾经合格
-    [ CUSTOMER_TAGS.NEVER_QUALIFIED]: '3',//从未合格
-};
 
 class CustomerPoolFilter extends React.Component {
     constructor(props) {
@@ -32,7 +26,6 @@ class CustomerPoolFilter extends React.Component {
         this.state = {
             ...condition,
             customerLabelList: [],//客户阶段
-            qualifyLabelList: [],//合格标签
             immutableLabelsList: [], //系统标签
             labelsList: [],//标签列表
             industryList: [],//行业列表
@@ -57,8 +50,6 @@ class CustomerPoolFilter extends React.Component {
     componentDidMount() {
         //获取客户阶段
         this.getFilterCustomerLabels();
-        //获取合格标签
-        this.getQualifyLabels();
         //获取系统标签
         this.getFilterSystemTags();
         //获取自定义标签
@@ -74,15 +65,6 @@ class CustomerPoolFilter extends React.Component {
         filterAJax.getCustomerPoolFilterItems({field: 'customer_label'}).then((data) => {
             this.setState({
                 customerLabelList: data || [],
-            });
-        });
-    }
-
-    getQualifyLabels() {
-        //获取合格标签
-        filterAJax.getCustomerPoolFilterItems({field: 'qualify_label'}).then((data) => {
-            this.setState({
-                qualifyLabelList: data || [],
             });
         });
     }
@@ -131,34 +113,15 @@ class CustomerPoolFilter extends React.Component {
         data.forEach(item => {
             if (item.groupId) {
                 condition[item.groupId] = _.map(item.data, x => x.value);
-                // if (['customer_label', 'qualify_label', 'province', 'industry', COMMON_OTHER_ITEM].includes(item.groupId)) {
-                //     condition[item.groupId] = condition[item.groupId].join(',');
-                // } else if (item.singleSelect) {
-                condition[item.groupId] = condition[item.groupId][0] || '';
-                // }
+                if (['customer_label','immutable_labels', 'labels', COMMON_OTHER_ITEM].includes(item.groupId)) {
+                    condition[item.groupId] = condition[item.groupId].join(',');
+                } else if (item.singleSelect) {
+                    condition[item.groupId] = condition[item.groupId][0] || '';
+                }
             }
         });
-        this.setState({...condition});
-        setTimeout(() => {
-            let filterParams = {};
-            _.each(condition, (val, key) => {
-                if (val) {
-                    //常用筛选
-                    if (key === COMMON_OTHER_ITEM) {
-                        //超15天未联系
-                        if (val === 'fifteen_uncontact') {
-                            filterParams.contact_end = moment().valueOf() - DAY_TIME.FIFTEEN_DAY;
-                        }
-                    } else {//高级筛选
-                        if (key === 'qualify_label') {
-                            filterParams[key] = qualifyLabelMap[val];
-                        } else {
-                            filterParams[key] = val;
-                        }
-                    }
-                }
-            });
-            this.props.search(filterParams);
+        this.setState({condition}, () => {
+            this.props.search();
         });
     };
 
@@ -187,13 +150,14 @@ class CustomerPoolFilter extends React.Component {
         });
         //选中的客户阶段列表
         let selectedCustomerLabels = _.get(this.state, 'condition.customer_label', '').split(',');
+        //选中的系统标签列表
+        let selectedImmutLabels = _.get(this.state, 'condition.immutable_labels', '').split(',');
         //选中的标签列表
-        let selectedLabels = _.get(this.state, 'condition.labels', []);
+        let selectedLabels = _.get(this.state, 'condition.labels', '').split(',');
         const advancedData = [
             {
                 groupName: Intl.get('weekly.report.customer.stage', '客户阶段'),
                 groupId: 'customer_label',
-                singleSelect: true,
                 data: _.map(this.state.customerLabelList, x => ({
                     name: x,
                     value: x,
@@ -204,30 +168,28 @@ class CustomerPoolFilter extends React.Component {
                 groupName: Intl.get('common.qualified', '合格'),
                 groupId: 'qualify_label',
                 singleSelect: true,
-                data: _.map(this.state.qualifyLabelList, x => {
+                data: _.map(qualifyLabelList, x => {
                     return {
-                        name: x,
-                        value: x,
-                        selected: x === _.get(this.state, 'condition.qualify_label', '')
+                        name: x.name,
+                        value: x.value,
+                        selected: x.value === _.get(this.state, 'condition.qualify_label', '')
                     };
                 })
             },
             {
                 groupName: Intl.get('crm.system.labels', '系统标签'),
                 groupId: 'immutable_labels',
-                singleSelect: true,
                 data: _.map(this.state.immutableLabelsList, x => {
                     return {
                         name: x,
                         value: x,
-                        selected: _.includes(selectedLabels, x)
+                        selected: _.includes(selectedImmutLabels, x)
                     };
                 })
             },
             {
                 groupName: Intl.get('common.tag', '标签'),
                 groupId: 'labels',
-                singleSelect: true,
                 data: _.map(this.state.labelsList, x => {
                     return {
                         name: x,
@@ -272,6 +234,7 @@ class CustomerPoolFilter extends React.Component {
                         advancedData={advancedData}
                         hasSettedDefaultCommonSelect={true}
                         onFilterChange={this.handleFilterChange.bind(this)}
+                        showAdvancedPanel={true}
                     />
                 </div>
             </div>
