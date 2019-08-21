@@ -376,6 +376,7 @@ class ClueRightPanel extends React.Component {
                                             showClueToCustomerPanel={this.props.showClueToCustomerPanel}
                                             updateCustomerLastContact={this.updateCustomerLastContact}
                                             extractClueOperator={this.props.extractClueOperator}
+                                            changeActiveKey={this.changeActiveKey}
                                         />
                                     ) : null}
                                 </TabPane>
