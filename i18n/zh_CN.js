@@ -3373,5 +3373,6 @@ var zh_CN = {
     'import.excel.no.data': '试下客套给您{recommend}的功能',
     'import.recommend.clue.lists': '推荐线索',
     'common.number.of.new.user.customer': '新开用户客户数',
+    'clue.customer.register.time': '注册时间'
 };
 export default zh_CN;

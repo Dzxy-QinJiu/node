@@ -261,6 +261,17 @@ class RecommendCustomerRightPanel extends React.Component {
                 dataIndex: 'name',
                 width: '300px',
             }, {
+                title: Intl.get('clue.customer.register.time', '注册时间'),
+                dataIndex: 'startTime',
+                width: '200px',
+                align: 'left',
+                render: (text, record, index) => {
+                    return (
+                        <span>{text ? moment(text).format(oplateConsts.DATE_FORMAT) : null}
+                        </span>
+                    );
+                }
+            }, {
                 title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'legalPerson',
                 width: '300px',
@@ -271,7 +282,7 @@ class RecommendCustomerRightPanel extends React.Component {
             },{
                 title: Intl.get('common.operate', '操作'),
                 dataIndex: 'oprate_btn',
-                width: '300px',
+                width: '100px',
                 render: (text, record, index) => {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !this.isCommonSales();
