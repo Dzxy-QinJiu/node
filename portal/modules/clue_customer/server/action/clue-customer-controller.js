@@ -393,7 +393,8 @@ exports.getRecommendClueLists = function(req, res) {
                 lists.push({id: item.id,
                     name: item.name,
                     legalPerson: item.legalPerson,
-                    telephones: item.telephones
+                    telephones: item.telephones,
+                    startTime: item.startTime
                 });
             });
             res.status(200).json(lists);
