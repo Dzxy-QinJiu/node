@@ -2303,12 +2303,10 @@ class ClueCustomer extends React.Component {
                         />
                     ) : null}
                     {this.isShowRecommendSettingPanel() ?
-                        <div className="right-panel-modal show-modal">
-                            <RecommendCluesForm
-                                hideFocusCustomerPanel={this.hideFocusCustomerPanel}
-                                saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
-                            />
-                        </div> : null}
+                        <RecommendCluesForm
+                            hideFocusCustomerPanel={this.hideFocusCustomerPanel}
+                            saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                        /> : null}
                 </div>
             </RightContent>
         );

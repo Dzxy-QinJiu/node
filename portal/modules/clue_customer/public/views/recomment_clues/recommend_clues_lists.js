@@ -492,8 +492,6 @@ class RecommendCustomerRightPanel extends React.Component {
                                 {
                                     hasSelectedClue ? this.renderBatchChangeClues() : null
                                 }
-
-
                             </div>
                         </TopNav>
                         <div className="recommend-clue-content-container">
@@ -503,12 +501,11 @@ class RecommendCustomerRightPanel extends React.Component {
                     </div>
                 </RightPanel>
                 {this.state.showEditConditionPanel || this.isShowRecommendSettingPanel() ?
-                    <div className="right-panel-modal show-modal recommend-list-wrap">
-                        <RecommendCluesForm
-                            hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
-                            hideFocusCustomerPanel={this.hideFocusCustomerPanel}
-                            saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
-                        /> </div> : null}
+                    <RecommendCluesForm
+                        hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
+                        hideFocusCustomerPanel={this.hideFocusCustomerPanel}
+                        saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                    /> : null}
             </div>
 
 
