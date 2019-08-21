@@ -145,9 +145,11 @@ class RecommendCustomerCondition extends React.Component {
     };
     onDateChange = (dates, dateStrings) => {
         if (_.get(dateStrings,'[0]') && _.get(dateStrings,'[1]')){
+            //开始时间要取那天早上的00:00:00
+            //结束时间要取那天晚上的23:59:59
             this.setState({
-                registerStartTime: moment(_.get(dateStrings,'[0]')).valueOf(),
-                registerEndTime: moment(_.get(dateStrings,'[1]')).valueOf(),
+                registerStartTime: moment(_.get(dateStrings,'[0]')).startOf('day').valueOf(),
+                registerEndTime: moment(_.get(dateStrings,'[1]')).endOf('day').valueOf(),
             });
         }else{
             this.setState({
