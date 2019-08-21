@@ -36,6 +36,8 @@ import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+import DetailCard from 'CMP_DIR/detail-card';
+import ClueTraceList from 'MOD_DIR/clue_customer/public/views/clue_trace_list';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 class ClueDetailOverview extends React.Component {
     state = {
@@ -735,7 +737,7 @@ class ClueDetailOverview extends React.Component {
                     </div>
                 </div>
                 <div className="btn-container">
-                        {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
+                    {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
                 </div>
             </div>
         );
@@ -743,13 +745,13 @@ class ClueDetailOverview extends React.Component {
     //判断是否显示按钮控制tab高度
     hasButtonTabHeight = (curClue, associatedCustomer ) => {
         var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
-                            ||  (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
+                            || (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         var associatedClue = (curClue.clue_type !== 'clue_pool')
-                                && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE ||curClue.status === SELECT_TYPE.WILL_TRACE) &&!associatedCustomer);                                             
+                                && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);                                             
         if(avalibility && associatedClue){
-            return ({height: this.state.divHeight - HAS_BTN_HEIGHT})
+            return ({height: this.state.divHeight - HAS_BTN_HEIGHT});
         }else{
-            return ({height: this.state.divHeight})
+            return ({height: this.state.divHeight});
         }                  
     }
 
@@ -806,54 +808,32 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
+    //渲染跟进列表
+    renderTraceList = () => {
+        let curClue = _.get(this.state, 'curClue');
+        return (<ClueTraceList
+            curClue={curClue}
+            updateCustomerLastContact={this.props.updateCustomerLastContact}
+            showClueDetailPanel={true}
+            isOverViewPanel={true}
+            changeActiveKey={this.props.changeActiveKey}
+        />);
+    }
+
     //渲染跟进内容
     renderTraceContent = () => {
         var curClue = this.state.curClue;
         //是否有添加跟进记录的权限
         var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE') && editCluePrivilege(curClue);
-        var remarkContent = _.get(curClue, 'customer_traces[0].remark');
-        var remarkAddName = _.get(curClue, 'customer_traces[0].nick_name');
-        var remarkAddTime = _.get(curClue, 'customer_traces[0].add_time');
-        var cls = className('clue-info-item', {
-            'no-margin-bottom': !remarkContent
-        });
+        let noTraceData = _.isEmpty(_.get(curClue, 'customer_traces'));
         return (
-            <div className="clue-trace-content clue-detail-block">
-                <div className={cls}>
-                    <div className="clue-info-label">
-                        {Intl.get('call.record.follow.content', '跟进内容')}：
-                    </div>
-                    <div className="clue-info-detail">
-                        <BasicEditInputField
-                            width={EDIT_FEILD_WIDTH}
-                            hasEditPrivilege={hasPrivilegeAddEditTrace}
-                            id={curClue.id}
-                            saveEditInput={this.saveTraceContentInfo}
-                            value={remarkContent}
-                            field='remark'
-                            type='textarea'
-                            row={3}
-                            validators={[{
-                                required: true,
-                                message: Intl.get('cluecustomer.content.not.empty', '跟进内容不能为空')
-                            }]}
-                            noDataTip={Intl.get('clue.no.trace.content', '暂无跟进')}
-                            addDataTip={Intl.get('clue.add.trace.content', '添加跟进内容')}
-                            placeholder={Intl.get('sales.home.fill.in.trace.content', '请输入跟进内容')}
-                            hasMoreRow={true}
-                        />
-                    </div>
-                </div>
-                {remarkContent && remarkAddTime ?
-                    <div className="add-person-info ">
-                        <div className="add-clue-info">
-                            <span className="source-name">{remarkAddName}</span>
-                            {Intl.get('clue.add.clue.time', '添加于')}
-                            {moment(remarkAddTime).format(oplateConsts.DATE_FORMAT)}
-                        </div>
-                    </div> : null}
-            </div>
-        );
+            <DetailCard
+                title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
+                titleBottomBorderNone={noTraceData}
+                titleDescr={noTraceData ? Intl.get('clue.add.trace.content', '添加跟进内容') : ''}
+                content={this.renderTraceList()}
+                disableEdit={hasPrivilegeAddEditTrace}
+            />);
     };
 
     //渲染关联账号的详情
@@ -1288,7 +1268,6 @@ class ClueDetailOverview extends React.Component {
                             this.renderAssigendClueText() : this.renderAssignedClueEdit()
                         }
                     </div>
-                    {this.renderTraceContent()}
                     <div className="associate-customer-detail clue-detail-block">
                         {/*线索处理，已跟进或待跟进的线索并且没有关联客户*/}
                         {this.renderAssociatedClue(curClue,associatedCustomer)}
@@ -1304,6 +1283,7 @@ class ClueDetailOverview extends React.Component {
                             : null
                     }
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
+                    {this.renderTraceContent()}
                 </GeminiScrollbar>
             </div>
         );
@@ -1365,6 +1345,7 @@ ClueDetailOverview.propTypes = {
     updateCustomerLastContact: PropTypes.func,
     extractClueOperator: PropTypes.func,
     showClueToCustomerPanel: PropTypes.func,
+    changeActiveKey: PropTypes.func
 };
 
 module.exports = ClueDetailOverview;
