@@ -7,7 +7,7 @@ var React = require('react');
  */
 require('./index.less');
 import PropTypes from 'prop-types';
-import {emailRegex, qqRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {emailRegex, qqRegex, wechatRegex} from 'PUB_DIR/sources/utils/validate-util';
 import PhoneInput from 'CMP_DIR/phone-input';
 import classNames from 'classnames';
 import {Form, Input, Icon} from 'antd';
@@ -16,7 +16,7 @@ const CONTACT_WAY_PLACEHOLDER = {
     'phone': Intl.get('clue.add.phone.num', '电话号码'),
     'email': Intl.get('clue.add.email.addr', '邮箱地址'),
     'qq': Intl.get('clue.add.qq.num', 'QQ号码'),
-    'weChat': Intl.get('clue.add.wechat.num', '微信号码')
+    'weChat': Intl.get('clue.add.wechat.num', '微信号码'),
 };
 // 联系方式的label
 const CONTACT_WAY_LABEL = {
@@ -38,6 +38,17 @@ class DynamicAddDelContacts extends React.Component {
             }
         } else {
             callback();
+        }
+    }
+
+    checkWechat = (rule, value, callback) => {
+        value = _.trim(value);
+        if(value){
+            if(wechatRegex.test(value)){
+                callback();
+            }else{
+                callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
+            }
         }
     }
 
@@ -205,7 +216,7 @@ class DynamicAddDelContacts extends React.Component {
                         return this.renderContacWayFormItem(index, contactKey, 'email', email.key, email.value, emailIndex, emailArray.length, this.checkEmail);
                     })}
                     {_.map(weChatArray, (weChat, weChatIndex) => {
-                        return this.renderContacWayFormItem(index, contactKey, 'weChat', weChat.key, weChat.value, weChatIndex, weChatArray.length);
+                        return this.renderContacWayFormItem(index, contactKey, 'weChat', weChat.key, weChat.value, weChatIndex, weChatArray.length, this.checkWechat);
                     })}
                 </div>
             </div>

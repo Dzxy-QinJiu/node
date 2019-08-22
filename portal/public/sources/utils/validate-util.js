@@ -49,6 +49,8 @@ export const phone1010Regex = /^1010\d+$/;
 //QQ号码的正则表达式
 export const qqRegex = /^[1-9][0-9]{4,}$/;
 
+//微信号的正则表达式 
+export const wechatRegex = / ^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/;
 // 验证QQ
 exports.checkQQ = (rule, value, callback) => {
     value = _.trim(value);
