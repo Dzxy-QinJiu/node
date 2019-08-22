@@ -16,7 +16,6 @@ var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compression = require('compression');
-var coordinator = require('./portal/lib/middlewares/coordinator-client');
 var commonUtils = require('./portal/lib/utils/common-utils');
 var auth = require('./portal/lib/utils/auth');
 
@@ -111,12 +110,8 @@ var server = app.listen(app.get('port'), function() {
     // eslint-disable-next-line no-console
     console.log('Oplate Server Running At http://localhost:' + app.get('port'));
 });
-
-//初始化coordinator
+//创建socketIO,启动推送
 if (auth.getLang() !== 'es_VE') {
-    coordinator(function() {
-        //Coordinator启动后，创建socketIO,启动推送
-        require('./portal/modules/socketio').startSocketio(server);
-    });
+    require('./portal/modules/socketio').startSocketio(server);
 }
 

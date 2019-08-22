@@ -17,7 +17,6 @@ var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compression = require("compression");
-var coordinator = require("./portal/lib/middlewares/coordinator-client");
 var commonUtils = require("./portal/lib/utils/common-utils");
 
 //修改配置数据
@@ -105,11 +104,8 @@ function initExpress() {
         console.log('Oplate Server Running At http://localhost:' + expressApp.get('port'));
     });
 
-//初始化coordinator
-    coordinator(function () {
-        //Coordinator启动后，创建socketIO,启动推送
-        require("./portal/modules/socketio").startSocketio(server);
-    });
+    //创建socketIO,启动推送
+    require("./portal/modules/socketio").startSocketio(server);
 }
 
 const electron = require('electron');
