@@ -161,14 +161,19 @@ class CustomerStageInfo extends React.Component {
                                     >
                                     </Button>
                                 </PrivilegeChecker>
-                                <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
-                                    <Button
-                                        className="customer-stage-btn-class icon-role-auth-config iconfont"
-                                        onClick={this.showCustomerStageDetail.bind(this, customerStage)}
-                                        data-tracename="设置客户阶段"
-                                    >
-                                    </Button>
-                                </PrivilegeChecker>
+                                {
+                                    /*** 先注释到客户阶段的设置功能
+                                     * <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                             <Button
+                                             className="customer-stage-btn-class icon-role-auth-config iconfont"
+                                             onClick={this.showCustomerStageDetail.bind(this, customerStage)}
+                                             data-tracename="设置客户阶段"
+                                             >
+                                             </Button>
+                                      </PrivilegeChecker>
+                                     * */
+                                }
+
                             </div>
                         )
                 }
@@ -180,6 +185,7 @@ class CustomerStageInfo extends React.Component {
                             saveCustomerStageSettingPlay={this.props.saveCustomerStageSettingPlay}
                             salesBehaviorList={this.props.salesBehaviorList}
                             saleProcessId={this.props.saleProcessId}
+                            autoConditionsList={this.props.autoConditionsList}
                         />
                     ) : null
                 }
@@ -211,6 +217,7 @@ CustomerStageInfo.propTypes = {
     saveCustomerStageSettingPlay: PropTypes.func,
     salesBehaviorList: PropTypes.array,
     saleProcessId: PropTypes.string,
+    autoConditionsList: PropTypes.array,
 };
 
 export default CustomerStageInfo;

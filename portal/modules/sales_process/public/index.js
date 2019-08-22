@@ -214,10 +214,10 @@ class SalesProcess extends React.Component {
                     this.changeSaleProcessFieldSuccess(upDateProcess);
                     message.success(Intl.get('crm.218', '修改成功！'));
                 } else {
-                    message.success(Intl.get('crm.219', '修改失败！'));
+                    message.error(Intl.get('crm.219', '修改失败！'));
                 }
             }, (errorMsg) => {
-                message.success(errorMsg || Intl.get('crm.219', '修改失败！'));
+                message.error(errorMsg || Intl.get('crm.219', '修改失败！'));
             });
         }
     };

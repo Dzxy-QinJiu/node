@@ -295,6 +295,54 @@
                 }
               }
             }
+            // 自动变更
+            .customer-stage-auto-conditions {
+              background-color: #fff;
+              padding: 20px;
+              height: 100%;
+              .auto-conditions-title {
+                margin-bottom: 16px;
+              }
+              .auto-conditions-content {
+                .basic-info-conditions {
+                  padding-bottom: 16px;
+                  float: left;
+                  width: 100%;
+                  min-height: 24px;
+                  font-size: 14px;
+                  .basic-info-label {
+                    float: left;
+                    line-height: 24px;
+                    color: #999;
+                  }
+                  //编辑按钮hover时才展示
+                  .icon-edit-btn {
+                    display: none;
+                  }
+                  &:hover {
+                    .icon-edit-btn {
+                      display: block;
+                      float: right;
+                      font-size: 16px;
+                      color: #8da8c5;
+                      cursor: pointer;
+                    }
+                  }
+                  form {
+                    .ant-form-item {
+                      padding-right: 0;
+                    }
+                  }
+                }
+                .basic-info-status {
+                  .basic-info-label {
+                    float: left;
+                    color: #999;
+                    margin-right: 10px;
+                  }
+                }
+              }
+            }
           }
       }
     }

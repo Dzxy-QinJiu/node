@@ -81,5 +81,26 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    }]
+    }, {
+        'method': 'get', // 获取客户阶段的自动变更条件
+        'path': '/rest/get/customer/stage/auto/change/conditions',
+        'handler': 'getCustomerStageAutoConditions',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        'method': 'post', // 编辑客户阶段的自动变更条件（添加或是更新）
+        'path': '/rest/edit/customer/stage/auto/change/conditions/:processId/:stageId',
+        'handler': 'editCustomerStageAutoConditions',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        'method': 'put', // 启/停用自动化条件
+        'path': '/rest/change/auto/change/conditions/:processId/:stageId/:status',
+        'handler': 'changeAutoConditionsStatus',
+        'passport': {
+            'needLogin': true
+        }
+    },]
 };
