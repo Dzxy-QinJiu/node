@@ -29,10 +29,12 @@ import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
 import { StatusWrapper } from 'antc';
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
+import MemberRecord from './member-record';
 
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
-    LOG_TAB: '2'//操作日志
+    LOG_TAB: '2',//操作日志
+    RECORD_TAB: '3', // 变更记录
 };
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 class MemberInfo extends React.Component {
@@ -851,7 +853,9 @@ class MemberInfo extends React.Component {
     }
 
     renderDetailTabs() {
-        let containerHeight = this.getContainerHeight();
+        const containerHeight = this.getContainerHeight();
+        const memberInfo = this.state.memberInfo;
+        const memberId = memberInfo.id;
         return (
             <Tabs
                 defaultActiveKey={TAB_KEYS.BASIC_INFO_TAB}
@@ -880,6 +884,19 @@ class MemberInfo extends React.Component {
                                 getContainerHeight={this.getContainerHeight}
                                 userName={_.get(this.state, 'memberInfo.userName.value') ||
                                        _.get(this.state, 'memberInfo.userName', '')}
+                            />
+                        ) : null
+                    }
+                </TabPane>
+                <TabPane
+                    tab={Intl.get('user.change.record', '变更记录')}
+                    key={TAB_KEYS.RECORD_TAB}
+                >
+                    {
+                        this.state.activeKey === TAB_KEYS.RECORD_TAB ? (
+                            <MemberRecord
+                                memberId={memberId}
+                                getContainerHeight={this.getContainerHeight}
                             />
                         ) : null
                     }

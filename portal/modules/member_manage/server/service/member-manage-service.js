@@ -7,7 +7,6 @@ const auth = require('../../../../lib/utils/auth');
 const Promise = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 
-
 const memberRestApis = {
     //获取用户列表地址
     getUsers: '/rest/base/v1/user',
@@ -35,6 +34,8 @@ const memberRestApis = {
     getMemberPosition: '/rest/base/v1/user/member/teamrole',
     // 成员分配职务
     setMemberPosition: '/rest/base/v1/user/member/teamrole',
+    // 获取成员变动记录
+    getMemberChangeRecord: '/rest/base/v1/user/member/timeline'
 };
 
 exports.urls = memberRestApis;
@@ -360,4 +361,14 @@ exports.setSalesGoals = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+
+// 获取成员变动记录
+exports.getMemberChangeRecord = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: memberRestApis.getMemberChangeRecord,
+            req: req,
+            res: res
+        }, req.query);
 };
