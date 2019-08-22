@@ -265,6 +265,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 dataIndex: 'startTime',
                 width: '200px',
                 align: 'left',
+                sorter: (a, b) => a.startTime - b.startTime,
                 render: (text, record, index) => {
                     return (
                         <span>{text ? moment(text).format(oplateConsts.DATE_FORMAT) : null}
