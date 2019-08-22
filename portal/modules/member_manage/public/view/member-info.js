@@ -20,7 +20,7 @@ import MemberInfoAction from '../action/member-info-action';
 import Trace from 'LIB_DIR/trace';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from './radio-card';
-import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, nameLengthRule, checkQQ} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -662,24 +662,19 @@ class MemberInfo extends React.Component {
                     />
                 </div>
                 <div className="basic-info-item">
-                    <span className="basic-info-label">{Intl.get('common.email', '邮箱')}:</span>
+                    <span className="basic-info-label">QQ:</span>
                     <BasicEditInputField
-                        width={EDIT_FEILD_WIDTH}
+                        width={EDIT_FEILD_LESS_WIDTH}
                         id={memberInfo.id}
-                        value={memberInfo.email}
-                        afterTextTip={`(${memberInfo.emailEnable ? Intl.get('common.actived', '已激活') : Intl.get('member.not.actived', '未激活')})`}
-                        field="email"
+                        value={memberInfo.qq}
+                        field="qq"
                         type="text"
                         hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
-                        validators={[{
-                            type: 'email',
-                            required: true,
-                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                        }]}
-                        placeholder={Intl.get('member.input.email', '请输入邮箱')}
-                        saveEditInput={this.saveEditMemberInfo.bind(this, 'email')}
-                        noDataTip={Intl.get('member.email.no.data', '未添加邮箱')}
-                        addDataTip={Intl.get('user.info.add.email', '添加邮箱')}
+                        validators={[{validator: checkQQ}]}
+                        placeholder={Intl.get('member.input.qq', '请输入QQ号')}
+                        saveEditInput={this.saveEditMemberInfo.bind(this, 'qq')}
+                        noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
+                        addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
                     />
                 </div>
                 <div className="basic-info-item">

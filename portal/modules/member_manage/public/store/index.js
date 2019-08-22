@@ -13,7 +13,8 @@ let emptyMember = {
     phone: '',
     email: '',
     role: [],
-    phoneOrder: ''
+    phoneOrder: '',
+    qq: ''
 };
 
 class MemberManageStore {
@@ -100,6 +101,7 @@ class MemberManageStore {
                 curMember.phoneOrder = _.get(result, 'phoneOrder');
                 curMember.createDate = _.get(result, 'createDate'); // 创建时间
                 curMember.disableDate = _.get(result, 'disableDate'); // 停用时间
+                curMember.qq = _.get(result, 'qq'); // qq
             }
             this.currentMember = result;
         }
@@ -184,7 +186,7 @@ class MemberManageStore {
                 let email = _.get(modifiedMember, 'email'); // 邮箱
                 let teamName = _.get(modifiedMember, 'teamName'); // 部门
                 let positionName = _.get(modifiedMember, 'positionName'); // 职务
-
+                let qq = _.get(modifiedMember, 'qq'); // qq
                 if (status) { // 修改成员状态
                     changeMember.status = status;
                 } else if (nick_name) { // 修改成员昵称
@@ -212,6 +214,8 @@ class MemberManageStore {
                 } else if (_.has(modifiedMember, 'positionName')) { // 修改成员职务
                     changeMember.positionName = positionName;
                     changeMember.positionId = _.get(modifiedMember, 'position');
+                } else if (_.has(modifiedMember, 'qq')) {
+                    changeMember.qq = qq;
                 }
                 this.currentMember = changeMember;
             } else { // 团队中修改成员的头像信息

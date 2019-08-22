@@ -99,6 +99,7 @@ class MemberRecord extends React.Component{
                 let password = _.get(operateDetail, 'password'); // 修改了密码
                 let email = _.get(operateDetail, 'email'); // 修改了邮箱
                 let phone = _.get(operateDetail, 'phone'); // 修改了手机号
+                let qq = _.get(operateDetail, 'qq'); // 修改了qq
                 if (logo) {
                     operatePerson += Intl.get('member.record.change.field', '修改了该成员的{field}。',
                         {field: Intl.get('member.head.logo', '头像')});
@@ -114,6 +115,9 @@ class MemberRecord extends React.Component{
                 } else if (phone) {
                     operatePerson += Intl.get('member.record.change.field.name', '修改了该成员的{field}，改为{name}。',
                         {field: Intl.get('member.phone', '手机'), name: phone});
+                } else if (qq) {
+                    operatePerson += Intl.get('member.record.change.field.name', '修改了该成员的{field}，改为{name}。',
+                        {field: 'QQ', name: qq});
                 }
             } else if (operateType === 'teamChange') { // 修改部门的变更信息
                 // 修改了部门
