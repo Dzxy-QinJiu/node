@@ -840,8 +840,8 @@ function hasEditMember(memberList, editUserId) {
 }
 //修改用户详情后，更改列表中的数据
 SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
-    let teamMemberObj = this.curShowTeamMemberObj;
-    let groupId = _.get(teamMemberObj, 'groupId');
+    let teamMemberObj = this.curShowTeamMemberObj; // 当前团队的成员
+    let groupId = _.get(teamMemberObj, 'groupId'); // 当前团队的groupId
 
     let owner = _.get(teamMemberObj, 'owner'); // 负责人
     let ownerId = _.get(owner, 'userId'); // 负责人id
@@ -907,38 +907,7 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
             }
         }
     } else if (_.has(member, 'team')) { // 修改成员部门
-        if (team) {
-            if (team !== groupId) {
-                // 更新原部门成员个数
-                let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === groupId);
-                let oldTeam = _.find(this.salesTeamList, item => item.group_id === team);
-
-                if (ownerId === memberId) { // 修改负责人所在的部门
-                    updateMemberCountTeam.total -= 1;
-                    delete teamMemberObj.owner;
-                    delete oldTeam.owner_id;
-                } else if (hasEditMember(managers, memberId)) { // 修改舆情秘书的部门
-                    updateMemberCountTeam.total -= 1;
-                    teamMemberObj.managers = _.filter(managers, userItem => userItem.userId !== memberId);
-                    oldTeam.manager_ids = _.filter(oldTeam.manager_ids, id => id !== memberId);
-                } else if (hasEditMember(users, memberId)) {// 修改普通成员的团队
-                    updateMemberCountTeam.total -= 1;
-                    teamMemberObj.users = _.filter(users, userItem => userItem.userId !== memberId);
-                    oldTeam.user_ids = _.filter(oldTeam.user_ids, id => id !== memberId);
-                }
-            }
-            //将修改后的成员加入新部门中
-            // 更新新部门成员个数
-            let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === team);
-            let addInTeam = _.find(this.salesTeamList, item => item.group_id === team);
-            if (_.get(addInTeam, 'user_ids.length')) {
-                addInTeam.user_ids.push(memberId);
-                updateMemberCountTeam.total += 1;
-            } else if (addInTeam) {
-                updateMemberCountTeam.total += 1;
-                addInTeam.user_ids = [memberId];
-            }
-        } else { // 将成员部门置空的处理
+        if (team !== groupId) {
             // 更新原部门成员个数
             let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === groupId);
 
@@ -953,7 +922,19 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
                 teamMemberObj.users = _.filter(users, userItem => userItem.userId !== memberId);
             }
         }
-
+        if (team) {
+            //将修改后的成员加入新部门中
+            // 更新新部门成员个数
+            let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === team);
+            let addInTeam = _.find(this.salesTeamList, item => item.group_id === team);
+            if (_.get(addInTeam, 'user_ids.length')) {
+                addInTeam.user_ids.push(memberId);
+                updateMemberCountTeam.total += 1;
+            } else if (addInTeam) {
+                updateMemberCountTeam.total += 1;
+                addInTeam.user_ids = [memberId];
+            }
+        }
     } else if (_.has(member, 'position')) { // 修改成员的职务
         if (ownerId === memberId) { // 修改负责人的职务
             owner.positionName = positionName;
