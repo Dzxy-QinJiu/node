@@ -6,6 +6,7 @@
 require('../css/new-distribute-customer.less');
 import {Tag} from 'antd';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+import CustomerLabel from 'CMP_DIR/customer_label';
 class NewDistributeCustomer extends React.Component {
     constructor(props) {
         super(props);
@@ -31,14 +32,10 @@ class NewDistributeCustomer extends React.Component {
         return (
             <div className="new-distribute-customer customer-detail-item">
                 <div className="new-distribute-customer-title">
-                    {newDistributeCustomer.qualify_label ? (
-                        <Tag className={crmUtil.getCrmLabelCls(newDistributeCustomer.qualify_label)}>
-                            {newDistributeCustomer.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                newDistributeCustomer.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null}
-                    {newDistributeCustomer.customer_label ? (
-                        <Tag
-                            className={crmUtil.getCrmLabelCls(newDistributeCustomer.customer_label)}>
-                            {newDistributeCustomer.customer_label}</Tag>) : null
+                        <CustomerLabel className={newDistributeCustomer.qualify_label} 
+                        content={newDistributeCustomer.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
+                            newDistributeCustomer.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}/>
+                        <CustomerLabel className={newDistributeCustomer.customer_label} content={newDistributeCustomer.customer_label}/>
                     }
                     <span className="sale-home-customer-name" onClick={this.openCustomerDetail.bind(this, newDistributeCustomer.id)} data-tracename="打开客户详情">{newDistributeCustomer.customer_name || newDistributeCustomer.name}</span>
                 </div>
