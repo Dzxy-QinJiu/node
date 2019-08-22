@@ -749,6 +749,7 @@ var en_US = {
     'member.get.role.lists': 'Getting role lists',//正在获取角色列表
     'member.is.building': 'Setting up',//创建中
     'member.create.time': 'Creating Time',//创建时间
+    'member.disable.time': 'Disable Time', // 停用时间
     'member.forbidden.self': 'Can\'t disable yourself', // 禁止禁用自己
     'member.email.extra.tip': 'The mailbox will be used as the user name for login',//邮箱会作为登录时的用户名使用
     'member.save.logo.tip': 'Do you want to save the uploaded head ?',//是否保存上传的头像？

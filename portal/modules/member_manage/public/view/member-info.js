@@ -490,6 +490,7 @@ class MemberInfo extends React.Component {
                 return <Option value='' >&nbsp;</Option>;
             }
         });
+        let disableDate = _.get(memberInfo, 'disableDate');
         return (
             <div>
                 <div className="basic-info-item">
@@ -569,6 +570,14 @@ class MemberInfo extends React.Component {
                         value={memberInfo.createDate ? moment(memberInfo.createDate).format(oplateConsts.DATE_FORMAT) : ''}
                         hasEditPrivilege={false}
                     />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">
+                        {Intl.get('member.disable.time', '停用时间')}:
+                    </span>
+                    <span>
+                        {disableDate ? moment(disableDate).format(oplateConsts.DATE_FORMAT) : ''}
+                    </span>
                 </div>
             </div>
         );
@@ -673,13 +682,39 @@ class MemberInfo extends React.Component {
                         addDataTip={Intl.get('user.info.add.email', '添加邮箱')}
                     />
                 </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">{Intl.get('common.email', '邮箱')}:</span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_WIDTH}
+                        id={memberInfo.id}
+                        value={memberInfo.email}
+                        afterTextTip={`(${memberInfo.emailEnable ? Intl.get('common.actived', '已激活') : Intl.get('member.not.actived', '未激活')})`}
+                        field="email"
+                        type="text"
+                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                        validators={[{
+                            type: 'email',
+                            required: true,
+                            message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                        }]}
+                        placeholder={Intl.get('member.input.email', '请输入邮箱')}
+                        saveEditInput={this.saveEditMemberInfo.bind(this, 'email')}
+                        noDataTip={Intl.get('member.email.no.data', '未添加邮箱')}
+                        addDataTip={Intl.get('user.info.add.email', '添加邮箱')}
+                    />
+                </div>
             </div>
         );
     }
 
     //切换tab时的处理
     changeActiveKey = (key) => {
-        let keyName = key === TAB_KEYS.BASIC_INFO_TAB ? '基本信息' : '操作日志';
+        let keyName = '基本信息';
+        if (key === TAB_KEYS.LOG_TAB) {
+            keyName = '操作日志';
+        } else if (key === TAB_KEYS.RECORD_TAB) {
+            keyName = '变更记录';
+        }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({
             activeKey: key

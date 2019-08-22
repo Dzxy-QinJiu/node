@@ -98,8 +98,8 @@ class MemberManageStore {
                 curMember.teamName = _.get(result, 'teamName');
                 curMember.teamId = _.get(result, 'teamId');
                 curMember.phoneOrder = _.get(result, 'phoneOrder');
-                //获取成员详情中没有创建时间，所以用列表中获取的创建时间
-                result.createDate = _.get(curMember, 'createDate');
+                curMember.createDate = _.get(result, 'createDate'); // 创建时间
+                curMember.disableDate = _.get(result, 'disableDate'); // 停用时间
             }
             this.currentMember = result;
         }

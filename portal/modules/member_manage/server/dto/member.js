@@ -45,8 +45,13 @@ exports.toFrontObject = function(restObject) {
     }
     let user_client = restObject.user_client;
     frontObj.status = user_client && Array.isArray(user_client) && user_client.length && user_client[0].status;
-    if (restObject.create_date) {
+    if (restObject.create_date) { // 创建时间
         frontObj.createDate = restObject.create_date;
+    }
+    // 停用时间
+    let disableDate = restObject.disable_date;
+    if (disableDate) {
+        frontObj.disableDate = disableDate;
     }
     return frontObj;
 };

@@ -754,6 +754,7 @@ var zh_CN = {
     'member.get.role.lists': '正在获取角色列表',
     'member.is.building': '创建中',
     'member.create.time': '创建时间',
+    'member.disable.time': '停用时间',
     'member.forbidden.self': '禁止禁用自己',
     'member.email.extra.tip': '邮箱会作为登录时的用户名使用',
     'member.save.logo.tip': '是否保存上传的头像？',
