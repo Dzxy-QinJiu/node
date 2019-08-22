@@ -260,6 +260,7 @@ var en_US = {
     'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
     'common.import.template': 'Template',//模板
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'common.create': 'Create', // 创建
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -748,6 +749,7 @@ var en_US = {
     'member.get.role.lists': 'Getting role lists',//正在获取角色列表
     'member.is.building': 'Setting up',//创建中
     'member.create.time': 'Creating Time',//创建时间
+    'member.disable.time': 'Disable Time', // 停用时间
     'member.forbidden.self': 'Can\'t disable yourself', // 禁止禁用自己
     'member.email.extra.tip': 'The mailbox will be used as the user name for login',//邮箱会作为登录时的用户名使用
     'member.save.logo.tip': 'Do you want to save the uploaded head ?',//是否保存上传的头像？
@@ -784,6 +786,11 @@ var en_US = {
     'member.position.set.default': 'Setting default', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
     'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 50 (including 50).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
+    'member.record.member.operate': 'The member was {operate}', // {operate}了该成员。
+    'member.record.change.field': 'Changed {field} for the member', // 修改了该成员的{field}。
+    'member.record.change.field.name': 'Changed {field} of the member to {name}', // 修改了该成员的{field}，改为{name}
+    'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
+    'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
     //后台管理-成员end
 
     //组织管理start

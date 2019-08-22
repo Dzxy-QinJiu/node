@@ -267,6 +267,7 @@ var zh_CN = {
     'common.download.template.filename': '下载{type}模板',
     'common.import.template': '模板',
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
+    'common.create': '创建',
 
     //公共部分--end
     'login.login': '登录',
@@ -753,6 +754,7 @@ var zh_CN = {
     'member.get.role.lists': '正在获取角色列表',
     'member.is.building': '创建中',
     'member.create.time': '创建时间',
+    'member.disable.time': '停用时间',
     'member.forbidden.self': '禁止禁用自己',
     'member.email.extra.tip': '邮箱会作为登录时的用户名使用',
     'member.save.logo.tip': '是否保存上传的头像？',
@@ -789,6 +791,11 @@ var zh_CN = {
     'member.position.set.default': '设为默认',
     'member.continue.add.member': '继续添加成员',
     'member.add.member.rule': '用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间',
+    'member.record.member.operate': '{operate}了该成员。',
+    'member.record.change.field': '修改了该成员的{field}。',
+    'member.record.change.field.name': '修改了该成员的{field}，改为{name}',
+    'member.record.get.record.failed': '获取成员变更失败',
+    'member.record.no.record': '暂无变更记录',
     //后台管理-成员end
 
     //组织管理start

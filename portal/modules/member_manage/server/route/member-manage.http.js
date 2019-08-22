@@ -145,5 +145,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'get', // 获取成员变动记录
+        'path': '/rest/get/member/record/timeline',
+        'handler': 'getMemberChangeRecord',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };
