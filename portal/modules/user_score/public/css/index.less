@@ -1,35 +1,68 @@
 .user-score-container {
-  padding: 12px;
+  padding:4px 12px 12px 12px;
   .user-score-wrap {
     background: #fff;
     .user-score-content {
       font-size: 14px;
       padding: 24px;
+      .status-wrapper{
+        float: right;
+      }
       .level-rule-tip{
-        margin-bottom: 12px;
+        color:#333;
+        font-size: 16px;
+        overflow: hidden;
+      }
+
+
+      //公共部分样式
+      .thead-title{
+        background: #F5F5F5;
+        font-size: 14px;
+        color: #999999;
+        text-align: left;
+      }
+      .ant-row{
+        height: 43px;
+        line-height: 40px;
+        &:hover{
+          background: #F1F8FE;
+        }
+        >div{
+          padding-left: 16px;
+        }
+        .ant-input-number{
+          margin:0 4px;
+        }
+        .add-minus-btns{
+          font-size: 22px;
+          cursor: pointer;
+          display: inline-block;
+          width: 100px;
+          text-align: right;
+        }
+      }
+      .iconfont.icon-update{
+        float: right;
+        cursor: pointer;
+        margin-right: 10px;
+        visibility: hidden;
       }
       //基本信息配置
       .basic-score-rule{
         padding: 12px 0;
-        p{
-          margin-bottom: 10px;
-          .ant-switch{
-            display: inline-block;
-            margin-left: 10px;
-          }
-        }
-        .ant-row{
-          margin-bottom:10px;
-          .start-icon{
-            display: inline-block;
-            margin: 0px 10px;
-          }
-          .add-minus-btns{
-            font-size: 20px;
-            cursor: pointer;
-            display: inline-block;
-            width: 100px;
+        border:1px solid #E5E5E5;
+        .basic-score-title{
+          color: #333;
+          font-size: 14px;
+          padding: 12px;
+          .status-wrapper{
             float: right;
+          }
+          &:hover{
+            .iconfont.icon-update{
+              visibility: visible;
+            }
           }
         }
         .user-score-lists{

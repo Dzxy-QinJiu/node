@@ -24,7 +24,7 @@ class CustomerScoreStore {
         this.minValue = 0;//分数尺子上的最小刻度
         this.maxValue = 0;//分数尺子上的最大刻度
         this.marks = {};//尺子上的下标
-        this.customerIndicator = [];//客户评分规则
+        this.customerIndicatorArr = [];//客户评分规则
         this.customerLevelObj = {
             loading: true,
             errMsg: '',
@@ -145,7 +145,11 @@ class CustomerScoreStore {
     }
     getCustomerScoreIndicator(result) {
         if (_.isArray(result.resData)) {
-            this.customerIndicator = result.resData;
+            _.forEach(result.resData, item => {
+                if (_.isArray(item.indicator_details)){
+                    this.customerIndicatorArr = _.concat(this.customerIndicatorArr, item.indicator_details);
+                }
+            });
         }
     }
     saveCustomerRules(result){

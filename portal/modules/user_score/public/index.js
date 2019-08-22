@@ -17,6 +17,10 @@ import Spinner from 'CMP_DIR/spinner';
 import {TimeRangeSelect} from 'MOD_DIR/customer_score/public/utils/customer_score_util';
 import {RETRY_GET_APP} from 'MOD_DIR/app_user_manage/public/util/consts';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
+import { StatusWrapper } from 'antc';
+import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
+var spanLength = '8';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 class userScore extends React.Component {
     constructor(props) {
         super(props);
@@ -142,9 +146,8 @@ class userScore extends React.Component {
             userEngagementFormData
         });
     };
-    renderUserScoreLists = () => {
-        var spanLength = '6';
-        const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData} = this.state;
+    renderUserBasicScoreLists = () => {
+        const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData, isEditUserBasicRule, userLevelObj} = this.state;
         var userScoreDetailList = _.get(userScoreFormData, 'detail', []);
         if (!userScoreDetailList.length) {
             userScoreDetailList.push({
@@ -156,10 +159,10 @@ class userScore extends React.Component {
             });
         }
 
-        if (_.get(this, 'state.userLevelObj.loading')) {
+        if (_.get(userLevelObj, 'loading')) {
             return (<Spinner/>);
-        } else if (_.get(this, 'state.userLevelObj.errMsg')) {
-            var errMsg = <span>{_.get(this, 'state.userLevelObj.errMsg')}
+        } else if (_.get(userLevelObj, 'errMsg')) {
+            var errMsg = <span>{_.get(userLevelObj, 'errMsg')}
                 <a onClick={this.getCustomerScoreLevel}>
                     {Intl.get('user.info.retry', '请重试')}
                 </a></span>;
@@ -180,10 +183,13 @@ class userScore extends React.Component {
                     if (_.get(userScoreDetailList, 'length') === _.get(userIndicator, 'length')) {
                         userIndicatorList = _.filter(userIndicatorList, indicatorItem => indicatorItem.indicator === item.indicator);
                     }
+                    var targetIndicator = _.find(userIndicatorList, indicator => indicator.indicator === item.indicator);
+                    var targetTimeRange = _.find(userIndicatorRangeList[item['indicator']], timeRange => timeRange.value === item.interval);
+                    var numberTarget = _.find(userIndicatorTypeList[item['indicator']], number => number.value === item.online_unit);
                     return (
                         <Row>
                             <Col span={spanLength}>
-                                <Select
+                                {isEditUserBasicRule ? <Select
                                     style={{width: 100 }}
                                     value={item['indicator']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'indicator')}
@@ -191,10 +197,11 @@ class userScore extends React.Component {
                                     {userIndicatorList.map((item, index) => (
                                         <Option key={index} value={item.indicator}>{item.desc}</Option>
                                     ))}
-                                </Select>
+                                </Select> : _.get(targetIndicator,'desc')}
+
                             </Col>
                             <Col span={spanLength}>
-                                <Select
+                                {isEditUserBasicRule ? <Select
                                     style={{width: 100 }}
                                     value={item['interval']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'interval')}
@@ -202,11 +209,10 @@ class userScore extends React.Component {
                                     {_.isArray(userIndicatorRangeList[item['indicator']]) ? userIndicatorRangeList[item['indicator']].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.name}</Option>
                                     )) : null}
-
-                                </Select>
+                                </Select> : _.get(targetTimeRange,'name')}
                             </Col>
                             <Col span={spanLength}>
-                                <Select
+                                {isEditUserBasicRule ? <Select
                                     style={{width: 100 }}
                                     value={item['online_unit']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'online_unit')}
@@ -215,15 +221,16 @@ class userScore extends React.Component {
                                         <Option key={index} value={item.value}>{item.name}</Option>
                                     )) : null}
 
-                                </Select>
+                                </Select> : _.get(numberTarget,'name')}
                                 <span className="start-icon">*</span>
-                                <InputNumber value={item.score}
+                                {isEditUserBasicRule ? <InputNumber value={item.score}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'score')}
-                                    min={1}/> {Intl.get('user.time.minute', '分')}
+                                    min={1}/> : item.score || 1}
+                                {Intl.get('user.time.minute', '分')}
                                 <span className="add-minus-btns">
-                                    {index + 1 !== _.get(userIndicator, 'length') && index === userScoreDetailList.length - 1 ?
+                                    {index + 1 !== _.get(userIndicator, 'length') && index === userScoreDetailList.length - 1 && !isEditUserBasicRule ?
                                         <span onClick={this.handleAddBtn}> + </span> : null}
-                                    {userScoreDetailList.length > 1 ?
+                                    {userScoreDetailList.length > 1 && !isEditUserBasicRule ?
                                         <span
                                             onClick={this.handleMinusBtn.bind(this, item.id || item.randomId)}> - </span> : null}
 
@@ -232,52 +239,52 @@ class userScore extends React.Component {
                         </Row>
                     );
                 })}
-                <div className="save-btns">
-                    <div className="indicator">
-                        {this.state.saveRulesErr ?
-                            (
-                                <AlertTimer
-                                    time={3000}
-                                    message={this.state.saveRulesErr}
-                                    type='error' showIcon
-                                    onHide={this.hideSaveTooltip}/>
-                            ) : ''
-                        }
-                    </div>
-                    <Button disabled={this.state.isSavingRules} type='primary'
-                        onClick={this.handleSaveRules}>{Intl.get('common.save', '保存')}
-                        {this.state.isSavingRules ? <Icon type="loading"/> : null}
-                    </Button>
-                    <Button onClick={this.handleCancelRules}>{Intl.get('common.cancel', '取消')}</Button>
-                </div>
+
+                {isEditUserBasicRule ? <div className="save-btns">
+                    <SaveCancelButton loading={this.state.isSavingRules}
+                        saveErrorMsg={this.state.saveRulesErr}
+                        handleSubmit={this.handleSaveRules}
+                        handleCancel={this.handleCancelRules}
+                    />
+                </div> : null}
             </div>;
         }
     };
-
+    handleClickUserBasicRule = () => {
+        this.setState({
+            isEditUserBasicRule: true
+        });
+    };
     renderBasicScoreRules() {
-        var spanLength = '6';
+        const {isEditUserBasicRule, userLevelObj} = this.state;
         return (
             <div className="basic-score-rule" data-tracename="基础评分">
-                <p>
-                    {Intl.get('clue.customer.if.switch', '是否启用')}
-                    <Switch size="small" onChange={this.handleUserScoreRuleStatus}
-                        checked={_.get(this, 'state.userScoreFormData.status') === 'enable'}/>
+                <p className="basic-score-title">
+                    {Intl.get('user.score.basic.score', '基础评分')}
+                    {userLevelObj.loading ? null : <StatusWrapper
+                        errorMsg={this.state.errorMsg}
+                        size='small'
+                    >
+                        <MemberStatusSwitch
+                            title={Intl.get('customer.score.status.rules', '确定要{status}该规则？', {
+                                status: _.get(this, 'state.userScoreFormData.status') !== 'enable' ? Intl.get('common.enabled', '启用') :
+                                    Intl.get('common.stop', '停用')
+                            })}
+                            handleConfirm={this.handleUserScoreRuleStatus}
+                            status={_.get(this, 'state.userScoreFormData.status') === 'enable'}
+                        />
+                    </StatusWrapper>}
+                    {isEditUserBasicRule || userLevelObj.loading ? null :
+                        <i className="iconfont icon-update" onClick={this.handleClickUserBasicRule}></i>}
                 </p>
-                <Row>
+                <Row className='thead-title'>
                     <Col span={spanLength}>{Intl.get('clue.customer.score.indicator', '指标')}</Col>
                     <Col span={spanLength}>{Intl.get('user.apply.detail.table.time', '周期')}</Col>
                     <Col span={spanLength}>{Intl.get('user.login.score', '分数')}</Col>
                 </Row>
-                <Row>
-                    <Col span={spanLength}>{Intl.get('user.score.nearly.active.days', '近期活跃天数分数')}</Col>
-                    <Col span={spanLength}>{Intl.get('clue.customer.last.month', '近一月')}</Col>
-                </Row>
-                <Row>
-                    <Col span={spanLength}>{Intl.get('user.score.online.score', '近期在线时长分数')}</Col>
-                    <Col span={spanLength}>{Intl.get('clue.customer.last.month', '近一月')}</Col>
-                </Row>
+
                 <div className="user-score-lists">
-                    {this.renderUserScoreLists()}
+                    {this.renderUserBasicScoreLists()}
                 </div>
             </div>
         );
@@ -593,27 +600,31 @@ class userScore extends React.Component {
     hideSaveTooltip = () => {
         userScoreAction.hideSaveErrMsg();
     };
-    handleChangeTab = () => {
-
-    };
 
     render() {
+        var {userEngagementObj, userLevelObj} = this.state;
         return (
             <div className="user-score-container" data-tracename="用户评分">
                 <div className="user-score-wrap">
                     <div className="user-score-content">
-                        <p className="level-rule-tip">{Intl.get('user.score.level.rule', '用户评分规则')}</p>
-                        <Tabs onChange={this.handleChangeTab} type="card">
-                            <TabPane tab={Intl.get('user.score.basic.score', '基础评分')} key="1">
-                                {this.renderBasicScoreRules()}
-                            </TabPane>
-                            <TabPane tab={Intl.get('user.score.particate.in.score', '参与度评分')} key="2">
-                                <div className="particepate-container-warp" data-tracename="参与度评分">
-                                    {this.renderParticateScoreRules()}
-                                </div>
+                        <p className="level-rule-tip">{Intl.get('user.score.level.rule', '用户评分规则')}
 
-                            </TabPane>
-                        </Tabs>
+                            {userLevelObj.loading || userEngagementObj.loading ? null : <StatusWrapper
+                                errorMsg={this.state.errorMsg}
+                                size='small'
+                            >
+                                <MemberStatusSwitch
+                                    title={Intl.get('customer.score.status.rules', '确定要{status}该规则？', {
+                                        status: _.get(this, 'state.customerRulesFormData.status') !== 'enable' ? Intl.get('common.enabled', '启用') :
+                                            Intl.get('common.stop', '停用')
+                                    })}
+                                    handleConfirm={this.handleCustomerScoreRuleStatus}
+                                    status={_.get(this, 'state.customerRulesFormData.status') === 'enable'}
+                                />
+                            </StatusWrapper>}
+                        </p>
+                        {this.renderBasicScoreRules()}
+                        {this.renderParticateScoreRules()}
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 .customer-score-container {
-  padding: 12px;
+  padding: 12px 12px 4px 12px;
   .customer-score-wrap {
     .customer-score-content {
       font-size: 14px;
@@ -8,11 +8,6 @@
         background: #fff;
         min-height: 172px;
         position: relative;
-        .load8 {
-          position: absolute;
-          top: 35%;
-          left: 45%;
-        }
         .customer-score-lable{
           color:#333;
           font-size: 16px;
@@ -161,10 +156,10 @@
           color: #333;
           font-size: 16px;
           overflow: hidden;
-          .ant-switch{
+          .status-wrapper{
             float: right;
             position: relative;
-            top: 5px;
+            top: -2px;
           }
           .icon-update{
             float: right;
@@ -190,18 +185,17 @@
               color: #999999;
               text-align: left;
             }
-            .customer-score-datalists{
               .ant-row{
+                height: 43px;
+                line-height: 40px;
                 &:hover{
                   background: #F1F8FE;
                 }
-              }
-            }
-              .ant-row{
-                height: 40px;
-                line-height: 40px;
                 >div{
                   padding-left: 16px;
+                }
+                .ant-input-number{
+                  margin:0 4px;
                 }
                 .add-minus-btns{
                   font-size: 22px;
@@ -210,7 +204,6 @@
                   width: 100px;
                   text-align: right;
                 }
-
               }
           }
 

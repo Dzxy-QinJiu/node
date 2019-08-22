@@ -3262,5 +3262,8 @@ var en_US = {
     'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
     'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
     'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
+    'import.recommend.clue.lists': 'Recommend clues',//推荐线索
+    'menu.sales.auto.manage.config': 'Sales auto',//销售自动化
+    'customer.score.status.rules': 'Are you sure to {status} this rule?'//确定要{status}该规则？
 };
 export default en_US;

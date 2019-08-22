@@ -37,9 +37,8 @@ class CustomerScoreActions {
             this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     }
-    getCustomerScoreIndicator(callback){
+    getCustomerScoreIndicator(){
         customerScoreAjax.getCustomerScoreIndicator().then((result) => {
-            _.isFunction(callback) && callback(result);
             this.dispatch({resData: result});
         }, (errorMsg) => {
 
