@@ -3385,7 +3385,8 @@ var zh_CN = {
     'import.excel.data.ketao': '将excel中的{type}导入到客套中',
     'import.excel.no.data': '试下客套给您{recommend}的功能',
     'import.recommend.clue.lists': '推荐线索',
+    'common.signed.customer.activity': '签约客户活跃度',
     'common.number.of.new.user.customer': '新开用户客户数',
-    'clue.customer.register.time': '注册时间'
+    'clue.customer.register.time': '注册时间',
 };
 export default zh_CN;
