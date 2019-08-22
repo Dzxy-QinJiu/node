@@ -34,7 +34,8 @@ if (process.argv.indexOf('d') >= 0
 //获取hazelcast的地址
 function getHazelcastAddress() {
     // ketao的caster地址和端口（用来给：蚁坊识微官网、公共应用（告警、sso等））
-    let casterIP = process.env.CASTER_IP || 'p-caster01,p-caster02,p-caster03,p-caster04';
+    //部署环境IP：p-caster01,p-caster02,p-caster03,p-caster04 本地测试IP: 10.20.2.124,10.20.2.125,10.20.2.126,10.20.2.127
+    let casterIP = process.env.CASTER_IP || '10.20.2.124,10.20.2.125,10.20.2.126,10.20.2.127';
     let casterPort = process.env.CASTER_PORT || '5762,5762,5762';
     let ipArray = casterIP.split(','), portArray = casterPort.split(',');
     return ipArray.map((ip, idx) => {
