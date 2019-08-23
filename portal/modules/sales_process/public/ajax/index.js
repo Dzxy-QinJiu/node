@@ -165,3 +165,107 @@ exports.changeCustomerStageOrder = (stageList) => {
     });
     return Deferred.promise();
 };
+
+// 获取客户阶段的销售行为
+exports.getCustomerStageSaleBehavior = () => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/customer/stage/sale/behavior',
+        dataType: 'json',
+        type: 'get',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 添加客户阶段的销售行为
+exports.addCustomerStageSaleBehavior = (addSaleBehaviorArray, paramsObj) => {
+    let saleProcessId = paramsObj.saleProcessId;
+    let stageId = paramsObj.stageId;
+    let Deferred = $.Deferred();
+    addSalesProcessAjax = $.ajax({
+        url: `/rest/add/customer/stage/sale/behavior/${saleProcessId}/${stageId}`,
+        dataType: 'json',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify(addSaleBehaviorArray),
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 获取客户阶段的自动变更条件
+exports.getCustomerStageAutoConditions = () => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/customer/stage/auto/change/conditions',
+        dataType: 'json',
+        type: 'get',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 编辑客户阶段的自动变更条件（添加或是更新）
+exports.editCustomerStageAutoConditions = (atuoChangArray, paramsObj) => {
+    const saleProcessId = paramsObj.saleProcessId;
+    const stageId = paramsObj.stageId;
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/edit/customer/stage/auto/change/conditions/${saleProcessId}/${stageId}`,
+        dataType: 'json',
+        type: 'post',
+        contentType: 'application/json',
+        data: JSON.stringify(atuoChangArray),
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (xhr, textStatus) => {
+            if ('abort' !== textStatus) {
+                Deferred.reject(xhr.responseJSON);
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+// 启/停用自动化条件
+exports.changeAutoConditionsStatus = (statusObj,paramsObj) => {
+    const saleProcessId = paramsObj.saleProcessId;
+    const stageId = paramsObj.stageId;
+    const status = paramsObj.status;
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/change/auto/change/conditions/${saleProcessId}/${stageId}/${status}`,
+        dataType: 'json',
+        type: 'put',
+        data: statusObj,
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

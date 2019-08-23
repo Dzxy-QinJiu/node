@@ -210,3 +210,12 @@ exports.setSalesGoals = function(req, res) {
             res.status(500).json(err.message);
         });
 };
+
+// 获取成员变动记录
+exports.getMemberChangeRecord = (req, res) => {
+    memberManageService.getMemberChangeRecord(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (err) => {
+        res.status(500).json(err.message);
+    });
+};

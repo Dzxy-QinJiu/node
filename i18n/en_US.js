@@ -70,6 +70,7 @@ var en_US = {
     'common.password.unequal': 'Passwords do not match',//两次输入密码不一致！
     'common.correct.email': 'Please enter the correct email account',//请输入正确的邮箱Please input the correct email
     'common.correct.qq': 'Please enter the correct QQ account',//请输入正确的QQ号
+    'common.correct.wechat': 'please enter the correct WeChat account',//请输入正确的微信号
     'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
     'common.password.validate.rule': 'Please enter the password with 6-18 digits, letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
@@ -260,6 +261,7 @@ var en_US = {
     'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
     'common.import.template': 'Template',//模板
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'common.create': 'Create', // 创建
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -748,6 +750,7 @@ var en_US = {
     'member.get.role.lists': 'Getting role lists',//正在获取角色列表
     'member.is.building': 'Setting up',//创建中
     'member.create.time': 'Creating Time',//创建时间
+    'member.disable.time': 'Disable Time', // 停用时间
     'member.forbidden.self': 'Can\'t disable yourself', // 禁止禁用自己
     'member.email.extra.tip': 'The mailbox will be used as the user name for login',//邮箱会作为登录时的用户名使用
     'member.save.logo.tip': 'Do you want to save the uploaded head ?',//是否保存上传的头像？
@@ -784,6 +787,11 @@ var en_US = {
     'member.position.set.default': 'Setting default', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
     'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 50 (including 50).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
+    'member.record.member.operate': 'The member was {operate}', // {operate}了该成员。
+    'member.record.change.field': 'Changed {field} for the member', // 修改了该成员的{field}。
+    'member.record.change.field.name': 'Changed {field} of the member to {name}', // 修改了该成员的{field}，改为{name}
+    'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
+    'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
     //后台管理-成员end
 
     //组织管理start
@@ -854,7 +862,16 @@ var en_US = {
     'sales.process.customer.stage.no.play': 'No scenarios', // 暂无剧本
     'sales.process.customer.stage.add.play': 'Add Scenarios', // 添加剧本
     'sales.process.customer.stage.activity': 'sales behaviors', // 销售行为
+    'sales.process.select.task.placeholder': 'Please select sale task', // 请选择任务
+    'sales.process.select.action.placeholder': 'Please select sale action', // 请选择动作
+    'sales.process.add.activity.failed': 'Failed to add the sales behaviors', // 添加销售行为失败
     'sales.process.customer.stage.detail.title': 'Set up scenarios, sales behaviors, and automatic change conditions for the information phase.', // 设置信息阶段的剧本、销售行为、自动变更条件。
+    'sales.process.customer.stage.auto.conditions': 'Automatically changes', // 自动变更
+    'sales.process.customer.stage.auto.conditions.title': 'The customer automatically changes to the phase when the following conditions', // 当符合以下条件时，客户自动变更为该阶段
+    'sales.process.auto.conditions.label': 'Selection condition', // 选择条件
+    'sales.process.auto.conditions.placeholder': 'Please select the conditions of the automatically change', // 请选择自动变更的条件
+    'sales.process.auto.conditions.no.conditions': 'Unconditional', // 暂无条件
+    'sales.process.status.auto.conditions.tip': 'Are you sure you want to {status} the automatically changes of the customer stage?', // 确定要{status}该客户阶段的自动变更条件吗？
     // 后台管理-销售流程end
 
     //应用管理start
@@ -2279,6 +2296,7 @@ var en_US = {
     'errorcode.158': 'Failed to update customer stage', // 更新客户阶段失败
     'errorcode.159': 'Failed to delete sale process', // 删除销售流程失败
     'errorcode.160': 'Failed to delete customer stage', // 删除客户阶段失败
+    'errorcode.161': 'Failed to upload files',//文件上传失败
     'errorcode.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败
@@ -3258,6 +3276,7 @@ var en_US = {
     'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
     'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
     'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
+    'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
     'common.number.of.new.user.customer': 'number of new user customer',//新开用户客户数
     'clue.customer.register.time': 'Register time'//注册时间
 };

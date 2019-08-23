@@ -37,6 +37,7 @@ var timeout = 1000;//1秒后刷新未读数
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 import {SELECT_TYPE, AVALIBILITYSTATUS, editCluePrivilege} from '../../utils/clue-customer-utils';
 import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+const OVERVIEW_SHOW_COUNT = 3; //在概览中显示最近三条跟进
 class ClueTraceList extends React.Component {
     state = {
         playingItemAddr: '',//正在播放的那条记录的地址
@@ -99,10 +100,10 @@ class ClueTraceList extends React.Component {
         if (lastId) {
             queryObj.id = lastId;
         }
-        // //概览页只获取最近五条的跟进记录
-        // if (this.props.isOverViewPanel) {
-        //     queryObj.page_size = OVERVIEW_SHOW_COUNT;
-        // }
+        //概览页只获取最近三条的跟进记录
+        if (this.props.isOverViewPanel) {
+            queryObj.page_size = OVERVIEW_SHOW_COUNT;
+        }
 
         let bodyData = {
             lead_id: this.state.leadId || '',
@@ -178,18 +179,18 @@ class ClueTraceList extends React.Component {
     };
     //渲染添加跟进记录的按钮
     renderAddRecordButton() {
-
-        // //概览页添加跟进记录的按钮
-        // if (this.props.isOverViewPanel) {
-        //     return (
-        //         <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
-        //               title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
-        // } else {//跟进记录页，添加跟进记录的按钮
-        return (<Button className='crm-detail-add-btn'
-            onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
-            {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
-        </Button>);
-        // }
+        //概览页添加跟进记录的按钮
+        if (this.props.isOverViewPanel) {
+            return (
+                <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
+                    title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
+        } else {//跟进记录页，添加跟进记录的按钮
+            return (
+                <Button className='crm-detail-add-btn'
+                    onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
+                    {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
+                </Button>);
+        }
     }
 
     onSelectDate = (start_time, end_time) => {
@@ -351,27 +352,25 @@ class ClueTraceList extends React.Component {
         );
     };
     turnToTraceRecordList = () => {
-        // if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey('3');
+        if (_.isFunction(this.props.changeActiveKey)) this.props.changeActiveKey('2');
     };
 
     renderTraceRecordBottom = () => {
-        //概览页只展示最近的五条跟进记录，如果总数大于5条时，可以点击更多转到跟进记录列表进行查看
-        // if (this.props.isOverViewPanel && this.state.total > OVERVIEW_SHOW_COUNT) {
-        //     return (
-        //         <div className="trace-record-bottom">
-        //             <span className="more-customer-record"
-        //                   onClick={this.turnToTraceRecordList}>
-        //                 {Intl.get('crm.basic.more', '更多')}
-        //             </span>
-        //         </div>);
-        // }
-
+        //概览页只展示最近的三条跟进记录，如果总数大于3条时，可以点击更多转到跟进记录列表进行查看
+        if (this.props.isOverViewPanel && this.state.total > OVERVIEW_SHOW_COUNT) {
+            return (
+                <div className="trace-record-bottom">
+                    <span className="more-customer-record"
+                        onClick={this.turnToTraceRecordList}>
+                        {Intl.get('crm.basic.more', '更多')}
+                    </span>
+                </div>);
+        }
     };
     //是否展示通话状态的过滤框
     isStatusFilterShow() {
         //不是概览页，有跟进记录或有通话状态筛选条件（有数据时才展示状态筛选框，但通过状态筛选后无数据也需要展示），并且不是拜访、舆情报上和其他类型时，展示通话状态筛选框
-        // return !this.props.isOverViewPanel &&
-        return (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus);
+        return !this.props.isOverViewPanel && (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus);
     }
     getRecordListShowHeight = () => {
         var divHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_NAV_HEIGHT -
@@ -638,12 +637,10 @@ class ClueTraceList extends React.Component {
             />);
     };
 
-    renderCustomerRecordLists = () => {
+    renderClueTraceLists = () => {
         var recordLength = _.get(this, 'state.customerRecord.length');
         //加载状态或加载数据错误时，容器高度的设置
-        let loadingErrorHeight =
-        // this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT :
-                this.getRecordListShowHeight();
+        let loadingErrorHeight = this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight();
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
@@ -659,9 +656,7 @@ class ClueTraceList extends React.Component {
                         retryFunc={this.retryChangeRecord}/>
                 </div>
             );
-        } else if (recordLength === 0 && !this.state.customerRecordLoading
-        // && !this.props.isOverViewPanel
-        ) {
+        } else if (recordLength === 0 && !this.state.customerRecordLoading && !this.props.isOverViewPanel) {
             //加载完成，没有数据的情况（概览页的跟进记录是在标题上展示）
             return (
                 <div className="no-record-container" style={{'height': this.getRecordListShowHeight()}}>
@@ -671,14 +666,15 @@ class ClueTraceList extends React.Component {
             //加载完成，有数据的情况
             return (
                 <div className="show-customer-trace">
-                    <div className="show-content" style={{'height': this.getRecordListShowHeight()}}>
-                        <GeminiScrollbar className="srollbar-out-card-style"
-                            handleScrollBottom={this.handleScrollBarBottom}
-                            listenScrollBottom={this.state.listenScrollBottom}
-                        >
-                            {this.renderTimeLine()}
-                        </GeminiScrollbar>
-                    </div>
+                    {this.props.isOverViewPanel ? this.renderTimeLine() :
+                        (<div className="show-content" style={{'height': this.getRecordListShowHeight()}}>
+                            <GeminiScrollbar className="srollbar-out-card-style"
+                                handleScrollBottom={this.handleScrollBarBottom}
+                                listenScrollBottom={this.state.listenScrollBottom}
+                            >
+                                {this.renderTimeLine()}
+                            </GeminiScrollbar>
+                        </div>)}
                 </div>
             );
         }
@@ -701,7 +697,7 @@ class ClueTraceList extends React.Component {
         return (
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
-                    {this.renderDatePicker()}
+                    {this.props.isOverViewPanel ? null : this.renderDatePicker()}
                     {hasAddRecordPrivilege ? this.renderAddRecordButton() : null}
                 </div>
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
@@ -712,7 +708,8 @@ class ClueTraceList extends React.Component {
                             <Icon type="down"/>
                         </a>
                     </Dropdown> : null}
-                    {this.renderCustomerRecordLists()}
+                    {this.renderClueTraceLists()}
+                    {this.renderTraceRecordBottom()}
                 </div>
             </div>
         );
@@ -725,6 +722,8 @@ ClueTraceList.propTypes = {
     updateCustomerLastContact: PropTypes.func,
     curClue: PropTypes.object,
     showClueDetailPanel: PropTypes.func,
+    isOverViewPanel: PropTypes.bool,
+    changeActiveKey: PropTypes.func
 };
 module.exports = ClueTraceList;
 

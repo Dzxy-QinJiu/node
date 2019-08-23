@@ -54,8 +54,13 @@ class CustomerStageInfo extends React.Component {
     };
 
     // 显示客户阶段详情
-    showCustomerStageDetail = () => {
-        this.props.showCustomerStageDetail();
+    showCustomerStageDetail = (customerStage) => {
+        this.props.showCustomerStageDetail(customerStage);
+    };
+
+    // 关闭客户阶段详情
+    closeCustomerStageDetail = (customerStage) => {
+        this.props.closeCustomerStageDetail(customerStage);
     };
 
     render() {
@@ -156,23 +161,31 @@ class CustomerStageInfo extends React.Component {
                                     >
                                     </Button>
                                 </PrivilegeChecker>
-                                <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
-                                    <Button
-                                        className="customer-stage-btn-class icon-role-auth-config iconfont"
-                                        onClick={this.showCustomerStageDetail}
-                                        data-tracename="设置客户阶段"
-                                    >
-                                    </Button>
-                                </PrivilegeChecker>
+                                {
+                                    /*** 先注释到客户阶段的设置功能
+                                     * <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                             <Button
+                                             className="customer-stage-btn-class icon-role-auth-config iconfont"
+                                             onClick={this.showCustomerStageDetail.bind(this, customerStage)}
+                                             data-tracename="设置客户阶段"
+                                             >
+                                             </Button>
+                                      </PrivilegeChecker>
+                                     * */
+                                }
+
                             </div>
                         )
                 }
                 {
-                    this.props.isShowCustomerStageDetailPanel ? (
+                    customerStage.isShowCustomerStageDetailPanel ? (
                         <CustomerStageDetail
-                            closeCustomerStageDetail={this.props.closeCustomerStageDetail}
+                            closeCustomerStageDetail={this.closeCustomerStageDetail.bind(this, customerStage)}
                             customerStage={customerStage}
                             saveCustomerStageSettingPlay={this.props.saveCustomerStageSettingPlay}
+                            salesBehaviorList={this.props.salesBehaviorList}
+                            saleProcessId={this.props.saleProcessId}
+                            autoConditionsList={this.props.autoConditionsList}
                         />
                     ) : null
                 }
@@ -200,10 +213,11 @@ CustomerStageInfo.propTypes = {
     width: PropTypes.number,
     customerStage: PropTypes.object,
     isShowCustomerStageTransferOrder: PropTypes.bool,
-    isShowCustomerStageDetailPanel: PropTypes.bool,
     closeCustomerStageDetail: PropTypes.func,
     saveCustomerStageSettingPlay: PropTypes.func,
-
+    salesBehaviorList: PropTypes.array,
+    saleProcessId: PropTypes.string,
+    autoConditionsList: PropTypes.array,
 };
 
 export default CustomerStageInfo;

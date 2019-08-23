@@ -66,7 +66,7 @@ MemberInfoStore.prototype.getLogList = function(resObj) {
         this.getLogErrorMsg = logListObj;
     } else {
         this.getLogErrorMsg = '';
-        this.logTotal = logListObj.total || 0;
+        this.logTotal = _.get(logListObj, 'total') || 0;
         if (_.isArray(logListObj.list)) {
             if (this.logNum === 1) {
                 this.logList = logListObj.list;

@@ -20,7 +20,7 @@ import MemberInfoAction from '../action/member-info-action';
 import Trace from 'LIB_DIR/trace';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from './radio-card';
-import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, nameLengthRule, checkQQ} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -29,10 +29,12 @@ import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
 import { StatusWrapper } from 'antc';
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
+import MemberRecord from './member-record';
 
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
-    LOG_TAB: '2'//操作日志
+    LOG_TAB: '2',//操作日志
+    RECORD_TAB: '3', // 变更记录
 };
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 class MemberInfo extends React.Component {
@@ -488,6 +490,7 @@ class MemberInfo extends React.Component {
                 return <Option value='' >&nbsp;</Option>;
             }
         });
+        let disableDate = _.get(memberInfo, 'disableDate');
         return (
             <div>
                 <div className="basic-info-item">
@@ -567,6 +570,14 @@ class MemberInfo extends React.Component {
                         value={memberInfo.createDate ? moment(memberInfo.createDate).format(oplateConsts.DATE_FORMAT) : ''}
                         hasEditPrivilege={false}
                     />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">
+                        {Intl.get('member.disable.time', '停用时间')}:
+                    </span>
+                    <span>
+                        {disableDate ? moment(disableDate).format(oplateConsts.DATE_FORMAT) : ''}
+                    </span>
                 </div>
             </div>
         );
@@ -651,6 +662,22 @@ class MemberInfo extends React.Component {
                     />
                 </div>
                 <div className="basic-info-item">
+                    <span className="basic-info-label">QQ:</span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={memberInfo.id}
+                        value={memberInfo.qq}
+                        field="qq"
+                        type="text"
+                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                        validators={[{validator: checkQQ}]}
+                        placeholder={Intl.get('member.input.qq', '请输入QQ号')}
+                        saveEditInput={this.saveEditMemberInfo.bind(this, 'qq')}
+                        noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
+                        addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
+                    />
+                </div>
+                <div className="basic-info-item">
                     <span className="basic-info-label">{Intl.get('common.email', '邮箱')}:</span>
                     <BasicEditInputField
                         width={EDIT_FEILD_WIDTH}
@@ -677,7 +704,12 @@ class MemberInfo extends React.Component {
 
     //切换tab时的处理
     changeActiveKey = (key) => {
-        let keyName = key === TAB_KEYS.BASIC_INFO_TAB ? '基本信息' : '操作日志';
+        let keyName = '基本信息';
+        if (key === TAB_KEYS.LOG_TAB) {
+            keyName = '操作日志';
+        } else if (key === TAB_KEYS.RECORD_TAB) {
+            keyName = '变更记录';
+        }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({
             activeKey: key
@@ -851,7 +883,9 @@ class MemberInfo extends React.Component {
     }
 
     renderDetailTabs() {
-        let containerHeight = this.getContainerHeight();
+        const containerHeight = this.getContainerHeight();
+        const memberInfo = this.state.memberInfo;
+        const memberId = memberInfo.id;
         return (
             <Tabs
                 defaultActiveKey={TAB_KEYS.BASIC_INFO_TAB}
@@ -880,6 +914,19 @@ class MemberInfo extends React.Component {
                                 getContainerHeight={this.getContainerHeight}
                                 userName={_.get(this.state, 'memberInfo.userName.value') ||
                                        _.get(this.state, 'memberInfo.userName', '')}
+                            />
+                        ) : null
+                    }
+                </TabPane>
+                <TabPane
+                    tab={Intl.get('user.change.record', '变更记录')}
+                    key={TAB_KEYS.RECORD_TAB}
+                >
+                    {
+                        this.state.activeKey === TAB_KEYS.RECORD_TAB ? (
+                            <MemberRecord
+                                memberId={memberId}
+                                getContainerHeight={this.getContainerHeight}
                             />
                         ) : null
                     }

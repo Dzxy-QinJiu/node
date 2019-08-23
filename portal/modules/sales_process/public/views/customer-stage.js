@@ -35,6 +35,8 @@ class CustomerStage extends React.Component {
         CustomerStageStore.listen(this.onChange);
         let saleProcessId = this.props.saleProcessId;
         CustomerStageAction.getCustomerStageList(saleProcessId);
+        CustomerStageAction.getCustomerStageSaleBehavior(); // 获取销售行为
+        CustomerStageAction.getCustomerStageAutoConditions();// 获取客户阶段的自动变更条件
     }
 
     componentWillUnmount() {
@@ -42,13 +44,13 @@ class CustomerStage extends React.Component {
     }
 
     // 显示客户阶段详情
-    showCustomerStageDetail() {
-        CustomerStageAction.showCustomerStageDetail();
+    showCustomerStageDetail(customerStage) {
+        CustomerStageAction.showCustomerStageDetail(customerStage);
     }
 
     // 关闭客户阶段详情
-    closeCustomerStageDetail() {
-        CustomerStageAction.closeCustomerStageDetail();
+    closeCustomerStageDetail(customerStage) {
+        CustomerStageAction.closeCustomerStageDetail(customerStage);
     }
 
     saveCustomerStageSettingPlay = (type, saveObj, successFunc, errorFunc) => {
@@ -56,7 +58,7 @@ class CustomerStage extends React.Component {
         CustomerStageAjax.editCustomerStage(saveObj, saleProcessId).then( (result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
-                saveObj.flag = 'edit';
+                saveObj.flag = 'editPlay';
                 CustomerStageAction.updateCustomerStageList(saveObj);
             } else {
                 if (_.isFunction(errorFunc)) errorFunc();
@@ -351,8 +353,10 @@ class CustomerStage extends React.Component {
                                                         isShowCustomerStageTransferOrder={this.state.isShowCustomerStageTransferOrder}
                                                         showCustomerStageDetail={this.showCustomerStageDetail}
                                                         closeCustomerStageDetail={this.closeCustomerStageDetail}
-                                                        isShowCustomerStageDetailPanel={this.state.isShowCustomerStageDetailPanel}
                                                         saveCustomerStageSettingPlay={this.saveCustomerStageSettingPlay}
+                                                        salesBehaviorList={this.state.salesBehaviorList}
+                                                        saleProcessId={this.props.saleProcessId}
+                                                        autoConditionsList={this.state.autoConditionsList}
                                                     />
                                                 </li>
                                             );

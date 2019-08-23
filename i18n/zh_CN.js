@@ -72,6 +72,7 @@ var zh_CN = {
     'common.password.unequal': '两次输入密码不一致！',
     'common.correct.email': '请输入正确的邮箱',
     'common.correct.qq': '请输入正确的QQ号',
+    'common.correct.wechat': '请输入正确的微信号',
     'common.password.length': '密码长度应大于6位小于18位',
     'common.password.compose.rule': '6-18位数字、字母、符号的组合',
     'common.password.validate.rule': '请输入6-18位数字、字母、符号组成的密码',
@@ -267,6 +268,7 @@ var zh_CN = {
     'common.download.template.filename': '下载{type}模板',
     'common.import.template': '模板',
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
+    'common.create': '创建',
 
     //公共部分--end
     'login.login': '登录',
@@ -753,6 +755,7 @@ var zh_CN = {
     'member.get.role.lists': '正在获取角色列表',
     'member.is.building': '创建中',
     'member.create.time': '创建时间',
+    'member.disable.time': '停用时间',
     'member.forbidden.self': '禁止禁用自己',
     'member.email.extra.tip': '邮箱会作为登录时的用户名使用',
     'member.save.logo.tip': '是否保存上传的头像？',
@@ -789,6 +792,11 @@ var zh_CN = {
     'member.position.set.default': '设为默认',
     'member.continue.add.member': '继续添加成员',
     'member.add.member.rule': '用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间',
+    'member.record.member.operate': '{operate}了该成员。',
+    'member.record.change.field': '修改了该成员的{field}。',
+    'member.record.change.field.name': '修改了该成员的{field}，改为{name}',
+    'member.record.get.record.failed': '获取成员变更失败',
+    'member.record.no.record': '暂无变更记录',
     //后台管理-成员end
 
     //组织管理start
@@ -859,7 +867,16 @@ var zh_CN = {
     'sales.process.customer.stage.no.play': '暂无剧本',
     'sales.process.customer.stage.add.play': '添加剧本',
     'sales.process.customer.stage.activity': '销售行为',
-    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本。', // 、销售行为、自动变更条件。
+    'sales.process.select.task.placeholder': '请选择任务',
+    'sales.process.select.action.placeholder': '请选择动作',
+    'sales.process.add.activity.failed': '添加销售行为失败',
+    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本、销售行为、自动变更条件',
+    'sales.process.customer.stage.auto.conditions': '自动变更',
+    'sales.process.customer.stage.auto.conditions.title': '当符合以下条件时，客户自动变更为该阶段',
+    'sales.process.auto.conditions.label': '选择条件',
+    'sales.process.auto.conditions.placeholder': '请选择自动变更的条件',
+    'sales.process.auto.conditions.no.conditions': '暂无条件',
+    'sales.process.status.auto.conditions.tip': '确定要{status}该客户阶段的自动变更条件吗？',
     // 后台管理-销售流程end
 
     //应用管理start
@@ -2317,6 +2334,7 @@ var zh_CN = {
     'errorcode.158': '更新客户阶段失败',
     'errorcode.159': '删除销售流程失败',
     'errorcode.160': '删除客户阶段失败',
+    'errorcode.161': '文件上传失败',
     'errorcode.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
     'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
@@ -3368,7 +3386,8 @@ var zh_CN = {
     'import.excel.data.ketao': '将excel中的{type}导入到客套中',
     'import.excel.no.data': '试下客套给您{recommend}的功能',
     'import.recommend.clue.lists': '推荐线索',
+    'common.signed.customer.activity': '签约客户活跃度',
     'common.number.of.new.user.customer': '新开用户客户数',
-    'clue.customer.register.time': '注册时间'
+    'clue.customer.register.time': '注册时间',
 };
 export default zh_CN;

@@ -48,6 +48,26 @@ export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
 export const phone1010Regex = /^1010\d+$/;
 //QQ号码的正则表达式
 export const qqRegex = /^[1-9][0-9]{4,}$/;
+
+//微信号的正则表达式 
+export const wechatRegex = / ^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/;
+// 验证QQ
+exports.checkQQ = (rule, value, callback) => {
+    value = _.trim(value);
+    if (value) {
+        if (qqRegex.test(value)) {
+            callback();
+        } else {
+            callback(new Error(Intl.get('common.correct.qq', '请输入正确的QQ号')));
+        }
+    } else {
+        if (rule.required) {
+            callback(new Error(Intl.get('member.input.qq', '请输入QQ号')));
+        } else {
+            callback();
+        }
+    }
+};
 //IP的正则表达式
 export const ipRegex = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/;
 

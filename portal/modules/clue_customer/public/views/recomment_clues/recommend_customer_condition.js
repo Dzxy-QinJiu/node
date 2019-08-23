@@ -88,19 +88,39 @@ class RecommendCustomerCondition extends React.Component {
             var hasSavedRecommendParams = this.state.hasSavedRecommendParams;
             if (!_.isEmpty(values.industrys)){
                 hasSavedRecommendParams.industrys = values.industrys;
+            }else{
+                delete hasSavedRecommendParams.industrys;
             }
             if (!_.isEmpty(values.entTypes)){
                 hasSavedRecommendParams.entTypes = values.entTypes;
+            }else{
+                delete hasSavedRecommendParams.entTypes;
             }
             if (_.get(values, 'staff_size') && _.isString(_.get(values, 'staff_size'))){
                 var staffObj = JSON.parse(_.get(values, 'staff_size'));
-                hasSavedRecommendParams.staffnumMin = _.get(staffObj,'staffnumMin');
-                hasSavedRecommendParams.staffnumMax = _.get(staffObj,'staffnumMax');
+                if (_.get(staffObj,'staffnumMin')){
+                    hasSavedRecommendParams.staffnumMin = _.get(staffObj,'staffnumMin');
+                }else{
+                    delete hasSavedRecommendParams.staffnumMin;
+                }
+                if (_.get(staffObj,'staffnumMax')){
+                    hasSavedRecommendParams.staffnumMax = _.get(staffObj,'staffnumMax');
+                }else{
+                    delete hasSavedRecommendParams.staffnumMax;
+                }
             }
-            if (_.get(values, 'money_size') && _.isString(_.get(values, 'money_size'))){
+            if (_.get(values, 'money_size','') && _.isString(_.get(values, 'money_size'))){
                 var moneyObj = JSON.parse(_.get(values, 'money_size'));
-                hasSavedRecommendParams.capitalMin = _.get(moneyObj,'capitalMin');
-                hasSavedRecommendParams.capitalMax = _.get(moneyObj,'capitalMax');
+                if (_.get(moneyObj,'capitalMin')){
+                    hasSavedRecommendParams.capitalMin = _.get(moneyObj,'capitalMin');
+                }else{
+                    delete hasSavedRecommendParams.capitalMin;
+                }
+                if (_.get(moneyObj,'capitalMax')){
+                    hasSavedRecommendParams.capitalMax = _.get(moneyObj,'capitalMax');
+                }else{
+                    delete hasSavedRecommendParams.capitalMax;
+                }
             }
             const {registerStartTime, registerEndTime} = this.state;
             if (registerStartTime && registerEndTime){
@@ -109,6 +129,11 @@ class RecommendCustomerCondition extends React.Component {
             }else{
                 delete hasSavedRecommendParams.startTime;
                 delete hasSavedRecommendParams.endTime;
+            }
+            for (var key in hasSavedRecommendParams){
+                if (!hasSavedRecommendParams[key]){
+                    delete hasSavedRecommendParams[key];
+                }
             }
             if (err) return;
             this.setState({
