@@ -966,8 +966,9 @@ class ClueDetailOverview extends React.Component {
 
     //渲染跟进列表
     renderTraceList = () => {
+        let curClue = _.get(this.state, 'curClue');
         return (<ClueTraceList
-            curClue={_.get(this.state, 'curClue')}
+            curClue={curClue}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
             showClueDetailPanel={this.props.showClueDetailPanel.bind(this, curClue)}
             isOverViewPanel={true}
