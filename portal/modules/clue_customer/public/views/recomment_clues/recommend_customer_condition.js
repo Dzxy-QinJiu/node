@@ -12,7 +12,7 @@ import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import AlertTimer from 'CMP_DIR/alert-timer';
 require('../../css/recommend-customer-condition.less');
 import {companyProperty, moneySize,staffSize} from '../../utils/clue-customer-utils';
-import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
@@ -339,22 +339,11 @@ class RecommendCustomerCondition extends React.Component {
                                 )}
                         </FormItem>
                         <div className="submit-button-container">
-                            <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                disabled={this.state.isSaving} data-tracename="点击保存推荐线索条件">
-                                {Intl.get('common.save', '保存')}
-                                {this.state.isSaving ? <Icon type="loading"/> : null}
-                            </Button>
-                            <div className="indicator">
-                                {saveResult ?
-                                    (
-                                        <AlertTimer
-                                            time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
-                                            message={this.state.saveMsg}
-                                            type={saveResult} showIcon
-                                            onHide={this.hideSaveTooltip}/>
-                                    ) : ''
-                                }
-                            </div>
+                            <SaveCancelButton loading={this.state.isSaving}
+                                saveErrorMsg={this.state.saveMsg}
+                                handleSubmit={this.handleSubmit}
+                                handleCancel={this.props.hideFocusCustomerPanel}
+                            />
                         </div>
                     </Form>
                 </div>
@@ -368,12 +357,16 @@ RecommendCustomerCondition.defaultProps = {
     form: {},
     saveRecommedConditionsSuccess: function() {
 
+    },
+    hideFocusCustomerPanel: function() {
+
     }
 };
 RecommendCustomerCondition.propTypes = {
     hasSavedRecommendParams: PropTypes.object,
     form: PropTypes.object,
-    saveRecommedConditionsSuccess: PropTypes.func
+    saveRecommedConditionsSuccess: PropTypes.func,
+    hideFocusCustomerPanel: PropTypes.func,
 };
 export default Form.create()(RecommendCustomerCondition);
 
