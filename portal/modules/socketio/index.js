@@ -56,30 +56,6 @@ function setSocketSessionid(ioServer) {
         });
     }
 }
-/**
- *从Eureka中获取推送服务的链接地址
- */
-function getPushServerByEureka() {
-    //优先使用环境变量中配置的推送服务地址（客套配）
-    let pushServerUrl = global.config.pushServerAddress;
-    if (pushServerUrl) {
-        pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
-        return pushServerUrl;
-    }
-    //环境变量中没有配置的推送服务地址时，从协调服务中根据id获取
-    pushServerUrl = global.config.pushServer;//默认推送服务地址
-    //根据appid获取某个可用服务地址
-    var oplateServerUrl = global.config.coordinator.getServerByAppId(global.config.appId);
-    if (oplateServerUrl) {
-        var strArray = oplateServerUrl.split(':');
-        if (_.isArray(strArray) && strArray.length) {
-            pushServerUrl = strArray[0] + ':' + strArray[1] + ':9093';
-        }
-
-    }
-    pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
-    return pushServerUrl;
-}
 
 //找到对应的socket，将接收到的数据推送到浏览器端
 function emitMsgBySocket(user_id, emitUrl, msgData) {
@@ -257,8 +233,9 @@ function applyUnreadReplyListener(unreadList) {
  * @ioServer socketIO服务
  */
 function createBackendClient() {
+    let pushServerUrl = global.config.pushServerAddress;
+    pushLogger.info('与后台建立连接的服务地址：' + pushServerUrl);
     //创建socket.io的客户端
-    var pushServerUrl = getPushServerByEureka();
     client = ioClient.connect(pushServerUrl, {forceNew: true});
     //监听 connect
     client.on('connect', function() {
