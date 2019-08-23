@@ -675,22 +675,6 @@ class MemberInfo extends React.Component {
                     />
                 </div>
                 <div className="basic-info-item">
-                    <span className="basic-info-label">QQ:</span>
-                    <BasicEditInputField
-                        width={EDIT_FEILD_LESS_WIDTH}
-                        id={memberInfo.id}
-                        value={memberInfo.qq}
-                        field="qq"
-                        type="text"
-                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
-                        validators={[{validator: checkQQ}]}
-                        placeholder={Intl.get('member.input.qq', '请输入QQ号')}
-                        saveEditInput={this.saveEditMemberInfo.bind(this, 'qq')}
-                        noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
-                        addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
-                    />
-                </div>
-                <div className="basic-info-item">
                     <span className="basic-info-label">{Intl.get('common.email', '邮箱')}:</span>
                     <BasicEditInputField
                         width={EDIT_FEILD_WIDTH}
@@ -709,6 +693,22 @@ class MemberInfo extends React.Component {
                         saveEditInput={this.saveEditMemberInfo.bind(this, 'email')}
                         noDataTip={Intl.get('member.email.no.data', '未添加邮箱')}
                         addDataTip={Intl.get('user.info.add.email', '添加邮箱')}
+                    />
+                </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">QQ:</span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={memberInfo.id}
+                        value={memberInfo.qq}
+                        field="qq"
+                        type="text"
+                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                        validators={[{validator: checkQQ}]}
+                        placeholder={Intl.get('member.input.qq', '请输入QQ号')}
+                        saveEditInput={this.saveEditMemberInfo.bind(this, 'qq')}
+                        noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
+                        addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
                     />
                 </div>
             </div>
