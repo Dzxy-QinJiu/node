@@ -1728,8 +1728,8 @@ class Crm extends React.Component {
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                     onClick={_this.handleFocusCustomer.bind(this, record)}></i>
-                                    <CustomerLabel className={record.customer_label} />
-                                    <CustomerLabel className={record.qualify_label}  />
+                                    <CustomerLabel label={record.customer_label} />
+                                    <CustomerLabel label={record.qualify_label}  />
                                 {text}
                             </div>
                             {tags.length ?

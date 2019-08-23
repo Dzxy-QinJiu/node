@@ -1,9 +1,14 @@
 import './customerLabel.less'
 import {Tag} from 'antd'
 import classNames from 'classnames';
+const QUALIFIED = 1;
+const HISTORY_QUALIFIED = 2;
 class CustomerLabel extends React.Component{
+
+//客户阶段标签组件
+//import CustomerLabel from 'CMP_DIR/customer_label';
     
-    getCrmLabelCls(customer_label) {
+    getClassName(customer_label) {//根据传入label获取className
         const LABEL_TYPES = {
             INFO_TAG: '信息',
             INTENT_TAG: '意向',
@@ -15,27 +20,27 @@ class CustomerLabel extends React.Component{
         let customerLabelCls = 'customer-label';
         if (customer_label) {
             customerLabelCls = classNames(customerLabelCls, {
-                'info-tag-style': customer_label === LABEL_TYPES.INFO_TAG,
-                'intent-tag-style': customer_label === LABEL_TYPES.INTENT_TAG,
-                'trial-tag-style': customer_label === LABEL_TYPES.TRIAL_TAG,
-                'sign-tag-style': customer_label === LABEL_TYPES.SIGN_TAG,
-                'qualified-tag-style': customer_label === 1,//合格
-                'history-qualified-tag-style': customer_label === 2,//曾经合格
-                'loss-tag-style': customer_label === LABEL_TYPES.LOSS_TAG,
-                're-contract-tag-style': customer_label === LABEL_TYPES.RE_CONTRACT,
+                'info-tag-style': customer_label === LABEL_TYPES.INFO_TAG,//信息
+                'intent-tag-style': customer_label === LABEL_TYPES.INTENT_TAG,//意向
+                'trial-tag-style': customer_label === LABEL_TYPES.TRIAL_TAG,//试用
+                'sign-tag-style': customer_label === LABEL_TYPES.SIGN_TAG,//签约
+                'qualified-tag-style': customer_label === QUALIFIED,//合格
+                'history-qualified-tag-style': customer_label === HISTORY_QUALIFIED,//曾经合格
+                'loss-tag-style': customer_label === LABEL_TYPES.LOSS_TAG,//流失
+                're-contract-tag-style': customer_label === LABEL_TYPES.RE_CONTRACT,//续约
             });
         }
         return customerLabelCls;
     };
 
-    theContent(customer_label){
+    getContent(customer_label){//根据label获取内容
         const  CUSTOMER_TAGS = {
             QUALIFIED: Intl.get('common.qualified', '合格'),
             HISTORY_QUALIFIED: Intl.get('common.history.qualified', '曾经合格'),
         };
-        if(customer_label === 1){
+        if(customer_label === QUALIFIED){
             return CUSTOMER_TAGS.QUALIFIED;
-        }else if(customer_label ===2){
+        }else if(customer_label === HISTORY_QUALIFIED){
             return CUSTOMER_TAGS.HISTORY_QUALIFIED;
         }else{
             return customer_label;
@@ -45,11 +50,11 @@ class CustomerLabel extends React.Component{
 
     render(){
         return(
-            this.props.className?<Tag className={this.getCrmLabelCls(this.props.className)}>{this.theContent(this.props.className)}</Tag>:null
+            this.props.label?<Tag className={this.getClassName(this.props.label)}>{this.getContent(this.props.label)}</Tag>:null
         );
     }
 }
-// module.exports = CustomerLabel;
-//客户阶段标签组件(className content)
-//import CustomerLabel from 'CMP_DIR/customer_label';
+CustomerLabel.propTypes = {
+    label: PropTypes.string,//传入用户标签描述
+}
 export default CustomerLabel;

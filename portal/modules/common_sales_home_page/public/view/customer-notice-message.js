@@ -40,8 +40,8 @@ class CustomerNoticeMessage extends React.Component {
     renderTagsContent(customerMessage) {
         return (
             <span>
-                    <CustomerLabel className={customerMessage.qualify_label} />
-                    <CustomerLabel className={customerMessage.customer_label}  />
+                    <CustomerLabel label={customerMessage.qualify_label} />
+                    <CustomerLabel label={customerMessage.customer_label}  />
                 }
             </span>
         );

@@ -599,7 +599,7 @@ const ApplyViewDetail = createReactClass({
                                 title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
                             >
                                 {detailInfo.customer_name}
-                                <CustomerLabel className={detailInfo.customer_label} />
+                                <CustomerLabel label={detailInfo.customer_label} />
                                 {tags.length ?
                                     <span className="customer-list-tags">
                                         {tags}

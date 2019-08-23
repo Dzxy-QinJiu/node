@@ -319,7 +319,7 @@ class MyInsterestColumn extends React.Component {
         return (
             <div className='customer-name'>
                 <i className={interestCls}/>
-                <CustomerLabel className={customer_label}  />
+                <CustomerLabel label={customer_label}  />
                 <span className='customer-name-text'
                     title={Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')})}
                     onClick={this.openCustomerDetail.bind(this, item.id, index)}>

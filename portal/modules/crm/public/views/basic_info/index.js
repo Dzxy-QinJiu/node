@@ -429,7 +429,7 @@ class BasicData extends React.Component {
                     /> ) : (
                     <div className="basic-info-title-block">
                         <div className="basic-info-name">
-                            <CustomerLabel className ={basicData.qualify_label}  />
+                            <CustomerLabel label ={basicData.qualify_label}  />
                             {this.hasEditCutomerLabelPrivilege() && !this.props.disableEdit ? (
                                 <Dropdown overlay={this.getCustomerLabelMenus()} trigger={['click']}>
                                     <span title={Intl.get('crm.customer.label.edit.tip', '点击修改客户阶段')}>
