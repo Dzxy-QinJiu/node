@@ -26,6 +26,8 @@ const memberRestApis = {
     checkOnlyUser: '/rest/base/v1/user/member/:key/:value/unique',
     //修改成员的所属团队
     updateUserTeam: '/rest/base/v1/group/user',
+    // 清空成员的部门
+    clearMemberDepartment: '/rest/base/v1/group/user/:user_id',
     //修改成员角色
     updateUserRoles: '/rest/base/v1/user/member/roles',
     //查询及添加个人销售目标
@@ -234,6 +236,17 @@ exports.updateUserTeam = function(req, res, params) {
             res: res
         }, null);
 };
+
+// 清空成员的部门
+exports.clearMemberDepartment = (req, res) => {
+    return restUtil.authRest.del({
+        url: memberRestApis.clearMemberDepartment.replace(':user_id', req.params.memberId),
+        req: req,
+        res: res
+    }, null);
+};
+
+
 //修改成员角色
 exports.updateUserRoles = function(req, res, user) {
     return restUtil.authRest.put(

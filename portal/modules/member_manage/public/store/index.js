@@ -208,7 +208,7 @@ class MemberManageStore {
                 } else if (email) { // 修改成员邮箱
                     changeMember.email = email;
                     changeMember.emailEnable = false; // 修改邮箱后，邮箱的激活状态改为未激活
-                } else if (teamName) { // 修改成员部门
+                } else if ( _.has(modifiedMember, 'teamName')) { // 修改成员部门
                     changeMember.teamName = teamName;
                     changeMember.teamId = _.get(modifiedMember, 'team');
                 } else if (_.has(modifiedMember, 'positionName')) { // 修改成员职务
