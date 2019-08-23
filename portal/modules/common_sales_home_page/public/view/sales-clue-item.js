@@ -33,6 +33,7 @@ import { AUTHS,TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import ajax from 'ant-ajax';
+import CustomerLabel from 'CMP_DIR/customer_label';
 class SalesClueItem extends React.Component {
     constructor(props) {
         super(props);
@@ -498,7 +499,7 @@ class SalesClueItem extends React.Component {
             {/*是有效线索并且有关联客户*/}
             {availability && associatedCustomer ?
                 <div className="associate-customer">
-                    {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_lable)}>{salesClueItem.customer_label}</Tag> : null}
+                        <CustomerLabel label={salesClueItem.customer_lable} />
                     <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> : null}
             {/*是无效线索且有判定无效的相关信息*/}
             {inValidClue ?

@@ -66,6 +66,7 @@ var LAYOUT_CONSTANTS = {
 };
 import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
 import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
+import CustomerLabel from 'CMP_DIR/customer_label';
 
 class ClueCustomer extends React.Component {
     state = {
@@ -954,7 +955,7 @@ class ClueCustomer extends React.Component {
                 {/*是有效线索并且有关联客户*/}
                 {associatedCustomer ? (
                     <div className="associate-customer">
-                        {salesClueItem.customer_label ? <Tag className={crmUtil.getCrmLabelCls(salesClueItem.customer_label)}>{salesClueItem.customer_label}</Tag> : null}
+                        <CustomerLabel label={salesClueItem.customer_label} />
                         <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}</b>
                     </div>
                 ) : null}

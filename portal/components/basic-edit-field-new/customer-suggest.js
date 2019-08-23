@@ -14,6 +14,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import CustomerLabel from 'CMP_DIR/customer_label';
 
 class CustomerSuggest extends React.Component {
     static defaultProps = {
@@ -497,7 +498,7 @@ class CustomerSuggest extends React.Component {
                             />) : null
                         }
                         <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
-                            {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
+                            <CustomerLabel label={this.props.customerLable} />
                             {this.state.displayText}
                         </span>
                     </div>);

@@ -50,6 +50,7 @@ import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
+import CustomerLabel from 'CMP_DIR/customer_label';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -1727,16 +1728,8 @@ class Crm extends React.Component {
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                     onClick={_this.handleFocusCustomer.bind(this, record)}></i>
-                                {record.customer_label ? (
-                                    <Tag
-                                        className={crmUtil.getCrmLabelCls(record.customer_label)}>
-                                        {record.customer_label}</Tag>) : null
-                                }
-                                {record.qualify_label ? (
-                                    <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
-                                        {record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                            record.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                                }
+                                    <CustomerLabel label={record.customer_label} />
+                                    <CustomerLabel label={record.qualify_label}  />
                                 {text}
                             </div>
                             {tags.length ?

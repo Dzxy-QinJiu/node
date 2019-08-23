@@ -29,6 +29,7 @@ import CustomerPoolFilter from './customer-pool-filter';
 import classNames from 'classnames';
 import {COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
 import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
+import CustomerLabel from 'CMP_DIR/customer_label';
 
 const PAGE_SIZE = 20;
 class CustomerPool extends React.Component {
@@ -263,11 +264,7 @@ class CustomerPool extends React.Component {
                 render: (text, record, index) => {
                     return (
                         <span>
-                            {record.customer_label ? (
-                                <Tag
-                                    className={crmUtil.getCrmLabelCls(record.customer_label)}>
-                                    {record.customer_label}</Tag>) : null
-                            }
+                            <CustomerLabel label={record.customer_label} />
                         </span>);
                 }
             }, {
@@ -287,11 +284,7 @@ class CustomerPool extends React.Component {
 
                     return (
                         <span>
-                            {record.qualify_label ? (
-                                <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
-                                    {record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                        record.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                            }
+                            <CustomerLabel label={record.qualify_label} />
                             {tags.length ?
                                 <div className="customer-list-tags">
                                     {tags}

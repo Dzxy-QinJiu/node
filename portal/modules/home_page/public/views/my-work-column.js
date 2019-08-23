@@ -42,6 +42,7 @@ import clueAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import Trace from 'LIB_DIR/trace';
+import CustomerLabel from 'CMP_DIR/customer_label';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -383,16 +384,7 @@ class MyWorkColumn extends React.Component {
         });
         return (
             <div className='work-name'>
-                {customer_label ? (
-                    <Tag
-                        className={crmUtil.getCrmLabelCls(customer_label)}>
-                        {customer_label}</Tag>) : null
-                }
-                {/*qualify_label ? (
-                 <Tag className={crmUtil.getCrmLabelCls(qualify_label)}>
-                 {qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                 qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                 */}
+                <CustomerLabel label={customer_label} />
                 <span className={nameCls} title={titleTip}
                     onClick={this.openCustomerOrClueDetail.bind(this, id, index, item)}>
                     {_.get(workObj, 'name', '')}
