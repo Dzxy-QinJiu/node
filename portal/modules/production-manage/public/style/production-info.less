@@ -97,27 +97,33 @@
         width: 100%;
         overflow: hidden;
         .product-add-user-data-card{
-          .ant-switch {
-            transition: none;
-            margin-top: -18%;
-            margin-left: 94%;
+          position: relative;
+          .add-user-data-warp.show-js-card {
+            margin-top: 26px;
           }
-          &.warped {
-            .detail-card-title {
-              margin-bottom: 0;
-              padding-bottom: 0;
-              border-bottom: none;
+          .float-operation-content {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            top: 0;
+            left: -20px;
+            width: 480px;
+            height: 48px;
+            padding: 12px 32px;
+            .ant-switch {
+              margin-left: 5px;
             }
-            .detail-card-content {
-              height: 0;
-              .ant-switch {
-                margin-top: -11%;
-                transition: none;
-              }
+            .add-uem-error {
+              color: @error-tip-color;
             }
           }
           .add-user-data-details {
             margin-top: -18px;
+            .iconfont {
+              width: 24px;
+              text-align: center;
+            }
             .js-code-user-tip {
               overflow: hidden;
               .ant-btn {
@@ -152,6 +158,21 @@
                 margin-left: 10px;
                 line-height: 28px;
                 font-size: 14px;
+              }
+            }
+            .custom-variable-container {
+              .custom-variable-content {
+                .custom-variable-wrap {
+                  .ant-form-item {
+                    padding-right: 0;
+                  }
+                  .icon-button {
+                    .iconfont {
+                      text-align: center;
+                      width: 24px;
+                    }
+                  }
+                }
               }
             }
           }
@@ -207,37 +228,6 @@
       font-weight: normal;
       font-size: 14px;
     }
-    //jscode-----------------start
-    .ant-form-item.jscode-form-item, .ant-form-item.useJS-form-item{
-      margin-bottom: 0;
-    }
-    .copy-btn {
-      float: right;
-      height: 28px;
-      font-size: 12px;
-    }
-    //复制成功的提示
-    .copy-success-tip {
-      float: right;
-      display: inline-block;
-      margin-left: 10px;
-      line-height: 28px;
-      color: @success-tip-color;
-    }
-    .js-code-label {
-      display: inline-block;
-      line-height: 28px;
-      color: #999999;
-      font-size: 14px;
-    }
-    //jscode展示区
-    .js-code-container {
-      margin-top: 4px;
-      margin-left: 30px;
-      pre {
-        padding: 10px;
-      }
-    }
     .test-success-tip{
       color: @success-tip-color;
     }
@@ -251,31 +241,5 @@
       float: right;
       margin-right: 45px;
     }
-
-    // 用户属性展示区
-    .custom-variable-container{
-      margin-left: 30px;
-      .custom-variable-item{
-        line-height: 20px;
-        .custom-variable-key{
-          width: 40%;
-        }
-      }
-    }
-    //自定义属性添加展示区 -- start
-    .custom-variables-wrapper{
-      .ant-form-item{
-        padding-right: 0!important;
-      }
-      .circle-button{
-        top: 0;
-      }
-      .edit-container{
-        .icon-edit-btn{
-          top: -7px;
-        }
-      }
-    }
-    //自定义属性添加展示区 -- end
   }
 }

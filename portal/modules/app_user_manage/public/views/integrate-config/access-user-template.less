@@ -69,8 +69,9 @@
               }
             }
             .first-step-buttons {
+              display: flex;
+              justify-content: flex-end;
               .prompt-info {
-                float: right;
                 .save-error {
                   color: @error_tips_color;
                   font-size: 14px;
@@ -110,84 +111,25 @@
               color: @title-color;
             }
             .add-user-data-warp {
-              .access-step-tip {
-                width: 100%;
-                font-size: 14px;
-                margin-top: 10px;
-                .js-code-label {
-                  display: inline-block;
-                  line-height: 28px;
-                  color: #999999;
-                  font-size: 14px;
-                }
-                //复制成功的提示
-                .copy-success-tip {
-                  float: right;
-                  display: inline-block;
-                  margin-left: 10px;
-                  line-height: 28px;
-                  color: @title-color;
-                  .anticon-check-circle {
-                    margin-right: 5px;
-                    color: @success-tip-color;
-                  }
-                }
-                .copy-btn {
-                  float: right;
-                  color: #8DA8C5;
-                  line-height: 28px;
-                  &:hover {
-                    color: darken(#8DA8C5 , 30%);
-                  }
-                }
-                //代码段
-                .pre-code{
-                  margin-top: 0;
-                  #matomo-js-code {
-                    white-space:pre-wrap;
-                    padding: 12px;
-                    font-size: 12px;
-                    background-color: #fff;
-                    color: #999;
-                  }
-                }
+              .js-code-user-tip {
+                display: flex;
+                justify-content: flex-end;
+                position: fixed;
+                bottom: 0;
+                left: 24px;
+                margin-top: 0;
+                height: 70px;
+                width: 480px;
+                padding: 12px 20px;
               }
-            }
-          }
-
-          //测试footer
-          .js-code-user-tip {
-            display: flex;
-            align-items: center;
-            float: right;
-            margin-top: 25px;
-            font-size: 14px;
-            color: @title-color;
-            .ant-btn {
-              margin-left: 12px;
-            }
-            .test-loading {
-              display: inline-block;
-              margin-left: 5px;
-            }
-            .anticon-check-circle {
-              color: @success-tip-color;
-            }
-            .anticon-exclamation-circle {
-              color: @error-tip-color;
-            }
-            .test-error-tip,.test-success-tip{
-              display: inline-block;
-              margin-left: 10px;
-              line-height: 24px;
             }
           }
         }
       }
     }
-
   }
 }
+
 .access-user-step-container.show-modal {
   position: fixed;
   top: 0;

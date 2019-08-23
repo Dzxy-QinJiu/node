@@ -41,8 +41,11 @@ exports.getUemJSCode = (uemSiteId, custom_variable) => {
     let jsCodeFixedCount = 5;
     // 加上添加的自定义属性
     let keys = _.keys(custom_variable);
+    console.log(keys);
     let custom_variables = [];
     _.each(keys,(key, index) => {
+        console.log(custom_variable[key]);
+        console.log(key);
         // 添加描述
         custom_variables.push(`  /*${custom_variable[key]}*/`);
         // 添加key
