@@ -27,6 +27,7 @@ import {getColumnHeight} from './common-util';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import PhoneCallout from 'CMP_DIR/phone-callout';
+import CustomerLabel from 'CMP_DIR/customer_label';
 const LOGIN_TYPES = {
     INTEREST_LOGIN: 'interest_login_success',//关注客户登录
     LOGIN_AFTER_STOPPED: 'login_after_stopped',//停用登录
@@ -318,16 +319,7 @@ class MyInsterestColumn extends React.Component {
         return (
             <div className='customer-name'>
                 <i className={interestCls}/>
-                {customer_label ? (
-                    <Tag
-                        className={crmUtil.getCrmLabelCls(customer_label)}>
-                        {customer_label}</Tag>) : null
-                }
-                {/*qualify_label ? (
-                 <Tag className={crmUtil.getCrmLabelCls(qualify_label)}>
-                 {qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                 qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                 */}
+                <CustomerLabel label={customer_label}  />
                 <span className='customer-name-text'
                     title={Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('call.record.customer', '客户')})}
                     onClick={this.openCustomerDetail.bind(this, item.id, index)}>

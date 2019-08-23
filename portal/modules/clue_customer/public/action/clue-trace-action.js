@@ -40,6 +40,10 @@ function ClueTraceAction() {
             this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
     };
+    //没有ajax的增加线索跟进记录
+    this.addClueTraceWithoutAjax = function(saveObj, callback){
+        this.dispatch({loading: false, error: false, data: saveObj});
+    };
     //更新线索跟进记录
     this.updateClueTrace = function(queryObj, callback) {
         this.dispatch({loading: true,error: false});

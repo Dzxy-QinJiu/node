@@ -491,35 +491,35 @@ class RecommendCustomerRightPanel extends React.Component {
     render() {
         var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
         return (
-            <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
-                <RightPanelClose data-tracename="关闭推荐线索列表" onClick={this.closeRecommendCluePanel}/>
-                <div className="recommend-clue-panel">
-                    <TopNav>
-                        <div className='recommend-customer-top-nav-wrap'>
-                            <Button className="btn-item" data-tracename="点击换一批按钮"
-                                onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
-                            <Button className="btn-item" data-tracename="点击修改推荐条件"
-                                onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
-                            {
-                                hasSelectedClue ? this.renderBatchChangeClues() : null
-                            }
-
-
+            <div className="recommend-clues-lists-container">
+                <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
+                    <RightPanelClose data-tracename="关闭推荐线索列表" onClick={this.closeRecommendCluePanel}/>
+                    <div className="recommend-clue-panel">
+                        <TopNav>
+                            <div className='recommend-customer-top-nav-wrap'>
+                                <Button className="btn-item" data-tracename="点击换一批按钮"
+                                    onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
+                                <Button className="btn-item" data-tracename="点击修改推荐条件"
+                                    onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
+                                {
+                                    hasSelectedClue ? this.renderBatchChangeClues() : null
+                                }
+                            </div>
+                        </TopNav>
+                        <div className="recommend-clue-content-container">
+                            {this.renderRecommendClueLists()}
                         </div>
-                    </TopNav>
-                    <div className="recommend-clue-content-container">
-                        {this.renderRecommendClueLists()}
+
                     </div>
+                </RightPanel>
+                {this.state.showEditConditionPanel || this.isShowRecommendSettingPanel() ?
+                    <RecommendCluesForm
+                        hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
+                        hideFocusCustomerPanel={this.hideFocusCustomerPanel}
+                        saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                    /> : null}
+            </div>
 
-                </div>
-                {this.state.showEditConditionPanel || this.isShowRecommendSettingPanel() ? <RecommendCluesForm
-                    hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
-                    hideFocusCustomerPanel={this.hideFocusCustomerPanel}
-                    saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
-                /> : null}
-
-
-            </RightPanel>
 
         );
     }

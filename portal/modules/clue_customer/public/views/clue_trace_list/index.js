@@ -715,6 +715,17 @@ class ClueTraceList extends React.Component {
         );
     }
 }
+function noop(){}
+ClueTraceList.defaultProps = {
+    disableEdit: false,
+    currentId: '',
+    ShowCustomerUserListPanel: noop,
+    updateCustomerLastContact: noop,
+    curClue: {},
+    showClueDetailPanel: noop,
+    isOverViewPanel: false,
+    changeActiveKey: noop
+};
 ClueTraceList.propTypes = {
     disableEdit: PropTypes.bool,
     currentId: PropTypes.string,

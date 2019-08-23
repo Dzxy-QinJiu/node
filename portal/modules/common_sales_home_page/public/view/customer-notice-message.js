@@ -12,6 +12,7 @@ import notificationAjax from 'MOD_DIR/notification/public/ajax/notification-ajax
 import Trace from 'LIB_DIR/trace';
 import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
 import {ALL_LISTS_TYPE} from 'PUB_DIR/sources/utils/consts';
+import CustomerLabel from 'CMP_DIR/customer_label';
 class CustomerNoticeMessage extends React.Component {
     constructor(props) {
         super(props);
@@ -39,14 +40,8 @@ class CustomerNoticeMessage extends React.Component {
     renderTagsContent(customerMessage) {
         return (
             <span>
-                {customerMessage.qualify_label ? (
-                    <Tag className={crmUtil.getCrmLabelCls(customerMessage.qualify_label)}>
-                        {customerMessage.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                            customerMessage.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null}
-                {customerMessage.customer_label ? (
-                    <Tag
-                        className={crmUtil.getCrmLabelCls(customerMessage.customer_label)}>
-                        {customerMessage.customer_label}</Tag>) : null
+                    <CustomerLabel label={customerMessage.qualify_label} />
+                    <CustomerLabel label={customerMessage.customer_label}  />
                 }
             </span>
         );
