@@ -34,11 +34,11 @@ class CustomerLabel extends React.Component{
             HISTORY_QUALIFIED: Intl.get('common.history.qualified', '曾经合格'),
         };
         if(customer_label === 1){
-            return CUSTOMER_TAGS.QUALIFIED 
+            return CUSTOMER_TAGS.QUALIFIED;
         }else if(customer_label ===2){
-            return CUSTOMER_TAGS.HISTORY_QUALIFIED
+            return CUSTOMER_TAGS.HISTORY_QUALIFIED;
         }else{
-            return customer_label
+            return customer_label;
         }
     }
 
