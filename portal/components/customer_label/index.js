@@ -49,6 +49,7 @@ class CustomerLabel extends React.Component{
         );
     }
 }
-module.exports = CustomerLabel;
+// module.exports = CustomerLabel;
 //客户阶段标签组件(className content)
 //import CustomerLabel from 'CMP_DIR/customer_label';
+export default CustomerLabel;
