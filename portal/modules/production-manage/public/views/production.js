@@ -353,7 +353,7 @@ class Production extends React.Component {
                                 {getFieldDecorator('price', {
                                     initialValue: this.props.info.price || 0,
                                     rules: [{
-                                        required: true,
+                                        required: false,
                                         type: 'number',
                                         message: Intl.get('config.product.input.number', '请输入数字'),
                                         transform: (value) => {
@@ -372,7 +372,7 @@ class Production extends React.Component {
                                 {getFieldDecorator('sales_unit', {
                                     initialValue: this.props.info.sales_unit,
                                     rules: [{
-                                        required: true,
+                                        required: false,
                                         message: Intl.get('config.product.input.sales_unit', '请输入计价单位')
                                     }]
                                 })(
