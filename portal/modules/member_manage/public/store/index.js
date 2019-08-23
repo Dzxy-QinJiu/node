@@ -102,6 +102,7 @@ class MemberManageStore {
                 curMember.createDate = _.get(result, 'createDate'); // 创建时间
                 curMember.disableDate = _.get(result, 'disableDate'); // 停用时间
                 curMember.qq = _.get(result, 'qq'); // qq
+                curMember.email = _.get(result, 'email'); // email
             }
             this.currentMember = result;
         }
