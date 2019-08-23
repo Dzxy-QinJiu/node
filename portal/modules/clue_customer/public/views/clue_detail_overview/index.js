@@ -969,7 +969,7 @@ class ClueDetailOverview extends React.Component {
         return (<ClueTraceList
             curClue={_.get(this.state, 'curClue')}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
-            showClueDetailPanel={true}
+            showClueDetailPanel={this.props.showClueDetailPanel.bind(this, curClue)}
             isOverViewPanel={true}
             changeActiveKey={this.props.changeActiveKey}
         />);
