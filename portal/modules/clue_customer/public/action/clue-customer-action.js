@@ -111,6 +111,14 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     };
+    //线索标记为无效
+    this.updateClueAvailability = function(submitObj,callback) {
+        clueCustomerAjax.updateClueItemDetail(submitObj).then((result) => {
+            _.isFunction(callback) && callback();
+        },(errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
+    };
     //线索关联某个客户
     this.setClueAssociatedCustomer = function(submitObj,callback) {
         clueCustomerAjax.setClueAssociatedCustomer(submitObj).then((result) => {

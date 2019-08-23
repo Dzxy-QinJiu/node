@@ -8,7 +8,9 @@ import { emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/sources/utils/validate
 var React = require('react');
 require('../../css/clue_detail_overview.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
-import {Button, Icon, message} from 'antd';
+import {Button, Form, Icon, message, Input} from 'antd';
+const FormItem = Form.Item;
+const {TextArea} = Input;
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DatePickerField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
@@ -22,7 +24,20 @@ var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,handleSubmitClueItemData,handleSubmitContactData,contactNameRule,getClueStatusValue,editCluePrivilege,assignSalesPrivilege} from '../../utils/clue-customer-utils';
+import {
+    SELECT_TYPE,
+    AVALIBILITYSTATUS,
+    getClueSalesList,
+    getLocalSalesClickCount,
+    SetLocalSalesClickCount,
+    handleSubmitClueItemData,
+    handleSubmitContactData,
+    contactNameRule,
+    getClueStatusValue,
+    editCluePrivilege,
+    assignSalesPrivilege,
+    handlePrivilegeType
+} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const EDIT_FEILD_WIDTH = 300;
@@ -38,7 +53,10 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DetailCard from 'CMP_DIR/detail-card';
 import ClueTraceList from 'MOD_DIR/clue_customer/public/views/clue_trace_list';
+import moment from 'moment';
+import ClueTraceAction from '../../action/clue-trace-action';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
+const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -56,11 +74,14 @@ class ClueDetailOverview extends React.Component {
         similarCustomerLists: [],//相似客户列表
         showLargerCustomerLists: false,//展示大于3个的客户列表
         showLargerClueLists: false,//展示大于3个的线索列表
+        submitReason: '',//要提交的无效原因
+        submitInvalidateClueMsg: '',//提交标记无效出错的信息
+        submitInvalidateLoading: false,//正在提交无效记录
+        isShowInvalidateInputPanel: false //正在展示无效信息输入框
     };
-    
+
     componentDidMount() {
         clueCustomerStore.listen(this.onClueCustomerStoreChange);
-        var curClue = this.state.curClue;
         //获取相似线索列表
         this.getSimilarClueLists();
         //获取相似客户列表
@@ -687,21 +708,161 @@ class ClueDetailOverview extends React.Component {
         );
     };
     showConfirmInvalid = (item) => {
+        let availability = item.availability;
+        //如果当前用户状态为有效，点击无效时标记flag
+        if(_.isEqual(availability, AVALIBILITYSTATUS.AVALIBILITY)) {
+            this.setState({
+                isShowInvalidateInputPanel: true,
+                editInvalidClueId: item.id
+            }, () => {
+                if (this['addTextarea']) {
+                    this['addTextarea'].focus();
+                }
+            });
+        } else {
+            this.setState({
+                editInvalidClueId: item.id
+            });
+        }
+    };
+    //取消无效处理
+    handleInvalidateCancelBtn = (item) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn-cancel'), '取消保存跟进内容');
         this.setState({
-            editInvalidClueId: item.id
+            submitInvalidateClueMsg: '',
+            submitReason: '',
+            editInvalidClueId: '',
+            isShowInvalidateInputPanel: false,
+            invalidateClueStatus: ''
         });
     };
-    renderInvalidConfirm = (salesClueItem) => {
+    //输入框改变时数据处理
+    handleInvalidateInputChange = (e) => {
+        this.setState({
+            submitReason: e.target.value
+        });
+    };
+    //确认无效处理
+    handleInvalidateBtn = (item, callback) => {
+        if (this.state.submitInvalidateLoading) {
+            return;
+        }
+        let invalidReason = _.trim(this.state.submitReason);
+        if (!invalidReason) {
+            this.setState({
+                submitInvalidateClueMsg: Intl.get('clue.invalid.reason.not.empty', '无效原因不能为空'),
+                invalidateClueStatus: 'error'
+            });
+        } else {
+            let updateAvailability = AVALIBILITYSTATUS.INAVALIBILITY;
+            let updateObj = {
+                id: item.id,
+                availability: updateAvailability,
+                invalid_info: {
+                    invalid_reason: invalidReason
+                }
+            };
+            updateObj = JSON.stringify(updateObj);
+            let clueState = {
+                updateItem: 'availability',
+                updateObj: updateObj,
+                type: handlePrivilegeType(true)
+            };
+            this.setState({
+                submitInvalidateLoading: true,
+            });
+            clueCustomerAction.updateClueAvailability(clueState, (result) => {
+                if (_.isString(result)) {
+                    this.setState({
+                        submitInvalidateLoading: false,
+                        editInvalidClueId: '',
+                        invalidateClueStatus: 'error',
+                        submitInvalidateClueMsg: result
+                    });
+                } else {
+                    _.isFunction(callback) && callback(updateAvailability);
+                    clueCustomerAction.deleteClueById(item);
+                    if (updateAvailability === AVALIBILITYSTATUS.INAVALIBILITY) {
+                        clueCustomerAction.addInvalidClueNum();
+                    }
+                    //前端更新跟进记录
+                    let newTrace = {
+                        remark: invalidReason,
+                        user_id: userData.getUserData().user_id || '',
+                        nick_name: userData.getUserData().nick_name,
+                        add_time: moment().valueOf(),
+                        time: moment().valueOf(),
+                        type: 'other',
+                        showAdd: false
+                    };
+                    ClueTraceAction.addClueTraceWithoutAjax(newTrace);
+                    this.setState({
+                        submitInvalidateLoading: false,
+                        editInvalidClueId: '',
+                        invalidateClueStatus: '',
+                        submitReason: '',
+                        submitInvalidateClueMsg: '',
+                        isShowInvalidateInputPanel: false,
+                    });
+                }
+            });
+        }
+    };
+    //渲染确认无效原因输入框
+    renderInvalidatePanel = (salesClueItem) => {
+        return (
+            <div className="confirm-invalidate-item">
+                <div className="confirm-invalidate-panel">
+                    <Form className="confirm-invalidate-input">
+                        <FormItem
+                            validateStatus={_.get(this.state, 'invalidateClueStatus')}
+                            help={_.get(this.state, 'submitInvalidateClueMsg')}
+                        >
+                            <TextArea
+                                ref={addTextarea => this['addTextarea'] = addTextarea}
+                                placeholder={Intl.get('clue.describe.invalid.reason', '请描述一下无效原因')}
+                                value={this.state.submitReason}
+                                onChange={this.handleInvalidateInputChange.bind(this)}
+                            />
+                        </FormItem
+                        >
+                        <div className="save-cancel-btn">
+                            <Button className="ant-btn-cancel"
+                                onClick={this.handleInvalidateCancelBtn.bind(this,salesClueItem)}
+                            >{Intl.get('common.cancel', '取消')}</Button>
+                            <Button type='primary'
+                                onClick={this.handleInvalidateBtn.bind(this, salesClueItem)}
+                                className="ant-btn-save"
+                                disabled={this.state.submitInvalidateLoading} data-tracename="保存无效原因">
+                                {Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                                {this.state.submitInvalidateLoading ? <Icon type="loading"/> : null}
+                            </Button>
+                        </div>
+                    </Form>
+                </div>
+            </div>
+        );
+    };
+    //渲染确认有效按钮
+    renderValidConfirm = (salesClueItem) => {
         var isEditting = this.state.isInvaliding;
-        var isInvalid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
         return (
             <span className="invalid-confirm">
                 <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
-                    {isInvalid ? Intl.get('clue.customer.confirm.valid', '确认有效') : Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                    {Intl.get('clue.customer.confirm.valid', '确认有效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
                 <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
             </span>
+        );
+    }
+    renderInvalidConfirm = (salesClueItem) => {
+        let isInvalid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
+        return (
+            <div>
+                {isInvalid ? this.renderValidConfirm(salesClueItem) : this.renderInvalidatePanel(salesClueItem)}
+            </div>
+
         );
     };
     renderAvailabilityClue = (curClue) => {
@@ -724,18 +885,9 @@ class ClueDetailOverview extends React.Component {
         }
 
     };
-
     renderAssociatedAndInvalidClueHandle = (curClue) => {
         return (
-            <div>
-                <div className="clue-info-item">
-                    <div className="clue-info-label">
-                        {Intl.get('clue.handle.clue', '线索处理')}
-                    </div>
-                    <div className="clue-info-detail no-handled">
-                        {Intl.get('clue.has.no.handle', '暂未处理')}
-                    </div>
-                </div>
+            <div className="invalid-valid-container">
                 <div className="btn-container">
                     {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
                 </div>
@@ -747,12 +899,16 @@ class ClueDetailOverview extends React.Component {
         var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
                             || (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         var associatedClue = (curClue.clue_type !== 'clue_pool')
-                                && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);                                             
-        if(avalibility && associatedClue){
-            return ({height: this.state.divHeight - HAS_BTN_HEIGHT});
+                                && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);
+        let height = this.state.divHeight;
+        if(_.get(this.state, 'isShowInvalidateInputPanel')){
+            height = this.props.divHeight - HAS_INPUT_HEIGHT;
+        }else if(avalibility && associatedClue){
+            height = this.props.divHeight - HAS_BTN_HEIGHT;
         }else{
-            return ({height: this.state.divHeight});
-        }                  
+            height = this.props.divHeight;
+        }
+        return ({height: height});
     }
 
     handleCancelCustomerSuggest = () => {
@@ -810,9 +966,8 @@ class ClueDetailOverview extends React.Component {
 
     //渲染跟进列表
     renderTraceList = () => {
-        let curClue = _.get(this.state, 'curClue');
         return (<ClueTraceList
-            curClue={curClue}
+            curClue={_.get(this.state, 'curClue')}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
             showClueDetailPanel={true}
             isOverViewPanel={true}
@@ -1265,7 +1420,7 @@ class ClueDetailOverview extends React.Component {
         //分配线索给销售的权限
         var hasAssignedPrivilege = assignSalesPrivilege(curClue);
         return (
-            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer )}>
+            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer)}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
                     {this.renderClueCustomerLists(curClue)}

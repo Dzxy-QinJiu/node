@@ -95,6 +95,17 @@ ClueTraceStore.prototype.addClueTrace = function(result) {
         this.inputContent = {value: ''};
     }
 };
+//没有ajax的添加线索
+ClueTraceStore.prototype.addClueTraceWithoutAjax = function(result) {
+    this.addCustomerLoading = false;
+    this.addCustomerErrMsg = '';
+    //全部类型下或添加类型筛选下，将新添加的跟进加入到当前展示类型的跟进列表中
+    if (this.filterType === 'all') {
+        this.customerRecord.unshift(result.data);
+    }
+    this.total += 1;
+    this.inputContent = {value: ''};
+};
 ClueTraceStore.prototype.updateClueTrace = function(result) {
     if (result.loading) {
         this.addDetailErrMsg = '';

@@ -3256,6 +3256,8 @@ var zh_CN = {
     'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
     'clue.customer.has.transfer': '已转化',
     'clue.confirm.clue.invalid': '确认无效',
+    'clue.invalid.reason.not.empty': '无效原因不能为空',
+    'clue.describe.invalid.reason': '请描述一下无效原因',
     'contract.amount.check.tip': '产品总额不能大于合同总额{amount}元，请核对',
     'contract.profit.check.tip': '产品毛利不能大于合同总额{amount}元，请核对',
     'customer.has.similar.lists': '相似客户',
