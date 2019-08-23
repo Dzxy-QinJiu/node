@@ -414,7 +414,7 @@ class customerScore extends React.Component {
         var customerScoreLists = _.get(this, 'state.customerRulesFormData.detail');
         if (!customerScoreLists.length) {
             //如果沒有设置过流程，默认展示打通电话次数和拜访电话次数
-            var defaultArr = _.filter(customerIndicatorArr, item => item.indicator === 'user');
+            var defaultArr = _.filter(customerIndicatorArr, item => item.indicator !== 'user');
             _.forEach(defaultArr, defaultItem => {
                 customerScoreLists.push({
                     indicator: _.get(defaultItem, 'indicator'),

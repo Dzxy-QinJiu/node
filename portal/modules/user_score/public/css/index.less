@@ -5,6 +5,8 @@
     .user-score-content {
       font-size: 14px;
       padding: 24px;
+      position: relative;
+      min-height: 300px;
       .status-wrapper{
         float: right;
       }
@@ -48,88 +50,99 @@
         margin-right: 10px;
         visibility: hidden;
       }
-      //基本信息配置
-      .basic-score-rule{
-        padding: 12px 0;
-        border:1px solid #E5E5E5;
-        .basic-score-title{
-          color: #333;
-          font-size: 14px;
-          padding: 12px;
-          .status-wrapper{
-            float: right;
-          }
-          &:hover{
-            .iconfont.icon-update{
-              visibility: visible;
-            }
-          }
-        }
-        .user-score-lists{
+      .user-basic-particate-wrap{
+        .user-basic-content{
           position: relative;
-          min-height: 100px;
+          padding: 12px 0 0 0;
+          border:1px solid #E5E5E5;
+          min-height: 188px;
+          //基本信息配置
+          .basic-score-rule{
 
-        }
-
-      }
-      //参与度配置
-      .particepate-container-warp{
-        min-height: 400px;
-        .user-engagement-container{
-          padding: 12px 0;
-          .user-engagement-panel{
-            p{
-              margin-bottom: 10px;
-              .ant-switch{
-                display: inline-block;
-                margin-left: 10px;
+            .basic-score-title{
+              color: #333;
+              font-size: 14px;
+              padding: 12px;
+              .status-wrapper{
+                float: right;
+              }
+              &:hover{
+                .iconfont.icon-update{
+                  visibility: visible;
+                }
               }
             }
-            .user-engagement-item-wrap{
+            .user-score-lists{
+              position: relative;
+              min-height: 80px;
 
-              .user-engagement-and-add{
-                overflow: hidden;
-                position: relative;
-                .user-engagement-item{
-                  width: 900px;
-                  float: left;
-                  border: 1px solid #ddd;
-                  padding: 12px;
-                  margin: 8px 0;
-                  .ant-row{
-                    margin-bottom:10px;
-                    .ant-input{
-                      width: 160px;
-                    }
-                    .add-operate-item{
-                      font-size: 20px;
-                      span{
-                        cursor: pointer;
-                        padding-left: 10px;
+            }
+
+          }
+        }
+        .user-particate-content{
+          position: relative;
+          min-height: 188px;
+          margin-top: 12px;
+          border: 1px solid #ddd;
+          //参与度配置
+            .user-engagement-panel{
+              .user-engage-title{
+                color: #333;
+                font-size: 14px;
+                padding: 12px;
+                .status-wrapper{
+                  float: right;
+                }
+                &:hover{
+                  .iconfont.icon-update{
+                    visibility: visible;
+                  }
+                }
+              }
+              .user-engagement-item-wrap{
+                .user-engagement-and-add{
+                  overflow: hidden;
+                  position: relative;
+                  .user-engagement-item{
+                    //width: 900px;
+                    //float: left;
+                    //
+                    //padding: 12px;
+                    //margin: 8px 0;
+                    .ant-row{
+                      margin-bottom:10px;
+                      .ant-input{
+                        width: 160px;
+                      }
+                      .add-operate-item{
+                        font-size: 20px;
+                        span{
+                          cursor: pointer;
+                          padding-left: 10px;
+                        }
                       }
                     }
                   }
-                }
-                .add-user-engagement-item{
-                  font-size: 20px;
-                  position: absolute;
-                  bottom: 0;
-                  left: 900px;
-                  span{
-                    cursor: pointer;
-                    padding-left: 10px;
+                  .add-user-engagement-item{
+                    font-size: 20px;
+                    position: absolute;
+                    bottom: 0;
+                    left: 900px;
+                    span{
+                      cursor: pointer;
+                      padding-left: 10px;
+                    }
                   }
                 }
               }
             }
-          }
+
         }
       }
-
       .save-btns{
         text-align: right;
-        padding-right: 424px;
-        margin-top:10px;
+        margin:10px 0;
         .ant-btn{
           margin-left: 20px;
         }

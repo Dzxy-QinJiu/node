@@ -110,15 +110,6 @@ class UserScoreStore {
             this.saveEngagementErr = '';
         }
     }
-    getAppList(obj) {
-        if(obj.loading) {
-            this.appList = [];
-        } else if(!obj.error) {
-            this.appList = obj.result;
-        }else if (obj.error){
-            this.appListErrorMsg = obj.result;
-        }
-    }
 
 
 

@@ -3373,6 +3373,11 @@ var zh_CN = {
     'import.excel.no.data': '试下客套给您{recommend}的功能',
     'import.recommend.clue.lists': '推荐线索',
     'menu.sales.auto.manage.config': '销售自动化',
-    'customer.score.status.rules': '确定要{status}该规则？'
+    'customer.score.status.rules': '确定要{status}该规则？',
+    'user.score.intro.user': '接入用户',
+    'user.score.no.data.info': '暂无用户信息',
+    'user.score.no.engagement.score': '暂未开启参与度评分',
+    'user.score.no.config.operation.config': '暂未配置操作指标',
+    'user.score.start.config': '开始配置'
 };
 export default zh_CN;
