@@ -910,16 +910,20 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
         if (team !== groupId) {
             // 更新原部门成员个数
             let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === groupId);
+            let oldTeam = _.find(this.salesTeamList, item => item.group_id === groupId);
 
             if (ownerId === memberId) { // 修改负责人所在的部门
                 updateMemberCountTeam.total -= 1;
                 delete teamMemberObj.owner;
+                delete oldTeam.owner_id;
             } else if (hasEditMember(managers, memberId)) { // 修改舆情秘书的部门
                 updateMemberCountTeam.total -= 1;
                 teamMemberObj.managers = _.filter(managers, userItem => userItem.userId !== memberId);
+                oldTeam.manager_ids = _.filter(oldTeam.manager_ids, id => id !== memberId);
             } else if (hasEditMember(users, memberId)) {// 修改普通成员的团队
                 updateMemberCountTeam.total -= 1;
                 teamMemberObj.users = _.filter(users, userItem => userItem.userId !== memberId);
+                oldTeam.user_ids = _.filter(oldTeam.user_ids, id => id !== memberId);
             }
         }
         if (team) {
