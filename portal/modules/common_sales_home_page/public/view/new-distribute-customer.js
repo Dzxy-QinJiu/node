@@ -32,10 +32,8 @@ class NewDistributeCustomer extends React.Component {
         return (
             <div className="new-distribute-customer customer-detail-item">
                 <div className="new-distribute-customer-title">
-                        <CustomerLabel className={newDistributeCustomer.qualify_label} 
-                        content={newDistributeCustomer.qualify_label == 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                            newDistributeCustomer.qualify_label == 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}/>
-                        <CustomerLabel className={newDistributeCustomer.customer_label} content={newDistributeCustomer.customer_label}/>
+                        <CustomerLabel className={newDistributeCustomer.qualify_label} />
+                        <CustomerLabel className={newDistributeCustomer.customer_label} />
                     }
                     <span className="sale-home-customer-name" onClick={this.openCustomerDetail.bind(this, newDistributeCustomer.id)} data-tracename="打开客户详情">{newDistributeCustomer.customer_name || newDistributeCustomer.name}</span>
                 </div>

@@ -955,7 +955,7 @@ class ClueCustomer extends React.Component {
                 {/*是有效线索并且有关联客户*/}
                 {associatedCustomer ? (
                     <div className="associate-customer">
-                        <CustomerLabel className={salesClueItem.customer_label} contact={salesClueItem.customer_label} />
+                        <CustomerLabel className={salesClueItem.customer_label} />
                         <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}</b>
                     </div>
                 ) : null}

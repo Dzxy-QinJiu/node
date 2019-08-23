@@ -264,7 +264,7 @@ class CustomerPool extends React.Component {
                 render: (text, record, index) => {
                     return (
                         <span>
-                            <CustomerLabel className={record.customer_label} content={record.customer_label} />
+                            <CustomerLabel className={record.customer_label} />
                         </span>);
                 }
             }, {
@@ -284,8 +284,7 @@ class CustomerPool extends React.Component {
 
                     return (
                         <span>
-                            <CustomerLabel className={record.qualify_label} content={record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                        record.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''} />
+                            <CustomerLabel className={record.qualify_label} />
                             {tags.length ?
                                 <div className="customer-list-tags">
                                     {tags}

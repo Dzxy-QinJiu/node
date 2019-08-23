@@ -384,7 +384,7 @@ class MyWorkColumn extends React.Component {
         });
         return (
             <div className='work-name'>
-                <CustomerLabel className={customer_label} content={customer_label} />
+                <CustomerLabel className={customer_label} />
                 <span className={nameCls} title={titleTip}
                     onClick={this.openCustomerOrClueDetail.bind(this, id, index, item)}>
                     {_.get(workObj, 'name', '')}

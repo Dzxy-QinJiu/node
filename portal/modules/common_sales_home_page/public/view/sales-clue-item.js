@@ -499,7 +499,7 @@ class SalesClueItem extends React.Component {
             {/*是有效线索并且有关联客户*/}
             {availability && associatedCustomer ?
                 <div className="associate-customer">
-                        <CustomerLabel className={salesClueItem.customer_lable} content={salesClueItem.customer_lable}/>
+                        <CustomerLabel className={salesClueItem.customer_lable} />
                     <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> : null}
             {/*是无效线索且有判定无效的相关信息*/}
             {inValidClue ?

@@ -2,7 +2,8 @@ import './customerLabel.less'
 import {Tag} from 'antd'
 import classNames from 'classnames';
 class CustomerLabel extends React.Component{
-    getCrmLabelCls = function(customer_label) {
+    
+    getCrmLabelCls(customer_label) {
         const LABEL_TYPES = {
             INFO_TAG: '信息',
             INTENT_TAG: '意向',
@@ -27,9 +28,24 @@ class CustomerLabel extends React.Component{
         return customerLabelCls;
     };
 
+    theContent(customer_label){
+        const  CUSTOMER_TAGS = {
+            QUALIFIED: Intl.get('common.qualified', '合格'),
+            HISTORY_QUALIFIED: Intl.get('common.history.qualified', '曾经合格'),
+        };
+        if(customer_label === 1){
+            return CUSTOMER_TAGS.QUALIFIED 
+        }else if(customer_label ===2){
+            return CUSTOMER_TAGS.HISTORY_QUALIFIED
+        }else{
+            return customer_label
+        }
+    }
+
+
     render(){
         return(
-            this.props.className?<Tag className={this.getCrmLabelCls(this.props.className)}>{this.props.content}</Tag>:null
+            this.props.className?<Tag className={this.getCrmLabelCls(this.props.className)}>{this.theContent(this.props.className)}</Tag>:null
         );
     }
 }

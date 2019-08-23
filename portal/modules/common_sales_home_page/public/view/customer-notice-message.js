@@ -40,12 +40,8 @@ class CustomerNoticeMessage extends React.Component {
     renderTagsContent(customerMessage) {
         return (
             <span>
-                    <CustomerLabel className={customerMessage.qualify_label} 
-                        content={
-                            customerMessage.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                            customerMessage.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''
-                        }/>
-                    <CustomerLabel className={customerMessage.customer_label} content={customerMessage.customer_label} />
+                    <CustomerLabel className={customerMessage.qualify_label} />
+                    <CustomerLabel className={customerMessage.customer_label}  />
                 }
             </span>
         );

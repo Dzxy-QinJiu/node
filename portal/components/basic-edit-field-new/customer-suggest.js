@@ -498,7 +498,7 @@ class CustomerSuggest extends React.Component {
                             />) : null
                         }
                         <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
-                            <CustomerLabel className={this.props.customerLable} content={this.props.customerLable} />
+                            <CustomerLabel className={this.props.customerLable} />
                             {this.state.displayText}
                         </span>
                     </div>);
