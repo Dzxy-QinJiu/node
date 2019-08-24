@@ -51,7 +51,7 @@ class CustomVariable extends React.Component {
         this.state = {
             loading: false,
             displayType: this.props.displayType || 'text',
-            value: this.dealCustomVariable(props.value),
+            value: this.dealCustomVariable(_.get(this.props, 'addProduct.custom_variable')),
             submitErrorMsg: '',
             customer_variables: FIXED_CUSTOM_VARIABLES,
             jsCopied: false,
@@ -63,7 +63,7 @@ class CustomVariable extends React.Component {
     }
 
     componentWillMount() {
-        let jsCode = getUemJSCode(_.get(this.state, 'addProduct.integration_id'), _.get(this.state, 'value'));
+        let jsCode = getUemJSCode(_.get(this.state, 'addProduct.integration_id'), this.reverseDeakCustomVariable());
         this.setState({
             jsCode
         });
@@ -169,7 +169,6 @@ class CustomVariable extends React.Component {
     //取消保存字段
     handleCancel = (e) => {
         this.setState({
-            value: this.dealCustomVariable(this.props.value),
             displayType: 'text',
             submitErrorMsg: ''
         });
@@ -230,7 +229,7 @@ class CustomVariable extends React.Component {
                 this.saveCustomVariable(saveObj, () => {
                     setDisplayState();
                     //更新jsCode
-                    let jsCode = getUemJSCode(_.get(this.state, 'addProduct.integration_id'), _.get(this.state, 'value'));
+                    let jsCode = getUemJSCode(_.get(this.state, 'addProduct.integration_id'), this.reverseDeakCustomVariable());
                     this.setState({
                         jsCode
                     });

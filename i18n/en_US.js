@@ -1016,7 +1016,9 @@ var en_US = {
     'config.product.add.code': 'Add product code',//添加产品编号
     'config.product.add.spec': 'Add product specifications',//添加规格/版本
     'config.product.add.price': 'Add product price',//添加产品单价
+    'config.product.price.not.null': 'Product price should not be empty',//产品单价不能为空
     'config.product.add.sales_unit': 'Add sales unit',//添加计价单位
+    'config.product.sales_unit.not.null': 'Sales unit should not be empty',//计价单位不能为空
     'config.product.add.address': 'Add access address',//添加访问地址
     'config.product.add.desc': 'Add product description',//添加产品描述
     'config.product.modify': 'Modify product',//修改产品

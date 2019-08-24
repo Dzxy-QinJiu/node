@@ -55,7 +55,7 @@ function ProductionFormActions() {
             } else {
                 _this.dispatch({saveResult: 'error', saveMsg: Intl.get('common.save.failed', '保存失败!')});
                 if(typeof callback === 'function') {
-                    callback(errorMsg || Intl.get('common.save.failed', '保存失败!'));
+                    callback(Intl.get('common.save.failed', '保存失败!'));
                 }
             }
         }, function(errorMsg) {

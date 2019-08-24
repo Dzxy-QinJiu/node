@@ -141,6 +141,10 @@ ProductionStore.prototype.closeInfoPanel = function() {
     this.formShow = false;
 };
 
+ProductionStore.prototype.openEditPanel = function() {
+    this.formType = 'edit';
+};
+
 //删除产品
 ProductionStore.prototype.deleteItemById = function(id) {
     if (id) {

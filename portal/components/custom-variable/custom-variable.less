@@ -20,15 +20,19 @@
     .custom-variable-content{
       font-size: 13px;
       .custom-variable-item{
+        display: flex;
         color: #333;
         .custom-variable{
+          word-wrap: break-word;
+          white-space: normal;
           width: 48%;
           display: inline-block;
           padding: 10px;
         }
         .custom-variable-value {
+          padding-left: 9px;
           width: 52%;
-          border-left: 1px dashed#edf1f2;
+          border-left: 1px dashed #edf1f2;
         }
       }
       .antc-table {
@@ -82,9 +86,6 @@
           .custom-variable-item{
             transition: all .3s;
             background:#F1F8FE;
-            .custom-variable-value {
-              padding-left: 9px;
-            }
           }
         }
         .hover-background {
@@ -114,6 +115,10 @@
             margin-bottom: 15px;
             .ant-input {
               width: 100%;
+            }
+            .ant-form-explain {
+              white-space: normal;
+              work-break: break-word;
             }
           }
           .ant-form-item-label{

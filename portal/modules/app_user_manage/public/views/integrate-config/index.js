@@ -4,10 +4,9 @@
  * Created by wangliping on 2018/12/13.
  */
 import {Input, Button, Form, Icon, message} from 'antd';
-require('./index.less');
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import AccessUserTemplate from './access-user-template';
-
+const NO_DATA_INFO_HEIGHT = 144;
 class IntegrateConfigView extends React.Component {
     constructor(props) {
         super(props);
@@ -47,7 +46,7 @@ class IntegrateConfigView extends React.Component {
 
     render() {
         //计算垂直居中需要的距离
-        let marginTop = ($(window).height() - $('.no-data-intro').height()) / 2;
+        let marginTop = ($(window).height() - NO_DATA_INFO_HEIGHT) / 2;
         return (
             <div className="integrate-config-wrap" style={{'margin-top': marginTop}}>
                 <NoDataIntro
