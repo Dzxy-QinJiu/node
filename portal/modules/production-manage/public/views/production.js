@@ -72,6 +72,7 @@ class Production extends React.Component {
             isJsCardShow: !_.isEmpty(_.get(this.props.info,'integration_type')),//是否展示Js采集用户信息card
             addUemProductErrorMsg: '',//改为集成错误信息
             isAddingUemProduct: false,//正在添加为集成产品
+            saveLogoErrorMsg: ''//保存产品Logo错误信息
         };
     };
 
@@ -155,7 +156,7 @@ class Production extends React.Component {
                 }
             });
         } else {
-            this.props.closeRightPanel();
+            this.props.openRightPanel();
         }
     };
 
@@ -319,11 +320,9 @@ class Production extends React.Component {
     }
 
     onSwitchChange = (checked) => {
-        //如果为打开switch
+        //如果为打开switch,尝试将产品变为uem集成
         if(checked) {
-            let integration_id = _.get(this.props, 'info.integration_id');
             let production = _.get(this.props, 'info');
-            production.integration_id = integration_id;
             production.isEditBasic = false;
             production.changeType = INTEGRATE_TYPES.UEM;
 
@@ -333,7 +332,6 @@ class Production extends React.Component {
                     this.setState({
                         addUemProductErrorMsg: '',
                         isAddingUemProduct: false,
-                        uemSiteId: integration_id,
                         isJsCardShow: true
                     });
                     this.props.afterOperation(this.props.formType, production);
@@ -344,7 +342,7 @@ class Production extends React.Component {
                     });
                 }
             });
-        } else {
+        } else { //如果关闭switch，尝试将uem产品变为普通产品
             let production = _.get(this.props, 'info');
             production.isEditBasic = false;
             production.changeType = INTEGRATE_TYPES.NORMAL;
@@ -390,9 +388,20 @@ class Production extends React.Component {
                 //头像保存没有"successFunc"回调函数
                 if(!isProductLogo){
                     successFunc();
+                } else {
+                    //头像保存成功，提示错误信息置空
+                    this.setState({
+                        saveLogoErrorMsg: ''
+                    });
                 }
                 this.props.afterOperation(this.props.formType, _.extend(this.props.info, saveObj));
             } else {
+                //头像保存失败的提示信息需要自己添加
+                if(isProductLogo) {
+                    this.setState({
+                        saveLogoErrorMsg: Intl.get('common.save.failed','保存失败')
+                    });
+                }
                 errorFunc(errorMsg);
             }
         });
@@ -523,6 +532,7 @@ class Production extends React.Component {
                         isUserHeadIcon={true}
                         userName={this.props.info.name}
                     />
+                    {_.get(this.state, 'saveLogoErrorMsg') ? <span className="save-logo-error">{_.get(this.state, 'saveLogoErrorMsg')}</span> : null}
                 </div>
                 <div className="product-info">
                     <div className="product-title">
@@ -622,6 +632,7 @@ Production.propTypes = {
     formType: PropTypes.string,
     closeRightPanel: PropTypes.func,
     form: PropTypes.object,
-    afterOperation: PropTypes.func
+    afterOperation: PropTypes.func,
+    openRightPanel: PropTypes.func
 };
 module.exports = Form.create()(Production);

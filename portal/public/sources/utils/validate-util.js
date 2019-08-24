@@ -28,8 +28,7 @@ export const isPhone = function(value) {
 // 产品单价验证规则
 export const productPriceRule = function(rule, value, callback) {
     value = _.trim(value);
-    console.log(value);
-    if(_.isEmpty(value)) {
+    if(!_.isEmpty(value)) {
         if(/^(\d|,)+(\.\d+)?$/.test(value)) {
             callback();
         } else {

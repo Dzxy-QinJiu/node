@@ -16,7 +16,6 @@ function ProductionActions() {
         'showInfoPanel',
         'closeInfoPanel',
         'setCurProduction',
-        'openEditPanel'
     );
     this.getProductions = function(query) {
         productionAjax.getProductions(query).then((listObj) => {

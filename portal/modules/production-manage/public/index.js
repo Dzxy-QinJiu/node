@@ -292,6 +292,7 @@ class ProductionManage extends React.Component {
                                 formType={this.state.currentProduction.id ? util.CONST.EDIT : util.CONST.ADD}
                                 info={this.state.currentProduction}
                                 closeRightPanel={this.events_closeRightPanel}
+                                openRightPanel={this.events_showAddForm.bind(this, util.CONST.EDIT)}
                                 afterOperation={this.events_afterOperation}
                             /> : null}
                         {this.state.deleteError ? (<message></message>) : null}
