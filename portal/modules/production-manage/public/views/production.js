@@ -156,7 +156,7 @@ class Production extends React.Component {
                 }
             });
         } else {
-            this.props.openRightPanel();
+            this.props.closeRightPanel();
         }
     };
 
@@ -381,6 +381,10 @@ class Production extends React.Component {
         };
         //为saveObj的输入内容做trim
         saveObj = _.mapValues(saveObj, obj => _.trim(obj));
+        //如果保存的是产品单价，将其转化为number类型
+        if(_.has(saveObj, 'price')) {
+            saveObj.price = _.toNumber(saveObj.price);
+        }
         _.extend(production, saveObj);
         ProductionFormAction.setSaveFlag(true);
         ProductionFormAction.editProduction(production, errorMsg => {
@@ -441,11 +445,14 @@ class Production extends React.Component {
                     hasEditPrivilege={true}
                     id={this.props.info.id}
                     saveEditInput={this.saveProductItem}
-                    value={this.props.info.price || 0}
+                    value={_.toString(this.props.info.price)}
                     afterTextTip={Intl.get('contract.82', '元')}
                     field='price'
                     type='textarea'
-                    validators={[productPriceRule]}
+                    validators={[{
+                        required: true,
+                        validator: productPriceRule
+                    }]}
                     addDataTip={Intl.get('config.product.add.price', '添加产品单价')}
                     placeholder={Intl.get( 'config.product.input.price', '请输入产品单价')}
                 />
