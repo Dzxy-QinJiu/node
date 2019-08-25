@@ -35,6 +35,7 @@ class UserInfo extends React.Component{
             rolesName: '',
             roles: '',
             reject: '',
+            qq: ''
         }
     };
     constructor(props) {
@@ -45,6 +46,7 @@ class UserInfo extends React.Component{
             isBindWechat: true,//是否绑定微信
             isLoadingWechatBind: false,//是否正在绑定微信
             emailEditType: 'text', //text或edit
+            qqEditType: 'text', // text或edit
             //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
             weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : '',//微信账号绑定的错误提示
             iconSaveError: ''//头像修改失败错误提示
@@ -194,16 +196,26 @@ class UserInfo extends React.Component{
     }
 
     //保存邮箱操作
-    saveEmailEditInput = (saveObj, successFunc, errorFunc) => {
-        let email = _.get(saveObj, 'email');
-        UserInfoAction.editUserInfo({email: email}, (errorMsg) => {
+    saveEditUserInfo = (type, saveObj, successFunc, errorFunc) => {
+        let value = _.get(saveObj, type);
+        let submitObj = {email: value};
+        if (type === 'qq') {
+            submitObj = {qq: value};
+        }
+        UserInfoAction.editUserInfo(submitObj, (errorMsg) => {
             if(_.isEmpty(errorMsg)){
-                //邮箱修改成功，恢复为未激活
-                let formData = _.extend(this.state.formData, {emailEnable: false});
-                this.setState({
-                    formData,
-                    emailEditType: 'text'
-                });
+                if (type === 'email') {
+                    //邮箱修改成功，恢复为未激活
+                    let formData = _.extend(this.state.formData, {emailEnable: false});
+                    this.setState({
+                        formData,
+                        emailEditType: 'text'
+                    });
+                } else if (type === 'qq') {
+                    this.setState({
+                        qqEditType: 'text'
+                    });
+                }
                 successFunc();
             } else {
                 errorFunc(errorMsg);
@@ -222,6 +234,21 @@ class UserInfo extends React.Component{
     onEmailDisplayTypeChange = (type) => {
         this.setState({
             emailEditType: type
+        });
+    }
+
+
+    // 设置qq编辑状态
+    setQQEditable = () => {
+        this.setState({
+            qqEditType: 'edit'
+        });
+    }
+
+    // 更新qq编辑状态
+    onQQDisplayTypeChange = (type) => {
+        this.setState({
+            qqEditType: type
         });
     }
 
@@ -254,6 +281,10 @@ class UserInfo extends React.Component{
                             </a>,
                     }}/>
             </span>);
+
+        // 根据是否拥有qq改变渲染input默认文字
+        let qqInputInfo = formData.qq ? formData.qq : ' ';
+
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo.bind(this)}
                 style={{marginLeft: '20px', marginTop: '20px'}}>
@@ -296,7 +327,7 @@ class UserInfo extends React.Component{
                                     type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
                                 }]}}
                                 afterTextTip={displaInfo}
-                                saveEditInput={this.saveEmailEditInput}
+                                saveEditInput={this.saveEditUserInfo.bind(this, 'email')}
                                 onDisplayTypeChange={this.onEmailDisplayTypeChange}
                             />
                         </span>
@@ -306,6 +337,21 @@ class UserInfo extends React.Component{
                             {Intl.get('user.phone', '手机号')}
                             ：</span>
                         <PhoneShowEditField id={formData.id} phone={formData.phone}/>
+                    </div>
+                    <div className="user-info-item">
+                        <span>QQ：</span>
+                        <span className="user-qq-item">
+                            <BasicEditInputField
+                                id={formData.id}
+                                displayType={this.state.qqEditType}
+                                field="qq"
+                                value={qqInputInfo}
+                                hasEditPrivilege={isEditable}
+                                hoverShowEdit={false}
+                                saveEditInput={this.saveEditUserInfo.bind(this, 'qq')}
+                                onDisplayTypeChange={this.onQQDisplayTypeChange}
+                            />
+                        </span>
                     </div>
                     <div className="user-info-item">
                         <span>{Intl.get('crm.58', '微信')}：</span>
