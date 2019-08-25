@@ -1728,8 +1728,8 @@ class Crm extends React.Component {
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                     onClick={_this.handleFocusCustomer.bind(this, record)}></i>
-                                    <CustomerLabel label={record.customer_label} />
-                                    <CustomerLabel label={record.qualify_label}  />
+                                <CustomerLabel label={record.customer_label} />
+                                <CustomerLabel label={record.qualify_label} />
                                 {text}
                             </div>
                             {tags.length ?
@@ -1840,8 +1840,8 @@ class Crm extends React.Component {
                                 <Popconfirm placement="topRight" onConfirm={this.releaseCustomer.bind(this, record.id)}
                                     title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确认释放吗？')}>
                                     <a className='release-customer'
-                                        title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
-                                        {Intl.get('crm.customer.release', '释放')}
+                                        title={Intl.get('crm.customer.release', '释放')}>
+                                        <i className="iconfont icon-release"/>
                                     </a>
                                 </Popconfirm>)
                             }
