@@ -17,7 +17,7 @@ const qualifiedTagList = [{
 function FilterStore() {
     this.appList = [];
     this.teamList = [];
-    this.ownerList = [];//有客户的负责人名称列表
+    this.userList = [];//负责人（联合跟进人）列表
     this.stageList = [];
     this.systemTagList = []; //系统标签
     this.tagList = [];
@@ -35,10 +35,10 @@ function FilterStore() {
 FilterStore.prototype.setInitialCondition = function() {
     this.condition = {
         sales_team_id: '',
-        user_name: '',//负责人
+        user_id: '',//负责人
+        second_user_id: '',//联合跟进人
         industry: '',
         province: '',
-        app_ids: [''],
         immutable_labels: [''], //系统标签
         labels: [''],//标签的筛选
         customer_label: '',//阶段标签
@@ -46,8 +46,7 @@ FilterStore.prototype.setInitialCondition = function() {
         member_role: '',//销售角色的筛选
         competing_products: [''],//竞品的筛选
         sales_opportunities: [{
-            sale_stages: '',
-            apps: ['']
+            sale_stages: ''
         }],
         administrative_level: '',//行政级别
         otherSelectedItem: '',//其他类型的筛选
@@ -77,8 +76,8 @@ FilterStore.prototype.getTeamList = function(result) {
     this.teamList = result.teamList;
 };
 
-FilterStore.prototype.getOwnerList = function(list) {
-    this.ownerList = _.get(list, '[0]') ? list : [];
+FilterStore.prototype.getUserList = function(list) {
+    this.userList = _.get(list, '[0]') ? list : [];
 };
 
 FilterStore.prototype.getStageList = function(list) {
@@ -120,43 +119,6 @@ FilterStore.prototype.getSystemTagList = function(list) {
     this.systemTagList = list;
 };
 
-FilterStore.prototype.setApp = function(value) {
-    this.condition.sales_opportunities[0].apps = [value];
-};
-
-FilterStore.prototype.setTeam = function(value) {
-    this.condition.sales_team_id = value;
-};
-
-FilterStore.prototype.setStage = function(value) {
-    this.condition.sales_opportunities[0].sale_stages = value;
-};
-
-FilterStore.prototype.setTag = function(value) {
-    this.condition.labels = value;
-};
-FilterStore.prototype.setStageTag = function(value) {
-    this.condition.customer_label = value;
-};
-
-FilterStore.prototype.setSalesRole = function(value) {
-    this.condition.member_role = value;
-};
-
-FilterStore.prototype.setCompetitor = function(value) {
-    this.condition.competing_products = value;
-};
-
-FilterStore.prototype.setIndustry = function(value) {
-    this.condition.industry = value;
-};
-
-FilterStore.prototype.setProvince = function(value) {
-    this.condition.province = value;
-};
-FilterStore.prototype.setContact = function(value) {
-    this.condition.contact = value;
-};
 FilterStore.prototype.setInputCondition = function(searchObj) {
     if (_.has(searchObj, 'contact_name')) {
         //联系人的搜索
@@ -164,16 +126,6 @@ FilterStore.prototype.setInputCondition = function(searchObj) {
     } else {
         this.inputCondition = searchObj;
     }
-};
-FilterStore.prototype.setClue = function(value) {
-    this.condition.clue = value;
-};
-FilterStore.prototype.setLevel = function(value) {
-    this.condition.administrative_level = value;
-};
-
-FilterStore.prototype.setOtherSelectedItem = function(item) {
-    this.condition.otherSelectedItem = item;
 };
 
 FilterStore.prototype.showPanel = function() {

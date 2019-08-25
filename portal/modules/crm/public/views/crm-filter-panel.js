@@ -112,7 +112,7 @@ class CrmFilterPanel extends React.Component {
         FilterAction.getCompetitorList();
         FilterAction.getIndustries();
         //负责任人名称列表
-        FilterAction.getOwnerList();
+        FilterAction.getUserList();
         FilterAction.getFilterProvinces();
         setTimeout(() => {
             this.getCommonFilterList();
@@ -145,232 +145,6 @@ class CrmFilterPanel extends React.Component {
         };
         FilterAction.getCommonFilterList(paramsObj);
     }
-
-    appSelected = (app) => {
-        FilterAction.setApp(app);
-
-        const _this = this;
-        setTimeout(() => _this.props.search());
-    };
-
-    stageSelected = (stage) => {
-        const curSelectedStages = this.state.condition.sales_opportunities[0].sale_stages;
-        let newSelectedStages = getSelected(curSelectedStages, stage);
-        //未知的处理
-        if (stage === UNKNOWN || curSelectedStages === UNKNOWN) {
-            newSelectedStages = stage;
-        } else {
-            newSelectedStages = getSelected(curSelectedStages, stage);
-        }
-        if (newSelectedStages === curSelectedStages) return;
-
-        FilterAction.setStage(newSelectedStages);
-
-        setTimeout(() => this.props.search());
-        stage = stage ? stage : '全部';
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按销售阶段筛选');
-    };
-
-    teamSelected = (team) => {
-        const curSelectedTeams = this.state.condition.sales_team_id;
-
-        const newSelectedTeams = getSelected(curSelectedTeams, team);
-
-        if (newSelectedTeams === curSelectedTeams) return;
-
-        FilterAction.setTeam(newSelectedTeams);
-
-        setTimeout(() => this.props.search());
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按团队筛选客户');
-    };
-
-    //行政级别的筛选
-    levelSelected = (level) => {
-        const curSelectedLevels = this.state.condition.administrative_level;
-
-        const newSelectedLevels = getSelected(curSelectedLevels, level);
-
-        if (newSelectedLevels === curSelectedLevels) return;
-
-        FilterAction.setLevel(newSelectedLevels);
-
-        setTimeout(() => this.props.search());
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按行政级别筛选客户');
-    };
-
-    tagSelected = (tag) => {
-        //标签
-        let labels = this.state.condition.labels;
-        let selectedTags = [''];
-        //当前选中的标签多于一个且当前点击的不是全部时进行处理
-        if (tag && labels) {
-            //如果之前处于选中状态则取消选择
-            if (labels.indexOf(tag) > -1) {
-                selectedTags = _.filter(labels, label => label !== tag);
-                if (selectedTags.length === 0) {//都取消选择后，选中全部
-                    selectedTags = [''];
-                }
-            }
-            //否则设为选中状态
-            else {
-                //未打标签的客户和其他标签不可同时选中
-                if (tag === Intl.get('crm.tag.unknown', '未打标签的客户')) {
-                    selectedTags = [tag];
-                } else {
-                    //过滤掉”未打标签的客户“
-                    labels = _.filter(labels, label => label !== Intl.get('crm.tag.unknown', '未打标签的客户'));
-                    selectedTags = [].concat(labels);
-                    selectedTags = _.filter(selectedTags, item => item !== '');
-                    selectedTags.push(tag);
-                }
-            }
-        }
-        FilterAction.setTag(selectedTags);
-
-        const _this = this;
-        setTimeout(() => _this.props.search());
-        tag = tag ? tag : '全部';
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按标签筛选');
-    };
-
-    //阶段标签的选择
-    stageTagSelected = (stageTag) => {
-        if (this.state.condition.customer_label === stageTag) {
-            if (stageTag) {//不是全部时，则取消当前选项的选择
-                stageTag = '';
-            } else {//全部时，不做处理
-                return;
-            }
-        }
-        FilterAction.setStageTag(stageTag);
-        setTimeout(() => this.props.search());
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按阶段标签筛选');
-    };
-
-    //销售角色的选择
-    salesRoleSelected = (role) => {
-        if (this.state.condition.member_role === role) {
-            if (role) {//不是全部时，则取消当前选项的选择
-                role = '';
-            } else {//全部时，不做处理
-                return;
-            }
-        }
-        FilterAction.setSalesRole(role);
-        setTimeout(() => this.props.search());
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按销售角色筛选');
-    };
-
-    //竞品的选择
-    competitorSelected = (tag) => {
-        let labels = this.state.condition.competing_products;
-        let selectedTags = [''];
-        //当前选中的标签多于一个且当前点击的不是全部时进行处理
-        if (tag && labels) {
-            //如果之前处于选中状态则取消选择
-            if (labels.indexOf(tag) > -1) {
-                selectedTags = _.filter(labels, label => label !== tag);
-            } else {//否则设为选中状态
-                selectedTags = [].concat(labels);
-                selectedTags = _.filter(selectedTags, item => item !== '');
-                selectedTags.push(tag);
-            }
-        }
-        FilterAction.setCompetitor(selectedTags);
-        setTimeout(() => this.props.search());
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按标签筛选');
-    };
-
-    industrySelected = (industry) => {
-        const curSelectedIndustrys = this.state.condition.industry;
-        let newSelectedIndustrys = '';
-        //未知的处理
-        if (industry === UNKNOWN || curSelectedIndustrys === UNKNOWN) {
-            newSelectedIndustrys = industry;
-        } else {
-            newSelectedIndustrys = getSelected(curSelectedIndustrys, industry);
-        }
-        if (newSelectedIndustrys === curSelectedIndustrys) return;
-
-        FilterAction.setIndustry(newSelectedIndustrys);
-
-        setTimeout(() => this.props.search());
-        industry = industry ? industry : '全部';
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按行业筛选');
-    };
-
-    provinceSelected = (province) => {
-        const curSelectedProvince = this.state.condition.province;
-        let newSelectedProvince = '';
-        //未知的处理
-        if (province === UNKNOWN || curSelectedProvince === UNKNOWN) {
-            newSelectedProvince = province;
-        } else {
-            newSelectedProvince = getSelected(curSelectedProvince, province);
-        }
-        if (newSelectedProvince === curSelectedProvince) return;
-        FilterAction.setProvince(newSelectedProvince);
-        setTimeout(() => this.props.search());
-        province = province ? province : '全部';
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '按地域筛选');
-    };
-
-    otherSelected = (item) => {
-        //当前选择的是之前选择的时
-        if (item === this.state.condition.otherSelectedItem) {
-            if (item) {//不是全部时，则取消当前选项的选择
-                item = '';
-            } else {//全部时，不做处理
-                return;
-            }
-        }
-        FilterAction.setOtherSelectedItem(item);
-        setTimeout(() => this.props.search());
-        switch (item) {
-            case otherFilterArray[1].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '从未联系客户筛选');
-                break;
-            case otherFilterArray[2].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超30天未联系的筛选');
-                break;
-            case otherFilterArray[3].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超15天未联系的筛选');
-                break;
-            case otherFilterArray[4].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超7天未联系的筛选');
-                break;
-            case otherFilterArray[5].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '无联系方式的客户的筛选');
-                break;
-            case otherFilterArray[6].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '最后联系但未写更近记录客户的筛选');
-                break;
-            case otherFilterArray[7].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '超30天未写跟进记录客户的筛选');
-                break;
-            case otherFilterArray[8].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '被关注客户的筛选');
-                break;
-            case otherFilterArray[9].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '我关注客户的筛选');
-                break;
-            case otherFilterArray[10].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '多个订单客户的筛选');
-                break;
-            case otherFilterArray[13].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '近一周的活跃客户的筛选');
-                break;
-            case otherFilterArray[14].value:
-                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '近一个月的活跃客户的筛选');
-                break;
-        }
-        if (otherFilterArray[11] && item === otherFilterArray[10].value) {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '未分配客户的筛选');
-        }
-        if (otherFilterArray[12] && item === otherFilterArray[11].value) {
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('li'), '有效客户');
-        }
-    };
 
     handleFilterChange = (data) => {
         const condition = {};
@@ -450,17 +224,7 @@ class CrmFilterPanel extends React.Component {
     }
 
     render() {
-        const appListJsx = this.state.appList.map((app, idx) => {
-            let className = app.client_id === this.state.condition.sales_opportunities[0].apps[0] ? 'selected' : '';
-            return <li key={idx} onClick={this.appSelected.bind(this, app.client_id)}
-                className={className}>{app.client_name}</li>;
-        });
         const teams = this.state.condition.sales_team_id.split(',');
-        const teamListJsx = this.state.teamList.map((team, idx) => {
-            let className = teams.indexOf(team.group_id) > -1 ? 'selected' : '';
-            return <li key={idx} onClick={this.teamSelected.bind(this, team.group_id)}
-                className={className}>{team.group_name}</li>;
-        });
         //用Store.getState()方法获取存在store里的state时，若state下的某个属性所在层次较深且其值为空时，该属性会被丢掉
         //所以这个地方需要判断一下sale_stages属性是否存在，若不存在则用空值替代
         const currentStage = this.state.condition.sales_opportunities[0].sale_stages || '';
@@ -597,11 +361,10 @@ class CrmFilterPanel extends React.Component {
                     }))
             }
         ];
-        var ownerList = _.uniqBy(this.state.ownerList, 'nickname');
         //非普通销售才有销售角色和团队
         if (!userData.getUserData().isCommonSales) {
             let salesTeamId = _.get(this.state, 'condition.sales_team_id', '');
-            let ownerList = [];
+            let userList = [];
             //如果选了团队，负责人列表为选中团队内的人
             if (salesTeamId) {
                 let selectedTeamIds = salesTeamId.split(',');
@@ -615,20 +378,30 @@ class CrmFilterPanel extends React.Component {
                 //去重，父子团队都选中时，会有重复的情况
                 memberIds = _.uniq(memberIds);
                 //过滤掉不是该团队内的成员
-                ownerList = _.filter(this.state.ownerList, owner => _.indexOf(memberIds, owner.user_id) !== -1);
+                userList = _.filter(this.state.userList, user => _.indexOf(memberIds, user.user_id) !== -1);
             } else {
-                ownerList = this.state.ownerList;
+                userList = this.state.userList;
             }
-            let ownerNameList = _.uniqBy(ownerList, 'nickname');
-            if (_.get(ownerList, 'length')) {
+            userList = _.uniqBy(userList, 'user_id');
+            if (_.get(userList, 'length')) {
+                advancedData.unshift({
+                    groupName: Intl.get('crm.second.sales', '联合跟进人'),
+                    groupId: 'second_user_id',
+                    singleSelect: true,
+                    data: _.map(userList, x => ({
+                        name: x.nickname,
+                        value: x.user_id,
+                        selected: x.user_id === _.get(this.state, 'condition.second_user_id', '')
+                    }))
+                });
                 advancedData.unshift({
                     groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'user_name',
+                    groupId: 'user_id',
                     singleSelect: true,
-                    data: _.map(ownerNameList, x => ({
+                    data: _.map(userList, x => ({
                         name: x.nickname,
-                        value: x.nickname,
-                        selected: x.nickname === _.get(this.state, 'condition.user_name', '')
+                        value: x.user_id,
+                        selected: x.user_id === _.get(this.state, 'condition.user_id', '')
                     }))
                 });
             }

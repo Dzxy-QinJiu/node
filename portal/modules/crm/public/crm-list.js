@@ -630,6 +630,19 @@ class Crm extends React.Component {
         if (condition.member_role) {
             term_fields.push('member_role');
         }
+        //负责人的处理
+        if(condition.user_id) {
+            condition.members = condition.members || [];
+            condition.members = [{member_id: condition.user_id, is_owner: true}];
+            delete condition.user_id;
+        }
+        //联合跟进人的处理
+        if(condition.second_user_id){
+            condition.members = condition.members || [];
+            condition.members.push({member_id: condition.second_user_id, is_owner: false});
+            delete condition.second_user_id;
+        }
+
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
             //未打标签的客户筛选处理
@@ -1728,8 +1741,8 @@ class Crm extends React.Component {
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                     onClick={_this.handleFocusCustomer.bind(this, record)}></i>
-                                    <CustomerLabel label={record.customer_label} />
-                                    <CustomerLabel label={record.qualify_label}  />
+                                    <CustomerLabel label={record.customer_label}/>
+                                    <CustomerLabel label={record.qualify_label}/>
                                 {text}
                             </div>
                             {tags.length ?
