@@ -15,7 +15,7 @@ function ProductionActions() {
         'updatePageSize',
         'showInfoPanel',
         'closeInfoPanel',
-        'setCurProduction',
+        'setCurProduction'
     );
     this.getProductions = function(query) {
         productionAjax.getProductions(query).then((listObj) => {
