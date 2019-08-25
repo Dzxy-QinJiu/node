@@ -13,6 +13,7 @@ import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
+import {checkQQ} from 'PUB_DIR/sources/utils/validate-util';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -195,7 +196,7 @@ class UserInfo extends React.Component{
         });
     }
 
-    //保存邮箱操作
+    //保存修改用户信息
     saveEditUserInfo = (type, saveObj, successFunc, errorFunc) => {
         let value = _.get(saveObj, type);
         let submitObj = {email: value};
@@ -348,6 +349,10 @@ class UserInfo extends React.Component{
                                 value={qqInputInfo}
                                 hasEditPrivilege={isEditable}
                                 hoverShowEdit={false}
+                                validators={[{validator: checkQQ}]}
+                                placeholder={Intl.get('member.input.qq', '请输入QQ号')}
+                                noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
+                                addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
                                 saveEditInput={this.saveEditUserInfo.bind(this, 'qq')}
                                 onDisplayTypeChange={this.onQQDisplayTypeChange}
                             />
