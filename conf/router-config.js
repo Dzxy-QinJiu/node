@@ -316,13 +316,13 @@ let routers = [
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CURTAO_RULE_MANAGE']
             },
-            // {
-            //     id: 'SALES_PROCESS', // 唯一标识
-            //     name: 'menu.sales.process',// 销售流程
-            //     routePath: '/background_management/sales_process',
-            //     component: `${MODULE_PATH}sales_process/public`,
-            //     showPrivileges: ['CRM_GET_SALES_PROCESS']
-            // },
+            {
+                id: 'SALES_PROCESS', // 唯一标识
+                name: 'menu.sales.process',// 客户阶段
+                routePath: '/background_management/customer_stage',
+                component: `${MODULE_PATH}sales_process/public`,
+                showPrivileges: ['CRM_GET_SALES_PROCESS']
+            },
         ]
     },
     {

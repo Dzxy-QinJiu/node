@@ -114,3 +114,51 @@
     }
   }
 }
+
+// 表格样式
+#app {
+  .stage-list-table-wrap {
+    .antc-table {
+      .ant-table-wrapper {
+        // 表头
+        .ant-table-thead {
+          th {
+            color: #999 !important;
+            font-weight: normal;
+            padding: 9px 16px !important;
+          }
+        }
+        // 表体
+        .ant-table tbody {
+          tr {
+            cursor: pointer;
+            background:#fff !important;
+            td {
+              padding: 9px 6px 9px 16px !important;
+              .customer-stage-name {
+                .default {
+                  float: right;
+                  padding: 0 5px;
+                  font-size: 12px;
+                  color: #ffffff;
+                  background-color: #b8c4ca;
+                }
+              }
+              .stage-operate {
+                  .iconfont {
+                    margin-right: 16px;
+                  }
+              }
+            }
+          }
+          .current-row {
+            background: #E4F2FE !important;
+            &:hover {
+              background: #E4F2FE !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

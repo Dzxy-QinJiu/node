@@ -15,6 +15,7 @@ import SalesProcessInfo from './views/sale-process-info';
 import CustomerStage from './views/customer-stage';
 import CONSTS from 'LIB_DIR/consts';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
+import {AntcTable} from 'antc';
 
 const saleId = CONSTS.ROLE_ID_CONSTANS.SALE_ID;
 const pageSize = 1000;
@@ -46,8 +47,8 @@ class SalesProcess extends React.Component {
 
     componentDidMount = () => {
         SalesProcessStore.listen(this.onChange);
-        // this.getSalesRoleMemberList(); // 获取销售角色的成员列表
-        // SalesProcessAction.getSalesTeamList(); // 获取销售团队
+        this.getSalesRoleMemberList(); // 获取销售角色的成员列表
+        SalesProcessAction.getSalesTeamList(); // 获取销售团队
         SalesProcessAction.getSalesProcess(); // 获取销售流程
     };
     
@@ -136,17 +137,17 @@ class SalesProcess extends React.Component {
                                     disabled={disabled}
                                 >
                                     <Icon type="plus" />
-                                    {Intl.get('sales.process.add.process', '添加销售流程')}
+                                    {Intl.get('customer.stage.define.new', '定义新客户阶段')}
                                 </Button>
                             </Popover>
                         ) : (
                             <Button
                                 type="ghost" className="sales-stage-top-btn btn-item"
                                 onClick={this.showAddProcessFormPanel}
-                                data-tracename="添加销售流程"
+                                data-tracename="定义新客户阶段"
                             >
                                 <Icon type="plus" />
-                                {Intl.get('sales.process.add.process', '添加销售流程')}
+                                {Intl.get('customer.stage.define.new', '定义新客户阶段')}
                             </Button>
                         )}
                     </PrivilegeChecker>
@@ -354,6 +355,122 @@ class SalesProcess extends React.Component {
         SalesProcessAction.changeSaleProcessFieldSuccess(saleProcess);
     };
 
+    getTableColumns = () => {
+        return [{
+            title: Intl.get('common.definition', '名称'),
+            dataIndex: 'name',
+            key: 'name',
+            width: 200,
+            render: (text, record, index) => {
+                let type = record.type;
+                return (
+                    <div
+                        className="customer-stage-name"
+                        onClick={this.showCustomerStagePanel.bind(this, record)}
+                        title={Intl.get('customer.stage.click.show.detail', '点击查看详细信息')}
+                    >
+                        <span>{text}</span>
+                        {
+                            type === 'default' ? (<span className="default">
+                                {Intl.get('crm.119', '默认')}
+                            </span>) : null
+                        }
+
+                    </div>
+                );
+            }
+        }, {
+            title: Intl.get('deal.stage', '阶段'),
+            dataIndex: 'stage',
+            key: 'stage',
+            render: (text, record, index) => {
+                return (
+                    <div
+                        className="customer-stage-stage"
+                        onClick={this.showCustomerStagePanel.bind(this, record)}
+                        title={Intl.get('customer.stage.click.show.detail', '点击查看详细信息')}
+                    >
+                        <span>{text}</span>
+                    </div>
+                );
+            }
+        }, {
+            title: Intl.get('common.operate', '操作'),
+            width: 100,
+            render: (text, record, index) => {
+                let type = record.type;
+                let name = record.name;
+                return (
+                    <div className="stage-operate">
+                        <span
+                            title={Intl.get('customer.stage.set.scope', '设置适用范围')}
+                            onClick={this.showCustomerStagePanel.bind(this, record)}
+                            data-tracename={'点击设置' + name + '按钮'}
+                        >
+                            <i className="iconfont icon-role-auth-config"></i>
+                        </span>
+                        {
+                            hasPrivilege('CRM_DELETE_SALES_PROCESS') && type === 'custom' ? (
+                                <span
+                                    title={Intl.get('sales.process.delete.process', '删除客户阶段')}
+                                    onClick={this.handleDeleteSaleProcess.bind(this, record)}
+                                    data-tracename={'点击删除' + name + '按钮'}
+                                >
+                                    <i className="iconfont icon-delete "></i>
+                                </span>
+                            ) : null
+                        }
+                    </div>
+                );
+            }
+        }];
+    };
+
+    // 渲染客户阶段table列表
+    renderCustomerStageList = (containerHeight) => {
+        const columns = this.getTableColumns();
+        const dataSource = this.state.salesProcessList;
+        const tableHeight = containerHeight - 40;
+        return (
+            <div className="stage-list-table-wrap scroll-load">
+                <div style={{ height: tableHeight }} ref="tableWrap">
+                    <AntcTable
+                        dataSource={dataSource}
+                        util={{zoomInSortArea: true}}
+                        pagination={false}
+                        columns={columns}
+                        scroll={{ y: tableHeight }}
+                    />
+                </div>
+            </div>
+        );
+    };
+
+    renderCustomerStageContent = (containerHeight) => {
+        const salesProcessList = this.state.salesProcessList;
+        const length = _.get(salesProcessList, 'length');
+        const errorMsg = this.state.errorMsg;
+        if (this.state.loading) {
+            return (
+                <div className="content-zone">
+                    <Spinner/>
+                </div>
+            );
+        } else if (!this.state.loading && (length === 0 || errorMsg)) {
+            return (
+                <div className="content-zone">
+                    {this.renderNoDataTipsOrErrMsg(errorMsg)}
+                </div>
+            );
+        } else {
+            return (
+                <div className="content-zone">
+                    {this.renderCustomerStageList(containerHeight)}
+                </div>
+            );
+        }
+    };
+
     render = () => {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let containerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
@@ -364,14 +481,14 @@ class SalesProcess extends React.Component {
             <div
                 className="sales-process-container"
                 style={{height: height}}
-                data-tracename="销售流程"
+                data-tracename="客户阶段"
             >
                 <div className="sale-process-wrap" style={{height: height}}>
                     <div className="sale-process-top-nav">
                         {this.renderTopNavOperation()}
                     </div>
                     <div className="sales-process-content" style={{height: containerHeight}}>
-                        {this.renderSalesProcess()}
+                        {this.renderCustomerStageContent(containerHeight)}
                     </div>
                     {
                         /**
