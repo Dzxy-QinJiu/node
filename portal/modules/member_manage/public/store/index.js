@@ -251,6 +251,9 @@ class MemberManageStore {
     updateCurrentMemberStatus(status) {
         if(this.currentMember){
             this.currentMember.status = status;
+            if (status === 0) {
+                this.currentMember.disableDate = new Date().getTime();
+            }
         }
     }
     // 处理搜索框的内容
