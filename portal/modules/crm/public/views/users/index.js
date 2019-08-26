@@ -460,7 +460,7 @@ class CustomerUsers extends React.Component {
     renderUserAppTitle() {
         return (
             <span>
-                <span className="user-app-name">{Intl.get('sales.frontpage.open.app', '已开通应用')}</span>
+                <span className="user-app-name">{Intl.get('sales.frontpage.open.product', '已开通产品')}</span>
                 <span className="user-app-type">{Intl.get('common.type', '类型')}</span>
                 <span className="user-last-login">{Intl.get('user.last.login', '最近登录')}</span>
                 <span className="user-app-over-draft">{Intl.get('sales.frontpage.expired.date', '到期情况')}</span>

@@ -57,7 +57,7 @@ export function getSalesOpenAccountLoginChart() {
             //选择全部或多个应用时显示应用名
             if (storedAppId === 'all' || _.includes(storedAppId, ',')) {
                 const appColumn = {
-                    title: Intl.get('common.app', '应用'),
+                    title: Intl.get('common.product','产品'),
                     dataIndex: 'app_name',
                     width: '25%',
                 };

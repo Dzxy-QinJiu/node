@@ -333,8 +333,8 @@ class AppUserManage extends React.Component {
                 </div>
             </Option>);
         }
-        list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage
-            id="user.app.all" defaultMessage="全部应用"/></Option>);
+        list.unshift(<Option value="" key="all" title={Intl.get('user.product.all','全部产品')}><ReactIntl.FormattedMessage
+            id="'user.product.all" defaultMessage="全部产品"/></Option>);
         return list;
     };
 

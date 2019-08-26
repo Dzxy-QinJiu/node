@@ -371,7 +371,7 @@ const UserDetailAddApp = createReactClass({
             <div>               
                 <div className="left-nav-container">
                     {
-                        Intl.get('user.user.app.select', '选择应用')
+                        Intl.get('user.user.product.select','选择产品')
                     }：
                 </div>
                 <div className="add-app-content">
@@ -485,7 +485,7 @@ const UserDetailAddApp = createReactClass({
                                 }
                             </ul>
                             <p className="btn-text" onClick={this.showAppSelector.bind(this, true)}>
-                                {Intl.get('common.add.app', '添加应用')}
+                                {Intl.get('common.add.product','添加产品')}
                             </p>
                         </div>
                         <ApplyUserAppConfig
@@ -762,7 +762,7 @@ const UserDetailAddApp = createReactClass({
                     <div className="add-app-container" style={{ height: this.props.height }}>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <OperationSteps
-                                title={Intl.get('common.add.app', '添加应用')}
+                                title={Intl.get('common.add.product','添加产品')}
                                 current={this.state.step}
                             >
                                 <OperationSteps.Step

@@ -966,7 +966,7 @@ const AddOrEditUser = createReactClass({
                         >
                             <OperationSteps.Step action={Intl.get('user.user.basic', '基本信息')}></OperationSteps.Step>
                             <OperationSteps.Step
-                                action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
+                                action={Intl.get('user.user.product.select','选择产品')}></OperationSteps.Step>
                             <OperationSteps.Step action={Intl.get('user.user.app.set', '应用设置')}></OperationSteps.Step>
                             {this.state.selectRealmId ?
                                 <OperationSteps.Step

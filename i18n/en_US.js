@@ -145,8 +145,9 @@ var en_US = {
     'common.upload.error': 'Upload failed, please try again!',//上传失败，请重试!
     'common.client': 'Client',//客户端
     'common.operate.record': 'Operational Records',//操作记录
-    'common.add.app': 'Add Applications',//添加应用
+    'common.add.product':'Add Products',//添加产品
     'common.app': 'Application',//应用
+    'common.product':'Product',//产品
     'common.sure': 'Confirm',//确定
     'common.name.is.existed': 'The name is already exists!', // 姓名已存在！
     'common.name.is.unique': 'The name already exists!', // 姓名唯一性校验出错！
@@ -391,7 +392,7 @@ var en_US = {
     'user.import.no.match.customer.tips': 'The customer which the user belongs to is not found. There may be no the customer or the customer name is inconsistent. Please modify the data and re-import.', // 未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
-    'user.user.app.select': 'Select applications',//选择应用
+    'user.user.product.select':'Select product',//选择产品
     'user.detail.addApp.selectAndConfig': 'Select and config apps',//'选择应用并配置',
     'user.detail.addApp.setRolePermissions': 'Config role and permissions',//'设置角色权限',
     'user.detail.errorTip.getRoleTimeout': 'get role data time out',//'获取角色列表超时',
@@ -399,7 +400,7 @@ var en_US = {
     'user.user.app.set': 'Application Configuration',//应用设置
     'user.batch.operation': 'Batch operations',//批量操作
     'user.operator': 'Operator',//操作人
-    'user.app.all': 'All Applications',//全部应用
+    'user.product.all':'All products',//全部产品
     'user.search.placeholder': 'Search by keywords',//请输入关键词搜索Please input keywords for searching
     'user.time.start': 'Open time',//开通时间
     'user.time.end': 'Expire time',//到期时间
@@ -524,7 +525,7 @@ var en_US = {
     'user.password.tip': 'In secrecy',//保密中
     'user.failed': 'Failure',//失败
     'user.select.user.tip': 'Please select users in list',//请在用户列表中选择用户
-    'user.app.select.please': 'Please select applications',//请选择应用
+    'user.product.select':'Please select products',//请选择产品
     'user.operate.success': 'Operate successfully',//操作成功
     'user.batch.app.open': 'Applications',//开通产品
     'user.batch.open.type': 'Types',//开通类型

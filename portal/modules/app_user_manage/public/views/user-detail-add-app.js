@@ -214,7 +214,7 @@ var UserDetailAddApp = createReactClass({
                 if(!appNotSelected.length) {
                     UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.select.user.tip', '请在用户列表中选择用户'));
                 } else {
-                    UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.app.select.please', '请选择应用'));
+                    UserDetailAddAppAction.setBatchSelectedAppError( Intl.get('user.product.select.please','请选择产品'));
                 }
                 return;
             }
@@ -661,7 +661,7 @@ var UserDetailAddApp = createReactClass({
         var app_selector_id = _.uniqueId('app_selector');
         return (
             <div className="ant-form-item">
-                <label className="col-4"><ReactIntl.FormattedMessage id="common.add.app" defaultMessage="添加应用" /></label>
+                <label className="col-4"><ReactIntl.FormattedMessage id="common.add.product" defaultMessage="添加产品" /></label>
                 <div className="col-20">
                     <div ref="app_selector_wrap" data-ref="app_selector_wrap" className={this.state.show_app_error ? 'app_selector_wrap permission-required' : 'app_selector_wrap'}>
                         <AppSelector
@@ -677,7 +677,7 @@ var UserDetailAddApp = createReactClass({
                         {
                             this.state.show_app_error && !formData.selected_apps.length ?
                                 (
-                                    <div className="has-error"><span className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.please" defaultMessage="请选择应用" /></span></div>
+                                    <div className="has-error"><span className="ant-form-explain"><ReactIntl.FormattedMessage id="user.product.select" defaultMessage="请选择产品" /></span></div>
                                 ) :
                                 null
                         }
@@ -1049,7 +1049,7 @@ var UserDetailAddApp = createReactClass({
                 ref="batchAppSelect"
                 optionFilterProp="children"
                 notFoundContent={!batchApps.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
-                searchPlaceholder={Intl.get('user.app.select.please', '请选择应用')}
+                searchPlaceholder={Intl.get('user.product.select.please','请选择产品')}
                 filterOption={(input, option) => ignoreCase(input, option)}
             >
                 {batchApps}
@@ -1065,7 +1065,7 @@ var UserDetailAddApp = createReactClass({
         return (
             <div className="batch_app_select">
                 <FormItem
-                    label={Intl.get('common.app', '应用')}
+                    label={Intl.get('common.product','产品')}
                     labelCol={labelCol}
                     wrapperCol={{span: 20}}
                 >
@@ -1208,12 +1208,12 @@ var UserDetailAddApp = createReactClass({
         return (
             <div className="addapp_minor_items batch-role-permission">
                 <FormItem
-                    label={Intl.get('common.app', '应用')}
+                    label={Intl.get('common.product','产品')}
                     labelCol={labelCol}
                     wrapperCol={{span: 20}}
                 >
                     <Select
-                        placeholder={Intl.get('user.app.select.please', '请选择应用')}
+                        placeholder={Intl.get('user.product.select.please','请选择产品')}
                         value={selectedApp}
                         optionFilterProp="children"
                         notFoundContent={!options.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
@@ -1224,7 +1224,7 @@ var UserDetailAddApp = createReactClass({
                     {
                         this.state.roleSelectedAppError ?
                             <div className="batch-role-permission-apps">
-                                <Alert message={Intl.get('user.app.select.please', '请选择应用')} showIcon type="error"/>
+                                <Alert message={Intl.get('user.product.select.please','请选择产品')} showIcon type="error"/>
                             </div> : null
                     }
                 </FormItem>

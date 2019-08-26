@@ -175,9 +175,9 @@ class SingleUserLog extends React.Component {
             <Option
                 value={value}
                 key="all"
-                title={Intl.get('user.app.all', '全部应用')}
+                title={Intl.get('user.product.all','全部产品')}
             >
-                {Intl.get('user.app.all', '全部应用')}
+                {Intl.get('user.product.all','全部产品')}
             </Option>);
         return list;
     };

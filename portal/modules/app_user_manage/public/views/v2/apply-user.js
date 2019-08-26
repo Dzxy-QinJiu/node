@@ -143,7 +143,7 @@ class ApplyUser extends React.Component {
                         title={Intl.get('user.apply.user', '申请用户')}
                         current={this.state.step}
                     >
-                        <OperationSteps.Step action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
+                        <OperationSteps.Step action={Intl.get('user.user.product.select','选择产品')}></OperationSteps.Step>
                         <OperationSteps.Step action={Intl.get('user.apply.user', '申请用户')}></OperationSteps.Step>
                     </OperationSteps>
                     <Carousel
