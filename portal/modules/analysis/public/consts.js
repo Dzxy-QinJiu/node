@@ -94,11 +94,11 @@ export const ACCOUNT_MENUS = {
         key: 'account_overall'
     },
     SIGNED: {
-        name: '签约帐号分析',
+        name: '签约用户分析',
         key: 'signed'
     },
     DELAYED: {
-        name: '延期帐号分析',
+        name: '延期用户分析',
         key: 'delayed'
     },
     EXPIRED: {

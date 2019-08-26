@@ -122,7 +122,7 @@ class CurtaoAnalysis extends React.Component {
         });
     };
 
-    //获取应用列表
+    //获取产品列表
     getAppList = () => {
         ajax.send({
             url: '/rest/global/grant_applications',
@@ -134,7 +134,7 @@ class CurtaoAnalysis extends React.Component {
             Store.appList = result;
             Store.appList.unshift({
                 app_id: 'all',
-                app_name: '全部应用',
+                app_name: '全部产品',
             });
         });
     };
@@ -352,7 +352,7 @@ class CurtaoAnalysis extends React.Component {
 
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
-                //当前页是否只能选择单个应用
+                //当前页是否只能选择单个产品
                 const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
         
                 if (defaultAppId) {
@@ -393,7 +393,7 @@ class CurtaoAnalysis extends React.Component {
             isCallDeviceTypeSelectorShow,
             adjustConditions
         }, () => {
-            //状态变更完成后，触发一下窗口大小变更事件，使分析组件重新计算其显示区域的高度，以解决显示或隐藏应用选择下拉菜单时，分析组件高度计算不准确的问题
+            //状态变更完成后，触发一下窗口大小变更事件，使分析组件重新计算其显示区域的高度，以解决显示或隐藏产品选择下拉菜单时，分析组件高度计算不准确的问题
             $(window).resize();
         });
     }
@@ -502,16 +502,16 @@ class CurtaoAnalysis extends React.Component {
     }
 
     render() {
-        //当前页是否只能选择单个应用
+        //当前页是否只能选择单个产品
         const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
 
         let appList = _.cloneDeep(Store.appList);
-        //应用选择模式
+        //产品选择模式
         let appSelectMode = 'multiple';
 
-        //如果当前页配置中设置了只能选择单个应用
+        //如果当前页配置中设置了只能选择单个产品
         if (this.state.currentPage.isCanOnlySelectSingleApp) {
-            //去掉全部应用项
+            //去掉全部产品项
             appList.splice(0, 1);
             //设成只能单选
             appSelectMode = '';

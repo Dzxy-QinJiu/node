@@ -18,23 +18,23 @@ module.exports = {
 
 function getCharts() {
     return [
-        //总体账号数统计
-        accountChart.getAccountNumChart('total', '总体账号数统计'),
-        //总帐号来源分类统计
-        accountChart.getAccountSourceChart('total', '总帐号来源分类统计'),
-        //有效账号数统计
+        //总体用户数统计
+        accountChart.getAccountNumChart('total', '总体用户数统计'),
+        //总用户来源分类统计
+        accountChart.getAccountSourceChart('total', '总用户来源分类统计'),
+        //有效用户数统计
         accountChart.getAccountValidChart(),
-        //总帐号地域统计
-        accountChart.getAccountZoneChart('total', '总帐号地域统计'),
-        //总帐号行业统计
-        accountChart.getAccountIndustryChart('total', '总帐号行业统计'),
-        //总帐号团队统计
-        accountChart.getAccountTeamChart('total', '总帐号团队统计'),
-        //单应用帐号类型统计
+        //总用户地域统计 
+        accountChart.getAccountZoneChart('total', '总用户地域统计'),
+        //总用户行业统计
+        accountChart.getAccountIndustryChart('total', '总用户行业统计'),
+        //总用户团队统计
+        accountChart.getAccountTeamChart('total', '总用户团队统计'),
+        //单应用用户类型统计
         accountChart.getAccountTypeChart(),
-        //单应用帐号状态统计
+        //单应用用户状态统计
         accountChart.getAccountStatusChart(),
-        //单应用帐号活跃度趋势
+        //单应用用户活跃度趋势
         accountChart.getActivityChart(),
         //活跃时间段
         accountChart.getActiveTimeIntervalChart(),
@@ -54,7 +54,7 @@ function getCharts() {
         accountChart.getLoginTimesChart(),
         //平均在线时长
         accountChart.getAverageOnlineTimeChart(),
-        //销售开通账号统计
+        //销售开通用户统计
         accountChart.getAccountSalesOpenAccountChart(),
     ];
 }
