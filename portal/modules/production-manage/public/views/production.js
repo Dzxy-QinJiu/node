@@ -147,17 +147,7 @@ class Production extends React.Component {
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.props.afterOperation(this.props.formType, this.state.savedProduction);
-        //将普通产品成功修改为uem产品时
-        if (_.get(this.state, 'savedProduction.changeType') === INTEGRATE_TYPES.UEM && _.get(this.state, 'savedProduction.id')) {
-            //获取该产品的integration_id更新列表中的integration_id
-            ProductionAction.getProductById(this.state.savedProduction.id, (data) => {
-                if (_.get(data, 'integration_id')) {
-                    this.setState({uemSiteId: data.integration_id});
-                }
-            });
-        } else {
-            this.props.closeRightPanel();
-        }
+        this.props.openRightPanel();
     };
 
     //渲染添加面板内容
@@ -322,6 +312,9 @@ class Production extends React.Component {
     onSwitchChange = (checked) => {
         //如果为打开switch,尝试将产品变为uem集成
         if(checked) {
+            this.setState({
+                isAddingUemProduct: true,
+            });
             let production = _.get(this.props, 'info');
             production.isEditBasic = false;
             production.changeType = INTEGRATE_TYPES.UEM;
@@ -343,6 +336,9 @@ class Production extends React.Component {
                 }
             });
         } else { //如果关闭switch，尝试将uem产品变为普通产品
+            this.setState({
+                isAddingUemProduct: true,
+            });
             let production = _.get(this.props, 'info');
             production.isEditBasic = false;
             production.changeType = INTEGRATE_TYPES.NORMAL;
@@ -357,6 +353,7 @@ class Production extends React.Component {
                     this.props.afterOperation(this.props.formType, production);
                 } else {
                     this.setState({
+                        isAddingUemProduct: false,
                         addUemProductErrorMsg: Intl.get('common.edit.failed','修改失败')
                     });
                 }
@@ -597,7 +594,7 @@ class Production extends React.Component {
                     <DetailCard content={priceUnit}/>
                     <DetailCard content={accessAddress}/>
                     <DetailCard content={productDescription}/>
-                    {_.get(this.state, 'create_time') ? <DetailCard content={foundTime}/> : null}
+                    <DetailCard content={foundTime}/>
                     {_.isEqual(_.get(this.state, 'integrateType'), INTEGRATE_TYPES.UEM) ?
                         <div className="product-card-with-switch">
                             <DetailCard

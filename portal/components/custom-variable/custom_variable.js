@@ -21,6 +21,8 @@ const CUSTOM_TYPES = {
 };
 // 自定义属性的最大个数(2),总共7个减去固定的5个
 const maxCustomVariableCount = 2;
+//定时器的间隔时间，三秒后测试失败的信息将消失
+const DELAY_TIME = 3000;
 // 固定的自定义属性
 const FIXED_CUSTOM_VARIABLES = [
     {
@@ -58,7 +60,8 @@ class CustomVariable extends React.Component {
             testResult: '',//测试结果返回值 'success' 'error'
             isTesting: false, //正在测试
             jsCode: '',
-            addProduct: this.props.addProduct
+            addProduct: this.props.addProduct,
+            timerId: '' //定时器的id
         };
     }
 
@@ -68,6 +71,7 @@ class CustomVariable extends React.Component {
             jsCode
         });
     }
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.addProduct.id !== this.props.addProduct.id) {
             this.setState({
@@ -79,6 +83,7 @@ class CustomVariable extends React.Component {
         }
     }
 
+    // 自定义属性可编辑状态
     setEditable(type, e) {
         let value = this.state.value;
         if(type === 'add') {
@@ -123,7 +128,7 @@ class CustomVariable extends React.Component {
         });
     };
 
-    //输入框改变事件
+    // 输入框改变事件
     onInputChange = (type, index, e) => {
         let inputValue = e.target.value;
         let value = this.state.value;
@@ -156,7 +161,7 @@ class CustomVariable extends React.Component {
         });
     };
 
-    //反编译自定义属性集合
+    // 反编译自定义属性集合
     reverseDeakCustomVariable = () => {
         let value = this.state.value;
         let obj = {};
@@ -166,7 +171,7 @@ class CustomVariable extends React.Component {
         return obj;
     };
 
-    //取消保存字段
+    // 取消保存字段
     handleCancel = (e) => {
         this.setState({
             displayType: 'text',
@@ -203,7 +208,7 @@ class CustomVariable extends React.Component {
         });
     }
 
-    //保存自定义字段
+    // 保存自定义字段
     handleSubmit = (e) => {
         this.props.form.validateFields((err) => {
             if(err) return false;
@@ -245,7 +250,7 @@ class CustomVariable extends React.Component {
         });
     };
 
-    //测试uem产品接入
+    // 测试uem产品接入
     testUemProduct = () => {
         let integration_id = _.get(this.state, 'addProduct.integration_id');
         if (!integration_id) return;
@@ -262,9 +267,18 @@ class CustomVariable extends React.Component {
                         isTesting: false,
                     });
                 } else {
+                    //如果时间戳存在，清除时间戳
+                    if(_.get(this.state, 'timerId')) {
+                        clearTimeout(_.get(this.state, 'timerId'));
+                    }
+                    let timerId = setTimeout(
+                        () => this.setTestResultState(),
+                        DELAY_TIME
+                    );
                     this.setState({
                         testResult: 'error',
                         isTesting: false,
+                        timerId: timerId
                     });
                 }
             },
@@ -277,7 +291,7 @@ class CustomVariable extends React.Component {
         });
     }
 
-    //渲染antc表格的字段
+    // 渲染antc表格的表头字段
     getUserPropertiesColumns = () => {
         let columns = [
             {
@@ -293,7 +307,7 @@ class CustomVariable extends React.Component {
         return columns;
     }
 
-    //复制Js代码
+    // 复制Js代码
     copyJSCode = () => {
         this.setState({jsCopied: true});
         setTimeout(() => {
@@ -301,7 +315,7 @@ class CustomVariable extends React.Component {
         }, 1000);
     }
 
-    //渲染antc表格
+    // 渲染antc表格
     renderFixedBlock = () => {
         let displayText = this.state.value;
         let bottonBorderNone = classNames({
@@ -318,7 +332,14 @@ class CustomVariable extends React.Component {
         );
     }
 
-    //根据不同测试结果渲染不同的footer
+    // 置空测试结果
+    setTestResultState = () => {
+        this.setState({
+            testResult: ''
+        });
+    }
+
+    // 根据不同测试结果渲染不同的footer
     renderTestFooter = () => {
         let testFooter = null;
         let testResult = _.get(this.state, 'testResult');
@@ -329,7 +350,7 @@ class CustomVariable extends React.Component {
             testFooter = (<div className="js-code-user-tip">
                 <ReactIntl.FormattedMessage
                     id="user.jscode.use.tip"
-                    defaultMessage={'请{copyAndTraceCode}到产品页面的header中后测试'}
+                    defaultMessage={'请{copyAndTraceCode}到产品页面的<header>中部署后测试'}
                     values={{
                         'copyAndTraceCode':
                             <CopyToClipboard text={jsCode} onCopy={this.copyJSCode}>
