@@ -237,7 +237,7 @@ class ApplyFormAndRules extends React.Component {
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form', []);
-        customiz_form.push({...ruleItem, 'key': uuid(), 'isEditting': true});
+        customiz_form.push({...ruleItem, 'key': ruleItem.key || uuid(), 'isEditting': true});
         applyTypeData.customiz_form = customiz_form;
         this.setState({
             applyTypeData: applyTypeData

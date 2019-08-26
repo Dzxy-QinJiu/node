@@ -202,7 +202,7 @@ class LeaveApplyManagement extends React.Component {
             );
             var noDataMsg = (
                 <span>
-                    {Intl.get('leave.apply.no.leave.apply','暂无符合条件的请假申请')}
+                    {Intl.get('self.setting.has.no.apply', '暂无符合条件的申请')}
                     <span>,</span>
                     <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                         {Intl.get('common.get.again', '重新获取')}

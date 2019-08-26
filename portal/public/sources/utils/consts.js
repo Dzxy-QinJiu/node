@@ -615,3 +615,10 @@ export const CHANGE_RECORD_TYPE = {
     teamChange: 'teamChange', // 变更团队
     teamRoleChange: 'teamRoleChange', // 变更职务
 };
+export const REALM_REMARK = {
+    CIVIW: '36duh3ok3i'//销识微域的安全域id
+};
+export const ASSIGN_TYPE = {
+    NEXT_CANDIDATED: 'nextCandidated',
+    COMMON_SALES: 'commonSales'
+};

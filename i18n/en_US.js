@@ -3280,6 +3280,8 @@ var en_US = {
     'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
     'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
     'common.number.of.new.user.customer': 'number of new user customer',//新开用户客户数
-    'clue.customer.register.time': 'Register time'//注册时间
+    'clue.customer.register.time': 'Register time',//注册时间
+    'self.setting.has.no.apply': 'There is no suited apply',//暂无符合条件的申请
+    'failed.distribute.apply': 'Failed assign!'//分配失败！
 };
 export default en_US;

@@ -18,25 +18,31 @@ import {applyComponentsType} from '../../../apply_approve_manage/public/utils/ap
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeRange,calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
-var ApplyApproveAction = require('MOD_DIR/apply_approve_manage/public/action/apply_approve_manage_action');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import {DELAY_TIME_RANGE, LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
 import classNames from 'classnames';
+import leaveStore from '../store/leave-apply-store';
+import LeaveApplyAction from '../action/leave-apply-action';
 class AddLeaveApply extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            ...leaveStore.getState()
         };
     }
-
+    onStoreChange = () => {
+        this.setState(leaveStore.getState());
+    };
     componentDidMount() {
-
+        leaveStore.listen(this.onStoreChange);
     }
     componentDidUpdate() {
 
+    }
+    componentWillUnmount() {
+        leaveStore.unlisten(this.onStoreChange);
     }
 
 
@@ -54,27 +60,32 @@ class AddLeaveApply extends React.Component {
                         _.extend(conditionObj, saveObj[key]['condition']);
                         delete saveObj[key].condition;
                     }
-                    if (_.get(refTarget,'props.component_type') === ALL_COMPONENTS.CUSTOMERSEARCH){
-                        saveObj['customers'] = [saveObj[key]];
-                        delete saveObj[key];
-                    }
                 }
-
                 _.extend(submitObj,saveObj );
             }
         }
-        ApplyApproveAction.addSelfSettingApply({'detail': submitObj,'type': SELF_SETTING_FLOW.VISITAPPLY, condition: conditionObj},(result) => {
-            if (result){
-                message.success('添加成功');
+        LeaveApplyAction.addSelfSettingApply({'detail': submitObj,'type': SELF_SETTING_FLOW.VISITAPPLY, condition: conditionObj},(result) => {
+            if (!_.isString(result)){
+                //添加成功
+                this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
                 this.hideLeaveApplyAddForm();
+                //添加完后的处理
+                result.afterAddReplySuccess = true;
+                result.showCancelBtn = true;
+                LeaveApplyAction.afterAddApplySuccess(result);
+            }else{
+                this.setResultData(result, 'error');
             }
+
         });
     };
-
-
-    onSaveAllData = () => {
-        console.log(arguments);
-    };
+    //保存结果的处理
+    setResultData(saveMsg, saveResult) {
+        this.setState({
+            saveMsg: saveMsg,
+            saveResult: saveResult
+        });
+    }
     hideLeaveApplyAddForm = () => {
         this.props.hideLeaveApplyAddForm();
     };
@@ -130,21 +141,6 @@ class AddLeaveApply extends React.Component {
                                             var applyItem = classNames('ant-row ant-form-item form-item-label',{
                                                 'require-item': _.get(formItem,'is_required')
                                             });
-                                            // return <FormItem
-                                            //     label={_.get(formItem,'title')}
-                                            //     id={_.get(formItem,'key')}
-                                            //     {...formItemLayout}
-                                            // >
-                                            //     {
-                                            //         getFieldDecorator(_.get(formItem,'key'),{
-                                            //             rules: [{required: _.get(formItem,'is_required') , }],
-                                            //         })(
-                                            //             <ApplyComponent {...formItem} labelKey={_.get(formItem,'key')} ref={'apply_component_' + index}/>
-                                            //         )}
-                                            // </FormItem>
-                                            // ;
-
-
                                             return <div className={applyItem}>
                                                 <div className="ant-form-item-label ant-col-xs-24 ant-col-sm-6">
                                                     <label className={_.get(formItem,'is_required') ? 'ant-form-item-required' : ''}>
@@ -153,20 +149,35 @@ class AddLeaveApply extends React.Component {
 
                                                 </div>
                                                 <div className="ant-form-item-control-wrapper ant-col-xs-24 ant-col-sm-18"><ApplyComponent {...formItem} labelKey={_.get(formItem,'key')} ref={'apply_component_' + index}/>
-
                                                 </div>
-
                                             </div>;
+                                            // return <FormItem
+                                            //     label={_.get(formItem,'title')}
+                                            //     id={_.get(formItem,'key')}
+                                            //     {...formItemLayout}
+                                            //     key={index}
+                                            // >
+                                            //     {
+                                            //         getFieldDecorator(_.get(formItem,'key'),{
+                                            //             rules: [{required: _.get(formItem,'is_required') , }],
+                                            //         })(
+                                            //             <ApplyComponent {...formItem} labelKey={_.get(formItem,'key')} />
+                                            //         )}
+                                            // </FormItem>
+                                            // ;
+
+
+
 
                                         }
                                     })}
 
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                            disabled={this.state.isSaving} data-tracename="点击保存添加
+                                            disabled={this.state.saveApply.loading} data-tracename="点击保存添加
                                             拜访申请">
                                             {Intl.get('common.save', '保存')}
-                                            {this.state.isSaving ? <Icon type="loading"/> : null}
+                                            {this.state.saveApply.loading ? <Icon type="loading"/> : null}
                                         </Button>
                                         <Button className="cancel-btn" onClick={this.hideLeaveApplyAddForm}
                                             data-tracename="点击取消添加拜访申请按钮">

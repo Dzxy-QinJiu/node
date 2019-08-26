@@ -8,7 +8,7 @@ import {Input, Select, Radio, Checkbox} from 'antd';
 const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
-class InputContent extends React.Component {
+class CustomerContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +17,7 @@ class InputContent extends React.Component {
 
     onSaveAllData = () => {
         var submitObj = {};
-        submitObj[this.props.labelKey + ''] = this.state;
+        submitObj[this.props.labelKey + ''] = [this.state];
         return submitObj;
     };
     onChangeInputValue = (e) => {
@@ -48,19 +48,23 @@ class InputContent extends React.Component {
     }
 }
 
-InputContent.defaultProps = {
+CustomerContent.defaultProps = {
     select_arr: [],
     type: '',
     placeholder: '',
     component_type: '',
-    labelKey: ''
+    labelKey: '',
+    displayType: '',
+    display_type: ''
 };
 
-InputContent.propTypes = {
+CustomerContent.propTypes = {
     select_arr: PropTypes.array,
     type: PropTypes.string,
     placeholder: PropTypes.string,
     component_type: PropTypes.string,
     labelKey: PropTypes.string,
+    displayType: PropTypes.string,
+    display_type: PropTypes.string,
 };
-export default InputContent;
+export default CustomerContent;

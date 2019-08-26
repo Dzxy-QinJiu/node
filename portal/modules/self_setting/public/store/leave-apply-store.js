@@ -45,6 +45,10 @@ LeaveApplyStore.prototype.setInitState = function() {
     this.isCheckUnreadApplyList = false;
     //有未读回复的列表
     this.unreadReplyList = [];
+    this.saveApply = {
+        loading: false,
+        errorMsg: ''
+    };
     this.clearData();
 };
 //设置是否查看未读回复的申请列表
@@ -160,6 +164,18 @@ LeaveApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.selectedDetailItem = item;
     this.selectedDetailItemIdx = 0;
     this.totalSize++;
+};
+LeaveApplyStore.prototype.addSelfSettingApply = function(obj) {
+    if (obj.loading) {
+        this.saveApply.loading = true;
+        this.saveApply.errorMsg = '';
+    } else if (obj.error) {
+        this.saveApply.loading = false;
+        this.saveApply.errorMsg = '';
+    }else{
+        this.saveApply.loading = false;
+        this.saveApply.errorMsg = obj.errorMsg;
+    }
 };
 //成功转出一条审批后的处理，如果当前展示的是待审批列表
 LeaveApplyStore.prototype.afterTransferApplySuccess = function(targetId) {

@@ -19,16 +19,7 @@ function ApplyApproveManageActions() {
 
         });
     };
-    this.addSelfSettingApply = function(submitObj,callback) {
-        this.dispatch({error: false, loading: true});
-        applyApproveManageAjax.addSelfSettingApply(submitObj).then((result) => {
-            this.dispatch({error: false, loading: false});
-            _.isFunction(callback) && callback(result);
-        }, (errorMsg) => {
-            this.dispatch({error: true, loading: false, errorMsg: errorMsg});
 
-        });
-    };
 
     this.editSelfSettingWorkFlow = function(submitObj,callback) {
         this.dispatch({error: false, loading: true});
@@ -50,12 +41,13 @@ function ApplyApproveManageActions() {
 
         });
     };
-    this.saveSelfSettingWorkFlowRules = function (applyId,data,callback) {
+    this.saveSelfSettingWorkFlowRules = function(applyId,data,callback) {
         this.dispatch({error: false, loading: true});
         applyApproveManageAjax.saveSelfSettingWorkFlowRules(applyId,data).then((result) => {
             this.dispatch({error: false, loading: false});
             _.isFunction(callback) && callback(result);
         }, (errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('member.add.failed', '添加失败！'));
             this.dispatch({error: true, loading: false, errorMsg: errorMsg});
         });
     };

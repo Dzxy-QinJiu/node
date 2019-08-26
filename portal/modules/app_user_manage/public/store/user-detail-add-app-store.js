@@ -53,7 +53,7 @@ function getMultipleSubType() {
 
 UserDetailAddAppStore.prototype.resetState = function() {
     //账号所属人
-    this.accountHolder = userData.getUserData().nick_name;
+    this.accountHolder = _.get(userData.getUserData(),'nick_name');
     //选中的应用列表
     this.app_list = [];
     //显示未选择应用的错误提示

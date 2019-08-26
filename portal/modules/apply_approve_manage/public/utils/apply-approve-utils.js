@@ -184,7 +184,8 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.CUSTOMERSEARCH,
         'display_type': 'edit',
-        'hideButtonBlock': true
+        'hideButtonBlock': true,
+        'key': 'customers'
     },
     {
         'rulename': Intl.get('apply.rule.production', '产品配置'), 'iconfontCls': 'icon-fuwu',

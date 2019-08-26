@@ -20,20 +20,17 @@ import ApplyDetailCustomer from 'CMP_DIR/apply-components/apply-detail-customer'
 import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
-import {APPLY_LIST_LAYOUT_CONSTANTS,APPLY_STATUS} from 'PUB_DIR/sources/utils/consts';
-import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,formatUsersmanList,updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyTopicText, getApplyResultDscr,getApplyStatusTimeLineDesc, getFilterReplyList,handleDiffTypeApply,formatUsersmanList,updateUnapprovedCount,isCiviwRealm,formatSalesmanList,} from 'PUB_DIR/sources/utils/common-method-util';
 import {handleTimeRange} from 'PUB_DIR/sources/utils/common-data-util';
-import {LEAVE_TYPE,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import ModalDialog from 'CMP_DIR/ModalDialog';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS,ASSIGN_TYPE,TOP_NAV_HEIGHT,APPLY_LIST_LAYOUT_CONSTANTS,} from 'PUB_DIR/sources/utils/consts';
+import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import classNames from 'classnames';
+import salesOpportunityApplyAjax from 'MOD_DIR/sales_opportunity/public/ajax/sales-opportunity-apply-ajax';
 class ApplyViewDetail extends React.Component {
     constructor(props) {
         super(props);
@@ -41,6 +38,7 @@ class ApplyViewDetail extends React.Component {
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             showBackoutConfirmType: '',//操作的确认框类型
+            salesManList: [],//销售列表
             usersManList: [],//成员列表
             ...LeaveApplyDetailStore.getState()
         };
@@ -60,8 +58,16 @@ class ApplyViewDetail extends React.Component {
         }else if (this.props.detailItem.id) {
             this.getBusinessApplyDetailData(this.props.detailItem, this.props.applyData);
         }
+        this.getSalesManList();
         this.getAllUserList();
     }
+    getSalesManList = () => {
+        salesOpportunityApplyAjax.getSalesManList().then(data => {
+            this.setState({
+                salesManList: _.filter(data, sales => sales && sales.user_info && sales.user_info.status === 1)
+            });
+        });
+    };
     getAllUserList = () => {
         getAllUserList().then(data => {
             this.setState({
@@ -100,7 +106,7 @@ class ApplyViewDetail extends React.Component {
             id: _.get(this, 'state.detailInfoObj.info.id',''),
             user_ids: [transferCandidateId]
         };
-        var hasApprovePrivilege = _.get(this,'state.detailInfoObj.info.showApproveBtn',false);
+        var hasApprovePrivilege = _.get(this,'state.detailInfoObj.info.showApproveBtn',false) || this.props.isHomeMyWork;
         var candidateList = _.filter(this.state.candidateList,item => item.user_id !== transferCandidateId);
         var deleteUserIds = _.map(candidateList,'user_id');
         //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
@@ -125,6 +131,8 @@ class ApplyViewDetail extends React.Component {
                     updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
                     //隐藏通过、驳回按钮
                     LeaveApplyDetailAction.showOrHideApprovalBtns(false);
+                    //调用父组件的方法进行转成完成后的其他处理
+                    this.props.afterApprovedFunc();
                 }else if (memberId === transferCandidateId){
                     //将非待我审批的申请转给我审批后，展示出通过驳回按钮,不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
                     LeaveApplyDetailAction.showOrHideApprovalBtns(true);
@@ -254,6 +262,8 @@ class ApplyViewDetail extends React.Component {
                 LeaveApplyDetailAction.getLeaveApplyCommentList({id: detailItem.id});
                 //根据申请的id获取申请的状态
                 LeaveApplyDetailAction.getLeaveApplyStatusById({id: detailItem.id});
+                //获取该审批所在节点的位置
+                LeaveApplyDetailAction.getApplyTaskNode({id: detailItem.id});
                 this.getNextCandidate(detailItem.id);
             }
         });
@@ -298,44 +308,85 @@ class ApplyViewDetail extends React.Component {
             customerOfCurUser: data.customerObj
         });
     };
+    handleShowCustomerDetail = (customer_id) => {
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+            customer_params: {
+                currentId: customer_id
+            }
+        });
+    }
 
     renderDetailApplyBlock(detailInfo) {
-        var detail = detailInfo.detail || {};
-        var targetObj = _.find(LEAVE_TYPE, (item) => {
-            return item.value === detail.leave_type;
-        });
-        var leaveType = '';
-        if (targetObj) {
-            leaveType = targetObj.name;
+        //找到流程保存的组件
+        var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
+        var applyLists = userData.getUserData().workFlowConfigs;
+        var workFlowConfig = _.find(applyLists, item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
+
+        if (workFlowConfig){
+            customizForm = workFlowConfig.customiz_form;
+            _.forEach(customizForm, item => {
+                var showItem = detail[item.key];
+                if (showItem){
+                    //有几个需要特殊处理的组件展示
+                    if (item.component_type === ALL_COMPONENTS.CUSTOMERSEARCH){
+                        showApplyInfo.push({
+                            label: _.get(item,'title'),
+                            text: <span className="customer-name" onClick={this.handleShowCustomerDetail.bind(this, _.get(showItem,'[0].id'))}>{_.get(showItem,'[0].name')}</span>
+                        });
+                    }else if (item.component_type === ALL_COMPONENTS.TIMEPERIOD && item.selected_value === '1day'){
+                        var starttime = moment(parseInt(showItem.starttime)).format(oplateConsts.DATE_FORMAT);
+                        var endtime = moment(parseInt(showItem.endtime)).format(oplateConsts.DATE_FORMAT);
+                        showApplyInfo.push({
+                            label: _.get(item,'title'),
+                            text: <span>{starttime} - {endtime}</span>
+                        });
+                    }else{
+                        showApplyInfo.push({
+                            label: _.get(item,'title'),
+                            text: _.isString(showItem) ? showItem : ''
+                        });
+                    }
+                }
+            });
+            return (
+                <ApplyDetailInfo
+                    iconClass='icon-leave-apply'
+                    showApplyInfo={showApplyInfo}
+                />
+            );
         }
-        var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
-        if (_.get(detail,'days')){
-            leaveRange += ' ' + Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
-        }
-        if (!leaveRange){
-            var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-            var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        }
-        var showApplyInfo = [
-            {
-                label: Intl.get('leave.apply.leave.time', '请假时间'),
-                text: leaveRange ? leaveRange : (begin_time + ' - ' + end_time)
-            },{
-                label: Intl.get('leave.apply.leave.type', '请假类型'),
-                text: leaveType
-            }, {
-                label: Intl.get('leave.apply.leave.reason', '请假原因'),
-                text: detail.reason
-            }, {
-                label: Intl.get('leave.apply.leave.person', '请假人'),
-                text: _.get(detailInfo, 'applicant.nick_name')
-            }];
-        return (
-            <ApplyDetailInfo
-                iconClass='icon-leave-apply'
-                showApplyInfo={showApplyInfo}
-            />
-        );
+
+
+        // var targetObj = _.find(LEAVE_TYPE, (item) => {
+        //     return item.value === detail.leave_type;
+        // });
+        // var leaveType = '';
+        // if (targetObj) {
+        //     leaveType = targetObj.name;
+        // }
+        // var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
+        // if (_.get(detail,'days')){
+        //     leaveRange += ' ' + Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
+        // }
+        // if (!leaveRange){
+        //     var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        //     var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
+        // }
+        // var showApplyInfo = [
+        //     {
+        //         label: Intl.get('leave.apply.leave.time', '请假时间'),
+        //         text: leaveRange ? leaveRange : (begin_time + ' - ' + end_time)
+        //     },{
+        //         label: Intl.get('leave.apply.leave.type', '请假类型'),
+        //         text: leaveType
+        //     }, {
+        //         label: Intl.get('leave.apply.leave.reason', '请假原因'),
+        //         text: detail.reason
+        //     }, {
+        //         label: Intl.get('leave.apply.leave.person', '请假人'),
+        //         text: _.get(detailInfo, 'applicant.nick_name')
+        //     }];
+
     }
 
     //添加一条回复
@@ -399,6 +450,91 @@ class ApplyViewDetail extends React.Component {
         }
         this.showConfirmModal(approval);
     };
+    //获取已选销售的id
+    onSalesmanChange = (salesMan) => {
+        LeaveApplyDetailAction.setSalesMan(salesMan);
+    };
+    clearSelectSales() {
+        LeaveApplyDetailAction.setSalesMan('');
+    }
+    clearSelectCandidate(){
+        LeaveApplyDetailAction.setApplyCandate('');
+    }
+    onSelectApplySales = (updateUser) => {
+        LeaveApplyDetailAction.setApplyCandate(updateUser);
+    };
+    renderSalesBlock = (type) => {
+        //type 区分是分配下一节点负责人  还是分配给普通销售
+        var onChangeFunction = this.onSalesmanChange;
+        var defaultValue = _.get(this.state,'detailInfoObj.info.user_ids');
+        var salesManList = this.state.salesManList;
+        if(type === ASSIGN_TYPE.NEXT_CANDIDATED){
+            //需要选择销售总经理
+            onChangeFunction = this.onSelectApplySales;
+            defaultValue = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+            //列表中只选销售总经理,
+            salesManList = _.filter(salesManList, data => _.get(data, 'user_groups[0].owner_id') === _.get(data, 'user_info.user_id'));
+        }
+        //销售领导、域管理员,展示其所有（子）团队的成员列表
+        let dataList = formatSalesmanList(salesManList);
+        return (
+            <div className="op-pane change-salesman">
+                <AlwaysShowSelect
+                    placeholder={Intl.get('sales.team.search', '搜索')}
+                    value={defaultValue}
+                    onChange={onChangeFunction}
+                    notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
+                    dataList={dataList}
+                />
+            </div>
+        );
+    };
+    renderAssigenedContext = () => {
+        var assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+        return (
+            <AntcDropdown
+                ref={AssignSales => this.assignSales = AssignSales}
+                content={<Button
+                    data-tracename="点击分配销售按钮"
+                    className='assign-btn btn-primary-sure' type="primary" size="small">{Intl.get('clue.customer.distribute', '分配')}</Button>}
+                overlayTitle={Intl.get('user.salesman', '销售人员')}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                overlayContent={this.renderSalesBlock(ASSIGN_TYPE.COMMON_SALES)}
+                handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//分配销售的时候直接分配，不需要再展示模态框
+                unSelectDataTip={assignedSalesUsersIds ? '' : Intl.get('leave.apply.select.assigned.sales','请选择要分配的销售')}
+                clearSelectData={this.clearSelectSales}
+                btnAtTop={false}
+                isSaving={this.state.applyResult.submitResult === 'loading'}
+                isDisabled={!assignedSalesUsersIds}
+            />
+        );
+
+    };
+    //分配下一节点的负责人
+    renderCandidatedContext = () => {
+        var assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+        return (
+            <AntcDropdown
+                ref={AssignSales => this.assignSales = AssignSales}
+                content={<Button
+                    data-tracename="点击分配销售总经理按钮"
+                    className='assign-candidate-btn btn-primary-sure' size="small"
+                    type="primary">{Intl.get('user.apply.detail.button.pass', '通过')}</Button>}
+                overlayTitle={Intl.get('user.salesman', '销售人员')}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                overlayContent={this.renderSalesBlock(ASSIGN_TYPE.NEXT_CANDIDATED)}
+                handleSubmit={this.passOrRejectApplyApprove.bind(this, 'pass')}//直接分配，不需要展示模态框
+                unSelectDataTip={assignedCandidateUserIds ? '' : Intl.get('sales.opportunity.assign.department.owner', '请选择要分配的部门主管')}
+                clearSelectData={this.clearSelectCandidate}
+                btnAtTop={false}
+                isSaving={this.state.applyResult.submitResult === 'loading'}
+                isDisabled={!assignedCandidateUserIds}
+            />
+
+        );
+    };
     //渲染详情底部区域
     renderDetailBottom() {
         var detailInfoObj = this.state.detailInfoObj.info;
@@ -410,6 +546,21 @@ class ApplyViewDetail extends React.Component {
         if ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || detailInfoObj.showApproveBtn || this.state.isLeader) && detailInfoObj.status === 'ongoing'){
             addApplyNextCandidate = this.renderAddApplyNextCandidate;
         }
+        var showApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;
+        var renderAssigenedContext = null;
+        //渲染分配的按钮
+        if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSales') > -1 && showApproveBtn){
+            //分配给普通销售
+            renderAssigenedContext = this.renderAssigenedContext;
+        }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'assignNextNodeApprover') > -1 && showApproveBtn){
+            if (isCiviwRealm()){
+                //如果是识微域，直接点通过就可以，不需要手动选择分配销售总经理
+                renderAssigenedContext = null;
+            }else{
+                //如果是不是识微域,需要选择所分配给的销售总经理
+                renderAssigenedContext = this.renderCandidatedContext;
+            }
+        }
         return (
             <ApplyDetailBottom
                 create_time={detailInfoObj.create_time}
@@ -420,6 +571,7 @@ class ApplyViewDetail extends React.Component {
                 showApproveBtn={detailInfoObj.showApproveBtn}
                 showCancelBtn={detailInfoObj.showCancelBtn}
                 submitApprovalForm={this.submitApprovalForm}
+                renderAssigenedContext={renderAssigenedContext}
                 addApplyNextCandidate={addApplyNextCandidate}
             />);
     }
@@ -429,8 +581,16 @@ class ApplyViewDetail extends React.Component {
         var replyList = getFilterReplyList(this.state);
         var applicateName = _.get(applicantList, 'applicant.nick_name') || '';
         var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
+
+        var descriptionArr = [];
+        if(isCiviwRealm()){
+            descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];
+        }else{
+            descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to','分配给'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];
+        }
+        //如果是识微域，
         var stepArr = [{
-            title: applicateName + Intl.get('user.apply.submit.list', '提交申请'),
+            title: applicateName + descriptionArr[0],
             description: applicateTime
         }];
         var currentLength = 0;
@@ -438,7 +598,12 @@ class ApplyViewDetail extends React.Component {
         currentLength = replyList.length;
         if (currentLength) {
             _.forEach(replyList, (replyItem, index) => {
-                var descrpt = getApplyStatusTimeLineDesc(replyItem.status);
+                var descrpt = descriptionArr[index + 1];
+                if (index === 1 && !isCiviwRealm()){
+                    //下一个节点的执行人
+                    descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
+                }
+                descrpt = getApplyStatusTimeLineDesc(replyItem.status);
                 if (replyItem.status === 'reject'){
                     stepStatus = 'error';
                     currentLength--;
@@ -447,6 +612,11 @@ class ApplyViewDetail extends React.Component {
                     title: (replyItem.nick_name || replyItem.user_name || userData.getUserData().nick_name || '') + descrpt,
                     description: moment(replyItem.comment_time).format(oplateConsts.DATE_TIME_FORMAT)
                 });
+            });
+        }else if(applicantList.status === 'cancel'){
+            stepArr.push({
+                title: Intl.get('user.apply.backout', '已撤销'),
+                description: moment(_.get(applicantList, 'update_time')).format(oplateConsts.DATE_TIME_FORMAT)
             });
         }
         var candidate = this.state.candidateList,candidateName = '';
@@ -471,8 +641,42 @@ class ApplyViewDetail extends React.Component {
         );
     };
     passOrRejectApplyApprove = (confirmType) => {
+        var assignedCandidateUserIds = '';//要分配下一节点的负责人的id
+        var assignedSalesUsersIds = '';//要分配下一节点的销售的id
+        if (confirmType === 'pass'){
+            assignedCandidateUserIds = _.get(this.state, 'detailInfoObj.info.assigned_candidate_users','');
+            assignedSalesUsersIds = _.get(this.state, 'detailInfoObj.info.user_ids','');
+        }
         var detailInfoObj = this.state.detailInfoObj.info;
-        LeaveApplyDetailAction.approveLeaveApplyPassOrReject({id: detailInfoObj.id, agree: confirmType});
+        var submitObj = {
+            id: detailInfoObj.id,
+            agree: confirmType
+        };
+        if (assignedCandidateUserIds && confirmType === 'pass' && _.isArray(assignedCandidateUserIds.split('&&'))){
+            var candidateUserIds = assignedCandidateUserIds.split('&&')[0];
+            submitObj.assigned_candidate_users = [candidateUserIds];
+        }
+        if (assignedSalesUsersIds && _.isArray(assignedSalesUsersIds.split('&&'))){
+            var salesUserIds = assignedSalesUsersIds.split('&&')[0];
+            submitObj.user_ids = [salesUserIds];
+        }
+        LeaveApplyDetailAction.approveLeaveApplyPassOrReject(submitObj, (flag) => {
+            if ((submitObj.assigned_candidate_users || submitObj.user_ids)) {
+                if (flag) {
+                    this.viewApprovalResult();
+                } else {
+                    message.error(Intl.get('failed.distribute.apply', '分配失败！'));
+                }
+            }
+            //调用父组件的方法进行审批完成后的其他处理
+            if (flag) {
+                this.props.afterApprovedFunc();
+            }
+        });
+        //关闭下拉框
+        if(_.isFunction(_.get(this, 'assignSales.handleCancel'))){
+            this.assignSales.handleCancel();
+        }
     };
     renderCancelApplyApprove = () => {
         var confirmType = this.state.showBackoutConfirmType;
@@ -572,9 +776,17 @@ class ApplyViewDetail extends React.Component {
             return null;
         }
         let customerOfCurUser = this.state.customerOfCurUser || {};
-        var divHeight = $(window).height() - TOP_NAV_HEIGHT;
+        let divHeight = $(window).height();
+        //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
+        if (!this.props.isHomeMyWork) {
+            divHeight -= TOP_NAV_HEIGHT;
+        }
+
+        const detailWrapCls = classNames('leave_manage_apply_detail_wrap', {
+            'col-md-8': !this.props.isHomeMyWork
+        });
         return (
-            <div className='col-md-8 leave_manage_apply_detail_wrap' style={{'height': divHeight}} data-tracename="请假审批详情界面">
+            <div className={detailWrapCls} style={{'height': divHeight}} data-tracename="请假审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}
@@ -610,6 +822,10 @@ ApplyViewDetail.defaultProps = {
     applyListType: '',
     isUnreadDetail: false,
     applyData: {},
+    isHomeMyWork: false,//是否是首页我的工作中打开的详情
+    afterApprovedFunc: function(){
+
+    }
 
 };
 ApplyViewDetail.propTypes = {
@@ -618,5 +834,7 @@ ApplyViewDetail.propTypes = {
     applyListType: PropTypes.string,
     isUnreadDetail: PropTypes.bool,
     applyData: PropTypes.object,
+    isHomeMyWork: PropTypes.bool,
+    afterApprovedFunc: PropTypes.func
 };
 module.exports = ApplyViewDetail;
