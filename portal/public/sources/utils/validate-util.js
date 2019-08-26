@@ -50,7 +50,7 @@ export const phone1010Regex = /^1010\d+$/;
 export const qqRegex = /^[1-9][0-9]{4,}$/;
 
 //微信号的正则表达式 (只能6—20个字母、数字、下划线和减号，必须以字母开头（不区分大小写），不支持设置中文)
-export const wechatRegex = /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})+$/;
+export const wechatRegex = /^[a-zA-Z]([-_a-zA-Z0-9]{5,19})$/;
 // 验证QQ
 exports.checkQQ = (rule, value, callback) => {
     value = _.trim(value);
