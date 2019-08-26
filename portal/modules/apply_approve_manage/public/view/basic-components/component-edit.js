@@ -106,7 +106,7 @@ class componentEdit extends React.Component {
     };
     onPreciousRadioChange = (e) => {
         var formItem = this.state.formItem;
-        formItem.selectedValue = e.target.value;
+        formItem.selected_value = e.target.value;
         this.setState({formItem});
     };
     handleInputChange = (index,e) => {
@@ -176,7 +176,7 @@ class componentEdit extends React.Component {
                     <div className="component-row required">
                         <span className="label-components">{_.get(formItem,'unitLabel')}</span>
                         <span className="text-components">
-                            <RadioGroup onChange={this.onPreciousRadioChange} value={_.get(formItem,'selectedValue')}>
+                            <RadioGroup onChange={this.onPreciousRadioChange} value={_.get(formItem,'selected_value')}>
                                 {_.map(_.get(formItem,'select_arr'),item => <Radio value={item.value}>{item.label}</Radio>)}
                             </RadioGroup>({_.get(formItem,'unitMsg')})
                         </span>

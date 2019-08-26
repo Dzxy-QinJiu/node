@@ -26,6 +26,7 @@ var NoData = require('CMP_DIR/analysis-nodata');
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 class LeaveApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加请假申请面板
@@ -85,7 +86,7 @@ class LeaveApplyManagement extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
-            type: _.get(workFlowConfigs,'[0].type'),
+            type: SELF_SETTING_FLOW.VISITAPPLY,
             comment_unread: this.state.isCheckUnreadApplyList,
         };
         //如果是选择的全部类型，不需要传status这个参数
@@ -298,7 +299,7 @@ class LeaveApplyManagement extends React.Component {
         var applyDetail = null;
         if (!noShowApplyDetail) {
             applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
-        };
+        }
         return (
             <div className="sales-opportunity-apply-container apply_manage_wrap">
                 <div className="leave-apply-list-detail-wrap">
@@ -306,7 +307,7 @@ class LeaveApplyManagement extends React.Component {
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
-                            addPrivilege='WORKFLOW_CONFIG_CUSTOMIZE'
+                            addPrivilege='SALES_PHONE_LIST'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}

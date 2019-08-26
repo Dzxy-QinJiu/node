@@ -8,7 +8,7 @@ const RadioGroup = Radio.Group;
 import RangeInput from '../view/range_input';
 import SelectOption from '../view/select_option';
 import TimePeriod from '../view/time_period';
-import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
+import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
@@ -177,13 +177,13 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             value: '0.5day'
         }],
         'unitMsg': Intl.get('apply.time.distinct.am', '区分上下午'),
-        'selectedValue': '1day',
+        'selected_value': '1day',
         'component_type': ALL_COMPONENTS.TIMEPERIOD
     },
     {
         'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.CUSTOMERSEARCH,
-        'displayType': 'edit',
+        'display_type': 'edit',
         'hideButtonBlock': true
     },
     {
@@ -202,7 +202,12 @@ const INNER_SETTING_FLOW = {
     LEAVE: 'leave',//请假
     BUSINESSOPPORTUNITIES: 'businessopportunities',//销售机会
     USERAPPLY: 'userapply',//用户申请
+
 };
+const SELF_SETTING_FLOW = {
+    VISITAPPLY: 'visitapply'//拜访申请
+};
+exports.SELF_SETTING_FLOW = SELF_SETTING_FLOW;
 exports.INNER_SETTING_FLOW = INNER_SETTING_FLOW;
 exports.APPROVER_TYPE = [{
     name: Intl.get('apply.add.approver.higher.level', '上级'),
@@ -280,6 +285,10 @@ exports.CONDITION_LIMITE = [{
 //是销售机会申请流程
 exports.isSalesOpportunityFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.BUSINESSOPPORTUNITIES;
+};
+//是拜访机会申请流程
+exports.isVisitApplyFlow = function(itemType) {
+    return itemType === SELF_SETTING_FLOW.VISITAPPLY;
 };
 //是出差申请流程
 exports.isBussinessTripFlow = function(itemType) {
