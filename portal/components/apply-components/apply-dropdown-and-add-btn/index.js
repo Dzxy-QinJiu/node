@@ -18,10 +18,8 @@ class ApplyDropdownAndAddBtn extends React.Component {
             applyType: this.props.applyType,
             applyState: {
                 isApplyButtonShow: false
-            },
-            popoverErrorVisible: false
-        }
-        ;
+            }
+        };
     }
 
     componentWillMount = () => {
@@ -51,36 +49,24 @@ class ApplyDropdownAndAddBtn extends React.Component {
             </div>
         );
     };
-    checkPrivilege = () => {
-        if(!_.get(this.state, 'applyState.applyPrivileged')) {
-            this.setState({
-                popoverErrorVisible: true
-            });
-            return false;
-        } else {
-            this.props.showAddApplyPanel();
-        }
-    }
 
-    handleVisibleChange = popoverErrorVisible => {
-        this.setState({ popoverErrorVisible });
+    showAddApplyPanel = () => {
+        this.props.showAddApplyPanel();
     };
+
     //根据返回的状态信息渲染带Popover的button和不带Popover的button
     renderApplyButton = () => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         return (
             applyPrivileged ? (
-                <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
-                >{this.props.addApplyMessage}</Button>) : (
-                <Popover
+                <Button className='pull-right add-leave-btn' onClick={this.showAddApplyPanel}>{this.props.addApplyMessage}</Button>) :
+                (<Popover
+                    className="apply-invalid-popover"
                     placement="bottomRight"
                     content={_.get(this.state, 'applyState.applyMessage')}
-                    visible={this.state.popoverErrorVisible}
-                    onVisibleChange={this.handleVisibleChange}
                     trigger="click"
                 >
-                    <Button className='pull-right add-leave-btn' onClick={this.checkPrivilege}
-                    >{this.props.addApplyMessage}</Button>
+                    <Button className='pull-right add-leave-btn'>{this.props.addApplyMessage}</Button>
                 </Popover>)
         );
     }

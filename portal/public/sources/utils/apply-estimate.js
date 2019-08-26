@@ -90,7 +90,7 @@ function getCCInfo() {
     let workFlowConfigs = userData.getUserData().workFlowConfigs;
     _.each(workFlowConfigs, item => {
         let type = _.get(item, 'type');
-        if(_.indexOf(_.values(APPLY_TYPE), type) !== -1) {
+        if(_.includes(APPLY_TYPE, type)) {
             ccInfoList.push({
                 type: type,
                 ccInfo: _.get(item, 'applyRulesAndSetting.ccInformation')
@@ -103,7 +103,15 @@ function getCCInfo() {
 //获取返回的错误信息jsx
 function getApplyMessage(hasPrivilege) {
     let applyMessage = null;
+    let messageTip = {
+        defaultMessageId: '',
+        defaultMessage: '',
+        linkMessage: ''
+    };
     if(_.get(hasPrivilege, 'needActive')) {
+        messageTip.defaultMessageId = 'apply.error.active';
+        messageTip.defaultMessage = Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}');
+        messageTip.linkMessage = '';
         applyMessage = (<span className="apply-error-tip">
             <span className="iconfont icon-warn-icon"></span>
             <span className="apply-error-text">
