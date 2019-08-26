@@ -49,6 +49,8 @@ class DynamicAddDelContacts extends React.Component {
             }else{
                 callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
             }
+        } else {
+            callback();
         }
     }
 
