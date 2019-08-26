@@ -3204,7 +3204,7 @@ var zh_CN = {
     'apply.time.select.period': '周期选择',
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
-    'apply.my.self.setting.work.flow': '我的自定义流程',
+    'apply.my.self.setting.work.flow': '拜访申请',
     'apply.approve.set.approver': '指定审批人',
     'apply.select.approver.type': '请选择审批人类型',
     /*自定义流程 end*/

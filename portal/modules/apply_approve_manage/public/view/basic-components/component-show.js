@@ -41,6 +41,7 @@ class componentShow extends React.Component {
                     target.defaultValue = moment(moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
                 }
             }
+
             return <ApplyComponent {...formItem}/>;
         } else {
             return null;

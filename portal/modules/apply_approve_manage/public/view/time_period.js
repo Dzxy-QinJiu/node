@@ -74,16 +74,16 @@ class TimePeriod extends React.Component {
         const begin_time = formData.begin_time;
         const endTime = formData.end_time;
         if (this.checkAllTimeExist()) {
-                if (moment(endTime).isBefore(begin_time)) {
-                    formData.err_tip = Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间');
-                } else if (moment(endTime).isSame(begin_time, 'day') && formData.begin_type === AM_AND_PM.PM && formData.end_type === AM_AND_PM.AM) {
-                    //是同一天的时候，不能开始时间选下午，结束时间选上午
-                    formData.err_tip = Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间');
-                }else{
-                    callback();
-                }
+            if (moment(endTime).isBefore(begin_time)) {
+                formData.err_tip = Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间');
+            } else if (moment(endTime).isSame(begin_time, 'day') && formData.begin_type === AM_AND_PM.PM && formData.end_type === AM_AND_PM.AM) {
+                //是同一天的时候，不能开始时间选下午，结束时间选上午
+                formData.err_tip = Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间');
+            }else{
+                callback();
+            }
 
-        };
+        }
         this.setState({formData});
 
     }
@@ -136,11 +136,19 @@ class TimePeriod extends React.Component {
     onSaveAllData = () => {
         var formData = this.state.formData;
         var submitObj = {}, label = this.props.labelKey;
-        submitObj[label + ''] = {
-            starttime: moment(formData.begin_time).format(oplateConsts.DATE_FORMAT) + `_${formData.begin_type}`,
-            endtime: moment(formData.end_time).format(oplateConsts.DATE_FORMAT) + `_${formData.end_type}`,
-            condition: {'condition': parseInt(formData.total_range)}
-        };
+        if (_.get(formData, 'selected_value') === '0.5day'){
+            submitObj[label + ''] = {
+                starttime: moment(formData.begin_time).format(oplateConsts.DATE_FORMAT) + `_${formData.begin_type}`,
+                endtime: moment(formData.end_time).format(oplateConsts.DATE_FORMAT) + `_${formData.end_type}`,
+                condition: {'condition': parseInt(formData.total_range)}
+            };
+        }else{
+            submitObj[label + ''] = {
+                starttime: moment(formData.begin_time).startOf('day').valueOf(),
+                endtime: moment(formData.end_time).endOf('day').valueOf(),
+            };
+        }
+
         return submitObj;
     };
 
@@ -155,7 +163,7 @@ class TimePeriod extends React.Component {
                         defaultValue={moment()}
                         onChange={this.onBeginTimeChange}
                     />
-                    {_.get(formData, 'selectedValue') === '0.5day' || true ? <Select
+                    {_.get(formData, 'selected_value') === '0.5day' ? <Select
                         defaultValue={_.get(formData, 'begin_type')}
                         onChange={this.onBeginTypeChange}
 
@@ -177,7 +185,7 @@ class TimePeriod extends React.Component {
                         defaultValue={moment()}
                         onChange={this.onEndTimeChange}
                     />
-                    {_.get(formData, 'selectedValue') === '0.5day' || true ? <Select
+                    {_.get(formData, 'selected_value') === '0.5day' ? <Select
                         defaultValue={_.get(formData, 'end_type')}
                         onChange={this.onEndTypeChange}
 
@@ -190,9 +198,9 @@ class TimePeriod extends React.Component {
                     </Select> : null}
 
                 </span>
-                <span className="total-range-container">
-                    {_.get(formData, 'total_range') ? Intl.get('apply.approve.total.days', '共{X}天', {X: _.get(formData, 'total_range')}) : null}
-                </span>
+                {/*<span className="total-range-container">*/}
+                {/*{_.get(formData, 'total_range') ? Intl.get('apply.approve.total.days', '共{X}天', {X: _.get(formData, 'total_range')}) : null}*/}
+                {/*</span>*/}
                 {_.get(formData,'err_tip') ? <span>{_.get(formData,'err_tip')}</span> : null}
             </div>
         );
@@ -200,22 +208,22 @@ class TimePeriod extends React.Component {
 }
 
 TimePeriod.defaultProps = {
-    selectedValue: '',
+    selected_value: '',
     placeholder: '',
     default_value: [],
-    onBeginTimeChange: function () {
+    onBeginTimeChange: function() {
 
     },
-    onBeginTypeChange: function () {
+    onBeginTypeChange: function() {
 
     },
-    onEndTimeChange: function () {
+    onEndTimeChange: function() {
 
     },
-    onEndTypeChange: function () {
+    onEndTypeChange: function() {
 
     },
-    onSaveAllData: function () {
+    onSaveAllData: function() {
 
     },
     component_type: '',
@@ -225,7 +233,7 @@ TimePeriod.defaultProps = {
 TimePeriod.propTypes = {
     component_type: PropTypes.string,
     labelKey: PropTypes.string,
-    selectedValue: PropTypes.string,
+    selected_value: PropTypes.string,
     placeholder: PropTypes.string,
     default_value: PropTypes.array,
     onBeginTimeChange: PropTypes.func,
