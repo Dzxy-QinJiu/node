@@ -71,9 +71,7 @@ class RecommendCustomerCondition extends React.Component {
         hasSavedRecommendParams.province = addressObj.provName || '';
         hasSavedRecommendParams.city = addressObj.cityName || '';
         hasSavedRecommendParams.district = addressObj.countyName || '';
-        this.setState({
-            hasSavedRecommendParams: hasSavedRecommendParams
-        });
+        //这里不要setState，否则选中了省份后的各省市面板会收起
     };
     //去掉保存后提示信息
     hideSaveTooltip = () => {
