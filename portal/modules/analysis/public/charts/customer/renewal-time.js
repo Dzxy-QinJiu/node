@@ -18,7 +18,12 @@ export function getRenewalCustomerTimeChart(paramObj = {}) {
                 };
 
                 _.each(item.points, (point, index) => {
-                    processedItem['month' + index] = point.count;
+                    let count = point.count;
+                    //未来时间数据显示为空
+                    if ( moment(item.timestamp).add(index, 'month').isAfter(moment()) ) {
+                        count = '';
+                    }
+                    processedItem['month' + index] = count;
                 });
 
                 return processedItem;
@@ -30,19 +35,23 @@ export function getRenewalCustomerTimeChart(paramObj = {}) {
                     {
                         title: '时间',
                         dataIndex: 'time',
+                        width: 80
                     }, {
                         title: '到期客户数',
                         dataIndex: 'due_num',
+                        width: 90
                     }, {
                         title: '当月续签',
                         dataIndex: 'month0',
+                        width: 80
                     }
                 ];
 
                 for (let i = 1; i < 13; i++) {
                     columns.push({
                         title: `延期${i}个月`,
-                        dataIndex: `month${i}`
+                        dataIndex: `month${i}`,
+                        width: i > 9 ? 90 : 80
                     });
                 }
 
