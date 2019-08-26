@@ -125,6 +125,10 @@ class SalesProcess extends React.Component {
             disabled = true;
             title = Intl.get('sales.process.toplimit', '销售流程个数已达上限（8个）');
         }
+        let addCustomerStage = {
+            id: '',
+            name: '客户阶段' + (length + 1)
+        };
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
@@ -143,7 +147,7 @@ class SalesProcess extends React.Component {
                         ) : (
                             <Button
                                 type="ghost" className="sales-stage-top-btn btn-item"
-                                onClick={this.showAddProcessFormPanel}
+                                onClick={this.showCustomerStagePanel.bind(this, addCustomerStage)}
                                 data-tracename="定义新客户阶段"
                             >
                                 <Icon type="plus" />
@@ -158,7 +162,20 @@ class SalesProcess extends React.Component {
 
     // 显示客户阶段面板
     showCustomerStagePanel = (item) => {
-        SalesProcessAction.showCustomerStagePanel(item);
+        if (item.id === '') { // 显示添加界面的处理
+            let submitObj = {
+                name: _.trim(item.name),
+                status: '1', // 默认是启用的状态
+            };
+            SalesProcessAjax.addSalesProcess(submitObj).then( (result) => {
+                if (result && result.id) { // 添加成功
+                    SalesProcessAction.showCustomerStagePanel(result);
+                    SalesProcessAction.upDateSalesProcessList(result);
+                }
+            });
+        } else {
+            SalesProcessAction.showCustomerStagePanel(item);
+        }
     };
 
     // 关闭客户阶段面板
@@ -355,6 +372,10 @@ class SalesProcess extends React.Component {
         SalesProcessAction.changeSaleProcessFieldSuccess(saleProcess);
     };
 
+    showCustomerStageScope = (customerStage) => {
+
+    };
+
     getTableColumns = () => {
         return [{
             title: Intl.get('common.definition', '名称'),
@@ -381,16 +402,16 @@ class SalesProcess extends React.Component {
             }
         }, {
             title: Intl.get('deal.stage', '阶段'),
-            dataIndex: 'stage',
-            key: 'stage',
             render: (text, record, index) => {
+                let customerStages = record.customer_stages;
+                let names = _.map(customerStages, 'name');
                 return (
                     <div
                         className="customer-stage-stage"
                         onClick={this.showCustomerStagePanel.bind(this, record)}
                         title={Intl.get('customer.stage.click.show.detail', '点击查看详细信息')}
                     >
-                        <span>{text}</span>
+                        <span>{_.join(names, '-> ')}</span>
                     </div>
                 );
             }
@@ -404,7 +425,7 @@ class SalesProcess extends React.Component {
                     <div className="stage-operate">
                         <span
                             title={Intl.get('customer.stage.set.scope', '设置适用范围')}
-                            onClick={this.showCustomerStagePanel.bind(this, record)}
+                            onClick={this.showCustomerStageScope.bind(this, record)}
                             data-tracename={'点击设置' + name + '按钮'}
                         >
                             <i className="iconfont icon-role-auth-config"></i>
@@ -528,6 +549,7 @@ class SalesProcess extends React.Component {
                                 containerWidth={containerWidth}
                                 isShowCustomerStage={this.state.isShowCustomerStage}
                                 saleProcesTitle={this.state.saleProcessName}
+                                salesProcessList={this.state.salesProcessList}
                             />
                         ) : null
                     }

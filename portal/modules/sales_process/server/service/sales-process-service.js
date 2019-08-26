@@ -48,9 +48,18 @@ exports.addSalesProcess = (req, res) => {
 
 // 更新销售流程
 exports.updateSalesProcess = (req, res) => {
+    let property = 'name'; // 修改名称
+    let bodyParam = req.body;
+    if (bodyParam.description) { // 修改描述
+        property = 'description';
+    } else if (bodyParam.status){ // 修改状态
+        property = 'status';
+    } else if (bodyParam.process_relate_entities ) { // 修改客户阶段适合范围
+        property = 'process_relate_entities';
+    }
     return restUtil.authRest.put(
         {
-            url: salesProcessRestApis.updateSalesProcess,
+            url: salesProcessRestApis.updateSalesProcess.replace(':property', property),
             req: req,
             res: res
         }, req.body);

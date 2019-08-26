@@ -7,7 +7,8 @@ import Trace from 'LIB_DIR/trace';
 import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanel = rightPanelUtil.RightPanel;
 const RightPanelClose = rightPanelUtil.RightPanelClose;
-import {message, Button, Popover, Icon} from 'antd';
+import {message, Button, Popover, Icon, Form, Input} from 'antd';
+const FormItem = Form.Item;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -18,6 +19,7 @@ import CustomerStageForm from './customer-stage-form';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import CustomerStageInfo from './customer-stage-info';
+import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
 
 class CustomerStage extends React.Component {
     constructor(props) {
@@ -34,9 +36,14 @@ class CustomerStage extends React.Component {
     componentDidMount() {
         CustomerStageStore.listen(this.onChange);
         let saleProcessId = this.props.saleProcessId;
-        CustomerStageAction.getCustomerStageList(saleProcessId);
-        CustomerStageAction.getCustomerStageSaleBehavior(); // 获取销售行为
-        CustomerStageAction.getCustomerStageAutoConditions();// 获取客户阶段的自动变更条件
+        if (saleProcessId) {
+            setTimeout( () => {
+                CustomerStageAction.getCustomerStageList(saleProcessId);
+            }, 0);
+        }
+        // TODO 隐藏  获取销售行为和获取客户阶段的自动变更条件
+        // CustomerStageAction.getCustomerStageSaleBehavior(); // 获取销售行为
+        // CustomerStageAction.getCustomerStageAutoConditions();// 获取客户阶段的自动变更条件
     }
 
     componentWillUnmount() {
@@ -78,7 +85,7 @@ class CustomerStage extends React.Component {
         CustomerStageAction.closeCustomerStageForm();
     };
 
-    // 提交客户阶段表单数据（添加客户阶段和编辑客户阶段）
+    // 提交客户阶段表单数据（添加一个客户阶段和编辑客户阶段）
     submitCustomerStageForm = (customerStage) => {
         let saleProcessId = this.props.saleProcessId;
         if (customerStage.id) { // 编辑客户阶段
@@ -96,7 +103,7 @@ class CustomerStage extends React.Component {
                 CustomerStageAction.closeCustomerStageForm();
                 message.success(errMsg || Intl.get('crm.219', '修改失败！'));
             } );
-        } else { // 添加客户阶段
+        } else { // 添加一个客户阶段
             let order = _.get(this.state.customerStageList, 'length');
             customerStage.order = order + 1; // 需要传客户阶段的序号
             CustomerStageAjax.addCustomerStage(customerStage, saleProcessId).then( (result) => {
@@ -181,6 +188,64 @@ class CustomerStage extends React.Component {
         } );
     };
 
+    // 客户阶段唯一性校验
+    getValidator = () => {
+        return (rule, value, callback) => {
+            let processValue = _.trim(value); // 文本框中的值
+            let salesProcessList = this.props.salesProcessList; // 已存在的销售流程
+            let isExist = _.find(salesProcessList, item => item.name === processValue);
+            if (isExist) { // 和已存在的客户阶段名称是相同
+                callback(Intl.get('customer.stage.exist.stage.tips', '该客户阶段已存在'));
+            } else {
+                callback();
+            }
+        };
+    };
+
+    // 编辑客户阶段（销售流程）的名称
+    handleEditCustomerName = () => {
+        this.props.form.validateFields((err, values) => {
+            if (err) return;
+            let submitObj = {
+                name: _.trim(values.name),
+                id: this.props.saleProcessId
+            };
+            CustomerStageAjax.updateSalesProcess(submitObj).then( (result) => {
+
+            } );
+        });
+    };
+
+    // 渲染客户阶段名称
+    renderCustomerStageName = () => {
+        const {getFieldDecorator} = this.props.form;
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 5},
+            wrapperCol: {span: 19},
+        };
+        return (
+            <Form layout='horizontal' className="form">
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get('common.definition', '名称')}
+                >
+                    {getFieldDecorator('name', {
+                        initialValue: this.props.saleProcesTitle,
+                        rules: [{
+                            validator: this.getValidator()
+                        }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))]
+                    })(
+                        <Input
+                            placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}
+                            onBlur={this.handleEditCustomerName}
+                        />
+                    )}
+                </FormItem>
+            </Form>
+        );
+    };
+
     //渲染操作按钮区
     renderTopNavOperation = () => {
         let length = _.get(this.state.customerStageList, 'length');
@@ -192,9 +257,6 @@ class CustomerStage extends React.Component {
         }
         return (
             <div className='condition-operator'>
-                <div className="customer-stage-title">
-                    {this.props.saleProcesTitle}
-                </div>
                 <div className="customer-stage-operator">
                     <PrivilegeChecker check="CRM_ADD_CUSTOMER_SALES" className="add-customer-stage-btn">
                         {title ? (
@@ -205,7 +267,7 @@ class CustomerStage extends React.Component {
                                     disabled={disabled}
                                 >
                                     <Icon type="plus" />
-                                    {Intl.get('sales.process.add.customer.stage', '添加客户阶段')}
+                                    {Intl.get('customer.stage.add.stage', '添加一个客户阶段')}
                                 </Button>
                             </Popover>
                         ) : (
@@ -213,10 +275,10 @@ class CustomerStage extends React.Component {
                                 type="ghost"
                                 className="customer-stage-top-btn btn-item"
                                 onClick={this.showCustomerStageForm.bind(this, 'addCustomerStage')}
-                                data-tracename="添加客户阶段"
+                                data-tracename="添加一个客户阶段"
                             >
                                 <Icon type="plus" />
-                                {Intl.get('sales.process.add.customer.stage', '添加客户阶段')}
+                                {Intl.get('customer.stage.add.stage', '添加一个客户阶段')}
                             </Button>
                         )}
                     </PrivilegeChecker>
@@ -316,7 +378,10 @@ class CustomerStage extends React.Component {
                 <RightPanelClose onClick={this.closeCustomerStagePanel}/>
                 <div className="customer-stage-container">
                     <div className="customer-stage-content" style={{height: height}}>
-                        <div className="customer-stage-top-nav">
+                        <div className="customer-stage-top-name">
+                            {this.renderCustomerStageName()}
+                        </div>
+                        <div className="customer-stage-top">
                             {this.renderTopNavOperation()}
                         </div>
                         <GeminiScrollBar style={{height: containerHeight}}>
@@ -387,6 +452,8 @@ CustomerStage.propTypes = {
     containerWidth: PropTypes.number,
     isShowCustomerStage: PropTypes.bool,
     saleProcesTitle: PropTypes.string,
+    salesProcessList: PropTypes.array,
+    form: PropTypes.object,
 };
 
-export default CustomerStage;
+export default Form.create()(CustomerStage);
