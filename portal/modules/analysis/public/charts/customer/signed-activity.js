@@ -20,10 +20,10 @@ export function getSignedCustomerActivityChart() {
             let interval = _.get(intervalCondition, 'value');
 
             return _.map(data, dataItem => {
-                if (!interval || interval === 'daily') {
+                if (!interval || interval === 'day') {
                     dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
                 } else {
-                    if (interval === 'weekly') {
+                    if (interval === 'week') {
                         //用iso格式的周开始时间，这样是从周一到周天算一周，而不是从周天到周六
                         interval = 'isoweek';
                     } else {
@@ -40,15 +40,15 @@ export function getSignedCustomerActivityChart() {
             });
         },
         cardContainer: {
-            operateButtons: [{value: 'daily', name: Intl.get('operation.report.day.active', '日活')},
-                {value: 'weekly', name: Intl.get('operation.report.week.active', '周活')},
-                {value: 'monthly', name: Intl.get('operation.report.month.active', '月活')}],
-            activeButton: 'daily',
+            operateButtons: [{value: 'day', name: Intl.get('operation.report.day.active', '日活')},
+                {value: 'week', name: Intl.get('operation.report.week.active', '周活')},
+                {value: 'month', name: Intl.get('operation.report.month.active', '月活')}],
+            activeButton: 'day',
             conditionName: 'param_interval',
         },
         conditions: [{
             name: 'param_interval',
-            value: 'daily',
+            value: 'day',
         }, {
             name: 'customer_label',
             value: '签约,续约',
@@ -63,9 +63,9 @@ export function getSignedCustomerActivityChart() {
                     const cardTab = data.cardTab;
                     let name = data.name;
 
-                    if (cardTab === 'weekly') {
+                    if (cardTab === 'week') {
                         name = `${name} - ${moment().format(oplateConsts.DATE_FORMAT)}`;
-                    } else if (cardTab === 'monthly') {
+                    } else if (cardTab === 'month') {
                         name = moment(name).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
                     }
 
