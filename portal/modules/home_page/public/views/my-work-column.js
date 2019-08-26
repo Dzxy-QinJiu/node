@@ -90,7 +90,6 @@ class MyWorkColumn extends React.Component {
             curWorkType: '',//当前筛选类型
             myWorkList: [],
             //我的工作类型
-            myWorkTypes: [{name: Intl.get('home.page.work.all', '全部事务'), value: ''}],
             loading: false,
             load_id: '',//用于下拉加载的id
             totalCount: 0,//共多少条工作
@@ -108,7 +107,6 @@ class MyWorkColumn extends React.Component {
     componentDidMount() {
         this.getUserList();
         this.getGuideConfig();
-        this.getMyWorkTypes();
         this.getMyWorkList();
         //关闭详情前，已完成工作处理的监听
         myWorkEmitter.on(myWorkEmitter.HANDLE_FINISHED_WORK, this.handleFinishedWork);
@@ -191,17 +189,7 @@ class MyWorkColumn extends React.Component {
         this.setState({guideConfig});
     }
 
-    getMyWorkTypes() {
-        myWorkAjax.getMyWorkTypes().then((typeList) => {
-            let workTypes = _.map(typeList, item => {
-                return {name: item.name, value: item.key};
-            });
-            workTypes.unshift({name: Intl.get('home.page.work.all', '全部事务'), value: ''});
-            this.setState({myWorkTypes: workTypes});
-        }, (errorMsg) => {
 
-        });
-    }
 
     getMyWorkList() {
         let queryParams = {
@@ -244,29 +232,7 @@ class MyWorkColumn extends React.Component {
         });
     }
 
-    onChangeWorkType = ({key}) => {
-        this.setState({curWorkType: key === 'item_0' ? '' : key, myWorkList: [], load_id: ''}, () => {
-            this.getMyWorkList();
-        });
-    }
 
-    getWorkTypeDropdown() {
-        const workTypeMenu = (
-            <Menu onClick={this.onChangeWorkType}>
-                {_.map(this.state.myWorkTypes, item => {
-                    return (<Menu.Item key={item.value}>{item.name}</Menu.Item>);
-                })}
-            </Menu>);
-        const curWorkType = _.find(this.state.myWorkTypes, item => item.value === this.state.curWorkType);
-        const curWorkTypeName = _.get(curWorkType, 'name', this.state.myWorkTypes[0].name);
-        return (
-            <Dropdown overlay={workTypeMenu} trigger={['click']} placement='bottomRight'>
-                <span className='my-work-dropdown-trigger'>
-                    {curWorkTypeName}
-                    <Icon type='down' className='dropdown-icon'/>
-                </span>
-            </Dropdown>);
-    }
 
     openClueDetail = (clueId, work) => {
         //打开新详情前先将之前已完成的工作处理掉
@@ -1190,7 +1156,6 @@ class MyWorkColumn extends React.Component {
         return (
             <ColumnItem contianerClass='my-work-wrap'
                 title={title}
-                titleHandleElement={this.getWorkTypeDropdown()}
                 content={this.renderWorkContent()}
             />);
     }

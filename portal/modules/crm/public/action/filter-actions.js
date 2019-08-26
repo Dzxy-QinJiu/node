@@ -5,23 +5,9 @@ const {asyncDispatcher} = altAsyncUtil;
 
 function FilterAction() {
     this.generateActions(
-        'setApp',
-        'setTeam',
-        'setStage',
-        'setTag',
-        'setStageTag',
-        'setCompetitor',
-        'setIndustry',
-        'setProvince',
-        'setContact',
-        'setRange',
         'setInputCondition',
-        'setClue',
-        'setLevel',
         'showPanel',
         'hidePanel',
-        'setOtherSelectedItem',
-        'setSalesRole',
         'setCondition',
         'setInitialCondition'
     );
@@ -46,8 +32,8 @@ function FilterAction() {
             if (_.isFunction(cb)) cb(list);
         });
     };
-    //获取负责人列表
-    this.getOwnerList = function() {
+    //获取负责人(联合跟进人)列表
+    this.getUserList = function() {
         getTeamTreeMemberLists((result) => {
             this.dispatch(result);
         });
