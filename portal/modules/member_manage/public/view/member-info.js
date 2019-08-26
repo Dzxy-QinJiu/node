@@ -503,7 +503,12 @@ class MemberInfo extends React.Component {
                 return <Option value='' >&nbsp;</Option>;
             }
         });
+
+        let loginUserInfo = UserData.getUserData();
+        // 自己不能停用自己状态，所以自己查看自己的详情不显示停用时间、启用状态下不显示停用时间
+        let isShowDisableDate = memberInfo.status === 1 || memberInfo.id === loginUserInfo.user_id ? false : true;
         let disableDate = _.get(memberInfo, 'disableDate');
+
         return (
             <div>
                 <div className="basic-info-item">
@@ -584,14 +589,21 @@ class MemberInfo extends React.Component {
                         hasEditPrivilege={false}
                     />
                 </div>
-                <div className="basic-info-item">
-                    <span className="basic-info-label">
-                        {Intl.get('member.disable.time', '停用时间')}:
-                    </span>
-                    <span>
-                        {disableDate ? moment(disableDate).format(oplateConsts.DATE_FORMAT) : ''}
-                    </span>
-                </div>
+                {
+                    isShowDisableDate ? (
+                        <div className="basic-info-item">
+                            <span className="basic-info-label">
+                                {Intl.get('member.disable.time', '停用时间')}:
+                            </span>
+                            <BasicEditDateField
+                                width={EDIT_FEILD_WIDTH}
+                                value={disableDate ? moment(disableDate).format(oplateConsts.DATE_FORMAT) : ''}
+                                hasEditPrivilege={false}
+                            />
+                        </div>
+                    ) : null
+                }
+
             </div>
         );
     };
