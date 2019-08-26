@@ -18,7 +18,12 @@ export function getRenewalCustomerTimeChart(paramObj = {}) {
                 };
 
                 _.each(item.points, (point, index) => {
-                    processedItem['month' + index] = point.count;
+                    let count = point.count;
+                    //未来时间数据显示为空
+                    if ( moment(item.timestamp).add(index, 'month').isAfter(moment()) ) {
+                        count = '';
+                    }
+                    processedItem['month' + index] = count;
                 });
 
                 return processedItem;
