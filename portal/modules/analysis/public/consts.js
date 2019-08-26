@@ -83,10 +83,10 @@ export const STORED_APP_ID_KEY = 'analysis_account_active_app_id';
 //历史最高客户id字段
 export const CUSTOMER_IDS_FIELD = 'highest_customer_ids';
 
-// 账号分析菜单
+// 用户分析菜单
 export const ACCOUNT_MENUS = {
     INDEX: {
-        name: '账号分析',
+        name: '用户分析',
         key: 'account'
     },
     OVERALL: {
@@ -102,15 +102,15 @@ export const ACCOUNT_MENUS = {
         key: 'delayed'
     },
     EXPIRED: {
-        name: '过期账号分析',
+        name: '过期用户分析',
         key: 'expired'
     },
     NEW_ADD: {
-        name: '新增账号分析',
+        name: '新增用户分析',
         key: 'new_add'
     },
     NEW_ADD_EXPIRE: {
-        name: '新增过期账号分析',
+        name: '新增过期用户分析',
         key: 'new_add_expire'
     }
 };

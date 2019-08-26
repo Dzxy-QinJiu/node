@@ -1,5 +1,5 @@
 /**
- * 新增过期账号分析
+ * 新增过期用户分析
  */
 
 import accountChart from '../../charts/account';
