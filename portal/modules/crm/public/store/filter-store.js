@@ -35,8 +35,8 @@ function FilterStore() {
 FilterStore.prototype.setInitialCondition = function() {
     this.condition = {
         sales_team_id: '',
-        user_id: '',//负责人
-        second_user_id: '',//联合跟进人
+        nickname: '',//负责人
+        second_nickname: '',//联合跟进人
         industry: '',
         province: '',
         immutable_labels: [''], //系统标签

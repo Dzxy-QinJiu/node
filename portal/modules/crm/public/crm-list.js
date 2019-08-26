@@ -630,17 +630,25 @@ class Crm extends React.Component {
         if (condition.member_role) {
             term_fields.push('member_role');
         }
+        //是否有负责人或联合跟进人的筛选
+        let hasNicknameFilter = false;
         //负责人的处理
-        if(condition.user_id) {
+        if (condition.nickname) {
             condition.members = condition.members || [];
-            condition.members = [{member_id: condition.user_id, is_owner: true}];
-            delete condition.user_id;
+            condition.members = [{nickname: condition.nickname, is_owner: true}];
+            hasNicknameFilter = true;
+            delete condition.nickname;
         }
         //联合跟进人的处理
-        if(condition.second_user_id){
+        if (condition.second_nickname) {
             condition.members = condition.members || [];
-            condition.members.push({member_id: condition.second_user_id, is_owner: false});
-            delete condition.second_user_id;
+            condition.members.push({nickname: condition.second_nickname, is_owner: false});
+            hasNicknameFilter = true;
+            delete condition.second_nickname;
+        }
+        if(hasNicknameFilter){
+            //需精确匹配
+            term_fields.push('nickname');
         }
 
         //标签的处理
@@ -1741,8 +1749,8 @@ class Crm extends React.Component {
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                     onClick={_this.handleFocusCustomer.bind(this, record)}></i>
-                                    <CustomerLabel label={record.customer_label}/>
-                                    <CustomerLabel label={record.qualify_label}/>
+                                <CustomerLabel label={record.customer_label}/>
+                                <CustomerLabel label={record.qualify_label}/>
                                 {text}
                             </div>
                             {tags.length ?

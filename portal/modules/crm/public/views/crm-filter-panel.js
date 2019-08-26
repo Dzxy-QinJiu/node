@@ -382,26 +382,26 @@ class CrmFilterPanel extends React.Component {
             } else {
                 userList = this.state.userList;
             }
-            userList = _.uniqBy(userList, 'user_id');
+            userList = _.uniqBy(userList, 'nickname');
             if (_.get(userList, 'length')) {
                 advancedData.unshift({
                     groupName: Intl.get('crm.second.sales', '联合跟进人'),
-                    groupId: 'second_user_id',
+                    groupId: 'second_nickname',
                     singleSelect: true,
                     data: _.map(userList, x => ({
                         name: x.nickname,
-                        value: x.user_id,
-                        selected: x.user_id === _.get(this.state, 'condition.second_user_id', '')
+                        value: x.nickname,
+                        selected: x.nickname === _.get(this.state, 'condition.second_nickname', '')
                     }))
                 });
                 advancedData.unshift({
                     groupName: Intl.get('crm.6', '负责人'),
-                    groupId: 'user_id',
+                    groupId: 'nickname',
                     singleSelect: true,
                     data: _.map(userList, x => ({
                         name: x.nickname,
-                        value: x.user_id,
-                        selected: x.user_id === _.get(this.state, 'condition.user_id', '')
+                        value: x.nickname,
+                        selected: x.nickname === _.get(this.state, 'condition.nickname', '')
                     }))
                 });
             }
