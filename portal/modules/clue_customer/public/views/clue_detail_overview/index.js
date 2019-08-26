@@ -775,7 +775,6 @@ class ClueDetailOverview extends React.Component {
                 if (_.isString(result)) {
                     this.setState({
                         submitInvalidateLoading: false,
-                        editInvalidClueId: '',
                         invalidateClueStatus: 'error',
                         submitInvalidateClueMsg: result
                     });

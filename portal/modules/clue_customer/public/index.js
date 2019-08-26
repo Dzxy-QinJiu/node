@@ -1202,7 +1202,7 @@ class ClueCustomer extends React.Component {
    };
 
     getClueTableColunms = () => {
-        const column_width = '110px';
+        const column_width = '100px';
         let columns = [
             {
                 dataIndex: 'clue_name',
@@ -1323,7 +1323,7 @@ class ClueCustomer extends React.Component {
         columns.push({
             dataIndex: 'assocaite_customer',
             className: 'invalid-td-clue',
-            width: '150px',
+            width: '170px',
             render: (text, salesClueItem, index) => {
                 return (
                     <div className="avalibity-or-invalid-container">
