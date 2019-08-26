@@ -182,7 +182,6 @@ var UserPwdPage = createReactClass({
                                 label={Intl.get('user.password.initial.password', '原始密码')}
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
-                                hasFeedback={false}
                             >
                                 {getFieldDecorator('passwd', {
                                     rules: [{
@@ -199,7 +198,6 @@ var UserPwdPage = createReactClass({
                                 label={Intl.get('user.password.new.password', '新密码')}
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
-                                hasFeedback={false}
                             >
                                 {getFieldDecorator('newPasswd', {
                                     rules: [{
@@ -222,7 +220,6 @@ var UserPwdPage = createReactClass({
                                 label={Intl.get('common.confirm.password', '确认密码')}
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
-                                hasFeedback={false}
                             >
 
                                 {getFieldDecorator('rePasswd', {
