@@ -15,6 +15,8 @@ class CustomerScoreStore {
 
     // 初始化数据
     resetState() {
+        this.customerLevelLoading = true;//客户不同等级加载中
+        this.customerLevelErrMsg = '';//客户不同等级获取错误信息
         this.customerLevelRules = [];//客户不同等级对应的分数,后端获取来的
         this.rangeHandleValue = [];//默认区分不同类型的点的数组
         this.lowerHandlePoint = 0;//不合格和合格直接的节点值
@@ -22,7 +24,7 @@ class CustomerScoreStore {
         this.minValue = 0;//分数尺子上的最小刻度
         this.maxValue = 0;//分数尺子上的最大刻度
         this.marks = {};//尺子上的下标
-        this.customerIndicator = [];//客户评分规则
+        this.customerIndicatorArr = [];//客户评分规则
         this.customerLevelObj = {
             loading: true,
             errMsg: '',
@@ -31,6 +33,9 @@ class CustomerScoreStore {
         //正在保存客户规则
         this.isSavingRules = false;
         this.saveRulesErr = '';
+        //正在保存客户等级
+        this.isSavingLevels = false;
+        this.saveLevelsErr = '';
     }
 
 
@@ -59,7 +64,7 @@ class CustomerScoreStore {
             this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
             var range = this.maxValue / 5;
             this.marks = {};
-            for (var i = 1; i < 5; i++) {
+            for (var i = 0; i < 5; i++) {
                 this.marks[i * range] = i * range;
             }
         }
@@ -67,7 +72,15 @@ class CustomerScoreStore {
     }
 
     getCustomerScoreRules(result) {
-        if (_.isArray(result.resData)) {
+        if(result.loading){
+            this.customerLevelLoading = true;
+            this.customerLevelErrMsg = '';
+        }else if (result.error){
+            this.customerLevelErrMsg = result.errorMsg;
+            this.customerLevelLoading = false;
+        }if (_.isArray(result.resData)) {
+            this.customerLevelLoading = false;
+            this.customerLevelErrMsg = '';
             this.customerLevelRules = result.resData;
             this.setInitialRangeValue();
 
@@ -103,7 +116,7 @@ class CustomerScoreStore {
         this.maxValue = Math.ceil(max / 5) * 5 < 100 ? 100 : Math.ceil(max / 5) * 5;
         var range = this.maxValue / 5;
         this.marks = {};
-        for (var i = 1; i < 5; i++) {
+        for (var i = 0; i < 5; i++) {
             this.marks[i * range] = i * range;
         }
     }
@@ -132,7 +145,11 @@ class CustomerScoreStore {
     }
     getCustomerScoreIndicator(result) {
         if (_.isArray(result.resData)) {
-            this.customerIndicator = result.resData;
+            _.forEach(result.resData, item => {
+                if (_.isArray(item.indicator_details)){
+                    this.customerIndicatorArr = _.concat(this.customerIndicatorArr, item.indicator_details);
+                }
+            });
         }
     }
     saveCustomerRules(result){
@@ -147,6 +164,22 @@ class CustomerScoreStore {
             this.saveRulesErr = '';
 
         }
+    }
+    saveCustomerLevels(result){
+        if (result.loading){
+            this.isSavingLevels = true;
+            this.saveLevelsErr = '';
+        }else if (result.error){
+            this.isSavingLevels = false;
+            this.saveLevelsErr = result.errorMsg;
+        }else{
+            this.isSavingLevels = false;
+            this.saveLevelsErr = '';
+
+        }
+    }
+    hideSaveLevelErrMsg(){
+        this.saveLevelsErr = '';
     }
     hideSaveErrMsg(){
         this.saveRulesErr = '';

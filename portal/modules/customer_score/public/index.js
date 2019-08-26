@@ -6,7 +6,7 @@
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 require('./css/index.less');
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
-import {InputNumber, Row, Col, Input, Switch, Select, Alert, Button, Icon, message} from 'antd';
+import {InputNumber, Row, Col, Input, Switch, Select, Alert, Button, Icon, message, Popconfirm} from 'antd';
 const Option = Select.Option;
 const InputGroup = Input.Group;
 import Slider from 'rc-slider';
@@ -23,11 +23,19 @@ import {TimeRangeSelect, numberSelect} from './utils/customer_score_util';
 import Spinner from 'CMP_DIR/spinner';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
+var className = require('classnames');
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+const spanLength = '8';
+import { StatusWrapper } from 'antc';
+import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
+import Trace from 'LIB_DIR/trace';
 class customerScore extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             customerRulesFormData: {},
+            isEditCustomerLevel: false,
+            isEditCustomerRule: false,
             ...customerScoreStore.getState()
         };
     }
@@ -58,11 +66,7 @@ class customerScore extends React.Component {
         });
     };
     getCustomerScoreIndicator = () => {
-        customerScoreAction.getCustomerScoreIndicator((result) => {
-            this.setState({
-                customerIndicator: _.cloneDeep(result)
-            });
-        });
+        customerScoreAction.getCustomerScoreIndicator();
     };
 
     componentWillMount() {
@@ -93,72 +97,173 @@ class customerScore extends React.Component {
     handleCustomerRangeValues = () => {
         customerScoreAction.setRangeValue();
     };
-    renderCustomerScoreList = () => {
-        const {rangeHandleValue, minValue, maxValue, rangeValue, lowerHandlePoint, largerHandlePoint} = this.state;
-        return (<div className="customer-score-content-wrap">
-            <span className="customer-score-lable"> {Intl.get('clue.customer.customer.level', '客户分数')}</span>
-            <div className="slider-container">
-                <Range
-                    min={minValue}
-                    max={maxValue}
-                    onChange={this.handleRangeChange}
-                    pushable
-                    onAfterChange={this.afterHandleChange}
-                    value={rangeHandleValue}
-                    marks={this.state.marks}
-                    trackStyle={[{backgroundColor: 'blue'}, {backgroundColor: 'yellow'}]}
-                    handleStyle={[{backgroundColor: '#fff'}, {backgroundColor: '#fff'}]}
-                    railStyle={{backgroundColor: 'red'}}
+    handleClickCustomerLevel = () => {
+        this.setState({
+            isEditCustomerLevel: true
+        });
+    };
+    handleCancelCustomerLevel = () => {
+        this.setState({
+            isEditCustomerLevel: false
+        });
+    };
+    //保存客户等级
+    handleSaveCustomerLevel = () => {
+        var customerLevelRules = _.cloneDeep(this.state.customerLevelRules);
+        _.forEach(customerLevelRules, item => {
+            if (item.level_name === 'cold') {
+                item.to = this.state.lowerHandlePoint;
+            } else if (item.level_name === 'warm') {
+                item.from = this.state.lowerHandlePoint;
+                item.to = this.state.largerHandlePoint;
+            } else {
+                item.from = this.state.largerHandlePoint;
+                delete item.to;
+            }
+        });
 
+        var submitObj = {
+            level_rule: customerLevelRules,
+        };
+        customerScoreAction.saveCustomerLevels(submitObj, () => {
+            message.success(Intl.get('common.save.success', '保存成功'));
+            this.setState({
+                isEditCustomerLevel: false
+            });
+            //如果保存成功，会有回调
+            customerScoreAction.updateCustomerScoreRange(customerLevelRules);
+        });
+    };
+    renderRangeLoadingAndContent = () => {
+        if (this.state.customerLevelLoading) {
+            return (<Spinner/>);
+        } else if (this.state.customerLevelErrMsg) {
+            var errMsg = <span>{this.state.customerLevelErrMsg}
+                <a onClick={this.getCustomerScoreRules}>
+                    {Intl.get('user.info.retry', '请重试')}
+                </a></span>;
+            return (
+                <Alert
+                    message={errMsg}
+                    type="error"
+                    showIcon
                 />
-            </div>
-            <div className="customer-level-score">
-                <span className="customer_level">
-                    {Intl.get('common.unqualified', '不合格')}
-                    <InputGroup className="input-groups" compact>
-                        <Input className='mini-number' disabled value='0'/>
-                        <Input
-                            className='min-between-max'
-                            placeholder="——"
-                            disabled
+            );
+        } else {
+            const {rangeHandleValue, minValue, maxValue, lowerHandlePoint, largerHandlePoint, isEditCustomerLevel} = this.state;
+            var rangeCls = className('slider-container', {
+                'not-edit-customer-level': !isEditCustomerLevel
+            });
+            var labelCls = className('customer_level', {
+                'edit_customer-level': isEditCustomerLevel
+            });
+            return (
+                <div>
+                    <div className={rangeCls}>
+                        <Range
+                            min={minValue}
+                            max={maxValue}
+                            onChange={this.handleRangeChange}
+                            pushable
+                            onAfterChange={this.afterHandleChange}
+                            value={rangeHandleValue}
+                            marks={this.state.marks}
+                            trackStyle={[{backgroundColor: '#EFA246'}, {backgroundColor: '#00C2C4'}]}
+                            handleStyle={[{backgroundColor: '#fff'}, {backgroundColor: '#fff'}]}
+                            railStyle={{backgroundColor: '#4662EF'}}
+
                         />
-                        <Input type="number" min="1" className='max-number' value={lowerHandlePoint} onChange={(e) => {
-                            this.handleCustomerScoreUnqualified(+e.target.value);
-                        }} onBlur={this.handleCustomerRangeValues}/>
-                    </InputGroup>
-                </span>
-                <span className="customer_level"> {Intl.get('common.qualified', '合格')}
-                    <InputGroup className="input-groups" compact>
-                        <Input type="number" min="0" className='mini-number' value={lowerHandlePoint + 1}
-                            onBlur={this.handleCustomerRangeValues} onChange={(e) => {
-                                this.handleCustomerScoreUnqualified(+e.target.value - 1);
-                            }}/>
-                        <Input
-                            className='min-between-max'
-                            placeholder="——"
-                            disabled
-                        />
-                        <Input type="number" min="0" className='max-number' value={largerHandlePoint} onChange={(e) => {
-                            this.handleCustomerScoreQualified(+e.target.value);
-                        }} onBlur={this.handleCustomerRangeValues}/>
-                    </InputGroup>
-                </span>
-                <span className="customer_level">{Intl.get('clue.customer.score.good', '优质')}
-                    <InputGroup className="input-groups good-level" compact>
-                        <ReactIntl.FormattedMessage
-                            id="clue.customer.above.limit"
-                            defaultMessage={'{score}以上'}
-                            values={{
-                                score: <Input type="number" min="0" className='mini-number'
-                                    value={largerHandlePoint + 1} onBlur={this.handleCustomerRangeValues}
+                    </div>
+                    <div className="customer-level-score">
+                        <span className={labelCls}>
+                            <i className="customer-level-quarter unqualified-icon"></i>
+                            {Intl.get('common.unqualified', '不合格')}：
+                            {isEditCustomerLevel ? <InputGroup className="input-groups" compact>
+                                <Input className='mini-number' disabled value='0'/>
+                                <Input
+                                    className='min-between-max'
+                                    placeholder="——"
+                                    disabled
+                                />
+                                <Input type="number" min="1" className='max-number' value={lowerHandlePoint}
                                     onChange={(e) => {
-                                        this.handleCustomerScoreQualified(+e.target.value - 1);
+                                        this.handleCustomerScoreUnqualified(+e.target.value);
+                                    }} onBlur={this.handleCustomerRangeValues}/>
+                            </InputGroup> : `0~${lowerHandlePoint}`}
+                        </span>
+                        <span className={labelCls}>
+                            <i className="customer-level-quarter qualified-icon"></i>
+                            {Intl.get('common.qualified', '合格')}：
+                            {isEditCustomerLevel ? <InputGroup className="input-groups" compact>
+                                <Input type="number" min="0" className='mini-number' value={lowerHandlePoint + 1}
+                                    onBlur={this.handleCustomerRangeValues} onChange={(e) => {
+                                        this.handleCustomerScoreUnqualified(+e.target.value - 1);
                                     }}/>
-                            }}
-                        />
-                    </InputGroup>
-                </span>
+                                <Input
+                                    className='min-between-max'
+                                    placeholder="——"
+                                    disabled
+                                />
+                                <Input type="number" min="0" className='max-number' value={largerHandlePoint}
+                                    onChange={(e) => {
+                                        this.handleCustomerScoreQualified(+e.target.value);
+                                    }} onBlur={this.handleCustomerRangeValues}/>
+                            </InputGroup> : `${lowerHandlePoint + 1}~${largerHandlePoint}`}
+
+                        </span>
+                        <span className={labelCls}>
+                            <i className="customer-level-quarter perfect-icon"></i>
+                            {Intl.get('clue.customer.score.good', '优质')}：
+                            {isEditCustomerLevel ? <InputGroup className="input-groups good-level" compact>
+                                <span className="above-certain-level">
+                                    <ReactIntl.FormattedMessage
+                                        id="clue.customer.above.limit"
+                                        defaultMessage={'{score}以上'}
+                                        values={{
+                                            score: <Input type="number" min="0" className='mini-number'
+                                                value={largerHandlePoint + 1}
+                                                onBlur={this.handleCustomerRangeValues}
+                                                onChange={(e) => {
+                                                    this.handleCustomerScoreQualified(+e.target.value - 1);
+                                                }}/>
+                                        }}
+                                    />
+                                </span>
+
+                            </InputGroup> : Intl.get('clue.customer.above.limit', '{score}以上', {score: largerHandlePoint + 1})}
+                        </span>
+                        {isEditCustomerLevel ? <span className="customer-level-save-btns-container">
+                            {this.state.saveLevelsErr ?
+                                (
+                                    <AlertTimer
+                                        time={3000}
+                                        message={this.state.saveLevelsErr}
+                                        type='error' showIcon
+                                        onHide={this.hideSaveCustomerLevelTooltip}/>
+                                ) : ''
+                            }
+                            <Button type='primary'
+                                onClick={this.handleSaveCustomerLevel}>{Intl.get('common.save', '保存')}
+                                {this.state.isSavingLevels ? <Icon type="loading"/> : null}
+                            </Button>
+                            <Button onClick={this.handleCancelCustomerLevel}>{Intl.get('common.cancel', '取消')}</Button>
+                        </span> : null}
+                    </div>
+                </div>
+            );
+        }
+    };
+    hideSaveCustomerLevelTooltip = () => {
+        customerScoreAction.hideSaveLevelErrMsg();
+    };
+    renderCustomerLevel = () => {
+        const {isEditCustomerLevel} = this.state;
+        return (<div className="customer-score-content-wrap">
+            <div className="customer-score-lable">{Intl.get('clue.customer.customer.level', '客户评级')}
+                {isEditCustomerLevel ? null :
+                    <i className="iconfont icon-update" onClick={this.handleClickCustomerLevel}></i>}
             </div>
+            {this.renderRangeLoadingAndContent()}
         </div>);
     };
     handleCustomerProperty = (id, property, value) => {
@@ -167,32 +272,17 @@ class customerScore extends React.Component {
         var target = _.find(customerScoreLists, item => item.id === id || item.randomId === id);
         if (target) {
             target[property] = value;
-            //如果是
-            if (property === 'source') {
-                if(value === 'user'){
-                    target['indicator'] = _.get(this, 'state.customerIndicator[1].indicator_details[0].indicator');
+            if (property === 'indicator') {
+                if (value === 'user') {
                     delete target.score;
                     target['user_option'] = 'max';
-                }else{
-                    //indicator 需要看一下另外一个item是否有值
-                    var salesLists = _.filter(customerScoreLists, item => item.source === 'sales' && item.randomId !== id && item.id !== id);
-                    if (_.get(salesLists,'length') === 1){
-                        var otherTarget = _.get(salesLists,'[0]',{});
-                        if (otherTarget.indicator === _.get(this, 'state.customerIndicator[0].indicator_details[1].indicator')){
-                            target['indicator'] = _.get(this, 'state.customerIndicator[0].indicator_details[0].indicator');
-                        }else{
-                            target['indicator'] = _.get(this, 'state.customerIndicator[0].indicator_details[1].indicator');
-                        }
-                    }else{
-                        target['indicator'] = _.get(this, 'state.customerIndicator[0].indicator_details[0].indicator');
-                    }
+                } else {
                     delete target.user_option;
                     target['score'] = '1';
                 }
-
             }
         }
-        
+
         this.setState({
             customerRulesFormData
         });
@@ -209,212 +299,159 @@ class customerScore extends React.Component {
     handleAddBtn = () => {
         var customerRulesFormData = this.state.customerRulesFormData;
         var customerScoreLists = _.get(customerRulesFormData, 'detail');
-        //
-        if (customerScoreLists.length === 1) {
-            //一共三种情况，这三种情况不可以重复展示
-            _.each(customerScoreLists, item => {
-                if (item.source === _.get(this, 'state.customerIndicator[0].source')) {
-                    if (item.indicator === _.get(this, 'state.customerIndicator[0].indicator_details[0].indicator')) {
-                        customerScoreLists.push({
-                            source: _.get(this, 'state.customerIndicator[0].source'),
-                            indicator: _.get(this, 'state.customerIndicator[0].indicator_details[1].indicator'),
-                            interval: 'last_month',
-                            score: '1',
-                            randomId: uuid()
-                        });
-
-                    } else {
-                        customerScoreLists.push({
-                            source: _.get(this, 'state.customerIndicator[0].source'),
-                            indicator: _.get(this, 'state.customerIndicator[0].indicator_details[0].indicator'),
-                            interval: 'last_month',
-                            score: '1',
-                            randomId: uuid()
-                        });
-                    }
-
-                } else {
-                    customerScoreLists.push({
-                        source: _.get(this, 'state.customerIndicator[0].source'),
-                        indicator: _.get(this, 'state.customerIndicator[0].indicator_details[0].indicator'),
-                        interval: 'last_month',
-                        score: '1',
-                        randomId: uuid()
-                    });
-                }
+        //过滤掉已经添加的，在剩下的选项中添加一个
+        if (_.isArray(customerScoreLists)) {
+            var customerSelectLists = _.cloneDeep(this.state.customerIndicatorArr);
+            _.forEach(customerScoreLists, customerScoreItem => {
+                customerSelectLists = _.filter(customerSelectLists, item => item.indicator !== customerScoreItem.indicator);
             });
-
-        } else if (customerScoreLists.length === 2) {
-            //如果都是销售行为，增加一个用户行为
-            var salesLists = _.filter(customerScoreLists, item => item.source === 'sales');
-            if (salesLists.length === 2) {
+        }
+        
+        if (_.get(customerSelectLists, 'length')) {
+            if (_.get(customerSelectLists, '[0].indicator') === 'user') {
                 customerScoreLists.push({
-                    source: _.get(this, 'state.customerIndicator[1].source'),
-                    indicator: _.get(this, 'state.customerIndicator[1].indicator_details[0].indicator'),
+                    indicator: _.get(customerSelectLists, '[0].indicator'),
                     interval: 'last_month',
                     user_option: 'max',
                     randomId: uuid()
                 });
-
             } else {
-                var item = _.get(salesLists, '[0]');
-                if (item.indicator === _.get(this, 'state.customerIndicator[0].indicator_details[0].indicator')) {
-                    customerScoreLists.push({
-                        source: _.get(this, 'state.customerIndicator[0].source'),
-                        indicator: _.get(this, 'state.customerIndicator[0].indicator_details[1].indicator'),
-                        interval: 'last_month',
-                        score: '1',
-                        randomId: uuid()
-                    });
-
-                } else {
-                    customerScoreLists.push({
-                        source: _.get(this, 'state.customerIndicator[0].source'),
-                        indicator: _.get(this, 'state.customerIndicator[0].indicator_details[0].indicator'),
-                        interval: 'last_month',
-                        score: '1',
-                        randomId: uuid()
-                    });
-                }
+                customerScoreLists.push({
+                    indicator: _.get(customerSelectLists, '[0].indicator'),
+                    interval: 'last_month',
+                    score: '1',
+                    randomId: uuid()
+                });
             }
-
-
         }
-        
         this.setState({
             customerRulesFormData
         });
 
 
     };
-    renderCustomerRuleTable = () => {
+    renderCustomerScoreData = () => {
+        const {isEditCustomerRule, customerIndicatorArr} = this.state;
         var customerScoreLists = _.get(this, 'state.customerRulesFormData.detail');
-        var spanLength = '6', subIndicator = [], sourceLists = [];
-        var defaultSource = '', defaultIndicator = '', defaultInterval = '', defaultScore = 1;
+        return (
+            <div className="customer-score-datalists">
+                {_.map(customerScoreLists, (item, index) => {
+                    var subIndicator = [];
+                    _.forEach(customerIndicatorArr, indicatorItem => {
+                        if (indicatorItem.indicator !== item.indicator) {
+                            var targetObj = _.find(customerScoreLists, list => list.indicator === indicatorItem.indicator);
+                            if (!targetObj) {
+                                subIndicator.push(indicatorItem);
+                            }
+                        } else {
+                            subIndicator.push(indicatorItem);
+                        }
+                    });
+
+                    var targetIndicator = _.find(customerIndicatorArr, indicator => indicator.indicator === item.indicator);
+                    var targetTimeRange = _.find(TimeRangeSelect, timeRange => timeRange.value === item.interval);
+                    var numberTarget = _.find(numberSelect, number => number.value === item.user_option);
+                    return (
+                        <Row>
+                            <Col span={spanLength}>
+                                {isEditCustomerRule ? <Select
+                                    style={{width: 130}}
+                                    value={item.indicator}
+                                    onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'indicator')}>
+                                    {_.map(subIndicator, (item) => {
+                                        return <Option value={item.indicator}>{item.indicator_desc}</Option>;
+                                    })}
+                                </Select> : _.get(targetIndicator, 'indicator_desc')}
+
+                            </Col>
+                            <Col span={spanLength}>
+                                {isEditCustomerRule ? <Select
+                                    style={{width: 100}}
+                                    value={item.interval}
+                                    onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'interval')}>
+                                    {_.map(TimeRangeSelect, item => {
+                                        return <Option value={item.value}>{item.name}</Option>;
+                                    })}
+                                </Select> : _.get(targetTimeRange, 'name')}
+
+                            </Col>
+                            <Col span={spanLength}>
+                                {item.user_option ?
+                                    <span>
+                                        {isEditCustomerRule ? <Select value={item.user_option}
+                                            style={{width: 100}}
+                                            onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'user_option')}>
+                                            {_.map(numberSelect, (item) => {
+                                                return <Option value={item.value}>{item.name}</Option>;
+                                            })}
+                                        </Select> : _.get(numberTarget, 'name')}
+
+                                    </span> :
+                                    <span> {Intl.get('customer.score.total.count', '总次数')} *
+                                        {isEditCustomerRule ? <InputNumber value={item.score}
+                                            onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'score')}
+                                            min={1}/> : item.score}
+                                        {Intl.get('user.time.minute', '分')}</span>}
+                                <span className="add-minus-btns">
+                                    {index !== 2 && index === customerScoreLists.length - 1 && isEditCustomerRule ?
+                                        <span onClick={this.handleAddBtn}> + </span> : null}
+                                    {customerScoreLists.length > 1 && isEditCustomerRule ?
+                                        <span
+                                            onClick={this.handleMinusBtn.bind(this, item.id || item.randomId)}> - </span> : null}
+
+                                </span>
+
+                            </Col>
+                        </Row>
+                    );
+                })}
+            </div>
+        );
+    }
+    //默认展示拜访客户次数和有效呼出电话次数
+    renderCustomerRuleTable = () => {
+        const {customerIndicatorArr} = this.state;
+        var customerScoreLists = _.get(this, 'state.customerRulesFormData.detail');
         if (!customerScoreLists.length) {
-            customerScoreLists.push({
-                source: '',
-                indicator: '',
-                interval: '',
-                score: '1',
-                randomId: uuid()
+            //如果沒有设置过流程，默认展示打通电话次数和拜访电话次数
+            var defaultArr = _.filter(customerIndicatorArr, item => item.indicator !== 'user');
+            _.forEach(defaultArr, defaultItem => {
+                customerScoreLists.push({
+                    indicator: _.get(defaultItem, 'indicator'),
+                    interval: 'last_month',
+                    score: '1',
+                    randomId: uuid()
+                });
             });
         }
-
+        
         return (<div>
-            <Row>
-                <Col span={spanLength}>{Intl.get('call.record.customer.source', '来源')}</Col>
+            <Row className='thead-title'>
                 <Col span={spanLength}>{Intl.get('clue.customer.score.indicator', '指标')}</Col>
                 <Col span={spanLength}>{Intl.get('user.apply.detail.table.time', '周期')}</Col>
                 <Col span={spanLength}>{Intl.get('user.login.score', '分数')}</Col>
             </Row>
-            {/*获取之前保存的数据*/}
-            {/*{customerScoreLists.length ? null : null}*/}
-            {_.map(customerScoreLists, (item, index) => {
-                var subIndicator = [], sourceLists = [];
-                var target = _.find(this.state.customerIndicator, indicatorItem => indicatorItem.source === item.source);
-                if (item.source === 'user') {
-                    if (target) {
-                        subIndicator = target.indicator_details;
-                    }
-                } else {
-                    var salesLists = _.filter(customerScoreLists, item => item.source === 'sales');
-                    if (salesLists.length === 1) {
-                        subIndicator = _.get(this, 'state.customerIndicator[0].indicator_details');
-                    } else {
-                        subIndicator = _.filter(_.get(this, 'state.customerIndicator[0].indicator_details'), detailItem => detailItem.indicator === item.indicator);
-                    }
-                }
-
-                if (customerScoreLists.length === 3) {
-                    if (!sourceLists.length) {
-                        sourceLists.push(target);
-                    }
-                } else {
-                    var salesLists = _.filter(customerScoreLists, item => item.source === 'user');
-                    //如果有用户行为了，下拉中就不能出现用户行为了
-                    if (salesLists.length) {
-                        if (item.source !== 'user' ) {
-                            sourceLists = _.filter(_.get(this, 'state.customerIndicator'), item => item.source !== 'user');
-                        }else{
-                            sourceLists = _.get(this, 'state.customerIndicator');
-                        }
-
-                    } else {
-                        sourceLists = _.get(this, 'state.customerIndicator');
-                    }
-                }
-                return (
-                    <Row>
-                        <Col span={spanLength}>
-                            <Select
-                                style={{width: 100 }}
-                                value={item.source}
-                                onChange={this.handleCustomerProperty.bind(this,item.id || item.randomId, 'source')}>
-                                {_.map(sourceLists, (item) => {
-                                    return <Option value={item.source}>{item.source_desc}</Option>;
-                                })}
-                            </Select>
-                        </Col>
-                        <Col span={spanLength}>
-                            <Select
-                                style={{width: 130 }}
-                                value={item.indicator}
-                                onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'indicator')}>
-                                {_.map(subIndicator, (item) => {
-                                    return <Option value={item.indicator}>{item.indicator_desc}</Option>;
-                                })}
-                            </Select>
-                        </Col>
-                        <Col span={spanLength}>
-                            <Select
-                                style={{width: 100 }}
-                                value={item.interval}
-                                onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'interval')}>
-                                {_.map(TimeRangeSelect, item => {
-                                    return <Option value={item.value}>{item.name}</Option>;
-                                })}
-                            </Select>
-                        </Col>
-                        <Col span={spanLength}>
-                            {item.user_option ?
-                                <span>
-                                    <Select value={item.user_option}
-                                        style={{width: 100 }}
-                                        onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'user_option')}>
-                                        {_.map(numberSelect, (item) => {
-                                            return <Option value={item.value}>{item.name}</Option>;
-                                        })}
-                                    </Select>
-                                </span> :
-                                <span> {Intl.get('customer.score.total.count', '总次数')} * <InputNumber value={item.score}
-                                    onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'score')}
-                                    min={1}/> {Intl.get('user.time.minute', '分')}</span>}
-                            <span className="add-minus-btns">
-                                {index !== 2 && index === customerScoreLists.length - 1 ?
-                                    <span onClick={this.handleAddBtn}> + </span> : null}
-                                {customerScoreLists.length > 1 ?
-                                    <span onClick={this.handleMinusBtn.bind(this, item.id || item.randomId)}> - </span> : null}
-
-                            </span>
-
-                        </Col>
-                    </Row>
-
-                );
-            })}
-
+            {this.renderCustomerScoreData()}
         </div>);
     };
-    handleCustomerScoreRuleStatus = (checkFlag) => {
+    handleCustomerScoreRuleStatus = (e) => {
         var customerRulesFormData = this.state.customerRulesFormData;
-        if (checkFlag){
-            customerRulesFormData.status = 'enable';
-        }else{
-            customerRulesFormData.status = 'disable';
+        let modalStr = Intl.get('member.start.this', '启用此');
+        if (customerRulesFormData.status === 'enable') {
+            modalStr = Intl.get('member.stop.this', '禁用此');
         }
+        Trace.traceEvent(e, '点击确认' + modalStr + '成员');
+
+        let status = 'enable';
+        if (customerRulesFormData.status === 'enable') {
+            status = 'disable';
+        }
+        customerRulesFormData.status = status;
+
         this.setState({
             customerRulesFormData
+        },() => {
+            this.handleSaveRules();
         });
     };
 
@@ -433,41 +470,25 @@ class customerScore extends React.Component {
                     showIcon
                 />
             );
-        } else if (_.get(this, 'state.customerIndicator.length')) {
+        } else if (_.get(this, 'state.customerIndicatorArr.length')) {
+            const {isEditCustomerRule} = this.state;
             return (
                 <div className="customer-rule-score-level">
-                    <div className="customer-rule-status">
-                        <span className="switch-tip">
-                            {Intl.get('clue.customer.if.switch', '是否启用')}
-                        </span>
-                        <Switch size="small" onChange={this.handleCustomerScoreRuleStatus} checked={_.get(this, 'state.customerRulesFormData.status') === 'enable'}/>
-                    </div>
                     <div className="customer-rule-table">
                         {this.renderCustomerRuleTable()}
                     </div>
-                    <div className="save-btns">
-                        <div className="indicator">
-                            {this.state.saveRulesErr ?
-                                (
-                                    <AlertTimer
-                                        time={3000}
-                                        message={this.state.saveRulesErr}
-                                        type='error' showIcon
-                                        onHide={this.hideSaveTooltip}/>
-                                ) : ''
-                            }
-                        </div>
-                        <Button disabled={this.state.isSavingRules} type='primary' onClick={this.handleSaveRules}>{Intl.get('common.save', '保存')}
-                            {this.state.isSavingRules ? <Icon type="loading"/> : null}
-
-                        </Button>
-                        <Button onClick={this.handleCancelRules}>{Intl.get('common.cancel', '取消')}</Button>
-                    </div>
-
+                    {isEditCustomerRule ? <div className="save-btns">
+                        <SaveCancelButton loading={this.state.isSavingRules}
+                            saveErrorMsg={this.state.saveRulesErr}
+                            handleSubmit={this.handleSaveRules}
+                            handleCancel={this.handleCancelRules}
+                        />
+                    </div> : null}
                 </div>
             );
         }
     }
+
     hideSaveTooltip = () => {
         customerScoreAction.hideSaveErrMsg();
     };
@@ -476,56 +497,63 @@ class customerScore extends React.Component {
         customerScoreAction.setInitialRangeValue();
         //把state上的
         this.setState({
+            isEditCustomerRule: false,
             customerRulesFormData: _.cloneDeep(this.state.customerLevelObj.obj)
         });
     };
-    //保存
+    //保存客户评分规则
     handleSaveRules = () => {
-        var customerLevelRules = _.cloneDeep(this.state.customerLevelRules);
-        _.forEach(customerLevelRules, item => {
-            if (item.level_name === 'cold') {
-                item.to = this.state.lowerHandlePoint;
-            } else if (item.level_name === 'warm') {
-                item.from = this.state.lowerHandlePoint;
-                item.to = this.state.largerHandlePoint;
-            } else {
-                item.from = this.state.largerHandlePoint;
-                delete item.to;
-            }
-        });
         var customerRulesFormData = _.cloneDeep(this.state.customerRulesFormData);
-        var customerDetail = _.get(customerRulesFormData,'detail');
+        var customerDetail = _.get(customerRulesFormData, 'detail');
         _.forEach(customerDetail, item => {
             delete item.randomId;
         });
-        var submitObj = {
-            level_rule: customerLevelRules,
-            score_rule: customerRulesFormData,
-        };
-        customerScoreAction.saveCustomerRules(submitObj,() => {
+        customerScoreAction.saveCustomerRules(customerRulesFormData, () => {
             message.success(Intl.get('common.save.success', '保存成功'));
             //如果保存成功，会有回调
-            customerScoreAction.updateCustomerScoreRange(customerLevelRules);
+            this.setState({
+                isEditCustomerRule: false
+            });
             customerScoreAction.updateCustomerRule(customerRulesFormData);
         });
 
     };
+    handleClickCustomerRule = () => {
+        this.setState({
+            isEditCustomerRule: true
+        });
+    };
 
 
     render() {
-        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
+        const {isEditCustomerRule} = this.state;
         return (
-            <div className="customer-score-container" data-tracename="客户评分" style={{height: height}}>
+            <div className="customer-score-container" data-tracename="客户评分">
                 <div className="customer-score-wrap">
-                    <GeminiScrollBar style={{height: height}}>
-                        <div className="customer-score-content">
-                            {_.get(this, 'state.rangeHandleValue.length') ? this.renderCustomerScoreList() : null}
-                            <div className="customer-rules-container">
-                                <p className="customer-rule-tip">{Intl.get('clue.customer.level.score', '客户评分规则')}</p>
-                                {this.renderCustomerScore()}
-                            </div>
+                    <div className="customer-score-content">
+                        {this.renderCustomerLevel()}
+                        <div className="customer-rules-container">
+                            <p className="customer-rule-tip">
+                                {Intl.get('clue.customer.level.score', '客户评分规则')}
+                                {_.get(this, 'state.customerLevelObj.loading') ? null : <StatusWrapper
+                                    errorMsg={this.state.errorMsg}
+                                    size='small'
+                                >
+                                    <MemberStatusSwitch
+                                        title={Intl.get('customer.score.status.rules', '确定要{status}该规则？', {
+                                            status: _.get(this, 'state.customerRulesFormData.status') !== 'enable' ? Intl.get('common.enabled', '启用') :
+                                                Intl.get('common.stop', '停用')
+                                        })}
+                                        handleConfirm={this.handleCustomerScoreRuleStatus}
+                                        status={_.get(this, 'state.customerRulesFormData.status') === 'enable'}
+                                    />
+                                </StatusWrapper>}
+                                {isEditCustomerRule ? null :
+                                    <i className="iconfont icon-update" onClick={this.handleClickCustomerRule}></i>}
+                            </p>
+                            {this.renderCustomerScore()}
                         </div>
-                    </GeminiScrollBar>
+                    </div>
 
                 </div>
             </div>

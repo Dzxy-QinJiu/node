@@ -3210,7 +3210,7 @@ var en_US = {
     'clue.customer.condition.change': 'modify condition',//修改条件
     'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
     'clue.customer.confirm.valid': 'Confirm valid',//确认有效
-    'clue.customer.customer.level': 'Customer score',//客户分数
+    'clue.customer.customer.level': 'Customer level',//客户评级
     'clue.customer.score.good': 'high quality',//优质
     'clue.customer.above.limit': '{score} above',//{score}以上
     'clue.customer.level.score': 'Customer rating rules',//客户评分规则
@@ -3278,6 +3278,9 @@ var en_US = {
     'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
     'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
     'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
+    'import.recommend.clue.lists': 'Recommend clues',//推荐线索
+    'menu.sales.auto.manage.config': 'Sales auto',//销售自动化
+    'customer.score.status.rules': 'Are you sure to {status} this rule?',//确定要{status}该规则？
     'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
     'common.number.of.new.user.customer': 'number of new user customer',//新开用户客户数
     'clue.customer.register.time': 'Register time'//注册时间

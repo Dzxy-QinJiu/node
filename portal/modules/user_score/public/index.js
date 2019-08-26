@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2019/8/5.
  */
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
+import NoDataIntro from 'CMP_DIR/no-data-intro';
 require('./css/index.less');
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import userScoreStore from './store/index';
@@ -17,6 +18,13 @@ import Spinner from 'CMP_DIR/spinner';
 import {TimeRangeSelect} from 'MOD_DIR/customer_score/public/utils/customer_score_util';
 import {RETRY_GET_APP} from 'MOD_DIR/app_user_manage/public/util/consts';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
+import {StatusWrapper} from 'antc';
+import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
+var spanLength = '8';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import {getIntegrationConfig, getProductList, uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
+let history = require('PUB_DIR/sources/history');
+import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 class userScore extends React.Component {
     constructor(props) {
         super(props);
@@ -24,6 +32,9 @@ class userScore extends React.Component {
             userScoreFormData: {},//用户评分规则
             userEngagementFormData: {},//用户参与度规则
             showUserEngagementPanel: false,//是否展示添加用户参与度面板
+            getUserIntegrationConfigLoading: false,//是否正在获取用户接入
+            getUserIntegrationConfigErrMsg: '',//获取用户接入失败的信息
+            isEditUserEngagementRule: false,
             ...userScoreStore.getState()
         };
     }
@@ -31,13 +42,61 @@ class userScore extends React.Component {
     onStoreChange = () => {
         this.setState(userScoreStore.getState());
     };
-
-    componentDidMount() {
-        userScoreStore.listen(this.onStoreChange);
+    getUserScoreData = () => {
         this.getUserIndicator();
         this.getUserEngagementRule();
         this.getUserScoreLists();
-        this.getAppLists();//获取应用列表
+    };
+    getUserIntegrationConfig = () => {
+        this.setState({
+            getUserIntegrationConfigLoading: true,
+            getUserIntegrationConfigErrMsg: ''
+        });
+        getIntegrationConfig().then(resultObj => {
+            let integrationType = _.get(resultObj, 'type');
+            //集成类型不存在或集成类型为uem时，
+            if (!integrationType || integrationType === INTEGRATE_TYPES.UEM) {
+                //获取已集成的产品列表
+                getProductList(productList => {
+                    //有产品时，直接获取用户列表并展示
+                    if (_.get(productList, '[0]')) {
+                        this.setState({
+                            showUserIntro: false,
+                            appList: productList,
+                            getUserIntegrationConfigLoading: false,
+                            getUserIntegrationConfigErrMsg: ''
+                        });
+                        this.getUserScoreData();
+                    } else {//没有产品时，展示添加产品及配置界面
+                        this.setState({
+                            showUserIntro: true,
+                            getUserIntegrationConfigLoading: false,
+                            getUserIntegrationConfigErrMsg: ''
+                        });
+                    }
+                });
+            } else {//集成类型为：oplate或matomo时，直接获取用户列表并展示
+                this.setState({
+                    showUserIntro: false,
+                    getUserIntegrationConfigLoading: false,
+                    getUserIntegrationConfigErrMsg: ''
+                });
+                this.getAppLists();
+                this.getUserScoreData();
+            }
+        }, errorMsg => {
+            this.setState({
+                showUserIntro: false,
+                getUserIntegrationConfigLoading: false,
+                getUserIntegrationConfigErrMsg: errorMsg
+            });
+        });
+    };
+
+    componentDidMount() {
+        userScoreStore.listen(this.onStoreChange);
+        this.getUserIntegrationConfig();
+
 
     }
 
@@ -45,7 +104,11 @@ class userScore extends React.Component {
         userScoreStore.unlisten(this.onStoreChange);
     }
     getAppLists(){
-        userScoreAction.getAppList();
+        userScoreAction.getAppList((result) => {
+            this.setState({
+                appList: result
+            });
+        });
     }
     getUserIndicator() {
         userScoreAction.getUserScoreIndicator();
@@ -140,11 +203,12 @@ class userScore extends React.Component {
         }
         this.setState({
             userEngagementFormData
+        },() => {
+
         });
     };
-    renderUserScoreLists = () => {
-        var spanLength = '6';
-        const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData} = this.state;
+    renderUserBasicScoreLists = () => {
+        const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData, isEditUserBasicRule, userLevelObj} = this.state;
         var userScoreDetailList = _.get(userScoreFormData, 'detail', []);
         if (!userScoreDetailList.length) {
             userScoreDetailList.push({
@@ -156,10 +220,10 @@ class userScore extends React.Component {
             });
         }
 
-        if (_.get(this, 'state.userLevelObj.loading')) {
+        if (_.get(userLevelObj, 'loading')) {
             return (<Spinner/>);
-        } else if (_.get(this, 'state.userLevelObj.errMsg')) {
-            var errMsg = <span>{_.get(this, 'state.userLevelObj.errMsg')}
+        } else if (_.get(userLevelObj, 'errMsg')) {
+            var errMsg = <span>{_.get(userLevelObj, 'errMsg')}
                 <a onClick={this.getCustomerScoreLevel}>
                     {Intl.get('user.info.retry', '请重试')}
                 </a></span>;
@@ -180,34 +244,37 @@ class userScore extends React.Component {
                     if (_.get(userScoreDetailList, 'length') === _.get(userIndicator, 'length')) {
                         userIndicatorList = _.filter(userIndicatorList, indicatorItem => indicatorItem.indicator === item.indicator);
                     }
+                    var targetIndicator = _.find(userIndicatorList, indicator => indicator.indicator === item.indicator);
+                    var targetTimeRange = _.find(userIndicatorRangeList[item['indicator']], timeRange => timeRange.value === item.interval);
+                    var numberTarget = _.find(userIndicatorTypeList[item['indicator']], number => number.value === item.online_unit);
                     return (
                         <Row>
                             <Col span={spanLength}>
-                                <Select
-                                    style={{width: 100 }}
+                                {isEditUserBasicRule ? <Select
+                                    style={{width: 100}}
                                     value={item['indicator']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'indicator')}
                                 >
                                     {userIndicatorList.map((item, index) => (
                                         <Option key={index} value={item.indicator}>{item.desc}</Option>
                                     ))}
-                                </Select>
+                                </Select> : _.get(targetIndicator, 'desc')}
+
                             </Col>
                             <Col span={spanLength}>
-                                <Select
-                                    style={{width: 100 }}
+                                {isEditUserBasicRule ? <Select
+                                    style={{width: 100}}
                                     value={item['interval']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'interval')}
                                 >
                                     {_.isArray(userIndicatorRangeList[item['indicator']]) ? userIndicatorRangeList[item['indicator']].map((item, index) => (
                                         <Option key={index} value={item.value}>{item.name}</Option>
                                     )) : null}
-
-                                </Select>
+                                </Select> : _.get(targetTimeRange, 'name')}
                             </Col>
                             <Col span={spanLength}>
-                                <Select
-                                    style={{width: 100 }}
+                                {isEditUserBasicRule ? <Select
+                                    style={{width: 100}}
                                     value={item['online_unit']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'online_unit')}
                                 >
@@ -215,111 +282,85 @@ class userScore extends React.Component {
                                         <Option key={index} value={item.value}>{item.name}</Option>
                                     )) : null}
 
-                                </Select>
-                                <span className="start-icon">*</span>
-                                <InputNumber value={item.score}
+                                </Select> : _.get(numberTarget, 'name')}
+                                <span className="start-icon"> X </span>
+                                {isEditUserBasicRule ? <InputNumber value={item.score}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'score')}
-                                    min={1}/> {Intl.get('user.time.minute', '分')}
-                                <span className="add-minus-btns">
+                                    min={1}/> : item.score || 1}
+                                {Intl.get('user.time.minute', '分')}
+                                {isEditUserBasicRule ? <span className="add-minus-btns">
                                     {index + 1 !== _.get(userIndicator, 'length') && index === userScoreDetailList.length - 1 ?
                                         <span onClick={this.handleAddBtn}> + </span> : null}
                                     {userScoreDetailList.length > 1 ?
                                         <span
                                             onClick={this.handleMinusBtn.bind(this, item.id || item.randomId)}> - </span> : null}
 
-                                </span>
+                                </span> : null}
+
                             </Col>
                         </Row>
                     );
                 })}
-                <div className="save-btns">
-                    <div className="indicator">
-                        {this.state.saveRulesErr ?
-                            (
-                                <AlertTimer
-                                    time={3000}
-                                    message={this.state.saveRulesErr}
-                                    type='error' showIcon
-                                    onHide={this.hideSaveTooltip}/>
-                            ) : ''
-                        }
-                    </div>
-                    <Button disabled={this.state.isSavingRules} type='primary'
-                        onClick={this.handleSaveRules}>{Intl.get('common.save', '保存')}
-                        {this.state.isSavingRules ? <Icon type="loading"/> : null}
-                    </Button>
-                    <Button onClick={this.handleCancelRules}>{Intl.get('common.cancel', '取消')}</Button>
-                </div>
+
+                {isEditUserBasicRule ? <div className="save-btns">
+                    <SaveCancelButton loading={this.state.isSavingRules}
+                        saveErrorMsg={this.state.saveRulesErr}
+                        handleSubmit={this.handleSaveRules}
+                        handleCancel={this.handleCancelRules}
+                    />
+                </div> : null}
             </div>;
         }
     };
+    handleClickUserBasicRule = () => {
+        this.setState({
+            isEditUserBasicRule: true
+        });
+    };
 
     renderBasicScoreRules() {
-        var spanLength = '6';
+        const {isEditUserBasicRule, userLevelObj} = this.state;
         return (
             <div className="basic-score-rule" data-tracename="基础评分">
-                <p>
-                    {Intl.get('clue.customer.if.switch', '是否启用')}
-                    <Switch size="small" onChange={this.handleUserScoreRuleStatus}
-                        checked={_.get(this, 'state.userScoreFormData.status') === 'enable'}/>
+                <p className="basic-score-title">
+                    {Intl.get('user.score.basic.score', '基础评分')}
+                    {userLevelObj.loading ? null : <StatusWrapper
+                        errorMsg={this.state.errorMsg}
+                        size='small'
+                    >
+                        <MemberStatusSwitch
+                            title={Intl.get('customer.score.status.rules', '确定要{status}该规则？', {
+                                status: _.get(this, 'state.userScoreFormData.status') !== 'enable' ? Intl.get('common.enabled', '启用') :
+                                    Intl.get('common.stop', '停用')
+                            })}
+                            handleConfirm={this.handleUserScoreRuleStatus}
+                            status={_.get(this, 'state.userScoreFormData.status') === 'enable'}
+                        />
+                    </StatusWrapper>}
+                    {isEditUserBasicRule || userLevelObj.loading ? null :
+                        <i className="iconfont icon-update" onClick={this.handleClickUserBasicRule}></i>}
                 </p>
-                <Row>
+                <Row className='thead-title'>
                     <Col span={spanLength}>{Intl.get('clue.customer.score.indicator', '指标')}</Col>
                     <Col span={spanLength}>{Intl.get('user.apply.detail.table.time', '周期')}</Col>
                     <Col span={spanLength}>{Intl.get('user.login.score', '分数')}</Col>
                 </Row>
-                <Row>
-                    <Col span={spanLength}>{Intl.get('user.score.nearly.active.days', '近期活跃天数分数')}</Col>
-                    <Col span={spanLength}>{Intl.get('clue.customer.last.month', '近一月')}</Col>
-                </Row>
-                <Row>
-                    <Col span={spanLength}>{Intl.get('user.score.online.score', '近期在线时长分数')}</Col>
-                    <Col span={spanLength}>{Intl.get('clue.customer.last.month', '近一月')}</Col>
-                </Row>
+
                 <div className="user-score-lists">
-                    {this.renderUserScoreLists()}
+                    {this.renderUserBasicScoreLists()}
                 </div>
             </div>
         );
 
     }
 
-    //用户参与度规则
-    renderParticateScoreRules() {
-        var {userEngagementObj} = this.state;
-        if (userEngagementObj.loading) {
-            return <Spinner/>;
-        } else if (userEngagementObj.errMsg) {
-            var errMsg = <span>{_.get(userEngagementObj, 'errMsg')}
-                <a onClick={this.getUserEngagementRule}>
-                    {Intl.get('user.info.retry', '请重试')}
-                </a></span>;
-            return (
-                <Alert
-                    message={errMsg}
-                    type="error"
-                    showIcon
-                />
-            );
-        } else {
-            return (
-                <div className="user-engagement-container">
-                    <div>
-                        {_.get(this, 'state.userEngagementFormData.user_engagements.length') || this.state.showUserEngagementPanel ? this.renderUserEngagementForm() :
-                            <Button data-tracename="添加参与度"
-                                onClick={this.handleShowUserEngagementPanel}>{Intl.get('common.add', '添加')}</Button>}
-                    </div>
-                </div>
-            );
-        }
-    }
     getAppOptions = (engageTargetItem) => {
         const {userEngagementFormData} = this.state;
-        var appList = _.cloneDeep(_.get(this, 'state.appList',[]));
+        var appList = _.cloneDeep(_.get(this, 'state.appList', []));
         //过滤掉之前选过的应用
-        _.forEach(_.get(userEngagementFormData,'user_engagements',[]),(engageItem) => {
-            if(_.get(engageItem,'app_id') && engageItem.randomId !== engageTargetItem.randomId){
-                appList = _.filter(appList,appItem => appItem.app_id !== engageItem.app_id);
+        _.forEach(_.get(userEngagementFormData, 'user_engagements', []), (engageItem) => {
+            if (_.get(engageItem, 'app_id') && engageItem.randomId !== engageTargetItem.randomId) {
+                appList = _.filter(appList, appItem => appItem.app_id !== engageItem.app_id);
             }
         });
         var list = appList.map((item) => {
@@ -340,10 +381,90 @@ class userScore extends React.Component {
         }
         return list;
     };
-    renderUserEngagementForm = () => {
-        const {userEngagementFormData} = this.state;
-        var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
+    handleClickUserEngagementRule = () => {
+        this.setState({
+            isEditUserEngagementRule: true
+        });
+    };
+    renderEngagementTabs = () => {
+        const {appList, userEngagementFormData, isEditUserEngagementRule} = this.state;
+        var userEngagements = _.get(userEngagementFormData, 'user_engagements');
 
+        return (
+            <div>
+                <Tabs defaultActiveKey="1" tabPosition='left' style={{ height: 220 }}>
+                    {_.map(appList,(appItem, idx) => {
+                        var engageItem = _.find(userEngagements,item => item.app_id === appItem.app_id);
+                        return (
+                            <TabPane tab={appItem.app_name} key={idx} >
+                                {_.get(engageItem,'detail[0]') ?
+                                    _.map(_.get(engageItem, 'detail', []), (operateItem, idx) => {
+                                        var engageId = engageItem.app_id || engageItem.randomId;
+                                        var detailId = operateItem.id || operateItem.randomId;
+                                        var targetTimeRange = _.find(TimeRangeSelect, timeRange => timeRange.value === operateItem.interval);
+                                        return <div>
+                                            {idx === 0 ? <Row className='thead-title'>
+                                                <Col span={spanLength}>{Intl.get('common.operate', '操作')}</Col>
+                                                <Col
+                                                    span={spanLength}>{Intl.get('user.apply.detail.table.time', '周期')}</Col>
+                                                <Col
+                                                    span={spanLength}>{Intl.get('user.login.score', '分数')}</Col>
+                                            </Row> : null}
+                                            <Row>
+                                                <Col span={spanLength}>
+                                                    {isEditUserEngagementRule ? <Input value={operateItem.operate}
+                                                        onChange={this.handleUserEngaegementProperty.bind(this, engageId, detailId, 'operate')}/> : operateItem.operate}
+
+                                                </Col>
+                                                <Col span={spanLength}>
+                                                    {isEditUserEngagementRule ? <Select
+                                                        value={operateItem.interval}
+                                                        style={{width: 100}}
+                                                        placeholder={Intl.get('user.score.choose.interval', '请选择周期')}
+                                                        onChange={this.handleUserEngaegementProperty.bind(this, engageId, detailId, 'interval')}
+                                                    >
+                                                        {_.map(TimeRangeSelect, item => {
+                                                            return <Option
+                                                                value={item.value}>{item.name}</Option>;
+                                                        })}
+                                                    </Select> : _.get(targetTimeRange, 'name')}
+
+                                                </Col>
+                                                <Col span={spanLength}>
+                                                    {Intl.get('customer.score.total.count', '总次数')}
+                                                    X
+                                                    {isEditUserEngagementRule ? <InputNumber value={operateItem.score}
+                                                        onChange={this.handleUserEngaegementProperty.bind(this, engageId, detailId, 'score')}
+                                                        min={1}/> : operateItem.score || 1}
+                                                    {Intl.get('user.time.minute', '分')}
+                                                </Col>
+                                                <div className="add-operate-item">
+
+                                                    {idx + 1 === _.get(engageItem, 'detail.length') && !isEditUserEngagementRule ? <span
+                                                        onClick={this.handeAddEngageDetail.bind(this, engageId)}>+</span> : null}
+                                                    {_.get(engageItem, 'detail.length') > 1 && !isEditUserEngagementRule ? <span
+                                                        onClick={this.handleMinusEngageDetail.bind(this, engageId, detailId)}>-</span> : null}
+                                                </div>
+                                            </Row>
+                                        </div>;
+                                    })
+                                    : <NoDataIntro renderAddAndImportBtns={this.noOperationIntroBtn} showAddBtn={true} noDataAndAddBtnTip = {Intl.get('user.score.no.config.operation.config', '暂未配置操作指标')} />}
+                                {/*保存*/}
+                            </TabPane>
+                        );
+                    })}
+                </Tabs>
+            </div>
+        );
+    };
+    noOperationIntroBtn = () => {
+        return <div className="btn-containers">
+            <Button type='primary'>{Intl.get('user.score.start.config', '开始配置')}</Button>
+        </div>;
+    }
+    renderParticateScoreRules = () => {
+        const {userEngagementFormData, userEngagementObj, isEditUserEngagementRule} = this.state;
+        var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
         if (!_.get(userEngagements, 'length')) {
             userEngagementFormData.status = 'enable';
             userEngagements.push({
@@ -359,100 +480,52 @@ class userScore extends React.Component {
             });
             userEngagementFormData['user_engagements'] = userEngagements;
         }
-        var spanLength = '6';
-        return (<div className="user-engagement-panel">
-            <p>
-                {Intl.get('clue.customer.if.switch', '是否启用')}
-                <Switch size="small" onChange={this.handleUserEngagementRuleStatus}
-                    checked={_.get(userEngagementFormData, 'status') === 'enable'}/>
-            </p>
-            {_.map(userEngagements, (engageItem, index) => {
-                var engageId = engageItem.app_id || engageItem.randomId;
-                var appOptions = this.getAppOptions(engageItem);
-                return (
-                    <div className="user-engagement-item-wrap">
-                        <div className="user-engagement-and-add">
-                            <div className="user-engagement-item">
-                                <Row>{Intl.get('menu.product', '产品')}：
-                                    <Select
-                                        value={_.get(engageItem,'app_id')}
-                                        style={{ width: 100 }}
-                                        showSearch
-                                        placeholder={Intl.get('leave.apply.select.product', '请选择产品')}
-                                        onChange={this.handleUserEngaegementProperty.bind(this,engageId, '', 'app_id')}
-                                        notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
-                                    >
-                                        {appOptions}
-                                    </Select>
-                                </Row>
-                                {_.map(_.get(engageItem, 'detail', []), (operateItem, idx) => {
-
-                                    var detailId = operateItem.id || operateItem.randomId;
-                                    return <div>
-                                        {idx === 0 ? <Row>
-                                            <Col span={spanLength}>{Intl.get('common.operate', '操作')}</Col>
-                                            <Col span={spanLength}>{Intl.get('user.apply.detail.table.time', '周期')}</Col>
-                                            <Col span={spanLength}>{Intl.get('user.login.score', '分数')}</Col>
-                                        </Row> : null}
-                                        <Row>
-                                            <Col span={spanLength}>
-                                                <Input value={operateItem.operate} onChange={this.handleUserEngaegementProperty.bind(this,engageId, detailId, 'operate')}/>
-                                            </Col>
-                                            <Col span={spanLength}>
-                                                <Select
-                                                    value={operateItem.interval}
-                                                    style={{width: 100 }}
-                                                    placeholder={Intl.get('user.score.choose.interval', '请选择周期')}
-                                                    onChange={this.handleUserEngaegementProperty.bind(this,engageId, detailId, 'interval')}
-                                                >
-                                                    {_.map(TimeRangeSelect, item => {
-                                                        return <Option value={item.value}>{item.name}</Option>;
-                                                    })}
-                                                </Select>
-                                            </Col>
-                                            <Col span={spanLength}>
-                                                {Intl.get('customer.score.total.count', '总次数')} * <InputNumber value={operateItem.score}
-                                                    onChange={this.handleUserEngaegementProperty.bind(this, engageId,detailId, 'score')}
-                                                    min={1}/> {Intl.get('user.time.minute', '分')}
-                                            </Col>
-                                            <div className="add-operate-item">
-
-                                                {idx + 1 === _.get(engageItem, 'detail.length') ? <span onClick={this.handeAddEngageDetail.bind(this, engageId)}>+</span> : null}
-                                                {_.get(engageItem, 'detail.length') > 1 ? <span onClick={this.handleMinusEngageDetail.bind(this, engageId, detailId)}>-</span> : null}
-                                            </div>
-                                        </Row>
-                                    </div>;
-                                })}
-                            </div>
-                            <div className="add-user-engagement-item">
-                                {index + 1 === _.get(userEngagements,'length') ? <span onClick={this.handleAddEngagementItem}>+</span> : null}
-                                {_.get(userEngagements,'length') > 1 ? <span onClick={this.handleMinusEngagementItem.bind(this, engageId)}>-</span> : null}
-                            </div>
+        if (userEngagementObj.loading) {
+            return <Spinner/>;
+        } else if (userEngagementObj.errMsg) {
+            var errMsg = <span>{_.get(userEngagementObj, 'errMsg')}
+                <a onClick={this.getUserEngagementRule}>
+                    {Intl.get('user.info.retry', '请重试')}
+                </a></span>;
+            return (
+                <Alert
+                    message={errMsg}
+                    type="error"
+                    showIcon
+                />
+            );
+        } else {
+            var engageRuleOpen = _.get(userEngagementFormData, 'status') === 'enable';
+            return (<div className="user-engagement-panel">
+                <p className="user-engage-title">
+                    {Intl.get('user.score.particate.in.score', '参与度评分')}
+                    {userEngagementObj.loading ? null : <StatusWrapper
+                        errorMsg={userEngagementObj.errMsg}
+                        size='small'
+                    >
+                        <MemberStatusSwitch
+                            title={Intl.get('customer.score.status.rules', '确定要{status}该规则？', {
+                                status: !engageRuleOpen ? Intl.get('common.enabled', '启用') :
+                                    Intl.get('common.stop', '停用')
+                            })}
+                            handleConfirm={this.handleUserEngagementRuleStatus}
+                            status={engageRuleOpen}
+                        />
+                    </StatusWrapper>}
+                    {isEditUserEngagementRule || userEngagementObj.loading || !engageRuleOpen ? null :
+                        <i className="iconfont icon-update" onClick={this.handleClickUserEngagementRule}></i>}
+                </p>
+                <div className="user-engagement-item-wrap">
+                    <div className="user-engagement-and-add">
+                        <div className="user-engagement-item">
+                            {/*如果参与度是禁用状态，加提示*/}
+                            {_.get(userEngagementFormData, 'status') !== 'enable' ? <NoDataIntro noDataTip={Intl.get('user.score.no.engagement.score', '暂未开启参与度评分')}/> : this.renderEngagementTabs()}
                         </div>
-                        {index + 1 === _.get(userEngagements,'length') ? <div className="save-btns">
-                            <div className="indicator">
-                                {this.state.saveEngagementErr ?
-                                    (
-                                        <AlertTimer
-                                            time={3000}
-                                            message={this.state.saveEngagementErr}
-                                            type='error' showIcon
-                                            onHide={this.hideSaveTooltip}/>
-                                    ) : ''
-                                }
-                            </div>
-                            <Button disabled={this.state.isSavingEngagement} type='primary'
-                                onClick={this.handleSaveEngagements}>{Intl.get('common.save', '保存')}
-                                {this.state.isSavingEngagement ? <Icon type="loading"/> : null}
-                            </Button>
-                            <Button onClick={this.handleCancelEngagement}>{Intl.get('common.cancel', '取消')}</Button>
-                        </div> : null}
-
                     </div>
-                );
-            })}
-        </div>);
-    };
+                </div>
+            </div>);
+        }
+    }
     handleAddEngagementItem = () => {
         const {userEngagementFormData} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
@@ -483,28 +556,28 @@ class userScore extends React.Component {
         const {userEngagementFormData} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
         var target = _.find(userEngagements, item => item.randomId === engageId || item.app_id === engageId);
-        if (target && _.isArray(target.detail)){
+        if (target && _.isArray(target.detail)) {
             target.detail = _.filter(target.detail, item => item.id !== detailId && item.randomId !== detailId);
         }
         this.setState({
             userEngagementFormData
         });
     };
-    handleUserEngaegementProperty = (engageId, detailId, property,value) => {
+    handleUserEngaegementProperty = (engageId, detailId, property, value) => {
         const {userEngagementFormData} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
         var target = _.find(userEngagements, item => item.randomId === engageId || item.app_id === engageId);
-        if (target){
-            if (_.isArray(target.detail) && detailId){
+        if (target) {
+            if (_.isArray(target.detail) && detailId) {
                 var subTarget = _.find(target.detail, item => item.id === detailId || item.randomId === detailId);
-                if (subTarget){
+                if (subTarget) {
                     subTarget[property] = _.isString(value) ? value : value.target.value;
                 }
-            }else{
+            } else {
                 target[property] = value;
-                if (property === 'app_id'){
-                    var appTarget = _.find(this.state.appList,appItem => appItem.app_id === value);
-                    if (appTarget){
+                if (property === 'app_id') {
+                    var appTarget = _.find(this.state.appList, appItem => appItem.app_id === value);
+                    if (appTarget) {
                         target['app_name'] = appTarget['app_name'];
                     }
                 }
@@ -518,7 +591,7 @@ class userScore extends React.Component {
         const {userEngagementFormData} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
         var target = _.find(userEngagements, item => item.randomId === engageId || item.app_id === engageId);
-        if (target && _.isArray(target.detail)){
+        if (target && _.isArray(target.detail)) {
             target.detail.push({
                 operate: '',
                 randomId: uuid(),
@@ -559,16 +632,16 @@ class userScore extends React.Component {
         var hasError = false;
         _.forEach(userEngagements, engageItem => {
             delete engageItem.randomId;
-            if (!engageItem.app_id || !engageItem.app_name){
+            if (!engageItem.app_id || !engageItem.app_name) {
                 hasError = true;
             }
             if (_.isArray(engageItem.detail)) {
-                _.forEach(engageItem.detail,(operatorItem) => {
+                _.forEach(engageItem.detail, (operatorItem) => {
                     delete operatorItem.randomId;
                 });
             }
         });
-        if (hasError){
+        if (hasError) {
             message.error(Intl.get('leave.apply.select.product', '请选择产品'));
             return;
         }
@@ -593,32 +666,76 @@ class userScore extends React.Component {
     hideSaveTooltip = () => {
         userScoreAction.hideSaveErrMsg();
     };
-    handleChangeTab = () => {
+    jumpToUserPanel = () => {
+        history.push('/user/list');
+    };
+    renderAddAndImportBtns = () => {
+        return (
+            <div className="btn-containers">
+                <Button type='primary'
+                    onClick={this.jumpToUserPanel}>{Intl.get('user.score.intro.user', '接入用户')}</Button>
+            </div>
+        );
 
+    };
+    renderUserInfo = () => {
+        return (
+            <NoDataIntro
+                showAddBtn={true}
+                renderAddAndImportBtns={this.renderAddAndImportBtns}
+                noDataAndAddBtnTip={Intl.get('user.score.no.data.info', '暂无用户信息')}
+            />
+        );
     };
 
     render() {
-        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
+        var {userEngagementObj, userLevelObj, getUserIntegrationConfigLoading, getUserIntegrationConfigErrMsg, showUserIntro} = this.state;
+        var errMsg = <span>{getUserIntegrationConfigErrMsg}
+            <a onClick={this.getUserIntegrationConfig}>
+                {Intl.get('user.info.retry', '请重试')}
+            </a></span>;
         return (
-            <div className="user-score-container" data-tracename="用户评分" style={{height: height}}>
+            <div className="user-score-container" data-tracename="用户评分">
                 <div className="user-score-wrap">
-                    <GeminiScrollBar style={{height: height}}>
-                        <div className="user-score-content">
-                            <p className="level-rule-tip">{Intl.get('user.score.level.rule', '用户评分规则')}</p>
-                            <Tabs onChange={this.handleChangeTab} type="card">
-                                <TabPane tab={Intl.get('user.score.basic.score', '基础评分')} key="1">
-                                    {this.renderBasicScoreRules()}
-                                </TabPane>
-                                <TabPane tab={Intl.get('user.score.particate.in.score', '参与度评分')} key="2">
-                                    <div className="particepate-container-warp" data-tracename="参与度评分">
-                                        {this.renderParticateScoreRules()}
+                    <div className="user-score-content">
+                        <p className="level-rule-tip">{Intl.get('user.score.level.rule', '用户评分规则')}
+
+                            {getUserIntegrationConfigLoading || getUserIntegrationConfigErrMsg || showUserIntro ? null :
+                                <StatusWrapper
+                                    errorMsg={this.state.errorMsg}
+                                    size='small'
+                                >
+                                    <MemberStatusSwitch
+                                        title={Intl.get('customer.score.status.rules', '确定要{status}该规则？', {
+                                            status: _.get(this, 'state.customerRulesFormData.status') !== 'enable' ? Intl.get('common.enabled', '启用') :
+                                                Intl.get('common.stop', '停用')
+                                        })}
+                                        handleConfirm={this.handleCustomerScoreRuleStatus}
+                                        status={_.get(this, 'state.customerRulesFormData.status') === 'enable'}
+                                    />
+                                </StatusWrapper>}
+                        </p>
+                        {getUserIntegrationConfigLoading ? <Spinner/> :
+                            <div>{getUserIntegrationConfigErrMsg ?
+                                <Alert
+                                    message={errMsg}
+                                    type="error"
+                                    showIcon
+                                />
+                                : <div className="user-basic-particate-wrap">
+                                    {showUserIntro ? this.renderUserInfo() : <div>
+                                        <div className="user-basic-content">
+                                            {this.renderBasicScoreRules()}
+                                        </div>
+                                        <div className="user-particate-content">
+                                            {this.renderParticateScoreRules()}
+                                        </div>
                                     </div>
+                                    }
+                                </div>
+                            }</div>}
 
-                                </TabPane>
-                            </Tabs>
-                        </div>
-                    </GeminiScrollBar>
-
+                    </div>
                 </div>
             </div>
         );
