@@ -28,7 +28,10 @@ function getStateFromStore() {
         userId: stateData.userInfo.id,
         userInfoFormPwdShow: stateData.userInfoFormPwdShow,
         submitErrorMsg: stateData.submitErrorMsg,
-        submitResult: stateData.submitResult
+        submitResult: stateData.submitResult,
+        oldPwd:'',
+        userPwdStatus: '',
+        userPwdHelp:'',
     };
 }
 
@@ -128,6 +131,12 @@ var UserPwdPage = createReactClass({
     },
 
     events_submitUserInfoForm: function(e) {
+        if(!this.state.oldPwd){
+            this.setState({
+                userPwdStatus:'error',
+                userPwdHelp:Intl.get('user.password.input.initial.password', '输入原密码')
+            })
+        }
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -169,6 +178,12 @@ var UserPwdPage = createReactClass({
         }
         return null;
     },
+    oldPwdChange(e){
+        const oldPwd =e.target.value;
+        this.setState({oldPwd:oldPwd,
+                    userPwdStatus:'',
+                    userPwdHelp:'',});
+    },
 
     render: function() {
         const {getFieldDecorator} = this.props.form;
@@ -183,17 +198,16 @@ var UserPwdPage = createReactClass({
                                 labelCol={{span: 5}}
                                 wrapperCol={{span: 15}}
                                 hasFeedback
+                                required
+                                validateStatus={this.state.userPwdStatus}
+                                help={this.state.userPwdHelp}
                             >
-                                {getFieldDecorator('passwd', {
-                                    rules: [{
-                                        required: true,
-                                        message: Intl.get('user.password.input.initial.password', '输入原密码')
-                                    }]
-                                })(
                                     <Input type="password" autoComplete="off"
                                         placeholder={Intl.get('user.password.input.initial.password', '输入原密码')}
-                                        data-tracename="输入原密码"/>
-                                )}
+                                        data-tracename="输入原密码"
+                                        value={this.state.oldPwd}
+                                        onChange={this.oldPwdChange}
+                                        />
                             </FormItem>
                             <FormItem
                                 label={Intl.get('user.password.new.password', '新密码')}
