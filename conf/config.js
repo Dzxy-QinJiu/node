@@ -1,24 +1,5 @@
 /**
  * 配置信息
- * oplate 安全域ID、应用ID、应用密钥（正式、测试环境的配置相同）
-     LOGIN_REALM：3722pgujaa
-     LOGIN_CLIENT_ID：3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9
-     LOGIN_CLIENT_SECRET：477qpz3uC5fZcaz0w1YloKWA
- * caster、网关（区分正式和测试环境）
- * 正式环境的配置
-     CASTER_IP："172.19.141.4,172.19.141.5,172.19.141.6"
-     CASTER_PORT："5762,5762,5762"
-     CASTER_USERNAME：caster-eefung
-     CASTER_PASSWORD：caster-eefung
-     GATEWAY：http://gateway-ketao.antfact.com
-     PUSH_SERVER_ADDRESS：http://notify-ketao.antfact.com:80
- * 测试环境的配置
-     CASTER_IP：172.19.106.110
-     CASTER_PORT：5766
-     CASTER_USERNAME：oplate-test-session
-     CASTER_PASSWORD：plate-test-session
-     GATEWAY：http://172.19.103.57:9090
-     PUSH_SERVER_ADDRESS：http://172.19.103.211:9093
  * zipkin、调用链跟踪记录（只有线上的正式环境有的配置）
      ZIPKINURL：http://172.19.103.39:9002
      METRIC_ADDRESS：http://172.19.103.123:8086/oplate_web
@@ -52,28 +33,19 @@ if (process.argv.indexOf('d') >= 0
 
 //获取hazelcast的地址
 function getHazelcastAddress() {
-    // 一开始用的鹰眼的caster地址和端口：172.19.105.138 : 5712
-    // 后oplate和ketao的caster地址和端口修改为：（用来给：蚁坊识微官网、公共应用（告警、sso等））
-    //  ["172.19.141.4,172.19.141.5,172.19.141.6"] : ["5762,5762,5762"]
-    if (process.env.CASTER_IP && process.env.CASTER_PORT) {
-        var ipArray = process.env.CASTER_IP.split(','), portArray = process.env.CASTER_PORT.split(',');
-        return ipArray.map((ip, idx) => {
-            return {host: ip, port: portArray[idx]};
-        });
-    }
-    //默认为测试环境
-    return [{host: '172.19.106.110', port: '5766'}];
+    // ketao的caster地址和端口（用来给：蚁坊识微官网、公共应用（告警、sso等））
+    //部署环境IP：p-caster01,p-caster02,p-caster03,p-caster04 本地测试IP: 10.20.2.124,10.20.2.125,10.20.2.126,10.20.2.127
+    let casterIP = process.env.CASTER_IP || '10.20.2.124,10.20.2.125,10.20.2.126,10.20.2.127';
+    let casterPort = process.env.CASTER_PORT || '5762,5762,5762';
+    let ipArray = casterIP.split(','), portArray = casterPort.split(',');
+    return ipArray.map((ip, idx) => {
+        return {host: ip, port: portArray[idx]};
+    });
 }
 //获取hazelcast的认证信息
 function getHazelcastGroupConfig() {
-    //一开始用的鹰眼的caster用户名和密码都是：caster-eageye-session
-    //后oplate和ketao的caster的用户名和密码改为：caster-eefung
-    if (process.env.CASTER_USERNAME && process.env.CASTER_PASSWORD) {
-        return {'name': process.env.CASTER_USERNAME, 'password': process.env.CASTER_PASSWORD};
-    }
-
-    //默认为测试环境
-    return {'name': 'oplate-test-session', 'password': 'oplate-test-session'};
+    //ketao的caster的用户名和密码：caster-eefung-session
+    return {'name': process.env.CASTER_USERNAME || 'caster-eefung-session', 'password': process.env.CASTER_PASSWOR || 'caster-eefung-session'};
 }
 //获取是否需要nock数据
 function getProvideNockData() {
@@ -103,11 +75,6 @@ function getGateway() {
     }
     return gateway;
 }
-//获取协调服务地址
-var coordinateAddress = {};
-coordinateAddress.domain = process.env.COORDINATOR_DOMAIN;
-coordinateAddress.host = process.env.COORDINATOR_SERVER_SERVICE_HOST;
-coordinateAddress.port = process.env.COORDINATOR_SERVER_SERVICE_PORT;
 
 var config = {
     'system': {
@@ -171,31 +138,17 @@ var config = {
         zipkinUrl: process.env.ZIPKINURL || 'http://172.19.103.39:9002', //将跟踪记录到服务器的url
         serviceName: 'ketao_web'
     },
-    //没有配置推送服务地址，并且从协调服务中根据id获取不到可用的服务地址时用的默认的推送服务地址
-    pushServer: 'http://172.19.104.103:9093',//测试环境：http://172.19.104.108:9093
-    coordinatorConfig: {
-        // coordinator 服务地址连接
-        coordinator: {
-            // 设置域名或者host和port
-            domain: coordinateAddress.domain || '',
-            host: coordinateAddress.host || '172.19.103.22',//测试环境：172.19.103.39
-            port: coordinateAddress.port || 8080
-        },
-        registerSelf: false,//是否注册本服务(nodejs)到服务注册中心
-        token: '123'
-    },
-    appId: 'COM.ANTFACT.OPLATE.NOTIFY',//从协调服务中获取推送服务地址时所需的id
     loginParams: {
-        //安全域Id,客套正式:34pj27enfq, 客套测试:34suklsvlP, curtao:34pj27enfq
-        realm: process.env.LOGIN_REALM || '34suklsvlP',
-        //应用Id, ketao:3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9 ,curtao:34pj27enfq34pj1oe3c4h91VbdhG4zxccX0Z3i2Z6eN
+        //安全域Id
+        realm: process.env.LOGIN_REALM || '34pj27enfq',
+        //应用Id
         clientId: process.env.LOGIN_CLIENT_ID || '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9',
-        //应用密钥, 客套正式:477qpz3uC5fZcaz0w1YloKWA, 客套测试:41yhR18RW4nebW305HAvf23t, curtao:0bMfdndoR4jPcH70Mm7SS1kg
-        clientSecret: process.env.LOGIN_CLIENT_SECRET || '41yhR18RW4nebW305HAvf23t',
+        //应用密钥
+        clientSecret: process.env.LOGIN_CLIENT_SECRET || '477qpz3uC5fZcaz0w1YloKWA',
         grantType: process.env.LOGIN_GRANT_TYPE || 'client_credentials'//授权类型
     },
-    //服务网关,测试环境：http://172.19.103.21:9191,正式：'http://gateway-ketao.antfact.com', curtao：http://gateway.curtao.com
-    gateway: getGateway() || 'http://172.19.103.21:9191',
+    //服务网关,测试环境：http://10.20.1.180:9191,正式：'http://gateway-ketao.antfact.com', exp环境：http://10.20.2.57:9090
+    gateway: getGateway() || 'http://10.20.1.180:9191',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的
     errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用

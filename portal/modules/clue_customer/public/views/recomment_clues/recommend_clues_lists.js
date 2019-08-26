@@ -261,6 +261,18 @@ class RecommendCustomerRightPanel extends React.Component {
                 dataIndex: 'name',
                 width: '300px',
             }, {
+                title: Intl.get('clue.customer.register.time', '注册时间'),
+                dataIndex: 'startTime',
+                width: '200px',
+                align: 'left',
+                sorter: (a, b) => a.startTime - b.startTime,
+                render: (text, record, index) => {
+                    return (
+                        <span>{text ? moment(text).format(oplateConsts.DATE_FORMAT) : null}
+                        </span>
+                    );
+                }
+            }, {
                 title: Intl.get('call.record.contacts', '联系人'),
                 dataIndex: 'legalPerson',
                 width: '300px',
@@ -271,7 +283,7 @@ class RecommendCustomerRightPanel extends React.Component {
             },{
                 title: Intl.get('common.operate', '操作'),
                 dataIndex: 'oprate_btn',
-                width: '300px',
+                width: '100px',
                 render: (text, record, index) => {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !this.isCommonSales();
@@ -479,35 +491,35 @@ class RecommendCustomerRightPanel extends React.Component {
     render() {
         var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
         return (
-            <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
-                <RightPanelClose data-tracename="关闭推荐线索列表" onClick={this.closeRecommendCluePanel}/>
-                <div className="recommend-clue-panel">
-                    <TopNav>
-                        <div className='recommend-customer-top-nav-wrap'>
-                            <Button className="btn-item" data-tracename="点击换一批按钮"
-                                onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
-                            <Button className="btn-item" data-tracename="点击修改推荐条件"
-                                onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
-                            {
-                                hasSelectedClue ? this.renderBatchChangeClues() : null
-                            }
-
-
+            <div className="recommend-clues-lists-container">
+                <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
+                    <RightPanelClose data-tracename="关闭推荐线索列表" onClick={this.closeRecommendCluePanel}/>
+                    <div className="recommend-clue-panel">
+                        <TopNav>
+                            <div className='recommend-customer-top-nav-wrap'>
+                                <Button className="btn-item" data-tracename="点击换一批按钮"
+                                    onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
+                                <Button className="btn-item" data-tracename="点击修改推荐条件"
+                                    onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
+                                {
+                                    hasSelectedClue ? this.renderBatchChangeClues() : null
+                                }
+                            </div>
+                        </TopNav>
+                        <div className="recommend-clue-content-container">
+                            {this.renderRecommendClueLists()}
                         </div>
-                    </TopNav>
-                    <div className="recommend-clue-content-container">
-                        {this.renderRecommendClueLists()}
+
                     </div>
+                </RightPanel>
+                {this.state.showEditConditionPanel || this.isShowRecommendSettingPanel() ?
+                    <RecommendCluesForm
+                        hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
+                        hideFocusCustomerPanel={this.hideFocusCustomerPanel}
+                        saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                    /> : null}
+            </div>
 
-                </div>
-                {this.state.showEditConditionPanel || this.isShowRecommendSettingPanel() ? <RecommendCluesForm
-                    hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
-                    hideFocusCustomerPanel={this.hideFocusCustomerPanel}
-                    saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
-                /> : null}
-
-
-            </RightPanel>
 
         );
     }

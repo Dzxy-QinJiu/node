@@ -200,3 +200,21 @@ exports.updateCommonFilter = params => ajaxPro('updateCommonFilter', params);
 exports.delCommonFilter = params => ajaxPro('delCommonFilter', params);
 
 exports.getCommonFilterList = params => ajaxPro('getCommonFilterList', params);
+
+//获取客户池中聚合的筛选项
+exports.getCustomerPoolFilterItems = function(queryParam) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/customer_pool/filter/items',
+        dataType: 'json',
+        type: 'get',
+        data: queryParam,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

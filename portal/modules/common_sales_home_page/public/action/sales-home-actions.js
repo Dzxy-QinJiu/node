@@ -142,7 +142,7 @@ function SalesHomeActions() {
             this.dispatch({
                 error: true,
                 loading: false,
-                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索客户列表失败')
+                errorMsg: errorMsg || Intl.get('failed.to.get.clue.customer.list', '获取线索列表失败')
             });
         });
     };

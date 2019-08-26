@@ -1,51 +1,29 @@
 /**
- * 活跃度
+ * 签约客户活跃度
  */
 
-import { ifNotSingleApp, argCallbackUnderlineTimeToTime, argCallbackTeamIdsToTeamId, argCallbackMemberIdsToSalesId } from '../../utils';
+import { argCallbackUnderlineTimeToTime, argCallbackMemberIdsToMemberId } from '../../utils';
 
-export function getActivityChart(type, title) {
-    let url;
-
-    if (type === 'new_added') {
-        url = '/rest/analysis/user/v1/:auth_type/new_added/users/activation/:param_interval';
-    } else if (type === 'expired') {
-        url = '/rest/analysis/user/v1/:auth_type/expired/:app_id/users/activation/:param_interval';
-    } else if (type === 'signed') {
-        url = '/rest/analysis/user/v3/:auth_type/active_percent/trend';
-    } else {
-        url = '/rest/analysis/user/v1/:auth_type/:app_id/users/activation/:param_interval';
-    }
-
+export function getSignedCustomerActivityChart() {
     return {
-        title: title || Intl.get('operation.report.activity', '活跃度'),
+        title: Intl.get('common.signed.customer.activity', '签约客户活跃度'),
         chartType: 'line',
-        url,
+        url: '/rest/analysis/customer/label/:data_type/active/trend',
         argCallback: arg => {
             argCallbackUnderlineTimeToTime(arg);
-            argCallbackTeamIdsToTeamId(arg);
-            argCallbackMemberIdsToSalesId(arg);
-
-            //如果统计的是签约用户的
-            if (type === 'signed') {
-                //统计用户类型
-                arg.query.type = '正式用户';
-                //统计时间间隔用图上选择的而非公共参数里的
-                arg.query.interval = arg.params.param_interval;
-            } else {
-                //去掉query参数中的公共interval，以免引起迷惑
-                delete arg.query.interval;
-            }
+            argCallbackMemberIdsToMemberId(arg);
+            //统计时间间隔用图上选择的而非公共参数里的
+            arg.query.interval = arg.query.param_interval;
         },
         processData: (data, chart) => {
             const intervalCondition = _.find(chart.conditions, item => item.name === 'param_interval');
             let interval = _.get(intervalCondition, 'value');
 
             return _.map(data, dataItem => {
-                if (!interval || interval === 'daily') {
+                if (!interval || interval === 'day') {
                     dataItem.name = moment(dataItem.timestamp).format(oplateConsts.DATE_FORMAT);
                 } else {
-                    if (interval === 'weekly') {
+                    if (interval === 'week') {
                         //用iso格式的周开始时间，这样是从周一到周天算一周，而不是从周天到周六
                         interval = 'isoweek';
                     } else {
@@ -58,33 +36,36 @@ export function getActivityChart(type, title) {
                     dataItem.name = `${startDate}${Intl.get('contract.83', '至')}${endDate}`;
                 }
 
-                dataItem.value = dataItem.active;
-
                 return dataItem;
             });
         },
         cardContainer: {
-            operateButtons: [{value: 'daily', name: Intl.get('operation.report.day.active', '日活')},
-                {value: 'weekly', name: Intl.get('operation.report.week.active', '周活')},
-                {value: 'monthly', name: Intl.get('operation.report.month.active', '月活')}],
-            activeButton: 'daily',
+            operateButtons: [{value: 'day', name: Intl.get('operation.report.day.active', '日活')},
+                {value: 'week', name: Intl.get('operation.report.week.active', '周活')},
+                {value: 'month', name: Intl.get('operation.report.month.active', '月活')}],
+            activeButton: 'day',
             conditionName: 'param_interval',
         },
         conditions: [{
             name: 'param_interval',
-            value: 'daily',
-            type: 'params',
+            value: 'day',
+        }, {
+            name: 'customer_label',
+            value: '签约,续约',
         }],
         option: {
+            grid: {
+                left: 20
+            },
             tooltip: {
                 formatter: params => {
                     const data = params[0].data;
                     const cardTab = data.cardTab;
                     let name = data.name;
 
-                    if (cardTab === 'weekly') {
+                    if (cardTab === 'week') {
                         name = `${name} - ${moment().format(oplateConsts.DATE_FORMAT)}`;
-                    } else if (cardTab === 'monthly') {
+                    } else if (cardTab === 'month') {
                         name = moment(name).format(oplateConsts.DATE_YEAR_MONTH_FORMAT);
                     }
 
@@ -104,7 +85,7 @@ export function getActivityChart(type, title) {
         customOption: {
             yAxises: [
                 {
-                    name: Intl.get('operation.report.user.count', '用户数'),
+                    name: Intl.get('contract.169', '客户数'),
                 },
                 {
                     name: Intl.get('operation.report.active', '活跃率'),
@@ -137,9 +118,6 @@ export function getActivityChart(type, title) {
                     key: 'total',
                 },
             ],
-        },
-        noShowCondition: {
-            callback: ifNotSingleApp
         },
     };
 }

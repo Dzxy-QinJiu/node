@@ -606,3 +606,12 @@ export const TIME_CALCULATE_CONSTS = {
     'THIRTY': 30,
     'SIXTY': 60
 };
+
+// 变更记录类型
+export const CHANGE_RECORD_TYPE = {
+    grantCreate: 'GrantCreate', // 授权的创建
+    grantUpdate: 'GrantUpdate', // 授权的更新
+    userInfoUpdate: 'UserInfoUpdate', // 基本信息的变更
+    teamChange: 'teamChange', // 变更团队
+    teamRoleChange: 'teamRoleChange', // 变更职务
+};

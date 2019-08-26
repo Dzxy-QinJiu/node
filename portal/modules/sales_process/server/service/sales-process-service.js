@@ -17,6 +17,11 @@ const salesProcessRestApis = {
     editCustomerStage: commonUrl + '/stage/:sales_process_id', // 编辑客户阶段
     deleteCustomerStage: commonUrl + '/stage/:id', // 删除客户阶段
     changeCustomerStageOrder: commonUrl + '/stages', // 变更客户阶段顺序
+    getCustomerStageSaleBehavior: commonUrl + '/stage/activity', // 获取客户阶段的销售行为
+    addCustomerStageSaleBehavior: commonUrl + '/stage/:sales_process_id/:stage_id/sales_activities', // 添加客户阶段的销售行为
+    getCustomerStageAutoConditions: commonUrl + '/stage/autoconditions', // 获取客户阶段的自动变更条件
+    editCustomerStageAutoConditions: commonUrl + '/stage/:sales_process_id/:stage_id/auto_conditions', // 编辑客户阶段的自动变更条件（添加或是更新）
+    changeAutoConditionsStatus: commonUrl + '/stage/:sales_process_id/:stage_id/auto_condition/:status' // 启/停用自动化条件
 };
 
 exports.urls = salesProcessRestApis;
@@ -111,6 +116,66 @@ exports.changeCustomerStageOrder = (req, res) => {
     return restUtil.authRest.put(
         {
             url: salesProcessRestApis.changeCustomerStageOrder,
+            req: req,
+            res: res
+        }, req.body);
+};
+
+// 获取客户阶段的销售行为
+exports.getCustomerStageSaleBehavior = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: salesProcessRestApis.getCustomerStageSaleBehavior,
+            req: req,
+            res: res
+        }, null);
+};
+
+// 添加客户阶段
+exports.addCustomerStageSaleBehavior = (req, res) => {
+    let processId = _.get(req, 'params.processId');
+    let stageId = _.get(req, 'params.stageId');
+    return restUtil.authRest.post(
+        {
+            url: salesProcessRestApis.addCustomerStageSaleBehavior.
+                replace(':sales_process_id', processId).replace(':stage_id', stageId),
+            req: req,
+            res: res
+        }, req.body);
+};
+
+// 获取客户阶段的自动变更条件
+exports.getCustomerStageAutoConditions = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: salesProcessRestApis.getCustomerStageAutoConditions,
+            req: req,
+            res: res
+        }, null);
+};
+
+// 编辑客户阶段的自动变更条件（添加或是更新）
+exports.editCustomerStageAutoConditions = (req, res) => {
+    const processId = _.get(req, 'params.processId');
+    const stageId = _.get(req, 'params.stageId');
+    return restUtil.authRest.post(
+        {
+            url: salesProcessRestApis.editCustomerStageAutoConditions.
+                replace(':sales_process_id', processId).replace(':stage_id', stageId),
+            req: req,
+            res: res
+        }, req.body);
+};
+
+// 启/停用自动化条件
+exports.changeAutoConditionsStatus = (req, res) => {
+    const processId = _.get(req, 'params.processId');
+    const stageId = _.get(req, 'params.stageId');
+    const status = _.get(req, 'params.status');
+    return restUtil.authRest.put(
+        {
+            url: salesProcessRestApis.changeAutoConditionsStatus.
+                replace(':sales_process_id', processId).replace(':stage_id', stageId).replace(':status', status),
             req: req,
             res: res
         }, req.body);

@@ -1,31 +1,76 @@
 @import "../../../../public/css/common-variables";
-.customer-pool{
+
+@filter-width: 288px;
+.customer-pool {
   .topNav {
-    .return-btn-container {
+    .search-input-wrapper {
       float: left;
-      margin-top: 20px;
-      cursor: pointer;
+      margin-top: 15px;
+      margin-right: 20px;
+      .btn-item {
+        margin-right: 0 !important;
+      }
+      .search-wrapper .filter-contianer .show-zone ul.collapse {
+        padding: 2px 0;
+      }
     }
-    .customer-search-block{
+    .customer-search-block {
       float: left;
       width: 300px;
-      margin-top: 20px;
-      margin-left: 50px;
-    }
-    .extract-btn{
-      float: right;
       margin-top: 15px;
     }
+    .extract-btn {
+      float: right;
+      margin-top: 15px;
+      margin-right: 20px !important;
+    }
+    .icon-close {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      float: right;
+      margin-top: 15px;
+      margin-right: 15px;
+      line-height: 25px;
+      font-size: 14px;
+      color: #fff;
+      background-color: #b5c2ca;
+      z-index: 2;
+      &:hover {
+        background-color: #4d96d1;
+      }
+    }
+  }
+  .filter-container {
+    float: left;
+    border-right: 1px solid #ccc;
+    min-width: @filter-width;
+    height: 100%;
+    position: absolute;
+    transition: all 0.5s;
+    &.filter-close {
+      left: 0 - @filter-width - 22;
+    }
+  }
+  .customer-pool-table-wrap.filter-panel-show {
+    padding-left: @filter-width + 22px;
   }
 }
+
 .customer-table-container {
   margin-top: 64px;
   padding-left: 20px;
+  .customer-pool-filter {
+    padding-top: 10px;
+  }
   .ant-table tbody .current-row:hover,
   .ant-table tbody .current-row {
     background: #DFEAF3 !important;
   }
-  .customer-list-tags .ant-tag{
+  .customer-list-tags .ant-tag {
     float: left;
     border-radius: 4px;
     background: #d1d9db;
@@ -45,30 +90,5 @@
     line-height: 19px;
     font-size: 12px;
     color: @tag-font-color;
-    background-color: #999999;
-  }
-  .customer-label.info-tag-style {
-    background-color: @info-tag-color;
-  }
-  .customer-label.intent-tag-style {
-    background-color: @intent-tag-color;
-  }
-  .customer-label.trial-tag-style {
-    background-color: @trial-tag-color;
-  }
-  .customer-label.sign-tag-style {
-    background-color: @sign-tag-color;
-  }
-  .customer-label.qualified-tag-style {
-    background-color: @qualified-tag-color;
-  }
-  .customer-label.history-qualified-tag-style {
-    background-color: @history-qualified-tag-color;
-  }
-  .customer-label.re-contract-tag-style{
-    background-color: @re-contract-color;
-  }
-  .customer-label.loss-tag-style {
-    background-color: @loss-tag-color;
   }
 }

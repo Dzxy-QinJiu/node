@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2019/7/24.
  */
 import {Form, Input, Button, Icon, message, DatePicker, Select} from 'antd';
+const { RangePicker } = DatePicker;
 var Option = Select.Option;
 const FormItem = Form.Item;
 import {AntcAreaSelection} from 'antc';
@@ -11,16 +12,19 @@ import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import AlertTimer from 'CMP_DIR/alert-timer';
 require('../../css/recommend-customer-condition.less');
 import {companyProperty, moneySize,staffSize} from '../../utils/clue-customer-utils';
-import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 class RecommendCustomerCondition extends React.Component {
     constructor(props) {
         super(props);
+        var hasSavedRecommendParams = _.cloneDeep(this.props.hasSavedRecommendParams);
         this.state = {
             recommendIndustry: [],
             recommendMoneySize: moneySize,
             recommendStaffSize: staffSize,
             recommendProperty: companyProperty,
-            hasSavedRecommendParams: _.cloneDeep(this.props.hasSavedRecommendParams)
+            registerStartTime: hasSavedRecommendParams.startTime || '',
+            registerEndTime: hasSavedRecommendParams.endTime || '',
+            hasSavedRecommendParams: hasSavedRecommendParams
         };
     }
 
@@ -67,9 +71,7 @@ class RecommendCustomerCondition extends React.Component {
         hasSavedRecommendParams.province = addressObj.provName || '';
         hasSavedRecommendParams.city = addressObj.cityName || '';
         hasSavedRecommendParams.district = addressObj.countyName || '';
-        this.setState({
-            hasSavedRecommendParams: hasSavedRecommendParams
-        });
+        //这里不要setState，否则选中了省份后的各省市面板会收起
     };
     //去掉保存后提示信息
     hideSaveTooltip = () => {
@@ -84,19 +86,52 @@ class RecommendCustomerCondition extends React.Component {
             var hasSavedRecommendParams = this.state.hasSavedRecommendParams;
             if (!_.isEmpty(values.industrys)){
                 hasSavedRecommendParams.industrys = values.industrys;
+            }else{
+                delete hasSavedRecommendParams.industrys;
             }
             if (!_.isEmpty(values.entTypes)){
                 hasSavedRecommendParams.entTypes = values.entTypes;
+            }else{
+                delete hasSavedRecommendParams.entTypes;
             }
             if (_.get(values, 'staff_size') && _.isString(_.get(values, 'staff_size'))){
                 var staffObj = JSON.parse(_.get(values, 'staff_size'));
-                hasSavedRecommendParams.staffnumMin = _.get(staffObj,'staffnumMin');
-                hasSavedRecommendParams.staffnumMax = _.get(staffObj,'staffnumMax');
+                if (_.get(staffObj,'staffnumMin')){
+                    hasSavedRecommendParams.staffnumMin = _.get(staffObj,'staffnumMin');
+                }else{
+                    delete hasSavedRecommendParams.staffnumMin;
+                }
+                if (_.get(staffObj,'staffnumMax')){
+                    hasSavedRecommendParams.staffnumMax = _.get(staffObj,'staffnumMax');
+                }else{
+                    delete hasSavedRecommendParams.staffnumMax;
+                }
             }
-            if (_.get(values, 'money_size') && _.isString(_.get(values, 'money_size'))){
+            if (_.get(values, 'money_size','') && _.isString(_.get(values, 'money_size'))){
                 var moneyObj = JSON.parse(_.get(values, 'money_size'));
-                hasSavedRecommendParams.capitalMin = _.get(moneyObj,'capitalMin');
-                hasSavedRecommendParams.capitalMax = _.get(moneyObj,'capitalMax');
+                if (_.get(moneyObj,'capitalMin')){
+                    hasSavedRecommendParams.capitalMin = _.get(moneyObj,'capitalMin');
+                }else{
+                    delete hasSavedRecommendParams.capitalMin;
+                }
+                if (_.get(moneyObj,'capitalMax')){
+                    hasSavedRecommendParams.capitalMax = _.get(moneyObj,'capitalMax');
+                }else{
+                    delete hasSavedRecommendParams.capitalMax;
+                }
+            }
+            const {registerStartTime, registerEndTime} = this.state;
+            if (registerStartTime && registerEndTime){
+                hasSavedRecommendParams.startTime = registerStartTime;
+                hasSavedRecommendParams.endTime = registerEndTime;
+            }else{
+                delete hasSavedRecommendParams.startTime;
+                delete hasSavedRecommendParams.endTime;
+            }
+            for (var key in hasSavedRecommendParams){
+                if (!hasSavedRecommendParams[key]){
+                    delete hasSavedRecommendParams[key];
+                }
             }
             if (err) return;
             this.setState({
@@ -131,6 +166,22 @@ class RecommendCustomerCondition extends React.Component {
             });
         });
     };
+    onDateChange = (dates, dateStrings) => {
+        if (_.get(dateStrings,'[0]') && _.get(dateStrings,'[1]')){
+            //开始时间要取那天早上的00:00:00
+            //结束时间要取那天晚上的23:59:59
+            this.setState({
+                registerStartTime: moment(_.get(dateStrings,'[0]')).startOf('day').valueOf(),
+                registerEndTime: moment(_.get(dateStrings,'[1]')).endOf('day').valueOf(),
+            });
+        }else{
+            this.setState({
+                registerStartTime: '',
+                registerEndTime: '',
+            });
+        }
+    }
+
     //保存结果的处理
     setResultData(saveMsg, saveResult) {
         this.setState({
@@ -140,6 +191,7 @@ class RecommendCustomerCondition extends React.Component {
         });
     }
     render() {
+        const { registerStartTime, registerEndTime} = this.state;
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
             labelCol: {
@@ -167,6 +219,10 @@ class RecommendCustomerCondition extends React.Component {
         if(hasSavedRecommendParams.capitalMin || hasSavedRecommendParams.capitalMax){
             capitalTarget = _.find(recommendMoneySize, item => item.capitalMin === hasSavedRecommendParams.capitalMin && item.capitalMax === hasSavedRecommendParams.capitalMax );
         }
+        var defaultValue = [];
+        if (registerStartTime && registerEndTime){
+            defaultValue = [moment(registerStartTime), moment(registerEndTime)];
+        }
 
         return (
             <div className="recommend-customer-condition" data-tracename="设置推荐线索条件面板">
@@ -174,6 +230,15 @@ class RecommendCustomerCondition extends React.Component {
                     className="recommend-top-title">{Intl.get('clue.customer.select.focus.customer', '请选择您关注的客户类型')}</div>
                 <div className="add-customer-recommend">
                     <Form layout='horizontal' className="customer-recommend-form" id="customer-recommend-form">
+                        <div className="ant-row ant-form-item">
+                            <div className="ant-form-item-label ant-col-xs-24 ant-col-sm-4">
+                                <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
+                            <div className="ant-form-item-control-wrapper ant-col-xs-24 ant-col-sm-20">
+                                <div className="ant-form-item-control has-success">
+                                    <RangePicker defaultValue={defaultValue} onChange={this.onDateChange}/>
+                                </div>
+                            </div>
+                        </div>
                         <FormItem
                             label={Intl.get('menu.industry', '行业')}
                             id="industrys"
@@ -272,22 +337,11 @@ class RecommendCustomerCondition extends React.Component {
                                 )}
                         </FormItem>
                         <div className="submit-button-container">
-                            <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
-                                disabled={this.state.isSaving} data-tracename="点击保存推荐线索条件">
-                                {Intl.get('common.save', '保存')}
-                                {this.state.isSaving ? <Icon type="loading"/> : null}
-                            </Button>
-                            <div className="indicator">
-                                {saveResult ?
-                                    (
-                                        <AlertTimer
-                                            time={saveResult === 'error' ? DELAY_TIME_RANGE.ERROR_RANGE : DELAY_TIME_RANGE.SUCCESS_RANGE}
-                                            message={this.state.saveMsg}
-                                            type={saveResult} showIcon
-                                            onHide={this.hideSaveTooltip}/>
-                                    ) : ''
-                                }
-                            </div>
+                            <SaveCancelButton loading={this.state.isSaving}
+                                saveErrorMsg={this.state.saveMsg}
+                                handleSubmit={this.handleSubmit}
+                                handleCancel={this.props.hideFocusCustomerPanel}
+                            />
                         </div>
                     </Form>
                 </div>
@@ -301,12 +355,16 @@ RecommendCustomerCondition.defaultProps = {
     form: {},
     saveRecommedConditionsSuccess: function() {
 
+    },
+    hideFocusCustomerPanel: function() {
+
     }
 };
 RecommendCustomerCondition.propTypes = {
     hasSavedRecommendParams: PropTypes.object,
     form: PropTypes.object,
-    saveRecommedConditionsSuccess: PropTypes.func
+    saveRecommedConditionsSuccess: PropTypes.func,
+    hideFocusCustomerPanel: PropTypes.func,
 };
 export default Form.create()(RecommendCustomerCondition);
 

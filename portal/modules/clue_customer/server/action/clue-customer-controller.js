@@ -393,9 +393,12 @@ exports.getRecommendClueLists = function(req, res) {
                 lists.push({id: item.id,
                     name: item.name,
                     legalPerson: item.legalPerson,
-                    telephones: item.telephones
+                    telephones: item.telephones,
+                    startTime: item.startTime || ''
                 });
             });
+            //按注册时间进行排序
+            lists = _.sortBy(lists, item => -item.startTime);
             res.status(200).json(lists);
         }).on('error', function(err) {
             res.status(500).json(err && err.message);

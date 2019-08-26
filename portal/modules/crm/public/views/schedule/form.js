@@ -1,5 +1,3 @@
-import * as LANGLOBAL from 'MOD_DIR/position_manage/public/consts';
-
 var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');

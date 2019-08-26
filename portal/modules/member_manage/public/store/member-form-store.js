@@ -24,9 +24,11 @@ class MemberFormStore {
     //获取团队列表
     getUserTeamList(teamList) {
         this.isLoadingTeamList = false;
-        this.userTeamList = _.isArray(teamList) ? teamList : [];
+        if (_.isArray(teamList) && teamList.length) {
+            teamList.unshift({group_id: '', group_name: ''});
+        }
+        this.userTeamList = teamList || [];
     }
-
     //设置是否正在获取团队列表
     setTeamListLoading(flag) {
         this.isLoadingTeamList = flag;

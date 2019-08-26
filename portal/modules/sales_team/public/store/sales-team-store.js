@@ -840,8 +840,8 @@ function hasEditMember(memberList, editUserId) {
 }
 //修改用户详情后，更改列表中的数据
 SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
-    let teamMemberObj = this.curShowTeamMemberObj;
-    let groupId = _.get(teamMemberObj, 'groupId');
+    let teamMemberObj = this.curShowTeamMemberObj; // 当前团队的成员
+    let groupId = _.get(teamMemberObj, 'groupId'); // 当前团队的groupId
 
     let owner = _.get(teamMemberObj, 'owner'); // 负责人
     let ownerId = _.get(owner, 'userId'); // 负责人id
@@ -906,11 +906,11 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
                 }
             }
         }
-    } else if (team) { // 修改成员部门
+    } else if (_.has(member, 'team')) { // 修改成员部门
         if (team !== groupId) {
             // 更新原部门成员个数
             let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === groupId);
-            let oldTeam = _.find(this.salesTeamList, item => item.group_id === team);
+            let oldTeam = _.find(this.salesTeamList, item => item.group_id === groupId);
 
             if (ownerId === memberId) { // 修改负责人所在的部门
                 updateMemberCountTeam.total -= 1;
@@ -926,19 +926,19 @@ SalesTeamStore.prototype.updateCurShowTeamMemberObj = function(member) {
                 oldTeam.user_ids = _.filter(oldTeam.user_ids, id => id !== memberId);
             }
         }
-
-        //将修改后的成员加入新部门中
-        // 更新新部门成员个数
-        let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === team);
-        let addInTeam = _.find(this.salesTeamList, item => item.group_id === team);
-        if (_.get(addInTeam, 'user_ids.length')) {
-            addInTeam.user_ids.push(memberId);
-            updateMemberCountTeam.total += 1;
-        } else if (addInTeam) {
-            updateMemberCountTeam.total += 1;
-            addInTeam.user_ids = [memberId];
+        if (team) {
+            //将修改后的成员加入新部门中
+            // 更新新部门成员个数
+            let updateMemberCountTeam = _.find(this.teamMemberCountList, item => item.team_id === team);
+            let addInTeam = _.find(this.salesTeamList, item => item.group_id === team);
+            if (_.get(addInTeam, 'user_ids.length')) {
+                addInTeam.user_ids.push(memberId);
+                updateMemberCountTeam.total += 1;
+            } else if (addInTeam) {
+                updateMemberCountTeam.total += 1;
+                addInTeam.user_ids = [memberId];
+            }
         }
-
     } else if (_.has(member, 'position')) { // 修改成员的职务
         if (ownerId === memberId) { // 修改负责人的职务
             owner.positionName = positionName;

@@ -94,6 +94,8 @@ var crmRestApis = {
     getPoolCustomer: '/customerpool/resource/customers',
     //提取客户
     extractCustomer: '/customerpool/resource/customers/pull',
+    //获取客户池中聚合的筛选项
+    getCustomerPoolFilterItems: '/customerpool/resource/customers/field/aggregation'
 };
 exports.urls = crmRestApis;
 
@@ -589,4 +591,13 @@ exports.extractCustomer = function(req, res) {
             req: req,
             res: res,
         }, req.body);
+};
+//获取客户池中聚合的筛选项
+exports.getCustomerPoolFilterItems = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getCustomerPoolFilterItems,
+            req: req,
+            res: res,
+        }, req.query);
 };

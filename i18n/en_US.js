@@ -70,6 +70,7 @@ var en_US = {
     'common.password.unequal': 'Passwords do not match',//两次输入密码不一致！
     'common.correct.email': 'Please enter the correct email account',//请输入正确的邮箱Please input the correct email
     'common.correct.qq': 'Please enter the correct QQ account',//请输入正确的QQ号
+    'common.correct.wechat': 'please enter the correct WeChat account',//请输入正确的微信号
     'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
     'common.password.validate.rule': 'Please enter the password with 6-18 digits, letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
@@ -260,6 +261,7 @@ var en_US = {
     'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
     'common.import.template': 'Template',//模板
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'common.create': 'Create', // 创建
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -748,6 +750,7 @@ var en_US = {
     'member.get.role.lists': 'Getting role lists',//正在获取角色列表
     'member.is.building': 'Setting up',//创建中
     'member.create.time': 'Creating Time',//创建时间
+    'member.disable.time': 'Disable Time', // 停用时间
     'member.forbidden.self': 'Can\'t disable yourself', // 禁止禁用自己
     'member.email.extra.tip': 'The mailbox will be used as the user name for login',//邮箱会作为登录时的用户名使用
     'member.save.logo.tip': 'Do you want to save the uploaded head ?',//是否保存上传的头像？
@@ -784,6 +787,11 @@ var en_US = {
     'member.position.set.default': 'Setting default', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
     'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 50 (including 50).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
+    'member.record.member.operate': 'The member was {operate}', // {operate}了该成员。
+    'member.record.change.field': 'Changed {field} for the member', // 修改了该成员的{field}。
+    'member.record.change.field.name': 'Changed {field} of the member to {name}', // 修改了该成员的{field}，改为{name}
+    'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
+    'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
     //后台管理-成员end
 
     //组织管理start
@@ -854,7 +862,16 @@ var en_US = {
     'sales.process.customer.stage.no.play': 'No scenarios', // 暂无剧本
     'sales.process.customer.stage.add.play': 'Add Scenarios', // 添加剧本
     'sales.process.customer.stage.activity': 'sales behaviors', // 销售行为
+    'sales.process.select.task.placeholder': 'Please select sale task', // 请选择任务
+    'sales.process.select.action.placeholder': 'Please select sale action', // 请选择动作
+    'sales.process.add.activity.failed': 'Failed to add the sales behaviors', // 添加销售行为失败
     'sales.process.customer.stage.detail.title': 'Set up scenarios, sales behaviors, and automatic change conditions for the information phase.', // 设置信息阶段的剧本、销售行为、自动变更条件。
+    'sales.process.customer.stage.auto.conditions': 'Automatically changes', // 自动变更
+    'sales.process.customer.stage.auto.conditions.title': 'The customer automatically changes to the phase when the following conditions', // 当符合以下条件时，客户自动变更为该阶段
+    'sales.process.auto.conditions.label': 'Selection condition', // 选择条件
+    'sales.process.auto.conditions.placeholder': 'Please select the conditions of the automatically change', // 请选择自动变更的条件
+    'sales.process.auto.conditions.no.conditions': 'Unconditional', // 暂无条件
+    'sales.process.status.auto.conditions.tip': 'Are you sure you want to {status} the automatically changes of the customer stage?', // 确定要{status}该客户阶段的自动变更条件吗？
     // 后台管理-销售流程end
 
     //应用管理start
@@ -1630,6 +1647,13 @@ var en_US = {
     'crm.customer.label.edit.tip': 'Click to edit customer stage',//点击修改客户阶段
     'crm.filter.team.customer': 'Team customers',//团队客户
     'crm.trace.statistic.unit': '{count} times',//{count}次
+    'crm.contract.add.buyer': 'Add buyer',//添加甲方
+    'crm.contract.add.gross': 'Add gross profit',//添加毛利
+    'crm.contract.add.money': 'Add contract amount',//添加合同额
+    'crm.contract.add.remarks': 'Add remarks',//添加备注
+    'crm.contract.add.category': 'Add contract type',//添加合同类型
+    'crm.contract.add.label': 'Add signing type',//添加签约类型
+    'crm.contract.no.label': 'No signing type',//暂无签约类型
     // 客户管理end
 
     //客户分析 start
@@ -2272,6 +2296,7 @@ var en_US = {
     'errorcode.158': 'Failed to update customer stage', // 更新客户阶段失败
     'errorcode.159': 'Failed to delete sale process', // 删除销售流程失败
     'errorcode.160': 'Failed to delete customer stage', // 删除客户阶段失败
+    'errorcode.161': 'Failed to upload files',//文件上传失败
     'errorcode.different.realm': 'Different realms',//安全域不一致
     'errorcode.invalid.wechat': 'Invalid Wechat Account',//无效的微信账号
     'errorcode.get.call.statistics.failed': 'Get call statistics failed', //获取通话记录统计失败
@@ -2403,8 +2428,7 @@ var en_US = {
     'call.record.input.feedback.content': 'Please fill in feedback content',//请输入反馈内容
     'call.record.input.feedback.topic': 'Please fill in feedback topic',//请输入反馈主题
     'call.record.failed.add.app.feedback': 'Failed to add feedback content',//添加产品反馈内容失败
-    'sales.lead.customer': 'Clue customers',//线索客户
-    'failed.to.get.clue.customer.list': 'Failed to get clue customers',//获取线索客户列表失败
+    'failed.to.get.clue.customer.list': 'Failed to get clue',//获取线索列表失败
     'sales.frontpage.active.info': 'Please activate your mailbox, so as not to affect the receipt of approval emails!',//请激活邮箱，以免影响收取审批邮件！
     'sales.frontpage.active.email': 'Activate mailbox',//激活邮箱
     'crm.customer.user': 'users of {customer}',//{customer}客户的用户
@@ -3124,6 +3148,8 @@ var en_US = {
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
     'clue.customer.has.transfer': 'Has transfer',//已转化
     'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效
+    'clue.invalid.reason.not.empty': 'Invalid reason cannot be empty', //无效原因不能为空
+    'clue.describe.invalid.reason': 'Please input a invalid reason',//请描述一下无效原因
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
     'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
@@ -3245,13 +3271,15 @@ var en_US = {
     'guide.see.clue': 'Check the clues',//查看线索
     'guide.close.tips': 'This prompt will no longer appear when you turn it off. Do you want to turn it off?',//关闭后此提示将不再出现，是否要关闭？
     'guide.import.customer.success': 'Import Success',//导入成功
-    'common.clue.will.disappear.after.convert.to.customer': 'Clue will disappear after convert to customer',//转为客户后，线索相关内容都将转入客户，线索将消失。
+    'common.after.convert.to.customer.tip': 'Clue content will shift to customer after convert to customer',//转为客户后，线索相关内容都将转入客户。
     'crm.clue.phone.on.meeting': 'In a meeting, it is not convenient to answer',//在开会，不方便接听
     'common.report.num': 'report numer',//报送数量
     'common.signed.customer.public.opinion.report.statistics': 'Signed customer public opinion report statistics',//签约客户舆情报送统计,
     'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
     'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
-    'import.excel.no.data': 'I have no clues? Try to give you a set of {recommend}',//自己没有线索？试下让客套给您{recommend}
-    'import.recommend.clue.lists': 'Recommended clue',//推荐线索
+    'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
+    'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
+    'common.number.of.new.user.customer': 'number of new user customer',//新开用户客户数
+    'clue.customer.register.time': 'Register time'//注册时间
 };
 export default en_US;

@@ -483,3 +483,12 @@ exports.extractCustomer = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+//获取客户池中聚合的筛选项
+exports.getCustomerPoolFilterItems = function(req, res) {
+    crmService.getCustomerPoolFilterItems(req, res).on('success', function(data) {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

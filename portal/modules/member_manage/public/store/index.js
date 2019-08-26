@@ -13,7 +13,8 @@ let emptyMember = {
     phone: '',
     email: '',
     role: [],
-    phoneOrder: ''
+    phoneOrder: '',
+    qq: ''
 };
 
 class MemberManageStore {
@@ -98,8 +99,10 @@ class MemberManageStore {
                 curMember.teamName = _.get(result, 'teamName');
                 curMember.teamId = _.get(result, 'teamId');
                 curMember.phoneOrder = _.get(result, 'phoneOrder');
-                //获取成员详情中没有创建时间，所以用列表中获取的创建时间
-                result.createDate = _.get(curMember, 'createDate');
+                curMember.createDate = _.get(result, 'createDate'); // 创建时间
+                curMember.disableDate = _.get(result, 'disableDate'); // 停用时间
+                curMember.qq = _.get(result, 'qq'); // qq
+                curMember.email = _.get(result, 'email'); // email
             }
             this.currentMember = result;
         }
@@ -184,7 +187,7 @@ class MemberManageStore {
                 let email = _.get(modifiedMember, 'email'); // 邮箱
                 let teamName = _.get(modifiedMember, 'teamName'); // 部门
                 let positionName = _.get(modifiedMember, 'positionName'); // 职务
-
+                let qq = _.get(modifiedMember, 'qq'); // qq
                 if (status) { // 修改成员状态
                     changeMember.status = status;
                 } else if (nick_name) { // 修改成员昵称
@@ -206,12 +209,14 @@ class MemberManageStore {
                 } else if (email) { // 修改成员邮箱
                     changeMember.email = email;
                     changeMember.emailEnable = false; // 修改邮箱后，邮箱的激活状态改为未激活
-                } else if (teamName) { // 修改成员部门
+                } else if ( _.has(modifiedMember, 'teamName')) { // 修改成员部门
                     changeMember.teamName = teamName;
                     changeMember.teamId = _.get(modifiedMember, 'team');
                 } else if (_.has(modifiedMember, 'positionName')) { // 修改成员职务
                     changeMember.positionName = positionName;
                     changeMember.positionId = _.get(modifiedMember, 'position');
+                } else if (_.has(modifiedMember, 'qq')) {
+                    changeMember.qq = qq;
                 }
                 this.currentMember = changeMember;
             } else { // 团队中修改成员的头像信息
@@ -246,6 +251,9 @@ class MemberManageStore {
     updateCurrentMemberStatus(status) {
         if(this.currentMember){
             this.currentMember.status = status;
+            if (status === 0) {
+                this.currentMember.disableDate = new Date().getTime();
+            }
         }
     }
     // 处理搜索框的内容

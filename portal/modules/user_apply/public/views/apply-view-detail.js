@@ -48,6 +48,7 @@ import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDe
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import CustomerLabel from 'CMP_DIR/customer_label';
 //表单默认配置
 var appConfig = {
     //默认没id，用id区分增加和修改类型，有id是修改，没id是增加
@@ -598,11 +599,7 @@ const ApplyViewDetail = createReactClass({
                                 title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
                             >
                                 {detailInfo.customer_name}
-                                {detailInfo.customer_label ? (
-                                    <Tag
-                                        className={crmUtil.getCrmLabelCls(detailInfo.customer_label)}>
-                                        {detailInfo.customer_label}</Tag>) : null
-                                }
+                                <CustomerLabel label={detailInfo.customer_label} />
                                 {tags.length ?
                                     <span className="customer-list-tags">
                                         {tags}

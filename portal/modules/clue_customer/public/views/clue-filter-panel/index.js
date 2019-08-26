@@ -81,6 +81,7 @@ class ClueFilterPanel extends React.Component {
             FilterAction.setExistedFiled();
             FilterAction.setUnexistedFiled();
             FilterAction.setFilterClueAllotNoTrace();
+            FilterAction.setSimilarFiled();
         }
         data.forEach(item => {
             if (item.groupId) {

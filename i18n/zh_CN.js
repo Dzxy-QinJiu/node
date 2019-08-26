@@ -72,6 +72,7 @@ var zh_CN = {
     'common.password.unequal': '两次输入密码不一致！',
     'common.correct.email': '请输入正确的邮箱',
     'common.correct.qq': '请输入正确的QQ号',
+    'common.correct.wechat': '请输入正确的微信号',
     'common.password.length': '密码长度应大于6位小于18位',
     'common.password.compose.rule': '6-18位数字、字母、符号的组合',
     'common.password.validate.rule': '请输入6-18位数字、字母、符号组成的密码',
@@ -267,6 +268,7 @@ var zh_CN = {
     'common.download.template.filename': '下载{type}模板',
     'common.import.template': '模板',
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
+    'common.create': '创建',
 
     //公共部分--end
     'login.login': '登录',
@@ -753,6 +755,7 @@ var zh_CN = {
     'member.get.role.lists': '正在获取角色列表',
     'member.is.building': '创建中',
     'member.create.time': '创建时间',
+    'member.disable.time': '停用时间',
     'member.forbidden.self': '禁止禁用自己',
     'member.email.extra.tip': '邮箱会作为登录时的用户名使用',
     'member.save.logo.tip': '是否保存上传的头像？',
@@ -789,6 +792,11 @@ var zh_CN = {
     'member.position.set.default': '设为默认',
     'member.continue.add.member': '继续添加成员',
     'member.add.member.rule': '用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间',
+    'member.record.member.operate': '{operate}了该成员。',
+    'member.record.change.field': '修改了该成员的{field}。',
+    'member.record.change.field.name': '修改了该成员的{field}，改为{name}',
+    'member.record.get.record.failed': '获取成员变更失败',
+    'member.record.no.record': '暂无变更记录',
     //后台管理-成员end
 
     //组织管理start
@@ -859,7 +867,16 @@ var zh_CN = {
     'sales.process.customer.stage.no.play': '暂无剧本',
     'sales.process.customer.stage.add.play': '添加剧本',
     'sales.process.customer.stage.activity': '销售行为',
-    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本。', // 、销售行为、自动变更条件。
+    'sales.process.select.task.placeholder': '请选择任务',
+    'sales.process.select.action.placeholder': '请选择动作',
+    'sales.process.add.activity.failed': '添加销售行为失败',
+    'sales.process.customer.stage.detail.title': '设置信息阶段的剧本、销售行为、自动变更条件',
+    'sales.process.customer.stage.auto.conditions': '自动变更',
+    'sales.process.customer.stage.auto.conditions.title': '当符合以下条件时，客户自动变更为该阶段',
+    'sales.process.auto.conditions.label': '选择条件',
+    'sales.process.auto.conditions.placeholder': '请选择自动变更的条件',
+    'sales.process.auto.conditions.no.conditions': '暂无条件',
+    'sales.process.status.auto.conditions.tip': '确定要{status}该客户阶段的自动变更条件吗？',
     // 后台管理-销售流程end
 
     //应用管理start
@@ -1652,6 +1669,13 @@ var zh_CN = {
     'crm.customer.label.edit.tip': '点击修改客户阶段',
     'crm.filter.team.customer': '团队客户',
     'crm.trace.statistic.unit': '{count}次',
+    'crm.contract.add.buyer': '添加甲方',
+    'crm.contract.add.gross': '添加毛利',
+    'crm.contract.add.money': '添加合同额',
+    'crm.contract.add.remarks': '添加备注',
+    'crm.contract.add.category': '添加合同类型',
+    'crm.contract.add.label': '添加签约类型',
+    'crm.contract.no.label': '暂无签约类型',
     // 客户管理end
 
     // 客户分析start
@@ -2310,6 +2334,7 @@ var zh_CN = {
     'errorcode.158': '更新客户阶段失败',
     'errorcode.159': '删除销售流程失败',
     'errorcode.160': '删除客户阶段失败',
+    'errorcode.161': '文件上传失败',
     'errorcode.different.realm': '安全域不一致',
     'errorcode.invalid.wechat': '无效的微信账号',
     'errorcode.get.call.statistics.failed': '获取通话记录统计失败',
@@ -2450,8 +2475,7 @@ var zh_CN = {
     'call.record.input.feedback.content': '请输入反馈内容',
     'call.record.input.feedback.topic': '请输入反馈主题',
     'call.record.failed.add.app.feedback': '添加产品反馈内容失败',
-    'sales.lead.customer': '线索客户',
-    'failed.to.get.clue.customer.list': '获取线索客户列表失败',
+    'failed.to.get.clue.customer.list': '获取线索列表失败',
     'sales.frontpage.active.info': '请激活邮箱，以免影响收取审批邮件！',
     'sales.frontpage.active.email': '激活邮箱',
     'crm.customer.user': '{customer}客户的用户',
@@ -3232,6 +3256,8 @@ var zh_CN = {
     'crm.104': '变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人',
     'clue.customer.has.transfer': '已转化',
     'clue.confirm.clue.invalid': '确认无效',
+    'clue.invalid.reason.not.empty': '无效原因不能为空',
+    'clue.describe.invalid.reason': '请描述一下无效原因',
     'contract.amount.check.tip': '产品总额不能大于合同总额{amount}元，请核对',
     'contract.profit.check.tip': '产品毛利不能大于合同总额{amount}元，请核对',
     'customer.has.similar.lists': '相似客户',
@@ -3353,14 +3379,17 @@ var zh_CN = {
     'guide.see.clue': '查看线索',
     'guide.close.tips': '关闭后此提示将不再出现，是否要关闭？',
     'guide.import.customer.success': '导入成功',
-    'common.clue.will.disappear.after.convert.to.customer': '转为客户后，线索相关内容都将转入客户，线索将消失。',
+    'common.after.convert.to.customer.tip': '转为客户后，线索相关内容都将转入客户。',
     'common.report.num': '报送数量',
     'common.signed.customer.public.opinion.report.statistics': '签约客户舆情报送统计',
     'crm.clue.phone.on.meeting': '在开会，不方便接听',
     'crm.clue.next.contact.time': '下次联系时间',
     'no.data.add.import.tip': '向客套中添加{type}',
     'import.excel.data.ketao': '将excel中的{type}导入到客套中',
-    'import.excel.no.data': '自己没有线索？试下让客套给您{recommend}',
+    'import.excel.no.data': '试下客套给您{recommend}的功能',
     'import.recommend.clue.lists': '推荐线索',
+    'common.signed.customer.activity': '签约客户活跃度',
+    'common.number.of.new.user.customer': '新开用户客户数',
+    'clue.customer.register.time': '注册时间',
 };
 export default zh_CN;
