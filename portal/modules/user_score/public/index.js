@@ -459,7 +459,7 @@ class userScore extends React.Component {
     };
     noOperationIntroBtn = () => {
         return <div className="btn-containers">
-            <Button type='primary'>{Intl.get('user.score.start.config', '开始配置')}</Button>
+            <Button type='primary' onClick={this.handleShowAppPanel}>{Intl.get('user.score.start.config', '开始配置')}</Button>
         </div>;
     }
     renderParticateScoreRules = () => {
