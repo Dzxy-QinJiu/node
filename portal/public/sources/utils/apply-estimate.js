@@ -7,26 +7,29 @@ function getAllApplyStates() {
     return new Promise((resolve, reject) => {
         applyStates.splice(0,applyStates.length);
         getUserInfo().then(userInfo => {
-            let hasPrivilege = {};
             let privilegedType = [CC_INFO.APPROVE, CC_INFO.APPLY_AND_APPROVE];
             //对每个type进行筛选，将返回参数push进applySates数组中
+            userInfo.email = '';
             _.each(userInfo.ccInfoList, ccInfo => {
                 //检查是否有抄送权限
                 let hasEmailPrivilege = _.indexOf(privilegedType, ccInfo.ccInfo) !== -1;
+                //如果有抄送权限，检查是否激活邮箱或者已经绑定邮箱
                 if(hasEmailPrivilege) {
-                    if(!_.get(userInfo, 'email')) {
+                    let hasPrivilege = {};
+                    if(_.isEmpty(_.get(userInfo, 'email'))) {
                         hasPrivilege.needBind = true;
-                    } else if(!_.get(userInfo, 'emailEnable')) {
+                    } else if(_.isEmpty(_.get(userInfo, 'emailEnable'))) {
                         hasPrivilege.needActive = true;
                     }
-                    let applyMessage = getApplyMessage(hasPrivilege);
-                    if(_.isEmpty(applyMessage)) {
+                    //如果都拥有
+                    if(_.isEmpty(hasPrivilege)) {
                         applyStates.push({
                             isApplyButtonShow: true,
                             applyPrivileged: true,
                             ...ccInfo
                         });
-                    } else {
+                    } else {//如果未绑定或未激活
+                        let applyMessage = getApplyMessage(hasPrivilege);
                         applyStates.push({
                             isApplyButtonShow: true,
                             applyPrivileged: false,
@@ -34,7 +37,7 @@ function getAllApplyStates() {
                             ...ccInfo
                         });
                     }
-                } else {
+                } else { //如果没有权限
                     applyStates.push({
                         isApplyButtonShow: false,
                         ...ccInfo
@@ -102,42 +105,32 @@ function getCCInfo() {
 
 //获取返回的错误信息jsx
 function getApplyMessage(hasPrivilege) {
-    let applyMessage = null;
-    let messageTip = {
-        defaultMessageId: '',
-        defaultMessage: '',
-        linkMessage: ''
-    };
-    if(_.get(hasPrivilege, 'needActive')) {
+    let messageTip = {};
+    let userInfoUrl = '/user_info_manage/user_info';
+    if (_.get(hasPrivilege, 'needActive')) {
         messageTip.defaultMessageId = 'apply.error.active';
         messageTip.defaultMessage = Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}');
-        messageTip.linkMessage = '';
-        applyMessage = (<span className="apply-error-tip">
-            <span className="iconfont icon-warn-icon"></span>
-            <span className="apply-error-text">
-                <ReactIntl.FormattedMessage
-                    id="apply.error.active"
-                    defaultMessage={'您还没有激活邮箱，请先{activeEmail}'}
-                    values={{
-                        'activeEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.active.email.tips" defaultMessage="激活邮箱"/></Link>
-                    }}/>
-            </span>
-        </span>);
-    } else if(_.get(hasPrivilege, 'needBind')) {
-        applyMessage = (<span className="apply-error-tip">
-            <span className="iconfont icon-warn-icon"></span>
-            <span className="apply-error-text">
-                <ReactIntl.FormattedMessage
-                    className="apply-error-text"
-                    id="apply.error.bind"
-                    defaultMessage={'您还没有绑定邮箱，请先{bindEmail}'}
-                    values={{
-                        'bindEmail': <Link to="/user_info_manage/user_info"><ReactIntl.FormattedMessage id="apply.bind.email.tips" defaultMessage="绑定邮箱"/></Link>
-                    }}/>
-            </span>
-        </span>);
+        messageTip.values = {
+            'activeEmail': <Link to={userInfoUrl}>{Intl.get('apply.active.email.tips', '激活邮箱')}</Link>
+        };
+    } else if (_.get(hasPrivilege, 'needBind')) {
+        messageTip.defaultMessageId = 'apply.error.bind';
+        messageTip.defaultMessage = Intl.get('apply.error.bind', '您还没有绑定邮箱，请先{bindEmail}');
+        messageTip.values = {
+            'bindEmail': <Link to={userInfoUrl}>{Intl.get('apply.bind.email.tips', '绑定邮箱')}</Link>
+        };
     }
-    return applyMessage;
+    return (
+        <span className="apply-error-tip">
+            <span className="iconfont icon-warn-icon"></span>
+            <span className="apply-error-text">
+                <ReactIntl.FormattedMessage
+                    id={messageTip.defaultMessageId}
+                    className="apply-error-text"
+                    defaultMessage={messageTip.defaultMessage}
+                    values={messageTip.values}/>
+            </span>
+        </span>);
 }
 
 
