@@ -1648,6 +1648,10 @@ var zh_CN = {
     'crm.customer.extract.time': '释放时间',
     'crm.customer.release.customer': '释放客户',
     'crm.customer.extract.limit.tip': '一次最多提取20个客户',
+    'crm.pool.single.extract.tip': '您确定要提取此客吗？',
+    'crm.pool.batch.extract.tip': '您确定要提取选中的客吗？',
+    'crm.pool.extract.distribute': '提取并分配负责人',
+    'crm.pool.select.customer.tip': '请点击列表中的{icon}选择客户',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
