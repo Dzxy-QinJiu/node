@@ -1629,7 +1629,7 @@ var en_US = {
     'crm.pool.single.extract.tip': 'Are you sure you want to extract this customer?',//您确定要提取此客吗？
     'crm.pool.batch.extract.tip': 'Are you sure you want to extract the selected customers?',//您确定要提取选中的客吗？
     'crm.pool.extract.distribute': 'To extract and assign the person in charge',//提取并分配负责人
-    'crm.pool.select.customer.tip': '',//请点击列表中的{icon}选择客户
+    'crm.pool.select.customer.tip': 'Click {icon} in the list to select customers',//请点击列表中的{icon}选择客户
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
