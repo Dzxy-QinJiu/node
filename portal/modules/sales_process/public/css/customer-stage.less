@@ -22,23 +22,28 @@
       color: #fff;
     }
     .customer-stage-content {
-      .customer-stage-top-nav {
-        padding: 0 24px 24px 24px ;
+      .customer-stage-top-name {
+        padding: 24px;
         height: 80px;
         border-bottom: 1px solid #E5E5E5;
-        .condition-operator {
-          .customer-stage-title {
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 24px;
-            padding-left: 0;
-          }
-          .customer-stage-operator {
-            .add-customer-stage-btn {
-              float: left;
+        form {
+          .ant-form-item {
+            width: 800px;
+            .input-red-border {
+              border: 1px solid #f04134;
             }
           }
+          .customer-name-check {
+            float: left;
+            margin-top: -14px;
+            line-height: 20px;
+            padding-left: 65px;
+            color: #f04134;
+          }
         }
+      }
+      .customer-stage-top {
+        padding: 16px 24px 24px 32px;
       }
       .customer-stage-table-block {
         padding: 48px 24px 0;
@@ -143,7 +148,7 @@
               }
 
               .customer-stage-btn-div {
-                width: 150px;
+                width: 50px;
                 float: right;
                 padding-top: 18px;
 
@@ -158,7 +163,7 @@
                   background-color: #b6c2c9;
                   margin-right: 12px;
                   text-align: center;
-                  padding: 0px;
+                  padding: 0;
                   color: #fff;
                   font-size: 16px;
                   border-radius: 100px;

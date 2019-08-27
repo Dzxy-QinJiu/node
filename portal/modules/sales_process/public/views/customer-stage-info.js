@@ -8,6 +8,8 @@ import classNames from 'classnames';
 import CustomerStageDetail from './stage-detail';
 import Trace from 'LIB_DIR/trace';
 
+const OPERATE_ZONE_WIDTH = 60; // 按钮操作区的宽度
+
 class CustomerStageInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -88,7 +90,7 @@ class CustomerStageInfo extends React.Component {
             >
                 <div
                     className="customer-stage-content"
-                    style={{width: customerStageContainerWidth - 160}}
+                    style={{width: customerStageContainerWidth - OPERATE_ZONE_WIDTH}}
                     onClick={this.showCustomerStageForm.bind(this, customerStage)}
                     title={Intl.get('customer.stage.edit.stage', '编辑{stage}阶段', {stage: name})}
                 >

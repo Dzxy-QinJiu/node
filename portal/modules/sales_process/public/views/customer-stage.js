@@ -201,9 +201,6 @@ class CustomerStage extends React.Component {
             } else {
                 callback();
             }
-            if (this.state.editCustomerNameMsgTips) {
-                callback(this.state.editCustomerNameMsgTips);
-            }
         };
     };
 
@@ -211,18 +208,22 @@ class CustomerStage extends React.Component {
     handleEditCustomerName = () => {
         this.props.form.validateFields((err, values) => {
             if (err) return;
+            let customerName = _.trim(values.name);
+            // 鼠标点击输入框，不做修改，则不需要发请求
+            if (customerName === this.props.saleProcesTitle) {
+                return;
+            }
             this.setState({
                 editCustomerNameLoading: true
             });
             let submitObj = {
-                name: _.trim(values.name),
+                name: customerName,
                 id: this.props.saleProcessId
             };
             CustomerStageAjax.updateSalesProcess(submitObj).then( (result) => {
                 if (result) {
                     this.setState({
-                        editCustomerNameLoading: false,
-                        editCustomerNameMsgTips: Intl.get('common.edit.failed', '修改失败')
+                        editCustomerNameLoading: false
                     });
                     this.props.changeSaleProcessFieldSuccess(submitObj);
                 } else {
@@ -239,15 +240,23 @@ class CustomerStage extends React.Component {
             } );
         });
     };
+    // 鼠标移入输入框
+    handleFocusInput = () => {
+        this.setState({
+            editCustomerNameMsgTips: ''
+        });
+    };
 
     // 渲染客户阶段名称
     renderCustomerStageName = () => {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             colon: false,
-            labelCol: {span: 5},
-            wrapperCol: {span: 19},
+            labelCol: {span: 2},
+            wrapperCol: {span: 20},
         };
+        const editCustomerNameMsgTips = this.state.editCustomerNameMsgTips;
+
         return (
             <Form layout='horizontal' className="form">
                 <FormItem
@@ -262,13 +271,22 @@ class CustomerStage extends React.Component {
                     })(
                         <Input
                             placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}
+                            className={this.state.editCustomerNameMsgTips ? 'input-red-border' : ''}
                             onBlur={this.handleEditCustomerName}
+                            onFocus={this.handleFocusInput}
                         />
                     )}
                     {
                         this.state.editCustomerNameLoading ? <Icon type="loading"/> : null
                     }
                 </FormItem>
+                {
+                    editCustomerNameMsgTips ? (
+                        <div className="customer-name-check">
+                            {editCustomerNameMsgTips}
+                        </div>
+                    ) : null
+                }
             </Form>
         );
     };
@@ -399,7 +417,7 @@ class CustomerStage extends React.Component {
         let customerStageList = this.state.customerStageList;
         let length = _.get(customerStageList, 'length');
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let containerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        let containerHeight = height - 2 * BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         const width = this.props.containerWidth - 100;
         return (
             <RightPanel
