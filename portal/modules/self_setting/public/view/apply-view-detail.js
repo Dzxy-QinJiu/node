@@ -334,8 +334,8 @@ class ApplyViewDetail extends React.Component {
                             text: <span className="customer-name" onClick={this.handleShowCustomerDetail.bind(this, _.get(showItem,'[0].id'))}>{_.get(showItem,'[0].name')}</span>
                         });
                     }else if (item.component_type === ALL_COMPONENTS.TIMEPERIOD && item.selected_value === '1day'){
-                        var starttime = moment(parseInt(showItem.starttime)).format(oplateConsts.DATE_FORMAT);
-                        var endtime = moment(parseInt(showItem.endtime)).format(oplateConsts.DATE_FORMAT);
+                        var starttime = moment(parseInt(showItem.begin_time)).format(oplateConsts.DATE_FORMAT);
+                        var endtime = moment(parseInt(showItem.end_time)).format(oplateConsts.DATE_FORMAT);
                         showApplyInfo.push({
                             label: _.get(item,'title'),
                             text: <span>{starttime} - {endtime}</span>
@@ -549,7 +549,7 @@ class ApplyViewDetail extends React.Component {
         var showApproveBtn = detailInfoObj.showApproveBtn || this.props.isHomeMyWork;
         var renderAssigenedContext = null;
         //渲染分配的按钮
-        if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSales') > -1 && showApproveBtn){
+        if (_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'distributeSalesToVisit') > -1 && showApproveBtn){
             //分配给普通销售
             renderAssigenedContext = this.renderAssigenedContext;
         }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'assignNextNodeApprover') > -1 && showApproveBtn){

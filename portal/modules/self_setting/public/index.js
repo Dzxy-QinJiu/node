@@ -307,7 +307,7 @@ class LeaveApplyManagement extends React.Component {
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
-                            addPrivilege='SALES_PHONE_LIST'
+                            addPrivilege='WORKFLOW_BASE_PERMISSION'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}

@@ -14,7 +14,7 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
-import {applyComponentsType} from '../../../apply_approve_manage/public/utils/apply-approve-utils';
+import {applyComponentsType, ADDAPPLYFORMCOMPONENTS} from '../../../apply_approve_manage/public/utils/apply-approve-utils';
 import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
 import {calculateTotalTimeRange,calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
 import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
@@ -25,10 +25,15 @@ import {DELAY_TIME_RANGE, LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/util
 import classNames from 'classnames';
 import leaveStore from '../store/leave-apply-store';
 import LeaveApplyAction from '../action/leave-apply-action';
+var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 class AddLeaveApply extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            hideCustomerRequiredTip: false,
+            formData: {
+                customer: {id: '', name: ''},
+            },
             ...leaveStore.getState()
         };
     }
@@ -37,9 +42,10 @@ class AddLeaveApply extends React.Component {
     };
     componentDidMount() {
         leaveStore.listen(this.onStoreChange);
+        this.addLabelRequiredCls();
     }
     componentDidUpdate() {
-
+        this.addLabelRequiredCls();
     }
     componentWillUnmount() {
         leaveStore.unlisten(this.onStoreChange);
@@ -47,37 +53,56 @@ class AddLeaveApply extends React.Component {
 
 
 
-    handleSubmit = () => {
-        var submitObj = {},conditionObj = {};
-        var refObj = this.refs;
-        for (var key in refObj){
-            var onSaveCallBack = _.get(refObj[key],'onSaveAllData');
-            if (_.isFunction(onSaveCallBack)){
-                var saveObj = onSaveCallBack();
-                var refTarget = refObj[key];
-                for (var key in saveObj){
-                    if (saveObj[key]['condition']){
-                        _.extend(conditionObj, saveObj[key]['condition']);
-                        delete saveObj[key].condition;
-                    }
-                }
-                _.extend(submitObj,saveObj );
-            }
-        }
-        LeaveApplyAction.addSelfSettingApply({'detail': submitObj,'type': SELF_SETTING_FLOW.VISITAPPLY, condition: conditionObj},(result) => {
-            if (!_.isString(result)){
-                //添加成功
-                this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
-                this.hideLeaveApplyAddForm();
-                //添加完后的处理
-                result.afterAddReplySuccess = true;
-                result.showCancelBtn = true;
-                LeaveApplyAction.afterAddApplySuccess(result);
-            }else{
-                this.setResultData(result, 'error');
-            }
+    handleSubmit = (e) => {
 
+        e.preventDefault();
+        this.props.form.validateFieldsAndScroll((err, values) => {
+            values = _.cloneDeep(values);
+            values['customers'] = [_.get(this.state, 'formData.customer')];
+            if (!_.get(values, 'customers[0].id')){
+                return;
+            }
+            for (var key in values){
+                if (_.get(values[key],'begin_time')){
+                    values[key]['begin_time'] = moment().valueOf();
+                }
+                if (_.get(values[key],'end_time')){
+                    values[key]['end_time'] = moment().valueOf();
+                }
+            }
+            LeaveApplyAction.addSelfSettingApply({'detail': values,'type': SELF_SETTING_FLOW.VISITAPPLY},(result) => {
+                if (!_.isString(result)){
+                    //添加成功
+                    this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
+                    this.hideLeaveApplyAddForm();
+                    //添加完后的处理
+                    result.afterAddReplySuccess = true;
+                    result.showCancelBtn = true;
+                    LeaveApplyAction.afterAddApplySuccess(result);
+                }else{
+                    this.setResultData(result, 'error');
+                }
+
+            });
         });
+
+        // var submitObj = {},conditionObj = {};
+        // var refObj = this.refs;
+        // for (var key in refObj){
+        //     var onSaveCallBack = _.get(refObj[key],'onSaveAllData');
+        //     if (_.isFunction(onSaveCallBack)){
+        //         var saveObj = onSaveCallBack();
+        //         var refTarget = refObj[key];
+        //         for (var key in saveObj){
+        //             if (saveObj[key]['condition']){
+        //                 _.extend(conditionObj, saveObj[key]['condition']);
+        //                 delete saveObj[key].condition;
+        //             }
+        //         }
+        //         _.extend(submitObj,saveObj );
+        //     }
+        // }
+
     };
     //保存结果的处理
     setResultData(saveMsg, saveResult) {
@@ -88,6 +113,56 @@ class AddLeaveApply extends React.Component {
     }
     hideLeaveApplyAddForm = () => {
         this.props.hideLeaveApplyAddForm();
+    };
+    checkCustomerName = (rule, value, callback) => {
+        value = _.trim(_.get(this.state, 'formData.customer.id'));
+        if (!value && !this.state.hideCustomerRequiredTip) {
+            callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
+        } else {
+            callback();
+        }
+    };
+    addAssignedCustomer = () => {
+        this.setState({
+            isShowAddCustomer: true
+        });
+    };
+    //关闭添加面板
+    hideAddForm = () => {
+        this.setState({
+            isShowAddCustomer: false
+        });
+    };
+    //渲染添加客户内容
+    renderAddCustomer = () => {
+        return (
+            <CRMAddForm
+                hideAddForm={this.hideAddForm}
+            />
+        );
+    };
+
+    customerChoosen = (key, selectedCustomer) => {
+        var formData = this.state.formData;
+        formData.customer.id = selectedCustomer.id;
+        formData.customer.name = selectedCustomer.name;
+        this.setState({
+            formData: formData
+        }, () => {
+            this.props.form.validateFields([key], {force: true});
+        });
+    };
+    addLabelRequiredCls() {
+        if (!$('.add-leave-apply-form-wrap form .require-item label').hasClass('ant-form-item-required')) {
+            $('.add-leave-apply-form-wrap form .require-item label').addClass('ant-form-item-required');
+        }
+    }
+    hideCustomerRequiredTip = (key, flag) => {
+        this.setState({
+            hideCustomerRequiredTip: flag
+        },() => {
+            this.props.form.validateFields([key], {force: true});
+        });
     };
     render() {
         var formData = this.state.formData;
@@ -102,16 +177,6 @@ class AddLeaveApply extends React.Component {
             wrapperCol: {
                 xs: {span: 24},
                 sm: {span: 18},
-            },
-        };
-        const formDataLayout = {
-            labelCol: {
-                xs: {span: 24},
-                sm: {span: 6},
-            },
-            wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 15},
             },
         };
         let saveResult = this.state.saveResult;
@@ -132,42 +197,46 @@ class AddLeaveApply extends React.Component {
                             <div className="add-leave-form">
                                 <Form layout='horizontal' className="sales-clue-form" id="add-leave-apply-form">
                                     {_.map(customizForm,(formItem,index) => {
-                                        var target = _.find(applyComponentsType, item => item.name === _.get(formItem, 'component_type'));
+                                        var target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.component_type === _.get(formItem, 'component_type'));
                                         if (target){
-                                            if (formItem.component_type === ALL_COMPONENTS.CUSTOMERSEARCH){
-                                                formItem['hideButtonBlock'] = true;
-                                            }
                                             var ApplyComponent = target.component;
-                                            var applyItem = classNames('ant-row ant-form-item form-item-label',{
-                                                'require-item': _.get(formItem,'is_required')
-                                            });
-                                            return <div className={applyItem}>
-                                                <div className="ant-form-item-label ant-col-xs-24 ant-col-sm-6">
-                                                    <label className={_.get(formItem,'is_required') ? 'ant-form-item-required' : ''}>
-                                                        {_.get(formItem,'title')}
-                                                    </label>
+                                            var propertyObj = _.assign({}, target, formItem);
+                                            propertyObj['formItemKey'] = propertyObj['key'];
+                                            if (target.component_type === ALL_COMPONENTS.CUSTOMERSEARCH){
+                                                return (
+                                                    <FormItem
+                                                        className="form-item-label require-item"
+                                                        label={_.get(propertyObj,'title')}
+                                                        {...formItemLayout}
+                                                    >
+                                                        {getFieldDecorator(propertyObj['key'], {
+                                                            rules: [{validator: _this.checkCustomerName}],
+                                                            initialValue: ''
+                                                        })(
+                                                            <ApplyComponent
+                                                                field='customer'
+                                                                hasEditPrivilege={true}
+                                                                displayText={''}
+                                                                displayType={'edit'}
+                                                                id={''}
+                                                                show_error={this.state.isShowCustomerError}
+                                                                noJumpToCrm={true}
+                                                                customer_name={''}
+                                                                customer_id={''}
+                                                                addAssignedCustomer={_this.addAssignedCustomer}
+                                                                noDataTip={Intl.get('clue.has.no.data', '暂无')}
+                                                                hideButtonBlock={true}
+                                                                customerChoosen={_this.customerChoosen.bind(_this, propertyObj['key'])}
+                                                                required={true}
+                                                                hideCustomerRequiredTip={_this.hideCustomerRequiredTip.bind(_this,propertyObj['key'])}
+                                                            />
+                                                        )}
+                                                    </FormItem>
+                                                );
 
-                                                </div>
-                                                <div className="ant-form-item-control-wrapper ant-col-xs-24 ant-col-sm-18"><ApplyComponent {...formItem} labelKey={_.get(formItem,'key')} ref={'apply_component_' + index}/>
-                                                </div>
-                                            </div>;
-                                            // return <FormItem
-                                            //     label={_.get(formItem,'title')}
-                                            //     id={_.get(formItem,'key')}
-                                            //     {...formItemLayout}
-                                            //     key={index}
-                                            // >
-                                            //     {
-                                            //         getFieldDecorator(_.get(formItem,'key'),{
-                                            //             rules: [{required: _.get(formItem,'is_required') , }],
-                                            //         })(
-                                            //             <ApplyComponent {...formItem} labelKey={_.get(formItem,'key')} />
-                                            //         )}
-                                            // </FormItem>
-                                            // ;
-
-
-
+                                            }else{
+                                                return <ApplyComponent {...propertyObj} form={this.props.form}/>;
+                                            }
 
                                         }
                                     })}
@@ -198,6 +267,7 @@ class AddLeaveApply extends React.Component {
                                 </Form>
                             </div>
                         </GeminiScrollbar>
+                        {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                     </div>
                 </div>
             </RightPanel>
@@ -208,7 +278,6 @@ class AddLeaveApply extends React.Component {
 AddLeaveApply.defaultProps = {
     hideLeaveApplyAddForm: function() {
     },
-    form: {}
 };
 AddLeaveApply.propTypes = {
     hideLeaveApplyAddForm: PropTypes.func,

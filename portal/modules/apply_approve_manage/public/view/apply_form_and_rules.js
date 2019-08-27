@@ -162,6 +162,9 @@ class ApplyFormAndRules extends React.Component {
             if (submitObj.applyRulesAndSetting) {
                 delete submitObj.applyRulesAndSetting;
             }
+            if (!submitObj.customiz_form){
+                submitObj['customiz_form'] = [];
+            }
             applyApproveManageAction.editSelfSettingWorkFlow(submitObj, () => {
                 //userData上的属性也修改
                 var targetItem = this.updateUserData();
@@ -237,7 +240,7 @@ class ApplyFormAndRules extends React.Component {
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form', []);
-        customiz_form.push({...ruleItem, 'key': ruleItem.key || uuid(), 'isEditting': true});
+        customiz_form.push({...ruleItem, 'key': ruleItem.key || ruleItem.component_type + '_' + uuid(), 'isEditting': true});
         applyTypeData.customiz_form = customiz_form;
         this.setState({
             applyTypeData: applyTypeData

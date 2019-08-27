@@ -3282,6 +3282,7 @@ var en_US = {
     'common.number.of.new.user.customer': 'number of new user customer',//新开用户客户数
     'clue.customer.register.time': 'Register time',//注册时间
     'self.setting.has.no.apply': 'There is no suited apply',//暂无符合条件的申请
-    'failed.distribute.apply': 'Failed assign!'//分配失败！
+    'failed.distribute.apply': 'Failed assign!',//分配失败！
+    'apply.approve.required.err.msg': 'Please input tips'//请输入未填写时的提示
 };
 export default en_US;

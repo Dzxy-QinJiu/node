@@ -3392,6 +3392,7 @@ var zh_CN = {
     'common.number.of.new.user.customer': '新开用户客户数',
     'clue.customer.register.time': '注册时间',
     'self.setting.has.no.apply': '暂无符合条件的申请',
-    'failed.distribute.apply': '分配失败！'
+    'failed.distribute.apply': '分配失败！',
+    'apply.approve.required.err.msg': '请输入未填写时的提示',
 };
 export default zh_CN;

@@ -8,7 +8,7 @@ const RadioGroup = Radio.Group;
 import RangeInput from '../view/range_input';
 import SelectOption from '../view/select_option';
 import TimePeriod from '../view/time_period';
-import CustomerSuggest from '../view/customer_suggest';
+import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import InputContent from '../view/input_container';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
@@ -85,27 +85,35 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'rulename': Intl.get('apply.rule.text', '文字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.within.32', '32个字符以内'),
-        'component_type': ALL_COMPONENTS.INPUT
+        'component_type': ALL_COMPONENTS.INPUT,
+        component: InputContent,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.textare', '多行文字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.over.32', '32个字符以上'),
         'component_type': ALL_COMPONENTS.INPUT,
-        'type': ALL_COMPONENTS_TYPE.TEXTAREA
+        'type': ALL_COMPONENTS_TYPE.TEXTAREA,
+        component: InputContent,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.number', '数字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.limit.int', '仅限整数'),
         'component_type': ALL_COMPONENTS.INPUTNUMBER,
+        component: InputNumber,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.count', '金额输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.allow.point', '允许小数点'),
         'component_type': ALL_COMPONENTS.INPUT,
-        'addonAfter': Intl.get('contract.82', '元')
+        'addonAfter': Intl.get('contract.82', '元'),
+        component: InputContent,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.hour', '时长输入'), 'iconfontCls': 'icon-fuwu',
@@ -136,6 +144,8 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             value: 'hour'
         }],
         'component_type': ALL_COMPONENTS.RANGEINPUT,
+        component: RangeInput,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.radio', '单选'), 'iconfontCls': 'icon-fuwu',
@@ -143,19 +153,25 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'unitLabel': Intl.get('apply.time.range.unit.select.label', '选项'),
         'component_type': ALL_COMPONENTS.SELECTOPTION,
         'type': 'radio',
+        component: SelectOption,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.check', '多选'), 'iconfontCls': 'icon-fuwu',
         'select_arr': [Intl.get('apply.approve.option.one', '选项一'), Intl.get('apply.approve.option.two', '选项二')],
         'unitLabel': Intl.get('apply.time.range.unit.select.label', '选项'),
         'component_type': ALL_COMPONENTS.SELECTOPTION,
-        'type': 'checkbox'
+        'type': 'checkbox',
+        component: SelectOption,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.date', '日期选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.DATETIME,
         'type': 'date',
-        'defaultValue': moment(moment().format(oplateConsts.DATE_FORMAT), oplateConsts.DATE_FORMAT)
+        'defaultValue': moment(moment().format(oplateConsts.DATE_FORMAT), oplateConsts.DATE_FORMAT),
+        component: DatePicker,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.date.and.time', '日期+时间选择'), 'iconfontCls': 'icon-fuwu',
@@ -164,6 +180,8 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'defaultValue': moment(moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT),
         'showTime': {format: 'HH:mm'},
         'format': oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT,
+        component: DatePicker,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
 
     },
     {
@@ -178,14 +196,18 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         }],
         'unitMsg': Intl.get('apply.time.distinct.am', '区分上下午'),
         'selected_value': '1day',
-        'component_type': ALL_COMPONENTS.TIMEPERIOD
+        'component_type': ALL_COMPONENTS.TIMEPERIOD,
+        component: TimePeriod,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.CUSTOMERSEARCH,
-        'display_type': 'edit',
+        'displayType': 'edit',
         'hideButtonBlock': true,
-        'key': 'customers'
+        'key': 'customers',
+        component: CustomerSuggest,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.production', '产品配置'), 'iconfontCls': 'icon-fuwu',
@@ -193,7 +215,9 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'type': 'option',
         'placeholder': Intl.get('leave.apply.select.product', '请选择产品'),
         'notshowInList': true,
-        'default_value': []
+        'default_value': [],
+        component: SelectOption,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     }
 ];
 

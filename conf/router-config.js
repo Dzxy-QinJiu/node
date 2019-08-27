@@ -226,7 +226,7 @@ let routers = [
         },
         {
             //todo 待修改的！！！！！！
-            id: 'MY_LAEVE_APPLY_MANAGEMENT',
+            id: 'MY_LEAVE_APPLY_MANAGEMENT',
             name: 'apply.my.self.setting.work.flow',//拜访申请
             routePath: '/application/self_setting',
             component: `${MODULE_PATH}self_setting/public`,

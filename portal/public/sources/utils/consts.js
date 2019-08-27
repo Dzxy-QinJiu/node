@@ -83,7 +83,9 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的请假申请数量
     UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
+    UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
+
 };
 
 //系统消息对应的几种类型

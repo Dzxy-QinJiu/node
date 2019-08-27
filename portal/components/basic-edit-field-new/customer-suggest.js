@@ -56,6 +56,7 @@ class CustomerSuggest extends React.Component {
         hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
         customerLable: '',//客户标签
         customer_id: '',//客户id
+        hideButtonBlock: false,
         hideCustomerRequiredTip: function() {
             
         },

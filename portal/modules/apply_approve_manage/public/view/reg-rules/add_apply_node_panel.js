@@ -319,7 +319,7 @@ class AddApplyNodePanel extends React.Component {
             //可以指定下一节点审批人
             submitObj.assignNextNodeApprover = this.state.assignNextNodeApprover;
             //可分配销售
-            submitObj.distributeSales = this.state.distributeSales;
+            // submitObj.distributeSales = this.state.distributeSales;
 
             this.props.saveAddApproveNode(submitObj);
             this.props.hideRightPanel();
