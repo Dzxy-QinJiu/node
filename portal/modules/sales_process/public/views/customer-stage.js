@@ -25,6 +25,7 @@ class CustomerStage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            saleProcessId: props.saleProcessId,
             editCustomerNameLoading: false, // 修改客户阶段名称的loading
             editCustomerNameMsgTips: '', // 修改客户阶段名称的信息提示
             ...CustomerStageStore.getState(),
@@ -37,7 +38,7 @@ class CustomerStage extends React.Component {
 
     componentDidMount() {
         CustomerStageStore.listen(this.onChange);
-        let saleProcessId = this.props.saleProcessId;
+        let saleProcessId = this.state.saleProcessId;
         if (saleProcessId) {
             setTimeout( () => {
                 CustomerStageAction.getCustomerStageList(saleProcessId);
@@ -63,7 +64,7 @@ class CustomerStage extends React.Component {
     }
 
     saveCustomerStageSettingPlay = (type, saveObj, successFunc, errorFunc) => {
-        let saleProcessId = this.props.saleProcessId;
+        let saleProcessId = this.state.saleProcessId;
         CustomerStageAjax.editCustomerStage(saveObj, saleProcessId).then( (result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
@@ -89,7 +90,7 @@ class CustomerStage extends React.Component {
 
     // 提交客户阶段表单数据（添加一个客户阶段和编辑客户阶段）
     submitCustomerStageForm = (customerStage) => {
-        let saleProcessId = this.props.saleProcessId;
+        let saleProcessId = this.state.saleProcessId;
         if (customerStage.id) { // 编辑客户阶段
             CustomerStageAjax.editCustomerStage(customerStage, saleProcessId).then( (result) => {
                 if (result) {
@@ -196,7 +197,7 @@ class CustomerStage extends React.Component {
             let processValue = _.trim(value); // 文本框中的值
             let salesProcessList = this.props.salesProcessList; // 已存在的销售流程
             let isExist = _.find(salesProcessList, item => item.name === processValue);
-            if (isExist) { // 和已存在的客户阶段名称是相同
+            if (isExist && processValue !== this.props.saleProcesTitle) { // 和已存在的客户阶段名称是相同
                 callback(Intl.get('customer.stage.exist.stage.tips', '该客户阶段已存在'));
             } else {
                 callback();
@@ -218,7 +219,7 @@ class CustomerStage extends React.Component {
             });
             let submitObj = {
                 name: customerName,
-                id: this.props.saleProcessId
+                id: this.state.saleProcessId
             };
             CustomerStageAjax.updateSalesProcess(submitObj).then( (result) => {
                 if (result) {
@@ -244,6 +245,38 @@ class CustomerStage extends React.Component {
     handleFocusInput = () => {
         this.setState({
             editCustomerNameMsgTips: ''
+        });
+    };
+
+    // 处理添加客户阶段
+    handleAddCustomerStage = () => {
+        this.props.form.validateFields((err, values) => {
+            if (err) return;
+            let customerName = _.trim(values.name);
+            let submitObj = {
+                name: customerName,
+                status: '1', // 默认是启用的状态
+            };
+            CustomerStageAjax.addSalesProcess(submitObj).then( (result) => {
+                if (result && result.id) {
+                    this.setState({
+                        editCustomerNameLoading: false,
+                        saleProcessId: result.id,
+                    }, () => {
+                        this.props.upDateSalesProcessList(result);
+                    });
+                } else {
+                    this.setState({
+                        editCustomerNameLoading: false,
+                        editCustomerNameMsgTips: errMsg || Intl.get('common.save.failed', '保存失败')
+                    });
+                }
+            }, (errMsg) => {
+                this.setState({
+                    editCustomerNameLoading: false,
+                    editCustomerNameMsgTips: errMsg || Intl.get('common.save.failed', '保存失败')
+                });
+            } );
         });
     };
 
@@ -280,6 +313,17 @@ class CustomerStage extends React.Component {
                         this.state.editCustomerNameLoading ? <Icon type="loading"/> : null
                     }
                 </FormItem>
+                {
+                    this.state.saleProcessId === '' ? (
+                        <Button
+                            type="ghost"
+                            className="add-customer-stage-btn"
+                            onClick={this.handleAddCustomerStage}
+                        >
+                            {Intl.get('common.save', '保存')}
+                        </Button>
+                    ) : null
+                }
                 {
                     editCustomerNameMsgTips ? (
                         <div className="customer-name-check">
@@ -371,7 +415,7 @@ class CustomerStage extends React.Component {
     };
 
     retryGetOrderList = () => {
-        let saleProcessId = this.props.saleProcessId;
+        let saleProcessId = this.state.saleProcessId;
         CustomerStageAction.getCustomerStageList(saleProcessId);
     };
 
@@ -403,12 +447,15 @@ class CustomerStage extends React.Component {
     };
 
     closeCustomerStagePanel = () => {
-        let upDateObj = {
-            id: this.props.saleProcessId,
-            customerStages: this.state.customerStageList
-        };
-        this.props.changeSaleProcessFieldSuccess(upDateObj);
+        let saleProcessId = this.state.saleProcessId;
+        if (saleProcessId) {
+            let upDateObj = {
+                id: this.state.saleProcessId,
+                customerStages: this.state.customerStageList
+            };
+            this.props.changeSaleProcessFieldSuccess(upDateObj);
 
+        }
         CustomerStageAction.setInitialData();
         this.props.closeCustomerStagePanel();
     };
@@ -432,55 +479,61 @@ class CustomerStage extends React.Component {
                         <div className="customer-stage-top-name">
                             {this.renderCustomerStageName()}
                         </div>
-                        <div className="customer-stage-top">
-                            {this.renderTopNavOperation()}
-                        </div>
-                        <GeminiScrollBar style={{height: containerHeight}}>
-                            {
-                                this.state.loading ? (
-                                    <Spinner/>
-                                ) : null
-                            }
-                            {
-                                !this.state.loading && (length === 0 || this.state.getCustomerStageListErrMsg) ?
-                                    this.renderNoDataTipsOrErrMsg() : null
-                            }
-                            <div className="customer-stage-table-block">
-                                <ul className="customer-stage-timeline">
-                                    {
-                                        _.map(customerStageList, (item, idx) => {
-                                            return (
-                                                <li className="customer-stage-timeline-item" key={idx}>
-                                                    <div className="customer-stage-timeline-item-tail"></div>
-                                                    <div className="customer-stage-timeline-item-head">
-                                                        <i className='iconfont icon-order-arrow-down'></i>
-                                                    </div>
-                                                    <div className="customer-stage-timeline-item-right"></div>
-                                                    <CustomerStageInfo
-                                                        width={width}
-                                                        customerStage={item}
-                                                        toggleCustomerStageDetail={this.toggleCustomerStageDetail}
-                                                        showCustomerStageModalDialog={this.showCustomerStageModalDialog}
-                                                        closeCustomerStageModalDialog={this.closeCustomerStageModalDialog}
-                                                        showCustomerStageForm={this.showCustomerStageForm}
-                                                        deleteCustomerStage={this.deleteCustomerStage}
-                                                        customerStageOrderUp={this.customerStageOrderUp}
-                                                        customerStageOrderDown={this.customerStageOrderDown}
-                                                        isShowCustomerStageTransferOrder={this.state.isShowCustomerStageTransferOrder}
-                                                        showCustomerStageDetail={this.showCustomerStageDetail}
-                                                        closeCustomerStageDetail={this.closeCustomerStageDetail}
-                                                        saveCustomerStageSettingPlay={this.saveCustomerStageSettingPlay}
-                                                        salesBehaviorList={this.state.salesBehaviorList}
-                                                        saleProcessId={this.props.saleProcessId}
-                                                        autoConditionsList={this.state.autoConditionsList}
-                                                    />
-                                                </li>
-                                            );
-                                        })
-                                    }
-                                </ul>
-                            </div>
-                        </GeminiScrollBar>
+                        {
+                            this.state.saleProcessId ? (
+                                <div>
+                                    <div className="customer-stage-top">
+                                        {this.renderTopNavOperation()}
+                                    </div>
+                                    <GeminiScrollBar style={{height: containerHeight}}>
+                                        {
+                                            this.state.loading ? (
+                                                <Spinner/>
+                                            ) : null
+                                        }
+                                        {
+                                            !this.state.loading && (length === 0 || this.state.getCustomerStageListErrMsg) ?
+                                                this.renderNoDataTipsOrErrMsg() : null
+                                        }
+                                        <div className="customer-stage-table-block">
+                                            <ul className="customer-stage-timeline">
+                                                {
+                                                    _.map(customerStageList, (item, idx) => {
+                                                        return (
+                                                            <li className="customer-stage-timeline-item" key={idx}>
+                                                                <div className="customer-stage-timeline-item-tail"></div>
+                                                                <div className="customer-stage-timeline-item-head">
+                                                                    <i className='iconfont icon-order-arrow-down'></i>
+                                                                </div>
+                                                                <div className="customer-stage-timeline-item-right"></div>
+                                                                <CustomerStageInfo
+                                                                    width={width}
+                                                                    customerStage={item}
+                                                                    toggleCustomerStageDetail={this.toggleCustomerStageDetail}
+                                                                    showCustomerStageModalDialog={this.showCustomerStageModalDialog}
+                                                                    closeCustomerStageModalDialog={this.closeCustomerStageModalDialog}
+                                                                    showCustomerStageForm={this.showCustomerStageForm}
+                                                                    deleteCustomerStage={this.deleteCustomerStage}
+                                                                    customerStageOrderUp={this.customerStageOrderUp}
+                                                                    customerStageOrderDown={this.customerStageOrderDown}
+                                                                    isShowCustomerStageTransferOrder={this.state.isShowCustomerStageTransferOrder}
+                                                                    showCustomerStageDetail={this.showCustomerStageDetail}
+                                                                    closeCustomerStageDetail={this.closeCustomerStageDetail}
+                                                                    saveCustomerStageSettingPlay={this.saveCustomerStageSettingPlay}
+                                                                    salesBehaviorList={this.state.salesBehaviorList}
+                                                                    saleProcessId={this.state.saleProcessId}
+                                                                    autoConditionsList={this.state.autoConditionsList}
+                                                                />
+                                                            </li>
+                                                        );
+                                                    })
+                                                }
+                                            </ul>
+                                        </div>
+                                    </GeminiScrollBar>
+                                </div>
+                            ) : null
+                        }
                     </div>
                     {
                         this.state.isShowCustomerStageForm ? (
@@ -506,6 +559,7 @@ CustomerStage.propTypes = {
     salesProcessList: PropTypes.array,
     form: PropTypes.object,
     changeSaleProcessFieldSuccess: PropTypes.func,
+    upDateSalesProcessList: PropTypes.func,
 };
 
 export default Form.create()(CustomerStage);

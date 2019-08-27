@@ -163,20 +163,7 @@ class SalesProcess extends React.Component {
 
     // 显示客户阶段面板
     showCustomerStagePanel = (item) => {
-        if (item.id === '') { // 显示添加界面的处理
-            let submitObj = {
-                name: _.trim(item.name),
-                status: '1', // 默认是启用的状态
-            };
-            SalesProcessAjax.addSalesProcess(submitObj).then( (result) => {
-                if (result && result.id) { // 添加成功
-                    SalesProcessAction.showCustomerStagePanel(result);
-                    SalesProcessAction.upDateSalesProcessList(result);
-                }
-            });
-        } else {
-            SalesProcessAction.showCustomerStagePanel(item);
-        }
+        SalesProcessAction.showCustomerStagePanel(item);
     };
 
     // 关闭客户阶段面板
@@ -383,6 +370,11 @@ class SalesProcess extends React.Component {
         SalesProcessAction.closeSelectTeamUserPanel(customerStage);
     };
 
+    // 更新列表
+    upDateSalesProcessList = (customerStage) => {
+        SalesProcessAction.upDateSalesProcessList(customerStage);
+    };
+
     getTableColumns = () => {
         return [{
             title: Intl.get('common.definition', '名称'),
@@ -568,6 +560,7 @@ class SalesProcess extends React.Component {
                                 saleProcesTitle={this.state.saleProcessName}
                                 salesProcessList={this.state.salesProcessList}
                                 changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
+                                upDateSalesProcessList={this.upDateSalesProcessList}
                             />
                         ) : null
                     }

@@ -105,7 +105,7 @@ class SalesProcessStore {
         if (saleProcess.flag === 'delete') { // 删除
             this.salesProcessList = _.filter(this.salesProcessList, item => item.id !== saleProcess.id);
         } else { // 添加
-            this.salesProcessList.unshift(saleProcess);
+            this.salesProcessList.push(saleProcess);
         }
     }
 
@@ -129,17 +129,19 @@ class SalesProcessStore {
         let teams = _.get(saleProcess, 'teams'); // 修改客户阶段使用范围(团队)
         let users = _.get(saleProcess, 'users'); // 修改客户阶段使用范围(个人)
         let customerStages = _.get(saleProcess, 'customerStages'); // 修改客户阶段的阶段数据
-        if (name) {
-            upDateProcess.name = name;
-        } else if (status) {
-            upDateProcess.status = status;
-        } else if (description) {
-            upDateProcess.description = description;
-        } else if (teams || users) {
-            upDateProcess.teams = teams;
-            upDateProcess.users = users;
-        } else if (customerStages) {
-            upDateProcess.customer_stages = customerStages;
+        if (upDateProcess) {
+            if (name) {
+                upDateProcess.name = name;
+            } else if (status) {
+                upDateProcess.status = status;
+            } else if (description) {
+                upDateProcess.description = description;
+            } else if (teams || users) {
+                upDateProcess.teams = teams;
+                upDateProcess.users = users;
+            } else if (customerStages) {
+                upDateProcess.customer_stages = customerStages;
+            }
         }
     }
 
