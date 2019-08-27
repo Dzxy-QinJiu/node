@@ -40,12 +40,8 @@ class Contacts extends React.Component {
     componentDidMount() {
         ContactStore.listen(this.onStoreChange);
         if (this.props.curCustomer) {
-            //如果要用客户里的联系人列表
-            if (this.props.isUseCustomerContacts) {
-                ContactAction.getContactList(this.props.curCustomer, true);
-            } else {
-                ContactAction.getContactList(this.props.curCustomer, this.props.isMerge || this.props.disableEdit);
-            }
+            //isUseCustomerContacts是否要用客户里的联系人列表
+            ContactAction.getContactList(this.props.curCustomer, this.props.isUseCustomerContacts);
         }
         $(window).on('resize', this.onStoreChange);
     }
@@ -57,7 +53,8 @@ class Contacts extends React.Component {
             });
             setTimeout(() => {
                 ContactAction.setInitData();
-                ContactAction.getContactList(nextProps.curCustomer, nextProps.isMerge || nextProps.disableEdit);
+                //isUseCustomerContacts是否要用客户里的联系人列表
+                ContactAction.getContactList(nextProps.curCustomer, this.props.isUseCustomerContacts);
             });
         }
     }

@@ -571,6 +571,7 @@ class CrmRightMergePanel extends React.Component {
                                                 updateMergeCustomerContact={this.updateMergeCustomerContact}
                                                 refreshCustomerList={this.props.refreshCustomerList}
                                                 curCustomer={this.state.selectedCustomer}
+                                                isUseCustomerContacts={true}
                                             />
                                         ) : null}
                                     </TabPane>

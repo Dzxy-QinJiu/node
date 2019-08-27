@@ -611,7 +611,6 @@ class ClueTraceList extends React.Component {
                                 <PhoneCallout
                                     phoneNumber={item.dst}
                                     hidePhoneNumber={true}
-                                    showClueDetailPanel={this.props.showClueDetailPanel.bind(this, this.props.curClue)}
                                 />
                             </span>) : null}
                         <span className="item-bottom-right">
@@ -722,7 +721,6 @@ ClueTraceList.defaultProps = {
     ShowCustomerUserListPanel: noop,
     updateCustomerLastContact: noop,
     curClue: {},
-    showClueDetailPanel: noop,
     isOverViewPanel: false,
     changeActiveKey: noop
 };
@@ -732,7 +730,6 @@ ClueTraceList.propTypes = {
     ShowCustomerUserListPanel: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     curClue: PropTypes.object,
-    showClueDetailPanel: PropTypes.func,
     isOverViewPanel: PropTypes.bool,
     changeActiveKey: PropTypes.func
 };

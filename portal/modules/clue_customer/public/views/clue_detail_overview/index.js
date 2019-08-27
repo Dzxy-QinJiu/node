@@ -623,7 +623,10 @@ class ClueDetailOverview extends React.Component {
         });
     };
     renderItemSelfSettingContent = (curClue,item) => {
-        return <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true} showClueDetailPanel={this.props.showClueDetailPanel.bind(this, curClue)}
+        return <PhoneCallout
+            phoneNumber={item}
+            showPhoneNum={addHyphenToPhoneNumber(item)}
+            showPhoneIcon={true}
         />;
     };
     renderItemSelfSettingForm = (key, index, that) => {
@@ -969,7 +972,6 @@ class ClueDetailOverview extends React.Component {
         return (<ClueTraceList
             curClue={curClue}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
-            showClueDetailPanel={this.props.showClueDetailPanel.bind(this, curClue)}
             isOverViewPanel={true}
             changeActiveKey={this.props.changeActiveKey}
         />);
@@ -1465,9 +1467,6 @@ ClueDetailOverview.defaultProps = {
     removeUpdateClueItem: function() {
 
     },
-    showClueDetailPanel: function() {
-
-    },
     hideRightPanel: function() {
 
     },
@@ -1500,7 +1499,6 @@ ClueDetailOverview.propTypes = {
     updateClueClassify: PropTypes.func,
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
-    showClueDetailPanel: PropTypes.func,
     hideRightPanel: PropTypes.func,
     updateClueProperty: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,
