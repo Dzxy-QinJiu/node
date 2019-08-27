@@ -96,6 +96,7 @@ class CustomerRecycleBin extends React.Component {
                         curCustomer: customerInfo,
                         hideRightPanel: this.colseRightPanel,
                         disableEdit: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)
+                        isUseCustomerContacts: true//联系人用客户对象上的contacts,不用再通过接口获取
                     }
                 });
             }

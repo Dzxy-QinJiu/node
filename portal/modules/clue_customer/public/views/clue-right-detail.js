@@ -285,15 +285,7 @@ class ClueRightPanel extends React.Component {
             isRemoveClue: {},
         });
     };
-    showClueDetailPanel = (curClue) => {
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
-            clue_params: {
-                currentId: curClue.id,
-                curClue: curClue,
-                hideRightPanel: this.hideRightPanel
-            }
-        });
-    };
+
     updateClueProperty = (updateProperty) => {
         var curClue = this.state.curClue;
         for (var key in updateProperty){
@@ -369,7 +361,6 @@ class ClueRightPanel extends React.Component {
                                             divHeight={divHeight}
                                             removeUpdateClueItem={this.props.removeUpdateClueItem}
                                             hideRightPanel={this.hideRightPanel}
-                                            showClueDetailPanel={this.showClueDetailPanel}
                                             updateClueProperty={this.updateClueProperty}
                                             afterTransferClueSuccess={this.props.afterTransferClueSuccess}
                                             onConvertToCustomerBtnClick={this.props.onConvertToCustomerBtnClick}
@@ -390,7 +381,6 @@ class ClueRightPanel extends React.Component {
                                             curClue={curClue}
                                             divHeight={divHeight}
                                             updateCustomerLastContact={this.updateCustomerLastContact}
-                                            showClueDetailPanel={this.showClueDetailPanel}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -449,6 +439,7 @@ ClueRightPanel.defaultProps = {
     updateCustomerLastContact: noop,
     afterTransferClueSuccess: noop,
     onConvertToCustomerBtnClick: noop,
+    showClueToCustomerPanel: noop,
 };
 ClueRightPanel.propTypes = {
     curClue: PropTypes.object,
@@ -464,5 +455,6 @@ ClueRightPanel.propTypes = {
     type: PropTypes.string,
     onConvertToCustomerBtnClick: PropTypes.func,
     extractClueOperator: PropTypes.func,
+    showClueToCustomerPanel: PropTypes.func,
 };
 export default ClueRightPanel;
