@@ -348,11 +348,19 @@ class UserLoginAnalysis extends React.Component {
     };
 
     renderChart = (data, charTips) => {
+        //今天
+        const today = moment().format(oplateConsts.DATE_FORMAT);
+        //六个月前
+        const sixMonthAgo = moment().subtract(6, 'months').format(oplateConsts.DATE_FORMAT);
+
+        const range = [sixMonthAgo, today];
+
         const calendarHeatMapOption = {
             calendar: [{
-                cellSize: [7, 7],
-                left: 'center',
+                cellSize: [13, 13],
+                left: 10,
                 top: 20,
+                range,
                 splitLine: {
                     lineStyle: {
                         color: CALENDER_COLOR.BORDER
