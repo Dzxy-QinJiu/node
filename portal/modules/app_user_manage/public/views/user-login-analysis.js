@@ -144,7 +144,7 @@ class UserLoginAnalysis extends React.Component {
         return {
             user_id: this.props.userId,
             appid: app_id,
-            starttime: queryParams && queryParams.starttime || moment().subtract(1, 'year').valueOf(),
+            starttime: queryParams && queryParams.starttime || moment().subtract(6, 'month').valueOf(),
             endtime: new Date().getTime()
         };
     }
