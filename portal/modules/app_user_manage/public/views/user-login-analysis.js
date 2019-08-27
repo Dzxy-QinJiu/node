@@ -17,7 +17,7 @@ import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
 //日历热力图颜色
 const CALENDER_COLOR = {
     BORDER: '#A2A2A2',
-    CONTENT: '#006bc0'
+    CONTENT: ['#fff', '#90caf9', '#2196f3', '#006bc0']
 };
 
 class UserLoginAnalysis extends React.Component {
@@ -372,7 +372,7 @@ class UserLoginAnalysis extends React.Component {
             },
             visualMap: {
                 inRange: {
-                    color: ['#fff', CALENDER_COLOR.CONTENT]
+                    color: CALENDER_COLOR.CONTENT
                 }
             },
         };
