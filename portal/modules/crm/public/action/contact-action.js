@@ -42,8 +42,8 @@ function ContactAction() {
         'afterEditContact'
     );
     //获取联系人列表
-    this.getContactList = function(curCustomer, isMerge) {
-        if (isMerge) {
+    this.getContactList = function(curCustomer, isUseCustomerContacts) {
+        if (isUseCustomerContacts) {
             let contactList = _.get(curCustomer, 'contacts', []);
             setTimeout(() => {
                 this.dispatch({list: contactList});
