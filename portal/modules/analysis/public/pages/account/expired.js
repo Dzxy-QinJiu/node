@@ -19,11 +19,11 @@ module.exports = {
 function getCharts() {
     return [
         //过期用户数统计
-        accountChart.getAccountNumChart('expired', '过期用户数统计'),
+        accountChart.getAccountNumChart('expired',Intl.get('user.statistics.expire','过期用户数统计')),
         //行业统计
-        accountChart.getAccountIndustryChart('expired', '过期用户行业统计'),
+        accountChart.getAccountIndustryChart('expired', Intl.get('user.statistics.expire.industry','过期用户行业统计')),
         //团队统计
-        accountChart.getAccountTeamChart('expired', '过期用户团队分布统计'),
+        accountChart.getAccountTeamChart('expired', Intl.get('user.statistics.expire.team','过期用户团队分布统计')),
         //用户类型
         accountChart.getAccountTypeChart('expired'),
         //状态统计

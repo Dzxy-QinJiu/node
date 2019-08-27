@@ -19,13 +19,13 @@ module.exports = {
 function getCharts() {
     return [
         //新增用户数统计
-        accountChart.getAccountNumChart('added', '新增用户数统计'),
+        accountChart.getAccountNumChart('added', Intl.get('user.statistics.new','新增用户数统计')),
         //新增用户来源分类统计
-        accountChart.getAccountSourceChart('added', '新增用户来源分类统计'),
+        accountChart.getAccountSourceChart('added', Intl.get('user.statistics.new.source','新增用户来源分类统计')),
         //行业统计
-        accountChart.getAccountIndustryChart('added', '新增用户行业统计'),
+        accountChart.getAccountIndustryChart('added', Intl.get('user.statistics.new.industry','新增用户行业统计')),
         //团队统计
-        accountChart.getAccountTeamChart('added', '新增用户团队统计'),
+        accountChart.getAccountTeamChart('added', Intl.get('user.statistics.new.team','新增用户团队统计')),
         //用户类型
         accountChart.getAccountTypeChart('added'),
         //状态统计
@@ -33,11 +33,11 @@ function getCharts() {
         //单应用用户活跃度趋势
         accountChart.getActivityChart('new_added'),
         //用户天留存统计
-        accountChart.getRemainAccountChart({interval: 'day', title: '用户天留存'}),
+        accountChart.getRemainAccountChart({interval: 'day', title: Intl.get('user.retain.day','用户天留存')}),
         //用户周留存统计
-        accountChart.getRemainAccountChart({interval: 'week', title: '用户周留存', range: 10}),
+        accountChart.getRemainAccountChart({interval: 'week', title: Intl.get('user.retain.week','用户周留存'), range: 10}),
         //用户月留存统计
-        accountChart.getRemainAccountChart({interval: 'month', title: '用户月留存', range: 10}),
+        accountChart.getRemainAccountChart({interval: 'month', title: Intl.get('user.retain.mon','用户月留存'), range: 10}),
         //设备统计
         accountChart.getAccountDeviceChart('add'),
         //浏览器统计

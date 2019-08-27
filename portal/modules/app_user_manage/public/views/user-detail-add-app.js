@@ -1048,7 +1048,7 @@ var UserDetailAddApp = createReactClass({
                 onChange={this.batchAppChange}
                 ref="batchAppSelect"
                 optionFilterProp="children"
-                notFoundContent={!batchApps.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                notFoundContent={!batchApps.length ? Intl.get('user.no.product','暂无产品') : Intl.get('user.no.related.product','无相关产品')}
                 searchPlaceholder={Intl.get('user.product.select.please','请选择产品')}
                 filterOption={(input, option) => ignoreCase(input, option)}
             >
@@ -1216,7 +1216,7 @@ var UserDetailAddApp = createReactClass({
                         placeholder={Intl.get('user.product.select.please','请选择产品')}
                         value={selectedApp}
                         optionFilterProp="children"
-                        notFoundContent={!options.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                        notFoundContent={!options.length ? Intl.get('user.no.product','暂无产品') : Intl.get('user.no.related.product','无相关产品')}
                         onChange={UserDetailAddAppAction.rolePermissionAppChange}
                     >
                         {options}

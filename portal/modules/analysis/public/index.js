@@ -134,7 +134,7 @@ class CurtaoAnalysis extends React.Component {
             Store.appList = result;
             Store.appList.unshift({
                 app_id: 'all',
-                app_name: '全部产品',
+                app_name: Intl.get( 'user.product.all','全部产品'),  
             });
         });
     };

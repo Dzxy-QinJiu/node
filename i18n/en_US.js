@@ -393,11 +393,11 @@ var en_US = {
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
     'user.user.product.select':'Select product',//选择产品
-    'user.detail.addApp.selectAndConfig': 'Select and config apps',//'选择应用并配置',
+    'user.detail.addProduct.selectAndConfig': 'Select and config products',//选择产品并配置
     'user.detail.addApp.setRolePermissions': 'Config role and permissions',//'设置角色权限',
     'user.detail.errorTip.getRoleTimeout': 'get role data time out',//'获取角色列表超时',
     'user.detail.errorTip.getPermissionTimeout': 'get permissions data time out',
-    'user.user.app.set': 'Application Configuration',//应用设置
+    'user.user.product.set':'Product Configuration',//产品设置
     'user.batch.operation': 'Batch operations',//批量操作
     'user.operator': 'Operator',//操作人
     'user.product.all':'All products',//全部产品
@@ -418,10 +418,10 @@ var en_US = {
     'user.remark.set.tip': 'Configure remarks',//设置备注
     'user.user.list.click': 'Please click at user list',//请在用户列表中点击
     'user.user.list.select': 'Select users',//选择用户
-    'user.app.open': 'Open application',//开通应用
-    'user.no.app': 'No application',//暂无应用
-    'user.no.related.app': 'No related application',////暂无符合条件的应用  无相关应用
-    'user.app.select.tip': 'Please select at least one application',//至少选择一个应用
+    'user.product.open':'Open product',//开通产品
+    'user.no.product': 'No product',//暂无产品
+    'user.no.related.product':'No related product',//无相关产品
+    'user.product.select.tip':'Please select at least one product',//至少选择一个产品
     'user.app.add.success': 'Add the application successfully',//添加应用成功
     'user.app.edit.success': 'Edit the application successfully',//修改应用成功
     'user.phone': 'Phone',//手机号
@@ -664,6 +664,50 @@ var en_US = {
     'user.login.last.week': 'The latest a week', // 近一周
     'user.login.last.title': 'Active statistics of {title}', // {title}的活跃统计
     'user.login.last.failed': 'Failed to get user recent login statistic', // 获取用户最近登录统计信息失败
+    'user.login.analysis.user':'Users analysis',//用户分析
+    'user.login.analysis.signed':'Signed users analysis',//签约用户分析
+    'user.login.analysis.delayed':'Deferred users analysis',//延期用户分析
+    'user.login.analysis.expired':'Expired users analysis',//过期用户分析
+    'user.login.analysis.new.add':'New users analysis',//新增用户分析
+    'user.login.analysis.new.expire':'New expired users analysis',//新增过期用户分析
+    'user.login.analysis.call':'Call analysis',//通话分析
+    'user.login.analysis.number.durant':'Quantity and duration statistics',//数量与时长统计
+    'user.login.analysis.call.other':'Other analysis',//其他分析
+    'user.login.analysis.chance':'Sales opportunity analysis',//销售机会分析
+    'user.login.analysis.clue':'Clue analysis',//线索分析
+    'user.login.analysis.contract':'Contract analysis',//合同分析
+    'user.login.analysis.new.contract':'New contract analysis',//新增合同分析
+    'user.login.analysis.cost':'Cost analysis',//费用分析
+    'user.login.analysis.repay':'Repay analysis',//回款分析
+    'user.login.analysis.customer':'Customer analysis',//客户分析
+    'user.login.analysis.customer.active':'Customer active analysis',//客户活跃度分析
+    'user.login.analysis.customer.new':'New customer analysis',//新增客户分析
+    'user.login.analysis.customer.other':'other',//其他
+    'user.login.analysis.customer.signed':'Singed customer analysis',//签约客户分析
+    'user.login.analysis.customer.stage':'Stage change analysis',//阶段变更分析
+    'user.login.analysis.customer.qualified':'Qualified customer analysis',//试用合格客户分析
+    'user.login.analysis.order':'Order analysis',//订单分析
+
+    //统计
+    'user.statistics.new':'New user count',//新增用户数统计
+    'user.statistics.new.source':'New user statistics source ',//新增用户来源分类统计
+    'user.statistics.new.industry':'New user industry statistics',//新增用户行业统计
+    'user.statistics.new.team':'New user team statistics',//新增用户团队统计
+    'user.statistics.expire':'Expired number of users',//过期用户数统计
+    'user.statistics.expire.industry':'Expired user industry statistics',//过期用户行业统计
+    'user.statistics.expire.team':'Expired user team statistics',//过期用户团队分布统计
+    'user.statistics.expire.new':'New expired user statistics',//新增过期用户数统计
+    'user.statistics.expire.new.industry':'New expired user industry statistics',//新增过期用户行业统计
+    'user.statistics.expire.new.team':'New expired user team statistics',//新增过期用户团队分布统计
+    'user.statistics.expire.new.area':'New expired user area statistics',//新增过期用户地域统计
+    'user.statistics.total.user':'Overall user count',//总体用户数统计
+    'user.statistics.total.user.source':'',//总用户来源分类统计
+    'user.statistics.total.user.area':'',//总用户地域统计
+    'user.statistics.total.user.industry':'',//总用户行业统计
+    'user.statistics.total.user.team':'',//总用户团队统计
+    'user.retain.day':'User retention of day',//用户天留存
+    'user.retain.week':'User retention of week',//用户周留存
+    'user.retain.mon':'User retention of month',//用户月留存
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',
     'third.party.app.add': 'Add application of the open plateform',//添加应用

@@ -383,7 +383,7 @@ const UserDetailAddApp = createReactClass({
                 {
                     isSubmitError ? (
                         <div className="has-error">
-                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.tip" defaultMessage="至少选择一个应用" /></div>
+                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.product.select.tip" defaultMessage="至少选择一个产品" /></div>
                         </div>
                     ) : null
                 }
@@ -767,7 +767,7 @@ const UserDetailAddApp = createReactClass({
                             >
                                 <OperationSteps.Step
                                     action={<span className={this.state.step === 0 ? 'active' : ''}>
-                                        {Intl.get('user.detail.addApp.selectAndConfig', '选择应用并配置')}<span className="icon-ellipsis">....</span></span>}
+                                        {Intl.get(    'user.detail.addProduct.selectAndConfig', '选择产品并配置')}<span className="icon-ellipsis">....</span></span>}
                                 >
                                 </OperationSteps.Step>
                                 <OperationSteps.Step

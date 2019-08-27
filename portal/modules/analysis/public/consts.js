@@ -86,7 +86,7 @@ export const CUSTOMER_IDS_FIELD = 'highest_customer_ids';
 // 用户分析菜单
 export const ACCOUNT_MENUS = {
     INDEX: {
-        name: '用户分析',
+        name: Intl.get('user.login.analysis.user','用户分析'),
         key: 'account'
     },
     OVERALL: {
@@ -94,23 +94,23 @@ export const ACCOUNT_MENUS = {
         key: 'account_overall'
     },
     SIGNED: {
-        name: '签约用户分析',
+        name:  Intl.get('user.login.analysis.signed','签约用户分析'),
         key: 'signed'
     },
     DELAYED: {
-        name: '延期用户分析',
+        name:  Intl.get('user.login.analysis.delayed','延期用户分析'),
         key: 'delayed'
     },
     EXPIRED: {
-        name: '过期用户分析',
+        name:  Intl.get('user.login.analysis.expired','过期用户分析'),
         key: 'expired'
     },
     NEW_ADD: {
-        name: '新增用户分析',
+        name:  Intl.get('user.login.analysis.new.add','新增用户分析'),
         key: 'new_add'
     },
     NEW_ADD_EXPIRE: {
-        name: '新增过期用户分析',
+        name:  Intl.get('user.login.analysis.new.expire','新增过期用户分析'),
         key: 'new_add_expire'
     }
 };
@@ -118,15 +118,15 @@ export const ACCOUNT_MENUS = {
 // 通话分析菜单
 export const CALL_MENUS = {
     INDEX: {
-        name: '通话分析',
+        name:  Intl.get('user.login.analysis.call','通话分析'),
         key: 'call'
     },
     NUMBER_DURATION: {
-        name: '数量与时长统计',
+        name:  Intl.get('user.login.analysis.number.durant','数量与时长统计'),
         key: 'number_duration'
     },
     OTHER: {
-        name: '其他分析',
+        name:  Intl.get('user.login.analysis.call.other','其他分析'),
         key: 'call_other'
     }
 };
@@ -134,7 +134,7 @@ export const CALL_MENUS = {
 // 销售机会分析菜单
 export const CHANCE_MENUS = {
     INDEX: {
-        name: '销售机会分析',
+        name: Intl.get('user.login.analysis.chance','销售机会分析'),
         key: 'chance'
     },
     OVERALL: {
@@ -146,7 +146,7 @@ export const CHANCE_MENUS = {
 // 线索分析菜单
 export const CLUE_MENUS = {
     INDEX: {
-        name: '线索分析',
+        name: Intl.get( 'user.login.analysis.clue','线索分析'),
         key: 'clue'
     },
     OVERALL: {
@@ -158,19 +158,19 @@ export const CLUE_MENUS = {
 // 合同分析菜单
 export const CONTRACT_MENUS = {
     INDEX: {
-        name: '合同分析',
+        name: Intl.get('user.login.analysis.contract','合同分析'),
         key: 'contract'
     },
     CONTRACT: {
-        name: '新增合同分析',
+        name: Intl.get('user.login.analysis.new.contract','新增合同分析'),
         key: 'new_contract'
     },
     COST: {
-        name: '费用分析',
+        name: Intl.get('user.login.analysis.cost','费用分析'),
         key: 'cost'
     },
     REPAY: {
-        name: '回款分析',
+        name: Intl.get('user.login.analysis.repay','回款分析'),
         key: 'repay'
     },
     OVERALL: {
@@ -182,31 +182,31 @@ export const CONTRACT_MENUS = {
 // 客户分析菜单
 export const CUSTOMER_MENUS = {
     INDEX: {
-        name: '客户分析',
+        name: Intl.get('user.login.analysis.customer','客户分析'), 
         key: 'customer'
     },
     ACTIVE: {
-        name: '客户活跃度分析',
+        name: Intl.get('user.login.analysis.customer.active','客户活跃度分析'), 
         key: 'active'
     },
     NEW_ADD: {
-        name: '新增客户分析',
+        name: Intl.get('user.login.analysis.customer.new','新增客户分析'),
         key: 'customer_new_add'
     },
     OTHER: {
-        name: '其他',
+        name: Intl.get('user.login.analysis.customer.other','其他'), 
         key: 'customer_other'
     },
     SIGNED: {
-        name: '签约客户分析',
+        name: Intl.get('user.login.analysis.customer.signed','签约客户分析'), 
         key: 'signed'
     },
     STAGE: {
-        name: '阶段变更分析',
+        name: Intl.get('user.login.analysis.customer.stage','阶段变更分析'), 
         key: 'stage'
     },
     TRIAL_QUALIFIED: {
-        name: '试用合格客户分析',
+        name: Intl.get('user.login.analysis.customer.qualified','试用合格客户分析'), 
         key: 'trial-qualified'
     },
     OVERALL: {
@@ -218,7 +218,7 @@ export const CUSTOMER_MENUS = {
 // 订单分析菜单
 export const ORDER_MENUS = {
     INDEX: {
-        name: '订单分析',
+        name: Intl.get('user.login.analysis.order','订单分析'), 
         key: 'order'
     },
     OVERALL: {

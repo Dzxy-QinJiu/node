@@ -19,17 +19,17 @@ module.exports = {
 function getCharts() {
     return [
         //总体用户数统计
-        accountChart.getAccountNumChart('total', '总体用户数统计'),
+        accountChart.getAccountNumChart('total', Intl.get( 'user.statistics.total.user','总体用户数统计')),
         //总用户来源分类统计
-        accountChart.getAccountSourceChart('total', '总用户来源分类统计'),
+        accountChart.getAccountSourceChart('total', Intl.get('user.statistics.total.user.source','总用户来源分类统计')),
         //有效用户数统计
         accountChart.getAccountValidChart(),
         //总用户地域统计 
-        accountChart.getAccountZoneChart('total', '总用户地域统计'),
+        accountChart.getAccountZoneChart('total', Intl.get('user.statistics.total.user.area','总用户地域统计')),
         //总用户行业统计
-        accountChart.getAccountIndustryChart('total', '总用户行业统计'),
+        accountChart.getAccountIndustryChart('total', Intl.get('user.statistics.total.user.industry','总用户行业统计',)),
         //总用户团队统计
-        accountChart.getAccountTeamChart('total', '总用户团队统计'),
+        accountChart.getAccountTeamChart('total', Intl.get('user.statistics.total.user.team','总用户团队统计')),
         //单应用用户类型统计
         accountChart.getAccountTypeChart(),
         //单应用用户状态统计
