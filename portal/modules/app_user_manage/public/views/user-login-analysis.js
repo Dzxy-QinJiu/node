@@ -17,7 +17,7 @@ import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
 //日历热力图颜色
 const CALENDER_COLOR = {
     BORDER: '#A2A2A2',
-    CONTENT: '#7190B4'
+    CONTENT: '#006bc0'
 };
 
 class UserLoginAnalysis extends React.Component {
