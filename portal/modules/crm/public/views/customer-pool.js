@@ -12,7 +12,7 @@ import {AntcTable} from 'antc';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {SearchInput} from 'antc';
-import {message, Popconfirm, Icon, Tag, Button} from 'antd';
+import {message, Popconfirm, Icon, Tag, Button, Popover} from 'antd';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import crmAjax from '../ajax/index';
 import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
@@ -86,9 +86,10 @@ class CustomerPool extends React.Component {
                 });
         }
     }
-    getFilterParams(){
+
+    getFilterParams() {
         let filterParams = {};
-        if(this.customerPoolFilterRef){
+        if (this.customerPoolFilterRef) {
             let condition = _.get(this.customerPoolFilterRef, 'state.condition', {});
             _.each(condition, (val, key) => {
                 if (val) {
@@ -106,6 +107,7 @@ class CustomerPool extends React.Component {
         }
         return filterParams;
     }
+
     getPoolCustomer() {
         let queryObj = {
             page_size: PAGE_SIZE,
@@ -150,10 +152,24 @@ class CustomerPool extends React.Component {
         });
     }
 
-    extractCustomer = () => {
-        if (this.state.isExtracting) return;
+    //批量提取客户
+    batchExtractCustomer = () => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.extract-btn'), '批量提取客户');
+        let customerIdArray = _.map(this.state.selectedCustomer, 'id');
+        this.extractCustomer(customerIdArray);
+    };
+    //单个提取客户
+    singleExtractCustomer = (customer) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-extract'), '提取单个客户');
+        let customerIdArray = _.get(customer, 'id') ? [_.get(customer, 'id')] : [];
+        this.extractCustomer(customerIdArray);
+    };
+
+    //提取客户的处理
+    extractCustomer = (customerIds) => {
+        if (this.state.isExtracting || !_.get(customerIds, 'length')) return;
         let paramObj = {
-            customerIds: _.map(this.state.selectedCustomer, 'id')
+            customerIds: customerIds
         };
         if (userData.getUserData().isCommonSales) {
             paramObj.ownerId = userData.getUserData().user_id;
@@ -179,11 +195,13 @@ class CustomerPool extends React.Component {
         this.setState({isExtracting: true});
         crmAjax.extractCustomer(paramObj).then(result => {
             let poolCustomerList = this.state.poolCustomerList;
-            let customerIds = _.map(this.state.selectedCustomer, 'id');
+            let customerIds = paramObj.customerIds;
             poolCustomerList = _.filter(poolCustomerList, item => !_.includes(customerIds, item.id));
             let totalSize = this.state.totalSize - _.get(customerIds, 'length', 0);
             this.setState({isExtracting: false, salesMan: '', poolCustomerList, totalSize});
             message.success(Intl.get('clue.extract.success', '提取成功'));
+            //隐藏批量提取面板
+            this.batchExtractRef && this.batchExtractRef.handleCancel();
             if (poolCustomerList.length < 20) {
                 this.getPoolCustomer();
             }
@@ -264,7 +282,7 @@ class CustomerPool extends React.Component {
                 render: (text, record, index) => {
                     return (
                         <span>
-                            <CustomerLabel label={record.customer_label} />
+                            <CustomerLabel label={record.customer_label}/>
                         </span>);
                 }
             }, {
@@ -284,7 +302,7 @@ class CustomerPool extends React.Component {
 
                     return (
                         <span>
-                            <CustomerLabel label={record.qualify_label} />
+                            <CustomerLabel label={record.qualify_label}/>
                             {tags.length ?
                                 <div className="customer-list-tags">
                                     {tags}
@@ -304,6 +322,36 @@ class CustomerPool extends React.Component {
                 className: 'has-filter',
             }
         ];
+
+        //只要不是运营人员都可以提取
+        if (!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+            columns.push({
+                title: Intl.get('common.operate', '操作'),
+                width: 40,
+                render: (text, record, index) => {
+                    const extractIcon = (<i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>);
+                    return userData.getUserData().isCommonSales ? (
+                        <Popconfirm
+                            placement="left"
+                            title={Intl.get('crm.pool.single.extract.tip', '您确定要提取此客吗？')}
+                            onConfirm={this.singleExtractCustomer.bind(this, record)}
+                        >
+                            {extractIcon}
+                        </Popconfirm>
+                    ) : (<AntcDropdown
+                        content={extractIcon}
+                        overlayTitle={Intl.get('crm.pool.extract.distribute', '提取并分配负责人')}
+                        okTitle={Intl.get('common.confirm', '确认')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        isSaving={this.state.isExtracting}
+                        overlayContent={this.renderSalesBlock()}
+                        handleSubmit={this.singleExtractCustomer.bind(this, record)}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectSales}
+                        btnAtTop={false}/>);
+                }
+            });
+        }
         return columns;
     }
 
@@ -426,6 +474,55 @@ class CustomerPool extends React.Component {
             this.getPoolCustomer();
         });
     };
+    //渲染批量提取的按钮
+    renderBatchExtractBtn(selectCustomerLength) {
+        //运营人员不提取
+        if (userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+            return null;
+        } else {//销售、管理员
+            const batchExtractBtn = (
+                <Button className="btn-item extract-btn" disabled={!selectCustomerLength}>
+                    {Intl.get('clue.extract', '提取')}
+                </Button>);
+            //选择客户后可以进行批量提取
+            if (selectCustomerLength) {
+                //普通销售可以直接将客户提取到自己身上
+                if (userData.getUserData().isCommonSales) {
+                    return (<Popconfirm
+                        title={Intl.get('crm.pool.batch.extract.tip', '您确定要提取选中的客吗？')}
+                        onConfirm={this.batchExtractCustomer}
+                    >
+                        {batchExtractBtn}
+                    </Popconfirm>);
+                } else {//销售领导、管理员提取需要分配客户的负责人
+                    return (<AntcDropdown
+                        ref={batchExtract => this.batchExtractRef = batchExtract}
+                        content={batchExtractBtn}
+                        overlayTitle={Intl.get('crm.pool.extract.distribute', '提取并分配负责人')}
+                        okTitle={Intl.get('common.confirm', '确认')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        isSaving={this.state.isExtracting}
+                        overlayContent={this.renderSalesBlock()}
+                        handleSubmit={this.batchExtractCustomer}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectSales}
+                        btnAtTop={false}/>);
+                }
+            } else {//未选客户时，批量提取按钮不可用，点击后提示先选择客户
+                const clickTip = (
+                    <ReactIntl.FormattedMessage
+                        id='crm.pool.select.customer.tip'
+                        defaultMessage={'请点击列表中的{icon}选择客户'}
+                        values={{'icon': <i className='table-select-icon'/>}}
+                    />
+                );
+                return (
+                    <Popover placement="left" content={clickTip} title={null} overlayClassName="batch-extract-popover">
+                        {batchExtractBtn}
+                    </Popover>);
+            }
+        }
+    }
 
     render() {
         let tableWrapHeight = getTableContainerHeight();
@@ -450,21 +547,26 @@ class CustomerPool extends React.Component {
                         />
                     </div>
                     <RightPanelClose onClick={this.returnCustomerList}/>
-                    {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || !selectCustomerLength ? null :
-                        userData.getUserData().isCommonSales ? (
-                            <Button className="btn-item extract-btn"
-                                onClick={this.extractCustomer}>{Intl.get('clue.extract', '提取')}</Button>
-                        ) : (<AntcDropdown
-                            content={<Button className="btn-item extract-btn">{Intl.get('clue.extract', '提取')}</Button>}
-                            overlayTitle={Intl.get('user.salesman', '销售人员')}
-                            okTitle={Intl.get('common.confirm', '确认')}
-                            cancelTitle={Intl.get('common.cancel', '取消')}
-                            isSaving={this.state.isExtracting}
-                            overlayContent={this.renderSalesBlock()}
-                            handleSubmit={this.extractCustomer}
-                            unSelectDataTip={this.state.unSelectDataTip}
-                            clearSelectData={this.clearSelectSales}
-                            btnAtTop={false}/>)}
+                    {this.renderBatchExtractBtn(selectCustomerLength)}
+                    {/*{userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || !selectCustomerLength ? null :*/}
+                    {/*userData.getUserData().isCommonSales ? (*/}
+                    {/*<Popconfirm*/}
+                    {/*title={Intl.get('crm.pool.batch.extract.tip', '您确定要提取选中的客吗？')}*/}
+                    {/*onConfirm={this.batchExtractCustomer}*/}
+                    {/*>*/}
+                    {/*{batchExtractBtn}*/}
+                    {/*</Popconfirm>*/}
+                    {/*) : (<AntcDropdown*/}
+                    {/*content={batchExtractBtn}*/}
+                    {/*overlayTitle={Intl.get('crm.pool.extract.distribute', '提取并分配负责人')}*/}
+                    {/*okTitle={Intl.get('common.confirm', '确认')}*/}
+                    {/*cancelTitle={Intl.get('common.cancel', '取消')}*/}
+                    {/*isSaving={this.state.isExtracting}*/}
+                    {/*overlayContent={this.renderSalesBlock()}*/}
+                    {/*handleSubmit={this.batchExtractCustomer}*/}
+                    {/*unSelectDataTip={this.state.unSelectDataTip}*/}
+                    {/*clearSelectData={this.clearSelectSales}*/}
+                    {/*btnAtTop={false}/>)}*/}
                 </TopNav>
                 <div className="customer-table-container customer-pool-table"
                     style={{height: tableWrapHeight}}>
