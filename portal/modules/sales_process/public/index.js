@@ -16,6 +16,7 @@ import CustomerStage from './views/customer-stage';
 import CONSTS from 'LIB_DIR/consts';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {AntcTable} from 'antc';
+import StageSelectTeamUser from './views/stage-select-team-user';
 
 const saleId = CONSTS.ROLE_ID_CONSTANS.SALE_ID;
 const pageSize = 1000;
@@ -372,8 +373,14 @@ class SalesProcess extends React.Component {
         SalesProcessAction.changeSaleProcessFieldSuccess(saleProcess);
     };
 
-    showCustomerStageScope = (customerStage) => {
+    // 显示选择团队或是个人的面板
+    showSelectTeamUserPanel = (customerStage) => {
+        SalesProcessAction.showSelectTeamUserPanel(customerStage);
+    };
 
+    // 关闭选择团队或是个人的面板
+    closeSelectTeamUserPanel = (customerStage) => {
+        SalesProcessAction.closeSelectTeamUserPanel(customerStage);
     };
 
     getTableColumns = () => {
@@ -425,7 +432,7 @@ class SalesProcess extends React.Component {
                     <div className="stage-operate">
                         <span
                             title={Intl.get('customer.stage.set.scope', '设置适用范围')}
-                            onClick={this.showCustomerStageScope.bind(this, record)}
+                            onClick={this.showSelectTeamUserPanel.bind(this, record)}
                             data-tracename={'点击设置' + name + '按钮'}
                         >
                             <i className="iconfont icon-role-auth-config"></i>
@@ -511,6 +518,16 @@ class SalesProcess extends React.Component {
                     <div className="sales-process-content" style={{height: containerHeight}}>
                         {this.renderCustomerStageContent(containerHeight)}
                     </div>
+                    {
+                        this.state.isShowSelectTeamUserPanel ? (
+                            <StageSelectTeamUser
+                                treeSelectData={treeSelectData}
+                                currentStage={this.state.currentSaleProcess}
+                                closeSelectTeamUserPanel={this.closeSelectTeamUserPanel}
+                                changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
+                            />
+                        ) : null
+                    }
                     {
                         /**
                          * isShowAddProcessFormPanel true 打开添加销售流程面板

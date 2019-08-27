@@ -54,7 +54,7 @@ exports.updateSalesProcess = (req, res) => {
         property = 'description';
     } else if (bodyParam.status){ // 修改状态
         property = 'status';
-    } else if (bodyParam.process_relate_entities ) { // 修改客户阶段适合范围
+    } else if (bodyParam.teams || bodyParam.users) { // 修改客户阶段适合范围
         property = 'process_relate_entities';
     }
     return restUtil.authRest.put(
