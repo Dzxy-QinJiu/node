@@ -643,7 +643,7 @@ var zh_CN = {
     'user.access.way.tip': '您如果使用了以下产品，还可以通过以下方式接入用户',
     'user.access.way.other.tip': '其他方式接入',
     'user.jscode.test.btn': '测试',
-    'user.jscode.use.tip': '请{copyAndTraceCode}到产品页面的header中后测试',
+    'user.jscode.use.tip': '请{copyAndTraceCode}到产品页面的<header>中部署后测试',
     'user.jscode.copy.trace': '复制跟踪代码',
     'user.test.error.tip': '测试失败',
     'user.list.check.refresh': '刷新查看用户列表',
