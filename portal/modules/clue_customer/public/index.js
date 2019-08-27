@@ -38,7 +38,7 @@ import {
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
-import ContactItem from 'MOD_DIR/common_sales_home_page/public/view//contact-item';
+import ContactItem from 'MOD_DIR/common_sales_home_page/public/view/contact-item';
 import ClueAnalysisPanel from './views/clue-analysis-panel';
 import SalesClueAddForm from './views/add-clues-form';
 import ClueImportRightDetail from 'CMP_DIR/import_step';
