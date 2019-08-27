@@ -886,6 +886,7 @@ var zh_CN = {
     'customer.stage.edit.stage': '编辑{stage}阶段',
     'customer.stage.exist.stage.tips': '该客户阶段已存在',
     'customer.stage.add.stage': '添加一个客户阶段',
+    'customer.stage.delete.stage': '删除客户阶段',
     // 后台管理-客户阶段end
 
     //应用管理start

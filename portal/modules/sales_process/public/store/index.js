@@ -128,6 +128,7 @@ class SalesProcessStore {
         let status = _.get(saleProcess, 'status'); // 修改销售流程状态
         let teams = _.get(saleProcess, 'teams'); // 修改客户阶段使用范围(团队)
         let users = _.get(saleProcess, 'users'); // 修改客户阶段使用范围(个人)
+        let customerStages = _.get(saleProcess, 'customerStages'); // 修改客户阶段的阶段数据
         if (name) {
             upDateProcess.name = name;
         } else if (status) {
@@ -137,6 +138,8 @@ class SalesProcessStore {
         } else if (teams || users) {
             upDateProcess.teams = teams;
             upDateProcess.users = users;
+        } else if (customerStages) {
+            upDateProcess.customer_stages = customerStages;
         }
     }
 

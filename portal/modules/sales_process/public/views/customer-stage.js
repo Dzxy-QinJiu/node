@@ -25,6 +25,8 @@ class CustomerStage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            editCustomerNameLoading: false, // 修改客户阶段名称的loading
+            editCustomerNameMsgTips: '', // 修改客户阶段名称的信息提示
             ...CustomerStageStore.getState(),
         };
     }
@@ -199,6 +201,9 @@ class CustomerStage extends React.Component {
             } else {
                 callback();
             }
+            if (this.state.editCustomerNameMsgTips) {
+                callback(this.state.editCustomerNameMsgTips);
+            }
         };
     };
 
@@ -206,12 +211,31 @@ class CustomerStage extends React.Component {
     handleEditCustomerName = () => {
         this.props.form.validateFields((err, values) => {
             if (err) return;
+            this.setState({
+                editCustomerNameLoading: true
+            });
             let submitObj = {
                 name: _.trim(values.name),
                 id: this.props.saleProcessId
             };
             CustomerStageAjax.updateSalesProcess(submitObj).then( (result) => {
-
+                if (result) {
+                    this.setState({
+                        editCustomerNameLoading: false,
+                        editCustomerNameMsgTips: Intl.get('common.edit.failed', '修改失败')
+                    });
+                    this.props.changeSaleProcessFieldSuccess(submitObj);
+                } else {
+                    this.setState({
+                        editCustomerNameLoading: false,
+                        editCustomerNameMsgTips: Intl.get('common.edit.failed', '修改失败')
+                    });
+                }
+            }, (errMsg) => {
+                this.setState({
+                    editCustomerNameLoading: false,
+                    editCustomerNameMsgTips: errMsg || Intl.get('common.edit.failed', '修改失败')
+                });
             } );
         });
     };
@@ -241,6 +265,9 @@ class CustomerStage extends React.Component {
                             onBlur={this.handleEditCustomerName}
                         />
                     )}
+                    {
+                        this.state.editCustomerNameLoading ? <Icon type="loading"/> : null
+                    }
                 </FormItem>
             </Form>
         );
@@ -358,6 +385,12 @@ class CustomerStage extends React.Component {
     };
 
     closeCustomerStagePanel = () => {
+        let upDateObj = {
+            id: this.props.saleProcessId,
+            customerStages: this.state.customerStageList
+        };
+        this.props.changeSaleProcessFieldSuccess(upDateObj);
+
         CustomerStageAction.setInitialData();
         this.props.closeCustomerStagePanel();
     };
@@ -454,6 +487,7 @@ CustomerStage.propTypes = {
     saleProcesTitle: PropTypes.string,
     salesProcessList: PropTypes.array,
     form: PropTypes.object,
+    changeSaleProcessFieldSuccess: PropTypes.func,
 };
 
 export default Form.create()(CustomerStage);

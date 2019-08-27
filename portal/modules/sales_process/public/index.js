@@ -355,7 +355,7 @@ class SalesProcess extends React.Component {
                                                     onClick={this.handleDeleteSaleProcess.bind(this, item)}
                                                     data-tracename={'点击删除' + item.name + '销售流程按钮'}
                                                 >
-                                                    <i className="iconfont icon-delete "></i>
+                                                    <i className="iconfont icon-delete"></i>
                                                 </span>
                                             ) : null
                                         }
@@ -440,11 +440,11 @@ class SalesProcess extends React.Component {
                         {
                             hasPrivilege('CRM_DELETE_SALES_PROCESS') && type === 'custom' ? (
                                 <span
-                                    title={Intl.get('sales.process.delete.process', '删除客户阶段')}
+                                    title={Intl.get('customer.stage.delete.stage', '删除客户阶段')}
                                     onClick={this.handleDeleteSaleProcess.bind(this, record)}
                                     data-tracename={'点击删除' + name + '按钮'}
                                 >
-                                    <i className="iconfont icon-delete "></i>
+                                    <i className="iconfont icon-delete"></i>
                                 </span>
                             ) : null
                         }
@@ -567,6 +567,7 @@ class SalesProcess extends React.Component {
                                 isShowCustomerStage={this.state.isShowCustomerStage}
                                 saleProcesTitle={this.state.saleProcessName}
                                 salesProcessList={this.state.salesProcessList}
+                                changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
                             />
                         ) : null
                     }
