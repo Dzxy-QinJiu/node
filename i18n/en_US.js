@@ -659,6 +659,7 @@ var en_US = {
     'user.login.history.activity.score': 'Historical activity score', // 历史活跃度分数
     'user.login.history.immersion.score': 'Historical immersion score', // 历史沉浸度分数
     'user.login.last.year': 'The latest a year', // 近一年
+    'user.login.last.six.month': 'The latest six month', // 近六个月
     'user.login.last.month': 'The latest a month', // 近一月
     'user.login.last.week': 'The latest a week', // 近一周
     'user.login.last.title': 'Active statistics of {title}', // {title}的活跃统计

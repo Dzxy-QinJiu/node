@@ -40,7 +40,7 @@ class UserLoginAnalysis extends React.Component {
     };
 
     getUserAnalysisInfo = (userId, selectedAppId) => {
-        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId, timeType: 'year' }, selectedAppId);
+        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId, timeType: 'six_month' }, selectedAppId);
         if (selectedAppId) {
             UserLoginAnalysisAction.setSelectedAppId(selectedAppId);
         }
@@ -441,7 +441,7 @@ class UserLoginAnalysis extends React.Component {
         });
     };
     handleSelectDate = (app, value) => {
-        let starttime = moment().subtract(1, 'year').valueOf();
+        let starttime = moment().subtract(6, 'month').valueOf();
         if (value === 'month') {
             starttime = moment().subtract(1, 'month').valueOf();
         } else if (value === 'week') {
@@ -456,7 +456,7 @@ class UserLoginAnalysis extends React.Component {
     };
     // 渲染时间选择框
     renderTimeSelect = (app) => {
-        let timeType = _.get(this.state.appUserDataMap, [app.app_id, 'timeType'], 'year');
+        let timeType = _.get(this.state.appUserDataMap, [app.app_id, 'timeType'], 'six_month');
         let list = _.map(DATE_SELECT, item =>
             <Option value={item.value} key={item.value} title={item.name}>{item.name}</Option>);
         return (

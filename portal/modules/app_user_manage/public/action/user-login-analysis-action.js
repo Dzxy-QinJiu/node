@@ -71,7 +71,7 @@ function UserLoginAnalysisAction() {
 
                 // 用户登录信息（时长、次数、首次和最后一次登录时间）
                 this.actions.getUserLoginInfo(loginParam);
-                let lastLoginParam = {...loginParam, timeType: _.get(searchObj, 'timeType'), starttime: _.get(searchObj, 'starttime') || moment().subtract(1, 'year').valueOf()};
+                let lastLoginParam = {...loginParam, timeType: _.get(searchObj, 'timeType'), starttime: _.get(searchObj, 'starttime') || moment().subtract(6, 'month').valueOf()};
                 // 用户登录统计图中登录时长、登录频次
                 this.actions.getUserLoginChartInfo(lastLoginParam);
 
