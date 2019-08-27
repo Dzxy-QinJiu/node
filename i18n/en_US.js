@@ -1626,6 +1626,10 @@ var en_US = {
     'crm.customer.extract.time': 'Extract time',//释放时间
     'crm.customer.release.customer': 'Release customer',//释放客户
     'crm.customer.extract.limit.tip': 'Up to 20 customers at a time',//一次最多提取20个客户
+    'crm.pool.single.extract.tip': 'Are you sure you want to extract this customer?',//您确定要提取此客吗？
+    'crm.pool.batch.extract.tip': 'Are you sure you want to extract the selected customers?',//您确定要提取选中的客吗？
+    'crm.pool.extract.distribute': 'To extract and assign the person in charge',//提取并分配负责人
+    'crm.pool.select.customer.tip': '',//请点击列表中的{icon}选择客户
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
