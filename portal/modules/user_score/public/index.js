@@ -425,7 +425,7 @@ class userScore extends React.Component {
                                             </Row>
                                         </div>;
                                     })
-                                    : <NoDataIntro renderAddAndImportBtns={this.noOperationIntroBtn.bind(this, appItem.app_id)} showAddBtn={true} noDataAndAddBtnTip = {Intl.get('user.score.no.config.operation.config', '暂未配置操作指标')} />}
+                                    : <NoDataIntro renderAddAndImportBtns={this.noOperationIntroBtn} showAddBtn={true} noDataAndAddBtnTip = {Intl.get('user.score.no.config.operation.config', '暂未配置操作指标')} />}
                                 {/*保存*/}
                             </TabPane>
                         );
@@ -434,14 +434,14 @@ class userScore extends React.Component {
             </div>
         );
     };
-    noOperationIntroBtn = (appId) => {
+    noOperationIntroBtn = () => {
         return <div className="btn-containers">
-            <Button type='primary' onClick={this.handleShowAppPanel.bind(this, appId)}>{Intl.get('user.score.start.config', '开始配置')}</Button>
+            <Button type='primary' onClick={this.handleShowAppPanel}>{Intl.get('user.score.start.config', '开始配置')}</Button>
         </div>;
     };
-    handleShowAppPanel = (appId) => {
+    handleShowAppPanel = () => {
         this.setState({
-            isAddingAppId: appId
+            isEditUserEngagementRule: true
         });
     };
 
