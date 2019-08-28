@@ -4,9 +4,10 @@
  * Created by zhangshujuan on 2019/5/23.
  */
 
-import {Input, Select, Radio, Checkbox} from 'antd';
+import {Input, Select, Radio, Checkbox, Form} from 'antd';
 const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
+const FormItem = Form.Item;
 
 class InputContent extends React.Component {
     constructor(props) {
@@ -16,21 +17,60 @@ class InputContent extends React.Component {
         };
     }
 
-    onSaveAllData = () => {
-        var submitObj = {};
-        submitObj[this.props.labelKey + ''] = this.state.inputValue;
-        return submitObj;
-    };
-    onChangeInputValue = (e) => {
-       this.setState({
-           inputValue: e.target.value
-       });
-    };
+    // onSaveAllData = () => {
+    //     var submitObj = {};
+    //     submitObj[this.props.labelKey + ''] = this.state.inputValue;
+    //     return submitObj;
+    // };
+    // onChangeInputValue = (e) => {
+    //    this.setState({
+    //        inputValue: e.target.value
+    //    });
+    // };
     render = () => {
+        var formItemLayout = {
+            labelCol: {
+                xs: {span: 24},
+                sm: {span: 6},
+            },
+            wrapperCol: {
+                xs: {span: 24},
+                sm: {span: 18},
+            },
+        };
+        var formItem = this.props;
+        var isTemplate = _.get(formItem,'componentTemple');
+        if (isTemplate){
+            formItemLayout = {
+                labelCol: {
+                    xs: {span: 0},
+                    sm: {span: 0},
+                },
+                wrapperCol: {
+                    xs: {span: 24},
+                    sm: {span: 24},
+                },
+            };
+        }
+
+        const {getFieldDecorator} = this.props.form;
         return (
-            <div className="select-option-container">
-                <Input {...this.props} onChange={this.onChangeInputValue}/>
-            </div>
+            <FormItem
+                label={isTemplate ? '' : _.get(formItem, 'title')}
+                id={_.get(formItem, 'formItemKey')}
+                {...formItemLayout}
+            >
+                {
+                    getFieldDecorator(_.get(formItem, 'formItemKey'), {
+                        initialValue: '',
+                        rules: [{
+                            required: _.get(formItem, 'is_required'),
+                            message: _.get(formItem, 'is_required_errmsg')
+                        }],
+                    })(
+                        <Input {...this.props}/>
+                    )}
+            </FormItem>
         );
     }
 }
@@ -40,7 +80,7 @@ InputContent.defaultProps = {
     type: '',
     placeholder: '',
     component_type: '',
-    labelKey: ''
+    labelKey: '',
 };
 
 InputContent.propTypes = {
@@ -49,5 +89,6 @@ InputContent.propTypes = {
     placeholder: PropTypes.string,
     component_type: PropTypes.string,
     labelKey: PropTypes.string,
+    form: PropTypes.object,
 };
 export default InputContent;

@@ -11,7 +11,7 @@
 import {Input, Checkbox, Button} from 'antd';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 require('./index.less');
-import {ALL_COMPONENTS, ALL_COMPONENTS_TYPE, applyComponentsType} from '../../utils/apply-approve-utils';
+import {ALL_COMPONENTS, ALL_COMPONENTS_TYPE, applyComponentsType, ADDAPPLYFORMCOMPONENTS} from '../../utils/apply-approve-utils';
 import classNames from 'classnames';
 class componentShow extends React.Component {
     constructor(props) {
@@ -31,7 +31,7 @@ class componentShow extends React.Component {
     }
 
     getTargetType = (formItem) => {
-        var target = _.find(applyComponentsType, item => item.name === _.get(formItem, 'component_type'));
+        var target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.component_type === _.get(formItem, 'component_type'));
         if (target) {
             var ApplyComponent = target.component;
             if (target.component_type === ALL_COMPONENTS.DATETIME && !target.defaultValue){
@@ -41,7 +41,9 @@ class componentShow extends React.Component {
                     target.defaultValue = moment(moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
                 }
             }
-            return <ApplyComponent {...formItem}/>;
+
+
+            return <ApplyComponent {...this.props} {..._.assign({}, target, formItem)}/>;
         } else {
             return null;
         }

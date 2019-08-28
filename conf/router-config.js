@@ -224,15 +224,15 @@ let routers = [
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
         },
-        //     {
-        //     //todo 待修改的！！！！！！
-        //     id: 'MY_LAEVE_APPLY_MANAGEMENT',
-        //     name: 'apply.my.self.setting.work.flow',//我的自定义流程
-        //     routePath: '/application/self_setting',
-        //     component: `${MODULE_PATH}self_setting/public`,
-        //     //有这个权限，才显示入口图标
-        //     showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
-        // }
+        {
+            //todo 待修改的！！！！！！
+            id: 'MY_LEAVE_APPLY_MANAGEMENT',
+            name: 'apply.my.self.setting.work.flow',//拜访申请
+            routePath: '/application/self_setting',
+            component: `${MODULE_PATH}self_setting/public`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+        }
         ]
     },
     {

@@ -27,6 +27,8 @@ Oplate.unread = {
     unhandleDocumentWrite: 0,
     //成员审批未读数
     unhandleMemberInivte: 0,
+    //拜访审批未读数
+    unhandleVisitApply: 0
 };
 
 Oplate.isCalling = false; //是否正在打电话，如果正在打电话，不可以继续打

@@ -69,6 +69,7 @@ LeaveApplyDetailStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.isLeader = false; //当前账号是否是待审批人的上级领导
+    this.applyNode = [];
 };
 LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     delete detailObj.afterAddReplySuccess;
@@ -99,6 +100,7 @@ LeaveApplyDetailStore.prototype.setDetailInfoObjAfterAdd = function(detailObj) {
     };
     //下一节点负责人的列表
     this.candidateList = [];
+
 
 };
 //设置某条申请的回复列表
@@ -273,6 +275,12 @@ LeaveApplyDetailStore.prototype.getNextCandidate = function(result) {
 LeaveApplyDetailStore.prototype.setNextCandidateIds = function(candidateId) {
     this.detailInfoObj.info.nextCandidateId = candidateId;
 };
+LeaveApplyDetailStore.prototype.setApplyCandate = function(selectUserId) {
+    this.detailInfoObj.info.assigned_candidate_users = selectUserId;
+};
+LeaveApplyDetailStore.prototype.setSalesMan = function(selectSales) {
+    this.detailInfoObj.info.user_ids = selectSales;
+};
 LeaveApplyDetailStore.prototype.transferNextCandidate = function(result) {
     if (result.loading) {
         this.transferStatusInfo.result = 'loading';
@@ -286,6 +294,25 @@ LeaveApplyDetailStore.prototype.transferNextCandidate = function(result) {
         //如果转出成功，要隐藏审批的按钮
         this.selectedDetailItem.showApproveBtn = false;
         this.detailInfoObj.info.showApproveBtn = false;
+    }
+};
+LeaveApplyDetailStore.prototype.saveSelfSettingWorkFlowRules = function(result) {
+    if (result.loading) {
+        this.saveRulesWorkFlowLoading = true;
+        this.saveRulesWorkFlowErrMsg = '';
+    } else if (result.error) {
+        this.saveRulesWorkFlowLoading = false;
+        this.saveRulesWorkFlowErrMsg = result.errorMsg;
+    } else {
+        this.saveRulesWorkFlowLoading = false;
+        this.saveRulesWorkFlowErrMsg = '';
+    }
+};
+LeaveApplyDetailStore.prototype.getApplyTaskNode = function(result){
+    if (result.error) {
+        this.applyNode = [];
+    } else {
+        this.applyNode = result;
     }
 };
 

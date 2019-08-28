@@ -83,7 +83,9 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的请假申请数量
     UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
+    UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
+
 };
 
 //系统消息对应的几种类型
@@ -614,4 +616,11 @@ export const CHANGE_RECORD_TYPE = {
     userInfoUpdate: 'UserInfoUpdate', // 基本信息的变更
     teamChange: 'teamChange', // 变更团队
     teamRoleChange: 'teamRoleChange', // 变更职务
+};
+export const REALM_REMARK = {
+    CIVIW: '36duh3ok3i'//销识微域的安全域id
+};
+export const ASSIGN_TYPE = {
+    NEXT_CANDIDATED: 'nextCandidated',
+    COMMON_SALES: 'commonSales'
 };

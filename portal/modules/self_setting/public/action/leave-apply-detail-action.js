@@ -30,7 +30,9 @@ function ApplyViewDetailActions() {
         'setNextCandidateIds',
         'setNextCandidateName',//下一节点审批人的名字
         'setNextCandidate',
-        'showOrHideApprovalBtns'
+        'showOrHideApprovalBtns',
+        'setApplyCandate',
+        'setSalesMan',
     );
 
     //获取审批单详情
@@ -77,23 +79,32 @@ function ApplyViewDetailActions() {
     };
 
     //通过或者驳回审批
-    this.approveLeaveApplyPassOrReject = function(obj) {
+    this.approveLeaveApplyPassOrReject = function(obj,callback) {
         this.dispatch({loading: true, error: false});
         SelfSettingApproveAjax.approveSelfSettingApply().sendRequest(obj).success((data) => {
-            this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
-            //更新选中的申请单类型
-            LeaveApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
-            if (Oplate && Oplate.unread) {
-                Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] -= 1;
-                if (timeoutFunc) {
-                    clearTimeout(timeoutFunc);
+            if(data){
+                this.dispatch({loading: false, error: false, data: data, approval: obj.approval});
+                //更新选中的申请单类型
+                LeaveApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
+                if (Oplate && Oplate.unread) {
+                    Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] -= 1;
+                    if (timeoutFunc) {
+                        clearTimeout(timeoutFunc);
+                    }
+                    timeoutFunc = setTimeout(function() {
+                        //触发展示的组件待审批数的刷新
+                        notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
+                    }, timeout);
                 }
-                timeoutFunc = setTimeout(function() {
-                    //触发展示的组件待审批数的刷新
-                    notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
-                }, timeout);
+                _.isFunction(callback) && callback(true);
+            }else{
+                LeaveApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('errorcode.19', '审批申请失败')});
+                _.isFunction(callback) && callback(false);
             }
+
         }).error((errorMsg) => {
+            _.isFunction(callback) && callback(false);
             //更新选中的申请单类型
             LeaveApplyUtils.emitter.emit('updateSelectedItem', {status: 'error'});
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
@@ -146,6 +157,14 @@ function ApplyViewDetailActions() {
             _.isFunction(callback) && callback(false);
         }
         );
+    };
+    //获取该审批所在节点
+    this.getApplyTaskNode = function(queryObj){
+        ApplyApproveAjax.getApplyTaskNode().sendRequest(queryObj).success((list) => {
+            if (_.isArray(list)) {
+                this.dispatch(list);
+            }
+        }).error(this.dispatch({error: true}));
     };
 
 }
