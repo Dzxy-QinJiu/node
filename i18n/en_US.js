@@ -701,10 +701,10 @@ var en_US = {
     'user.statistics.expire.new.team':'New expired user team statistics',//新增过期用户团队分布统计
     'user.statistics.expire.new.area':'New expired user area statistics',//新增过期用户地域统计
     'user.statistics.total.user':'Overall user count',//总体用户数统计
-    'user.statistics.total.user.source':'',//总用户来源分类统计
-    'user.statistics.total.user.area':'',//总用户地域统计
-    'user.statistics.total.user.industry':'',//总用户行业统计
-    'user.statistics.total.user.team':'',//总用户团队统计
+    'user.statistics.total.user.source':'Total User Source Statistics',//总用户来源分类统计
+    'user.statistics.total.user.area':'User geographic statistics',//总用户地域统计
+    'user.statistics.total.user.industry':'Total User Industry Statistics',//总用户行业统计
+    'user.statistics.total.user.team':'Total User Team Statistics',//总用户团队统计
     'user.retain.day':'User retention of day',//用户天留存
     'user.retain.week':'User retention of week',//用户周留存
     'user.retain.mon':'User retention of month',//用户月留存
