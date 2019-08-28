@@ -525,7 +525,7 @@ var en_US = {
     'user.password.tip': 'In secrecy',//保密中
     'user.failed': 'Failure',//失败
     'user.select.user.tip': 'Please select users in list',//请在用户列表中选择用户
-    'user.product.select':'Please select products',//请选择产品
+    'user.product.select.please':'Please select products',//请选择产品
     'user.operate.success': 'Operate successfully',//操作成功
     'user.batch.app.open': 'Applications',//开通产品
     'user.batch.open.type': 'Types',//开通类型
