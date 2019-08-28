@@ -61,8 +61,10 @@ class ClueTraceList extends React.Component {
 
     componentDidMount() {
         ClueTraceStore.listen(this.onStoreChange);
-        //获取线索的跟进记录
-        this.getClueTraceList();
+        setTimeout(() => {//此处不加setTimeout，调用action方法时会报Dispatch错误
+            //获取线索的跟进记录
+            this.getClueTraceList();
+        });
         $(window).on('resize', this.onStoreChange);
     }
 
