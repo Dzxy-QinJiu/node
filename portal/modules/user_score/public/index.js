@@ -353,46 +353,23 @@ class userScore extends React.Component {
         );
 
     }
-
-    getAppOptions = (engageTargetItem) => {
-        const {userEngagementFormData} = this.state;
-        var appList = _.cloneDeep(_.get(this, 'state.appList', []));
-        //过滤掉之前选过的应用
-        _.forEach(_.get(userEngagementFormData, 'user_engagements', []), (engageItem) => {
-            if (_.get(engageItem, 'app_id') && engageItem.randomId !== engageTargetItem.randomId) {
-                appList = _.filter(appList, appItem => appItem.app_id !== engageItem.app_id);
-            }
-        });
-        var list = appList.map((item) => {
-            return <Option key={item.app_id} value={item.app_id} title={item.app_name}>{item.app_name}</Option>;
-        });
-        if (!appList.length) {
-            var clickMsg = Intl.get('app.user.manager.click.get.app', '点击获取应用');
-            if (this.state.appListErrorMsg) {
-                clickMsg = Intl.get('app.user.failed.get.apps', '获取失败') + '，' + clickMsg;
-            } else {
-                clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
-            }
-            list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="retry-get-applist-container">
-                <div className="retry-get-appList" onClick={this.getAppLists}>
-                    {clickMsg}
-                </div>
-            </Option>);
-        }
-        return list;
-    };
     handleClickUserEngagementRule = () => {
         this.setState({
             isEditUserEngagementRule: true
         });
     };
+    handleSelectedAppChange = () => {
+        this.setState({
+            isEditUserEngagementRule: false
+        });
+    }
     renderEngagementTabs = () => {
         const {appList, userEngagementFormData, isEditUserEngagementRule} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements');
 
         return (
             <div>
-                <Tabs defaultActiveKey="1" tabPosition='left' style={{ height: 220 }}>
+                <Tabs defaultActiveKey="1" tabPosition='left' style={{ height: 220 }} onChange={this.handleSelectedAppChange}>
                     {_.map(appList,(appItem, idx) => {
                         var engageItem = _.find(userEngagements,item => item.app_id === appItem.app_id);
                         return (
@@ -448,7 +425,7 @@ class userScore extends React.Component {
                                             </Row>
                                         </div>;
                                     })
-                                    : <NoDataIntro renderAddAndImportBtns={this.noOperationIntroBtn} showAddBtn={true} noDataAndAddBtnTip = {Intl.get('user.score.no.config.operation.config', '暂未配置操作指标')} />}
+                                    : <NoDataIntro renderAddAndImportBtns={this.noOperationIntroBtn.bind(this, appItem.app_id)} showAddBtn={true} noDataAndAddBtnTip = {Intl.get('user.score.no.config.operation.config', '暂未配置操作指标')} />}
                                 {/*保存*/}
                             </TabPane>
                         );
@@ -457,11 +434,17 @@ class userScore extends React.Component {
             </div>
         );
     };
-    noOperationIntroBtn = () => {
+    noOperationIntroBtn = (appId) => {
         return <div className="btn-containers">
-            <Button type='primary' onClick={this.handleShowAppPanel}>{Intl.get('user.score.start.config', '开始配置')}</Button>
+            <Button type='primary' onClick={this.handleShowAppPanel.bind(this, appId)}>{Intl.get('user.score.start.config', '开始配置')}</Button>
         </div>;
-    }
+    };
+    handleShowAppPanel = (appId) => {
+        this.setState({
+            isAddingAppId: appId
+        });
+    };
+
     renderParticateScoreRules = () => {
         const {userEngagementFormData, userEngagementObj, isEditUserEngagementRule} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
@@ -699,21 +682,6 @@ class userScore extends React.Component {
                 <div className="user-score-wrap">
                     <div className="user-score-content">
                         <p className="level-rule-tip">{Intl.get('user.score.level.rule', '用户评分规则')}
-
-                            {getUserIntegrationConfigLoading || getUserIntegrationConfigErrMsg || showUserIntro ? null :
-                                <StatusWrapper
-                                    errorMsg={this.state.errorMsg}
-                                    size='small'
-                                >
-                                    <MemberStatusSwitch
-                                        title={Intl.get('customer.score.status.rules', '确定要{status}该规则？', {
-                                            status: _.get(this, 'state.customerRulesFormData.status') !== 'enable' ? Intl.get('common.enabled', '启用') :
-                                                Intl.get('common.stop', '停用')
-                                        })}
-                                        handleConfirm={this.handleCustomerScoreRuleStatus}
-                                        status={_.get(this, 'state.customerRulesFormData.status') === 'enable'}
-                                    />
-                                </StatusWrapper>}
                         </p>
                         {getUserIntegrationConfigLoading ? <Spinner/> :
                             <div>{getUserIntegrationConfigErrMsg ?

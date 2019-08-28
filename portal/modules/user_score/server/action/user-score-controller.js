@@ -3,11 +3,6 @@ var _ = require('lodash');
 const userScoreService = require('../service/user-score-service');
 exports.getUserScoreIndicator = (req, res) => {
     userScoreService.getUserScoreIndicator(req, res).on('success', (data) => {
-        //过滤掉不用的选择项
-        if (_.isArray(data)){
-            data = _.filter(data, item => item.indicator !== 'online_time_rate');
-            data = _.filter(data, item => item.indicator !== 'active_days_rate');
-        }
         res.status(200).json(data);
     }).on('error', (err) => {
         res.status(500).json(err && err.message);
