@@ -168,7 +168,7 @@ class TimePeriod extends React.Component {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         var _this = this;
         var formItem = this.props;
-        const formItemLayout = {
+        var formItemLayout = {
             labelCol: {
                 xs: {span: 24},
                 sm: {span: 6},
@@ -178,10 +178,23 @@ class TimePeriod extends React.Component {
                 sm: {span: 18},
             },
         };
+        var isTemplate = _.get(formItem,'componentTemple');
+        if (isTemplate){
+            formItemLayout = {
+                labelCol: {
+                    xs: {span: 0},
+                    sm: {span: 0},
+                },
+                wrapperCol: {
+                    xs: {span: 24},
+                    sm: {span: 24},
+                },
+            };
+        }
         return (
             <div className="time-period-container">
                 <FormItem
-                    label={_.get(formItem, 'title')}
+                    label={isTemplate ? '' : _.get(formItem, 'title')}
                     id={_.get(formItem, 'formItemKey')}
                     {...formItemLayout}
                 >
@@ -194,7 +207,7 @@ class TimePeriod extends React.Component {
                             }],
                         })(
                             <Row>
-                                <Col span={11}>
+                                <Col span={isTemplate ? 7 : 11}>
                                     <FormItem
                                         className="form-item-label add-apply-time"
                                     >
@@ -231,7 +244,7 @@ class TimePeriod extends React.Component {
                                     <span className="split-line">
                      ——
                                     </span></Col>
-                                <Col span={11}>
+                                <Col span={isTemplate ? 7 : 11}>
                                     <FormItem
                                         className="form-item-label add-apply-time"
                                     >
@@ -302,7 +315,6 @@ TimePeriod.defaultProps = {
     },
     component_type: '',
     labelKey: '',
-    form: {}
 };
 
 TimePeriod.propTypes = {

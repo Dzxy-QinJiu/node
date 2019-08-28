@@ -28,7 +28,7 @@ class InputContent extends React.Component {
     //    });
     // };
     render = () => {
-        const formItemLayout = {
+        var formItemLayout = {
             labelCol: {
                 xs: {span: 24},
                 sm: {span: 6},
@@ -39,10 +39,24 @@ class InputContent extends React.Component {
             },
         };
         var formItem = this.props;
+        var isTemplate = _.get(formItem,'componentTemple');
+        if (isTemplate){
+            formItemLayout = {
+                labelCol: {
+                    xs: {span: 0},
+                    sm: {span: 0},
+                },
+                wrapperCol: {
+                    xs: {span: 24},
+                    sm: {span: 24},
+                },
+            };
+        }
+
         const {getFieldDecorator} = this.props.form;
         return (
             <FormItem
-                label={_.get(formItem, 'title')}
+                label={isTemplate ? '' : _.get(formItem, 'title')}
                 id={_.get(formItem, 'formItemKey')}
                 {...formItemLayout}
             >

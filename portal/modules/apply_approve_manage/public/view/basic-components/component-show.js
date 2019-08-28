@@ -43,7 +43,7 @@ class componentShow extends React.Component {
             }
 
 
-            return <ApplyComponent {..._.assign({}, target, formItem)}/>;
+            return <ApplyComponent {...this.props} {..._.assign({}, target, formItem)}/>;
         } else {
             return null;
         }
