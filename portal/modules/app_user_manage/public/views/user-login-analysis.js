@@ -349,7 +349,7 @@ class UserLoginAnalysis extends React.Component {
 
     //获取块配置
     getPieces(data) {
-        //去零、去重、按从小到大排序后的数值数值
+        //去零、去重、按从小到大排序后的数值数组
         const numArr = _.chain(data).map('sum').filter(it => it > 0).uniq().sort().value();
         //颜色数组
         const colorArr = CALENDER_COLOR.CONTENT;
@@ -360,7 +360,7 @@ class UserLoginAnalysis extends React.Component {
         if (numArr.length > 0) {
             //如果数值数组的长度小于等于颜色数组的长度
             if (numArr.length <= colorArr.length) {
-                //给每个值分配颜色
+                //给每个数值分配颜色
                 _.each(numArr, (num, index) => {
                     pieceArr.push({value: num, color: colorArr[index]});
                 });
@@ -370,6 +370,7 @@ class UserLoginAnalysis extends React.Component {
                 //分段长度
                 const fragLen = _.round(numArr.length / colorArr.length);
 
+                //遍历颜色数组，生成颜色对应的块配置
                 _.each(colorArr, (color, index) => {
                     //分段起始索引
                     const startIndex = index * fragLen;
