@@ -647,7 +647,7 @@ class CustomerRecord extends React.Component {
                                 </span>
                             ) : null
                         }
-                        {_.includes(PHONE_TYPES, item.type) ?
+                        {_.includes(PHONE_TYPES, item.type) && !this.props.disableEdit ?
                             (<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
                                 <PhoneCallout
                                     phoneNumber={item.dst}
