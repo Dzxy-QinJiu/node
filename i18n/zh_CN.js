@@ -664,6 +664,7 @@ var zh_CN = {
     'user.login.history.activity.score': '历史活跃度',
     'user.login.history.immersion.score': '历史沉浸度',
     'user.login.last.year': '近一年',
+    'user.login.last.six.month': '近六个月',
     'user.login.last.month': '近一月',
     'user.login.last.week': '近一周',
     'user.login.last.title': '{title} 的活跃统计',

@@ -489,7 +489,7 @@ export const DIFF_APPLY_TYPE_UNREAD_REPLY = {
 
 // 用户分析中，时间选择类型
 export const DATE_SELECT = [
-    {name: Intl.get('user.login.last.year', '近一年'), value: 'year'},
+    {name: Intl.get('user.login.last.six.month', '近六个月'), value: 'six_month'},
     {name: Intl.get('user.login.last.month', '近一月'), value: 'month' },
     {name: Intl.get('user.login.last.week', '近一周'), value: 'week'}
 ];
