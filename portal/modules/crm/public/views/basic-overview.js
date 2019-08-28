@@ -365,11 +365,12 @@ class BasicOverview extends React.Component {
                 </Button>) :
                 (<Popover
                     placement="bottomRight"
+                    overlayClassName="apply-invalid-popover"
                     content={_.get(this.state, 'applyState.applyMessage')}
                     visible={this.state.popoverErrorVisible}
                     onVisibleChange={this.handleVisibleChange}
                     trigger="click">
-                    <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
+                    <Button className='crm-detail-add-btn'>
                         {Intl.get('crm.apply.user.new', '申请新用户')}
                     </Button>
                 </Popover>)
@@ -411,15 +412,8 @@ class BasicOverview extends React.Component {
     };
 
     toggleApplyForm = () => {
-        if(!_.get(this.state, 'applyState.applyPrivileged')) {
-            this.setState({
-                popoverErrorVisible: true
-            });
-            return false;
-        } else {
-            let applyFormShowFlag = !this.state.applyFormShowFlag;
-            this.setState({applyFormShowFlag: applyFormShowFlag});
-        }
+        let applyFormShowFlag = !this.state.applyFormShowFlag;
+        this.setState({applyFormShowFlag: applyFormShowFlag});
     };
 
     turnToUserList = () => {

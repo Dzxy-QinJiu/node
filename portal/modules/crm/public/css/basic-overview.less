@@ -218,20 +218,23 @@
     }
   }
 }
-.ant-popover-inner-content {
-  overflow: hidden;
-  //申请时错误提示
-  .apply-error-tip {
-    font-size: 14px;
-    .icon-warn-icon {
-      position: relative;
-      top: 1px;
-      margin-right: 4px;
-      color: @select_warning_color;
-    }
-    .apply-error-text {
-      color: #333333;
-      margin-left: 4px;
+//Popover错误提示框
+.apply-invalid-popover{
+  .ant-popover-inner-content {
+    overflow: hidden;
+    //申请时错误提示
+    .apply-error-tip {
+      font-size: 14px;
+      .icon-warn-icon {
+        position: relative;
+        top: 1px;
+        margin-right: 4px;
+        color: @select_warning_color;
+      }
+      .apply-error-text {
+        color: #333333;
+        margin-left: 4px;
+      }
     }
   }
 }

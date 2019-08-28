@@ -286,33 +286,26 @@ class CustomerUsers extends React.Component {
     }
 
     handleMenuClick(applyType) {
-        if(!_.get(this.state, 'applyState.applyPrivileged') && applyType === APPLY_TYPES.NEW_USERS) {
-            this.setState({
-                popoverErrorVisible: true
-            });
-            return false;
-        } else {
-            let traceDescr = '';
-            if (applyType === APPLY_TYPES.STOP_USE) {
-                traceDescr = '打开申请停用面板';
-            } else if (applyType === APPLY_TYPES.EDIT_PASSWORD) {
-                traceDescr = '打开申请修改密码面板';
-            } else if (applyType === APPLY_TYPES.DELAY) {
-                traceDescr = '打开申请延期面板';
-            } else if (applyType === APPLY_TYPES.OTHER) {
-                traceDescr = '打开申请其他类型面板';
-            } else if (applyType === APPLY_TYPES.OPEN_APP) {
-                traceDescr = '打开申请开通应用面板';
-                // if (_.isFunction(this.props.showOpenAppForm)) {
-                //     this.props.showOpenAppForm(applyType);
-                // }
-            }
-            Trace.traceEvent('客户详情', traceDescr);
-            this.setState({applyType: applyType});
-            setTimeout(() => {
-                this.setState(this.getLayoutHeight());
-            });
+        let traceDescr = '';
+        if (applyType === APPLY_TYPES.STOP_USE) {
+            traceDescr = '打开申请停用面板';
+        } else if (applyType === APPLY_TYPES.EDIT_PASSWORD) {
+            traceDescr = '打开申请修改密码面板';
+        } else if (applyType === APPLY_TYPES.DELAY) {
+            traceDescr = '打开申请延期面板';
+        } else if (applyType === APPLY_TYPES.OTHER) {
+            traceDescr = '打开申请其他类型面板';
+        } else if (applyType === APPLY_TYPES.OPEN_APP) {
+            traceDescr = '打开申请开通应用面板';
+            // if (_.isFunction(this.props.showOpenAppForm)) {
+            //     this.props.showOpenAppForm(applyType);
+            // }
         }
+        Trace.traceEvent('客户详情', traceDescr);
+        this.setState({applyType: applyType});
+        setTimeout(() => {
+            this.setState(this.getLayoutHeight());
+        });
     }
 
     //发邮件使用的参数
@@ -350,14 +343,14 @@ class CustomerUsers extends React.Component {
                 </div>) : (
                 <Popover
                     placement="bottomRight"
+                    overlayClassName="apply-invalid-popover"
                     content={_.get(this.state, 'applyState.applyMessage')}
                     visible={this.state.popoverErrorVisible}
                     onVisibleChange={this.handleVisibleChange}
                     trigger="click"
                 >
                     <div className="crm-user-apply-btns" data-tracename="申请新用户">
-                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
-                            onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}>
                             {Intl.get('crm.apply.user.new', '申请新用户')}
                         </Button>
                     </div>

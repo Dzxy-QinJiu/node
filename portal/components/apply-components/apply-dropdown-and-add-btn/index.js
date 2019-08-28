@@ -31,10 +31,13 @@ class ApplyDropdownAndAddBtn extends React.Component {
     }
 
     componentDidMount = () => {
+
     };
     componentWillReceiveProps = (nextProps) => {
+
     };
     componentWillUnmount = () => {
+
     };
 
     renderApplyMessage = () => {
@@ -61,7 +64,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
             applyPrivileged ? (
                 <Button className='pull-right add-leave-btn' onClick={this.showAddApplyPanel}>{this.props.addApplyMessage}</Button>) :
                 (<Popover
-                    className="apply-invalid-popover"
+                    overlayClassName="apply-invalid-popover"
                     placement="bottomRight"
                     content={_.get(this.state, 'applyState.applyMessage')}
                     trigger="click"

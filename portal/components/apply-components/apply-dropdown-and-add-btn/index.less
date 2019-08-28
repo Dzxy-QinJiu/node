@@ -84,21 +84,24 @@
     margin-left: 10px;
   }
 }
+
 //popover错误提示框
-.ant-popover-inner-content {
-  overflow: hidden;
-  //申请时错误提示
-  .apply-error-tip {
-    font-size: 14px;
-    .icon-warn-icon {
-      position: relative;
-      top: 1px;
-      color: @reply-message-tip-color;
-      margin-right:4px;
-    }
-    .apply-error-text {
-      margin-left: 5px;
-      color: #333333;
+.apply-invalid-popover {
+  .ant-popover-inner-content {
+    overflow: hidden;
+    //申请时错误提示
+    .apply-error-tip {
+      font-size: 14px;
+      .icon-warn-icon {
+        position: relative;
+        top: 1px;
+        color: @reply-message-tip-color;
+        margin-right:4px;
+      }
+      .apply-error-text {
+        margin-left: 5px;
+        color: #333333;
+      }
     }
   }
 }

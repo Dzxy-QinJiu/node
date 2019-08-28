@@ -13,6 +13,7 @@ import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
+import userData from 'PUB_DIR/sources/user-data';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -175,6 +176,7 @@ class UserInfo extends React.Component{
             if (resultObj.error) {
                 message.error(resultObj.errorMsg);
             } else {
+                userData.setUserData('emailEnable', true);
                 message.success(
                     Intl.get('user.info.active.email', '激活邮件已发送至{email},请前往激活',{'email': _.get(this.props.userInfo, 'email')})
                 );
@@ -194,6 +196,9 @@ class UserInfo extends React.Component{
                 this.setState({
                     formData
                 });
+                //在userdata中更新此字段
+                userData.setUserData('email', email);
+                userData.setUserData('emailEnable', '');
                 successFunc();
             } else {
                 errorFunc(errorMsg);
