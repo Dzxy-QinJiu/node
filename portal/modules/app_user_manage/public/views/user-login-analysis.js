@@ -17,7 +17,7 @@ import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
 //日历热力图颜色
 const CALENDER_COLOR = {
     BORDER: '#A2A2A2',
-    CONTENT: ['#fff', '#90caf9', '#2196f3', '#006bc0']
+    CONTENT: ['#90caf9', '#2196f3', '#006bc0']
 };
 
 class UserLoginAnalysis extends React.Component {
@@ -347,6 +347,60 @@ class UserLoginAnalysis extends React.Component {
 
     };
 
+    //获取块配置
+    getPieces(data) {
+        //去零、去重、按从小到大排序后的数值数值
+        const numArr = _.chain(data).map('sum').filter(it => it > 0).uniq().sort().value();
+        //颜色数组
+        const colorArr = CALENDER_COLOR.CONTENT;
+        //块配置数组
+        let pieceArr = [];
+
+        //数值数组有值时，才能根据数值生成块配置
+        if (numArr.length > 0) {
+            //如果数值数组的长度小于等于颜色数组的长度
+            if (numArr.length <= colorArr.length) {
+                //给每个值分配颜色
+                _.each(numArr, (num, index) => {
+                    pieceArr.push({value: num, color: colorArr[index]});
+                });
+            //如果数值数组的长度大于颜色数组的长度，
+            //则需要对数值数组进行分段，为每个段分配颜色
+            } else {
+                //分段长度
+                const fragLen = _.round(numArr.length / colorArr.length);
+
+                _.each(colorArr, (color, index) => {
+                    //分段起始索引
+                    const startIndex = index * fragLen;
+                    //分段起始值
+                    const fragStart = numArr[startIndex];
+
+                    //分段结束索引，默认按当前分段索引和分段长度进行计算
+                    let endIndex = (index + 1) * fragLen;
+                    //分段结束值
+                    let fragEnd;
+
+                    //如果是最后一个分段
+                    if (index + 1 === colorArr.length) {
+                        //则分段结束值应该是数值数组最后一个值
+                        fragEnd = _.last(numArr);
+                        //此时分段结束值应该包含在分段内，即比较符为 lte（小于等于），而非 lt（小于）
+                        pieceArr.push({gte: fragStart, lte: fragEnd, color});
+                    //否则
+                    } else {
+                        //分段结束值根据分段结束索引获取
+                        fragEnd = numArr[endIndex];
+                        //此时分段结束值不包含在当前分段内，即比较符为 lt（小于）
+                        pieceArr.push({gte: fragStart, lt: fragEnd, color});
+                    }
+                });
+            }
+        }
+
+        return pieceArr;
+    }
+
     renderChart = (data, charTips) => {
         //今天
         const today = moment().format(oplateConsts.DATE_FORMAT);
@@ -354,6 +408,8 @@ class UserLoginAnalysis extends React.Component {
         const sixMonthAgo = moment().subtract(6, 'months').format(oplateConsts.DATE_FORMAT);
 
         const range = [sixMonthAgo, today];
+
+        const pieces = this.getPieces(data);
 
         const calendarHeatMapOption = {
             calendar: [{
@@ -371,9 +427,8 @@ class UserLoginAnalysis extends React.Component {
                 formatter: charTips
             },
             visualMap: {
-                inRange: {
-                    color: CALENDER_COLOR.CONTENT
-                }
+                type: 'piecewise',
+                pieces,
             },
         };
 
