@@ -195,8 +195,13 @@ class DynamicAddDelCustomers extends React.Component {
         _.each(customers, (item, index) => {
             if (item.key === key) {
                 item.visit_start_time = startValue ? startValue.valueOf() : '';
+                //如果开始时间比结束时间晚，修改结束时间
+                if (item.visit_start_time > item.visit_end_time){
+                    item.visit_end_time = item.visit_start_time;
+                }
                 //修改完开始时间也需要看一下开始时间类型的下拉选项是否需要修改
                 item.start_type_select = this.calculateSelectType(item.visit_start_time);
+                item.end_type_select = this.calculateEndSelectType(item);
                 //如果之前选中的上午还是下午的类型（visit_start_type），不在时间类型的下拉选项（start_type_select）中，自动设置visit_end_type为end_type_select里第一个
                 if (!_.some(item.start_type_select,typeItem => typeItem.value === item.visit_start_type) && _.get(item.start_type_select,'[0]')){
                     item.visit_start_type = _.get(item.start_type_select,'[0].value');
@@ -216,8 +221,13 @@ class DynamicAddDelCustomers extends React.Component {
         _.each(customers, (item, index) => {
             if (item.key === key) {
                 item.visit_end_time = endValue ? endValue.valueOf() : '';
+                //如果开始时间比结束时间晚，修改开始时间
+                if (item.visit_start_time > item.visit_end_time){
+                    item.visit_start_time = item.visit_end_time;
+                }
                 //修改完结束时间，看一下结束时间类型的下拉选项是否需要修改
-                item.end_type_select = this.calculateSelectType(item.visit_end_time);
+                item.start_type_select = this.calculateSelectType(item.visit_start_time);
+                item.end_type_select = this.calculateEndSelectType(item);
                 //如果之前选中的上午还是下午的类型（visit_end_type），不在时间类型的下拉选项（end_type_select）中，自动设置visit_end_type为end_type_select里第一个
                 if (!_.some(item.end_type_select,typeItem => typeItem.value === item.visit_end_type) && _.get(item.end_type_select,'[0]')){
                     item.visit_end_type = _.get(item.end_type_select,'[0].value');
@@ -230,6 +240,14 @@ class DynamicAddDelCustomers extends React.Component {
         this.setFieldCustomers(_.cloneDeep(customers));
         this.props.handleCustomersChange(customers);
     };
+    calculateEndSelectType = (item) => {
+        var selectTypeArr = LEAVE_TIME_RANGE;
+        //如果和开始的时间是同一天并且开始的类型是PM
+        if (moment(item.visit_start_time).isSame(item.visit_end_time,'day') && item.visit_start_type === AM_AND_PM.PM){
+            selectTypeArr = LEAVE_TIME_RANGE.slice(1,2);
+        }
+        return selectTypeArr;
+    }
     setFieldCustomers = (customers) => {
         const {form} = this.props;
         if (_.isArray(customers) && customers.length){
@@ -253,6 +271,7 @@ class DynamicAddDelCustomers extends React.Component {
         _.each(customers, (item, index) => {
             if (item.key === key) {
                 item.visit_start_type = value || '';
+                item.end_type_select = this.calculateEndSelectType(item);
                 return false;
             }
         });
