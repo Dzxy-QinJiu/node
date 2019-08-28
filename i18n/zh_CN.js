@@ -692,6 +692,7 @@ var zh_CN = {
     'user.login.analysis.customer.qualified':'试用合格客户分析',
     'user.login.analysis.order':'订单分析',
 
+
     //统计
     'user.statistics.new':'新增用户数统计',
     'user.statistics.new.source':'新增用户来源分类统计',
@@ -712,6 +713,7 @@ var zh_CN = {
     'user.retain.day':'用户天留存',
     'user.retain.week':'用户周留存',
     'user.retain.mon':'用户月留存',
+    'user.login.create.account':'销售开通用户统计',
     // 第三方应用配置
     'third.party.app': '开放应用平台',
     'third.party.app.add': '添加开放平台应用',
@@ -2146,8 +2148,8 @@ var zh_CN = {
     'user.analysis.moveoutCustomer': '转出客户统计',
     'user.analysis.sales.users': '销售开通用户统计',
     'user.analysis.active.user.area.statistics': '活跃用户地域统计',
-    'user.analysis.account.login.statistics': '开通账号登录统计',
-    'user.analysis.account.count': '开通账号数',
+    'user.analysis.account.login.statistics': '开通用户登录统计',
+    'user.analysis.user.count': '开通用户数',
     'user.analysis.account.login.count': '实际登录数',
 
     //销售首页-新增客户分析

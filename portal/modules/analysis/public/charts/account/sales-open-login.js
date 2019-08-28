@@ -8,7 +8,7 @@ import {STORED_APP_ID_KEY} from '../../consts';
 
 export function getSalesOpenAccountLoginChart() {
     return {
-        title: Intl.get('user.analysis.account.login.statistics', '开通账号登录统计'),
+        title: Intl.get('user.analysis.account.login.statistics', '开通用户登录统计'),
         chartType: 'table',
         noShowCondition: {
             callback: () => isSales()
@@ -39,7 +39,7 @@ export function getSalesOpenAccountLoginChart() {
                     width: '25%',
                 },
                 {
-                    title: Intl.get('user.analysis.account.count', '开通账号数'),
+                    title: Intl.get('user.analysis.user.count', '开通用户数'),
                     dataIndex: 'new_users',
                     align: 'right',
                     width: '25%',
