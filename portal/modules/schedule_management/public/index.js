@@ -8,7 +8,7 @@ require('./css/index.less');
 require('react-big-calendar/lib/css/react-big-calendar.css');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import Trace from 'LIB_DIR/trace';
-import { message } from 'antd';
+import { message, Radio } from 'antd';
 
 var scheduleManagementStore = require('./store/schedule-management-store');
 var scheduleManagementAction = require('./action/schedule-management-action');
@@ -47,6 +47,7 @@ class ScheduleManagement extends React.Component {
         curCustomerId: '',//查看详情的客户的id
         isShowAddToDo: false,// 是否显示右侧添加待办项
         scheduleLists: [],// 用于存放请求接口后返回的日程数据
+        topicValue: 'customer', //添加待办项时选择主题为"客户"还是"线索"
         ...scheduleManagementStore.getState()
     };
 
@@ -325,18 +326,36 @@ class ScheduleManagement extends React.Component {
         this.handleScheduleData(events, view);
     };
 
+    // 待办项的topic修改时
+    onTopicChange = (e) => {
+        this.setState({
+            topicValue: e.target.value
+        });
+    }
     // 渲染待办项
     renderCrmFormContent() {
         return (
-            <DetailCard className='add-todo' content={
-                <CrmScheduleForm
-                    isAddToDoClicked
-                    handleScheduleAdd={this.handleScheduleAdd}
-                    handleScheduleCancel={this.handleCancel}
-                    currentSchedule={{}}/>
-            }>
-            </DetailCard>
-
+            <div className="add-todo-container">
+                <div className="todo-topic-switch">
+                    <Radio.Group
+                        size="large"
+                        value={_.get(this.state, 'topicValue')}
+                        onChange={this.onTopicChange}
+                    >
+                        <Radio.Button value="customer">{Intl.get('call.record.customer', '客户')}</Radio.Button>
+                        <Radio.Button value="clue">{Intl.get('crm.sales.clue', '线索')}</Radio.Button>
+                    </Radio.Group>
+                </div>
+                <DetailCard className='add-todo' content={
+                    <CrmScheduleForm
+                        isAddToDoClicked
+                        handleScheduleAdd={this.handleScheduleAdd}
+                        handleScheduleCancel={this.handleCancel}
+                        topicValue={_.get(this.state, 'topicValue')}
+                        currentSchedule={{}}/>
+                }>
+                </DetailCard>
+            </div>
         );
     }
 

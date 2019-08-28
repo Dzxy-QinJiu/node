@@ -1,0 +1,55 @@
+@import '../../../public/css/common-variables';
+
+.clue_search_wrap {
+  position: relative;
+  //颜色是666
+  color: #666;
+  //提示样式
+  .clue_suggest_tip {
+    color: #666;
+    padding-top: 7px;
+  }
+  .clue_select_error_tip{
+    text-align: left;
+  }
+  //错误样式
+  .clue_suggest_error_tip,.clue_select_error_tip {
+    color: @error_tips_color;
+  }
+  .ant-select-search__field__placeholder {
+    top: 3px;
+    color: #cdcdcd;
+  }
+  .associate-clue-wrap {
+    .ant-select {
+      width: 100%;
+      &.err-tip{
+        &:focus {
+          outline: none;
+        }
+        .ant-select-selection {
+          border: 1px solid @error_tips_color;
+          &:focus, &:active {
+            box-shadow: 0 0 0 2px rgba(240, 65, 52, 0.2);
+          }
+          .ant-select-search__field__wrap .ant-select-search__field:focus {
+            box-shadow: none;
+          }
+        }
+      }
+      &.ant-select-focused.err-tip{
+        .ant-select-selection {
+          box-shadow: 0 0 0 2px rgba(240, 65, 52, 0.2);
+          &:focus, &:active {
+            box-shadow: 0 0 0 2px rgba(240, 65, 52, 0.2);
+          }
+        }
+      }
+    }
+  }
+  &.clue_searchbox_error {
+    .ant-select-selection--single {
+      border: 1px solid @error_tips_color;
+    }
+  }
+}

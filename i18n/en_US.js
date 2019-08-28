@@ -1433,6 +1433,12 @@ var en_US = {
     'crm.sales.clue.customer.recommend': 'Customer recommendation',//客户推荐
     'crm.access.channel.placeholder': 'Please select access channels',//请选择接入渠道
     'crm.clue.source.placeholder': 'Please select the source of the clues',//请选择线索来源
+    'crm.suggest.clue.search': 'Please input clue name to implement search',//请输入线索名称搜索
+    'crm.suggest.clue.not.found': 'Clue not found',//未找到该线索
+    'crm.clue.suggest.create.clue': 'Create clue', //创建线索
+    'crm.suggest.select.clue.tip': 'Please choose a clue from the dropdown list',//请在下拉框中选择线索
+    'crm.suggest.select.clue': 'Please choose a clue', //请选择线索
+    'crm。suggest.select.clue.first': 'Please choose a clue first',//请先选择线索
     'crm.sales.clue': 'Clue',//线索
     'crm.sales.clue.add.disable': '\'{label}\' tags cannot be added manually',//不能手动添加'{label}'标签
     'crm.clue.require.one': 'Telephone, mail, QQ and weChat required one',//电话、邮箱、QQ必填一项
