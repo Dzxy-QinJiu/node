@@ -1724,7 +1724,7 @@ var zh_CN = {
     'oplate_customer_analysis.salesNewCustomerCount': '销售新开客户数统计',
     'oplate_customer_analysis.newCustomerCount': '新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': '新开账号数总数',
-    'oplate_customer_analysis.customerLoginCount': '新开通客户登录数',
+    'oplate_customer_analysis.customerLoginCount': '登录过的客户数',
     'oplate_customer_analysis.type.all': '全部类型',
     'oplate_customer_analysis.type.trial': '试用用户',
     'oplate_customer_analysis.type.formal': '正式用户',
@@ -3399,7 +3399,7 @@ var zh_CN = {
     'import.excel.no.data': '试下客套给您{recommend}的功能',
     'import.recommend.clue.lists': '推荐线索',
     'common.signed.customer.activity': '签约客户活跃度',
-    'common.number.of.new.user.customer': '新开用户客户数',
+    'common.number.of.new.user.customer': '开通了用户的客户数',
     'clue.customer.register.time': '注册时间',
 };
 export default zh_CN;
