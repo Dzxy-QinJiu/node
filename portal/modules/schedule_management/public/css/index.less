@@ -618,23 +618,6 @@
   .iconfont.icon-schedule-other{
     color:@Icon-Gray-Color
   }
-  //添加待办面板
-  .todo-add-container {
-    .add-todo-container {
-      position: relative;
-      .todo-topic-switch{
-        position: absolute;
-        top: 20px;
-        left: 12px;
-      }
-      .add-todo.detail-card-container {
-        padding-top: 0;
-        .detail-card-content {
-          margin-top: 56px;
-        }
-      }
-    }
-  }
 }
 //展示客户名称样式
 .customer-names-wrap{
@@ -699,5 +682,35 @@
         }
       }
     }
+  }
+}
+
+.add-todo-container {
+  .add-todo-title {
+    display: inline-block;
+    overflow: hidden;
+    padding-bottom: 2px;
+    margin: 0 20px;
+    border-bottom: 1px solid #dedfe1;
+    font-size: 14px;
+    width: 456px;
+    .iconfont {
+      display: inline-block;
+      color: #8da8c5;
+      margin-right: 6px;
+    }
+    .todo-topic-switch {
+      display: inline-block;
+    }
+  }
+  .add-todo.detail-card-container {
+    margin-top: 2px;
+  }
+}
+.add-todo.detail-card-container {
+  background-color: unset;
+  .schedule-form{
+    border:none;
+    padding: 0;
   }
 }

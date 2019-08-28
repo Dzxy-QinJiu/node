@@ -68,16 +68,19 @@ var CrmAlertForm = createReactClass({
     },
 
     getInitialFormData: function() {
-        let formData = this.props.currentSchedule;
-        formData.topic = formData.topic || formData.customer_name || '';
-        //时间的默认值，用于编辑时使用
-        formData.scheduleType = formData.scheduleType || 'calls';
+        let oldFormData = this.props.currentSchedule;
+        let formData = {};
+        formData.topic = oldFormData.topic || oldFormData.customer_name || '';
+        //代办类型的默认值
+        formData.scheduleType = oldFormData.scheduleType || 'calls';
+        //内容的默认值
+        formData.content = oldFormData.content || '';
         //联系的开始时间
-        formData.start_time = formData.start_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
+        formData.start_time = oldFormData.start_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
         //联系的结束时间
-        formData.end_time = formData.end_time || moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
+        formData.end_time = oldFormData.end_time || moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
         //提醒时间
-        formData.alert_time = formData.alert_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
+        formData.alert_time = oldFormData.alert_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
         return formData;
     },
 
@@ -85,7 +88,7 @@ var CrmAlertForm = createReactClass({
         //用户切换添加"线索"或"客户"类型代办时，更新formData里的scheduleType初始值
         if(_.has(nextProps, 'topicValue')) {
             let scheduleType = _.isEqual(_.get(nextProps,'topicValue'), 'customer') ? 'calls' : 'lead';
-            let formData = this.state.formData;
+            let formData = this.getInitialFormData();
             formData.scheduleType = scheduleType;
             this.setState({
                 formData
@@ -803,5 +806,10 @@ var CrmAlertForm = createReactClass({
         );
     },
 });
+
+CrmAlertForm.defaultProps = {
+    currentSchedule: {},
+};
+
 module.exports = CrmAlertForm;
 

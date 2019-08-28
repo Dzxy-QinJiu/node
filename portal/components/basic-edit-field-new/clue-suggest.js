@@ -248,8 +248,8 @@ class ClueSuggest extends Component {
     };
     render() {
         let displayCls = classNames({
-            'clue_search_wrap': true,
-            'clue_searchbox_error': this.props.show_error && this.props.required,
+            'clue-search-wrap': true,
+            'clue-searchbox-error': this.props.show_error && this.props.required,
         });
         let wrapSelectId = this.state.customerSuggestWrapId;
         return (
@@ -293,7 +293,7 @@ ClueSuggest.defaultProps = {
     //是否显示错误提示，一般在点击提交的时候，这个值为true
     show_error: false,
     canCreateClue: true,//找不到线索时能否创建线索
-    //线索客户的id
+    //线索的id
     id: '',
     //搜索关键词
     keyword: '',
