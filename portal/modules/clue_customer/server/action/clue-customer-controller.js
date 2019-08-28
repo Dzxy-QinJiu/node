@@ -444,3 +444,11 @@ exports.batchExtractRecommendLists = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
+exports.getClueListByKeyword = function(req, res) {
+    clueCustomerService.getClueListByKeyword(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};

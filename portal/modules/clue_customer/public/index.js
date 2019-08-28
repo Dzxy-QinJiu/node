@@ -21,6 +21,7 @@ const {TextArea} = Input;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
+import queryString from 'query-string';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
@@ -115,6 +116,7 @@ class ClueCustomer extends React.Component {
     };
 
     componentDidMount() {
+        const query = queryString.parse(this.props.location.search);
         clueCustomerStore.listen(this.onStoreChange);
         //获取线索来源
         this.getClueSource();
@@ -127,6 +129,18 @@ class ClueCustomer extends React.Component {
         this.getSalesmanList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
+        //如果从url跳转到该页面，并且有add=true，则打开右侧面板
+        if (query.add === 'true') {
+            this.showAddForm();
+        }
+    }
+
+    //打开添加线索面板
+    showAddForm = () => {
+        this.setState({
+            addType: 'add',//手动添加
+            clueAddFormShow: true
+        });
     }
 
     // 获取销售人员
