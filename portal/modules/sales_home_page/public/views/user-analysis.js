@@ -249,7 +249,7 @@ class UserAnlyis extends React.Component {
             nameValueMap: unknownDataMap,
             resultType: this.state.teamOrMemberAnalysis.resultType,
         }, {
-            title: Intl.get('user.analysis.account.login.statistics', '开通账号登录统计'),
+            title: Intl.get('user.analysis.account.login.statistics', '开通用户登录统计'),
             url: '/rest/analysis/user/v3/:login_type/login/detail',
             argCallback: (arg) => {
                 let query = arg.query;
@@ -286,7 +286,7 @@ class UserAnlyis extends React.Component {
                         width: '40%',
                     },
                     {
-                        title: Intl.get('user.analysis.account.count', '开通账号数'),
+                        title: Intl.get('user.analysis.user.count', '开通用户数'),
                         dataIndex: 'new_users',
                         align: 'right',
                         width: '30%',

@@ -145,8 +145,9 @@ var en_US = {
     'common.upload.error': 'Upload failed, please try again!',//上传失败，请重试!
     'common.client': 'Client',//客户端
     'common.operate.record': 'Operational Records',//操作记录
-    'common.add.app': 'Add Applications',//添加应用
+    'common.add.product':'Add Products',//添加产品
     'common.app': 'Application',//应用
+    'common.product':'Product',//产品
     'common.sure': 'Confirm',//确定
     'common.name.is.existed': 'The name is already exists!', // 姓名已存在！
     'common.name.is.unique': 'The name already exists!', // 姓名唯一性校验出错！
@@ -391,15 +392,15 @@ var en_US = {
     'user.import.no.match.customer.tips': 'The customer which the user belongs to is not found. There may be no the customer or the customer name is inconsistent. Please modify the data and re-import.', // 未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
-    'user.user.app.select': 'Select applications',//选择应用
-    'user.detail.addApp.selectAndConfig': 'Select and config apps',//'选择应用并配置',
+    'user.user.product.select':'Select product',//选择产品
+    'user.detail.addProduct.selectAndConfig': 'Select and config products',//选择产品并配置
     'user.detail.addApp.setRolePermissions': 'Config role and permissions',//'设置角色权限',
     'user.detail.errorTip.getRoleTimeout': 'get role data time out',//'获取角色列表超时',
     'user.detail.errorTip.getPermissionTimeout': 'get permissions data time out',
-    'user.user.app.set': 'Application Configuration',//应用设置
+    'user.user.product.set':'Product Configuration',//产品设置
     'user.batch.operation': 'Batch operations',//批量操作
     'user.operator': 'Operator',//操作人
-    'user.app.all': 'All Applications',//全部应用
+    'user.product.all':'All products',//全部产品
     'user.search.placeholder': 'Search by keywords',//请输入关键词搜索Please input keywords for searching
     'user.time.start': 'Open time',//开通时间
     'user.time.end': 'Expire time',//到期时间
@@ -417,10 +418,10 @@ var en_US = {
     'user.remark.set.tip': 'Configure remarks',//设置备注
     'user.user.list.click': 'Please click at user list',//请在用户列表中点击
     'user.user.list.select': 'Select users',//选择用户
-    'user.app.open': 'Open application',//开通应用
-    'user.no.app': 'No application',//暂无应用
-    'user.no.related.app': 'No related application',////暂无符合条件的应用  无相关应用
-    'user.app.select.tip': 'Please select at least one application',//至少选择一个应用
+    'user.product.open':'Open product',//开通产品
+    'user.no.product': 'No product',//暂无产品
+    'user.no.related.product':'No related product',//无相关产品
+    'user.product.select.tip':'Please select at least one product',//至少选择一个产品
     'user.app.add.success': 'Add the application successfully',//添加应用成功
     'user.app.edit.success': 'Edit the application successfully',//修改应用成功
     'user.phone': 'Phone',//手机号
@@ -524,7 +525,7 @@ var en_US = {
     'user.password.tip': 'In secrecy',//保密中
     'user.failed': 'Failure',//失败
     'user.select.user.tip': 'Please select users in list',//请在用户列表中选择用户
-    'user.app.select.please': 'Please select applications',//请选择应用
+    'user.product.select.please':'Please select products',//请选择产品
     'user.operate.success': 'Operate successfully',//操作成功
     'user.batch.app.open': 'Applications',//开通产品
     'user.batch.open.type': 'Types',//开通类型
@@ -664,6 +665,51 @@ var en_US = {
     'user.login.last.week': 'The latest a week', // 近一周
     'user.login.last.title': 'Active statistics of {title}', // {title}的活跃统计
     'user.login.last.failed': 'Failed to get user recent login statistic', // 获取用户最近登录统计信息失败
+    'user.login.analysis.user':'Users analysis',//用户分析
+    'user.login.analysis.signed':'Signed users analysis',//签约用户分析
+    'user.login.analysis.delayed':'Deferred users analysis',//延期用户分析
+    'user.login.analysis.expired':'Expired users analysis',//过期用户分析
+    'user.login.analysis.new.add':'New users analysis',//新增用户分析
+    'user.login.analysis.new.expire':'New expired users analysis',//新增过期用户分析
+    'user.login.analysis.call':'Call analysis',//通话分析
+    'user.login.analysis.number.durant':'Quantity and duration statistics',//数量与时长统计
+    'user.login.analysis.call.other':'Other analysis',//其他分析
+    'user.login.analysis.chance':'Sales opportunity analysis',//销售机会分析
+    'user.login.analysis.clue':'Clue analysis',//线索分析
+    'user.login.analysis.contract':'Contract analysis',//合同分析
+    'user.login.analysis.new.contract':'New contract analysis',//新增合同分析
+    'user.login.analysis.cost':'Cost analysis',//费用分析
+    'user.login.analysis.repay':'Repay analysis',//回款分析
+    'user.login.analysis.customer':'Customer analysis',//客户分析
+    'user.login.analysis.customer.active':'Customer active analysis',//客户活跃度分析
+    'user.login.analysis.customer.new':'New customer analysis',//新增客户分析
+    'user.login.analysis.customer.other':'other',//其他
+    'user.login.analysis.customer.signed':'Singed customer analysis',//签约客户分析
+    'user.login.analysis.customer.stage':'Stage change analysis',//阶段变更分析
+    'user.login.analysis.customer.qualified':'Qualified customer analysis',//试用合格客户分析
+    'user.login.analysis.order':'Order analysis',//订单分析
+
+    //统计
+    'user.statistics.new':'New user count',//新增用户数统计
+    'user.statistics.new.source':'New user statistics source ',//新增用户来源分类统计
+    'user.statistics.new.industry':'New user industry statistics',//新增用户行业统计
+    'user.statistics.new.team':'New user team statistics',//新增用户团队统计
+    'user.statistics.expire':'Expired number of users',//过期用户数统计
+    'user.statistics.expire.industry':'Expired user industry statistics',//过期用户行业统计
+    'user.statistics.expire.team':'Expired user team statistics',//过期用户团队分布统计
+    'user.statistics.expire.new':'New expired user statistics',//新增过期用户数统计
+    'user.statistics.expire.new.industry':'New expired user industry statistics',//新增过期用户行业统计
+    'user.statistics.expire.new.team':'New expired user team statistics',//新增过期用户团队分布统计
+    'user.statistics.expire.new.area':'New expired user area statistics',//新增过期用户地域统计
+    'user.statistics.total.user':'Overall user count',//总体用户数统计
+    'user.statistics.total.user.source':'Total User Source Statistics',//总用户来源分类统计
+    'user.statistics.total.user.area':'User geographic statistics',//总用户地域统计
+    'user.statistics.total.user.industry':'Total User Industry Statistics',//总用户行业统计
+    'user.statistics.total.user.team':'Total User Team Statistics',//总用户团队统计
+    'user.login.create.account':'Salesman staff opened account statistics',//销售开通用户统计
+    'user.retain.day':'User retention of day',//用户天留存
+    'user.retain.week':'User retention of week',//用户周留存
+    'user.retain.mon':'User retention of month',//用户月留存
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',
     'third.party.app.add': 'Add application of the open plateform',//添加应用
@@ -2077,8 +2123,8 @@ var en_US = {
     'user.analysis.moveoutCustomer': 'Move-out customer ',// '转出客户统计',
     'user.analysis.sales.users': 'Sales and opening of user statistics',//销售开通用户统计
     'user.analysis.active.user.area.statistics': 'Active user area statistics',//活跃用户地域统计
-    'user.analysis.account.login.statistics': 'Account login statistics', // 开通账号登录统计
-    'user.analysis.account.count': 'Number of open accounts', // 开通账号数
+    'user.analysis.account.login.statistics': 'Account login statistics', // 开通用户登录统计
+    'user.analysis.account.count': 'Number of open users', // 开通用户数
     'user.analysis.account.login.count': 'Actual number of login accounts', // 实际登录数
 
     //销售首页-新增客户分析

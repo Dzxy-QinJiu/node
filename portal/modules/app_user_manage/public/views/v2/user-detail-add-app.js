@@ -371,7 +371,7 @@ const UserDetailAddApp = createReactClass({
             <div>               
                 <div className="left-nav-container">
                     {
-                        Intl.get('user.user.app.select', '选择应用')
+                        Intl.get('user.user.product.select','选择产品')
                     }：
                 </div>
                 <div className="add-app-content">
@@ -383,7 +383,7 @@ const UserDetailAddApp = createReactClass({
                 {
                     isSubmitError ? (
                         <div className="has-error">
-                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.tip" defaultMessage="至少选择一个应用" /></div>
+                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.product.select.tip" defaultMessage="至少选择一个产品" /></div>
                         </div>
                     ) : null
                 }
@@ -485,7 +485,7 @@ const UserDetailAddApp = createReactClass({
                                 }
                             </ul>
                             <p className="btn-text" onClick={this.showAppSelector.bind(this, true)}>
-                                {Intl.get('common.add.app', '添加应用')}
+                                {Intl.get('common.add.product','添加产品')}
                             </p>
                         </div>
                         <ApplyUserAppConfig
@@ -762,12 +762,12 @@ const UserDetailAddApp = createReactClass({
                     <div className="add-app-container" style={{ height: this.props.height }}>
                         <Validation ref="validation" onValidate={this.handleValidate}>
                             <OperationSteps
-                                title={Intl.get('common.add.app', '添加应用')}
+                                title={Intl.get('common.add.product','添加产品')}
                                 current={this.state.step}
                             >
                                 <OperationSteps.Step
                                     action={<span className={this.state.step === 0 ? 'active' : ''}>
-                                        {Intl.get('user.detail.addApp.selectAndConfig', '选择应用并配置')}<span className="icon-ellipsis">....</span></span>}
+                                        {Intl.get(    'user.detail.addProduct.selectAndConfig', '选择产品并配置')}<span className="icon-ellipsis">....</span></span>}
                                 >
                                 </OperationSteps.Step>
                                 <OperationSteps.Step

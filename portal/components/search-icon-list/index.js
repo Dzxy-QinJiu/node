@@ -222,7 +222,7 @@ SearchIconList.defaultProps = {
     name_field: 'app_name',
     id_field: 'app_id',
     search_fields: ['app_name'],
-    notFoundContent: Intl.get('user.no.related.app','暂无符合条件的应用'),
+    notFoundContent: Intl.get('user.no.related.product','无相关产品'),
     onItemsChange: noop,
     searchPlaceholder: '',//搜索框的提示内容
     isShowAllApps: false // 是否显示全部的应用，默认不显示

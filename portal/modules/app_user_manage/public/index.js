@@ -325,7 +325,7 @@ class AppUserManage extends React.Component {
             if (this.state.appListErrorMsg) {
                 clickMsg = Intl.get('app.user.failed.get.apps', '获取失败') + '，' + clickMsg;
             } else {
-                clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
+                clickMsg = Intl.get('user.no.product','暂无产品') + '，' + clickMsg;
             }
             list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="retry-get-applist-container">
                 <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
@@ -333,8 +333,8 @@ class AppUserManage extends React.Component {
                 </div>
             </Option>);
         }
-        list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage
-            id="user.app.all" defaultMessage="全部应用"/></Option>);
+        list.unshift(<Option value="" key="all" title={Intl.get('user.product.all','全部产品')}><ReactIntl.FormattedMessage
+            id="'user.product.all" defaultMessage="全部产品"/></Option>);
         return list;
     };
 
@@ -501,7 +501,7 @@ class AppUserManage extends React.Component {
             if (this.state.selectedUserRows.length) {
                 return (
                     <div className="inline-block add-btn-common btn-item" onClick={this.showApplyUserForm}>
-                        <Button>{Intl.get('user.app.open', '开通应用')}</Button>
+                        <Button>{Intl.get('user.product.open','开通产品')}</Button>
                     </div>);
             }
             //没选中用户加提示
@@ -509,7 +509,7 @@ class AppUserManage extends React.Component {
                 <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                     <div className="inline-block add-btn-common gray btn-item">
                         <Button disabled>
-                            {Intl.get('user.app.open', '开通应用')}
+                            {Intl.get('user.product.open','开通产品')}
                         </Button>
                     </div>
                 </Popover>);
@@ -824,7 +824,7 @@ class AppUserManage extends React.Component {
                         minWidth={120}
                         value={this.state.selectedAppId}
                         onChange={this.onSelectedAppChange}
-                        notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                        notFoundContent={!appOptions.length ? Intl.get('user.no.product','暂无产品') : Intl.get('user.no.related.product','无相关产品')}
                     >
                         {appOptions}
                     </SelectFullWidth>

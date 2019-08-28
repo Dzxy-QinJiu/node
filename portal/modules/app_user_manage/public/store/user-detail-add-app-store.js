@@ -298,7 +298,7 @@ UserDetailAddAppStore.prototype.batchAppChange = function(appIds) {
     if(appIds.length) {
         this.batchSelectedAppError = false;
     } else {
-        this.batchSelectedAppError = Intl.get('user.app.select.please', '请选择应用');
+        this.batchSelectedAppError = Intl.get('user.product.select.please','请选择产品');
     }
     //单独处理权限设置的选中
     //如果刚才选中的权限，在列表中不存在了，则将选中的应用置空，同时清空权限和角色

@@ -606,7 +606,7 @@ class UserDetailBasic extends React.Component {
                     className="a_button"
                     href="javascript:void(0)"
                     onClick={this.showAddAppPanel}>
-                    <ReactIntl.FormattedMessage id="common.add.app" defaultMessage="添加应用" />
+                    <ReactIntl.FormattedMessage id="common.add.product" defaultMessage="添加产品" />
                 </PrivilegeChecker>
             ) : null
         );

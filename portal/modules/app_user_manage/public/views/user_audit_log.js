@@ -200,7 +200,7 @@ class LogView extends React.Component {
             if (this.state.userAppArrayErrMsg){
                 clickMsg = Intl.get('app.user.failed.get.apps','获取失败') + '，' + clickMsg;
             }else{
-                clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
+                clickMsg = Intl.get('user.no.product','暂无产品') + '，' + clickMsg;
             }
             list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="get-applist-container">
                 <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
