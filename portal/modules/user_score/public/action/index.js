@@ -76,10 +76,11 @@ class UserScoreActions {
 
     //获取App列表
     getAppList(callback) {
-        this.dispatch({loading: true});
         getAppList((list, errorMsg) => {
             if (!errorMsg) {
                 _.isFunction(callback) && callback(list);
+            }else{
+                _.isFunction(callback) && callback(errorMsg);
             }
         });
     }

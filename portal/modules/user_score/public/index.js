@@ -104,10 +104,20 @@ class userScore extends React.Component {
         userScoreStore.unlisten(this.onStoreChange);
     }
     getAppLists(){
+        this.setState({isLoadingApp: true});
         userScoreAction.getAppList((result) => {
-            this.setState({
-                appList: result
-            });
+            if (_.isString(result)){
+                this.setState({
+                    appList: [],
+                    isLoadingApp: false
+                });
+            }else{
+                this.setState({
+                    isLoadingApp: false,
+                    appList: result
+                });
+            }
+
         });
     }
     getUserIndicator() {
@@ -372,6 +382,15 @@ class userScore extends React.Component {
                 <Tabs defaultActiveKey="1" tabPosition='left' style={{ height: 220 }} onChange={this.handleSelectedAppChange}>
                     {_.map(appList,(appItem, idx) => {
                         var engageItem = _.find(userEngagements,item => item.app_id === appItem.app_id);
+                        if(isEditUserEngagementRule && !_.get(engageItem,'detail[0]')){
+                            engageItem = {
+                                detail: [{
+                                    randomId: uuid(),
+                                }],
+                                app_id: appItem.app_id,
+                                app_name: appItem.app_name
+                            };
+                        }
                         return (
                             <TabPane tab={appItem.app_name} key={idx} >
                                 {_.get(engageItem,'detail[0]') ?
@@ -379,6 +398,7 @@ class userScore extends React.Component {
                                         var engageId = engageItem.app_id || engageItem.randomId;
                                         var detailId = operateItem.id || operateItem.randomId;
                                         var targetTimeRange = _.find(TimeRangeSelect, timeRange => timeRange.value === operateItem.interval);
+
                                         return <div>
                                             {idx === 0 ? <Row className='thead-title'>
                                                 <Col span={spanLength}>{Intl.get('common.operate', '操作')}</Col>
@@ -426,7 +446,14 @@ class userScore extends React.Component {
                                         </div>;
                                     })
                                     : <NoDataIntro renderAddAndImportBtns={this.noOperationIntroBtn} showAddBtn={true} noDataAndAddBtnTip = {Intl.get('user.score.no.config.operation.config', '暂未配置操作指标')} />}
-                                {/*保存*/}
+                                {/*保存一条参与度数据*/}
+                                {isEditUserEngagementRule ? <div className="save-btns">
+                                    <SaveCancelButton loading={this.state.isSavingEngagement}
+                                        saveErrorMsg={this.state.saveEngagementErr}
+                                        handleSubmit={this.handleSaveEngagements}
+                                        handleCancel={this.handleCancelEngagement}
+                                    />
+                                </div> : null}
                             </TabPane>
                         );
                     })}
@@ -446,7 +473,7 @@ class userScore extends React.Component {
     };
 
     renderParticateScoreRules = () => {
-        const {userEngagementFormData, userEngagementObj, isEditUserEngagementRule} = this.state;
+        const {userEngagementFormData, userEngagementObj, isEditUserEngagementRule, isLoadingApp} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
         if (!_.get(userEngagements, 'length')) {
             userEngagementFormData.status = 'enable';
@@ -463,7 +490,7 @@ class userScore extends React.Component {
             });
             userEngagementFormData['user_engagements'] = userEngagements;
         }
-        if (userEngagementObj.loading) {
+        if (userEngagementObj.loading || isLoadingApp) {
             return <Spinner/>;
         } else if (userEngagementObj.errMsg) {
             var errMsg = <span>{_.get(userEngagementObj, 'errMsg')}
@@ -482,7 +509,7 @@ class userScore extends React.Component {
             return (<div className="user-engagement-panel">
                 <p className="user-engage-title">
                     {Intl.get('user.score.particate.in.score', '参与度评分')}
-                    {userEngagementObj.loading ? null : <StatusWrapper
+                    <StatusWrapper
                         errorMsg={userEngagementObj.errMsg}
                         size='small'
                     >
@@ -494,8 +521,8 @@ class userScore extends React.Component {
                             handleConfirm={this.handleUserEngagementRuleStatus}
                             status={engageRuleOpen}
                         />
-                    </StatusWrapper>}
-                    {isEditUserEngagementRule || userEngagementObj.loading || !engageRuleOpen ? null :
+                    </StatusWrapper>
+                    {isEditUserEngagementRule || !engageRuleOpen ? null :
                         <i className="iconfont icon-update" onClick={this.handleClickUserEngagementRule}></i>}
                 </p>
                 <div className="user-engagement-item-wrap">
@@ -615,19 +642,13 @@ class userScore extends React.Component {
         var hasError = false;
         _.forEach(userEngagements, engageItem => {
             delete engageItem.randomId;
-            if (!engageItem.app_id || !engageItem.app_name) {
-                hasError = true;
-            }
+
             if (_.isArray(engageItem.detail)) {
                 _.forEach(engageItem.detail, (operatorItem) => {
                     delete operatorItem.randomId;
                 });
             }
         });
-        if (hasError) {
-            message.error(Intl.get('leave.apply.select.product', '请选择产品'));
-            return;
-        }
         userScoreAction.saveUserEngagementRule(userEngagementFormData, () => {
             message.success(Intl.get('common.save.success', '保存成功'));
             //如果保存成功，会有回调
