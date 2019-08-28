@@ -377,8 +377,8 @@ class UserLoginAnalysis extends React.Component {
                     //分段起始值
                     const fragStart = numArr[startIndex];
 
-                    //分段结束索引，默认按当前分段索引和分段长度进行计算
-                    let endIndex = (index + 1) * fragLen;
+                    //分段结束索引
+                    const endIndex = (index + 1) * fragLen;
                     //分段结束值
                     let fragEnd;
 
