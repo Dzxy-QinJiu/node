@@ -176,7 +176,6 @@ class UserInfo extends React.Component{
             if (resultObj.error) {
                 message.error(resultObj.errorMsg);
             } else {
-                userData.setUserData('emailEnable', true);
                 message.success(
                     Intl.get('user.info.active.email', '激活邮件已发送至{email},请前往激活',{'email': _.get(this.props.userInfo, 'email')})
                 );
