@@ -140,9 +140,13 @@ class RegRulesView extends React.Component {
                         if (elemIndex + 2 === elementsArr.length && key === FLOW_TYPES.DEFAULTFLOW){
                             if (isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))){
                                 elem.distributeSales = true;
+                            }else{
+                                elem.distributeSales = false;
                             }
                             if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))){
                                 elem.distributeSalesToVisit = true;
+                            }else{
+                                elem.distributeSalesToVisit = false;
                             }
                         }
 

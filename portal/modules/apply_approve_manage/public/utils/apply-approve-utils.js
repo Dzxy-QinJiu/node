@@ -323,4 +323,4 @@ exports.isBussinessTripFlow = function(itemType) {
 exports.isLeaveFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.LEAVE;
 };
-exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales'];
+exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit'];
