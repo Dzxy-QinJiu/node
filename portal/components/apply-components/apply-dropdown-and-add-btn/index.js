@@ -16,9 +16,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
         super(props);
         this.state = {
             applyType: this.props.applyType,
-            applyState: {
-                isApplyButtonShow: false
-            }
+            applyState: {}
         };
     }
 
