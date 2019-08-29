@@ -500,7 +500,7 @@ class phoneStatusTop extends React.Component {
                                     </Popconfirm>
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
                                         onClick={this.handleAddPlan}>{Intl.get('user.time.custom', '自定义')}</Button>
-                                    {this.state.addCustomerSchedule ? <Icon type="loading"/> : null}
+                                    {this.state.addClueSchedule ? <Icon type="loading"/> : null}
                                 </div>
 
 
