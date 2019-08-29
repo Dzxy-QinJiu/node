@@ -1,13 +1,223 @@
+// 错误提示的字体以及边框颜色
+@success-tip-color: #06ae06;
+@error-tip-color: #f5222d;
 //添加成员时，角色选中后就不再在下拉列表中展示的样式设置
 .ant-select-dropdown-menu-item-selected.role-options-selected {
   display: none;
 }
-
-// 错误提示的字体以及边框颜色
-@error_tips_color: #f04134;
-@success-tip-color: #06ae06;
 //添加成员面版样式
 .product-add-container {
+  .product-details-content {
+    //产品顶部信息
+    .product-info-title {
+      overflow: hidden;
+      background: #ffffff;
+      padding: 24px;
+      //产品logo
+      .product-icon {
+        float: left;
+        text-align: center;
+        .head-image-container {
+          height: 100%;
+          margin-top: 0;
+          margin-bottom: 0;
+          .cirle-image{
+            margin-left: 0;
+          }
+        }
+        .save-logo-error {
+          color: @error-tip-color;
+        }
+      }
+      //产品参数
+      .product-info{
+        margin-left: 24px;
+        width: 78%;
+        float: left;
+        white-space: normal;
+        .product-title {
+          margin-bottom: 4px;
+          line-height: 16px;
+          font-size: 16px;
+          color: #506470;
+          display: inline-block;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          width: 100%;
+          overflow: hidden;
+          word-wrap: initial;
+          .basic-edit-field-textarea {
+            .icon-edit-btn {
+              float: right;
+            }
+            .basic-info-text {
+              width: 95%;
+              line-height: 20px;
+              font-size: 16px;
+              margin-left: 0;
+              color: #506470;
+            }
+            .ant-form-item {
+              padding-right: 0;
+            }
+            textarea {
+              margin-left: 0;
+            }
+          }
+        }
+        .product-item {
+          margin-top: 4px;
+          overflow: hidden;
+          font-size: 14px;
+          color: #81939e;
+          .product-item-key {
+            width: 80px;
+            float: left;
+          }
+          &.product-version {
+            margin-bottom: 4px;
+          }
+          &.product-identifier {
+            margin-top: 8px;
+          }
+          .product-item-editor{
+            .basic-info-text {
+              max-width: 230px;
+              transform: translateY(-1.5px);
+            }
+            .icon-edit-btn{
+              float: right;
+            }
+            .ant-form-item {
+              padding-right: 0;
+            }
+            textarea {
+              margin-left: 0;
+            }
+          }
+        }
+      }
+    }
+    //产品卡片
+    .product-card-items {
+      padding: 0 20px 10px 20px;
+      .product-card-with-switch {
+        float: left;
+        width: 100%;
+        overflow: hidden;
+        .product-add-user-data-card{
+          position: relative;
+          .add-user-data-warp.show-js-card {
+            margin-top: 26px;
+          }
+          .float-operation-content {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            top: 0;
+            left: -20px;
+            width: 480px;
+            height: 48px;
+            padding: 12px 32px;
+            .ant-switch {
+              margin-left: 5px;
+            }
+            .add-uem-error {
+              margin-left:8px;
+              color: @error-tip-color;
+            }
+          }
+          .add-user-data-details {
+            margin-top: -18px;
+            .iconfont {
+              width: 24px;
+              text-align: center;
+            }
+            .js-code-user-tip {
+              overflow: hidden;
+              width: 440px;
+              justify-content: flex-end;
+              .ant-btn {
+                float: right;
+                margin-left: 15px;
+              }
+              .js-copy-tip {
+                float: right;
+                line-height: 28px;
+                font-size: 14px;
+              }
+              .test-loading {
+                float: right;
+                display: inline-block;
+                margin-left: 5px;
+              }
+              .anticon-check-circle {
+                float: right;
+                color: @success-tip-color;
+                font-size: 14px;
+                line-height: 28px;
+              }
+              .anticon-exclamation-circle {
+                float: right;
+                color: @error-tip-color;
+                font-size: 14px;
+                line-height: 28px;
+              }
+              .test-error-tip,.test-success-tip{
+                float: right;
+                display: inline-block;
+                margin-left: 10px;
+                line-height: 28px;
+                font-size: 14px;
+              }
+            }
+            .custom-variable-container {
+              .custom-variable-content {
+                .custom-variable-wrap {
+                  .ant-form-item {
+                    padding-right: 0;
+                  }
+                  .icon-button {
+                    .iconfont {
+                      text-align: center;
+                      width: 24px;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      .product-detail-item {
+        .product-detail-item-title {
+          width: 70px;
+          float: left;
+          color: #999;
+          font-size: 14px;
+          line-height: 24px;
+        }
+        .product-detail-item-des {
+          .basic-info-text {
+            font-size: 14px;
+          }
+          .icon-edit-btn {
+            float: right;
+          }
+          .basic-info-text {
+            max-width: 320px;
+          }
+          .ant-form-item {
+            padding-right: 0;
+          }
+          textarea {
+            margin-left: 0;
+          }
+        }
+      }
+    }
+  }
   form {
     .head-image-container {
       margin-bottom: 0;
@@ -30,53 +240,11 @@
       font-weight: normal;
       font-size: 14px;
     }
-    //jscode-----------------start
-    .ant-form-item.jscode-form-item, .ant-form-item.useJS-form-item{
-      margin-bottom: 0;
-    }
-    .copy-btn {
-      float: right;
-      height: 28px;
-      font-size: 12px;
-    }
-    //复制成功的提示
-    .copy-success-tip {
-      float: right;
-      display: inline-block;
-      margin-left: 10px;
-      line-height: 28px;
-      color: @success-tip-color;
-    }
-    .js-code-label {
-      display: inline-block;
-      line-height: 28px;
-      color: #999999;
-      font-size: 14px;
-    }
-    //jscode展示区
-    .js-code-contianer {
-      margin-top: 4px;
-      margin-left: 30px;
-      pre {
-        padding: 10px;
-      }
-      .js-code-user-tip {
-        display: inline-block;
-        margin-top: 8px;
-        color: #999999;
-        .attention-flag {
-          color: @error_tips_color;
-        }
-        button {
-          margin-left: 4px;
-        }
-      }
-    }
     .test-success-tip{
       color: @success-tip-color;
     }
     .test-error-tip{
-      color: @error_tips_color;
+      color: @error-tip-color;
     }
     .test-error-tip,.test-success-tip{
       display: inline-block;
@@ -85,31 +253,5 @@
       float: right;
       margin-right: 45px;
     }
-    //jscode--------------end
-    // 用户属性展示区
-    .custom-variable-container{
-      margin-left: 30px;
-      .custom-variable-item{
-        line-height: 20px;
-        .custom-variable-key{
-          width: 40%;
-        }
-      }
-    }
-    //自定义属性添加展示区 -- start
-    .custom-variables-wrapper{
-      .ant-form-item{
-        padding-right: 0!important;
-      }
-      .circle-button{
-        top: 0;
-      }
-      .edit-container{
-        .icon-edit-btn{
-          top: -7px;
-        }
-      }
-    }
-    //自定义属性添加展示区 -- end
   }
 }

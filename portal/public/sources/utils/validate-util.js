@@ -25,7 +25,19 @@ exports.getNumberValidateRule = function() {
 export const isPhone = function(value) {
     return /^1[3-9]\d{9}$/.test(value);
 };
-
+// 产品单价验证规则
+export const productPriceRule = function(rule, value, callback) {
+    value = _.trim(value);
+    if(!_.isEmpty(value)) {
+        if(/^(\d|,)+(\.\d+)?$/.test(value)) {
+            callback();
+        } else {
+            callback(new Error(Intl.get('config.product.input.number', '请输入数字')));
+        }
+    } else {
+        callback(new Error(Intl.get('config.product.price.not.null', '产品单价不能为空')));
+    }
+};
 
 //邮箱正则表达式
 export const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;

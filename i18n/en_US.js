@@ -229,7 +229,7 @@ var en_US = {
     'common.user.lang': 'Language',//语言
     'common.filter.by.key': 'Filter by {key}',//根据{key}过滤
     'common.upload.img.change': 'Change',//更改
-    'common.table.customize': 'Customize Table\'s Columns',//'自定义表格列',    
+    'common.table.customize': 'Customize Table\'s Columns',//'自定义表格列',
     'common.label.times': 'times',//'次',
     'common.label.days': 'days',//'天',
     'common.label.hours': 'hours',//'小时',
@@ -646,8 +646,10 @@ var en_US = {
     'user.jscode.copy': 'Copy',//复制
     'user.copy.success.tip': 'Copied success',//复制成功！
     'user.access.way.tip': 'If you use the following products, you can also access users in the following ways',//您如果使用了以下产品，还可以通过以下方式接入用户
-    'user.jscode.test.btn': 'Click test',//点击测试
-    'user.jscode.use.tip': 'Please add the above JS code to the header of the application page if it has been added ',//请将以上js代码添加到应用页面的header中，如已添加
+    'user.access.way.other.tip': 'Acess user in other ways', //其他方式接入
+    'user.jscode.test.btn': 'Test',//测试
+    'user.jscode.use.tip': 'Please {copyAndTraceCode}into your product <header>, test after deploy it',//请{copyAndTraceCode}到产品页面的header中后测试
+    'user.jscode.copy.trace': 'copy the trace code',//复制跟踪代码
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
     // 用户分析
@@ -1109,6 +1111,14 @@ var en_US = {
     'config.product.manage': 'Product manage',//产品管理
     'config.product.reload': 'Reload product',//重新获取产品
     'config.product.add': 'Add product',//添加产品
+    'config.product.add.code': 'Add product code',//添加产品编号
+    'config.product.add.spec': 'Add product specifications',//添加规格/版本
+    'config.product.add.price': 'Add product price',//添加产品单价
+    'config.product.price.not.null': 'Product price should not be empty',//产品单价不能为空
+    'config.product.add.sales_unit': 'Add sales unit',//添加计价单位
+    'config.product.sales_unit.not.null': 'Sales unit should not be empty',//计价单位不能为空
+    'config.product.add.address': 'Add access address',//添加访问地址
+    'config.product.add.desc': 'Add product description',//添加产品描述
     'config.product.modify': 'Modify product',//修改产品
     'config.product.input.name': 'Please input production name',//请输入产品名称
     'config.product.name.rule': '1 ~ 10 characters', // 最少1个字符,最多10个字符
@@ -3229,6 +3239,9 @@ var en_US = {
     'common.clue.convert': 'clue convert',//线索转化
     'common.clue.name.need.at.least.two.char.to.do.customer.convert': 'clue name need at least two char to do customer convert',//线索名称必须在两个字或以上，才能进行转为客户的操作
     'app.manege.access.no.amdin.tip': 'No user,please contact the administrator to access the user',//暂无用户，请联系管理员接入用户
+    'app.manage.no.user.info': 'No user infomation', //暂无用户信息
+    'app.manage.access.user': 'Access User', //接入用户
+    'app.manage.configure.access.info': 'Configure Access Infomation', //配置接入信息
     'common.new.customer.conversion.rate.statistics': 'new customer conversion rate statistics',//新增客户转化率统计
     'common.number.of.new.customers': 'number of new customers',//新增客户数
     'common.number.of.open.user.customers': 'number of open user customers',//开通用户客户数
