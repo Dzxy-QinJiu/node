@@ -24,6 +24,7 @@ var spanLength = '8';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {getIntegrationConfig, getProductList, uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
 let history = require('PUB_DIR/sources/history');
+import Trace from 'LIB_DIR/trace';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 class userScore extends React.Component {
     constructor(props) {
@@ -103,15 +104,16 @@ class userScore extends React.Component {
     componentWillUnmount() {
         userScoreStore.unlisten(this.onStoreChange);
     }
-    getAppLists(){
+
+    getAppLists() {
         this.setState({isLoadingApp: true});
         userScoreAction.getAppList((result) => {
-            if (_.isString(result)){
+            if (_.isString(result)) {
                 this.setState({
                     appList: [],
                     isLoadingApp: false
                 });
-            }else{
+            } else {
                 this.setState({
                     isLoadingApp: false,
                     appList: result
@@ -120,6 +122,7 @@ class userScore extends React.Component {
 
         });
     }
+
     getUserIndicator() {
         userScoreAction.getUserScoreIndicator();
     }
@@ -152,10 +155,15 @@ class userScore extends React.Component {
             target[property] = value;
             //如果修改indicator，也需要把后面分数的选项更改一下
             if (property === 'indicator') {
-                target['online_unit'] = _.get(this, `state.userIndicatorType[${value}][0].value`);
+                if (value === 'active_days_rate' || value === 'online_time_rate') {
+                    delete target['online_unit'];
+                    delete target['score'];
+                } else {
+                    target['online_unit'] = _.get(this, `state.userIndicatorType[${value}][0].value`);
+                    target['score'] = 1;
+                }
             }
         }
-
         this.setState({
             userScoreFormData
         });
@@ -164,18 +172,30 @@ class userScore extends React.Component {
     handleAddBtn = () => {
         const {userScoreFormData, userIndicator, userIndicatorRange, userIndicatorType} = this.state;
         var userScoreDetailList = _.get(userScoreFormData, 'detail', []);
-        if (userScoreDetailList.length === 1) {
-            //查出上一条记录选择的是什么
-            var dataItem = _.get(userScoreDetailList, '[0]');
-            var userIndicatorFilter = _.filter(userIndicator, item => item.indicator !== dataItem.indicator);
-            if (_.get(userIndicatorFilter, 'length')) {
-                var indicator = _.get(userIndicatorFilter, '[0].indicator');
+        //过滤掉已经添加的，在剩下的选项中添加一个
+        if (_.isArray(userScoreDetailList)) {
+            var userIndicatorList = _.cloneDeep(userIndicator);
+            _.forEach(userScoreDetailList, userScoreItem => {
+                userIndicatorList = _.filter(userIndicatorList, item => item.indicator !== userScoreItem.indicator);
+            });
+        }
+        
+        if (_.get(userIndicatorList, 'length')) {
+            var indicator = _.get(userIndicatorList, '[0].indicator');
+            if (this.isRateItem(_.get(userIndicatorList, '[0]'))) {
                 userScoreDetailList.push({
-                    'indicator': indicator,
-                    'interval': _.get(userIndicatorRange[indicator], '[0].value'),
-                    'online_unit': _.get(userIndicatorType[indicator], '[0].value'),
-                    'score': '1',
-                    'randomId': uuid()
+                    indicator: indicator,
+                    interval: 'last_month',
+                    randomId: uuid()
+                });
+            } else {
+                var onlineUnit = userIndicatorType[indicator];
+                userScoreDetailList.push({
+                    indicator: indicator,
+                    interval: 'last_month',
+                    score: '1',
+                    online_unit: _.get(onlineUnit, '[0].value'),
+                    randomId: uuid()
                 });
             }
         }
@@ -192,37 +212,95 @@ class userScore extends React.Component {
             userScoreFormData
         });
     };
-    handleUserScoreRuleStatus = (checkFlag) => {
+    handleUserScoreRuleStatus = (e) => {
         var {userScoreFormData} = this.state;
-        if (checkFlag) {
-            userScoreFormData.status = 'enable';
-        } else {
-            userScoreFormData.status = 'disable';
+        let modalStr = Intl.get('member.start.this', '启用此');
+        if (userScoreFormData.status === 'enable') {
+            modalStr = Intl.get('member.stop.this', '禁用此');
         }
-
+        Trace.traceEvent(e, '点击确认' + modalStr + '该规则');
+        let status = 'enable';
+        if (userScoreFormData.status === 'enable') {
+            status = 'disable';
+        }
+        userScoreFormData.status = status;
         this.setState({
             userScoreFormData
+        },() => {
+            this.handleSaveRules();
         });
     };
-    handleUserEngagementRuleStatus = (checkFlag) => {
+    handleUserEngagementRuleStatus = (e) => {
         var {userEngagementFormData} = this.state;
-        if (checkFlag) {
-            userEngagementFormData.status = 'enable';
-        } else {
-            userEngagementFormData.status = 'disable';
+        let modalStr = Intl.get('member.start.this', '启用此');
+        if (userEngagementFormData.status === 'enable') {
+            modalStr = Intl.get('member.stop.this', '禁用此');
         }
+        Trace.traceEvent(e, '点击确认' + modalStr + '该规则');
+
+        let status = 'enable';
+        if (userEngagementFormData.status === 'enable') {
+            status = 'disable';
+        }
+        userEngagementFormData.status = status;
         this.setState({
             userEngagementFormData
-        },() => {
+        }, () => {
 
         });
+    };
+    isRateItem = (item) => {
+        return item.indicator === 'online_time_rate' || item.indicator === 'active_days_rate';
+    }
+    renderRateLastItem = (userScoreDetailList, item, index) => {
+        const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData, isEditUserBasicRule, userLevelObj} = this.state;
+        if (isEditUserBasicRule) {
+            return <span className="add-minus-btns">
+                {index + 1 !== _.get(userIndicator, 'length') && index === userScoreDetailList.length - 1 ?
+                    <span onClick={this.handleAddBtn}> + </span> : null}
+                {userScoreDetailList.length > 1 ?
+                    <span
+                        onClick={this.handleMinusBtn.bind(this, item.id || item.randomId)}> - </span> : null}
+
+            </span>;
+        }
+    };
+    renderNotRateLastItem = (userScoreDetailList, item, index) => {
+        const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData, isEditUserBasicRule, userLevelObj} = this.state;
+        var numberTarget = _.find(userIndicatorType[item['indicator']], number => number.value === item.online_unit);
+        return <span>
+            {isEditUserBasicRule ? <Select
+                style={{width: 100}}
+                value={item['online_unit']}
+                onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'online_unit')}
+            >
+                {_.isArray(userIndicatorType[item['indicator']]) ? userIndicatorType[item['indicator']].map((item, index) => (
+                    <Option key={index} value={item.value}>{item.name}</Option>
+                )) : null}
+
+            </Select> : _.get(numberTarget, 'name')}
+            <span className="start-icon"> X </span>
+            {isEditUserBasicRule ? <InputNumber value={item.score}
+                onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'score')}
+                min={1}/> : item.score || 1}
+            {Intl.get('user.time.minute', '分')}
+            {isEditUserBasicRule ? <span className="add-minus-btns">
+                {index + 1 !== _.get(userIndicator, 'length') && index === userScoreDetailList.length - 1 ?
+                    <span onClick={this.handleAddBtn}> + </span> : null}
+                {userScoreDetailList.length > 1 ?
+                    <span
+                        onClick={this.handleMinusBtn.bind(this, item.id || item.randomId)}> - </span> : null}
+
+            </span> : null}
+
+        </span>;
     };
     renderUserBasicScoreLists = () => {
         const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData, isEditUserBasicRule, userLevelObj} = this.state;
         var userScoreDetailList = _.get(userScoreFormData, 'detail', []);
         if (!userScoreDetailList.length) {
             //如果没有配置过用户评分，默认展示 近期活跃天数分数 和 近期在线时长分数
-            var defaultArr = _.filter(userIndicator, item => item.indicator === 'online_time_rate' || item.indicator === 'active_days_rate');
+            var defaultArr = _.filter(userIndicator, item => this.isRateItem(item));
             _.forEach(defaultArr, defaultItem => {
                 userScoreDetailList.push({
                     indicator: _.get(defaultItem, 'indicator'),
@@ -250,31 +328,38 @@ class userScore extends React.Component {
             return <div>
                 {_.map(userScoreDetailList, (item, index) => {
                     var userIndicatorList = _.cloneDeep(userIndicator),
-                        userIndicatorRangeList = _.cloneDeep(userIndicatorRange),
-                        userIndicatorTypeList = _.cloneDeep(userIndicatorType);
+                        userIndicatorRangeList = _.cloneDeep(userIndicatorRange);
                     //过滤一下下拉框的选项
-                    if (_.get(userScoreDetailList, 'length') === _.get(userIndicator, 'length')) {
-                        userIndicatorList = _.filter(userIndicatorList, indicatorItem => indicatorItem.indicator === item.indicator);
-                    }
+                    var subIndicator = [];
+                    _.forEach(userIndicatorList, indicatorItem => {
+                        if (indicatorItem.indicator !== item.indicator) {
+                            var targetObj = _.find(userScoreDetailList, list => list.indicator === indicatorItem.indicator);
+                            if (!targetObj) {
+                                subIndicator.push(indicatorItem);
+                            }
+                        } else {
+                            subIndicator.push(indicatorItem);
+                        }
+                    });
                     var targetIndicator = _.find(userIndicatorList, indicator => indicator.indicator === item.indicator);
                     var targetTimeRange = _.find(userIndicatorRangeList[item['indicator']], timeRange => timeRange.value === item.interval);
-                    var numberTarget = _.find(userIndicatorTypeList[item['indicator']], number => number.value === item.online_unit);
+
                     return (
                         <Row>
                             <Col span={spanLength}>
                                 {isEditUserBasicRule ? <Select
-                                    style={{width: 100}}
+                                    style={{width: 150}}
                                     value={item['indicator']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'indicator')}
                                 >
-                                    {userIndicatorList.map((item, index) => (
+                                    {subIndicator.map((item, index) => (
                                         <Option key={index} value={item.indicator}>{item.desc}</Option>
                                     ))}
                                 </Select> : _.get(targetIndicator, 'desc')}
 
                             </Col>
                             <Col span={spanLength}>
-                                {isEditUserBasicRule ? <Select
+                                {isEditUserBasicRule && !this.isRateItem(item) ? <Select
                                     style={{width: 100}}
                                     value={item['interval']}
                                     onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'interval')}
@@ -284,31 +369,9 @@ class userScore extends React.Component {
                                     )) : null}
                                 </Select> : _.get(targetTimeRange, 'name')}
                             </Col>
-                            <Col span={spanLength}>
-                                {isEditUserBasicRule ? <Select
-                                    style={{width: 100}}
-                                    value={item['online_unit']}
-                                    onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'online_unit')}
-                                >
-                                    {_.isArray(userIndicatorTypeList[item['indicator']]) ? userIndicatorTypeList[item['indicator']].map((item, index) => (
-                                        <Option key={index} value={item.value}>{item.name}</Option>
-                                    )) : null}
-
-                                </Select> : _.get(numberTarget, 'name')}
-                                <span className="start-icon"> X </span>
-                                {isEditUserBasicRule ? <InputNumber value={item.score}
-                                    onChange={this.handleUserProperty.bind(this, item.id || item.randomId, 'score')}
-                                    min={1}/> : item.score || 1}
-                                {Intl.get('user.time.minute', '分')}
-                                {isEditUserBasicRule ? <span className="add-minus-btns">
-                                    {index + 1 !== _.get(userIndicator, 'length') && index === userScoreDetailList.length - 1 ?
-                                        <span onClick={this.handleAddBtn}> + </span> : null}
-                                    {userScoreDetailList.length > 1 ?
-                                        <span
-                                            onClick={this.handleMinusBtn.bind(this, item.id || item.randomId)}> - </span> : null}
-
-                                </span> : null}
-
+                            <Col span={spanLength} className='add-minus-container'>
+                                {this.isRateItem(item) ? this.renderRateLastItem(userScoreDetailList, item, index) : this.renderNotRateLastItem(userScoreDetailList, item, index)
+                                }
                             </Col>
                         </Row>
                     );
@@ -365,6 +428,7 @@ class userScore extends React.Component {
         );
 
     }
+
     handleClickUserEngagementRule = () => {
         this.setState({
             isEditUserEngagementRule: true
@@ -381,10 +445,11 @@ class userScore extends React.Component {
 
         return (
             <div>
-                <Tabs defaultActiveKey="1" tabPosition='left' style={{ height: 220 }} onChange={this.handleSelectedAppChange}>
-                    {_.map(appList,(appItem, idx) => {
-                        var engageItem = _.find(userEngagements,item => item.app_id === appItem.app_id);
-                        if(isEditUserEngagementRule && !_.get(engageItem,'detail[0]')){
+                <Tabs defaultActiveKey="1" tabPosition='left' style={{height: 220}}
+                    onChange={this.handleSelectedAppChange}>
+                    {_.map(appList, (appItem, idx) => {
+                        var engageItem = _.find(userEngagements, item => item.app_id === appItem.app_id);
+                        if (isEditUserEngagementRule && !_.get(engageItem, 'detail[0]')) {
                             engageItem = {
                                 detail: [{
                                     operate: '',
@@ -399,8 +464,8 @@ class userScore extends React.Component {
                         }
 
                         return (
-                            <TabPane tab={appItem.app_name} key={idx} >
-                                {_.get(engageItem,'detail[0]') ?
+                            <TabPane tab={appItem.app_name} key={idx}>
+                                {_.get(engageItem, 'detail[0]') ?
                                     _.map(_.get(engageItem, 'detail', []), (operateItem, idx) => {
                                         var engageId = engageItem.app_id || engageItem.randomId;
                                         var detailId = operateItem.id || operateItem.randomId;
@@ -444,15 +509,18 @@ class userScore extends React.Component {
                                                 </Col>
                                                 <div className="add-operate-item">
 
-                                                    {idx + 1 === _.get(engageItem, 'detail.length') && !isEditUserEngagementRule ? <span
-                                                        onClick={this.handeAddEngageDetail.bind(this, engageId)}>+</span> : null}
-                                                    {_.get(engageItem, 'detail.length') > 1 && !isEditUserEngagementRule ? <span
-                                                        onClick={this.handleMinusEngageDetail.bind(this, engageId, detailId)}>-</span> : null}
+                                                    {idx + 1 === _.get(engageItem, 'detail.length') && !isEditUserEngagementRule ?
+                                                        <span
+                                                            onClick={this.handeAddEngageDetail.bind(this, engageId)}>+</span> : null}
+                                                    {_.get(engageItem, 'detail.length') > 1 && !isEditUserEngagementRule ?
+                                                        <span
+                                                            onClick={this.handleMinusEngageDetail.bind(this, engageId, detailId)}>-</span> : null}
                                                 </div>
                                             </Row>
                                         </div>;
                                     })
-                                    : <NoDataIntro renderAddAndImportBtns={this.noOperationIntroBtn} showAddBtn={true} noDataAndAddBtnTip = {Intl.get('user.score.no.config.operation.config', '暂未配置操作指标')} />}
+                                    : <NoDataIntro renderAddAndImportBtns={this.noOperationIntroBtn} showAddBtn={true}
+                                        noDataAndAddBtnTip={Intl.get('user.score.no.config.operation.config', '暂未配置操作指标')}/>}
                                 {/*保存一条参与度数据*/}
                                 {isEditUserEngagementRule ? <div className="save-btns">
                                     <SaveCancelButton loading={this.state.isSavingEngagement}
@@ -470,7 +538,8 @@ class userScore extends React.Component {
     };
     noOperationIntroBtn = () => {
         return <div className="btn-containers">
-            <Button type='primary' onClick={this.handleShowAppPanel}>{Intl.get('user.score.start.config', '开始配置')}</Button>
+            <Button type='primary'
+                onClick={this.handleShowAppPanel}>{Intl.get('user.score.start.config', '开始配置')}</Button>
         </div>;
     };
     handleShowAppPanel = () => {
@@ -521,7 +590,8 @@ class userScore extends React.Component {
                     <div className="user-engagement-and-add">
                         <div className="user-engagement-item">
                             {/*如果参与度是禁用状态，加提示*/}
-                            { _.get(userEngagementFormData, 'status') !== 'enable' ? <NoDataIntro noDataTip={Intl.get('user.score.no.engagement.score', '暂未开启参与度评分')}/> : this.renderEngagementTabs()}
+                            { _.get(userEngagementFormData, 'status') !== 'enable' ? <NoDataIntro
+                                noDataTip={Intl.get('user.score.no.engagement.score', '暂未开启参与度评分')}/> : this.renderEngagementTabs()}
                         </div>
                     </div>
                 </div>
@@ -625,6 +695,9 @@ class userScore extends React.Component {
             message.success(Intl.get('common.save.success', '保存成功'));
             //如果保存成功，会有回调
             userScoreAction.updateUserRule(userScoreFormData);
+            this.setState({
+                isEditUserBasicRule: false
+            });
         });
 
     };
@@ -645,6 +718,9 @@ class userScore extends React.Component {
             message.success(Intl.get('common.save.success', '保存成功'));
             //如果保存成功，会有回调
             userScoreAction.updateUserEngagement(userEngagementFormData);
+            this.setState({
+                isEditUserEngagementRule: false
+            });
         });
     };
 

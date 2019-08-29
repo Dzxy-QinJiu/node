@@ -300,6 +300,7 @@ class customerScore extends React.Component {
         var customerRulesFormData = this.state.customerRulesFormData;
         var customerScoreLists = _.get(customerRulesFormData, 'detail');
         //过滤掉已经添加的，在剩下的选项中添加一个
+        var customerSelectLists = [];
         if (_.isArray(customerScoreLists)) {
             var customerSelectLists = _.cloneDeep(this.state.customerIndicatorArr);
             _.forEach(customerScoreLists, customerScoreItem => {
@@ -375,7 +376,7 @@ class customerScore extends React.Component {
                                 </Select> : _.get(targetTimeRange, 'name')}
 
                             </Col>
-                            <Col span={spanLength}>
+                            <Col span={spanLength} className='add-minus-container'>
                                 {item.user_option ?
                                     <span>
                                         {isEditCustomerRule ? <Select value={item.user_option}
@@ -440,7 +441,7 @@ class customerScore extends React.Component {
         if (customerRulesFormData.status === 'enable') {
             modalStr = Intl.get('member.stop.this', '禁用此');
         }
-        Trace.traceEvent(e, '点击确认' + modalStr + '成员');
+        Trace.traceEvent(e, '点击确认' + modalStr + '该规则');
 
         let status = 'enable';
         if (customerRulesFormData.status === 'enable') {
