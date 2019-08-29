@@ -87,8 +87,6 @@ class ApplyDropdownAndAddBtn extends React.Component {
                 })}
             </Menu>
         );
-        //判断是否有发邮件权限
-        let hasEmailPrivilege = _.get(this.state, 'applyState.isApplyButtonShow');
         return (
             <div className="apply-searchbar clearfix">
                 <div className="apply-type-filter btn-item" id="apply-type-container">
@@ -102,7 +100,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
                         </Dropdown>
                     }
                 </div>
-                {hasPrivilege(this.props.addPrivilege) && hasEmailPrivilege ?
+                {hasPrivilege(this.props.addPrivilege) ?
                     this.renderApplyButton()
                     : null}
                 <div className="pull-right search-btns">

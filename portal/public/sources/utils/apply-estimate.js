@@ -6,13 +6,14 @@ import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 function getApplyState(applyType) {
     return new Promise((resolve) => {
         let userInfo = userData.getUserData();
-        //判断是否有抄送权限
-        let hasPrivilege = hasCCPrivilege(applyType);
-        if(!hasPrivilege) {
+        //判断是否需要抄送
+        let ccResult = canUserCC(applyType);
+        if(!ccResult) {
             resolve({
-                isApplyButtonShow: false,
+                applyPrivileged: true,
             });
         } else {
+            let hasPrivilege = {};
             //如果邮箱为空
             if(_.isEmpty(_.get(userInfo, 'email'))) {
                 hasPrivilege.needBind = true;
@@ -31,13 +32,11 @@ function getApplyState(applyType) {
             //如果都有
             if(_.isEmpty(hasPrivilege)) {
                 resolve({
-                    isApplyButtonShow: true,
                     applyPrivileged: true,
                 });
             } else {//如果未激活或未绑定
                 let applyMessage = getApplyMessage(hasPrivilege);
                 resolve({
-                    isApplyButtonShow: true,
                     applyPrivileged: false,
                     applyMessage: applyMessage,
                 });
@@ -64,8 +63,8 @@ function getUserInfo() {
     });
 }
 
-//获取用户是否有抄送权限
-function hasCCPrivilege(applyType) {
+//获取用户是否需要抄送
+function canUserCC(applyType) {
     let workFlowConfigs = userData.getUserData().workFlowConfigs;
     //获取申请类型的config
     let ccInfo = _.filter(workFlowConfigs, config => _.isEqual(config.type, applyType))[0];

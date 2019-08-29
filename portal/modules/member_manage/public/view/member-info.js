@@ -321,6 +321,14 @@ class MemberInfo extends React.Component {
         delete saveObj.id;
         MemberManageAjax.editUser(saveObj).then((result) => {
             if (result) {
+                //如果修改的是自己的邮箱，userdata数据更新
+                if(_.isEqual(type, 'email')) {
+                    let userId = UserData.getUserData().user_id;
+                    if(_.isEqual(saveObj.user_id, userId)) {
+                        UserData.setUserData('email', saveObj.email);
+                        UserData.setUserData('emailEnable', false);
+                    }
+                }
                 if (_.isFunction(successFunc)) successFunc();
                 this.changeMemberFieldSuccess(updateObj);
                 //如果是密码的修改，取消密码框的展示

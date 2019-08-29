@@ -63,9 +63,7 @@ class CustomerUsers extends React.Component {
             applyType: '',//申请用户的类型
             listenScrollBottom: true,//是否监听滚动
             appList: [],
-            applyState: {
-                isApplyButtonShow: false
-            },
+            applyState: {},
             popoverErrorVisible: false,
             ... this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
@@ -326,11 +324,7 @@ class CustomerUsers extends React.Component {
         };
     }
 
-    handleVisibleChange = popoverErrorVisible => {
-        this.setState({ popoverErrorVisible });
-    };
-
-    //根据返回的状态信息渲染带Popover的button和不带Popover的button
+    //申请新用户时，根据返回的状态信息渲染带Popover的button和不带Popover的button
     renderApplyButton = () => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
         return (
@@ -345,8 +339,6 @@ class CustomerUsers extends React.Component {
                     placement="bottomRight"
                     overlayClassName="apply-invalid-popover"
                     content={_.get(this.state, 'applyState.applyMessage')}
-                    visible={this.state.popoverErrorVisible}
-                    onVisibleChange={this.handleVisibleChange}
                     trigger="click"
                 >
                     <div className="crm-user-apply-btns" data-tracename="申请新用户">
@@ -358,22 +350,11 @@ class CustomerUsers extends React.Component {
         );
     }
 
-    renderApplyBtns() {
-        //是否可以批量申请（停用、延期、修改密码、其他）的操作，只要有选择的用户或应用就可以
-        let batchApplyFlag = this.getBatchApplyFlag();
-        //开通应用，只有选择用户后才可用
-        let openAppFlag = false;
-        let crmUserList = this.state.crmUserList;
-        //判断是否有发邮件权限
-        let hasEmailPrivilege = _.get(this.state, 'applyState.isApplyButtonShow');
-        if (_.isArray(crmUserList) && crmUserList.length) {
-            openAppFlag = _.some(crmUserList, userObj => userObj && userObj.user && userObj.user.checked);
-        }
-        if (!batchApplyFlag && !openAppFlag) {
-            //申请新用户
-            return hasEmailPrivilege ? this.renderApplyButton() : null;
-        } else {//其他申请
-            return (
+    //其他申请时，根据返回的状态信息渲染带popover的button和不带popover的button
+    renderOtherApplyButton = (batchApplyFlag, openAppFlag) => {
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        return (
+            applyPrivileged ? (
                 <div className="crm-user-apply-btns">
                     <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
@@ -397,7 +378,81 @@ class CustomerUsers extends React.Component {
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
                         {Intl.get('user.app.open', '开通应用')}
                     </Button>
-                </div>);
+                </div>) : (
+                <div className="crm-user-apply-btns" data-tracename="申请新用户">
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
+                            disabled={!batchApplyFlag}>
+                            {Intl.get('common.stop', '停用')}
+                        </Button>
+                    </Popover>
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
+                            disabled={!batchApplyFlag}>
+                            {Intl.get('crm.user.delay', '延期')}
+                        </Button>
+                    </Popover>
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
+                            disabled={!batchApplyFlag}>
+                            {Intl.get('common.edit.password', '修改密码')}
+                        </Button>
+                    </Popover>
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
+                            disabled={!batchApplyFlag}>
+                            {Intl.get('crm.186', '其他')}
+                        </Button>
+                    </Popover>
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
+                            disabled={!openAppFlag}>
+                            {Intl.get('user.app.open', '开通应用')}
+                        </Button>
+                    </Popover>
+                </div>
+            )
+        );
+    };
+
+    renderApplyBtns() {
+        //是否可以批量申请（停用、延期、修改密码、其他）的操作，只要有选择的用户或应用就可以
+        let batchApplyFlag = this.getBatchApplyFlag();
+        //开通应用，只有选择用户后才可用
+        let openAppFlag = false;
+        let crmUserList = this.state.crmUserList;
+        if (_.isArray(crmUserList) && crmUserList.length) {
+            openAppFlag = _.some(crmUserList, userObj => userObj && userObj.user && userObj.user.checked);
+        }
+        if (!batchApplyFlag && !openAppFlag) {//申请新用户
+            return this.renderApplyButton();
+        } else {//其他申请
+            return this.renderOtherApplyButton(batchApplyFlag, openAppFlag);
         }
     }
 

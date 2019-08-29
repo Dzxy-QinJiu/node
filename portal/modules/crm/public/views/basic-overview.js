@@ -29,7 +29,6 @@ import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
 import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
-import UserInfoStore from '../../../user_info/public/store/user-info-store';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 const PRIVILEGE_MAP = {
@@ -57,7 +56,6 @@ class BasicOverview extends React.Component {
             applyFormShowFlag: false,
             competitorList: [],
             isOplateUser: false,
-            popoverErrorVisible: false
         };
     }
 
@@ -192,7 +190,6 @@ class BasicOverview extends React.Component {
     componentWillUnmount() {
         basicOverviewStore.unlisten(this.onChange);
         CustomerRecordStore.unlisten(this.onRecordStoreChange);
-        UserInfoStore.unlisten(this.onChange);
     }
 
     //展示按客户搜索到的用户列表
@@ -352,9 +349,6 @@ class BasicOverview extends React.Component {
         }
     };
 
-    handleVisibleChange = popoverErrorVisible => {
-        this.setState({ popoverErrorVisible });
-    };
     //根据是否绑定激活渲染带Popover的button和不带Popover的button
     renderApplyButton = () => {
         let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
@@ -367,8 +361,6 @@ class BasicOverview extends React.Component {
                     placement="bottomRight"
                     overlayClassName="apply-invalid-popover"
                     content={_.get(this.state, 'applyState.applyMessage')}
-                    visible={this.state.popoverErrorVisible}
-                    onVisibleChange={this.handleVisibleChange}
                     trigger="click">
                     <Button className='crm-detail-add-btn'>
                         {Intl.get('crm.apply.user.new', '申请新用户')}
@@ -379,8 +371,6 @@ class BasicOverview extends React.Component {
 
     //渲染申请用户的提示\面板
     renderApplyUserBlock = () => {
-        //判断是否有发邮件权限
-        let hasEmailPrivilege = _.get(this.state, 'applyState.isApplyButtonShow');
         //只有销售和销售主管才会申请
         let hasApplyPrivilege = userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
         if (hasApplyPrivilege && !this.props.isMerge && this.state.isOplateUser) {
@@ -402,8 +392,7 @@ class BasicOverview extends React.Component {
                         <span className="no-user-tip-content">
                             {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                         </span>
-                        {hasEmailPrivilege ?
-                            this.renderApplyButton() : null}
+                        {this.renderApplyButton()}
                     </div>);
                 return <DetailCard content={tip} className="apply-user-tip-contianer"/>;
             }
