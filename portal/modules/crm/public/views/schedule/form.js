@@ -81,6 +81,12 @@ var CrmAlertForm = createReactClass({
         return formData;
     },
 
+    getDefaultProps: function() {
+        return {
+            topicValue: 'customer'
+        };
+    },
+
     componentWillReceiveProps: function(nextProps) {
         //用户切换添加"线索"或"客户"类型代办时，更新formData里的scheduleType初始值
         if(_.has(nextProps, 'topicValue')) {
@@ -219,7 +225,7 @@ var CrmAlertForm = createReactClass({
             ScheduleAction.addSchedule(submitObj, (resData) => {
                 if (resData.id) {
                     this.showMessage(Intl.get('user.user.add.success', '添加成功'));
-                    _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel();
+                    _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel(resData);
                     // 判断是否是添加待办项
                     if(this.props.isAddToDoClicked) {
                         _.isFunction(this.props.handleScheduleAdd) && this.props.handleScheduleAdd(resData);
