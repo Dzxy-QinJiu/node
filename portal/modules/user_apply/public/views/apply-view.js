@@ -184,7 +184,6 @@ class ApplyTabContent extends React.Component {
                 </span>
             );
             var noDataBlock, errorBlock;
-            console.log(noDataFirst);
             if (switchMsg) {
                 noDataBlock = (<Alert
                     message={noDataMsg}
