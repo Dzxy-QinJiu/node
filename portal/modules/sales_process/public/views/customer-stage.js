@@ -465,6 +465,9 @@ class CustomerStage extends React.Component {
         let length = _.get(customerStageList, 'length');
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let containerHeight = height - 2 * BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        if (this.props.saleProcessType === 'default') {
+            containerHeight += BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        }
         const width = this.props.containerWidth - 100;
         return (
             <RightPanel
@@ -477,14 +480,25 @@ class CustomerStage extends React.Component {
                 <div className="customer-stage-container">
                     <div className="customer-stage-content" style={{height: height}}>
                         <div className="customer-stage-top-name">
-                            {this.renderCustomerStageName()}
+                            {
+                                this.props.saleProcessType === 'custom' ? (
+                                    this.renderCustomerStageName()
+                                ) : (
+                                    <span className="default-name">{this.props.saleProcesTitle}</span>
+                                )
+                            }
                         </div>
                         {
                             this.state.saleProcessId ? (
                                 <div>
-                                    <div className="customer-stage-top">
-                                        {this.renderTopNavOperation()}
-                                    </div>
+                                    {
+                                        this.props.saleProcessType === 'custom' ? (
+                                            <div className="customer-stage-top">
+                                                {this.renderTopNavOperation()}
+                                            </div>
+                                        ) : null
+                                    }
+
                                     <GeminiScrollBar style={{height: containerHeight}}>
                                         {
                                             this.state.loading ? (
@@ -523,6 +537,7 @@ class CustomerStage extends React.Component {
                                                                     salesBehaviorList={this.state.salesBehaviorList}
                                                                     saleProcessId={this.state.saleProcessId}
                                                                     autoConditionsList={this.state.autoConditionsList}
+                                                                    saleProcessType={this.props.saleProcessType}
                                                                 />
                                                             </li>
                                                         );
@@ -560,6 +575,7 @@ CustomerStage.propTypes = {
     form: PropTypes.object,
     changeSaleProcessFieldSuccess: PropTypes.func,
     upDateSalesProcessList: PropTypes.func,
+    saleProcessType: PropTypes.string,
 };
 
 export default Form.create()(CustomerStage);

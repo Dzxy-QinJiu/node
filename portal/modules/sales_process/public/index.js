@@ -561,6 +561,7 @@ class SalesProcess extends React.Component {
                                 salesProcessList={this.state.salesProcessList}
                                 changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
                                 upDateSalesProcessList={this.upDateSalesProcessList}
+                                saleProcessType={this.state.saleProcessType}
                             />
                         ) : null
                     }

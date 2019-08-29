@@ -23,6 +23,7 @@ class SalesProcessStore {
         this.isShowCustomerStage = false; // 是否显示客户阶段，默认是false
         this.saleProcessId = ''; // 销售流程id
         this.saleProcessName = ''; // 销售流程名称
+        this.saleProcessType = 'custom'; // 客户阶段（销售流程）类型，默认是自定义的
         this.isShowSelectTeamUserPanel = false; // 是否显示选择团队或是个人的面板，默认false
     }
 
@@ -149,6 +150,7 @@ class SalesProcessStore {
     showCustomerStagePanel(saleProcess) {
         this.saleProcessId = saleProcess.id;
         this.saleProcessName = saleProcess.name;
+        this.saleProcessType = saleProcess.type || 'custom';
         this.isShowCustomerStage = true;
     }
 
@@ -156,6 +158,7 @@ class SalesProcessStore {
     closeCustomerStagePanel() {
         this.saleProcessId = '';
         this.saleProcessName = '';
+        this.saleProcessType = 'custom';
         this.isShowCustomerStage = false;
     }
 

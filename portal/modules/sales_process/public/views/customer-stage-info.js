@@ -26,6 +26,9 @@ class CustomerStageInfo extends React.Component {
 
     // 显示客户阶段表单
     showCustomerStageForm = (customerStage) => {
+        if (this.props.saleProcessType === 'default') {
+            return;
+        }
         this.props.showCustomerStageForm(customerStage);
     };
 
@@ -92,7 +95,7 @@ class CustomerStageInfo extends React.Component {
                     className="customer-stage-content"
                     style={{width: customerStageContainerWidth - OPERATE_ZONE_WIDTH}}
                     onClick={this.showCustomerStageForm.bind(this, customerStage)}
-                    title={Intl.get('customer.stage.edit.stage', '编辑{stage}阶段', {stage: name})}
+                    title={this.props.saleProcessType === 'default' ? '' : Intl.get('customer.stage.edit.stage', '编辑{stage}阶段', {stage: name})}
                 >
                     <div className="customer-stage-content-name">
                         <span>{name}</span>
@@ -153,29 +156,32 @@ class CustomerStageInfo extends React.Component {
                             </div>
                         ) :
                         (
-                            <div className="customer-stage-btn-div operation-btn">
-                                <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
-                                    <Button
-                                        className="customer-stage-btn-class icon-delete iconfont"
-                                        onClick={this.showCustomerStageModalDialog.bind(this, customerStage)}
-                                        data-tracename="删除客户阶段"
-                                    >
-                                    </Button>
-                                </PrivilegeChecker>
-                                {
-                                    /*** 先注释到客户阶段的设置功能
-                                     * <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
-                                             <Button
-                                             className="customer-stage-btn-class icon-role-auth-config iconfont"
-                                             onClick={this.showCustomerStageDetail.bind(this, customerStage)}
-                                             data-tracename="设置客户阶段"
-                                             >
-                                             </Button>
-                                      </PrivilegeChecker>
-                                     * */
-                                }
+                            this.props.saleProcessType === 'custom' ? (
+                                <div className="customer-stage-btn-div operation-btn">
+                                    <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
+                                        <Button
+                                            className="customer-stage-btn-class icon-delete iconfont"
+                                            onClick={this.showCustomerStageModalDialog.bind(this, customerStage)}
+                                            data-tracename="删除客户阶段"
+                                        >
+                                        </Button>
+                                    </PrivilegeChecker>
+                                    {
+                                        /*** 先注释到客户阶段的设置功能
+                                         * <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                         <Button
+                                         className="customer-stage-btn-class icon-role-auth-config iconfont"
+                                         onClick={this.showCustomerStageDetail.bind(this, customerStage)}
+                                         data-tracename="设置客户阶段"
+                                         >
+                                         </Button>
+                                         </PrivilegeChecker>
+                                         * */
+                                    }
 
-                            </div>
+                                </div>
+                            ) : null
+
                         )
                 }
                 {/*{*/}
@@ -220,6 +226,7 @@ CustomerStageInfo.propTypes = {
     salesBehaviorList: PropTypes.array,
     saleProcessId: PropTypes.string,
     autoConditionsList: PropTypes.array,
+    saleProcessType: PropTypes.string,
 };
 
 export default CustomerStageInfo;
