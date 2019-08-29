@@ -7,23 +7,23 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
 var restApis = {
-    //添加请假申请
+    //添加申请
     addLeaveApply: '/rest/base/v1/workflow/leave',
-    //查询所有的请假申请
+    //查询所有的申请
     allWorkFlowApplyList: '/rest/base/v1/workflow/applylist',
-    //查询由当前账号审批的请假申请
+    //查询由当前账号审批的申请
     applylistWorkFlowWorkList: '/rest/base/v1/workflow/worklist',
     //通过或者驳回申请
     approveLeaveApplyPassOrReject: '/rest/base/v1/workflow/leave/approve',
     //获取申请的状态
     getApplyStatusById: '/rest/base/v1/workflow/status',
-    //根据请假申请的id查询申请的详情
+    //根据申请的id查询申请的详情
     getApplyDetailById: '/rest/base/v1/workflow/detail',
     //获取批注和添加批注
     getOrAddApplyComments: '/rest/base/v1/workflow/comments',
 };
 exports.restUrls = restApis;
-//获取所有的请假申请
+//获取所有的申请
 exports.getAllLeaveApplyList = function(req, res) {
     return restUtil.authRest.get(
         {
@@ -32,7 +32,7 @@ exports.getAllLeaveApplyList = function(req, res) {
             res: res
         }, req.query);
 };
-//查询由当前账号审批的请假申请
+//查询由当前账号审批的申请
 exports.getWorklistLeaveApplyList = function(req, res) {
     return restUtil.authRest.get(
         {
@@ -41,7 +41,7 @@ exports.getWorklistLeaveApplyList = function(req, res) {
             res: res
         }, req.query);
 };
-//添加请假申请
+//添加申请
 exports.addLeaveApply = function(req, res) {
     return restUtil.authRest.post(
         {
@@ -86,7 +86,7 @@ exports.approveLeaveApplyPassOrReject = function(req, res) {
             res: res
         }, req.body);
 };
-//获取请假申请的状态
+//获取申请的状态
 exports.getLeaveApplyStatusById = function(req, res) {
     return restUtil.authRest.get(
         {

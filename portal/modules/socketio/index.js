@@ -77,7 +77,7 @@ function emitMsgBySocket(user_id, emitUrl, msgData) {
  * @param data 消息数据
  */
 function notifyChannelListener(data) {
-    // pushLogger.debug('后端推送的消息数据:' + data);
+    pushLogger.debug('后端推送的消息数据:' + data);
     // 将查询结果返给浏览器
     let messageObj = JSON.parse(data);
     if (messageObj.consumers && messageObj.consumers.length > 0) {

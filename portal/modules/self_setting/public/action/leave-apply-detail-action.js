@@ -87,7 +87,7 @@ function ApplyViewDetailActions() {
                 //更新选中的申请单类型
                 LeaveApplyUtils.emitter.emit('updateSelectedItem', {agree: obj.agree, status: 'success'});
                 if (Oplate && Oplate.unread) {
-                    Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] -= 1;
+                    Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY] -= 1;
                     if (timeoutFunc) {
                         clearTimeout(timeoutFunc);
                     }

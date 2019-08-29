@@ -15,7 +15,7 @@ function LeaveApplyStore() {
 }
 LeaveApplyStore.prototype.setInitState = function() {
     this.sort_field = 'create_time';//排序字段
-    this.status = '';//请假申请的状态
+    this.status = '';//申请的状态
     this.order = 'descend';
     this.page_size = 20;
     //所有申请列表
@@ -28,7 +28,7 @@ LeaveApplyStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.lastApplyId = '';
-    //由我发起的请假申请
+    //由我发起的申请
     this.selfApplyList = {
         // "" loading error
         loadingResult: 'loading',
