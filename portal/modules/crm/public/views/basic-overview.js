@@ -30,6 +30,8 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import CustomerStageCard from './basic_info/customer-stage-card';
+
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
     CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
@@ -55,6 +57,7 @@ class BasicOverview extends React.Component {
             applyFormShowFlag: false,
             competitorList: [],
             isOplateUser: false,
+            customerStageList: [], // 客户阶段列表
         };
     }
 
@@ -73,11 +76,14 @@ class BasicOverview extends React.Component {
     componentDidMount() {
         basicOverviewStore.listen(this.onChange);
         CustomerRecordStore.listen(this.onRecordStoreChange);
-        basicOverviewAction.getBasicData(this.props.curCustomer);
+        let curCustomer = this.props.curCustomer;
+        let teamId = _.get(curCustomer, 'sales_team_id');
+        basicOverviewAction.getBasicData(curCustomer);
         if(!this.props.disableEdit){
             this.getRecommendTags();
             this.getCompetitorList();
             this.getIntegrateConfig();
+            this.getCustomerStageByTeamId(teamId); // 获取客户阶段
             if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                 setTimeout(() => {
                     this.getCrmUserList(this.props.curCustomer);
@@ -87,6 +93,23 @@ class BasicOverview extends React.Component {
             }
         }
     }
+
+    // 获取客户阶段
+    getCustomerStageByTeamId = (teamId) => {
+        crmAjax.getCustomerStageByTeamId(teamId).then( (result) => {
+            if (result && result.id) {
+                let customerStageList = result.customer_stages;
+                this.setState({
+                    customerStageList: _.map(customerStageList, 'name')
+                });
+            } else {
+                this.setState({
+                    customerStageList: []
+                });
+            }
+        });
+    };
+
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
@@ -170,7 +193,8 @@ class BasicOverview extends React.Component {
                 }
                 //需要展示未处理的电联的联系计划
                 this.getNotCompletedScheduleList(nextProps.curCustomer);
-
+                let teamId = _.get(nextProps.curCustomer, 'sales_team_id');
+                this.getCustomerStageByTeamId(teamId); // 获取客户阶段
             });
         }
     }
@@ -474,12 +498,21 @@ class BasicOverview extends React.Component {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
         var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
+
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
                     {!this.props.disableEdit ? (
                         hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
+                    <CustomerStageCard
+                        isMerge={this.props.isMerge}
+                        updateMergeCustomer={this.props.updateMergeCustomer}
+                        disableEdit={this.props.disableEdit}
+                        customerId={basicData.id}
+                        customerStageList={this.state.customerStageList}
+                        currentStage={basicData.customer_label}
+                    />
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}

@@ -71,10 +71,11 @@ var crmRestApis = {
         updateInterest: `${editCustomerBaseUrl}/interest_member_ids`,
         //转出客户
         transferCustomer: `${editCustomerBaseUrl}/transfer`,
-        //修改客户阶段(v3的版本里后端不让改客户阶段)
-        editCustomerStage: '/rest/customer/v2/customer/:url_type/customer_label',
+        //修改客户阶段
+        editCustomerStage: `${editCustomerBaseUrl}/customer_label`,
         //只修改客户的所属团队
-        onlyEditCustomerTeam: `${editCustomerBaseUrl}/sales_team`
+        onlyEditCustomerTeam: `${editCustomerBaseUrl}/sales_team`,
+
     },
     // 拨打电话
     callOut: '/rest/customer/v2/phone/call/ou',
@@ -95,9 +96,21 @@ var crmRestApis = {
     //提取客户
     extractCustomer: '/customerpool/resource/customers/pull',
     //获取客户池中聚合的筛选项
-    getCustomerPoolFilterItems: '/customerpool/resource/customers/field/aggregation'
+    getCustomerPoolFilterItems: '/customerpool/resource/customers/field/aggregation',
+    // 通过团队id获取客户阶段（销售流程）
+    getCustomerStageByTeamId: '/rest/customer/v3/salesprocess/:team_id',
 };
 exports.urls = crmRestApis;
+
+// 通过团队id获取客户阶段（销售流程）
+exports.getCustomerStageByTeamId = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.getCustomerStageByTeamId.replace(':team_id', _.get(req, 'params.teamId')),
+            req: req,
+            res: res
+        }, null);
+};
 
 //获取回收站中的客户列表
 exports.getRecycleBinCustomers = function(req, res) {
@@ -405,6 +418,9 @@ exports.updateCustomer = function(req, res, newCustomer) {
         case 'customer_interest':
             url = crmRestApis.basic.updateInterest;
             break;
+        case 'customer_label':
+            url = crmRestApis.basic.editCustomerStage;
+            break;
     }
     url = url.replace(':url_type', urlType);
     delete newCustomer.type;
@@ -416,6 +432,7 @@ exports.updateCustomer = function(req, res, newCustomer) {
             res: res
         }, newCustomer);
 };
+
 
 //转出客户的处理
 exports.transferCustomer = function(req, res, newCustomer) {
