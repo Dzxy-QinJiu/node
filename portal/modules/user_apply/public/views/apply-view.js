@@ -164,7 +164,9 @@ class ApplyTabContent extends React.Component {
     renderApplyListError = () => {
         var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== 'all';
         var noDataSearch = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.searchKeyword !== '';
-        if (this.state.applyListObj.loadingResult === 'error' || noData || noDataSearch) {
+        var noDataFirst = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType === 'all' && this.state.searchKeyword === '';
+        var switchMsg = noData || noDataSearch || noDataFirst;
+        if (this.state.applyListObj.loadingResult === 'error' || switchMsg) {
             var retry = (
                 <span>
                     {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
@@ -182,7 +184,8 @@ class ApplyTabContent extends React.Component {
                 </span>
             );
             var noDataBlock, errorBlock;
-            if (noData || noDataSearch) {
+            console.log(noDataFirst);
+            if (switchMsg) {
                 noDataBlock = (<Alert
                     message={noDataMsg}
                     type="info"
@@ -199,7 +202,7 @@ class ApplyTabContent extends React.Component {
             }
             return (
                 <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                    {(noData || noDataSearch) ? noDataBlock : errorBlock}
+                    {(switchMsg) ? noDataBlock : errorBlock}
                 </div>);
         }
         return null;
@@ -470,19 +473,6 @@ class ApplyTabContent extends React.Component {
     };
 
     render() {
-        //根本就没有用户审批的时候，显示没数据的提示
-        if (this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType === 'all' && this.state.searchKeyword === '') {
-            let noDataTip = this.state.isCheckUnreadApplyList ? (<ReactIntl.FormattedMessage
-                id="user.apply.unread.reply.null"
-                defaultMessage={'已无未读回复的申请，{return}'}
-                values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
-            />) : Intl.get('user.apply.no.apply', '还没有用户审批诶...');
-            return (
-                <div className="apply_manage_wrap">
-                    <NoData msg={noDataTip}/>
-                </div>
-            );
-        }
         //列表高度
         //详情高度
         var applyListHeight = 'auto';
