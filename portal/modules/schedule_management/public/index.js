@@ -296,7 +296,8 @@ class ScheduleManagement extends React.Component {
     handleCancel = (e) => {
         e && e.preventDefault();
         this.setState({
-            isShowAddToDo: false
+            isShowAddToDo: false,
+            topicValue: 'customer'
         });
     };
 
@@ -336,15 +337,18 @@ class ScheduleManagement extends React.Component {
     renderCrmFormContent() {
         return (
             <div className="add-todo-container">
-                <div className="todo-topic-switch">
-                    <Radio.Group
-                        size="large"
-                        value={_.get(this.state, 'topicValue')}
-                        onChange={this.onTopicChange}
-                    >
-                        <Radio.Button value="customer">{Intl.get('call.record.customer', '客户')}</Radio.Button>
-                        <Radio.Button value="clue">{Intl.get('crm.sales.clue', '线索')}</Radio.Button>
-                    </Radio.Group>
+                <div className="add-todo-title">
+                    <span className="iconfont icon-detail-list"/>
+                    <div className="todo-topic-switch">
+                        <Radio.Group
+                            size="small"
+                            value={_.get(this.state, 'topicValue')}
+                            onChange={this.onTopicChange}
+                        >
+                            <Radio.Button value="customer">{Intl.get('call.record.customer', '客户')}</Radio.Button>
+                            <Radio.Button value="clue">{Intl.get('crm.sales.clue', '线索')}</Radio.Button>
+                        </Radio.Group>
+                    </div>
                 </div>
                 <DetailCard className='add-todo' content={
                     <CrmScheduleForm
@@ -352,7 +356,7 @@ class ScheduleManagement extends React.Component {
                         handleScheduleAdd={this.handleScheduleAdd}
                         handleScheduleCancel={this.handleCancel}
                         topicValue={_.get(this.state, 'topicValue')}
-                        currentSchedule={{}}/>
+                    />
                 }>
                 </DetailCard>
             </div>
