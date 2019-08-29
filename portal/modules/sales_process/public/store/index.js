@@ -23,6 +23,8 @@ class SalesProcessStore {
         this.isShowCustomerStage = false; // 是否显示客户阶段，默认是false
         this.saleProcessId = ''; // 销售流程id
         this.saleProcessName = ''; // 销售流程名称
+        this.saleProcessType = 'custom'; // 客户阶段（销售流程）类型，默认是自定义的
+        this.isShowSelectTeamUserPanel = false; // 是否显示选择团队或是个人的面板，默认false
     }
 
     // 遍历团队树，返回要显示的树选择结构数据
@@ -104,7 +106,7 @@ class SalesProcessStore {
         if (saleProcess.flag === 'delete') { // 删除
             this.salesProcessList = _.filter(this.salesProcessList, item => item.id !== saleProcess.id);
         } else { // 添加
-            this.salesProcessList.unshift(saleProcess);
+            this.salesProcessList.push(saleProcess);
         }
     }
 
@@ -125,13 +127,22 @@ class SalesProcessStore {
         let name = _.get(saleProcess, 'name'); // 修改销售流程名称
         let description = _.get(saleProcess, 'description'); // 修改销售流程描述
         let status = _.get(saleProcess, 'status'); // 修改销售流程状态
-        let scope = _.get(saleProcess, 'scope'); // 修改销售流程使用范围
-        if (name) {
-            upDateProcess.name = name;
-        } else if (status) {
-            upDateProcess.status = status;
-        } else if (description) {
-            upDateProcess.description = description;
+        let teams = _.get(saleProcess, 'teams'); // 修改客户阶段使用范围(团队)
+        let users = _.get(saleProcess, 'users'); // 修改客户阶段使用范围(个人)
+        let customerStages = _.get(saleProcess, 'customerStages'); // 修改客户阶段的阶段数据
+        if (upDateProcess) {
+            if (name) {
+                upDateProcess.name = name;
+            } else if (status) {
+                upDateProcess.status = status;
+            } else if (description) {
+                upDateProcess.description = description;
+            } else if (teams || users) {
+                upDateProcess.teams = teams;
+                upDateProcess.users = users;
+            } else if (customerStages) {
+                upDateProcess.customer_stages = customerStages;
+            }
         }
     }
 
@@ -139,6 +150,7 @@ class SalesProcessStore {
     showCustomerStagePanel(saleProcess) {
         this.saleProcessId = saleProcess.id;
         this.saleProcessName = saleProcess.name;
+        this.saleProcessType = saleProcess.type || 'custom';
         this.isShowCustomerStage = true;
     }
 
@@ -146,7 +158,19 @@ class SalesProcessStore {
     closeCustomerStagePanel() {
         this.saleProcessId = '';
         this.saleProcessName = '';
+        this.saleProcessType = 'custom';
         this.isShowCustomerStage = false;
+    }
+
+    // 显示选择团队或是个人的面板
+    showSelectTeamUserPanel(saleProcess) {
+        this.isShowSelectTeamUserPanel = true;
+        this.currentSaleProcess = saleProcess;
+    }
+    // 关闭选择团队或是个人的面板
+    closeSelectTeamUserPanel() {
+        this.isShowSelectTeamUserPanel = false;
+        this.currentSaleProcess = {};
     }
    
 }

@@ -24,7 +24,7 @@ var en_US = {
     'menu.order.stage': 'Order Stage', // 订单阶段
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
-    'menu.sales.process': 'Sales Process', // 销售流程
+    'menu.sales.process': 'Customer Stage', // 客户阶段
     'menu.clue.allocation': 'Clue allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
@@ -920,6 +920,16 @@ var en_US = {
     'sales.process.auto.conditions.no.conditions': 'Unconditional', // 暂无条件
     'sales.process.status.auto.conditions.tip': 'Are you sure you want to {status} the automatically changes of the customer stage?', // 确定要{status}该客户阶段的自动变更条件吗？
     // 后台管理-销售流程end
+
+    // 后台管理-客户阶段start
+    'customer.stage.define.new': 'Define  New Customer Stage', // 定义新客户阶段
+    'customer.stage.set.scope': 'Set scope', // 设置适用范围
+    'customer.stage.click.show.detail': 'Click for details', // 点击查看详细信息
+    'customer.stage.edit.stage': 'Edit the {stage} stage', // 编辑{stage}阶段
+    'customer.stage.exist.stage.tips': 'This customer stage already exists', // 该客户阶段已存在
+    'customer.stage.add.stage': 'Add a customer stage', // 添加一个客户阶段
+    'customer.stage.delete.stage': 'Delete customer stage', // 删除客户阶段
+    // 后台管理-客户阶段end
 
     //应用管理start
     'app.title': 'application management', // 应用管理

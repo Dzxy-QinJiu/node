@@ -17,7 +17,9 @@ class SalesProcessAction {
             'closeProcessDetailPanel', // 关闭销售流程详情面板
             'changeSaleProcessFieldSuccess', // 修改销售流程字段
             'showCustomerStagePanel', // 显示客户阶段面板
-            'closeCustomerStagePanel' // 关闭客户界阶段面板
+            'closeCustomerStagePanel', // 关闭客户界阶段面板
+            'showSelectTeamUserPanel', // 显示选择团队个人的面板
+            'closeSelectTeamUserPanel' // 关闭选择团队个人的面板
         );
     }
     // 获取销售团队

@@ -107,14 +107,14 @@ class CustomerStageStore {
 
     // 上移客户阶段
     customerStageOrderUp(customerStage) {
-        let oldOrder = parseInt(customerStage.order);
+        let oldOrder = customerStage.order;
         this.customerStageList = _.filter(this.customerStageList, item => {
             let order = item.order;
-            if (parseInt(item.order) === oldOrder) {
-                order = (parseInt(item.order) - 1).toString();
+            if (item.order === oldOrder) {
+                order = item.order - 1;
             }
-            if (parseInt(item.order) === (oldOrder - 1)) {
-                order = (parseInt(item.order) + 1).toString();
+            if (item.order === (oldOrder - 1)) {
+                order = item.order + 1;
             }
             item.order = order;
             return true;
@@ -128,14 +128,14 @@ class CustomerStageStore {
 
     // 下移客户阶段
     customerStageOrderDown(customerStage) {
-        let oldOrder = parseInt(customerStage.order);
+        let oldOrder = customerStage.order;
         this.customerStageList = _.filter(this.customerStageList, item => {
             let order = item.order;
-            if (parseInt(item.order) === oldOrder) {
-                order = (parseInt(item.order) + 1).toString();
+            if (item.order === oldOrder) {
+                order = item.order + 1;
             }
-            if (parseInt(item.order) === (oldOrder + 1)) {
-                order = (parseInt(item.order) - 1).toString();
+            if (item.order === (oldOrder + 1)) {
+                order = item.order - 1;
             }
             item.order = order;
             return true;

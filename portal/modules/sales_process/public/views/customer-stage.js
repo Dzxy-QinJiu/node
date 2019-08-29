@@ -7,7 +7,8 @@ import Trace from 'LIB_DIR/trace';
 import rightPanelUtil from 'CMP_DIR/rightPanel/index';
 const RightPanel = rightPanelUtil.RightPanel;
 const RightPanelClose = rightPanelUtil.RightPanelClose;
-import {message, Button, Popover, Icon} from 'antd';
+import {message, Button, Popover, Icon, Form, Input} from 'antd';
+const FormItem = Form.Item;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -18,11 +19,15 @@ import CustomerStageForm from './customer-stage-form';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import CustomerStageInfo from './customer-stage-info';
+import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
 
 class CustomerStage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            saleProcessId: props.saleProcessId,
+            editCustomerNameLoading: false, // 修改客户阶段名称的loading
+            editCustomerNameMsgTips: '', // 修改客户阶段名称的信息提示
             ...CustomerStageStore.getState(),
         };
     }
@@ -33,10 +38,15 @@ class CustomerStage extends React.Component {
 
     componentDidMount() {
         CustomerStageStore.listen(this.onChange);
-        let saleProcessId = this.props.saleProcessId;
-        CustomerStageAction.getCustomerStageList(saleProcessId);
-        CustomerStageAction.getCustomerStageSaleBehavior(); // 获取销售行为
-        CustomerStageAction.getCustomerStageAutoConditions();// 获取客户阶段的自动变更条件
+        let saleProcessId = this.state.saleProcessId;
+        if (saleProcessId) {
+            setTimeout( () => {
+                CustomerStageAction.getCustomerStageList(saleProcessId);
+            }, 0);
+        }
+        // TODO 隐藏  获取销售行为和获取客户阶段的自动变更条件
+        // CustomerStageAction.getCustomerStageSaleBehavior(); // 获取销售行为
+        // CustomerStageAction.getCustomerStageAutoConditions();// 获取客户阶段的自动变更条件
     }
 
     componentWillUnmount() {
@@ -54,7 +64,7 @@ class CustomerStage extends React.Component {
     }
 
     saveCustomerStageSettingPlay = (type, saveObj, successFunc, errorFunc) => {
-        let saleProcessId = this.props.saleProcessId;
+        let saleProcessId = this.state.saleProcessId;
         CustomerStageAjax.editCustomerStage(saveObj, saleProcessId).then( (result) => {
             if (result) {
                 if (_.isFunction(successFunc)) successFunc();
@@ -78,9 +88,9 @@ class CustomerStage extends React.Component {
         CustomerStageAction.closeCustomerStageForm();
     };
 
-    // 提交客户阶段表单数据（添加客户阶段和编辑客户阶段）
+    // 提交客户阶段表单数据（添加一个客户阶段和编辑客户阶段）
     submitCustomerStageForm = (customerStage) => {
-        let saleProcessId = this.props.saleProcessId;
+        let saleProcessId = this.state.saleProcessId;
         if (customerStage.id) { // 编辑客户阶段
             CustomerStageAjax.editCustomerStage(customerStage, saleProcessId).then( (result) => {
                 if (result) {
@@ -96,7 +106,7 @@ class CustomerStage extends React.Component {
                 CustomerStageAction.closeCustomerStageForm();
                 message.success(errMsg || Intl.get('crm.219', '修改失败！'));
             } );
-        } else { // 添加客户阶段
+        } else { // 添加一个客户阶段
             let order = _.get(this.state.customerStageList, 'length');
             customerStage.order = order + 1; // 需要传客户阶段的序号
             CustomerStageAjax.addCustomerStage(customerStage, saleProcessId).then( (result) => {
@@ -181,6 +191,150 @@ class CustomerStage extends React.Component {
         } );
     };
 
+    // 客户阶段唯一性校验
+    getValidator = () => {
+        return (rule, value, callback) => {
+            let processValue = _.trim(value); // 文本框中的值
+            let salesProcessList = this.props.salesProcessList; // 已存在的销售流程
+            let isExist = _.find(salesProcessList, item => item.name === processValue);
+            if (isExist && processValue !== this.props.saleProcesTitle) { // 和已存在的客户阶段名称是相同
+                callback(Intl.get('customer.stage.exist.stage.tips', '该客户阶段已存在'));
+            } else {
+                callback();
+            }
+        };
+    };
+
+    // 编辑客户阶段（销售流程）的名称
+    handleEditCustomerName = () => {
+        this.props.form.validateFields((err, values) => {
+            if (err) return;
+            let customerName = _.trim(values.name);
+            // 鼠标点击输入框，不做修改，则不需要发请求
+            if (customerName === this.props.saleProcesTitle) {
+                return;
+            }
+            this.setState({
+                editCustomerNameLoading: true
+            });
+            let submitObj = {
+                name: customerName,
+                id: this.state.saleProcessId
+            };
+            CustomerStageAjax.updateSalesProcess(submitObj).then( (result) => {
+                if (result) {
+                    this.setState({
+                        editCustomerNameLoading: false
+                    });
+                    this.props.changeSaleProcessFieldSuccess(submitObj);
+                } else {
+                    this.setState({
+                        editCustomerNameLoading: false,
+                        editCustomerNameMsgTips: Intl.get('common.edit.failed', '修改失败')
+                    });
+                }
+            }, (errMsg) => {
+                this.setState({
+                    editCustomerNameLoading: false,
+                    editCustomerNameMsgTips: errMsg || Intl.get('common.edit.failed', '修改失败')
+                });
+            } );
+        });
+    };
+    // 鼠标移入输入框
+    handleFocusInput = () => {
+        this.setState({
+            editCustomerNameMsgTips: ''
+        });
+    };
+
+    // 处理添加客户阶段
+    handleAddCustomerStage = () => {
+        this.props.form.validateFields((err, values) => {
+            if (err) return;
+            let customerName = _.trim(values.name);
+            let submitObj = {
+                name: customerName,
+                status: '1', // 默认是启用的状态
+            };
+            CustomerStageAjax.addSalesProcess(submitObj).then( (result) => {
+                if (result && result.id) {
+                    this.setState({
+                        editCustomerNameLoading: false,
+                        saleProcessId: result.id,
+                    }, () => {
+                        this.props.upDateSalesProcessList(result);
+                    });
+                } else {
+                    this.setState({
+                        editCustomerNameLoading: false,
+                        editCustomerNameMsgTips: errMsg || Intl.get('common.save.failed', '保存失败')
+                    });
+                }
+            }, (errMsg) => {
+                this.setState({
+                    editCustomerNameLoading: false,
+                    editCustomerNameMsgTips: errMsg || Intl.get('common.save.failed', '保存失败')
+                });
+            } );
+        });
+    };
+
+    // 渲染客户阶段名称
+    renderCustomerStageName = () => {
+        const {getFieldDecorator} = this.props.form;
+        const formItemLayout = {
+            colon: false,
+            labelCol: {span: 2},
+            wrapperCol: {span: 20},
+        };
+        const editCustomerNameMsgTips = this.state.editCustomerNameMsgTips;
+
+        return (
+            <Form layout='horizontal' className="form">
+                <FormItem
+                    {...formItemLayout}
+                    label={Intl.get('common.definition', '名称')}
+                >
+                    {getFieldDecorator('name', {
+                        initialValue: this.props.saleProcesTitle,
+                        rules: [{
+                            validator: this.getValidator()
+                        }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))]
+                    })(
+                        <Input
+                            placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}
+                            className={this.state.editCustomerNameMsgTips ? 'input-red-border' : ''}
+                            onBlur={this.handleEditCustomerName}
+                            onFocus={this.handleFocusInput}
+                        />
+                    )}
+                    {
+                        this.state.editCustomerNameLoading ? <Icon type="loading"/> : null
+                    }
+                </FormItem>
+                {
+                    this.state.saleProcessId === '' ? (
+                        <Button
+                            type="ghost"
+                            className="add-customer-stage-btn"
+                            onClick={this.handleAddCustomerStage}
+                        >
+                            {Intl.get('common.save', '保存')}
+                        </Button>
+                    ) : null
+                }
+                {
+                    editCustomerNameMsgTips ? (
+                        <div className="customer-name-check">
+                            {editCustomerNameMsgTips}
+                        </div>
+                    ) : null
+                }
+            </Form>
+        );
+    };
+
     //渲染操作按钮区
     renderTopNavOperation = () => {
         let length = _.get(this.state.customerStageList, 'length');
@@ -192,9 +346,6 @@ class CustomerStage extends React.Component {
         }
         return (
             <div className='condition-operator'>
-                <div className="customer-stage-title">
-                    {this.props.saleProcesTitle}
-                </div>
                 <div className="customer-stage-operator">
                     <PrivilegeChecker check="CRM_ADD_CUSTOMER_SALES" className="add-customer-stage-btn">
                         {title ? (
@@ -205,7 +356,7 @@ class CustomerStage extends React.Component {
                                     disabled={disabled}
                                 >
                                     <Icon type="plus" />
-                                    {Intl.get('sales.process.add.customer.stage', '添加客户阶段')}
+                                    {Intl.get('customer.stage.add.stage', '添加一个客户阶段')}
                                 </Button>
                             </Popover>
                         ) : (
@@ -213,10 +364,10 @@ class CustomerStage extends React.Component {
                                 type="ghost"
                                 className="customer-stage-top-btn btn-item"
                                 onClick={this.showCustomerStageForm.bind(this, 'addCustomerStage')}
-                                data-tracename="添加客户阶段"
+                                data-tracename="添加一个客户阶段"
                             >
                                 <Icon type="plus" />
-                                {Intl.get('sales.process.add.customer.stage', '添加客户阶段')}
+                                {Intl.get('customer.stage.add.stage', '添加一个客户阶段')}
                             </Button>
                         )}
                     </PrivilegeChecker>
@@ -264,7 +415,7 @@ class CustomerStage extends React.Component {
     };
 
     retryGetOrderList = () => {
-        let saleProcessId = this.props.saleProcessId;
+        let saleProcessId = this.state.saleProcessId;
         CustomerStageAction.getCustomerStageList(saleProcessId);
     };
 
@@ -296,6 +447,15 @@ class CustomerStage extends React.Component {
     };
 
     closeCustomerStagePanel = () => {
+        let saleProcessId = this.state.saleProcessId;
+        if (saleProcessId) {
+            let upDateObj = {
+                id: this.state.saleProcessId,
+                customerStages: this.state.customerStageList
+            };
+            this.props.changeSaleProcessFieldSuccess(upDateObj);
+
+        }
         CustomerStageAction.setInitialData();
         this.props.closeCustomerStagePanel();
     };
@@ -304,7 +464,10 @@ class CustomerStage extends React.Component {
         let customerStageList = this.state.customerStageList;
         let length = _.get(customerStageList, 'length');
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let containerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        let containerHeight = height - 2 * BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        if (this.props.saleProcessType === 'default') {
+            containerHeight += BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        }
         const width = this.props.containerWidth - 100;
         return (
             <RightPanel
@@ -316,55 +479,76 @@ class CustomerStage extends React.Component {
                 <RightPanelClose onClick={this.closeCustomerStagePanel}/>
                 <div className="customer-stage-container">
                     <div className="customer-stage-content" style={{height: height}}>
-                        <div className="customer-stage-top-nav">
-                            {this.renderTopNavOperation()}
+                        <div className="customer-stage-top-name">
+                            {
+                                this.props.saleProcessType === 'custom' ? (
+                                    this.renderCustomerStageName()
+                                ) : (
+                                    <span className="default-name">{this.props.saleProcesTitle}</span>
+                                )
+                            }
                         </div>
-                        <GeminiScrollBar style={{height: containerHeight}}>
-                            {
-                                this.state.loading ? (
-                                    <Spinner/>
-                                ) : null
-                            }
-                            {
-                                !this.state.loading && (length === 0 || this.state.getCustomerStageListErrMsg) ?
-                                    this.renderNoDataTipsOrErrMsg() : null
-                            }
-                            <div className="customer-stage-table-block">
-                                <ul className="customer-stage-timeline">
+                        {
+                            this.state.saleProcessId ? (
+                                <div>
                                     {
-                                        _.map(customerStageList, (item, idx) => {
-                                            return (
-                                                <li className="customer-stage-timeline-item" key={idx}>
-                                                    <div className="customer-stage-timeline-item-tail"></div>
-                                                    <div className="customer-stage-timeline-item-head">
-                                                        <i className='iconfont icon-order-arrow-down'></i>
-                                                    </div>
-                                                    <div className="customer-stage-timeline-item-right"></div>
-                                                    <CustomerStageInfo
-                                                        width={width}
-                                                        customerStage={item}
-                                                        toggleCustomerStageDetail={this.toggleCustomerStageDetail}
-                                                        showCustomerStageModalDialog={this.showCustomerStageModalDialog}
-                                                        closeCustomerStageModalDialog={this.closeCustomerStageModalDialog}
-                                                        showCustomerStageForm={this.showCustomerStageForm}
-                                                        deleteCustomerStage={this.deleteCustomerStage}
-                                                        customerStageOrderUp={this.customerStageOrderUp}
-                                                        customerStageOrderDown={this.customerStageOrderDown}
-                                                        isShowCustomerStageTransferOrder={this.state.isShowCustomerStageTransferOrder}
-                                                        showCustomerStageDetail={this.showCustomerStageDetail}
-                                                        closeCustomerStageDetail={this.closeCustomerStageDetail}
-                                                        saveCustomerStageSettingPlay={this.saveCustomerStageSettingPlay}
-                                                        salesBehaviorList={this.state.salesBehaviorList}
-                                                        saleProcessId={this.props.saleProcessId}
-                                                        autoConditionsList={this.state.autoConditionsList}
-                                                    />
-                                                </li>
-                                            );
-                                        })
+                                        this.props.saleProcessType === 'custom' ? (
+                                            <div className="customer-stage-top">
+                                                {this.renderTopNavOperation()}
+                                            </div>
+                                        ) : null
                                     }
-                                </ul>
-                            </div>
-                        </GeminiScrollBar>
+
+                                    <GeminiScrollBar style={{height: containerHeight}}>
+                                        {
+                                            this.state.loading ? (
+                                                <Spinner/>
+                                            ) : null
+                                        }
+                                        {
+                                            !this.state.loading && (length === 0 || this.state.getCustomerStageListErrMsg) ?
+                                                this.renderNoDataTipsOrErrMsg() : null
+                                        }
+                                        <div className="customer-stage-table-block">
+                                            <ul className="customer-stage-timeline">
+                                                {
+                                                    _.map(customerStageList, (item, idx) => {
+                                                        return (
+                                                            <li className="customer-stage-timeline-item" key={idx}>
+                                                                <div className="customer-stage-timeline-item-tail"></div>
+                                                                <div className="customer-stage-timeline-item-head">
+                                                                    <i className='iconfont icon-order-arrow-down'></i>
+                                                                </div>
+                                                                <div className="customer-stage-timeline-item-right"></div>
+                                                                <CustomerStageInfo
+                                                                    width={width}
+                                                                    customerStage={item}
+                                                                    toggleCustomerStageDetail={this.toggleCustomerStageDetail}
+                                                                    showCustomerStageModalDialog={this.showCustomerStageModalDialog}
+                                                                    closeCustomerStageModalDialog={this.closeCustomerStageModalDialog}
+                                                                    showCustomerStageForm={this.showCustomerStageForm}
+                                                                    deleteCustomerStage={this.deleteCustomerStage}
+                                                                    customerStageOrderUp={this.customerStageOrderUp}
+                                                                    customerStageOrderDown={this.customerStageOrderDown}
+                                                                    isShowCustomerStageTransferOrder={this.state.isShowCustomerStageTransferOrder}
+                                                                    showCustomerStageDetail={this.showCustomerStageDetail}
+                                                                    closeCustomerStageDetail={this.closeCustomerStageDetail}
+                                                                    saveCustomerStageSettingPlay={this.saveCustomerStageSettingPlay}
+                                                                    salesBehaviorList={this.state.salesBehaviorList}
+                                                                    saleProcessId={this.state.saleProcessId}
+                                                                    autoConditionsList={this.state.autoConditionsList}
+                                                                    saleProcessType={this.props.saleProcessType}
+                                                                />
+                                                            </li>
+                                                        );
+                                                    })
+                                                }
+                                            </ul>
+                                        </div>
+                                    </GeminiScrollBar>
+                                </div>
+                            ) : null
+                        }
                     </div>
                     {
                         this.state.isShowCustomerStageForm ? (
@@ -387,6 +571,11 @@ CustomerStage.propTypes = {
     containerWidth: PropTypes.number,
     isShowCustomerStage: PropTypes.bool,
     saleProcesTitle: PropTypes.string,
+    salesProcessList: PropTypes.array,
+    form: PropTypes.object,
+    changeSaleProcessFieldSuccess: PropTypes.func,
+    upDateSalesProcessList: PropTypes.func,
+    saleProcessType: PropTypes.string,
 };
 
-export default CustomerStage;
+export default Form.create()(CustomerStage);

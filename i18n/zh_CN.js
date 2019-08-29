@@ -24,7 +24,7 @@ var zh_CN = {
     'menu.order.stage': '订单阶段',
     'menu.industry': '行业',
     'menu.competing.product': '竞品',
-    'menu.sales.process': '销售流程',
+    'menu.sales.process': '客户阶段',
     'menu.clue.allocation': '线索分配',
     'menu.my.company': '我的企业',
     'menu.user': '成员管理',
@@ -925,6 +925,16 @@ var zh_CN = {
     'sales.process.auto.conditions.no.conditions': '暂无条件',
     'sales.process.status.auto.conditions.tip': '确定要{status}该客户阶段的自动变更条件吗？',
     // 后台管理-销售流程end
+
+    // 后台管理-客户阶段start
+    'customer.stage.define.new': '定义新客户阶段',
+    'customer.stage.set.scope': '设置适用范围',
+    'customer.stage.click.show.detail': '点击查看详细信息',
+    'customer.stage.edit.stage': '编辑{stage}阶段',
+    'customer.stage.exist.stage.tips': '该客户阶段已存在',
+    'customer.stage.add.stage': '添加一个客户阶段',
+    'customer.stage.delete.stage': '删除客户阶段',
+    // 后台管理-客户阶段end
 
     //应用管理start
     'app.title': '应用管理',
