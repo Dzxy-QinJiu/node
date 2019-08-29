@@ -1687,6 +1687,27 @@ var en_US = {
     'crm.customer.extract.time': 'Extract time',//释放时间
     'crm.customer.release.customer': 'Release customer',//释放客户
     'crm.customer.extract.limit.tip': 'Up to 20 customers at a time',//一次最多提取20个客户
+    'crm.customer.rule.name': 'Rules set',//规则设置
+    'crm.add.customer.pool.rule': 'Add rules',//添加规则
+    'crm.customer.pool.rule.name': '{name} customer pool',//{name}客户池
+    'crm.customer.pool.default.visible.range': 'Customer pool original team',//客户池原始团队
+    'crm.customer.pool.all.visible.range': 'Owner',//所有人
+    'crm.customer.visible.range': 'Visible range',//可见范围
+    'crm.customer.pool.select.range': 'Please select the visibility range',//请选择可见范围
+    'crm.customer.pool.source': 'Customer source',//客户来源
+    'crm.customer.pool.unlimited': 'Unlimited',//不限
+    'crm.customer.pool.rule.form.name': 'Rule name',//规则名称
+    'crm.customer.pool.rule.range.tip': 'Please select which teams or members can see the customer',//请选择客户能被哪些团队或者成员看到
+    'crm.customer.pool.rule.add.source': 'Add source',//增加来源
+    'crm.customer.pool.rule.original.team': 'Original team',//原始团队
+    'crm.customer.pool.rule.original.team.select.tip': 'Please select original team',//请选择原始团队
+    'crm.customer.pool.rule.select.customer.stage': 'Please select customer stage',//请选择客户阶段
+    'crm.customer.pool.rule.select.customer.label': 'Please select customer label',//请选择客户标签
+    'crm.customer.pool.rule.source.max.length.tip': 'Customer source Settings up to 5',//客户来源设置最多5个
+    'crm.customer.pool.rule.default.tip': 'When there is no original team, everyone is visible by default',//没有原始团队时，默认所有人可见
+    'crm.get.customer.pool.rule.faild': 'Failed to get customer pool configuration!!!',//获取客户池配置失败！！！
+    'crm.customer.pool.rule.get.stage.lists': 'Getting the customer phase list',//正在获取客户阶段列表
+    'crm.customer.pool.rule.sure.delete.tip': 'Are you sure you want to delete this rule?',//确认要删除此项规则吗？
     'crm.pool.single.extract.tip': 'Are you sure you want to extract this customer?',//您确定要提取此客吗？
     'crm.pool.batch.extract.tip': 'Are you sure you want to extract the selected customers?',//您确定要提取选中的客吗？
     'crm.pool.extract.distribute': 'To extract and assign the person in charge',//提取并分配负责人

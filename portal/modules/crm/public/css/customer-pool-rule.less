@@ -1,0 +1,161 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2019/08/26.
+*/
+@import "../../../../public/css/common-variables";
+@bg-color: #fafafa;
+@hover_bg_color: #E8F5FE;
+.customer-pool-rules-container{
+  .right-panel-modal-title{
+    margin-bottom: 16px;
+  }
+
+  .load8{
+    transform: scale(0.5, 0.5);
+  }
+  // 头部标题区域样式
+  .customer-title-wrapper{
+    span{
+      color: @title-color;
+    }
+    .customer-title-btn{
+      float: right;
+      color: @CLICK-BLUE;
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      &:hover{
+        color: @blue;
+      }
+      .icon-add{
+        font-size: 14px;
+        margin-right: 3px;
+      }
+    }
+  }
+  .customer-rules-wrapper{
+    .customer-rules-scroll-wrapper{
+      padding: 0 24px 24px;
+      .ant-form-item{
+        padding-right: 0;
+      }
+    }
+    .iconfont{
+      float: right;
+      font-size: 16px;
+      color: @btn-font-color;
+      cursor: pointer;
+    }
+    // 默认规则样式
+    .customer-rule-default-wrapper{
+      .detail-card-title{
+        color: @title-color;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+      .default-item-content{
+        font-size: 14px;
+        .customer-pool__label{
+          float: left;
+          color: #999;
+          line-height: 24px;
+        }
+        .customer-pool__text{
+          line-height: 24px;
+          margin-left: 6px;
+          color: @title-color;
+        }
+      }
+    }
+  }
+
+  // 规则表单样式
+  .customer-rule-form-container{
+    &.hover-show-edit{
+      .ant-form-item{
+        margin-bottom: 0;
+      }
+      &:hover{
+        .rule-form-btns{
+          display: block;
+        }
+      }
+    }
+    // 规则表单头部样式
+    .rule-form-title-wrapper{
+      position: relative;
+      .rule-form-label{
+        font-size: 14px;
+        color: @title-color;
+      }
+      .rule-form-btns{
+        float: right;
+        display: none;
+        .iconfont{
+          font-size: 16px;
+        }
+        .icon-edit-btn{
+          margin-right: 5px;
+        }
+      }
+    }
+    // 客户来源样式
+    .customer-source-wrapper{
+      .customer-source-item{
+        position: relative;
+        background: @bg-color;
+        padding: 8px;
+        margin-bottom: 8px;
+        &.has-range-more{
+          padding-right: 30px;
+        }
+      }
+      .customer-source-btn{
+        span{
+          cursor: pointer;
+          color: @btn-font-color;
+          font-size: 14px;
+          .icon-add{
+            font-size: 14px;
+            margin-right: 4px;
+            float: left;
+          }
+          &:hover{
+            color: @blue;
+          }
+        }
+      }
+      .customer-stage-list-loading{
+        line-height: 32px;
+        color: #666;
+        .anticon-loading {
+          font-size: 16px;
+          margin-left: 10px;
+        }
+      }
+      .circle-button{
+        position: absolute;
+        top: 0;
+        right: 10px;
+        cursor: pointer;
+        .anticon-minus{
+          color: @btn-font-color;
+          font-size: 14px;
+        }
+      }
+    }
+    .load8{
+      transform: scale(0.4, 0.4);
+      top: -16px;
+      right: 0px;
+      left: unset;
+    }
+    .customer-info-text{
+      font-size: 14px;
+      color: @title-color;
+
+    }
+  }
+}
