@@ -67,6 +67,7 @@ class TeamDataColumn extends React.Component {
                 //昨天
                 callTimeObj.callTimeDescr = Intl.get('user.time.yesterday', '昨天');
                 callTimeObj.startTime = getTodayTimeStamp().start_time - oplateConsts.ONE_DAY_TIME_RANGE;
+                callTimeObj.endTime = getTodayTimeStamp().end_time - oplateConsts.ONE_DAY_TIME_RANGE;
             }
         } else {//管理员、运营
             //本周
@@ -177,7 +178,7 @@ class TeamDataColumn extends React.Component {
                         </span>
                     ) : (
                         <span className="add-data-style phone-total-time phone-total-data">
-                            <span className='num'>0</span>
+                            <span className='num'> 0 {Intl.get('user.time.second', '秒')}</span>
                         </span>)}
                 </div>
                 <div className='call-time-list my-data-detail-list'>
