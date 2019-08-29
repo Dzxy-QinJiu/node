@@ -355,38 +355,6 @@ class ApplyViewDetail extends React.Component {
                 />
             );
         }
-
-
-        // var targetObj = _.find(LEAVE_TYPE, (item) => {
-        //     return item.value === detail.leave_type;
-        // });
-        // var leaveType = '';
-        // if (targetObj) {
-        //     leaveType = targetObj.name;
-        // }
-        // var leaveRange = handleTimeRange(_.get(detail, 'apply_time[0].start',''),_.get(detail, 'apply_time[0].end',''));
-        // if (_.get(detail,'days')){
-        //     leaveRange += ' ' + Intl.get('apply.approve.total.days','共{X}天',{X: _.get(detail,'days')});
-        // }
-        // if (!leaveRange){
-        //     var begin_time = moment(detail.begin_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        //     var end_time = moment(detail.end_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT);
-        // }
-        // var showApplyInfo = [
-        //     {
-        //         label: Intl.get('leave.apply.leave.time', '请假时间'),
-        //         text: leaveRange ? leaveRange : (begin_time + ' - ' + end_time)
-        //     },{
-        //         label: Intl.get('leave.apply.leave.type', '请假类型'),
-        //         text: leaveType
-        //     }, {
-        //         label: Intl.get('leave.apply.leave.reason', '请假原因'),
-        //         text: detail.reason
-        //     }, {
-        //         label: Intl.get('leave.apply.leave.person', '请假人'),
-        //         text: _.get(detailInfo, 'applicant.nick_name')
-        //     }];
-
     }
 
     //添加一条回复
@@ -786,7 +754,7 @@ class ApplyViewDetail extends React.Component {
             'col-md-8': !this.props.isHomeMyWork
         });
         return (
-            <div className={detailWrapCls} style={{'height': divHeight}} data-tracename="请假审批详情界面">
+            <div className={detailWrapCls} style={{'height': divHeight}} data-tracename="审批详情界面">
                 <ApplyDetailStatus
                     showLoading={this.state.detailInfoObj.loadingResult === 'loading'}
                     showErrTip={this.state.detailInfoObj.loadingResult === 'error'}

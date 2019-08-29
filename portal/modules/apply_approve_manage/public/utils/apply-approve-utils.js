@@ -253,16 +253,16 @@ exports.getTeamHigerLevel = function() {
         name: Intl.get('apply.approve.first.higher.level', '直属上级'),
         value: 'team_0_true'
     }];
-    var levels = [{name: Intl.get('user.number.first', '一'),value: '1'},
-        {name: Intl.get('user.number.second', '二'),value: '2'},
-        {name: Intl.get('user.number.three', '三'),value: '3'},
-        {name: Intl.get('user.number.four', '四'),value: '4'},
-        {name: Intl.get('apply.approve.level.five', '五'),value: '5'},
-        {name: Intl.get('apply.approve.level.six', '六'),value: '6'},
-        {name: Intl.get('user.num.seven', '七'),value: '7'},
-        {name: Intl.get('apply.approve.level.eight', '八'),value: '8'},
-        {name: Intl.get('apply.approve.level.nine', '九'),value: '9'},
-        {name: Intl.get('user.num.ten', '十'),value: '10'}];
+    var levels = [
+        {name: Intl.get('user.number.second', '二'),value: '1'},
+        {name: Intl.get('user.number.three', '三'),value: '2'},
+        {name: Intl.get('user.number.four', '四'),value: '3'},
+        {name: Intl.get('apply.approve.level.five', '五'),value: '4'},
+        {name: Intl.get('apply.approve.level.six', '六'),value: '5'},
+        {name: Intl.get('user.num.seven', '七'),value: '6'},
+        {name: Intl.get('apply.approve.level.eight', '八'),value: '7'},
+        {name: Intl.get('apply.approve.level.nine', '九'),value: '8'},
+        {name: Intl.get('user.num.ten', '十'),value: '9'}];
     _.forEach(levels, item => {
         teamList.push({
             name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: item.name}),

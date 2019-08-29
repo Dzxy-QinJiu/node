@@ -57,6 +57,9 @@ class AddLeaveApply extends React.Component {
 
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
+            if(err){
+                return;
+            }
             values = _.cloneDeep(values);
             values['customers'] = [_.get(this.state, 'formData.customer')];
             if (!_.get(values, 'customers[0].id')){
@@ -85,24 +88,6 @@ class AddLeaveApply extends React.Component {
 
             });
         });
-
-        // var submitObj = {},conditionObj = {};
-        // var refObj = this.refs;
-        // for (var key in refObj){
-        //     var onSaveCallBack = _.get(refObj[key],'onSaveAllData');
-        //     if (_.isFunction(onSaveCallBack)){
-        //         var saveObj = onSaveCallBack();
-        //         var refTarget = refObj[key];
-        //         for (var key in saveObj){
-        //             if (saveObj[key]['condition']){
-        //                 _.extend(conditionObj, saveObj[key]['condition']);
-        //                 delete saveObj[key].condition;
-        //             }
-        //         }
-        //         _.extend(submitObj,saveObj );
-        //     }
-        // }
-
     };
     //保存结果的处理
     setResultData(saveMsg, saveResult) {

@@ -29,7 +29,7 @@ import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 class LeaveApplyManagement extends React.Component {
     state = {
-        showAddApplyPanel: false,//是否展示添加请假申请面板
+        showAddApplyPanel: false,//是否展示添加申请面板
         teamTreeList: [],
         ...LeaveApplyStore.getState()
     };
@@ -42,14 +42,14 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
-        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE]){
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY]){
             this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
             this.getAllLeaveApplyList();
         }
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.pushDataListener);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
         this.getUnreadReplyList();
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
@@ -112,7 +112,7 @@ class LeaveApplyManagement extends React.Component {
         }
     };
 
-    //获取全部请假申请
+    //获取全部申请
     getAllLeaveApplyList = () => {
         var queryObj = this.getQueryParams();
         LeaveApplyAction.getAllLeaveApplyList(queryObj,(count) => {
@@ -124,12 +124,12 @@ class LeaveApplyManagement extends React.Component {
         });
     };
 
-    //获取自己发起的请假申请
+    //获取自己发起的申请
     getSelfLeaveApplyList() {
         LeaveApplyAction.getSelfApplyList();
     }
 
-    //获取由自己审批的请假申请
+    //获取由自己审批的申请
     getWorklistLeaveApplyList() {
         LeaveApplyAction.getWorklistLeaveApplyList();
     }
@@ -138,7 +138,7 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.unlisten(this.onStoreChange);
         LeaveApplyAction.setInitState();
         LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.pushDataListener);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
 
@@ -303,7 +303,7 @@ class LeaveApplyManagement extends React.Component {
         return (
             <div className="sales-opportunity-apply-container apply_manage_wrap">
                 <div className="leave-apply-list-detail-wrap">
-                    <div className="col-md-4 leave-apply-list" data-tracename="请假申请列表">
+                    <div className="col-md-4 leave-apply-list" data-tracename="拜访申请列表">
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
