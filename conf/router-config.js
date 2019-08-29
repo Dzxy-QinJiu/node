@@ -302,17 +302,10 @@ let routers = [
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
             },
             {
-                id: 'CUSTOMER_SCORE',
-                name: 'menu.customer.score',// 客户评分
-                routePath: '/background_management/customer_score',
-                component: `${MODULE_PATH}customer_score/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['CURTAO_RULE_MANAGE']
-            },{
-                id: 'USER_SCORE',
-                name: 'menu.user.score',// 用户评分
-                routePath: '/background_management/user_score',
-                component: `${MODULE_PATH}user_score/public`,
+                id: 'SALES_AUTO',
+                name: 'menu.sales.auto.manage.config',// 销售自动化
+                routePath: '/background_management/sales_auto',
+                component: `${MODULE_PATH}sales_auto/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CURTAO_RULE_MANAGE']
             },
