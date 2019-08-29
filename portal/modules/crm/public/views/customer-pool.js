@@ -30,6 +30,7 @@ import classNames from 'classnames';
 import {COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
 import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import CustomerPoolRule from './customer_pool_rule';
 
 const PAGE_SIZE = 20;
 class CustomerPool extends React.Component {
@@ -50,7 +51,8 @@ class CustomerPool extends React.Component {
             selectedCustomer: [],
             distributeUser: '',
             userList: [],
-            showFilterList: false
+            showFilterList: false,
+            showCustomerRulePanel: false, //显示规则设置面板
         };
     }
 
@@ -191,6 +193,14 @@ class CustomerPool extends React.Component {
             this.setState({isExtracting: false, salesMan: ''});
             message.error(errorMsg);
         });
+    };
+
+    showRuleRightPanel = () => {
+        this.setState({ showCustomerRulePanel: true });
+    };
+
+    hideRuleRightPanel = () => {
+        this.setState({ showCustomerRulePanel: false });
     };
 
     showRightPanel = (id) => {
@@ -465,6 +475,11 @@ class CustomerPool extends React.Component {
                             unSelectDataTip={this.state.unSelectDataTip}
                             clearSelectData={this.clearSelectSales}
                             btnAtTop={false}/>)}
+                    {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
+                        <Button
+                            className="btn-item extract-btn"
+                            onClick={this.showRuleRightPanel}>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>
+                    ) : null}
                 </TopNav>
                 <div className="customer-table-container customer-pool-table"
                     style={{height: tableWrapHeight}}>
@@ -482,6 +497,13 @@ class CustomerPool extends React.Component {
                         {this.renderTableContent()}
                     </div>
                 </div>
+                {
+                    this.state.showCustomerRulePanel ? (
+                        <CustomerPoolRule
+                            closeRightPanel={this.hideRuleRightPanel}
+                        />
+                    ) : null
+                }
             </div>);
     }
 }
