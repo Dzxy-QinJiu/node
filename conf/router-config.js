@@ -301,14 +301,14 @@ let routers = [
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
             },
-            {
-                id: 'SALES_AUTO',
-                name: 'menu.sales.auto.manage.config',// 销售自动化
-                routePath: '/background_management/sales_auto',
-                component: `${MODULE_PATH}sales_auto/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['CURTAO_RULE_MANAGE']
-            },
+            // {
+            //     id: 'SALES_AUTO',
+            //     name: 'menu.sales.auto.manage.config',// 销售自动化
+            //     routePath: '/background_management/sales_auto',
+            //     component: `${MODULE_PATH}sales_auto/public`,
+            //     //有这个权限，才显示入口图标
+            //     showPrivileges: ['CURTAO_RULE_MANAGE']
+            // },
             {
                 id: 'SALES_PROCESS', // 唯一标识
                 name: 'menu.sales.process',// 客户阶段
