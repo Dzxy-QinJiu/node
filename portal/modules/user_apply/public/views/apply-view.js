@@ -162,49 +162,69 @@ class ApplyTabContent extends React.Component {
     };
 
     renderApplyListError = () => {
-        var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== 'all';
-        var noDataSearch = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.searchKeyword !== '';
-        var noDataFirst = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType === 'all' && this.state.searchKeyword === '';
-        var switchMsg = noData || noDataSearch || noDataFirst;
-        if (this.state.applyListObj.loadingResult === 'error' || switchMsg) {
-            var retry = (
-                <span>
-                    {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
-                        onClick={this.retryFetchApplyList}><ReactIntl.FormattedMessage
-                            id="common.retry" defaultMessage="重试"/></a>
-                </span>
-            );
-            var noDataMsg = (
-                <span>
-                    <ReactIntl.FormattedMessage id="user.apply.no.match.retry"
-                        defaultMessage="暂无符合查询条件的用户申请"/><span>,</span>
-                    <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                        <ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取"/>
-                    </a>
-                </span>
-            );
-            var noDataBlock, errorBlock;
-            if (switchMsg) {
-                noDataBlock = (<Alert
-                    message={noDataMsg}
-                    type="info"
-                    showIcon={true}
-                />);
-            } else {
-                errorBlock = (
-                    <Alert
-                        message={retry}
-                        type="error"
-                        showIcon={true}
-                    />
-                );
-            }
+        var error =this.state.applyListObj.loadingResult === 'error';
+        var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 ;
+        var noDataSearch =  this.state.searchKeyword !== '';
+        var noUnread = this.state.isCheckUnreadApplyList;
+
+        var retry = (
+            <span>
+                {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
+                    onClick={this.retryFetchApplyList}>{Intl.get("common.retry","重试")}</a>
+            </span>
+        );
+        var noDataMsg = (
+            <span>
+                {Intl.get("user.apply.no.match.retry","暂无符合查询条件的用户申请")}<span>,</span>
+                <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                    {Intl.get("common.get.again","重新获取")}
+                </a>
+            </span>
+        );
+        var noUnreadMsg = (
+            <span>
+                {Intl.get('user.apply.no.unread','已无未读回复的申请')}<span>,</span>
+                <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                    {Intl.get("common.get.again","重新获取")}
+                </a>
+            </span>
+        );
+        var noApply = (
+            <span>
+                {Intl.get('user.apply.no.apply','还没有用户审批')}<span>,</span>
+                <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                    {Intl.get("common.get.again","重新获取")}
+                </a>
+            </span>
+            
+        );
+
+        if(error){
             return (
                 <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                    {(switchMsg) ? noDataBlock : errorBlock}
-                </div>);
+                   <Alert message={retry} type="error" showIcon={true}/>
+                </div>);  
+        }else if(noData){
+            if(noDataSearch){
+                return(
+                    <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
+                        <Alert message={noDataMsg} type="info" showIcon={true}/>
+                    </div>
+                );
+            }else if(noUnread){
+                return(
+                    <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
+                    <Alert message={noUnreadMsg} type="info" showIcon={true}/>
+                </div>
+                );
+            }else{
+                return(
+                    <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
+                    <Alert message={noApply} type="info" showIcon={true}/>
+                </div>
+                );
+            }
         }
-        return null;
     };
 
     getApplyStateText = (obj) => {
