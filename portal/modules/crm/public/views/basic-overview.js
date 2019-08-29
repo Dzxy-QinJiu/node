@@ -8,7 +8,7 @@ import {isUnmodifiableTag} from '../utils/crm-util';
 var basicOverviewStore = require('../store/basic-overview-store');
 var basicOverviewAction = require('../action/basic-overview-actions');
 var SalesTeamStore = require('../../../sales_team/public/store/sales-team-store');
-import {message, Button} from 'antd';
+import {message, Button, Popover} from 'antd';
 var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
@@ -28,8 +28,9 @@ import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
-import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
     CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
@@ -59,7 +60,9 @@ class BasicOverview extends React.Component {
     }
 
     onChange = () => {
-        this.setState({...basicOverviewStore.getState()});
+        this.setState({
+            ...basicOverviewStore.getState(),
+        });
     };
 
     onRecordStoreChange = () => {
@@ -69,6 +72,14 @@ class BasicOverview extends React.Component {
             customerRecord: customerRecordState.customerRecord
         });
     };
+
+    componentWillMount = () => {
+        getApplyState(APPLY_TYPE.USER_APPLY).then(applyState => {
+            this.setState({
+                applyState
+            });
+        });
+    }
 
     componentDidMount() {
         basicOverviewStore.listen(this.onChange);
@@ -87,6 +98,7 @@ class BasicOverview extends React.Component {
             }
         }
     }
+
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
@@ -337,6 +349,26 @@ class BasicOverview extends React.Component {
         }
     };
 
+    //根据是否绑定激活渲染带Popover的button和不带Popover的button
+    renderApplyButton = () => {
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        return (
+            applyPrivileged ? (
+                <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
+                    {Intl.get('crm.apply.user.new', '申请新用户')}
+                </Button>) :
+                (<Popover
+                    placement="bottomRight"
+                    overlayClassName="apply-invalid-popover"
+                    content={_.get(this.state, 'applyState.applyMessage')}
+                    trigger="click">
+                    <Button className='crm-detail-add-btn'>
+                        {Intl.get('crm.apply.user.new', '申请新用户')}
+                    </Button>
+                </Popover>)
+        );
+    }
+
     //渲染申请用户的提示\面板
     renderApplyUserBlock = () => {
         //只有销售和销售主管才会申请
@@ -360,11 +392,9 @@ class BasicOverview extends React.Component {
                         <span className="no-user-tip-content">
                             {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                         </span>
-                        <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
-                            {Intl.get('crm.apply.user.new', '申请新用户')}
-                        </Button>
+                        {this.renderApplyButton()}
                     </div>);
-                return (<DetailCard content={tip} className="apply-user-tip-contianer"/>);
+                return <DetailCard content={tip} className="apply-user-tip-contianer"/>;
             }
         }
         return null;

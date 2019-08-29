@@ -13,6 +13,7 @@ import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
+import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ} from 'PUB_DIR/sources/utils/validate-util';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
@@ -217,6 +218,9 @@ class UserInfo extends React.Component{
                         qqEditType: 'text'
                     });
                 }
+                //在userdata中更新此字段
+                userData.setUserData('email', email);
+                userData.setUserData('emailEnable', false);
                 successFunc();
             } else {
                 errorFunc(errorMsg);

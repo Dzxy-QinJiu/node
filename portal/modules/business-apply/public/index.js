@@ -19,7 +19,13 @@ var LeaveApplyUtils = require('./utils/leave-apply-utils');
 import ApplyViewDetail from './view/apply-view-detail';
 import ApplyListItem from 'CMP_DIR/apply-components/apply-list-item';
 import ApplyDropdownAndAddBtn from 'CMP_DIR/apply-components/apply-dropdown-and-add-btn';
-import {selectMenuList, APPLY_LIST_LAYOUT_CONSTANTS,APPLY_APPROVE_TYPES,APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
+import {
+    selectMenuList,
+    APPLY_LIST_LAYOUT_CONSTANTS,
+    APPLY_APPROVE_TYPES,
+    APPLY_TYPE_STATUS_CONST,
+    APPLY_TYPE
+} from 'PUB_DIR/sources/utils/consts';
 let userData = require('../../../public/sources/user-data');
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 var NoData = require('CMP_DIR/analysis-nodata');
@@ -297,6 +303,7 @@ class BusinessApplyManagement extends React.Component {
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="出差申请列表">
                         <ApplyDropdownAndAddBtn
+                            applyType={APPLY_TYPE.BUSINESS_TRIP}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='BUSINESS_TRIP_APPLY'
