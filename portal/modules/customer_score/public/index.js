@@ -387,7 +387,7 @@ class customerScore extends React.Component {
                                         </Select> : _.get(numberTarget, 'name')}
 
                                     </span> :
-                                    <span> {Intl.get('customer.score.total.count', '总次数')} *
+                                    <span> {Intl.get('customer.score.total.count', '总次数')} X
                                         {isEditCustomerRule ? <InputNumber value={item.score}
                                             onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'score')}
                                             min={1}/> : item.score}

@@ -221,12 +221,14 @@ class userScore extends React.Component {
         const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData, isEditUserBasicRule, userLevelObj} = this.state;
         var userScoreDetailList = _.get(userScoreFormData, 'detail', []);
         if (!userScoreDetailList.length) {
-            userScoreDetailList.push({
-                'indicator': '',
-                'interval': '',
-                'online_unit': '',
-                'score': '1',
-                'randomId': uuid()
+            //如果没有配置过用户评分，默认展示 近期活跃天数分数 和 近期在线时长分数
+            var defaultArr = _.filter(userIndicator, item => item.indicator === 'online_time_rate' || item.indicator === 'active_days_rate');
+            _.forEach(defaultArr, defaultItem => {
+                userScoreDetailList.push({
+                    indicator: _.get(defaultItem, 'indicator'),
+                    interval: _.get(defaultItem, 'interval'),
+                    randomId: uuid()
+                });
             });
         }
 
@@ -385,12 +387,17 @@ class userScore extends React.Component {
                         if(isEditUserEngagementRule && !_.get(engageItem,'detail[0]')){
                             engageItem = {
                                 detail: [{
+                                    operate: '',
                                     randomId: uuid(),
+                                    interval: '',
+                                    score: 1,
                                 }],
                                 app_id: appItem.app_id,
-                                app_name: appItem.app_name
+                                app_name: appItem.app_name,
+                                randomId: uuid(),
                             };
                         }
+
                         return (
                             <TabPane tab={appItem.app_name} key={idx} >
                                 {_.get(engageItem,'detail[0]') ?
@@ -399,7 +406,7 @@ class userScore extends React.Component {
                                         var detailId = operateItem.id || operateItem.randomId;
                                         var targetTimeRange = _.find(TimeRangeSelect, timeRange => timeRange.value === operateItem.interval);
 
-                                        return <div>
+                                        return <div className="engagement-detail-container">
                                             {idx === 0 ? <Row className='thead-title'>
                                                 <Col span={spanLength}>{Intl.get('common.operate', '操作')}</Col>
                                                 <Col
@@ -475,21 +482,6 @@ class userScore extends React.Component {
     renderParticateScoreRules = () => {
         const {userEngagementFormData, userEngagementObj, isEditUserEngagementRule, isLoadingApp} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
-        if (!_.get(userEngagements, 'length')) {
-            userEngagementFormData.status = 'enable';
-            userEngagements.push({
-                app_id: '',
-                app_name: '',
-                randomId: uuid(),
-                detail: [{
-                    operate: '',
-                    randomId: uuid(),
-                    interval: '',
-                    score: 1
-                }]
-            });
-            userEngagementFormData['user_engagements'] = userEngagements;
-        }
         if (userEngagementObj.loading || isLoadingApp) {
             return <Spinner/>;
         } else if (userEngagementObj.errMsg) {
@@ -529,7 +521,7 @@ class userScore extends React.Component {
                     <div className="user-engagement-and-add">
                         <div className="user-engagement-item">
                             {/*如果参与度是禁用状态，加提示*/}
-                            {_.get(userEngagementFormData, 'status') !== 'enable' ? <NoDataIntro noDataTip={Intl.get('user.score.no.engagement.score', '暂未开启参与度评分')}/> : this.renderEngagementTabs()}
+                            { _.get(userEngagementFormData, 'status') !== 'enable' ? <NoDataIntro noDataTip={Intl.get('user.score.no.engagement.score', '暂未开启参与度评分')}/> : this.renderEngagementTabs()}
                         </div>
                     </div>
                 </div>
@@ -659,12 +651,14 @@ class userScore extends React.Component {
     //取消信息的保存
     handleCancelRules = () => {
         this.setState({
-            userScoreFormData: _.cloneDeep(this.state.userLevelObj.obj)
+            userScoreFormData: _.cloneDeep(this.state.userLevelObj.obj),
+            isEditUserBasicRule: false
         });
     };
     handleCancelEngagement = () => {
         this.setState({
-            userEngagementFormData: _.cloneDeep(this.state.userEngagementObj.obj)
+            userEngagementFormData: _.cloneDeep(this.state.userEngagementObj.obj),
+            isEditUserEngagementRule: false
         });
     };
     hideSaveTooltip = () => {
