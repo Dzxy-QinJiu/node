@@ -509,9 +509,10 @@ class BasicOverview extends React.Component {
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
                         disableEdit={this.props.disableEdit}
-                        customerId={basicData.id}
                         customerStageList={this.state.customerStageList}
                         currentStage={basicData.customer_label}
+                        basicData={basicData}
+                        editBasicSuccess={this.editBasicSuccess}
                     />
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
