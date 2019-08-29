@@ -1,0 +1,48 @@
+@import "../../../../public/css/common-variables";
+.customer-stage-container {
+  .customer-stage-content {
+    .customer-stage-label {
+      margin-right: 6px;
+    }
+    .customer-stage {
+      cursor: pointer;
+      .color-lump {
+        width: 45px;
+        display: inline-block;
+        color: @tag-font-color;
+        background-color: #999;
+        margin-right: 1px;
+        border-radius: 3px;
+        text-align: center;
+      }
+      .customer-stage-color-lump0 { // 信息
+        background-color: @info-tag-color;
+      }
+      .customer-stage-color-lump1 { // 意向
+        background-color: @intent-tag-color;
+      }
+      .customer-stage-color-lump2 { // 试用
+        background-color: @trial-tag-color;
+      }
+      .customer-stage-color-lump3 { // 机会
+        background-color: #999;
+      }
+      .customer-stage-color-lump4 { // 流失
+        background-color: @loss-tag-color;
+      }
+      .customer-stage-color-lump5 { // 签约
+        background-color: @sign-tag-color;
+      }
+      .customer-stage-color-lump6 { // 续约
+        background-color: @re-contract-color;
+      }
+      .customer-stage-color-lump7 {
+        background-color: #8da8c5;
+      }
+      .gray-color-lump {
+        background-color: lightgray;
+        color: lightgray;
+      }
+    }
+  }
+}

@@ -490,3 +490,20 @@ exports.extractCustomer = function(reqData) {
     });
     return Deferred.promise();
 };
+
+// 通过团队id获取客户阶段（销售流程)
+exports.getCustomerStageByTeamId = (teamId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/get/customer/stage/${teamId}`,
+        dataType: 'json',
+        type: 'get',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

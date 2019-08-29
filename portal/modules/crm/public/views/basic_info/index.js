@@ -19,7 +19,7 @@ import CrmBasicAjax from '../../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
-import CustomerLabel from 'CMP_DIR/customer_label';
+
 let customerLabelList = [];//存储客户阶段的列表
 class BasicData extends React.Component {
     state = {
@@ -429,13 +429,6 @@ class BasicData extends React.Component {
                     /> ) : (
                     <div className="basic-info-title-block">
                         <div className="basic-info-name">
-                            <CustomerLabel label ={basicData.qualify_label}  />
-                            {this.hasEditCutomerLabelPrivilege() && !this.props.disableEdit ? (
-                                <Dropdown overlay={this.getCustomerLabelMenus()} trigger={['click']}>
-                                    <span title={Intl.get('crm.customer.label.edit.tip', '点击修改客户阶段')}>
-                                        {customerLabel}
-                                    </span>
-                                </Dropdown>) : customerLabel}
                             <span className="basic-name-text">{basicData.name}</span>
                             {hasPrivilege('CUSTOMER_UPDATE_NAME') && !this.props.disableEdit ? (
                                 <DetailEditBtn title={Intl.get('common.edit', '编辑')}
