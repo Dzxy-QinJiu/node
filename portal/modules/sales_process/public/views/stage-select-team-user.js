@@ -44,8 +44,8 @@ class StageSelectTeamUserPanel extends React.Component {
 
     // 处理选择团队、个人的数据，转为后端需要的数据
     handleProcessSubmitData(selectedData) {
-        let salesMemberList = this.state.salesMemberList; // 销售人员
-        let salesTeamList = this.state.salesTeamList; // 销售团队
+        let salesMemberList = _.cloneDeep(this.state.salesMemberList); // 销售人员
+        let salesTeamList = _.cloneDeep(this.state.salesTeamList); // 销售团队
         let scope = selectedData.scope; // 选择的流程的适用范围的数据
         if (scope && scope.length) {
             selectedData.teams = [];
