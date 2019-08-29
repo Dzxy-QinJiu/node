@@ -1097,6 +1097,13 @@ class SalesHomePage extends React.Component {
             />
         );
     };
+    //试用新版
+    tryNewPage = () => {
+        if (event) {
+            Trace.traceEvent(event, '试用新版');
+        }
+        this.props.history && this.props.history.push('/home');
+    };
     render() {
         var phoneData = this.state.phoneTotalObj.data;
         const rightContentHeight = $(window).height() - LAYOUT_CONSTS.PADDDING_TOP_AND_BOTTOM;
@@ -1197,10 +1204,13 @@ class SalesHomePage extends React.Component {
                             </RightPanel>
                             : null
                     }
+                    <div onClick={this.tryNewPage} className='try-new-btn'>{Intl.get('home.page.try.new', '试用新版')}</div>
                 </div>
             </RightContent>
         );
     }
 }
-
+SalesHomePage.propTypes = {
+    history: PropTypes.obj
+};
 module.exports = SalesHomePage;
