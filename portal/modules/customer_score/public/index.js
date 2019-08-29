@@ -388,7 +388,8 @@ class customerScore extends React.Component {
                                         </Select> : _.get(numberTarget, 'name')}
 
                                     </span> :
-                                    <span> {Intl.get('customer.score.total.count', '总次数')} X
+                                    <span> {Intl.get('customer.score.total.count', '总次数')}
+                                        <span className="icon-multiply">X</span>
                                         {isEditCustomerRule ? <InputNumber value={item.score}
                                             onChange={this.handleCustomerProperty.bind(this, item.id || item.randomId, 'score')}
                                             min={1}/> : item.score}
@@ -515,7 +516,7 @@ class customerScore extends React.Component {
             this.setState({
                 isEditCustomerRule: false
             });
-            customerScoreAction.updateCustomerRule(customerRulesFormData);
+            customerScoreAction.updateCustomerRule(this.state.customerRulesFormData);
         });
 
     };

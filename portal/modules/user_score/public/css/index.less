@@ -46,6 +46,9 @@
             display: inline-block;
             width: 100px;
             text-align: right;
+            >span{
+              margin-right: 10px;
+            }
           }
         }
 
@@ -81,7 +84,9 @@
             .user-score-lists{
               position: relative;
               min-height: 80px;
-
+              .load8{
+                top:0;
+              }
             }
 
           }
@@ -123,25 +128,9 @@
                         .ant-input{
                           width: 160px;
                         }
-                        .add-operate-item{
-                          font-size: 20px;
-                          span{
-                            cursor: pointer;
-                            padding-left: 10px;
-                          }
-                        }
                       }
 
 
-                    }
-                    .ant-tabs-content{
-                      position: relative;
-                      height: 100%;
-                      .save-btns{
-                        position: absolute;
-                        bottom: 10px;
-                        right:0;
-                      }
                     }
 
                   }
@@ -182,6 +171,9 @@
     .loader8 {
       border-left-color: #394144;
     }
+  }
+  .icon-multiply{
+    margin: 0px 5px;
   }
   .btn-containers{
     text-align: left;
