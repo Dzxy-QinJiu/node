@@ -604,6 +604,7 @@ class ClueCustomer extends React.Component {
                 query: {
                     ...typeFilter
                 },
+                rang_params: rangeParams,
                 ...bodyField,
             },
             pageSize: this.state.pageSize,//路径中需要加的参数
