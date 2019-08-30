@@ -305,10 +305,11 @@ class ClueRightPanel extends React.Component {
 
     getCluePanelHeight = () => {
         let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
-        if(_.get(this.props, 'hasPhonePanel') && _.get(this.props, 'phonePanelHasCustomerSchedule')) {
-            baseHeight -= DYNAMICHEIGHT.PHONE_PANEL_HAS_CUSTOMER_SCHEDULE;
-        } else if(_.get(this.props, 'hasPhonePanel')) {
+        if(_.get(this.props, 'hasPhonePanel')) {
             baseHeight -= DYNAMICHEIGHT.HAS_PHONE_PANEL;
+            if(_.get(this.props, 'phonePanelHasCustomerSchedule')) {
+                baseHeight -= DYNAMICHEIGHT.PHONE_PANEL_HAS_CUSTOMER_SCHEDULE;
+            }
         }
         return baseHeight;
     };

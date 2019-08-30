@@ -2474,7 +2474,7 @@ var en_US = {
     'crm.contact.time': 'Contact time',//联系时间
     'crm.alert.time': 'Alert time',//提醒时间
     'crm.schedule.n.hour.later': '{n} hour(s) later',//{n}小时后
-    'crm.schedule.n.hour.later,confirm': 'Are you sure to contact this customer after {n} hour(s)',//确定{n}小时之后在联系吗？
+    'crm.schedule.n.hour.later,confirm': 'Are you sure to contact this customer after {n} hour(s)',//确定{n}小时之后再联系吗？
     'crm.alert.after.n.day': '{n} days later',//{n}天后
     'crm.alert.after.n.day.confirm': 'Are you sure to contact this customer after {n} day(s)',//确定{n}天之后再联系吗？
     'crm.alert.after.1.week': '1 week later',//1周后
