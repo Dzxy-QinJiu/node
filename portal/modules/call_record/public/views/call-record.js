@@ -695,7 +695,7 @@ class CallRecord extends React.Component {
                                 </div>
                             ) : (
                                 <Dropdown overlay={this.getAddCustomerMenus(record)} trigger={['click']}>
-                                    <Icon type="plus" className="add-customer-icon"/>
+                                    <Icon type="plus" className="add-customer-icon handle-btn-item"/>
                                 </Dropdown>
                             )}
                         </div>
