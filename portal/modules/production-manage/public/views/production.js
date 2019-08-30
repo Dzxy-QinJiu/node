@@ -7,7 +7,7 @@
 import '../style/production-info.less';
 import {Form, Icon, Input, Switch} from 'antd';
 import Trace from 'LIB_DIR/trace';
-import {productNameRule} from 'PUB_DIR/sources/utils/validate-util';
+import {productNameRule, getNumberValidateRule, productNameRuleForValidator} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -24,7 +24,6 @@ import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import CustomVariable from 'CMP_DIR/custom-variable/custom_variable';
 import DetailCard from 'CMP_DIR/detail-card';
-import {nameLengthRule, productPriceRule} from 'PUB_DIR/sources/utils/validate-util';
 import classNames from 'classnames';
 
 const LAYOUT_CONST = {
@@ -213,7 +212,9 @@ class Production extends React.Component {
                                         }
                                     }]
                                 })(
-                                    <Input name="price" id="price" type="text"/>
+                                    <Input
+                                        placeholder={Intl.get( 'config.product.input.price', '请输入产品单价')}
+                                        name="price" id="price" type="text"/>
                                 )}
                                 < div className='currency_unit'>{Intl.get('contract.82', '元')}</div>
                             </FormItem>
@@ -228,7 +229,9 @@ class Production extends React.Component {
                                         message: Intl.get('config.product.input.sales_unit', '请输入计价单位')
                                     }]
                                 })(
-                                    <Input name="sales_unit" id="sales_unit" type="text"/>
+                                    <Input
+                                        placeholder={Intl.get('config.product.input.sales_unit', '请输入计价单位')}
+                                        name="sales_unit" id="sales_unit" type="text"/>
                                 )}
                             </FormItem>
                             <FormItem
@@ -420,9 +423,8 @@ class Production extends React.Component {
                 </div>
                 {_.get(this.state, 'isJsCardShow') ? <div className="add-user-data-details">
                     <CustomVariable
-                        ref={custom => this.custom = custom}
                         addProduct={_.get(this.props, 'info')}
-                        value={this.state.custom_variable}
+                        realValue={this.state.custom_variable}
                         hasEditPrivilege={true}
                         addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
                     />
@@ -446,10 +448,7 @@ class Production extends React.Component {
                     afterTextTip={Intl.get('contract.82', '元')}
                     field='price'
                     type='textarea'
-                    validators={[{
-                        required: true,
-                        validator: productPriceRule
-                    }]}
+                    validators={[getNumberValidateRule()]}
                     addDataTip={Intl.get('config.product.add.price', '添加产品单价')}
                     placeholder={Intl.get( 'config.product.input.price', '请输入产品单价')}
                 />
@@ -464,13 +463,9 @@ class Production extends React.Component {
                     hasEditPrivilege={true}
                     id={this.props.info.id}
                     saveEditInput={this.saveProductItem}
-                    value={this.props.info.sales_unit || 0}
+                    value={this.props.info.sales_unit}
                     field='sales_unit'
                     type='textarea'
-                    validators={[{
-                        required: true,
-                        message: Intl.get('config.product.sales_unit.not.null', '计价单位不能为空')
-                    }]}
                     addDataTip={Intl.get('config.product.add.sales_unit', '添加计价单位')}
                     placeholder={Intl.get( 'config.product.input.sales_unit', '请输入计价单位')}
                 />
@@ -547,7 +542,7 @@ class Production extends React.Component {
                             value={this.props.info.name}
                             field='name'
                             type='textarea'
-                            validators={[nameLengthRule]}
+                            validators={[productNameRuleForValidator]}
                             placeholder={Intl.get('config.product.input.name', '请输入产品名称')}
                             hasMoreRow={true}
                         />

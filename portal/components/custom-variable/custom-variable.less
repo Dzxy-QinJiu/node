@@ -7,6 +7,7 @@
       margin-top: 4px;
       float: right;
       color: #8DA8C5;
+      cursor: pointer;
       &:hover {
         color: darken(#8DA8C5 , 30%);
       }
@@ -184,11 +185,7 @@
       display: inline-block;
       margin-left: 10px;
       line-height: 28px;
-      color: @title-color;
-      .anticon-check-circle {
-        margin-right: 5px;
-        color: @success-tip-color;
-      }
+      color: @success-tip-color;
     }
     .copy-btn {
       float: right;
@@ -218,6 +215,10 @@
     margin-top: 25px;
     font-size: 14px;
     color: @title-color;
+    //复制成功的提示
+    .copy-success-tip {
+      color: @success-tip-color;
+    }
     .ant-btn {
       margin-left: 12px;
     }

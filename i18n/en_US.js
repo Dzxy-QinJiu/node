@@ -648,7 +648,7 @@ var en_US = {
     'user.access.way.tip': 'If you use the following products, you can also access users in the following ways',//您如果使用了以下产品，还可以通过以下方式接入用户
     'user.access.way.other.tip': 'Acess user in other ways', //其他方式接入
     'user.jscode.test.btn': 'Test',//测试
-    'user.jscode.use.tip': 'Please {copyAndTraceCode}into your product <header>, test after deploy it',//请{copyAndTraceCode}到产品页面的header中后测试
+    'user.jscode.use.tip': 'Please {copyAndTraceCode} into your product <header>',//请{copyAndTraceCode}到产品页面的header中
     'user.jscode.copy.trace': 'copy the trace code',//复制跟踪代码
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表

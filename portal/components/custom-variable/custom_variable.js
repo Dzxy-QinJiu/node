@@ -11,13 +11,16 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {productKeyRule, productDesRule} from 'PUB_DIR/sources/utils/validate-util';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
-import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 
 // 自定义属性变量的字段名
 const CUSTOM_VARIABLE_FIELD = 'custom_variable';
 const CUSTOM_TYPES = {
     key: 'key',
     desc: 'description'
+};
+const COPY_POSITION = {
+    BOTTOM: 'bottom',
+    TOP: 'top'
 };
 // 自定义属性的最大个数(2),总共7个减去固定的5个
 const maxCustomVariableCount = 2;
@@ -53,10 +56,12 @@ class CustomVariable extends React.Component {
         this.state = {
             loading: false,
             displayType: this.props.displayType || 'text',
-            value: this.dealCustomVariable(_.get(this.props, 'addProduct.custom_variable')),
+            realValue: this.dealCustomVariable(_.get(this.props, 'addProduct.custom_variable')), //真正提交成功后或者从props获取的自定义变量时使用此数组
+            tempValue: [], //编辑模式下用户手动输入自定义变量时使用此数组
             submitErrorMsg: '',
             customer_variables: FIXED_CUSTOM_VARIABLES,
-            jsCopied: false,
+            jsCopiedBottom: false, //复制提示一共有两个位置
+            jsCopiedTop: false,
             testResult: '',//测试结果返回值 'success' 'error'
             isTesting: false, //正在测试
             jsCode: '',
@@ -75,7 +80,7 @@ class CustomVariable extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.addProduct.id !== this.props.addProduct.id) {
             this.setState({
-                value: this.dealCustomVariable(nextProps.value),
+                realValue: this.dealCustomVariable(nextProps.realValue),
                 loading: false,
                 displayType: nextProps.displayType || 'text',
                 submitErrorMsg: '',
@@ -85,72 +90,74 @@ class CustomVariable extends React.Component {
 
     // 自定义属性可编辑状态
     setEditable(type, e) {
-        let value = this.state.value;
+        let tempValue = null;
         if(type === 'add') {
-            value = [{
+            tempValue = [{
                 key: '',
                 description: ''
             }];
+        } else {
+            tempValue = _.cloneDeep(this.state.realValue);
         }
         this.setState({
             displayType: 'edit',
-            value,
+            tempValue: tempValue,
         });
         Trace.traceEvent(e, '点击编辑' + CUSTOM_VARIABLE_FIELD);
     }
 
     // 添加自定义属性框
     addCustomVariable = () => {
-        let value = this.state.value;
+        let tempValue = this.state.tempValue;
         // 自定义属性不能超过最大个数
-        if(_.get(value, 'length') < maxCustomVariableCount) {
-            value.push({
+        if(_.get(tempValue, 'length') < maxCustomVariableCount) {
+            tempValue.push({
                 key: '',
                 description: '',
             });
             this.setState({
-                value
+                tempValue
             });
         }
     };
 
     // 删除自定义属性
     deleteCustomVariable = (index) => {
-        let { value } = this.state;
-
-        value.splice(index, 1);
+        let tempValue = this.state.tempValue;
+        tempValue.splice(index, 1);
         // 清除form数据，以免缓存
         this.props.form.resetFields();
         this.setState({
-            value
-        }, () => {
-
+            tempValue
         });
     };
 
     // 输入框改变事件
     onInputChange = (type, index, e) => {
         let inputValue = e.target.value;
-        let value = this.state.value;
+        let tempValue = this.state.tempValue;
         if(inputValue) {
             // key发生变化
             if(type === CUSTOM_TYPES.key) {
-                value[index].key = inputValue;
+                tempValue[index].key = inputValue;
             }
             else if(type === CUSTOM_TYPES.desc) {// 描述发生变化
-                value[index].description = inputValue;
+                tempValue[index].description = inputValue;
             }
         }else {
             // 没值时，清除所有的参数
-            value[index][type] = '';
+            tempValue[index][type] = '';
         }
         this.setState({
-            value
+            tempValue
         });
     };
 
     // 处理自定义属性集合
     dealCustomVariable = (data) => {
+        if(_.isEmpty(data)) {
+            return [];
+        }
         // data: {key: 描述}, 如{status: '状态'}
         let keys = _.keys(data);
         return _.map(keys,key => {
@@ -163,7 +170,7 @@ class CustomVariable extends React.Component {
 
     // 反编译自定义属性集合
     reverseDeakCustomVariable = () => {
-        let value = this.state.value;
+        let value = this.state.tempValue;
         let obj = {};
         _.each(value, item => {
             obj[item.key] = item.description;
@@ -174,6 +181,7 @@ class CustomVariable extends React.Component {
     // 取消保存字段
     handleCancel = (e) => {
         this.setState({
+            tempValue: [],
             displayType: 'text',
             submitErrorMsg: ''
         });
@@ -225,18 +233,22 @@ class CustomVariable extends React.Component {
                 this.setState({
                     loading: false,
                     submitErrorMsg: '',
-                    value: this.dealCustomVariable(saveObj.custom_variable),
+                    realValue: this.dealCustomVariable(saveObj.custom_variable),
                     displayType: 'text'
                 });
             };
 
-            if (!_.isEqual(saveObj.custom_variable, this.props.value)) {
+            if (!_.isEqual(saveObj.custom_variable, this.props.realValue)) {
                 this.saveCustomVariable(saveObj, () => {
                     setDisplayState();
                     //更新jsCode
                     let jsCode = getUemJSCode(_.get(this.state, 'addProduct.integration_id'), this.reverseDeakCustomVariable());
+                    //取出提交成功的自定义变量
+                    let realValue = _.cloneDeep(this.state.tempValue);
                     this.setState({
-                        jsCode
+                        jsCode,
+                        realValue,
+                        tempValue: []
                     });
                 }, (errorMsg) => {
                     this.setState({
@@ -308,16 +320,25 @@ class CustomVariable extends React.Component {
     }
 
     // 复制Js代码
-    copyJSCode = () => {
-        this.setState({jsCopied: true});
-        setTimeout(() => {
-            this.setState({jsCopied: false});
-        }, 1000);
+    copyJSCode = (position) => {
+        if(_.isEqual(position, COPY_POSITION.BOTTOM)) {
+            this.setState({jsCopiedBottom: true});
+            setTimeout(() => {
+                this.setState({jsCopiedBottom: false});
+            }, 1000);
+        } else {
+            this.setState({jsCopiedTop: true});
+            setTimeout(() => {
+                this.setState({jsCopiedTop: false});
+            }, 1000);
+        }
+
+
     }
 
     // 渲染antc表格
     renderFixedBlock = () => {
-        let displayText = this.state.value;
+        let displayText = this.state.realValue;
         let bottonBorderNone = classNames({
             'table-bottom-border-none': displayText.length !== 0
         });
@@ -348,12 +369,16 @@ class CustomVariable extends React.Component {
         if(jsCode && _.isEqual(testResult, '')) {
             //当没有测试结果时
             testFooter = (<div className="js-code-user-tip">
+                {this.state.jsCopiedBottom ? (
+                    <span className="copy-success-tip">
+                        {Intl.get('user.copy.success.tip', '复制成功！')}
+                    </span>) : null}
                 <ReactIntl.FormattedMessage
                     id="user.jscode.use.tip"
                     defaultMessage={'请{copyAndTraceCode}到产品页面的<header>中部署后测试'}
                     values={{
                         'copyAndTraceCode':
-                            <CopyToClipboard text={jsCode} onCopy={this.copyJSCode}>
+                            <CopyToClipboard text={jsCode} onCopy={this.copyJSCode.bind(this, COPY_POSITION.BOTTOM)}>
                                 <a className='copy-btn'>
                                     <ReactIntl.FormattedMessage id="user.jscode.copy.trace" defaultMessage="复制跟踪代码"/>
                                 </a>
@@ -390,13 +415,14 @@ class CustomVariable extends React.Component {
             'editing': this.state.displayType === 'edit'
         });
 
-        let displayText = this.state.value;
+        let displayText = this.state.realValue;
+        let tempDisplayText = this.state.tempValue;
         let textBlock = null;
         let cls = classNames('edit-container',{
             'hover-show-edit': this.props.hasEditPrivilege
         });
         let {getFieldDecorator} = this.props.form;
-        let itemSize = _.get(displayText, 'length');
+        let itemSize = _.get(tempDisplayText, 'length');
 
         if (this.state.displayType === 'text'){
             textBlock = (
@@ -424,7 +450,7 @@ class CustomVariable extends React.Component {
             <div className="custom-variable-wrap">
                 <Form className="clearfix" layout='horizontal' autoComplete="off" style={{width: this.props.width || '100%'}}>
                     {
-                        _.map(displayText, (item, index) => {
+                        _.map(tempDisplayText, (item, index) => {
                             const fieldName = CUSTOM_VARIABLE_FIELD + index;
                             // 展示删除按钮， 自定义属性数组长度不为1时展示
                             const isShowDeleteBtn = itemSize !== 1;
@@ -477,7 +503,7 @@ class CustomVariable extends React.Component {
                                                 type="minus"
                                                 onClick={this.deleteCustomVariable.bind(this, index)}/>
                                         </Col>) : null}
-                                    {displayText.length < maxCustomVariableCount ? (
+                                    {tempDisplayText.length < maxCustomVariableCount ? (
                                         <Col className="icon-button right">
                                             <i className="iconfont icon-add"
                                                 title={Intl.get('common.add', '添加')}
@@ -501,7 +527,7 @@ class CustomVariable extends React.Component {
             </div>
         ) : null;
         //当前不为编辑状态并且value为空时展示修改
-        let isEditShow = _.isEqual(this.state.displayType, 'text') && _.get(this.state, 'value').length === 0;
+        let isEditShow = _.isEqual(this.state.displayType, 'text') && _.get(this.state, 'realValue').length === 0;
         return (
             <React.Fragment>
                 <div className='custom-variable-container'>
@@ -525,14 +551,13 @@ class CustomVariable extends React.Component {
                     {_.get(this.state, 'jsCode') ? (
                         <span>
                             <CopyToClipboard text={_.get(this.state, 'jsCode')}
-                                onCopy={this.copyJSCode}>
+                                onCopy={this.copyJSCode.bind(this, COPY_POSITION.TOP)}>
                                 <a className='copy-btn'>
                                     {Intl.get('user.jscode.copy', '复制')}
                                 </a>
                             </CopyToClipboard>
-                            {this.state.jsCopied ? (
+                            {this.state.jsCopiedTop ? (
                                 <span className="copy-success-tip">
-                                    <Icon type="check-circle" theme="filled" />
                                     {Intl.get('user.copy.success.tip', '复制成功！')}
                                 </span>) : null}
                         </span>) : (
@@ -541,10 +566,8 @@ class CustomVariable extends React.Component {
                     {_.get(this.state, 'jsCode') ? (
                         <React.Fragment>
                             <span className="js-code-label">{Intl.get('common.trace.code', '跟踪代码')}： </span>
-                            <div className="access-step-tip margin-style js-code-contianer pre-code" style={{height: 200}}>
-                                <GeminiScrollbar>
-                                    <pre id='matomo-js-code'>{_.get(this.state, 'jsCode')}</pre>
-                                </GeminiScrollbar>
+                            <div className="access-step-tip margin-style js-code-contianer pre-code">
+                                <pre id='matomo-js-code'>{_.get(this.state, 'jsCode')}</pre>
                             </div>
                         </React.Fragment>) : null}
                 </div>
@@ -555,7 +578,7 @@ class CustomVariable extends React.Component {
 }
 CustomVariable.defaultProps = {
     // 自定义属性集合， {status: 状态}
-    value: {},
+    realValue: {},
     // 展示类型，text:文本展示状态，edit:编辑状态
     displayType: '',
     //是否有修改权限
@@ -577,7 +600,7 @@ CustomVariable.defaultProps = {
 CustomVariable.propTypes = {
     form: PropTypes.object,
     displayType: PropTypes.string,
-    value: PropTypes.array,
+    realValue: PropTypes.array,
     hasEditPrivilege: PropTypes.bool,
     addBtnTip: PropTypes.string,
     width: PropTypes.string,

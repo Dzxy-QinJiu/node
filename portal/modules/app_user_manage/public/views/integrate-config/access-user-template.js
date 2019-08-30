@@ -3,18 +3,16 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by sunqingfeng on 2019/8/12.
  */
-var React = require('react');
+import './access-user-template.less';
 import {Button, Steps, Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
-const PropTypes = require('prop-types');
-import './access-user-template.less';
 const Step = Steps.Step;
 import DetailCard from 'CMP_DIR/detail-card';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import DefaultUserLogoTitle from 'CMP_DIR/default-user-logo-title';
 import CustomVariable from 'CMP_DIR/custom-variable/custom_variable';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
-var RightPanel = rightPanelUtil.RightPanel;
+let RightPanel = rightPanelUtil.RightPanel;
 const SET_TIME_OUT = {
     TRANSITION_TIME: 600,//右侧面板动画隐藏的时间
     LOADING_TIME: 1500//避免在第三步时关闭太快，加上延时展示loading效果
@@ -48,7 +46,7 @@ class AccessUserTemplate extends React.Component {
         };
     }
 
-    //关闭模板面板
+    //关闭接入产品面板
     handleCancel = (e) => {
         this.props.closeTemplatePanel();
         setTimeout(() => {
@@ -142,7 +140,7 @@ class AccessUserTemplate extends React.Component {
             <div className="add-user-data-warp">
                 <CustomVariable
                     addProduct={this.state.addProduct}
-                    value={this.state.custom_variable}
+                    realValue={this.state.custom_variable}
                     hasEditPrivilege={true}
                     addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
                 />
