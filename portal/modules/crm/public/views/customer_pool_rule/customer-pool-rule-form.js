@@ -31,11 +31,7 @@ class CustomerPoolRuleForm extends React.Component{
     };
 
     componentDidMount() {
-        if(this.props.formType === FORM_TYPE.EDIT) {
-            _.each(this.state.formData.team_range, (range, index) => {
-                this.getCustomerStageList(index, range.team_id);
-            });
-        }
+        this.getAllCustomerStageList();
     }
 
     getIntialState() {
@@ -51,6 +47,16 @@ class CustomerPoolRuleForm extends React.Component{
         };
     }
 
+    getAllCustomerStageList = () => {
+        _.each(this.state.formData.team_range, (range, index) => {
+            // 没有customerStageList，team_id有值时，以及没有在请求客户阶段时
+            let isCanReq = !range.customerStageList && range.team_id && !range.isLoading;
+            if(isCanReq) {
+                this.getCustomerStageList(index, range.team_id);
+            }
+        });
+    };
+
     getCustomerStageList = (index, teamId) => {
         let formData = this.state.formData;
         let team_range = formData.team_range;
@@ -60,6 +66,10 @@ class CustomerPoolRuleForm extends React.Component{
         this.setState({team_range});
         CustomerPoolAjax.getCustomerStageByTeamId({team_id: teamId}).then((res) => {
             delete curTeamRange.isLoading;
+            let curPropsTeamRangeIndex = _.findIndex(this.props.curCustomerRule.team_range, range => range.team_id === teamId);
+            if(curPropsTeamRangeIndex > -1) {
+                this.props.curCustomerRule.team_range[curPropsTeamRangeIndex].customerStageList = res.customer_stages;
+            }
             curTeamRange.customerStageList = res.customer_stages;
             team_range[index] = curTeamRange;
             this.setState({formData});
@@ -114,21 +124,12 @@ class CustomerPoolRuleForm extends React.Component{
         this.setState({
             formData: this.getIntialState()
         }, () => {
-            _.each(this.state.formData.team_range, (range, index) => {
-                if(!range.customerStageList) {
-                    this.getCustomerStageList(index, range.team_id);
-                }
-            });
             this.props.handleCancel();
         });
     };
 
     handleEdit = () => {
-        _.each(this.state.formData.team_range, (range, index) => {
-            if(!range.customerStageList) {
-                this.getCustomerStageList(index, range.team_id);
-            }
-        });
+        this.getAllCustomerStageList();
         this.props.handleEdit();
     };
 
