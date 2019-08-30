@@ -229,7 +229,7 @@ class PageFrame extends React.Component {
                             />) : null}
                         {
                             this.state.isShowNotificationPanel ? (
-                                <Notification/>
+                                <Notification closeNotificationPanel={this.closeNotificationPanel}/>
                             ) : null
                         }
                     </div>
