@@ -4,7 +4,6 @@
 require('../../css/customer-stage.less');
 import {message} from 'antd';
 import DetailCard from 'CMP_DIR/detail-card';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import CrmBasicAjax from '../../ajax/index';
 
 import Trace from 'LIB_DIR/trace';
@@ -29,14 +28,6 @@ class CustomerStageCard extends React.Component {
         }
     };
 
-    getEditCustomerLabelType = () => {
-        let type = 'user';//'CRM_USER_UPDATE_CUSTOMER_LABEL'
-        if (hasPrivilege('CRM_MANAGER_UPDATE_CUSTOMER_LABEL')) {
-            type = 'manager';
-        }
-        return type;
-    };
-
     changeCustomerLabel = (item) => {
         let basicData = this.state.basicData;
         if (item === _.get(basicData, 'customer_label')) return;
@@ -44,15 +35,14 @@ class CustomerStageCard extends React.Component {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存客户阶段的修改');
         let saveLabelObj = {
             id: _.get(basicData, 'id'),
-            customer_label: item
+            customer_label: item,
+            type: 'customer_label'
         };
         if (this.props.isMerge) {
             if (_.isFunction(this.props.updateMergeCustomer)) this.props.updateMergeCustomer(saveLabelObj);
             basicData.customer_label = item;
             this.setState({basicData});
         } else {
-            let type = this.getEditCustomerLabelType();
-            saveLabelObj.type = type;
             CrmBasicAjax.updateCustomer(saveLabelObj).then((resData) => {
                 if (resData && resData.result === 'success') {
                     this.setState({
