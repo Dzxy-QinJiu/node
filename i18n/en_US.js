@@ -2559,8 +2559,10 @@ var en_US = {
     'crm.alert.topic': 'Title',//标题
     'crm.contact.time': 'Contact time',//联系时间
     'crm.alert.time': 'Alert time',//提醒时间
-    'crm.schedule.n.hour.later': '{n} hours later',//{n}小时后
+    'crm.schedule.n.hour.later': '{n} hour(s) later',//{n}小时后
+    'crm.schedule.n.hour.later,confirm': 'Are you sure to contact this customer after {n} hour(s)',//确定{n}小时之后再联系吗？
     'crm.alert.after.n.day': '{n} days later',//{n}天后
+    'crm.alert.after.n.day.confirm': 'Are you sure to contact this customer after {n} day(s)',//确定{n}天之后再联系吗？
     'crm.alert.after.1.week': '1 week later',//1周后
     'crm.not.alert': 'Not remind',//不提醒
     'crm.alert.not.finish': 'Not finish',//未完成
@@ -2632,6 +2634,8 @@ var en_US = {
     'clue.customer.clue.name': 'clue names',//线索名称
     'clue.customer.fillin.clue.name': 'Please fill in the clue names',//请填写线索名称
     'clue.customer.register.user': 'registered user',//注册用户
+    'clue.customer,add,schedule,success': 'This schedule has been added',//联系计划已添加
+    'clue,customer.add.schedule.error': 'This schedule fail to add',//联系计划添加失败
     'batch.failed.add.schedule': '{customerName} failed to add schedule',//{customerName}添加联系计划失败
     'batch.success.add.schedule': 'All schedules are added successfully',//所有联系计划均添加成功
     'shedule.list.add.todo': 'Add to do',//待办

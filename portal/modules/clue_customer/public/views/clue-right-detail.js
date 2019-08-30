@@ -26,6 +26,8 @@ var noop = function() {
 };
 const DYNAMICHEIGHT = {
     LAYOUT: 117,
+    HAS_PHONE_PANEL: 225,
+    PHONE_PANEL_HAS_CUSTOMER_SCHEDULE: 460
 };
 import PropTypes from 'prop-types';
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
@@ -300,11 +302,23 @@ class ClueRightPanel extends React.Component {
         this.updateClueProperty({status: SELECT_TYPE.HAS_TRACE});
         this.props.updateCustomerLastContact(saveObj);
     };
+
+    getCluePanelHeight = () => {
+        let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        if(_.get(this.props, 'hasPhonePanel')) {
+            baseHeight -= DYNAMICHEIGHT.HAS_PHONE_PANEL;
+            if(_.get(this.props, 'phonePanelHasCustomerSchedule')) {
+                baseHeight -= DYNAMICHEIGHT.PHONE_PANEL_HAS_CUSTOMER_SCHEDULE;
+            }
+        }
+        return baseHeight;
+    };
+
     render() {
-        var curClue = this.state.curClue;
+        let curClue = _.get(this.state, 'curClue');
         //是否没有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
-        var divHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        var divHeight = this.getCluePanelHeight();
         var cls = 'clue_customer_rightpanel white-space-nowrap';
         if (this.props.className){
             cls += ` ${this.props.className}`;
@@ -434,6 +448,8 @@ ClueRightPanel.defaultProps = {
     showFlag: false,
     currentId: '',
     className: '',
+    hasPhonePanel: false,
+    phonePanelHasCustomerSchedule: false,
     removeUpdateClueItem: noop,
     updateRemarks: noop,
     updateCustomerLastContact: noop,
@@ -456,5 +472,7 @@ ClueRightPanel.propTypes = {
     onConvertToCustomerBtnClick: PropTypes.func,
     extractClueOperator: PropTypes.func,
     showClueToCustomerPanel: PropTypes.func,
+    hasPhonePanel: PropTypes.bool,
+    phonePanelHasCustomerSchedule: PropTypes.bool
 };
 export default ClueRightPanel;
