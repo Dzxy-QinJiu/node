@@ -27,7 +27,7 @@ import ModalDialog from 'CMP_DIR/ModalDialog';
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS,ASSIGN_TYPE,TOP_NAV_HEIGHT,APPLY_LIST_LAYOUT_CONSTANTS,} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS,ASSIGN_TYPE,TOP_NAV_HEIGHT,APPLY_LIST_LAYOUT_CONSTANTS,LEAVE_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import classNames from 'classnames';
 import salesOpportunityApplyAjax from 'MOD_DIR/sales_opportunity/public/ajax/sales-opportunity-apply-ajax';
@@ -315,7 +315,33 @@ class ApplyViewDetail extends React.Component {
             }
         });
     }
+    calculateStartAndEndRange = (visit_time) => {
+        var start = _.get(visit_time, 'begin_time');
+        var end = _.get(visit_time, 'end_time');
+        var startObj = _.find(LEAVE_TIME_RANGE,item => item.value === _.get(start.split('_'),'[1]')
+        );
+        var endObj = _.find(LEAVE_TIME_RANGE,item => item.value === _.get(end.split('_'),'[1]')
+        );
+        return {
+            visit_start_time: _.get(start.split('_'),'[0]'),
+            visit_start_type: _.get(startObj,'name',''),
+            visit_end_time: _.get(end.split('_'),'[0]'),
+            visit_end_type: _.get(endObj,'name',''),
+        };
+    };
+    renderShowVisitRange = (item) => {
+        var visit_start_time = '', visit_start_type = '', visit_end_time = '', visit_end_type = '';
+        var rangeObj = this.calculateStartAndEndRange(item);
+        visit_start_time = rangeObj.visit_start_time;
+        visit_start_type = rangeObj.visit_start_type;
+        visit_end_time = rangeObj.visit_end_time;
+        visit_end_type = rangeObj.visit_end_type;
 
+        return (
+            <span>{visit_start_time}{visit_start_type}{Intl.get('common.time.connector', '至')}{visit_end_time}{visit_end_type}
+            </span>
+        );
+    };
     renderDetailApplyBlock(detailInfo) {
         //找到流程保存的组件
         var detail = detailInfo.detail || {}, customizForm = [], showApplyInfo = [];
@@ -333,12 +359,16 @@ class ApplyViewDetail extends React.Component {
                             label: _.get(item,'title'),
                             text: <span className="customer-name" onClick={this.handleShowCustomerDetail.bind(this, _.get(showItem,'[0].id'))}>{_.get(showItem,'[0].name')}</span>
                         });
-                    }else if (item.component_type === ALL_COMPONENTS.TIMEPERIOD && item.selected_value === '1day'){
-                        var starttime = moment(parseInt(showItem.begin_time)).format(oplateConsts.DATE_FORMAT);
-                        var endtime = moment(parseInt(showItem.end_time)).format(oplateConsts.DATE_FORMAT);
+                    }else if (item.component_type === ALL_COMPONENTS.TIMEPERIOD ){
+                        var starttime = '', endtime = '';
+                        if (item.selected_value !== '0.5day'){
+                            starttime = moment(parseInt(showItem.begin_time)).format(oplateConsts.DATE_FORMAT);
+                            endtime = moment(parseInt(showItem.end_time)).format(oplateConsts.DATE_FORMAT);
+                        }
+
                         showApplyInfo.push({
                             label: _.get(item,'title'),
-                            text: <span>{starttime} - {endtime}</span>
+                            text: item.selected_value === '0.5day' ? this.renderShowVisitRange(showItem) : <span>{starttime - endtime}</span>
                         });
                     }else{
                         showApplyInfo.push({

@@ -67,11 +67,13 @@ class AddLeaveApply extends React.Component {
             }
             for (var key in values){
                 if (_.get(values[key],'begin_time')){
-                    values[key]['begin_time'] = moment().valueOf();
+                    values[key]['begin_time'] = moment(_.get(values[key],'begin_time')).format(oplateConsts.DATE_FORMAT) + `_${_.get(values[key],'begin_type')}`;
                 }
                 if (_.get(values[key],'end_time')){
-                    values[key]['end_time'] = moment().valueOf();
+                    values[key]['end_time'] = moment(_.get(values[key],'end_time')).format(oplateConsts.DATE_FORMAT) + `_${_.get(values[key],'end_type')}`;
                 }
+                delete values[key]['begin_type'];
+                delete values[key]['end_type'];
             }
             LeaveApplyAction.addSelfSettingApply({'detail': values,'type': SELF_SETTING_FLOW.VISITAPPLY},(result) => {
                 if (!_.isString(result)){
