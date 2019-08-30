@@ -20,6 +20,7 @@ import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import Spinner from 'CMP_DIR/spinner';
 import CustomerStageInfo from './customer-stage-info';
 import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
+import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
 
 class CustomerStage extends React.Component {
     constructor(props) {
@@ -108,6 +109,7 @@ class CustomerStage extends React.Component {
             } );
         } else { // 添加一个客户阶段
             let order = _.get(this.state.customerStageList, 'length');
+            customerStage.color = CUSTOMER_STAGE_COLOR[order];
             customerStage.order = order + 1; // 需要传客户阶段的序号
             CustomerStageAjax.addCustomerStage(customerStage, saleProcessId).then( (result) => {
                 if (result && result.id) {
@@ -179,7 +181,11 @@ class CustomerStage extends React.Component {
 
     handleChangeCustomerStageOrder = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.topNav .customer-stage-top-btn:last-child span'), '保存对客户阶段的更改');
-        CustomerStageAjax.changeCustomerStageOrder(this.state.customerStageList).then( (result) => {
+        let customerStageList = this.state.customerStageList;
+        _.each(customerStageList, (item, index) => {
+            item.color = CUSTOMER_STAGE_COLOR[index];
+        });
+        CustomerStageAjax.changeCustomerStageOrder(customerStageList).then( (result) => {
             if (result) {
                 this.closeCustomerStageTransferOrder(true);
             } else {

@@ -929,6 +929,8 @@ var en_US = {
     'customer.stage.exist.stage.tips': 'This customer stage already exists', // 该客户阶段已存在
     'customer.stage.add.stage': 'Add a customer stage', // 添加一个客户阶段
     'customer.stage.delete.stage': 'Delete customer stage', // 删除客户阶段
+    'customer.stage.select.team.user.placeholder': 'Select the team or individual that use the stage', // 请选择适用该阶段的团队或个人
+    'customer.stage.add.stage.title': 'Customer Stage {num}', // 客户阶段{num}
     // 后台管理-客户阶段end
 
     //应用管理start
