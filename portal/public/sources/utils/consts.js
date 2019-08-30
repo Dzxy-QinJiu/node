@@ -641,3 +641,6 @@ export const CC_INFO = {
     APPLY_AND_APPROVE: 'apply_and_approve', //审批通过后抄送
     APPROVE: 'approve' //提交申请和审批通过后都抄送
 };
+
+// 客户阶段中的每个阶段的颜色
+export const CUSTOMER_STAGE_COLOR = ['#D0C628', '#9BBD33', '#38BB3B', '#07B3C2', '#2196F3', '#806FE6', '#D078D1', '#D18F78'];

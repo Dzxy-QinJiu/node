@@ -64,6 +64,9 @@ class StageSelectTeamUserPanel extends React.Component {
                     }
                 }
             });
+        } else {
+            selectedData.teams = [];
+            selectedData.users = [];
         }
         delete selectedData.scope;
         return selectedData;
@@ -144,7 +147,7 @@ class StageSelectTeamUserPanel extends React.Component {
                             treeCheckable={true}
                             treeDefaultExpandAll={true}
                             showCheckedStrategy={SHOW_PARENT}
-                            searchPlaceholder={Intl.get('sales.process.suitable.objects.placeholder', '请选择适用该流程的团队或个人')}
+                            searchPlaceholder={Intl.get('customer.stage.select.team.user.placeholder', '请选择适用该阶段的团队或个人')}
                             dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
                         />
                     )}
