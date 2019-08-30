@@ -1228,8 +1228,8 @@ var en_US = {
     'user.apply.presenter': 'presenter', // 申请人
     'user.apply.id': 'Account apply', // 账号申请
     'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的用户申请
-    'user.apply.no.apply':'User applications that do not yet need to be approved',//还没有需要审批的用户申请
-    'user.apply.no.unread':'No unread reply',//已无未读回复的申请
+    'user.apply.no.apply': 'User applications that do not yet need to be approved',//还没有需要审批的用户申请
+    'user.apply.no.unread': 'No unread reply',//已无未读回复的申请
     'user.apply.show.update.tip': 'The data has been updated, Whether to', // 数据已更新,是否
     'user.apply.total.apply': '{number} applies {apply_type}', // apply_type: null=>全部 已通过 已驳回 待审批 已撤销  共{number}条申请{apply_type}@
     'user.apply.detail.order': 'Order', // 订单
@@ -1703,7 +1703,7 @@ var en_US = {
     'crm.customer.rule.name': 'Rules set',//规则设置
     'crm.add.customer.pool.rule': 'Add rules',//添加规则
     'crm.customer.pool.rule.name': '{name} customer pool',//{name}客户池
-    'crm.customer.pool.default.visible.range': 'Customer pool original team',//客户池原始团队
+    'crm.customer.pool.default.visible.range': 'Customer original team',//客户原始团队
     'crm.customer.pool.all.visible.range': 'Owner',//所有人
     'crm.customer.visible.range': 'Visible range',//可见范围
     'crm.customer.pool.select.range': 'Please select the visibility range',//请选择可见范围

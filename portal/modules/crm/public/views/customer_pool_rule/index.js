@@ -39,7 +39,7 @@ const RULE_CONFIG_OPERATOR = {
 // 默认客户池的可见范围
 const DEFAULT_VISIBLE_RANGE_MAPS = [
     {name: Intl.get('crm.customer.pool.all.visible.range', '所有人'), value: 'all'},
-    {name: Intl.get('crm.customer.pool.default.visible.range', '客户池原始团队'), value: 'default'}
+    {name: Intl.get('crm.customer.pool.default.visible.range', '客户原始团队'), value: 'default'}
 ];
 
 class CustomerPoolRule extends React.Component{
