@@ -207,7 +207,7 @@ class TimePeriod extends React.Component {
                             }],
                         })(
                             <Row>
-                                <Col span={isTemplate ? 7 : 11}>
+                                <Col span={isTemplate ? 7 : 12}>
                                     <FormItem
                                         className="form-item-label add-apply-time"
                                     >
@@ -224,27 +224,31 @@ class TimePeriod extends React.Component {
                                                 value={formData.begin_time ? moment(formData.begin_time) : moment()}
                                             />
                                         )}
-                                        {/*{getFieldDecorator('begin_type', {initialValue: formData.begin_type})(*/}
-                                        {/*<Select*/}
-                                        {/*getPopupContainer={() => document.getElementById('add-leave-apply-form')}*/}
-                                        {/*onChange={this.handleChangeStartRange}*/}
+                                        {getFieldDecorator(_.get(formItem, 'formItemKey') + '.begin_type',{
+                                            initialValue: 'AM'
+                                        })(
+                                            _.get(formItem, 'selected_value') === '0.5day' ?
+                                                <Select
+                                                    onChange={this.onBeginTypeChange}
 
-                                        {/*>*/}
-                                        {/*{_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?*/}
-                                        {/*LEAVE_TIME_RANGE.map((leaveItem, idx) => {*/}
-                                        {/*return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);*/}
-                                        {/*}) : null*/}
-                                        {/*}*/}
-                                        {/*</Select>*/}
-                                        {/*)}*/}
+                                                >
+                                                    {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                        LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                            return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                        }) : null
+                                                    }
+                                                </Select>
+                                                : null
 
+                                        )}
                                     </FormItem>
                                 </Col>
-                                <Col span={2}>
+                                {isTemplate ? <Col span={2}>
                                     <span className="split-line">
                      ——
-                                    </span></Col>
-                                <Col span={isTemplate ? 7 : 11}>
+                                    </span></Col> : null}
+
+                                <Col span={isTemplate ? 7 : 12}>
                                     <FormItem
                                         className="form-item-label add-apply-time"
                                     >
@@ -261,20 +265,21 @@ class TimePeriod extends React.Component {
                                                 value={formData.end_time ? moment(formData.end_time) : moment()}
                                             />
                                         )}
-                                        {/*{getFieldDecorator('end_type', {initialValue: formData.end_type})(*/}
-                                        {/*{_.get(formData, 'selected_value') === '0.5day' ? <Select*/}
-                                        {/*defaultValue={_.get(formData, 'end_type')}*/}
-                                        {/*onChange={this.onEndTypeChange}*/}
 
-                                        {/*>*/}
-                                        {/*{_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?*/}
-                                        {/*LEAVE_TIME_RANGE.map((item, idx) => {*/}
-                                        {/*return (<Option key={idx} value={item.value}>{item.name}</Option>);*/}
-                                        {/*}) : null*/}
-                                        {/*}*/}
-                                        {/*</Select> : null}*/}
-                                        {/*)}*/}
+                                        {getFieldDecorator(_.get(formItem, 'formItemKey') + '.end_type',{initialValue: 'PM'})(
+                                            _.get(formItem, 'selected_value') === '0.5day' ?
+                                                <Select
+                                                    onChange={this.onEndTypeChange}
 
+                                                >
+                                                    {_.isArray(LEAVE_TIME_RANGE) && LEAVE_TIME_RANGE.length ?
+                                                        LEAVE_TIME_RANGE.map((leaveItem, idx) => {
+                                                            return (<Option key={idx} value={leaveItem.value}>{leaveItem.name}</Option>);
+                                                        }) : null
+                                                    }
+                                                </Select> : null
+
+                                        )}
                                     </FormItem>
                                 </Col>
                             </Row>
