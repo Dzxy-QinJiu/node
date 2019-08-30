@@ -345,7 +345,7 @@ class CustomerPoolRuleForm extends React.Component{
                                                         {customerStageOptions}
                                                     </Select>
                                                 )) : (
-                                                    <span className="customer-info-text">{customer_label.join(',')}</span>
+                                                    <span className="customer-info-text">{customer_label.join(',') || Intl.get('crm.customer.pool.unlimited', '不限')}</span>
                                                 )
                                             )}
                                         </FormItem>
@@ -366,7 +366,7 @@ class CustomerPoolRuleForm extends React.Component{
                                                     {customerLabelOptions}
                                                 </Select>
                                             )) : (
-                                                <span className="customer-info-text">{_.get(source, 'labels',[]).join(',')}</span>
+                                                <span className="customer-info-text">{_.get(source, 'labels',[]).join(',') || Intl.get('crm.customer.pool.unlimited', '不限')}</span>
                                             )}
                                         </FormItem>
                                     </div>
