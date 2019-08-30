@@ -46,7 +46,6 @@ exports.addProduction = function(production) {
         data: production,
         success: function(result) {
             Deferred.resolve(result);
-            _.dispatch(production);
         }, error: function(errorInfo) {
             Deferred.reject(errorInfo.responseJSON);
         }
