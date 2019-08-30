@@ -30,6 +30,9 @@ function getClueDiffType(backendIntl) {
         {
             name: backendIntl.get('clue.customer.has.follow', '已跟进'),
             value: '2',
+        },{
+            name: backendIntl.get('clue.customer.has.transfer', '已转化'),
+            value: '3',
         }];
 }
 const contactWays = ['phone','qq','email','weChat'];
@@ -311,17 +314,17 @@ exports.exportData = function(req, res) {
                     value = _.get(targetObj,'name') || value;
                 }
 
-                if (column.dataIndex === 'source_time'){
+                if (column.dataIndex === 'source_time' && value){
                     value = moment(value).format(DATE_FORMAT);
                 }
                 if (column.dataIndex === 'contacts' && _.isArray(value)){
                     var contactDes = '';
                     _.forEach(value, (contactItem) => {
-                        contactDes += _.get(contactItem,'name','');
+                        contactDes = contactDes + ' ' + _.get(contactItem,'name','');
                         _.forEach(contactWays, (way) => {
                             if (_.isArray(contactItem[way])){
                                 _.forEach(contactItem[way], (wayItem) => {
-                                    contactDes += wayItem;
+                                    contactDes = contactDes + ' ' + wayItem;
                                 });
                             }
                         });

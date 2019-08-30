@@ -2439,7 +2439,7 @@ var zh_CN = {
     'errorcode.wechat.bound.other': '您的微信已绑定到其他账号',
     'errorcode.17334': '获取最近联系客户统计失败',
     'errorcdoe.17331': '统计通话的客户的地域,阶段,行业分布失败',
-
+    'errorcode.162': '已达到一天的提取上限',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
