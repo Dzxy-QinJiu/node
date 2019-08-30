@@ -247,8 +247,7 @@ class userScore extends React.Component {
         this.setState({
             userEngagementFormData
         }, () => {
-            //todo 后端加一个单独保存的接口
-
+            this.handleSaveEngagements();
         });
     };
     isRateItem = (item) => {
@@ -725,7 +724,9 @@ class userScore extends React.Component {
                 });
             }
         });
-        userEngagementFormData['user_engagements'] = _.filter(_.get(this, 'state.userEngagementFormData.user_engagements'), item => item.app_id === appItem.app_id);
+        if (appItem){
+            userEngagementFormData['user_engagements'] = _.filter(_.get(this, 'state.userEngagementFormData.user_engagements'), item => item.app_id === appItem.app_id);
+        }
         userScoreAction.saveUserEngagementRule(userEngagementFormData, () => {
             message.success(Intl.get('common.save.success', '保存成功'));
             //如果保存成功，会有回调
