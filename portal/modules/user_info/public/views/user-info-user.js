@@ -14,7 +14,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
-import {checkQQ} from 'PUB_DIR/sources/utils/validate-util';
+import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -258,14 +258,13 @@ class UserInfo extends React.Component{
     }
 
     renderUserInfo() {
-        var _this = this;
-        var formData = this.state.formData;
+        let formData = this.props.userInfo;
         //根据是否拥有邮箱改变渲染input默认文字
-        let emailInputInfo = formData.email ? formData.email : ' ';
+        let emailInputInfo = formData.email ? formData.email : '';
         //根据是否拥有邮箱改变编辑状态
         let isEditable = formData.email ? true : false;
         //根据邮箱状态是否激活改变渲染afterTextTip文字
-        let displaInfo = formData.email ? (formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
+        let displayInfo = !_.isEmpty(formData.email) ? (formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
             (<span className="active-info">(<ReactIntl.FormattedMessage
                 id="user.info.no.active"
                 defaultMessage={'未激活，请{active}'}
@@ -273,19 +272,7 @@ class UserInfo extends React.Component{
                     'active': <a onClick={this.activeUserEmail.bind(this)} data-tracename="激活">
                         <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
                     </a>
-                }}/>)</span>)) :
-            (<span>
-                <ReactIntl.FormattedMessage
-                    id="user.info.no.email"
-                    defaultMessage={'您还没有绑定邮箱，{add-email}'}
-                    values={{'add-email':
-                            <a
-                                data-tracename="点击绑定邮箱"
-                                onClick={(e) => this.setEmailEditable(e)}>
-                                {Intl.get('user.info.binding.email','绑定邮箱')}
-                            </a>,
-                    }}/>
-            </span>);
+                }}/>)</span>)) : null;
 
         // 根据是否拥有qq改变渲染input默认文字
         let qqInputInfo = formData.qq ? formData.qq : ' ';
@@ -319,22 +306,32 @@ class UserInfo extends React.Component{
                             {Intl.get('common.email', '邮箱')}
                             ：</span>
                         <span className="user-email-item">
-                            <BasicEditInputField
+                            {_.isEmpty(formData.email) && !_.isEqual(this.state.emailEditType, 'edit') ? (<span>
+                                <ReactIntl.FormattedMessage
+                                    id="user.info.no.email"
+                                    defaultMessage={'您还没有绑定邮箱，{add-email}'}
+                                    values={{'add-email':
+                                            <a
+                                                data-tracename="点击绑定邮箱"
+                                                onClick={(e) => this.setEmailEditable(e)}>
+                                                {Intl.get('user.info.binding.email','绑定邮箱')}
+                                            </a>,
+                                    }}/>
+                            </span>) : <BasicEditInputField
                                 id={formData.id}
                                 displayType={this.state.emailEditType}
                                 field="email"
                                 value={emailInputInfo}
                                 hasEditPrivilege={isEditable}
                                 hoverShowEdit={false}
-                                validators={{rules: [{
-                                    required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
-                                },{
-                                    type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                }]}}
-                                afterTextTip={displaInfo}
+                                validators={[{
+                                    pattern: emailRegex,
+                                    message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                }]}
+                                afterTextTip={displayInfo}
                                 saveEditInput={this.saveEditUserInfo.bind(this, 'email')}
                                 onDisplayTypeChange={this.onEmailDisplayTypeChange}
-                            />
+                            />}
                         </span>
                     </div>
                     <div className="user-info-item">

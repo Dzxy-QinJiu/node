@@ -187,7 +187,7 @@ const BasicEditField = createReactClass({
             if (!valid) {
                 return;
             }
-            var value = this.state.formData.input;
+            var value = _.trim(this.state.formData.input);
             var saveObj = {
                 id: this.props.id
             };
