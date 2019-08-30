@@ -162,47 +162,53 @@ class ApplyTabContent extends React.Component {
     };
 
     renderApplyListError = () => {
-        var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType !== 'all';
-        var noDataSearch = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.searchKeyword !== '';
-        if (this.state.applyListObj.loadingResult === 'error' || noData || noDataSearch) {
-            var retry = (
+        let noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 ;
+        let tipMsg = '';
+
+        if(this.state.applyListObj.loadingResult === 'error'){
+            let retry = (
                 <span>
                     {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
-                        onClick={this.retryFetchApplyList}><ReactIntl.FormattedMessage
-                            id="common.retry" defaultMessage="重试"/></a>
+                        onClick={this.retryFetchApplyList}>{Intl.get("common.retry","重试")}</a>
                 </span>
             );
-            var noDataMsg = (
-                <span>
-                    <ReactIntl.FormattedMessage id="user.apply.no.match.retry"
-                        defaultMessage="暂无符合查询条件的用户申请"/><span>,</span>
-                    <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                        <ReactIntl.FormattedMessage id="common.get.again" defaultMessage="重新获取"/>
-                    </a>
-                </span>
-            );
-            var noDataBlock, errorBlock;
-            if (noData || noDataSearch) {
-                noDataBlock = (<Alert
-                    message={noDataMsg}
-                    type="info"
-                    showIcon={true}
-                />);
-            } else {
-                errorBlock = (
-                    <Alert
-                        message={retry}
-                        type="error"
-                        showIcon={true}
-                    />
-                );
-            }
             return (
                 <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                    {(noData || noDataSearch) ? noDataBlock : errorBlock}
-                </div>);
+                   <Alert message={retry} type="error" showIcon={true}/>
+                </div>);  
+        }else if(noData){
+            if(  this.state.searchKeyword !== ''){
+                tipMsg = (
+                    <span>
+                        {Intl.get("user.apply.no.match.retry","暂无符合查询条件的用户申请")}<span>,</span>
+                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                            {Intl.get("common.get.again","重新获取")}
+                        </a>
+                    </span>
+                );
+            }else if(this.state.isCheckUnreadApplyList){
+                tipMsg = (
+                    <span>
+                        {Intl.get('user.apply.no.unread','已无未读回复的申请')}<span>,</span>
+                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                            {Intl.get("common.get.again","重新获取")}
+                        </a>
+                    </span>
+                );
+            }else{
+                tipMsg = (
+                    <span>
+                        {Intl.get('user.apply.no.apply','还没有需要审批的用户申请')}<span>,</span>
+                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                            {Intl.get("common.get.again","重新获取")}
+                        </a>
+                    </span>
+                );
+            }
+            return  <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
+                        <Alert message={tipMsg} type="info" showIcon={true}/>
+                    </div>;
         }
-        return null;
     };
 
     getApplyStateText = (obj) => {
@@ -470,19 +476,6 @@ class ApplyTabContent extends React.Component {
     };
 
     render() {
-        //根本就没有用户审批的时候，显示没数据的提示
-        if (this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 && this.state.applyListType === 'all' && this.state.searchKeyword === '') {
-            let noDataTip = this.state.isCheckUnreadApplyList ? (<ReactIntl.FormattedMessage
-                id="user.apply.unread.reply.null"
-                defaultMessage={'已无未读回复的申请，{return}'}
-                values={{'return': <a onClick={this.toggleUnreadApplyList}>{Intl.get('crm.52', '返回')}</a>}}
-            />) : Intl.get('user.apply.no.apply', '还没有用户审批诶...');
-            return (
-                <div className="apply_manage_wrap">
-                    <NoData msg={noDataTip}/>
-                </div>
-            );
-        }
         //列表高度
         //详情高度
         var applyListHeight = 'auto';
