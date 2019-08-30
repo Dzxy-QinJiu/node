@@ -485,7 +485,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
                 contactName: phoneItem.customer_name,
                 customerId: phoneItem.customer_id
             };
-            phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
+            phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out handle-btn-item\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
         });
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
         notificationUtil.showNotification({

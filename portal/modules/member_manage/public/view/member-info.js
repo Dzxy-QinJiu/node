@@ -836,7 +836,7 @@ class MemberInfo extends React.Component {
                 )}
                 <div className="member-title-btns">
                     {hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? (
-                        <span className="iconfont icon-edit-pw"
+                        <span className="iconfont icon-edit-pw handle-btn-item"
                             title={Intl.get('common.edit.password', '修改密码')}
                             onClick={this.onPasswordDisplayChange.bind(this)}/>) : null}
                     {this.renderMemberStatus(memberInfo)}

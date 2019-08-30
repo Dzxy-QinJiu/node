@@ -872,7 +872,7 @@ class ClueCustomer extends React.Component {
                         </ShearContent>
                     </div>
                     : editCluePrivilege(salesClueItem) ?
-                        <span className='add-trace-content'
+                        <span className='add-trace-content handle-btn-item'
                             onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</span>
                         : null}
 
@@ -964,7 +964,7 @@ class ClueCustomer extends React.Component {
             <span className="valid-or-invalid-container">
                 {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
                     data-tracename="判定线索无效">
-                    {editCluePrivilege(salesClueItem) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
+                    {editCluePrivilege(salesClueItem) ? <span className="can-edit handle-btn-item">{Intl.get('clue.customer.set.invalid', '标为无效')}</span> : <span className="can-edit handle-btn-item"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
                 </span> : null}
             </span>
 
@@ -1115,11 +1115,11 @@ class ClueCustomer extends React.Component {
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
         return(
             <div className="avalibility-container">
-                <div className="associate-customer">
+                <div className="associate-customer ">
 
                     {associatedPrivilege ? (
                         <span
-                            className="can-edit"
+                            className="can-edit handle-btn-item"
                             style={{marginRight: 15}}
                             onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name, salesClueItem.phones)}
                         >
@@ -1282,7 +1282,7 @@ class ClueCustomer extends React.Component {
                     //分配线索给销售的权限
                     var hasAssignedPrivilege = assignSalesPrivilege(salesClueItem);
                     var assigenCls = classNames('assign-btn',{'can-edit': !handlePersonName});
-                    var containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege});
+                    var containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege},'handle-btn-item');
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {/*有分配权限*/}
@@ -2089,7 +2089,7 @@ class ClueCustomer extends React.Component {
                 render: (text, record, index) => {
                     return (
                         <span className="cus-op">
-                            <i className="order-btn-class iconfont icon-delete "
+                            <i className="order-btn-class iconfont icon-delete handle-btn-item "
                                 onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
                                 data-tracename="删除重复线索"
                                 title={Intl.get('common.delete', '删除')}/>

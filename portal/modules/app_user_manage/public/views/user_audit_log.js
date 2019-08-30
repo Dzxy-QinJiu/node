@@ -689,7 +689,7 @@ class LogView extends React.Component {
                         </div>
                         <span className="refresh-btn customize-btn btn-item">
                             <i
-                                className="iconfont icon-down-twoline"
+                                className="iconfont icon-down-twoline handle-btn-item"
                                 id="audit-log"
                                 data-tracename="点击自定义表格列按钮"
                                 title={Intl.get('common.table.customize', '自定义表格列')}

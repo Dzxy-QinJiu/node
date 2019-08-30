@@ -71,8 +71,8 @@ class CustomerStageInfo extends React.Component {
         let activity = saleActivity && saleActivity.length ? _.map(saleActivity, 'name') : [];
         let isShowMore = customerStage.isShowMore;
         let twoLineClass = classNames('iconfont', {
-            'icon-down-twoline': !isShowMore,
-            'icon-up-twoline': isShowMore
+            'icon-down-twoline handle-btn-item': !isShowMore,
+            'icon-up-twoline handle-btn-item': isShowMore
         });
         let twoLineTitle = isShowMore ? Intl.get('crm.basic.detail.hide', '收起详情') :
             Intl.get('crm.basic.detail.show', '展开详情');
@@ -147,7 +147,7 @@ class CustomerStageInfo extends React.Component {
                             <div className="customer-stage-btn-div operation-btn">
                                 <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
                                     <Button
-                                        className="customer-stage-btn-class icon-delete iconfont"
+                                        className="customer-stage-btn-class icon-delete iconfont  handle-btn-item"
                                         onClick={this.showCustomerStageModalDialog.bind(this, customerStage)}
                                         data-tracename="删除客户阶段"
                                     >

@@ -72,7 +72,7 @@ class SalesStageInfo extends React.Component {
                         </div>) :
                         (<div className="sales-stage-btn-div operation-btn">
                             <PrivilegeChecker check="BGM_SALES_STAGE_DELETE">
-                                <Button className="sales-stage-btn-class icon-delete iconfont"
+                                <Button className="sales-stage-btn-class icon-delete iconfont  handle-btn-item"
                                     onClick={_this.showSalesStageModalDialog.bind(this, salesStage)}
                                     data-tracename="删除销售阶段"
                                 >

@@ -538,7 +538,7 @@ class SalesClueItem extends React.Component {
                     }
                 </div>
                 {hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
-                    <Button className='add-trace-content'
+                    <Button className='add-trace-content handle-btn-item'  
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
                 {associatedPrivilege && hasTraceClue ? <Button onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name, salesClueItem.phones)} data-tracename="点击关联客户按钮">{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}

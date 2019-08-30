@@ -1,4 +1,5 @@
 @hover_bg_color: #E8F5FE;
+@import "../../../public/sources/page-frame/index-zh_CN.less";
 //动态添加、删除元素的组件样式
 .dynamic-item-form {
   float: left;
@@ -64,9 +65,7 @@
   .no-data-descr {
     vertical-align: middle;
     color: #ccc;
-    a {
-      color: #8fa8c6;
-    }
+    .handle-btn-item;
   }
 
   .item-show-content {
@@ -74,12 +73,15 @@
     padding-left: 41px;
     line-height: 24px;
     font-size: 14px;
+    a{
+      .handle-btn-item;
+    }
+
     .icon-edit-btn {
       display: none;
       position: absolute;
       float: right;
       font-size: 16px;
-      color: #8da8c5;
       top: 0;
       right: 0;
     }

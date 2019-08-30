@@ -741,7 +741,7 @@ class ClueExtract extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !user.isCommonSales;
                     let assigenCls = classNames('assign-btn', {'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue', {'assign-privilege': hasAssignedPrivilege});
+                    let containerCls = classNames('singl-extract-clue', {'assign-privilege ': hasAssignedPrivilege},'handle-btn-item');
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}

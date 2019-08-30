@@ -239,7 +239,7 @@ let BasicEditSelectField = createReactClass({
                     </div>);
             } else {
                 textBlock = (
-                    <span className="inline-block basic-info-text no-data-descr">
+                    <span className="inline-block basic-info-text no-data-descr handle-btn-item">
                         {this.props.hasEditPrivilege ? (
                             <a onClick={this.setEditable.bind(this)}>{this.props.addDataTip}</a>) : this.props.noDataTip}
 

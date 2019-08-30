@@ -145,7 +145,7 @@ class ScheduleItem extends React.Component {
                                         getPopupContainer={() => document.getElementById(scheduleContentId)}
                                         title={Intl.get('crm.schedule.del.confirm', '确定要删除此联系计划吗？')}
                                         onConfirm = {this.deleteSchedule.bind(this, item.id)}>
-                                        <span className='iconfont icon-delete' data-tracename='点击删除联系计划按钮'/>
+                                        <span className='iconfont icon-delete handle-btn-item' data-tracename='点击删除联系计划按钮'/>
                                     </Popconfirm> : null}
                             </span>
                         </div>)}

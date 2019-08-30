@@ -32,7 +32,7 @@ class LeftTree extends React.Component {
     };
 
     addGroup = (item) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'添加子部门');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add handle-btn-item'),'添加子部门');
         SalesTeamAction.addGroup(item);
     };
 
@@ -141,7 +141,7 @@ class LeftTree extends React.Component {
                 </PrivilegeChecker>
                 <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
                     <div className="tree-operation-btn-div-item" onClick={this.deleteGroup.bind(this, item)}>
-                        <span className="icon-operation iconfont icon-delete">
+                        <span className="icon-operation iconfont icon-delete  handle-btn-item">
                         </span>
                         <span className="operation-btn-item-span"><ReactIntl.FormattedMessage id="common.delete"
                             defaultMessage="删除"/></span>
@@ -160,7 +160,7 @@ class LeftTree extends React.Component {
                     <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.addGroup.bind(this, item)}
                     >
-                        <i className='iconfont icon-add'></i>
+                        <i className='iconfont icon-add handle-btn-item'></i>
                         <span className='operation-item-text'>
                             {Intl.get('member.team.add.child.department', '添加子部门')}
                         </span>
@@ -182,7 +182,7 @@ class LeftTree extends React.Component {
                             <div className="tree-operation-item-zone icon-operation tree-operation-icon"
                                 onClick={this.deleteGroup.bind(this, item)}
                             >
-                                <i className='iconfont icon-delete'></i>
+                                <i className='iconfont icon-delete handle-btn-item'></i>
                                 <span className='operation-item-text'>
                                     {Intl.get('organization.del.department', '删除部门')}
                                 </span>
@@ -235,7 +235,7 @@ class LeftTree extends React.Component {
                         className="tree-operation-item-zone icon-operation tree-operation-icon"
                         onClick={this.handleAddRootDepartment}
                     >
-                        <i className='iconfont icon-add'></i>
+                        <i className='iconfont icon-add handle-btn-item'></i>
                         <span className='operation-item-text'>
                             {Intl.get('organization.add.department', '添加部门')}
                         </span>
@@ -437,7 +437,7 @@ class LeftTree extends React.Component {
     };
 
     addSalesTeamRoot = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add'),'添加部门');
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('ul.left-tree-ul .tree-operation-div .icon-add handle-btn-item'),'添加部门');
         SalesTeamAction.addSalesTeamRoot();
     };
 

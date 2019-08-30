@@ -191,7 +191,7 @@ let BasicEditSelectField = createReactClass({
                     {this.props.displayText}
                 </span>
                 { this.props.disabled ? null : (
-                    <i className="inline-block iconfont icon-update" title={this.props.title}
+                    <i className="inline-block iconfont icon-update handle-btn-item" title={this.props.title}
                         onClick={(e) => {this.setEditable(e);}}/>
                 )}
             </div>
