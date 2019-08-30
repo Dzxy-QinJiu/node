@@ -157,7 +157,7 @@ var LeftTree = createReactClass({
                 </PrivilegeChecker>
                 <PrivilegeChecker check="USER_ORGANIZATION_DELETE">
                     <div className="tree-operation-btn-div-item" onClick={this.deleteGroup.bind(this, item)}>
-                        <span className="icon-operation iconfont icon-delete">
+                        <span className="icon-operation iconfont icon-delete handle-btn-item">
                         </span>
                         <span className="operation-btn-item-span">
                             <ReactIntl.FormattedMessage id="common.delete" defaultMessage="删除"/>
@@ -201,7 +201,7 @@ var LeftTree = createReactClass({
                         {//团队下没有字团队，因此，团队上没有添加按钮
                             item.category == CATEGORY_TYPE.TEAM ? null :
                                 <PrivilegeChecker check="USER_ORGANIZATION_ADD">
-                                    <span className="icon-operation iconfont icon-add tree-operation-icon"
+                                    <span className="icon-operation iconfont icon-add tree-operation-icon handle-btn-item"
                                         title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get('organization.add.department','添加部门') : Intl.get('common.add','添加')}
                                         onClick={this.addGroup.bind(this, item)}/>
                                 </PrivilegeChecker>
@@ -212,7 +212,7 @@ var LeftTree = createReactClass({
                                 onClick={this.editGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                         <PrivilegeChecker check="USER_ORGANIZATION_DELETE">
-                            <span className="icon-operation iconfont icon-delete tree-operation-icon"
+                            <span className="icon-operation iconfont icon-delete tree-operation-icon handle-btn-item"
                                 title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get('organization.del.department','删除部门') : item.category == CATEGORY_TYPE.TEAM ? Intl.get('organization.del.team','删除团队') : Intl.get('organization.del.organization','删除组织')}
                                 onClick={this.deleteGroup.bind(this, item)}/>
                         </PrivilegeChecker>
@@ -347,7 +347,7 @@ var LeftTree = createReactClass({
                         <div className="add-root-organization-btn"
                             title={Intl.get('organization.add.organization', '添加组织')}
                             onClick={this.addOrganizationRoot}>
-                            <span className="iconfont icon-add"/>
+                            <span className="iconfont icon-add handle-btn-item"/>
                         </div>
                     </div>)
                     }

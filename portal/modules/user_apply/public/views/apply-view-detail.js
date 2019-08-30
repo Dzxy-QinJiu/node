@@ -605,7 +605,7 @@ const ApplyViewDetail = createReactClass({
                                         {tags}
                                     </span>
                                     : null}
-                                <span className="iconfont icon-arrow-right"/>
+                                <span className="iconfont icon-arrow-right handle-btn-item"/>
                             </a>
                         </div>
                         {detailInfo.last_contact_time ? (
@@ -1050,7 +1050,7 @@ const ApplyViewDetail = createReactClass({
     renderMultiAppDelayTable(user) {
         let columns = [
             {
-                title: Intl.get('common.app', '应用'),
+                title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
                 className: 'apply-detail-th'
             }, {
@@ -1145,7 +1145,7 @@ const ApplyViewDetail = createReactClass({
         const isOplateUser = this.state.isOplateUser;
         let columns = [
             {
-                title: Intl.get('common.app', '应用'),
+                title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
                 className: 'apply-detail-th'
             }];
@@ -1480,7 +1480,7 @@ const ApplyViewDetail = createReactClass({
     renderOtherStatusTable: function(user) {
         let columns = [
             {
-                title: Intl.get('common.app', '应用'),
+                title: Intl.get('common.product','产品'),
                 dataIndex: 'client_name',
                 className: 'apply-detail-th'
             }];
@@ -1491,7 +1491,7 @@ const ApplyViewDetail = createReactClass({
     },
     renderApplyAppNames: function(detailInfo) {
         return (<div className="apply-info-label">
-            <span className="user-info-label">{Intl.get('common.app', '应用')}:</span>
+            <span className="user-info-label">{Intl.get('common.product','产品')}:</span>
             <span className="user-info-text">
                 {detailInfo.app_name || ''}
             </span>

@@ -3,6 +3,7 @@
 @label_color: #999999;
 @btn_color: #8da8c5;
 @card_margin: 8px;
+@error_tips_color: #f04134;
 //选项框提示
 @select_warning_color: #efa246;
 .basic-overview-contianer {
@@ -213,6 +214,26 @@
         &:hover {
           color: #2196f3;
         }
+      }
+    }
+  }
+}
+//Popover错误提示框
+.apply-invalid-popover{
+  .ant-popover-inner-content {
+    overflow: hidden;
+    //申请时错误提示
+    .apply-error-tip {
+      font-size: 14px;
+      .icon-warn-icon {
+        position: relative;
+        top: 1px;
+        margin-right: 4px;
+        color: @select_warning_color;
+      }
+      .apply-error-text {
+        color: #333333;
+        margin-left: 4px;
       }
     }
   }

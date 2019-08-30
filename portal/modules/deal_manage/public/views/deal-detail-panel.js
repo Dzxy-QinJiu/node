@@ -354,7 +354,7 @@ class DealDetailPanel extends React.Component {
                                     </Button>
                                 </span>) : (
                                 <PrivilegeChecker check={HAS_DELETE}>
-                                    <span className="iconfont icon-delete" 
+                                    <span className="iconfont icon-delete handle-btn-item" 
                                         title={Intl.get('common.delete', '删除')}
                                         onClick={this.showDelConfirmTip}/>
                                 </PrivilegeChecker>

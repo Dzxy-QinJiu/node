@@ -118,7 +118,7 @@ class AnalysisAppSelector extends React.Component {
                 minWidth={150}
                 value={this.state.selectedApp}
                 onChange={this.onSelectedAppChange}
-                notFoundContent={!options.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                notFoundContent={!options.length ? Intl.get('user.no.product','暂无产品') : Intl.get('user.no.related.product','无相关产品')}
             >
                 {options}
             </SelectFullWidth>

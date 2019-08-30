@@ -39,13 +39,13 @@ export function getSalesNewOpenChart(paramObj = {}) {
                     width: 80
                 },
                 {
-                    title: Intl.get('common.number.of.new.user.customer', '新开用户客户数'),
+                    title: Intl.get('common.number.of.new.user.customer', '开通了用户的客户数'),
                     dataIndex: 'tatol_newly_users',
                     align: 'right',
                     width: 80
                 },
                 {
-                    title: Intl.get('oplate_customer_analysis.customerLoginCount', '新开通客户登录数'),
+                    title: Intl.get('oplate_customer_analysis.customerLoginCount', '登录过的客户数'),
                     dataIndex: 'customer_login',
                     align: 'right',
                     width: 80

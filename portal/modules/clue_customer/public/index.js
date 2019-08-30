@@ -21,6 +21,7 @@ const {TextArea} = Input;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
+import queryString from 'query-string';
 import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
@@ -115,6 +116,7 @@ class ClueCustomer extends React.Component {
     };
 
     componentDidMount() {
+        const query = queryString.parse(this.props.location.search);
         clueCustomerStore.listen(this.onStoreChange);
         //获取线索来源
         this.getClueSource();
@@ -127,6 +129,18 @@ class ClueCustomer extends React.Component {
         this.getSalesmanList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
+        //如果从url跳转到该页面，并且有add=true，则打开右侧面板
+        if (query.add === 'true') {
+            this.showAddForm();
+        }
+    }
+
+    //打开添加线索面板
+    showAddForm = () => {
+        this.setState({
+            addType: 'add',//手动添加
+            clueAddFormShow: true
+        });
     }
 
     // 获取销售人员
@@ -873,7 +887,7 @@ class ClueCustomer extends React.Component {
                         </ShearContent>
                     </div>
                     : editCluePrivilege(salesClueItem) ?
-                        <span className='add-trace-content'
+                        <span className='add-trace-content handle-btn-item'
                             onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</span>
                         : null}
 
@@ -965,7 +979,7 @@ class ClueCustomer extends React.Component {
             <span className="valid-or-invalid-container">
                 {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
                     data-tracename="判定线索无效">
-                    {editCluePrivilege(salesClueItem) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid', '标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
+                    {editCluePrivilege(salesClueItem) ? <span className="can-edit handle-btn-item">{Intl.get('clue.customer.set.invalid', '标为无效')}</span> : <span className="can-edit handle-btn-item"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
                 </span> : null}
             </span>
 
@@ -1120,7 +1134,7 @@ class ClueCustomer extends React.Component {
 
                     {associatedPrivilege ? (
                         <span
-                            className="can-edit"
+                            className="can-edit handle-btn-item"
                             style={{marginRight: 15}}
                             onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name, salesClueItem.phones)}
                         >
@@ -1283,7 +1297,7 @@ class ClueCustomer extends React.Component {
                     //分配线索给销售的权限
                     var hasAssignedPrivilege = assignSalesPrivilege(salesClueItem);
                     var assigenCls = classNames('assign-btn',{'can-edit': !handlePersonName});
-                    var containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege});
+                    var containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege},'handle-btn-item');
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {/*有分配权限*/}
@@ -2090,7 +2104,7 @@ class ClueCustomer extends React.Component {
                 render: (text, record, index) => {
                     return (
                         <span className="cus-op">
-                            <i className="order-btn-class iconfont icon-delete "
+                            <i className="order-btn-class iconfont icon-delete handle-btn-item "
                                 onClick={_this.deleteDuplicatImportClue.bind(_this, index)}
                                 data-tracename="删除重复线索"
                                 title={Intl.get('common.delete', '删除')}/>

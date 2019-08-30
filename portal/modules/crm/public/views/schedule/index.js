@@ -216,7 +216,7 @@ class CrmSchedule extends React.Component {
                 {!_.get(this.state, 'scheduleList[0]') && !this.state.isLoadingScheduleList ? (
                     <span className="no-data-text">{}</span>) : null}
                 {this.props.isMerge ? null : (
-                    <span className="iconfont icon-add schedule-add-btn"
+                    <span className="iconfont icon-add schedule-add-btn handle-btn-item"
                         title={Intl.get('crm.214', '添加联系计划')}
                         onClick={this.addSchedule}/>)
                 }

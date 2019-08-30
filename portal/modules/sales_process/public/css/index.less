@@ -69,6 +69,35 @@
           }
         }
     }
+    // 选择销售部门、个人面板样式
+    .select-team-user-panel {
+      .right-panel-modal-content {
+        form {
+          .buttons-wrap {
+            text-align: right;
+            margin-right: 20px;
+            .alert-timer {
+              display: inline-block;
+              margin-right: 16px;
+              .ant-alert-success, .ant-alert-error {
+                border: none;
+                background: none;
+                display: inline;
+              }
+              .ant-alert-success .ant-alert-message {
+                color: #2196F3;
+              }
+              .ant-alert-error .ant-alert-message {
+                color: #EB5E57;
+              }
+            }
+            .ant-btn-primary {
+              margin-right:16px;
+            }
+          }
+        }
+      }
+    }
   }
 
   // 编辑销售流程面板
@@ -101,13 +130,60 @@
             display: block;
             float: right;
             font-size: 16px;
-            color: @btn-color;
             cursor: pointer;
           }
         }
         form {
           .ant-form-item {
             padding-right: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 表格样式
+#app {
+  .stage-list-table-wrap {
+    .antc-table {
+      .ant-table-wrapper {
+        // 表头
+        .ant-table-thead {
+          th {
+            color: #999 !important;
+            font-weight: normal;
+            padding: 9px 16px !important;
+          }
+        }
+        // 表体
+        .ant-table tbody {
+          tr {
+            cursor: pointer;
+            background:#fff !important;
+            td {
+              padding: 9px 6px 9px 16px !important;
+              .customer-stage-name {
+                .default {
+                  float: right;
+                  padding: 0 5px;
+                  font-size: 12px;
+                  color: #ffffff;
+                  background-color: #b8c4ca;
+                }
+              }
+              .stage-operate {
+                  .iconfont {
+                    margin-right: 16px;
+                  }
+              }
+            }
+          }
+          .current-row {
+            background: #E4F2FE !important;
+            &:hover {
+              background: #E4F2FE !important;
+            }
           }
         }
       }

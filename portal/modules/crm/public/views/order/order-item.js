@@ -601,8 +601,8 @@ class OrderItem extends React.Component {
         let isExpandDetail = this.state.isExpandDetail;
         const order = this.state.formData;
         const expandIconClassName = classNames('iconfont order-expand-icon', {
-            'icon-up-twoline': isExpandDetail,
-            'icon-down-twoline': !isExpandDetail
+            'icon-up-twoline handle-btn-item': isExpandDetail,
+            'icon-down-twoline handle-btn-item': !isExpandDetail
         });
         return (
             <span className="order-item-title">
@@ -629,7 +629,7 @@ class OrderItem extends React.Component {
                                         </Button>
                                     </span>
                                 ) : this.props.disableEdit || !hasPrivilege(HAS_DELETE) ? null 
-                                    : (<span className="iconfont icon-delete" 
+                                    : (<span className="iconfont icon-delete handle-btn-item" 
                                         title={Intl.get('common.delete', '删除')}
                                         data-tracename="点击删除订单按钮" 
                                         onClick={this.showDelModalDialog}/>)

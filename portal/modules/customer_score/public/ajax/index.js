@@ -68,3 +68,20 @@ exports.saveCustomerRules = (queryObj) => {
     });
     return Deferred.promise();
 };
+//保存客户的等级
+exports.saveCustomerLevels = (queryObj) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/save/customer/levels',
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: (list) => {
+            Deferred.resolve(list);
+        },
+        error: (errorMsg) => {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

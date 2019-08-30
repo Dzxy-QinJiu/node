@@ -25,8 +25,6 @@ exports.getNumberValidateRule = function() {
 export const isPhone = function(value) {
     return /^1[3-9]\d{9}$/.test(value);
 };
-
-
 //邮箱正则表达式
 export const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 //是否是邮箱
@@ -143,6 +141,12 @@ export const productDesRule = {
 // 产品名称长度的验证规则（包含大小写字母、下划线、中英文括号、点及汉字，长度1-10之间）
 export const productNameLengthRule = regex.getNameRegex(10);
 
+export const productNameRuleForValidator = {
+    required: true,
+    min: 1,
+    max: 10,
+    message: Intl.get('product.name.rule', '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间')
+};
 export const productNameRule = {
     required: true,
     pattern: productNameLengthRule,

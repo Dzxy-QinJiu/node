@@ -5,7 +5,7 @@
  */
 const PropTypes = require('prop-types');
 var React = require('react');
-import {Button, Tag, Select, Input, Menu, Dropdown, Icon} from 'antd';
+import {Button, Tag, Select, Input, Menu, Dropdown, Icon, Popconfirm} from 'antd';
 const {TextArea} = Input;
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
@@ -49,6 +49,16 @@ class phoneStatusTop extends React.Component {
     componentDidMount() {
         phoneAlertStore.listen(this.onStoreChange);
     }
+
+    componentDidUpdate= () => {
+        //当自定义计划添加成功并且当前未通过"n小时/n天后"button添加计划时
+        if(_.get(this.props, 'isAddingScheduleSuccess') && !_.get(this.state, 'hasAddedSchedlue')){
+            this.showMessage(Intl.get('clue.customer,add,schedule,success','联系计划已添加'), 'success');
+            this.setState({
+                hasAddedSchedlue: true
+            });
+        }
+    };
 
     onStoreChange = () => {
         this.setState(phoneAlertStore.getState());
@@ -349,6 +359,10 @@ class phoneStatusTop extends React.Component {
     handleAddPlan = () => {
         this.props.handleAddPlan();
     };
+    //关闭自定义联系计划面板
+    closeAddPlan = () => {
+        this.props.closeAddPlan();
+    }
     //挂断电话
     releaseCall = (called) => {
         if (getCallClient()) {
@@ -378,9 +392,11 @@ class phoneStatusTop extends React.Component {
                 this.setState({
                     hasAddedSchedlue: true
                 });
-                this.showMessage(Intl.get('user.user.add.success', '添加成功'), 'success');
+                //当打开自定义面板未进行提交编辑又选择了其他天数、小时数联系计划并确认后，关闭自定义添加的面板
+                this.closeAddPlan();
+                this.showMessage(Intl.get('clue.customer,add,schedule,success','联系计划已添加'), 'success');
             } else {
-                this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
+                this.showMessage(resData || Intl.get('clue,customer.add.schedule.error', '联系计划添加失败'), 'error');
             }
         });
     };
@@ -441,10 +457,6 @@ class phoneStatusTop extends React.Component {
                     {/*已转化的线索和无效线索不能展示这两个按钮*/}
                     {!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo && ![SELECT_TYPE.HAS_TRANSFER].includes(_.get(this, 'state.curClue.status')) && _.get(this, 'state.curClue.availability') === AVALIBILITYSTATUS.AVALIBILITY ?
                         <div className="add-trace-and-plan">
-                            <div className="add-more-info-container">
-                                <Button size="small"
-                                    onClick={this.handleSetClueInvalid}>{this.state.showMarkClueInvalid ? Intl.get('clue.customer.set.invalid', '标为无效') : Intl.get('clue.cancel.set.invalid', '改为有效')}</Button>
-                            </div>
                             {this.state.showMarkClueInvalid ? <div className="add-plan-info-container">
                                 <div className="contact-tip">{Intl.get('crm.clue.next.contact.time', '下次联系时间')}
                                     <div className="indicator">
@@ -461,18 +473,31 @@ class phoneStatusTop extends React.Component {
                                 </div>
 
                                 <div className="btn-wrap">
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWO, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}
-
-                                    </Button>
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.SIX, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(3 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(5 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
+                                    <Popconfirm
+                                        title={Intl.get('crm.schedule.n.hour.later,confirm', '确定{n}小时之后在联系吗？', {n: 2})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWO, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}</Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title={Intl.get('crm.schedule.n.hour.later,confirm', '确定{n}小时之后在联系吗？', {n: 6})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.SIX, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title={Intl.get('crm.alert.after.n.day.confirm', '确定{n}天之后再联系吗？', {n: 1})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title={Intl.get('crm.alert.after.n.day.confirm', '确定{n}天之后再联系吗？', {n: 3})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(3 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title={Intl.get('crm.alert.after.n.day.confirm', '确定{n}天之后再联系吗？', {n: 5})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(5 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
+                                    </Popconfirm>
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
                                         onClick={this.handleAddPlan}>{Intl.get('user.time.custom', '自定义')}</Button>
                                     {this.state.addClueSchedule ? <Icon type="loading"/> : null}
@@ -503,6 +528,9 @@ phoneStatusTop.defaultProps = {
     handleAddPlan: function() {
 
     },
+    closeAddPlan: function() {
+
+    },
     commonPhoneDesArray: [],
     showMarkClueInvalid: function() {
 
@@ -523,5 +551,6 @@ phoneStatusTop.propTypes = {
     commonPhoneDesArray: PropTypes.object,
     showMarkClueInvalid: PropTypes.func,
     curClue: PropTypes.object,
+    closeAddPlan: PropTypes.func,
 };
 export default phoneStatusTop;

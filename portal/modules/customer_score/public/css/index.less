@@ -1,31 +1,59 @@
 .customer-score-container {
-  padding: 12px;
+  padding: 12px 12px 4px 12px;
   .customer-score-wrap {
-    background: #fff;
     .customer-score-content {
       font-size: 14px;
       .customer-score-content-wrap {
-        padding: 12px;
+        padding: 24px;
+        background: #fff;
+        min-height: 172px;
+        position: relative;
+        .customer-score-lable{
+          color:#333;
+          font-size: 16px;
+          overflow: hidden;
+          .iconfont.icon-update{
+            float: right;
+            cursor: pointer;
+            visibility: hidden;
+          }
+          &:hover{
+            .iconfont.icon-update{
+              visibility: visible;
+            }
+          }
+        }
         .slider-container {
           display: inline-block;
-          width: calc(100% - 450px);
-          padding: 30px 0 0 30px;
+          width: 100%;
+          padding: 30px 0 0 0;
+          &.not-edit-customer-level{
+            .rc-slider{
+              .rc-slider-handle-2, .rc-slider-handle-3{
+                visibility: hidden;
+              }
+            }
+
+          }
           .rc-slider {
             div.rc-slider-handle:first-of-type, div.rc-slider-handle:last-of-type {
               visibility: hidden;
             }
+
+
             //todo 待修改
             .rc-slider-handle-1, .rc-slider-handle-4 {
               visibility: hidden;
               display: none;
             }
             .rc-slider-handle-2, .rc-slider-handle-3 {
-              background: #fff;
+              background-color: #fff;
               margin-top: -8px;
               width: 10px;
               height: 23px;
               border-radius: 0;
             }
+
             .rc-slider-handle {
 
             }
@@ -34,14 +62,61 @@
                 display: none;
               }
             }
+            .rc-slider-rail{
+              height: 8px;
+              -webkit-border-radius:4px;
+              -moz-border-radius:4px;
+              border-radius:4px;
+            }
+            .rc-slider-track{
+              height: 8px;
+
+            }
           }
 
         }
         .customer-level-score {
-          margin: 30px 0 0 80px;
+          margin: 30px 0 0 0;
+          overflow: hidden;
           .customer_level {
             display: inline-block;
             width: 30%;
+            &:last-child{
+              text-align: right;
+            }
+            &:nth-child(2){
+              text-align: center;
+            }
+            &.edit_customer-level{
+              width: 20%;
+              text-align: left;
+            }
+            .customer-level-quarter{
+              display: inline-block;
+              width: 12px;
+              height: 12px;
+              margin-right: 5px;
+              &.unqualified-icon{
+                background: #EFA246;
+              }
+              &.qualified-icon{
+                background: #00C2C4;
+              }
+              &.perfect-icon{
+                background: #4662EF;
+              }
+            }
+            .above-certain-level{
+              background: #F5F5F5;
+              color: #999;
+              font-size: 14px;
+              border:1px solid #d9d9d9;
+              border-left: none;
+              padding: 0px 5px 0 0;
+              .ant-input{
+                margin-right: 5px;
+              }
+            }
             .input-groups {
               width: auto;
               display: inline-block;
@@ -63,40 +138,85 @@
               }
             }
           }
+          .customer-level-save-btns-container{
+            float: right;
+            .ant-btn{
+              margin-left: 8px;
+            }
+          }
         }
       }
       .customer-rules-container{
-        padding: 12px;
+        margin-top:8px;
+        padding: 24px;
+        background: #fff;
+        min-height: 160px;
+        position:relative;
         .customer-rule-tip{
-          margin: 10px 0;
+          color: #333;
+          font-size: 16px;
+          overflow: hidden;
+          .status-wrapper{
+            float: right;
+            position: relative;
+            top: -2px;
+          }
+          .icon-update{
+            float: right;
+            visibility: hidden;
+            margin-right: 10px;
+            cursor: pointer;
+
+          }
+          &:hover{
+            .icon-update{
+              visibility: visible;
+            }
+          }
         }
 
         .customer-rule-score-level{
-          padding: 12px;
-          .customer-rule-status{
-            margin-bottom: 12px;
-            .switch-tip{
-              margin-right: 10px;
-            }
-          }
           .customer-rule-table{
+            border: 1px solid #E5E5E5;
+            margin-top:5px;
+            .thead-title{
+              background: #F5F5F5;
+              font-size: 14px;
+              color: #999999;
+              text-align: left;
+            }
               .ant-row{
-                margin-bottom: 12px;
-                min-height: 24px;
-                .add-minus-btns{
-                  font-size: 22px;
-                  cursor: pointer;
-                  display: inline-block;
-                  width: 100px;
-                  text-align: right;
+                height: 43px;
+                line-height: 40px;
+                &:hover{
+                  background: #F1F8FE;
                 }
+                >div{
+                  padding-left: 16px;
+                }
+                .ant-input-number{
+                  margin:0 4px;
+                }
+                .add-minus-container{
+                  position: relative;
+                  .add-minus-btns{
+                    position: absolute;
+                    right: 100px;
+                    font-size: 22px;
+                    cursor: pointer;
+                    display: inline-block;
+                    width: 100px;
+                    text-align: right;
+                  }
+                }
+
               }
           }
 
         }
         //保存或者取消按钮
         .save-btns{
-          padding: 12px 69px 0 12px;
+          padding: 17px 0 0 0;
           text-align: right;
           button{
             margin-left: 10px;
@@ -108,10 +228,19 @@
     }
   }
   .ant-alert.ant-alert-error{
-    width: 200px;
+    width: 400px;
     margin:40px auto;
   }
   .ant-input-number-input{
     height: 25px;
+  }
+  .icon-multiply{
+    margin: 0px 5px;
+  }
+  .load8 {
+    transform: scale(0.5, 0.5);
+    .loader8 {
+      border-left-color: #394144;
+    }
   }
 }

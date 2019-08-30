@@ -178,7 +178,7 @@ class OfficeManage extends React.Component {
                 <div className="operation-item-zone"
                     onClick={this.deletePosition.bind(this, item)}
                 >
-                    <i className='iconfont icon-delete'></i>
+                    <i className='iconfont icon-delete handle-btn-item'></i>
                     <span className='operation-item-text'>
                         {Intl.get('member.position.delete.office', '删除职务')}
                     </span>

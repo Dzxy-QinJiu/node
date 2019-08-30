@@ -25,7 +25,8 @@ import {
     REG_FILES_SIZE_RULES,
     ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM,
     FINAL_TASK,
-    ORGANIZATION_APP_TYPES
+    ORGANIZATION_APP_TYPES,
+    REALM_REMARK
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -35,6 +36,7 @@ import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -447,6 +449,8 @@ exports.getApplyTopicText = function(obj) {
         return getDocumentReportTypeText(DOCUMENT_TYPE, _.get(obj, 'detail.document_type'));
     } else if (obj.topic === APPLY_APPROVE_TYPES.MEMBER_INVITE) {
         return Intl.get('member.application', '成员申请');
+    }else if (obj.workflow_type === SELF_SETTING_FLOW.VISITAPPLY){
+        return Intl.get('apply.my.self.setting.work.flow', '拜访申请');
     }
 };
 function getDocumentReportTypeText(AllTypeList, specificType) {
@@ -960,4 +964,10 @@ exports.isOpenCash = () => {
 exports.setExclusiveNumber = (phoneType) => {
     let isDefault = _.isEqual(phoneType, 'default');
     userData.setUserData('hasExcluesiveNumber', !isDefault);
+};
+//是否是识微域
+exports.isCiviwRealm = () => {
+    var userDetail = userData.getUserData();
+    var realmId = _.get(userDetail, 'auth.realm_id');
+    return realmId === REALM_REMARK.CIVIW;
 };

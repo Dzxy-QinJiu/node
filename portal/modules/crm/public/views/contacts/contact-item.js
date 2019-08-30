@@ -145,8 +145,8 @@ class ContactItem extends React.Component {
         const defaultTitle = isDefaultContact ? Intl.get('crm.119', '默认') : Intl.get('crm.detail.contact.default.set', '设为默认联系人');
         //联系方式展开、收起
         const contactWayClassName = classNames('iconfont', {
-            'icon-up-twoline': isExpanded,
-            'icon-down-twoline': !isExpanded
+            'icon-up-twoline handle-btn-item': isExpanded,
+            'icon-down-twoline handle-btn-item': !isExpanded
         });
         return (
             <span className="contact-item-title">
@@ -170,7 +170,7 @@ class ContactItem extends React.Component {
                         </Button>
                     </span>) : this.props.disableEdit ? null : (
                     <span className="contact-item-buttons">
-                        <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
+                        <span className="iconfont icon-delete handle-btn-item" title={Intl.get('common.delete', '删除')}
                             data-tracename="点击删除联系人按钮"
                             onClick={this.showDeleteContactConfirm}/>
                         <span className={contactWayClassName}

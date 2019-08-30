@@ -818,7 +818,7 @@ const AddOrEditUser = createReactClass({
                             <SearchIconList
                                 totalList={this.state.currentRealmApps}
                                 onItemsChange={this.onAppsChange}
-                                notFoundContent={Intl.get('user.no.related.app', '无相关应用')}
+                                notFoundContent={Intl.get('user.no.related.product','无相关产品')}
                             />
                         )
                     )
@@ -826,8 +826,8 @@ const AddOrEditUser = createReactClass({
                 {
                     isSubmitError ? (
                         <div className="has-error">
-                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.tip"
-                                defaultMessage="至少选择一个应用"/>
+                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.product.select.tip"
+                                defaultMessage="至少选择一个产品"/>
                             </div>
                         </div>
                     ) : null
@@ -966,8 +966,8 @@ const AddOrEditUser = createReactClass({
                         >
                             <OperationSteps.Step action={Intl.get('user.user.basic', '基本信息')}></OperationSteps.Step>
                             <OperationSteps.Step
-                                action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
-                            <OperationSteps.Step action={Intl.get('user.user.app.set', '应用设置')}></OperationSteps.Step>
+                                action={Intl.get('user.user.product.select','选择产品')}></OperationSteps.Step>
+                            <OperationSteps.Step action={Intl.get('user.user.product.set','产品设置')}></OperationSteps.Step>
                             {this.state.selectRealmId ?
                                 <OperationSteps.Step
                                     action={Intl.get('user.select.realm', '选择安全域')}></OperationSteps.Step> : null}

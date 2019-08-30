@@ -169,7 +169,7 @@ function getConfigJson(req) {
         '90024': {'httpCode': 500, 'message': backendIntl.get('errorcode.142', '线索不存在')},
         '90010': {'httpCode': 500, 'message': backendIntl.get('errorcode.150', '修改线索信息失败')},
         '90031': {'httpCode': 500, 'message': backendIntl.get('errorcode.152', '线索重复')},
-
+        '90061': {'httpCode': 500, 'message': backendIntl.get('errorcode.162', '已达到一天的提取上限')},
 
         /*************************** 角色权限 *****************************/
         '15101': {'httpCode': 500, 'message': backendIntl.get('errorcode.84', '添加角色失败')},

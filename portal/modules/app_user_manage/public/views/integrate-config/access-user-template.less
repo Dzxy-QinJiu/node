@@ -1,0 +1,160 @@
+@import '../../../../../public/css/common-variables';
+@success-tip-color: #06ae06;
+@error-tip-color: #f5222d;
+//接入用户
+.access-user-step-container{
+  .access-user-template-panel.right-pannel-default {
+    transform: translateX(100%);
+    font-size: 14px;
+    background-color: transparent!important;
+    .iconfont.icon-close.access-user-btn{
+      color: #fff;
+      background-color: #8ea9c4;
+      border-radius: 0 !important;
+      width: 24px;
+      height: 24px;
+      float: left;
+      font-size: 14px;
+    }
+    //接入用户面板
+    .access-user-detail-wrap{
+      float: left;
+      height: 100%;
+      background-color: #f5f5f5 !important;
+      position: relative;
+      //接入用户标题
+      .access-top-title{
+        background: #fff;
+        padding: 20px 12px 20px 20px;
+        font-weight: bold;
+        .other-access-way {
+          a {
+            float: right;
+            color: #8DA8C5;
+            font-size: 14px;
+            font-weight:400;
+          }
+        }
+      }
+      .access-title-top{
+        padding: 20px 60px 20px 20px;
+        .ant-steps {
+          width:300px;
+          .ant-steps-item {
+            .ant-steps-head{
+              background-color:#f5f5f5;
+            }
+            .ant-steps-title{
+              background-color:#f5f5f5 ;
+            }
+          }
+        }
+      }
+
+      .access-detail-container{
+        height: 100%;
+        margin:0 20px;
+        .first-step-content{
+          height: 100%;
+          margin-top: 0;
+          .integrate-config-form {
+            width: 100%;
+            margin-top: 0;
+            .ant-form-item{
+              width: 100%;
+              margin-bottom: 24px;
+              input {
+                width: 100%;
+                font-size: 14px;
+              }
+            }
+            .first-step-buttons {
+              display: flex;
+              justify-content: flex-end;
+              .prompt-info {
+                .save-loading {
+                  color: #777;
+                }
+                .save-error {
+                  color: @error_tips_color;
+                  font-size: 14px;
+                }
+              }
+              button {
+                text-align: center;
+                margin-left: 8px;
+                font-size: 16px;
+                width: 72px;
+                height: 32px;
+                padding: 0px;
+              }
+            }
+          }
+        }
+        .second-step-content {
+          //接入的用户title
+          .access-title {
+            display: flex;
+            .no-user-logo-div {
+              margin-right: 8px;
+              font-size: 16px;
+              height: 24px;
+              width: 24px;
+              line-height: 24px;
+              border-radius: 4px;
+            }
+            span {
+              color: @title-color;
+              font-size: 16px;
+              font-weight: bold;
+              width: 90%;
+              word-wrap: break-word;
+              white-space: normal;
+            }
+          }
+          //用户属性
+          .add-user-data-card {
+            .detail-card-title {
+              color: @title-color;
+            }
+            .add-user-data-warp {
+              .js-code-user-tip {
+                display: flex;
+                justify-content: flex-end;
+                position: fixed;
+                bottom: 0;
+                left: 24px;
+                margin-top: 0;
+                height: 70px;
+                width: 480px;
+                padding: 12px 20px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.access-user-step-container.show-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 12;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+//导入线索成功后的提示
+.ant-message{
+  top:400px;
+  .ant-message-notice-content{
+    background: rgba(0, 0, 0, 0.5);
+    color:#fff;
+  }
+}
+.file-tip{
+  margin-top:10px;
+}

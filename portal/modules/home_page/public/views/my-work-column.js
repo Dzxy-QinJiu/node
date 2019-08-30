@@ -121,6 +121,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
 
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
@@ -137,6 +138,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
     }
 
     // 获取销售人员

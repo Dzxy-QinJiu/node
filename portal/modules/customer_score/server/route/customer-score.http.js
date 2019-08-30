@@ -30,6 +30,13 @@ module.exports = {
             passport: {
                 needLogin: true
             }
+        }, { // 保存客户规则
+            method: 'post',
+            path: '/rest/save/customer/levels',
+            handler: 'saveCustomerLevels',
+            passport: {
+                needLogin: true
+            }
         }
     ]
 };

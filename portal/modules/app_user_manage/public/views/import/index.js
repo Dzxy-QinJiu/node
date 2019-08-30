@@ -116,7 +116,7 @@ class ImportTemplate extends React.Component {
                     showSearch
                     minWidth={120}
                     onChange={this.onSelectedAppChange}
-                    notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                    notFoundContent={!appOptions.length ? Intl.get('user.no.product','暂无产品') : Intl.get('user.no.related.product','无相关产品')}
                 >
                     {appOptions}
                 </SelectFullWidth>

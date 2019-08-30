@@ -584,7 +584,7 @@ class MemberForm extends React.Component {
                                                 {this.renderTeamOptions()}
                                             </Select>
                                         )}
-                                        {this.props.isShowAddGroupFrom ? <i title={Intl.get('guide.add.member.team.tip', '添加新部门')} className="iconfont icon-add" onClick={this.setAddGroupForm.bind(this, true)}/> : null}
+                                        {this.props.isShowAddGroupFrom ? <i title={Intl.get('guide.add.member.team.tip', '添加新部门')} className="iconfont icon-add handle-btn-item" onClick={this.setAddGroupForm.bind(this, true)}/> : null}
                                     </div>)
                                 }
                             </FormItem>) : null}

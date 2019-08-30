@@ -545,7 +545,7 @@ class UserDetailBasic extends React.Component {
                                 <span className="btn-bar">
                                     {
                                         app.is_disabled === 'true' ?
-                                            <span className="collapse-btn">
+                                            <span className="collapse-btn handle-btn-item">
                                                 {
                                                     app.showDetail ?
                                                         <span onClick={() => this.showAppDetail({ app, isShow: false })}>{Intl.get('user.detail.tip.collapse', '收起停用前设置')}</span> :
@@ -573,7 +573,7 @@ class UserDetailBasic extends React.Component {
                                         <a href="javascript:void(0)"
                                             onClick={_this.editSingleApp.bind(_this, app)}
                                             title={Intl.get('user.app.change', '变更应用')}>
-                                            <span className="iconfont icon-guanli"></span>
+                                            <span className="iconfont icon-guanli handle-btn-item"></span>
                                         </a>
                                     </PrivilegeChecker> : null
                             }
@@ -606,7 +606,7 @@ class UserDetailBasic extends React.Component {
                     className="a_button"
                     href="javascript:void(0)"
                     onClick={this.showAddAppPanel}>
-                    <ReactIntl.FormattedMessage id="common.add.app" defaultMessage="添加应用" />
+                    <ReactIntl.FormattedMessage id="common.add.product" defaultMessage="添加产品" />
                 </PrivilegeChecker>
             ) : null
         );

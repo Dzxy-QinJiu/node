@@ -93,7 +93,7 @@ class AppUserFormStore {
         //提交错误信息
         this.submitErrorMsg = '';
         //提交人
-        this.operator = UserData.getUserData().nick_name;
+        this.operator = _.get(UserData.getUserData(),'nick_name');
     }
     //上一步、下一步
     turnStep(direction) {

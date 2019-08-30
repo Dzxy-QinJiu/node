@@ -6,7 +6,7 @@ import Store from '../../store';
 
 export function getOpenAccountChart(type = 'total') {
     return {
-        title: Intl.get('user.analysis.account.login.statistics', '开通账号登录统计'),
+        title: Intl.get('user.analysis.account.login.statistics', '开通用户登录统计'),
         url: '/rest/analysis/user/v3/:data_type/login/detail',
         argCallback: (arg) => {
             let query = arg.query;
@@ -38,7 +38,7 @@ export function getOpenAccountChart(type = 'total') {
                     width: '40%',
                 },
                 {
-                    title: Intl.get('user.analysis.account.count', '开通账号数'),
+                    title: Intl.get('user.analysis.user.count', '开通用户数'),
                     dataIndex: 'new_users',
                     align: 'right',
                     width: '30%',

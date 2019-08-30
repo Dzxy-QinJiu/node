@@ -1,5 +1,5 @@
 /**
- * 签约账号分析
+ * 签约用户分析
  */
 
 import accountChart from '../../charts/account';

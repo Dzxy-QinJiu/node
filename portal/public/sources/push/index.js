@@ -22,6 +22,7 @@ import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {getClueUnhandledPrivilege, getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 const session = storageUtil.session;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -127,7 +128,10 @@ function applyApproveUnhandledListener(data) {
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, data);
                 break;
-
+            case SELF_SETTING_FLOW.VISITAPPLY:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY, true);
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_VISIT, data);
+                break;
         }
     }
 
@@ -485,7 +489,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
                 contactName: phoneItem.customer_name,
                 customerId: phoneItem.customer_id
             };
-            phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
+            phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out handle-btn-item\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
         });
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
         notificationUtil.showNotification({
@@ -722,6 +726,10 @@ function getMessageCount(callback) {
                 case 'documentwriting_apply_management':
                     getUnapproveDocumentWritingApply();//获取文件撰写的待我审批数
                     break;
+                case 'my_leave_apply_management'://路由配置中路由的id
+                    getUnapproveVisitApply();//获取拜访申请的待我审批数
+                    break;
+
             }
         });
     }
@@ -939,6 +947,21 @@ function getUnapproveSalesOpportunityApply() {
         data: queryObj,
         success: function(data) {
             setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,data);
+        },
+        error: function(errorMsg) {
+        }
+    });
+}
+//获取待我审批的拜访申请
+function getUnapproveVisitApply() {
+    var queryObj = {type: SELF_SETTING_FLOW.VISITAPPLY};
+    $.ajax({
+        url: '/rest/get/worklist/apply_approve/list',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,data);
         },
         error: function(errorMsg) {
         }

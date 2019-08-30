@@ -83,7 +83,9 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的请假申请数量
     UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
+    UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
+
 };
 
 //系统消息对应的几种类型
@@ -614,4 +616,28 @@ export const CHANGE_RECORD_TYPE = {
     userInfoUpdate: 'UserInfoUpdate', // 基本信息的变更
     teamChange: 'teamChange', // 变更团队
     teamRoleChange: 'teamRoleChange', // 变更职务
+};
+export const REALM_REMARK = {
+    CIVIW: '36duh3ok3i'//销识微域的安全域id
+};
+export const ASSIGN_TYPE = {
+    NEXT_CANDIDATED: 'nextCandidated',
+    COMMON_SALES: 'commonSales'
+};
+
+// 用户申请类型
+export const APPLY_TYPE = {
+    USER_APPLY: 'userapply',//用户审批
+    BUSINESS_OPPORTUNITIES: 'businessopportunities', //机会申请
+    BUSINESS_TRIP: 'businesstrip', //出差申请
+    LEAVE: 'leave', //请假申请
+    DOCUMENT_WRITING: 'documentwriting', //文件撰写
+    OPINION_REPORT: 'opinionreport', //舆情报告
+};
+
+//申请抄送类型
+export const CC_INFO = {
+    APPLY: 'apply', //提交申请时抄送
+    APPLY_AND_APPROVE: 'apply_and_approve', //审批通过后抄送
+    APPROVE: 'approve' //提交申请和审批通过后都抄送
 };
