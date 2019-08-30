@@ -2400,6 +2400,7 @@ var en_US = {
     'errorcode.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
     'errorcode.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
     'errorcode.17331': 'Statistics of call customers by region, stage, industry distribution failure',//统计通话的客户的地域,阶段,行业分布失败
+    'errorcode.162': 'You has achevie the max limit',//已达到一天的提取上限
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索

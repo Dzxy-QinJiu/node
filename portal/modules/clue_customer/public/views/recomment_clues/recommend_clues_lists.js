@@ -157,11 +157,11 @@ class RecommendCustomerRightPanel extends React.Component {
                     message.error(Intl.get('clue.extract.failed', '提取失败'));
                 }
             },
-            error: (xhr) => {
+            error: (errorInfo) => {
                 this.setState({
                     singleExtractLoading: false,
                 });
-                message.error(Intl.get('clue.extract.failed', '提取失败'));
+                message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }
         });
 
@@ -439,11 +439,11 @@ class RecommendCustomerRightPanel extends React.Component {
 
                 }
             },
-            error: (errorMsg) => {
+            error: (errorInfo) => {
                 this.setState({
                     batchExtractLoading: false
                 });
-                message.error(errorMsg || Intl.get('clue.extract.failed', '提取失败'));
+                message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }
         });
     };
