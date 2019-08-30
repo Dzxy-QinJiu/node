@@ -128,7 +128,7 @@ class SalesProcess extends React.Component {
         }
         let addCustomerStage = {
             id: '',
-            name: '客户阶段' + (length + 1)
+            name: Intl.get('customer.stage.add.stage.title', '客户阶段{num}', {num: length + 1})
         };
         return (
             <div className='condition-operator'>
@@ -163,7 +163,20 @@ class SalesProcess extends React.Component {
 
     // 显示客户阶段面板
     showCustomerStagePanel = (item) => {
-        SalesProcessAction.showCustomerStagePanel(item);
+        if (item.id === '') { // 显示添加界面的处理
+            let submitObj = {
+                name: _.trim(item.name),
+                status: '1', // 默认是启用的状态
+            };
+            SalesProcessAjax.addSalesProcess(submitObj).then( (result) => {
+                if (result && result.id) { // 添加成功
+                    SalesProcessAction.showCustomerStagePanel(result);
+                    SalesProcessAction.upDateSalesProcessList(result);
+                }
+            });
+        } else {
+            SalesProcessAction.showCustomerStagePanel(item);
+        }
     };
 
     // 关闭客户阶段面板
