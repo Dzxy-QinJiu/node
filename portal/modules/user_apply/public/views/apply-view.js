@@ -178,7 +178,7 @@ class ApplyTabContent extends React.Component {
                 </div>);  
         }else if(noData){
             if(  this.state.searchKeyword !== ''){
-                let noDataMsg = (
+                tipMsg = (
                     <span>
                         {Intl.get("user.apply.no.match.retry","暂无符合查询条件的用户申请")}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
@@ -186,9 +186,8 @@ class ApplyTabContent extends React.Component {
                         </a>
                     </span>
                 );
-                tipMsg = noDataMsg;
             }else if(this.state.isCheckUnreadApplyList){
-                let noUnreadMsg = (
+                tipMsg = (
                     <span>
                         {Intl.get('user.apply.no.unread','已无未读回复的申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
@@ -196,18 +195,15 @@ class ApplyTabContent extends React.Component {
                         </a>
                     </span>
                 );
-               tipMsg = noUnreadMsg;
             }else{
-                let noApply = (
+                tipMsg = (
                     <span>
                         {Intl.get('user.apply.no.apply','还没有需要审批的用户申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                             {Intl.get("common.get.again","重新获取")}
                         </a>
                     </span>
-                    
                 );
-                tipMsg = noApply;
             }
             return  <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
                         <Alert message={tipMsg} type="info" showIcon={true}/>
