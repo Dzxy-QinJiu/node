@@ -200,7 +200,7 @@ class ApplyTabContent extends React.Component {
             }else{
                 let noApply = (
                     <span>
-                        {Intl.get('user.apply.no.apply','还没有用户审批')}<span>,</span>
+                        {Intl.get('user.apply.no.apply','还没有需要审批的用户申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                             {Intl.get("common.get.again","重新获取")}
                         </a>
