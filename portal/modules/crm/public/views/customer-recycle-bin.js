@@ -347,7 +347,7 @@ class CustomerRecycleBin extends React.Component {
                                     <Popconfirm placement="leftTop"
                                         title={Intl.get('crm.delete.customer.confirm.tip', '删除后不可恢复，确定要彻底删除客户 {name} 吗？', {name: _.get(record, 'name', '')})}
                                         onConfirm={this.deleteCustomer.bind(this, _.get(record, 'id', ''))}>
-                                        <span className="iconfont icon-delete operate-icon  handle-btn-item"
+                                        <span className="iconfont icon-delete operate-icon handle-btn-item"
                                             data-tracename="彻底删除客户"
                                             title={Intl.get('crm.delete.thoroughly', '彻底删除')}/>
                                     </Popconfirm>) : null}

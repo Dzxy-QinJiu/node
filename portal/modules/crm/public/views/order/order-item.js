@@ -629,7 +629,7 @@ class OrderItem extends React.Component {
                                         </Button>
                                     </span>
                                 ) : this.props.disableEdit || !hasPrivilege(HAS_DELETE) ? null 
-                                    : (<span className="iconfont icon-delete  handle-btn-item" 
+                                    : (<span className="iconfont icon-delete handle-btn-item" 
                                         title={Intl.get('common.delete', '删除')}
                                         data-tracename="点击删除订单按钮" 
                                         onClick={this.showDelModalDialog}/>)

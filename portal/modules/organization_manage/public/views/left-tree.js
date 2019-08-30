@@ -212,7 +212,7 @@ var LeftTree = createReactClass({
                                 onClick={this.editGroup.bind(this, item)}/>
                         </PrivilegeChecker>
                         <PrivilegeChecker check="USER_ORGANIZATION_DELETE">
-                            <span className="icon-operation iconfont icon-delete tree-operation-icon  handle-btn-item"
+                            <span className="icon-operation iconfont icon-delete tree-operation-icon handle-btn-item"
                                 title={item.category == CATEGORY_TYPE.DEPARTMENT ? Intl.get('organization.del.department','删除部门') : item.category == CATEGORY_TYPE.TEAM ? Intl.get('organization.del.team','删除团队') : Intl.get('organization.del.organization','删除组织')}
                                 onClick={this.deleteGroup.bind(this, item)}/>
                         </PrivilegeChecker>

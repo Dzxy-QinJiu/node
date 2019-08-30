@@ -173,7 +173,7 @@ class DynamicAddDelContacts extends React.Component {
         const emailArray = contact_keys[index].email;
         const weChatArray = contact_keys[index].weChat;
         const contactKey = item.key;//当前联系人的key
-        const delContactCls = classNames('iconfont icon-delete  handle-btn-item', {
+        const delContactCls = classNames('iconfont icon-delete handle-btn-item', {
             'disabled': index === 0 && size === 1
         });
         const validateContactName = this.props.validateContactName;

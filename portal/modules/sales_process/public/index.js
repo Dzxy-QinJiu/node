@@ -336,7 +336,7 @@ class SalesProcess extends React.Component {
                                                     onClick={this.handleDeleteSaleProcess.bind(this, item)}
                                                     data-tracename={'点击删除' + item.name + '销售流程按钮'}
                                                 >
-                                                    <i className="iconfont icon-delete  handle-btn-item"></i>
+                                                    <i className="iconfont icon-delete handle-btn-item"></i>
                                                 </span>
                                             ) : null
                                         }

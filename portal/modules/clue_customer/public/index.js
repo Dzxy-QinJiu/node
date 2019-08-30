@@ -1115,7 +1115,7 @@ class ClueCustomer extends React.Component {
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
         return(
             <div className="avalibility-container">
-                <div className="associate-customer ">
+                <div className="associate-customer">
 
                     {associatedPrivilege ? (
                         <span

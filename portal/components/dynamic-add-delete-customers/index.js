@@ -288,7 +288,7 @@ class DynamicAddDelCustomers extends React.Component {
         var _this = this;
         const size = customer_keys.length;
         const {getFieldDecorator, getFieldValue} = this.props.form;
-        const delContactCls = classNames('iconfont icon-delete  handle-btn-item', {
+        const delContactCls = classNames('iconfont icon-delete handle-btn-item', {
             'disabled': index === 0 && size === 1
         });
         const formItemLayout = {

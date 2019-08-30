@@ -141,7 +141,7 @@ class LeftTree extends React.Component {
                 </PrivilegeChecker>
                 <PrivilegeChecker check="BGM_SALES_TEAM_DELETE">
                     <div className="tree-operation-btn-div-item" onClick={this.deleteGroup.bind(this, item)}>
-                        <span className="icon-operation iconfont icon-delete  handle-btn-item">
+                        <span className="icon-operation iconfont icon-delete handle-btn-item">
                         </span>
                         <span className="operation-btn-item-span"><ReactIntl.FormattedMessage id="common.delete"
                             defaultMessage="删除"/></span>
