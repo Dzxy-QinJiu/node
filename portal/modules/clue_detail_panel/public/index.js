@@ -60,8 +60,9 @@ class ClueDetailPanel extends React.Component {
             isAddingPlanInfo: false,//是否展示添加联系计划面板
             isAddingScheduleSuccess: false, //添加自定义计划是否成功
             isAddToCustomerFlag: false,//是否展示添加到已有线索面板
-            hasPhonePanel: false,
-            phonePanelHasCustomerSchedule: false,
+            hasPhonePanel: false,//是否有电话面板，用于线索面板计算高度
+            phonePanelHasCustomerSchedule: false,//是否正在编辑自定义事件，用于线索面板计算高度
+            phonePanelFinishTrace: false,//电话面板是否完成跟进,用于线索面板计算高度
         };
     }
 
@@ -345,6 +346,7 @@ class ClueDetailPanel extends React.Component {
                 hideRightPanel={this.hideClueDetailPanel}
                 hasPhonePanel={this.state.hasPhonePanel}
                 phonePanelHasCustomerSchedule={this.state.phonePanelHasCustomerSchedule}
+                phonePanelFinishTrace={this.state.phonePanelFinishTrace}
             />);
     }
 
@@ -484,6 +486,19 @@ class ClueDetailPanel extends React.Component {
         return _.get(this,'props.paramObj.clue_params.curClue') || _.get(this,'state.clueInfoArr[0]');
     }
 
+    //根据回调函数返回跟进的编辑状态来标记flag
+    setTraceEditStatus = (type) => {
+        if(_.isEqual(type, 'edit')) {
+            this.setState({
+                phonePanelFinishTrace: false,
+            });
+        } else {
+            this.setState({
+                phonePanelFinishTrace: true,
+            });
+        }
+    }
+
     renderPhoneStatus() {
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         //有监听到推送消息时再渲染出页面
@@ -515,6 +530,7 @@ class ClueDetailPanel extends React.Component {
                         handleAddPlan={this.handleAddPlan}
                         closeAddPlan={this.closeAddPlan} //手动控制关闭面板
                         isAddingScheduleSuccess={this.state.isAddingScheduleSuccess}//检查自定义是否添加成功
+                        setTraceEditStatus={this.setTraceEditStatus} //添加跟进内容回调，获取编辑状态 'edit' 'text'
                         isAddingPlanInfo={this.state.isAddingPlanInfo}
                         commonPhoneDesArray={cluePhoneDesArray}
                         showMarkClueInvalid={showMarkClueInvalid}
@@ -591,6 +607,7 @@ class ClueDetailPanel extends React.Component {
                             hideRightPanel={this.hideClueDetailPanel}
                             hasPhonePanel={this.state.hasPhonePanel}
                             phonePanelHasCustomerSchedule={this.state.phonePanelHasCustomerSchedule}
+                            phonePanelFinishTrace={this.state.phonePanelFinishTrace}
                         />) : null
                     }
                 </div>

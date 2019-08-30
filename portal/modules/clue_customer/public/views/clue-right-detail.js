@@ -27,7 +27,8 @@ var noop = function() {
 const DYNAMICHEIGHT = {
     LAYOUT: 117,
     HAS_PHONE_PANEL: 225,
-    PHONE_PANEL_HAS_CUSTOMER_SCHEDULE: 460
+    PHONE_PANEL_HAS_CUSTOMER_SCHEDULE: 235,
+    PHONE_PANEL_HAS_TRACE_FINISHED: 65
 };
 import PropTypes from 'prop-types';
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
@@ -305,10 +306,16 @@ class ClueRightPanel extends React.Component {
 
     getCluePanelHeight = () => {
         let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        //如果有电话跟进面板
         if(_.get(this.props, 'hasPhonePanel')) {
             baseHeight -= DYNAMICHEIGHT.HAS_PHONE_PANEL;
+            //如果电话跟进面板正在添加自定义计划
             if(_.get(this.props, 'phonePanelHasCustomerSchedule')) {
                 baseHeight -= DYNAMICHEIGHT.PHONE_PANEL_HAS_CUSTOMER_SCHEDULE;
+            }
+            //如果电话跟进面板跟进计划是text状态
+            if(_.get(this.props, 'phonePanelFinishTrace')) {
+                baseHeight += DYNAMICHEIGHT.PHONE_PANEL_HAS_TRACE_FINISHED;
             }
         }
         return baseHeight;
@@ -448,8 +455,9 @@ ClueRightPanel.defaultProps = {
     showFlag: false,
     currentId: '',
     className: '',
-    hasPhonePanel: false,
-    phonePanelHasCustomerSchedule: false,
+    hasPhonePanel: false, //判断是否此时线索详情面板上有电话跟进面板
+    phonePanelHasCustomerSchedule: false, //判断电话跟进面板是否在编辑自定义计划
+    phonePanelFinishTrace: false,//判断电话跟进面板是否正在编辑跟进记录
     removeUpdateClueItem: noop,
     updateRemarks: noop,
     updateCustomerLastContact: noop,
@@ -473,6 +481,7 @@ ClueRightPanel.propTypes = {
     extractClueOperator: PropTypes.func,
     showClueToCustomerPanel: PropTypes.func,
     hasPhonePanel: PropTypes.bool,
-    phonePanelHasCustomerSchedule: PropTypes.bool
+    phonePanelHasCustomerSchedule: PropTypes.bool,
+    phonePanelFinishTrace: PropTypes.bool,
 };
 export default ClueRightPanel;
