@@ -138,7 +138,7 @@ class DynamicAddDelField extends React.Component {
                 </div>);
         } else {//无数据时的处理
             return (
-                <div className="item-show-content no-data-descr">
+                <div className="item-show-content no-data-descr handle-btn-item">
                     {this.props.hasEditPrivilege ? (
                         <a onClick={this.setEditable.bind(this)}>{this.props.addDataTip}</a>) : this.props.noDataTip}
                 </div>

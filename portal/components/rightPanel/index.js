@@ -80,7 +80,7 @@ class RightPanelEdit extends React.Component {
 //渲染详情中的编辑按钮
 class DetailEditBtn extends React.Component {
     render() {
-        return (<span {...this.props} className="iconfont icon-edit-btn"/>);
+        return (<span {...this.props} className="iconfont icon-edit-btn handle-btn-item"/>);
     }
 }
 
@@ -118,7 +118,7 @@ class RightPanelReturn extends React.Component {
 class RightPanelDelete extends React.Component {
     render() {
         return (
-            <div {...this.props} className="icon-delete circle-button iconfont" title={Intl.get('common.delete','删除')}>
+            <div {...this.props} className="icon-delete circle-button iconfont handle-btn-item" title={Intl.get('common.delete','删除')}>
             </div>
         );
     }
@@ -168,7 +168,7 @@ class RightPanelAppVersionDelete extends React.Component {
 class RightPanelUserTypeConfig extends React.Component {
     render() {
         return (
-            <div {...this.props} className="icon-usertypeconfig circle-button iconfont" title={Intl.get('rightpanel_usertypeconfig','用户类型设置')}>
+            <div {...this.props} className="icon-usertypeconfig circle-button iconfont handle-btn-item" title={Intl.get('rightpanel_usertypeconfig','用户类型设置')}>
             </div>
         );
     }

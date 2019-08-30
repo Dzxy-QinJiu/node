@@ -625,8 +625,8 @@ class UserLoginAnalysis extends React.Component {
                                         <span className="btn-bar">
                                             {
                                                 this.state.showDetailMap[app.app_id] ?
-                                                    <span className="iconfont icon-up-twoline" onClick={this.showAppDetail.bind(this, app, false)}></span> :
-                                                    <span className="iconfont icon-down-twoline" onClick={this.showAppDetail.bind(this, app, true)}></span>
+                                                    <span className="iconfont icon-up-twoline handle-btn-item" onClick={this.showAppDetail.bind(this, app, false)}></span> :
+                                                    <span className="iconfont icon-down-twoline handle-btn-item" onClick={this.showAppDetail.bind(this, app, true)}></span>
                                             }
                                         </span>
                                     </div>

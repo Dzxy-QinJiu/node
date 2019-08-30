@@ -399,7 +399,7 @@ class BasicData extends React.Component {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
         let interestFlag = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids, crmUtil.getMyUserId()) > -1;
-        const interestClass = classNames('iconfont', {
+        const interestClass = classNames('iconfont','handle-btn-item', {
             'icon-interested': interestFlag,
             'icon-uninterested': !interestFlag
         });
@@ -436,7 +436,7 @@ class BasicData extends React.Component {
                         </div>
                         <div className="basic-info-btns">
                             <span
-                                className={classNames('iconfont icon-detail-list', {'btn-active': this.state.showDetailFlag})}
+                                className={classNames('iconfont icon-detail-list handle-btn-item', {'btn-active': this.state.showDetailFlag})}
                                 title={this.state.showDetailFlag ? Intl.get('crm.basic.detail.hide', '收起详情') :
                                     Intl.get('crm.basic.detail.show', '展开详情')}
                                 onClick={this.toggleBasicDetail}/>

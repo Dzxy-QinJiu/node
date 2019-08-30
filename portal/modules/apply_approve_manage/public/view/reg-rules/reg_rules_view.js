@@ -298,7 +298,7 @@ class RegRulesView extends React.Component {
                 })}
                 <div className="item-node">
                     <div className="icon-container add-node" onClick={this.addApplyNode.bind(this, flowType)}>
-                        <i className="iconfont icon-add"></i>
+                        <i className="iconfont icon-add handle-btn-item"></i>
                     </div>
                 </div>
             </div>
@@ -614,7 +614,7 @@ class RegRulesView extends React.Component {
                                                 onClick={this.handleCancelDeleteItem}>{Intl.get('common.cancel', '取消')}</Button>
                                         </span> : <span className="iconfont-wrap"> <i className="iconfont icon-update"
                                             onClick={this.handleUpdateConditionItem.bind(this, key)}></i>
-                                        <i className="iconfont icon-delete"
+                                        <i className="iconfont icon-delete handle-btn-item"
                                             onClick={this.handleDeleteConditionItem.bind(this, key)}></i></span>}
 
                                     </span>
@@ -642,7 +642,7 @@ class RegRulesView extends React.Component {
                                         <div className="rule-content apply-node-lists">
                                             <div className="icon-container add-node"
                                                 onClick={this.addApplyNode.bind(this, key)}>
-                                                <i className="iconfont icon-add"></i>
+                                                <i className="iconfont icon-add handle-btn-item"></i>
                                             </div>
                                         </div>
                                     }

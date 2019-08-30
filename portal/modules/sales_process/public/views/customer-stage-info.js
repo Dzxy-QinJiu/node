@@ -156,32 +156,37 @@ class CustomerStageInfo extends React.Component {
                             </div>
                         ) :
                         (
-                            this.props.saleProcessType === 'custom' ? (
-                                <div className="customer-stage-btn-div operation-btn">
-                                    <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
-                                        <Button
-                                            className="customer-stage-btn-class icon-delete iconfont"
-                                            onClick={this.showCustomerStageModalDialog.bind(this, customerStage)}
-                                            data-tracename="删除客户阶段"
-                                        >
-                                        </Button>
-                                    </PrivilegeChecker>
-                                    {
-                                        /*** 先注释到客户阶段的设置功能
-                                         * <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
-                                         <Button
-                                         className="customer-stage-btn-class icon-role-auth-config iconfont"
-                                         onClick={this.showCustomerStageDetail.bind(this, customerStage)}
-                                         data-tracename="设置客户阶段"
-                                         >
-                                         </Button>
-                                         </PrivilegeChecker>
-                                         * */
-                                    }
+                            <div className="customer-stage-btn-div operation-btn">
+                                <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
+                                    <Button
+                                        className="customer-stage-btn-class icon-delete iconfont handle-btn-item"
+                                        onClick={this.showCustomerStageModalDialog.bind(this, customerStage)}
+                                        data-tracename="删除客户阶段"
+                                    >
+                                    </Button>
+                                </PrivilegeChecker>
+                                <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                    <Button
+                                        className="customer-stage-btn-class icon-update iconfont"
+                                        onClick={this.showCustomerStageForm.bind(this, customerStage)}
+                                        data-tracename="编辑客户阶段"
+                                    >
+                                    </Button>
+                                </PrivilegeChecker>
+                                {
+                                    /*** 先注释到客户阶段的设置功能
+                                     * <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                             <Button
+                                             className="customer-stage-btn-class icon-role-auth-config iconfont"
+                                             onClick={this.showCustomerStageDetail.bind(this, customerStage)}
+                                             data-tracename="设置客户阶段"
+                                             >
+                                             </Button>
+                                      </PrivilegeChecker>
+                                     * */
+                                }
 
-                                </div>
-                            ) : null
-
+                            </div>
                         )
                 }
                 {/*{*/}

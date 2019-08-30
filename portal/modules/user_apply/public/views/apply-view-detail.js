@@ -605,7 +605,7 @@ const ApplyViewDetail = createReactClass({
                                         {tags}
                                     </span>
                                     : null}
-                                <span className="iconfont icon-arrow-right"/>
+                                <span className="iconfont icon-arrow-right handle-btn-item"/>
                             </a>
                         </div>
                         {detailInfo.last_contact_time ? (

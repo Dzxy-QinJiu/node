@@ -361,7 +361,7 @@ class BasicOverview extends React.Component {
                     <span className="expire-tip-content">
                         {Intl.get('crm.overview.expire.tip', '有应用{days}试用到期', {days: expireTrialUsers[0].overDraftTimeStr})}
                     </span>
-                    <span className="iconfont icon-arrow-right" onClick={this.turnToUserList}
+                    <span className="iconfont icon-arrow-right handle-btn-item" onClick={this.turnToUserList}
                         title={Intl.get('call.record.show.customer.detail', '查看详情')}/>
                 </div>);
             return (<DetailCard content={tip} className="expire-tip-contianer"/>);

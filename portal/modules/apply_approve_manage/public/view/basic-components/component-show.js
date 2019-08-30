@@ -83,7 +83,7 @@ class componentShow extends React.Component {
                                 <i className="iconfont icon-update"
                                     onClick={this.handleEditItem.bind(this, formItem)}></i>
                                 <i className="iconfont icon-transfer"></i>
-                                <i className="iconfont icon-delete"
+                                <i className="iconfont icon-delete handle-btn-item"
                                     onClick={this.handleRemoveItem.bind(this, formItem)}></i>
                             </span>}
 

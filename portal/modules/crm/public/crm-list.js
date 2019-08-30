@@ -1134,7 +1134,7 @@ class Crm extends React.Component {
                     userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
                         <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}
                             title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>
-                            <Button className='btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
+                            <Button className='btn-item handle-btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
                                 {Intl.get('crm.customer.release', '释放')}
                             </Button>
                         </Popconfirm>
@@ -1179,7 +1179,7 @@ class Crm extends React.Component {
                             title={isWebMini ? Intl.get('crm.customer.recycle.bin', '回收站') : ''}
                             onClick={this.props.showCustomerRecycleBin}
                         >
-                            {isWebMini ? <i className="iconfont icon-delete"/> :
+                            {isWebMini ? <i className="iconfont icon-delete handle-btn-item"/> :
                                 <Button>{Intl.get('crm.customer.recycle.bin', '回收站')}</Button>}
                         </div>) : null
                 }
@@ -1852,7 +1852,7 @@ class Crm extends React.Component {
                         <span>
                             <span className="cus-op" data-tracename="删除客户">
                                 {isDeleteBtnShow ? (
-                                    <Button className="order-btn-class delete-btn" icon="delete"
+                                    <Button className="order-btn-class delete-btn handle-btn-item" icon="delete"
                                         onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get('common.delete', '删除')} />
                                 ) : null}
@@ -1862,7 +1862,7 @@ class Crm extends React.Component {
                                     title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确认释放吗？')}>
                                     <a className='release-customer'
                                         title={Intl.get('crm.customer.release', '释放')}>
-                                        <i className="iconfont icon-release"/>
+                                        <i className="iconfont icon-release handle-btn-item"/>
                                     </a>
                                 </Popconfirm>)
                             }

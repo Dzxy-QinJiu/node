@@ -333,7 +333,7 @@ class SalesProcess extends React.Component {
                                             onClick={this.showCustomerStagePanel.bind(this, item)}
                                             data-tracename={'点击设置' + item.name + '销售流程按钮'}
                                         >
-                                            <i className="iconfont icon-role-auth-config"></i>
+                                            <i className="iconfont icon-role-auth-config handle-btn-item"></i>
                                         </span>
                                         {
                                             hasPrivilege('CRM_DELETE_SALES_PROCESS') && item.type === 'custom' ? (
@@ -342,7 +342,7 @@ class SalesProcess extends React.Component {
                                                     onClick={this.handleDeleteSaleProcess.bind(this, item)}
                                                     data-tracename={'点击删除' + item.name + '销售流程按钮'}
                                                 >
-                                                    <i className="iconfont icon-delete"></i>
+                                                    <i className="iconfont icon-delete handle-btn-item"></i>
                                                 </span>
                                             ) : null
                                         }

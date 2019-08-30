@@ -347,7 +347,7 @@ class ClueRightPanel extends React.Component {
                             </div>
                             {hasPrivilege('CLUECUSTOMER_DELETE') && editCluePrivilege(curClue) ?
                                 <div className="remove-clue">
-                                    <i className="iconfont icon-delete"
+                                    <i className="iconfont icon-delete handle-btn-item"
                                         onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
                                 </div> : null}
                         </div>

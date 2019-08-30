@@ -505,7 +505,7 @@ class CustomerSuggest extends React.Component {
                     </div>);
             } else {
                 textBlock = (
-                    <span className="inline-block basic-info-text no-data-descr">
+                    <span className="inline-block basic-info-text no-data-descr handle-btn-item">
                         {this.props.hasEditPrivilege ? (
                             <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮">{this.props.addDataTip}</a>) : this.props.noDataTip}
 

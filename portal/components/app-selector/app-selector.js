@@ -338,7 +338,7 @@ class AppSelector extends React.Component {
                     {selectedApps}
                     {!this.props.readOnly && unchoosenApps && unchoosenApps.length ? (
                         <div className="application-img-div" ref="addBtn">
-                            <div className="icon-add iconfont"
+                            <div className="icon-add iconfont handle-btn-item"
                                 onClick={this.showDropDown}
                                 ref="addBtnButton"
                             ></div>

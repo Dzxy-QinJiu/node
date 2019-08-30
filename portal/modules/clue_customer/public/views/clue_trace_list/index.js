@@ -184,7 +184,7 @@ class ClueTraceList extends React.Component {
         //概览页添加跟进记录的按钮
         if (this.props.isOverViewPanel) {
             return (
-                <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
+                <span className="iconfont icon-add handle-btn-item" onClick={this.toggleAddRecordPanel.bind(this)}
                     title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
         } else {//跟进记录页，添加跟进记录的按钮
             return (
@@ -609,7 +609,7 @@ class ClueTraceList extends React.Component {
                             ) : null
                         }
                         {_.includes(PHONE_TYPES, item.type) ?
-                            (<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
+                            (<span className="phone-call-out-btn handle-btn-item" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
                                 <PhoneCallout
                                     phoneNumber={item.dst}
                                     hidePhoneNumber={true}
