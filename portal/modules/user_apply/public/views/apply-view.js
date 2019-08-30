@@ -162,68 +162,56 @@ class ApplyTabContent extends React.Component {
     };
 
     renderApplyListError = () => {
-        var error =this.state.applyListObj.loadingResult === 'error';
-        var noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 ;
-        var noDataSearch =  this.state.searchKeyword !== '';
-        var noUnread = this.state.isCheckUnreadApplyList;
+        let noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 ;
+        let tipMsg = '';
 
-        var retry = (
-            <span>
-                {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
-                    onClick={this.retryFetchApplyList}>{Intl.get("common.retry","重试")}</a>
-            </span>
-        );
-        var noDataMsg = (
-            <span>
-                {Intl.get("user.apply.no.match.retry","暂无符合查询条件的用户申请")}<span>,</span>
-                <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                    {Intl.get("common.get.again","重新获取")}
-                </a>
-            </span>
-        );
-        var noUnreadMsg = (
-            <span>
-                {Intl.get('user.apply.no.unread','已无未读回复的申请')}<span>,</span>
-                <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                    {Intl.get("common.get.again","重新获取")}
-                </a>
-            </span>
-        );
-        var noApply = (
-            <span>
-                {Intl.get('user.apply.no.apply','还没有用户审批')}<span>,</span>
-                <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                    {Intl.get("common.get.again","重新获取")}
-                </a>
-            </span>
-            
-        );
-
-        if(error){
+        if(this.state.applyListObj.loadingResult === 'error'){
+            let retry = (
+                <span>
+                    {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
+                        onClick={this.retryFetchApplyList}>{Intl.get("common.retry","重试")}</a>
+                </span>
+            );
             return (
                 <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
                    <Alert message={retry} type="error" showIcon={true}/>
                 </div>);  
         }else if(noData){
-            if(noDataSearch){
-                return(
-                    <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                        <Alert message={noDataMsg} type="info" showIcon={true}/>
-                    </div>
+            if(  this.state.searchKeyword !== ''){
+                let noDataMsg = (
+                    <span>
+                        {Intl.get("user.apply.no.match.retry","暂无符合查询条件的用户申请")}<span>,</span>
+                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                            {Intl.get("common.get.again","重新获取")}
+                        </a>
+                    </span>
                 );
-            }else if(noUnread){
-                return(
-                    <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                    <Alert message={noUnreadMsg} type="info" showIcon={true}/>
-                </div>
+                tipMsg = noDataMsg;
+            }else if(this.state.isCheckUnreadApplyList){
+                let noUnreadMsg = (
+                    <span>
+                        {Intl.get('user.apply.no.unread','已无未读回复的申请')}<span>,</span>
+                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                            {Intl.get("common.get.again","重新获取")}
+                        </a>
+                    </span>
                 );
+               tipMsg = noUnreadMsg;
             }else{
-                return(
-                    <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                    <Alert message={noApply} type="info" showIcon={true}/>
-                </div>
+                let noApply = (
+                    <span>
+                        {Intl.get('user.apply.no.apply','还没有用户审批')}<span>,</span>
+                        <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
+                            {Intl.get("common.get.again","重新获取")}
+                        </a>
+                    </span>
+                    
                 );
+                tipMsg = noApply;
             }
+            return  <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
+                        <Alert message={tipMsg} type="info" showIcon={true}/>
+                    </div>;
         }
     };
 
