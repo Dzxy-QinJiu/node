@@ -30,6 +30,10 @@ class CustomerPoolRuleForm extends React.Component{
         formData: this.getIntialState(), // 规则信息
     };
 
+    componentDidMount() {
+        this.getAllCustomerStageList();
+    }
+
     getIntialState() {
         let team_range = _.cloneDeep(this.props.curCustomerRule.team_range) || [_.cloneDeep(DEFAULT_SOURCE_MAPS)];
         team_range = _.map(team_range, (range,index) => {
@@ -42,6 +46,16 @@ class CustomerPoolRuleForm extends React.Component{
             team_range
         };
     }
+
+    getAllCustomerStageList = () => {
+        _.each(this.state.formData.team_range, (range, index) => {
+            // 没有customerStageList，team_id有值时，以及没有在请求客户阶段时
+            let isCanReq = !range.customerStageList && range.team_id && !range.isLoading;
+            if(isCanReq) {
+                this.getCustomerStageList(index, range.team_id);
+            }
+        });
+    };
 
     getCustomerStageList = (index, teamId) => {
         let formData = this.state.formData;
@@ -115,6 +129,7 @@ class CustomerPoolRuleForm extends React.Component{
     };
 
     handleEdit = () => {
+        this.getAllCustomerStageList();
         this.props.handleEdit();
     };
 
@@ -234,14 +249,6 @@ class CustomerPoolRuleForm extends React.Component{
 
         const rangeCls = classNames('customer-source-item', {
             'has-range-more': teamRangeLength > 1
-        });
-
-        _.each(formData.team_range, (range, index) => {
-            // 没有customerStageList，team_id有值时，以及没有在请求客户阶段时
-            let isCanReq = !range.customerStageList && range.team_id && !range.isLoading;
-            if(isCanReq) {
-                this.getCustomerStageList(index, range.team_id);
-            }
         });
 
         return (
