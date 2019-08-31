@@ -26,6 +26,7 @@ import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-v
 import LeaveApplyDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail';
 import DocumentApplyDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
 import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
+import VisitApplyDetail from 'MOD_DIR/self_setting/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
@@ -485,6 +486,7 @@ class MyWorkColumn extends React.Component {
 
     getApplyType(type) {
         const APPLY_TYPE_MAP = {
+            'visitapply': Intl.get('apply.my.self.setting.work.flow', '拜访申请'),
             'business_opportunities': Intl.get('leave.apply.sales.oppotunity', '机会申请'),
             'customer_visit': Intl.get('leave.apply.add.leave.apply', '出差申请'),
             'personal_leave': Intl.get('leave.apply.leave.application', '请假申请'),
@@ -1073,6 +1075,15 @@ class MyWorkColumn extends React.Component {
                 topic: this.getApplyType(_.get(work, 'apply.apply_type', ''))
             };
             switch (_.get(work, 'apply.apply_type')) {
+                case APPLY_APPROVE_TYPES.VISIT_APPLY: //拜访申请
+                    detailContent = (
+                        <VisitApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishApplyWork}
+                        />);
+                    break;
                 case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会申请
                     detailContent = (
                         <OpportunityApplyDetail
