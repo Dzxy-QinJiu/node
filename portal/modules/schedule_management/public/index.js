@@ -293,8 +293,7 @@ class ScheduleManagement extends React.Component {
     };
 
     // 处理待办项的关闭事件
-    handleCancel = (e) => {
-        e && e.preventDefault();
+    handleCancel = () => {
         this.setState({
             isShowAddToDo: false,
             topicValue: 'customer'
