@@ -26,6 +26,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {clueNameContactRule, customerNameRegex} from 'PUB_DIR/sources/utils/validate-util';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import {renderCustomerNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
 const ADD_TITLE_HEIGHT = 70 + 24;//添加客户标题的高度+下边距marginBottom
 var CRMAddForm = createReactClass({
     displayName: 'CRMAddForm',
@@ -283,7 +284,7 @@ var CRMAddForm = createReactClass({
                         this.setState({customerNameExist: false, checkNameError: false, existCustomerList: []});
                     } else {
                         //已存在
-                        this.setState({customerNameExist: true, checkNameError: false, existCustomerList: data.list});
+                        this.setState({customerNameExist: true, checkNameError: false, existCustomerList: _.get(data, 'list', [])});
                     }
                 }
             });
@@ -293,59 +294,6 @@ var CRMAddForm = createReactClass({
             this.autofillGeoInfo(customerName);
         } else {
             this.setState({customerNameExist: false, checkNameError: false, existCustomerList: []});
-        }
-    },
-
-    //客户名唯一性验证的提示信息
-    renderCustomerNameMsg: function() {
-        if (this.state.customerNameExist) {
-            let name = this.state.formData.name;
-            const list = _.clone(this.state.existCustomerList);
-            const index = _.findIndex(list, item => item.name === name);
-            const existSame = index > -1;
-            let customer;
-            if (existSame) customer = list.splice(index, 1)[0];
-            else customer = list.shift();
-
-            const curUserId = userData.getUserData().user_id;
-
-            return (
-                <div className="tip-customer-exist">
-                    {Intl.get('call.record.customer', '客户')} {existSame ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，
-
-                    {customer.user_id === curUserId ? (
-                        <a href="javascript:void(0)"
-                            onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
-                    ) : (
-                        <span>{customer.name} ({customer.user_name})</span>
-                    )}
-
-                    {list.length ? (
-                        <div>
-                            {Intl.get('crm.68', '相似的客户还有')}:
-                            {list.map(customer => {
-                                return (
-                                    <div key={customer.user_id}>
-                                        {customer.user_id === curUserId ? (
-                                            <div><a href="javascript:void(0)"
-                                                onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
-                                            </div>
-                                        ) : (
-                                            <div>{customer.name} ({customer.user_name})</div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : null}
-                </div>
-            );
-        } else if (this.state.checkNameError) {
-            return (
-                <div className="check-only-error"><ReactIntl.FormattedMessage id="crm.69" defaultMessage="客户名唯一性校验出错"/>！
-                </div>);
-        } else {
-            return '';
         }
     },
 
@@ -463,7 +411,7 @@ var CRMAddForm = createReactClass({
                             />
                         </Validator>
                     </FormItem>
-                    {this.renderCustomerNameMsg()}
+                    {renderCustomerNameMsg(this.state.customerNameExist, this.state.existCustomerList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
                     <FormItem
                         {...formItemLayout}
                         label={Intl.get('common.industry', '行业')}
