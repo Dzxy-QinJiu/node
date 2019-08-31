@@ -107,6 +107,8 @@ class phoneStatusTop extends React.Component {
 
     handleEditContent = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-update'), '点击编辑跟进记录按钮');
+        //提示父组件此时跟进为编辑状态
+        this.props.setTraceEditStatus('edit');
         phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ''});
         this.setState({
             showCancelBtn: true,
@@ -131,6 +133,7 @@ class phoneStatusTop extends React.Component {
     handleTraceCancel = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.trace-content-container'), '取消保存跟进记录');
         phoneAlertAction.setEditStatus({isEdittingTrace: false, submittingTraceMsg: ''});
+        this.props.setTraceEditStatus('text');
         this.setState({
             showCancelBtn: false
         });
@@ -166,6 +169,8 @@ class phoneStatusTop extends React.Component {
                 isConnected: false,
                 showCancelBtn: false,
             });
+            //回调给父组件提示父组件此时跟进已经变为展示状态
+            this.props.setTraceEditStatus('text');
             //写了跟进记录后，对应的首页我的工作完成
             if (window.location.pathname === '/home') {
                 myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
@@ -552,5 +557,6 @@ phoneStatusTop.propTypes = {
     showMarkClueInvalid: PropTypes.func,
     curClue: PropTypes.object,
     closeAddPlan: PropTypes.func,
+    setTraceEditStatus: PropTypes.func //添加跟进内容回调，获取编辑状态 'edit' 'text'
 };
 export default phoneStatusTop;

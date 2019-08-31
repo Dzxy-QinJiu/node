@@ -191,6 +191,7 @@ class DynamicAddDelCustomers extends React.Component {
         this.props.handleCustomersChange(customers);
     };
     onVisitBeginTimeChange = (key, startValue) => {
+        const {form} = this.props;
         let customers = this.state.customers;
         _.each(customers, (item, index) => {
             if (item.key === key) {
@@ -205,6 +206,7 @@ class DynamicAddDelCustomers extends React.Component {
                 //如果之前选中的上午还是下午的类型（visit_start_type），不在时间类型的下拉选项（start_type_select）中，自动设置visit_end_type为end_type_select里第一个
                 if (!_.some(item.start_type_select,typeItem => typeItem.value === item.visit_start_type) && _.get(item.start_type_select,'[0]')){
                     item.visit_start_type = _.get(item.start_type_select,'[0].value');
+                    form.setFieldsValue({[`customers[${key}].visit_start_type`]: item.visit_start_type});
                 }
                 return false;
             }
@@ -231,6 +233,7 @@ class DynamicAddDelCustomers extends React.Component {
                 //如果之前选中的上午还是下午的类型（visit_end_type），不在时间类型的下拉选项（end_type_select）中，自动设置visit_end_type为end_type_select里第一个
                 if (!_.some(item.end_type_select,typeItem => typeItem.value === item.visit_end_type) && _.get(item.end_type_select,'[0]')){
                     item.visit_end_type = _.get(item.end_type_select,'[0].value');
+                    form.setFieldsValue({[`customers[${key}].visit_end_type`]: item.visit_end_type});
                 }
                 return false;
             }
@@ -267,11 +270,16 @@ class DynamicAddDelCustomers extends React.Component {
         });
     };
     handleChangeStartType = (key, value) => {
+        const {form} = this.props;
         let customers = this.state.customers;
         _.each(customers, (item, index) => {
             if (item.key === key) {
                 item.visit_start_type = value || '';
                 item.end_type_select = this.calculateEndSelectType(item);
+                if (!_.some(item.end_type_select,typeItem => typeItem.value === item.visit_end_type) && _.get(item.end_type_select,'[0]')){
+                    item.visit_end_type = _.get(item.end_type_select,'[0].value');
+                    form.setFieldsValue({[`customers[${key}].visit_end_type`]: item.visit_end_type});
+                }
                 return false;
             }
         });
