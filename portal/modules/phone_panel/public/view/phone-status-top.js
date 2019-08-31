@@ -235,7 +235,7 @@ class phoneStatusTop extends React.Component {
                     </div>
                     <div className="modal-submit-tip">
                         {this.state.submittingTraceMsg ? (
-                            <AlertTimer time={3000}
+                            <AlertTimer time={3000000}
                                 message={this.state.submittingTraceMsg}
                                 type="error" showIcon
                                 onHide={onHide}
