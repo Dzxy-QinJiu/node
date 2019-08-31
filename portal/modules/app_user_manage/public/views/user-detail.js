@@ -433,7 +433,7 @@ class UserDetail extends React.Component {
                                         </div>
                                         <div className="basic-info-btns">
                                             {
-                                                !loading && hasEditPrivilege ? <span className="iconfont icon-edit-pw handle-btn-item " title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
+                                                !loading && hasEditPrivilege ? <span className="iconfont icon-edit-pw handle-btn-item" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
                                             }
                                             {
                                                 !loading ? this.renderUserStatus(userInfo.data, true) : null

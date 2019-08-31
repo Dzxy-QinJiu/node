@@ -245,34 +245,34 @@ class UserLoginAnalysis extends React.Component {
                                 </Tooltip>
                             </span>
                         </li>
-                        {!_.isEmpty(userBasicScore) && _.get(userBasicScore,'status') === 'enable' ?
-                            _.map(_.get(userBasicScore,'detail'), userBasic => {
-                                var targetObj = _.find(this.props.userIndicator, indicatorItem => indicatorItem.indicator === userBasic.indicator);
-                                if (_.get(targetObj,'desc')){
-                                    return <li>
-                                        <span>{_.get(targetObj,'desc')}:</span>
-                                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data,`${userBasic.indicator}`) || 0)}
-                                            <Tooltip trigger="click">
-                                                <Icon type="question-circle-o" />
-                                            </Tooltip>
-                                        </span>
-                                    </li>;
-                                }else{
-                                    return null;
-                                }
+                        {/*{!_.isEmpty(userBasicScore) && _.get(userBasicScore,'status') === 'enable' ?*/}
+                        {/*_.map(_.get(userBasicScore,'detail'), userBasic => {*/}
+                        {/*var targetObj = _.find(this.props.userIndicator, indicatorItem => indicatorItem.indicator === userBasic.indicator);*/}
+                        {/*if (_.get(targetObj,'desc')){*/}
+                        {/*return <li>*/}
+                        {/*<span>{_.get(targetObj,'desc')}:</span>*/}
+                        {/*<span className="login-stress">{this.transScoreInteger(_.get(loginScore.data,`${userBasic.indicator}`) || 0)}*/}
+                        {/*<Tooltip trigger="click">*/}
+                        {/*<Icon type="question-circle-o" />*/}
+                        {/*</Tooltip>*/}
+                        {/*</span>*/}
+                        {/*</li>;*/}
+                        {/*}else{*/}
+                        {/*return null;*/}
+                        {/*}*/}
 
-                            })
-                            : null}
-                        {!_.isEmpty(userEngagementScore) && _.get(userBasicScore,'status') === 'enable' ?
-                            <li>
-                                <span>{Intl.get('user.score.particate.in.score', '参与度评分')}:</span>
-                                <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'user_engagement_score') || 0)}
-                                    <Tooltip trigger="click">
-                                        <Icon type="question-circle-o" />
-                                    </Tooltip>
-                                </span>
-                            </li>
-                            : null}
+                        {/*})*/}
+                        {/*: null}*/}
+                        {/*{!_.isEmpty(userEngagementScore) && _.get(userBasicScore,'status') === 'enable' ?*/}
+                        {/*<li>*/}
+                        {/*<span>{Intl.get('user.score.particate.in.score', '参与度评分')}:</span>*/}
+                        {/*<span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'user_engagement_score') || 0)}*/}
+                        {/*<Tooltip trigger="click">*/}
+                        {/*<Icon type="question-circle-o" />*/}
+                        {/*</Tooltip>*/}
+                        {/*</span>*/}
+                        {/*</li>*/}
+                        {/*: null}*/}
                     </ul>
                 </div>
             );
@@ -660,8 +660,8 @@ class UserLoginAnalysis extends React.Component {
                                         <span className="btn-bar">
                                             {
                                                 this.state.showDetailMap[app.app_id] ?
-                                                    <span className="iconfont icon-up-twoline" onClick={this.showAppDetail.bind(this, app, false)}></span> :
-                                                    <span className="iconfont icon-down-twoline" onClick={this.showAppDetail.bind(this, app, true)}></span>
+                                                    <span className="iconfont icon-up-twoline handle-btn-item" onClick={this.showAppDetail.bind(this, app, false)}></span> :
+                                                    <span className="iconfont icon-down-twoline handle-btn-item" onClick={this.showAppDetail.bind(this, app, true)}></span>
                                             }
                                         </span>
                                     </div>

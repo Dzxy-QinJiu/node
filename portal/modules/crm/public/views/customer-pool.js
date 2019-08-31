@@ -558,30 +558,11 @@ class CustomerPool extends React.Component {
                     </div>
                     <RightPanelClose onClick={this.returnCustomerList}/>
                     {this.renderBatchExtractBtn(selectCustomerLength)}
-                    {/*{userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) || !selectCustomerLength ? null :*/}
-                    {/*userData.getUserData().isCommonSales ? (*/}
-                    {/*<Popconfirm*/}
-                    {/*title={Intl.get('crm.pool.batch.extract.tip', '您确定要提取选中的客吗？')}*/}
-                    {/*onConfirm={this.batchExtractCustomer}*/}
-                    {/*>*/}
-                    {/*{batchExtractBtn}*/}
-                    {/*</Popconfirm>*/}
-                    {/*) : (<AntcDropdown*/}
-                    {/*content={batchExtractBtn}*/}
-                    {/*overlayTitle={Intl.get('crm.pool.extract.distribute', '提取并分配负责人')}*/}
-                    {/*okTitle={Intl.get('common.confirm', '确认')}*/}
-                    {/*cancelTitle={Intl.get('common.cancel', '取消')}*/}
-                    {/*isSaving={this.state.isExtracting}*/}
-                    {/*overlayContent={this.renderSalesBlock()}*/}
-                    {/*handleSubmit={this.batchExtractCustomer}*/}
-                    {/*unSelectDataTip={this.state.unSelectDataTip}*/}
-                    {/*clearSelectData={this.clearSelectSales}*/}
-                    {/*btnAtTop={false}/>)}*/}
-                    {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
-                        <Button
-                            className="btn-item extract-btn"
-                            onClick={this.showRuleRightPanel}>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>
-                    ) : null}
+                    {/*{userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (*/}
+                    {/*<Button*/}
+                    {/*className="btn-item extract-btn"*/}
+                    {/*onClick={this.showRuleRightPanel}>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>*/}
+                    {/*) : null}*/}
                 </TopNav>
                 <div className="customer-table-container customer-pool-table"
                     style={{height: tableWrapHeight}}>

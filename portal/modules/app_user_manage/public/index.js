@@ -106,7 +106,7 @@ class AppUserManage extends React.Component {
         this.prevRoutePath = currentView;
 
         //获取配置过的用户评分规则
-        this.getUserScoreConfig();
+        // this.getUserScoreConfig();
 
     }
     getUserScoreConfig = () => {
