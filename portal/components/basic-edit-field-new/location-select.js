@@ -157,9 +157,9 @@ class LocationSelectField extends React.Component {
             } else {
                 return (
                     <div className="basic-location-field basic-edit-field">
-                        <span className="inline-block basic-info-text no-data-descr handle-btn-item">
+                        <span className="inline-block basic-info-text no-data-descr">
                             {this.props.hasEditPrivilege ? (
-                                <a onClick={this.changeDisplayType.bind(this, 'edit')}>{this.props.addDataTip}</a>) : this.props.noDataTip}
+                                <a onClick={this.changeDisplayType.bind(this, 'edit')} className="handle-btn-item">{this.props.addDataTip}</a>) : <span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
 
                         </span>
                     </div>
