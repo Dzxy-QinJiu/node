@@ -16,9 +16,10 @@ class UserScoreActions {
         );
     }
 
-    getUserScoreIndicator() {
+    getUserScoreIndicator(callback) {
         userScoreAjax.getUserScoreIndicator().then((result) => {
             this.dispatch({resData: result});
+            _.isFunction(callback) && callback(result);
         }, (errorMsg) => {
 
         });
