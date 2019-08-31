@@ -797,7 +797,7 @@ class AppUserManage extends React.Component {
                         return (
                             <span className="cus-op">
                                 {isDeleteBtnShow ? (
-                                    <i className="order-btn-class iconfont icon-delete "
+                                    <i className="order-btn-class iconfont icon-delete handle-btn-item "
                                         onClick={this.deleteImportUser.bind(this, idx)}
                                         data-tracename="删除导入的用户数据"
                                         title={Intl.get('common.delete', '删除')}/>
