@@ -309,7 +309,7 @@ class OPLATE_USER_ANALYSIS extends React.Component {
                 },
                 generateCsvData: function(data) {
                     let csvData = [];
-                    let thead = [Intl.get('common.app.name', '应用名称')];
+                    let thead = [Intl.get('common.product.name','产品名称')];
                     let subData = data[0] && data[0].data;
                     if (!subData) return [];
 

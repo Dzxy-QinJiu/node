@@ -341,7 +341,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get('common.app.name', '应用名称'),
+                title: Intl.get('common.product.name','产品名称'),
                 dataIndex: 'apps',
                 key: 'appName',
                 width: null,

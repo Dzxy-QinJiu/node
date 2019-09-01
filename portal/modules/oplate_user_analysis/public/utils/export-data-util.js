@@ -51,7 +51,7 @@ export function handleUserStatis(userAnalysisData) {
             let titleNameArray = titleArray.map( (time) => {
                 return moment(+time).format(oplateConsts.DATE_FORMAT);
             });
-            titleNameArray.unshift(Intl.get('common.app.name', '应用名称'));  
+            titleNameArray.unshift(Intl.get('common.product.name','产品名称'));  
             exportData.push(titleNameArray);
             let countArray = [];
             _.each( userAnalysisData, (userData) => {
