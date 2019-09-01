@@ -399,7 +399,7 @@ class BasicData extends React.Component {
         var basicData = this.state.basicData ? this.state.basicData : {};
         //是否是关注客户的标识
         let interestFlag = _.isArray(basicData.interest_member_ids) && _.indexOf(basicData.interest_member_ids, crmUtil.getMyUserId()) > -1;
-        const interestClass = classNames('iconfont','handle-btn-item', {
+        const interestClass = classNames('iconfont', {
             'icon-interested': interestFlag,
             'icon-uninterested': !interestFlag
         });

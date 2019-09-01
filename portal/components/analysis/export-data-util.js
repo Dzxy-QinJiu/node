@@ -183,7 +183,7 @@ export function handleUserStatis(userAnalysisData) {
             let titleNameArray = titleArray.map( (time) => {
                 return moment(+time).format(oplateConsts.DATE_FORMAT);
             });
-            titleNameArray.unshift(Intl.get('common.app.name', '应用名称'));
+            titleNameArray.unshift(Intl.get('common.product.name','产品名称'));
             exportData.push(titleNameArray);
             let countArray = [];
             _.each( userAnalysisData, (userData) => {
@@ -439,7 +439,7 @@ export function handleMultiLineActivelyData(processData) {
         titleNameArray.forEach( (time, index) => {
             if (index === 0) {
                 exportTimeArray.push('', time, '', '');
-                activeTypeArray.push(Intl.get('common.app.name', '应用名称'),Intl.get('operation.report.active.num', '活跃数'),
+                activeTypeArray.push(Intl.get('common.product.name','产品名称'),Intl.get('operation.report.active.num', '活跃数'),
                     Intl.get('operation.report.total.num', '总数'), Intl.get('operation.report.active', '活跃率'));
             } else {
                 exportTimeArray.push(time, '', '');

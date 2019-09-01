@@ -196,7 +196,6 @@ var zh_CN = {
     'common.belong.customer': '所属客户',
     'common.belong.sales': '所属销售',
     'common.belong.team': '所属团队',
-    'common.app.name': '应用名称',
     'common.type': '类型',
     'common.official': '签约',
     'common.trial': '试用',

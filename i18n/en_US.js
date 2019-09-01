@@ -189,7 +189,6 @@ var en_US = {
     'common.belong.customer': 'Customers',//所属客户
     'common.belong.sales': 'Sales',//所属销售
     'common.belong.team': 'Team',//所属团队
-    'common.app.name': 'Application',//应用名称
     'common.type': 'Type',//类型
     'common.official': 'Signed',//签约
     'common.trial': 'Trial',//试用
