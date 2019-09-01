@@ -92,7 +92,7 @@ class BasicOverview extends React.Component {
             this.getRecommendTags();
             this.getCompetitorList();
             this.getIntegrateConfig();
-            // this.getCustomerStageByTeamId(teamId); // 获取客户阶段
+            this.getCustomerStageByTeamId(teamId); // 获取客户阶段
             if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                 setTimeout(() => {
                     this.getCrmUserList(this.props.curCustomer);
@@ -532,15 +532,15 @@ class BasicOverview extends React.Component {
                     {!this.props.disableEdit ? (
                         hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
-                    {/*<CustomerStageCard*/}
-                    {/*isMerge={this.props.isMerge}*/}
-                    {/*updateMergeCustomer={this.props.updateMergeCustomer}*/}
-                    {/*disableEdit={this.props.disableEdit}*/}
-                    {/*customerStageList={this.state.customerStageList}*/}
-                    {/*currentStage={basicData.customer_label}*/}
-                    {/*basicData={basicData}*/}
-                    {/*editBasicSuccess={this.editBasicSuccess}*/}
-                    {/*/>*/}
+                    <CustomerStageCard
+                        isMerge={this.props.isMerge}
+                        updateMergeCustomer={this.props.updateMergeCustomer}
+                        disableEdit={this.props.disableEdit}
+                        customerStageList={this.state.customerStageList}
+                        currentStage={basicData.customer_label}
+                        basicData={basicData}
+                        editBasicSuccess={this.editBasicSuccess}
+                    />
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}
