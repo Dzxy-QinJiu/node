@@ -71,7 +71,6 @@
           .customer-stage-zone {
             margin: 0 24px 16px 24px;
             .customer-stage-block {
-              cursor: pointer;
               margin-bottom: 16px;
               height: 132px;
               border: 1px solid #E5E5E5;
@@ -153,8 +152,25 @@
                       font-size: 14px;
                       color: @sub-content-font-color;
                     }
+                    .item-delete-buttons {
+                      font-size: 14px;
+                      .item-delete-confirm {
+                        background-color: @confirm-delete-background;
+                        color: @tag-font-color;
+                        margin-right: 12px;
+                      }
+                      .item-delete-cancel {
+                        color: @label-color;
+                      }
+                    }
                   }
                 }
+              }
+            }
+            // 自定义客户阶段客户编辑，设置鼠标为手型
+            .custom-customer-stage-block {
+              &:hover {
+                cursor: pointer;
               }
             }
           }

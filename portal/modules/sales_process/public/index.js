@@ -17,6 +17,8 @@ import CONSTS from 'LIB_DIR/consts';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {AntcTable} from 'antc';
 import StageSelectTeamUser from './views/stage-select-team-user';
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
+import classNames from 'classnames';
 
 const saleId = CONSTS.ROLE_ID_CONSTANS.SALE_ID;
 const pageSize = 1000;
@@ -27,6 +29,8 @@ class SalesProcess extends React.Component {
         this.state = {
             addProcessLoading: false, // 添加流程的loading
             addProcessResult: '', // 添加流程是否成功，成功：success， 失败：error
+            deleteCustomerStageId: '', // 删除客户阶段的id，默认是空
+            isDeletingLoading: false, // 删除的loading
             ...SalesProcessStore.getState(),
         };
     }
@@ -163,19 +167,23 @@ class SalesProcess extends React.Component {
 
     // 显示客户阶段面板
     showCustomerStagePanel = (item) => {
-        if (item.id === '') { // 显示添加界面的处理
-            let submitObj = {
-                name: _.trim(item.name),
-                status: '1', // 默认是启用的状态
-            };
-            SalesProcessAjax.addSalesProcess(submitObj).then( (result) => {
-                if (result && result.id) { // 添加成功
-                    SalesProcessAction.showCustomerStagePanel(result);
-                    SalesProcessAction.upDateSalesProcessList(result);
-                }
-            });
+        if (item.type === 'default') { // 默认客户阶段，不能编辑
+            return;
         } else {
-            SalesProcessAction.showCustomerStagePanel(item);
+            if (item.id === '') { // 显示添加界面的处理
+                let submitObj = {
+                    name: _.trim(item.name),
+                    status: '1', // 默认是启用的状态
+                };
+                SalesProcessAjax.addSalesProcess(submitObj).then( (result) => {
+                    if (result && result.id) { // 添加成功
+                        SalesProcessAction.showCustomerStagePanel(result);
+                        SalesProcessAction.upDateSalesProcessList(result);
+                    }
+                });
+            } else {
+                SalesProcessAction.showCustomerStagePanel(item);
+            }
         }
     };
 
@@ -478,6 +486,44 @@ class SalesProcess extends React.Component {
             </div>
         );
     };
+    
+    // 删除客户阶段
+    handleDeleteCustomerStage = (item, event) => {
+        event.stopPropagation();
+        this.setState({
+            deleteCustomerStageId: item.id
+        });
+    };
+
+    // 确定删除客户阶段
+    handleConfirmDeleteCustomerStage = (item, event) => {
+        event.stopPropagation();
+        const id = item.id;
+        this.setState({
+            isDeletingLoading: true
+        });
+        SalesProcessAjax.deleteSalesProcess(id).then((result) => {
+            this.setState({
+                isDeletingLoading: false
+            });
+            if (result === true) { // 删除成功
+                item.flag = 'delete'; // 增加一个删除标志，可以合和添加流程，更新列表区分开
+                SalesProcessAction.upDateSalesProcessList(item);
+                message.success(Intl.get('crm.138', '删除成功！'));
+            } else {
+                message.error(Intl.get('crm.139', '删除失败！'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.139', '删除失败！'));
+        });
+    };
+    // 取消删除客户阶段
+    cancelDeleteCustomerStage = (item, event) => {
+        event.stopPropagation();
+        this.setState({
+            deleteCustomerStageId: ''
+        });
+    };
 
     renderCustomerStageBlock = () => {
         const salesProcessList = this.state.salesProcessList;
@@ -490,8 +536,10 @@ class SalesProcess extends React.Component {
                         let teams = _.map(item.teams, 'name');
                         let users = _.map(item.users, 'name');
                         let scope = _.concat(teams, users);
+                        const cls = classNames('customer-stage-block',
+                            {'custom-customer-stage-block': item.type === 'custom'});
                         return (
-                            <div className="customer-stage-block"
+                            <div className={cls}
                                 key={item.id}
                                 onClick={this.showCustomerStagePanel.bind(this, item)}
                             >
@@ -500,13 +548,35 @@ class SalesProcess extends React.Component {
                                     <span className="stage-delete-operator">
                                         {
                                             hasPrivilege('CRM_DELETE_SALES_PROCESS') && item.type === 'custom' ? (
-                                                <span
-                                                    title={Intl.get('customer.stage.delete.stage', '删除客户阶段')}
-                                                    onClick={this.handleDeleteSaleProcess.bind(this, item)}
-                                                    data-tracename={'点击删除' + item.name + '客户阶段按钮'}
-                                                >
-                                                    <i className="iconfont icon-delete handle-btn-item"></i>
-                                                </span>
+                                                item.id === this.state.deleteCustomerStageId ? (
+                                                    <span className="item-delete-buttons">
+                                                        <Button
+                                                            className="item-delete-confirm"
+                                                            disabled={this.state.isDeletingLoading}
+                                                            onClick={this.handleConfirmDeleteCustomerStage.bind(this, item)}
+                                                        >
+                                                            {
+                                                                this.state.isDeletingLoading ? <Icon type="loading"/> : null
+                                                            }
+                                                            {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                                        </Button>
+                                                        <Button
+                                                            className="item-delete-cancel"
+                                                            onClick={this.cancelDeleteCustomerStage.bind(this, item)}
+                                                        >
+                                                            {Intl.get('common.cancel', '取消')}
+                                                        </Button>
+                                                    </span>
+                                                ) : (
+                                                    <span
+                                                        title={Intl.get('customer.stage.delete.stage', '删除客户阶段')}
+                                                        onClick={this.handleDeleteCustomerStage.bind(this, item)}
+                                                        data-tracename={'点击删除' + item.name + '客户阶段按钮'}
+                                                    >
+                                                        <i className="iconfont icon-delete handle-btn-item"></i>
+                                                    </span>
+                                                )
+
                                             ) : (
                                                 <span className="stage-default-tips">
                                                     {Intl.get('customer.stage.default.stage.tips', '默认不可编辑')}
@@ -592,9 +662,11 @@ class SalesProcess extends React.Component {
                     <div className="sale-process-top-nav">
                         {this.renderTopNavOperation()}
                     </div>
-                    <div className="sales-process-content" style={{height: containerHeight}}>
-                        {this.renderCustomerStageContent(containerHeight)}
-                    </div>
+                    <GeminiScrollBar style={{height: containerHeight}}>
+                        <div className="sales-process-content" style={{height: containerHeight}}>
+                            {this.renderCustomerStageContent(containerHeight)}
+                        </div>
+                    </GeminiScrollBar>
                     {
                         this.state.isShowSelectTeamUserPanel ? (
                             <StageSelectTeamUser
