@@ -70,7 +70,6 @@ var CrmAlertForm = createReactClass({
 
     getInitialFormData: function(props) {
         let formData = _.cloneDeep(props.currentSchedule);
-
         formData.topic = formData.topic || formData.customer_name || '';
         //代办类型的默认值
         formData.scheduleType = formData.scheduleType || 'calls';
