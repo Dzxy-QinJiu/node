@@ -3511,5 +3511,7 @@ var zh_CN = {
     'self.setting.has.no.apply': '暂无符合条件的申请',
     'failed.distribute.apply': '分配失败！',
     'apply.approve.required.err.msg': '请输入未填写时的提示',
+    // 线索分配策略
+    'clue.assignment.strategy.add': '添加分配策略'
 };
 export default zh_CN;

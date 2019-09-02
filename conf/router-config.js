@@ -302,6 +302,13 @@ let routers = [
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
             },
             {
+                id: 'CLUE_ASSIGNMENT',
+                name: 'menu.clue.allocation', //线索分配
+                routePath: '/background_management/clue_assignment',
+                component: `${MODULE_PATH}clue_assignment/public`,
+                // todo 权限
+            },
+            {
                 id: 'SALES_AUTO',
                 name: 'menu.sales.auto.manage.config',// 销售自动化
                 routePath: '/background_management/sales_auto',
