@@ -8,11 +8,6 @@
         background: #fff;
         min-height: 172px;
         position: relative;
-        &:hover{
-          .customer-score-lable .iconfont.icon-update{
-            visibility: visible;
-          }
-        }
         .customer-score-lable{
           color:#333;
           font-size: 16px;
@@ -21,6 +16,11 @@
             float: right;
             cursor: pointer;
             visibility: hidden;
+          }
+          &:hover{
+            .iconfont.icon-update{
+              visibility: visible;
+            }
           }
         }
         .slider-container {
@@ -152,11 +152,6 @@
         background: #fff;
         min-height: 160px;
         position:relative;
-        &:hover{
-          p.customer-rule-tip .icon-update{
-            visibility: visible;
-          }
-        }
         .customer-rule-tip{
           color: #333;
           font-size: 16px;
@@ -173,6 +168,12 @@
             cursor: pointer;
 
           }
+          &:hover{
+            .icon-update{
+              visibility: visible;
+            }
+          }
+
         }
 
         .customer-rule-score-level{
