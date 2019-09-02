@@ -75,7 +75,7 @@ ClueFilterStore.prototype.setTimeRange = function(timeRange) {
 ClueFilterStore.prototype.setTimeType = function(timeType) {
     this.timeType = timeType;
     if (timeType === 'all'){
-        this.setTimeRange({start_time: clueStartTime, end_time: moment().valueOf()});
+        this.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf()});
     }else{
         var timeObj = getStartEndTimeOfDiffRange(this.timeType, true);
         var start_time = datePickerUtils.getMilliseconds(timeObj.start_time);

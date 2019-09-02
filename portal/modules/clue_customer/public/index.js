@@ -529,10 +529,14 @@ class ClueCustomer extends React.Component {
         var filterStoreData = clueFilterStore.getState();
         var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
-            to: moment().valueOf(),
+            to: moment().endOf('day').valueOf(),
             type: 'time',
             name: 'source_time'
         }] : filterStoreData.rangeParams;
+        //如果是选的全部时间，在获取线索列表的时候把结束时间再重新取一下，避免第二天再切换tab，传的时间还是昨天的时间
+        if (filterStoreData.timeType === 'all'){
+            rangeParams[0].to = moment().endOf('day').valueOf();
+        }
         var typeFilter = isGetAllClue ? {status: ''} : this.getFilterStatus();//线索类型
         typeFilter.availability = filterStoreData.filterClueAvailability;
         //如果筛选的是无效的，不传status参数
