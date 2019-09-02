@@ -849,6 +849,7 @@ class ClueToCustomerPanel extends React.Component {
                     ref={ref => {this.refs[contactId] = ref;}}
                     type="edit"
                     contact={contact}
+                    isValidatePhoneOnDidMount={true}
                 />
             </div>
         );
