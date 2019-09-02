@@ -51,7 +51,7 @@ var CrmAlertForm = createReactClass({
         topicValue: PropTypes.string,
     },
     getInitialState: function() {
-        var formData = this.getInitialFormData();
+        var formData = this.getInitialFormData(this.props);
         var selectedAlertTimeRange = 'not_remind';
         return {
             formData: formData,
@@ -68,11 +68,9 @@ var CrmAlertForm = createReactClass({
         };
     },
 
-    getInitialFormData: function(nextProps) {
-        let formData = _.cloneDeep(this.props.currentSchedule);
-        if(!_.isEmpty(nextProps)) {
-            formData = _.cloneDeep(nextProps.currentSchedule);
-        }
+    getInitialFormData: function(props) {
+        let formData = _.cloneDeep(props.currentSchedule);
+
         formData.topic = formData.topic || formData.customer_name || '';
         //代办类型的默认值
         formData.scheduleType = formData.scheduleType || 'calls';
@@ -442,7 +440,7 @@ var CrmAlertForm = createReactClass({
         //如果是批量添加联系计划,关闭后应该清空数据
         if (_.isArray(this.props.selectedCustomer)) {
             this.setState({
-                formData: this.getInitialFormData()
+                formData: this.getInitialFormData(this.props)
             });
         } else {
             ScheduleAction.cancelEdit();
