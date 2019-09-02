@@ -65,20 +65,19 @@
           padding: 12px 0 0 0;
           border:1px solid #E5E5E5;
           min-height: 188px;
+          &:hover{
+            .basic-score-rule .basic-score-title .iconfont.icon-update{
+              visibility: visible;
+            }
+          }
           //基本信息配置
           .basic-score-rule{
-
             .basic-score-title{
               color: #333;
               font-size: 14px;
               padding: 12px;
               .status-wrapper{
                 float: right;
-              }
-              &:hover{
-                .iconfont.icon-update{
-                  visibility: visible;
-                }
               }
             }
             .user-score-lists{
@@ -96,6 +95,12 @@
           min-height: 188px;
           margin-top: 12px;
           border: 1px solid #ddd;
+          &:hover{
+            .user-engagement-panel .user-engage-title .iconfont.icon-update{
+              visibility: visible;
+            }
+          }
+
           //参与度配置
             .user-engagement-panel{
               .user-engage-title{
@@ -105,11 +110,7 @@
                 .status-wrapper{
                   float: right;
                 }
-                &:hover{
-                  .iconfont.icon-update{
-                    visibility: visible;
-                  }
-                }
+
               }
               .user-engagement-item-wrap{
                 .user-engagement-and-add{
