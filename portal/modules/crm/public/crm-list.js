@@ -1487,6 +1487,7 @@ class Crm extends React.Component {
                         let name_verify = _.get(record, 'errors.name_verify');
                         //导入的数据中存在同名客户
                         let import_name_repeat = _.get(record, 'errors.import_name_repeat');
+                        //系统中存在同名客户
                         let name_repeat = _.get(record, 'errors.name_repeat');
                         let cls = classNames({
                             'repeat-item-name': name_verify || import_name_repeat || name_repeat

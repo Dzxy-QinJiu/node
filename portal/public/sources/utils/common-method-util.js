@@ -1000,12 +1000,12 @@ exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkName
                 return null;
             }
         };
+        list = _.filter(list, cur => cur.id !== sameCustomer.id)
         return (
             <div className="tip-customer-exist">
                 <span className="tip-customer-error">{Intl.get('call.record.customer', '客户')}{sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，</span>
                 {/*同名客户或相似客户的第一个*/}
                 {renderCustomerName(sameCustomer || list.shift())}
-                {list = _.filter(list, cur => cur.id !== sameCustomer.id)}
                 {_.get(list, 'length') ? (
                     <div>
                         {Intl.get('crm.68', '相似的客户还有')}:
