@@ -61,7 +61,7 @@ var ContactForm = createReactClass({
             let phoneFormValArray = [];
 
             _.each(this.phoneInputRefs, item => {
-                phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
+                phoneFormValArray.push(this.getPhoneFormValue(item.props.form));
             });
 
             Promise.all(phoneFormValArray);
