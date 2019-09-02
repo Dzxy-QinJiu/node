@@ -2920,6 +2920,8 @@ var zh_CN = {
     'clue.export.clue.list': '导出线索',
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',
+    'clue.customer.release.pool': '释放到线索池',
+    'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确认释放吗？',
     'clue.pool.batch.extract.clue': '批量提取',
     'clue.extract.get.list.failed': '获取提取线索列表失败',
     'clue.extract.batch.extract.failed': '批量提取线索失败',

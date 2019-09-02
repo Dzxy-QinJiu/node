@@ -16,7 +16,22 @@ var userData = require('../../../public/sources/user-data');
 import Trace from 'LIB_DIR/trace';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import {SearchInput, AntcTable} from 'antc';
-import {message, Icon, Row, Col, Button, Alert, Select, Modal, Radio, Input,Tag,Menu, Dropdown,} from 'antd';
+import {
+    message,
+    Icon,
+    Row,
+    Col,
+    Button,
+    Alert,
+    Select,
+    Modal,
+    Radio,
+    Input,
+    Tag,
+    Menu,
+    Dropdown,
+    Popconfirm,
+} from 'antd';
 const {TextArea} = Input;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
@@ -1221,7 +1236,7 @@ class ClueCustomer extends React.Component {
         let columns = [
             {
                 dataIndex: 'clue_name',
-                width: '240px',
+                width: '220px',
                 render: (text, salesClueItem, index) => {
                     let similarClue = _.get(salesClueItem, 'labels');
                     let availability = _.get(salesClueItem, 'availability');
@@ -1262,7 +1277,7 @@ class ClueCustomer extends React.Component {
                 }
             },{
                 dataIndex: 'contact',
-                width: '230px',
+                width: '200px',
                 render: (text, salesClueItem, index) => {
                     //联系人的相关信息
                     var contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
@@ -1347,6 +1362,26 @@ class ClueCustomer extends React.Component {
                 );
             }
         });
+        //除了运营不能释放线索，管理员、销售都可以释放
+        if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+            columns.push({
+                dataIndex: 'release_clue',
+                className: 'release-td-clue',
+                width: '40px',
+                render: (text, salesClueItem, index) => {
+                    return (
+                        <div className="release-clue-btn">
+                            <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem.id)}
+                                title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确认释放吗？')}>
+                                <a className='release-customer'
+                                    title={Intl.get('crm.customer.release', '释放')}>
+                                    <i className="iconfont icon-release handle-btn-item"/>
+                                </a>
+                            </Popconfirm>
+                        </div>);
+                }
+            });
+        }
         return columns;
     };
     renderHandleAssociateInvalidBtn = (salesClueItem) => {
@@ -2154,6 +2189,17 @@ class ClueCustomer extends React.Component {
                 </span>);
         }
     };
+    //释放到线索池
+    batchReleaseClue = () => {
+
+    }
+
+    //释放单个线索
+    releaseClue = (id) => {
+        console.log(id);
+    }
+
+    //渲染批量操作按钮
     renderBatchChangeClues = () => {
         return (
             <div className="pull-right">
@@ -2173,6 +2219,15 @@ class ClueCustomer extends React.Component {
                         clearSelectData={this.clearSelectSales}
                         btnAtTop={false}
                     />
+                    {//除了运营不能释放线索，管理员、销售都可以释放
+                        userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                            <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
+                                title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确认释放吗？')}>
+                                <Button className='btn-item handle-btn-item' title={Intl.get('clue.customer.release.pool', '释放到线索池')}>
+                                    {Intl.get('crm.customer.release', '释放')}
+                                </Button>
+                            </Popconfirm>
+                        )}
                 </div>
             </div>
         );
