@@ -70,6 +70,9 @@ var CrmAlertForm = createReactClass({
     getInitialFormData: function() {
         let oldFormData = this.props.currentSchedule;
         let formData = {};
+        if(_.has(this.props.currentSchedule, 'customer_id')) {
+            formData.customer_id = oldFormData.customer_id;
+        }
         formData.topic = oldFormData.topic || oldFormData.customer_name || '';
         //代办类型的默认值
         formData.scheduleType = oldFormData.scheduleType || 'calls';
@@ -82,12 +85,6 @@ var CrmAlertForm = createReactClass({
         //提醒时间
         formData.alert_time = oldFormData.alert_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
         return formData;
-    },
-
-    getDefaultProps: function() {
-        return {
-            topicValue: 'customer'
-        };
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -815,6 +812,7 @@ var CrmAlertForm = createReactClass({
 
 CrmAlertForm.defaultProps = {
     currentSchedule: {},
+    topicValue: 'customer', //默认修改为“客户”的联系计划
 };
 
 module.exports = CrmAlertForm;
