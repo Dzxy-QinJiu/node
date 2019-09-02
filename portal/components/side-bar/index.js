@@ -16,7 +16,7 @@ class SideBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showChat: false//this.props.showChat !== 'false'
+            showChat: this.props.showChat !== 'false'
         };
     }
 
@@ -46,7 +46,7 @@ class SideBar extends React.Component {
     };
     chatClick = () => {
         //如果有客服时，点击触发出客服界面
-        $('#chatBtn').trigger('click');
+        $('#newBridge #nb_icon_wrap').trigger('click');
     };
 
     render() {

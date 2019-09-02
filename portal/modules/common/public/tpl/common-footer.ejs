@@ -56,12 +56,15 @@
 <% } %>
 </body>
 <% if((isCurtao && custom_service_lang) || show_custom_service) { %>
-<!-- custome service
-<script type='text/javascript' src='https://webchat.7moor.com/javascripts/7moorInit.js?accessId=f5f6dd30-c3c9-11e9-b853-050e898ec854&autoShow=true&language=<%= custom_service_lang %>' async='async'>
+<!-- custome service(baidu 商桥的客服) -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?018070b819b07675def7ad2d0574534f";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
 </script>
-<script type='text/javascript'>
-    var qimoClientId = '<%= userid %>';
-</script>
--->
 <% } %>
 </html>
