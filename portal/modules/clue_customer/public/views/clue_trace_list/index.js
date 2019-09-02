@@ -52,6 +52,7 @@ class ClueTraceList extends React.Component {
         filterStatus: '',//通话状态的过滤
         addRecordNullTip: '',//添加跟进记录内容为空的提示
         editRecordNullTip: '', //编辑跟进内容为空的提示
+        hasRecordPanel:false,//
         ...ClueTraceStore.getState(),
     };
 
@@ -637,9 +638,32 @@ class ClueTraceList extends React.Component {
                 relativeDate={false}
             />);
     };
+    //是否已有跟进内容
+    setRecordLength = (length) =>{
+        var hasRecordPanel = length > 0;
+        if(this.state.hasRecordPanel != hasRecordPanel){
+            this.setState({hasRecordPanel});
+        }
+    };
+    //添加跟进按钮
+    tipRecordBurron = () =>{
+                //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
+                let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
+                if(hasAddRecordPrivilege){
+                    if(this.state.hasRecordPanel){
+                        return this.renderAddRecordButton()
+                    }else{
+                        return(
+                            <a className="handle-btn-item no-data-device" onClick={this.toggleAddRecordPanel.bind(this)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</a>
+                        );
+                    }
+
+                }
+    }
 
     renderClueTraceLists = () => {
         var recordLength = _.get(this, 'state.customerRecord.length');
+        this.setRecordLength(recordLength);
         //加载状态或加载数据错误时，容器高度的设置
         let loadingErrorHeight = this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight();
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
@@ -693,13 +717,11 @@ class ClueTraceList extends React.Component {
         }
     };
     render() {
-        //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
-        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
         return (
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
                     {this.props.isOverViewPanel ? null : this.renderDatePicker()}
-                    {hasAddRecordPrivilege ? this.renderAddRecordButton() : null}
+                    {this.tipRecordBurron()}
                 </div>
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
                 <div className="show-container" id="show-container">

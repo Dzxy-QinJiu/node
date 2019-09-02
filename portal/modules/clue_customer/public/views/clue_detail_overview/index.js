@@ -987,7 +987,6 @@ class ClueDetailOverview extends React.Component {
             <DetailCard
                 title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
                 titleBottomBorderNone={noTraceData}
-                titleDescr={noTraceData ? Intl.get('clue.add.trace.content', '添加跟进内容') : ''}
                 content={this.renderTraceList()}
                 disableEdit={hasPrivilegeAddEditTrace}
             />);
