@@ -64,26 +64,26 @@ var CrmAlertForm = createReactClass({
             isSelectFullday: true,//是否已经选择了全天
             hideCustomerRequiredTip: false,
             hideClueRequiredTip: false,
+            topicValue: this.props.topicValue
         };
     },
 
-    getInitialFormData: function() {
-        let oldFormData = this.props.currentSchedule;
-        let formData = {};
-        if(_.has(this.props.currentSchedule, 'customer_id')) {
-            formData.customer_id = oldFormData.customer_id;
+    getInitialFormData: function(nextProps) {
+        let formData = _.cloneDeep(this.props.currentSchedule);
+        if(!_.isEmpty(nextProps)) {
+            formData = _.cloneDeep(nextProps.currentSchedule);
         }
-        formData.topic = oldFormData.topic || oldFormData.customer_name || '';
+        formData.topic = formData.topic || formData.customer_name || '';
         //代办类型的默认值
-        formData.scheduleType = oldFormData.scheduleType || 'calls';
+        formData.scheduleType = formData.scheduleType || 'calls';
         //内容的默认值
-        formData.content = oldFormData.content || '';
+        formData.content = formData.content || '';
         //联系的开始时间
-        formData.start_time = oldFormData.start_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
+        formData.start_time = formData.start_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
         //联系的结束时间
-        formData.end_time = oldFormData.end_time || moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
+        formData.end_time = formData.end_time || moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
         //提醒时间
-        formData.alert_time = oldFormData.alert_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
+        formData.alert_time = formData.alert_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
         return formData;
     },
 
@@ -91,10 +91,11 @@ var CrmAlertForm = createReactClass({
         //用户切换添加"线索"或"客户"类型代办时，更新formData里的scheduleType初始值
         if(_.has(nextProps, 'topicValue')) {
             let scheduleType = _.isEqual(_.get(nextProps,'topicValue'), 'customer') ? 'calls' : 'lead';
-            let formData = this.getInitialFormData();
+            let formData = this.getInitialFormData(nextProps);
             formData.scheduleType = scheduleType;
             this.setState({
-                formData
+                formData,
+                topicValue: nextProps.topicValue
             });
         }
     },
@@ -392,10 +393,10 @@ var CrmAlertForm = createReactClass({
 
         if(this.props.isAddToDoClicked) {
             //若当前添加的是客户代办
-            if (_.isEqual(this.props.topicValue, 'customer') && !submitObj.customer_id) {
+            if (_.isEqual(this.state.topicValue, 'customer') && !submitObj.customer_id) {
                 this.refs.validation.forceValidate(['customer']);
                 return;
-            } else if (_.isEqual(this.props.topicValue, 'clue') && !submitObj.lead_id) { //若当前添加的是线索代办
+            } else if (_.isEqual(this.state.topicValue, 'clue') && !submitObj.lead_id) { //若当前添加的是线索代办
                 this.refs.validation.forceValidate(['clue']);
                 return;
             }
@@ -655,13 +656,13 @@ var CrmAlertForm = createReactClass({
         var scheduleStartTime = moment(formData.start_time).format(HOUR_MUNITE_FORMAT);
         var scheduleEndTime = moment(formData.end_time).format(HOUR_MUNITE_FORMAT);
         //根据topic渲染不同的radio buttons
-        let scheduleType = _.isEqual(_.get(this.props, 'topicValue'), 'customer') ? CUSTOMER_SCHEDULE_TYPES : CLUE_SCHEDULE_TYPES;
+        let scheduleType = _.isEqual(_.get(this.state, 'topicValue'), 'customer') ? CUSTOMER_SCHEDULE_TYPES : CLUE_SCHEDULE_TYPES;
         return (
             <Form layout='horizontal' data-tracename="添加联系计划表单" className="schedule-form" id="schedule-form">
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {/*如果是点击待办项，显示客户选择框，否则如果是批量操作的时候，不需要展示标题*/
                         this.props.isAddToDoClicked ? (
-                            this.renderTopic(_.get(this.props, 'topicValue'), formItemLayout)
+                            this.renderTopic(_.get(this.state, 'topicValue'), formItemLayout)
                         ) : (this.props.selectedCustomer ? null : (
                             <FormItem
                                 {...formItemLayout}
