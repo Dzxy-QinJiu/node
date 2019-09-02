@@ -36,7 +36,7 @@ const REGISTER_STEPS = {
     PHONE_VALID: 1,//电话验证
     ACCOUNT_SET: 2//账号设置
 };
-const bgImgUrl = require('./image/login-bg.jpg');
+const bgImgUrl = require('./image/login-bg.png');
 
 class LoginMain extends React.Component {
     constructor(props) {
