@@ -84,6 +84,7 @@ class RecommendCustomerCondition extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             var hasSavedRecommendParams = this.state.hasSavedRecommendParams;
+            hasSavedRecommendParams.name = _.trim(values.name);
             if (!_.isEmpty(values.industrys)){
                 hasSavedRecommendParams.industrys = values.industrys;
             }else{
@@ -230,6 +231,18 @@ class RecommendCustomerCondition extends React.Component {
                     className="recommend-top-title">{Intl.get('clue.customer.select.focus.customer', '请选择您关注的客户类型')}</div>
                 <div className="add-customer-recommend">
                     <Form layout='horizontal' className="customer-recommend-form" id="customer-recommend-form">
+                        <FormItem
+                            label={Intl.get('clue.recommed.keyword.list', '关键词')}
+                            id="name"
+                            {...formItemLayout}
+                        >
+                            {
+                                getFieldDecorator('name',
+                                    {initialValue: _.get(hasSavedRecommendParams,'name','')}
+                                )(
+                                    <Input placeholder={Intl.get('clue.recommend.input.keyword', '请输入关键词')}/>
+                                )}
+                        </FormItem>
                         <div className="ant-row ant-form-item">
                             <div className="ant-form-item-label ant-col-xs-24 ant-col-sm-4">
                                 <label >{Intl.get('clue.customer.register.time', '注册时间')}</label></div>
@@ -341,6 +354,7 @@ class RecommendCustomerCondition extends React.Component {
                                 saveErrorMsg={this.state.saveMsg}
                                 handleSubmit={this.handleSubmit}
                                 handleCancel={this.props.hideFocusCustomerPanel}
+                                okBtnText={Intl.get('config.manage.realm.oktext', '确定')}
                             />
                         </div>
                     </Form>
