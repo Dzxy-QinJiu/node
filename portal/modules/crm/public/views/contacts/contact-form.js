@@ -37,18 +37,35 @@ var ContactForm = createReactClass({
     getDefaultProps: function() {
         return {
             contact: ContactUtil.newViewContactObject(),
-            type: 'add'
+            type: 'add',
+            //是否在组件装载完后立即对电话输入框中的内容进行校验
+            isValidatePhoneOnDidMount: false,
         };
     },
     propTypes: {
         contact: PropTypes.object,
         isMerge: PropTypes.bool,
+        //是否在组件装载完后立即对电话输入框中的内容进行校验
+        isValidatePhoneOnDidMount: PropTypes.bool,
         type: PropTypes.string,
         customer_id: PropTypes.string,
         customer_name: PropTypes.string,
         contactListLength: PropTypes.number,
         updateMergeCustomerContact: PropTypes.func,
         updateCustomerDefContact: PropTypes.func
+    },
+
+    componentDidMount() {
+        //如果需要在组件装载后立即校验电话输入框中的内容是否符合规则
+        if (this.props.isValidatePhoneOnDidMount) {
+            let phoneFormValArray = [];
+
+            _.each(this.phoneInputRefs, item => {
+                phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
+            });
+
+            Promise.all(phoneFormValArray);
+        }
     },
 
     //联系方式的数组展开放到对应的formData中
@@ -378,6 +395,13 @@ var ContactForm = createReactClass({
                     //获取当前已添加的电话列表
                     let curPhoneArray = this.getCurPhoneArray();
                     let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
+
+                    //如果需要在组件装载后立即校验电话输入框中的内容是否符合规则
+                    if (this.props.isValidatePhoneOnDidMount) {
+                        //用于绕过下面的判断逻辑，直接抵达发请求验证电话是否已存在的地方
+                        phoneArray = phoneCount = [];
+                    }
+
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
                         // 判断当前添加的电话列表中是否已存在该电话,获取当前已添加的电话列表有延迟，
