@@ -142,17 +142,17 @@ class SalesProcess extends React.Component {
                                     disabled={disabled}
                                 >
                                     <Icon type="plus" />
-                                    {Intl.get('customer.stage.define.new', '定义新客户阶段')}
+                                    {Intl.get('customer.stage.add.customer.stage', '添加客户阶段')}
                                 </Button>
                             </Popover>
                         ) : (
                             <Button
                                 type="ghost" className="sales-stage-top-btn btn-item"
                                 onClick={this.showCustomerStagePanel.bind(this, addCustomerStage)}
-                                data-tracename="定义新客户阶段"
+                                data-tracename="添加客户阶段"
                             >
                                 <Icon type="plus" />
-                                {Intl.get('customer.stage.define.new', '定义新客户阶段')}
+                                {Intl.get('customer.stage.add.customer.stage', '添加客户阶段')}
                             </Button>
                         )}
                     </PrivilegeChecker>
@@ -479,6 +479,78 @@ class SalesProcess extends React.Component {
         );
     };
 
+    renderCustomerStageBlock = () => {
+        const salesProcessList = this.state.salesProcessList;
+        return (
+            <div className="customer-stage-zone">
+                {
+                    _.map(salesProcessList, (item, index) => {
+                        let customerStages = item.customer_stages;
+                        let customerStagesNames = _.map(customerStages, 'name');
+                        let teams = _.map(item.teams, 'name');
+                        let users = _.map(item.users, 'name');
+                        let scope = _.concat(teams, users);
+                        return (
+                            <div className="customer-stage-block"
+                                key={item.id}
+                                onClick={this.showCustomerStagePanel.bind(this, item)}
+                            >
+                                <div className="customer-stage-name">
+                                    <span className="stage-name">{item.name}</span>
+                                    <span className="stage-delete-operator">
+                                        {
+                                            hasPrivilege('CRM_DELETE_SALES_PROCESS') && item.type === 'custom' ? (
+                                                <span
+                                                    title={Intl.get('customer.stage.delete.stage', '删除客户阶段')}
+                                                    onClick={this.handleDeleteSaleProcess.bind(this, item)}
+                                                    data-tracename={'点击删除' + item.name + '客户阶段按钮'}
+                                                >
+                                                    <i className="iconfont icon-delete handle-btn-item"></i>
+                                                </span>
+                                            ) : (
+                                                <span className="stage-default-tips">
+                                                    {Intl.get('customer.stage.default.stage.tips', '默认不可编辑')}
+                                                </span>
+                                            )
+                                        }
+                                    </span>
+                                </div>
+                                <div className="customer-stage-set">
+                                    <span className="customer-stage-label">
+                                        {Intl.get('customer.stage.stage.title', '阶段设置')}:
+                                    </span>
+                                    <span className="stage-content">
+                                        {
+                                            _.map(customerStagesNames, (name, idx) => {
+                                                let cls = 'color-lump';
+                                                cls += ' customer-stage-color-lump' + idx;
+                                                return (
+                                                    <div className={cls}>
+                                                        {
+                                                            name.length > 6 ? <span>{name.substring(0, 5)}...</span> :
+                                                                <span>{name}</span>
+                                                        }
+                                                    </div>
+                                                );
+                                            })
+                                        }
+                                    </span>
+                                </div>
+                                <div className="customer-stage-team-user">
+                                    <span className="customer-stage-label">
+                                        {Intl.get('sales.process.suitable.objects', '适用范围')}:
+                                    </span>
+                                    <span className="stage-content" title={_.join(scope, '、')}>
+                                        {_.join(scope, '、')}
+                                    </span>
+                                </div>
+                            </div>
+                        );}
+                    )}
+            </div>
+        );
+    };
+
     renderCustomerStageContent = (containerHeight) => {
         const salesProcessList = this.state.salesProcessList;
         const length = _.get(salesProcessList, 'length');
@@ -498,7 +570,7 @@ class SalesProcess extends React.Component {
         } else {
             return (
                 <div className="content-zone">
-                    {this.renderCustomerStageList(containerHeight)}
+                    {this.renderCustomerStageBlock(containerHeight)}
                 </div>
             );
         }
