@@ -982,7 +982,7 @@ exports.isCiviwRealm = () => {
 * */
 exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkNameError, curCustomerName, showRightPanel) => {
     if (customerNameExist) {
-        const list = _.cloneDeep(existCustomerList);
+        let list = _.cloneDeep(existCustomerList);
         const sameCustomer = _.find(list, item => item.name === curCustomerName);
         const curUserId = userData.getUserData().user_id;
         let renderCustomerName = (customer) => {
@@ -990,7 +990,7 @@ exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkName
                 //如果是我的客户，可以查看客户详情
                 if (_.get(customer, 'user_id') === curUserId) {
                     return (
-                        <a href="javascript:void(0)" onClick={showRightPanel.bind(this, _.get(customer, 'id'))}>
+                        <a href="javascript:void(0)" onClick={showRightPanel.bind(this, _.get(customer, 'id'))} className="handle-btn-item">
                             {_.get(customer, 'name', '')}
                         </a>);
                 } else {//如果是其他人的客户，只能看名字，不能看客户详情
@@ -1000,9 +1000,10 @@ exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkName
                 return null;
             }
         };
+        list = _.filter(list, cur => cur.id !== sameCustomer.id)
         return (
             <div className="tip-customer-exist">
-                {Intl.get('call.record.customer', '客户')} {sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，
+                <span className="tip-customer-error">{Intl.get('call.record.customer', '客户')}{sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，</span>
                 {/*同名客户或相似客户的第一个*/}
                 {renderCustomerName(sameCustomer || list.shift())}
                 {_.get(list, 'length') ? (
