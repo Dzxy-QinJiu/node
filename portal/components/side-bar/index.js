@@ -16,7 +16,7 @@ class SideBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showChat: this.props.showChat !== 'false'
+            showChat: false//this.props.showChat !== 'false'
         };
     }
 
