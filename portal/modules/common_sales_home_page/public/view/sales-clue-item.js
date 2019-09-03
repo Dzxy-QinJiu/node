@@ -584,7 +584,7 @@ class SalesClueItem extends React.Component {
             <div className={itemCls} data-tracename="线索概览信息">
                 <div className="clue-top-title">
                     <span className="hidden record-id">{salesClueItem.id}</span>
-                    {renderClueStatus(salesClueItem.status)}
+                    {renderClueStatus(salesClueItem)}
                     <span className="clue-name" data-tracename="查看线索详情"
                         onClick={this.handleShowClueDetail.bind(this, salesClueItem)}>{salesClueItem.name}</span>
                     {salesClueItem.availability === '1' ? <Tag>{Intl.get('sales.clue.is.enable', '无效')}</Tag> : null}

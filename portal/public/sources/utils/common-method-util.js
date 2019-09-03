@@ -344,12 +344,15 @@ exports.getClueStatus = function(status) {
     }
     return statusDes;
 };
-exports.renderClueStatus = function(status) {
+exports.renderClueStatus = function(listItem) {
+    let status = 
+            typeof listItem === 'string' ? listItem :
+            listItem.availability === "1" ? status = '4': listItem.status;
     var statusDes = '';
     switch (status) {
         case '0':
-            statusDes = <span
-                className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
+            statusDes = 
+                <span className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
             break;
         case '1':
             statusDes =
@@ -362,6 +365,10 @@ exports.renderClueStatus = function(status) {
         case '3':
             statusDes =
                 <span className="clue-stage has-transfer">{Intl.get('clue.customer.has.transfer', '已转化')}</span>;
+            break;
+        case '4':
+            statusDes =
+                <spam className="clue-stage has-invalid">{Intl.get( 'clue.analysis.inability', '无效')}</spam>
             break;
     }
     return statusDes;

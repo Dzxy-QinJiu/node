@@ -1287,7 +1287,7 @@ class ClueDetailOverview extends React.Component {
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
                     return <div className="similar-block">
                         <div className="similar-title">
-                            {isClueType ? renderClueStatus(listItem.status) : null}
+                            {isClueType ? renderClueStatus(listItem) : null}
                             <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
                             {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
 
