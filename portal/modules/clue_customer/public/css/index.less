@@ -295,7 +295,6 @@
         }
         //当前跟进人
         .handle-and-trace{
-          color: #777;
           font-size: 14px;
           &.assign-privilege{
             cursor: pointer;
@@ -306,6 +305,9 @@
           //編輯跟进内容
           .edit-trace-content{
             padding: 14px 28px 12px 4px;
+            .ant-alert-error{
+              width: 100%;
+            }
             .save-cancel-btn{
               margin-top:8px;
               text-align: right;
@@ -317,7 +319,6 @@
           //展示跟进内容
           .foot-text-content{
             .add-trace-content{
-              color:#8da8c5;
               cursor:pointer;
             };
             .trace-author{
@@ -343,6 +344,9 @@
         .avalibity-or-invalid-container{
           .edit-invalid-trace-content {
             padding: 14px 28px 12px 4px;
+            .ant-alert-error {
+              width: 100%;
+            }
             .save-cancel-btn {
               margin-top: 8px;
               text-align: right;
@@ -481,7 +485,6 @@
     font-size: 14px;
     .can-edit{
       cursor: pointer;
-      color:#8da8c5;
     }
     .clue-stage.will-distribute {
       background: @will-distribute-background;
@@ -498,6 +501,10 @@
     .clue-stage.has-transfer {
       color: @has-transfer-color;
       background: @has-transfer-background;
+    }
+    .clue-stage.has-invalid {
+      color: @has-invalid-color;
+      background: @has-invalid-background;
     }
   }
 }

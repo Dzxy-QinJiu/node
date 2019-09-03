@@ -1,6 +1,6 @@
 var React = require('react');
 const PropTypes = require('prop-types');
-import {Form, Icon, message, Popconfirm} from 'antd';
+import {Form, Icon, message, Popconfirm, Popover} from 'antd';
 var HeadIcon = require('../../../../components/headIcon');
 var UserInfoAction = require('../action/user-info-actions');
 var Alert = require('antd').Alert;
@@ -13,7 +13,8 @@ import UserInfoAjax from '../ajax/user-info-ajax';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
-import {checkQQ} from 'PUB_DIR/sources/utils/validate-util';
+import userData from 'PUB_DIR/sources/user-data';
+import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -91,8 +92,10 @@ class UserInfo extends React.Component{
             var formData = $.extend(true, {}, this.state.formData);
             if (this.state.formData.reject === 0) {
                 formData.reject = 1;
+                userData.setUserData('reject', 1);
             } else {
                 formData.reject = 0;
+                userData.setUserData('reject', 0);
             }
             this.setState({
                 formData: formData
@@ -114,6 +117,46 @@ class UserInfo extends React.Component{
             Trace.traceEvent(e, '重新订阅');
         }
     }
+
+    //订阅前提醒先激活邮箱
+    subscribeTips = () => {
+        //已激活可以订阅
+        if(this.props.userInfo.emailEnable){
+            return(<ReactIntl.FormattedMessage
+                        id="user.info.receive.email"
+                        defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
+                        values={{
+                            'receive': 
+                                <a onClick={this.handleSubscribe}>
+                                    <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
+                                </a>
+                        }}
+                    />);
+        }else{//未激活提醒
+            return( <ReactIntl.FormattedMessage
+                        id="user.info.receive.email"
+                        defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
+                        values={{
+                            'receive': 
+                            <Popover
+                                overlayClassName="apply-invalid-popover"
+                                placement="topRight"
+                                trigger="click"
+                                content={
+                                    <span className="apply-error-tip">
+                                        <span className="iconfont icon-warn-icon"></span>
+                                        <span className="apply-error-text">
+                                            {Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}',{activeEmail:Intl.get('apply.active.email.tips', '激活邮箱')})}
+                                        </span>
+                                    </span>
+                                    }
+                            >
+                                <a>{Intl.get("user.info.receive.subscribe","重新订阅")}</a>
+                            </Popover>
+                        }}
+                    />)
+    }
+}
 
     retryUserInfo() {
         UserInfoAction.getUserInfo();
@@ -137,16 +180,7 @@ class UserInfo extends React.Component{
         } else {
             return (
                 <div>
-                    <ReactIntl.FormattedMessage
-                        id="user.info.receive.email"
-                        defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
-                        values={{
-                            'receive': <a onClick={this.handleSubscribe}>
-                                <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
-                            </a>
-                        }}
-                    />
-
+                    {this.subscribeTips()}
                 </div>
             );
         }
@@ -217,6 +251,9 @@ class UserInfo extends React.Component{
                         qqEditType: 'text'
                     });
                 }
+                //在userdata中更新此字段
+                userData.setUserData('email', email);
+                userData.setUserData('emailEnable', false);
                 successFunc();
             } else {
                 errorFunc(errorMsg);
@@ -254,14 +291,13 @@ class UserInfo extends React.Component{
     }
 
     renderUserInfo() {
-        var _this = this;
-        var formData = this.state.formData;
+        let formData = this.props.userInfo;
         //根据是否拥有邮箱改变渲染input默认文字
-        let emailInputInfo = formData.email ? formData.email : ' ';
+        let emailInputInfo = formData.email ? formData.email : '';
         //根据是否拥有邮箱改变编辑状态
         let isEditable = formData.email ? true : false;
         //根据邮箱状态是否激活改变渲染afterTextTip文字
-        let displaInfo = formData.email ? (formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
+        let displayInfo = !_.isEmpty(formData.email) ? (formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
             (<span className="active-info">(<ReactIntl.FormattedMessage
                 id="user.info.no.active"
                 defaultMessage={'未激活，请{active}'}
@@ -269,19 +305,7 @@ class UserInfo extends React.Component{
                     'active': <a onClick={this.activeUserEmail.bind(this)} data-tracename="激活">
                         <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
                     </a>
-                }}/>)</span>)) :
-            (<span>
-                <ReactIntl.FormattedMessage
-                    id="user.info.no.email"
-                    defaultMessage={'您还没有绑定邮箱，{add-email}'}
-                    values={{'add-email':
-                            <a
-                                data-tracename="点击绑定邮箱"
-                                onClick={(e) => this.setEmailEditable(e)}>
-                                {Intl.get('user.info.binding.email','绑定邮箱')}
-                            </a>,
-                    }}/>
-            </span>);
+                }}/>)</span>)) : null;
 
         // 根据是否拥有qq改变渲染input默认文字
         let qqInputInfo = formData.qq ? formData.qq : ' ';
@@ -315,22 +339,32 @@ class UserInfo extends React.Component{
                             {Intl.get('common.email', '邮箱')}
                             ：</span>
                         <span className="user-email-item">
-                            <BasicEditInputField
+                            {_.isEmpty(formData.email) && !_.isEqual(this.state.emailEditType, 'edit') ? (<span>
+                                <ReactIntl.FormattedMessage
+                                    id="user.info.no.email"
+                                    defaultMessage={'您还没有绑定邮箱，{add-email}'}
+                                    values={{'add-email':
+                                            <a
+                                                data-tracename="点击绑定邮箱"
+                                                onClick={(e) => this.setEmailEditable(e)}>
+                                                {Intl.get('user.info.binding.email','绑定邮箱')}
+                                            </a>,
+                                    }}/>
+                            </span>) : <BasicEditInputField
                                 id={formData.id}
                                 displayType={this.state.emailEditType}
                                 field="email"
                                 value={emailInputInfo}
                                 hasEditPrivilege={isEditable}
                                 hoverShowEdit={false}
-                                validators={{rules: [{
-                                    required: true, message: Intl.get('user.info.email.required', '邮箱不能为空')
-                                },{
-                                    type: 'email', message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                }]}}
-                                afterTextTip={displaInfo}
+                                validators={[{
+                                    pattern: emailRegex,
+                                    message: Intl.get('common.correct.email', '请输入正确的邮箱')
+                                }]}
+                                afterTextTip={displayInfo}
                                 saveEditInput={this.saveEditUserInfo.bind(this, 'email')}
                                 onDisplayTypeChange={this.onEmailDisplayTypeChange}
-                            />
+                            />}
                         </span>
                     </div>
                     <div className="user-info-item">

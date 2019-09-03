@@ -64,7 +64,7 @@ class RihgtCardsContainer extends React.Component {
                             onClick={this.showCardForm}>
                             {
                                 this.props.type === CONSTANTS.APP_MANAGE ?
-                                    Intl.get('common.add.app', '添加应用')
+                                    Intl.get('common.add.product','添加产品')
                                     : Intl.get('common.add', '添加') + this.props.modalType
 
                             }

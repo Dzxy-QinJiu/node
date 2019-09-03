@@ -91,7 +91,7 @@ class Dynamic extends React.Component {
                     <ShearContent>
                         {item.message}
                     </ShearContent>
-                    {item.relate_name && item.relate_id ? <span className="relete-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)} data-tracename="查看客户详情">{item.relate_name}</span> : null}
+                    {item.relate_name && item.relate_id ? <span className="relate-name" onClick={this.showCustomerDetail.bind(this, item.relate_id)} data-tracename="查看客户详情">{item.relate_name}</span> : null}
                 </dd>
                 <dt>{moment(item.date).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>

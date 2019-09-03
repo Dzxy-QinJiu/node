@@ -381,7 +381,7 @@ class ClueExtract extends React.Component {
                 <span>
                     {Intl.get('crm.8', '已选择全部{count}项', {count: this.state.cluePoolListSize})}
                     <a href="javascript:void(0)"
-                       onClick={this.clearSelectAllSearchResult}>{Intl.get('crm.10', '只选当前展示项')}</a>
+                        onClick={this.clearSelectAllSearchResult}>{Intl.get('crm.10', '只选当前展示项')}</a>
                 </span>);
         } else {//只选择了当前页时，展示：已选当前页xxx项, <a>选择全部xxx项</a>
             return (
@@ -499,8 +499,8 @@ class ClueExtract extends React.Component {
             return (
                 <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
                     <div className="clue-customer-list"
-                         style={{height: divHeight + LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
-                         id="area"
+                        style={{height: divHeight + LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                        id="area"
                     >
                         {this.renderClueCustomerLists()}
                     </div>
@@ -741,7 +741,7 @@ class ClueExtract extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !user.isCommonSales;
                     let assigenCls = classNames('assign-btn', {'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue', {'assign-privilege': hasAssignedPrivilege});
+                    let containerCls = classNames('singl-extract-clue', {'assign-privilege ': hasAssignedPrivilege},'handle-btn-item');
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}

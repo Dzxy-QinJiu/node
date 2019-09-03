@@ -134,7 +134,7 @@ class TagCard extends React.Component {
                         <div className="tag-input-block">
                             <Input className="tag-input" ref="newTag"
                                 placeholder={this.props.placeholder}/>
-                            <span className="iconfont icon-add" ref="newTagAdd"
+                            <span className="iconfont icon-add handle-btn-item" ref="newTagAdd"
                                 onClick={this.addTag.bind(this)}/>
                         </div>
                     </div>)

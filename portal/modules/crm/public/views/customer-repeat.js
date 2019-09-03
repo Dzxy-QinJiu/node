@@ -337,7 +337,7 @@ class CustomerRepeat extends React.Component {
                             onConfirm={this.delRepeatCustomer.bind(this, customer)}
                             okText={Intl.get('common.sure', '确认')}
                             cancelText={Intl.get('common.cancel', '取消')}>
-                            <Button className="repeat-del-btn" icon="delete"
+                            <Button className="repeat-del-btn handle-btn-item" icon="delete"
                                 title={Intl.get('common.delete', '删除')}/>
                         </Popconfirm>
                     </PrivilegeChecker>
@@ -367,7 +367,7 @@ class CustomerRepeat extends React.Component {
                             })}
                         </Col>
                         <Col span={1}>
-                            <PrivilegeChecker check="CUSTOMER_MERGE_CUSTOMER" className="repeat-merge-btn"
+                            <PrivilegeChecker check="CUSTOMER_MERGE_CUSTOMER" className="repeat-merge-btn handle-btn-item"
                                 onClick={this.showMergePanel.bind(this, repeatObj.repeatList)}>
                                 {Intl.get('crm.54', '合并')}
                             </PrivilegeChecker>
@@ -391,7 +391,8 @@ class CustomerRepeat extends React.Component {
                     curCustomer: this.state.curCustomer,
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     updateCustomerDefContact: CustomerRepeatAction.updateCustomerDefContact,
-                    hideRightPanel: this.hideRightPanel
+                    hideRightPanel: this.hideRightPanel,
+                    isUseCustomerContacts: true//联系人用客户对象上的contacts,不用再通过接口获取
                 }
             });
         }

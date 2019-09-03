@@ -623,7 +623,10 @@ class ClueDetailOverview extends React.Component {
         });
     };
     renderItemSelfSettingContent = (curClue,item) => {
-        return <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true} showClueDetailPanel={this.props.showClueDetailPanel.bind(this, curClue)}
+        return <PhoneCallout
+            phoneNumber={item}
+            showPhoneNum={addHyphenToPhoneNumber(item)}
+            showPhoneIcon={true}
         />;
     };
     renderItemSelfSettingForm = (key, index, that) => {
@@ -875,7 +878,7 @@ class ClueDetailOverview extends React.Component {
                     onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id, curClue.name, curClue.phones)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
                 <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>
-                    {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('sales.clue.is.enable', '无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
+                    {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid','标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
 
                 </Button>
             </div>;
@@ -969,7 +972,6 @@ class ClueDetailOverview extends React.Component {
         return (<ClueTraceList
             curClue={curClue}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
-            showClueDetailPanel={this.props.showClueDetailPanel.bind(this, curClue)}
             isOverViewPanel={true}
             changeActiveKey={this.props.changeActiveKey}
         />);
@@ -1285,7 +1287,7 @@ class ClueDetailOverview extends React.Component {
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
                     return <div className="similar-block">
                         <div className="similar-title">
-                            {isClueType ? renderClueStatus(listItem.status) : null}
+                            {isClueType ? renderClueStatus(listItem) : null}
                             <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
                             {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
 
@@ -1465,9 +1467,6 @@ ClueDetailOverview.defaultProps = {
     removeUpdateClueItem: function() {
 
     },
-    showClueDetailPanel: function() {
-
-    },
     hideRightPanel: function() {
 
     },
@@ -1500,7 +1499,6 @@ ClueDetailOverview.propTypes = {
     updateClueClassify: PropTypes.func,
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
-    showClueDetailPanel: PropTypes.func,
     hideRightPanel: PropTypes.func,
     updateClueProperty: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,

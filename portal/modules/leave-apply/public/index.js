@@ -25,7 +25,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 var NoData = require('CMP_DIR/analysis-nodata');
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
-import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 class LeaveApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加请假申请面板
@@ -303,6 +303,7 @@ class LeaveApplyManagement extends React.Component {
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="请假申请列表">
                         <ApplyDropdownAndAddBtn
+                            applyType={APPLY_TYPE.LEAVE}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_LEAVE_APPLY'

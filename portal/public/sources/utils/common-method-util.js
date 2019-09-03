@@ -25,7 +25,8 @@ import {
     REG_FILES_SIZE_RULES,
     ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM,
     FINAL_TASK,
-    ORGANIZATION_APP_TYPES
+    ORGANIZATION_APP_TYPES,
+    REALM_REMARK
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -35,6 +36,7 @@ import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -342,12 +344,15 @@ exports.getClueStatus = function(status) {
     }
     return statusDes;
 };
-exports.renderClueStatus = function(status) {
+exports.renderClueStatus = function(listItem) {
+    let status = 
+            _.isString(listItem) ? listItem :
+            listItem.availability === "1" ? 'invalid': listItem.status;
     var statusDes = '';
     switch (status) {
         case '0':
-            statusDes = <span
-                className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
+            statusDes = 
+                <span className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
             break;
         case '1':
             statusDes =
@@ -360,6 +365,10 @@ exports.renderClueStatus = function(status) {
         case '3':
             statusDes =
                 <span className="clue-stage has-transfer">{Intl.get('clue.customer.has.transfer', '已转化')}</span>;
+            break;
+        case 'invalid':
+            statusDes =
+                <spam className="clue-stage has-invalid">{Intl.get( 'clue.analysis.inability', '无效')}</spam>
             break;
     }
     return statusDes;
@@ -447,6 +456,8 @@ exports.getApplyTopicText = function(obj) {
         return getDocumentReportTypeText(DOCUMENT_TYPE, _.get(obj, 'detail.document_type'));
     } else if (obj.topic === APPLY_APPROVE_TYPES.MEMBER_INVITE) {
         return Intl.get('member.application', '成员申请');
+    }else if (obj.workflow_type === SELF_SETTING_FLOW.VISITAPPLY){
+        return Intl.get('apply.my.self.setting.work.flow', '拜访申请');
     }
 };
 function getDocumentReportTypeText(AllTypeList, specificType) {
@@ -960,4 +971,66 @@ exports.isOpenCash = () => {
 exports.setExclusiveNumber = (phoneType) => {
     let isDefault = _.isEqual(phoneType, 'default');
     userData.setUserData('hasExcluesiveNumber', !isDefault);
+};
+//是否是识微域
+exports.isCiviwRealm = () => {
+    var userDetail = userData.getUserData();
+    var realmId = _.get(userDetail, 'auth.realm_id');
+    return realmId === REALM_REMARK.CIVIW;
+};
+
+//客户名唯一性验证的提示信息
+/**
+ * @param customerNameExist 客户名是否存在
+ * @param existCustomerList 已存在的客户列表
+ * @param checkNameError 客户名检验接口报错的提示
+ * @param curCustomerName 当前输入的客户名
+ * @param showRightPanel 点击客户名打开客户详情的方法
+* */
+exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkNameError, curCustomerName, showRightPanel) => {
+    if (customerNameExist) {
+        let list = _.cloneDeep(existCustomerList);
+        const sameCustomer = _.find(list, item => item.name === curCustomerName);
+        const curUserId = userData.getUserData().user_id;
+        let renderCustomerName = (customer) => {
+            if (customer) {
+                //如果是我的客户，可以查看客户详情
+                if (_.get(customer, 'user_id') === curUserId) {
+                    return (
+                        <a href="javascript:void(0)" onClick={showRightPanel.bind(this, _.get(customer, 'id'))} className="handle-btn-item">
+                            {_.get(customer, 'name', '')}
+                        </a>);
+                } else {//如果是其他人的客户，只能看名字，不能看客户详情
+                    return (<span>{_.get(customer, 'name', '')} ({_.get(customer, 'user_name')})</span>);
+                }
+            } else {
+                return null;
+            }
+        };
+        list = _.filter(list, cur => cur.id !== sameCustomer.id)
+        return (
+            <div className="tip-customer-exist">
+                <span className="tip-customer-error">{Intl.get('call.record.customer', '客户')}{sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，</span>
+                {/*同名客户或相似客户的第一个*/}
+                {renderCustomerName(sameCustomer || list.shift())}
+                {_.get(list, 'length') ? (
+                    <div>
+                        {Intl.get('crm.68', '相似的客户还有')}:
+                        {_.map(list, customer => {
+                            return (
+                                <div key={_.get(customer, 'id')}>
+                                    {renderCustomerName(customer)}
+                                </div>
+                            );
+                        })}
+                    </div>) : null}
+            </div>
+        );
+    } else if (checkNameError) {
+        return (
+            <div className="check-only-error"><ReactIntl.FormattedMessage id="crm.69" defaultMessage="客户名唯一性校验出错"/>！
+            </div>);
+    } else {
+        return '';
+    }
 };

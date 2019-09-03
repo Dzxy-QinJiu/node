@@ -58,7 +58,11 @@ class ClueDetailPanel extends React.Component {
             isInitialHeight: true, //恢复到初始的高度
             openAppShowFlag: false,//是否展示开通应用面板
             isAddingPlanInfo: false,//是否展示添加联系计划面板
+            isAddingScheduleSuccess: false, //添加自定义计划是否成功
             isAddToCustomerFlag: false,//是否展示添加到已有线索面板
+            hasPhonePanel: false,//是否有电话面板，用于线索面板计算高度
+            phonePanelHasCustomerSchedule: false,//是否正在编辑自定义事件，用于线索面板计算高度
+            phonePanelFinishTrace: false,//电话面板是否完成跟进,用于线索面板计算高度
         };
     }
 
@@ -159,6 +163,10 @@ class ClueDetailPanel extends React.Component {
                 }
                 paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
             }
+            //如果打电话的模态框展示，将flag值变为true
+            this.setState({
+                hasPhonePanel: true
+            });
         }
         this.setState({
             paramObj: paramObj
@@ -336,6 +344,9 @@ class ClueDetailPanel extends React.Component {
                 currentId={customer.id}
                 curClue={customer}
                 hideRightPanel={this.hideClueDetailPanel}
+                hasPhonePanel={this.state.hasPhonePanel}
+                phonePanelHasCustomerSchedule={this.state.phonePanelHasCustomerSchedule}
+                phonePanelFinishTrace={this.state.phonePanelFinishTrace}
             />);
     }
 
@@ -368,13 +379,31 @@ class ClueDetailPanel extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-plan-info-container'), '点击添加联系计划按钮');
         this.setState({
             isAddingPlanInfo: true,
+            phonePanelHasCustomerSchedule: true
         });
+    };
+    //关闭联系计划面板
+    closeAddPlan = () => {
+        if(this.state.isAddingPlanInfo) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-plan-info-container'), '关闭联系计划');
+            this.setState({
+                isAddingPlanInfo: false,
+                phonePanelHasCustomerSchedule: false
+            });
+        }
     };
 
     //取消保存联系计划
-    handleScheduleCancel = () => {
+    handleScheduleCancel = (resData) => {
+        //如果有返回值的回调此函数，说明为保存成功后面板自动关闭
+        if(!_.isEmpty(resData)) {
+            this.setState({
+                isAddingScheduleSuccess: true
+            });
+        }
         this.setState({
-            isAddingPlanInfo: false
+            isAddingPlanInfo: false,
+            phonePanelHasCustomerSchedule: false
         });
     };
 
@@ -457,6 +486,19 @@ class ClueDetailPanel extends React.Component {
         return _.get(this,'props.paramObj.clue_params.curClue') || _.get(this,'state.clueInfoArr[0]');
     }
 
+    //根据回调函数返回跟进的编辑状态来标记flag
+    setTraceEditStatus = (type) => {
+        if(_.isEqual(type, 'edit')) {
+            this.setState({
+                phonePanelFinishTrace: false,
+            });
+        } else {
+            this.setState({
+                phonePanelFinishTrace: true,
+            });
+        }
+    }
+
     renderPhoneStatus() {
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
         //有监听到推送消息时再渲染出页面
@@ -486,6 +528,9 @@ class ClueDetailPanel extends React.Component {
                         detailClueId={this.getDetailClueId()}//线索详情中打电话时，线索的id
                         isAddingMoreProdctInfo={this.state.isAddingMoreProdctInfo}
                         handleAddPlan={this.handleAddPlan}
+                        closeAddPlan={this.closeAddPlan} //手动控制关闭面板
+                        isAddingScheduleSuccess={this.state.isAddingScheduleSuccess}//检查自定义是否添加成功
+                        setTraceEditStatus={this.setTraceEditStatus} //添加跟进内容回调，获取编辑状态 'edit' 'text'
                         isAddingPlanInfo={this.state.isAddingPlanInfo}
                         commonPhoneDesArray={cluePhoneDesArray}
                         showMarkClueInvalid={showMarkClueInvalid}
@@ -557,8 +602,12 @@ class ClueDetailPanel extends React.Component {
                     {paramObj.call_params ? this.renderPhoneStatus() : null}
                     {/*{只打开线索详情或从当前展示的线索详情中打电话时}*/}
                     {this.isOnlyOpenClueDetail(paramObj) || this.isClueDetailCall(paramObj) ? (
-                        <ClueDetail ref={cluePanel => this.cluePanel = cluePanel} {...paramObj.clue_params}
+                        <ClueDetail ref={cluePanel => this.cluePanel = cluePanel}
+                            {...paramObj.clue_params}
                             hideRightPanel={this.hideClueDetailPanel}
+                            hasPhonePanel={this.state.hasPhonePanel}
+                            phonePanelHasCustomerSchedule={this.state.phonePanelHasCustomerSchedule}
+                            phonePanelFinishTrace={this.state.phonePanelFinishTrace}
                         />) : null
                     }
                 </div>

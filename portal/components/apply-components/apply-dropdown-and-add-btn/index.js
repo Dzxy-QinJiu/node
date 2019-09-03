@@ -3,23 +3,31 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/27.
  */
-import {Button, Menu, Dropdown} from 'antd';
+import {Button, Menu, Dropdown, Popover} from 'antd';
+import {Link} from 'react-router-dom';
 var hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 require('./index.less');
 var classNames = require('classnames');
 import {getUnreadReplyTitle} from 'PUB_DIR/sources/utils/common-method-util';
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
+
 class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
-
+            applyType: this.props.applyType,
+            applyState: {}
         };
     }
 
-    onStoreChange = () => {
+    componentWillMount = () => {
+        getApplyState(this.props.applyType).then(applyState => {
+            this.setState({
+                applyState
+            });
+        });
+    }
 
-    };
     componentDidMount = () => {
 
     };
@@ -29,6 +37,7 @@ class ApplyDropdownAndAddBtn extends React.Component {
     componentWillUnmount = () => {
 
     };
+
     renderApplyMessage = () => {
         var showUnreadTip = this.props.showUnreadTip;
         var isCheckUnreadApplyList = this.props.isCheckUnreadApplyList;
@@ -41,6 +50,28 @@ class ApplyDropdownAndAddBtn extends React.Component {
             </div>
         );
     };
+
+    showAddApplyPanel = () => {
+        this.props.showAddApplyPanel();
+    };
+
+    //根据返回的状态信息渲染带Popover的button和不带Popover的button
+    renderApplyButton = () => {
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        return (
+            applyPrivileged ? (
+                <Button className='pull-right add-leave-btn' onClick={this.showAddApplyPanel}>{this.props.addApplyMessage}</Button>) :
+                (<Popover
+                    overlayClassName="apply-invalid-popover"
+                    placement="bottomRight"
+                    content={_.get(this.state, 'applyState.applyMessage')}
+                    trigger="click"
+                >
+                    <Button className='pull-right add-leave-btn'>{this.props.addApplyMessage}</Button>
+                </Popover>)
+        );
+    }
+
     render(){
         // 筛选菜单
         var menuList = (
@@ -68,16 +99,13 @@ class ApplyDropdownAndAddBtn extends React.Component {
                     }
                 </div>
                 {hasPrivilege(this.props.addPrivilege) ?
-                    <Button className='pull-right add-leave-btn' onClick={this.props.showAddApplyPanel}
-                    >{this.props.addApplyMessage}</Button>
+                    this.renderApplyButton()
                     : null}
                 <div className="pull-right search-btns">
                     {this.props.showApplyMessageIcon ? this.renderApplyMessage() : null}
                     {this.props.showRefreshIcon ? <span onClick={this.props.refreshPage}
                         className={classNames('iconfont pull-right icon-refresh', {'has-new-apply': this.props.showUpdateTip})}
                         title={this.props.showUpdateTip ? Intl.get('user.apply.new.refresh.tip', '有新申请，点此刷新') : Intl.get('user.apply.no.new.refresh.tip', '无新申请')}/> : null}
-
-
                 </div>
             </div>
         );
@@ -125,6 +153,7 @@ ApplyDropdownAndAddBtn.propTypes = {
     toggleUnreadApplyList: PropTypes.func,
     showUnreadTip: PropTypes.bool,
     isCheckUnreadApplyList: PropTypes.bool,
+    applyType: PropTypes.string
 };
 
 export default ApplyDropdownAndAddBtn;

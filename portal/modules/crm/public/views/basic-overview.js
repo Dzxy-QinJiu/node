@@ -8,7 +8,7 @@ import {isUnmodifiableTag} from '../utils/crm-util';
 var basicOverviewStore = require('../store/basic-overview-store');
 var basicOverviewAction = require('../action/basic-overview-actions');
 var SalesTeamStore = require('../../../sales_team/public/store/sales-team-store');
-import {message, Button} from 'antd';
+import {message, Button, Popover} from 'antd';
 var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
@@ -28,9 +28,10 @@ import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
-import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
-const PRIVILEGE_MAP = {
+import CustomerStageCard from './basic_info/customer-stage-card';
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate'; const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
     CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
     EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
@@ -55,11 +56,14 @@ class BasicOverview extends React.Component {
             applyFormShowFlag: false,
             competitorList: [],
             isOplateUser: false,
+            customerStageList: [], // 客户阶段列表
         };
     }
 
     onChange = () => {
-        this.setState({...basicOverviewStore.getState()});
+        this.setState({
+            ...basicOverviewStore.getState(),
+        });
     };
 
     onRecordStoreChange = () => {
@@ -70,14 +74,25 @@ class BasicOverview extends React.Component {
         });
     };
 
+    componentWillMount = () => {
+        getApplyState(APPLY_TYPE.USER_APPLY).then(applyState => {
+            this.setState({
+                applyState
+            });
+        });
+    }
+
     componentDidMount() {
         basicOverviewStore.listen(this.onChange);
         CustomerRecordStore.listen(this.onRecordStoreChange);
-        basicOverviewAction.getBasicData(this.props.curCustomer);
+        let curCustomer = this.props.curCustomer;
+        let teamId = _.get(curCustomer, 'sales_team_id');
+        basicOverviewAction.getBasicData(curCustomer);
         if(!this.props.disableEdit){
             this.getRecommendTags();
             this.getCompetitorList();
             this.getIntegrateConfig();
+            this.getCustomerStageByTeamId(teamId); // 获取客户阶段
             if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
                 setTimeout(() => {
                     this.getCrmUserList(this.props.curCustomer);
@@ -87,6 +102,23 @@ class BasicOverview extends React.Component {
             }
         }
     }
+
+    // 获取客户阶段
+    getCustomerStageByTeamId = (teamId) => {
+        crmAjax.getCustomerStageByTeamId(teamId).then( (result) => {
+            if (result && result.id) {
+                let customerStageList = result.customer_stages;
+                this.setState({
+                    customerStageList: _.map(customerStageList, 'name')
+                });
+            } else {
+                this.setState({
+                    customerStageList: []
+                });
+            }
+        });
+    };
+
     getIntegrateConfig(){
         commonDataUtil.getIntegrationConfig().then(resultObj => {
             let isOplateUser = _.get(resultObj, 'type') === INTEGRATE_TYPES.OPLATE;
@@ -170,7 +202,8 @@ class BasicOverview extends React.Component {
                 }
                 //需要展示未处理的电联的联系计划
                 this.getNotCompletedScheduleList(nextProps.curCustomer);
-
+                let teamId = _.get(nextProps.curCustomer, 'sales_team_id');
+                this.getCustomerStageByTeamId(teamId); // 获取客户阶段
             });
         }
     }
@@ -328,7 +361,7 @@ class BasicOverview extends React.Component {
                     <span className="expire-tip-content">
                         {Intl.get('crm.overview.expire.tip', '有应用{days}试用到期', {days: expireTrialUsers[0].overDraftTimeStr})}
                     </span>
-                    <span className="iconfont icon-arrow-right" onClick={this.turnToUserList}
+                    <span className="iconfont icon-arrow-right handle-btn-item" onClick={this.turnToUserList}
                         title={Intl.get('call.record.show.customer.detail', '查看详情')}/>
                 </div>);
             return (<DetailCard content={tip} className="expire-tip-contianer"/>);
@@ -336,6 +369,26 @@ class BasicOverview extends React.Component {
             return null;
         }
     };
+
+    //根据是否绑定激活渲染带Popover的button和不带Popover的button
+    renderApplyButton = () => {
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        return (
+            applyPrivileged ? (
+                <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
+                    {Intl.get('crm.apply.user.new', '申请新用户')}
+                </Button>) :
+                (<Popover
+                    placement="bottomRight"
+                    overlayClassName="apply-invalid-popover"
+                    content={_.get(this.state, 'applyState.applyMessage')}
+                    trigger="click">
+                    <Button className='crm-detail-add-btn'>
+                        {Intl.get('crm.apply.user.new', '申请新用户')}
+                    </Button>
+                </Popover>)
+        );
+    }
 
     //渲染申请用户的提示\面板
     renderApplyUserBlock = () => {
@@ -360,11 +413,9 @@ class BasicOverview extends React.Component {
                         <span className="no-user-tip-content">
                             {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
                         </span>
-                        <Button className='crm-detail-add-btn' onClick={this.toggleApplyForm.bind(this)}>
-                            {Intl.get('crm.apply.user.new', '申请新用户')}
-                        </Button>
+                        {this.renderApplyButton()}
                     </div>);
-                return (<DetailCard content={tip} className="apply-user-tip-contianer"/>);
+                return <DetailCard content={tip} className="apply-user-tip-contianer"/>;
             }
         }
         return null;
@@ -474,12 +525,22 @@ class BasicOverview extends React.Component {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
         var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
+
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
                     {!this.props.disableEdit ? (
                         hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
+                    <CustomerStageCard
+                        isMerge={this.props.isMerge}
+                        updateMergeCustomer={this.props.updateMergeCustomer}
+                        disableEdit={this.props.disableEdit}
+                        customerStageList={this.state.customerStageList}
+                        currentStage={basicData.customer_label}
+                        basicData={basicData}
+                        editBasicSuccess={this.editBasicSuccess}
+                    />
                     <SalesTeamCard
                         isMerge={this.props.isMerge}
                         updateMergeCustomer={this.props.updateMergeCustomer}

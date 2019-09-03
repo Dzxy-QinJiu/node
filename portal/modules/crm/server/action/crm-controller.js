@@ -492,3 +492,12 @@ exports.getCustomerPoolFilterItems = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 通过团队id获取客户阶段（销售流程)
+exports.getCustomerStageByTeamId = (req, res) => {
+    crmService.getCustomerStageByTeamId(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

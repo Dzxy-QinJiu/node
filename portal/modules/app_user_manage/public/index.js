@@ -11,6 +11,7 @@ var RightPanel = require('../../../components/rightPanel').RightPanel;
 var AppUserStore = require('./store/app-user-store');
 var AppUserPanelSwitchStore = require('./store/app-user-panelswitch-store');
 var AppUserAction = require('./action/app-user-actions');
+import userScoreAction from 'MOD_DIR/user_score/public/action/index';
 var AppUserUtil = require('./util/app-user-util');
 
 var UserView = require('./views/user-view');
@@ -103,6 +104,39 @@ class AppUserManage extends React.Component {
         }
         //记住上一次路由
         this.prevRoutePath = currentView;
+
+        //获取配置过的用户评分规则
+        this.getUserScoreConfig();
+
+    }
+    getUserScoreConfig = () => {
+        //获取用户基础评分规则
+        this.getUserScoreLists();
+        //获取用户参与度评分规则
+        this.getUserEngagementRule();
+        this.getUserIndicator();
+    };
+    getUserIndicator() {
+        userScoreAction.getUserScoreIndicator((result) => {
+            this.setState({
+                userIndicator: _.cloneDeep(result)
+            });
+        });
+    }
+    getUserEngagementRule() {
+        userScoreAction.getUserEngagementRule((result) => {
+            this.setState({
+                userEngagementScore: _.cloneDeep(result)
+            });
+        });
+    }
+
+    getUserScoreLists() {
+        userScoreAction.getUserScoreLists((result) => {
+            this.setState({
+                userBasicScore: _.cloneDeep(result)
+            });
+        });
     }
 
     getIntegrationConfig(getUserDataCallback) {
@@ -325,7 +359,7 @@ class AppUserManage extends React.Component {
             if (this.state.appListErrorMsg) {
                 clickMsg = Intl.get('app.user.failed.get.apps', '获取失败') + '，' + clickMsg;
             } else {
-                clickMsg = Intl.get('user.no.app', '暂无应用') + '，' + clickMsg;
+                clickMsg = Intl.get('user.no.product','暂无产品') + '，' + clickMsg;
             }
             list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="retry-get-applist-container">
                 <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
@@ -333,8 +367,8 @@ class AppUserManage extends React.Component {
                 </div>
             </Option>);
         }
-        list.unshift(<Option value="" key="all" title={Intl.get('user.app.all', '全部应用')}><ReactIntl.FormattedMessage
-            id="user.app.all" defaultMessage="全部应用"/></Option>);
+        list.unshift(<Option value="" key="all" title={Intl.get('user.product.all','全部产品')}><ReactIntl.FormattedMessage
+            id="'user.product.all" defaultMessage="全部产品"/></Option>);
         return list;
     };
 
@@ -501,7 +535,7 @@ class AppUserManage extends React.Component {
             if (this.state.selectedUserRows.length) {
                 return (
                     <div className="inline-block add-btn-common btn-item" onClick={this.showApplyUserForm}>
-                        <Button>{Intl.get('user.app.open', '开通应用')}</Button>
+                        <Button>{Intl.get('user.product.open','开通产品')}</Button>
                     </div>);
             }
             //没选中用户加提示
@@ -509,7 +543,7 @@ class AppUserManage extends React.Component {
                 <Popover placement="left" content={this.getUserRowsTooltip()} title={null}>
                     <div className="inline-block add-btn-common gray btn-item">
                         <Button disabled>
-                            {Intl.get('user.app.open', '开通应用')}
+                            {Intl.get('user.product.open','开通产品')}
                         </Button>
                     </div>
                 </Popover>);
@@ -763,7 +797,7 @@ class AppUserManage extends React.Component {
                         return (
                             <span className="cus-op">
                                 {isDeleteBtnShow ? (
-                                    <i className="order-btn-class iconfont icon-delete "
+                                    <i className="order-btn-class iconfont icon-delete handle-btn-item "
                                         onClick={this.deleteImportUser.bind(this, idx)}
                                         data-tracename="删除导入的用户数据"
                                         title={Intl.get('common.delete', '删除')}/>
@@ -824,7 +858,7 @@ class AppUserManage extends React.Component {
                         minWidth={120}
                         value={this.state.selectedAppId}
                         onChange={this.onSelectedAppChange}
-                        notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                        notFoundContent={!appOptions.length ? Intl.get('user.no.product','暂无产品') : Intl.get('user.no.related.product','无相关产品')}
                     >
                         {appOptions}
                     </SelectFullWidth>
@@ -899,6 +933,9 @@ class AppUserManage extends React.Component {
                             isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
                             selectedAppId={this.state.selectedAppId}
                             userConditions={this.state.userConditions}
+                            userEngagementScore={this.state.userEngagementScore}
+                            userBasicScore={this.state.userBasicScore}
+                            userIndicator={this.state.userIndicator}
                         />
                     );
                     break;

@@ -27,6 +27,7 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import routeList from '../../modules/common/route';
 import ajax from '../../modules/common/ajax';
 import { PropTypes } from 'prop-types';
+import {renderCustomerNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
 const PHONE_INPUT_ID = 'phoneInput';
 class AddCustomerForm extends React.Component {
     constructor(props) {
@@ -142,7 +143,7 @@ class AddCustomerForm extends React.Component {
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
                         //已存在
-                        this.setState({customerNameExist: true, checkNameError: false, existCustomerList: data.list});
+                        this.setState({customerNameExist: true, checkNameError: false, existCustomerList: _.get(data, 'list', [])});
                     }
                 }
             });
@@ -243,61 +244,6 @@ class AddCustomerForm extends React.Component {
                 message.error(data);
             }
         });
-    };
-    //客户名唯一性验证的提示信息
-    renderCustomerNameMsg = () => {
-        if (this.state.customerNameExist) {
-            const form = this.props.form;
-            let name = form.getFieldValue('name');
-            const list = _.clone(this.state.existCustomerList);
-            const index = _.findIndex(list, item => item.name === name);
-            const existSame = index > -1;
-            let customer;
-            if (existSame) customer = list.splice(index, 1)[0];
-            else customer = list.shift();
-            var curUserId = '';
-            if (userData.getUserData()) {
-                curUserId = userData.getUserData().user_id;
-            }
-            return (
-                <div className="tip-customer-exist">
-                    {Intl.get('call.record.customer', '客户')} {existSame ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，
-
-                    {customer.user_id === curUserId ? (
-                        <a href="javascript:void(0)"
-                            onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
-                    ) : (
-                        <span>{customer.name} ({customer.user_name})</span>
-                    )}
-
-                    {list.length ? (
-                        <div>
-                            {Intl.get('crm.68', '相似的客户还有')}:
-                            {list.map((customer, index) => {
-                                return (
-                                    <div key={index}>
-                                        {customer.user_id === curUserId ? (
-                                            <div>
-                                                <a href="javascript:void(0)"
-                                                    onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
-                                            </div>
-                                        ) : (
-                                            <div>{customer.name} ({customer.user_name})</div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : null}
-                </div>
-            );
-        } else if (this.state.checkNameError) {
-            return (
-                <div className="check-only-error"><ReactIntl.FormattedMessage id="crm.69" defaultMessage="客户名唯一性校验出错"/>！
-                </div>);
-        } else {
-            return '';
-        }
     };
     checkOnlyContactPhone = (rule, value, callback) => {
         CrmAction.checkOnlyContactPhone(value, data => {
@@ -415,7 +361,7 @@ class AddCustomerForm extends React.Component {
 
     };
     render = () => {
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator, getFieldValue} = this.props.form;
         const formLayout = this.state.formLayout;
         var formData = this.state.formData;
         const formItemLayout = {
@@ -450,6 +396,7 @@ class AddCustomerForm extends React.Component {
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
         var initialValue = this.props.phoneNum || '';
         var fixedHeight = $(window).height() - this.props.scrollLayOut;
+        let customerName = getFieldValue('name');
         return (
             <div id="add-customer-form-container" style={{height: fixedHeight}} data-tracename="增加客户页面">
                 <GeminiScrollbar>
@@ -480,7 +427,7 @@ class AddCustomerForm extends React.Component {
                                             />
                                         )}
                                     </FormItem>
-                                    {this.renderCustomerNameMsg()}
+                                    {renderCustomerNameMsg(this.state.customerNameExist, this.state.existCustomerList, this.state.checkNameError, customerName, this.props.showRightPanel)}
                                     <FormItem
                                         label={Intl.get('common.industry', '行业')}
                                         id="industry"

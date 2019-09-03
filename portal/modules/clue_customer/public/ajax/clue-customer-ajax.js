@@ -16,6 +16,10 @@ const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
     'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
 };
+const QUERYCLUE = {
+    'MANAGER': 'CLUECUSTOMER_QUERY_MANAGER', //管理员通过关键词查询线索的权限
+    'USER': 'CLUECUSTOMER_QUERY_USER'//普通销售通过关键词查询线索的权限
+};
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
 var userData = require('PUB_DIR/sources/user-data');
@@ -232,6 +236,36 @@ exports.getClueFulltext = function(queryObj) {
     var Deferred = $.Deferred();
     getClueFulltextAjax && getClueFulltextAjax.abort();
     getClueFulltextAjax = $.ajax({
+        url: url ,
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//通过关键字获取线索列表
+let getClueListByKeywordAjax;
+exports.getClueListByKeyword = function(queryObj) {
+    let pageSize = queryObj.pageSize;
+    delete queryObj.pageSize;
+    let sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
+    delete queryObj.sorter;
+    let type = '';
+    if(hasPrivilege(QUERYCLUE.USER)) {
+        type = 'user';
+    }else if (hasPrivilege(QUERYCLUE.MANAGER)){
+        type = 'manager';
+    }
+    let url = `/rest/clue/${type}/${pageSize}/${sorter.field}/${sorter.order}`;
+    let Deferred = $.Deferred();
+    getClueListByKeywordAjax && getClueListByKeywordAjax.abort();
+    getClueListByKeywordAjax = $.ajax({
         url: url ,
         dataType: 'json',
         type: 'post',

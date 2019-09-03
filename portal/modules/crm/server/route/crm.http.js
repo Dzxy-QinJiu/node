@@ -364,6 +364,13 @@ module.exports = {
                 needLogin: true
             },
             privileges: ['CUSTOMER_POOL_MANAGE']
+        }, {// 通过团队id获取客户阶段（销售流程）
+            method: 'get',
+            path: '/rest/get/customer/stage/:teamId',
+            handler: 'getCustomerStageByTeamId',
+            passport: {
+                needLogin: true
+            }
         }
     ]
 };

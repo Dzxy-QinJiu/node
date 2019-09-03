@@ -63,7 +63,7 @@ class PhoneCallout extends React.Component {
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;
         var visible = this.state.visible;
-        var iconCls = classNames('iconfont icon-active-call_record-ico',{
+        var iconCls = classNames('iconfont icon-active-call_record-ico handle-btn-item',{
             'default-show': this.props.showPhoneIcon || this.props.hidePhoneNumber
         });
         return (

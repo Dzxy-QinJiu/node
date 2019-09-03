@@ -90,6 +90,7 @@ exports.getUserData = function(req, res) {
         DesktopIndexService.getUserInfo(req, res, user.user_id)
             .on('success', function(data) {
                 //将界面上可能会修改到的登录用户的信息进行刷新
+                user.email = data.email,
                 user.user_logo = data.user_logo;
                 user.nick_name = data.nick_name;
                 user.team_id = data.team_id;

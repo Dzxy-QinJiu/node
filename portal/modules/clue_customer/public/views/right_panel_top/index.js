@@ -19,5 +19,13 @@ class BasicData extends React.Component {
         );
     }
 }
+BasicData.defaultProps = {
+    clueStatus: '',
+    clueTypeTitle: ''
+};
+BasicData.propTypes = {
+    clueStatus: PropTypes.string,
+    clueTypeTitle: PropTypes.string,
+};
 
 module.exports = BasicData;

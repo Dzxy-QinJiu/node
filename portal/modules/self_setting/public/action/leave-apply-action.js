@@ -8,6 +8,7 @@ let userData = require('PUB_DIR/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {getAllApplyList,getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+var applyApproveManageAjax = require('../ajax/leave-apply-ajax');
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -57,6 +58,16 @@ function LeaveApplyActions() {
             getDiffTypeApplyList(this,queryObj);
         }
     };
+    this.addSelfSettingApply = function(submitObj,callback) {
+        this.dispatch({error: false, loading: true});
+        applyApproveManageAjax.addSelfSettingApply(submitObj).then((result) => {
+            this.dispatch({error: false, loading: false});
+            _.isFunction(callback) && callback(result);
+        }, (errorMsg) => {
+            this.dispatch({error: true, loading: false, errorMsg: errorMsg});
+
+        });
+    };
 
 }
 function getDiffTypeApplyList(that,queryObj,workListArr) {
@@ -86,5 +97,6 @@ function getDiffTypeApplyList(that,queryObj,workListArr) {
             loading: false,
             errMsg: errorMsg || Intl.get('failed.get.all.leave.list','获取全部请假申请失败')
         });});
+
 }
 module.exports = alt.createActions(LeaveApplyActions);

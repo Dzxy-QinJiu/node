@@ -1,5 +1,5 @@
 /**
- * 过期账号分析
+ * 过期用户分析
  */
 
 import accountChart from '../../charts/account';
@@ -18,17 +18,17 @@ module.exports = {
 
 function getCharts() {
     return [
-        //过期账号数统计
-        accountChart.getAccountNumChart('expired', '过期账号数统计'),
+        //过期用户数统计
+        accountChart.getAccountNumChart('expired',Intl.get('user.statistics.expire','过期用户数统计')),
         //行业统计
-        accountChart.getAccountIndustryChart('expired', '过期账号行业统计'),
+        accountChart.getAccountIndustryChart('expired', Intl.get('user.statistics.expire.industry','过期用户行业统计')),
         //团队统计
-        accountChart.getAccountTeamChart('expired', '过期帐号团队分布统计'),
-        //账号类型
+        accountChart.getAccountTeamChart('expired', Intl.get('user.statistics.expire.team','过期用户团队分布统计')),
+        //用户类型
         accountChart.getAccountTypeChart('expired'),
         //状态统计
         accountChart.getAccountStatusChart('expired'),
-        //单应用帐号活跃度趋势
+        //单应用用户活跃度趋势
         accountChart.getActivityChart('expired'),
         //在线时长统计
         accountChart.getLoginLongChart('expired'),

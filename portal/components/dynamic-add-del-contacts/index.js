@@ -49,6 +49,8 @@ class DynamicAddDelContacts extends React.Component {
             }else{
                 callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
             }
+        } else {
+            callback();
         }
     }
 
@@ -171,7 +173,7 @@ class DynamicAddDelContacts extends React.Component {
         const emailArray = contact_keys[index].email;
         const weChatArray = contact_keys[index].weChat;
         const contactKey = item.key;//当前联系人的key
-        const delContactCls = classNames('iconfont icon-delete', {
+        const delContactCls = classNames('iconfont icon-delete handle-btn-item', {
             'disabled': index === 0 && size === 1
         });
         const validateContactName = this.props.validateContactName;

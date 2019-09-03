@@ -63,6 +63,7 @@ export const SYSTEM_NOTICE_TYPES = {
 };
 export const APPLY_APPROVE_TYPES = {
     //获取数据时，接口返回数据中用于展示的申请类型标识
+    VISIT_APPLY: 'visitapply',//拜访申请
     CUSTOMER_VISIT: 'customer_visit',//出差申请，后端传到前端的出差申请的类型
     BUSINESS_OPPORTUNITIES: 'business_opportunities',//销售机会申请，获取全部销售机会申请前端传给后端的类型，后端传到前端的销售机会的类型
     PERSONAL_LEAVE: 'personal_leave',//请假申请，获取全部请假申请前端传给后端的类型，后端传到前端请假的类型
@@ -83,6 +84,7 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEREPORTSEND: 'unhandleReportSend',//未处理的请假申请数量
     UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
+    UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
 };
 
@@ -489,7 +491,7 @@ export const DIFF_APPLY_TYPE_UNREAD_REPLY = {
 
 // 用户分析中，时间选择类型
 export const DATE_SELECT = [
-    {name: Intl.get('user.login.last.year', '近一年'), value: 'year'},
+    {name: Intl.get('user.login.last.six.month', '近六个月'), value: 'six_month'},
     {name: Intl.get('user.login.last.month', '近一月'), value: 'month' },
     {name: Intl.get('user.login.last.week', '近一周'), value: 'week'}
 ];
@@ -615,3 +617,30 @@ export const CHANGE_RECORD_TYPE = {
     teamChange: 'teamChange', // 变更团队
     teamRoleChange: 'teamRoleChange', // 变更职务
 };
+export const REALM_REMARK = {
+    CIVIW: '36duh3ok3i'//销识微域的安全域id
+};
+export const ASSIGN_TYPE = {
+    NEXT_CANDIDATED: 'nextCandidated',
+    COMMON_SALES: 'commonSales'
+};
+
+// 用户申请类型
+export const APPLY_TYPE = {
+    USER_APPLY: 'userapply',//用户审批
+    BUSINESS_OPPORTUNITIES: 'businessopportunities', //机会申请
+    BUSINESS_TRIP: 'businesstrip', //出差申请
+    LEAVE: 'leave', //请假申请
+    DOCUMENT_WRITING: 'documentwriting', //文件撰写
+    OPINION_REPORT: 'opinionreport', //舆情报告
+};
+
+//申请抄送类型
+export const CC_INFO = {
+    APPLY: 'apply', //提交申请时抄送
+    APPLY_AND_APPROVE: 'apply_and_approve', //审批通过后抄送
+    APPROVE: 'approve' //提交申请和审批通过后都抄送
+};
+
+// 客户阶段中的每个阶段的颜色
+export const CUSTOMER_STAGE_COLOR = ['#D0C628', '#9BBD33', '#38BB3B', '#07B3C2', '#2196F3', '#806FE6', '#D078D1', '#D18F78'];

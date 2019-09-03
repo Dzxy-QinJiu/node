@@ -499,7 +499,7 @@ class SalesClueItem extends React.Component {
             {/*是有效线索并且有关联客户*/}
             {availability && associatedCustomer ?
                 <div className="associate-customer">
-                        <CustomerLabel label={salesClueItem.customer_lable} />
+                    <CustomerLabel label={salesClueItem.customer_lable} />
                     <b className="customer-name" onClick={this.showCustomerDetail.bind(this, salesClueItem.customer_id)} data-tracename="点击查看关联客户详情">{associatedCustomer}<span className="arrow-right">&gt;</span></b></div> : null}
             {/*是无效线索且有判定无效的相关信息*/}
             {inValidClue ?
@@ -538,7 +538,7 @@ class SalesClueItem extends React.Component {
                     }
                 </div>
                 {hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
-                    <Button className='add-trace-content'
+                    <Button className='add-trace-content handle-btn-item'  
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}
                 {associatedPrivilege && hasTraceClue ? <Button onClick={this.onConvertToCustomerBtnClick.bind(this, salesClueItem.id, salesClueItem.name, salesClueItem.phones)} data-tracename="点击关联客户按钮">{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
@@ -584,7 +584,7 @@ class SalesClueItem extends React.Component {
             <div className={itemCls} data-tracename="线索概览信息">
                 <div className="clue-top-title">
                     <span className="hidden record-id">{salesClueItem.id}</span>
-                    {renderClueStatus(salesClueItem.status)}
+                    {renderClueStatus(salesClueItem)}
                     <span className="clue-name" data-tracename="查看线索详情"
                         onClick={this.handleShowClueDetail.bind(this, salesClueItem)}>{salesClueItem.name}</span>
                     {salesClueItem.availability === '1' ? <Tag>{Intl.get('sales.clue.is.enable', '无效')}</Tag> : null}

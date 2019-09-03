@@ -241,6 +241,13 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{//通过关键词获取线索列表
+            method: 'post',
+            path: '/rest/clue/:type/:page_size/:sort_field/:order',
+            handler: 'getClueListByKeyword',
+            passport: {
+                'needLogin': true
+            }
         }
     ]
 };

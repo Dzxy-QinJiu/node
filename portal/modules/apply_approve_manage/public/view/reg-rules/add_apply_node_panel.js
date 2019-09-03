@@ -37,8 +37,8 @@ class AddApplyNodePanel extends React.Component {
             checkedRadioValue: '',
             //todo 可否可以多选
             higher_ups: {
-                candidateUsers: '',//上级审批人
-                showCandidateUsers: '',//显示的名称
+                candidateUsers: 'team_0_true',//上级审批人
+                showCandidateUsers: Intl.get('apply.approve.first.higher.level', '直属上级'),//显示的名称
                 higherLevelApproveChecked: true,//空缺时由组织中的更上一级审批
                 adminApproveChecked: false,//没有审批人的时候由管理员审批
             },
@@ -144,23 +144,6 @@ class AddApplyNodePanel extends React.Component {
             higher_ups: higher_ups
         });
     };
-    onChangeAdminApproveHigherLevel = (e) => {
-        var value = e.target.value;
-        var higher_ups = this.state.higher_ups;
-        if (value === 'higherLevelApproveChecked'){
-            higher_ups.higherLevelApproveChecked = true;
-            higher_ups.adminApproveChecked = false;
-        }else if (value === 'adminApproveChecked'){
-            higher_ups.higherLevelApproveChecked = false;
-            higher_ups.adminApproveChecked = true;
-        }
-        this.setState({
-            adminApproveHigherLevel: value,
-            higher_ups: higher_ups
-        });
-
-
-    };
     handleHigherUpChange = (value) => {
         var higher_ups = this.state.higher_ups;
         var userArr = value.split('-');
@@ -214,16 +197,22 @@ class AddApplyNodePanel extends React.Component {
                             <div className="higher-level-item addition-condition-item">
                                 <Select showSearch
                                     onChange={this.handleHigherUpChange}
-                                    filterOption={(input, option) => ignoreCase(input, option)}>
+                                    filterOption={(input, option) => ignoreCase(input, option)}
+                                    defaultValue={Intl.get('apply.approve.first.higher.level', '直属上级') + '-0'}
+                                >
                                     {_.map(TEAM_HIGHER_LEVEL, (item,index) => {
                                         return <Option value={item.name + '-' + index} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
                             </div>
-                            <Radio.Group className="radio-select-list" onChange={this.onChangeAdminApproveHigherLevel} value={this.state.adminApproveHigherLevel}>
-                                <Radio value='higherLevelApproveChecked'>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Radio>
-                                {/*<Radio value='adminApproveChecked'>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Radio>*/}
-                            </Radio.Group>
+                            <div className="higher-level-item addition-condition-item">
+                                <Checkbox checked={higher_ups.higherLevelApproveChecked}
+                                    onChange={this.onChangeHigherLevelCheck}>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Checkbox>
+                            </div>
+                            {/*<div className="higher-level-item addition-condition-item">*/}
+                            {/*<Checkbox checked={higher_ups.adminApproveChecked}*/}
+                            {/*onChange={this.onChangeAdminApproveCheck}>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Checkbox>*/}
+                            {/*</div>*/}
                         </div>
                     );
                 case 'setting_roles' :
@@ -271,9 +260,21 @@ class AddApplyNodePanel extends React.Component {
                         submitObj.showName = higher_ups.showCandidateUsers;
                         if (_.isBoolean(higher_ups.higherLevelApproveChecked)) {
                             submitObj.higherLevelApproveChecked = higher_ups.higherLevelApproveChecked;
+                            var approveArr = submitObj.candidateApprover.split('_');
+                            if(submitObj.higherLevelApproveChecked){
+                                approveArr[_.get(approveArr,'length') - 1] = 'true';
+                            }else{
+                                approveArr[_.get(approveArr,'length') - 1] = 'false';
+                            }
+                            submitObj.candidateApprover = approveArr.join('_');
                         }
                         if (_.isBoolean(higher_ups.adminApproveChecked)) {
                             submitObj.adminApproveChecked = higher_ups.adminApproveChecked;
+                            if (submitObj.adminApproveChecked){
+                                var approveArr = submitObj.candidateApprover.split('_');
+                                approveArr[_.get(approveArr,'length') - 1] = 'managers';
+                                submitObj.candidateApprover = approveArr.join('_');
+                            }
                         }
                         errTip = false;
                     }

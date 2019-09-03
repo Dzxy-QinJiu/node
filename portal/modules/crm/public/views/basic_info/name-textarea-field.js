@@ -18,10 +18,19 @@ let CrmBasicAjax = require('../../ajax/index');
 import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import {renderCustomerNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
 let NameTextareaField = createReactClass({
     displayName: 'NameTextareaField',
     mixins: [FieldMixin],
-
+    propTypes: {
+        isMerge: PropTypes.bool,
+        customerId: PropTypes.string,
+        name: PropTypes.string,
+        setEditNameFlag: PropTypes.func,
+        updateMergeCustomer: PropTypes.func,
+        modifySuccess: PropTypes.func,
+        showRightPanel: PropTypes.func,
+    },
     getDefaultProps: function() {
         return {
             customerId: '',
@@ -147,65 +156,12 @@ let NameTextareaField = createReactClass({
                         this.setState({customerNameExist: false, checkNameError: false});
                     } else {
                         //已存在
-                        this.setState({customerNameExist: true, checkNameError: false, existCustomerList: data.list});
+                        this.setState({customerNameExist: true, checkNameError: false, existCustomerList: _.get(data, 'list', [])});
                     }
                 }
             }, this.state.customerId);
         } else {
             this.setState({customerNameExist: false, checkNameError: false});
-        }
-    },
-
-    //客户名唯一性验证的提示信息
-    renderCustomerNameMsg: function() {
-        if (this.state.customerNameExist) {
-            let name = this.state.formData.name;
-            const list = _.clone(this.state.existCustomerList);
-            const index = _.findIndex(list, item => item.name === name);
-            const existSame = index > -1;
-            let customer;
-            if (existSame) customer = list.splice(index, 1)[0];
-            else customer = list.shift();
-
-            const curUserId = userData.getUserData().user_id;
-
-            return (
-                <div className="tip-customer-exist">
-                    {Intl.get('call.record.customer', '客户')} {existSame ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，
-
-                    {customer.user_id === curUserId ? (
-                        <a href="javascript:void(0)"
-                            onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
-                    ) : (
-                        <span>{customer.name} ({customer.user_name})</span>
-                    )}
-
-                    {list.length ? (
-                        <div>
-                            {Intl.get('crm.68', '相似的客户还有')}:
-                            {list.map((customer, index) => {
-                                return (
-                                    <div key={index}>
-                                        {customer.user_id === curUserId ? (
-                                            <div><a href="javascript:void(0)"
-                                                onClick={this.props.showRightPanel.bind(this, customer.id)}>{customer.name}</a>
-                                            </div>
-                                        ) : (
-                                            <div>{customer.name} ({customer.user_name})</div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : null}
-                </div>
-            );
-        } else if (this.state.checkNameError) {
-            return (
-                <div className="check-only-error"><ReactIntl.FormattedMessage id="crm.69" defaultMessage="客户名唯一性校验出错"/>！
-                </div>);
-        } else {
-            return '';
         }
     },
 
@@ -230,7 +186,7 @@ let NameTextareaField = createReactClass({
                             />
                         </Validator>
                     </FormItem>
-                    {this.renderCustomerNameMsg()}
+                    {renderCustomerNameMsg(this.state.customerNameExist, this.state.existCustomerList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
                 </Validation>
                 <SaveCancelButton loading={this.state.loading}
                     saveErrorMsg={this.state.submitErrorMsg}

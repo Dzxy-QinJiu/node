@@ -21,7 +21,7 @@ class UserDetailEditAppStore {
         //提交错误信息
         this.submitErrorMsg = '';
         //提交人
-        this.operator = UserData.getUserData().nick_name;
+        this.operator = _.get(UserData.getUserData(),'nick_name');
     }
     //选中的应用列表发生变化
     setInitialData(appInfo) {

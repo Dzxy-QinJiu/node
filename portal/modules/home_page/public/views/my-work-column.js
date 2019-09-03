@@ -26,6 +26,7 @@ import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-v
 import LeaveApplyDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail';
 import DocumentApplyDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
 import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
+import VisitApplyDetail from 'MOD_DIR/self_setting/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
@@ -90,7 +91,6 @@ class MyWorkColumn extends React.Component {
             curWorkType: '',//当前筛选类型
             myWorkList: [],
             //我的工作类型
-            myWorkTypes: [{name: Intl.get('home.page.work.all', '全部事务'), value: ''}],
             loading: false,
             load_id: '',//用于下拉加载的id
             totalCount: 0,//共多少条工作
@@ -108,7 +108,6 @@ class MyWorkColumn extends React.Component {
     componentDidMount() {
         this.getUserList();
         this.getGuideConfig();
-        this.getMyWorkTypes();
         this.getMyWorkList();
         //关闭详情前，已完成工作处理的监听
         myWorkEmitter.on(myWorkEmitter.HANDLE_FINISHED_WORK, this.handleFinishedWork);
@@ -123,6 +122,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
 
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
@@ -139,6 +139,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
     }
 
     // 获取销售人员
@@ -191,17 +192,7 @@ class MyWorkColumn extends React.Component {
         this.setState({guideConfig});
     }
 
-    getMyWorkTypes() {
-        myWorkAjax.getMyWorkTypes().then((typeList) => {
-            let workTypes = _.map(typeList, item => {
-                return {name: item.name, value: item.key};
-            });
-            workTypes.unshift({name: Intl.get('home.page.work.all', '全部事务'), value: ''});
-            this.setState({myWorkTypes: workTypes});
-        }, (errorMsg) => {
 
-        });
-    }
 
     getMyWorkList() {
         let queryParams = {
@@ -244,29 +235,7 @@ class MyWorkColumn extends React.Component {
         });
     }
 
-    onChangeWorkType = ({key}) => {
-        this.setState({curWorkType: key === 'item_0' ? '' : key, myWorkList: [], load_id: ''}, () => {
-            this.getMyWorkList();
-        });
-    }
 
-    getWorkTypeDropdown() {
-        const workTypeMenu = (
-            <Menu onClick={this.onChangeWorkType}>
-                {_.map(this.state.myWorkTypes, item => {
-                    return (<Menu.Item key={item.value}>{item.name}</Menu.Item>);
-                })}
-            </Menu>);
-        const curWorkType = _.find(this.state.myWorkTypes, item => item.value === this.state.curWorkType);
-        const curWorkTypeName = _.get(curWorkType, 'name', this.state.myWorkTypes[0].name);
-        return (
-            <Dropdown overlay={workTypeMenu} trigger={['click']} placement='bottomRight'>
-                <span className='my-work-dropdown-trigger'>
-                    {curWorkTypeName}
-                    <Icon type='down' className='dropdown-icon'/>
-                </span>
-            </Dropdown>);
-    }
 
     openClueDetail = (clueId, work) => {
         //打开新详情前先将之前已完成的工作处理掉
@@ -517,6 +486,7 @@ class MyWorkColumn extends React.Component {
 
     getApplyType(type) {
         const APPLY_TYPE_MAP = {
+            'visitapply': Intl.get('apply.my.self.setting.work.flow', '拜访申请'),
             'business_opportunities': Intl.get('leave.apply.sales.oppotunity', '机会申请'),
             'customer_visit': Intl.get('leave.apply.add.leave.apply', '出差申请'),
             'personal_leave': Intl.get('leave.apply.leave.application', '请假申请'),
@@ -1105,6 +1075,15 @@ class MyWorkColumn extends React.Component {
                 topic: this.getApplyType(_.get(work, 'apply.apply_type', ''))
             };
             switch (_.get(work, 'apply.apply_type')) {
+                case APPLY_APPROVE_TYPES.VISIT_APPLY: //拜访申请
+                    detailContent = (
+                        <VisitApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishApplyWork}
+                        />);
+                    break;
                 case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会申请
                     detailContent = (
                         <OpportunityApplyDetail
@@ -1190,7 +1169,6 @@ class MyWorkColumn extends React.Component {
         return (
             <ColumnItem contianerClass='my-work-wrap'
                 title={title}
-                titleHandleElement={this.getWorkTypeDropdown()}
                 content={this.renderWorkContent()}
             />);
     }

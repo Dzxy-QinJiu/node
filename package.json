@@ -88,7 +88,7 @@
   "devDependencies": {
     "alt": "0.17.9",
     "ant-ajax": "1.0.2",
-    "antc": "1.0.150",
+    "antc": "1.0.151",
     "antd": "2.13.0",
     "autoprefixer": "8.3.0",
     "autosize": "3.0.17",

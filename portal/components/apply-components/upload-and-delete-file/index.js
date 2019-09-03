@@ -302,7 +302,7 @@ class UploadAndDeleteFile extends React.Component {
                 {deleteResult.result === 'loading' && deleteResult.delId === fileItem.id ?
                     <Icon type="loading"/> :
                     <Popconfirm placement="top" title={Intl.get('apply.approve.delete.this.file','是否删除此文件')} onConfirm={this.handleDeleteFile.bind(this, fileItem)} okText={Intl.get('user.yes', '是')} cancelText={Intl.get('user.no','否')}>
-                        <i className="iconfont icon-delete"></i>
+                        <i className="iconfont icon-delete handle-btn-item"></i>
                     </Popconfirm>
 
                 }

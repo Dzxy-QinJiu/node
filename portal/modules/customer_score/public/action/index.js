@@ -15,15 +15,17 @@ class CustomerScoreActions {
             'changeLargerHandlePoint',
             'setInitialRangeValue',//初始化尺子上的尺寸
             'hideSaveErrMsg',
+            'hideSaveLevelErrMsg',
             'updateCustomerScoreRange',
             'updateCustomerRule'
         );
     }
     getCustomerScoreRules() {
+        this.dispatch({loading: true,error: false});
         customerScoreAjax.getCustomerScoreRules().then((result) => {
-            this.dispatch({resData: result});
+            this.dispatch({loading: false,error: false, resData: result});
         }, (errorMsg) => {
-
+            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     }
     getCustomerScoreLevel(callback) {
@@ -35,9 +37,8 @@ class CustomerScoreActions {
             this.dispatch({loading: false,error: true, errorMsg: errorMsg});
         });
     }
-    getCustomerScoreIndicator(callback){
+    getCustomerScoreIndicator(){
         customerScoreAjax.getCustomerScoreIndicator().then((result) => {
-            _.isFunction(callback) && callback(result);
             this.dispatch({resData: result});
         }, (errorMsg) => {
 
@@ -46,6 +47,20 @@ class CustomerScoreActions {
     saveCustomerRules(queryObj,callback){
         this.dispatch({loading: true,error: false});
         customerScoreAjax.saveCustomerRules(queryObj).then((result) => {
+            if (result){
+                _.isFunction(callback) && callback();
+                this.dispatch({loading: false,error: false});
+            }else{
+                this.dispatch({loading: false,error: true, errorMsg: Intl.get('common.save.failed', '保存失败')});
+            }
+
+        }, (errorMsg) => {
+            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
+        });
+    }
+    saveCustomerLevels(queryObj,callback){
+        this.dispatch({loading: true,error: false});
+        customerScoreAjax.saveCustomerLevels(queryObj).then((result) => {
             if (result){
                 _.isFunction(callback) && callback();
                 this.dispatch({loading: false,error: false});

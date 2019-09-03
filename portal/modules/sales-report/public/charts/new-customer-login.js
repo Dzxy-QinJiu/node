@@ -27,7 +27,7 @@ export const newCustomerLoginChart = () => {
                     width: 80
                 },
                 {
-                    title: Intl.get('oplate_customer_analysis.customerLoginCount', '新开通客户登录数'),
+                    title: Intl.get('oplate_customer_analysis.customerLoginCount', '登录过的客户数'),
                     dataIndex: 'customer_login',
                     align: 'right',
                     width: 80

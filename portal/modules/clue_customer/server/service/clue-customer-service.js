@@ -71,6 +71,8 @@ const restApis = {
     extractRecommendClue: '/rest/clue/v2/ent/clue',
     //批量提取线索
     batchExtractRecommendLists: '/rest/clue/v2/ent/clues',
+    //根据关键词获取线索
+    getClueListByKeyword: clueBaseUrl + '/query/:type/:page_size/:sort_field/:order'
 };
 
 //查询客户
@@ -525,6 +527,19 @@ exports.getRecommendClueLists = function(req, res) {
     return restUtil.authRest.post(
         {
             url: restApis.getRecommendClueLists,
+            req: req,
+            res: res
+        }, req.body);
+};
+//根据关键词获取线索
+exports.getClueListByKeyword = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.getClueListByKeyword
+                .replace(':type', req.params.type)
+                .replace(':page_size', req.params.page_size)
+                .replace(':sort_field', req.params.sort_field)
+                .replace(':order', req.params.order),
             req: req,
             res: res
         }, req.body);

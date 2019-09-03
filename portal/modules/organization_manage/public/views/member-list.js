@@ -332,7 +332,7 @@ var MemberList = createReactClass({
         var isAddMember = this.props.isAddMember; //是否是添加状态
         var isEditMember = this.props.isEditMember;//是否是编辑状态
         var showMemberOperationBtn = this.props.showMemberOperationBtn;
-        var addActiveClass = classNames('add-member-btn operation-top-btn iconfont icon-add', this.props.className, {
+        var addActiveClass = classNames('add-member-btn operation-top-btn iconfont icon-add handle-btn-item', this.props.className, {
             'active-btn': isAddMember
         });
         var editActiveClass = classNames('edit-member-btn operation-top-btn iconfont icon-update', this.props.className, {

@@ -245,7 +245,7 @@ class Industry extends React.Component {
                                                 data-tracename="点击删除某个行业按钮"
                                                 className="ant-btn"
                                             >
-                                                <i className="iconfont icon-delete "></i>
+                                                <i className="iconfont icon-delete handle-btn-item "></i>
                                             </span>
                                             { this.state.DeletingItemId === item.id ? (
                                                 <span ><Icon type="loading"/></span>

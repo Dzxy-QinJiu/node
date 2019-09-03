@@ -1,5 +1,5 @@
 /**
- * 账号分析
+ * 用户分析
  */
 
 import { getContextContent } from '../../utils';

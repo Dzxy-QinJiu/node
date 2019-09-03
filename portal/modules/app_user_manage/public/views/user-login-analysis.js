@@ -17,18 +17,24 @@ import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
 //日历热力图颜色
 const CALENDER_COLOR = {
     BORDER: '#A2A2A2',
-    CONTENT: '#7190B4'
+    CONTENT: ['#90caf9', '#2196f3', '#006bc0']
 };
 
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
-        userId: '1'
+        userId: '1',
+        userEngagementScore: {},
+        userBasicScore: {},
+        userIndicator: []
     };
 
     static propTypes = {
         userId: PropTypes.string,
         selectedAppId: PropTypes.string,
         height: PropTypes.number,
+        userEngagementScore: PropTypes.object,
+        userBasicScore: PropTypes.object,
+        userIndicator: PropTypes.Array,
     };
 
     onStateChange = () => {
@@ -40,7 +46,7 @@ class UserLoginAnalysis extends React.Component {
     };
 
     getUserAnalysisInfo = (userId, selectedAppId) => {
-        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId, timeType: 'year' }, selectedAppId);
+        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId, timeType: 'six_month' }, selectedAppId);
         if (selectedAppId) {
             UserLoginAnalysisAction.setSelectedAppId(selectedAppId);
         }
@@ -144,7 +150,7 @@ class UserLoginAnalysis extends React.Component {
         return {
             user_id: this.props.userId,
             appid: app_id,
-            starttime: queryParams && queryParams.starttime || moment().subtract(1, 'year').valueOf(),
+            starttime: queryParams && queryParams.starttime || moment().subtract(6, 'month').valueOf(),
             endtime: new Date().getTime()
         };
     }
@@ -186,6 +192,7 @@ class UserLoginAnalysis extends React.Component {
         if (_.get(loginScore.data, 'score') === undefined) {
             return null;
         } else {
+            const {userEngagementScore, userBasicScore} = this.props;
             return (
                 <div className='login-score'>
                     <div className="score-container total-score">
@@ -238,6 +245,34 @@ class UserLoginAnalysis extends React.Component {
                                 </Tooltip>
                             </span>
                         </li>
+                        {!_.isEmpty(userBasicScore) && _.get(userBasicScore,'status') === 'enable' ?
+                            _.map(_.get(userBasicScore,'detail'), userBasic => {
+                                var targetObj = _.find(this.props.userIndicator, indicatorItem => indicatorItem.indicator === userBasic.indicator);
+                                if (_.get(targetObj,'desc')){
+                                    return <li>
+                                        <span>{_.get(targetObj,'desc')}:</span>
+                                        <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data,`${userBasic.indicator}`) || 0)}
+                                            <Tooltip trigger="click">
+                                                <Icon type="question-circle-o" />
+                                            </Tooltip>
+                                        </span>
+                                    </li>;
+                                }else{
+                                    return null;
+                                }
+
+                            })
+                            : null}
+                        {!_.isEmpty(userEngagementScore) && _.get(userBasicScore,'status') === 'enable' ?
+                            <li>
+                                <span>{Intl.get('user.score.particate.in.score', '参与度评分')}:</span>
+                                <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'user_engagement_score') || 0)}
+                                    <Tooltip trigger="click">
+                                        <Icon type="question-circle-o" />
+                                    </Tooltip>
+                                </span>
+                            </li>
+                            : null}
                     </ul>
                 </div>
             );
@@ -347,12 +382,77 @@ class UserLoginAnalysis extends React.Component {
 
     };
 
+    //获取块配置
+    getPieces(data) {
+        //去零、去重、按从小到大排序后的数值数组
+        const numArr = _.chain(data).map('sum').filter(it => it > 0).uniq().sort().value();
+        //颜色数组
+        const colorArr = CALENDER_COLOR.CONTENT;
+        //块配置数组
+        let pieceArr = [];
+
+        //数值数组有值时，才能根据数值生成块配置
+        if (numArr.length > 0) {
+            //如果数值数组的长度小于等于颜色数组的长度
+            if (numArr.length <= colorArr.length) {
+                //给每个数值分配颜色
+                _.each(numArr, (num, index) => {
+                    pieceArr.push({value: num, color: colorArr[index]});
+                });
+            //如果数值数组的长度大于颜色数组的长度，
+            //则需要对数值数组进行分段，为每个段分配颜色
+            } else {
+                //分段长度
+                const fragLen = _.round(numArr.length / colorArr.length);
+
+                //遍历颜色数组，生成颜色对应的块配置
+                _.each(colorArr, (color, index) => {
+                    //分段起始索引
+                    const startIndex = index * fragLen;
+                    //分段起始值
+                    const fragStart = numArr[startIndex];
+
+                    //分段结束索引
+                    const endIndex = (index + 1) * fragLen;
+                    //分段结束值
+                    let fragEnd;
+
+                    //如果是最后一个分段
+                    if (index + 1 === colorArr.length) {
+                        //则分段结束值应该是数值数组最后一个值
+                        fragEnd = _.last(numArr);
+                        //此时分段结束值应该包含在分段内，即比较符为 lte（小于等于），而非 lt（小于）
+                        pieceArr.push({gte: fragStart, lte: fragEnd, color});
+                    //否则
+                    } else {
+                        //分段结束值根据分段结束索引获取
+                        fragEnd = numArr[endIndex];
+                        //此时分段结束值不包含在当前分段内，即比较符为 lt（小于）
+                        pieceArr.push({gte: fragStart, lt: fragEnd, color});
+                    }
+                });
+            }
+        }
+
+        return pieceArr;
+    }
+
     renderChart = (data, charTips) => {
+        //今天
+        const today = moment().format(oplateConsts.DATE_FORMAT);
+        //六个月前
+        const sixMonthAgo = moment().subtract(6, 'months').format(oplateConsts.DATE_FORMAT);
+
+        const range = [sixMonthAgo, today];
+
+        const pieces = this.getPieces(data);
+
         const calendarHeatMapOption = {
             calendar: [{
-                cellSize: [7, 7],
-                left: 'center',
+                cellSize: [13, 13],
+                left: 10,
                 top: 20,
+                range,
                 splitLine: {
                     lineStyle: {
                         color: CALENDER_COLOR.BORDER
@@ -363,9 +463,8 @@ class UserLoginAnalysis extends React.Component {
                 formatter: charTips
             },
             visualMap: {
-                inRange: {
-                    color: ['#fff', CALENDER_COLOR.CONTENT]
-                }
+                type: 'piecewise',
+                pieces,
             },
         };
 
@@ -433,7 +532,7 @@ class UserLoginAnalysis extends React.Component {
         });
     };
     handleSelectDate = (app, value) => {
-        let starttime = moment().subtract(1, 'year').valueOf();
+        let starttime = moment().subtract(6, 'month').valueOf();
         if (value === 'month') {
             starttime = moment().subtract(1, 'month').valueOf();
         } else if (value === 'week') {
@@ -448,7 +547,7 @@ class UserLoginAnalysis extends React.Component {
     };
     // 渲染时间选择框
     renderTimeSelect = (app) => {
-        let timeType = _.get(this.state.appUserDataMap, [app.app_id, 'timeType'], 'year');
+        let timeType = _.get(this.state.appUserDataMap, [app.app_id, 'timeType'], 'six_month');
         let list = _.map(DATE_SELECT, item =>
             <Option value={item.value} key={item.value} title={item.name}>{item.name}</Option>);
         return (
@@ -561,8 +660,8 @@ class UserLoginAnalysis extends React.Component {
                                         <span className="btn-bar">
                                             {
                                                 this.state.showDetailMap[app.app_id] ?
-                                                    <span className="iconfont icon-up-twoline" onClick={this.showAppDetail.bind(this, app, false)}></span> :
-                                                    <span className="iconfont icon-down-twoline" onClick={this.showAppDetail.bind(this, app, true)}></span>
+                                                    <span className="iconfont icon-up-twoline handle-btn-item" onClick={this.showAppDetail.bind(this, app, false)}></span> :
+                                                    <span className="iconfont icon-down-twoline handle-btn-item" onClick={this.showAppDetail.bind(this, app, true)}></span>
                                             }
                                         </span>
                                     </div>

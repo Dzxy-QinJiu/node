@@ -221,8 +221,8 @@ class AppRolePermission extends React.Component {
         //展开、收起 class名
         var advanceRoleClass = classNames({
             iconfont: true,
-            'icon-up-twoline': state.showPermissionBlock,
-            'icon-down-twoline': !state.showPermissionBlock
+            'icon-up-twoline handle-btn-item': state.showPermissionBlock,
+            'icon-down-twoline handle-btn-item': !state.showPermissionBlock
         });
         return <div>
             <div className="app-role-permission-role">
@@ -248,7 +248,7 @@ class AppRolePermission extends React.Component {
                     state.ajaxPermissionList.length > 0 ?
                         (
                             <div className='divider-right'>
-                                <span className='divider-content' onClick={this.togglePermissionBlock}>
+                                <span className='divider-content handle-btn-item' onClick={this.togglePermissionBlock}>
                                     {
                                         !state.showPermissionBlock ?
                                             Intl.get('user.permission.show', '展开具体权限') : Intl.get('user.permission.hide', '收起具体权限')
@@ -330,8 +330,8 @@ class AppRolePermission extends React.Component {
         //展开、收起 class名
         var advanceRoleClass = classNames({
             iconfont: true,
-            'icon-up-twoline': state.showPermissionBlock,
-            'icon-down-twoline': !state.showPermissionBlock
+            'icon-up-twoline handle-btn-item': state.showPermissionBlock,
+            'icon-down-twoline handle-btn-item': !state.showPermissionBlock
         });
         return <div className="app-role-permission-list">
             {state.ajaxRolesList.map((roleInfo) => {
@@ -410,7 +410,7 @@ class AppRolePermission extends React.Component {
                             <h4 onClick={() => {
                                 this.showPerItemdetail(group, false);
                             }}>
-                                <Icon type="down"/>
+                                <Icon type="down" className='handle-btn-item'/>
                                 <span>
                                     {group.permission_group_name}
                                 </span>
@@ -433,7 +433,7 @@ class AppRolePermission extends React.Component {
                             <h4 onClick={() => {
                                 this.showPerItemdetail(group, true);
                             }}>
-                                <Icon type="right"/>
+                                <Icon type="right" className='handle-btn-item'/>
                                 <span>
                                     {group.permission_group_name}
                                 </span>

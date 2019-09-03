@@ -157,11 +157,11 @@ class RecommendCustomerRightPanel extends React.Component {
                     message.error(Intl.get('clue.extract.failed', '提取失败'));
                 }
             },
-            error: (xhr) => {
+            error: (errorInfo) => {
                 this.setState({
                     singleExtractLoading: false,
                 });
-                message.error(Intl.get('clue.extract.failed', '提取失败'));
+                message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }
         });
 
@@ -288,7 +288,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !this.isCommonSales();
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue',{'assign-privilege': hasAssignedPrivilege});
+                    let containerCls = classNames('singl-extract-clue',{'assign-privilege ': hasAssignedPrivilege},'handle-btn-item');
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}
@@ -439,11 +439,11 @@ class RecommendCustomerRightPanel extends React.Component {
 
                 }
             },
-            error: (errorMsg) => {
+            error: (errorInfo) => {
                 this.setState({
                     batchExtractLoading: false
                 });
-                message.error(errorMsg || Intl.get('clue.extract.failed', '提取失败'));
+                message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }
         });
     };

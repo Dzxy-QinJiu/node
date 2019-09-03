@@ -61,8 +61,10 @@ class ClueTraceList extends React.Component {
 
     componentDidMount() {
         ClueTraceStore.listen(this.onStoreChange);
-        //获取线索的跟进记录
-        this.getClueTraceList();
+        setTimeout(() => {//此处不加setTimeout，调用action方法时会报Dispatch错误
+            //获取线索的跟进记录
+            this.getClueTraceList();
+        });
         $(window).on('resize', this.onStoreChange);
     }
 
@@ -182,7 +184,7 @@ class ClueTraceList extends React.Component {
         //概览页添加跟进记录的按钮
         if (this.props.isOverViewPanel) {
             return (
-                <span className="iconfont icon-add" onClick={this.toggleAddRecordPanel.bind(this)}
+                <span className="iconfont icon-add handle-btn-item" onClick={this.toggleAddRecordPanel.bind(this)}
                     title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
         } else {//跟进记录页，添加跟进记录的按钮
             return (
@@ -607,11 +609,10 @@ class ClueTraceList extends React.Component {
                             ) : null
                         }
                         {_.includes(PHONE_TYPES, item.type) ?
-                            (<span className="phone-call-out-btn" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
+                            (<span className="phone-call-out-btn handle-btn-item" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
                                 <PhoneCallout
                                     phoneNumber={item.dst}
                                     hidePhoneNumber={true}
-                                    showClueDetailPanel={this.props.showClueDetailPanel.bind(this, this.props.curClue)}
                                 />
                             </span>) : null}
                         <span className="item-bottom-right">
@@ -722,7 +723,6 @@ ClueTraceList.defaultProps = {
     ShowCustomerUserListPanel: noop,
     updateCustomerLastContact: noop,
     curClue: {},
-    showClueDetailPanel: noop,
     isOverViewPanel: false,
     changeActiveKey: noop
 };
@@ -732,7 +732,6 @@ ClueTraceList.propTypes = {
     ShowCustomerUserListPanel: PropTypes.func,
     updateCustomerLastContact: PropTypes.func,
     curClue: PropTypes.object,
-    showClueDetailPanel: PropTypes.func,
     isOverViewPanel: PropTypes.bool,
     changeActiveKey: PropTypes.func
 };

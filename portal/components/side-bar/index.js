@@ -46,7 +46,7 @@ class SideBar extends React.Component {
     };
     chatClick = () => {
         //如果有客服时，点击触发出客服界面
-        $('#chatBtn').trigger('click');
+        $('#newBridge #nb_icon_wrap').trigger('click');
     };
 
     render() {
@@ -58,7 +58,7 @@ class SideBar extends React.Component {
             <div className='side-bar-content'>
                 <div className='side-bar'>
                     <div className='single-bar-box'>
-                        <i className='iconfont icon-weixin ' onMouseEnter={this.weixinMouseEnter}
+                        <i className='iconfont icon-weixin' onMouseEnter={this.weixinMouseEnter}
                             onMouseLeave={this.weixinMouseLeave}
                         ></i>
                         <i className='single-bar-label'>{Intl.get('weixin.mini.program', '小程序')}</i>
@@ -68,10 +68,11 @@ class SideBar extends React.Component {
                             onMouseLeave={this.appMouseLeave}></i>
                         <i className='single-bar-label'>{Intl.get('login.ketao.app.name', '客套APP')}</i>
                     </div>
-                    <div className='single-bar-box'>
-                        <i className='iconfont   icon-apply-message-tip' onClick={this.chatClick}></i>
-                        <i className='single-bar-label'>{Intl.get('customer.service', '客服')}</i>
-                    </div>
+                    {this.state.showChat ? (
+                        <div className='single-bar-box'>
+                            <i className='iconfont icon-apply-message-tip' onClick={this.chatClick}></i>
+                            <i className='single-bar-label'>{Intl.get('customer.service', '客服')}</i>
+                        </div>) : (<div className='single-bar-box is-placeholder'/>)}
                 </div>
                 <img className={weixinClassName} src={weixinImgUrl}
                     style={{'margin-bottom': weixinBottom + 'px'}}></img>

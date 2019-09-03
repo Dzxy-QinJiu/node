@@ -23,7 +23,7 @@ import ApplyDetailStatus from 'CMP_DIR/apply-components/apply-detail-status';
 import ApplyApproveStatus from 'CMP_DIR/apply-components/apply-approve-status';
 import ApplyDetailBottom from 'CMP_DIR/apply-components/apply-detail-bottom';
 import ModalDialog from 'CMP_DIR/ModalDialog';
-import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS,TOP_NAV_HEIGHT} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_LIST_LAYOUT_CONSTANTS, APPLY_STATUS,TOP_NAV_HEIGHT, REALM_REMARK, ASSIGN_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {
     getApplyTopicText,
     getApplyResultDscr,
@@ -32,23 +32,14 @@ import {
     handleDiffTypeApply,
     formatSalesmanList,
     formatUsersmanList,
-    updateUnapprovedCount
+    updateUnapprovedCount,
+    isCiviwRealm
 } from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-const salesmanAjax = require('MOD_DIR/common/public/ajax/salesman');
 import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
-import {APPLY_APPROVE_TYPES,REFRESH_APPLY_RANGE,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
-var timeoutFunc;//定时方法
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
-
-const ASSIGN_TYPE = {
-    NEXT_CANDIDATED: 'nextCandidated',
-    COMMON_SALES: 'commonSales'
-};
+import {APPLY_APPROVE_TYPES,APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
-import {REALM_REMARK} from '../utils/sales-oppotunity-utils';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import classNames from 'classnames';
 
 class ApplyViewDetail extends React.Component {
@@ -147,9 +138,7 @@ class ApplyViewDetail extends React.Component {
                     //隐藏通过、驳回按钮
                     SalesOpportunityApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
-                    if (_.isFunction(this.props.afterApprovedFunc)) {
-                        this.props.afterApprovedFunc();
-                    }
+                    this.props.afterApprovedFunc();
                 }else if (memberId === transferCandidateId ){
                     //将非待我审批的申请转给我审批后，展示出通过驳回按钮,不需要再手动加一，因为后端会有推送，这里如果加一就会使数量多一个
                     SalesOpportunityApplyDetailAction.showOrHideApprovalBtns(true);
@@ -507,7 +496,6 @@ class ApplyViewDetail extends React.Component {
             />
 
         );
-
     };
     // 确认撤销申请
     saleConfirmBackoutApply = (e) => {
@@ -532,11 +520,7 @@ class ApplyViewDetail extends React.Component {
         };
         SalesOpportunityApplyDetailAction.cancelApplyApprove(backoutObj);
     };
-    isCiviwRealm = () => {
-        var userDetail = userData.getUserData();
-        var realmId = _.get(userDetail, 'auth.realm_id');
-        return realmId === REALM_REMARK.CIVIW;
-    };
+
     //渲染详情底部区域
     renderDetailBottom() {
         var detailInfoObj = this.state.detailInfoObj.info;
@@ -551,7 +535,7 @@ class ApplyViewDetail extends React.Component {
             //分配给普通销售
             renderAssigenedContext = this.renderAssigenedContext;
         }else if(_.indexOf(_.get(this.state,'applyNode[0].forms',[]), 'assignNextNodeApprover') > -1 && showApproveBtn){
-            if (this.isCiviwRealm()){
+            if (isCiviwRealm()){
                 //如果是识微域，直接点通过就可以，不需要手动选择分配销售总经理
                 renderAssigenedContext = null;
             }else{
@@ -678,10 +662,8 @@ class ApplyViewDetail extends React.Component {
         var applicateName = _.get(applicantList, 'applicant.nick_name');
         var applicateTime = moment(_.get(applicantList, 'create_time')).format(oplateConsts.DATE_TIME_FORMAT);
         var userDetail = userData.getUserData();
-        var realmId = _.get(userDetail, 'auth.realm_id');
-        var isCiviwRealm = realmId === REALM_REMARK.CIVIW;
         var descriptionArr = [];
-        if(isCiviwRealm){
+        if(isCiviwRealm()){
             descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];
         }else{
             descriptionArr = [Intl.get('user.apply.submit.list', '提交申请'),Intl.get('user.apply.detail.pass', '通过申请'),Intl.get('user.apply.distribute.to','分配给'),Intl.get('user.apply.distribute.to.sales','已分配给销售')];
@@ -696,7 +678,7 @@ class ApplyViewDetail extends React.Component {
         if (currentLength){
             _.forEach(replyList,(replyItem,index) => {
                 var descrpt = descriptionArr[index + 1];
-                if (index === 1 && !isCiviwRealm){
+                if (index === 1 && !isCiviwRealm()){
                     //下一个节点的执行人
                     descrpt += Intl.get('sales.commission.role.manager', '销售总经理');
                 }

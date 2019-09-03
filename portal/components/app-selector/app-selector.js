@@ -269,8 +269,8 @@ class AppSelector extends React.Component {
                 list={unchoosenApps}
                 nameProp="app_name"
                 onSelect={this.addApp}
-                notFoundContent={Intl.get('user.no.related.app', '无相关应用')}
-                noDataCoutent={Intl.get('user.no.app', '暂无应用')}
+                notFoundContent={Intl.get('user.no.related.product','无相关产品')}
+                noDataCoutent={Intl.get('user.no.product','暂无产品')}
             ></SearchList>
         );
         var selectedApp = this.state.selectedApp;
@@ -338,7 +338,7 @@ class AppSelector extends React.Component {
                     {selectedApps}
                     {!this.props.readOnly && unchoosenApps && unchoosenApps.length ? (
                         <div className="application-img-div" ref="addBtn">
-                            <div className="icon-add iconfont"
+                            <div className="icon-add iconfont handle-btn-item"
                                 onClick={this.showDropDown}
                                 ref="addBtnButton"
                             ></div>

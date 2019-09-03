@@ -772,19 +772,19 @@ const ApplyUserForm = createReactClass({
                                 </FormItem>) : null}
                             <FormItem
                                 {...formItemLayout}
-                                label={Intl.get('common.app', '应用')}
+                                label={Intl.get('common.product','产品')}
                                 validateStatus={this.getValidateStatus('selectAppIds')}
                                 help={this.getHelpMessage('selectAppIds')}
                                 required
                             >
                                 <Validator rules={[{
                                     required: true,
-                                    message: Intl.get('user.app.select.please', '请选择应用'),
+                                    message: Intl.get('user.product.select.please','请选择产品'),
                                     type: 'array'
                                 }]}>
                                     <Select mode="tags" value={selectAppIds} name='selectAppIds'
                                         dropdownClassName="apply-user-apps-dropdown"
-                                        placeholder={Intl.get('user.app.select.please', '请选择应用')}
+                                        placeholder={Intl.get('user.product.select.please','请选择产品')}
                                         onChange={this.handleChangeApps.bind(this)}>
                                         {this.getAppOptions(selectAppIds)}
                                     </Select>

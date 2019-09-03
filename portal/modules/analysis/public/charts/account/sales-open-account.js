@@ -6,7 +6,7 @@ import { argCallbackUnderlineTimeToTime } from '../../utils';
 
 export function getAccountSalesOpenAccountChart() {
     return {
-        title: '销售开通账号统计',
+        title: Intl.get('user.login.create.account','销售开通用户统计'),
         url: '/rest/customer/v2/customer/:data_type/app/user/count',
         argCallback: argCallbackUnderlineTimeToTime,
         chartType: 'table',
