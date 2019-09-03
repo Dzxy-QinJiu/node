@@ -2914,8 +2914,10 @@ var en_US = {
     'user.info.binding.phone': 'Bind phone',//绑定手机号
     'user.info.no.set.phone': 'You have not bound your phone yet, {bindPhone}',//您还没有绑定手机号，{bindPhone}
     'apply.delay.endTime': 'End time',//'到期',
-    'apply.error.bind': 'You have not bind email yet, please {bindEmail}', //您还没有绑定邮箱，请先绑定邮箱
-    'apply.error.active': 'You have not active email yet, please {activeEmail}',//您还没有激活邮箱，请先激活邮箱
+    'apply.error.bind': 'You have not bound email yet, please {bindEmail}', //您还没有绑定邮箱，请先绑定邮箱
+    'apply.error.active': 'You have not activated email yet, please {activeEmail}',//您还没有激活邮箱，请先激活邮箱
+    'apply.error.subscribe': 'You have not subscribed notification email, please {subscribe}',//您还没有订阅邮件提醒, 请先订阅
+    'apply.subscribe.email.tip': 'subscribe',//订阅
     'apply.bind.email.tips': 'bind email',//绑定邮箱
     'apply.active.email.tips': 'active email',//激活邮箱
     'shear.expand': 'expand', //'展开'
