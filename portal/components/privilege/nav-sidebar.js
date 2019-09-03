@@ -395,11 +395,20 @@ var NavSidebar = createReactClass({
             </div>
         );
     },
-
+    //在线咨询
+    onChatClick() {
+        //如果有客服时，点击触发出客服界面
+        $('#newBridge #nb_icon_wrap').trigger('click');
+    },
     // 渲染二级子菜单，isShowLogOut用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
     renderSubMenuLinks(linkList, isShowLogOut) {
         return (
             <ul className="ul-unstyled">
+                {Oplate.isCurtao === 'true' ? (
+                    <li onClick={this.onChatClick}>
+                        <a>{Intl.get('menu.online.consulting', '在线咨询')}</a>
+                    </li>
+                ) : null}
                 {
                     _.map(linkList, obj =>
                         <li key={obj.id} onClick={this.closeNotificationPanel}>
