@@ -347,7 +347,7 @@ exports.getClueStatus = function(status) {
 exports.renderClueStatus = function(listItem) {
     let status = 
             typeof listItem === 'string' ? listItem :
-            listItem.availability === "1" ? status = '4': listItem.status;
+            listItem.availability === "1" ? status = 'invalid': listItem.status;
     var statusDes = '';
     switch (status) {
         case '0':
@@ -366,7 +366,7 @@ exports.renderClueStatus = function(listItem) {
             statusDes =
                 <span className="clue-stage has-transfer">{Intl.get('clue.customer.has.transfer', '已转化')}</span>;
             break;
-        case '4':
+        case 'invalid':
             statusDes =
                 <spam className="clue-stage has-invalid">{Intl.get( 'clue.analysis.inability', '无效')}</spam>
             break;
