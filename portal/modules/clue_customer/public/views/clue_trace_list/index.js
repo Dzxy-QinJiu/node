@@ -623,13 +623,10 @@ class ClueTraceList extends React.Component {
             />);
     };
     //添加跟进按钮
-    tipRecordBurron = () =>{
-                let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
-                let hasRecordPanel = this.state.customerRecord.length >0
-                //能否添加记录；详情还是概览；是不是已有记录
-                if(hasAddRecordPrivilege){
+    tipRecordButton = () =>{
+                //详情还是概览；是不是已有记录
                     if(this.props.isOverViewPanel){
-                        if(hasRecordPanel){
+                        if(this.state.customerRecord.length){
                             return  (<span className="iconfont icon-add handle-btn-item" onClick={this.toggleAddRecordPanel.bind(this)}
                             title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
                         }else{
@@ -645,13 +642,14 @@ class ClueTraceList extends React.Component {
                             </Button>
                         );
                     }
-                }
     }
 
     renderClueTraceLists = () => {
         var recordLength = _.get(this, 'state.customerRecord.length');
         //加载状态或加载数据错误时，容器高度的设置
         let loadingErrorHeight = this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight();
+        //是不是可以添加跟进
+        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
@@ -683,7 +681,7 @@ class ClueTraceList extends React.Component {
                                 handleScrollBottom={this.handleScrollBarBottom}
                                 listenScrollBottom={this.state.listenScrollBottom}
                             >
-                                {this.renderTimeLine()}
+                                {hasAddRecordPrivilege ? this.renderTimeLine():null}
                             </GeminiScrollbar>
                         </div>)}
                 </div>
@@ -707,7 +705,7 @@ class ClueTraceList extends React.Component {
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
                     {this.props.isOverViewPanel ? null : this.renderDatePicker()}
-                    {this.tipRecordBurron()}
+                    {this.tipRecordButton()}
                 </div>
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
                 <div className="show-container" id="show-container">
