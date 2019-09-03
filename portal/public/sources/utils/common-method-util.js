@@ -347,7 +347,7 @@ exports.getClueStatus = function(status) {
 exports.renderClueStatus = function(listItem) {
     let status = 
             _.isString(listItem) ? listItem :
-            listItem.availability === "1" ? status = 'invalid': listItem.status;
+            listItem.availability === "1" ? 'invalid': listItem.status;
     var statusDes = '';
     switch (status) {
         case '0':
