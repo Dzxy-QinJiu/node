@@ -2953,6 +2953,8 @@ var zh_CN = {
     'apply.delay.endTime': '到期',
     'apply.error.bind': '您还没有绑定邮箱，请先{bindEmail}',
     'apply.error.active': '您还没有激活邮箱，请先{activeEmail}',
+    'apply.error.subscribe': '您还没有订阅邮件提醒, 请先{subscribe}',
+    'apply.subscribe.email.tip': '订阅',
     'apply.bind.email.tips': '绑定邮箱',
     'apply.active.email.tips': '激活邮箱',
     'shear.expand': '展开',

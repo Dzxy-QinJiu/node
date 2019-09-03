@@ -92,8 +92,10 @@ class UserInfo extends React.Component{
             var formData = $.extend(true, {}, this.state.formData);
             if (this.state.formData.reject === 0) {
                 formData.reject = 1;
+                userData.setUserData('reject', 1);
             } else {
                 formData.reject = 0;
+                userData.setUserData('reject', 0);
             }
             this.setState({
                 formData: formData
