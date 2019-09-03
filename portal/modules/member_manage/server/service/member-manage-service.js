@@ -58,8 +58,7 @@ function getUserLists(req, res, condition, isGetAllUser, teamrole_id) {
                     //处理数据
                     let memberListObj = _.clone(data);
                     let curMemberList = _.get(memberListObj, 'data', []);
-                    let length = _.get(curMemberList, 'length', 0);
-                    for (let i = 0, len = length; i < len; i++) {
+                    _.forEach(curMemberList,(item,i) => {
                         if (isGetAllUser) {
                             //获取所有成员列表时，只返回userId、nickName和userName即可
                             curMemberList[i] = {
@@ -79,7 +78,7 @@ function getUserLists(req, res, condition, isGetAllUser, teamrole_id) {
                                 phone: curMemberList[i].phone // 手机
                             };
                         }
-                    }
+                    });
                     memberListObj.data = curMemberList;
                     resolve(memberListObj);
                 },

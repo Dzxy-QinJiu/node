@@ -885,6 +885,8 @@ exports.isFinalTask = function(applyNode) {
     if (_.isArray(applyNode) && applyNode.length) {
         //现在主要是看用户申请的审批是否位于最后一个节点，这种类型的节点只会有一个，但是如果有并行的节点，applyNode就会有两个，现在认为有一个节点是final_task ，这条审批就是位于最后一个节点
         return _.some(applyNode, item => item.description === FINAL_TASK);
+    }else{
+        return false;
     }
 };
 //判断某个审批所在节点的审批角色是否有管理员

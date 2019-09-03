@@ -115,7 +115,7 @@ const getAllUserList = function(notFilterStop) {
     });
 };
 exports.getAllUserList = getAllUserList;
-
+//获取不包含销售角色的用户列表
 const getNotSalesRoleUserList = function() {
     return new Promise((resolve, reject) => {
         if (_.get(notSalesUserList, '[0]')) {

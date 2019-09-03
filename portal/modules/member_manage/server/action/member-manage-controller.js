@@ -32,7 +32,7 @@ function handleMemberReqData(req, res) {
         params.id = req.query.id;
     }
     return {
-        params: params,
+        params: params === {} ? null : params,
         isGetAllUser: isGetAllUser,
         teamrole_id: teamrole_id
     };
@@ -41,7 +41,7 @@ function handleMemberReqData(req, res) {
 exports.getMemberList = (req, res) => {
     var submitObj = handleMemberReqData(req, res);
     var params = submitObj.params, isGetAllUser = submitObj.isGetAllUser, teamrole_id = submitObj.teamrole_id;
-    memberManageService.getMemberList(req, res, params === {} ? null : params, isGetAllUser, teamrole_id).on('success', (data) => {
+    memberManageService.getMemberList(req, res, params, isGetAllUser, teamrole_id).on('success', (data) => {
         res.status(200).json(data);
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -51,7 +51,7 @@ exports.getMemberList = (req, res) => {
 exports.getMemberListByRoles = (req, res) => {
     var submitObj = handleMemberReqData(req, res);
     var params = submitObj.params, isGetAllUser = submitObj.isGetAllUser, teamrole_id = submitObj.teamrole_id;
-    memberManageService.getMemberListByRoles(req, res, params === {} ? null : params, isGetAllUser, teamrole_id).on('success', (data) => {
+    memberManageService.getMemberListByRoles(req, res, params, isGetAllUser, teamrole_id).on('success', (data) => {
         res.status(200).json(data);
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
