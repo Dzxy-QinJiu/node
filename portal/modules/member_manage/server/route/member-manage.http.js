@@ -159,5 +159,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'get', // 根据不同角色获取不同的用户列表
+        'path': '/rest/get/member/by/roles',
+        'handler': 'getMemberListByRoles',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

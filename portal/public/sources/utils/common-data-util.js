@@ -9,7 +9,7 @@ import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 import { INTEGRATE_TYPES } from 'PUB_DIR/sources/utils/consts';
-
+import CONSTS from 'LIB_DIR/consts';
 const session = storageUtil.session;
 let appList = [];
 //oplate中的应用+客套中的产品列表
@@ -18,6 +18,7 @@ let allProductList = [];
 let integrationProductList = [];
 let dealStageList = [];
 let allUserList = [];
+let notSalesUserList = [];
 // 销售列表
 let salesmanList = [];
 let myTeamTreeMemberList = [];//我所在团队及下级团队的人员列表（管理员返回所有团队下的人员列表）
@@ -114,6 +115,38 @@ const getAllUserList = function(notFilterStop) {
     });
 };
 exports.getAllUserList = getAllUserList;
+
+const getNotSalesRoleUserList = function() {
+    return new Promise((resolve, reject) => {
+        if (_.get(notSalesUserList, '[0]')) {
+            //过滤停用的成员
+            resolve(_.filter(notSalesUserList, sales => sales && sales.status === 1));
+        } else {
+            var roleIdsConsts = _.cloneDeep(CONSTS.ROLE_ID_CONSTANS);
+            delete roleIdsConsts.SALE_ID;
+            let queryObj = {
+                roleParam: _.values(roleIdsConsts), // 成员角色
+            };
+            $.ajax({
+                url: '/rest/get/member/by/roles',
+                type: 'get',
+                dataType: 'json',
+                data: queryObj,
+                success: result => {
+                    if (_.get(result, '[0]')) {
+                        notSalesUserList = result;
+                    }
+                    resolve(_.filter(notSalesUserList, sales => sales && sales.status === 1));
+                },
+                error: xhr => {
+                    notSalesUserList = [];
+                    resolve(notSalesUserList);
+                }
+            });
+        }
+    });
+};
+exports.getNotSalesRoleUserList = getNotSalesRoleUserList;
 
 // 获取销售列表
 const getSalesmanList = function() {

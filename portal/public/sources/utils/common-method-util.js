@@ -887,6 +887,15 @@ exports.isFinalTask = function(applyNode) {
         return _.some(applyNode, item => item.description === FINAL_TASK);
     }
 };
+//判断某个审批所在节点的审批角色是否有管理员
+exports.isApprovedByManager = function(applyNode) {
+    if (_.isArray(applyNode) && applyNode.length) {
+        return _.some(applyNode, item => {
+            var name = _.get(item, 'name', '');
+            return name.indexOf(Intl.get('common.managers', '管理员')) > -1;
+        });
+    }
+};
 //把文件列表中文件大小的字段file_size,再加上一个字段size。防止在导入新文件时，计算文件大小的字段是size
 exports.uniteFileSize = function(fileLists) {
     if (_.get(fileLists,'[0].file_size','')){
@@ -1000,7 +1009,7 @@ exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkName
                 return null;
             }
         };
-        list = _.filter(list, cur => cur.id !== sameCustomer.id)
+        list = _.filter(list, cur => cur.id !== sameCustomer.id);
         return (
             <div className="tip-customer-exist">
                 <span className="tip-customer-error">{Intl.get('call.record.customer', '客户')}{sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，</span>
