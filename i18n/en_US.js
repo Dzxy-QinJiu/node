@@ -54,6 +54,7 @@ var en_US = {
     'menu.download.app': 'Download APP',//下载APP
     'menu.leave.apply.list.management': 'Application for approval',//申请审批
     'menu.active.user.lists': 'Active users',//活跃用户
+    'menu.online.consulting': 'Online consulting',//在线咨询
     //公共部分提取start
     'common.actived': 'Activated',//已激活
     'common.no.data': 'No data',//暂无数据

@@ -56,6 +56,7 @@ var zh_CN = {
     'menu.active.user.lists': '活跃用户',
     'menu.customer.score': '客户评分',
     'menu.user.score': '用户评分',
+    'menu.online.consulting': '在线咨询',
     //公共部分提取start
     'common.actived': '已激活',
     'common.no.data': '暂无数据',
