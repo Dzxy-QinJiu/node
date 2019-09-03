@@ -354,11 +354,13 @@
   }
   //申请列表
   .app_user_manage_apply_list_wrap {
+    position: relative;
     @color: #506470;
     color: @color;
     border-right: 1px solid @bordercolor;
     width: 420px;
     float: left;
+    min-height: 300px;
     @text-color: #313330;
     .searchbar {
       height: @apply-top-height;
@@ -1019,7 +1021,7 @@
   }
 }
 .app_user_manage_apply_list_error{
-  position: static;
+  position: absolute;
 }
 
 .apply-filter-menu-list {
