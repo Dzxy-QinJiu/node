@@ -1,6 +1,6 @@
 var React = require('react');
 const PropTypes = require('prop-types');
-import {Form, Icon, message, Popconfirm} from 'antd';
+import {Form, Icon, message, Popconfirm, Popover} from 'antd';
 var HeadIcon = require('../../../../components/headIcon');
 var UserInfoAction = require('../action/user-info-actions');
 var Alert = require('antd').Alert;
@@ -116,6 +116,46 @@ class UserInfo extends React.Component{
         }
     }
 
+    //订阅前提醒先激活邮箱
+    subscribeTips = () => {
+        //已激活可以订阅
+        if(this.props.userInfo.emailEnable){
+            return(<ReactIntl.FormattedMessage
+                        id="user.info.receive.email"
+                        defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
+                        values={{
+                            'receive': 
+                                <a onClick={this.handleSubscribe}>
+                                    <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
+                                </a>
+                        }}
+                    />);
+        }else{//未激活提醒
+            return( <ReactIntl.FormattedMessage
+                        id="user.info.receive.email"
+                        defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
+                        values={{
+                            'receive': 
+                            <Popover
+                                overlayClassName="apply-invalid-popover"
+                                placement="topRight"
+                                trigger="click"
+                                content={
+                                    <span className="apply-error-tip">
+                                        <span className="iconfont icon-warn-icon"></span>
+                                        <span className="apply-error-text">
+                                            {Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}',{activeEmail:Intl.get('apply.active.email.tips', '激活邮箱')})}
+                                        </span>
+                                    </span>
+                                    }
+                            >
+                                <a>{Intl.get("user.info.receive.subscribe","重新订阅")}</a>
+                            </Popover>
+                        }}
+                    />)
+    }
+}
+
     retryUserInfo() {
         UserInfoAction.getUserInfo();
     }
@@ -138,16 +178,7 @@ class UserInfo extends React.Component{
         } else {
             return (
                 <div>
-                    <ReactIntl.FormattedMessage
-                        id="user.info.receive.email"
-                        defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
-                        values={{
-                            'receive': <a onClick={this.handleSubscribe}>
-                                <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
-                            </a>
-                        }}
-                    />
-
+                    {this.subscribeTips()}
                 </div>
             );
         }
