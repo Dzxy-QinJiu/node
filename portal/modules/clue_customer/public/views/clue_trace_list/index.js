@@ -688,8 +688,7 @@ class ClueTraceList extends React.Component {
     };
     //监听下拉加载
     handleScrollBarBottom = () => {
-                //是不是可以添加跟进
-        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
+
         var length = this.state.customerRecord.length;
         if (length < this.state.total) {
             var lastId = this.state.customerRecord[length - 1].id;
@@ -701,6 +700,8 @@ class ClueTraceList extends React.Component {
         }
     };
     render() {
+        //是不是可以添加跟进
+        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
         return (
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
