@@ -733,9 +733,16 @@ class CallRecord extends React.Component {
                                         id={'content' + record.id}
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
-                                    /> :
-                                        <span className="text-show line-clamp line-clamp-2" onClick={this.handleClickTextArea.bind(this, record)}>
-                                            {record.remark ?record.remark:<i className="iconfont icon-edit-btn-plus handle-btn-item"/>}
+                                    /> :record.remark ?
+                                    <span className="text-show line-clamp line-clamp-2" 
+                                            onClick={this.handleClickTextArea.bind(this, record)} 
+                                            title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}>
+                                        {record.remark}
+                                    </span>:
+                                        <span className="text-show line-clamp line-clamp-2" >
+                                            <i className="iconfont icon-edit-btn-plus handle-btn-item" 
+                                                onClick={this.handleClickTextArea.bind(this, record)}
+                                                title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
                                         </span>
                                 }
                             </Popconfirm>
