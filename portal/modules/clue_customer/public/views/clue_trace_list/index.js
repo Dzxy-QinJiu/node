@@ -648,8 +648,6 @@ class ClueTraceList extends React.Component {
         var recordLength = _.get(this, 'state.customerRecord.length');
         //加载状态或加载数据错误时，容器高度的设置
         let loadingErrorHeight = this.props.isOverViewPanel ? LAYOUT_CONSTANTS.OVER_VIEW_LOADING_HEIGHT : this.getRecordListShowHeight();
-        //是不是可以添加跟进
-        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
         if (this.state.customerRecordLoading && this.state.curPage === 1) {
             //加载中的情况
             return (
@@ -681,7 +679,7 @@ class ClueTraceList extends React.Component {
                                 handleScrollBottom={this.handleScrollBarBottom}
                                 listenScrollBottom={this.state.listenScrollBottom}
                             >
-                                {hasAddRecordPrivilege ? this.renderTimeLine():null}
+                                {this.renderTimeLine()}
                             </GeminiScrollbar>
                         </div>)}
                 </div>
@@ -690,6 +688,8 @@ class ClueTraceList extends React.Component {
     };
     //监听下拉加载
     handleScrollBarBottom = () => {
+                //是不是可以添加跟进
+        let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
         var length = this.state.customerRecord.length;
         if (length < this.state.total) {
             var lastId = this.state.customerRecord[length - 1].id;
@@ -705,7 +705,7 @@ class ClueTraceList extends React.Component {
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
                     {this.props.isOverViewPanel ? null : this.renderDatePicker()}
-                    {this.tipRecordButton()}
+                    {hasAddRecordPrivilege? this.tipRecordButton():null}
                 </div>
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
                 <div className="show-container" id="show-container">
