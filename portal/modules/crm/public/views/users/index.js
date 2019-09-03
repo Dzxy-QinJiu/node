@@ -432,7 +432,7 @@ class CustomerUsers extends React.Component {
                     >
                         <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
                             disabled={!openAppFlag}>
-                            {Intl.get('user.app.open', '开通应用')}
+                            {Intl.get('user.product.open','开通产品')}
                         </Button>
                     </Popover>
                 </div>
