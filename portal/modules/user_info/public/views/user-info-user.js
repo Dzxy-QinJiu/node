@@ -116,8 +116,9 @@ class UserInfo extends React.Component{
         }
     }
 
-    //订阅前提醒先绑定邮箱
+    //订阅前提醒先激活邮箱
     subscribeTips = () => {
+        //已激活可以订阅
         if(this.props.userInfo.emailEnable){
             return(<ReactIntl.FormattedMessage
                         id="user.info.receive.email"
@@ -129,7 +130,7 @@ class UserInfo extends React.Component{
                                 </a>
                         }}
                     />);
-        }else{
+        }else{//未激活提醒
             return( <ReactIntl.FormattedMessage
                         id="user.info.receive.email"
                         defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
