@@ -32,7 +32,7 @@ function handleMemberReqData(req, res) {
         params.id = req.query.id;
     }
     return {
-        params: params === {} ? null : params,
+        params: _.isEqual(params,{}) ? null : params,
         isGetAllUser: isGetAllUser,
         teamrole_id: teamrole_id
     };
