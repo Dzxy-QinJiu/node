@@ -567,6 +567,19 @@ class CallRecord extends React.Component {
             </Menu>
         );
     }
+    getNewContent = (content) =>{
+        let oldContent = '';
+        let newContent = '';
+
+        if(content.length>15){
+            oldContent = _.chunk(content,15);
+            newContent =oldContent[0].join("")+"..."
+            console.log(newContent);
+            return newContent
+        }else{
+            return content
+        }
+    }
 
     //通话记录表格列
     getCallRecordColumns = () => {
@@ -734,13 +747,14 @@ class CallRecord extends React.Component {
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
                                     /> :record.remark ?
-                                    <span className="text-show line-clamp line-clamp-2" 
-                                            onClick={this.handleClickTextArea.bind(this, record)} 
-                                            title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}>
-                                        {record.remark}
+                                    <span className="text-show line-clamp line-clamp-2" >
+                                        {this.getNewContent(record.remark)}
+                                        <i className="iconfont icon-edit-btn-plus handle-btn-item" 
+                                                onClick={this.handleClickTextArea.bind(this, record)}
+                                                title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
                                     </span>:
                                         <span className="text-show line-clamp line-clamp-2" >
-                                            <i className="iconfont icon-edit-btn-plus handle-btn-item" 
+                                            <i className="iconfont icon-edit-btn-plus handle-btn-item .no-old-data" 
                                                 onClick={this.handleClickTextArea.bind(this, record)}
                                                 title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
                                         </span>
@@ -765,7 +779,10 @@ class CallRecord extends React.Component {
         const id = record.id;
         let value = $('.new-custom-tbody #content' + id).val();
         if (oldValue) { // 有内容时，对应的是修改
-            if (value === oldValue) { // 没做修改，直接返回，不出现确认框
+            if (value === oldValue) {
+                 // 没做修改，直接返回，不出现确认框
+                 record.showTextEdit = ! record.showTextEdit;
+                 this.setState(this.state);
                 return;
             } else { // 修改内容时，出现确认框
                 CallRecordActions.toggleConfirm({ id, flag: true });
@@ -773,6 +790,9 @@ class CallRecord extends React.Component {
         } else { // 添加跟进内容时
             if (_.trim(value)) {
                 CallRecordActions.toggleConfirm({ id, flag: true });
+            }else{
+                record.showTextEdit = ! record.showTextEdit;
+                this.setState(this.state);
             }
         }
     };
