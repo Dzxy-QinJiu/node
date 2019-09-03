@@ -346,7 +346,7 @@ exports.getClueStatus = function(status) {
 };
 exports.renderClueStatus = function(listItem) {
     let status = 
-            typeof listItem === 'string' ? listItem :
+            _.isString(listItem) ? listItem :
             listItem.availability === "1" ? status = 'invalid': listItem.status;
     var statusDes = '';
     switch (status) {
