@@ -963,7 +963,7 @@ exports.isOpenCash = () => {
 // 设置是否已有专属号码
 exports.setExclusiveNumber = (phoneType) => {
     let isDefault = _.isEqual(phoneType, 'default');
-    userData.setUserData('hasExcluesiveNumber', !isDefault);
+    userData.setUserData('hasExcluesiveNumber', '' + !isDefault);
 };
 //是否是识微域
 exports.isCiviwRealm = () => {
