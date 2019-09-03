@@ -34,7 +34,7 @@
   .add-content .text-show {
     min-height: 41px;
     margin-left: -5px;
-    padding: 0 5px 0 3px;   
+    padding: 0 5px 0 3px;
   }
   .add-content textarea.textarea-fix {
     overflow: hidden;     
@@ -220,6 +220,21 @@
       }
       td.has-filter {
         cursor: default !important;
+      }
+    }
+    .ant-table-tbody{
+      tr{
+        .icon-edit-btn-plus{
+          position: absolute;
+          padding-left: 6px;
+          padding-top: 6px;
+          visibility: hidden;
+        }
+        &:hover{
+          .icon-edit-btn-plus{
+            visibility: visible;
+          }
+        }
       }
     }
     .ant-table-header {

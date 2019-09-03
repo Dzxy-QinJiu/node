@@ -735,7 +735,7 @@ class CallRecord extends React.Component {
                                         onScroll={event => event.stopPropagation()}
                                     /> :
                                         <span className="text-show line-clamp line-clamp-2" onClick={this.handleClickTextArea.bind(this, record)}>
-                                            {record.remark}
+                                            {record.remark ?record.remark:<i className="iconfont icon-edit-btn-plus handle-btn-item"/>}
                                         </span>
                                 }
                             </Popconfirm>
