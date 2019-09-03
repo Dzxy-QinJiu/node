@@ -361,8 +361,30 @@ class CrmFilterPanel extends React.Component {
                     }))
             }
         ];
-        //非普通销售才有销售角色和团队
-        if (!userData.getUserData().isCommonSales) {
+        //普通销售展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
+        if (userData.getUserData().isCommonSales) {
+            let loginUserName = userData.getUserData().nick_name;
+            advancedData.unshift({
+                groupName: Intl.get('crm.second.sales', '联合跟进人'),
+                groupId: 'second_nickname',
+                singleSelect: true,
+                data: [{
+                    name: loginUserName,
+                    value: loginUserName,
+                    selected: loginUserName === _.get(this.state, 'condition.second_nickname', '')
+                }]
+            });
+            advancedData.unshift({
+                groupName: Intl.get('crm.6', '负责人'),
+                groupId: 'nickname',
+                singleSelect: true,
+                data: [{
+                    name: loginUserName,
+                    value: loginUserName,
+                    selected: loginUserName === _.get(this.state, 'condition.nickname', '')
+                }]
+            });
+        } else {//非普通销售才有销售角色和团队
             let salesTeamId = _.get(this.state, 'condition.sales_team_id', '');
             let userList = [];
             //如果选了团队，负责人列表为选中团队内的人
