@@ -224,6 +224,9 @@
     }
     .ant-table-tbody{
       tr{
+        .add-customer-icon{
+          visibility: hidden;
+        }
         .icon-edit-btn-plus{
           font-size: 15px;
           padding-left: 6px;
@@ -232,7 +235,20 @@
           display:inline-block;
           visibility: hidden;
         }
+        .add-content{
+          position: relative;
+          .icon-edit-btn-plus.has-data-btn{
+            position: absolute;
+            right: -10px;
+            margin: 0;
+            padding: 0;
+            top:8px
+          }
+        }
         &:hover{
+          .add-customer-icon{
+            visibility: visible;
+          }
           .icon-edit-btn-plus{
             visibility: visible;
           }

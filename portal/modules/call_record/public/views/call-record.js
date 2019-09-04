@@ -32,6 +32,7 @@ const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 import {getInvalidPhone,addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import ShearContent from 'CMP_DIR/shear-content';
 //接听状态
 let CALL_STATUS_MAP = {
     'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
@@ -567,41 +568,30 @@ class CallRecord extends React.Component {
             </Menu>
         );
     }
-    //内容太长只显示一行
-    getNewContent = (content) =>{
-        let oldContent = '';
-        let newContent = '';
-        if(content.length>9){
-            oldContent = _.chunk(content,9);
-            newContent =oldContent[0].join("")+"..."
-            return newContent
-        }else{
-            return content
-        }
-    }
     //编辑时光标移动到尾部
     cursorBackward = (record,oldValue) =>{
         if(oldValue){
             const id = record.id;
             let obj = $('.new-custom-tbody #content' + id);
-            obj.val("").focus().val(oldValue);
+            obj.val("").focus().val(oldValue).scrollTop(obj.height());
+
         }
     }
     //修改跟进记录的按钮和内容
     editButton = (record) =>{
         if(record.remark){
             return(
-                <span className="text-show line-clamp line-clamp-2" >
-                    {this.getNewContent(record.remark)}
-                    <i className="iconfont icon-edit-btn-plus handle-btn-item" 
+                <span className="text-show line-clamp " >
+                     <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn" 
                             onClick={this.handleClickTextArea.bind(this, record)}
                             title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+                    <ShearContent lines={2}>{record.remark}</ShearContent>
                 </span>
             );
         }else{
             return(
-                <span className="text-show line-clamp line-clamp-2" >
-                <i className="iconfont icon-edit-btn-plus handle-btn-item .no-old-data" 
+                <span className="text-show line-clamp " >
+                <i className="iconfont icon-edit-btn-plus handle-btn-item " 
                     onClick={this.handleClickTextArea.bind(this, record)}
                     title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
             </span>
@@ -767,7 +757,6 @@ class CallRecord extends React.Component {
                                     record.showTextEdit ? <textarea
                                         autoFocus
                                         className="textarea-fix"
-                                        row={2}
                                         defaultValue={record.remark}
                                         onFocus={this.cursorBackward.bind(this,record, record.remark)}
                                         onBlur={this.toggleConfirm.bind(this, record, record.remark)}
