@@ -582,9 +582,9 @@ class CallRecord extends React.Component {
         if(record.remark){
             return(
                 <span className="text-show line-clamp " >
-                     <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn" 
+                     {/* <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn" 
                             onClick={this.handleClickTextArea.bind(this, record)}
-                            title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+                            title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/> */}
                     <ShearContent lines={2}>{record.remark}</ShearContent>
                 </span>
             );
@@ -785,23 +785,23 @@ class CallRecord extends React.Component {
     toggleConfirm = (record, oldValue) => {
         const id = record.id;
         let value = $('.new-custom-tbody #content' + id).val();
-        if (oldValue) { // 有内容时，对应的是修改
-            if (value === oldValue) {
-                 // 没做修改，直接返回，不出现确认框
-                 record.showTextEdit = ! record.showTextEdit;
-                 this.setState(this.state);
-                return;
-            } else { // 修改内容时，出现确认框
-                CallRecordActions.toggleConfirm({ id, flag: true });
-            }
-        } else { // 添加跟进内容时
+        // if (oldValue) { // 有内容时，对应的是修改
+        //     if (value === oldValue) {
+        //          // 没做修改，直接返回，不出现确认框
+        //          record.showTextEdit = ! record.showTextEdit;
+        //          this.setState(this.state);
+        //         return;
+        //     } else { // 修改内容时，出现确认框
+        //         CallRecordActions.toggleConfirm({ id, flag: true });
+        //     }
+        // } else { // 添加跟进内容时
             if (_.trim(value)) {
                 CallRecordActions.toggleConfirm({ id, flag: true });
             }else{
                 record.showTextEdit = ! record.showTextEdit;
                 this.setState(this.state);
             }
-        }
+        // }
     };
 
     // 确认框点击不保存时
