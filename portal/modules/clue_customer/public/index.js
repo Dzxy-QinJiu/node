@@ -128,7 +128,6 @@ class ClueCustomer extends React.Component {
         this.getSettingCustomerRecomment();
         this.getSalesmanList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
-        phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
             this.showAddForm();
@@ -245,12 +244,9 @@ class ClueCustomer extends React.Component {
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
-        phoneMsgEmitter.removeListener(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
+
     }
 
-    invalidBtnClickedListener = (data) => {
-        this.handleClickInvalidBtn(data.item, data.callback);
-    };
     //展示右侧面板
     showClueDetailOut = (item) => {
         rightPanelShow = true;
@@ -943,12 +939,9 @@ class ClueCustomer extends React.Component {
             }
         });
     };
-    //标记线索无效或者有效
-    handleClickInvalidBtn = (item, callback) => {
-        var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
-        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY) {
-            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
-        }
+    //标记线索有效
+    handleClickClueValidBtn = (item, callback) => {
+        var updateValue = AVALIBILITYSTATUS.AVALIBILITY;
         var submitObj = {
             id: item.id,
             availability: updateValue
@@ -966,9 +959,8 @@ class ClueCustomer extends React.Component {
             } else {
                 _.isFunction(callback) && callback(updateValue);
                 clueCustomerAction.deleteClueById(item);
-                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY) {
-                    clueCustomerAction.addInvalidClueNum();
-                }
+                //标记为有效的时候，在其他类型上加上相应的数字
+                clueCustomerAction.updateClueTabNum(item.status);
                 this.setState({
                     isInvaliding: false,
                     isInvalidClue: ''
@@ -1064,7 +1056,7 @@ class ClueCustomer extends React.Component {
                 } else {
                     _.isFunction(callback) && callback(updateAvailability);
                     clueCustomerAction.deleteClueById(item);
-                    clueCustomerAction.addInvalidClueNum();
+                    clueCustomerAction.updateClueTabNum('invalidClue');
                     this.setState({
                         submitInvalidateLoading: false,
                         isInvalidClue: ''
@@ -1118,7 +1110,7 @@ class ClueCustomer extends React.Component {
         let isEditting = this.state.isInvalidClue === salesClueItem.id && this.state.isInvaliding;
         return (
             <span className="invalid-confirm">
-                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
+                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickClueValidBtn.bind(this, salesClueItem)}>
                     {Intl.get('clue.customer.confirm.valid', '确认有效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>

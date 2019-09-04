@@ -361,19 +361,6 @@ class ClueDetailPanel extends React.Component {
             }
         }
     };
-    //点击标记线索无效
-    handleSetClueInvalid = (item, callback) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-more-info-container'), '点击标为无效按钮');
-        if (_.isEmpty(item)){
-            item = this.getCurClueObj();
-        }
-        phoneMsgEmitter.emit(phoneMsgEmitter.SETTING_CLUE_INVALID, {
-            item: item, callback: (updateValue) => {
-                item.availability = updateValue;
-                _.isFunction(callback) && callback(updateValue);
-            }
-        });
-    };
     //添加联系计划
     handleAddPlan = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-plan-info-container'), '点击添加联系计划按钮');
@@ -522,7 +509,6 @@ class ClueDetailPanel extends React.Component {
                     <PhoneStatusTop
                         phoneAlertModalTitleCls={PhoneAlertModalTitleCls}
                         phonemsgObj={phonemsgObj}
-                        handleSetClueInvalid={this.handleSetClueInvalid}
                         isModalShown={this.state.isModalShown}
                         contactNameObj={this.state.paramObj.call_params.contactNameObj}
                         detailClueId={this.getDetailClueId()}//线索详情中打电话时，线索的id
