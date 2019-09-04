@@ -533,12 +533,12 @@ var NavSidebar = createReactClass({
         //是申请审批，有未读回复数并且，所有申请待审批数都为0
         //所有申请的待审批总数
         var allUnhandleApplyTotal = 0;
-        if (Oplate && Oplate.unread) {
-            for (var key in Oplate.unread){
-                if (Oplate.unread[key] && _.isNumber(Oplate.unread[key])){
-                    allUnhandleApplyTotal += Oplate.unread[key];
+        if (_.has(Oplate, 'unread')) {
+            _.forEach(Oplate.unread, (value) => {
+                if (value && _.isNumber(value)){
+                    allUnhandleApplyTotal += value;
                 }
-            }
+            });
         }
         let unreadReplyTipShowFlag = category === 'application' &&//申请审批
             (this.state.hasUnreadReply || this.state.hasDiffApplyUnreadReply) &&//有用户审批或者其他类型审批的未读回复
