@@ -21,21 +21,16 @@ class HomePage extends React.Component {
         }
         this.props.history && this.props.history.push('/sales/home');
     };
-    //判断在哪个域名下
-    getRealmName = () =>{
-        let realm = window.location.hostname;
-        if(!realm.indexOf("curtao")){
-            return(<div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div>);
-        }
-    }
 
     render() {
+        let realm = window.location.hostname;
         return (
             <Row className='home-page-container' data-tracename="新版首页">
                 <Col span={10}><MyWorkColumn/></Col>
                 <Col span={7}><TeamDataColumn/></Col>
                 <Col span={7}><MyInsterestColumn/></Col>
-                {this.getRealmName()}          
+                //判断所处域名，curtao下不显示返回旧版
+                {realm.indexOf("curtao")> -1 ?<div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div>:null}          
             </Row>);
     }
 }
