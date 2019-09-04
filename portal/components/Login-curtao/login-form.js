@@ -250,8 +250,7 @@ class LoginForm extends React.Component {
                             name="username"
                             autoComplete="off" tabIndex="1"
                             ref="username" value={this.state.username} onChange={this.userNameChange}
-                            onBlur={this.getLoginCaptcha}
-                            className="user-name"/>
+                            onBlur={this.getLoginCaptcha}/>
                     </div>
 
                     <div className="input-item">
