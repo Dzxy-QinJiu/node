@@ -2,7 +2,7 @@
 // 成员管理服务
 const memberManageService = require('../service/member-manage-service');
 const BackendIntl = require('../../../../lib/utils/backend_intl');
-
+const _ = require('lodash');
 function handleMemberReqData(req, res) {
     let params = {};
     let isGetAllUser = false;

@@ -122,13 +122,6 @@ var NavSidebar = createReactClass({
             menus: menuUtil.getFirstLevelMenus(),
             userInfoLogo: getUserInfoLogo(),
             userInfo: getUserName(),
-            messages: {
-                unhandleClue: 0,//待处理的线索数
-                approve: 0,//用户申请待审批数
-                unhandleCustomerVisit: 0,//出差申请待我审批数
-                unhandleBusinessOpportunities: 0,//销售机会申请待我审批数
-                unhandlePersonalLeave: 0//请假申请待我审批数
-            },
             //需要加引导功能的某个元素
             $introElement: '',
             isShowIntroModal: false,//是否展示引导的模态框
@@ -538,12 +531,19 @@ var NavSidebar = createReactClass({
     //展示未读回复的图标提示
     renderUnreadReplyTip(category) {
         //是申请审批，有未读回复数并且，所有申请待审批数都为0
+        //所有申请的待审批总数
+        var allUnhandleApplyTotal = 0;
+        if (Oplate && Oplate.unread) {
+            for (var key in Oplate.unread){
+                if (Oplate.unread[key] && _.isNumber(Oplate.unread[key])){
+                    allUnhandleApplyTotal += Oplate.unread[key];
+                }
+            }
+        }
         let unreadReplyTipShowFlag = category === 'application' &&//申请审批
             (this.state.hasUnreadReply || this.state.hasDiffApplyUnreadReply) &&//有用户审批或者其他类型审批的未读回复
-            this.state.messages.approve === 0 &&//用户申请待审批数
-            this.state.messages.unhandleCustomerVisit === 0 && //出差申请待我审批数
-            this.state.messages.unhandleBusinessOpportunities === 0 &&//销售机会申请待我审批数
-            this.state.messages.unhandlePersonalLeave === 0;//请假申请待我审批数
+            allUnhandleApplyTotal === 0;//总的待我审批数为0
+
         if (unreadReplyTipShowFlag) {
             return (
                 <span className="iconfont icon-apply-message-tip"
