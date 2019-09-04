@@ -567,18 +567,46 @@ class CallRecord extends React.Component {
             </Menu>
         );
     }
+    //内容太长只显示一行
     getNewContent = (content) =>{
         let oldContent = '';
         let newContent = '';
-
-        if(content.length>15){
-            oldContent = _.chunk(content,15);
+        if(content.length>9){
+            oldContent = _.chunk(content,9);
             newContent =oldContent[0].join("")+"..."
-            console.log(newContent);
             return newContent
         }else{
             return content
         }
+    }
+    //编辑时光标移动到尾部
+    cursorBackward = (record,oldValue) =>{
+        if(oldValue){
+            const id = record.id;
+            let obj = $('.new-custom-tbody #content' + id);
+            obj.val("").focus().val(oldValue);
+        }
+    }
+    //修改跟进记录的按钮和内容
+    editButton = (record) =>{
+        if(record.remark){
+            return(
+                <span className="text-show line-clamp line-clamp-2" >
+                    {this.getNewContent(record.remark)}
+                    <i className="iconfont icon-edit-btn-plus handle-btn-item" 
+                            onClick={this.handleClickTextArea.bind(this, record)}
+                            title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+                </span>
+            );
+        }else{
+            return(
+                <span className="text-show line-clamp line-clamp-2" >
+                <i className="iconfont icon-edit-btn-plus handle-btn-item .no-old-data" 
+                    onClick={this.handleClickTextArea.bind(this, record)}
+                    title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+            </span>
+            );
+        }                      
     }
 
     //通话记录表格列
@@ -741,23 +769,13 @@ class CallRecord extends React.Component {
                                         className="textarea-fix"
                                         row={2}
                                         defaultValue={record.remark}
+                                        onFocus={this.cursorBackward.bind(this,record, record.remark)}
                                         onBlur={this.toggleConfirm.bind(this, record, record.remark)}
                                         type="text"
                                         id={'content' + record.id}
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
-                                    /> :record.remark ?
-                                    <span className="text-show line-clamp line-clamp-2" >
-                                        {this.getNewContent(record.remark)}
-                                        <i className="iconfont icon-edit-btn-plus handle-btn-item" 
-                                                onClick={this.handleClickTextArea.bind(this, record)}
-                                                title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
-                                    </span>:
-                                        <span className="text-show line-clamp line-clamp-2" >
-                                            <i className="iconfont icon-edit-btn-plus handle-btn-item .no-old-data" 
-                                                onClick={this.handleClickTextArea.bind(this, record)}
-                                                title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
-                                        </span>
+                                    /> :this.editButton(record)
                                 }
                             </Popconfirm>
                         </div>
