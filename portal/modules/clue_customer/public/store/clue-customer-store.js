@@ -10,7 +10,8 @@ import {
     SELECT_TYPE,
     getClueStatusValue,
     deleteEmptyProperty,
-    AVALIBILITYSTATUS
+    AVALIBILITYSTATUS,
+    clueStatusTabNum
 } from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
@@ -477,8 +478,11 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
         this.agg_list['hasTransfer'] = this.agg_list['hasTransfer'] - 1;
     }
 };
-ClueCustomerStore.prototype.addInvalidClueNum = function() {
-    this.agg_list['invalidClue'] = this.agg_list['invalidClue'] + 1;
+ClueCustomerStore.prototype.updateClueTabNum = function(type) {
+    var targetObj = _.find(clueStatusTabNum, item => item.status === type);
+    if (targetObj && targetObj.numName){
+        this.agg_list[targetObj.numName] = this.agg_list[targetObj.numName] + 1;
+    }
 };
 //转化客户成功后的处理
 ClueCustomerStore.prototype.afterTranferClueSuccess = function(data) {
