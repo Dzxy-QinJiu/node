@@ -119,7 +119,7 @@ class LeaveApplyManagement extends React.Component {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
             if (this.state.applyListType === 'ongoing') {
                 //触发更新待审批数
-                commonMethodUtil.updateUnapprovedCount('unhandlePersonalLeave','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                commonMethodUtil.updateUnapprovedCount('unhandleVisitApply','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
         });
     };
