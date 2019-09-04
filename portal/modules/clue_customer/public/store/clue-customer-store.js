@@ -481,7 +481,7 @@ ClueCustomerStore.prototype.deleteClueById = function(data) {
 ClueCustomerStore.prototype.updateClueTabNum = function(type) {
     var targetObj = _.find(clueStatusTabNum, item => item.status === type);
     if (targetObj && targetObj.numName){
-        this.agg_list[targetObj.numName] = this.agg_list[targetObj.numName] + 1;
+        this.agg_list[targetObj.numName] += 1;
     }
 };
 //转化客户成功后的处理
