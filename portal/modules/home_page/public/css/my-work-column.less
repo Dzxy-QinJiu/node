@@ -86,7 +86,16 @@
             background-color: @btn-hover-color;
             //拨打电话的按钮
             .iconfont {
-              font-size: 14px;
+              font-size: 16px;
+              color: #FFFFFF;
+              margin-left: 0;
+            }
+          }
+          //只有一个电话时的按钮样式（为了点整个按钮都可以触发打电话，padding需要放到内层的电话按钮上）
+          .work-contact-phone.only-one-phone-btn{
+            padding: 0;
+            .icon-active-call_record-ico{
+              padding: 0 22px;
             }
           }
         }
@@ -220,6 +229,18 @@
     }
     .phone-item {
       color: #999999;
+    }
+  }
+  //只有一个电话时的样式设置
+  .contacts-item.only-one-phone-style{
+    .contacts-name-content{
+      display: inline-block;
+      max-width: 150px;
+    }
+    .contacts-phone-content {
+      display: inline-block;
+      vertical-align: top;
+      padding-left: 0;
     }
   }
   .contacts-item.def-contact-item {

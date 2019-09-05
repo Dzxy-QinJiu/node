@@ -371,11 +371,15 @@ class MyWorkColumn extends React.Component {
         return (
             <div className="contacts-containers">
                 {_.map(contacts, (contact) => {
-                    var cls = classNames('contacts-item',
-                        {'def-contact-item': contact.def_contancts === 'true'});
+                    //只有一个电话的联系人后面紧跟打电话的按钮，不需要展示电话
+                    let onlyOnePhone = _.get(contact, 'phone.length') === 1;
+                    const cls = classNames('contacts-item', {
+                        'def-contact-item': contact.def_contancts === 'true',
+                        'only-one-phone-style': onlyOnePhone
+                    });
                     return (
                         <div className={cls}>
-                            <div className="contacts-name-content">
+                            <div className='contacts-name-content'>
                                 <i className="iconfont icon-contact-default"/>
                                 {contact.name}
                             </div>
@@ -387,6 +391,7 @@ class MyWorkColumn extends React.Component {
                                                 phoneNumber={phone}
                                                 contactName={contact.name}
                                                 showPhoneIcon={true}
+                                                hidePhoneNumber={onlyOnePhone}
                                                 onCallSuccess={this.onCallSuccess.bind(this, item)}
                                             />
                                         </div>
@@ -419,18 +424,43 @@ class MyWorkColumn extends React.Component {
         } else if (item.type === WORK_TYPES.LEAD) {
             contacts = _.get(item, 'lead.contacts', []);
         }
-        let phones = _.map(contacts, 'phone');
-        if (!_.isEmpty(contacts) && !_.isEmpty(phones)) {
+        let phones = [];
+        _.each(contacts, contact => {
+            if (_.get(contact, 'phone[0]')) {
+                phones.push(contact.phone);
+            }
+        });
+        //将各个电话数组整合到一个数组中进行判断
+        let phoneNumArray = _.flatten(phones);
+        if (!_.isEmpty(contacts) && !_.isEmpty(phoneNumArray)) {
             let contactsContent = this.renderPopoverContent(contacts, item);
+            let phoneCount = _.get(phoneNumArray, 'length');
+            let phoneContactName = '';
+            //只有一个电话时，点击拨号按钮可以直接拨打出去
+            if (phoneCount === 1) {
+                let contact = _.find(contacts, con => _.includes(con.phone, phoneNumArray[0]));
+                phoneContactName = _.get(contact, 'name', '');
+            }
             return (
                 <div className='work-hover-show-detail' onClick={this.preventOpenDetail}>
-                    <Popover content={contactsContent} placement="bottom"
-                        overlayClassName='contact-phone-popover'
-                        getPopupContainer={() => document.getElementById(`home-page-work${item.id}`)}>
-                        <span className='work-contact-phone'>
-                            <i className="iconfont icon-phone-call-out"/>
+                    {phoneCount === 1 ? (
+                        <span className='work-contact-phone only-one-phone-btn'>
+                            <PhoneCallout
+                                phoneNumber={phoneNumArray[0]}
+                                contactName={phoneContactName}
+                                showPhoneIcon={true}
+                                hidePhoneNumber={true}
+                                onCallSuccess={this.onCallSuccess.bind(this, item)}
+                            />
                         </span>
-                    </Popover>
+                    ) : (
+                        <Popover content={contactsContent} placement="bottom"
+                            overlayClassName='contact-phone-popover'
+                            getPopupContainer={() => document.getElementById(`home-page-work${item.id}`)}>
+                            <span className='work-contact-phone'>
+                                <i className="iconfont icon-active-call_record-ico"/>
+                            </span>
+                        </Popover>)}
                 </div>);
         }
     }
@@ -745,8 +775,8 @@ class MyWorkColumn extends React.Component {
                 showIcon
                 onHide={this.hideEditStatusTip.bind(this, item)}/>);
         } else {
-            //不是普通销售的线索类型，需要展示分配按钮
-            if (item.type === WORK_TYPES.LEAD && !userData.getUserData().isCommonSales) {
+            //不是普通销售的线索类型，需要展示分配按钮（线索tags中需要有lead，线索的日程不需要要展示分配按钮）
+            if (item.type === WORK_TYPES.LEAD && _.includes(item.tags, WORK_TYPES.LEAD) && !userData.getUserData().isCommonSales) {
                 const distributeBtn = (
                     <div className='handle-work-finish' data-tracename="点击分配线索按钮">
                         <span className='work-finish-text approval-btn'>
@@ -1052,8 +1082,7 @@ class MyWorkColumn extends React.Component {
     }
 
     //处理添加日程的关闭事件
-    handleCancel = (e) => {
-        e && e.preventDefault();
+    handleCancel = () => {
         this.setState({
             isShowAddToDo: false
         });
