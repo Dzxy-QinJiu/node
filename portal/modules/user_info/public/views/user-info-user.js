@@ -221,7 +221,7 @@ class UserInfo extends React.Component{
                     });
                 }
                 //在userdata中更新此字段
-                userData.setUserData('email', email);
+                userData.setUserData('email', value);
                 userData.setUserData('emailEnable', false);
                 successFunc();
             } else {
