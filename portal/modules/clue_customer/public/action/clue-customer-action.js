@@ -43,7 +43,7 @@ function ClueCustomerActions() {
         'saveSettingCustomerRecomment',
         'saveQueryObj',
         'updateRecommendClueLists',
-        'addInvalidClueNum'
+        'updateClueTabNum'
     );
     //获取销售列表
     this.getSalesManList = function(cb) {

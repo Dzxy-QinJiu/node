@@ -44,10 +44,10 @@ var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
 
 var moment = require('moment');
-import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount, isFinalTask} from 'PUB_DIR/sources/utils/common-method-util';
+import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount, isFinalTask, isApprovedByManager} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {getAllUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import {getAllUserList,getNotSalesRoleUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import CustomerLabel from 'CMP_DIR/customer_label';
 //表单默认配置
 var appConfig = {
@@ -171,6 +171,7 @@ const ApplyViewDetail = createReactClass({
             showBackoutConfirmType: '',//操作的确认框类型
             isOplateUser: false,
             usersManList: [],//成员列表
+            userManNotSalesList: [],//不包含销售的成员列表
             checkStatus: true, //自动生成密码radio是否选中
             passwordValue: '',//试用或者签约用户申请的明文密码
             showWariningTip: false,//是否展示密码的提示信息
@@ -209,6 +210,13 @@ const ApplyViewDetail = createReactClass({
             });
         });
     },
+    getNotSalesRoleUserList(){
+        getNotSalesRoleUserList().then(data => {
+            this.setState({
+                userManNotSalesList: data
+            });
+        });
+    },
     componentDidMount() {
         ApplyViewDetailStore.listen(this.onStoreChange);
         var applyId = this.props.detailItem.id;
@@ -222,6 +230,7 @@ const ApplyViewDetail = createReactClass({
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
         this.getIntegrateConfig();
         this.getAllUserList();
+        this.getNotSalesRoleUserList();
     },
 
     componentWillUnmount() {
@@ -2055,7 +2064,11 @@ const ApplyViewDetail = createReactClass({
     },
     renderTransferCandidateBlock(){
         var usersManList = this.state.usersManList;
-        //需要选择销售总经理
+        //如果不是uem类型，并且该节点的审批人类型是管理员，那么要转审的列表中就不能包含销售角色
+        var isUem = !this.state.isOplateUser, applyNode = this.state.applyNode;
+        if (!isUem && isApprovedByManager(applyNode)){
+            usersManList = this.state.userManNotSalesList;
+        }
         var onChangeFunction = this.onSelectApplyNextCandidate;
         var defaultValue = _.get(this.state, 'detailInfoObj.info.nextCandidateId', '');
 

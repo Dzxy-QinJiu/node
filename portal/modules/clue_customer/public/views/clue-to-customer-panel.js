@@ -647,7 +647,7 @@ class ClueToCustomerPanel extends React.Component {
         const existingCustomers = this.props.existingCustomers;
 
         //客户列表标题区域高度
-        const titleBlockHeight = 45;
+        const titleBlockHeight = 135;
         //转为新客户按钮区域高度
         const convertToNewCustomerBtnBlockHeight = 60;
         //列表容器最大高度

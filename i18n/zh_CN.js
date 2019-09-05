@@ -1748,6 +1748,7 @@ var zh_CN = {
     'crm.get.customer.pool.rule.faild': '获取客户池配置失败！！！',
     'crm.customer.pool.rule.get.stage.lists': '正在获取客户阶段列表',
     'crm.customer.pool.rule.sure.delete.tip': '确认要删除此项规则吗？',
+    'crm.customer.pool.max.selected.num': '每次最多提取{num}个',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',

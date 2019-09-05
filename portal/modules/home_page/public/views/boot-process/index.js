@@ -447,8 +447,8 @@ class BootProcess extends React.Component {
                 _.each(this.state.guideConfig, (item, index) => {
                     if(item.key === BOOT_PROCESS_KEYS_MAP.dial.key) {
                         //TODO 是否已有专属号码，有就不显示，没有显示(default)
-                        let isDefault = !_.get(userData.getUserData(), 'hasExcluesiveNumber', false);
-                        if(isDefault) {
+                        let hasExclusive = _.get(userData.getUserData(), 'hasExcluesiveNumber');
+                        if(hasExclusive === 'false') {// 没有专属号码时，是default显示拨号流程
                             guideList.push(this.renderGuideCard(item, index));
                         }
                     }else {

@@ -127,8 +127,8 @@ class ApplyViewDetail extends React.Component {
                 //将待我审批的申请转审后
                 if (hasApprovePrivilege){
                     //待审批数字减一
-                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE] - 1;
-                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                    var count = Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY] - 1;
+                    updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
                     //隐藏通过、驳回按钮
                     LeaveApplyDetailAction.showOrHideApprovalBtns(false);
                     //调用父组件的方法进行转成完成后的其他处理
@@ -357,7 +357,12 @@ class ApplyViewDetail extends React.Component {
                     if (item.component_type === ALL_COMPONENTS.CUSTOMERSEARCH){
                         showApplyInfo.push({
                             label: _.get(item,'title'),
-                            text: <span className="customer-name" onClick={this.handleShowCustomerDetail.bind(this, _.get(showItem,'[0].id'))}>{_.get(showItem,'[0].name')}</span>
+                            text: <a href="javascript:void(0)"
+                                onClick={this.handleShowCustomerDetail.bind(this, _.get(showItem,'[0].id'))}
+                                data-tracename="查看客户详情"
+                                className="customer-name"
+                                title={Intl.get('call.record.customer.title', '点击可查看客户详情')}
+                            >{_.get(showItem,'[0].name')}</a>
                         });
                     }else if (item.component_type === ALL_COMPONENTS.TIMEPERIOD ){
                         var starttime = '', endtime = '';

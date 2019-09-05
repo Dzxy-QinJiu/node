@@ -340,26 +340,6 @@ class phoneStatusTop extends React.Component {
         }
         return desTipObj;
     }
-
-    //将线索标为无效
-    handleSetClueInvalid = () => {
-        var item = {};
-        if (this.state.selectedClueId) {
-            item = _.find(this.state.clueInfoArr, item => item.id === this.state.selectedClueId);
-        }
-        this.props.handleSetClueInvalid(item, (updateValue) => {
-            item.availability = updateValue;
-            if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY) {
-                this.setState({
-                    showMarkClueInvalid: false
-                });
-            } else {
-                this.setState({
-                    showMarkClueInvalid: true
-                });
-            }
-        });
-    };
     //点击添加联系计划
     handleAddPlan = () => {
         this.props.handleAddPlan();
@@ -527,8 +507,6 @@ phoneStatusTop.defaultProps = {
     detailClueId: '',
     isAddingMoreProdctInfo: false,
     contactNameObj: {},
-    handleSetClueInvalid: function() {
-    },
     isAddingPlanInfo: false,
     handleAddPlan: function() {
 
@@ -550,7 +528,6 @@ phoneStatusTop.propTypes = {
     detailClueId: PropTypes.string,
     isAddingMoreProdctInfo: PropTypes.bool,
     contactNameObj: PropTypes.object,
-    handleSetClueInvalid: PropTypes.func,
     isAddingPlanInfo: PropTypes.bool,
     handleAddPlan: PropTypes.bool,
     commonPhoneDesArray: PropTypes.object,
