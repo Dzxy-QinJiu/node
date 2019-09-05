@@ -558,11 +558,11 @@ class CustomerPool extends React.Component {
                     </div>
                     <RightPanelClose onClick={this.returnCustomerList}/>
                     {this.renderBatchExtractBtn(selectCustomerLength)}
-                    {/*{userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (*/}
-                    {/*<Button*/}
-                    {/*className="btn-item extract-btn"*/}
-                    {/*onClick={this.showRuleRightPanel}>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>*/}
-                    {/*) : null}*/}
+                    {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
+                        <Button
+                            className="btn-item extract-btn"
+                            onClick={this.showRuleRightPanel}>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>
+                    ) : null}
                 </TopNav>
                 <div className="customer-table-container customer-pool-table"
                     style={{height: tableWrapHeight}}>
