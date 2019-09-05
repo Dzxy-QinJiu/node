@@ -568,15 +568,15 @@ class CallRecord extends React.Component {
             </Menu>
         );
     }
-    //编辑时光标移动到尾部
-    cursorBackward = (record,oldValue) =>{
-        if(oldValue){
-            const id = record.id;
-            let obj = $('.new-custom-tbody #content' + id);
-            obj.val("").focus().val(oldValue).scrollTop(obj.height());
+    // //编辑时光标移动到尾部
+    // cursorBackward = (record,oldValue) =>{
+    //     if(oldValue){
+    //         const id = record.id;
+    //         let obj = $('.new-custom-tbody #content' + id);
+    //         obj.val("").focus().val(oldValue).scrollTop(obj.height());
 
-        }
-    }
+    //     }
+    // }
     //修改跟进记录的按钮和内容
     editButton = (record) =>{
         if(record.remark){
