@@ -3402,6 +3402,7 @@ var en_US = {
     'failed.distribute.apply': 'Failed assign!',//分配失败！
     'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
     'clue.recommed.keyword.list': 'Keyword',//关键词
-    'clue.recommend.input.keyword': 'Please input keyword'//请输入关键词
+    'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
+    'clue.customer.noty.all.list': 'Click to see all clues?'//查看所有线索？
 };
 export default en_US;

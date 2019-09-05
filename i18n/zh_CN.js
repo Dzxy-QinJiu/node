@@ -3516,6 +3516,7 @@ var zh_CN = {
     'failed.distribute.apply': '分配失败！',
     'apply.approve.required.err.msg': '请输入未填写时的提示',
     'clue.recommed.keyword.list': '关键词',
-    'clue.recommend.input.keyword': '请输入关键词'
+    'clue.recommend.input.keyword': '请输入关键词',
+    'clue.customer.noty.all.list': '查看所有线索？'
 };
 export default zh_CN;

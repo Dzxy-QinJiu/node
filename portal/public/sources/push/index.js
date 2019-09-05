@@ -39,6 +39,7 @@ var contactNameObj = {};
 //socketIo对象
 var socketIo;
 var hasAddCloseBtn = false;
+import history from 'PUB_DIR/sources/history';
 //推送过来新的消息后，将未读数加/减一
 function updateUnreadByPushMessage(type, isAdd) {
     //将未读数加一
@@ -141,6 +142,10 @@ window.closeAllNoty = function() {
     $('#noty-quene-tip-container').remove();
     $.noty.closeAll();
 };
+//打开线索列表，同时将新分配的线索加上new的标识
+window.openAllClues = function(){
+    history.push('/clue_customer', {refreshClueList: true});
+};
 //处理线索的数据
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
@@ -194,7 +199,8 @@ function clueUnhandledListener(data) {
         if (!hasAddCloseBtn) {
             hasAddCloseBtn = true;
             ulHtml.before(`<p id="noty-quene-tip-container">
-${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示，', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}，<a href="#" onclick='closeAllNoty()'>
+${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示，', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}，<a href="#" onclick='openAllClues()'>
+${Intl.get('clue.customer.noty.all.list', '查看所有线索？')}</a><a href="#" onclick='closeAllNoty()'>
 ${Intl.get('clue.close.all.noty', '关闭所有提醒？')}</a></p>`);
         } else {
             var queueNum = $('#queue-num');
