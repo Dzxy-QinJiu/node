@@ -645,10 +645,10 @@ const ApplyUserForm = createReactClass({
                 let targetObj = _.find(customerContacts,contact => contact.def_contancts === 'true');
                 if (targetObj){
                     var userName = '',nickName = '';
-                    if (_.isArray(targetObj.email) && _.get(targetObj,'email.length')){
+                    if (_.isArray(targetObj.phone) && _.get(targetObj, 'phone.length')) {
+                        userName = _.get(targetObj, 'phone[0]');
+                    }else if (_.isArray(targetObj.email) && _.get(targetObj, 'email.length')) {
                         userName = _.get(targetObj,'email[0]');
-                    }else if (_.isArray(targetObj.phone) && _.get(targetObj,'phone.length')){
-                        userName = _.get(targetObj,'phone[0]');
                     }else if (_.isArray(targetObj.qq) && _.get(targetObj,'qq.length')){
                         userName = _.get(targetObj,'qq[0]');
                     }
