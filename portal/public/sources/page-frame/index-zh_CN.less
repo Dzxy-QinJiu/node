@@ -168,8 +168,13 @@ body.macintosh pre {
 
 
 #app {
+    //去掉自动填充用户名的背景色chrom
     input:-webkit-autofill {
         box-shadow: inset 0 0 0 1000px #fff !important;
+    }
+    //去掉自动填充用户名的背景色ff
+    input{
+        filter: none !important;
     }
     .select-init-width {
         width: initial;

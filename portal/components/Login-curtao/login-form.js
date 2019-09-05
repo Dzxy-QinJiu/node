@@ -259,7 +259,7 @@ class LoginForm extends React.Component {
                             type="password" tabIndex="2"
                             ref="password_input"
                             logininput="password"
-                            onChange={this.passwordChange} value={this.state.password} autoComplete="off"/>
+                            onChange={this.passwordChange} value={this.state.password} autoComplete="new-password"/>
                     </div>
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
