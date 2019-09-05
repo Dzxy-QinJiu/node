@@ -4,6 +4,7 @@
 
 import {ACCOUNT_MENUS} from '../../consts';
 import accountChart from '../../charts/account';
+import Store from '../../store';
 
 module.exports = {
     title: ACCOUNT_MENUS.DELAYED.name,
@@ -13,6 +14,9 @@ module.exports = {
         'USER_ANALYSIS_COMMON',
         'USER_ANALYSIS_MANAGER',
     ],
+    isShowCallback: () => {
+        return !_.isEmpty(Store.appList);
+    },
     //是否只能选择一个应用
     isCanOnlySelectSingleApp: true,
     charts: getCharts()

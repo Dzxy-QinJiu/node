@@ -62,7 +62,7 @@ class CurtaoAnalysis extends React.Component {
             currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
             //当前显示页面的id
             currentPage: '',
-            groups: this.processMenu(processedGroups),
+            groups: processedGroups,
             isAppSelectorShow: false,
             //是否显示通话设备类型选择器
             isCallDeviceTypeSelectorShow: false,
@@ -136,6 +136,7 @@ class CurtaoAnalysis extends React.Component {
                 app_id: 'all',
                 app_name: Intl.get( 'user.product.all','全部产品'),  
             });
+            this.setState({groups: this.processMenu(groups)});
         });
     };
 
@@ -165,7 +166,13 @@ class CurtaoAnalysis extends React.Component {
     }
 
     processMenu(menus, subMenuField = 'pages') {
+        menus = _.cloneDeep(menus);
+
         return _.filter(menus, menu => {
+            if (_.isFunction(menu.isShowCallback)) {
+                return menu.isShowCallback();
+            }
+
             if (menu.privileges) {
                 const foundPrivilege = _.find(menu.privileges, privilege => hasPrivilege(privilege));
 
