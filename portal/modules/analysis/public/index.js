@@ -136,6 +136,8 @@ class CurtaoAnalysis extends React.Component {
                 app_id: 'all',
                 app_name: Intl.get( 'user.product.all','全部产品'),  
             });
+
+            //获取完应用后，再走一遍处理菜单的过程，以便把那些在没有应用时不该显示的菜单过滤掉
             this.setState({groups: this.processMenu(groups)});
         });
     };
@@ -169,6 +171,7 @@ class CurtaoAnalysis extends React.Component {
         menus = _.cloneDeep(menus);
 
         return _.filter(menus, menu => {
+            //若果定义了是否显示该菜单的回调函数，则调用该函数，以控制菜单的显示隐藏
             if (_.isFunction(menu.isShowCallback)) {
                 return menu.isShowCallback();
             }

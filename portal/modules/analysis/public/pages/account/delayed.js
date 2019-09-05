@@ -15,6 +15,7 @@ module.exports = {
         'USER_ANALYSIS_MANAGER',
     ],
     isShowCallback: () => {
+        //应用列表不为空的时候才显示该菜单
         return !_.isEmpty(Store.appList);
     },
     //是否只能选择一个应用
