@@ -623,10 +623,12 @@ class ClueDetailOverview extends React.Component {
         });
     };
     renderItemSelfSettingContent = (curClue,item) => {
+        let hasPrivilege = editCluePrivilege(curClue);
         return <PhoneCallout
             phoneNumber={item}
             showPhoneNum={addHyphenToPhoneNumber(item)}
             showPhoneIcon={true}
+            hidePhoneIcon={!hasPrivilege}
         />;
     };
     renderItemSelfSettingForm = (key, index, that) => {

@@ -29,6 +29,7 @@ function ClueCustomerActions() {
         'removeClueItem',//删除某条线索
         'afterModifiedAssocaitedCustomer',//修改当前线索的绑定客户后在列表中修改该条线索所绑定的客户
         'afterAddClueTrace',//添加完线索的跟进记录后
+        'afterReleaseClue', //在释放线索之后
         'afterAssignSales',//分配销售之后
         'setKeyWord',//设置关键字
         'setLastClueId',//用于设置下拉加载的最后一个线索的id
@@ -181,6 +182,22 @@ function ClueCustomerActions() {
         getAllSalesUserList((allUserList) => {
             this.dispatch(allUserList);
             if (cb) cb(allUserList);
+        });
+    };
+    //释放线索
+    this.releaseClue = function(clueIds, callback) {
+        clueCustomerAjax.releaseClue({lead_ids: clueIds}).then(() => {
+            _.isFunction(callback) && callback();
+        }, (errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg);
+        });
+    };
+    //批量释放线索
+    this.batchReleaseClue = function(condition, callback) {
+        clueCustomerAjax.batchReleaseClue(condition).then(data => {
+            _.isFunction(callback) && callback(data);
+        }, errorMsg => {
+            _.isFunction(callback) && callback(errorMsg);
         });
     };
 }

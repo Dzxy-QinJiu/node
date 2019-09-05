@@ -123,6 +123,9 @@ class ClueCustomer extends React.Component {
         isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
         addType: 'start',//添加按钮的初始
         showRecommendCustomerCondition: false,
+        isReleasingClue: false,//是否正在释放线索
+        selectedClue: {},//选中的线索
+        selectedNumber: 0,//当用户只选了二十条数据时，记录此时的数据总量
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -143,6 +146,7 @@ class ClueCustomer extends React.Component {
         this.getSettingCustomerRecomment();
         this.getSalesmanList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
+        batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         phoneMsgEmitter.on(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
@@ -260,6 +264,7 @@ class ClueCustomer extends React.Component {
         clueFilterAction.setInitialData();
         clueCustomerAction.resetState();
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
+        batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SETTING_CLUE_INVALID, this.invalidBtnClickedListener);
     }
 
@@ -1168,6 +1173,7 @@ class ClueCustomer extends React.Component {
             clueFilterAction.setFilterClueAvailbility();
         }else{
             clueFilterAction.setFilterType(selectedType);
+            clueFilterAction.setFilterType(selectedType);
         }
         this.onTypeChange();
     };
@@ -1251,7 +1257,8 @@ class ClueCustomer extends React.Component {
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
-                                onClick={this.showClueDetailOut.bind(this, salesClueItem)}>{salesClueItem.name}
+                                onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
+                                <div className="clue-name-item">{salesClueItem.name}</div>
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
                                     <Tag className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.clue', '有相似线索')}
@@ -1362,23 +1369,28 @@ class ClueCustomer extends React.Component {
                 );
             }
         });
+        let typeFilter = this.getFilterStatus();//线索类型
+        let willTrace = SELECT_TYPE.WILL_TRACE === typeFilter.status;
+        let hasTrace = SELECT_TYPE.HAS_TRACE === typeFilter.status;
+        let filterStore = clueFilterStore.getState();
+        let invalidClue = filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY;
         //除了运营不能释放线索，管理员、销售都可以释放
-        if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+        //待跟进，已跟进，无效线索才可以被释放
+        if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue)) {
             columns.push({
                 dataIndex: 'release_clue',
                 className: 'release-td-clue',
                 width: '40px',
                 render: (text, salesClueItem, index) => {
-                    return (
-                        <div className="release-clue-btn">
-                            <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem.id)}
-                                title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确认释放吗？')}>
-                                <a className='release-customer'
-                                    title={Intl.get('crm.customer.release', '释放')}>
-                                    <i className="iconfont icon-release handle-btn-item"/>
-                                </a>
-                            </Popconfirm>
-                        </div>);
+                    return(<div className="release-clue-btn">
+                        <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
+                            title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确认释放吗？')}>
+                            <a className='release-customer'
+                                title={Intl.get('crm.customer.release', '释放')}>
+                                <i className="iconfont icon-release handle-btn-item"/>
+                            </a>
+                        </Popconfirm>
+                    </div>);
                 }
             });
         }
@@ -2189,18 +2201,125 @@ class ClueCustomer extends React.Component {
                 </span>);
         }
     };
-    //释放到线索池
-    batchReleaseClue = () => {
+    //批量释放到线索池-emitter
+    batchReleaseLead = (taskInfo, taskParams) => {
+        //如果参数不合法，不进行更新
+        if (!_.isObject(taskInfo) || !_.isObject(taskParams)) {
+            return;
+        }
+        //解析tasks
+        let {
+            tasks
+        } = taskInfo;
+        //如果tasks为空，不进行更新
+        if (!_.isArray(tasks) || !tasks.length) {
+            return;
+        }
+        //检查taskDefine
+        tasks = _.filter(tasks, (task) => typeof task.taskDefine === 'string');
+        //如果没有要更新的数据
+        if (!tasks.length) {
+            return;
+        }
+        clueCustomerAction.afterReleaseClue(tasks);
+        //当最后一个推送完成后
+        if(_.isEqual(taskInfo.running, 0)) {
+            let cluesNumber = this.state.customersSize;
+            let totalSelected = this.state.selectedNumber;
+            //如果批量筛选的数据为20以内并且当前的数据不为空
+            if(totalSelected <= 20 && totalSelected > 0 && cluesNumber > 0) {
+                //刷新重新获取列表
+                //做1s延迟为了跟数据库同步
+                setTimeout(() => {
+                    this.getClueList();
+                },1000);
+            }
+            this.setState({
+                selectedClues: []
+            });
+        }
+    };
 
-    }
+    //批量释放到线索池
+    batchReleaseClue = () => {
+        if(this.state.isReleasingClue) {
+            return;
+        }
+        //初始化当前选中的线索数量
+        this.setState({
+            selectedNumber: 0
+        });
+        let condition = {
+        };
+        //选中全部搜索结果时，将搜索条件传给后端
+        //后端会将符合这个条件的客户释放
+        if (this.state.selectAllMatched) {
+            let queryObj = this.getClueSearchCondition();
+            condition.query_param = queryObj.bodyParam;
+        } else {
+            //记录当前选中的线索数量
+            let selectedNumber = _.get(this.state.selectedClues, 'length');
+            this.setState({
+                selectedNumber
+            });
+            //只在当前页进行选择时，将选中项的id传给后端
+            //后端检测到传递的id后，将会对这些id的客户进行迁移
+            let clueIds = _.map(this.state.selectedClues, 'id').join(',');
+            condition.customer_ids = clueIds;
+        }
+        this.setState({isReleasingClue: true});
+        clueCustomerAction.batchReleaseClue(condition, (data) => {
+            let batch_label = _.get(data,'batch_label');
+            //lead_batch_release
+            this.setState({isReleasingClue: false});
+            //批量操作参数
+            let is_select_all = this.state.selectAllMatched;
+            //全部记录的个数
+            let totalSelectedSize = is_select_all ? this.state.customersSize : this.state.selectedClues.length;
+            //构造批量操作参数
+            let batchParams = {};
+            //向任务列表id中添加taskId
+            batchOperate.addTaskIdToList(batch_label);
+            //存储批量操作参数，后续更新时使用
+            batchOperate.saveTaskParamByTaskId(batch_label, batchParams, {
+                showPop: true,
+                urlPath: '/clue_customer'
+            });
+            //立即在界面上显示推送通知
+            //界面上立即显示一个初始化推送
+            batchOperate.batchOperateListener({
+                taskId: batch_label,
+                total: totalSelectedSize,
+                running: totalSelectedSize,
+                typeText: Intl.get('clue.release','释放线索',)
+            });
+        }, (errorMsg) => {
+            this.setState({isReleasingCustomer: false});
+            message.error(errorMsg);
+        });
+    };
 
     //释放单个线索
-    releaseClue = (id) => {
-        console.log(id);
-    }
+    releaseClue = (clue) => {
+        if(this.state.isReleasingCustomer) return;
+        this.setState({isReleasingCustomer: true});
+        clueCustomerAction.releaseClue(clue.id, () => {
+            this.setState({isReleasingCustomer: false});
+            clueCustomerAction.afterReleaseClue(clue.id);
+        }, errorMsg => {
+            this.setState({isReleasingCustomer: false});
+            message.error(errorMsg);
+        });
+    };
 
     //渲染批量操作按钮
     renderBatchChangeClues = () => {
+        let filterClueStatus = clueFilterStore.getState().filterClueStatus;
+        let curStatus = getClueStatusValue(filterClueStatus);
+        //除了运营不能释放线索，管理员、销售都可以释放
+        let roleRule = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+        //只有待跟进和已跟进tab才有批量操作
+        let batchRule = _.isEqual(curStatus.status, SELECT_TYPE.WILL_TRACE) || _.isEqual(curStatus.status, SELECT_TYPE.HAS_TRACE);
         return (
             <div className="pull-right">
                 <div className="pull-right">
@@ -2219,15 +2338,15 @@ class ClueCustomer extends React.Component {
                         clearSelectData={this.clearSelectSales}
                         btnAtTop={false}
                     />
-                    {//除了运营不能释放线索，管理员、销售都可以释放
-                        userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                    {
+                        roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
                                 title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确认释放吗？')}>
                                 <Button className='btn-item handle-btn-item' title={Intl.get('clue.customer.release.pool', '释放到线索池')}>
                                     {Intl.get('crm.customer.release', '释放')}
                                 </Button>
                             </Popconfirm>
-                        )}
+                        ) : null}
                 </div>
             </div>
         );

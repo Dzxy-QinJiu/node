@@ -455,3 +455,21 @@ exports.getClueListByKeyword = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
+//释放线索
+exports.releaseClue = function(req, res) {
+    clueCustomerService.releaseClue(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+//线索批量操作
+exports.batchReleaseClue = function(req, res) {
+    clueCustomerService.batchReleaseClue(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
