@@ -3,7 +3,7 @@
  * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
  * Created by tangmaoqin on 2019/08/27.
  */
-import { Form, Select, message, Icon, Popconfirm } from 'antd';
+import { Form, Select, message, Icon, Popconfirm, Checkbox } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import DetailCard from 'CMP_DIR/detail-card';
@@ -43,7 +43,8 @@ class CustomerPoolRuleForm extends React.Component{
         return {
             team_id: this.props.curCustomerRule.team_id,
             team_name: this.props.curCustomerRule.team_name,
-            team_range
+            team_range,
+            show_my_customers: !!this.props.curCustomerRule.show_my_customers
         };
     }
 
@@ -87,6 +88,7 @@ class CustomerPoolRuleForm extends React.Component{
             let saveObj = {
                 team_id: formData.team_id,
                 team_name: formData.team_name,
+                show_my_customers: formData.show_my_customers,
                 team_range: _.map(formData.team_range, range => {
                     return {
                         team_id: range.team_id, //客户原始团队id
@@ -142,6 +144,12 @@ class CustomerPoolRuleForm extends React.Component{
         let team = _.find(this.props.visibleTeamList, item => item.group_id === value);
         formData.team_id = team.group_id;
         formData.team_name = team.group_name;
+        this.setState({formData});
+    };
+
+    handleVisibleChange = (e) => {
+        let formData = this.state.formData;
+        formData.show_my_customers = !e.target.checked;
         this.setState({formData});
     };
 
@@ -251,6 +259,8 @@ class CustomerPoolRuleForm extends React.Component{
             'has-range-more': teamRangeLength > 1
         });
 
+        const visibleText = this.props.curCustomerRule.show_my_customers ? '' : ` (${Intl.get('crm.customer.pool.rule.own.visible', '自己释放的自己不可见')})`;
+
         return (
             <Form>
                 <FormItem {...formItemLayout} label={Intl.get('crm.customer.pool.rule.form.name', '规则名称')}>
@@ -261,23 +271,39 @@ class CustomerPoolRuleForm extends React.Component{
                 </FormItem>
                 <FormItem {...formItemLayout} label={Intl.get('crm.customer.visible.range', '可见范围')}>
                     {this.props.isEdit ? (
-                        getFieldDecorator('team_id', {
-                            initialValue: formData.team_id,
-                            rules: [
-                                {required: true, message: Intl.get('crm.customer.pool.select.range', '请选择可见范围')},
-                            ],
-                        })(
-                            <Select
-                                showSearch
-                                optionFilterProp="children"
-                                placeholder={Intl.get('crm.customer.pool.rule.range.tip', '请选择客户能被哪些团队或者成员看到')}
-                                onChange={this.handleSelectVisibelRange}
-                            >
-                                {visibleTeamOptions}
-                            </Select>
-                        )
+                        <div>
+                            {
+                                getFieldDecorator('team_id', {
+                                    initialValue: formData.team_id,
+                                    rules: [
+                                        {required: true, message: Intl.get('crm.customer.pool.select.range', '请选择可见范围')},
+                                    ],
+                                })(
+                                    <Select
+                                        showSearch
+                                        optionFilterProp="children"
+                                        placeholder={Intl.get('crm.customer.pool.rule.range.tip', '请选择客户能被哪些团队或者成员看到')}
+                                        onChange={this.handleSelectVisibelRange}
+                                    >
+                                        {visibleTeamOptions}
+                                    </Select>
+                                )
+                            }
+                            {
+                                getFieldDecorator('show_my_customers', {
+                                    initialValue: !formData.show_my_customers,
+                                    valuePropName: 'checked'
+                                })(
+                                    <Checkbox
+                                        onChange={this.handleVisibleChange}
+                                    >
+                                        {Intl.get('crm.customer.pool.rule.own.invisible', '自己释放的不可见')}
+                                    </Checkbox>
+                                )
+                            }
+                        </div>
                     ) : (
-                        <span className="customer-info-text">{_.get(formData,'team_name', '')}</span>
+                        <span className="customer-info-text">{_.get(formData,'team_name', '')}{visibleText}</span>
                     )}
                 </FormItem>
                 <FormItem {...formItemLayout} label={Intl.get('crm.customer.pool.source', '客户来源')}>

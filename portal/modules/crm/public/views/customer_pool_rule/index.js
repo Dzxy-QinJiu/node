@@ -5,7 +5,7 @@
  */
 // 客户池规则设置
 import '../../css/customer-pool-rule.less';
-import {Select, message} from 'antd';
+import {Select, message, Checkbox} from 'antd';
 const Option = Select.Option;
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -13,6 +13,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import Spinner from 'CMP_DIR/spinner';
+import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import CustomerPoolRuleForm from './customer-pool-rule-form';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 import userData from 'PUB_DIR/sources/user-data';
@@ -27,7 +28,8 @@ const LAYOUT_CONSTS = {
 
 const FORM_TYPE = {
     ADD: 'add',
-    EDIT: 'edit'
+    EDIT: 'edit',
+    DEFAULT: 'default'
 };
 // 规则操作符
 const RULE_CONFIG_OPERATOR = {
@@ -55,6 +57,11 @@ class CustomerPoolRule extends React.Component{
             isCustomerConfigsLoading: false, // 获取客户池配置
             errMsg: '',
             customerPoolConfigs: [],
+            defaultRuleConfig: {}, // 默认客户池的配置
+            isDefaultEdit: false,
+            isDefaultLoading: false,
+            defaultErrMsg: '',
+            defaultChecked: false,
         };
     }
 
@@ -108,8 +115,19 @@ class CustomerPoolRule extends React.Component{
         CustomerPoolAjax.getCustomerPoolConfigs(queryObj).then((res) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             let customerPoolConfigs = this.state.customerPoolConfigs.concat(_.get(res,'list', []));
+            let defaultRuleConfig = this.state.defaultRuleConfig;
+            let defaultChecked = this.state.defaultChecked;
+            if(_.isEmpty(this.state.defaultRuleConfig)) {
+                let organizationId = _.get(userData.getUserData(), 'organization.id');
+                defaultRuleConfig = _.find(customerPoolConfigs, config => config.id === organizationId);
+                customerPoolConfigs = _.filter(customerPoolConfigs, config => config.id !== organizationId);
+                defaultChecked = !_.get(defaultRuleConfig,'show_my_customers', undefined);
+            }
+
             this.setState({
                 isCustomerConfigsLoading: false,
+                defaultRuleConfig,
+                defaultChecked,
                 errMsg: '',
                 customerPoolConfigs,
                 total: _.get(res,'total', 0)
@@ -135,17 +153,20 @@ class CustomerPoolRule extends React.Component{
     };
 
     saveCustomerRuleBasicInfo = (type, saveObj, successFunc, errorFunc) => {
-        // 处理数据
-        saveObj.team_range = _.filter(saveObj.team_range, range => {
-            let isAllNull = _.isEmpty(range.team_id)
-                && _.isEmpty(range.team_name)
-                && _.isEmpty(range.customer_label)
-                && _.isEmpty(range.labels);
-            if(isAllNull) {
-                return false;
-            }
-            return true;
-        });
+        if(type !== FORM_TYPE.DEFAULT) {
+            // 处理数据
+            saveObj.team_range = _.filter(saveObj.team_range, range => {
+                let isAllNull = _.isEmpty(range.team_id)
+                    && _.isEmpty(range.team_name)
+                    && _.isEmpty(range.customer_label)
+                    && _.isEmpty(range.labels);
+                if(isAllNull) {
+                    return false;
+                }
+                return true;
+            });
+        }
+
         if(type === FORM_TYPE.ADD) {//添加规则
             CustomerPoolAjax.addCustomerPoolConfig(saveObj).then((res) => {
                 message.success(Intl.get('crm.216', '添加成功'));
@@ -160,20 +181,28 @@ class CustomerPoolRule extends React.Component{
             }, (errorMsg) => {
                 _.isFunction(errorFunc) && errorFunc(errorMsg);
             });
-        }else if(type === FORM_TYPE.EDIT) {//编辑规则
+        }else if(_.includes([FORM_TYPE.EDIT, FORM_TYPE.DEFAULT], type)) {//编辑规则
             CustomerPoolAjax.updateCustomerPoolConfig(saveObj).then((res) => {
-                message.success(Intl.get('crm.218', '修改成功'));
-                let {customerPoolConfigs} = this.state;
-                let curRuleIndex = _.findIndex(customerPoolConfigs, rule => rule.id === saveObj.id);
-                let curRule = customerPoolConfigs[curRuleIndex];
-                delete curRule.isEditting;
-                curRule = {...curRule, ...saveObj};
-                customerPoolConfigs[curRuleIndex] = curRule;
-                this.setState({
-                    customerPoolConfigs
-                }, () => {
-                    _.isFunction(successFunc) && successFunc();
-                });
+                if(_.isEqual(res, true)) {
+                    message.success(Intl.get('crm.218', '修改成功'));
+                    if(type === FORM_TYPE.EDIT) {//编辑规则
+                        let {customerPoolConfigs} = this.state;
+                        let curRuleIndex = _.findIndex(customerPoolConfigs, rule => rule.id === saveObj.id);
+                        let curRule = customerPoolConfigs[curRuleIndex];
+                        delete curRule.isEditting;
+                        curRule = {...curRule, ...saveObj};
+                        customerPoolConfigs[curRuleIndex] = curRule;
+                        this.setState({
+                            customerPoolConfigs
+                        }, () => {
+                            _.isFunction(successFunc) && successFunc();
+                        });
+                    }else{//编辑默认规则
+                        _.isFunction(successFunc) && successFunc();
+                    }
+                }else {
+                    _.isFunction(errorFunc) && errorFunc(Intl.get('crm.219', '修改失败'));
+                }
             }, (errorMsg) => {
                 _.isFunction(errorFunc) && errorFunc(errorMsg || Intl.get('crm.219', '修改失败'));
             });
@@ -213,13 +242,7 @@ class CustomerPoolRule extends React.Component{
         curRule.isDelete = true;
         customerPoolConfigs[curRuleIndex] = curRule;
         this.setState({customerPoolConfigs});
-        CustomerPoolAjax.deleteCustomerPoolConfig({id}).then((res) => {
-            message.success(Intl.get('crm.138', '删除成功'));
-
-            let curRuleIndex = _.findIndex(customerPoolConfigs, rule => rule.id === id);
-            customerPoolConfigs.splice(curRuleIndex, 1);
-            this.setState({customerPoolConfigs});
-        }, (errorMsg) => {
+        let errorFunc = (errorMsg) => {
             message.error(errorMsg || Intl.get('crm.139', '删除失败'));
             let curRuleIndex = _.findIndex(customerPoolConfigs, rule => rule.id === id);
             let curRule = customerPoolConfigs[curRuleIndex];
@@ -228,7 +251,18 @@ class CustomerPoolRule extends React.Component{
             delete curRule.isDelete;
             customerPoolConfigs[curRuleIndex] = curRule;
             this.setState({customerPoolConfigs});
-        });
+        };
+        CustomerPoolAjax.deleteCustomerPoolConfig({id}).then((res) => {
+            if(_.isEqual(res, true)) {
+                message.success(Intl.get('crm.138', '删除成功'));
+
+                let curRuleIndex = _.findIndex(customerPoolConfigs, rule => rule.id === id);
+                customerPoolConfigs.splice(curRuleIndex, 1);
+                this.setState({customerPoolConfigs});
+            }else {
+                errorFunc();
+            }
+        }, errorFunc);
     };
 
     handleScrollBottom = () => {
@@ -241,6 +275,50 @@ class CustomerPoolRule extends React.Component{
                 listenScrollBottom: false
             });
         }
+    };
+
+    handleEditDefaultRule = (type) => {
+        if(type === RULE_CONFIG_OPERATOR.EDIT) {
+            this.setState({
+                isDefaultEdit: true
+            });
+        }else {
+            this.setState({
+                isDefaultEdit: false,
+                defaultChecked: !_.get(this.state.defaultRuleConfig,'show_my_customers')
+            });
+        }
+    };
+
+
+    onDefaultRuleChange = (e) => {
+        let checked = e.target.checked;
+        this.setState({defaultChecked: checked});
+    };
+
+    handleDefaultSubmit = () => {
+        let saveObj = {
+            id: this.state.defaultRuleConfig.id,
+            show_my_customers: !this.state.defaultChecked,
+        };
+        this.setState({isDefaultLoading: true});
+        let successFunc = () => {
+            let {defaultChecked, defaultRuleConfig} = this.state;
+            defaultRuleConfig.show_my_customers = !defaultChecked;
+            this.setState({
+                isDefaultLoading: false,
+                defaultErrMsg: '',
+                isDefaultEdit: false,
+                defaultRuleConfig
+            });
+        };
+        let errorFunc = (errorMsg) => {
+            this.setState({
+                isDefaultLoading: false,
+                defaultErrMsg: errorMsg
+            });
+        };
+        this.saveCustomerRuleBasicInfo(FORM_TYPE.DEFAULT, saveObj,successFunc,errorFunc);
     };
 
     renderTitleBlock = () => {
@@ -261,14 +339,18 @@ class CustomerPoolRule extends React.Component{
         const defaultOptions = _.map(DEFAULT_VISIBLE_RANGE_MAPS, item => {
             return <Option key={item.value} value={item.value}>{item.name}</Option>;
         });
+        // 自己释放的可见，true: 可见，false: 不可见
+        let showMyCustomers = _.get(this.state.defaultRuleConfig, 'show_my_customers', undefined);
+        // 展示时，可见时不展示，不可见时展示
+        let text = showMyCustomers ? '' : ` (${Intl.get('crm.customer.pool.rule.own.visible', '自己释放的自己不可见')})`;
         return (
-            <div>
+            <div data-tracename="默认客户池配置">
                 <div className="default-item-content">
                     <span className='customer-pool__label'>{Intl.get('crm.customer.visible.range', '可见范围')}:</span>
                     <BasicEditSelectField
                         width={EDIT_WIDTH}
                         id={''}
-                        displayText={DEFAULT_VISIBLE_RANGE_MAPS[1].name + ` (${Intl.get('crm.customer.pool.rule.default.tip', '没有原始团队时，默认所有人可见')})`}
+                        displayText={DEFAULT_VISIBLE_RANGE_MAPS[1].name + text}
                         value={DEFAULT_VISIBLE_RANGE_MAPS[1].value}
                         field="range"
                         selectOptions={defaultOptions}
@@ -276,7 +358,34 @@ class CustomerPoolRule extends React.Component{
                         placeholder={Intl.get('crm.customer.pool.select.range', '请选择可见范围')}
                         saveEditSelect={this.saveCustomerRuleBasicInfo.bind(this, 'team_id')}
                     />
+                    {this.state.isDefaultEdit ? (
+                        <div>
+                            <Checkbox
+                                dataTracename="释放设置checkbox按钮"
+                                className="visible-checkbox"
+                                checked={this.state.defaultChecked}
+                                onChange={this.onDefaultRuleChange}
+                                disabled={this.state.isDefaultLoading}
+                            >{Intl.get('crm.customer.pool.rule.own.invisible', '自己释放的不可见')}</Checkbox>
+                        </div>
+                    ) : null}
                 </div>
+                {/*{
+                    this.state.isDefaultEdit ? (
+                        <div className="default-item-content">
+                            <span className='customer-pool__label'>{Intl.get('crm.customer.pool.rule.release.setting', '释放设置')}:</span>
+                            <div>
+                                <Checkbox
+                                    dataTracename="释放设置checkbox按钮"
+                                    className="visible-checkbox"
+                                    checked={this.state.defaultChecked}
+                                    onChange={this.onDefaultRuleChange}
+                                    disabled={this.state.isDefaultLoading}
+                                >{Intl.get('crm.customer.pool.rule.own.invisible', '自己释放的不可见')}</Checkbox>
+                            </div>
+                        </div>
+                    ) : null
+                }*/}
                 <div className="default-item-content">
                     <span className='customer-pool__label'>{Intl.get('crm.customer.pool.source', '客户来源')}:</span>
                     <span className="customer-pool__text">{Intl.get('crm.customer.pool.unlimited', '不限')}</span>
@@ -327,6 +436,21 @@ class CustomerPoolRule extends React.Component{
         }
     };
 
+    renderDefaultTitleBlock = () => {
+        return (
+            <div>
+                <span>{Intl.get('crm.customer.pool.rule.name', '{name}客户池', {name: Intl.get('crm.119', '默认')})}</span>
+                {this.state.isDefaultEdit ? null : (
+                    <DetailEditBtn
+                        dataTracename="默认客户池编辑按钮"
+                        title={Intl.get('common.edit', '编辑')}
+                        onClick={this.handleEditDefaultRule.bind(this, RULE_CONFIG_OPERATOR.EDIT)}
+                    />
+                )}
+            </div>
+        );
+    };
+
     renderFormContent = () => {
         let contentHeight = $(window).height() - LAYOUT_CONSTS.TITLE_HEIGHT - LAYOUT_CONSTS.TITLE_MARGIN_BOTTOM;
         // 可见范围中设置的团队，其他规则中不能再添加此团队。
@@ -354,12 +478,21 @@ class CustomerPoolRule extends React.Component{
                             />
                         ) : null}
                         {this.renderConfigBlock(visibleTeamList)}
-                        <DetailCard
-                            title={Intl.get('crm.customer.pool.rule.name', '{name}客户池', {name: Intl.get('crm.119', '默认')})}
-                            titleBottomBorderNone
-                            content={this.renderDefaultRuleForm()}
-                            className='customer-rule-default-wrapper'
-                        />
+                        {
+                            _.isEmpty(this.state.defaultRuleConfig) ? null : (
+                                <DetailCard
+                                    title={this.renderDefaultTitleBlock()}
+                                    titleBottomBorderNone
+                                    isEdit={this.state.isDefaultEdit}
+                                    loading={this.state.isDefaultLoading}
+                                    saveErrorMsg={this.state.defaultErrMsg}
+                                    content={this.renderDefaultRuleForm()}
+                                    handleSubmit={this.handleDefaultSubmit}
+                                    handleCancel={this.handleEditDefaultRule.bind(this,RULE_CONFIG_OPERATOR.CANCEL)}
+                                    className='customer-rule-default-wrapper'
+                                />
+                            )
+                        }
                     </div>
                 </GeminiScrollbar>
             </div>
