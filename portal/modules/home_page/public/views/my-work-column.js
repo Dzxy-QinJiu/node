@@ -775,8 +775,8 @@ class MyWorkColumn extends React.Component {
                 showIcon
                 onHide={this.hideEditStatusTip.bind(this, item)}/>);
         } else {
-            //不是普通销售的线索类型，需要展示分配按钮
-            if (item.type === WORK_TYPES.LEAD && !userData.getUserData().isCommonSales) {
+            //不是普通销售的线索类型，需要展示分配按钮（线索tags中需要有lead，线索的日程不需要要展示分配按钮）
+            if (item.type === WORK_TYPES.LEAD && _.includes(item.tags, WORK_TYPES.LEAD) && !userData.getUserData().isCommonSales) {
                 const distributeBtn = (
                     <div className='handle-work-finish' data-tracename="点击分配线索按钮">
                         <span className='work-finish-text approval-btn'>
