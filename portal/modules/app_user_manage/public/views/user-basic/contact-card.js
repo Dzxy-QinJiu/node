@@ -7,7 +7,7 @@ var React = require('react');
 import DetailCard from 'CMP_DIR/detail-card';
 import { PropTypes } from 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
+var UserDetailEditField = require('CMP_DIR/basic-edit-field-new/input');
 
 class ContactCard extends React.Component {
     constructor(props) {
@@ -47,7 +47,7 @@ class ContactCard extends React.Component {
                             </span>
                             <span className="sales-team-text">
                                 {hasEditAuth ? <UserDetailEditField
-                                    user_id={userInfo.user_id}
+                                    id={userInfo.user_id}
                                     saveEditInput={this.props.saveEditInput}
                                     showBtn={true}
                                     {...this.props.email}
@@ -60,7 +60,7 @@ class ContactCard extends React.Component {
                             </span>
                             <span className="sales-team-text">
                                 {hasEditAuth ? <UserDetailEditField
-                                    user_id={userInfo.user_id}
+                                    id={userInfo.user_id}
                                     saveEditInput={this.props.saveEditInput}
                                     showBtn={true}
                                     {...this.props.phone}

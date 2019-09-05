@@ -757,7 +757,7 @@ class UserDetailBasic extends React.Component {
                         value: userInfo.phone,
                         field: 'phone',
                         type: 'text',
-                        disabled: hasEditPrivilege ? false : true,
+                        hasEditPrivilege: hasEditPrivilege ,
                         validators: [{ validator: checkPhone }],
                         placeholder: Intl.get('user.input.phone', '请输入手机号'),
                         title: Intl.get('user.phone.set.tip', '修改手机号')
@@ -766,7 +766,7 @@ class UserDetailBasic extends React.Component {
                         value: userInfo.email,
                         field: 'email',
                         type: 'text',
-                        disabled: hasEditPrivilege ? false : true,
+                        hasEditPrivilege: hasEditPrivilege ,
                         validators: [{
                             type: 'email',
                             required: true,
