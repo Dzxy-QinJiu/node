@@ -211,11 +211,11 @@ exports.editAppUser = function(user,succCallback,errCallback) {
         data: JSON.stringify(userData),
         timeout: 180 * 1000,
         success: function(newUser) {
-            succCallback();
+            _.isObject(succCallback)?succCallback():null;
             Deferred.resolve(newUser);
         },
         error: function(xhr) {
-            errCallback();
+            _.isObject(errCallback)?errCallback():null;
             Deferred.reject(xhr.responseJSON || Intl.get('errorcode.17','修改用户失败'));
         }
     });
