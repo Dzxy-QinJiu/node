@@ -19,7 +19,7 @@
             .process-box {
               position: relative;
               width: 300px;
-              border: 1px solid #E5E5E5;
+              border: 1px solid @border-color;
               border-radius:4px;
               color: #333;
               margin: 16px 16px 0 0;
@@ -73,7 +73,7 @@
             .customer-stage-block {
               margin-bottom: 16px;
               height: 132px;
-              border: 1px solid #E5E5E5;
+              border: 1px solid @border-color;
               padding: 16px;
               // 阶段名称
               .customer-stage-name {
@@ -205,6 +205,186 @@
         }
       }
     }
+    // 新版客户阶段详情样式
+    .customer-stage-detail-container {
+      .right-panel-modal-content {
+        .right-panel-modal-title {
+          margin-bottom: 0;
+        }
+        .stage-detail-wrap {
+          padding: 16px 24px;
+          .stage-content-set-stage, .stage-content-team-user {
+            background-color: @content-zone-background;
+            padding: 12px;
+            .stage-label {
+              color: @label-color;
+              height: 20px;
+              margin-bottom: 8px;
+            }
+          }
+          .stage-content-set-stage {
+            margin-bottom: 8px;
+            .stage-content {
+              .customer-stage-table-block {
+                .customer-stage-block {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  bottom: 0;
+                  right: 0;
+                  margin: auto;
+                  z-index: 10;
+                }
+                .customer-stage-timeline {
+                  .customer-stage-timeline-item {
+                    position: relative;
+                    padding-bottom: 12px;
+                    //线
+                    .customer-stage-timeline-item-tail {
+                      position: absolute;
+                      left: 10px;
+                      top: 40px;
+                      height: 100%;
+                      border-left: 4px dotted #8DA8C5;
+                    }
+                    //序号
+                    .customer-stage-timeline-item-head {
+                      position: absolute;
+                      top: 30px;
+                      width: 24px;
+                      height: 24px;
+                      border-radius: 100px;
+                      color: #fff;
+                      text-align: center;
+                      line-height: 24px;
+                      font-size: 14px;
+                    }
+                    .customer-stage-color-lump0 { // 信息
+                      background-color: @customer-stage-first-color;
+                    }
+                    .customer-stage-color-lump1 { // 意向
+                      background-color: @customer-stage-second-color;
+                    }
+                    .customer-stage-color-lump2 { // 试用
+                      background-color: @customer-stage-third-color;
+                    }
+                    .customer-stage-color-lump3 { // 机会
+                      background-color: @customer-stage-fourth-color;
+                    }
+                    .customer-stage-color-lump4 { // 流失
+                      background-color: @customer-stage-fifth-color;
+                    }
+                    .customer-stage-color-lump5 { // 签约
+                      background-color: @customer-stage-sixth-color;
+                    }
+                    .customer-stage-color-lump6 { // 续约
+                      background-color: @customer-stage-seventh-color;
+                    }
+                    .customer-stage-color-lump7 {
+                      background-color: @customer-stage-eighth-color;
+                    }
+                    .customer-stage-timeline-item-right {
+                      width: 20px;
+                      border: 1px solid #8DA8C5;
+                      position: relative;
+                      top: 40px;
+                      left: 24px;
+                    }
+
+                    //内容
+                    .customer-stage-timeline-item-content {
+                      cursor: pointer;
+                      font-size: 12px;
+                      position: relative;
+                      border: 1px solid @border-color;
+                      margin-left: 44px;
+                      height: 68px;
+                      &:hover {
+                        background: #F1F8FE;
+                      }
+
+                      .customer-stage-content {
+                        float: left;
+                        padding: 12px;
+                        .customer-stage-content-name {
+                          font-size: 14px;
+                          font-weight: bold;
+                          color: #333;
+                          .iconfont {
+                            margin-left: 16px;
+                          }
+                        }
+
+                        .customer-stage-content-describe {
+                          color: #999;
+                        }
+                      }
+
+                      .customer-stage-btn-div {
+                        width: 90px;
+                        float: right;
+                        padding-top: 18px;
+
+                        &.operation-btn {
+                          display: none;
+                        }
+
+                        .customer-stage-btn-class {
+                          border: 0;
+                          width: 28px;
+                          float: right;
+                          background-color: #b6c2c9;
+                          margin-right: 12px;
+                          text-align: center;
+                          padding: 0;
+                          color: #fff;
+                          font-size: 16px;
+                          border-radius: 100px;
+                        }
+                      }
+
+                      &:hover {
+                        .operation-btn {
+                          display: block;
+                        }
+                      }
+                    }
+
+                    &:last-child {
+                      .customer-stage-timeline-item-tail {
+                        display: none;
+                      }
+                      .order-arrow {
+                        .down-arrow {
+                          display: none;
+                        }
+                      }
+                    }
+
+                    &:first-child {
+                      .order-arrow {
+                        .up-arrow {
+                          visibility: hidden;
+                        }
+                      }
+                    }
+
+                  }
+                }
+              }
+            }
+          }
+          .stage-content-team-user {
+            .stage-content {
+              border-top: 1px solid @border-color;
+              padding-top: 12px;
+              font-size: 14px;
+              color: @content-font-color;
+            }
+          }
+        }
+      }
+    }
   }
 
   // 编辑销售流程面板
@@ -275,7 +455,7 @@
                   float: right;
                   padding: 0 5px;
                   font-size: 12px;
-                  color: #ffffff;
+                  color: @tag-font-color;
                   background-color: #b8c4ca;
                 }
               }

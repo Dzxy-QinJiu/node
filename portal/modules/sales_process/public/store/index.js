@@ -152,6 +152,7 @@ class SalesProcessStore {
         this.saleProcessName = saleProcess.name;
         this.saleProcessType = saleProcess.type || 'custom';
         this.isShowCustomerStage = true;
+        this.currentSaleProcess = saleProcess;
     }
 
     // 关闭客户界阶段面板
@@ -160,6 +161,7 @@ class SalesProcessStore {
         this.saleProcessName = '';
         this.saleProcessType = 'custom';
         this.isShowCustomerStage = false;
+        this.currentSaleProcess = {};
     }
 
     // 显示选择团队或是个人的面板

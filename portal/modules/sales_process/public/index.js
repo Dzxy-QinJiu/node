@@ -10,9 +10,10 @@ import SalesProcessStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import SalesProcessStore from './store';
 import SalesProcessAction from './action';
 import SalesProcessAjax from './ajax';
-import SalesProcessForm from './views/sales-process-form';
+import CustomerStageFormPanel from './views/customer-stage-form-panel';
 import SalesProcessInfo from './views/sale-process-info';
 import CustomerStage from './views/customer-stage';
+import CustomerStageDetailPanel from './views/customer-stage-detail-panel';
 import CONSTS from 'LIB_DIR/consts';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {AntcTable} from 'antc';
@@ -668,6 +669,17 @@ class SalesProcess extends React.Component {
                         </div>
                     </GeminiScrollBar>
                     {
+                        this.state.isShowCustomerStage ? (
+                            <CustomerStageDetailPanel
+                                closeCustomerStagePanel={this.closeCustomerStagePanel}
+                                salesProcessList={this.state.salesProcessList}
+                                changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
+                                upDateSalesProcessList={this.upDateSalesProcessList}
+                                currentCustomerStage={this.state.currentSaleProcess}
+                            />
+                        ) : null
+                    }
+                    {
                         this.state.isShowSelectTeamUserPanel ? (
                             <StageSelectTeamUser
                                 treeSelectData={treeSelectData}
@@ -677,12 +689,13 @@ class SalesProcess extends React.Component {
                             />
                         ) : null
                     }
+
                     {
                         /**
                          * isShowAddProcessFormPanel true 打开添加销售流程面板
                          **/
                         this.state.isShowAddProcessFormPanel ? (
-                            <SalesProcessForm
+                            <CustomerStageFormPanel
                                 closeAddProcessFormPanel={this.closeAddProcessFormPanel}
                                 submitSalesProcessForm={this.submitSalesProcessForm}
                                 treeSelectData={treeSelectData}
@@ -706,23 +719,23 @@ class SalesProcess extends React.Component {
                         ) : null
                     }
                 </div>
-                <div className="customer-stage-wrap" style={{width: containerWidth}}>
-                    {
-                        this.state.isShowCustomerStage ? (
-                            <CustomerStage
-                                closeCustomerStagePanel={this.closeCustomerStagePanel}
-                                saleProcessId={this.state.saleProcessId}
-                                containerWidth={containerWidth}
-                                isShowCustomerStage={this.state.isShowCustomerStage}
-                                saleProcesTitle={this.state.saleProcessName}
-                                salesProcessList={this.state.salesProcessList}
-                                changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
-                                upDateSalesProcessList={this.upDateSalesProcessList}
-                                saleProcessType={this.state.saleProcessType}
-                            />
-                        ) : null
-                    }
-                </div>
+                {/*<div className="customer-stage-wrap" style={{width: containerWidth}}>*/}
+                {/*{*/}
+                {/*this.state.isShowCustomerStage ? (*/}
+                {/*<CustomerStage*/}
+                {/*closeCustomerStagePanel={this.closeCustomerStagePanel}*/}
+                {/*saleProcessId={this.state.saleProcessId}*/}
+                {/*containerWidth={containerWidth}*/}
+                {/*isShowCustomerStage={this.state.isShowCustomerStage}*/}
+                {/*saleProcesTitle={this.state.saleProcessName}*/}
+                {/*salesProcessList={this.state.salesProcessList}*/}
+                {/*changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}*/}
+                {/*upDateSalesProcessList={this.upDateSalesProcessList}*/}
+                {/*saleProcessType={this.state.saleProcessType}*/}
+                {/*/>*/}
+                {/*) : null*/}
+                {/*}*/}
+                {/*</div>*/}
             </div>
         );
     }
