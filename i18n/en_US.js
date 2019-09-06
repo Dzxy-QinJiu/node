@@ -1726,6 +1726,8 @@ var en_US = {
     'crm.pool.extract.distribute': 'To extract and assign the person in charge',//提取并分配负责人
     'crm.pool.select.customer.tip': 'Click {icon} in the list to select customers',//请点击列表中的{icon}选择客户
     'crm.pool.max.selected.num': 'Extract {num} at most each time',//每次最多提取{num}个
+    'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
+    'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
