@@ -11,13 +11,11 @@ export function getCustomerManagerPerformanceRankingChart() {
         layout: { sm: 24 },
         height: 'auto',
         url: '/rest/analysis/contract/contract/v2/performance/order/account_manager',
-        processData: data => {
-            _.each(data, item => {
-                //                item.performance = calc.mul(item.performance, 100);
-            });
-
-            return data;
-        },
+        conditions: [{
+            name: 'page_size',
+            value: 1000,
+        }],
+        dataField: 'list',
         processOption: option => {
             const uniqTeams = _.uniqBy(option.dataSource, 'sales_team');
 
@@ -42,25 +40,16 @@ export function getCustomerManagerPerformanceRankingChart() {
                     dataIndex: 'member_name',
                     width: '10%',
                 }, {
-                    title: Intl.get('contract.29', '回款毛利'),
-                    dataIndex: 'gross_profit',
-                    sorter: sorter.bind(null, 'gross_profit'),
+                    title: '新签回款毛利分数',
+                    dataIndex: 'new_gross_profit_performance',
                     width: '10%',
                 }, {
-                    title: Intl.get('common.oppertunity.number', '机会数量'),
-                    dataIndex: 'opportunity_count',
-                    sorter: sorter.bind(null, 'opportunity_count'),
+                    title: '个人贡献分数',
+                    dataIndex: 'contribution_performance',
                     width: '10%',
                 }, {
-                    title: Intl.get('common.deal.number', '成交数'),
-                    dataIndex: 'deal_count',
-                    sorter: sorter.bind(null, 'deal_count'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.deal.rate', '成交率'),
-                    dataIndex: 'deal_rate',
-                    showAsPercent: true,
-                    sorter: sorter.bind(null, 'deal_rate'),
+                    title: '回款毛利率分数',
+                    dataIndex: 'gross_profit_rate_performance',
                     width: '10%',
                 }, {
                     title: Intl.get('common.total.points', '总分'),
