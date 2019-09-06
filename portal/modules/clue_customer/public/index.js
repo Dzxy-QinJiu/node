@@ -619,20 +619,13 @@ class ClueCustomer extends React.Component {
         const queryObj = this.getClueSearchCondition();
         var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
         if (filterAllotNoTraced){
-            //获取有待我处理条件的线索
-            var cloneQuery = _.cloneDeep(queryObj);
-            cloneQuery.self_no_traced = true;
-
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
-                clueCustomerAction.saveQueryObj(cloneQuery);
             });
-
         }else{
             //取全部线索列表
             clueCustomerAction.getClueFulltext(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
-                clueCustomerAction.saveQueryObj(queryObj);
             });
 
         }
