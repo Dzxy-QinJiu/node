@@ -195,19 +195,27 @@ exports.addAppUser = function(user) {
 /**
  * 修改应用用户
  */
-exports.editAppUser = function(user) {
+exports.editAppUser = function(user,succCallback,errCallback) {
     var Deferred = $.Deferred();
+    var userData = user;
+    //用于兼容新旧输入组件
+    if(user.id){
+        userData.user_id = user.id;
+        delete userData.id
+    }
     $.ajax({
         url: '/rest/appuser',
         dataType: 'json',
         contentType: 'application/json',
         type: 'put',
-        data: JSON.stringify(user),
+        data: JSON.stringify(userData),
         timeout: 180 * 1000,
         success: function(newUser) {
+            _.isFunction(succCallback)?succCallback():null;
             Deferred.resolve(newUser);
         },
         error: function(xhr) {
+            _.isFunction(errCallback)?errCallback():null;
             Deferred.reject(xhr.responseJSON || Intl.get('errorcode.17','修改用户失败'));
         }
     });
