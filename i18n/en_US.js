@@ -1725,6 +1725,8 @@ var en_US = {
     'crm.pool.batch.extract.tip': 'Are you sure you want to extract the selected customers?',//您确定要提取选中的客吗？
     'crm.pool.extract.distribute': 'To extract and assign the person in charge',//提取并分配负责人
     'crm.pool.select.customer.tip': 'Click {icon} in the list to select customers',//请点击列表中的{icon}选择客户
+    'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
+    'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
