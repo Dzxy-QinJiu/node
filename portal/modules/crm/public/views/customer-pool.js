@@ -6,17 +6,13 @@
 import '../css/customer-pool.less';
 import TopNav from'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 import {AntcTable} from 'antc';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {SearchInput} from 'antc';
 import {message, Popconfirm, Icon, Tag, Button, Popover} from 'antd';
-import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import crmAjax from '../ajax/index';
-import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
-import crmUtil from '../utils/crm-util';
 import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
@@ -37,7 +33,7 @@ var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 66 + 46,//表格容器上外边距 + 表头的高度
     BOTTOM_DISTANCE: 30 + 10 * 2,//分页器的高度 + 分页器上下外边距
 };
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 20;
 class CustomerPool extends React.Component {
     constructor(props) {
         super(props);
@@ -52,10 +48,13 @@ class CustomerPool extends React.Component {
             poolCustomerList: [],
             totalSize: 0,
             pageSize: PAGE_SIZE,
-            pageNum: 1,
+            pageNum: 1, // 当前页数
+            nextPageNum: 0, //下次点击的页数
+            pageNumBack: 1, //为了便于翻页，记录的上次翻页正确的页数
+            customersBack: [], //为了便于翻页,记录的上次获取正确的客户列表
             errorMsg: '',
             currentId: '',
-            customerId: '',
+            customerId: '', //向前或者向后翻页时传的id值
             cursor: true,//向前还是向后翻页
             pageValue: 0,//两次点击时的页数差
             selectedCustomer: [],
@@ -133,6 +132,7 @@ class CustomerPool extends React.Component {
             curState.cursor = true;
             this.setState({
                 pageNum: 1,
+                nextPageNum: 1,
                 selectedCustomer,
                 customerId: '',
                 cursor: true,
@@ -165,15 +165,36 @@ class CustomerPool extends React.Component {
         this.setState({isLoading: true, errorMsg: ''});
         crmAjax.getPoolCustomer(queryObj).then(result => {
             let list = _.get(result, 'list', []);
+            let poolCustomerList = [];
             let totalSize = _.get(result, 'total', 0);
+            let pageNum = this.state.pageNum;
+            let pageNumBack = this.state.pageNumBack;
+            let customersBack = this.state.customersBack;
+            if(list && _.isArray(list) && list.length) {
+                customersBack = poolCustomerList = list;
+                if(!_.isEqual(this.state.nextPageNum, 0)) {
+                    pageNum = pageNumBack = this.state.nextPageNum;
+                }
+            }else {
+                poolCustomerList = [];
+                pageNum = this.state.nextPageNum;
+                totalSize = 0;
+            }
 
             this.setState({
                 isLoading: false,
                 totalSize,
-                poolCustomerList: list,
+                poolCustomerList,
+                pageNum,
+                pageNumBack,
+                customersBack
             });
         }, (errorMsg) => {
-            this.setState({isLoading: false, errorMsg});
+            let pageNum = this.state.pageNum;
+            if (this.state.nextPageNum !== 0) {
+                pageNum = this.nextPageNum;
+            }
+            this.setState({isLoading: false, errorMsg, pageNum, poolCustomerList: []});
         });
     }
 
@@ -224,13 +245,20 @@ class CustomerPool extends React.Component {
             poolCustomerList = _.filter(poolCustomerList, item => !_.includes(customerIds, item.id));
             let selectedCustomer = _.filter(this.state.selectedCustomer, customer => !_.includes(customerIds, customer.id));
             let totalSize = this.state.totalSize - _.get(customerIds, 'length', 0);
-            this.setState({isExtracting: false, salesMan: '', poolCustomerList,selectedCustomer, totalSize});
+            this.setState({
+                isExtracting: false,
+                salesMan: '',
+                poolCustomerList,
+                customersBack: poolCustomerList,
+                selectedCustomer,
+                totalSize
+            });
             message.success(Intl.get('clue.extract.success', '提取成功'));
             //隐藏批量提取面板
             this.batchExtractRef && this.batchExtractRef.handleCancel();
             // 当前页展示的客户全部释放完后，需要重新获取数据
             if (!poolCustomerList.length) {
-                this.getPoolCustomer();
+                this.getPoolCustomer(true);
             }
         }, (errorMsg) => {
             this.setState({isExtracting: false, salesMan: ''});
@@ -414,7 +442,8 @@ class CustomerPool extends React.Component {
 
     onPageChange = (page) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
-        let currPageNum = this.state.pageNum;
+        let currPageNum = this.state.pageNumBack;
+        var curCustomerList = this.state.customersBack;
         if (page === currPageNum) {
             return;
         } else {
@@ -427,18 +456,18 @@ class CustomerPool extends React.Component {
             if (page > currPageNum) {
                 //向后翻页
                 pageValue = page - currPageNum;
-                customerId = _.last(this.state.poolCustomerList).id;
+                customerId = _.last(curCustomerList).id;
             } else {
                 //向前翻页
                 if (page !== '1') {
                     pageValue = currPageNum - page;
                     cursor = false;
-                    customerId = _.first(this.state.poolCustomerList).id;
+                    customerId = _.first(curCustomerList).id;
                 }
             }
             //设置要跳转到的页码数值
             this.setState({
-                pageNum: page,
+                nextPageNum: page,
                 pageValue,
                 cursor,
                 customerId
@@ -596,6 +625,8 @@ class CustomerPool extends React.Component {
     render() {
         let tableWrapHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         let selectCustomerLength = _.get(this.state.selectedCustomer, 'length');
+        // 没有在加载，并且有错误信息或者（在翻页时没有数据）
+        let showRefresh = !this.state.isLoading && (this.state.errorMsg || (!_.get(this.state.poolCustomerList,'[0]') && !_.isEqual(this.state.pageValue, 0)));
         return (
             <div className="customer-pool" data-tracename="客户池列表">
                 <TopNav>
@@ -615,6 +646,14 @@ class CustomerPool extends React.Component {
                             searchEvent={this.onSearchInputChange}
                         />
                     </div>
+                    {showRefresh ? (
+                        <Button
+                            className="btn-item refresh-btn"
+                            type='primary'
+                            onClick={this.search.bind(this, !this.state.errorMsg)}
+                            disabled={this.state.isLoading}
+                        >{Intl.get('common.refresh', '刷新')}</Button>
+                    ) : null}
                     <RightPanelClose onClick={this.returnCustomerList}/>
                     {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
                         <Button

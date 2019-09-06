@@ -267,15 +267,15 @@ var ContactForm = createReactClass({
             this.setState({showNeedPhone: true});
             return;
         }
-        formData.phone = phoneArray;
+        formData.phone = _.uniq(phoneArray);
         if(_.get(qqArray,'[0]')){
-            formData.qq = qqArray;
+            formData.qq = _.uniq(qqArray);
         }
         if(_.get(weChatArray,'[0]')){
-            formData.weChat = weChatArray;
+            formData.weChat = _.uniq(weChatArray);
         }
         if(_.get(emailArray,'[0]')){
-            formData.email = emailArray;
+            formData.email = _.uniq(emailArray);
         }
         if(formData.birthday){
             formData.birthday = formData.birthday.valueOf();
@@ -395,7 +395,6 @@ var ContactForm = createReactClass({
                     //获取当前已添加的电话列表
                     let curPhoneArray = this.getCurPhoneArray();
                     let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
-
                     //如果需要在组件装载后立即校验电话输入框中的内容是否符合规则
                     if (this.props.isValidatePhoneOnDidMount) {
                         //用于绕过下面的判断逻辑，直接抵达发请求验证电话是否已存在的地方
@@ -404,27 +403,29 @@ var ContactForm = createReactClass({
 
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
-                        // 判断当前添加的电话列表中是否已存在该电话,获取当前已添加的电话列表有延迟，
-                        // 在验证时，在电话列表里是不会存在验证的这个号码，所以有两个length会是1，就它自己length是0
-                        if (phoneCount.length > 0) {
-                            //当前添加的电话列表已存在该电话，再添加时（重复添加）
-                            callback(Intl.get('crm.83', '该电话已存在'));
-                        } else {
-                            //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                            CrmAction.checkOnlyContactPhone(phone, data => {
-                                if (_.isString(data)) {
-                                    //唯一性验证出错了
-                                    callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                        // TODO 判断当前添加的电话列表中是否已存在该电话,获取当前已添加的电话列表有延迟，
+                        // TODO 在验证时，在formData里还没赋值上最新输入需要验证的这个号码，所以有两个时length会是1，就它自己length是0
+                        // TODO 在点保存时，在formData里的phone都已赋值完，所以有两个时length会是2，就它自己length是1
+                        // TODO 所以此处判断会有问题，先暂时隐藏掉，通过保存时去重来防止添加重复的
+                        // if (phoneCount.length > 1) {
+                        //     //当前添加的电话列表已存在该电话，再添加时（重复添加）
+                        //     callback(Intl.get('crm.83', '该电话已存在'));
+                        // } else {
+                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
+                        CrmAction.checkOnlyContactPhone(phone, data => {
+                            if (_.isString(data)) {
+                                //唯一性验证出错了
+                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                            } else {
+                                if (_.isObject(data) && data.result === 'true') {
+                                    callback();
                                 } else {
-                                    if (_.isObject(data) && data.result === 'true') {
-                                        callback();
-                                    } else {
-                                        //已存在
-                                        callback(Intl.get('crm.83', '该电话已存在'));
-                                    }
+                                    //已存在
+                                    callback(Intl.get('crm.83', '该电话已存在'));
                                 }
-                            });
-                        }
+                            }
+                        });
+                        // }
                     } else {//该联系人员电话列表中已存在该电话
                         if (phoneCount.length > 1) {
                             //该联系人中的电话列表已存在该电话，再添加时（重复添加）
