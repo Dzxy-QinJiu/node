@@ -31,15 +31,17 @@ export function getCustomerManagerPerformanceRankingChart() {
                 }, {
                     title: '新签回款毛利分数',
                     dataIndex: 'new_gross_profit_performance',
+                    render: clickableCellRender.bind(null, conditions, 'new_gross_profit_performance'),
                     width: '10%',
                 }, {
                     title: '个人贡献分数',
                     dataIndex: 'contribution_performance',
+                    render: clickableCellRender.bind(null, conditions, 'contribution_performance'),
                     width: '10%',
-                    render: clickableCellRender.bind(null, conditions, 'contribution_performance')
                 }, {
                     title: '回款毛利率分数',
                     dataIndex: 'gross_profit_rate_performance',
+                    render: clickableCellRender.bind(null, conditions, 'gross_profit_rate_performance'),
                     width: '10%',
                 }, {
                     title: Intl.get('common.total.points', '总分'),
