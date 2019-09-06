@@ -72,7 +72,9 @@ const restApis = {
     //批量提取线索
     batchExtractRecommendLists: '/rest/clue/v2/ent/clues',
     //根据关键词获取线索
-    getClueListByKeyword: clueBaseUrl + '/query/:type/:page_size/:sort_field/:order'
+    getClueListByKeyword: clueBaseUrl + '/query/:type/:page_size/:sort_field/:order',
+    //获取提取推荐线索剩余数量
+    getRecommendClueCount: '/rest/clue/v2/ent/clues/get',
 };
 
 //查询客户
@@ -121,6 +123,15 @@ exports.batchExtractRecommendLists = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+//获取提取推荐线索剩余数量
+exports.getRecommendClueCount = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getRecommendClueCount,
+            req: req,
+            res: res
+        }, req.query);
 };
 
 exports.changeClueSalesBatch = function(req, res) {

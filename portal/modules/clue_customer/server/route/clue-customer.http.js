@@ -248,6 +248,13 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{
+            method: 'get',
+            path: '/rest/recommend/clue/count',
+            handler: 'getRecommendClueCount',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };
