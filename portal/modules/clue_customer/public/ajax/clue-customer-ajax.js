@@ -22,7 +22,7 @@ const QUERYCLUE = {
 };
 const BATCH_RELEASE = {
     MANAGER: 'LEAD_POOL_RELEASE_MANAGER', //管理员进行批量释放
-    USER: 'LEAD_POOL_RELEASE_MANAGER'//普通销售进行批量释放
+    USER: 'LEAD_POOL_RELEASE_USER'//普通销售进行批量释放
 };
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');

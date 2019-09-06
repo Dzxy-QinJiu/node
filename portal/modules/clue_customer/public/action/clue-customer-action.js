@@ -187,7 +187,7 @@ function ClueCustomerActions() {
     //释放线索
     this.releaseClue = function(clueIds, callback) {
         clueCustomerAjax.releaseClue({lead_ids: clueIds}).then(() => {
-            _.isFunction(callback) && callback();
+            _.isFunction(callback) && callback(clueIds);
         }, (errorMsg) => {
             _.isFunction(callback) && callback(errorMsg);
         });

@@ -124,7 +124,7 @@ class ClueCustomer extends React.Component {
         addType: 'start',//添加按钮的初始
         showRecommendCustomerCondition: false,
         isReleasingClue: false,//是否正在释放线索
-        selectedClue: {},//选中的线索
+        selectedClue: [],//选中的线索
         selectedNumber: 0,//当用户只选了二十条数据时，记录此时的数据总量
         //显示内容
         ...clueCustomerStore.getState()
@@ -1552,8 +1552,14 @@ class ClueCustomer extends React.Component {
     getRowSelection = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示选择框的处理
         let showSelectionFlag = (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales;
-        var typeFilter = this.getFilterStatus();//线索类型
-        if (showSelectionFlag && this.editCluePrivilege()){
+        //待跟进，已跟进，无效可以有批量释放,可以展示选择框
+        let typeFilter = this.getFilterStatus();//线索类型
+        let willTrace = SELECT_TYPE.WILL_TRACE === typeFilter.status;
+        let hasTrace = SELECT_TYPE.HAS_TRACE === typeFilter.status;
+        let filterStore = clueFilterStore.getState();
+        let invalidClue = filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY;
+        let tags = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue);
+        if ((showSelectionFlag && this.editCluePrivilege()) || tags){
             let rowSelection = {
                 type: 'checkbox',
                 selectedRowKeys: _.map(this.state.selectedClues, 'id'),
@@ -1577,7 +1583,6 @@ class ClueCustomer extends React.Component {
                 }
             };
             return rowSelection;
-
         }else{
             return null;
         }
@@ -2221,7 +2226,9 @@ class ClueCustomer extends React.Component {
         if (!tasks.length) {
             return;
         }
-        clueCustomerAction.afterReleaseClue(tasks);
+        _.each(tasks, task => {
+            clueCustomerAction.afterReleaseClue(task.taskDefine);
+        });
         //当最后一个推送完成后
         if(_.isEqual(taskInfo.running, 0)) {
             let cluesNumber = this.state.customersSize;
@@ -2256,6 +2263,13 @@ class ClueCustomer extends React.Component {
         if (this.state.selectAllMatched) {
             let queryObj = this.getClueSearchCondition();
             condition.query_param = queryObj.bodyParam;
+            let filterStoreData = clueFilterStore.getState();
+            let filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
+            if (filterAllotNoTraced) {
+                //获取有待我处理条件的线索
+                condition.self_no_traced = true;
+            }
+
         } else {
             //记录当前选中的线索数量
             let selectedNumber = _.get(this.state.selectedClues, 'length');
@@ -2318,32 +2332,39 @@ class ClueCustomer extends React.Component {
         let curStatus = getClueStatusValue(filterClueStatus);
         //除了运营不能释放线索，管理员、销售都可以释放
         let roleRule = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
-        //只有待跟进和已跟进tab才有批量操作
-        let batchRule = _.isEqual(curStatus.status, SELECT_TYPE.WILL_TRACE) || _.isEqual(curStatus.status, SELECT_TYPE.HAS_TRACE);
+        let filterStore = clueFilterStore.getState();
+        //只有待跟进和已跟进和无效tab才有批量操作
+        let batchRule = _.isEqual(curStatus.status, SELECT_TYPE.WILL_TRACE) || _.isEqual(curStatus.status, SELECT_TYPE.HAS_TRACE) || _.isEqual(filterStore.filterClueAvailability, AVALIBILITYSTATUS.INAVALIBILITY);
+        //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
+        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
         return (
             <div className="pull-right">
                 <div className="pull-right">
-                    <AntcDropdown
-                        ref='changesales'
-                        content={<Button type="primary"
-                            data-tracename="点击分配线索客户按钮"
-                            className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
-                        overlayTitle={Intl.get('user.salesman', '销售人员')}
-                        okTitle={Intl.get('common.confirm', '确认')}
-                        cancelTitle={Intl.get('common.cancel', '取消')}
-                        isSaving={this.state.distributeBatchLoading}
-                        overlayContent={this.renderSalesBlock()}
-                        handleSubmit={this.handleSubmitAssignSalesBatch}
-                        unSelectDataTip={this.state.unSelectDataTip}
-                        clearSelectData={this.clearSelectSales}
-                        btnAtTop={false}
-                    />
+                    { showBatchChange ?
+                        (<AntcDropdown
+                            ref='changesales'
+                            content={<Button type="primary"
+                                data-tracename="点击分配线索客户按钮"
+                                className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
+                            overlayTitle={Intl.get('user.salesman', '销售人员')}
+                            okTitle={Intl.get('common.confirm', '确认')}
+                            cancelTitle={Intl.get('common.cancel', '取消')}
+                            isSaving={this.state.distributeBatchLoading}
+                            overlayContent={this.renderSalesBlock()}
+                            handleSubmit={this.handleSubmitAssignSalesBatch}
+                            unSelectDataTip={this.state.unSelectDataTip}
+                            clearSelectData={this.clearSelectSales}
+                            btnAtTop={false}
+                        />) : null
+                    }
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
                                 title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确认释放吗？')}>
-                                <Button className='btn-item handle-btn-item' title={Intl.get('clue.customer.release.pool', '释放到线索池')}>
-                                    {Intl.get('crm.customer.release', '释放')}
+                                <Button data-tracename="点击批量释放线索按钮"
+                                    className='btn-item handle-btn-item'
+                                    title={Intl.get('clue.customer.release.pool', '释放到线索池')}>
+                                    {Intl.get('clue.customer.batch.release', '批量释放')}
                                 </Button>
                             </Popconfirm>
                         ) : null}

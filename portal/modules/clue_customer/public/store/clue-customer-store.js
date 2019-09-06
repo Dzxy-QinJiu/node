@@ -107,13 +107,11 @@ ClueCustomerStore.prototype.setSortField = function(updateSortField) {
     this.sorter.field = updateSortField;
 };
 //释放线索之后
-ClueCustomerStore.prototype.afterReleaseClue = function(tasks) {
-    _.each(tasks, task => {
-        let clue = this.getClueById(task.taskDefine);
-        if(!_.isEmpty(clue)){
-            this.deleteClueById(clue);
-        }
-    });
+ClueCustomerStore.prototype.afterReleaseClue = function(clueId) {
+    let clue = this.getClueById(clueId);
+    if(!_.isEmpty(clue)){
+        this.deleteClueById(clue);
+    }
 };
 //通过id查找线索
 ClueCustomerStore.prototype.getClueById = function(clueId) {

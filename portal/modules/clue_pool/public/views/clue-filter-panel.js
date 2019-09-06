@@ -5,19 +5,24 @@ import clueFilterStore from '../store/filter-store';
 import cluePoolAction from '../action';
 import {clueStartTime} from '../utils/clue-pool-utils';
 import userData from 'PUB_DIR/sources/user-data';
-
-const COMMON_OTHER_ITEM = 'otherSelectedItem';
-const SIMILAR_CUSTOMER = '有相似客户';
-const SIMILAR_CLUE = '有相似线索';
-var otherFilterArray = [{
-    name: Intl.get( 'clue.has.similar.customer','有相似客户'),
-    value: SIMILAR_CUSTOMER
-},{
-    name: Intl.get( 'clue.has.similar.clue','有相似线索'),
-    value: SIMILAR_CLUE
-}
+import {
+    COMMON_OTHER_ITEM,
+    SIMILAR_CUSTOMER,
+    SIMILAR_CLUE,
+    SELECT_TYPE
+} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+let otherFilterArray = [
+    {
+        name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
+        value: SELECT_TYPE.WAIT_ME_HANDLE
+    },{
+        name: Intl.get( 'clue.has.similar.customer','有相似客户'),
+        value: SIMILAR_CUSTOMER
+    },{
+        name: Intl.get( 'clue.has.similar.clue','有相似线索'),
+        value: SIMILAR_CLUE
+    }
 ];
-
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);

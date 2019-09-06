@@ -558,9 +558,15 @@ exports.releaseClue = function(req, res) {
 };
 //线索批量释放
 exports.batchReleaseClue = function(req,res) {
+    let url = restApis.batchReleaseClue.replace(':type', req.params.type);
+    let reqBody = _.cloneDeep(req.body);
+    if(_.has(reqBody, 'self_no_traced')) {
+        delete reqBody.self_no_traced;
+        url += '?self_no_traced=true';
+    }
     return restUtil.authRest.post({
-        url: restApis.batchReleaseClue.replace(':type', req.params.type),
+        url: url,
         req: req,
         res: res
-    } , req.body);
+    } , reqBody);
 };

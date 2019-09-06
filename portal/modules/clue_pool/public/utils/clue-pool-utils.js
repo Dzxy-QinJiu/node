@@ -48,26 +48,3 @@ export const SetLocalSalesClickCount = function(sale_id) {
     }
     local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
 };
-
-//获取所选中线索状态的状态值
-export const getClueStatusValue = (filterClueStatus) => {
-    var typeFilter = {};
-    var targetObj = _.find(filterClueStatus, (item) => {
-        return item.selected;
-    });
-    if (targetObj){
-        typeFilter['status'] = targetObj.value;
-    }else{
-        typeFilter['status'] = '';
-    }
-    return typeFilter;
-};
-
-// 全部 "" 待分配 0 待跟进 1 已跟进 2 已转化  3
-export const SELECT_TYPE = {
-    ALL: '',
-    WILL_DISTRIBUTE: '0',
-    WILL_TRACE: '1',
-    HAS_TRACE: '2',
-    HAS_TRANSFER: '3',
-};

@@ -1008,7 +1008,6 @@ class ClueExtract extends React.Component {
             clueFilterAction.setFilterClueAvailability();
         }else{
             clueFilterAction.setFilterType(selectedType);
-            clueFilterAction.setFilterType(selectedType);
         }
         this.onTypeChange();
     };
