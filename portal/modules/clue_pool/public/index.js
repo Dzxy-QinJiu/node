@@ -34,6 +34,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import { batchPushEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
+import filterEmitter from 'CMP_DIR/filter/emitter';
 
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
@@ -242,6 +243,9 @@ class ClueExtract extends React.Component {
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         cluePoolAction.resetState();
+        //清空筛选条件
+        filterEmitter.emit(filterEmitter.CLEAR_FILTERS);
+        filterEmitter.emit(filterEmitter.CLOSE_LIST);
     };
 
     // 筛选
@@ -1109,6 +1113,7 @@ class ClueExtract extends React.Component {
                             <FilterInput
                                 ref="filterinput"
                                 toggleList={this.toggleList.bind(this)}
+                                showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
                             />
                         </div>
                         {hasSelectedClue ? (
