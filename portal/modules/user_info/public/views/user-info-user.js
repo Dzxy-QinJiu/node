@@ -121,7 +121,6 @@ class UserInfo extends React.Component{
     //订阅前提醒先激活邮箱
     subscribeTips = () => {
         let content="";
-        console.log(_.isEmpty(this.props.userInfo.email || !this.props.userInfo.emailEnable));
         if(!_.isEmpty(this.props.userInfo.email)&&this.props.userInfo.emailEnable){
             //已激活可以订阅
             content =  <a onClick={this.handleSubscribe}>
