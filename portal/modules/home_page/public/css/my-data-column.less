@@ -7,6 +7,22 @@
     border-bottom: 4px solid @border-color;
     border-radius: 0;
   }
+  .my-data-call-time-card{
+    &.has-loading{
+      min-height: 150px;
+      position: relative;
+    }
+    .call-time-select-wrapper{
+      .ant-select-selection{
+        height: 24px;
+        margin-right: 5px;
+        font-size: 14px;
+        .ant-select-selection__rendered{
+          line-height: 24px;
+        }
+      }
+    }
+  }
 }
 
 .my-data-title {
