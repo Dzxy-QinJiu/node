@@ -1750,7 +1750,6 @@ var zh_CN = {
     'crm.customer.pool.rule.sure.delete.tip': '确认要删除此项规则吗？',
     'crm.customer.pool.rule.release.setting': '释放设置',
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
-    'crm.customer.pool.rule.own.invisible': '自己释放的不可见',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',

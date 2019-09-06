@@ -80,13 +80,12 @@
           color: @title-color;
         }
         .visible-checkbox{
-          //font-weight: normal;
-          //margin-left: 6px;
-          //font-size: 14px;
+          font-weight: normal;
+          font-size: 14px;
           margin-left: 66px;
           margin-bottom: 10px;
           color: @title-color;
-          span{
+          span:last-child{
             vertical-align: middle;
           }
         }
@@ -179,6 +178,20 @@
       font-size: 14px;
       color: @title-color;
 
+    }
+    form{
+      .ant-checkbox-wrapper{
+        font-weight: normal;
+        font-size: 14px;
+        color: @title-color;
+        span:last-child{
+          vertical-align: middle;
+        }
+      }
+    }
+    .visible-text{
+      color: #999;
+      margin-left: 5px;
     }
   }
 }

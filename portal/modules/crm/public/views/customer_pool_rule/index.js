@@ -123,6 +123,7 @@ class CustomerPoolRule extends React.Component{
                 customerPoolConfigs = _.filter(customerPoolConfigs, config => config.id !== organizationId);
                 defaultChecked = !_.get(defaultRuleConfig,'show_my_customers', undefined);
             }
+            let total = _.get(res,'total', 0);
 
             this.setState({
                 isCustomerConfigsLoading: false,
@@ -130,7 +131,7 @@ class CustomerPoolRule extends React.Component{
                 defaultChecked,
                 errMsg: '',
                 customerPoolConfigs,
-                total: _.get(res,'total', 0)
+                total: total > 0 ? total - 1 : 0
             });
         }, (errorMsg) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
@@ -258,7 +259,7 @@ class CustomerPoolRule extends React.Component{
 
                 let curRuleIndex = _.findIndex(customerPoolConfigs, rule => rule.id === id);
                 customerPoolConfigs.splice(curRuleIndex, 1);
-                this.setState({customerPoolConfigs});
+                this.setState({customerPoolConfigs, total: this.state.total - 1});
             }else {
                 errorFunc();
             }
@@ -366,26 +367,10 @@ class CustomerPoolRule extends React.Component{
                                 checked={this.state.defaultChecked}
                                 onChange={this.onDefaultRuleChange}
                                 disabled={this.state.isDefaultLoading}
-                            >{Intl.get('crm.customer.pool.rule.own.invisible', '自己释放的不可见')}</Checkbox>
+                            >{Intl.get('crm.customer.pool.rule.own.visible', '自己释放的自己不可见')}</Checkbox>
                         </div>
                     ) : null}
                 </div>
-                {/*{
-                    this.state.isDefaultEdit ? (
-                        <div className="default-item-content">
-                            <span className='customer-pool__label'>{Intl.get('crm.customer.pool.rule.release.setting', '释放设置')}:</span>
-                            <div>
-                                <Checkbox
-                                    dataTracename="释放设置checkbox按钮"
-                                    className="visible-checkbox"
-                                    checked={this.state.defaultChecked}
-                                    onChange={this.onDefaultRuleChange}
-                                    disabled={this.state.isDefaultLoading}
-                                >{Intl.get('crm.customer.pool.rule.own.invisible', '自己释放的不可见')}</Checkbox>
-                            </div>
-                        </div>
-                    ) : null
-                }*/}
                 <div className="default-item-content">
                     <span className='customer-pool__label'>{Intl.get('crm.customer.pool.source', '客户来源')}:</span>
                     <span className="customer-pool__text">{Intl.get('crm.customer.pool.unlimited', '不限')}</span>

@@ -1727,7 +1727,6 @@ var en_US = {
     'crm.pool.select.customer.tip': 'Click {icon} in the list to select customers',//请点击列表中的{icon}选择客户
     'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
     'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
-    'crm.customer.pool.rule.own.invisible': 'What they release is invisible',//自己释放的不可见
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期

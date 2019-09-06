@@ -259,7 +259,7 @@ class CustomerPoolRuleForm extends React.Component{
             'has-range-more': teamRangeLength > 1
         });
 
-        const visibleText = this.props.curCustomerRule.show_my_customers ? '' : ` (${Intl.get('crm.customer.pool.rule.own.visible', '自己释放的自己不可见')})`;
+        const visibleText = this.props.curCustomerRule.show_my_customers ? '' : (<span className="visible-text">({Intl.get('crm.customer.pool.rule.own.visible', '自己释放的自己不可见')})</span>);
 
         return (
             <Form>
@@ -297,7 +297,7 @@ class CustomerPoolRuleForm extends React.Component{
                                     <Checkbox
                                         onChange={this.handleVisibleChange}
                                     >
-                                        {Intl.get('crm.customer.pool.rule.own.invisible', '自己释放的不可见')}
+                                        {Intl.get('crm.customer.pool.rule.own.visible', '自己释放的自己不可见')}
                                     </Checkbox>
                                 )
                             }
