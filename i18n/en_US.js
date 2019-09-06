@@ -3223,6 +3223,7 @@ var en_US = {
     'common.oppertunity.number': 'oppertunity number',//机会数量
     'common.performance': 'performance',//业绩
     'common.sales.manager.performance.ranking': 'sales manager performance ranking',//销售经理业绩排名
+    'common.customer.manager.performance.ranking': 'customer manager performance ranking',//客户经理业绩排名
     'common.current.week': 'current week',//本周
     'common.current.quarter': 'current quarter',//本季度
     'common.current.year': 'current year',//本年

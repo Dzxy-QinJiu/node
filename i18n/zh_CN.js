@@ -3335,6 +3335,7 @@ var zh_CN = {
     'common.oppertunity.number': '机会数量',
     'common.performance': '业绩',
     'common.sales.manager.performance.ranking': '销售经理业绩排名',
+    'common.customer.manager.performance.ranking': '客户经理业绩排名',
     'common.current.week': '本周',
     'common.current.quarter': '本季度',
     'common.current.year': '本年',
