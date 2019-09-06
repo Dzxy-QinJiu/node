@@ -372,6 +372,14 @@ exports.changeClueSalesBatch = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
+exports.getRecommendClueCount = function(req, res) {
+    clueCustomerService.getRecommendClueCount(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
 exports.getSimilarClueLists = function(req, res) {
     clueCustomerService.getSimilarClueLists(req, res)
         .on('success', function(data) {
