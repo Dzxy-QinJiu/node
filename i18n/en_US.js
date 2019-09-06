@@ -2894,7 +2894,7 @@ var en_US = {
     'clue.extract.clue': 'Extract clue', // 提取线索
     'clue.release': 'Release Clue',//释放线索
     'clue.pool': 'Clue Pool', // 线索池
-    'clue.customer.release.pool': 'Release to clue pool',
+    'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
     'clue.customer.release.confirm.tip': 'After release to the clue pool, other people can view and extract. Do you confirm the release?',//释放到线索池后，其他人也可以查看、提取，您确认释放吗？
     'clue.customer.fail.to.release.tip': 'Fail to release to clue pool',//释放线索失败

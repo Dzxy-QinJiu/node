@@ -8,14 +8,10 @@ import userData from 'PUB_DIR/sources/user-data';
 import {
     COMMON_OTHER_ITEM,
     SIMILAR_CUSTOMER,
-    SIMILAR_CLUE,
-    SELECT_TYPE
+    SIMILAR_CLUE
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 let otherFilterArray = [
     {
-        name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
-        value: SELECT_TYPE.WAIT_ME_HANDLE
-    },{
         name: Intl.get( 'clue.has.similar.customer','有相似客户'),
         value: SIMILAR_CUSTOMER
     },{
