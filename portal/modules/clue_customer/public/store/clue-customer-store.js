@@ -222,6 +222,12 @@ ClueCustomerStore.prototype.setLoadingFalse = function() {
     this.firstLogin = false;
 },
 ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
+    //获取有待我处理条件的线索
+    if(!clueData.loading && !clueData.error){
+        var cloneQuery = _.cloneDeep(clueData.queryObj);
+        cloneQuery.self_no_traced = true;
+        this.queryObj = cloneQuery;
+    }
     this.handleClueData(clueData);
 },
 ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
@@ -230,6 +236,9 @@ ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
 };    
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
+    if(!clueData.loading && !clueData.error){
+        this.queryObj = clueData.queryObj;
+    }
     this.handleClueData(clueData);
 };
 //更新线索客户的一些属性
@@ -502,9 +511,7 @@ ClueCustomerStore.prototype.afterTranferClueSuccess = function(data) {
 ClueCustomerStore.prototype.updateClueCustomers = function(data) {
     this.curClueLists = data;
 };
-ClueCustomerStore.prototype.saveQueryObj = function(data) {
-    this.queryObj = data;
-};
+
 //添加跟进记录时，修改客户最新的跟进记录时，更新列表中的最后联系
 ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
     if (_.get(traceObj, 'lead_id')) {

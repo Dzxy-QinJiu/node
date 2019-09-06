@@ -41,7 +41,6 @@ function ClueCustomerActions() {
         'setLoadingFalse',
         'changeFilterFlag',
         'saveSettingCustomerRecomment',
-        'saveQueryObj',
         'updateRecommendClueLists',
         'updateClueTabNum'
     );
@@ -152,7 +151,7 @@ function ClueCustomerActions() {
         });
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
@@ -167,7 +166,7 @@ function ClueCustomerActions() {
         });
         clueCustomerAjax.getClueFulltextSelfHandle(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
