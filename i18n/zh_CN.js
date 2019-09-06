@@ -3526,6 +3526,7 @@ var zh_CN = {
     'clue.recommed.keyword.list': '关键词',
     'clue.recommend.input.keyword': '请输入关键词',
     'clue.recommend.extract.num.limit': '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',
-    'clue.recommend.has.extract': '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索'
+    'clue.recommend.has.extract': '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
+    'clue.customer.noty.all.list': '查看所有线索？'
 };
 export default zh_CN;

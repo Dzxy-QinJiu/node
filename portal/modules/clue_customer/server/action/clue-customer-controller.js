@@ -332,7 +332,7 @@ exports.exportData = function(req, res) {
                     value = contactDes;
                 }
                 if (column.dataIndex === 'customer_traces' && _.isArray(value)){
-                    var traceAddTime = _.get(value, '[0].add_time');//跟进时间
+                    var traceAddTime = _.get(value, '[0].call_date');//跟进时间
 
                     traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
                     var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字

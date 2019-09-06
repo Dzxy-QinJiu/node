@@ -3412,6 +3412,7 @@ var en_US = {
     'clue.recommed.keyword.list': 'Keyword',//关键词
     'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization today has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
-    'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues'//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
+    'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
+    'clue.customer.noty.all.list': 'Click to see all clues?'//查看所有线索？
 };
 export default en_US;

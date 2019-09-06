@@ -218,6 +218,10 @@ class ClueCustomer extends React.Component {
                 this.getUnhandledClue();
             }
         }
+        //是否是点击noty上的查看全部线索
+        if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.refreshClueList')){
+            this.onTypeChange();
+        }
     }
 
     batchChangeTraceMan = (taskInfo, taskParams) => {
@@ -1245,6 +1249,8 @@ class ClueCustomer extends React.Component {
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
+                                {/*如果是今天分配的，就展示新的图标*/}
+                                {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
                                 <div className="clue-name-item">{salesClueItem.name}</div>
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
                                     <Tag className="clue-label intent-tag-style">
