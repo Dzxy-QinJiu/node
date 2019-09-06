@@ -1235,10 +1235,10 @@ class ClueCustomer extends React.Component {
                     return (
                         <div className="clue-top-title" >
                             <span className="hidden record-id">{salesClueItem.id}</span>
-                            {/*如果是今天分配的，就展示新的图标*/}
-                            {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <span>新</span> : null}
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
+                                {/*如果是今天分配的，就展示新的图标*/}
+                                {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
                                 {salesClueItem.name}
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
                                     <Tag className="clue-label intent-tag-style">
