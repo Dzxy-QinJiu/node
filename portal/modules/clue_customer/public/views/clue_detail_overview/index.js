@@ -584,12 +584,9 @@ class ClueDetailOverview extends React.Component {
         );
     };
 
-    //标记线索无效或者有效
-    handleClickInvalidBtn = (item, callback) => {
-        var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
-        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY){
-            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
-        }
+    //标记线索有效
+    handleClickValidBtn = (item, callback) => {
+        var updateValue = AVALIBILITYSTATUS.AVALIBILITY;
         var submitObj = {
             id: item.id,
             availability: updateValue
@@ -606,10 +603,7 @@ class ClueDetailOverview extends React.Component {
             } else {
                 _.isFunction(callback) && callback(updateValue);
                 clueCustomerAction.deleteClueById(item);
-                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
-                    clueCustomerAction.addInvalidClueNum();
-                }
-
+                clueCustomerAction.updateClueTabNum(item.status);
                 this.setState({
                     isInvaliding: false,
                     editInvalidClueId: ''
@@ -623,10 +617,12 @@ class ClueDetailOverview extends React.Component {
         });
     };
     renderItemSelfSettingContent = (curClue,item) => {
+        let hasPrivilege = editCluePrivilege(curClue);
         return <PhoneCallout
             phoneNumber={item}
             showPhoneNum={addHyphenToPhoneNumber(item)}
             showPhoneIcon={true}
+            hidePhoneIcon={!hasPrivilege}
         />;
     };
     renderItemSelfSettingForm = (key, index, that) => {
@@ -784,9 +780,7 @@ class ClueDetailOverview extends React.Component {
                 } else {
                     _.isFunction(callback) && callback(updateAvailability);
                     clueCustomerAction.deleteClueById(item);
-                    if (updateAvailability === AVALIBILITYSTATUS.INAVALIBILITY) {
-                        clueCustomerAction.addInvalidClueNum();
-                    }
+                    clueCustomerAction.updateClueTabNum('invalidClue');
                     //前端更新跟进记录
                     let newTrace = {
                         remark: invalidReason,
@@ -850,7 +844,7 @@ class ClueDetailOverview extends React.Component {
         var isEditting = this.state.isInvaliding;
         return (
             <span className="invalid-confirm">
-                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
+                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickValidBtn.bind(this, salesClueItem)}>
                     {Intl.get('clue.customer.confirm.valid', '确认有效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
@@ -987,7 +981,6 @@ class ClueDetailOverview extends React.Component {
             <DetailCard
                 title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
                 titleBottomBorderNone={noTraceData}
-                titleDescr={noTraceData ? Intl.get('clue.add.trace.content', '添加跟进内容') : ''}
                 content={this.renderTraceList()}
                 disableEdit={hasPrivilegeAddEditTrace}
             />);
@@ -1287,7 +1280,7 @@ class ClueDetailOverview extends React.Component {
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
                     return <div className="similar-block">
                         <div className="similar-title">
-                            {isClueType ? renderClueStatus(listItem.status) : null}
+                            {isClueType ? renderClueStatus(listItem) : null}
                             <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
                             {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
 

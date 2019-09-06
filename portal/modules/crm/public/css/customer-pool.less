@@ -43,6 +43,11 @@
         background-color: #4d96d1;
       }
     }
+    .refresh-btn{
+      padding: 0;
+      margin-top: 15px;
+      margin-left: 20px!important;
+    }
   }
   .filter-container {
     float: left;
@@ -55,14 +60,40 @@
       left: 0 - @filter-width - 22;
     }
   }
+  .customer-pool-table-wrap{
+    .antc-table .load8.spinner-fix{
+      left: 0;
+    }
+    .ant-pagination{
+      margin: 10px 0;
+      .ant-pagination-total-text{
+        position: absolute;
+        left: 5px;
+      }
+    }
+  }
   .customer-pool-table-wrap.filter-panel-show {
     padding-left: @filter-width + 22px;
+  }
+  .customerpool-list-selected-tip{
+    float: left;
+    //padding-left: 15px;
+    height: 30px;
+    line-height: 30px;
+    margin-top: 17px;
+    .icon-sys-notice{
+      color: #4d96d1;
+      font-size: 18px;
+      font-weight: bold;
+      float: left;
+      margin-right: 5px;
+    }
   }
 }
 
 .customer-table-container {
   margin-top: 64px;
-  padding-left: 20px;
+  padding:0 20px;
   .customer-pool-filter {
     padding-top: 10px;
   }

@@ -25,8 +25,6 @@ exports.phoneMsgEmitter.OPEN_CLUE_PANEL = 'openCluePanel';
 exports.phoneMsgEmitter.CLOSE_CLUE_PANEL = 'closeCluePanel';
 //关闭拨打电话模态框emitter
 exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = 'closePhoneModal';
-//标记线索无效
-exports.phoneMsgEmitter.SETTING_CLUE_INVALID = 'settingClueInvalid';
 //拨打电话emitter
 exports.audioMsgEmitter = new EventEmitter();
 //打开播放录音的面板emitter
@@ -115,6 +113,8 @@ exports.batchPushEmitter.CRM_BATCH_RELEASE_POOL = 'batchtask.crm_batch_release_p
 exports.batchPushEmitter.CLUE_BATCH_CHANGE_TRACE = 'batchtask.clue_user';
 // 线索池-批量提取线索
 exports.batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT = 'batchtask.lead_extract';
+//批量释放线索
+exports.batchPushEmitter.CLUE_BATCH_LEAD_RELEASE = 'batchtask.lead_batch_release';
 //推荐线索-批量提取线索
 exports.batchPushEmitter.CLUE_BATCH_ENT_CLUE = 'batchtask.ent_clue';
 //socket的emitter

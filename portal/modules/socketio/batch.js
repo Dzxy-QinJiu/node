@@ -31,6 +31,7 @@ function getOperateTextMap(lang){
         crm_batch_change_level: backendIntl.get('crm.administrative.level.change', '变更行政级别'),//变更行政级别
         crm_batch_release_pool: backendIntl.get('crm.customer.release.customer', '释放客户'),//释放客户
         clue_user: backendIntl.get('clue.batch.change.trace.man', '变更跟进人'), //批量变更线索的跟进人,
+        lead_batch_release: backendIntl.get('clue.customer.batch.release','批量释放'), //线索批量释放
         lead_extract: backendIntl.get('clue.pool.batch.extract.clue', '批量提取'), //线索池批量提取
         ent_clue: backendIntl.get('clue.pool.batch.extract.clue', '批量提取'),//批量提取推荐线索
     };

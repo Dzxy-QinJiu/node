@@ -20,6 +20,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
 import CustomerLabel from 'CMP_DIR/customer_label';
+
 let customerLabelList = [];//存储客户阶段的列表
 class BasicData extends React.Component {
     state = {

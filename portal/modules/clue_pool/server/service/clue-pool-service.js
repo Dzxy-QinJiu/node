@@ -20,75 +20,50 @@ const restApis = {
     // 根据线索的id获取线索的详情
     getClueDetailById: commonUrl + '/query/lead_pool_id/:lead_pool_id',
 };
-
-// 处理线索池中列表的参数
-function handleClueParams(req, clueUrl) {
-    let reqBody = req.body;
+function handleCluePram(req, clueUrl) {
+    var reqBody = _.cloneDeep(req.body);
+    //有导出的线索会用这个条件
     if (_.isString(req.body.reqData)){
         reqBody = JSON.parse(req.body.reqData);
     }
-    let rangeParams = _.isString(reqBody.rangeParams) ? JSON.parse(reqBody.rangeParams) : reqBody.rangeParams;
-    let typeFilter = _.isString(reqBody.typeFilter) ? JSON.parse(reqBody.typeFilter) : reqBody.typeFilter;
-    let url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':order',req.params.order);
+    var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':order',req.params.order);
+    var queryParams = _.get(reqBody,'queryParam');
+    var rangeParams = _.get(queryParams,'rangeParams');
     if (rangeParams[0].from){
         url += `?start_time=${rangeParams[0].from}`;
     }
     if (rangeParams[0].to){
         url += `&end_time=${rangeParams[0].to}`;
     }
-    if (reqBody.keyword){
-        let keyword = encodeURI(reqBody.keyword);
+    if (queryParams.keyword){
+        var keyword = encodeURI(queryParams.keyword);
         url += `&keyword=${keyword}`;
     }
 
-    if (reqBody.lastClueId){
-        url += `&id=${reqBody.lastClueId}`;
+    if (queryParams.statistics_fields){
+        url += `&statistics_fields=${queryParams.statistics_fields}`;
     }
-    let bodyObj = {
-        query: {...typeFilter},
-    };
-    if (reqBody.userId){
-        bodyObj.query.userId = reqBody.userId;
+    if (queryParams.id){
+        url += `&id=${queryParams.id}`;
     }
-    if (reqBody.id){
-        bodyObj.query.id = reqBody.id;
-    }
-    if (reqBody.clue_source){
-        bodyObj.query.clue_source = reqBody.clue_source;
-    }
-    if (reqBody.access_channel){
-        bodyObj.query.access_channel = reqBody.access_channel;
-    }
-    if (reqBody.clue_classify){
-        bodyObj.query.clue_classify = reqBody.clue_classify;
-    }
-
-    if (reqBody.province){
-        bodyObj.query.province = reqBody.province;
-    }
-    bodyObj.rang_params = rangeParams;
-    let exist_fields = reqBody.exist_fields ? JSON.parse(reqBody.exist_fields) : [];
-    let unexist_fields = reqBody.unexist_fields ? JSON.parse(reqBody.unexist_fields) : [];
+    var bodyParams = _.get(reqBody,'bodyParam');
+    var exist_fields = _.get(bodyParams,'exist_fields',[]);
     if (_.isArray(exist_fields) && exist_fields.length){
-        bodyObj.exist_fields = exist_fields;
         //如果是查询重复线索，要按repeat_id排序
         if (_.indexOf(exist_fields,'repeat_id') > -1){
             url = url.replace(':sort_field', 'repeat_id');
         }else {
             url = url.replace(':sort_field',req.params.sort_field);
         }
-    } else {
+    }else {
         url = url.replace(':sort_field',req.params.sort_field);
     }
-    if (_.isArray(unexist_fields) && unexist_fields.length){
-        bodyObj.unexist_fields = unexist_fields;
-    }
-    return {url: url, bodyObj: bodyObj};
+    return {url: url, bodyObj: bodyParams};
 }
 
 // 获取线索池列表
 exports.getCluePoolList = (req, res) => {
-    const obj = handleClueParams(req, restApis.getCluePoolList);
+    const obj = handleCluePram(req, restApis.getCluePoolList);
     return restUtil.authRest.post({
         url: obj.url,
         req: req,

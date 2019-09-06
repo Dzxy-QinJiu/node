@@ -1748,6 +1748,7 @@ var zh_CN = {
     'crm.get.customer.pool.rule.faild': '获取客户池配置失败！！！',
     'crm.customer.pool.rule.get.stage.lists': '正在获取客户阶段列表',
     'crm.customer.pool.rule.sure.delete.tip': '确认要删除此项规则吗？',
+    'crm.customer.pool.max.selected.num': '每次最多提取{num}个',
     'crm.customer.pool.rule.release.setting': '释放设置',
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
 
@@ -2923,6 +2924,11 @@ var zh_CN = {
     'clue.export.clue.list': '导出线索',
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',
+    'clue.release': '释放线索',
+    'clue.customer.release.pool': '释放到线索池',
+    'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确认释放吗？',
+    'clue.customer.batch.release': '批量释放',
+    'clue.customer.fail.to.release.tip': '释放线索失败',
     'clue.pool.batch.extract.clue': '批量提取',
     'clue.extract.get.list.failed': '获取提取线索列表失败',
     'clue.extract.batch.extract.failed': '批量提取线索失败',
@@ -3334,6 +3340,7 @@ var zh_CN = {
     'common.oppertunity.number': '机会数量',
     'common.performance': '业绩',
     'common.sales.manager.performance.ranking': '销售经理业绩排名',
+    'common.customer.manager.performance.ranking': '客户经理业绩排名',
     'common.current.week': '本周',
     'common.current.quarter': '本季度',
     'common.current.year': '本年',
@@ -3516,5 +3523,10 @@ var zh_CN = {
     'self.setting.has.no.apply': '暂无符合条件的申请',
     'failed.distribute.apply': '分配失败！',
     'apply.approve.required.err.msg': '请输入未填写时的提示',
+    'clue.recommed.keyword.list': '关键词',
+    'clue.recommend.input.keyword': '请输入关键词',
+    'clue.recommend.extract.num.limit': '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',
+    'clue.recommend.has.extract': '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
+    'clue.customer.noty.all.list': '查看所有线索？'
 };
 export default zh_CN;

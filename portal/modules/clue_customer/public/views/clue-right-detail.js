@@ -339,7 +339,7 @@ class ClueRightPanel extends React.Component {
                         <div className="clue-basic-info-container">
                             <div className="clue-name-wrap">
                                 {
-                                    curClue.clue_type === 'clue_pool' ? null : renderClueStatus(curClue.status)
+                                    curClue.clue_type === 'clue_pool' ? null : renderClueStatus(curClue)
                                 }
                                 <div className="clue-name-title">
                                     <BasicEditInputField

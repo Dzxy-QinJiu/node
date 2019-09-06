@@ -6,21 +6,17 @@
 import '../css/customer-pool.less';
 import TopNav from'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import Trace from 'LIB_DIR/trace';
 import {AntcTable} from 'antc';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {SearchInput} from 'antc';
 import {message, Popconfirm, Icon, Tag, Button, Popover} from 'antd';
-import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import crmAjax from '../ajax/index';
-import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
-import crmUtil from '../utils/crm-util';
 import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import {formatSalesmanList, removeEmptyItem} from 'PUB_DIR/sources/utils/common-method-util';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
@@ -32,6 +28,11 @@ import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import CustomerPoolRule from './customer_pool_rule';
 
+//用于布局的高度
+var LAYOUT_CONSTANTS = {
+    TOP_DISTANCE: 66 + 46,//表格容器上外边距 + 表头的高度
+    BOTTOM_DISTANCE: 30 + 10 * 2,//分页器的高度 + 分页器上下外边距
+};
 const PAGE_SIZE = 20;
 class CustomerPool extends React.Component {
     constructor(props) {
@@ -46,8 +47,16 @@ class CustomerPool extends React.Component {
             isLoading: false,
             poolCustomerList: [],
             totalSize: 0,
+            pageSize: PAGE_SIZE,
+            pageNum: 1, // 当前页数
+            nextPageNum: 0, //下次点击的页数
+            pageNumBack: 1, //为了便于翻页，记录的上次翻页正确的页数
+            customersBack: [], //为了便于翻页,记录的上次获取正确的客户列表
             errorMsg: '',
             currentId: '',
+            customerId: '', //向前或者向后翻页时传的id值
+            cursor: true,//向前还是向后翻页
+            pageValue: 0,//两次点击时的页数差
             selectedCustomer: [],
             distributeUser: '',
             userList: [],
@@ -110,15 +119,48 @@ class CustomerPool extends React.Component {
         return filterParams;
     }
 
-    getPoolCustomer() {
+    getPoolCustomer(reset) {
+        let curState = this.state;
+        //当重置标志为true时，重新从第一页加载，并重置客户列表
+        if (reset) {
+            //清除客户的选择
+            let selectedCustomer = [];
+            //将分页器默认选中为第一页
+            curState.pageNum = 1;
+            curState.customerId = '';
+            curState.pageValue = 0;
+            curState.cursor = true;
+            this.setState({
+                pageNum: 1,
+                nextPageNum: 1,
+                selectedCustomer,
+                customerId: '',
+                cursor: true,
+                pageValue: 0,
+                poolCustomerList: []
+            });
+        }
+
         let queryObj = {
-            page_size: PAGE_SIZE,
+            page_size: curState.pageSize,
             sort_field: 'push_time',
             order: 'descend',
         };
-        if (this.state.lastId) {
-            queryObj.sort_id = this.state.lastId;
+
+        if(curState.customerId) {
+            queryObj.sort_id = curState.customerId;
+            queryObj.total_size = curState.pageSize * curState.pageValue;
+            queryObj.cursor = curState.cursor;
         }
+
+        /*const condition = _.extend({}, this.state.searchValue);
+
+        //去除查询条件中值为空的项
+        removeEmptyItem(condition);
+        if(!_.isEmpty(condition)) {
+            queryObj = {...queryObj, ...condition};
+        }*/
+
         if (this.state.searchValue) {
             queryObj.name = this.state.searchValue;
         }
@@ -126,31 +168,40 @@ class CustomerPool extends React.Component {
         if (!_.isEmpty(filterParams)) {
             queryObj = {...queryObj, ...filterParams};
         }
-        this.setState({isLoading: true, loadErrorMsg: ''});
+
+        this.setState({isLoading: true, errorMsg: ''});
         crmAjax.getPoolCustomer(queryObj).then(result => {
             let list = _.get(result, 'list', []);
-            let customerList = this.state.poolCustomerList;
+            let poolCustomerList = [];
             let totalSize = _.get(result, 'total', 0);
-            if (this.state.lastId) {
-                customerList = _.concat(customerList, list);
-            } else {
-                customerList = list;
+            let pageNum = this.state.pageNum;
+            let pageNumBack = this.state.pageNumBack;
+            let customersBack = this.state.customersBack;
+            if(list && _.isArray(list) && list.length) {
+                customersBack = poolCustomerList = list;
+                if(!_.isEqual(this.state.nextPageNum, 0)) {
+                    pageNum = pageNumBack = this.state.nextPageNum;
+                }
+            }else {
+                poolCustomerList = [];
+                pageNum = this.state.nextPageNum;
+                totalSize = 0;
             }
-            //是否监听下拉加载的处理
-            let listenScrollBottom = false;
-            if (_.get(customerList, 'length') < totalSize) {
-                listenScrollBottom = true;
-            }
+
             this.setState({
-                errorMsg: '',
                 isLoading: false,
                 totalSize,
-                poolCustomerList: customerList,
-                listenScrollBottom,
-                lastId: _.get(customerList, `[${customerList.length - 1}].id`, '')
+                poolCustomerList,
+                pageNum,
+                pageNumBack,
+                customersBack
             });
         }, (errorMsg) => {
-            this.setState({isLoading: false, errorMsg});
+            let pageNum = this.state.pageNum;
+            if (this.state.nextPageNum !== 0) {
+                pageNum = this.nextPageNum;
+            }
+            this.setState({isLoading: false, errorMsg, pageNum, poolCustomerList: []});
         });
     }
 
@@ -199,13 +250,22 @@ class CustomerPool extends React.Component {
             let poolCustomerList = this.state.poolCustomerList;
             let customerIds = paramObj.customerIds;
             poolCustomerList = _.filter(poolCustomerList, item => !_.includes(customerIds, item.id));
+            let selectedCustomer = _.filter(this.state.selectedCustomer, customer => !_.includes(customerIds, customer.id));
             let totalSize = this.state.totalSize - _.get(customerIds, 'length', 0);
-            this.setState({isExtracting: false, salesMan: '', poolCustomerList, totalSize});
+            this.setState({
+                isExtracting: false,
+                salesMan: '',
+                poolCustomerList,
+                customersBack: poolCustomerList,
+                selectedCustomer,
+                totalSize
+            });
             message.success(Intl.get('clue.extract.success', '提取成功'));
             //隐藏批量提取面板
             this.batchExtractRef && this.batchExtractRef.handleCancel();
-            if (poolCustomerList.length < 20) {
-                this.getPoolCustomer();
+            // 当前页展示的客户全部释放完后，需要重新获取数据
+            if (!poolCustomerList.length) {
+                this.getPoolCustomer(true);
             }
         }, (errorMsg) => {
             this.setState({isExtracting: false, salesMan: ''});
@@ -260,13 +320,16 @@ class CustomerPool extends React.Component {
         }
     };
 
-    onSearchInputChange = (keyword) => {
+    onSearchInputChange = (keyword, selectedField) => {
         let searchValue = _.trim(keyword);
         if (searchValue !== this.state.searchValue) {
-            this.setState({searchValue: searchValue, lastId: ''}, () => {
-                this.getPoolCustomer();
+            this.setState({searchValue: searchValue}, () => {
+                this.getPoolCustomer(true);
             });
         }
+        /*this.setState({searchValue: this.refs.searchInput.state.formData}, () => {
+            this.getPoolCustomer(true);
+        });*/
     };
 
     getColumns() {
@@ -387,16 +450,44 @@ class CustomerPool extends React.Component {
         }
     };
 
-    handleScrollBottom = () => {
-        if (this.state.isLoading) return;
-        this.getPoolCustomer();
-    }
-    showNoMoreDataTip = () => {
-        return !this.state.isLoading && !this.state.errorMsg &&
-            this.state.poolCustomerList.length >= PAGE_SIZE && !this.state.listenScrollBottom;
-    }
+    onPageChange = (page) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
+        let currPageNum = this.state.pageNumBack;
+        var curCustomerList = this.state.customersBack;
+        if (page === currPageNum) {
+            return;
+        } else {
+            let selectedCustomer = this.state.selectedCustomer;
+            //清空翻页前选择的客户
+            if (_.isArray(selectedCustomer) && selectedCustomer.length) {
+                this.setState({ selectedCustomer: [] });
+            }
+            var pageValue = 0, cursor = true, customerId = '';
+            if (page > currPageNum) {
+                //向后翻页
+                pageValue = page - currPageNum;
+                customerId = _.last(curCustomerList).id;
+            } else {
+                //向前翻页
+                if (page !== '1') {
+                    pageValue = currPageNum - page;
+                    cursor = false;
+                    customerId = _.first(curCustomerList).id;
+                }
+            }
+            //设置要跳转到的页码数值
+            this.setState({
+                nextPageNum: page,
+                pageValue,
+                cursor,
+                customerId
+            }, () => {
+                this.search();
+            });
+        }
+    };
 
-    renderTableContent() {
+    renderTableContent(tableWrapHeight) {
         //初次获取数据时展示loading效果
         if (this.state.isLoading && !_.get(this.state, 'poolCustomerList[0]')) {
             return (<Spinner />);
@@ -424,20 +515,17 @@ class CustomerPool extends React.Component {
                         loading={this.state.isLoading}
                         dataSource={this.getTableData()}
                         util={{zoomInSortArea: true}}
-                        pagination={false}
-                        scroll={{y: getTableContainerHeight()}}
-                        dropLoad={{
-                            listenScrollBottom: this.state.listenScrollBottom,
-                            handleScrollBottom: this.handleScrollBottom,
-                            loading: this.state.isLoading,
-                            showNoMoreDataTip: this.showNoMoreDataTip(),
-                            noMoreDataText: Intl.get('common.no.more.crm', '没有更多客户了')
+                        scroll={{y: tableWrapHeight}}
+                        pagination={{
+                            total: this.state.totalSize,
+                            showTotal: total => {
+                                return Intl.get('crm.207', '共{count}个客户', { count: total });
+                            },
+                            pageSize: this.state.pageSize,
+                            onChange: this.onPageChange,
+                            current: this.state.pageNum
                         }}
                     />
-                    {this.state.totalSize ?
-                        <BottomTotalCount
-                            totalCount={Intl.get('crm.207', '共{count}个客户', {count: this.state.totalSize})}/>
-                        : null}
                 </div>);
         } else {
             let noDataTip = Intl.get('contract.60', '暂无客户');
@@ -479,11 +567,21 @@ class CustomerPool extends React.Component {
             showFilterList: !this.state.showFilterList
         });
     };
-    search = () => {
-        this.setState({lastId: ''}, () => {
-            this.getPoolCustomer();
-        });
+    search = (reset) => {
+        this.getPoolCustomer(reset);
     };
+
+    //渲染选择客户数的提示
+    renderSelectCustomerTips = () => {
+        //只选择了当前页时，展示：已选当前页xxx项, <a>选择全部xxx项</a>
+        return (
+            <span>
+                {Intl.get('crm.11', '已选当前页{count}项', { count: this.state.selectedCustomer.length })}
+                （{Intl.get('crm.customer.pool.max.selected.num', '每次最多提取{num}个',{num: 20})}）
+            </span>
+        );
+    };
+
     //渲染批量提取的按钮
     renderBatchExtractBtn(selectCustomerLength) {
         //运营人员不提取
@@ -535,8 +633,20 @@ class CustomerPool extends React.Component {
     }
 
     render() {
-        let tableWrapHeight = getTableContainerHeight();
+        let tableWrapHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DISTANCE - LAYOUT_CONSTANTS.BOTTOM_DISTANCE;
         let selectCustomerLength = _.get(this.state.selectedCustomer, 'length');
+        // 没有在加载，并且有错误信息或者（在翻页时没有数据）
+        let showRefresh = !this.state.isLoading && (this.state.errorMsg || (!_.get(this.state.poolCustomerList,'[0]') && !_.isEqual(this.state.pageValue, 0)));
+        /*const searchFields = [
+            {
+                name: Intl.get('crm.41', '客户名'),
+                field: 'name'
+            },
+            {
+                name: Intl.get('common.phone', '电话'),
+                field: 'phone'
+            },
+        ];*/
         return (
             <div className="customer-pool" data-tracename="客户池列表">
                 <TopNav>
@@ -548,20 +658,37 @@ class CustomerPool extends React.Component {
                             filterType={Intl.get('call.record.customer', '客户')}
                         />
                     </div>
-                    <div className="customer-search-block">
+                    <div className="customer-search-block" style={{display: selectCustomerLength ? 'none' : 'block'}}>
                         <SearchInput
+                            ref="searchInput"
                             className="btn-item"
-                            type="input"
+                            // type="select"
+                            // type="input"
+                            // searchFields={searchFields}
                             searchPlaceHolder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                             searchEvent={this.onSearchInputChange}
                         />
                     </div>
+                    {showRefresh ? (
+                        <Button
+                            className="btn-item refresh-btn"
+                            type='primary'
+                            onClick={this.search.bind(this, !this.state.errorMsg)}
+                            disabled={this.state.isLoading}
+                        >{Intl.get('common.refresh', '刷新')}</Button>
+                    ) : null}
                     <RightPanelClose onClick={this.returnCustomerList}/>
-                    {this.renderBatchExtractBtn(selectCustomerLength)}
                     {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
                         <Button
                             className="btn-item extract-btn"
                             onClick={this.showRuleRightPanel}>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>
+                    ) : null}
+                    {this.renderBatchExtractBtn(selectCustomerLength)}
+                    {selectCustomerLength ? (
+                        <div className="customerpool-list-selected-tip">
+                            <span className="iconfont icon-sys-notice" />
+                            {this.renderSelectCustomerTips()}
+                        </div>
                     ) : null}
                 </TopNav>
                 <div className="customer-table-container customer-pool-table"
@@ -570,14 +697,14 @@ class CustomerPool extends React.Component {
                         className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
                         <CustomerPoolFilter
                             ref={filterRef => this.customerPoolFilterRef = filterRef}
-                            search={this.search}
+                            search={this.search.bind(this, true)}
                             showSelectTip={selectCustomerLength}
                             style={{width: 300, height: tableWrapHeight}}
                         />
                     </div>
                     <div
                         className={classNames('customer-pool-table-wrap', {'filter-panel-show': this.state.showFilterList})}>
-                        {this.renderTableContent()}
+                        {this.renderTableContent(tableWrapHeight)}
                     </div>
                 </div>
                 {

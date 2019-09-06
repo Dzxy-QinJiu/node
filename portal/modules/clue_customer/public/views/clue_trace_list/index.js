@@ -179,21 +179,6 @@ class ClueTraceList extends React.Component {
             }
         });
     };
-    //渲染添加跟进记录的按钮
-    renderAddRecordButton() {
-        //概览页添加跟进记录的按钮
-        if (this.props.isOverViewPanel) {
-            return (
-                <span className="iconfont icon-add handle-btn-item" onClick={this.toggleAddRecordPanel.bind(this)}
-                    title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
-        } else {//跟进记录页，添加跟进记录的按钮
-            return (
-                <Button className='crm-detail-add-btn'
-                    onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
-                    {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
-                </Button>);
-        }
-    }
 
     onSelectDate = (start_time, end_time) => {
         ClueTraceAction.dismiss();
@@ -637,6 +622,27 @@ class ClueTraceList extends React.Component {
                 relativeDate={false}
             />);
     };
+    //添加跟进按钮
+    tipRecordButton = () =>{
+                //详情还是概览；是不是已有记录
+                    if(this.props.isOverViewPanel){
+                        if(this.state.customerRecord.length){
+                            return  (<span className="iconfont icon-add handle-btn-item" onClick={this.toggleAddRecordPanel.bind(this)}
+                            title={Intl.get('sales.frontpage.add.customer', '添加跟进记录')}/>);
+                        }else{
+                            return(
+                                <a className="handle-btn-item no-data-device" onClick={this.toggleAddRecordPanel.bind(this)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</a>
+                            );
+                        }
+                    }else{
+                        return (
+                            <Button className='crm-detail-add-btn'
+                                onClick={this.toggleAddRecordPanel.bind(this, '')} data-tracename="添加跟进记录">
+                                {Intl.get('sales.frontpage.add.customer', '添加跟进记录')}
+                            </Button>
+                        );
+                    }
+    }
 
     renderClueTraceLists = () => {
         var recordLength = _.get(this, 'state.customerRecord.length');
@@ -682,6 +688,7 @@ class ClueTraceList extends React.Component {
     };
     //监听下拉加载
     handleScrollBarBottom = () => {
+
         var length = this.state.customerRecord.length;
         if (length < this.state.total) {
             var lastId = this.state.customerRecord[length - 1].id;
@@ -693,13 +700,13 @@ class ClueTraceList extends React.Component {
         }
     };
     render() {
-        //能否添加跟进记录， 可编辑并且没有正在编辑的跟进记录时，可添加
+        //是不是可以添加跟进
         let hasAddRecordPrivilege = !this.props.disableEdit && !this.state.isEdit && editCluePrivilege(this.props.curClue);
         return (
             <div className="clue-trace-container" data-tracename="跟进记录页面" id="clue-trace-container">
                 <div className="top-hander-wrap">
                     {this.props.isOverViewPanel ? null : this.renderDatePicker()}
-                    {hasAddRecordPrivilege ? this.renderAddRecordButton() : null}
+                    {hasAddRecordPrivilege? this.tipRecordButton():null}
                 </div>
                 {this.state.addRecordPanelShow ? this.renderAddRecordPanel() : null}
                 <div className="show-container" id="show-container">

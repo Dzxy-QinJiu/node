@@ -1725,6 +1725,7 @@ var en_US = {
     'crm.pool.batch.extract.tip': 'Are you sure you want to extract the selected customers?',//您确定要提取选中的客吗？
     'crm.pool.extract.distribute': 'To extract and assign the person in charge',//提取并分配负责人
     'crm.pool.select.customer.tip': 'Click {icon} in the list to select customers',//请点击列表中的{icon}选择客户
+    'crm.pool.max.selected.num': 'Extract {num} at most each time',//每次最多提取{num}个
     'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
     'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
 
@@ -2895,7 +2896,12 @@ var en_US = {
     'clue.has.similar.clue': 'similar clue',//有相似线索
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.extract.clue': 'Extract clue', // 提取线索
+    'clue.release': 'Release Clue',//释放线索
     'clue.pool': 'Clue Pool', // 线索池
+    'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
+    'clue.customer.batch.release': 'Batch release',//批量释放
+    'clue.customer.release.confirm.tip': 'After release to the clue pool, other people can view and extract. Do you confirm the release?',//释放到线索池后，其他人也可以查看、提取，您确认释放吗？
+    'clue.customer.fail.to.release.tip': 'Fail to release to clue pool',//释放线索失败
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
     'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
     'clue.extract.batch.extract.failed': 'Failed to extract clues in bulk', // 批量提取线索失败
@@ -3222,6 +3228,7 @@ var en_US = {
     'common.oppertunity.number': 'oppertunity number',//机会数量
     'common.performance': 'performance',//业绩
     'common.sales.manager.performance.ranking': 'sales manager performance ranking',//销售经理业绩排名
+    'common.customer.manager.performance.ranking': 'customer manager performance ranking',//客户经理业绩排名
     'common.current.week': 'current week',//本周
     'common.current.quarter': 'current quarter',//本季度
     'common.current.year': 'current year',//本年
@@ -3401,6 +3408,11 @@ var en_US = {
     'clue.customer.register.time': 'Register time',//注册时间
     'self.setting.has.no.apply': 'There is no suited apply',//暂无符合条件的申请
     'failed.distribute.apply': 'Failed assign!',//分配失败！
-    'apply.approve.required.err.msg': 'Please input tips'//请输入未填写时的提示
+    'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
+    'clue.recommed.keyword.list': 'Keyword',//关键词
+    'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
+    'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization today has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
+    'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
+    'clue.customer.noty.all.list': 'Click to see all clues?'//查看所有线索？
 };
 export default en_US;

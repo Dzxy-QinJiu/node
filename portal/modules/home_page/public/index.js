@@ -14,7 +14,7 @@ class HomePage extends React.Component {
     constructor(props) {
         super(props);
     }
-
+    
     returnOldPage = (event) => {
         if (event) {
             Trace.traceEvent(event, '返回旧版首页');
@@ -23,12 +23,14 @@ class HomePage extends React.Component {
     };
 
     render() {
+        let realm = window.location.hostname;
         return (
             <Row className='home-page-container' data-tracename="新版首页">
                 <Col span={10}><MyWorkColumn/></Col>
                 <Col span={7}><TeamDataColumn/></Col>
                 <Col span={7}><MyInsterestColumn/></Col>
-                <div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div>
+                {/*判断所处域名，curtao下不显示返回旧版 */}
+                {_.indexOf(realm,"curtao") === -1 ?<div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div>:null}          
             </Row>);
     }
 }

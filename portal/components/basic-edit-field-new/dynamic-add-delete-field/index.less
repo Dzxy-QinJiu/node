@@ -54,20 +54,21 @@
 .item-show-container {
   float: left;
   width: 100%;
-  &:hover {
-    background-color: @hover_bg_color;
-    .item-show-content {
-      .icon-edit-btn {
-        display: block;
+  &.item-has-edit-privilege {
+    &:hover {
+      background-color: @hover_bg_color;
+      .item-show-content {
+        .icon-edit-btn {
+          display: block;
+        }
       }
     }
   }
   .no-data-descr {
     vertical-align: middle;
     color: #ccc;
-    .handle-btn-item;
-    .no-data-descr-nodata{
-      color: @CLICK-BLUE;
+    a{
+      .handle-btn-item;
     }
   }
 

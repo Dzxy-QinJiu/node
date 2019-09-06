@@ -10,6 +10,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {Form, Input, Icon} from 'antd';
 const FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
+import classNames from 'classnames';
 class DynamicAddDelField extends React.Component {
     constructor(props) {
         super(props);
@@ -159,9 +160,13 @@ class DynamicAddDelField extends React.Component {
     render() {
         const item_keys = this.state.item_keys;
         let itemSize = _.get(item_keys, 'length');
+        //没有编辑权限的时候不展示hover效果
+        let cls = classNames('item-show-container', {
+            'item-has-edit-privilege': this.props.hasEditPrivilege
+        });
         if (this.state.displayType === 'text') {
             return (
-                <div className="item-show-container">
+                <div className={cls}>
                     <div className="item-show-label contact-way-icon">
                         {this.props.label}
                     </div>

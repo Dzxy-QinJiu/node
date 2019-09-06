@@ -20,6 +20,8 @@ module.exports = {
 
 function getCharts() {
     return [
+        //客户经理业绩排名
+        salesProductivityChart.getCustomerManagerPerformanceRankingChart(),
         //销售经理业绩排名
         salesProductivityChart.getSalesManagerPerformanceRankingChart()
     ];

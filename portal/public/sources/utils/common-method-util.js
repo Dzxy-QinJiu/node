@@ -344,12 +344,15 @@ exports.getClueStatus = function(status) {
     }
     return statusDes;
 };
-exports.renderClueStatus = function(status) {
+exports.renderClueStatus = function(listItem) {
+    let status = 
+            _.isString(listItem) ? listItem :
+            listItem.availability === "1" ? 'invalid': listItem.status;
     var statusDes = '';
     switch (status) {
         case '0':
-            statusDes = <span
-                className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
+            statusDes = 
+                <span className="clue-stage will-distribute">{Intl.get('clue.customer.will.distribution', '待分配')}</span>;
             break;
         case '1':
             statusDes =
@@ -362,6 +365,10 @@ exports.renderClueStatus = function(status) {
         case '3':
             statusDes =
                 <span className="clue-stage has-transfer">{Intl.get('clue.customer.has.transfer', '已转化')}</span>;
+            break;
+        case 'invalid':
+            statusDes =
+                <spam className="clue-stage has-invalid">{Intl.get( 'clue.analysis.inability', '无效')}</spam>
             break;
     }
     return statusDes;
@@ -885,6 +892,17 @@ exports.isFinalTask = function(applyNode) {
     if (_.isArray(applyNode) && applyNode.length) {
         //现在主要是看用户申请的审批是否位于最后一个节点，这种类型的节点只会有一个，但是如果有并行的节点，applyNode就会有两个，现在认为有一个节点是final_task ，这条审批就是位于最后一个节点
         return _.some(applyNode, item => item.description === FINAL_TASK);
+    }else{
+        return false;
+    }
+};
+//判断某个审批所在节点的审批角色是否有管理员
+exports.isApprovedByManager = function(applyNode) {
+    if (_.isArray(applyNode) && applyNode.length) {
+        return _.some(applyNode, item => {
+            var name = _.get(item, 'name', '');
+            return name.indexOf(Intl.get('common.managers', '管理员')) > -1;
+        });
     }
 };
 //把文件列表中文件大小的字段file_size,再加上一个字段size。防止在导入新文件时，计算文件大小的字段是size
@@ -982,7 +1000,7 @@ exports.isCiviwRealm = () => {
 * */
 exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkNameError, curCustomerName, showRightPanel) => {
     if (customerNameExist) {
-        const list = _.cloneDeep(existCustomerList);
+        let list = _.cloneDeep(existCustomerList);
         const sameCustomer = _.find(list, item => item.name === curCustomerName);
         const curUserId = userData.getUserData().user_id;
         let renderCustomerName = (customer) => {
@@ -990,7 +1008,7 @@ exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkName
                 //如果是我的客户，可以查看客户详情
                 if (_.get(customer, 'user_id') === curUserId) {
                     return (
-                        <a href="javascript:void(0)" onClick={showRightPanel.bind(this, _.get(customer, 'id'))}>
+                        <a href="javascript:void(0)" onClick={showRightPanel.bind(this, _.get(customer, 'id'))} className="handle-btn-item">
                             {_.get(customer, 'name', '')}
                         </a>);
                 } else {//如果是其他人的客户，只能看名字，不能看客户详情
@@ -1000,9 +1018,10 @@ exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkName
                 return null;
             }
         };
+        list = _.filter(list, cur => cur.id !== sameCustomer.id);
         return (
             <div className="tip-customer-exist">
-                {Intl.get('call.record.customer', '客户')} {sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，
+                <span className="tip-customer-error">{Intl.get('call.record.customer', '客户')}{sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，</span>
                 {/*同名客户或相似客户的第一个*/}
                 {renderCustomerName(sameCustomer || list.shift())}
                 {_.get(list, 'length') ? (

@@ -107,7 +107,6 @@ class AppUserManage extends React.Component {
 
         //获取配置过的用户评分规则
         // this.getUserScoreConfig();
-
     }
     getUserScoreConfig = () => {
         //获取用户基础评分规则
