@@ -120,43 +120,33 @@ class UserInfo extends React.Component{
 
     //订阅前提醒先激活邮箱
     subscribeTips = () => {
-        let content=""
-        if(_.isEmpty(this.props.userInfo.email)){//没有邮箱
-            content = <Popover
-                        overlayClassName="apply-invalid-popover"
-                        placement="topRight"
-                        trigger="click"
-                        content={
-                            <span className="apply-error-tip">
-                                <span className="iconfont icon-warn-icon"></span>
-                                <span className="apply-error-text">
-                                    {Intl.get('apply.error.bind', '您还没有绑定邮箱，请先{bindEmail}',{bindEmail:Intl.get('apply.bind.email.tips','绑定邮箱')})}
-                                </span>
-                            </span>
-                            }
-                    >
-                        <a>{Intl.get("user.info.receive.subscribe","重新订阅")}</a>
-                    </Popover>
-        }else if(!this.props.userInfo.emailEnable){//未激活邮箱
-            content = <Popover
-                        overlayClassName="apply-invalid-popover"
-                        placement="topRight"
-                        trigger="click"
-                        content={
-                            <span className="apply-error-tip">
-                                <span className="iconfont icon-warn-icon"></span>
-                                <span className="apply-error-text">
-                                    {Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}',{activeEmail:Intl.get('apply.active.email.tips', '激活邮箱')})}
-                                </span>
-                            </span>
-                            }
-                    >
-                        <a>{Intl.get("user.info.receive.subscribe","重新订阅")}</a>
-                    </Popover>
-        }else{//已激活可以订阅
+        let content="";
+        console.log(_.isEmpty(this.props.userInfo.email || !this.props.userInfo.emailEnable));
+        if(!_.isEmpty(this.props.userInfo.email)&&this.props.userInfo.emailEnable){
+            //已激活可以订阅
             content =  <a onClick={this.handleSubscribe}>
                             <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
                         </a>
+        }else{
+            //没有邮箱
+            let bind = Intl.get('apply.error.bind', '您还没有绑定邮箱，请先{bindEmail}',{bindEmail:Intl.get('apply.bind.email.tips','绑定邮箱')});
+            //未激活邮箱
+            let active =Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}',{activeEmail:Intl.get('apply.active.email.tips', '激活邮箱')});
+            content = <Popover
+                        overlayClassName="apply-invalid-popover"
+                        placement="topRight"
+                        trigger="click"
+                        content={
+                            <span className="apply-error-tip">
+                                <span className="iconfont icon-warn-icon"></span>
+                                <span className="apply-error-text">
+                                    { _.isEmpty(this.props.userInfo.email) ? bind : active}
+                                </span>
+                            </span>
+                            }
+                    >
+                        <a>{Intl.get("user.info.receive.subscribe","重新订阅")}</a>
+                    </Popover>
         }
     return(
         <ReactIntl.FormattedMessage
