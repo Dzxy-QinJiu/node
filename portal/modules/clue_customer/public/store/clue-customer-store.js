@@ -222,7 +222,7 @@ ClueCustomerStore.prototype.setLoadingFalse = function() {
 },
 ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
     //获取有待我处理条件的线索
-    if(!clueData.loading){
+    if(!clueData.loading && !clueData.error){
         var cloneQuery = _.cloneDeep(clueData.queryObj);
         cloneQuery.self_no_traced = true;
         this.queryObj = cloneQuery;
@@ -235,7 +235,7 @@ ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
 };    
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
-    if(!clueData.loading){
+    if(!clueData.loading && !clueData.error){
         this.queryObj = clueData.queryObj;
     }
     this.handleClueData(clueData);
