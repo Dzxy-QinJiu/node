@@ -54,11 +54,13 @@
 .item-show-container {
   float: left;
   width: 100%;
-  &:hover {
-    background-color: @hover_bg_color;
-    .item-show-content {
-      .icon-edit-btn {
-        display: block;
+  &.item-has-edit-privilege {
+    &:hover {
+      background-color: @hover_bg_color;
+      .item-show-content {
+        .icon-edit-btn {
+          display: block;
+        }
       }
     }
   }

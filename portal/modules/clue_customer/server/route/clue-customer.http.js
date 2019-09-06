@@ -248,6 +248,20 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
-        }
+        },{//释放线索
+            method: 'post',
+            path: '/rest/clue/release/:type',
+            handler: 'releaseClue',
+            passport: {
+                needLogin: true
+            }
+        },{//线索批量操作
+            method: 'post',
+            path: '/rest/clue/batch/release/:type',
+            handler: 'batchReleaseClue',
+            passport: {
+                needLogin: true
+            }
+        },
     ]
 };

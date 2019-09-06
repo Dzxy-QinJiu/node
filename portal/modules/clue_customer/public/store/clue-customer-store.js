@@ -107,6 +107,17 @@ ClueCustomerStore.prototype.setLastClueId = function(updateId) {
 ClueCustomerStore.prototype.setSortField = function(updateSortField) {
     this.sorter.field = updateSortField;
 };
+//释放线索之后
+ClueCustomerStore.prototype.afterReleaseClue = function(clueId) {
+    let clue = this.getClueById(clueId);
+    if(!_.isEmpty(clue)){
+        this.deleteClueById(clue);
+    }
+};
+//通过id查找线索
+ClueCustomerStore.prototype.getClueById = function(clueId) {
+    return _.find(this.curClueLists, clue => _.isEqual(clue.id, clueId));
+};
 ClueCustomerStore.prototype.updateCurrentClueRemark = function(submitObj) {
     let clue = _.find(this.curClueLists, (clue) => {
         return clue.id === submitObj.lead_id;

@@ -20,6 +20,10 @@ const QUERYCLUE = {
     'MANAGER': 'CLUECUSTOMER_QUERY_MANAGER', //管理员通过关键词查询线索的权限
     'USER': 'CLUECUSTOMER_QUERY_USER'//普通销售通过关键词查询线索的权限
 };
+const BATCH_RELEASE = {
+    MANAGER: 'LEAD_POOL_RELEASE_MANAGER', //管理员进行批量释放
+    USER: 'LEAD_POOL_RELEASE_USER'//普通销售进行批量释放
+};
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
 var userData = require('PUB_DIR/sources/user-data');
@@ -424,6 +428,53 @@ exports.getRecommendClueLists = function(obj) {
         },
         error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//释放线索
+exports.releaseClue = function(reqData) {
+    let Deferred = $.Deferred();
+    let authType = 'user';
+    if(hasPrivilege(BATCH_RELEASE.MANAGER)){
+        authType = 'manager';
+    }
+    $.ajax({
+        url: `/rest/clue/release/${authType}`,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get('clue.customer.fail.to.release.tip', '释放线索失败'));
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+//批量释放线索
+exports.batchReleaseClue = function(condition) {
+    var Deferred = $.Deferred();
+    var jsonStr = JSON.stringify(condition);
+    let authType = 'user';
+    if(hasPrivilege(BATCH_RELEASE.MANAGER)){
+        authType = 'manager';
+    }
+    $.ajax({
+        url: `/rest/clue/batch/release/${authType}`,
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'post',
+        data: jsonStr,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || Intl.get('errorcode.20', '批量操作失败'));
         }
     });
     return Deferred.promise();

@@ -72,7 +72,11 @@ const restApis = {
     //批量提取线索
     batchExtractRecommendLists: '/rest/clue/v2/ent/clues',
     //根据关键词获取线索
-    getClueListByKeyword: clueBaseUrl + '/query/:type/:page_size/:sort_field/:order'
+    getClueListByKeyword: clueBaseUrl + '/query/:type/:page_size/:sort_field/:order',
+    //释放线索
+    releaseClue: clueBaseUrl + '/lead_pool/release/:type',
+    //批量释放线索
+    batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type'
 };
 
 //查询客户
@@ -543,4 +547,26 @@ exports.getClueListByKeyword = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+//释放线索
+exports.releaseClue = function(req, res) {
+    return restUtil.authRest.post({
+        url: restApis.releaseClue.replace(':type', req.params.type) + `?lead_ids=${req.body.lead_ids}`,
+        req: req,
+        res: res,
+    });
+};
+//线索批量释放
+exports.batchReleaseClue = function(req,res) {
+    let url = restApis.batchReleaseClue.replace(':type', req.params.type);
+    let reqBody = _.cloneDeep(req.body);
+    if(_.has(reqBody, 'self_no_traced')) {
+        delete reqBody.self_no_traced;
+        url += '?self_no_traced=true';
+    }
+    return restUtil.authRest.post({
+        url: url,
+        req: req,
+        res: res
+    } , reqBody);
 };
