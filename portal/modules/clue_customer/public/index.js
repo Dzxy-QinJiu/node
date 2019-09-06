@@ -125,7 +125,6 @@ class ClueCustomer extends React.Component {
         showRecommendCustomerCondition: false,
         isReleasingClue: false,//是否正在释放线索
         selectedClue: [],//选中的线索
-        selectedNumber: 0,//当用户只选了二十条数据时，记录此时的数据总量
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -2231,16 +2230,14 @@ class ClueCustomer extends React.Component {
         });
         //当最后一个推送完成后
         if(_.isEqual(taskInfo.running, 0)) {
-            let cluesNumber = this.state.customersSize;
-            let totalSelected = this.state.selectedNumber;
-            //如果批量筛选的数据为20以内并且当前的数据不为空
-            if(totalSelected <= 20 && totalSelected > 0 && cluesNumber > 0) {
-                //刷新重新获取列表
-                //做1s延迟为了跟数据库同步
-                setTimeout(() => {
-                    this.getClueList();
-                },1000);
-            }
+            //批量操作删除之后，
+            // 1.如果全部删除，因为tab的数据对不上
+            // 2.如果删除的数据小于二十个，当前页面的数据并不能补充展示
+            //刷新重新获取列表
+            //做1s延迟为了跟数据库同步
+            setTimeout(() => {
+                this.getClueList();
+            },1000);
             this.setState({
                 selectedClues: []
             });
@@ -2252,10 +2249,6 @@ class ClueCustomer extends React.Component {
         if(this.state.isReleasingClue) {
             return;
         }
-        //初始化当前选中的线索数量
-        this.setState({
-            selectedNumber: 0
-        });
         let condition = {
         };
         //选中全部搜索结果时，将搜索条件传给后端
@@ -2271,11 +2264,6 @@ class ClueCustomer extends React.Component {
             }
 
         } else {
-            //记录当前选中的线索数量
-            let selectedNumber = _.get(this.state.selectedClues, 'length');
-            this.setState({
-                selectedNumber
-            });
             //只在当前页进行选择时，将选中项的id传给后端
             //后端检测到传递的id后，将会对这些id的客户进行迁移
             let clueIds = _.map(this.state.selectedClues, 'id').join(',');
