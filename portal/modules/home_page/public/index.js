@@ -30,7 +30,7 @@ class HomePage extends React.Component {
                 <Col span={7}><TeamDataColumn/></Col>
                 <Col span={7}><MyInsterestColumn/></Col>
                 {/*判断所处域名，curtao下不显示返回旧版 */}
-                {_.indexOf(realm,"curtao") === -1 ?<div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div>:null}          
+                {!_.indexOf(realm,"curtao") === -1 ?<div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div>:null}          
             </Row>);
     }
 }
