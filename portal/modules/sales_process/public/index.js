@@ -498,7 +498,7 @@ class SalesProcess extends React.Component {
 
     // 确定删除客户阶段
     handleConfirmDeleteCustomerStage = (item, event) => {
-        event.stopPropagation();
+        event && event.stopPropagation();
         const id = item.id;
         this.setState({
             isDeletingLoading: true
@@ -520,7 +520,7 @@ class SalesProcess extends React.Component {
     };
     // 取消删除客户阶段
     cancelDeleteCustomerStage = (item, event) => {
-        event.stopPropagation();
+        event && event.stopPropagation();
         this.setState({
             deleteCustomerStageId: ''
         });
@@ -623,8 +623,7 @@ class SalesProcess extends React.Component {
     };
 
     renderCustomerStageContent = (containerHeight) => {
-        const salesProcessList = this.state.salesProcessList;
-        const length = _.get(salesProcessList, 'length');
+        let length = _.get(this.state.salesProcessList, 'length');
         const errorMsg = this.state.errorMsg;
         if (this.state.loading) {
             return (
@@ -676,6 +675,9 @@ class SalesProcess extends React.Component {
                                 changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
                                 upDateSalesProcessList={this.upDateSalesProcessList}
                                 currentCustomerStage={this.state.currentSaleProcess}
+                                handleConfirmDeleteCustomerStage={this.handleConfirmDeleteCustomerStage}
+                                cancelDeleteCustomerStage={this.cancelDeleteCustomerStage}
+                                isDeletingLoading={this.state.isDeletingLoading}
                             />
                         ) : null
                     }

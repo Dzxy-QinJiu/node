@@ -3,14 +3,18 @@
  * 客户阶段详情面板
  */
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
+import {Button, Icon, message} from 'antd';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import SalesProcessStore from '../store';
 import SalesProcessAjax from '../ajax';
 import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
-import CustomerStageInfo from './customer-stage-info';
 import CustomerStageTimeLine from './customer-stage-timeline';
+import CustomerStageForm from 'CMP_DIR/basic-form';
+import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 import Trace from 'LIB_DIR/trace';
 
 const EDIT_FEILD_LESS_WIDTH = 420;
@@ -19,8 +23,14 @@ class CustomerStageDetailPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentCustomerStage: props.currentCustomerStage, // 客户阶段信息
-            salesProcessList: props.salesProcessList, //
+            currentCustomerStage: props.currentCustomerStage, // 当前客户阶段信息
+            customerStageList: _.get(props, 'currentCustomerStage.customer_stages'), // 阶段列表
+            salesProcessList: props.salesProcessList, // （销售流程列表）
+            isDeleteFlag: false, // 是否删除，默认false不删除
+            customerStageNameShowType: 'text', // 客户阶段名称显示的类型,默认text
+            isShowCustomerStageTransferOrder: false, // 是否变更客户阶段顺序
+            isShowAddCustomerStage: false, // 是否显示添加客户阶段
+            isloading: false, // 添加或是编辑阶段时的加载loading
             ...SalesProcessStore.getState(),
         };
     }
@@ -30,6 +40,7 @@ class CustomerStageDetailPanel extends React.Component {
             this.setState({
                 currentCustomerStage: nextProps.currentCustomerStage,
                 salesProcessList: nextProps.salesProcessList,
+                customerStageList: _.get(nextProps, 'currentCustomerStage.customer_stages')
             });
         }
     }
@@ -78,20 +89,145 @@ class CustomerStageDetailPanel extends React.Component {
             - PADDING;
     };
 
+    // 处理变更顺序
+    handleTransferOrder = () => {
+        this.setState({
+            isShowCustomerStageTransferOrder: true
+        });
+    };
+
+    handleChangeCustomerStageOrder = () => {
+
+    };
+
+    closeCustomerStageTransferOrder = () => {
+
+    };
+
+    // 添加客户阶段
+    handleAddCustomerStage = () => {
+        let customerStageList = this.state.customerStageList;
+        let length = customerStageList.length;
+        customerStageList.push({order: length + 1});
+        this.setState({
+            isShowAddCustomerStage: true,
+            customerStageList: customerStageList
+        });
+    };
+
+    handleCancelCustomerStageForm = () => {
+        let customerStageList = this.state.customerStageList;
+        customerStageList.pop();
+        this.setState({
+            isShowAddCustomerStage: false,
+            customerStageList: customerStageList
+        });
+    };
+
+    // 提交保存表单
+    handleSubmitCustomerStageForm = (submitObj) => {
+        let saleProcessId = this.state.currentCustomerStage.id;
+        if (submitObj.id) { // 编辑客户阶段
+            SalesProcessAjax.editCustomerStage(submitObj, saleProcessId).then( (result) => {
+                if (result) {
+                    message.success(Intl.get('crm.218', '修改成功！'));
+                } else {
+                    message.success(Intl.get('crm.219', '修改失败！'));
+                }
+            }, (errMsg) => {
+                message.success(errMsg || Intl.get('crm.219', '修改失败！'));
+            } );
+        } else { // 添加一个客户阶段
+            let customerStageList = this.state.customerStageList;
+            let order = _.get(customerStageList, 'length');
+            submitObj.color = CUSTOMER_STAGE_COLOR[order];
+            submitObj.order = order; // 需要传客户阶段的序号
+            SalesProcessAjax.addCustomerStage(submitObj, saleProcessId).then( (result) => {
+                if (result && result.id) {
+                    customerStageList[order - 1] = result;
+                    this.setState({
+                        customerStageList: customerStageList,
+                        isShowAddCustomerStage: false,
+                    });
+                    let updateObj = {
+                        id: saleProcessId,
+                        customerStages: this.state.customerStageList
+                    };
+                    // 更新列表中阶段的值
+                    this.changeSaleProcessFieldSuccess(updateObj);
+                    message.success(Intl.get('crm.216', '添加成功！'));
+                } else {
+                    this.setState({
+                        isShowAddCustomerStage: false,
+                    });
+                    message.error(Intl.get('member.add.failed', '添加失败！'));
+                }
+            }, (errMsg) => {
+                this.setState({
+                    isShowAddCustomerStage: false,
+                });
+                message.error(errMsg || Intl.get('member.add.failed', '添加失败！'));
+            });
+        }
+    };
+
+
+    // 添加或是编辑客户阶段
+    renderEditOrAddCustomerStage = () => {
+        let currentData = {};
+        return (
+            <CustomerStageForm
+                isShowSaveBtn={true}
+                currentData={currentData}
+                customerStageList={this.state.customerStageList}
+                handleCancel={this.handleCancelCustomerStageForm}
+                handleSubmit={this.handleSubmitCustomerStageForm}
+            />
+        );
+    };
+
     // 渲染右侧面板内容区的值
     renderContent(){
         const currentCustomerStage = this.state.currentCustomerStage;
-        let customerStages = currentCustomerStage.customer_stages;
+        let customerStages = this.state.customerStageList;
+        const length = customerStages.length;
         let teams = _.map(currentCustomerStage.teams, 'name');
         let users = _.map(currentCustomerStage.users, 'name');
         let scope = _.concat(teams, users);
-        let heigth = this.getContainerHeight();
+        let height = this.getContainerHeight();
         return (
-            <div className="stage-detail-wrap" style={{height: heigth}}>
-                <GeminiScrollBar style={{height: heigth}}>
+            <div className="stage-detail-wrap" style={{height: height}}>
+                <GeminiScrollBar style={{height: height}}>
                     <div className="stage-content-set-stage">
-                        <div className="stage-label">
-                            {Intl.get('customer.stage.stage.title', '阶段设置')}
+                        <div className="stage-set-title-zone">
+                            <div className="stage-label">
+                                {Intl.get('customer.stage.stage.title', '阶段设置')}
+                            </div>
+                            <div className="operate-zone">
+                                {
+                                    hasPrivilege('CRM_ADD_CUSTOMER_SALES') ? (
+                                        length > 7 ? null : (
+                                            <span
+                                                onClick={this.handleAddCustomerStage}
+                                                className="add-stage"
+                                            >
+                                                <i className='iconfont icon-plus' />
+                                            </span>
+                                        )
+                                    ) : null
+                                }
+                                {
+                                    hasPrivilege('CRM_UPDATE_CUSTOMER_SALES') ? (
+                                        <span
+                                            onClick={this.handleTransferOrder}
+                                            title={Intl.get('sales.stage.change.sort', '变更顺序')}
+                                        >
+                                            <i className='iconfont icon-transfer' />
+                                        </span>
+                                    ) : null
+                                }
+
+                            </div>
                         </div>
                         <div className="stage-content">
                             <div className="customer-stage-table-block">
@@ -116,6 +252,33 @@ class CustomerStageDetailPanel extends React.Component {
                                     }
                                 </ul>
                             </div>
+                            {
+                                this.state.isShowAddCustomerStage ? (
+                                    <div className="add-customer-stage-zone">
+                                        {this.renderEditOrAddCustomerStage()}
+                                    </div>
+                                ) : null
+                            }
+                            {
+                                this.state.isShowCustomerStageTransferOrder ? (
+                                    <div className="customer-stage-change-order">
+                                        <Button
+                                            type="ghost"
+                                            className="customer-stage-top-btn btn-item"
+                                            onClick={this.handleChangeCustomerStageOrder.bind(this)}
+                                        >
+                                            {Intl.get('common.confirm', '确认')}
+                                        </Button>
+                                        <Button
+                                            type="ghost"
+                                            className="customer-stage-top-btn btn-item"
+                                            onClick={this.closeCustomerStageTransferOrder.bind(this)}
+                                        >
+                                            {Intl.get('common.cancel', '取消')}
+                                        </Button>
+                                    </div>
+                                ) : null
+                            }
                         </div>
                     </div>
                     <div className="stage-content-team-user">
@@ -149,24 +312,93 @@ class CustomerStageDetailPanel extends React.Component {
         };
     };
 
+    handleDeleteCustomerStage = () => {
+        this.setState({
+            isDeleteFlag: true
+        });
+    };
+
+    handleConfirmDeleteCustomerStage = (currentCustomerStage) => {
+        this.props.handleConfirmDeleteCustomerStage(currentCustomerStage);
+        this.setState({
+            isDeleteFlag: false
+        }, () => {
+            this.props.closeCustomerStagePanel();
+        });
+    };
+
+    cancelDeleteCustomerStage = (currentCustomerStage) => {
+        this.setState({
+            isDeleteFlag: false
+        });
+        this.props.cancelDeleteCustomerStage(currentCustomerStage);
+    };
+
+    handleDisplayTypeChange = (type) => {
+        this.setState({
+            customerStageNameShowType: type
+        });
+    }
+
     // 渲染客户阶段名称
-    renderCustomerStageName = () => {
+    renderRightPanelTitle = () => {
         const currentCustomerStage = this.state.currentCustomerStage;
         const id = currentCustomerStage.id;
+        const name = currentCustomerStage.name;
 
         return (
-            <div className="basic-info-item">
-                <BasicEditInputField
-                    width={EDIT_FEILD_LESS_WIDTH}
-                    id={id}
-                    value={currentCustomerStage.name}
-                    field='name'
-                    type="text"
-                    hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
-                    validators={[{validator: this.getValidator()}]}
-                    placeholder={Intl.get('customer.stage.name.placeholder', '请输入客户阶段')}
-                    saveEditInput={this.saveEditCustomerStageName.bind(this, 'name')}
-                />
+            <div className="right-panel-title-zone">
+                <div className="customer-stage-zone">
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={id}
+                        displayType={this.state.customerStageNameShowType}
+                        value={name}
+                        field='name'
+                        type="text"
+                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        validators={[{validator: this.getValidator()}]}
+                        placeholder={Intl.get('customer.stage.name.placeholder', '请输入客户阶段')}
+                        saveEditInput={this.saveEditCustomerStageName.bind(this, 'name')}
+                        onDisplayTypeChange={this.handleDisplayTypeChange}
+                    />
+                </div>
+                {
+                    this.state.customerStageNameShowType === 'text' ? (
+                        <div className="delete-operator">
+                            {
+                                this.state.isDeleteFlag ? (
+                                    <span className="delete-buttons">
+                                        <Button
+                                            className="delete-confirm"
+                                            disabled={this.props.isDeletingLoading}
+                                            onClick={this.handleConfirmDeleteCustomerStage.bind(this, currentCustomerStage)}
+                                        >
+                                            {
+                                                this.props.isDeletingLoading ? <Icon type="loading"/> : null
+                                            }
+                                            {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                        </Button>
+                                        <Button
+                                            className="delete-cancel"
+                                            onClick={this.cancelDeleteCustomerStage.bind(this, currentCustomerStage)}
+                                        >
+                                            {Intl.get('common.cancel', '取消')}
+                                        </Button>
+                                    </span>
+                                ) : (
+                                    <span
+                                        title={Intl.get('customer.stage.delete.stage', '删除客户阶段')}
+                                        onClick={this.handleDeleteCustomerStage}
+                                        data-tracename={'点击删除' + name + '客户阶段按钮'}
+                                    >
+                                        <i className="iconfont icon-delete handle-btn-item"></i>
+                                    </span>
+                                )
+                            }
+                        </div>
+                    ) : null
+                }
             </div>
         );
     };
@@ -178,7 +410,7 @@ class CustomerStageDetailPanel extends React.Component {
                 isShowMadal={false}
                 isShowCloseBtn={true}
                 onClosePanel={this.handleCancel.bind(this)}
-                title={this.renderCustomerStageName()}
+                title={this.renderRightPanelTitle()}
                 content={this.renderContent()}
                 dataTracename='编辑客户阶段'
             />);
@@ -191,6 +423,9 @@ CustomerStageDetailPanel.propTypes = {
     salesProcessList: PropTypes.array,
     changeSaleProcessFieldSuccess: PropTypes.func,
     closeCustomerStagePanel: PropTypes.func,
+    handleConfirmDeleteCustomerStage: PropTypes.func,
+    cancelDeleteCustomerStage: PropTypes.func,
+    isDeletingLoading: PropTypes.boolean
 };
 
 export default CustomerStageDetailPanel;

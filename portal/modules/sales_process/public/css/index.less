@@ -210,6 +210,37 @@
       .right-panel-modal-content {
         .right-panel-modal-title {
           margin-bottom: 0;
+          .right-panel-title-zone {
+            .customer-stage-zone {
+              float: left;
+              cursor: pointer;
+              .basic-edit-field-input {
+                .hover-show-edit {
+                  .icon-edit-btn {
+                    float: right;
+                  }
+                }
+              }
+            }
+            .delete-operator {
+              cursor: pointer;
+              text-align: right;
+              .delete-buttons {
+                font-size: 14px;
+                .delete-confirm {
+                  background-color: @confirm-delete-background;
+                  color: @tag-font-color;
+                  margin-right: 12px;
+                }
+                .delete-cancel {
+                  color: @label-color;
+                }
+              }
+              &:hover {
+                color: @confirm-delete-background;
+              }
+            }
+          }
         }
         .stage-detail-wrap {
           padding: 16px 24px;
@@ -223,6 +254,32 @@
             }
           }
           .stage-content-set-stage {
+            .stage-set-title-zone {
+              cursor: pointer;
+              color: @label-color;
+              height: 20px;
+              margin-bottom: 8px;
+              .stage-label {
+                float: left;
+              }
+              .operate-zone {
+                visibility: hidden;
+                text-align: right;
+                .add-stage {
+                  margin-right: 16px;
+                }
+                .iconfont {
+                  font-size: 14px;
+                }
+              }
+              &:hover {
+                .operate-zone {
+                  visibility: visible;
+                  cursor: pointer;
+                  color: @hover-btn-color;
+                }
+              }
+            }
             margin-bottom: 8px;
             .stage-content {
               .customer-stage-table-block {
@@ -371,6 +428,12 @@
 
                   }
                 }
+              }
+              .add-customer-stage-zone {
+                width: 366px;
+                position: relative;
+                top: -80px;
+                left: 42px;
               }
             }
           }

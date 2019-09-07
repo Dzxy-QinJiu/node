@@ -267,6 +267,7 @@ var zh_CN = {
     'common.import.template': '模板',
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'common.create': '创建',
+    'common.stage.describe': '阶段描述',
 
     //公共部分--end
     'login.login': '登录',
