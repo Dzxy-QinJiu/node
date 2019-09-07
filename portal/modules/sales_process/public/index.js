@@ -680,6 +680,7 @@ class SalesProcess extends React.Component {
                                 handleConfirmDeleteCustomerStage={this.handleConfirmDeleteCustomerStage}
                                 cancelDeleteCustomerStage={this.cancelDeleteCustomerStage}
                                 isDeletingLoading={this.state.isDeletingLoading}
+                                treeSelectData={treeSelectData}
                             />
                         ) : null
                     }

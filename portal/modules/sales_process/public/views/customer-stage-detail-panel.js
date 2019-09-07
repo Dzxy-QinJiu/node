@@ -13,6 +13,7 @@ import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import CustomerStageTimeLine from './customer-stage-timeline';
 import CustomerStageForm from 'CMP_DIR/basic-form';
 import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
+import StageSelectTeamUser from './stage-select-team-user';
 import classNames from 'classnames';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -33,6 +34,7 @@ class CustomerStageDetailPanel extends React.Component {
             isShowAddCustomerStage: false, // 是否显示添加客户阶段
             isloading: false, // 添加或是编辑阶段时的加载loading
             isDeletingStageLoading: false, // 删除某个客户阶段中具体的客户阶段
+            isEditCustomerScope: false, // 是否编辑适用范围，默认false
             ...SalesProcessStore.getState(),
         };
     }
@@ -157,7 +159,7 @@ class CustomerStageDetailPanel extends React.Component {
                     this.changeSaleProcessFieldSuccess(updateObj);
                     message.success(Intl.get('crm.218', '修改成功！'));
                 } else {
-                    message.success(Intl.get('crm.219', '修改失败！'));
+                    message.error(Intl.get('crm.219', '修改失败！'));
                 }
             }, (errMsg) => {
                 this.setState({
@@ -263,6 +265,20 @@ class CustomerStageDetailPanel extends React.Component {
         } );
     };
 
+    // 编辑客户阶段的适用范围
+    handleEditCustomerScope = () => {
+        this.setState({
+            isEditCustomerScope: true
+        });
+    };
+
+    // 取消客户阶段的适用范围
+    handleCancelEditCustomerScope = () => {
+        this.setState({
+            isEditCustomerScope: false
+        });
+    };
+
     // 渲染右侧面板内容区的值
     renderContent(){
         const currentCustomerStage = this.state.currentCustomerStage;
@@ -365,12 +381,38 @@ class CustomerStageDetailPanel extends React.Component {
                         </div>
                     </div>
                     <div className="stage-content-team-user">
-                        <div className="stage-label">
-                            {Intl.get('sales.process.suitable.objects', '适用范围')}
+                        <div className="stage-set-title-zone">
+                            <div className="stage-label">
+                                {Intl.get('sales.process.suitable.objects', '适用范围')}
+                            </div>
+                            <div className="operate-zone">
+                                {
+                                    hasPrivilege('CRM_UPDATE_CUSTOMER_SALES') ? (
+                                        <span onClick={this.handleEditCustomerScope}>
+                                            <i className='icon-update iconfont handle-btn-item' />
+                                        </span>
+                                    ) : null
+                                }
+
+                            </div>
                         </div>
-                        <div className="stage-content">
-                            {_.join(scope, '、')}
-                        </div>
+                        {
+                            this.state.isEditCustomerScope ? (
+                                <div className="select-zone">
+                                    <StageSelectTeamUser
+                                        treeSelectData={this.props.treeSelectData}
+                                        changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
+                                        cancelEditCustomerScope={this.handleCancelEditCustomerScope}
+                                        currentCustomerStage={this.state.currentCustomerStage}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="stage-content">
+                                    {_.join(scope, '、')}
+                                </div>
+                            )
+                        }
+
                     </div>
                 </GeminiScrollBar>
             </div>
@@ -510,7 +552,8 @@ CustomerStageDetailPanel.propTypes = {
     closeCustomerStagePanel: PropTypes.func,
     handleConfirmDeleteCustomerStage: PropTypes.func,
     cancelDeleteCustomerStage: PropTypes.func,
-    isDeletingLoading: PropTypes.boolean
+    isDeletingLoading: PropTypes.boolean,
+    treeSelectData: PropTypes.array,
 };
 
 export default CustomerStageDetailPanel;
