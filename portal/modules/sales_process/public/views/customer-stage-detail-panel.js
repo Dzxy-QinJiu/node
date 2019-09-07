@@ -31,6 +31,7 @@ class CustomerStageDetailPanel extends React.Component {
             isShowCustomerStageTransferOrder: false, // 是否变更客户阶段顺序
             isShowAddCustomerStage: false, // 是否显示添加客户阶段
             isloading: false, // 添加或是编辑阶段时的加载loading
+            isDeletingStageLoading: false, // 删除某个客户阶段中具体的客户阶段
             ...SalesProcessStore.getState(),
         };
     }
@@ -127,15 +128,41 @@ class CustomerStageDetailPanel extends React.Component {
     // 提交保存表单
     handleSubmitCustomerStageForm = (submitObj) => {
         let saleProcessId = this.state.currentCustomerStage.id;
+        this.setState({
+            isloading: true
+        });
         if (submitObj.id) { // 编辑客户阶段
             SalesProcessAjax.editCustomerStage(submitObj, saleProcessId).then( (result) => {
+                let customerStageList = this.state.customerStageList;
+                let changeStage = _.find(customerStageList, item => item.id === submitObj.id);
+                let order = -1;
+                if (changeStage) {
+                    order = changeStage.order;
+                }
+                submitObj.order = order;
+                this.setState({
+                    isloading: false
+                });
                 if (result) {
+                    customerStageList[order - 1] = submitObj;
+                    this.setState({
+                        customerStageList: customerStageList,
+                    });
+                    let updateObj = {
+                        id: saleProcessId,
+                        customerStages: this.state.customerStageList
+                    };
+                    // 更新列表中阶段的值
+                    this.changeSaleProcessFieldSuccess(updateObj);
                     message.success(Intl.get('crm.218', '修改成功！'));
                 } else {
                     message.success(Intl.get('crm.219', '修改失败！'));
                 }
             }, (errMsg) => {
-                message.success(errMsg || Intl.get('crm.219', '修改失败！'));
+                this.setState({
+                    isloading: false
+                });
+                message.error(errMsg || Intl.get('crm.219', '修改失败！'));
             } );
         } else { // 添加一个客户阶段
             let customerStageList = this.state.customerStageList;
@@ -172,18 +199,67 @@ class CustomerStageDetailPanel extends React.Component {
     };
 
 
-    // 添加或是编辑客户阶段
-    renderEditOrAddCustomerStage = () => {
+    // 添加客户阶段
+    renderAddCustomerStage = () => {
         let currentData = {};
         return (
             <CustomerStageForm
                 isShowSaveBtn={true}
                 currentData={currentData}
+                loading={this.state.isloading}
                 customerStageList={this.state.customerStageList}
                 handleCancel={this.handleCancelCustomerStageForm}
                 handleSubmit={this.handleSubmitCustomerStageForm}
             />
         );
+    };
+
+    // 确认删除某个客户阶段中的具体的某个阶段
+    handleConfirmDeleteStage = (customerStage, cb) => {
+        let customerStageId = customerStage.id;
+        let saleProcessId = this.state.currentCustomerStage.id;
+        let customerStageList = this.state.customerStageList;
+        let changeStageList = _.cloneDeep(customerStageList);
+        let deleteCustomerStage = _.find(changeStageList, item => item.id === customerStageId);
+        _.remove(changeStageList, customerStage); // 删除后的客户阶段
+        let stageColorsArray = [];
+        _.each(changeStageList, (item, index) => {
+            stageColorsArray.push({id: item.id, color: CUSTOMER_STAGE_COLOR[index]});
+        });
+        let order = deleteCustomerStage.order; // 删除客户阶段的位置
+        let submitObj = {
+            delete_ids: customerStageId,
+            stage_colors: stageColorsArray
+        };
+        this.setState({
+            isDeletingStageLoading: true
+        });
+        SalesProcessAjax.deleteCustomerStageColor(submitObj, saleProcessId).then( (result) => {
+            if (result === 'true') {
+                this.setState({
+                    customerStageList: changeStageList,
+                    isDeletingStageLoading: false
+                });
+                let updateObj = {
+                    id: saleProcessId,
+                    customerStages: changeStageList
+                };
+                // 更新列表中阶段的值
+                this.changeSaleProcessFieldSuccess(updateObj);
+                message.success(Intl.get('crm.138', '删除成功！'));
+                _.isFunction(cb) && cb();
+            } else {
+                message.error(Intl.get('crm.139', '删除失败！'));
+                this.setState({
+                    isDeletingStageLoading: false
+                });
+            }
+        }, (errMsg) => {
+            this.setState({
+                isDeletingStageLoading: false
+            });
+            message.error(errMsg || Intl.get('crm.139', '删除失败！'));
+        } );
     };
 
     // 渲染右侧面板内容区的值
@@ -245,6 +321,12 @@ class CustomerStageDetailPanel extends React.Component {
                                                     <div className="customer-stage-timeline-item-right"></div>
                                                     <CustomerStageTimeLine
                                                         customerStage={item}
+                                                        customerStageList={this.state.customerStageList}
+                                                        handleCancelCustomerStageForm={this.handleCancelCustomerStageForm}
+                                                        handleSubmitCustomerStageForm={this.handleSubmitCustomerStageForm}
+                                                        isDeletingStageLoading={this.state.isDeletingStageLoading}
+                                                        handleConfirmDeleteStage={this.handleConfirmDeleteStage}
+                                                        isEditLoading={this.state.isloading}
                                                     />
                                                 </li>
                                             );
@@ -255,7 +337,7 @@ class CustomerStageDetailPanel extends React.Component {
                             {
                                 this.state.isShowAddCustomerStage ? (
                                     <div className="add-customer-stage-zone">
-                                        {this.renderEditOrAddCustomerStage()}
+                                        {this.renderAddCustomerStage()}
                                     </div>
                                 ) : null
                             }

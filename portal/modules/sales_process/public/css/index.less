@@ -377,33 +377,48 @@
                         }
                       }
 
-                      .customer-stage-btn-div {
-                        width: 90px;
-                        float: right;
+                      // 编辑和删除某个阶段样式
+                      .operation-btn {
                         padding-top: 18px;
-
-                        &.operation-btn {
-                          display: none;
-                        }
-
-                        .customer-stage-btn-class {
+                        .iconfont {
                           border: 0;
-                          width: 28px;
+                          width: 26px;
                           float: right;
                           background-color: #b6c2c9;
                           margin-right: 12px;
                           text-align: center;
                           padding: 0;
                           color: #fff;
-                          font-size: 16px;
+                          font-size: 14px;
                           border-radius: 100px;
                         }
+                        visibility: hidden;
                       }
+                    }
+                    &:hover {
+                      .operation-btn {
+                        visibility: visible;
+                      }
+                    }
 
-                      &:hover {
-                        .operation-btn {
-                          display: block;
+                    // 删除某个阶段
+                    .delete-operator {
+                      padding: 18px 12px 0 0;
+                      cursor: pointer;
+                      float: right;
+                      .delete-buttons {
+                        font-size: 14px;
+                        .delete-confirm {
+                          background-color: @confirm-delete-background;
+                          color: @tag-font-color;
+                          margin-right: 12px;
                         }
+                        .delete-cancel {
+                          color: @label-color;
+                        }
+                      }
+                      &:hover {
+                        color: @confirm-delete-background;
                       }
                     }
 
@@ -425,7 +440,6 @@
                         }
                       }
                     }
-
                   }
                 }
               }
@@ -433,6 +447,11 @@
                 width: 366px;
                 position: relative;
                 top: -80px;
+                left: 42px;
+              }
+              .edit-customer-stage-zone {
+                width: 366px;
+                position: relative;
                 left: 42px;
               }
             }

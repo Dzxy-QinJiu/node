@@ -1,27 +1,90 @@
 /**
  * Created by hzl on 2019/9/3.
  */
-import { Button } from 'antd';
+import { Button, Icon } from 'antd';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import classNames from 'classnames';
+import CustomerStageForm from 'CMP_DIR/basic-form';
 import Trace from 'LIB_DIR/trace';
-
-const OPERATE_ZONE_WIDTH = 100; // 按钮操作区的宽度
 
 class CustomerStageTimeLine extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            customerStage: props.customerStage
+            customerStage: props.customerStage,
+            isEditCustomerStage: false, // 是否编辑客户阶段，默认false
+            isDeleteCustomerStage: false, // 是否删除客户阶段，默认false
+            customerStageList: props.customerStageList,
         };
     }
+
+    // 编辑客户阶段
+    handleEditCustomerStage = () => {
+        this.setState({
+            isEditCustomerStage: true
+        });
+    };
+
+    // 取消编辑的客户阶段
+    handleCancelCustomerStageForm = () => {
+        this.setState({
+            isEditCustomerStage: false
+        });
+    };
+
+    // 提交编辑的客户阶段
+    handleSubmitCustomerStageForm = (submitObj) => {
+        this.props.handleSubmitCustomerStageForm(submitObj);
+        this.setState({
+            isEditCustomerStage: false
+        });
+    };
+
+    // 删除客户阶段
+    handleDeleteCustomerStage = () => {
+        this.setState({
+            isDeleteCustomerStage: true
+        });
+    };
+
+    // 确认删除客户阶段
+    handleConfirmDeleteStage = (customerStage) => {
+        this.props.handleConfirmDeleteStage(customerStage, () => {
+            this.setState({
+                isDeleteCustomerStage: false
+            });
+        });
+    };
+
+    // 取消删除客户阶段
+    handleCancelDeleteStage = () => {
+        this.setState({
+            isDeleteCustomerStage: false
+        });
+    };
 
     render() {
         let customerStage = this.props.customerStage;
         let name = customerStage.name; // 阶段名称
         let description = customerStage.description;
         let contentZoneCls = classNames('customer-stage-content', {
-            'no-description-content': !description});
+            'no-description-content': !description,
+            'show-confirm-delete-btn-stage-content': this.state.isDeleteCustomerStage,
+        });
+        if (this.state.isEditCustomerStage) {
+            return (
+                <div className="edit-customer-stage-zone">
+                    <CustomerStageForm
+                        isShowSaveBtn={true}
+                        currentData={customerStage}
+                        loading={this.props.isEditLoading}
+                        customerStageList={this.props.customerStageList}
+                        handleCancel={this.handleCancelCustomerStageForm}
+                        handleSubmit={this.handleSubmitCustomerStageForm}
+                    />
+                </div>
+            );
+        }
         return (
             <div
                 className="customer-stage-timeline-item-content"
@@ -35,7 +98,49 @@ class CustomerStageTimeLine extends React.Component {
                         {description}
                     </div>
                 </div>
-
+                {
+                    this.state.isDeleteCustomerStage ? (
+                        <div className="delete-operator">
+                            <span className="delete-buttons">
+                                <Button
+                                    className="delete-confirm"
+                                    disabled={this.props.isDeletingStageLoading}
+                                    onClick={this.handleConfirmDeleteStage.bind(this, customerStage)}
+                                >
+                                    {
+                                        this.props.isDeletingStageLoading ? <Icon type="loading"/> : null
+                                    }
+                                    {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                </Button>
+                                <Button
+                                    className="delete-cancel"
+                                    onClick={this.handleCancelDeleteStage}
+                                >
+                                    {Intl.get('common.cancel', '取消')}
+                                </Button>
+                            </span>
+                        </div>
+                    ) : (
+                        <div className="operation-btn">
+                            <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
+                                <Button
+                                    className="icon-delete iconfont handle-btn-item"
+                                    onClick={this.handleDeleteCustomerStage}
+                                    data-tracename="删除客户阶段"
+                                >
+                                </Button>
+                            </PrivilegeChecker>
+                            <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                <Button
+                                    className="icon-update iconfont handle-btn-item"
+                                    onClick={this.handleEditCustomerStage}
+                                    data-tracename="编辑客户阶段"
+                                >
+                                </Button>
+                            </PrivilegeChecker>
+                        </div>
+                    )
+                }
             </div>
         );
     }
@@ -43,7 +148,11 @@ class CustomerStageTimeLine extends React.Component {
 
 CustomerStageTimeLine.propTypes = {
     customerStage: PropTypes.object,
-
+    customerStageList: PropTypes.array,
+    handleSubmitCustomerStageForm: PropTypes.func,
+    handleConfirmDeleteStage: PropTypes.func,
+    isEditLoading: PropTypes.boolean,
+    isDeletingStageLoading: PropTypes.boolean,
 };
 
 export default CustomerStageTimeLine;
