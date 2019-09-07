@@ -13,6 +13,7 @@ import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import CustomerStageTimeLine from './customer-stage-timeline';
 import CustomerStageForm from 'CMP_DIR/basic-form';
 import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
+import classNames from 'classnames';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import Trace from 'LIB_DIR/trace';
@@ -427,10 +428,12 @@ class CustomerStageDetailPanel extends React.Component {
         const currentCustomerStage = this.state.currentCustomerStage;
         const id = currentCustomerStage.id;
         const name = currentCustomerStage.name;
-
+        let cls = classNames('customer-stage-zone', {
+            'edit-content-zone': this.state.customerStageNameShowType === 'edit',
+        });
         return (
             <div className="right-panel-title-zone">
-                <div className="customer-stage-zone">
+                <div className={cls}>
                     <BasicEditInputField
                         width={EDIT_FEILD_LESS_WIDTH}
                         id={id}
