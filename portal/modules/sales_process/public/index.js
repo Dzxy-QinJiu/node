@@ -537,8 +537,10 @@ class SalesProcess extends React.Component {
                         let teams = _.map(item.teams, 'name');
                         let users = _.map(item.users, 'name');
                         let scope = _.concat(teams, users);
-                        const cls = classNames('customer-stage-block',
-                            {'custom-customer-stage-block': item.type === 'custom'});
+                        const cls = classNames('customer-stage-block', {
+                            'custom-customer-stage-block': item.type === 'custom',
+                            'select-customer-stage': item.id === this.state.saleProcessId
+                        });
                         return (
                             <div className={cls}
                                 key={item.id}
