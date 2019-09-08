@@ -93,7 +93,6 @@ class SalesProcessStore {
     // 显示添加销售流程表单程面板
     showAddProcessFormPanel() {
         this.isShowAddProcessFormPanel = true;
-        this.isShowProcessInfoPanel = false;
     }
 
     // 关闭添加销售流程表单程面板

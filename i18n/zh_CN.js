@@ -939,6 +939,7 @@ var zh_CN = {
     'customer.stage.delete.stage': '删除客户阶段',
     'customer.stage.select.team.user.placeholder': '请选择适用该阶段的团队或个人',
     'customer.stage.add.stage.title': '客户阶段{num}',
+    'customer.stage.click.add.stage': '添加阶段',
     // 后台管理-客户阶段end
 
     //应用管理start

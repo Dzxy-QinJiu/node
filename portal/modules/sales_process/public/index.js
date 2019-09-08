@@ -122,6 +122,11 @@ class SalesProcess extends React.Component {
         } );
     };
 
+    // 添加客户阶段面板
+    showAddProcessFormPanel = () => {
+        SalesProcessAction.showAddProcessFormPanel();
+    };
+
     //渲染操作按钮区
     renderTopNavOperation = () => {
         let length = _.get(this.state.salesProcessList, 'length');
@@ -153,7 +158,7 @@ class SalesProcess extends React.Component {
                         ) : (
                             <Button
                                 type="ghost" className="sales-stage-top-btn btn-item"
-                                onClick={this.showCustomerStagePanel.bind(this, addCustomerStage)}
+                                onClick={this.showAddProcessFormPanel}
                                 data-tracename="添加客户阶段"
                             >
                                 <Icon type="plus" />
@@ -685,17 +690,6 @@ class SalesProcess extends React.Component {
                         ) : null
                     }
                     {
-                        this.state.isShowSelectTeamUserPanel ? (
-                            <StageSelectTeamUser
-                                treeSelectData={treeSelectData}
-                                currentStage={this.state.currentSaleProcess}
-                                closeSelectTeamUserPanel={this.closeSelectTeamUserPanel}
-                                changeSaleProcessFieldSuccess={this.changeSaleProcessFieldSuccess}
-                            />
-                        ) : null
-                    }
-
-                    {
                         /**
                          * isShowAddProcessFormPanel true 打开添加销售流程面板
                          **/
@@ -706,6 +700,7 @@ class SalesProcess extends React.Component {
                                 treeSelectData={treeSelectData}
                                 isLoading={this.state.addProcessLoading}
                                 saveResult={this.state.addProcessResult}
+                                salesProcessList={this.state.salesProcessList}
                             />
                         ) : null
                     }
