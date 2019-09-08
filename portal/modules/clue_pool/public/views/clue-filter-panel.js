@@ -4,9 +4,21 @@ import FilterAction from '../action/filter-action';
 import clueFilterStore from '../store/filter-store';
 import cluePoolAction from '../action';
 import {clueStartTime} from '../utils/clue-pool-utils';
-
 import userData from 'PUB_DIR/sources/user-data';
-
+import {
+    COMMON_OTHER_ITEM,
+    SIMILAR_CUSTOMER,
+    SIMILAR_CLUE
+} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+let otherFilterArray = [
+    {
+        name: Intl.get( 'clue.has.similar.customer','有相似客户'),
+        value: SIMILAR_CUSTOMER
+    },{
+        name: Intl.get( 'clue.has.similar.clue','有相似线索'),
+        value: SIMILAR_CLUE
+    }
+];
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -25,6 +37,7 @@ class ClueFilterPanel extends React.Component {
     };
     componentDidMount = () => {
         clueFilterStore.listen(this.onStoreChange);
+        FilterAction.getTeamList();
     };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
@@ -41,6 +54,11 @@ class ClueFilterPanel extends React.Component {
 
     handleFilterChange = (data) => {
         cluePoolAction.setClueInitialData();
+        if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
+            FilterAction.setExistedFiled();
+            FilterAction.setUnexistedFiled();
+            FilterAction.setSimilarFiled();
+        }
         data.forEach(item => {
             let groupId = item.groupId;
             let data = item.data;
@@ -56,6 +74,18 @@ class ClueFilterPanel extends React.Component {
                 FilterAction.setFilterClueProvince(data);
             } else if (groupId === 'clue_pool_user_name'){
                 FilterAction.setFilterClueUsername(data);
+            } else if(groupId === 'clue_pool_sales_team_id') {
+                FilterAction.setFilterClueTeam(data);
+            } else if (groupId === COMMON_OTHER_ITEM){
+                if(item.value === SIMILAR_CUSTOMER){
+                    FilterAction.setExistedFiled();
+                    FilterAction.setUnexistedFiled();
+                    FilterAction.setSimilarFiled(SIMILAR_CUSTOMER);
+                }else if(item.value === SIMILAR_CLUE){
+                    FilterAction.setExistedFiled();
+                    FilterAction.setUnexistedFiled();
+                    FilterAction.setSimilarFiled(SIMILAR_CLUE);
+                }
             }
         });
 
@@ -111,7 +141,28 @@ class ClueFilterPanel extends React.Component {
         //线索分类
         const clueClassifyArray = this.state.clueClassifyArray;
         const clueProvinceList = this.state.clueProvinceArray;
-
+        const commonData = otherFilterArray.map(x => {
+            x.readOnly = true;
+            x.groupId = COMMON_OTHER_ITEM;
+            x.groupName = Intl.get('crm.186', '其他');
+            x.data = [{
+                name: x.name,
+                value: x.value,
+                groupId: COMMON_OTHER_ITEM,
+                groupName: Intl.get('crm.186', '其他'),
+                data: [{
+                    name: x.name,
+                    value: x.value,
+                    groupId: COMMON_OTHER_ITEM,
+                    groupName: Intl.get('crm.186', '其他'),
+                }]
+            }];
+            x.plainFilterList = [{
+                name: x.name,
+                value: x.value
+            }];
+            return x;
+        });
         const advancedData = [
             {
                 groupName: Intl.get('crm.6', '负责人'),
@@ -151,19 +202,34 @@ class ClueFilterPanel extends React.Component {
                     value: x
                 }))
             }];
+        //非普通销售才有销团队
+        if (!userData.getUserData().isCommonSales) {
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('user.sales.team', '销售团队'),
+                    groupId: 'clue_pool_sales_team_id',
+                    data: _.drop(this.state.teamList).map(x => ({
+                        name: x.group_name,
+                        value: x.group_id,
+                    }))
+                }
+            );
+        }
 
         return (
             <div data-tracename="筛选">
                 <div className="clue-filter-panel">
                     <FilterList
-                        hideAdvancedTitle={true}
                         ref={filterList => this.filterList = filterList}
+                        commonData={commonData}
                         advancedData={advancedData}
                         onFilterChange={this.handleFilterChange.bind(this)}
                         renderOtherDataContent={this.renderTimeRangeSelect}
+                        setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
                         hasSettedDefaultCommonSelect={true}
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
+                        showAdvancedPanel={true}
                     />
                 </div>
             </div>

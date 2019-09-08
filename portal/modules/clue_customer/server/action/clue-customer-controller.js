@@ -332,7 +332,7 @@ exports.exportData = function(req, res) {
                     value = contactDes;
                 }
                 if (column.dataIndex === 'customer_traces' && _.isArray(value)){
-                    var traceAddTime = _.get(value, '[0].add_time');//跟进时间
+                    var traceAddTime = _.get(value, '[0].call_date');//跟进时间
 
                     traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
                     var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
@@ -366,6 +366,14 @@ exports.exportData = function(req, res) {
 //批量修改线索的所属销售
 exports.changeClueSalesBatch = function(req, res) {
     clueCustomerService.changeClueSalesBatch(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+exports.getRecommendClueCount = function(req, res) {
+    clueCustomerService.getRecommendClueCount(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
@@ -449,6 +457,24 @@ exports.batchExtractRecommendLists = function(req, res) {
 };
 exports.getClueListByKeyword = function(req, res) {
     clueCustomerService.getClueListByKeyword(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+//释放线索
+exports.releaseClue = function(req, res) {
+    clueCustomerService.releaseClue(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+//线索批量操作
+exports.batchReleaseClue = function(req, res) {
+    clueCustomerService.batchReleaseClue(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {

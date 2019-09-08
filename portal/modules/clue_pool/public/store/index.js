@@ -1,4 +1,5 @@
 import CluePoolAction from '../action';
+import {AVALIBILITYSTATUS, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
 class CluePoolStore {
     constructor() {
@@ -27,6 +28,8 @@ class CluePoolStore {
         this.keyword = '';//线索全文搜索的关键字
         this.currentId = '';//当前展示线索的id
         this.curClue = {}; //当前展示线索详情
+        this.firstLogin = true;//用来记录是否是首次加载
+        this.agg_list = {};//线索统计数据
     }
     // 获取线索池列表
     getCluePoolList(result) {
@@ -44,6 +47,42 @@ class CluePoolStore {
                 let length = _.get(this.cluePoolList, 'length', 0);
                 this.listenScrollBottom = length < this.cluePoolListSize ? true : false;
                 this.lastId = length > 0 ? this.cluePoolList[length - 1].id : '';
+                this.firstLogin = false;
+                let agg_list = _.get(result, 'resData.agg_list', []);
+                if (_.isArray(agg_list)) {
+                    _.forEach(agg_list, item => {
+                        if (_.isArray(_.get(item, 'status'))) {
+                            let arr = _.get(item, 'status');
+                            let willTrace = _.find(arr, item => item.name === SELECT_TYPE.WILL_TRACE);
+                            let hasTrace = _.find(arr, item => item.name === SELECT_TYPE.HAS_TRACE);
+                            let statusStatics = {
+                                'willTrace': _.get(willTrace, 'total',0),
+                                'hasTrace': _.get(hasTrace, 'total',0),
+                            };
+                            this.agg_list = _.assign({},this.agg_list, statusStatics);
+                        }
+                        if (_.isArray(_.get(item, 'availability'))) {
+                            var arr = _.get(item, 'availability');
+                            var invalidClue = _.find(arr, item => item.name === AVALIBILITYSTATUS.INAVALIBILITY);
+                            var availabilityObj = {
+                                'invalidClue': _.get(invalidClue, 'total',0),
+                            };
+                            this.agg_list = _.assign(this.agg_list, availabilityObj);
+                        }
+                    });
+                    for (let key in this.agg_list){
+                        this.allClueCount += this.agg_list[key];
+                    }
+
+                    this.isLoading = false;
+                    this.lastId = _.last(this.cluePoolList) ? _.last(this.cluePoolList).id : '';
+                    this.firstLogin = false;
+
+                }else{
+                    this.isLoading = false;
+                    this.lastId = _.last(this.cluePoolList) ? _.last(this.cluePoolList).id : '';
+                    this.firstLogin = false;
+                }
             }
         }
     }
@@ -89,7 +128,17 @@ class CluePoolStore {
 
     // 提取线索成功之后，更新线索列表
     updateCluePoolList(id) {
-        this.cluePoolList = _.filter(this.cluePoolList, clue => clue.id !== id);
+        let curClue = _.find(this.cluePoolList, clue => _.isEqual(clue.id, id));
+        let clueStatus = curClue.clueStatus || curClue.status;
+        this.cluePoolList = _.filter(this.cluePoolList, clue => !_.isEqual(clue.id, id));
+        //删除线索后，更新线索的统计值
+        if (curClue.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+            this.agg_list['invalidClue'] = this.agg_list['invalidClue'] - 1;
+        }else if (clueStatus === SELECT_TYPE.WILL_TRACE){
+            this.agg_list['willTrace'] = this.agg_list['willTrace'] - 1;
+        }else if (clueStatus === SELECT_TYPE.HAS_TRACE){
+            this.agg_list['hasTrace'] = this.agg_list['hasTrace'] - 1;
+        }
         this.cluePoolListSize--;
     }
 

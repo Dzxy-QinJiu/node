@@ -10,14 +10,12 @@ var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import { AntcDatePicker as DatePicker } from 'antc';
-import {clueStartTime, SELECT_TYPE, getClueStatusValue} from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE } from '../../utils/clue-customer-utils';
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
-const COMMON_OTHER_ITEM = 'otherSelectedItem';
-const SIMILAR_CUSTOMER = '有相似客户';
-const SIMILAR_CLUE = '有相似线索';
-var otherFilterArray = [
+import userData from 'PUB_DIR/sources/user-data';
+let otherFilterArray = [
     {
         name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
         value: SELECT_TYPE.WAIT_ME_HANDLE
@@ -29,7 +27,6 @@ var otherFilterArray = [
         value: SIMILAR_CLUE
     }
 ];
-import userData from 'PUB_DIR/sources/user-data';
 class ClueFilterPanel extends React.Component {
     constructor(props) {
         super(props);

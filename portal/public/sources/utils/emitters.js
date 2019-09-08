@@ -113,6 +113,8 @@ exports.batchPushEmitter.CRM_BATCH_RELEASE_POOL = 'batchtask.crm_batch_release_p
 exports.batchPushEmitter.CLUE_BATCH_CHANGE_TRACE = 'batchtask.clue_user';
 // 线索池-批量提取线索
 exports.batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT = 'batchtask.lead_extract';
+//批量释放线索
+exports.batchPushEmitter.CLUE_BATCH_LEAD_RELEASE = 'batchtask.lead_batch_release';
 //推荐线索-批量提取线索
 exports.batchPushEmitter.CLUE_BATCH_ENT_CLUE = 'batchtask.ent_clue';
 //socket的emitter
