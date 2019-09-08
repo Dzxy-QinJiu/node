@@ -347,7 +347,7 @@ exports.getClueStatus = function(status) {
 exports.renderClueStatus = function(listItem) {
     let status = 
             _.isString(listItem) ? listItem :
-            listItem.availability === "1" ? 'invalid': listItem.status;
+                listItem.availability === '1' ? 'invalid' : listItem.status;
     var statusDes = '';
     switch (status) {
         case '0':
@@ -368,7 +368,7 @@ exports.renderClueStatus = function(listItem) {
             break;
         case 'invalid':
             statusDes =
-                <spam className="clue-stage has-invalid">{Intl.get( 'clue.analysis.inability', '无效')}</spam>
+                <spam className="clue-stage has-invalid">{Intl.get( 'clue.analysis.inability', '无效')}</spam>;
             break;
     }
     return statusDes;
@@ -1005,20 +1005,22 @@ exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkName
         const curUserId = userData.getUserData().user_id;
         let renderCustomerName = (customer) => {
             if (customer) {
-                //如果是我的客户，可以查看客户详情
-                if (_.get(customer, 'user_id') === curUserId) {
+                //如果是销售角色并且不是我的客户，只能看名字，不能看客户详情
+                if (userData.hasRole(userData.ROLE_CONSTANS.SALES) && _.get(customer, 'user_id') !== curUserId) {
+                    return (<span>{_.get(customer, 'name', '')} ({_.get(customer, 'user_name')})</span>);
+                } else {//如果是管理员、运营或是我的客户，可以查看客户详情
                     return (
                         <a href="javascript:void(0)" onClick={showRightPanel.bind(this, _.get(customer, 'id'))} className="handle-btn-item">
                             {_.get(customer, 'name', '')}
                         </a>);
-                } else {//如果是其他人的客户，只能看名字，不能看客户详情
-                    return (<span>{_.get(customer, 'name', '')} ({_.get(customer, 'user_name')})</span>);
                 }
             } else {
                 return null;
             }
         };
-        list = _.filter(list, cur => cur.id !== sameCustomer.id);
+        if(sameCustomer){
+            list = _.filter(list, cur => cur.id !== sameCustomer.id);
+        }
         return (
             <div className="tip-customer-exist">
                 <span className="tip-customer-error">{Intl.get('call.record.customer', '客户')}{sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，</span>
