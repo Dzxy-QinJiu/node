@@ -10,13 +10,14 @@ import MemberFormAction from './action/member-form-actions';
 import MemberForm from './view/member-form';
 import MemberInfo from './view/member-info';
 import {memberStatusList} from 'PUB_DIR/sources/utils/consts';
-import {Icon, Button} from 'antd';
+import {Icon, Button, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 import MemberTableList from 'MOD_DIR/member-table-list';
 import {BACKGROUG_LAYOUT_CONSTANTS, BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
+import userData from 'PUB_DIR/sources/user-data';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -166,16 +167,35 @@ class MemberManage extends React.Component {
     renderTopNavOperation = () => {
         let roleOptions = this.getRoleOptions(); // 角色下拉框
         let statusOptions = this.getStatusOptions(); // 成员状态下拉框
+        let maxMemberNumber = _.get(userData.getUserData(), 'organization.maxMemberNumber'); // 添加成员上线
+        let memberTotal = this.state.allTotal; // 成员总数
+        let disabled = false;
+        let title = '';
+        if (memberTotal === maxMemberNumber) {
+            disabled = true;
+            title = Intl.get('member.number.toplimit', '成员个数已达上限（{number}个）', {number: maxMemberNumber});
+        }
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
                     <PrivilegeChecker check="USER_MANAGE_ADD_USER" className="btn-item">
-                        <Button
-                            data-tracename="添加成员"
-                            onClick={this.showMemberForm.bind(this, 'add')}
-                        >
-                            <Icon type="plus" />{Intl.get('common.add.member', '添加成员')}
-                        </Button>
+                        {title ? (
+                            <Popover content={title}>
+                                <Button
+                                    data-tracename="添加成员"
+                                    disabled={disabled}
+                                >
+                                    <Icon type="plus" />{Intl.get('common.add.member', '添加成员')}
+                                </Button>
+                            </Popover>
+                        ) : (
+                            <Button
+                                data-tracename="添加成员"
+                                onClick={this.showMemberForm.bind(this, 'add')}
+                            >
+                                <Icon type="plus" />{Intl.get('common.add.member', '添加成员')}
+                            </Button>
+                        )}
                     </PrivilegeChecker>
                 </div>
                 <div className='pull-right'>

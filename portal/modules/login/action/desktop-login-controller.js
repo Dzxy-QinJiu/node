@@ -171,6 +171,7 @@ function loginSuccess(req, res) {
                     id: _.get(data,'id', ''),
                     name: _.get(data, 'name', ''),
                     functions: _.get(data, 'functions', []),
+                    maxMemberNumber: _.get(data, 'max_membernumber', 0),
                 };
                 req.session.save(() => {
                     if (req.xhr) {
