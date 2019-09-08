@@ -170,6 +170,20 @@ class BasicOverview extends React.Component {
             });
         } else {
             basicOverviewAction.setCrmUserList([]);
+            basicOverviewAction.getCrmUserList({
+                customer_id: curCustomer.id,
+                id: '',
+                page_size: 1
+            }, (result) => {
+                if(_.isArray(result.data)) {
+                    let basicData = this.state.basicData;
+                    let userId = _.get(result.data, '[0].user.user_id');
+                    if(userId && !_.get(basicData,'app_user_ids[0]')) {
+                        basicData.app_user_ids = [userId];
+                        basicOverviewAction.updateBasicData(basicData);
+                    }
+                }
+            });
             //销售及销售主管才有用户申请
             if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
                 //该客户没有用户时需要引导申请，申请用户时需要应用列表
@@ -195,6 +209,7 @@ class BasicOverview extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
+        basicOverviewAction.setUserListLoading(true);
         if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
                 if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
@@ -394,7 +409,7 @@ class BasicOverview extends React.Component {
     renderApplyUserBlock = () => {
         //只有销售和销售主管才会申请
         let hasApplyPrivilege = userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
-        if (hasApplyPrivilege && !this.props.isMerge && this.state.isOplateUser) {
+        if (!this.state.isUserLoading && hasApplyPrivilege && !this.props.isMerge && this.state.isOplateUser) {
             if (this.state.applyFormShowFlag) {
                 return (
                     <ApplyUserForm
