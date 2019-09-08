@@ -173,6 +173,7 @@ class CustomerStageFormPanel extends React.Component {
                     label={Intl.get('common.definition', '名称')}
                 >
                     {getFieldDecorator('name', {
+                        initialValue: this.props.saleProcesTitle,
                         rules: [{
                             required: true,
                             validator: this.getValidator()
@@ -262,5 +263,6 @@ CustomerStageFormPanel.propTypes = {
     treeSelectData: PropTypes.array,
     isSavingSalesStage: PropTypes.boolean,
     saveStageErrMsg: PropTypes.string,
+    saleProcesTitle: PropTypes.string,
 };
 export default Form.create()(CustomerStageFormPanel);

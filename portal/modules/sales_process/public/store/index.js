@@ -93,11 +93,14 @@ class SalesProcessStore {
     // 显示添加销售流程表单程面板
     showAddProcessFormPanel() {
         this.isShowAddProcessFormPanel = true;
+        let length = _.get(this.salesProcessList, 'length');
+        this.saleProcessName = Intl.get('customer.stage.add.stage.title', '客户阶段{num}', {num: length + 1});
     }
 
     // 关闭添加销售流程表单程面板
     closeAddProcessFormPanel() {
         this.isShowAddProcessFormPanel = false;
+        this.saleProcessName = '';
     }
 
     // 更新销售流程列表

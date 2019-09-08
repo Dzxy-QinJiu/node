@@ -701,6 +701,7 @@ class SalesProcess extends React.Component {
                                 isLoading={this.state.addProcessLoading}
                                 saveResult={this.state.addProcessResult}
                                 salesProcessList={this.state.salesProcessList}
+                                saleProcesTitle={this.state.saleProcessName}
                             />
                         ) : null
                     }
