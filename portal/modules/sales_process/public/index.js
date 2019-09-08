@@ -605,7 +605,7 @@ class SalesProcess extends React.Component {
                                                 return (
                                                     <div className={cls}>
                                                         {
-                                                            name.length > 6 ? <span>{name.substring(0, 5)}...</span> :
+                                                            name && name.length > 6 ? <span>{name.substring(0, 5)}...</span> :
                                                                 <span>{name}</span>
                                                         }
                                                     </div>

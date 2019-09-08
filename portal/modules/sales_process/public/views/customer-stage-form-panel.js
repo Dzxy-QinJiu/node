@@ -10,11 +10,16 @@ import Trace from 'LIB_DIR/trace';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {nameRule} from 'PUB_DIR/sources/utils/validate-util';
-import CustomerStageForm from 'CMP_DIR/basic-form';
+import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
+import classNames from 'classnames';
 
 class CustomerStageFormPanel extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            itemKeys: [0, 1],
+        };
     }
 
     // 取消事件
@@ -30,8 +35,22 @@ class CustomerStageFormPanel extends React.Component {
         Trace.traceEvent(event, '保存客户阶段的信息');
         this.props.form.validateFields((err, values) => {
             if (err) return;
+            let names = _.filter(values.names, item => item);
+            let descriptions = _.filter(values.description, item => item);
+            let length = names.length;
+            let customer_stages = [];
+            for (let i = 0; i < length; i++) {
+                customer_stages.push({
+                    order: i + 1,
+                    name: names[i],
+                    description: descriptions[i],
+                    color: CUSTOMER_STAGE_COLOR[i]
+                });
+            }
             let submitObj = {
                 name: _.trim(values.name),
+                customer_stages: customer_stages,
+                scope: values.scope
             };
             this.props.submitSalesProcessForm(submitObj);
         });
@@ -54,33 +73,56 @@ class CustomerStageFormPanel extends React.Component {
 
     // 渲染客户阶段
     renderCustomerStage = () => {
+        let itemKeys = this.state.itemKeys;
+        return (
+            <div>
+                {_.map(itemKeys, (key, index) => {
+                    return (
+                        <div className="item-set-stage-wrap" key={key}>
+                            {this.renderItemContent(key, index)}
+                        </div>);
+                })}
+            </div>
+        );
+    };
+
+
+    renderItemContent = (key, index) => {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             colon: false,
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
+        let cls = classNames('operator-zone', {
+            'no-show-delete-icon': _.get(this.state.itemKeys, 'length') < 3,
+        });
         return (
-            <div>
+            <div key={key}>
                 <FormItem
                     {...formItemLayout}
                     label={Intl.get('crm.order.stage.name', '阶段名称')}
-                    key={key}
                 >
-                    {getFieldDecorator('stageName', {
+                    {getFieldDecorator(`names[${key}]`, {
                         rules: [{
                             validator: this.getValidator()
                         }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))]
                     })(
                         <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
                     )}
+                    <div
+                        className={cls}
+                        onClick={this.handleDeleteCustomerStage.bind(this, key)}
+                    >
+                        <i className="icon-delete iconfont handle-btn-item" />
+                    </div>
+
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
                     label={Intl.get('common.stage.describe', '阶段描述')}
-                    key={key}
                 >
-                    {getFieldDecorator('description', {
+                    {getFieldDecorator(`description[${key}]`, {
                         rules: [{
                             min: 1,
                             max: 200,
@@ -98,17 +140,32 @@ class CustomerStageFormPanel extends React.Component {
     };
 
     // 添加阶段
-    handleAddStage = () => {
+    handleAddCustomerStage = () => {
+        let itemKeys = this.state.itemKeys;
+        // 元素key数组中最后一个元素的key
+        let lastItemKey = _.get(itemKeys, `[${itemKeys.length - 1}]`, 0);
+        // 新加元素的key
+        let addItemKey = lastItemKey + 1;
+        itemKeys.push(addItemKey);
+        this.setState(itemKeys);
+    };
 
+    // 删除客户阶段
+    handleDeleteCustomerStage = (key) => {
+        let itemKeys = this.state.itemKeys;
+        // 过滤调要删除元素的key
+        itemKeys = _.filter(itemKeys, item => item !== key);
+        this.setState({itemKeys});
     };
 
     renderFormContent() {
-        const {getFieldDecorator} = this.props.form;
+        const {getFieldDecorator, getFieldValue } = this.props.form;
         const formItemLayout = {
             colon: false,
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
+        const keys = getFieldValue('customer_stage');
         return (
             <Form layout='horizontal' className="form">
                 <FormItem
@@ -128,25 +185,28 @@ class CustomerStageFormPanel extends React.Component {
                     {...formItemLayout}
                     label={Intl.get('customer.stage.stage.title', '阶段设置')}
                 >
-                    {getFieldDecorator('customer_stage', {
+                    {getFieldDecorator('customer_stages', {
                         rules: [{
                             required: true,
                         }]
                     })(
-                        <div>{this.renderCustomerStage()}</div>
+                        <div>{this.renderCustomerStage(keys)}</div>
                     )}
+                    <div
+                        className="add-stage"
+                        onClick={this.handleAddCustomerStage}
+                    >
+                        {Intl.get('customer.stage.click.add.stage', '添加阶段')}
+                    </div>
                 </FormItem>
-                <div
-                    className="add-stage"
-                    onClick={this.handleAddStage}
-                >
-                    {Intl.get('customer.stage.click.add.stage', '添加阶段')}
-                </div>
                 <FormItem
                     {...formItemLayout}
                     label={Intl.get('sales.process.suitable.objects', '适用范围')}
                 >
                     {getFieldDecorator('scope', {
+                        rules: [{
+                            required: true,
+                        }]
                     })(
                         <TreeSelect
                             allowClear={true}
