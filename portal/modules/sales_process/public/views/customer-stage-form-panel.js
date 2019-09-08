@@ -158,6 +158,14 @@ class CustomerStageFormPanel extends React.Component {
         this.setState({itemKeys});
     };
 
+    getContainerHeight = () => {
+        const PADDING = 100;
+        return $('body').height()
+            - $('.member-detail-container .right-panel-modal-title').outerHeight(true)
+            - $('.member-detail-container .ant-tabs-bar').outerHeight(true)
+            - PADDING;
+    };
+
     renderFormContent() {
         const {getFieldDecorator, getFieldValue } = this.props.form;
         const formItemLayout = {
@@ -165,70 +173,78 @@ class CustomerStageFormPanel extends React.Component {
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
-        const keys = getFieldValue('customer_stage');
+        const height = this.getContainerHeight();
+        let cls = classNames('add-stage', {
+            'no-show-add-stage-tips': _.get(this.state.itemKeys, 'length') > 7,
+        });
+
         return (
-            <Form layout='horizontal' className="form">
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get('common.definition', '名称')}
-                >
-                    {getFieldDecorator('name', {
-                        initialValue: this.props.saleProcesTitle,
-                        rules: [{
-                            required: true,
-                            validator: this.getValidator()
-                        }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))]
-                    })(
-                        <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
-                    )}
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get('customer.stage.stage.title', '阶段设置')}
-                >
-                    {getFieldDecorator('customer_stages', {
-                        rules: [{
-                            required: true,
-                        }]
-                    })(
-                        <div>{this.renderCustomerStage(keys)}</div>
-                    )}
-                    <div
-                        className="add-stage"
-                        onClick={this.handleAddCustomerStage}
-                    >
-                        {Intl.get('customer.stage.click.add.stage', '添加阶段')}
-                    </div>
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label={Intl.get('sales.process.suitable.objects', '适用范围')}
-                >
-                    {getFieldDecorator('scope', {
-                        rules: [{
-                            required: true,
-                        }]
-                    })(
-                        <TreeSelect
-                            allowClear={true}
-                            treeData={this.props.treeSelectData}
-                            treeCheckable={true}
-                            treeDefaultExpandAll={true}
-                            showCheckedStrategy={SHOW_ALL}
-                            searchPlaceholder={Intl.get('contract.choose', '请选择')}
-                            dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
-                        />
-                    )}
-                </FormItem>
-                <FormItem>
-                    <SaveCancelButton
-                        loading={this.props.isSavingSalesStage}
-                        saveErrorMsg={this.props.saveStageErrMsg}
-                        handleSubmit={this.handleSubmit.bind(this)}
-                        handleCancel={this.handleCancel.bind(this)}
-                    />
-                </FormItem>
-            </Form>
+            <div className="add-customer-stage-form-wrap" style={{height: height}}>
+                <GeminiScrollBar style={{height: height}}>
+                    <Form layout='horizontal' className="form">
+                        <FormItem
+                            {...formItemLayout}
+                            label={Intl.get('common.definition', '名称')}
+                        >
+                            {getFieldDecorator('name', {
+                                initialValue: this.props.saleProcesTitle,
+                                rules: [{
+                                    required: true,
+                                    validator: this.getValidator()
+                                }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))]
+                            })(
+                                <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
+                            )}
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label={Intl.get('customer.stage.stage.title', '阶段设置')}
+                        >
+                            {getFieldDecorator('customer_stages', {
+                                rules: [{
+                                    required: true,
+                                }]
+                            })(
+                                <div>{this.renderCustomerStage()}</div>
+                            )}
+                            <div
+                                className={cls}
+                                onClick={this.handleAddCustomerStage}
+                            >
+                                {Intl.get('customer.stage.click.add.stage', '添加阶段')}
+                            </div>
+                        </FormItem>
+                        <FormItem
+                            {...formItemLayout}
+                            label={Intl.get('sales.process.suitable.objects', '适用范围')}
+                        >
+                            {getFieldDecorator('scope', {
+                                rules: [{
+                                    required: true,
+                                }]
+                            })(
+                                <TreeSelect
+                                    allowClear={true}
+                                    treeData={this.props.treeSelectData}
+                                    treeCheckable={true}
+                                    treeDefaultExpandAll={true}
+                                    showCheckedStrategy={SHOW_ALL}
+                                    searchPlaceholder={Intl.get('contract.choose', '请选择')}
+                                    dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
+                                />
+                            )}
+                        </FormItem>
+                        <FormItem>
+                            <SaveCancelButton
+                                loading={this.props.isSavingSalesStage}
+                                saveErrorMsg={this.props.saveStageErrMsg}
+                                handleSubmit={this.handleSubmit.bind(this)}
+                                handleCancel={this.handleCancel.bind(this)}
+                            />
+                        </FormItem>
+                    </Form>
+                </GeminiScrollBar>
+            </div>
         );
     }
 
