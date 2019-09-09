@@ -7,6 +7,7 @@ import {storageUtil} from 'ant-utils';
 import Store from './store';
 import ajax from 'ant-ajax';
 import TableListPanel from 'CMP_DIR/table-list-panel';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import TopBar from './top-bar';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
@@ -68,6 +69,8 @@ class CurtaoAnalysis extends React.Component {
             isCallDeviceTypeSelectorShow: false,
             //是否显示右侧面板
             isRightPanelShow: false,
+            //是否显示详情面板
+            isDetailPanelShow: false,
             //是否显示客户列表
             isCustomerListShow: false,
             //是否显示试用合格客户统计历史最高值明细
@@ -504,6 +507,21 @@ class CurtaoAnalysis extends React.Component {
         }];
     }
 
+    //显示详情面板
+    showDetailPanel = detailPanelParams => {
+        this.setState({
+            isDetailPanelShow: true,
+            detailPanelParams
+        });
+    }
+
+    //隐藏详情面板
+    hideDetailPanel = () => {
+        this.setState({
+            isDetailPanelShow: false,
+        });
+    }
+
     render() {
         //当前页是否只能选择单个产品
         const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
@@ -563,7 +581,16 @@ class CurtaoAnalysis extends React.Component {
                         {this.renderContent()}
                     </Col>
                 </Row>
+
                 <TableListPanel/>
+
+                {this.state.isDetailPanelShow ? (
+                    <RightPanelModal
+                        isShowCloseBtn={true}
+                        onClosePanel={this.hideDetailPanel}
+                        {...this.state.detailPanelParams}
+                    />
+                ) : null}
             </div>
         );
     }
