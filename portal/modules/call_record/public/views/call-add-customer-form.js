@@ -180,13 +180,16 @@ var CallAddCustomerForm = createReactClass({
         //满足验证条件后再进行唯一性验证
         if (customerName && customerNameRegex.test(customerName)) {
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
+                let list = _.get(data,'list');
+                //客户名是否重复
+                let sameCustomer = _.findIndex(list,{'name':customerName}) === -1;
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (data.result === 'true') {
+                    if (sameCustomer) {
                         //不存在
-                        this.setState({customerNameExist: false, checkNameError: false});
+                        this.setState({customerNameExist: false, checkNameError: false,existCustomerList: _.get(data, 'list',[])});
                     } else {
                         //已存在
                         this.setState({customerNameExist: true, checkNameError: false, existCustomerList: _.get(data, 'list',[])});
@@ -286,7 +289,7 @@ var CallAddCustomerForm = createReactClass({
                                 />
                             </Validator>
                         </FormItem>
-                        {renderCustomerNameMsg(this.state.customerNameExist, this.state.existCustomerList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
+                        {renderCustomerNameMsg( this.state.existCustomerList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
                         <FormItem
                             label={Intl.get('common.industry', '行业')}
                             id="industry"

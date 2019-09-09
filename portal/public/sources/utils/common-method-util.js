@@ -992,14 +992,13 @@ exports.isCiviwRealm = () => {
 
 //客户名唯一性验证的提示信息
 /**
- * @param customerNameExist 客户名是否存在
  * @param existCustomerList 已存在的客户列表
  * @param checkNameError 客户名检验接口报错的提示
  * @param curCustomerName 当前输入的客户名
  * @param showRightPanel 点击客户名打开客户详情的方法
 * */
-exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkNameError, curCustomerName, showRightPanel) => {
-    if (customerNameExist) {
+exports.renderCustomerNameMsg = ( existCustomerList, checkNameError, curCustomerName, showRightPanel) => {
+    if (existCustomerList.length) {
         let list = _.cloneDeep(existCustomerList);
         const sameCustomer = _.find(list, item => item.name === curCustomerName);
         const curUserId = userData.getUserData().user_id;
