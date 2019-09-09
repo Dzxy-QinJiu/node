@@ -62,7 +62,7 @@ class ClueExtract extends React.Component {
             clueSourceArray: clueSourceArray,// 线索来源
             clueClassifyArray: clueClassifyArray,// 线索分类
             clueProvinceArray: [], // 地域
-            showFilterList: userData.getUserData().isCommonSales ? true : false,//是否展示线索筛选区域
+            showFilterList: false,//是否展示线索筛选区域
             selectedClues: [],//获取批量操作选中的线索
             singleExtractLoading: false, // 单个提取的loading
             isShowClueDetailPanel: false, // 是否显示显示详情， 默认false
@@ -644,7 +644,7 @@ class ClueExtract extends React.Component {
             );
         } else {
             return (
-                <span
+                <span className={assigenCls}
                     onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
                 >
                     {Intl.get('clue.extract', '提取')}
