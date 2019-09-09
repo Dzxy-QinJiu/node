@@ -5,7 +5,15 @@ import { Button, Icon } from 'antd';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import classNames from 'classnames';
 import CustomerStageForm from 'CMP_DIR/basic-form';
+import {Draggable} from 'react-beautiful-dnd';
 import Trace from 'LIB_DIR/trace';
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+    // change background colour if dragging
+    background: isDragging ? '#F1F8FE' : '#ffffff',
+    // styles we need to apply on draggables
+    ...draggableStyle
+});
 
 class CustomerStageTimeLine extends React.Component {
     constructor(props) {
@@ -90,14 +98,29 @@ class CustomerStageTimeLine extends React.Component {
                 className="customer-stage-timeline-item-content"
                 data-tracename="客户阶段列表"
             >
-                <div className={contentZoneCls}>
-                    <div className="customer-stage-content-name">
-                        <span>{name}</span>
-                    </div>
-                    <div className="customer-stage-content-describe">
-                        {description}
-                    </div>
-                </div>
+                <Draggable
+                    draggableId={customerStage.id}
+                    index={this.props.index}>
+                    {(provided, snapshot) => (
+                        <div className="single-deal-card draggable-style"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style,
+                            )}>
+                            <div className={contentZoneCls}>
+                                <div className="customer-stage-content-name">
+                                    <span>{name}</span>
+                                </div>
+                                <div className="customer-stage-content-describe">
+                                    {description}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </Draggable>
                 {
                     this.state.isDeleteCustomerStage ? (
                         <div className="delete-operator">
@@ -153,6 +176,7 @@ CustomerStageTimeLine.propTypes = {
     handleConfirmDeleteStage: PropTypes.func,
     isEditLoading: PropTypes.boolean,
     isDeletingStageLoading: PropTypes.boolean,
+    index: PropTypes.number
 };
 
 export default CustomerStageTimeLine;

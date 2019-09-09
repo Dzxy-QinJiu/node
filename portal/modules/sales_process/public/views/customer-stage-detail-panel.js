@@ -15,7 +15,7 @@ import CustomerStageForm from 'CMP_DIR/basic-form';
 import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
 import StageSelectTeamUser from './stage-select-team-user';
 import classNames from 'classnames';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable} from 'react-beautiful-dnd';
 
 import Trace from 'LIB_DIR/trace';
 
@@ -91,21 +91,6 @@ class CustomerStageDetailPanel extends React.Component {
             - $('.member-detail-container .right-panel-modal-title').outerHeight(true)
             - $('.member-detail-container .ant-tabs-bar').outerHeight(true)
             - PADDING;
-    };
-
-    // 处理变更顺序
-    handleTransferOrder = () => {
-        this.setState({
-            isShowCustomerStageTransferOrder: true
-        });
-    };
-
-    handleChangeCustomerStageOrder = () => {
-
-    };
-
-    closeCustomerStageTransferOrder = () => {
-
     };
 
     // 添加客户阶段
@@ -279,6 +264,50 @@ class CustomerStageDetailPanel extends React.Component {
         });
     };
 
+    handleTransferOrderCustomerStage = (source, destination, draggableId) => {
+        let customerStageList = this.state.customerStageList;
+        let sourceIndex = source.index;
+        let destinationIndex = destination.index;
+        // 被移动的阶段数据
+        let destinationStage = _.find(customerStageList, stage => stage.order === destinationIndex + 1);
+        destinationStage.order = sourceIndex + 1;
+        destinationStage.color = CUSTOMER_STAGE_COLOR[sourceIndex];
+        // 拖动的阶段数据
+        let dragStage = _.find(customerStageList, stage => stage.id === draggableId);
+        dragStage.order = destinationIndex + 1;
+        dragStage.color = CUSTOMER_STAGE_COLOR[destinationIndex];
+
+        customerStageList = customerStageList.sort((item1, item2) => {
+            return item1.order - item2.order;
+        });
+        SalesProcessAjax.changeCustomerStageOrder(customerStageList).then( (result) => {
+            if (result) {
+                let updateObj = {
+                    id: this.state.currentCustomerStage.id,
+                    customerStages: customerStageList
+                };
+                // 更新列表中阶段的值
+                this.changeSaleProcessFieldSuccess(updateObj);
+                message.success(Intl.get('sales.process.change.order.success', '变更客户阶段顺序成功'));
+            } else {
+                message.error(Intl.get('sales.process.change.order.failed', '变更客户阶段顺序失败'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('sales.process.change.order.failed', '变更客户阶段顺序失败'));
+        } );
+    }
+
+    onDragEnd = (dragResult) => {
+        const {source, destination, draggableId} = dragResult;
+        // dropped outside the list
+        if (!destination) return;
+        if (source.index === destination.index && destination.droppableId === source.droppableId) {
+            return;
+        } else {
+            this.handleTransferOrderCustomerStage(source, destination, draggableId);
+        }
+    };
+
     // 渲染右侧面板内容区的值
     renderContent(){
         const currentCustomerStage = this.state.currentCustomerStage;
@@ -291,95 +320,74 @@ class CustomerStageDetailPanel extends React.Component {
         return (
             <div className="stage-detail-wrap" style={{height: height}}>
                 <GeminiScrollBar style={{height: height}}>
-                    <div className="stage-content-set-stage">
-                        <div className="stage-set-title-zone">
-                            <div className="stage-label">
-                                {Intl.get('customer.stage.stage.title', '阶段设置')}
-                            </div>
-                            <div className="operate-zone">
-                                {
-                                    hasPrivilege('CRM_ADD_CUSTOMER_SALES') ? (
-                                        length > 7 ? null : (
-                                            <span
-                                                onClick={this.handleAddCustomerStage}
-                                                className="add-stage"
-                                            >
-                                                <i className='iconfont icon-plus' />
-                                            </span>
-                                        )
-                                    ) : null
-                                }
-                                {
-                                    hasPrivilege('CRM_UPDATE_CUSTOMER_SALES') ? (
-                                        <span
-                                            onClick={this.handleTransferOrder}
-                                            title={Intl.get('sales.stage.change.sort', '变更顺序')}
-                                        >
-                                            <i className='iconfont icon-transfer' />
-                                        </span>
-                                    ) : null
-                                }
-
-                            </div>
-                        </div>
-                        <div className="stage-content">
-                            <div className="customer-stage-table-block">
-                                <ul className="customer-stage-timeline">
+                    <DragDropContext onDragEnd={this.onDragEnd}>
+                        <div className="stage-content-set-stage">
+                            <div className="stage-set-title-zone">
+                                <div className="stage-label">
+                                    {Intl.get('customer.stage.stage.title', '阶段设置')}
+                                </div>
+                                <div className="operate-zone">
                                     {
-                                        _.map(customerStages, (item, idx) => {
-                                            let cls = 'customer-stage-timeline-item-head';
-                                            cls += ' customer-stage-color-lump' + idx;
-                                            return (
-                                                <li className="customer-stage-timeline-item" key={idx}>
-                                                    <div className="customer-stage-timeline-item-tail"></div>
-                                                    <div className={cls}>
-                                                        <i className='iconfont icon-order-arrow-down'></i>
-                                                    </div>
-                                                    <div className="customer-stage-timeline-item-right"></div>
-                                                    <CustomerStageTimeLine
-                                                        customerStage={item}
-                                                        customerStageList={this.state.customerStageList}
-                                                        handleCancelCustomerStageForm={this.handleCancelCustomerStageForm}
-                                                        handleSubmitCustomerStageForm={this.handleSubmitCustomerStageForm}
-                                                        isDeletingStageLoading={this.state.isDeletingStageLoading}
-                                                        handleConfirmDeleteStage={this.handleConfirmDeleteStage}
-                                                        isEditLoading={this.state.isloading}
-                                                    />
-                                                </li>
-                                            );
-                                        })
+                                        hasPrivilege('CRM_ADD_CUSTOMER_SALES') ? (
+                                            length > 7 ? null : (
+                                                <span
+                                                    onClick={this.handleAddCustomerStage}
+                                                    className="add-stage"
+                                                >
+                                                    <i className='iconfont icon-plus' />
+                                                </span>
+                                            )
+                                        ) : null
                                     }
-                                </ul>
+                                </div>
                             </div>
-                            {
-                                this.state.isShowAddCustomerStage ? (
-                                    <div className="add-customer-stage-zone">
-                                        {this.renderAddCustomerStage()}
+                            <Droppable droppableId={_.get(currentCustomerStage, 'id', '')}>
+                                {(provided, snapshot) => (
+                                    <div className='stage-board-wrap' ref={provided.innerRef}>
+                                        <div className={classNames('stage-content', {'dragging-over-style': snapshot.isDraggingOver})}>
+                                            <div className="customer-stage-table-block">
+                                                <ul className="customer-stage-timeline">
+                                                    {
+                                                        _.map(customerStages, (item, idx) => {
+                                                            let cls = 'customer-stage-timeline-item-head';
+                                                            cls += ' customer-stage-color-lump' + idx;
+                                                            return (
+                                                                <li className="customer-stage-timeline-item" key={idx}>
+                                                                    <div className="customer-stage-timeline-item-tail"></div>
+                                                                    <div className={cls}>
+                                                                        <i className='iconfont icon-order-arrow-down'></i>
+                                                                    </div>
+                                                                    <div className="customer-stage-timeline-item-right"></div>
+                                                                    <CustomerStageTimeLine
+                                                                        index={idx}
+                                                                        customerStage={item}
+                                                                        customerStageList={this.state.customerStageList}
+                                                                        handleCancelCustomerStageForm={this.handleCancelCustomerStageForm}
+                                                                        handleSubmitCustomerStageForm={this.handleSubmitCustomerStageForm}
+                                                                        isDeletingStageLoading={this.state.isDeletingStageLoading}
+                                                                        handleConfirmDeleteStage={this.handleConfirmDeleteStage}
+                                                                        isEditLoading={this.state.isloading}
+                                                                    />
+                                                                </li>
+                                                            );
+                                                        })
+                                                    }
+                                                </ul>
+                                                {
+                                                    this.state.isShowAddCustomerStage ? (
+                                                        <div className="add-customer-stage-zone">
+                                                            {this.renderAddCustomerStage()}
+                                                        </div>
+                                                    ) : null
+                                                }
+                                            </div>
+                                        </div>
+                                        {provided.placeholder}
                                     </div>
-                                ) : null
-                            }
-                            {
-                                this.state.isShowCustomerStageTransferOrder ? (
-                                    <div className="customer-stage-change-order">
-                                        <Button
-                                            type="ghost"
-                                            className="customer-stage-top-btn btn-item"
-                                            onClick={this.handleChangeCustomerStageOrder.bind(this)}
-                                        >
-                                            {Intl.get('common.confirm', '确认')}
-                                        </Button>
-                                        <Button
-                                            type="ghost"
-                                            className="customer-stage-top-btn btn-item"
-                                            onClick={this.closeCustomerStageTransferOrder.bind(this)}
-                                        >
-                                            {Intl.get('common.cancel', '取消')}
-                                        </Button>
-                                    </div>
-                                ) : null
-                            }
+                                )}
+                            </Droppable>
                         </div>
-                    </div>
+                    </DragDropContext>
                     <div className="stage-content-team-user">
                         <div className="stage-set-title-zone">
                             <div className="stage-label">

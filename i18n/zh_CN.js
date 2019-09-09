@@ -908,6 +908,7 @@ var zh_CN = {
     'sales.process.customer.stage.nodata.tips': '暂无客户阶段，请先添加',
     'sales.process.customer.stage.toplimit': '客户阶段个数已达上限（8个）',
     'sales.process.delete.customer.stage.tips': '确定删除这个客户阶段么',
+    'sales.process.change.order.success': '变更客户阶段顺序成功',
     'sales.process.change.order.failed': '变更客户阶段顺序失败',
     'sales.process.customer.stage.play': '剧本',
     'sales.process.customer.stage.play.placeholder': '请输入剧本',

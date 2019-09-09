@@ -75,6 +75,7 @@ class DealStageBoard extends React.Component {
 
     render() {
         let stageObj = this.props.stageObj;
+        console.log(stageObj);
         let totalBudget = stageObj.totalBudget ? parseAmount(formatNumHasDotToFixed(stageObj.totalBudget, 1)) : '';
         let title = (
             <span>
