@@ -80,32 +80,32 @@ class ContactForm extends React.Component {
         }
     }
 
-    handleSubmit = (e) => {
+    handleSubmit = (cb, e) => {
         e && e.preventDefault();
-        return new Promise((resolve, reject) => {
-            this.props.form.validateFields((error) => {
-                if (this.phoneInputRefs.length) {
-                    //存在电话输入框时，验证一下填写的电话是否符合要求
-                    let phoneFormValArray = [];
-                    _.each(this.phoneInputRefs, item => {
-                        phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
-                    });
-                    Promise.all(phoneFormValArray).then(result => {
-                        let firstErrorItem = _.find(result, item => item.errs);
-                        if (firstErrorItem || error) {
-                            resolve(false);
-                        } else {
-                            resolve(this.doSubmit());
-                        }
-                    });
-                } else {
-                    if (error) {
-                        resolve(false);
+        this.props.form.validateFields((error) => {
+            if (this.phoneInputRefs.length) {
+                //存在电话输入框时，验证一下填写的电话是否符合要求
+                let phoneFormValArray = [];
+                _.each(this.phoneInputRefs, item => {
+                    phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
+                });
+                Promise.all(phoneFormValArray).then(result => {
+                    let firstErrorItem = _.find(result, item => item.errs);
+                    if (firstErrorItem || error) {
+                        cb && cb(false);
                     } else {
-                        resolve(this.doSubmit());
+                        let res = this.doSubmit();
+                        cb && cb(res);
                     }
+                });
+            } else {
+                if (error) {
+                    cb && cb(false);
+                } else {
+                    let res = this.doSubmit();
+                    cb && cb(res);
                 }
-            });
+            }
         });
     };
 
@@ -700,7 +700,7 @@ class ContactForm extends React.Component {
                 className="contact-form-container"
                 loading={this.state.isLoading}
                 saveErrorMsg={this.state.errorMsg}
-                handleSubmit={this.handleSubmit}
+                handleSubmit={this.handleSubmit.bind(this, null)}
                 handleCancel={this.cancel}
             />
         );
