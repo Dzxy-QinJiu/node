@@ -2,7 +2,8 @@
  * 客户经理业绩排名
  */
 
-import { listPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { listPanelEmitter, detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
+import ajax from 'ant-ajax';
 
 export function getCustomerManagerPerformanceRankingChart() {
     return {
@@ -119,7 +120,19 @@ function handleNumberClick(conditions, type, record) {
         dataField: null,
         conditions,
         columns,
+        onRowClick: showDetail
     };
 
     listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+}
+
+function showDetail(detail) {
+    ajax.send({
+        url: '/rest/customer/v2/customer/industries'
+    }).then(result => {
+        detailPanelEmitter.emit(detailPanelEmitter.SHOW, {
+            title,
+            content
+        });
+    });
 }
