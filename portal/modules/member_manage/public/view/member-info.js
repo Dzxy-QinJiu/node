@@ -181,14 +181,16 @@ class MemberInfo extends React.Component {
         }
     };
 
-    afterEditRoleSuccess = (user) => {
+    afterEditRoleSuccess = (member) => {
         //更新详情中的角色
         let roleList = this.props.roleList;
-        let curRole = _.find(roleList, role => role.roleId === user.role);
+        let curRole = _.find(roleList, role => role.roleId === member.role);
         let roleObj = {roleIds: [_.get(curRole, 'roleId')], roleNames: [_.get(curRole, 'roleName')]};
-        MemberManageAction.updateMemberRoles(roleObj); 
         if (_.isFunction(this.props.afterEditRoleSuccess)) {
-            this.props.afterEditRoleSuccess(user);
+            this.props.afterEditRoleSuccess(member);
+            MemberManageAction.updateMemberRoles(roleObj);
+        } else {
+            this.props.changeMemberFieldSuccess({...member, roleNames: _.get(roleObj, 'roleNames')});
         }
     };
 

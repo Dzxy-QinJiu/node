@@ -502,6 +502,7 @@ class MemberForm extends React.Component {
                                         {getFieldDecorator('position', {
                                         })(
                                             <Select
+                                                showSearch
                                                 name="position"
                                                 id="position"
                                                 optionFilterProp="children"

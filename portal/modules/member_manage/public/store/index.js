@@ -188,6 +188,7 @@ class MemberManageStore {
                 let teamName = _.get(modifiedMember, 'teamName'); // 部门
                 let positionName = _.get(modifiedMember, 'positionName'); // 职务
                 let qq = _.get(modifiedMember, 'qq'); // qq
+                let role = _.get(modifiedMember, 'role'); // 角色
                 if (status) { // 修改成员状态
                     changeMember.status = status;
                 } else if (nick_name) { // 修改成员昵称
@@ -217,6 +218,9 @@ class MemberManageStore {
                     changeMember.positionId = _.get(modifiedMember, 'position');
                 } else if (_.has(modifiedMember, 'qq')) {
                     changeMember.qq = qq;
+                } else if (role) { // 角色
+                    changeMember.roleIds = [role];
+                    changeMember.roleNames = _.get(modifiedMember, 'roleNames');
                 }
                 this.currentMember = changeMember;
             } else { // 团队中修改成员的头像信息
