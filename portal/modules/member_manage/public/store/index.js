@@ -40,7 +40,6 @@ class MemberManageStore {
         this.sortId = '';
         this.memberList = [];
         this.memberTotal = 0; // 成员列表数
-        this.allTotal = 0; // 成员总数
         this.getMemberListErrMsg = ''; // 获取成员列表失败的信息
         this.currentMember = emptyMember; // 编辑/添加 状态时，需要提交的域对象
         this.formType = 'add'; //表单的类型：添加/修改
@@ -64,7 +63,6 @@ class MemberManageStore {
                 this.getMemberListErrMsg = '';
                 let list = _.get(result, 'resData.data', []);
                 this.memberList = _.concat(this.memberList, list);
-                this.allTotal = _.get(result, 'resData.list_size', 0); // 成员总数
                 this.memberTotal = _.get(result, 'resData.list_size', 0);
                 let length = _.get(this.memberList, 'length', 0);
                 this.listenScrollBottom = length < this.memberTotal ? true : false;

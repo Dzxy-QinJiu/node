@@ -167,11 +167,12 @@ class MemberManage extends React.Component {
     renderTopNavOperation = () => {
         let roleOptions = this.getRoleOptions(); // 角色下拉框
         let statusOptions = this.getStatusOptions(); // 成员状态下拉框
-        let maxMemberNumber = _.get(userData.getUserData(), 'organization.maxMemberNumber'); // 添加成员上线
-        let memberTotal = this.state.allTotal; // 成员总数
+        let data = userData.getUserData();
+        let maxMemberNumber = _.get(data, 'organization.maxMemberNumber'); // 添加成员上限
+        let currentMemberNumber = _.get(data, 'organization.currentMemberNumber'); // 当前成员数量
         let disabled = false;
         let title = '';
-        if (memberTotal === maxMemberNumber) {
+        if (currentMemberNumber === maxMemberNumber) {
             disabled = true;
             title = Intl.get('member.number.toplimit', '成员个数已达上限（{number}个）', {number: maxMemberNumber});
         }
