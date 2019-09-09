@@ -514,42 +514,29 @@ class ClueToCustomerPanel extends React.Component {
         }
 
         const promises = [];
+        const contactFormErrors = [];
 
         _.each(contacts, (contact, index) => {
             //如果是新联系人
             if (contact.isNew) {
-                contact = _.cloneDeep(this.refs[contact.id].state.formData);
+                this.refs[contact.id].handleSubmit().then((res) => {
+                    if(!_.isObject(res)) {
+                        contactFormErrors.push('error');
+                    }else {
+                        contact = _.cloneDeep(res);
 
-                //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
-                contact.def_contancts = 'false';
+                        //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
+                        contact.def_contancts = 'false';
 
-                if (contact.birthday) {
-                    //将moment格式的值转为时间戳
-                    contact.birthday = contact.birthday.valueOf();
-                }
+                        const promise = ajax.send({
+                            url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
+                            type: 'post',
+                            data: contact
+                        });
 
-                _.each(contact, (value, key) => {
-                    const keyWithoutIndex = key.substr(0, key.length - 1);
-
-                    //如果是联系方式字段，并且有值
-                    if (_.includes(CONTACT_WAY_TYPE_FIELDS, keyWithoutIndex) && value) {
-                        if (!contact[keyWithoutIndex]) {
-                            contact[keyWithoutIndex] = [value];
-                        } else {
-                            contact[keyWithoutIndex].push(value);
-                        }
-
-                        delete contact[key];
+                        promises.push(promise);
                     }
                 });
-
-                const promise = ajax.send({
-                    url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
-                    type: 'post',
-                    data: contact
-                });
-
-                promises.push(promise);
             } else {
                 //遍历需要更新的字段
                 _.each(contact.updateFields, field => {
@@ -566,6 +553,11 @@ class ClueToCustomerPanel extends React.Component {
                 delete contact.updateFields;
             }
         });
+
+        if(_.get(contactFormErrors, '[0]')) {
+            message.warning(Intl.get('clue.merge.customer.contact.error.tip', '请填写正确的联系方式后，再进行合并'));
+            return false;
+        }
 
         $.when(...promises)
             .done(() => {
@@ -849,6 +841,7 @@ class ClueToCustomerPanel extends React.Component {
                     ref={ref => {this.refs[contactId] = ref;}}
                     type="edit"
                     contact={contact}
+                    isValidateOnExternal
                     isValidatePhoneOnDidMount={true}
                 />
             </div>
