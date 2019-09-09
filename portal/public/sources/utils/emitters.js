@@ -201,6 +201,11 @@ const listPanelEmitter = new EventEmitter();
 listPanelEmitter.SHOW = 'show_list_panel';
 export { listPanelEmitter };
 
+// 详情面板事件
+const detailPanelEmitter = new EventEmitter();
+detailPanelEmitter.SHOW = 'show_detail_panel';
+export { detailPanelEmitter };
+
 //拨打电话的相关事件
 const phoneEmitter = new EventEmitter();
 phoneEmitter.CALL_CLIENT_INITED = 'call_client_inited';
