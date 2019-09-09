@@ -89,6 +89,7 @@ class CurtaoAnalysis extends React.Component {
         this.getCallSystemConfig();
 
         analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+        detailPanelEmitter.on(detailPanelEmitter.SHOW, this.showDetailPanel);
 
         //将页面body元素的overflow样式设为hidden，以防止出现纵向滚动条
         this.setBodyOverflow('hidden');
@@ -96,6 +97,7 @@ class CurtaoAnalysis extends React.Component {
 
     componentWillUnmount() {
         analysisCustomerListEmitter.removeListener(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+        detailPanelEmitter.removeListener(detailPanelEmitter.SHOW, this.showDetailPanel);
 
         //恢复页面body元素的overflow样式
         this.setBodyOverflow('auto');
