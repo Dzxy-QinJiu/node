@@ -514,7 +514,6 @@ class ClueToCustomerPanel extends React.Component {
         }
 
         const promises = [];
-        const contactFormErrors = [];
 
         _.each(contacts, (contact, index) => {
             //如果是新联系人
@@ -567,11 +566,6 @@ class ClueToCustomerPanel extends React.Component {
                 delete contact.updateFields;
             }
         });
-
-        if(_.get(contactFormErrors, '[0]')) {
-            message.warning(Intl.get('clue.merge.customer.contact.error.tip', '请填写正确的联系方式后，再进行合并'));
-            return false;
-        }
 
         $.when(...promises)
             .done(() => {
