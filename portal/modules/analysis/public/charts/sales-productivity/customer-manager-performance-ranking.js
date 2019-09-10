@@ -5,6 +5,8 @@
 import { listPanelEmitter, detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
 
+let conditionCache = {};
+
 export function getCustomerManagerPerformanceRankingChart() {
     return {
         title: Intl.get('common.customer.manager.performance.ranking', '客户经理业绩排名'),
@@ -101,6 +103,8 @@ function handleNumberClick(conditions, type, record) {
         value: record.member_id
     });
 
+    conditionCache = conditions;
+
     const columns = [
         {
             title: '指标',
@@ -126,10 +130,21 @@ function handleNumberClick(conditions, type, record) {
     listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
 }
 
-function showDetail(detail) {
+function showDetail(record) {
+    let query = {};
+
+    _.each(conditionCache, item => {
+        query[item.name] = item.value;
+    });
+
+    query.type = record.key;
+
     ajax.send({
-        url: '/rest/customer/v2/customer/industries'
+        url: '/rest/analysis/contract/contract/v2/all/performance/metrics/account_manager/detail',
+        query
     }).then(result => {
+        const title = 'k';
+        const content = 'c';
         detailPanelEmitter.emit(detailPanelEmitter.SHOW, {
             title,
             content
