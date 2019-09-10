@@ -2446,6 +2446,7 @@ var zh_CN = {
     'errorcode.17334': '获取最近联系客户统计失败',
     'errorcdoe.17331': '统计通话的客户的地域,阶段,行业分布失败',
     'errorcode.162': '已达到一天的提取上限',
+    'errorcode.phone.busy': '座机繁忙，请稍后再试！',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
@@ -3527,6 +3528,7 @@ var zh_CN = {
     'clue.recommend.input.keyword': '请输入关键词',
     'clue.recommend.extract.num.limit': '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
-    'clue.customer.noty.all.list': '查看所有线索？'
+    'clue.customer.noty.all.list': '查看所有线索？',
+    'clue.customer.fail.get.all.lists': '获取全部拜访申请失败'
 };
 export default zh_CN;

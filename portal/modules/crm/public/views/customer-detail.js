@@ -32,14 +32,14 @@ class CrmRightPanel extends React.Component {
         activeKey: this.props.activeKey || TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
         apps: [],
         curOrder: {},
-        curCustomer: this.props.curCustomer,
+        curCustomer: _.cloneDeep(this.props.curCustomer),
         tabsContainerHeight: 'auto',
         getCusomerResultdMsg: '',//获取客户详情后的失败或无数据的提示
         showDetailUserId: ''//展示用户详情的userId
     };
 
     componentWillMount() {
-        if (!this.state.curCustomer) {
+        if (_.isEmpty(this.props.curCustomer)) {
             if (this.props.currentId) {
                 this.getCurCustomer(this.props.currentId);
             }
@@ -56,7 +56,7 @@ class CrmRightPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.curCustomer) {
+        if (!_.isEmpty(nextProps.curCustomer)) {
             this.setState({curCustomer: nextProps.curCustomer});
         } else if (nextProps.currentId !== this.props.currentId) {
             this.getCurCustomer(nextProps.currentId);

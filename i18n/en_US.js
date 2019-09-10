@@ -2407,6 +2407,7 @@ var en_US = {
     'errorcode.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
     'errorcode.17331': 'Statistics of call customers by region, stage, industry distribution failure',//统计通话的客户的地域,阶段,行业分布失败
     'errorcode.162': 'You has achevie the max limit',//已达到一天的提取上限
+    'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -3413,6 +3414,7 @@ var en_US = {
     'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization today has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
-    'clue.customer.noty.all.list': 'Click to see all clues?'//查看所有线索？
+    'clue.customer.noty.all.list': 'Click to see all clues?',//查看所有线索？
+    'clue.customer.fail.get.all.lists': 'Failed to get all visit apply'//获取全部拜访申请失败
 };
 export default en_US;
