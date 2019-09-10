@@ -41,7 +41,7 @@ var socketIo;
 var hasAddCloseBtn = false;
 import history from 'PUB_DIR/sources/history';
 //推送过来新的消息后，将未读数加/减一
-function updateUnreadByPushMessage(type, isAdd) {
+function updateUnreadByPushMessage(type, isAdd, isAddLists) {
     //将未读数加一
     if (Oplate && Oplate.unread) {
         if (Oplate.unread[type]) {
@@ -54,6 +54,9 @@ function updateUnreadByPushMessage(type, isAdd) {
             }
         } else {
             Oplate.unread[type] = isAdd ? 1 : 0;
+        }
+        if(type === 'unhandleClue' && _.isArray(isAddLists) && _.isArray(_.get(Oplate,'unread.unhandleClueList'))){
+            Oplate.unread['unhandleClueList'] = _.concat(Oplate.unread['unhandleClueList'], isAddLists);
         }
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
@@ -150,7 +153,8 @@ window.openAllClues = function(){
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
         if (getClueUnhandledPrivilege()){
-            updateUnreadByPushMessage('unhandleClue', _.get(data, 'clue_list.length'));
+            var clueList = _.get(data, 'clue_list',[]);
+            updateUnreadByPushMessage('unhandleClue', clueList.length, clueList);
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
         var clueArr = _.get(data, 'clue_list',[]);
