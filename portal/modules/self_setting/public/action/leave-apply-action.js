@@ -3,12 +3,13 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/9/10.
  */
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 let userData = require('PUB_DIR/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {getAllApplyList,getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 var applyApproveManageAjax = require('../ajax/leave-apply-ajax');
+import {APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -27,8 +28,12 @@ function LeaveApplyActions() {
     this.getAllLeaveApplyList = function(queryObj,callback) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        //如果是全部申请，要先取一下待我审批的列表
-        if (queryObj.status === 'ongoing' || !queryObj.status){
+        //如果选中的是我审批过的
+        if (queryObj.status === APPLY_TYPE_STATUS_CONST.MYAPPROVED){
+            delete queryObj.status;
+            getApplyListApprovedByMe(this,queryObj);
+        }else if (queryObj.status === APPLY_TYPE_STATUS_CONST.ONGOING || !queryObj.status){
+            //如果是全部申请，要先取一下待我审批的列表
             //todo type就是自定义流程上的type
             var workFlowConfigs = userData.getUserData().workFlowConfigs;
             getWorklistApplyList({type: _.get(workFlowConfigs,'[0].type')}).then((workList) => {
@@ -51,7 +56,7 @@ function LeaveApplyActions() {
                 this.dispatch({
                     error: true,
                     loading: false,
-                    errMsg: errorMsg || Intl.get('apply.failed.get.my.worklist.application', '获取待我审批的{type}申请失败', {type: Intl.get('weekly.report.ask.for.leave', '请假')})
+                    errMsg: errorMsg || Intl.get('apply.failed.get.my.worklist.application', '获取待我审批的{type}申请失败', {type: Intl.get('common.visit', '拜访')})
                 });
             });
         }else{
@@ -69,6 +74,20 @@ function LeaveApplyActions() {
         });
     };
 
+}
+//获取我审批过的列表
+function getApplyListApprovedByMe(that,queryObj) {
+    ApplyApproveAjax.getApplyListApprovedByMe().sendRequest(queryObj).success((data) => {
+        scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+        that.dispatch({error: false, loading: false, data: data});
+    }).error(xhr => {
+        that.dispatch({
+            error: true,
+            loading: false,
+            errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取我审批过的{type}申请失败', {type: Intl.get('common.visit', '拜访')})
+        });
+    }
+    );
 }
 function getDiffTypeApplyList(that,queryObj,workListArr) {
     getAllApplyList(queryObj).then((data) => {
@@ -95,7 +114,7 @@ function getDiffTypeApplyList(that,queryObj,workListArr) {
         that.dispatch({
             error: true,
             loading: false,
-            errMsg: errorMsg || Intl.get('failed.get.all.leave.list','获取全部请假申请失败')
+            errMsg: errorMsg || Intl.get('clue.customer.fail.get.all.lists', '获取全部拜访申请失败')
         });});
 
 }
