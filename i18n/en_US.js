@@ -839,7 +839,7 @@ var en_US = {
     'member.record.change.field.name': 'Changed {field} of the member to {name}', // 修改了该成员的{field}，改为{name}
     'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
     'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
-    'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量{number}个已达上限
+    'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量已达{number}个上限
     //后台管理-成员end
 
     //组织管理start

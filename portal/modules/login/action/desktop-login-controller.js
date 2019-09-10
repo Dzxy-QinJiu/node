@@ -170,8 +170,7 @@ function loginSuccess(req, res) {
                 userData.organization = {
                     id: _.get(data,'id', ''),
                     name: _.get(data, 'name', ''),
-                    functions: _.get(data, 'functions', []),
-                    maxMemberNumber: _.get(data, 'max_membernumber'), // 可以创建的最大成员数量
+                    functions: _.get(data, 'functions', [])
                 };
                 req.session.save(() => {
                     if (req.xhr) {
