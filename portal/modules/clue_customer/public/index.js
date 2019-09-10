@@ -1249,18 +1249,18 @@ class ClueCustomer extends React.Component {
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
-                                <span className="clue-name-item">
-                                    {/*如果是今天分配的，就展示新的图标*/}
-                                    {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
-                                    {salesClueItem.name}</span>
+                                {/*如果是今天分配的，就展示新的图标*/}
+                                {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
+                                <div className="clue-name-item">{salesClueItem.name}</div>
+
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
-                                    <span className="clue-label intent-tag-style">
+                                    <Tag className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.clue', '有相似线索')}
-                                    </span> : null}
+                                    </Tag> : null}
                                 {ifShowTags && _.indexOf(similarClue, '有相似客户') !== -1 ?
-                                    <span className="clue-label intent-tag-style">
+                                    <Tag className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
-                                    </span> : null}
+                                    </Tag> : null}
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
