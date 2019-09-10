@@ -44,6 +44,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import Trace from 'LIB_DIR/trace';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import AddSchedule from 'CMP_DIR/add-schedule';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -1048,15 +1049,13 @@ class MyWorkColumn extends React.Component {
                 }
                 {this.state.curOpenDetailWork ? this.renderWorkDetail() : null}
                 {/*添加日程*/}
-                {this.state.isShowAddToDo ? (
-                    <RightPanelModal
-                        className="todo-add-container"
-                        isShowMadal={true}
-                        isShowCloseBtn={true}
-                        onClosePanel={this.handleCancel}
-                        title={Intl.get('home.page.add.schedule', '添加日程')}
-                        content={this.renderCrmFormContent()}
-                        dataTracename='添加日程'/>) : null}
+                <AddSchedule 
+                    isShowAddToDo = {this.state.isShowAddToDo}
+                    handleCancelAddToDo={this.handleCancel}
+                    handleScheduleAdd={this.afterAddSchedule}
+                    formTitle={Intl.get('home.page.add.schedule', '添加日程')}
+                    dataTracename='添加日程'
+                    />
                 {this.renderExtractClue()}
             </div>);
     }
@@ -1064,21 +1063,7 @@ class MyWorkColumn extends React.Component {
     afterAddSchedule = () => {
         setTimeout(() => {
             this.refreshMyworkList();
-        }, 1000);
-    }
-    // 渲染添加日程界面
-    renderCrmFormContent() {
-        return (
-            <DetailCard className='add-todo' content={
-                <CrmScheduleForm
-                    isAddToDoClicked
-                    handleScheduleAdd={this.afterAddSchedule}
-                    handleScheduleCancel={this.handleCancel}
-                    currentSchedule={{}}/>
-            }>
-            </DetailCard>
-
-        );
+        }, 1500);
     }
 
     //处理添加日程的关闭事件

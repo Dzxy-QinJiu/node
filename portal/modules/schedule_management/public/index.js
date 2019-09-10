@@ -26,6 +26,7 @@ import moment from 'moment';
 // 引入联系计划表单
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
 import DetailCard from 'CMP_DIR/detail-card';
+import AddSchedule from 'CMP_DIR/add-schedule';
 
 require('MOD_DIR/crm/public/css/schedule.less');
 BigCalendar.momentLocalizer(moment);
@@ -332,35 +333,7 @@ class ScheduleManagement extends React.Component {
             topicValue: e.target.value
         });
     }
-    // 渲染待办项
-    renderCrmFormContent() {
-        return (
-            <div className="add-todo-container">
-                <div className="add-todo-title">
-                    <span className="iconfont icon-detail-list"/>
-                    <div className="todo-topic-switch">
-                        <Radio.Group
-                            size="small"
-                            value={_.get(this.state, 'topicValue')}
-                            onChange={this.onTopicChange}
-                        >
-                            <Radio.Button value="customer">{Intl.get('call.record.customer', '客户')}</Radio.Button>
-                            <Radio.Button value="clue">{Intl.get('crm.sales.clue', '线索')}</Radio.Button>
-                        </Radio.Group>
-                    </div>
-                </div>
-                <DetailCard className='add-todo' content={
-                    <CrmScheduleForm
-                        isAddToDoClicked
-                        handleScheduleAdd={this.handleScheduleAdd}
-                        handleScheduleCancel={this.handleCancel}
-                        topicValue={_.get(this.state, 'topicValue')}
-                    />
-                }>
-                </DetailCard>
-            </div>
-        );
-    }
+ 
 
     renderModalContent = () => {
         return (
@@ -480,15 +453,13 @@ class ScheduleManagement extends React.Component {
                     </div>
                 </div>
                 {/*添加待办项*/}
-                {this.state.isShowAddToDo ? (
-                    <RightPanelModal
-                        className="todo-add-container"
-                        isShowMadal={true}
-                        isShowCloseBtn={true}
-                        onClosePanel={this.handleCancel.bind(this)}
-                        title={Intl.get('shedule.list.add.todo', '添加待办')}
-                        content={this.renderCrmFormContent()}
-                        dataTracename='添加待办项'/>) : null}
+                        <AddSchedule 
+                            isShowAddToDo ={this.state.isShowAddToDo}
+                            handleCancelAddToDo={this.handleCancel}
+                            handleScheduleAdd={this.handleScheduleAdd}
+                            formTitle={Intl.get('shedule.list.add.todo', '添加待办')}
+                            dataTracename="添加待办项"
+                        />
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"
