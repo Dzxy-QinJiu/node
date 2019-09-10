@@ -454,11 +454,9 @@ class ScheduleManagement extends React.Component {
                 </div>
                 {/*添加待办项*/}
                         <AddSchedule 
-                            isShowAddToDo ={this.state.isShowAddToDo}
+                            isShowAddToDo={this.state.isShowAddToDo}
                             handleCancelAddToDo={this.handleCancel}
                             handleScheduleAdd={this.handleScheduleAdd}
-                            formTitle={Intl.get('shedule.list.add.todo', '添加待办')}
-                            dataTracename="添加待办项"
                         />
                 {/*该客户下的用户列表*/}
                 <RightPanel

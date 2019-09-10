@@ -226,6 +226,7 @@ var CrmAlertForm = createReactClass({
                     _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel(resData);
                     // 判断是否是添加待办项
                     if(this.props.isAddToDoClicked) {
+                        console.log(resData);
                         _.isFunction(this.props.handleScheduleAdd) && this.props.handleScheduleAdd(resData);
                     } else {
                         ScheduleAction.afterAddSchedule(resData);
