@@ -2408,6 +2408,7 @@ var en_US = {
     'errorcode.17331': 'Statistics of call customers by region, stage, industry distribution failure',//统计通话的客户的地域,阶段,行业分布失败
     'errorcode.162': 'You has achevie the max limit',//已达到一天的提取上限
     'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
+    'errorcode.163': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
