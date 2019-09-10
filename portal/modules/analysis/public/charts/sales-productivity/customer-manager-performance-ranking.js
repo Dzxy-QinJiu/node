@@ -172,7 +172,7 @@ function showDetail(record) {
             <div style={{fontSize: 14}}>
                 {_.map(items, item => (
                     <Row>
-                        <Col span={4} style={{textAlign: 'right', fontWeight: 'bold', paddingRight: 8}}>{item.name}: </Col>
+                        <Col span={4} style={{textAlign: 'right', fontWeight: 'bold', paddingRight: 8, marginBottom: 10}}>{item.name}: </Col>
                         <Col span={20}>{item.value}</Col>
                     </Row>
                 ))}
