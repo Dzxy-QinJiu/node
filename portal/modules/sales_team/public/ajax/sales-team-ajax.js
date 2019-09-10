@@ -178,3 +178,19 @@ exports.saveSalesGoals = function(salesGoals) {
     return Deferred.promise();
 };
 
+// 根据组织属性获取组织信息
+exports.getOrganizationInfoByName = (queryObj) => {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/organization/info',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: (list) => {
+            Deferred.resolve(list);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

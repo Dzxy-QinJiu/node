@@ -18,6 +18,7 @@ var SalesTeamActions = require('../action/sales-team-actions');
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
+import salesTeamAjax from '../ajax/sales-team-ajax';
 
 function noop() {
 }
@@ -222,6 +223,14 @@ var SalesTeamForm = createReactClass({
         formData.saveTeamMsg = '';
         this.setState({formData});
     },
+
+    // 校验组织名称
+    checkOrganizationName: (organizationname) => {
+        salesTeamAjax.getOrganizationInfoByName({name: organizationname}).then( (result) => {
+            console.log('result:',result);
+        } );
+    },
+
     render: function() {
         var formData = this.state.formData;
         var status = this.state.status;
@@ -255,6 +264,7 @@ var SalesTeamForm = createReactClass({
                                     onChange={this.onChangeTeamName.bind(this)}
                                     placeholder={Intl.get('sales.team.search.placeholder', '请输入团队名称')}
                                     data-tracename="填写团队名称"
+                                    onBlur={this.checkOrganizationName.bind(this, formData.title)}
                                 />
                             </Validator>
                         </FormItem>
