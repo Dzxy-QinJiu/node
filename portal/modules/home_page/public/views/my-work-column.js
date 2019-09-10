@@ -208,7 +208,6 @@ class MyWorkColumn extends React.Component {
         }
         this.setState({loading: true});
         myWorkAjax.getMyWorkList(queryParams).then((result) => {
-            console.log(result)
             scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             let myWorkList = this.state.myWorkList;
@@ -222,7 +221,6 @@ class MyWorkColumn extends React.Component {
             if (_.get(myWorkList, 'length') < totalCount) {
                 listenScrollBottom = true;
             }
-            console.log(totalCount)
             this.setState({
                 loading: false,
                 isShowRefreshTip: false,
