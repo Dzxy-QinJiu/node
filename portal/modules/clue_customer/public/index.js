@@ -253,7 +253,7 @@ class ClueCustomer extends React.Component {
                 this.updateItem(target, taskParams, taskParams.isWillDistribute);
             }
         });
-        clueCustomerAction.updateClueCustomers(curClueLists);
+        clueCustomerAction.updateClueCustomers(this.state.curClueLists);
         this.setState({
             selectedClues: []
         });
@@ -784,7 +784,7 @@ class ClueCustomer extends React.Component {
             return;
         }
         var value = _.get(item, 'customer_traces[0].remark', '');
-        if (Oplate && Oplate.unread && item.status === SELECT_TYPE.WILL_TRACE) {
+        if (Oplate && Oplate.unread) {
             subtracteGlobalClue(item);
         }
         //获取填写的保存跟进记录的内容
@@ -1249,17 +1249,18 @@ class ClueCustomer extends React.Component {
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
-                                {/*如果是今天分配的，就展示新的图标*/}
-                                {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
-                                <div className="clue-name-item">{salesClueItem.name}</div>
+                                <span className="clue-name-item">
+                                    {/*如果是今天分配的，就展示新的图标*/}
+                                    {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
+                                    {salesClueItem.name}</span>
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
-                                    <Tag className="clue-label intent-tag-style">
+                                    <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.clue', '有相似线索')}
-                                    </Tag> : null}
+                                    </span> : null}
                                 {ifShowTags && _.indexOf(similarClue, '有相似客户') !== -1 ?
-                                    <Tag className="clue-label intent-tag-style">
+                                    <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
-                                    </Tag> : null}
+                                    </span> : null}
                             </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
@@ -1509,7 +1510,10 @@ class ClueCustomer extends React.Component {
     onConvertClueToNewCustomerDone = (customers) => {
         const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
         message.success(msgInfo);
-
+        var curClue = this.state.curClue;
+        if (Oplate && Oplate.unread) {
+            subtracteGlobalClue(curClue);
+        }
         const curCustomer = _.get(customers, '[0]');
         const customerId = _.get(curCustomer, 'id');
         const customerName = _.get(curCustomer, 'name');
@@ -1675,12 +1679,12 @@ class ClueCustomer extends React.Component {
         let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
         SetLocalSalesClickCount(sale_id);
         //member_id是跟进销售的id
-        if (Oplate && Oplate.unread && item.status === SELECT_TYPE.WILL_TRACE) {
+        if (Oplate && Oplate.unread) {
             subtracteGlobalClue(item,(flag) => {
                 var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
                 if (flag && filterAllotNoTraced){
                     //需要在列表中删除
-                    clueCustomerAction.afterAddClueTrace(item);
+                    clueCustomerAction.deleteClueById(item);
                 }
             });
         }
@@ -2219,6 +2223,17 @@ class ClueCustomer extends React.Component {
         if (!tasks.length) {
             return;
         }
+        var curClueLists = this.state.curClueLists;
+        var clueArr = _.map(tasks, 'taskDefine');
+        //遍历每一个客户
+        _.each(clueArr, (clueId) => {
+            //如果当前客户是需要更新的客户，才更新
+            var target = _.find(curClueLists, item => item.id === clueId);
+            if (target) {
+                this.updateItem(target, taskParams);
+            }
+        });
+        clueCustomerAction.updateClueCustomers(this.state.curClueLists);
         _.each(tasks, task => {
             clueCustomerAction.afterReleaseClue(task.taskDefine);
         });
@@ -2302,6 +2317,10 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.releaseClue(clue.id, () => {
             this.setState({isReleasingCustomer: false});
             clueCustomerAction.afterReleaseClue(clue.id);
+            if (Oplate && Oplate.unread) {
+                subtracteGlobalClue(clue);
+            }
+
         }, errorMsg => {
             this.setState({isReleasingCustomer: false});
             message.error(errorMsg);
@@ -2389,7 +2408,10 @@ class ClueCustomer extends React.Component {
     onClueMergedToCustomer = (customerId, customerName) => {
         //在列表中隐藏当前操作的线索
         this.afterTransferClueSuccess();
-
+        var curClue = this.state.curClue;
+        if (Oplate && Oplate.unread) {
+            subtracteGlobalClue(curClue);
+        }
         //打开客户面板，显示合并后的客户信息
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {

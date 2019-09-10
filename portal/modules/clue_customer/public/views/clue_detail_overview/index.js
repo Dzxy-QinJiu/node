@@ -392,7 +392,7 @@ class ClueDetailOverview extends React.Component {
             return;
         }
         var curClue = this.state.curClue;
-        if (Oplate && Oplate.unread && curClue.status === SELECT_TYPE.WILL_TRACE) {
+        if (Oplate && Oplate.unread) {
             subtracteGlobalClue(curClue);
         }
         saveObj.lead_id = saveObj.id;
@@ -432,7 +432,7 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    //分配线索给某个销售
+    //分配线索给某个销售 && 这个销售不是当前账号
     handleChangeAssignedSales = (submitObj, successFunc, errorFunc) => {
         var user_id = _.get(this.state.curClue,'user_id');
         var curClue = this.state.curClue;
@@ -461,8 +461,14 @@ class ClueDetailOverview extends React.Component {
                 } else {
 
                     if (_.isFunction(successFunc)) successFunc();
-                    if (Oplate && Oplate.unread && curClue.status === SELECT_TYPE.WILL_TRACE) {
-                        subtracteGlobalClue(curClue);
+                    if (Oplate && Oplate.unread && submitObj.user_id !== userData.getUserData().user_id) {
+                        subtracteGlobalClue(curClue, (flag) => {
+                            var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+                            if (flag && filterAllotNoTraced) {
+                                //需要在列表中删除
+                                clueCustomerAction.deleteClueById(curClue);
+                            }
+                        });
                     }
                     this.setState({
                         clickAssigenedBtn: false

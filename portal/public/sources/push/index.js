@@ -45,12 +45,22 @@ function updateUnreadByPushMessage(type, isAdd) {
     //将未读数加一
     if (Oplate && Oplate.unread) {
         if (Oplate.unread[type]) {
+            //如果是更新线索这里，需要把列表也更新一下
             //分配线索这里，会有批量分配的情况
             var count = _.isNumber(isAdd) ? isAdd : 1;
-            if (isAdd) {
+            if(type === 'unhandleClue' && _.isArray(isAdd)){
+                count = isAdd.length;
+                //需要把全局变量中的列表也更新一下
+                if (_.isArray(_.get(Oplate,'unread.unhandleClueList'))){
+                    Oplate.unread['unhandleClueList'] = _.concat(Oplate.unread['unhandleClueList'], isAdd);
+                }
                 Oplate.unread[type] += count;
-            } else {
-                Oplate.unread[type] -= count;
+            }else{
+                if (isAdd) {
+                    Oplate.unread[type] += count;
+                } else {
+                    Oplate.unread[type] -= count;
+                }
             }
         } else {
             Oplate.unread[type] = isAdd ? 1 : 0;
@@ -150,7 +160,7 @@ window.openAllClues = function(){
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
         if (getClueUnhandledPrivilege()){
-            updateUnreadByPushMessage('unhandleClue', _.get(data, 'clue_list.length'));
+            updateUnreadByPushMessage('unhandleClue', _.get(data, 'clue_list'));
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
         var clueArr = _.get(data, 'clue_list',[]);

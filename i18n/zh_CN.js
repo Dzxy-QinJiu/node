@@ -2447,6 +2447,7 @@ var zh_CN = {
     'errorcdoe.17331': '统计通话的客户的地域,阶段,行业分布失败',
     'errorcode.162': '已达到一天的提取上限',
     'errorcode.phone.busy': '座机繁忙，请稍后再试！',
+    'errorcode.163': '获取即将到期的客户统计数据失败',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',

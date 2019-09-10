@@ -442,7 +442,11 @@ ClueCustomerStore.prototype.afterAddClueTrace = function(item) {
         if (_.get(this, 'curClue.id') === item.id){
             this.curClue.status = SELECT_TYPE.HAS_TRACE;
         }
-        this.agg_list['hasTrace'] = this.agg_list['hasTrace'] + 1;
+        //如果是待我处理的线索，不需要在已跟进中加这个数字
+        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+        if (!filterAllotNoTraced){
+            this.agg_list['hasTrace'] = this.agg_list['hasTrace'] + 1;
+        }
         if (clueStatus === SELECT_TYPE.WILL_DISTRIBUTE){
             this.agg_list['willDistribute'] = this.agg_list['willDistribute'] - 1;
         }else if (clueStatus === SELECT_TYPE.WILL_TRACE){

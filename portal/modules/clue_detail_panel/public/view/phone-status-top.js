@@ -14,12 +14,14 @@ import {getCallClient, AcceptButton, ReleaseButton} from 'PUB_DIR/sources/utils/
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var ClueAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
+var clueFilterStore = require('MOD_DIR/clue_customer/public/store/clue-filter-store');
 var ScheduleAction = require('MOD_DIR/clue_customer/public/action/schedule-action');
 var AlertTimer = require('CMP_DIR/alert-timer');
 var className = require('classnames');
 import {AVALIBILITYSTATUS, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -96,6 +98,18 @@ class phoneStatusTop extends React.Component {
         if ((showClueModal) && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
             this.setInitialData(phonemsgObj);
         }
+        var curClue = _.isEmpty(nextProps.curClue) ? this.state.curClue : nextProps.curClue;
+        //如果电话已经接通，并且是待我审批的线索，需要把待我处理左侧数字减一
+        if (Oplate && Oplate.unread && phonemsgObj.billsec > 0) {
+            subtracteGlobalClue(curClue, (flag) => {
+                var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+                if (flag && filterAllotNoTraced) {
+                    //需要在列表中删除
+                    ClueAction.deleteClueById(curClue);
+                }
+            });
+        }
+
     }
 
     setInitialData() {
