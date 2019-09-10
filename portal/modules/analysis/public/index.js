@@ -36,6 +36,7 @@ import {
     teamTreeEmitter,
     dateSelectorEmitter,
     analysisCustomerListEmitter,
+    detailPanelEmitter,
     callDeviceTypeEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 
