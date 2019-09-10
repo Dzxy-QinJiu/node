@@ -158,10 +158,29 @@ function showDetail(record) {
             } else if (key === 'contract_name') {
                 name = '合同名称';
             } else if (key === 'date') {
-                name = '日期';
                 value = moment(value).format(oplateConsts.DATE_FORMAT);
+
+                if (type === 'cost') {
+                    name = '费用日期';
+                } else if (_.includes(type, 'repay')) {
+                    name = '回款日期';
+                } else {
+                    name = '日期';
+                }
             } else if (key === 'value') {
-                name = '数值';
+                if (type === 'cost') {
+                    name = '费用';
+                } else if (type === 'repayment_amount') {
+                    name = '回款额';
+                } else if (type === 'repayment_gross_profit') {
+                    name = '回款毛利';
+                } else if (type === 'newrepayment_gross_profit') {
+                    name = '新增回款毛利';
+                } else if (type === 'churn_amount') {
+                    name = '流失合同额';
+                } else {
+                    name = '数值';
+                }
             } else {
                 name = key;
             }
