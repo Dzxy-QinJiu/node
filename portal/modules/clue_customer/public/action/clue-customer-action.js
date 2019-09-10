@@ -43,7 +43,8 @@ function ClueCustomerActions() {
         'changeFilterFlag',
         'saveSettingCustomerRecomment',
         'updateRecommendClueLists',
-        'updateClueTabNum'
+        'updateClueTabNum',
+        'updateClueItemAfterAssign'
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
