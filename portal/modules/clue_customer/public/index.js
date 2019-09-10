@@ -1282,7 +1282,7 @@ class ClueCustomer extends React.Component {
                     //分配线索给销售的权限
                     var hasAssignedPrivilege = assignSalesPrivilege(salesClueItem);
                     var assigenCls = classNames('assign-btn',{'can-edit': !handlePersonName});
-                    var containerCls = classNames('handle-and-trace',{'assign-privilege': hasAssignedPrivilege},'handle-btn-item');
+                    var containerCls = classNames('handle-and-trace',{'assign-privilege handle-btn-item': hasAssignedPrivilege});
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {/*有分配权限*/}
