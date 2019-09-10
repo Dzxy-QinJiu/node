@@ -56,7 +56,7 @@ function getConfigJson(req) {
         '10215': {'httpCode': 500, 'message': backendIntl.get('errorcode.31', '授权应用失败')},
         '10216': {'httpCode': 500, 'message': backendIntl.get('errorcode.32', '修改授权应用失败')},
         '10217': {'httpCode': 500, 'message': backendIntl.get('errorcode.33', '已经发送了开通该账号的申请，请勿重复申请')},
-
+        '10218': {'httpCode': 500, 'message': backendIntl.get('errorcode.163', '成员数量已达上限')},
         /****************** 认证授权 auth2  *****************/
 
         '11000': {'httpCode': 500, 'message': backendIntl.get('errorcode.35', '很抱歉，服务器出现了异常状况')},

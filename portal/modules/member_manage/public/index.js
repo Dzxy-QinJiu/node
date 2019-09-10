@@ -37,6 +37,7 @@ class MemberManage extends React.Component {
         this.state = {
             selectedRowIndex: null, // 点击的行索引
             memberRoleList: [],
+            currentMemberNumber: 0, // 当前成员数量
             ...MemberManageStore.getState(),
         };
     }
@@ -62,6 +63,15 @@ class MemberManage extends React.Component {
             if ( _.isArray(result) && result.length) {
                 this.setState({
                     memberRoleList: result
+                });
+            }
+        });
+        // 获取成员的组织信息
+        MemberManageAjax.getMemberOrganization().then( (result) => {
+            let currentMemberNumber = result && result.membernumber || 0;
+            if (currentMemberNumber) {
+                this.setState({
+                    currentMemberNumber: currentMemberNumber
                 });
             }
         });
@@ -167,14 +177,13 @@ class MemberManage extends React.Component {
     renderTopNavOperation = () => {
         let roleOptions = this.getRoleOptions(); // 角色下拉框
         let statusOptions = this.getStatusOptions(); // 成员状态下拉框
-        let data = userData.getUserData();
-        let maxMemberNumber = _.get(data, 'organization.maxMemberNumber'); // 添加成员上限
-        let currentMemberNumber = _.get(data, 'organization.currentMemberNumber'); // 当前成员数量
+        let maxMemberNumber = _.get(userData.getUserData(), 'organization.maxMemberNumber'); // 添加成员上限
+        let currentMemberNumber = this.state.currentMemberNumber; // 当前成员数量
         let disabled = false;
         let title = '';
         if (currentMemberNumber === maxMemberNumber) {
             disabled = true;
-            title = Intl.get('member.number.toplimit', '成员个数已达上限（{number}个）', {number: maxMemberNumber});
+            title = Intl.get('member.number.toplimit', '成员数量{number}个已达上限', {number: maxMemberNumber});
         }
         return (
             <div className='condition-operator'>

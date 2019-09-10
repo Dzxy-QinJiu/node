@@ -3,6 +3,16 @@
 const memberManageService = require('../service/member-manage-service');
 const BackendIntl = require('../../../../lib/utils/backend_intl');
 const _ = require('lodash');
+
+// 获取成员的组织信息
+exports.getMemberOrganization = (req, res) => {
+    memberManageService.getMemberOrganization(req, res, req.query).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 function handleMemberReqData(req, res) {
     let params = {};
     let isGetAllUser = false;

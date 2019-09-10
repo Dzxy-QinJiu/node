@@ -839,7 +839,7 @@ var en_US = {
     'member.record.change.field.name': 'Changed {field} of the member to {name}', // 修改了该成员的{field}，改为{name}
     'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
     'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
-    'member.number.toplimit': 'The number of members has reached the upper limit({number}).', // 成员个数已达上限（{number}个）
+    'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量{number}个已达上限
     //后台管理-成员end
 
     //组织管理start
@@ -2408,6 +2408,7 @@ var en_US = {
     'errorcode.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
     'errorcode.17331': 'Statistics of call customers by region, stage, industry distribution failure',//统计通话的客户的地域,阶段,行业分布失败
     'errorcode.162': 'You has achevie the max limit',//已达到一天的提取上限
+    'errorcode.163': 'The number of members has been reached.', // 成员数量已达上限
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索

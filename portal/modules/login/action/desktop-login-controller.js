@@ -171,8 +171,7 @@ function loginSuccess(req, res) {
                     id: _.get(data,'id', ''),
                     name: _.get(data, 'name', ''),
                     functions: _.get(data, 'functions', []),
-                    maxMemberNumber: _.get(data, 'max_membernumber', 0), // 可以创建的最大成员数量
-                    currentMemberNumber: _.get(data, 'membernumber', 0), // 当前的成员数量
+                    maxMemberNumber: _.get(data, 'max_membernumber'), // 可以创建的最大成员数量
                 };
                 req.session.save(() => {
                     if (req.xhr) {

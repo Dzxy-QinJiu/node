@@ -844,7 +844,7 @@ var zh_CN = {
     'member.record.change.field.name': '修改了该成员的{field}，改为{name}',
     'member.record.get.record.failed': '获取成员变更失败',
     'member.record.no.record': '暂无变更记录',
-    'member.number.toplimit': '成员个数已达上限（{number}个）',
+    'member.number.toplimit': '成员数{number}个已达上限',
     //后台管理-成员end
 
     //组织管理start
@@ -2447,6 +2447,7 @@ var zh_CN = {
     'errorcode.17334': '获取最近联系客户统计失败',
     'errorcdoe.17331': '统计通话的客户的地域,阶段,行业分布失败',
     'errorcode.162': '已达到一天的提取上限',
+    'errorcode.163': '成员数量已达上限',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
