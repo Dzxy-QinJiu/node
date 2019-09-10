@@ -11,11 +11,13 @@ import {
     getClueStatusValue,
     deleteEmptyProperty,
     AVALIBILITYSTATUS,
-    clueStatusTabNum
+    clueStatusTabNum,
+    SetLocalSalesClickCount
 } from '../utils/clue-customer-utils';
 var clueFilterStore = require('./clue-filter-store');
 var user = require('../../../../public/sources/user-data').getUserData();
 const clueContactType = ['phone', 'qq', 'weChat', 'email'];
+import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueCustomerStore() {
     //初始化state数据
     this.resetState();
@@ -549,6 +551,29 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
 // 获取所有人员
 ClueCustomerStore.prototype.getAllSalesUserList = function(list) {
     this.salesManList = _.isArray(list) ? list : [];
+};
+ClueCustomerStore.prototype.updateClueItemAfterAssign = function (updateObj) {
+    var item = _.get(updateObj,'item'),submitObj = _.get(updateObj,'submitObj'),isWillDistribute = _.get(updateObj,'isWillDistribute');
+    let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
+    SetLocalSalesClickCount(sale_id);
+    //member_id是跟进销售的id
+    subtracteGlobalClue(item, (flag) => {
+        var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
+        if (flag && filterAllotNoTraced) {
+            //需要在列表中删除
+            this.deleteClueById(item);
+        }
+    });
+    if (!isWillDistribute){
+        item.user_name = sale_name;
+        item.user_id = sale_id;
+        item.sales_team = team_name;
+        item.sales_team_id = team_id;
+        if (item.status !== SELECT_TYPE.HAS_TRACE){
+            item.status = SELECT_TYPE.WILL_TRACE;
+        }
+    };
+    this.updateClueCustomers(this.curClueLists);
 };
 
 module.exports = alt.createStore(ClueCustomerStore, 'ClueCustomerStore');

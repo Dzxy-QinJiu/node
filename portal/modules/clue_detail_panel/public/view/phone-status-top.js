@@ -22,6 +22,7 @@ import {AVALIBILITYSTATUS, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
 import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -100,12 +101,10 @@ class phoneStatusTop extends React.Component {
         }
         var curClue = _.isEmpty(nextProps.curClue) ? this.state.curClue : nextProps.curClue;
         //如果电话已经接通，并且是待我审批的线索，需要把待我处理左侧数字减一
-        if (Oplate && Oplate.unread && phonemsgObj.billsec > 0) {
+        if (phonemsgObj.billsec > 0) {
             subtracteGlobalClue(curClue, (flag) => {
-                var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-                if (flag && filterAllotNoTraced) {
-                    //需要在列表中删除
-                    ClueAction.deleteClueById(curClue);
+                if(flag){
+                    clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM);
                 }
             });
         }

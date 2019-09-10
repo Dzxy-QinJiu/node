@@ -221,3 +221,7 @@ export { positionEmitter };
 const userBasicInfoEmitter = new EventEmitter();
 userBasicInfoEmitter.GET_USER_BASIC_INFO = 'get_user_basic_info';
 export { userBasicInfoEmitter };
+//线索相关事件
+const clueEmitter = new EventEmitter();
+clueEmitter.REMOVE_CLUE_ITEM = 'remove_clue_item';
+export { clueEmitter };

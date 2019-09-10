@@ -950,19 +950,21 @@ function isSalesRole() {
 }
 exports.isSalesRole = isSalesRole;
 exports.subtracteGlobalClue = function(clueItem,callback) {
-    var unHandleClueLists = Oplate.unread['unhandleClueList'];
-    var targetObj = _.find(unHandleClueLists,item => item.id === clueItem.id);
-    if (targetObj){
-        Oplate.unread['unhandleClue'] -= 1;
-        Oplate.unread['unhandleClueList'] = _.filter(unHandleClueLists,item => item.id !== clueItem.id);
-        if (timeoutFunc) {
-            clearTimeout(timeoutFunc);
+    if (Oplate && Oplate.unread) {
+        var unHandleClueLists = Oplate.unread['unhandleClueList'];
+        var targetObj = _.find(unHandleClueLists,item => item.id === clueItem.id);
+        if (targetObj){
+            Oplate.unread['unhandleClue'] -= 1;
+            Oplate.unread['unhandleClueList'] = _.filter(unHandleClueLists,item => item.id !== clueItem.id);
+            if (timeoutFunc) {
+                clearTimeout(timeoutFunc);
+            }
+            timeoutFunc = setTimeout(function() {
+                //触发展示的组件待处理线索数的刷新
+                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+            }, timeout);
+            _.isFunction(callback) && callback(true);
         }
-        timeoutFunc = setTimeout(function() {
-            //触发展示的组件待审批数的刷新
-            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-        }, timeout);
-        _.isFunction(callback) && callback(true);
     }
 };
 

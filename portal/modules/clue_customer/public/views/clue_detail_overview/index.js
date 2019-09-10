@@ -392,9 +392,7 @@ class ClueDetailOverview extends React.Component {
             return;
         }
         var curClue = this.state.curClue;
-        if (Oplate && Oplate.unread) {
-            subtracteGlobalClue(curClue);
-        }
+        subtracteGlobalClue(curClue);
         saveObj.lead_id = saveObj.id;
         saveObj.type = 'other';
         delete saveObj.id;
@@ -461,7 +459,7 @@ class ClueDetailOverview extends React.Component {
                 } else {
 
                     if (_.isFunction(successFunc)) successFunc();
-                    if (Oplate && Oplate.unread && submitObj.user_id !== userData.getUserData().user_id) {
+                    if (submitObj.user_id !== userData.getUserData().user_id) {
                         subtracteGlobalClue(curClue, (flag) => {
                             var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
                             if (flag && filterAllotNoTraced) {
@@ -797,6 +795,7 @@ class ClueDetailOverview extends React.Component {
                         type: 'other',
                         showAdd: false
                     };
+                    subtracteGlobalClue(item);
                     ClueTraceAction.addClueTraceWithoutAjax(newTrace);
                     this.setState({
                         submitInvalidateLoading: false,

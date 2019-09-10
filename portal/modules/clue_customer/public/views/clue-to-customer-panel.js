@@ -576,9 +576,7 @@ class ClueToCustomerPanel extends React.Component {
         $.when(...promises)
             .done(() => {
                 message.success(Intl.get('common.merge.success', '合并成功'));
-                if (Oplate && Oplate.unread) {
-                    subtracteGlobalClue(clue);
-                }
+                subtracteGlobalClue(clue);
                 this.props.onMerged(this.state.customerId, this.state.customerName);
             })
             .fail(err => {
