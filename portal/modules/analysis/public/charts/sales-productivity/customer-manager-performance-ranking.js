@@ -159,6 +159,7 @@ function showDetail(record) {
                 name = '合同名称';
             } else if (key === 'date') {
                 name = '日期';
+                value = moment(value).format(oplateConsts.DATE_FORMAT);
             } else if (key === 'value') {
                 name = '数值';
             } else {
