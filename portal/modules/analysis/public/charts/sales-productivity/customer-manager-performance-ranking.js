@@ -132,7 +132,7 @@ function handleNumberClick(conditions, type, record) {
 }
 
 function showDetail(record) {
-    const type = record.type;
+    const type = record.key;
     let query = {};
 
     _.each(conditionCache, item => {
@@ -169,11 +169,11 @@ function showDetail(record) {
         });
 
         const content = (
-            <div>
+            <div style={{fontSize: 14}}>
                 {_.map(items, item => (
                     <Row>
-                        <Col>{item.name}</Col>
-                        <Col>{item.value}</Col>
+                        <Col span={4} style={{textAlign: 'right', fontWeight: 'bold', paddingRight: 8, marginBottom: 10}}>{item.name}: </Col>
+                        <Col span={20}>{item.value}</Col>
                     </Row>
                 ))}
             </div>
