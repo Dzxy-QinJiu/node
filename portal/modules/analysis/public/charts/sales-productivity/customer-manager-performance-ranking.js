@@ -146,6 +146,7 @@ function showDetail(record) {
         query
     }).then(result => {
         const title = record.title + '指标详情';
+
         const data = _.get(result, '[0]');
         let items = [];
 
@@ -154,6 +155,8 @@ function showDetail(record) {
 
             if (key === 'num') {
                 name = '合同号';
+            } else if (key === 'contract_name') {
+                name = '合同名称';
             } else if (key === 'date') {
                 name = '日期';
             } else if (key === 'value') {
