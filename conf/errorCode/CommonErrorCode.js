@@ -341,7 +341,9 @@ function getConfigJson(req) {
         //根据成员名查询成员操作日志失败
         '17411': {'httpCode': 500, 'message': backendIntl.get('errorcode.123', '获取成员操作日志失败')},
         //试用用户覆盖率
-        '17240': {'httpCode': 500, 'message': backendIntl.get('errorcode.150', '获取客户区域覆盖情况统计数据失败')},	
+        '17240': {'httpCode': 500, 'message': backendIntl.get('errorcode.150', '获取客户区域覆盖情况统计数据失败')},
+        //获取即将到期的客户统计数据失败
+        '17241': {'httpCode': 500, 'message': backendIntl.get('errorcode.163', '获取即将到期的客户统计数据失败')},
         //销售新开客户数
         '17242': {'httpCode': 500, 'message': backendIntl.get('errorcode.151', '获取销售新开客户数和新开帐号数失败')},	
         /*************************** 申请消息 *****************************/
