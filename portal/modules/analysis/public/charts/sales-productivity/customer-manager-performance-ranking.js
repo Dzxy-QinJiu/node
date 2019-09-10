@@ -4,6 +4,7 @@
 
 import { listPanelEmitter, detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
+import { Row, Col } from 'antd';
 
 let conditionCache = {};
 
@@ -131,20 +132,53 @@ function handleNumberClick(conditions, type, record) {
 }
 
 function showDetail(record) {
+    const type = record.type;
     let query = {};
 
     _.each(conditionCache, item => {
         query[item.name] = item.value;
     });
 
-    query.type = record.key;
+    query.type = type;
 
     ajax.send({
         url: '/rest/analysis/contract/contract/v2/all/performance/metrics/account_manager/detail',
         query
     }).then(result => {
-        const title = 'k';
-        const content = 'c';
+        const title = record.title + '指标详情';
+        const data = _.get(result, '[0]');
+        let items = [];
+
+        _.each(data, (value, key) => {
+            let name;
+
+            if (key === 'num') {
+                name = '合同号';
+            } else if (key === 'date') {
+                name = '日期';
+            } else if (key === 'value') {
+                name = '数值';
+            } else {
+                name = key;
+            }
+
+            items.push({
+                name,
+                value
+            });
+        });
+
+        const content = (
+            <div>
+                {_.map(items, item => (
+                    <Row>
+                        <Col>{item.name}</Col>
+                        <Col>{item.value}</Col>
+                    </Row>
+                ))}
+            </div>
+        );
+
         detailPanelEmitter.emit(detailPanelEmitter.SHOW, {
             title,
             content
