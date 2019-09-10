@@ -391,6 +391,7 @@
                       }
 
                       .customer-stage-content {
+                        width: 100%;
                         float: left;
                         padding: 12px;
                         .customer-stage-content-name {
@@ -409,7 +410,8 @@
 
                       // 编辑和删除某个阶段样式
                       .operation-btn {
-                        padding-top: 18px;
+                        position: relative;
+                        bottom: 30px;
                         .iconfont {
                           border: 0;
                           width: 26px;
@@ -424,6 +426,9 @@
                         }
                         visibility: hidden;
                       }
+                      .single-stage-card {
+                        cursor: grab;
+                      }
                     }
                     &:hover {
                       .operation-btn {
@@ -433,7 +438,8 @@
 
                     // 删除某个阶段
                     .delete-operator {
-                      padding: 18px 12px 0 0;
+                      position: relative;
+                      bottom: 28px;
                       cursor: pointer;
                       float: right;
                       .delete-buttons {

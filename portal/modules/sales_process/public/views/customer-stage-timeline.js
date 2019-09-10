@@ -9,8 +9,10 @@ import {Draggable} from 'react-beautiful-dnd';
 import Trace from 'LIB_DIR/trace';
 
 const getItemStyle = (isDragging, draggableStyle) => ({
+    border: '1px solid #E5E5E5',
+    height: '68px',
     // change background colour if dragging
-    background: isDragging ? '#F1F8FE' : '#ffffff',
+    background: '#ffffff',
     // styles we need to apply on draggables
     ...draggableStyle
 });
@@ -75,7 +77,7 @@ class CustomerStageTimeLine extends React.Component {
         let customerStage = this.props.customerStage;
         let name = customerStage.name; // 阶段名称
         let description = customerStage.description;
-        let contentZoneCls = classNames('customer-stage-content', {
+        let contentZoneCls = classNames('customer-stage-content', 'draggable-style',{
             'no-description-content': !description,
             'show-confirm-delete-btn-stage-content': this.state.isDeleteCustomerStage,
         });
@@ -102,7 +104,7 @@ class CustomerStageTimeLine extends React.Component {
                     draggableId={customerStage.id}
                     index={this.props.index}>
                     {(provided, snapshot) => (
-                        <div className="single-deal-card draggable-style"
+                        <div className={contentZoneCls}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
@@ -110,60 +112,58 @@ class CustomerStageTimeLine extends React.Component {
                                 snapshot.isDragging,
                                 provided.draggableProps.style,
                             )}>
-                            <div className={contentZoneCls}>
-                                <div className="customer-stage-content-name">
-                                    <span>{name}</span>
-                                </div>
-                                <div className="customer-stage-content-describe">
-                                    {description}
-                                </div>
+                            <div className="customer-stage-content-name">
+                                <span>{name}</span>
                             </div>
+                            <div className="customer-stage-content-describe">
+                                {description}
+                            </div>
+                            {
+                                this.state.isDeleteCustomerStage ? (
+                                    <div className="delete-operator">
+                                        <span className="delete-buttons">
+                                            <Button
+                                                className="delete-confirm"
+                                                disabled={this.props.isDeletingStageLoading}
+                                                onClick={this.handleConfirmDeleteStage.bind(this, customerStage)}
+                                            >
+                                                {
+                                                    this.props.isDeletingStageLoading ? <Icon type="loading"/> : null
+                                                }
+                                                {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                            </Button>
+                                            <Button
+                                                className="delete-cancel"
+                                                onClick={this.handleCancelDeleteStage}
+                                            >
+                                                {Intl.get('common.cancel', '取消')}
+                                            </Button>
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <div className="operation-btn">
+                                        <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
+                                            <Button
+                                                className="icon-delete iconfont handle-btn-item"
+                                                onClick={this.handleDeleteCustomerStage}
+                                                data-tracename="删除客户阶段"
+                                            >
+                                            </Button>
+                                        </PrivilegeChecker>
+                                        <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                            <Button
+                                                className="icon-update iconfont handle-btn-item"
+                                                onClick={this.handleEditCustomerStage}
+                                                data-tracename="编辑客户阶段"
+                                            >
+                                            </Button>
+                                        </PrivilegeChecker>
+                                    </div>
+                                )
+                            }
                         </div>
                     )}
                 </Draggable>
-                {
-                    this.state.isDeleteCustomerStage ? (
-                        <div className="delete-operator">
-                            <span className="delete-buttons">
-                                <Button
-                                    className="delete-confirm"
-                                    disabled={this.props.isDeletingStageLoading}
-                                    onClick={this.handleConfirmDeleteStage.bind(this, customerStage)}
-                                >
-                                    {
-                                        this.props.isDeletingStageLoading ? <Icon type="loading"/> : null
-                                    }
-                                    {Intl.get('crm.contact.delete.confirm', '确认删除')}
-                                </Button>
-                                <Button
-                                    className="delete-cancel"
-                                    onClick={this.handleCancelDeleteStage}
-                                >
-                                    {Intl.get('common.cancel', '取消')}
-                                </Button>
-                            </span>
-                        </div>
-                    ) : (
-                        <div className="operation-btn">
-                            <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
-                                <Button
-                                    className="icon-delete iconfont handle-btn-item"
-                                    onClick={this.handleDeleteCustomerStage}
-                                    data-tracename="删除客户阶段"
-                                >
-                                </Button>
-                            </PrivilegeChecker>
-                            <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
-                                <Button
-                                    className="icon-update iconfont handle-btn-item"
-                                    onClick={this.handleEditCustomerStage}
-                                    data-tracename="编辑客户阶段"
-                                >
-                                </Button>
-                            </PrivilegeChecker>
-                        </div>
-                    )
-                }
             </div>
         );
     }
