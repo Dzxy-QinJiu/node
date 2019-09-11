@@ -169,18 +169,8 @@ class BasicOverview extends React.Component {
             page_size: appUserLength || 1
         }, (result) => {
             if(!appUserLength) {
-                let flag = true;
-                if(_.isArray(result.data)) {
-                    let basicData = this.state.basicData;
-                    let userId = _.get(result.data, '[0].user.user_id');
-                    if(userId && !_.get(basicData,'app_user_ids[0]')) {
-                        basicData.app_user_ids = [userId];
-                        basicOverviewAction.updateBasicData(basicData);
-                        flag = false;
-                    }
-                }
-                //没有用户列表，且销售及销售主管才有用户申请
-                if (flag && (userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                //没有用户列表销售及销售主管才有用户申请
+                if (!_.get(result,'data[0]') && (userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
                     //该客户没有用户时需要引导申请，申请用户时需要应用列表
                     this.getAppList();
                 }
@@ -566,7 +556,7 @@ class BasicOverview extends React.Component {
                     {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             showUserDetail={this.props.showUserDetail}
-                            customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>) : null
+                            customerUserSize={_.get(this.state.crmUserList, 'length', 0)}/>) : null
                     }
                     <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
                         placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
