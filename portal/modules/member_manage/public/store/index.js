@@ -141,20 +141,6 @@ class MemberManageStore {
         this.memberList.unshift(newMember);
         this.memberTotal += 1;
         if (_.get(newMember, 'id')) {
-            //添加完成员返回详情页的处理
-            let rolesIds = _.get(newMember, 'roleIds');
-            let length = _.get(rolesIds, 'length', 0);
-            if (_.isArray(rolesIds) && length) {
-                //角色的处理
-                let roleList = _.get(MemberFormStore.getState(), 'roleList');
-                let roleListLength = _.get(roleList, 'length');
-                if (_.isArray(roleList) && roleListLength) {
-                    let role = _.filter(roleList, role => rolesIds.indexOf(role.roleId) !== -1);
-                    if (_.isArray(role) && role.length) {
-                        newMember.roleNames = _.map(role, 'roleName');
-                    }
-                }
-            }
             //获取团队名称
             let teamId = _.get(newMember, 'teamId');
             if (teamId) {
