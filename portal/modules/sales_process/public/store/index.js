@@ -93,12 +93,14 @@ class SalesProcessStore {
     // 显示添加销售流程表单程面板
     showAddProcessFormPanel() {
         this.isShowAddProcessFormPanel = true;
-        this.isShowProcessInfoPanel = false;
+        let length = _.get(this.salesProcessList, 'length');
+        this.saleProcessName = Intl.get('customer.stage.add.stage.title', '客户阶段{num}', {num: length + 1});
     }
 
     // 关闭添加销售流程表单程面板
     closeAddProcessFormPanel() {
         this.isShowAddProcessFormPanel = false;
+        this.saleProcessName = '';
     }
 
     // 更新销售流程列表
@@ -152,6 +154,7 @@ class SalesProcessStore {
         this.saleProcessName = saleProcess.name;
         this.saleProcessType = saleProcess.type || 'custom';
         this.isShowCustomerStage = true;
+        this.currentSaleProcess = saleProcess;
     }
 
     // 关闭客户界阶段面板
@@ -160,6 +163,7 @@ class SalesProcessStore {
         this.saleProcessName = '';
         this.saleProcessType = 'custom';
         this.isShowCustomerStage = false;
+        this.currentSaleProcess = {};
     }
 
     // 显示选择团队或是个人的面板

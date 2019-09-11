@@ -61,6 +61,13 @@ module.exports = {
             'needLogin': true
         }
     }, {
+        'method': 'put', //  删除某个客户阶段的具体的阶段
+        'path': '/rest/delete/customer/color/stage/:id',
+        'handler': 'deleteCustomerStageColor',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
         'method': 'put', // 变更客户阶段顺序
         'path': '/rest/change/customer/stage/order',
         'handler': 'changeCustomerStageOrder',
