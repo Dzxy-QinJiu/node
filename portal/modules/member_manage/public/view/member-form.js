@@ -168,6 +168,19 @@ class MemberForm extends React.Component {
     // 返回详细信息展示页
     returnInfoPanel = (newMember) => {
         this.resetValidatFlags();
+        //添加完成员返回详情页角色的处理
+        let rolesIds = _.get(newMember, 'roleIds');
+        let length = _.get(rolesIds, 'length', 0);
+        if (_.isArray(rolesIds) && length) {
+            let roleList = this.props.roleList;
+            let roleListLength = _.get(roleList, 'length');
+            if (_.isArray(roleList) && roleListLength) {
+                let role = _.filter(roleList, role => rolesIds.indexOf(role.roleId) !== -1);
+                if (_.isArray(role) && role.length) {
+                    newMember.roleNames = _.map(role, 'roleName');
+                }
+            }
+        }
         this.props.returnInfoPanel(newMember);
     };
 
