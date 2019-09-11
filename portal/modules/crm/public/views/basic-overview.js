@@ -160,36 +160,31 @@ class BasicOverview extends React.Component {
     //获取客户开通的用户列表
     getCrmUserList = (curCustomer) => {
         if(!_.get(curCustomer,'id')) return;
+        basicOverviewAction.setCrmUserList([]);
         //该客户开通的用户个数
         let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
-        if (appUserLength) {
-            basicOverviewAction.getCrmUserList({
-                customer_id: curCustomer.id,
-                id: '',
-                page_size: appUserLength
-            });
-        } else {
-            basicOverviewAction.setCrmUserList([]);
-            basicOverviewAction.getCrmUserList({
-                customer_id: curCustomer.id,
-                id: '',
-                page_size: 1
-            }, (result) => {
+        basicOverviewAction.getCrmUserList({
+            customer_id: curCustomer.id,
+            id: '',
+            page_size: appUserLength || 1
+        }, (result) => {
+            if(!appUserLength) {
                 if(_.isArray(result.data)) {
                     let basicData = this.state.basicData;
                     let userId = _.get(result.data, '[0].user.user_id');
                     if(userId && !_.get(basicData,'app_user_ids[0]')) {
                         basicData.app_user_ids = [userId];
                         basicOverviewAction.updateBasicData(basicData);
+                    }else {
+                        //销售及销售主管才有用户申请
+                        if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                            //该客户没有用户时需要引导申请，申请用户时需要应用列表
+                            this.getAppList();
+                        }
                     }
                 }
-            });
-            //销售及销售主管才有用户申请
-            if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
-                //该客户没有用户时需要引导申请，申请用户时需要应用列表
-                this.getAppList();
             }
-        }
+        });
     };
 
     //获取未完成的日程列表
@@ -545,7 +540,7 @@ class BasicOverview extends React.Component {
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
                     {!this.props.disableEdit ? (
-                        hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
+                        hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(this.state.crmUserList, '[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     <CustomerStageCard
                         isMerge={this.props.isMerge}
