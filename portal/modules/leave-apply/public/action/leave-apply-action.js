@@ -8,6 +8,8 @@ let userData = require('PUB_DIR/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {getAllApplyList,getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -26,8 +28,12 @@ function LeaveApplyActions() {
     this.getAllLeaveApplyList = function(queryObj,callback) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        //如果是全部申请，要先取一下待我审批的列表
-        if (queryObj.status === 'ongoing' || !queryObj.status){
+        //如果选中的是我审批过的
+        if (queryObj.status === APPLY_TYPE_STATUS_CONST.MYAPPROVED){
+            delete queryObj.status;
+            getApplyListApprovedByMe(this,queryObj);
+        }else if (queryObj.status === 'ongoing' || !queryObj.status){
+            //如果是全部申请，要先取一下待我审批的列表
             getWorklistApplyList({type: APPLY_APPROVE_TYPES.LEAVE}).then((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
                 if (queryObj.status && queryObj.status === 'ongoing'){
@@ -56,6 +62,20 @@ function LeaveApplyActions() {
         }
     };
 
+}
+//获取我审批过的列表
+function getApplyListApprovedByMe(that,queryObj) {
+    ApplyApproveAjax.getApplyListApprovedByMe().sendRequest(queryObj).success((data) => {
+        scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+        that.dispatch({error: false, loading: false, data: data});
+    }).error(xhr => {
+            that.dispatch({
+                error: true,
+                loading: false,
+                errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取我审批过的{type}申请失败', {type: Intl.get('weekly.report.ask.for.leave', '请假')})
+            });
+        }
+    );
 }
 function getDiffTypeApplyList(that,queryObj,workListArr) {
     getAllApplyList(queryObj).then((data) => {

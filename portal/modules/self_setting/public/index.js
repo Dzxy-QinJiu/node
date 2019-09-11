@@ -300,10 +300,6 @@ class LeaveApplyManagement extends React.Component {
         if (!noShowApplyDetail) {
             applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
         }
-        var selfSettingMenuList = _.cloneDeep(selectMenuList);
-        selfSettingMenuList.push({
-            key: APPLY_TYPE_STATUS_CONST.MYAPPROVED, value: Intl.get('apply.list.my.approved', '我审批过'),
-        });
         return (
             <div className="sales-opportunity-apply-container apply_manage_wrap">
                 <div className="leave-apply-list-detail-wrap">
@@ -314,7 +310,7 @@ class LeaveApplyManagement extends React.Component {
                             addPrivilege='WORKFLOW_BASE_PERMISSION'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
-                            menuList={selfSettingMenuList}
+                            menuList={selectMenuList}
                             refreshPage={this.refreshPage}
                             showUpdateTip={this.state.showUpdateTip}
                             showRefreshIcon={applyListType === APPLY_TYPE_STATUS_CONST.ALL || applyListType === APPLY_TYPE_STATUS_CONST.ONGOING}
