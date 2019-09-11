@@ -46,9 +46,9 @@ class ScheduleManagement extends React.Component {
         calendarLists: [],//右侧日程列表中的日程数据
         curViewName: 'day',//当前被按下的视图的名称
         curCustomerId: '',//查看详情的客户的id
-        isShowAddToDo: false,// 是否显示右侧添加待办项
+        isShowAddToDo: false,// 是否显示右侧添加日程项
         scheduleLists: [],// 用于存放请求接口后返回的日程数据
-        topicValue: 'customer', //添加待办项时选择主题为"客户"还是"线索"
+        topicValue: 'customer', //添加日程项时选择主题为"客户"还是"线索"
         ...scheduleManagementStore.getState()
     };
 
@@ -301,7 +301,7 @@ class ScheduleManagement extends React.Component {
         });
     };
 
-    // 添加待办项
+    // 添加日程
     handleScheduleAdd = (resData) => {
         // 判断当前的日程视图
         let view = this.state.curViewName;
@@ -452,7 +452,7 @@ class ScheduleManagement extends React.Component {
                         />
                     </div>
                 </div>
-                {/*添加待办项*/}
+                {/*添加日程*/}
                         <AddSchedule 
                             isShowAddToDo={this.state.isShowAddToDo}
                             handleCancelAddToDo={this.handleCancel}

@@ -12,7 +12,7 @@ class AddSchedule extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            topicValue: 'customer', //添加待办项时选择主题为"客户"还是"线索"
+            topicValue: 'customer', //添加日程项时选择主题为"客户"还是"线索"
         }
     };
 

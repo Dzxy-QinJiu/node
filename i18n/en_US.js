@@ -2646,7 +2646,6 @@ var en_US = {
     'clue,customer.add.schedule.error': 'This schedule fail to add',//联系计划添加失败
     'batch.failed.add.schedule': '{customerName} failed to add schedule',//{customerName}添加联系计划失败
     'batch.success.add.schedule': 'All schedules are added successfully',//所有联系计划均添加成功
-    'shedule.list.add.todo': 'Add to do',//待办
     'crm.get.phone.failed': 'Failed to get phone number',//获取座机号失败!
     'crm.call.phone.success': 'Call out successlly',//拨打成功
     'crm.call.phone.failed': 'Failed to call out',//拨打失败

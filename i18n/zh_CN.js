@@ -2690,7 +2690,6 @@ var zh_CN = {
     'clue,customer.add.schedule.error': '联系计划添加失败',
     'batch.failed.add.schedule': '{customerName}添加联系计划失败',
     'batch.success.add.schedule': '所有联系计划均添加成功',
-    'shedule.list.add.todo': '添加待办',
     'crm.get.phone.failed': '获取座机号失败!',
     'crm.call.phone.success': '拨打成功',
     'crm.call.phone.failed': '拨打失败',
