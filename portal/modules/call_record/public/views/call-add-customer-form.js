@@ -182,12 +182,12 @@ var CallAddCustomerForm = createReactClass({
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 let list = _.get(data,'list');
                 //客户名是否重复
-                let sameCustomer = _.findIndex(list,{'name':customerName}) === -1;
+                let repeatCustomer = !_.some(list,{'name':customerName});
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
                 } else if (_.isObject(data)) {
-                    if (sameCustomer) {
+                    if (repeatCustomer) {
                         //不存在
                         this.setState({customerNameExist: false, checkNameError: false,existCustomerList: _.get(data, 'list',[])});
                     } else {
