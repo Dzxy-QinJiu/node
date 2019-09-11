@@ -188,16 +188,6 @@ class TeamDataColumn extends React.Component {
         return !userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     }
 
-    getEmitters() {
-        return [{
-            emitter: callDeviceTypeEmitter,
-            event: callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE,
-            callbackArgs: [{
-                name: 'device_type',
-            }],
-        }];
-    }
-
     renderPerformanceData() {
         const performanceData = this.state.performanceData;
         const isSales = this.isSalesRole();
