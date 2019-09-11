@@ -31,7 +31,7 @@ function ReportSendApplyActions() {
         //如果选中的是我审批过的
         if (queryObj.status === APPLY_TYPE_STATUS_CONST.MYAPPROVED){
             delete queryObj.status;
-            getApplyListApprovedByMe(this,queryObj);
+            getApplyListApprovedByMe.bind(this,queryObj)();
         }else if (queryObj.status === 'ongoing' || !queryObj.status){
             getWorklistApplyList({type: APPLY_APPROVE_TYPES.DOCUMENTWRITING}).then((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
@@ -63,12 +63,12 @@ function ReportSendApplyActions() {
     };
 }
 //获取我审批过的列表
-function getApplyListApprovedByMe(that,queryObj) {
+function getApplyListApprovedByMe(queryObj) {
     ApplyApproveAjax.getApplyListApprovedByMe().sendRequest(queryObj).success((data) => {
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-        that.dispatch({error: false, loading: false, data: data});
+        this.dispatch({error: false, loading: false, data: data});
     }).error(xhr => {
-            that.dispatch({
+            this.dispatch({
                 error: true,
                 loading: false,
                 errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取我审批过的{type}申请失败', {type: Intl.get('apply.approve.document.writing', '文件撰写')})
