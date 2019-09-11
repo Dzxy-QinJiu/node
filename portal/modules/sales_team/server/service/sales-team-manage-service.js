@@ -32,16 +32,6 @@ exports.getOrganizationInfoByName = (req, res) => {
         }, req.query);
 };
 
-// 修改组织名称
-exports.changeOrganizationName = (req, res) => {
-    return restUtil.authRest.put(
-        {
-            url: salesTeamRestApis.changeOrganizationName,
-            req: req,
-            res: res
-        }, req.body);
-};
-
 exports.getSalesGoals = function(req, res, team_id) {
     return restUtil.authRest.get(
         {
@@ -145,9 +135,14 @@ exports.deleteGroup = function(req, res, groupId) {
 };
 
 exports.editGroup = function(req, res, salesTeam) {
+    let url = salesTeamRestApis.editGroup; // 修改子部门的URL
+    if (salesTeam && salesTeam.isOrganizationFlag) { // 修改组织的URL
+        url = salesTeamRestApis.changeOrganizationName;
+        delete salesTeam.isOrganizationFlag;
+    }
     return restUtil.authRest.put(
         {
-            url: salesTeamRestApis.editGroup,
+            url: url,
             req: req,
             res: res
         },

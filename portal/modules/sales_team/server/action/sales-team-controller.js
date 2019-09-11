@@ -8,21 +8,15 @@ var SalesTeamManageServic = require('../service/sales-team-manage-service');
 // 根据组织属性获取组织信息，用来判断是否重名
 exports.getOrganizationInfoByName = (req, res) => {
     SalesTeamManageServic.getOrganizationInfoByName(req, res).on('success', (data) => {
-        res.status(200).json(data);
+        if (data && data.name) { // 重名，返回true
+            res.status(200).json(true);
+        } else {
+            res.status(200).json(false);
+        }
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
-
-// 修改组织名称
-exports.changeOrganizationName = (req, res) => {
-    SalesTeamManageServic.changeOrganizationName(req, res).on('success', (data) => {
-        res.status(200).json(data);
-    }).on('error', (codeMessage) => {
-        res.status(500).json(codeMessage && codeMessage.message);
-    });
-};
-
 
 exports.filterSalesTeamList = function(req, res) {
     var userName = encodeURI(req.params.user_name);

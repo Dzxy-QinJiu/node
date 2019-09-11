@@ -5,6 +5,8 @@
 @border-color: #f3f5f7;
 @edit-team-form-height: 130px;
 @edit-teamName-form-height: 86px;
+// 错误提示的字体以及边框颜色
+@error_tips_color: #f04134;
 
 .sales-team-manage-container {
   padding: 12px;
@@ -512,6 +514,30 @@
                   .edit-sales-team-btn-item {
                     padding-right: 0;
                   }
+                }
+                .ant-form-item {
+                  .input-red-border {
+                    position: relative;
+                    display: inline-block;
+                    width: 100%;
+                    padding: 6px 7px;
+                    border: 1px solid @error_tips_color;
+                    line-height: 1.5;
+                    color: #666;
+                    background-color: #fff;
+                    background-image: none;
+                    box-shadow: 0 0 0 2px #ffddcc;
+                    cursor: text;
+                  }
+                }
+                .organizaion-check {
+                  float: left;
+                  width: 100%;
+                  margin-top: -10px;
+                  line-height: 20px;
+                  margin-bottom: 10px;
+                  padding-left: 54px;
+                  color: @error_tips_color;
                 }
               }
             }

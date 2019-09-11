@@ -19,6 +19,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import Trace from 'LIB_DIR/trace';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import salesTeamAjax from '../ajax/sales-team-ajax';
+import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 
 function noop() {
 }
@@ -31,7 +32,8 @@ var SalesTeamForm = createReactClass({
         cancelSalesTeamForm: PropTypes.func,
         salesTeamList: PropTypes.array,
         className: PropTypes.string,
-        handleSubmitTeamForm: PropTypes.func
+        handleSubmitTeamForm: PropTypes.func,
+        isAddRoot: PropTypes.boolean
     },
     getDefaultProps: function() {
         return {
@@ -71,7 +73,9 @@ var SalesTeamForm = createReactClass({
                 title: {},
                 superiorTeam: {}
             },
-            formData: this.getFormData(this.props.salesTeam)
+            formData: this.getFormData(this.props.salesTeam),
+            checkNameError: false,
+            checkNameExist: false,
         };
     },
     
@@ -102,15 +106,14 @@ var SalesTeamForm = createReactClass({
 
     //保存角色信息
     handleSubmit: function(e) {
-        var _this = this;
-        var validation = this.refs.validation;
-        validation.validate(function(valid) {
-            if (!valid) {
+        const validation = this.refs.validation;
+        validation.validate( (valid) => {
+            if (!valid || this.state.checkNameExist || this.state.checkNameError) {
                 return;
             } else {
                 Trace.traceEvent(e,'保存添加或编辑团队的修改');
-                let formData = _this.state.formData;
-                if (formData.isEditGroup) {
+                let formData = this.state.formData;
+                if (formData.isEditGroup) { // 编辑部门或是组织
                     let editGroupData = {
                         group_id: formData.key,
                         group_name: formData.title,
@@ -118,16 +121,16 @@ var SalesTeamForm = createReactClass({
                         parent_group: formData.superiorTeam//上级团队
                     };
                     formData.isTeamSaving = true;
-                    _this.setState({formData: formData});
+                    this.setState({formData: formData});
                     SalesTeamActions.saveEditGroup(editGroupData, result => {
                         //保存结果
                         formData.saveTeamMsg = result.saveMsg;
                         formData.saveTeamResult = result.saveResult;
                         formData.isTeamSaving = false;
-                        _this.setState({formData: formData});
+                        this.setState({formData: formData});
                         if (result.saveResult === 'success') {
                             //保存成功后的处理
-                            var salesTeam = _this.props.salesTeam;
+                            const salesTeam = this.props.salesTeam;
                             if (salesTeam && salesTeam.isEditGroup) {
                                 SalesTeamActions.cancelEditGroup(salesTeam);
                                 //刷新团队列表
@@ -141,29 +144,29 @@ var SalesTeamForm = createReactClass({
                             }
                         }
                     });
-                } else {
+                } else { // 添加子部门
                     let addGroupData = {
                         groupName: formData.title
                     };
-                    if (_this.props.salesTeam) {
-                        addGroupData.parentGroup = _this.props.salesTeam.key;//上级组织
+                    if (this.props.salesTeam) {
+                        addGroupData.parentGroup = this.props.salesTeam.key;//上级组织
                     }
                     formData.isTeamSaving = true;
-                    _this.setState({formData: formData});
+                    this.setState({formData: formData});
                     SalesTeamActions.saveAddGroup(addGroupData, (result, addTeam) => {
                         //保存结果
                         formData.saveTeamMsg = result.saveMsg;
                         formData.saveTeamResult = result.saveResult;
                         formData.isTeamSaving = false;
-                        _this.setState({formData: formData});
+                        this.setState({formData: formData});
                         //添加成功后的处理
                         if (result.saveResult === 'success') {
-                            if (_this.props.isAddRoot) {
+                            if (this.props.isAddRoot) {
                                 //添加根组织时的处理
-                                _this.props.cancelSalesTeamForm();
+                                this.props.cancelSalesTeamForm();
                             } else {
                                 //添加子团队成功后的处理
-                                SalesTeamActions.cancelAddGroup(_this.props.salesTeam);
+                                SalesTeamActions.cancelAddGroup(this.props.salesTeam);
                             }
                             //刷新团队列表
                             SalesTeamActions.refreshTeamListAfterAdd(addTeam);
@@ -225,19 +228,75 @@ var SalesTeamForm = createReactClass({
     },
 
     // 校验组织名称
-    checkOrganizationName: (organizationname) => {
-        salesTeamAjax.getOrganizationInfoByName({name: organizationname}).then( (result) => {
-            console.log('result:',result);
-        } );
+    checkOrganizationName: function(){
+        const isOrganizationFlag = _.get(this.state, 'formData.isOrganizationFlag');
+        const organizationName = _.trim(this.state.formData.title);
+        //满足验证条件后再进行唯一性验证
+        if (organizationName) {
+            salesTeamAjax.getOrganizationInfoByName({name: organizationName}).then( (data) => {
+                if (_.isString(data)) {
+                    //唯一性验证出错了
+                    this.setState({
+                        checkNameExist: false,
+                        checkNameError: true
+                    });
+                } else {
+                    if (data) {
+                        //不存在
+                        this.setState({
+                            checkNameExist: false,
+                            checkNameError: false
+                        });
+                    } else {
+                        //已存在
+                        this.setState({
+                            checkNameExist: true,
+                            checkNameError: false
+                        });
+                    }
+                }
+            });
+
+        } else {
+            this.setState({
+                checkNameExist: false,
+                checkNameError: false
+            });
+        }
+    },
+
+    handleFocueInput: function() {
+        this.setState({
+            checkNameExist: false,
+            checkNameError: false
+        });
+    },
+
+    // 渲染校验名称提示信息
+    renderCheckNameTips: function() {
+        if (this.state.checkNameExist || this.state.checkNameError) {
+            return (
+                <div className="organizaion-check">
+                    {
+                        this.state.checkNameExist ? Intl.get('organization.name.existed', '组织名称已存在！') :
+                            Intl.get('organization.name.is.unique', '组织名称唯一性校验出错！')
+                    }
+                </div>
+            );
+        }
     },
 
     render: function() {
-        var formData = this.state.formData;
-        var status = this.state.status;
-        var formClass = classNames('edit-sales-team-form', this.props.className, {
+        let formData = this.state.formData;
+        let status = this.state.status;
+        let formClass = classNames('edit-sales-team-form', this.props.className, {
             'select': formData.select,
             'edit-form': formData.isEditGroup
         });
+        let name = Intl.get('crm.113', '部门');
+        if (formData.isOrganizationFlag) {
+            name = Intl.get('user.organization', '组织');
+        }
         return (
             <div className={formClass} data-tracename ="编辑/添加团队表单">
                 <Form layout='horizontal' className="form">
@@ -251,23 +310,26 @@ var SalesTeamForm = createReactClass({
                             validateStatus={this.renderValidateStyle('title')}
                             help={status.title.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.title.errors && status.title.errors.join(','))}>
                             <Validator
-                                rules={[{
-                                    required: true,
-                                    min: 1,
-                                    max: 20 ,
-                                    message: Intl.get('common.input.character.rules', '最少1个字符,最多8个字符')}]}
+                                rules={[validatorNameRuleRegex(true, 10, name)]}
                             >
                                 <Input
                                     name="title"
                                     id="title"
                                     value={formData.title}
                                     onChange={this.onChangeTeamName.bind(this)}
+                                    className={this.state.checkNameExist || this.state.checkNameError ? 'input-red-border' : ''}
                                     placeholder={Intl.get('sales.team.search.placeholder', '请输入团队名称')}
                                     data-tracename="填写团队名称"
-                                    onBlur={this.checkOrganizationName.bind(this, formData.title)}
+                                    onBlur={(e) => {
+                                        this.checkOrganizationName(e);
+                                    }}
+                                    onFocus={(e) => {
+                                        this.handleFocueInput(e);
+                                    }}
                                 />
                             </Validator>
                         </FormItem>
+                        {this.renderCheckNameTips()}
                         {
                             formData.superiorTeam ? (
                                 <FormItem
