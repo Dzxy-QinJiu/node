@@ -169,19 +169,20 @@ class BasicOverview extends React.Component {
             page_size: appUserLength || 1
         }, (result) => {
             if(!appUserLength) {
+                let flag = true;
                 if(_.isArray(result.data)) {
                     let basicData = this.state.basicData;
                     let userId = _.get(result.data, '[0].user.user_id');
                     if(userId && !_.get(basicData,'app_user_ids[0]')) {
                         basicData.app_user_ids = [userId];
                         basicOverviewAction.updateBasicData(basicData);
-                    }else {
-                        //销售及销售主管才有用户申请
-                        if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
-                            //该客户没有用户时需要引导申请，申请用户时需要应用列表
-                            this.getAppList();
-                        }
+                        flag = false;
                     }
+                }
+                //没有用户列表，且销售及销售主管才有用户申请
+                if (flag && (userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                    //该客户没有用户时需要引导申请，申请用户时需要应用列表
+                    this.getAppList();
                 }
             }
         });
