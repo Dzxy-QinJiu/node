@@ -279,13 +279,16 @@ var CRMAddForm = createReactClass({
         if (customerName && customerNameRegex.test(customerName)) {
             Trace.traceEvent(e, '添加客户名称');
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
+                let list = _.get(data,'list');
+                //客户名是否重复
+                let repeatCustomer = _.some(list,{'name':customerName});
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true, existCustomerList: []});
                 } else if (_.isObject(data)) {
-                    if (data.result === 'true') {
+                    if (!repeatCustomer) {
                         //不存在
-                        this.setState({customerNameExist: false, checkNameError: false, existCustomerList: []});
+                        this.setState({customerNameExist: false, checkNameError: false, existCustomerList: _.get(data, 'list', [])});
                     } else {
                         //已存在
                         this.setState({customerNameExist: true, checkNameError: false, existCustomerList: _.get(data, 'list', [])});
@@ -445,7 +448,7 @@ var CRMAddForm = createReactClass({
                             />
                         </Validator>
                     </FormItem>
-                    {renderCustomerNameMsg(this.state.customerNameExist, this.state.existCustomerList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
+                    {renderCustomerNameMsg(this.state.existCustomerList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
                     {
                         isBasicExpanded ? (
                             <div>
