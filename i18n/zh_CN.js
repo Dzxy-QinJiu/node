@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -3537,6 +3538,13 @@ var zh_CN = {
     'clue.recommend.extract.num.limit': '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     'clue.customer.noty.all.list': '查看所有线索？',
-    'clue.customer.fail.get.all.lists': '获取全部拜访申请失败'
+    'common.personal.contribution.score': '个人贡献分数',
+    'common.collection.of.gross.profit.margin.score': '回款毛利率分数',
+    'common.indicators.for.details': '指标详情',
+    'common.the.numerical': '数值',
+    'common.gross.margin.score.of.newly.signed.refund': '新签回款毛利分数',
+    'common.loss.contract.amount': '流失合同额',
+    'common.cost.date': '费用日期',
+    'clue.customer.fail.get.all.lists': '获取全部拜访申请失败',
 };
 export default zh_CN;
