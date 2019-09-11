@@ -104,7 +104,7 @@ class phoneStatusTop extends React.Component {
         if (phonemsgObj.billsec > 0) {
             subtracteGlobalClue(curClue, (flag) => {
                 if(flag){
-                    clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM);
+                    clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
                 }
             });
         }

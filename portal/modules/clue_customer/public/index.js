@@ -263,12 +263,12 @@ class ClueCustomer extends React.Component {
             selectedClues: []
         });
     };
-    removeClueItem = () => {
+    removeClueItem = (item) => {
         //在列表中删除线索
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
         if (filterAllotNoTraced) {
             //需要在列表中删除
-            clueCustomerAction.deleteClueById(this.state.curClue);
+            clueCustomerAction.deleteClueById(item);
         }
     };
 
@@ -1281,7 +1281,7 @@ class ClueCustomer extends React.Component {
                                     <span>
                                         <span className="clue_source_time">{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}&nbsp;</span>
                                         
-                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '描述：{content}',{content: salesClueItem.source}) : null}</span>
+                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '详情：{content}',{content: salesClueItem.source}) : null}</span>
 
                                     </span>
                                 </ShearContent>
@@ -1685,28 +1685,6 @@ class ClueCustomer extends React.Component {
                 submitObj.customer_id = itemId;
             }
             return submitObj;
-        }
-    };
-    updateItem = (item, submitObj,isWillDistribute) => {
-        let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
-        SetLocalSalesClickCount(sale_id);
-        //member_id是跟进销售的id
-        subtracteGlobalClue(item,(flag) => {
-            var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-            if (flag && filterAllotNoTraced){
-                //需要在列表中删除
-                clueCustomerAction.deleteClueById(item);
-            }
-        });
-
-        if (!isWillDistribute){
-            item.user_name = sale_name;
-            item.user_id = sale_id;
-            item.sales_team = team_name;
-            item.sales_team_id = team_id;
-            if (item.status !== SELECT_TYPE.HAS_TRACE){
-                item.status = SELECT_TYPE.WILL_TRACE;
-            }
         }
     };
     //单个及批量修改跟进人完成后的处理
@@ -2241,10 +2219,12 @@ class ClueCustomer extends React.Component {
             //如果当前客户是需要更新的客户，才更新
             var target = _.find(curClueLists, item => item.id === clueId);
             if (target) {
-                this.updateItem(target, taskParams);
+                clueCustomerAction.updateClueItemAfterAssign({
+                    item: target,
+                    submitObj: taskParams
+                });
             }
         });
-        clueCustomerAction.updateClueCustomers(this.state.curClueLists);
         _.each(tasks, task => {
             clueCustomerAction.afterReleaseClue(task.taskDefine);
         });

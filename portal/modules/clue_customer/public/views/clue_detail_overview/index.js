@@ -57,6 +57,7 @@ import moment from 'moment';
 import ClueTraceAction from '../../action/clue-trace-action';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -461,10 +462,8 @@ class ClueDetailOverview extends React.Component {
                     if (_.isFunction(successFunc)) successFunc();
                     if (submitObj.user_id !== userData.getUserData().user_id) {
                         subtracteGlobalClue(curClue, (flag) => {
-                            var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索
-                            if (flag && filterAllotNoTraced) {
-                                //需要在列表中删除
-                                clueCustomerAction.deleteClueById(curClue);
+                            if(flag){
+                                clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
                             }
                         });
                     }
