@@ -182,7 +182,8 @@ class MemberManage extends React.Component {
         let currentMemberNumber = this.state.currentMemberNumber; // 当前成员数量
         let disabled = false;
         let title = '';
-        if (currentMemberNumber === maxMemberNumber) {
+        // maxMemberNumber等于-1时，创建成员数量没有限制
+        if (maxMemberNumber !== -1 && !(currentMemberNumber < maxMemberNumber)) {
             disabled = true;
             title = Intl.get('member.number.toplimit', '成员数量已达{number}个上限', {number: maxMemberNumber});
         }
