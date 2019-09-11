@@ -552,7 +552,7 @@ ClueCustomerStore.prototype.updateCustomerLastContact = function(traceObj) {
 ClueCustomerStore.prototype.getAllSalesUserList = function(list) {
     this.salesManList = _.isArray(list) ? list : [];
 };
-ClueCustomerStore.prototype.updateClueItemAfterAssign = function (updateObj) {
+ClueCustomerStore.prototype.updateClueItemAfterAssign = function(updateObj) {
     var item = _.get(updateObj,'item'),submitObj = _.get(updateObj,'submitObj'),isWillDistribute = _.get(updateObj,'isWillDistribute');
     let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
     SetLocalSalesClickCount(sale_id);
@@ -572,7 +572,7 @@ ClueCustomerStore.prototype.updateClueItemAfterAssign = function (updateObj) {
         if (item.status !== SELECT_TYPE.HAS_TRACE){
             item.status = SELECT_TYPE.WILL_TRACE;
         }
-    };
+    }
     this.updateClueCustomers(this.curClueLists);
 };
 
