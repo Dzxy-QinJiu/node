@@ -1,5 +1,5 @@
 require('./css/index.less');
-import {SearchInput, AntcTable} from 'antc';
+import {SearchInput} from 'antc';
 import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import Spinner from 'CMP_DIR/spinner';
@@ -17,7 +17,7 @@ import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 import MemberTableList from 'MOD_DIR/member-table-list';
 import {BACKGROUG_LAYOUT_CONSTANTS, BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
-import userData from 'PUB_DIR/sources/user-data';
+
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -142,7 +142,9 @@ class MemberManage extends React.Component {
         }
         MemberManageAction.updateSearchContent(content);
         MemberManageAction.setInitialData();
-        this.getMemberList({search: content, id: '', role: ''});
+        setTimeout( () => {
+            this.getMemberList({search: content, id: '', role: ''});
+        }, 0);
     };
 
     // 角色下拉框
