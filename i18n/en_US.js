@@ -260,6 +260,7 @@ var en_US = {
     'common.import.template': 'Template',//模板
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
     'common.create': 'Create', // 创建
+    'common.stage.describe': 'the description of stage', // 阶段描述
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -902,6 +903,7 @@ var en_US = {
     'sales.process.customer.stage.nodata.tips': 'No customer stage, please add first', // 暂无客户阶段，请先添加
     'sales.process.customer.stage.toplimit': 'The number of customer stages has reached the upper limit(8).', // 客户阶段个数已达上限（8个）
     'sales.process.delete.customer.stage.tips': 'Are you sure to delete the customer stage?', // 确定删除这个客户阶段么
+    'sales.process.change.order.success': 'Success to change the order of customer stages', // 变更客户阶段顺序成功
     'sales.process.change.order.failed': 'Failed to change the order of customer stages', // 变更客户阶段顺序失败
     'sales.process.customer.stage.play': 'Play', // 剧本
     'sales.process.customer.stage.play.placeholder': 'Please enter scenarios', // 请输入剧本
@@ -922,6 +924,10 @@ var en_US = {
 
     // 后台管理-客户阶段start
     'customer.stage.define.new': 'Define  New Customer Stage', // 定义新客户阶段
+    'customer.stage.add.customer.stage': 'Add Customer Stage ', // 添加客户阶段
+    'customer.stage.default.stage.tips': 'Uneditable by default', // 默认不可编辑
+    'customer.stage.stage.title': 'Setting the stage', // 阶段设置
+    'customer.stage.name.placeholder': 'Please enter the stage of customer', // 请输入客户阶段
     'customer.stage.set.scope': 'Set scope', // 设置适用范围
     'customer.stage.click.show.detail': 'Click for details', // 点击查看详细信息
     'customer.stage.edit.stage': 'Edit the {stage} stage', // 编辑{stage}阶段
@@ -930,6 +936,7 @@ var en_US = {
     'customer.stage.delete.stage': 'Delete customer stage', // 删除客户阶段
     'customer.stage.select.team.user.placeholder': 'Select the team or individual that use the stage', // 请选择适用该阶段的团队或个人
     'customer.stage.add.stage.title': 'Customer Stage {num}', // 客户阶段{num}
+    'customer.stage.click.add.stage': 'Add stage', // 添加阶段
     // 后台管理-客户阶段end
 
     //应用管理start
