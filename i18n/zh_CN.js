@@ -3456,6 +3456,7 @@ var zh_CN = {
     'clue.customer.this.month': '本月',
     'clue.customer.this.quarter': '本季度',
     'clue.customer.this.year': '今年',
+    'clue.customer.last.three.month': '近三个月',
     'clue.customer.last.week': '近一周',
     'clue.customer.last.month': '近一月',
     'clue.customer.last.quarter': '近一季度',
