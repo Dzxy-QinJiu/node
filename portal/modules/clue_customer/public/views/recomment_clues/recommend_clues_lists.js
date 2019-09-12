@@ -28,7 +28,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
-const maxLimitExtractNumber = 20;
+const maxLimitExtractNumber = 100;
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
