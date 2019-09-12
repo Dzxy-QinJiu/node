@@ -171,6 +171,7 @@ function loginSuccess(req, res) {
                     id: _.get(data,'id', ''),
                     name: _.get(data, 'name', ''),
                     functions: _.get(data, 'functions', []),
+                    type: _.get(data, 'type', ''),
                 };
                 req.session.save(() => {
                     if (req.xhr) {
