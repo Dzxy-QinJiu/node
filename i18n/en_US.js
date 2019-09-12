@@ -655,7 +655,7 @@ var en_US = {
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
     // 用户分析
-    'user.login.total.score': 'Total score', // 总分
+    'user.login.total.score': 'Total score', // 总评分
     'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
     'user.login.latest.immersion.score': 'Latest immersion score', // 最新沉浸度分数
     'user.login.freshness.score': 'Freshness score', // 新鲜度分数
@@ -3433,5 +3433,6 @@ var en_US = {
     'common.loss.contract.amount': 'Loss contract amount',//流失合同额
     'common.cost.date': 'Cost date',//费用日期
     'clue.customer.fail.get.all.lists': 'Failed to get all visit apply',//获取全部拜访申请失败
+    'user.manage.setting.rules': 'How to set socre rules?'//如何设置评分规则？
 };
 export default en_US;

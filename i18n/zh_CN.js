@@ -3546,5 +3546,6 @@ var zh_CN = {
     'common.loss.contract.amount': '流失合同额',
     'common.cost.date': '费用日期',
     'clue.customer.fail.get.all.lists': '获取全部拜访申请失败',
+    'user.manage.setting.rules': '如何设置评分规则？'
 };
 export default zh_CN;
