@@ -255,18 +255,18 @@ class RecommendCustomerRightPanel extends React.Component {
             });
             //提取线索前，先发请求获取还能提取的线索数量
             this.getRecommendClueCount((count) => {
-                if (count >= maxLimitExtractNumber){
-                    this.setState({
-                        tablePopoverVisible: record.id,
-                        singleExtractLoading: false
-                    });
-                }else{
+                // if (count >= maxLimitExtractNumber){
+                //     this.setState({
+                //         tablePopoverVisible: record.id,
+                //         singleExtractLoading: false
+                //     });
+                // }else{
                     this.setState({
                         tablePopoverVisible: ''
                     });
                     let submitObj = this.handleBeforeSumitChangeSales([record.id]);
                     this.handleExtractRecommendClues(submitObj);
-                }
+                // }
             });
         }
     }
@@ -384,17 +384,17 @@ class RecommendCustomerRightPanel extends React.Component {
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
             this.getRecommendClueCount((count) => {
-                if (count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
-                    this.setState({
-                        batchPopoverVisible: true,
-                        singleExtractLoading: false
-                    });
-                }else{
+                // if (count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
+                //     this.setState({
+                //         batchPopoverVisible: true,
+                //         singleExtractLoading: false
+                //     });
+                // }else{
                     this.setState({
                         batchPopoverVisible: false
                     });
                     this.handleBatchAssignClues(submitObj);
-                }
+                // }
             });
 
 
