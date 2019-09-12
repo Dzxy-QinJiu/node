@@ -8,7 +8,7 @@ function CrmOverviewStore() {
     //是否展示编辑基本资料页面的标志
     this.editShowFlag = false;
     this.crmUserList = [];//客户开通的用户列表
-    this.isUserLoading = false;//是否正在获取客户开通的用户列表
+    this.isUserLoading = true;//是否正在获取客户开通的用户列表
     this.userErrorMsg = '';//获取客户开通的用户列表的错误提示
     this.userTotal = 0;//客户开通的用户的总数
     this.isLoadingScheduleList = false;//是否正在获取未完成的日程列表
@@ -81,6 +81,10 @@ CrmOverviewStore.prototype.updateBasicData = function(newBasicData) {
     if (newBasicData.id === this.basicData.id) {
         this.basicData = newBasicData;
     }
+};
+
+CrmOverviewStore.prototype.setUserListLoading = function(flag) {
+    this.isUserLoading = !!flag;
 };
 
 module.exports = alt.createStore(CrmOverviewStore, 'CrmOverviewStore');
