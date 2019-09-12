@@ -24,6 +24,7 @@ function CrmOverviewActions() {
             _.isFunction(cb) && cb(result);
         }, (errorMsg) => {
             this.dispatch({loading: false, errorMsg: errorMsg || Intl.get('failed.get.crm.list', '获取客户列表失败')});
+            _.isFunction(cb) && cb(errorMsg);
         });
     };
     this.getNotCompletedScheduleList = function(queryObj) {

@@ -162,18 +162,15 @@ class BasicOverview extends React.Component {
         if(!_.get(curCustomer,'id')) return;
         basicOverviewAction.setCrmUserList([]);
         //该客户开通的用户个数
-        let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
         basicOverviewAction.getCrmUserList({
             customer_id: curCustomer.id,
             id: '',
-            page_size: appUserLength || 1
+            page_size: _.get(curCustomer, 'app_user_ids.length', 1)
         }, (result) => {
-            if(!appUserLength) {
-                //没有用户列表销售及销售主管才有用户申请
-                if (!_.get(result,'data[0]') && (userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
-                    //该客户没有用户时需要引导申请，申请用户时需要应用列表
-                    this.getAppList();
-                }
+            //没有用户列表,销售及销售主管才有用户申请
+            if (!_.get(result,'data[0]') && (userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+                //该客户没有用户时需要引导申请，申请用户时需要应用列表
+                this.getAppList();
             }
         });
     };
