@@ -110,9 +110,11 @@ dealBoardStore.prototype.dragDealEnd = function(dragResult) {
     let dragDeal = _.find(sourceStageObj.list, deal => deal.id === draggableId);
     //赢单、丢单的处理
     if (destination.droppableId === 'win' || destination.droppableId === 'lose') {
-        dragDeal.oppo_status = draggableId;
+        dragDeal.oppo_status = destination.droppableId;
         delete dragDeal.sale_stages;
         delete dragDeal.sale_stages_num;
+    }else{
+        dragDeal.sale_stages = destination.droppableId;
     }
     //交易插入的位置
     let dropIndex = destination.index;
