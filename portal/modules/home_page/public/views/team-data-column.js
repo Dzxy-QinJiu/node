@@ -15,8 +15,9 @@ import {
     getTodayTimeStamp,
     getThisWeekTimeStamp,
     getLastWeekTimeStamp,
-    getNearlyMonthTimeStamp,
-    getNearlyQuarterTimeStamp
+    getThisMonthTimeStamp,
+    getThisQuarterTimeStamp,
+    getNearlyThreeMonthsTimeStamp
 } from 'PUB_DIR/sources/utils/time-stamp-util';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
@@ -34,8 +35,9 @@ const DATE_TYPE_KEYS = {
     YESTERDAY: 'yesterday',
     CURRENT_WEEK: 'week',
     LAST_WEEK: 'lastWeek',
-    NEARLY_MONTH: 'nearly_month',
-    NEARLY_QUARTER: 'nearly_quarter'
+    THIS_MONTH: 'this_month',
+    THIS_QUARTER: 'this_quarter',
+    NEARLY_THREE_MONTH: 'nearly_three_month',
 };
 const DATE_TYPE_MAP = [
     {
@@ -55,6 +57,8 @@ const DATE_TYPE_MAP = [
         value: DATE_TYPE_KEYS.LAST_WEEK
     },
 ];
+
+const TABLE_MAX_WIDTH = 615;
 
 
 class TeamDataColumn extends React.Component {
@@ -329,7 +333,7 @@ class TeamDataColumn extends React.Component {
             className='my-data-contact-customers-card'/>);
     }
 
-    // 到期合同（可选近一月，近一季度）
+    // 到期合同（可选本月，本季度，近三个月）
     renderExpireContracts() {
         // 开通营收中心后才能显示
         if (isOpenCash()) {
@@ -339,7 +343,7 @@ class TeamDataColumn extends React.Component {
             const columns = _.get(chart, 'option.columns');
 
             // 设置table最大宽度
-            chart.option.scroll = {x: 615};
+            chart.option.scroll = {x: TABLE_MAX_WIDTH};
 
             //负责人列索引
             const endTimeColumnIndex = _.findIndex(columns, column => column.dataIndex === 'end_time');
@@ -371,39 +375,45 @@ class TeamDataColumn extends React.Component {
                 cardContainer: {
                     selectors: [{
                         options: [{
-                            name: Intl.get('clue.customer.last.month', '近一月'),
-                            value: DATE_TYPE_KEYS.NEARLY_MONTH,
+                            name: Intl.get('clue.customer.this.month', '本月'),
+                            value: DATE_TYPE_KEYS.THIS_MONTH,
                         },{
-                            name: Intl.get('clue.customer.last.quarter', '近一季度'),
-                            value: DATE_TYPE_KEYS.NEARLY_QUARTER,
+                            name: Intl.get('clue.customer.this.quarter', '本季度'),
+                            value: DATE_TYPE_KEYS.THIS_QUARTER,
+                        },{
+                            name: Intl.get('clue.customer.last.three.month', '近三个月'),
+                            value: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
                         }],
-                        activeOption: DATE_TYPE_KEYS.NEARLY_MONTH,
+                        activeOption: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
                         conditionName: 'date_type',
                     }],
                 },
                 conditions: _.concat(_.get(chart,'conditions', []), [{
                     name: 'date_type',
-                    value: DATE_TYPE_KEYS.NEARLY_MONTH,
+                    value: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
                 }]),
                 argCallback: arg => {
                     arg.query.load_size = 10000;
 
                     let date_type = arg.query.date_type;
 
-                    if (date_type === DATE_TYPE_KEYS.NEARLY_MONTH) {//近一月
-                        arg.query.starttime = getNearlyMonthTimeStamp().start_time;
-                        arg.query.endtime = getNearlyMonthTimeStamp().end_time;
-                    }else {//近一季度
-                        arg.query.starttime = getNearlyQuarterTimeStamp().start_time;
-                        arg.query.endtime = getNearlyQuarterTimeStamp().end_time;
+                    if (date_type === DATE_TYPE_KEYS.THIS_MONTH) {//本月
+                        arg.query.starttime = getThisMonthTimeStamp().start_time;
+                        arg.query.endtime = getThisMonthTimeStamp().end_time;
+                    }else if(date_type === DATE_TYPE_KEYS.THIS_QUARTER) {//本季度
+                        arg.query.starttime = getThisQuarterTimeStamp().start_time;
+                        arg.query.endtime = getThisQuarterTimeStamp().end_time;
+                    }else {//近三个月
+                        arg.query.starttime = moment().valueOf();
+                        arg.query.endtime = moment().add(3, 'months').valueOf();
                     }
                     delete arg.query.date_type;
                 },
                 noExportCsv: true,
                 processData: (data, chart) => {
                     const total = _.get(data, 'total', 0);
-                    chart.option.pagination = (total / 10) > 1;
-                    chart.title = Intl.get('contract.expire.statistics', '到期合同统计') + `(共${total}个)`;
+                    chart.option.pagination = total > 10;
+                    chart.title = Intl.get('contract.expire.statistics', '到期合同统计') + `(${Intl.get('sales.home.total.count', '共{count}个', {count: total})})`;
 
                     data = _.get(data, 'expired_contracts', []);
 
@@ -414,7 +424,7 @@ class TeamDataColumn extends React.Component {
                             contract_amount: item.contract_amount,
                             gross_profit: item.gross_profit,
                             total_gross_profit: item.total_gross_profit,
-                            end_time: moment(item.end_time).format('YYYY-MM-DD'),
+                            end_time: moment(item.end_time).format(oplateConsts.DATE_FORMAT),
                             customer_name: '',
                             user_name: '',
                         };

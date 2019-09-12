@@ -3358,6 +3358,7 @@ var en_US = {
     'clue.customer.this.month': 'This month',//本月
     'clue.customer.this.quarter': 'This quarter',//本季度
     'clue.customer.this.year': 'This year',//今年
+    'clue.customer.last.three.month': 'Last three months',//近三个月
     'clue.customer.last.week': 'Last week',//近一周
     'clue.customer.last.month': 'Last month',//近一月
     'clue.customer.last.quarter': 'Last quarter',//近一季度
