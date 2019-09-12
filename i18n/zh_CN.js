@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -268,6 +269,7 @@ var zh_CN = {
     'common.import.template': '模板',
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'common.create': '创建',
+    'common.stage.describe': '阶段描述',
 
     //公共部分--end
     'login.login': '登录',
@@ -844,6 +846,7 @@ var zh_CN = {
     'member.record.change.field.name': '修改了该成员的{field}，改为{name}',
     'member.record.get.record.failed': '获取成员变更失败',
     'member.record.no.record': '暂无变更记录',
+    'member.number.toplimit': '成员数量已达{number}个上限',
     //后台管理-成员end
 
     //组织管理start
@@ -908,6 +911,7 @@ var zh_CN = {
     'sales.process.customer.stage.nodata.tips': '暂无客户阶段，请先添加',
     'sales.process.customer.stage.toplimit': '客户阶段个数已达上限（8个）',
     'sales.process.delete.customer.stage.tips': '确定删除这个客户阶段么',
+    'sales.process.change.order.success': '变更客户阶段顺序成功',
     'sales.process.change.order.failed': '变更客户阶段顺序失败',
     'sales.process.customer.stage.play': '剧本',
     'sales.process.customer.stage.play.placeholder': '请输入剧本',
@@ -927,7 +931,10 @@ var zh_CN = {
     // 后台管理-销售流程end
 
     // 后台管理-客户阶段start
-    'customer.stage.define.new': '定义新客户阶段',
+    'customer.stage.add.customer.stage': '添加客户阶段',
+    'customer.stage.default.stage.tips': '默认不可编辑',
+    'customer.stage.stage.title': '阶段设置',
+    'customer.stage.name.placeholder': '请输入客户阶段',
     'customer.stage.set.scope': '设置适用范围',
     'customer.stage.click.show.detail': '点击查看详细信息',
     'customer.stage.edit.stage': '编辑{stage}阶段',
@@ -936,6 +943,7 @@ var zh_CN = {
     'customer.stage.delete.stage': '删除客户阶段',
     'customer.stage.select.team.user.placeholder': '请选择适用该阶段的团队或个人',
     'customer.stage.add.stage.title': '客户阶段{num}',
+    'customer.stage.click.add.stage': '添加阶段',
     // 后台管理-客户阶段end
 
     //应用管理start
@@ -2446,7 +2454,9 @@ var zh_CN = {
     'errorcode.17334': '获取最近联系客户统计失败',
     'errorcdoe.17331': '统计通话的客户的地域,阶段,行业分布失败',
     'errorcode.162': '已达到一天的提取上限',
+    'errorcode.163': '成员数量已达上限',
     'errorcode.phone.busy': '座机繁忙，请稍后再试！',
+    'errorcode.164': '获取即将到期的客户统计数据失败',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
@@ -2690,7 +2700,6 @@ var zh_CN = {
     'clue,customer.add.schedule.error': '联系计划添加失败',
     'batch.failed.add.schedule': '{customerName}添加联系计划失败',
     'batch.success.add.schedule': '所有联系计划均添加成功',
-    'shedule.list.add.todo': '添加待办',
     'crm.get.phone.failed': '获取座机号失败!',
     'crm.call.phone.success': '拨打成功',
     'crm.call.phone.failed': '拨打失败',
@@ -3529,6 +3538,13 @@ var zh_CN = {
     'clue.recommend.extract.num.limit': '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     'clue.customer.noty.all.list': '查看所有线索？',
-    'clue.customer.fail.get.all.lists': '获取全部拜访申请失败'
+    'common.personal.contribution.score': '个人贡献分数',
+    'common.collection.of.gross.profit.margin.score': '回款毛利率分数',
+    'common.indicators.for.details': '指标详情',
+    'common.the.numerical': '数值',
+    'common.gross.margin.score.of.newly.signed.refund': '新签回款毛利分数',
+    'common.loss.contract.amount': '流失合同额',
+    'common.cost.date': '费用日期',
+    'clue.customer.fail.get.all.lists': '获取全部拜访申请失败',
 };
 export default zh_CN;

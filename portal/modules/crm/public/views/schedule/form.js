@@ -224,7 +224,7 @@ var CrmAlertForm = createReactClass({
                 if (resData.id) {
                     this.showMessage(Intl.get('user.user.add.success', '添加成功'));
                     _.isFunction(this.props.handleScheduleCancel) && this.props.handleScheduleCancel(resData);
-                    // 判断是否是添加待办项
+                    // 判断是否是添加日程项
                     if(this.props.isAddToDoClicked) {
                         _.isFunction(this.props.handleScheduleAdd) && this.props.handleScheduleAdd(resData);
                     } else {

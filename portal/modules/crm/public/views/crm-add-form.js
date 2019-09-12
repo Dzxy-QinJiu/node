@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+
 require('../css/crm-add-form.less');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
@@ -71,6 +73,8 @@ var CRMAddForm = createReactClass({
             isLoadingIndustry: false,//是否正在加载行业列表
             submitErrorMsg: '',//保存失败的错误提示
             phoneNum: this.props.phoneNum,//外部传入的电话值
+            isBasicExpanded: false, // 客户基本信息是否展示其余项不折叠
+            isContactWayExpanded: false, // 联系方式是否展示其余项不折叠
         };
     },
     getDefaultProps() {
@@ -275,13 +279,16 @@ var CRMAddForm = createReactClass({
         if (customerName && customerNameRegex.test(customerName)) {
             Trace.traceEvent(e, '添加客户名称');
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
+                let list = _.get(data,'list');
+                //客户名是否重复
+                let repeatCustomer = _.some(list,{'name':customerName});
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true, existCustomerList: []});
                 } else if (_.isObject(data)) {
-                    if (data.result === 'true') {
+                    if (!repeatCustomer) {
                         //不存在
-                        this.setState({customerNameExist: false, checkNameError: false, existCustomerList: []});
+                        this.setState({customerNameExist: false, checkNameError: false, existCustomerList: _.get(data, 'list', [])});
                     } else {
                         //已存在
                         this.setState({customerNameExist: true, checkNameError: false, existCustomerList: _.get(data, 'list', [])});
@@ -360,6 +367,16 @@ var CRMAddForm = createReactClass({
         return options;
     },
 
+    //展开、收起联系方式的处理
+    toggleContactWay: function() {
+        this.setState({isContactWayExpanded: !this.state.isContactWayExpanded});
+    },
+
+    //展开、收起客户基本信息的处理
+    toggleBasicInfo: function() {
+        this.setState({isBasicExpanded: !this.state.isBasicExpanded});
+    },
+
     renderFormContent: function(){
         var formData = this.state.formData;
         var status = this.state.status;
@@ -385,12 +402,32 @@ var CRMAddForm = createReactClass({
             wrapperCol: {span: 19},
         };
         let formHeight = $('body').height() - ADD_TITLE_HEIGHT;
+        let isBasicExpanded = this.state.isBasicExpanded;
+        let isContactWayExpanded = this.state.isContactWayExpanded;
+        //客户基本信息展开、收起
+        const basicInfoClassName = classNames('iconfont', {
+            'icon-up-twoline handle-btn-item': isBasicExpanded,
+            'icon-down-twoline handle-btn-item': !isBasicExpanded
+        });
+        //联系方式展开、收起
+        const contactWayClassName = classNames('iconfont', {
+            'icon-up-twoline handle-btn-item': isContactWayExpanded,
+            'icon-down-twoline handle-btn-item': !isContactWayExpanded
+        });
         return (<Form layout='horizontal' className="crm-add-form" id="crm-add-form" style={{height: formHeight}}>
             <GeminiScrollbar>
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     <div className="add-info-title">
                         <span className="iconfont icon-detail-list"/>
                         {Intl.get('user.user.basic', '基本信息')}
+                        <div className="add-info-buttons">
+                            <span
+                                className={basicInfoClassName}
+                                data-tracename={isBasicExpanded ? '收起详情' : '展开详情'}
+                                title={isBasicExpanded ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}
+                                onClick={this.toggleBasicInfo}
+                            />
+                        </div>
                     </div>
                     <FormItem
                         {...formItemLayout}
@@ -411,81 +448,92 @@ var CRMAddForm = createReactClass({
                             />
                         </Validator>
                     </FormItem>
-                    {renderCustomerNameMsg(this.state.customerNameExist, this.state.existCustomerList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get('common.industry', '行业')}
-                        id="industry"
-                        required={true}
-                        validateStatus={this.renderValidateStyle('industry')}
-                        help={status.industry.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.industry.errors && status.industry.errors.join(','))}
-                    >
-                        {this.state.isLoadingIndustry ? (
-                            <div className="industry-list-loading"><ReactIntl.FormattedMessage id="crm.88"
-                                defaultMessage="正在获取行业列表"/><Icon
-                                type="loading"/></div>) : (
-                            <Validator
-                                rules={[{required: true, message: Intl.get('crm.22', '请选择行业')}]}>
-                                <Select showSearch placeholder={Intl.get('crm.22', '请选择行业')} name="industry"
-                                    searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
-                                    optionFilterProp="children"
-                                    notFoundContent={!industryList.length ? Intl.get('crm.24', '暂无行业') : Intl.get('crm.23', '无相关行业')}
-                                    onChange={this.setField.bind(this, 'industry')}
-                                    value={formData.industry}
-                                    onSelect={(e) => {
-                                        this.handleSelect(e);
-                                    }}
-                                    getPopupContainer={() => document.getElementById('crm-add-form')}
-                                    filterOption={(input, option) => ignoreCase(input, option)}
+                    {renderCustomerNameMsg(this.state.existCustomerList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
+                    {
+                        isBasicExpanded ? (
+                            <div>
+                                <FormItem
+                                    {...formItemLayout}
+                                    label={Intl.get('common.industry', '行业')}
+                                    id="industry"
+                                    // required={true}
+                                    validateStatus={this.renderValidateStyle('industry')}
+                                    help={status.industry.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.industry.errors && status.industry.errors.join(','))}
                                 >
-                                    {industryOptions}
-                                </Select>
-                            </Validator>)}
-                    </FormItem >
-                    <FormItem
-                        label={Intl.get('crm.administrative.level', '行政级别')}
-                        {...formItemLayout}
-                    >
-                        <Select placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
-                            name="administrative_level"
-                            onChange={this.setField.bind(this, 'administrative_level')}
-                            value={formData.administrative_level}
-                            getPopupContainer={() => document.getElementById('crm-add-form')}
-                        >
-                            {this.getAdministrativeLevelOptions()}
-                        </Select>
-                    </FormItem >
-                    <AntcAreaSelection labelCol="5" wrapperCol="19" width="100%"
-                        colon={false}
-                        label={Intl.get('crm.96', '地域')}
-                        placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
-                        provName={formData.province} cityName={formData.city}
-                        countyName={formData.county} updateLocation={this.updateLocation}/>
-                    <FormItem
-                        label={Intl.get('common.address', '地址')}
-                        {...formItemLayout}
-                    >
-                        <Input name="address" value={formData.address}
-                            placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
-                            onChange={this.setField.bind(this, 'address')}
-                        />
-                    </FormItem>
-                    < FormItem
-                        label={Intl.get('common.remark', '备注')}
-                        id="remarks"
-                        {...formItemLayout}
-                        validateStatus={this.renderValidateStyle('remarks')}
-                    >
-                        <Input type="textarea" id="remarks" rows="3" value={formData.remarks}
-                            onChange={this.setField.bind(this, 'remarks')}
-                            onBlur={(e) => {
-                                this.handleRemarkInput(e);
-                            }}
-                        />
-                    </FormItem>
+                                    {this.state.isLoadingIndustry ? (
+                                        <div className="industry-list-loading"><ReactIntl.FormattedMessage id="crm.88"
+                                            defaultMessage="正在获取行业列表"/><Icon
+                                            type="loading"/></div>) : (
+                                        <Select showSearch placeholder={Intl.get('crm.22', '请选择行业')} name="industry"
+                                            searchPlaceholder={Intl.get('crm.89', '输入行业进行搜索')}
+                                            optionFilterProp="children"
+                                            notFoundContent={!industryList.length ? Intl.get('crm.24', '暂无行业') : Intl.get('crm.23', '无相关行业')}
+                                            onChange={this.setField.bind(this, 'industry')}
+                                            value={formData.industry}
+                                            onSelect={(e) => {
+                                                this.handleSelect(e);
+                                            }}
+                                            getPopupContainer={() => document.getElementById('crm-add-form')}
+                                            filterOption={(input, option) => ignoreCase(input, option)}
+                                        >
+                                            {industryOptions}
+                                        </Select>)}
+                                </FormItem >
+                                <FormItem
+                                    label={Intl.get('crm.administrative.level', '行政级别')}
+                                    {...formItemLayout}
+                                >
+                                    <Select placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
+                                        name="administrative_level"
+                                        onChange={this.setField.bind(this, 'administrative_level')}
+                                        value={formData.administrative_level}
+                                        getPopupContainer={() => document.getElementById('crm-add-form')}
+                                    >
+                                        {this.getAdministrativeLevelOptions()}
+                                    </Select>
+                                </FormItem >
+                                <AntcAreaSelection labelCol="5" wrapperCol="19" width="100%"
+                                    colon={false}
+                                    label={Intl.get('crm.96', '地域')}
+                                    placeholder={Intl.get('crm.address.placeholder', '请选择地域')}
+                                    provName={formData.province} cityName={formData.city}
+                                    countyName={formData.county} updateLocation={this.updateLocation}/>
+                                <FormItem
+                                    label={Intl.get('common.address', '地址')}
+                                    {...formItemLayout}
+                                >
+                                    <Input name="address" value={formData.address}
+                                        placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                                        onChange={this.setField.bind(this, 'address')}
+                                    />
+                                </FormItem>
+                                < FormItem
+                                    label={Intl.get('common.remark', '备注')}
+                                    id="remarks"
+                                    {...formItemLayout}
+                                    validateStatus={this.renderValidateStyle('remarks')}
+                                >
+                                    <Input type="textarea" id="remarks" rows="3" value={formData.remarks}
+                                        onChange={this.setField.bind(this, 'remarks')}
+                                        onBlur={(e) => {
+                                            this.handleRemarkInput(e);
+                                        }}
+                                    />
+                                </FormItem>
+                            </div>
+                        ) : null
+                    }
                     <div className="add-info-title contact-info-title">
                         <span className="iconfont icon-contact-head"/>
                         {Intl.get('call.record.contacts', '联系人')}
+                        <div className="add-info-buttons">
+                            <span
+                                className={contactWayClassName}
+                                data-tracename={isContactWayExpanded ? '收起详情' : '展开详情'}
+                                title={isContactWayExpanded ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情')}
+                                onClick={this.toggleContactWay}
+                            />
+                        </div>
                     </div>
                     <FormItem
                         label={Intl.get('common.name', '姓名')}
@@ -501,40 +549,46 @@ var CRMAddForm = createReactClass({
                             />
                         </Validator>
                     </FormItem>
-                    <FormItem
-                        label={Intl.get('crm.91', '职位')}
-                        {...formItemLayout}
-                        validateStatus={this.renderValidateStyle('contacts0_position')}
-                        help={status.contacts0_position.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
-                    >
-                        <Validator
-                            rules={[{required: false, min: 1, message: Intl.get('crm.92', '请输入联系人职位')}]}>
-                            <Input name="contacts0_position" placeholder={Intl.get('crm.92', '请输入联系人职位')}
-                                value={formData.contacts0_position}
-                                onChange={this.setField.bind(this, 'contacts0_position')}
-                                data-tracename="填写联系人职位"
-                            />
-                        </Validator>
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label={Intl.get('user.apply.detail.table.role', '角色')}
-                        id="contacts0_role"
-                        validateStatus={this.renderValidateStyle('contacts0_role')}
-                        help={status.contacts0_role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
-                    >
-                        <Validator
-                            rules={[{required: true, min: 1, message: Intl.get('crm.93', '请输入联系人角色')}]}>
-                            <Select name="contacts0_role" placeholder={Intl.get('crm.94', '请输入角色')}
-                                value={this.state.formData.contacts0_role}
-                                onChange={this.setField.bind(this, 'contacts0_role')}
-                                onSelect={this.handleRoleSelect}
-                                getPopupContainer={() => document.getElementById('crm-add-form')}
-                            >
-                                {roleOptions}
-                            </Select>
-                        </Validator>
-                    </FormItem>
+                    {
+                        isContactWayExpanded ? (
+                            <div>
+                                <FormItem
+                                    label={Intl.get('crm.91', '职位')}
+                                    {...formItemLayout}
+                                    validateStatus={this.renderValidateStyle('contacts0_position')}
+                                    help={status.contacts0_position.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_position.errors && status.contacts0_position.errors.join(','))}
+                                >
+                                    <Validator
+                                        rules={[{required: false, min: 1, message: Intl.get('crm.92', '请输入联系人职位')}]}>
+                                        <Input name="contacts0_position" placeholder={Intl.get('crm.92', '请输入联系人职位')}
+                                            value={formData.contacts0_position}
+                                            onChange={this.setField.bind(this, 'contacts0_position')}
+                                            data-tracename="填写联系人职位"
+                                        />
+                                    </Validator>
+                                </FormItem>
+                                <FormItem
+                                    {...formItemLayout}
+                                    label={Intl.get('user.apply.detail.table.role', '角色')}
+                                    id="contacts0_role"
+                                    validateStatus={this.renderValidateStyle('contacts0_role')}
+                                    help={status.contacts0_role.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.contacts0_role.errors && status.contacts0_role.errors.join(','))}
+                                >
+                                    <Validator
+                                        rules={[{required: true, min: 1, message: Intl.get('crm.93', '请输入联系人角色')}]}>
+                                        <Select name="contacts0_role" placeholder={Intl.get('crm.94', '请输入角色')}
+                                            value={this.state.formData.contacts0_role}
+                                            onChange={this.setField.bind(this, 'contacts0_role')}
+                                            onSelect={this.handleRoleSelect}
+                                            getPopupContainer={() => document.getElementById('crm-add-form')}
+                                        >
+                                            {roleOptions}
+                                        </Select>
+                                    </Validator>
+                                </FormItem>
+                            </div>
+                        ) : null
+                    }
                     <PhoneInput
                         labelCol={{span: 5}}
                         wrapperCol={{span: 19}}

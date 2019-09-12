@@ -8,6 +8,8 @@ import {getWorklistApplyList, getAllApplyList} from 'PUB_DIR/sources/utils/apply
 let userData = require('PUB_DIR/sources/user-data');
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
+import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 function ReportSendApplyActions() {
     this.generateActions(
         'setInitState',
@@ -26,8 +28,12 @@ function ReportSendApplyActions() {
     this.getAllApplyList = function(queryObj,callback) {
         //需要先获取待审批列表，成功后获取全部列表
         this.dispatch({loading: true, error: false});
-        //如果是全部申请，要先取一下待我审批的列表
-        if (queryObj.status === 'ongoing' || !queryObj.status){
+        //如果选中的是我审批过的
+        if (queryObj.status === APPLY_TYPE_STATUS_CONST.MYAPPROVED){
+            delete queryObj.status;
+            getApplyListApprovedByMe.bind(this,queryObj)();
+        }else if (queryObj.status === 'ongoing' || !queryObj.status){
+            //如果是全部申请，要先取一下待我审批的列表
             getWorklistApplyList({type: APPLY_APPROVE_TYPES.OPINIONREPORT}).then((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
                 if (queryObj.status && queryObj.status === 'ongoing') {
@@ -57,6 +63,20 @@ function ReportSendApplyActions() {
             getDiffTypeApplyList(this,queryObj);
         }
     };
+}
+//获取我审批过的列表
+function getApplyListApprovedByMe(queryObj) {
+    ApplyApproveAjax.getApplyListApprovedByMe().sendRequest(queryObj).success((data) => {
+        scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+        this.dispatch({error: false, loading: false, data: data});
+    }).error(xhr => {
+            this.dispatch({
+                error: true,
+                loading: false,
+                errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取我审批过的{type}申请失败', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')})
+            });
+        }
+    );
 }
 function getDiffTypeApplyList(that,queryObj,workListArr) {
     getAllApplyList(queryObj).then((data) => {

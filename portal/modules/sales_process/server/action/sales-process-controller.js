@@ -77,6 +77,15 @@ exports.deleteCustomerStage = (req, res) => {
     });
 };
 
+// 删除某个客户阶段的具体的阶段
+exports.deleteCustomerStageColor = (req, res) => {
+    salesProcessService.deleteCustomerStageColor(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 // 变更客户阶段顺序
 exports.changeCustomerStageOrder = (req, res) => {
     salesProcessService.changeCustomerStageOrder(req, res).on('success', (data) => {

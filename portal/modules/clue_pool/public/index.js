@@ -706,7 +706,7 @@ class ClueExtract extends React.Component {
                                         <span
                                             className="clue_source_time">{moment(salesClueItem.source_time).format(oplateConsts.DATE_FORMAT)}&nbsp;</span>
 
-                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '描述：{content}', {content: salesClueItem.source}) : null}</span>
+                                        <span>{salesClueItem.source ? Intl.get('clue.item.acceess.channel', '详情：{content}', {content: salesClueItem.source}) : null}</span>
 
                                     </span>
                                 </ShearContent>
@@ -775,7 +775,7 @@ class ClueExtract extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !user.isCommonSales;
                     let assigenCls = classNames('assign-btn', {'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue', {'assign-privilege ': hasAssignedPrivilege},'handle-btn-item');
+                    let containerCls = classNames('singl-extract-clue', {'assign-privilege handle-btn-item': hasAssignedPrivilege},);
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}

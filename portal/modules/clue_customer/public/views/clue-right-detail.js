@@ -24,6 +24,8 @@ var tabNameList = {
 var noop = function() {
 
 };
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 const DYNAMICHEIGHT = {
     LAYOUT: 117,
     HAS_PHONE_PANEL: 225,
@@ -269,6 +271,12 @@ class ClueRightPanel extends React.Component {
             } else {
                 this.setState({
                     isRemoveClue: {},
+                });
+                var curClue = this.state.curClue;
+                subtracteGlobalClue(curClue, (flag) => {
+                    if(flag){
+                        clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
+                    }
                 });
                 _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel(e);
             }

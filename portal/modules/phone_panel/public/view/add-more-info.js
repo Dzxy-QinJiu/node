@@ -82,7 +82,7 @@ class AddMoreInfo extends React.Component {
                 <TopTitleCMP
                     titleText={'+' + Intl.get('call.record.product.feedback', '产品反馈')}
                 />
-                {/*添加待办事项 产品反馈 竞品信息*/}
+                {/*添加日程 产品反馈 竞品信息*/}
                 <div className="product-feedback-container">
                     <FormItem
                         label={Intl.get('call.record.application.product', '应用产品')}

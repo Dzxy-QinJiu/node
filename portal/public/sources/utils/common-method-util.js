@@ -950,19 +950,21 @@ function isSalesRole() {
 }
 exports.isSalesRole = isSalesRole;
 exports.subtracteGlobalClue = function(clueItem,callback) {
-    var unHandleClueLists = Oplate.unread['unhandleClueList'];
-    var targetObj = _.find(unHandleClueLists,item => item.id === clueItem.id);
-    unHandleClueLists = _.filter(unHandleClueLists,item => item.id !== clueItem.id);
-    if (targetObj){
-        Oplate.unread['unhandleClue'] -= 1;
-        if (timeoutFunc) {
-            clearTimeout(timeoutFunc);
+    if (Oplate && Oplate.unread) {
+        var unHandleClueLists = Oplate.unread['unhandleClueList'];
+        var targetObj = _.find(unHandleClueLists,item => item.id === clueItem.id);
+        if (targetObj){
+            Oplate.unread['unhandleClue'] -= 1;
+            Oplate.unread['unhandleClueList'] = _.filter(unHandleClueLists,item => item.id !== clueItem.id);
+            if (timeoutFunc) {
+                clearTimeout(timeoutFunc);
+            }
+            timeoutFunc = setTimeout(function() {
+                //触发展示的组件待处理线索数的刷新
+                notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
+            }, timeout);
+            _.isFunction(callback) && callback(true);
         }
-        timeoutFunc = setTimeout(function() {
-            //触发展示的组件待审批数的刷新
-            notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT);
-        }, timeout);
-        _.isFunction(callback) && callback(true);
     }
 };
 
@@ -992,14 +994,13 @@ exports.isCiviwRealm = () => {
 
 //客户名唯一性验证的提示信息
 /**
- * @param customerNameExist 客户名是否存在
  * @param existCustomerList 已存在的客户列表
  * @param checkNameError 客户名检验接口报错的提示
  * @param curCustomerName 当前输入的客户名
  * @param showRightPanel 点击客户名打开客户详情的方法
 * */
-exports.renderCustomerNameMsg = (customerNameExist, existCustomerList, checkNameError, curCustomerName, showRightPanel) => {
-    if (customerNameExist) {
+exports.renderCustomerNameMsg = ( existCustomerList, checkNameError, curCustomerName, showRightPanel) => {
+    if (existCustomerList.length) {
         let list = _.cloneDeep(existCustomerList);
         const sameCustomer = _.find(list, item => item.name === curCustomerName);
         const curUserId = userData.getUserData().user_id;

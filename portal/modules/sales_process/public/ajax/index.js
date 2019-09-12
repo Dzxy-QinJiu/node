@@ -148,6 +148,24 @@ exports.deleteCustomerStage = (id) => {
     return Deferred.promise();
 };
 
+
+// 删除某个客户阶段的具体的阶段
+exports.deleteCustomerStageColor = (deleteCustomerStage, id) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/delete/customer/color/stage/${id}`,
+        dataType: 'json',
+        type: 'put',
+        data: deleteCustomerStage,
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 // 变更客户阶段顺序
 exports.changeCustomerStageOrder = (stageList) => {
     let Deferred = $.Deferred();

@@ -21,7 +21,8 @@ const salesProcessRestApis = {
     addCustomerStageSaleBehavior: commonUrl + '/stage/:sales_process_id/:stage_id/sales_activities', // 添加客户阶段的销售行为
     getCustomerStageAutoConditions: commonUrl + '/stage/autoconditions', // 获取客户阶段的自动变更条件
     editCustomerStageAutoConditions: commonUrl + '/stage/:sales_process_id/:stage_id/auto_conditions', // 编辑客户阶段的自动变更条件（添加或是更新）
-    changeAutoConditionsStatus: commonUrl + '/stage/:sales_process_id/:stage_id/auto_condition/:status' // 启/停用自动化条件
+    changeAutoConditionsStatus: commonUrl + '/stage/:sales_process_id/:stage_id/auto_condition/:status', // 启/停用自动化条件
+    deleteCustomerStageColor: commonUrl + '/stage/color/:sales_process_id' // 删除某个客户阶段的具体的阶段
 };
 
 exports.urls = salesProcessRestApis;
@@ -118,6 +119,17 @@ exports.deleteCustomerStage = (req, res) => {
             req: req,
             res: res
         }, null);
+};
+
+// 删除某个客户阶段的具体的阶段
+exports.deleteCustomerStageColor = (req, res) => {
+    let id = _.get(req, 'params.id');
+    return restUtil.authRest.put(
+        {
+            url: salesProcessRestApis.deleteCustomerStageColor.replace(':sales_process_id', id),
+            req: req,
+            res: res
+        }, req.body);
 };
 
 // 变更客户阶段顺序

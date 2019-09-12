@@ -37,10 +37,23 @@ const memberRestApis = {
     // 成员分配职务
     setMemberPosition: '/rest/base/v1/user/member/teamrole',
     // 获取成员变动记录
-    getMemberChangeRecord: '/rest/base/v1/user/member/timeline'
+    getMemberChangeRecord: '/rest/base/v1/user/member/timeline',
+    // 获取成员的组织信息
+    getMemberOrganization: '/rest/base/v1/user/member/organization'
 };
 
 exports.urls = memberRestApis;
+
+
+// 获取成员的组织信息
+exports.getMemberOrganization = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: memberRestApis.getMemberOrganization,
+            req: req,
+            res: res
+        }, null);
+};
 
 function getUserLists(req, res, condition, isGetAllUser, teamrole_id) {
     let url = memberRestApis.getUsers + '?with_extentions=' + true;
@@ -217,7 +230,6 @@ function setMemberPosition(req, res, obj) {
         });
     });
 }
-
 
 //添加用户
 exports.addUser = function(req, res, frontUser) {

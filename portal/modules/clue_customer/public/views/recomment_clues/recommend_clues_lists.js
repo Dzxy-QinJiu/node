@@ -359,7 +359,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !this.isCommonSales();
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue',{'assign-privilege ': hasAssignedPrivilege},'handle-btn-item');
+                    let containerCls = classNames('singl-extract-clue',{'assign-privilege handle-btn-item': hasAssignedPrivilege},);
 
                     return (
                         <div className={containerCls} ref='trace-person'>

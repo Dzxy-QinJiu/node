@@ -57,6 +57,7 @@ import moment from 'moment';
 import ClueTraceAction from '../../action/clue-trace-action';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -392,9 +393,7 @@ class ClueDetailOverview extends React.Component {
             return;
         }
         var curClue = this.state.curClue;
-        if (Oplate && Oplate.unread && curClue.status === SELECT_TYPE.WILL_TRACE) {
-            subtracteGlobalClue(curClue);
-        }
+        subtracteGlobalClue(curClue);
         saveObj.lead_id = saveObj.id;
         saveObj.type = 'other';
         delete saveObj.id;
@@ -432,7 +431,7 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    //分配线索给某个销售
+    //分配线索给某个销售 && 这个销售不是当前账号
     handleChangeAssignedSales = (submitObj, successFunc, errorFunc) => {
         var user_id = _.get(this.state.curClue,'user_id');
         var curClue = this.state.curClue;
@@ -461,8 +460,12 @@ class ClueDetailOverview extends React.Component {
                 } else {
 
                     if (_.isFunction(successFunc)) successFunc();
-                    if (Oplate && Oplate.unread && curClue.status === SELECT_TYPE.WILL_TRACE) {
-                        subtracteGlobalClue(curClue);
+                    if (submitObj.user_id !== userData.getUserData().user_id) {
+                        subtracteGlobalClue(curClue, (flag) => {
+                            if(flag){
+                                clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
+                            }
+                        });
                     }
                     this.setState({
                         clickAssigenedBtn: false
@@ -791,6 +794,7 @@ class ClueDetailOverview extends React.Component {
                         type: 'other',
                         showAdd: false
                     };
+                    subtracteGlobalClue(item);
                     ClueTraceAction.addClueTraceWithoutAjax(newTrace);
                     this.setState({
                         submitInvalidateLoading: false,

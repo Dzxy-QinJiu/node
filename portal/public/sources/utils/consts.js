@@ -320,7 +320,14 @@ export const STAGE_OPTIONS = [
 export const UNKNOWN = Intl.get('user.unknown', '未知');
 
 export const COMMON_OTHER_ITEM = 'otherSelectedItem';
-
+export const APPLY_TYPE_STATUS_CONST = {
+    ONGOING: 'ongoing',
+    PASS: 'pass',
+    CANCEL: 'cancel',
+    REJECT: 'reject',
+    ALL: 'all',
+    MYAPPROVED: 'myApproved'
+};
 //标签选项下的特殊标签
 export const SPECIAL_LABEL = {
     NON_TAGGED_CUSTOMER: Intl.get('crm.tag.unknown', '未打标签的客户'),
@@ -342,6 +349,8 @@ export const selectMenuList = [
         key: 'reject', value: Intl.get('user.apply.reject', '已驳回'),
     },{
         key: 'cancel', value: Intl.get('user.apply.backout', '已撤销'),
+    },{
+        key: APPLY_TYPE_STATUS_CONST.MYAPPROVED, value: Intl.get('apply.list.my.approved', '我审批过')
     }];
 //申请列表滚动条参数
 export const APPLY_LIST_LAYOUT_CONSTANTS = {
@@ -443,14 +452,7 @@ export const INTEGRATE_TYPES = {
 };
 //申请审批刷新待审批数的时间间隔
 export const REFRESH_APPLY_RANGE = 1000;//1秒后刷新未读数
-export const APPLY_TYPE_STATUS_CONST = {
-    ONGOING: 'ongoing',
-    PASS: 'pass',
-    CANCEL: 'cancel',
-    REJECT: 'reject',
-    ALL: 'all',
-    MYAPPROVED: 'myApproved'
-};
+
 //组织类型
 export const ORGANIZATION_TYPE = {
     EEFUNG: '36v8tudu9Z', // 蚁坊

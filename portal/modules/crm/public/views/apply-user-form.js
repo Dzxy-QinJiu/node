@@ -524,7 +524,9 @@ const ApplyUserForm = createReactClass({
                 name="user_name"
                 placeholder={placeholder}
                 value={userName}
-                onChange={this.onUserNameChange}/>
+                onChange={this.onUserNameChange}
+                autocomplete="off"
+                autoFocus/>
         );
         let customerContacts = this.state.customerContacts;
         let emailList = [];//联系人的邮箱列表

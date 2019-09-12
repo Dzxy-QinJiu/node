@@ -265,7 +265,7 @@ class ExpireScheduleLists extends React.Component {
             }, DELAY_RANGE.ANIMATION);
         });
     };
-    //点击添加待办按钮
+    //点击添加日程按钮
     handleAddTodo = () => {
         // 这里改为右侧滑出待办项面板
         this.props.showAddToDo();
@@ -301,7 +301,7 @@ class ExpireScheduleLists extends React.Component {
                 </div>
                 {/*添加日程*/}
                 <div className="add-schedule-btn">
-                    <Button type="primary" className="btn-item" onClick={this.handleAddTodo} data-tracename="添加待办">{Intl.get('shedule.list.add.todo', '添加待办')}</Button>
+                    <Button type="primary" className="btn-item" onClick={this.handleAddTodo} data-tracename="添加日程">{Intl.get('home.page.add.schedule', '添加日程')}</Button>
                 </div>
             </div>
         );
