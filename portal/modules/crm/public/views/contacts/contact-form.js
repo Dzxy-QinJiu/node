@@ -70,43 +70,29 @@ class ContactForm extends React.Component {
     componentDidMount() {
         //如果需要在组件装载后立即校验电话输入框中的内容是否符合规则
         if (this.props.isValidatePhoneOnDidMount) {
-            let phoneFormValArray = [];
-
-            _.each(this.phoneInputRefs, item => {
-                phoneFormValArray.push(this.getPhoneFormValue(item.props.form));
-            });
-
-            Promise.all(phoneFormValArray);
+            this.props.form.validateFields();
         }
     }
 
-    handleSubmit = (cb, e) => {
+    handleSubmit = (e) => {
         e && e.preventDefault();
+        let saveObj = {
+            error: false,
+            data: {}
+        };
         this.props.form.validateFields((error) => {
-            if (this.phoneInputRefs.length) {
-                //存在电话输入框时，验证一下填写的电话是否符合要求
-                let phoneFormValArray = [];
-                _.each(this.phoneInputRefs, item => {
-                    phoneFormValArray.push(::this.getPhoneFormValue(item.props.form));
-                });
-                Promise.all(phoneFormValArray).then(result => {
-                    let firstErrorItem = _.find(result, item => item.errs);
-                    if (firstErrorItem || error) {
-                        cb && cb(false);
-                    } else {
-                        let res = this.doSubmit();
-                        cb && cb(res);
-                    }
-                });
+            if (error) {
+                saveObj.error = true;
             } else {
-                if (error) {
-                    cb && cb(false);
-                } else {
-                    let res = this.doSubmit();
-                    cb && cb(res);
+                let res = this.doSubmit();
+                if(_.isObject(res)) {
+                    saveObj.data = res;
+                }else {
+                    saveObj.error = true;
                 }
             }
         });
+        return saveObj;
     };
 
     doSubmit() {
@@ -118,6 +104,7 @@ class ContactForm extends React.Component {
             if (key.indexOf(CONTACT_KEYS_MAP.PHONE) !== -1) {
                 if(contactVal) phoneArray.push(contactVal);
                 delete formData[key];
+                delete stateFormData[CONTACT_KEYS_MAP.PHONE];
             } else if (key.indexOf(CONTACT_KEYS_MAP.QQ) !== -1) {
                 if(contactVal) qqArray.push(contactVal);
                 delete formData[key];
@@ -138,12 +125,6 @@ class ContactForm extends React.Component {
         if (!this.state.isValidNameDepartment) {
             return false;
         }
-        let phoneArr = stateFormData[CONTACT_KEYS_MAP.PHONE];
-        //过滤出不为空的联系电话
-        phoneArray = _.chain(phoneArr)
-            .map(phone => phone.value)
-            .filter(phone => phone)
-            .value();
         let hasPhone = _.some(phoneArray, phone => phone);
         //提示电话为必填
         if (!hasPhone) {
@@ -255,12 +236,6 @@ class ContactForm extends React.Component {
         }
     };
 
-    setField = (type, index, e) => {
-        let formData = this.state.formData;
-        formData[type][index].value = _.get(e.target,'value','');
-        this.setState({formData});
-    };
-
     //联系方式的数组展开放到对应的formData中
     formatContact(type, contactData, formData) {
         formData[type] = [];
@@ -300,18 +275,16 @@ class ContactForm extends React.Component {
         };
     }
 
-    getPhoneFormValue = (form) => {
-        return new Promise(resolve => {
-            form.validateFields((errs, fields) => {
-                resolve({errs, fields});
-            });
-        });
-    };
-
     //获取当前已添加的电话列表
     getCurPhoneArray(){
-        let formData = this.state.formData;
-        return _.map(formData[CONTACT_KEYS_MAP.PHONE], phone => _.trim(phone.value));
+        let values = this.props.form.getFieldsValue();
+        let phoneArray = [];
+        _.each(values, (val, key) => {
+            if (key.indexOf(CONTACT_KEYS_MAP.PHONE) !== -1) {
+                phoneArray.push(_.trim(val));
+            }
+        });
+        return phoneArray;
     }
 
     //获取联系人电话验证规则
@@ -337,29 +310,26 @@ class ContactForm extends React.Component {
 
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
-                        // TODO 判断当前添加的电话列表中是否已存在该电话,获取当前已添加的电话列表有延迟，
-                        // TODO 在验证时，在formData里还没赋值上最新输入需要验证的这个号码，所以有两个时length会是1，就它自己length是0
-                        // TODO 在点保存时，在formData里的phone都已赋值完，所以有两个时length会是2，就它自己length是1
-                        // TODO 所以此处判断会有问题，先暂时隐藏掉，通过保存时去重来防止添加重复的
-                        // if (phoneCount.length > 1) {
-                        //     //当前添加的电话列表已存在该电话，再添加时（重复添加）
-                        //     callback(Intl.get('crm.83', '该电话已存在'));
-                        // } else {
-                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                        CrmAction.checkOnlyContactPhone(phone, data => {
-                            if (_.isString(data)) {
-                                //唯一性验证出错了
-                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-                            } else {
-                                if (_.isObject(data) && data.result === 'true') {
-                                    callback();
+                        // TODO 判断当前添加的电话列表中是否已存在该电话
+                        if (phoneCount.length > 1) {
+                            //当前添加的电话列表已存在该电话，再添加时（重复添加）
+                            callback(Intl.get('crm.83', '该电话已存在'));
+                        } else {
+                            //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
+                            CrmAction.checkOnlyContactPhone(phone, data => {
+                                if (_.isString(data)) {
+                                    //唯一性验证出错了
+                                    callback(Intl.get('crm.82', '电话唯一性验证出错了'));
                                 } else {
-                                    //已存在
-                                    callback(Intl.get('crm.83', '该电话已存在'));
+                                    if (_.isObject(data) && data.result === 'true') {
+                                        callback();
+                                    } else {
+                                        //已存在
+                                        callback(Intl.get('crm.83', '该电话已存在'));
+                                    }
                                 }
-                            }
-                        });
-                        // }
+                            });
+                        }
                     } else {//该联系人员电话列表中已存在该电话
                         if (phoneCount.length > 1) {
                             //该联系人中的电话列表已存在该电话，再添加时（重复添加）
@@ -416,17 +386,16 @@ class ContactForm extends React.Component {
         return (
             <div key={curPhone.id}>
                 <PhoneInput
-                    id={curPhone.id}
+                    form={this.props.form}
+                    id={phoneKey + curPhone.id}
                     colon={false}
                     label={index ? ' ' : Intl.get('common.phone', '电话')}
-                    wrappedComponentRef={(inst) => this.phoneInputRefs.push(inst)}
                     placeholder={Intl.get('crm.95', '请输入联系人电话')}
                     initialValue={curPhone.value}
                     labelCol={{span: 2}}
                     wrapperCol={{span: 12}}
                     key={curPhone.id}
                     validateRules={this.getPhoneInputValidateRules()}
-                    onChange={this.setField.bind(this, phoneKey, index)}
                     suffix={this.renderContactWayBtns(index, size, CONTACT_KEYS_MAP.PHONE)}
                 />
                 {this.state.showNeedPhone && index === 0 ?
@@ -516,9 +485,6 @@ class ContactForm extends React.Component {
 
     renderContactForm = () => {
         var formData = this.state.formData;
-        var contact = this.state.contact;
-        this.phoneInputRefs = [];
-        let contactWayAddObj = contact.contactWayAddObj || {};
         let {getFieldDecorator} = this.props.form;
 
         return (
@@ -602,9 +568,9 @@ class ContactForm extends React.Component {
                         }
                     </FormItem>
                     {//电话
-                        _.isArray(contactWayAddObj.phone) && contactWayAddObj.phone.length ? contactWayAddObj.phone.map((phone, index) => {
-                            return this.renderPhoneInput(index, contactWayAddObj.phone.length, formData);
-                        }) : [this.renderPhoneInput(0, 1, formData)]
+                        _.map(formData[CONTACT_KEYS_MAP.PHONE], (contact, index) => {
+                            return this.renderPhoneInput(index, formData[CONTACT_KEYS_MAP.PHONE].length, formData);
+                        })
                     }
                     {/*qq*/}
                     {this.renderContactWayBlock(CONTACT_KEYS_MAP.QQ)}
@@ -700,7 +666,7 @@ class ContactForm extends React.Component {
                 className="contact-form-container"
                 loading={this.state.isLoading}
                 saveErrorMsg={this.state.errorMsg}
-                handleSubmit={this.handleSubmit.bind(this, null)}
+                handleSubmit={this.handleSubmit}
                 handleCancel={this.cancel}
             />
         );
