@@ -84,6 +84,7 @@ ProductionStore.prototype.getProductById = function(data) {
 //添加产品后更新列表
 ProductionStore.prototype.addProduction = function(production) {
     this.productionList.unshift(production);
+    this.currentProduction = production;
     this.listTipMsg = '';
 };
 //更新产品

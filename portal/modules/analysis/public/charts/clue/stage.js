@@ -12,7 +12,8 @@ export function getStageChart() {
         chartType: 'funnel',
         url: [
             '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
-            '/rest/analysis/customer/v2/clue/:data_type/statistical/field/access_channel'
+            '/rest/analysis/customer/v2/clue/:data_type/statistical/field/access_channel',
+            '/rest/analysis/customer/v2/clue/:data_type/statistical/field/clue_source',
         ],
         conditions: [{
             name: 'access_channel',
@@ -22,42 +23,13 @@ export function getStageChart() {
             value: '',
         }],
         processData: (data, chart) => {
+            //设置渠道筛选器
+            setSelector(data, 1, chart, '全部渠道', 'access_channel');
+
+            //设置来源筛选器
+            setSelector(data, 2, chart, '全部来源', 'clue_source');
+
             const stageData = data[0];
-
-            const channelSelector = _.find(chart.cardContainer.selectors, item => item.conditionName === 'access_channel');
-
-            if (!channelSelector) {
-                //渠道数据
-                let channelData = _.get(data, '[1].result');
-                //将渠道数据按值从小到大排序，以和渠道统计中的图例顺序保持一致
-                channelData = _.sortBy(channelData, item => _.values(item)[0]);
-                //渠道名列表
-                let channelList = [];
-    
-                _.each(channelData, item => {
-                    channelList = _.concat(channelList, _.keys(item));
-                });
-    
-                chart.cardContainer.selectors.unshift({
-                    optionsCallback: () => {
-                        let options = [{
-                            name: '全部渠道',
-                            value: '',
-                        }];
-    
-                        _.map(channelList, item => {
-                            options.push({
-                                name: item,
-                                value: item
-                            });
-                        });
-    
-                        return options;
-                    },
-                    activeOption: '',
-                    conditionName: 'access_channel',
-                });
-            }
 
             const func = getFunnelWithConvertRateProcessDataFunc([
                 {
@@ -93,26 +65,44 @@ export function getStageChart() {
             valueField: 'showValue',
             showConvertRate: true,
         },
-        cardContainer: {
-            selectors: [{
+    };
+
+    function setSelector(data, dataIndex, chart, itemAllName, conditionName) {
+        if (!chart.cardContainer) chart.cardContainer = {selectors: []};
+
+        const selector = _.find(chart.cardContainer.selectors, item => item.conditionName === conditionName);
+
+        if (!selector) {
+            //选项数据
+            let optionData = _.get(data, `[${dataIndex}].result`);
+            //将选项数据按值从小到大排序，以和相应统计中的图例顺序保持一致
+            optionData = _.sortBy(optionData, item => _.values(item)[0]);
+            //名称列表
+            let list = [];
+        
+            _.each(optionData, item => {
+                list = _.concat(list, _.keys(item));
+            });
+        
+            chart.cardContainer.selectors.push({
                 optionsCallback: () => {
                     let options = [{
-                        name: '全部来源',
+                        name: itemAllName,
                         value: '',
                     }];
-
-                    _.map(Store.clueSourceList, item => {
+        
+                    _.map(list, item => {
                         options.push({
                             name: item,
                             value: item
                         });
                     });
-
+        
                     return options;
                 },
                 activeOption: '',
-                conditionName: 'clue_source',
-            }],
-        },
-    };
+                conditionName,
+            });
+        }
+    }
 }

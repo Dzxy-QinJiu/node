@@ -50,6 +50,7 @@ import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
+import CustomerLabel from 'CMP_DIR/customer_label';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -629,6 +630,27 @@ class Crm extends React.Component {
         if (condition.member_role) {
             term_fields.push('member_role');
         }
+        //是否有负责人或联合跟进人的筛选
+        let hasNicknameFilter = false;
+        //负责人的处理
+        if (condition.nickname) {
+            condition.members = condition.members || [];
+            condition.members = [{nickname: condition.nickname, is_owner: true}];
+            hasNicknameFilter = true;
+            delete condition.nickname;
+        }
+        //联合跟进人的处理
+        if (condition.second_nickname) {
+            condition.members = condition.members || [];
+            condition.members.push({nickname: condition.second_nickname, is_owner: false});
+            hasNicknameFilter = true;
+            delete condition.second_nickname;
+        }
+        if(hasNicknameFilter){
+            //需精确匹配
+            term_fields.push('nickname');
+        }
+
         //标签的处理
         if (_.isArray(condition.labels) && condition.labels.length) {
             //未打标签的客户筛选处理
@@ -1112,7 +1134,7 @@ class Crm extends React.Component {
                     userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
                         <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}
                             title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>
-                            <Button className='btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
+                            <Button className='btn-item handle-btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
                                 {Intl.get('crm.customer.release', '释放')}
                             </Button>
                         </Popconfirm>
@@ -1157,7 +1179,7 @@ class Crm extends React.Component {
                             title={isWebMini ? Intl.get('crm.customer.recycle.bin', '回收站') : ''}
                             onClick={this.props.showCustomerRecycleBin}
                         >
-                            {isWebMini ? <i className="iconfont icon-delete"/> :
+                            {isWebMini ? <i className="iconfont icon-delete handle-btn-item"/> :
                                 <Button>{Intl.get('crm.customer.recycle.bin', '回收站')}</Button>}
                         </div>) : null
                 }
@@ -1727,16 +1749,8 @@ class Crm extends React.Component {
                             <div className={className}>
                                 <i className={interestClassName} title={title}
                                     onClick={_this.handleFocusCustomer.bind(this, record)}></i>
-                                {record.customer_label ? (
-                                    <Tag
-                                        className={crmUtil.getCrmLabelCls(record.customer_label)}>
-                                        {record.customer_label}</Tag>) : null
-                                }
-                                {record.qualify_label ? (
-                                    <Tag className={crmUtil.getCrmLabelCls(record.qualify_label)}>
-                                        {record.qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                                            record.qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                                }
+                                <CustomerLabel label={record.customer_label}/>
+                                <CustomerLabel label={record.qualify_label}/>
                                 {text}
                             </div>
                             {tags.length ?
@@ -1838,7 +1852,7 @@ class Crm extends React.Component {
                         <span>
                             <span className="cus-op" data-tracename="删除客户">
                                 {isDeleteBtnShow ? (
-                                    <Button className="order-btn-class delete-btn" icon="delete"
+                                    <Button className="order-btn-class delete-btn handle-btn-item" icon="delete"
                                         onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
                                         title={Intl.get('common.delete', '删除')} />
                                 ) : null}
@@ -1847,8 +1861,8 @@ class Crm extends React.Component {
                                 <Popconfirm placement="topRight" onConfirm={this.releaseCustomer.bind(this, record.id)}
                                     title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确认释放吗？')}>
                                     <a className='release-customer'
-                                        title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
-                                        {Intl.get('crm.customer.release', '释放')}
+                                        title={Intl.get('crm.customer.release', '释放')}>
+                                        <i className="iconfont icon-release handle-btn-item"/>
                                     </a>
                                 </Popconfirm>)
                             }

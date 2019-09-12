@@ -16,9 +16,10 @@ class UserScoreActions {
         );
     }
 
-    getUserScoreIndicator() {
+    getUserScoreIndicator(callback) {
         userScoreAjax.getUserScoreIndicator().then((result) => {
             this.dispatch({resData: result});
+            _.isFunction(callback) && callback(result);
         }, (errorMsg) => {
 
         });
@@ -75,13 +76,12 @@ class UserScoreActions {
 
 
     //获取App列表
-    getAppList(opts) {
-        this.dispatch({loading: true});
+    getAppList(callback) {
         getAppList((list, errorMsg) => {
             if (!errorMsg) {
-                this.dispatch({error: false, result: list});
-            } else {
-                this.dispatch({error: true, result: errorMsg});
+                _.isFunction(callback) && callback(list);
+            }else{
+                _.isFunction(callback) && callback(errorMsg);
             }
         });
     }

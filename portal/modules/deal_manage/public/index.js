@@ -178,6 +178,19 @@ class DealManage extends React.Component {
         });
     };
 
+    //当拖动改变阶段时，同步状态到订单详情展示
+    dragChangeStageMsg = (editParams) => {
+        if(editParams.id === this.state.currDeal.id){
+            let currDeal = _.cloneDeep(this.state.currDeal);
+            if(editParams.oppo_status){
+                currDeal.oppo_status = editParams.oppo_status;
+            }else{
+                currDeal.sale_stages = editParams.sale_stages;
+            }
+            this.setState({currDeal});
+        }
+    }
+
     render() {
         const searchFields = [
             {
@@ -252,6 +265,7 @@ class DealManage extends React.Component {
                                 showDetailPanel={this.showDetailPanel}
                                 currDeal={this.state.currDeal}
                                 searchObj={this.state.searchObj}
+                                dragChangeStageMsg={this.dragChangeStageMsg}
                             />
                         </div>)}
                 </div>

@@ -4,7 +4,7 @@
 
 let restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
-let getAreaInfoUrl = '/rest/geo/service/v1/geo/search/eefung/all';
+let getAreaInfoUrl = 'http://geoservice.curtao.com/rest/geo/service/v1/geo/search/eefung/all';
 ///获取查询所有行政区域规划信息
 exports.getAreaInfo = function(req, res) {
     return restUtil.authRest.get({

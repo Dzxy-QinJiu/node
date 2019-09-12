@@ -195,7 +195,7 @@ const UserDetailEditApp = createReactClass({
         return (
             <div className="user-manage-v2 user-detail-edit-app-v2" style={{height}}>
                 <h4 onClick={this.cancel}>
-                    <Icon type="left"/>{Intl.get('user.user.app.set', '应用设置')}
+                    <Icon type="left"/>{Intl.get('user.user.product.set','产品设置')}
                 </h4>
                 <AppPropertySetting
                     appsSetting={this.state.appSettingConfig}

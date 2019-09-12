@@ -8,6 +8,8 @@ import classNames from 'classnames';
 import CustomerStageDetail from './stage-detail';
 import Trace from 'LIB_DIR/trace';
 
+const OPERATE_ZONE_WIDTH = 100; // 按钮操作区的宽度
+
 class CustomerStageInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -24,6 +26,9 @@ class CustomerStageInfo extends React.Component {
 
     // 显示客户阶段表单
     showCustomerStageForm = (customerStage) => {
+        if (this.props.saleProcessType === 'default') {
+            return;
+        }
         this.props.showCustomerStageForm(customerStage);
     };
 
@@ -67,16 +72,19 @@ class CustomerStageInfo extends React.Component {
         const modalContent = Intl.get('sales.process.delete.customer.stage.tips', '确定删除这个客户阶段么') + '?';
         const customerStageContainerWidth = this.props.width;
         let customerStage = this.props.customerStage;
-        let saleActivity = _.get(customerStage, 'sales_activities');
-        let activity = saleActivity && saleActivity.length ? _.map(saleActivity, 'name') : [];
-        let isShowMore = customerStage.isShowMore;
-        let twoLineClass = classNames('iconfont', {
-            'icon-down-twoline': !isShowMore,
-            'icon-up-twoline': isShowMore
-        });
-        let twoLineTitle = isShowMore ? Intl.get('crm.basic.detail.hide', '收起详情') :
-            Intl.get('crm.basic.detail.show', '展开详情');
-        let playBooks = customerStage.play_books; // 剧本
+        let name = customerStage.name; // 阶段名称
+        // TODO 客户阶段的剧本、销售行为、自动变更暂不展示
+        // let saleActivity = _.get(customerStage, 'sales_activities');
+        // let activity = saleActivity && saleActivity.length ? _.map(saleActivity, 'name') : [];
+        // let isShowMore = customerStage.isShowMore;
+        // let twoLineClass = classNames('iconfont', {
+        //     'icon-down-twoline': !isShowMore,
+        //     'icon-up-twoline': isShowMore
+        // });
+        // let twoLineTitle = isShowMore ? Intl.get('crm.basic.detail.hide', '收起详情') :
+        //     Intl.get('crm.basic.detail.show', '展开详情');
+        // let playBooks = customerStage.play_books; // 剧本
+
         return (
             <div
                 className="customer-stage-timeline-item-content modal-container"
@@ -85,45 +93,49 @@ class CustomerStageInfo extends React.Component {
             >
                 <div
                     className="customer-stage-content"
-                    style={{width: customerStageContainerWidth - 160}}
+                    style={{width: customerStageContainerWidth - OPERATE_ZONE_WIDTH}}
+                    onClick={this.showCustomerStageForm.bind(this, customerStage)}
+                    title={this.props.saleProcessType === 'default' ? '' : Intl.get('customer.stage.edit.stage', '编辑{stage}阶段', {stage: name})}
                 >
                     <div className="customer-stage-content-name">
-                        <span>{customerStage.name}</span>
-                        <span
-                            className={twoLineClass}
-                            title={twoLineTitle}
-                            onClick={this.toggleCustomerStageDetail.bind(this, customerStage)}
-                        />
+                        <span>{name}</span>
+                        {/**TODO 暂时隐藏,只显示客户阶段的名称和描述*/}
+                        {/*<span*/}
+                        {/*className={twoLineClass}*/}
+                        {/*title={twoLineTitle}*/}
+                        {/*onClick={this.toggleCustomerStageDetail.bind(this, customerStage)}*/}
+                        {/*/>*/}
                     </div>
                     <div className="customer-stage-content-describe">{customerStage.description}</div>
-                    {
-                        isShowMore ? (
-                            <div className="customer-stage-content-more">
-                                <div className="customer-stage-content-paly">
-                                    <span>{Intl.get('sales.process.customer.stage.play', '剧本')}:</span>
-                                    {
-                                        _.isArray(playBooks) && playBooks.length ? (
-                                            <ul className="customer-stage-playbooks">
-                                                {
-                                                    _.map(playBooks, (item, idx) => {
-                                                        return (
-                                                            <li className="play-item" key={idx}>
-                                                                {item}
-                                                            </li>
-                                                        );
-                                                    })
-                                                }
-                                            </ul>
-                                        ) : null
-                                    }
-                                </div>
-                                <div className="customer-stage-content-activity">
-                                    <span>{Intl.get('sales.process.customer.stage.activity', '销售行为')}:</span>
-                                    <span>{activity.join(',')}</span>
-                                </div>
-                            </div>
-                        ) : null
-                    }
+                    {/*{*/}
+                    {/*// TODO 隐藏剧本和销售行为*/}
+                    {/*isShowMore ? (*/}
+                    {/*<div className="customer-stage-content-more">*/}
+                    {/*<div className="customer-stage-content-paly">*/}
+                    {/*<span>{Intl.get('sales.process.customer.stage.play', '剧本')}:</span>*/}
+                    {/*{*/}
+                    {/*_.isArray(playBooks) && playBooks.length ? (*/}
+                    {/*<ul className="customer-stage-playbooks">*/}
+                    {/*{*/}
+                    {/*_.map(playBooks, (item, idx) => {*/}
+                    {/*return (*/}
+                    {/*<li className="play-item" key={idx}>*/}
+                    {/*{item}*/}
+                    {/*</li>*/}
+                    {/*);*/}
+                    {/*})*/}
+                    {/*}*/}
+                    {/*</ul>*/}
+                    {/*) : null*/}
+                    {/*}*/}
+                    {/*</div>*/}
+                    {/*<div className="customer-stage-content-activity">*/}
+                    {/*<span>{Intl.get('sales.process.customer.stage.activity', '销售行为')}:</span>*/}
+                    {/*<span>{activity.join(',')}</span>*/}
+                    {/*</div>*/}
+                    {/*</div>*/}
+                    {/*) : null*/}
+                    {/*}*/}
                 </div>
                 {
                     this.props.isShowCustomerStageTransferOrder ?
@@ -144,45 +156,54 @@ class CustomerStageInfo extends React.Component {
                             </div>
                         ) :
                         (
-                            <div className="customer-stage-btn-div operation-btn">
-                                <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
-                                    <Button
-                                        className="customer-stage-btn-class icon-delete iconfont"
-                                        onClick={this.showCustomerStageModalDialog.bind(this, customerStage)}
-                                        data-tracename="删除客户阶段"
-                                    >
-                                    </Button>
-                                </PrivilegeChecker>
-                                <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
-                                    <Button
-                                        className="customer-stage-btn-class icon-update iconfont"
-                                        onClick={this.showCustomerStageForm.bind(this, customerStage)}
-                                        data-tracename="编辑客户阶段"
-                                    >
-                                    </Button>
-                                </PrivilegeChecker>
-                                <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
-                                    <Button
-                                        className="customer-stage-btn-class icon-role-auth-config iconfont"
-                                        onClick={this.showCustomerStageDetail.bind(this, customerStage)}
-                                        data-tracename="设置客户阶段"
-                                    >
-                                    </Button>
-                                </PrivilegeChecker>
-                            </div>
+                            this.props.saleProcessType === 'custom' ? (
+                                <div className="customer-stage-btn-div operation-btn">
+                                    <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
+                                        <Button
+                                            className="customer-stage-btn-class icon-delete iconfont handle-btn-item"
+                                            onClick={this.showCustomerStageModalDialog.bind(this, customerStage)}
+                                            data-tracename="删除客户阶段"
+                                        >
+                                        </Button>
+                                    </PrivilegeChecker>
+                                    <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                        <Button
+                                            className="customer-stage-btn-class icon-update iconfont"
+                                            onClick={this.showCustomerStageForm.bind(this, customerStage)}
+                                            data-tracename="编辑客户阶段"
+                                        >
+                                        </Button>
+                                    </PrivilegeChecker>
+                                    {
+                                        /*** 先注释到客户阶段的设置功能
+                                         * <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                         <Button
+                                         className="customer-stage-btn-class icon-role-auth-config iconfont"
+                                         onClick={this.showCustomerStageDetail.bind(this, customerStage)}
+                                         data-tracename="设置客户阶段"
+                                         >
+                                         </Button>
+                                         </PrivilegeChecker>
+                                         * */
+                                    }
+
+                                </div>
+                            ) : null
                         )
                 }
-                {
-                    customerStage.isShowCustomerStageDetailPanel ? (
-                        <CustomerStageDetail
-                            closeCustomerStageDetail={this.closeCustomerStageDetail.bind(this, customerStage)}
-                            customerStage={customerStage}
-                            saveCustomerStageSettingPlay={this.props.saveCustomerStageSettingPlay}
-                            salesBehaviorList={this.props.salesBehaviorList}
-                            saleProcessId={this.props.saleProcessId}
-                        />
-                    ) : null
-                }
+                {/*{*/}
+                {/*// TODO 客户阶段的剧本、销售行为、自动变更*/}
+                {/*customerStage.isShowCustomerStageDetailPanel ? (*/}
+                {/*<CustomerStageDetail*/}
+                {/*closeCustomerStageDetail={this.closeCustomerStageDetail.bind(this, customerStage)}*/}
+                {/*customerStage={customerStage}*/}
+                {/*saveCustomerStageSettingPlay={this.props.saveCustomerStageSettingPlay}*/}
+                {/*salesBehaviorList={this.props.salesBehaviorList}*/}
+                {/*saleProcessId={this.props.saleProcessId}*/}
+                {/*autoConditionsList={this.props.autoConditionsList}*/}
+                {/*/>*/}
+                {/*) : null*/}
+                {/*}*/}
                 <ModalDialog
                     modalContent={modalContent}
                     modalShow={customerStage.isShowDeleteModalDialog}
@@ -211,6 +232,8 @@ CustomerStageInfo.propTypes = {
     saveCustomerStageSettingPlay: PropTypes.func,
     salesBehaviorList: PropTypes.array,
     saleProcessId: PropTypes.string,
+    autoConditionsList: PropTypes.array,
+    saleProcessType: PropTypes.string,
 };
 
 export default CustomerStageInfo;

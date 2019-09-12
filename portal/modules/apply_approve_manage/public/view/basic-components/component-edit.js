@@ -9,14 +9,16 @@ const RadioGroup = Radio.Group;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import DynamicAddDelField from 'CMP_DIR/basic-edit-field-new/dynamic-add-delete-field';
 require('./index.less');
-import {ALL_COMPONENTS} from '../../utils/apply-approve-utils';
+import {ALL_COMPONENTS, ADDAPPLYFORMCOMPONENTS} from '../../utils/apply-approve-utils';
 import classNames from 'classnames';
 class componentEdit extends React.Component {
     constructor(props) {
         super(props);
         var formItem = _.cloneDeep(this.props.formItem);
+        //组件上有些属性没有保存到后端，需要查找原来组件上的默认属性
+        var target = _.find(ADDAPPLYFORMCOMPONENTS, item => item.component_type === formItem.component_type) || {};
         this.state = {
-            formItem: formItem,
+            formItem: _.assign({},target,formItem),
             loading: false,//正在保存
             submitErrorMsg: '',
             titleRequiredMsg: '',
@@ -25,6 +27,14 @@ class componentEdit extends React.Component {
     onStoreChange = () => {
 
     };
+    handleChangeRequiredMsg = (e) => {
+        var formItem = this.state.formItem;
+        var value = e.target.value;
+        formItem.is_required_errmsg = value;
+        this.setState({
+            formItem
+        });
+    }
     handleChangeTopic = (e) => {
         var formItem = this.state.formItem;
         var value = e.target.value;
@@ -106,7 +116,7 @@ class componentEdit extends React.Component {
     };
     onPreciousRadioChange = (e) => {
         var formItem = this.state.formItem;
-        formItem.selectedValue = e.target.value;
+        formItem.selected_value = e.target.value;
         this.setState({formItem});
     };
     handleInputChange = (index,e) => {
@@ -115,6 +125,7 @@ class componentEdit extends React.Component {
         options.splice(index ,1, e.target.value);
         this.setState({formItem});
     };
+
     render = () => {
         var formItem = this.state.formItem, hasErrTip = this.state.titleRequiredMsg;
         var cls = classNames('',{
@@ -139,7 +150,7 @@ class componentEdit extends React.Component {
                     </span>
                 </div>
                 { _.get(this,'props.formItem.placeholder','') ? <div className="component-row">
-                    <span className="label-components">{Intl.get('apply.components.tip.msg', '提示说明')}</span>
+                    <span className="label-components">placeHolder</span>
                     <span className='text-components'>
                         <Input className={cls} defaultValue={ _.get(formItem,'placeholder','')} onChange={this.handleChangeTip}/>
                     </span>
@@ -176,8 +187,12 @@ class componentEdit extends React.Component {
                     <div className="component-row required">
                         <span className="label-components">{_.get(formItem,'unitLabel')}</span>
                         <span className="text-components">
-                            <RadioGroup onChange={this.onPreciousRadioChange} value={_.get(formItem,'selectedValue')}>
-                                {_.map(_.get(formItem,'select_arr'),item => <Radio value={item.value}>{item.label}</Radio>)}
+                            <RadioGroup onChange={this.onPreciousRadioChange} value={_.get(formItem,'selected_value')}>
+                                {_.map(_.get(formItem,'select_arr'),(item) => {
+                                    if (_.isString(item)){
+                                        item = JSON.parse(item);
+                                    }
+                                    return <Radio value={item.value}>{item.label}</Radio>;})}
                             </RadioGroup>({_.get(formItem,'unitMsg')})
                         </span>
 
@@ -191,6 +206,11 @@ class componentEdit extends React.Component {
                         {Intl.get('apply.components.required.item', '必填')}
                     </span>
                 </div>
+                {_.get(formItem,'is_required') ?
+                    <div className="component-row">
+                        <span className="label-components"></span>
+                        <span className="text-components">
+                            <Input placeholder={Intl.get('apply.approve.required.err.msg', '请输入未填写时的提示')} defaultValue={_.get(formItem,'is_required_errmsg')} onChange={this.handleChangeRequiredMsg}/></span></div> : null}
                 <SaveCancelButton loading={this.state.loading}
                     saveErrorMsg={this.state.submitErrorMsg}
                     handleSubmit={this.handleSubmit}

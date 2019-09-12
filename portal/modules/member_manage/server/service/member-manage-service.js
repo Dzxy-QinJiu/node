@@ -7,7 +7,6 @@ const auth = require('../../../../lib/utils/auth');
 const Promise = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 
-
 const memberRestApis = {
     //获取用户列表地址
     getUsers: '/rest/base/v1/user',
@@ -27,6 +26,8 @@ const memberRestApis = {
     checkOnlyUser: '/rest/base/v1/user/member/:key/:value/unique',
     //修改成员的所属团队
     updateUserTeam: '/rest/base/v1/group/user',
+    // 清空成员的部门
+    clearMemberDepartment: '/rest/base/v1/group/user/:user_id',
     //修改成员角色
     updateUserRoles: '/rest/base/v1/user/member/roles',
     //查询及添加个人销售目标
@@ -35,54 +36,105 @@ const memberRestApis = {
     getMemberPosition: '/rest/base/v1/user/member/teamrole',
     // 成员分配职务
     setMemberPosition: '/rest/base/v1/user/member/teamrole',
+    // 获取成员变动记录
+    getMemberChangeRecord: '/rest/base/v1/user/member/timeline',
+    // 获取成员的组织信息
+    getMemberOrganization: '/rest/base/v1/user/member/organization'
 };
 
 exports.urls = memberRestApis;
 
-// 获取成员列表
-exports.getMemberList = (req, res, condition, isGetAllUser, teamrole_id) => {
+
+// 获取成员的组织信息
+exports.getMemberOrganization = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: memberRestApis.getMemberOrganization,
+            req: req,
+            res: res
+        }, null);
+};
+
+function getUserLists(req, res, condition, isGetAllUser, teamrole_id) {
     let url = memberRestApis.getUsers + '?with_extentions=' + true;
     if (teamrole_id) {
         url += '&teamrole_id=' + teamrole_id;
     }
-    return restUtil.authRest.get(
-        {
-            url: url,
-            req: req,
-            res: res
-        }, condition, {
-            success: (eventEmitter, data) => {
-                //处理数据
-                let memberListObj = _.clone(data);
-                let curMemberList = _.get(memberListObj, 'data', []);
-                let length = _.get(curMemberList, 'length', 0);
-                for (let i = 0, len = length; i < len; i++) {
-                    if (isGetAllUser) {
-                        //获取所有成员列表时，只返回userId、nickName和userName即可
-                        curMemberList[i] = {
-                            userId: curMemberList[i].user_id,
-                            nickName: curMemberList[i].nick_name,
-                            userName: curMemberList[i].user_name,
-                            status: curMemberList[i].status
-                        };
-                    } else {
-                        curMemberList[i] = {
-                            id: curMemberList[i].user_id, // 成员id
-                            name: curMemberList[i].nick_name, // 昵称
-                            userName: curMemberList[i].user_name, // 账号
-                            status: curMemberList[i].status, // 状态
-                            positionName: curMemberList[i].teamrole_name, // 职务
-                            teamName: curMemberList[i].team_name,
-                            phone: curMemberList[i].phone // 手机
-                        };
-                    }
+    return new Promise( (resolve, reject) => {
+        return restUtil.authRest.get(
+            {
+                url: url,
+                req: req,
+                res: res
+            }, condition, {
+                success: (eventEmitter, data) => {
+                    //处理数据
+                    let memberListObj = _.clone(data);
+                    let curMemberList = _.get(memberListObj, 'data', []);
+                    _.forEach(curMemberList,(item,i) => {
+                        if (isGetAllUser) {
+                            //获取所有成员列表时，只返回userId、nickName和userName即可
+                            curMemberList[i] = {
+                                userId: curMemberList[i].user_id,
+                                nickName: curMemberList[i].nick_name,
+                                userName: curMemberList[i].user_name,
+                                status: curMemberList[i].status
+                            };
+                        } else {
+                            curMemberList[i] = {
+                                id: curMemberList[i].user_id, // 成员id
+                                name: curMemberList[i].nick_name, // 昵称
+                                userName: curMemberList[i].user_name, // 账号
+                                status: curMemberList[i].status, // 状态
+                                positionName: curMemberList[i].teamrole_name, // 职务
+                                teamName: curMemberList[i].team_name,
+                                phone: curMemberList[i].phone // 手机
+                            };
+                        }
+                    });
+                    memberListObj.data = curMemberList;
+                    resolve(memberListObj);
+                },
+                error: (eventEmitter, errorDesc) => {
+                    reject(errorDesc.message);
                 }
-                memberListObj.data = curMemberList;
-                eventEmitter.emit('success', memberListObj);
-            }
-        });
+            });
+    });
+}
+
+// 获取成员列表
+exports.getMemberList = (req, res, condition, isGetAllUser, teamrole_id) => {
+    var emitter = new EventEmitter();
+    Promise.all([getUserLists(req, res, condition, isGetAllUser, teamrole_id)]).then( (result) => {
+        emitter.emit('success', result[0]);
+    }, (errorMsg) => {
+        emitter.emit('error', errorMsg);
+    });
+    return emitter;
 };
 
+//根据不同的角色获取不同的用户列表
+exports.getMemberListByRoles = (req, res, condition, isGetAllUser, teamrole_id) => {
+    var emitter = new EventEmitter();
+    //根据不同角色获取不同的列表
+    var rolesType = _.get(condition,'role_id',[]);
+    var promiseLists = [];
+    _.forEach(rolesType, roleItem => {
+        condition.role_id = roleItem;
+        promiseLists.push(getUserLists(req, res, condition, isGetAllUser, teamrole_id));
+    });
+    Promise.all(promiseLists).then( (result) => {
+        var lists = [];
+        _.forEach(result, item => {
+            lists = _.concat(lists, _.get(item, 'data'));
+        });
+        _.uniqBy(lists, 'userId');
+        emitter.emit('success', lists);
+    }, (errorMsg) => {
+        emitter.emit('error', errorMsg);
+    });
+    return emitter;
+};
 
 // 获取成员的职务
 function getMemberPosition(req, res, memberId) {
@@ -179,7 +231,6 @@ function setMemberPosition(req, res, obj) {
     });
 }
 
-
 //添加用户
 exports.addUser = function(req, res, frontUser) {
     let emitter = new EventEmitter();
@@ -233,6 +284,17 @@ exports.updateUserTeam = function(req, res, params) {
             res: res
         }, null);
 };
+
+// 清空成员的部门
+exports.clearMemberDepartment = (req, res) => {
+    return restUtil.authRest.del({
+        url: memberRestApis.clearMemberDepartment.replace(':user_id', req.params.memberId),
+        req: req,
+        res: res
+    }, null);
+};
+
+
 //修改成员角色
 exports.updateUserRoles = function(req, res, user) {
     return restUtil.authRest.put(
@@ -360,4 +422,14 @@ exports.setSalesGoals = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+
+// 获取成员变动记录
+exports.getMemberChangeRecord = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: memberRestApis.getMemberChangeRecord,
+            req: req,
+            res: res
+        }, req.query);
 };

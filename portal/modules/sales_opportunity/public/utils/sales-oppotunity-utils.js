@@ -6,6 +6,3 @@
 var EventEmitter = require('events');
 //暴露一个emitter，做自定义事件
 exports.emitter = new EventEmitter();
-export const REALM_REMARK = {
-    CIVIW: '36duh3ok3i'//销识微域的安全域id
-};

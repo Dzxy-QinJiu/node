@@ -86,7 +86,16 @@
             background-color: @btn-hover-color;
             //拨打电话的按钮
             .iconfont {
-              font-size: 14px;
+              font-size: 16px;
+              color: #FFFFFF;
+              margin-left: 0;
+            }
+          }
+          //只有一个电话时的按钮样式（为了点整个按钮都可以触发打电话，padding需要放到内层的电话按钮上）
+          .work-contact-phone.only-one-phone-btn{
+            padding: 0;
+            .icon-active-call_record-ico{
+              padding: 0 22px;
             }
           }
         }
@@ -116,32 +125,6 @@
             padding: 0 4px;
             line-height: 15px;
             color: #ffffff;
-            background-color: #999999;
-          }
-          //客户标签的颜色设置
-          .customer-label.info-tag-style {
-            background-color: @info-tag-color;
-          }
-          .customer-label.intent-tag-style {
-            background-color: @intent-tag-color;
-          }
-          .customer-label.trial-tag-style {
-            background-color: @trial-tag-color;
-          }
-          .customer-label.sign-tag-style {
-            background-color: @sign-tag-color;
-          }
-          .customer-label.qualified-tag-style {
-            background-color: @qualified-tag-color;
-          }
-          .customer-label.history-qualified-tag-style {
-            background-color: @history-qualified-tag-color;
-          }
-          .customer-label.re-contract-tag-style {
-            background-color: @re-contract-color;
-          }
-          .customer-label.loss-tag-style {
-            background-color: @loss-tag-color;
           }
           //  客户分数
           .custmer-score {
@@ -248,6 +231,18 @@
       color: #999999;
     }
   }
+  //只有一个电话时的样式设置
+  .contacts-item.only-one-phone-style{
+    .contacts-name-content{
+      display: inline-block;
+      max-width: 150px;
+    }
+    .contacts-phone-content {
+      display: inline-block;
+      vertical-align: top;
+      padding-left: 0;
+    }
+  }
   .contacts-item.def-contact-item {
     .contacts-name-content {
       .iconfont{
@@ -265,9 +260,6 @@
       max-width: 200px;
       &:hover {
         color: #333333;
-        .phone-callout-container .icon-active-call_record-ico{
-          color: @btn-hover-color;
-        }
       }
     }
   }

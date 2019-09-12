@@ -241,6 +241,34 @@ module.exports = {
             passport: {
                 'needLogin': true
             }
+        },{//通过关键词获取线索列表
+            method: 'post',
+            path: '/rest/clue/:type/:page_size/:sort_field/:order',
+            handler: 'getClueListByKeyword',
+            passport: {
+                'needLogin': true
+            }
+        },{//释放线索
+            method: 'post',
+            path: '/rest/clue/release/:type',
+            handler: 'releaseClue',
+            passport: {
+                needLogin: true
+            }
+        },{//线索批量操作
+            method: 'post',
+            path: '/rest/clue/batch/release/:type',
+            handler: 'batchReleaseClue',
+            passport: {
+                needLogin: true
+            }
+        },{
+            method: 'get',
+            path: '/rest/recommend/clue/count',
+            handler: 'getRecommendClueCount',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };

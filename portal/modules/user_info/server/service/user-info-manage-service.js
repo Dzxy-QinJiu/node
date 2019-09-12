@@ -53,7 +53,8 @@ exports.getUserInfo = function(req, res, userId) {
                         emailEnable: data.email_enable,
                         rolesName: rolesName,
                         status: data.status,
-                        reject: data.reject
+                        reject: data.reject,
+                        qq: data.qq || ''
                     };
                 }
                 eventEmitter.emit('success', data);

@@ -8,7 +8,7 @@ require('./css/index.less');
 require('react-big-calendar/lib/css/react-big-calendar.css');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import Trace from 'LIB_DIR/trace';
-import { message } from 'antd';
+import { message, Radio } from 'antd';
 
 var scheduleManagementStore = require('./store/schedule-management-store');
 var scheduleManagementAction = require('./action/schedule-management-action');
@@ -26,6 +26,7 @@ import moment from 'moment';
 // 引入联系计划表单
 import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
 import DetailCard from 'CMP_DIR/detail-card';
+import AddSchedule from 'CMP_DIR/add-schedule';
 
 require('MOD_DIR/crm/public/css/schedule.less');
 BigCalendar.momentLocalizer(moment);
@@ -45,8 +46,9 @@ class ScheduleManagement extends React.Component {
         calendarLists: [],//右侧日程列表中的日程数据
         curViewName: 'day',//当前被按下的视图的名称
         curCustomerId: '',//查看详情的客户的id
-        isShowAddToDo: false,// 是否显示右侧添加待办项
+        isShowAddToDo: false,// 是否显示右侧添加日程项
         scheduleLists: [],// 用于存放请求接口后返回的日程数据
+        topicValue: 'customer', //添加日程项时选择主题为"客户"还是"线索"
         ...scheduleManagementStore.getState()
     };
 
@@ -292,14 +294,14 @@ class ScheduleManagement extends React.Component {
     };
 
     // 处理待办项的关闭事件
-    handleCancel = (e) => {
-        e && e.preventDefault();
+    handleCancel = () => {
         this.setState({
-            isShowAddToDo: false
+            isShowAddToDo: false,
+            topicValue: 'customer'
         });
     };
 
-    // 添加待办项
+    // 添加日程
     handleScheduleAdd = (resData) => {
         // 判断当前的日程视图
         let view = this.state.curViewName;
@@ -325,20 +327,13 @@ class ScheduleManagement extends React.Component {
         this.handleScheduleData(events, view);
     };
 
-    // 渲染待办项
-    renderCrmFormContent() {
-        return (
-            <DetailCard className='add-todo' content={
-                <CrmScheduleForm
-                    isAddToDoClicked
-                    handleScheduleAdd={this.handleScheduleAdd}
-                    handleScheduleCancel={this.handleCancel}
-                    currentSchedule={{}}/>
-            }>
-            </DetailCard>
-
-        );
+    // 待办项的topic修改时
+    onTopicChange = (e) => {
+        this.setState({
+            topicValue: e.target.value
+        });
     }
+
 
     renderModalContent = () => {
         return (
@@ -457,16 +452,12 @@ class ScheduleManagement extends React.Component {
                         />
                     </div>
                 </div>
-                {/*添加待办项*/}
-                {this.state.isShowAddToDo ? (
-                    <RightPanelModal
-                        className="todo-add-container"
-                        isShowMadal={true}
-                        isShowCloseBtn={true}
-                        onClosePanel={this.handleCancel.bind(this)}
-                        title={Intl.get('shedule.list.add.todo', '添加待办')}
-                        content={this.renderCrmFormContent()}
-                        dataTracename='添加待办项'/>) : null}
+                {/*添加日程*/}
+                        <AddSchedule 
+                            isShowAddToDo={this.state.isShowAddToDo}
+                            handleCancelAddToDo={this.handleCancel}
+                            handleScheduleAdd={this.handleScheduleAdd}
+                        />
                 {/*该客户下的用户列表*/}
                 <RightPanel
                     className="customer-user-list-panel"

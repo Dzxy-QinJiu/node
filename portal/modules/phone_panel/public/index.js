@@ -75,6 +75,7 @@ class PhonePanel extends React.Component {
             applyFormCustomerName: '',//申请用户面板用到的客户名
             openAppShowFlag: false,//是否展示开通应用面板
             isAddingPlanInfo: false,//是否展示添加联系计划面板
+            isAddingScheduleSuccess: false, //添加自定义计划是否成功
             isAddToCustomerFlag: false,//是否展示添加到已有客户面板
         };
     }
@@ -449,6 +450,15 @@ class PhonePanel extends React.Component {
             isAddingPlanInfo: true,
         });
     };
+    //关闭联系计划面板
+    closeAddPlan = () => {
+        if(this.state.isAddingPlanInfo) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.add-plan-info-container'), '关闭联系计划');
+            this.setState({
+                isAddingPlanInfo: false,
+            });
+        }
+    };
     //点击取消按钮
     handleCancel = () => {
         this.setState({
@@ -485,7 +495,13 @@ class PhonePanel extends React.Component {
     }
 
     //取消保存联系计划
-    handleScheduleCancel = () => {
+    handleScheduleCancel = (resData) => {
+        //如果有返回值的回调此函数，说明为保存成功后面板自动关闭
+        if(!_.isEmpty(resData)) {
+            this.setState({
+                isAddingScheduleSuccess: true
+            });
+        }
         this.setState({
             isAddingPlanInfo: false
         });
@@ -675,6 +691,8 @@ class PhonePanel extends React.Component {
                         detailCustomerId={this.getDetailCustomerId()}//客户详情中打电话时，客户的id
                         isAddingMoreProdctInfo={this.state.isAddingMoreProdctInfo}
                         handleAddPlan={this.handleAddPlan}
+                        closeAddPlan={this.closeAddPlan} //手动控制关闭面板
+                        isAddingScheduleSuccess={this.state.isAddingScheduleSuccess}//检查自定义是否添加成功
                         isAddingPlanInfo={this.state.isAddingPlanInfo}
                     />
                     {this.renderMainContent()}

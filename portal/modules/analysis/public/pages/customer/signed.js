@@ -26,6 +26,8 @@ function getCharts(paramObj) {
     return [
         //签约客户总体趋势
         customerChart.getSignedCustomerTotalTrendChart(paramObj),
+        //签约客户活跃度
+        customerChart.getSignedCustomerActivityChart(),
         //签约客户净增分析
         customerChart.getSignedCustomerNetIncreaseChart(paramObj),
         //签约客户毛利分析

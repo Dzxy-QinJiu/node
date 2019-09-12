@@ -34,7 +34,7 @@
   .add-content .text-show {
     min-height: 41px;
     margin-left: -5px;
-    padding: 0 5px 0 3px;   
+    padding: 0 5px 0 3px;
   }
   .add-content textarea.textarea-fix {
     overflow: hidden;     
@@ -222,6 +222,40 @@
         cursor: default !important;
       }
     }
+    .ant-table-tbody{
+      tr{
+        .add-customer-icon{
+          visibility: hidden;
+        }
+        .collapse-btn{
+          padding-right:7px; 
+        }
+        .icon-edit-btn-plus{
+          font-size: 15px;
+          padding-left: 6px;
+          padding-top: 8px;
+          cursor: pointer;
+          display:inline-block;
+          visibility: hidden;
+        }
+        .add-content{
+          position: relative;
+          .icon-edit-btn-plus.has-data-btn{
+            position: absolute;
+            bottom: -1px;
+            right: -10px;
+          }
+        }
+        &:hover{
+          .add-customer-icon{
+            visibility: visible;
+          }
+          .icon-edit-btn-plus{
+            visibility: visible;
+          }
+        }
+      }
+    }
     .ant-table-header {
       .ant-table-thead {
         th.has-filter {
@@ -271,10 +305,13 @@
   }
 
   .tip-customer-exist {
-    margin-top: -13px;
+    margin-top: -10px;
     line-height: 20px;
     margin-bottom: 10px;
     margin-left: 100px;
+    .tip-customer-error{
+      color: @error_tips_color;
+    }
   }
   .ant-table-tbody {
     .current_row, .current_row:hover {

@@ -1,9 +1,10 @@
 /**
- * 签约账号分析
+ * 签约用户分析
  */
 
 import accountChart from '../../charts/account';
 import {ACCOUNT_MENUS} from '../../consts';
+import Store from '../../store';
 
 module.exports = {
     title: ACCOUNT_MENUS.SIGNED.name,
@@ -15,6 +16,10 @@ module.exports = {
     ],
     //是否只能选择一个应用
     isCanOnlySelectSingleApp: true,
+    isShowCallback: () => {
+        //应用列表不为空的时候才显示该菜单
+        return !_.isEmpty(Store.appList);
+    },
     charts: getCharts()
 };
 

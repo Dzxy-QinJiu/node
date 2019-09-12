@@ -26,7 +26,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 var NoData = require('CMP_DIR/analysis-nodata');
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
-import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {DIFF_APPLY_TYPE_UNREAD_REPLY, APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 class SalesOpportunityApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加销售机会申请面板
@@ -307,21 +307,18 @@ class SalesOpportunityApplyManagement extends React.Component {
         if (!noShowApplyDetail) {
             applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
         }
-        var salesOpportunityMenuList = _.cloneDeep(selectMenuList);
-        salesOpportunityMenuList.push({
-            key: APPLY_TYPE_STATUS_CONST.MYAPPROVED, value: Intl.get('apply.list.my.approved', '我审批过'),
-        });
         return (
             <div className="sales-opportunity-apply-container apply_manage_wrap">
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="销售机会申请列表">
                         <ApplyDropdownAndAddBtn
+                            applyType={APPLY_TYPE.BUSINESS_OPPORTUNITIES}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_BUSINESSOPPO_APPLY'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
-                            menuList={salesOpportunityMenuList}
+                            menuList={selectMenuList}
                             refreshPage={this.refreshPage}
                             showUpdateTip={this.state.showUpdateTip}
                             showRefreshIcon = {applyListType === APPLY_TYPE_STATUS_CONST.ALL || applyListType === APPLY_TYPE_STATUS_CONST.ONGOING}

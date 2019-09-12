@@ -27,16 +27,19 @@
       form {
         .ant-form-item{
           width:100%;
-          .ant-calendar-picker{
-            float: left;
-            width: 50%;
-          }
+
           input, textarea, .ant-select{
             width: 100%
           }
           .ant-form-item-label label{
             font-size: 14px;
             color:#999;
+          }
+          .time-period-container{
+            overflow: hidden;
+            .begin-container,.split-line,.end-container{
+              float: left;
+            }
           }
           .ant-form-explain{
             text-align: left;
@@ -46,9 +49,11 @@
           .anticon.anticon-cross-circle.ant-calendar-picker-clear{
             display: none;
           }
+          .ant-calendar-picker{
+            width: 114px;
+          }
           .ant-select{
-            float: left;
-            width: 50%;
+            width: 57px;
           }
         }
         .total-range{

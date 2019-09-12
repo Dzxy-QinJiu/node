@@ -1,5 +1,5 @@
 /**
- * 新增过期账号分析
+ * 新增过期用户分析
  */
 
 import accountChart from '../../charts/account';
@@ -18,15 +18,15 @@ module.exports = {
 
 function getCharts() {
     return [
-        //新增过期账号数统计
-        accountChart.getAccountNumChart('added_expired', '新增过期账号数统计'),
-        //新增过期帐号团队统计
-        accountChart.getAccountTeamChart('added_expired', '新增过期帐号团队统计'),
+        //新增过期用户数统计
+        accountChart.getAccountNumChart('added_expired', Intl.get('user.statistics.expire.new','新增过期用户数统计')),
+        //新增过期用户团队统计
+        accountChart.getAccountTeamChart('added_expired', Intl.get('user.statistics.expire.new.team','新增过期用户团队分布统计')),
         //地域统计
-        accountChart.getAccountZoneChart('added_expired', '新增过期帐号地域统计'),
+        accountChart.getAccountZoneChart('added_expired', Intl.get('user.statistics.expire.new.area','新增过期用户地域统计')),
         //行业统计
-        accountChart.getAccountIndustryChart('added_expired', '新增过期帐号行业统计'),
-        //账号类型
+        accountChart.getAccountIndustryChart('added_expired', Intl.get('user.statistics.expire.new.industry','新增过期用户行业统计')),
+        //用户类型
         accountChart.getAccountTypeChart('added_expired'),
         //状态统计
         accountChart.getAccountStatusChart('added_expired'),

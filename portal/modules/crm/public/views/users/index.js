@@ -5,7 +5,7 @@ var React = require('react');
  * Created by wangliping on 2018/4/17.
  */
 require('../../css/customer-users.less');
-import {Button, Checkbox, Alert} from 'antd';
+import {Button, Checkbox, Alert, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import Spinner from 'CMP_DIR/spinner';
 import {RightPanel} from 'CMP_DIR/rightPanel';
@@ -22,6 +22,8 @@ import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
+import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -61,8 +63,18 @@ class CustomerUsers extends React.Component {
             applyType: '',//申请用户的类型
             listenScrollBottom: true,//是否监听滚动
             appList: [],
+            applyState: {},
+            popoverErrorVisible: false,
             ... this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
+    }
+
+    componentWillMount = () => {
+        getApplyState(APPLY_TYPE.USER_APPLY).then(applyState => {
+            this.setState({
+                applyState
+            });
+        });
     }
 
     componentDidMount() {
@@ -312,26 +324,37 @@ class CustomerUsers extends React.Component {
         };
     }
 
-    renderApplyBtns() {
-        //是否可以批量申请（停用、延期、修改密码、其他）的操作，只要有选择的用户或应用就可以
-        let batchApplyFlag = this.getBatchApplyFlag();
-        //开通应用，只有选择用户后才可用
-        let openAppFlag = false;
-        let crmUserList = this.state.crmUserList;
-        if (_.isArray(crmUserList) && crmUserList.length) {
-            openAppFlag = _.some(crmUserList, userObj => userObj && userObj.user && userObj.user.checked);
-        }
-        if (!batchApplyFlag && !openAppFlag) {
-            //申请新用户
-            return (
+    //申请新用户时，根据返回的状态信息渲染带Popover的button和不带Popover的button
+    renderApplyButton = () => {
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        return (
+            applyPrivileged ? (
                 <div className="crm-user-apply-btns" data-tracename="申请新用户">
                     <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.NEW_USERS) }>
                         {Intl.get('crm.apply.user.new', '申请新用户')}
                     </Button>
-                </div>);
-        } else {//其他申请
-            return (
+                </div>) : (
+                <Popover
+                    placement="bottomRight"
+                    overlayClassName="apply-invalid-popover"
+                    content={_.get(this.state, 'applyState.applyMessage')}
+                    trigger="click"
+                >
+                    <div className="crm-user-apply-btns" data-tracename="申请新用户">
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.NEW_USERS)}>
+                            {Intl.get('crm.apply.user.new', '申请新用户')}
+                        </Button>
+                    </div>
+                </Popover>)
+        );
+    }
+
+    //其他申请时，根据返回的状态信息渲染带popover的button和不带popover的button
+    renderOtherApplyButton = (batchApplyFlag, openAppFlag) => {
+        let applyPrivileged = _.get(this.state, 'applyState.applyPrivileged');
+        return (
+            applyPrivileged ? (
                 <div className="crm-user-apply-btns">
                     <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.STOP_USE)}
@@ -353,9 +376,83 @@ class CustomerUsers extends React.Component {
                     </Button>
                     <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
                         onClick={this.handleMenuClick.bind(this, APPLY_TYPES.OPEN_APP)} disabled={!openAppFlag}>
-                        {Intl.get('user.app.open', '开通应用')}
+                        {Intl.get('user.product.open','开通产品')}
                     </Button>
-                </div>);
+                </div>) : (
+                <div className="crm-user-apply-btns" data-tracename="申请新用户">
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.STOP_USE)}
+                            disabled={!batchApplyFlag}>
+                            {Intl.get('common.stop', '停用')}
+                        </Button>
+                    </Popover>
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.DELAY)}
+                            disabled={!batchApplyFlag}>
+                            {Intl.get('crm.user.delay', '延期')}
+                        </Button>
+                    </Popover>
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.EDIT_PASSWORD)}
+                            disabled={!batchApplyFlag}>
+                            {Intl.get('common.edit.password', '修改密码')}
+                        </Button>
+                    </Popover>
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OTHER)}
+                            disabled={!batchApplyFlag}>
+                            {Intl.get('crm.186', '其他')}
+                        </Button>
+                    </Popover>
+                    <Popover
+                        placement="bottomRight"
+                        overlayClassName="apply-invalid-popover"
+                        content={_.get(this.state, 'applyState.applyMessage')}
+                        trigger="click"
+                    >
+                        <Button className='crm-detail-add-btn' type={this.getApplyBtnType(APPLY_TYPES.OPEN_APP)}
+                            disabled={!openAppFlag}>
+                            {Intl.get('user.product.open','开通产品')}
+                        </Button>
+                    </Popover>
+                </div>
+            )
+        );
+    };
+
+    renderApplyBtns() {
+        //是否可以批量申请（停用、延期、修改密码、其他）的操作，只要有选择的用户或应用就可以
+        let batchApplyFlag = this.getBatchApplyFlag();
+        //开通应用，只有选择用户后才可用
+        let openAppFlag = false;
+        let crmUserList = this.state.crmUserList;
+        if (_.isArray(crmUserList) && crmUserList.length) {
+            openAppFlag = _.some(crmUserList, userObj => userObj && userObj.user && userObj.user.checked);
+        }
+        if (!batchApplyFlag && !openAppFlag) {//申请新用户
+            return this.renderApplyButton();
+        } else {//其他申请
+            return this.renderOtherApplyButton(batchApplyFlag, openAppFlag);
         }
     }
 
@@ -460,7 +557,7 @@ class CustomerUsers extends React.Component {
     renderUserAppTitle() {
         return (
             <span>
-                <span className="user-app-name">{Intl.get('sales.frontpage.open.app', '已开通应用')}</span>
+                <span className="user-app-name">{Intl.get('sales.frontpage.open.product', '已开通产品')}</span>
                 <span className="user-app-type">{Intl.get('common.type', '类型')}</span>
                 <span className="user-last-login">{Intl.get('user.last.login', '最近登录')}</span>
                 <span className="user-app-over-draft">{Intl.get('sales.frontpage.expired.date', '到期情况')}</span>

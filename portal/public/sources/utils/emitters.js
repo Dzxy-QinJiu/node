@@ -25,8 +25,6 @@ exports.phoneMsgEmitter.OPEN_CLUE_PANEL = 'openCluePanel';
 exports.phoneMsgEmitter.CLOSE_CLUE_PANEL = 'closeCluePanel';
 //关闭拨打电话模态框emitter
 exports.phoneMsgEmitter.CLOSE_PHONE_MODAL = 'closePhoneModal';
-//标记线索无效
-exports.phoneMsgEmitter.SETTING_CLUE_INVALID = 'settingClueInvalid';
 //拨打电话emitter
 exports.audioMsgEmitter = new EventEmitter();
 //打开播放录音的面板emitter
@@ -60,7 +58,7 @@ exports.notificationEmitter.APPLY_UPDATED_LEAVE = 'applyUpdatedLeave';
 exports.notificationEmitter.APPLY_UPDATED_MEMBER_INVITE = 'applyUpdatedMemberInvite';
 exports.notificationEmitter.APPLY_UPDATED_REPORT_SEND = 'applyUpdatedReportSend';
 exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocumentWrite';
-
+exports.notificationEmitter.APPLY_UPDATED_VISIT = 'applyUpdatedVisit';
 //未处理的线索数量
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
 //更新待我处理的数据
@@ -115,6 +113,8 @@ exports.batchPushEmitter.CRM_BATCH_RELEASE_POOL = 'batchtask.crm_batch_release_p
 exports.batchPushEmitter.CLUE_BATCH_CHANGE_TRACE = 'batchtask.clue_user';
 // 线索池-批量提取线索
 exports.batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT = 'batchtask.lead_extract';
+//批量释放线索
+exports.batchPushEmitter.CLUE_BATCH_LEAD_RELEASE = 'batchtask.lead_batch_release';
 //推荐线索-批量提取线索
 exports.batchPushEmitter.CLUE_BATCH_ENT_CLUE = 'batchtask.ent_clue';
 //socket的emitter
@@ -201,6 +201,11 @@ const listPanelEmitter = new EventEmitter();
 listPanelEmitter.SHOW = 'show_list_panel';
 export { listPanelEmitter };
 
+// 详情面板事件
+const detailPanelEmitter = new EventEmitter();
+detailPanelEmitter.SHOW = 'show_detail_panel';
+export { detailPanelEmitter };
+
 //拨打电话的相关事件
 const phoneEmitter = new EventEmitter();
 phoneEmitter.CALL_CLIENT_INITED = 'call_client_inited';
@@ -221,3 +226,7 @@ export { positionEmitter };
 const userBasicInfoEmitter = new EventEmitter();
 userBasicInfoEmitter.GET_USER_BASIC_INFO = 'get_user_basic_info';
 export { userBasicInfoEmitter };
+//线索相关事件
+const clueEmitter = new EventEmitter();
+clueEmitter.REMOVE_CLUE_ITEM = 'remove_clue_item';
+export { clueEmitter };

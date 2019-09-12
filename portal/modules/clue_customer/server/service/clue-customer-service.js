@@ -71,6 +71,14 @@ const restApis = {
     extractRecommendClue: '/rest/clue/v2/ent/clue',
     //批量提取线索
     batchExtractRecommendLists: '/rest/clue/v2/ent/clues',
+    //根据关键词获取线索
+    getClueListByKeyword: clueBaseUrl + '/query/:type/:page_size/:sort_field/:order',
+    //获取提取推荐线索剩余数量
+    getRecommendClueCount: '/rest/clue/v2/ent/clues/get',
+    //释放线索
+    releaseClue: clueBaseUrl + '/lead_pool/release/:type',
+    //批量释放线索
+    batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type'
 };
 
 //查询客户
@@ -119,6 +127,15 @@ exports.batchExtractRecommendLists = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+//获取提取推荐线索剩余数量
+exports.getRecommendClueCount = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getRecommendClueCount,
+            req: req,
+            res: res
+        }, req.query);
 };
 
 exports.changeClueSalesBatch = function(req, res) {
@@ -528,4 +545,39 @@ exports.getRecommendClueLists = function(req, res) {
             req: req,
             res: res
         }, req.body);
+};
+//根据关键词获取线索
+exports.getClueListByKeyword = function(req, res) {
+    return restUtil.authRest.post(
+        {
+            url: restApis.getClueListByKeyword
+                .replace(':type', req.params.type)
+                .replace(':page_size', req.params.page_size)
+                .replace(':sort_field', req.params.sort_field)
+                .replace(':order', req.params.order),
+            req: req,
+            res: res
+        }, req.body);
+};
+//释放线索
+exports.releaseClue = function(req, res) {
+    return restUtil.authRest.post({
+        url: restApis.releaseClue.replace(':type', req.params.type) + `?lead_ids=${req.body.lead_ids}`,
+        req: req,
+        res: res,
+    });
+};
+//线索批量释放
+exports.batchReleaseClue = function(req,res) {
+    let url = restApis.batchReleaseClue.replace(':type', req.params.type);
+    let reqBody = _.cloneDeep(req.body);
+    if(_.has(reqBody, 'self_no_traced')) {
+        delete reqBody.self_no_traced;
+        url += '?self_no_traced=true';
+    }
+    return restUtil.authRest.post({
+        url: url,
+        req: req,
+        res: res
+    } , reqBody);
 };

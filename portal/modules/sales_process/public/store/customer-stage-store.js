@@ -25,6 +25,8 @@ class CustomerStageStore {
         this.currentcustomerStageList = [];
         this.salesBehaviorList = []; // 销售行为列表
         this.getsalesBehaviorListErrMsg = ''; // 获取销售行为失败的信息
+        this.autoConditionsList = []; // 自动变更列表
+        this.getAutoConditionsListErrMsg = ''; // // 获取自动变更列表失败的信息
     }
 
     // 获取客户阶段列表
@@ -80,6 +82,8 @@ class CustomerStageStore {
                     }
                 } else if (flag === 'editBehavior') { // 更新销售行为
                     upDateStage.sales_activities = customerStage.salesActivities;
+                } else if (flag === 'autoConditionsStatus') { // 修改自动变更的状态
+                    upDateStage.auto_conditions = customerStage.autoConditions;
                 }
             }
         } else { // 添加
@@ -103,14 +107,14 @@ class CustomerStageStore {
 
     // 上移客户阶段
     customerStageOrderUp(customerStage) {
-        let oldOrder = parseInt(customerStage.order);
+        let oldOrder = customerStage.order;
         this.customerStageList = _.filter(this.customerStageList, item => {
             let order = item.order;
-            if (parseInt(item.order) === oldOrder) {
-                order = (parseInt(item.order) - 1).toString();
+            if (item.order === oldOrder) {
+                order = item.order - 1;
             }
-            if (parseInt(item.order) === (oldOrder - 1)) {
-                order = (parseInt(item.order) + 1).toString();
+            if (item.order === (oldOrder - 1)) {
+                order = item.order + 1;
             }
             item.order = order;
             return true;
@@ -124,14 +128,14 @@ class CustomerStageStore {
 
     // 下移客户阶段
     customerStageOrderDown(customerStage) {
-        let oldOrder = parseInt(customerStage.order);
+        let oldOrder = customerStage.order;
         this.customerStageList = _.filter(this.customerStageList, item => {
             let order = item.order;
-            if (parseInt(item.order) === oldOrder) {
-                order = (parseInt(item.order) + 1).toString();
+            if (item.order === oldOrder) {
+                order = item.order + 1;
             }
-            if (parseInt(item.order) === (oldOrder + 1)) {
-                order = (parseInt(item.order) - 1).toString();
+            if (item.order === (oldOrder + 1)) {
+                order = item.order - 1;
             }
             item.order = order;
             return true;
@@ -170,6 +174,16 @@ class CustomerStageStore {
         } else {
             this.getsalesBehaviorListErrMsg = '';
             this.salesBehaviorList = result.resData;
+        }
+    }
+
+    // 获取客户阶段的自动变更条件
+    getCustomerStageAutoConditions(result) {
+        if (result.error) {
+            this.getAutoConditionsListErrMsg = result.errorMsg;
+        } else {
+            this.getAutoConditionsListErrMsg = '';
+            this.autoConditionsList = result.resData;
         }
     }
 }

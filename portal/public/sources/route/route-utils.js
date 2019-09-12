@@ -15,6 +15,7 @@ const ROUTE_CONST = {
     'CALL_RECORD': 'call_record',//通话记录id
 };
 const isOpenCaller = require('../utils/common-method-util').isOpenCaller;
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
@@ -201,6 +202,9 @@ function dealWorkFlowConfigRoute(userRoutes, workFlowConfigList) {
     }, {
         id: 'bussiness_apply_management',//路由配置中路由id
         configType: 'businesstrip'//获取后端返回的申请流程配置中流程的类型
+    }, {
+        id: 'my_leave_apply_management',//路由配置中路由id
+        configType: SELF_SETTING_FLOW.VISITAPPLY//获取后端返回的申请流程配置中流程的类型
     }];
     _.forEach(REPORTANDDOUCMENTMAP, item => {
         if (!workFlowConfigList || _.indexOf(_.map(workFlowConfigList, 'type'), item.configType) < 0 ) {

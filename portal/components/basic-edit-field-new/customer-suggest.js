@@ -14,90 +14,48 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import CustomerLabel from 'CMP_DIR/customer_label';
 
 class CustomerSuggest extends React.Component {
-    static defaultProps = {
-        name: '',//用于老式验证方式下，不明确指定name属性，不会走验证的设置
-        showCustomerId: '',//正在展示客户详情的客户id
-        isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-        customerOfCurUser: {},//当前展示用户所属客户的详情
-        //是否是必填项
-        required: true,
-        //是否显示错误提示，一般在点击提交的时候，这个值为true
-        show_error: false,
-        canCreateCustomer: true,//找不到客户时能否创建客户
-        //客户的id
-        id: '',
-        //客户的name
-        customer_name: '',
-        //当选中了customer的时候，会调用这个函数
-        onCustomerChoosen: function() {
-        },
-        //告诉调用的父组件，隐藏错误提示
-        hideCustomerError: function() {
-        },
-        //搜索关键词
-        keyword: '',
-        //外层的id
-        customerSuggestWrapId: '',
-        //展示内容（非编辑状态）
-        displayText: '',
-        //所展示客户的id
-        displayCustomerId: '',
-        //是否展示客户所属的销售
-        isShowSales: false,
-        //无数据时的提示（没有修改权限时提示没有数据）
-        noDataTip: '',
-        //添加数据的提示（有修改权限时，提示补充数据）
-        addDataTip: '',
-        //是否有修改权限
-        hasEditPrivilege: false,
-        hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
-        customerLable: '',//客户标签
-        customer_id: '',//客户id
-        hideCustomerRequiredTip: function() {
-            
-        },
-        saveSameNoCustomerName: function() {
 
-        },
-    };
-
-    state = {
-        //类型
-        result_type: '',
-        //从服务端获取的客户列表
-        list: [],
-        //显示提示
-        show_tip: false,
-        //联想接口错误时候的提示信息
-        suggest_error_msg: '',
-        //没有选择客户的提示
-        no_select_error_msg: '',
-        //销售团队
-        sales_team: {
-            id: '',
-            name: ''
-        },
-        //销售
-        sales: {
-            id: '',
-            name: ''
-        },
-        //客户
-        customer: {
-            id: this.props.customer_id,
-            name: this.props.customer_name
-        },
-        customerSuggestWrapId: this.props.customerSuggestWrapId || 'app',
-        //线索的id
-        id: this.props.id,
-        displayType: this.props.displayType || 'text',
-        displayText: this.props.displayText,//在界面上展示的值
-        displayCustomerId: this.props.customer_id,
-        value: this.props.customer_name,
-        isShowSales: this.props.isShowSales
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            //类型
+            result_type: '',
+            //从服务端获取的客户列表
+            list: [],
+            //显示提示
+            show_tip: false,
+            //联想接口错误时候的提示信息
+            suggest_error_msg: '',
+            //没有选择客户的提示
+            no_select_error_msg: '',
+            //销售团队
+            sales_team: {
+                id: '',
+                name: ''
+            },
+            //销售
+            sales: {
+                id: '',
+                name: ''
+            },
+            //客户
+            customer: {
+                id: this.props.customer_id,
+                name: this.props.customer_name
+            },
+            customerSuggestWrapId: this.props.customerSuggestWrapId || 'app',
+            //线索的id
+            id: this.props.id,
+            displayType: this.props.displayType || 'text',
+            displayText: this.props.displayText,//在界面上展示的值
+            displayCustomerId: this.props.customer_id,
+            value: this.props.customer_name,
+            isShowSales: this.props.isShowSales
+        };
+    }
 
     suggestTimer = null;
 
@@ -497,7 +455,7 @@ class CustomerSuggest extends React.Component {
                             />) : null
                         }
                         <span className="inline-block basic-info-text customer-name" data-tracename="查看客户详情" onClick={this.showCustomerDetail.bind(this, customerId)}>
-                            {this.props.customerLable ? <Tag className={crmUtil.getCrmLabelCls(this.props.customerLable)}>{this.props.customerLable}</Tag> : null}
+                            <CustomerLabel label={this.props.customerLable} />
                             {this.state.displayText}
                         </span>
                     </div>);
@@ -505,7 +463,7 @@ class CustomerSuggest extends React.Component {
                 textBlock = (
                     <span className="inline-block basic-info-text no-data-descr">
                         {this.props.hasEditPrivilege ? (
-                            <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮">{this.props.addDataTip}</a>) : this.props.noDataTip}
+                            <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮" className="handle-btn-item">{this.props.addDataTip}</a>) :<span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
 
                     </span>
                 );
@@ -573,6 +531,53 @@ class CustomerSuggest extends React.Component {
         );
     }
 }
+CustomerSuggest.defaultProps = {
+    name: '',//用于老式验证方式下，不明确指定name属性，不会走验证的设置
+    showCustomerId: '',//正在展示客户详情的客户id
+    isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+    customerOfCurUser: {},//当前展示用户所属客户的详情
+    //是否是必填项
+    required: true,
+    //是否显示错误提示，一般在点击提交的时候，这个值为true
+    show_error: false,
+    canCreateCustomer: true,//找不到客户时能否创建客户
+    //客户的id
+    id: '',
+    //客户的name
+    customer_name: '',
+    //当选中了customer的时候，会调用这个函数
+    onCustomerChoosen: function() {
+    },
+    //告诉调用的父组件，隐藏错误提示
+    hideCustomerError: function() {
+    },
+    //搜索关键词
+    keyword: '',
+    //外层的id
+    customerSuggestWrapId: '',
+    //展示内容（非编辑状态）
+    displayText: '',
+    //所展示客户的id
+    displayCustomerId: '',
+    //是否展示客户所属的销售
+    isShowSales: false,
+    //无数据时的提示（没有修改权限时提示没有数据）
+    noDataTip: '',
+    //添加数据的提示（有修改权限时，提示补充数据）
+    addDataTip: '',
+    //是否有修改权限
+    hasEditPrivilege: false,
+    hoverShowEdit: true,//编辑按钮是否在鼠标移入的时候再展示出来
+    customerLable: '',//客户标签
+    customer_id: '',//客户id
+    hideButtonBlock: false,
+    hideCustomerRequiredTip: function() {
+
+    },
+    saveSameNoCustomerName: function() {
+
+    },
+};
 CustomerSuggest.propTypes = {
     name: PropTypes.string,
     customer_id: PropTypes.string,

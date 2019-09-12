@@ -224,8 +224,8 @@ class CrmScoreCard extends React.Component {
     renderScoreTitle() {
         const customerScore = this.state.customerScore;
         const expandIconCls = classNames('iconfont', {
-            'icon-down-twoline': !this.state.isExpandDetail,
-            'icon-up-twoline': this.state.isExpandDetail,
+            'icon-down-twoline handle-btn-item': !this.state.isExpandDetail,
+            'icon-up-twoline handle-btn-item': this.state.isExpandDetail,
         });
         const expandIconTip = this.state.isExpandDetail ? Intl.get('crm.basic.detail.hide', '收起详情') : Intl.get('crm.basic.detail.show', '展开详情');
         return (

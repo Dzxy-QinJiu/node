@@ -16,15 +16,6 @@ let routers = [
         showPrivileges: ['USER_INFO_USER']
     },
     {
-        id: 'CRM',
-        name: 'call.record.customer',//客户
-        routePath: '/crm',
-        component: `${MODULE_PATH}crm/public`,
-        shortName: 'call.record.customer',//客户
-        //有这个权限，才显示入口图标
-        showPrivileges: ['CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL']
-    },
-    {
         id: 'ClUE_CUSTOMER',
         name: 'crm.sales.clue',//线索
         routePath: '/clue_customer',
@@ -32,6 +23,15 @@ let routers = [
         shortName: 'crm.sales.clue',//线索
         //有这个权限，才显示入口图标
         showPrivileges: ['CLUECUSTOMER_VIEW']
+    },
+    {
+        id: 'CRM',
+        name: 'call.record.customer',//客户
+        routePath: '/crm',
+        component: `${MODULE_PATH}crm/public`,
+        shortName: 'call.record.customer',//客户
+        //有这个权限，才显示入口图标
+        showPrivileges: ['CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL']
     },
     {
         id: 'DEAL_MANAGE',
@@ -224,15 +224,15 @@ let routers = [
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
         },
-        //     {
-        //     //todo 待修改的！！！！！！
-        //     id: 'MY_LAEVE_APPLY_MANAGEMENT',
-        //     name: 'apply.my.self.setting.work.flow',//我的自定义流程
-        //     routePath: '/application/self_setting',
-        //     component: `${MODULE_PATH}self_setting/public`,
-        //     //有这个权限，才显示入口图标
-        //     showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
-        // }
+        {
+            //todo 待修改的！！！！！！
+            id: 'MY_LEAVE_APPLY_MANAGEMENT',
+            name: 'apply.my.self.setting.work.flow',//拜访申请
+            routePath: '/application/self_setting',
+            component: `${MODULE_PATH}self_setting/public`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+        }
         ]
     },
     {
@@ -278,6 +278,13 @@ let routers = [
                 showPrivileges: ['PRODUCTS_MANAGE']
             },
             {
+                id: 'SALES_PROCESS', // 唯一标识
+                name: 'menu.sales.process',// 客户阶段
+                routePath: '/background_management/customer_stage',
+                component: `${MODULE_PATH}sales_process/public`,
+                showPrivileges: ['CRM_GET_SALES_PROCESS']
+            },
+            {
                 id: 'ORDERSTAGE',
                 name: 'menu.order.stage',// 订单阶段
                 routePath: '/background_management/sales_stage',
@@ -302,28 +309,20 @@ let routers = [
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
             },
             {
-                id: 'CUSTOMER_SCORE',
-                name: 'menu.customer.score',// 客户评分
-                routePath: '/background_management/customer_score',
-                component: `${MODULE_PATH}customer_score/public`,
-                //有这个权限，才显示入口图标
-                showPrivileges: ['CURTAO_RULE_MANAGE']
-            },{
-                id: 'USER_SCORE',
-                name: 'menu.user.score',// 用户评分
-                routePath: '/background_management/user_score',
-                component: `${MODULE_PATH}user_score/public`,
+                id: 'SALES_AUTO',
+                name: 'menu.sales.auto.manage.config',// 销售自动化
+                routePath: '/background_management/sales_auto',
+                component: `${MODULE_PATH}sales_auto/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CURTAO_RULE_MANAGE']
             },
             {
                 id: 'SALES_PROCESS', // 唯一标识
-                name: 'menu.sales.process',// 销售流程
-                routePath: '/background_management/sales_process',
+                name: 'menu.sales.process',// 客户阶段
+                routePath: '/background_management/customer_stage',
                 component: `${MODULE_PATH}sales_process/public`,
                 showPrivileges: ['CRM_GET_SALES_PROCESS']
-            },
-        ]
+            }]
     },
     {
         id: 'USER_INFO_MANAGE',//唯一标识

@@ -77,6 +77,15 @@ exports.deleteCustomerStage = (req, res) => {
     });
 };
 
+// 删除某个客户阶段的具体的阶段
+exports.deleteCustomerStageColor = (req, res) => {
+    salesProcessService.deleteCustomerStageColor(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 // 变更客户阶段顺序
 exports.changeCustomerStageOrder = (req, res) => {
     salesProcessService.changeCustomerStageOrder(req, res).on('success', (data) => {
@@ -98,6 +107,33 @@ exports.getCustomerStageSaleBehavior = (req, res) => {
 // 添加客户阶段的销售行为
 exports.addCustomerStageSaleBehavior = (req, res) => {
     salesProcessService.addCustomerStageSaleBehavior(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 获取客户阶段的自动变更条件
+exports.getCustomerStageAutoConditions = (req, res) => {
+    salesProcessService.getCustomerStageAutoConditions(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 编辑客户阶段的自动变更条件（添加或是更新）
+exports.editCustomerStageAutoConditions = (req, res) => {
+    salesProcessService.editCustomerStageAutoConditions(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 启/停用自动化条件
+exports.changeAutoConditionsStatus = (req, res) => {
+    salesProcessService.changeAutoConditionsStatus(req, res).on('success', (data) => {
         res.status(200).json(data);
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);

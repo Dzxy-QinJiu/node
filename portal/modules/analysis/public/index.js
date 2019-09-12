@@ -7,6 +7,7 @@ import {storageUtil} from 'ant-utils';
 import Store from './store';
 import ajax from 'ant-ajax';
 import TableListPanel from 'CMP_DIR/table-list-panel';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import TopBar from './top-bar';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
@@ -35,6 +36,7 @@ import {
     teamTreeEmitter,
     dateSelectorEmitter,
     analysisCustomerListEmitter,
+    detailPanelEmitter,
     callDeviceTypeEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 
@@ -62,12 +64,14 @@ class CurtaoAnalysis extends React.Component {
             currentCharts: _.get(processedGroups, '[0].pages[0].charts'),
             //当前显示页面的id
             currentPage: '',
-            groups: this.processMenu(processedGroups),
+            groups: processedGroups,
             isAppSelectorShow: false,
             //是否显示通话设备类型选择器
             isCallDeviceTypeSelectorShow: false,
             //是否显示右侧面板
             isRightPanelShow: false,
+            //是否显示详情面板
+            isDetailPanelShow: false,
             //是否显示客户列表
             isCustomerListShow: false,
             //是否显示试用合格客户统计历史最高值明细
@@ -81,12 +85,12 @@ class CurtaoAnalysis extends React.Component {
         this.getStageList();
         this.getIndustryList();
         this.getAppList();
-        this.getClueSourceList();
         this.getUserTypeList();
         // 获取组织电话系统配置
         this.getCallSystemConfig();
 
         analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+        detailPanelEmitter.on(detailPanelEmitter.SHOW, this.showDetailPanel);
 
         //将页面body元素的overflow样式设为hidden，以防止出现纵向滚动条
         this.setBodyOverflow('hidden');
@@ -94,6 +98,7 @@ class CurtaoAnalysis extends React.Component {
 
     componentWillUnmount() {
         analysisCustomerListEmitter.removeListener(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+        detailPanelEmitter.removeListener(detailPanelEmitter.SHOW, this.showDetailPanel);
 
         //恢复页面body元素的overflow样式
         this.setBodyOverflow('auto');
@@ -122,7 +127,7 @@ class CurtaoAnalysis extends React.Component {
         });
     };
 
-    //获取应用列表
+    //获取产品列表
     getAppList = () => {
         ajax.send({
             url: '/rest/global/grant_applications',
@@ -131,20 +136,17 @@ class CurtaoAnalysis extends React.Component {
                 page_size: 1000
             }
         }).then(result => {
-            Store.appList = result;
-            Store.appList.unshift({
-                app_id: 'all',
-                app_name: '全部应用',
-            });
-        });
-    };
+            if (_.isArray(result) && !_.isEmpty(result)) {
+                Store.appList = result;
 
-    //线索来源列表
-    getClueSourceList = () => {
-        ajax.send({
-            url: '/rest/clue/v1/clue_source/100/1'
-        }).then(result => {
-            Store.clueSourceList = _.get(result, 'result');
+                Store.appList.unshift({
+                    app_id: 'all',
+                    app_name: Intl.get('user.product.all', '全部产品')
+                });
+
+                //获取完应用后，再走一遍处理菜单的过程，以便根据是否有应用来控制菜单的显示隐藏
+                this.setState({groups: this.processMenu(groups)});
+            }
         });
     };
 
@@ -165,7 +167,14 @@ class CurtaoAnalysis extends React.Component {
     }
 
     processMenu(menus, subMenuField = 'pages') {
+        menus = _.cloneDeep(menus);
+
         return _.filter(menus, menu => {
+            //若果定义了是否显示该菜单的回调函数，则调用该函数，以控制菜单的显示隐藏
+            if (_.isFunction(menu.isShowCallback)) {
+                return menu.isShowCallback();
+            }
+
             if (menu.privileges) {
                 const foundPrivilege = _.find(menu.privileges, privilege => hasPrivilege(privilege));
 
@@ -352,7 +361,7 @@ class CurtaoAnalysis extends React.Component {
 
                 let defaultAppId = storageUtil.local.get(STORED_APP_ID_KEY);
 
-                //当前页是否只能选择单个应用
+                //当前页是否只能选择单个产品
                 const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
         
                 if (defaultAppId) {
@@ -393,7 +402,7 @@ class CurtaoAnalysis extends React.Component {
             isCallDeviceTypeSelectorShow,
             adjustConditions
         }, () => {
-            //状态变更完成后，触发一下窗口大小变更事件，使分析组件重新计算其显示区域的高度，以解决显示或隐藏应用选择下拉菜单时，分析组件高度计算不准确的问题
+            //状态变更完成后，触发一下窗口大小变更事件，使分析组件重新计算其显示区域的高度，以解决显示或隐藏产品选择下拉菜单时，分析组件高度计算不准确的问题
             $(window).resize();
         });
     }
@@ -501,17 +510,32 @@ class CurtaoAnalysis extends React.Component {
         }];
     }
 
+    //显示详情面板
+    showDetailPanel = detailPanelParams => {
+        this.setState({
+            isDetailPanelShow: true,
+            detailPanelParams
+        });
+    }
+
+    //隐藏详情面板
+    hideDetailPanel = () => {
+        this.setState({
+            isDetailPanelShow: false,
+        });
+    }
+
     render() {
-        //当前页是否只能选择单个应用
+        //当前页是否只能选择单个产品
         const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
 
         let appList = _.cloneDeep(Store.appList);
-        //应用选择模式
+        //产品选择模式
         let appSelectMode = 'multiple';
 
-        //如果当前页配置中设置了只能选择单个应用
+        //如果当前页配置中设置了只能选择单个产品
         if (this.state.currentPage.isCanOnlySelectSingleApp) {
-            //去掉全部应用项
+            //去掉全部产品项
             appList.splice(0, 1);
             //设成只能单选
             appSelectMode = '';
@@ -560,7 +584,16 @@ class CurtaoAnalysis extends React.Component {
                         {this.renderContent()}
                     </Col>
                 </Row>
+
                 <TableListPanel/>
+
+                {this.state.isDetailPanelShow ? (
+                    <RightPanelModal
+                        isShowCloseBtn={true}
+                        onClosePanel={this.hideDetailPanel}
+                        {...this.state.detailPanelParams}
+                    />
+                ) : null}
             </div>
         );
     }

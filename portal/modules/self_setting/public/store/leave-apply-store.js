@@ -15,7 +15,7 @@ function LeaveApplyStore() {
 }
 LeaveApplyStore.prototype.setInitState = function() {
     this.sort_field = 'create_time';//排序字段
-    this.status = '';//请假申请的状态
+    this.status = '';//申请的状态
     this.order = 'descend';
     this.page_size = 20;
     //所有申请列表
@@ -28,7 +28,7 @@ LeaveApplyStore.prototype.setInitState = function() {
         errorMsg: ''
     };
     this.lastApplyId = '';
-    //由我发起的请假申请
+    //由我发起的申请
     this.selfApplyList = {
         // "" loading error
         loadingResult: 'loading',
@@ -45,6 +45,10 @@ LeaveApplyStore.prototype.setInitState = function() {
     this.isCheckUnreadApplyList = false;
     //有未读回复的列表
     this.unreadReplyList = [];
+    this.saveApply = {
+        loading: false,
+        errorMsg: ''
+    };
     this.clearData();
 };
 //设置是否查看未读回复的申请列表
@@ -160,6 +164,18 @@ LeaveApplyStore.prototype.afterAddApplySuccess = function(item) {
     this.selectedDetailItem = item;
     this.selectedDetailItemIdx = 0;
     this.totalSize++;
+};
+LeaveApplyStore.prototype.addSelfSettingApply = function(obj) {
+    if (obj.loading) {
+        this.saveApply.loading = true;
+        this.saveApply.errorMsg = '';
+    } else if (obj.error) {
+        this.saveApply.loading = false;
+        this.saveApply.errorMsg = '';
+    }else{
+        this.saveApply.loading = false;
+        this.saveApply.errorMsg = obj.errorMsg;
+    }
 };
 //成功转出一条审批后的处理，如果当前展示的是待审批列表
 LeaveApplyStore.prototype.afterTransferApplySuccess = function(targetId) {

@@ -341,7 +341,7 @@ class RecentLoginUsers extends React.Component {
                 }
             },
             {
-                title: Intl.get('common.app.name', '应用名称'),
+                title: Intl.get('common.product.name','产品名称'),
                 dataIndex: 'apps',
                 key: 'appName',
                 width: null,
@@ -563,7 +563,7 @@ class RecentLoginUsers extends React.Component {
                                 minWidth={120}
                                 value={this.state.selectedAppId}
                                 onChange={this.onSelectedAppChange.bind(this)}
-                                notFoundContent={!appOptions.length ? Intl.get('user.no.app', '暂无应用') : Intl.get('user.no.related.app', '无相关应用')}
+                                notFoundContent={!appOptions.length ? Intl.get('user.no.product','暂无产品') : Intl.get('user.no.related.product','无相关产品')}
                             >
                                 {appOptions}
                             </SelectFullWidth>

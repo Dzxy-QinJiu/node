@@ -101,6 +101,7 @@ class DealBoardList extends React.Component {
             if (result && result.code === 0) {
                 //不同列拖动时的处理(从源列中移除，从目标列中加入)
                 dealBoardAction.dragDealEnd({source, destination, draggableId});
+                this.props.dragChangeStageMsg(editParams);
                 message.success(Intl.get('user.edit.success', '修改成功'));
             } else {
                 message.error(Intl.get('common.edit.failed', '修改失败'));
@@ -129,6 +130,7 @@ class DealBoardList extends React.Component {
                 if (result && result.code === 0) {
                     //不同列拖动时的处理(从源列中移除，从目标列中加入)
                     dealBoardAction.dragDealEnd({source, destination, draggableId});
+                    this.props.dragChangeStageMsg(saveDeal);
                     message.success(Intl.get('user.edit.success', '修改成功'));
                 } else {
                     message.error(Intl.get('common.edit.failed', '修改失败'));
@@ -183,7 +185,8 @@ DealBoardList.propTypes = {
     containerHeight: PropTypes.number,
     searchObj: PropTypes.object,
     showDetailPanel: PropTypes.func,
-    showCustomerDetail: PropTypes.func
+    showCustomerDetail: PropTypes.func,
+    dragChangeStage:PropTypes.func,
 };
 
 export default DealBoardList;

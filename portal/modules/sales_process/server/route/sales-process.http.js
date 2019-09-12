@@ -61,6 +61,13 @@ module.exports = {
             'needLogin': true
         }
     }, {
+        'method': 'put', //  删除某个客户阶段的具体的阶段
+        'path': '/rest/delete/customer/color/stage/:id',
+        'handler': 'deleteCustomerStageColor',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
         'method': 'put', // 变更客户阶段顺序
         'path': '/rest/change/customer/stage/order',
         'handler': 'changeCustomerStageOrder',
@@ -81,5 +88,26 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
-    }]
+    }, {
+        'method': 'get', // 获取客户阶段的自动变更条件
+        'path': '/rest/get/customer/stage/auto/change/conditions',
+        'handler': 'getCustomerStageAutoConditions',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        'method': 'post', // 编辑客户阶段的自动变更条件（添加或是更新）
+        'path': '/rest/edit/customer/stage/auto/change/conditions/:processId/:stageId',
+        'handler': 'editCustomerStageAutoConditions',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        'method': 'put', // 启/停用自动化条件
+        'path': '/rest/change/auto/change/conditions/:processId/:stageId/:status',
+        'handler': 'changeAutoConditionsStatus',
+        'passport': {
+            'needLogin': true
+        }
+    },]
 };

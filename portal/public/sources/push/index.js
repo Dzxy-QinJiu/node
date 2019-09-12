@@ -22,6 +22,7 @@ import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {getClueUnhandledPrivilege, getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 const session = storageUtil.session;
 var NotificationType = {};
 var approveTipCount = 0;
@@ -38,8 +39,9 @@ var contactNameObj = {};
 //socketIo对象
 var socketIo;
 var hasAddCloseBtn = false;
+import history from 'PUB_DIR/sources/history';
 //推送过来新的消息后，将未读数加/减一
-function updateUnreadByPushMessage(type, isAdd) {
+function updateUnreadByPushMessage(type, isAdd, isAddLists) {
     //将未读数加一
     if (Oplate && Oplate.unread) {
         if (Oplate.unread[type]) {
@@ -52,6 +54,9 @@ function updateUnreadByPushMessage(type, isAdd) {
             }
         } else {
             Oplate.unread[type] = isAdd ? 1 : 0;
+        }
+        if(type === 'unhandleClue' && _.isArray(isAddLists) && _.isArray(_.get(Oplate,'unread.unhandleClueList'))){
+            Oplate.unread['unhandleClueList'] = _.concat(Oplate.unread['unhandleClueList'], isAddLists);
         }
         if (timeoutFunc) {
             clearTimeout(timeoutFunc);
@@ -127,7 +132,10 @@ function applyApproveUnhandledListener(data) {
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, data);
                 break;
-
+            case SELF_SETTING_FLOW.VISITAPPLY:
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY, true);
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_VISIT, data);
+                break;
         }
     }
 
@@ -137,11 +145,16 @@ window.closeAllNoty = function() {
     $('#noty-quene-tip-container').remove();
     $.noty.closeAll();
 };
+//打开线索列表，同时将新分配的线索加上new的标识
+window.openAllClues = function(){
+    history.push('/clue_customer', {refreshClueList: true});
+};
 //处理线索的数据
 function clueUnhandledListener(data) {
     if (_.isObject(data)) {
         if (getClueUnhandledPrivilege()){
-            updateUnreadByPushMessage('unhandleClue', _.get(data, 'clue_list.length'));
+            var clueList = _.get(data, 'clue_list',[]);
+            updateUnreadByPushMessage('unhandleClue', clueList.length, clueList);
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
         var clueArr = _.get(data, 'clue_list',[]);
@@ -190,7 +203,8 @@ function clueUnhandledListener(data) {
         if (!hasAddCloseBtn) {
             hasAddCloseBtn = true;
             ulHtml.before(`<p id="noty-quene-tip-container">
-${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示，', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}，<a href="#" onclick='closeAllNoty()'>
+${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示，', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}，<a href="#" onclick='openAllClues()'>
+${Intl.get('clue.customer.noty.all.list', '查看所有线索？')}</a><a href="#" onclick='closeAllNoty()'>
 ${Intl.get('clue.close.all.noty', '关闭所有提醒？')}</a></p>`);
         } else {
             var queueNum = $('#queue-num');
@@ -485,7 +499,7 @@ function scheduleAlertListener(scheduleAlertMsg) {
                 contactName: phoneItem.customer_name,
                 customerId: phoneItem.customer_id
             };
-            phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
+            phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out handle-btn-item\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
         });
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
         notificationUtil.showNotification({
@@ -722,6 +736,10 @@ function getMessageCount(callback) {
                 case 'documentwriting_apply_management':
                     getUnapproveDocumentWritingApply();//获取文件撰写的待我审批数
                     break;
+                case 'my_leave_apply_management'://路由配置中路由的id
+                    getUnapproveVisitApply();//获取拜访申请的待我审批数
+                    break;
+
             }
         });
     }
@@ -939,6 +957,21 @@ function getUnapproveSalesOpportunityApply() {
         data: queryObj,
         success: function(data) {
             setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,data);
+        },
+        error: function(errorMsg) {
+        }
+    });
+}
+//获取待我审批的拜访申请
+function getUnapproveVisitApply() {
+    var queryObj = {type: SELF_SETTING_FLOW.VISITAPPLY};
+    $.ajax({
+        url: '/rest/get/worklist/apply_approve/list',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,data);
         },
         error: function(errorMsg) {
         }

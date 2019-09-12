@@ -506,7 +506,7 @@ class CustomerAnalysis extends React.Component {
                             dataItem.highest_date = highestDate;
                         }
 
-                        dataItem[key] = dataItem[key].total;
+                        dataItem[key] = _.get(dataItem, [key, 'total'], 0);
                     });
                 });
 

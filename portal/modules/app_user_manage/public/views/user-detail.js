@@ -43,7 +43,10 @@ class UserDetail extends React.Component {
     static defaultProps = {
         userId: '1',
         appLists: [],
-        userConditions: []
+        userConditions: [],
+        userEngagementScore: {},
+        userBasicScore: {},
+        userIndicator: []
     };
 
     state = {
@@ -348,6 +351,9 @@ class UserDetail extends React.Component {
                                     height={contentHeight}
                                     userId={this.props.userId}
                                     selectedAppId={this.props.selectedAppId}
+                                    userEngagementScore={this.props.userEngagementScore}
+                                    userBasicScore={this.props.userBasicScore}
+                                    userIndicator={this.props.userIndicator}
                                 />
                             </div> : null
                     }
@@ -427,7 +433,7 @@ class UserDetail extends React.Component {
                                         </div>
                                         <div className="basic-info-btns">
                                             {
-                                                !loading && hasEditPrivilege ? <span className="iconfont icon-edit-pw" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
+                                                !loading && hasEditPrivilege ? <span className="iconfont icon-edit-pw handle-btn-item" title={Intl.get('common.edit.password', '修改密码')} onClick={() => { this.showEditPw(true); }} /> : null
                                             }
                                             {
                                                 !loading ? this.renderUserStatus(userInfo.data, true) : null
@@ -536,6 +542,9 @@ UserDetail.propTypes = {
     userId: PropTypes.string,
     isShownExceptionTab: PropTypes.bool,
     userConditions: PropTypes.array,
-    operatorRecordDateSelectTime: PropTypes.object // 操作记录界面，选择的时间
+    operatorRecordDateSelectTime: PropTypes.object, // 操作记录界面，选择的时间
+    userEngagementScore: PropTypes.object,
+    userBasicScore: PropTypes.object,
+    userIndicator: PropTypes.Array,
 };
 module.exports = UserDetail;

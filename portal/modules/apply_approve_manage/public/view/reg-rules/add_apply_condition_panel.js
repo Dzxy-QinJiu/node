@@ -168,7 +168,7 @@ class AddApplyConditionPanel extends React.Component {
                             return (<div className="condition-type-container range-condition-container">
                                 <div className="condition-type-title">
                                     {_.get(target, 'name')}
-                                    <i className="iconfont icon-delete"
+                                    <i className="iconfont icon-delete handle-btn-item"
                                         onClick={this.deleteConditionType.bind(this, limitType)}></i>
                                 </div>
                                 <div className="condition-type-content">

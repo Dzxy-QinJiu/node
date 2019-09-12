@@ -262,7 +262,7 @@ var UserBasicEditField = createReactClass({
                     className="inline-block">{displayText}{this.props.afterValTip ? this.props.afterValTip : ''}</span>
                 {
                     !this.props.disabled ? (
-                        <i className="inline-block iconfont icon-update" title={this.props.title}
+                        <i className="inline-block iconfont icon-update handle-btn-item" title={this.props.title}
                             onClick={(e) => { this.setEditable(e); }}></i>
                     ) : null
                 }

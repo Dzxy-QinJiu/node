@@ -130,7 +130,7 @@ class DatePickerEditField extends React.Component {
                     className="inline-block">{moment(displayText).format(oplateConsts.DATE_FORMAT)}</span>
                 {
                     !this.props.disabled ? (
-                        <i className="inline-block iconfont icon-update" title={this.props.title}
+                        <i className="inline-block iconfont icon-update handle-btn-item" title={this.props.title}
                             onClick={(e) => {
                                 this.setEditable(e);
                             }}></i>

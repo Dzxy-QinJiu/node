@@ -124,6 +124,23 @@ exports.updateMemberTeam = function(user) {
     return Deferred.promise();
 };
 
+// 清空成员的部门
+exports.clearMemberDepartment = (memberId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/member/department/reset/' + memberId,
+        type: 'delete',
+        dateType: 'json',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //修改成员的角色
 exports.updateMemberRoles = (user) => {
     let Deferred = $.Deferred();
@@ -291,6 +308,41 @@ exports.setSalesGoals = function(queryObj) {
         success: function(list) {
             Deferred.resolve(list);
         }, error: function(errorInfo) {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+// 获取成员变动记录
+exports.getMemberChangeRecord = (queryObj) => {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/member/record/timeline',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: (recordList) => {
+            Deferred.resolve(recordList);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+// 获取成员的组织信息
+exports.getMemberOrganization = () => {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/member/organization',
+        dataType: 'json',
+        type: 'get',
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error: (errorInfo) => {
             Deferred.reject(errorInfo.responseJSON);
         }
     });

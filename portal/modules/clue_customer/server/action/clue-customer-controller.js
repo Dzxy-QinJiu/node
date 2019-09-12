@@ -30,6 +30,9 @@ function getClueDiffType(backendIntl) {
         {
             name: backendIntl.get('clue.customer.has.follow', '已跟进'),
             value: '2',
+        },{
+            name: backendIntl.get('clue.customer.has.transfer', '已转化'),
+            value: '3',
         }];
 }
 const contactWays = ['phone','qq','email','weChat'];
@@ -311,17 +314,17 @@ exports.exportData = function(req, res) {
                     value = _.get(targetObj,'name') || value;
                 }
 
-                if (column.dataIndex === 'source_time'){
+                if (column.dataIndex === 'source_time' && value){
                     value = moment(value).format(DATE_FORMAT);
                 }
                 if (column.dataIndex === 'contacts' && _.isArray(value)){
                     var contactDes = '';
                     _.forEach(value, (contactItem) => {
-                        contactDes += _.get(contactItem,'name','');
+                        contactDes = contactDes + ' ' + _.get(contactItem,'name','');
                         _.forEach(contactWays, (way) => {
                             if (_.isArray(contactItem[way])){
                                 _.forEach(contactItem[way], (wayItem) => {
-                                    contactDes += wayItem;
+                                    contactDes = contactDes + ' ' + wayItem;
                                 });
                             }
                         });
@@ -329,7 +332,7 @@ exports.exportData = function(req, res) {
                     value = contactDes;
                 }
                 if (column.dataIndex === 'customer_traces' && _.isArray(value)){
-                    var traceAddTime = _.get(value, '[0].add_time');//跟进时间
+                    var traceAddTime = _.get(value, '[0].call_date');//跟进时间
 
                     traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
                     var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
@@ -369,6 +372,14 @@ exports.changeClueSalesBatch = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
+exports.getRecommendClueCount = function(req, res) {
+    clueCustomerService.getRecommendClueCount(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
 exports.getSimilarClueLists = function(req, res) {
     clueCustomerService.getSimilarClueLists(req, res)
         .on('success', function(data) {
@@ -394,9 +405,11 @@ exports.getRecommendClueLists = function(req, res) {
                     name: item.name,
                     legalPerson: item.legalPerson,
                     telephones: item.telephones,
-                    startTime: item.startTime
+                    startTime: item.startTime || ''
                 });
             });
+            //按注册时间进行排序
+            lists = _.sortBy(lists, item => -item.startTime);
             res.status(200).json(lists);
         }).on('error', function(err) {
             res.status(500).json(err && err.message);
@@ -436,6 +449,32 @@ exports.extractRecommendClue = function(req, res) {
 };
 exports.batchExtractRecommendLists = function(req, res) {
     clueCustomerService.batchExtractRecommendLists(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+exports.getClueListByKeyword = function(req, res) {
+    clueCustomerService.getClueListByKeyword(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+//释放线索
+exports.releaseClue = function(req, res) {
+    clueCustomerService.releaseClue(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err && err.message);
+        });
+};
+//线索批量操作
+exports.batchReleaseClue = function(req, res) {
+    clueCustomerService.batchReleaseClue(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {

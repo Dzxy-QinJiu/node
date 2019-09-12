@@ -13,7 +13,7 @@ import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import CrmAction from '../../action/crm-actions';
 import contactAjax from '../../ajax/contact-ajax';
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-import {emailRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {emailRegex,qqRegex,wechatRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
 import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
@@ -109,7 +109,8 @@ class ContactItem extends React.Component {
         return contactInfo;
     };
     renderItemSelfSettingContent = (item) => {
-        return <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true}/>;
+        return this.props.disableEdit ? addHyphenToPhoneNumber(item) : (
+            <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true}/>);
     };
     renderItemSelfSettingForm = (key, index, that) => {
         const fieldKey = `${that.props.field}[${key}]`;
@@ -144,8 +145,8 @@ class ContactItem extends React.Component {
         const defaultTitle = isDefaultContact ? Intl.get('crm.119', '默认') : Intl.get('crm.detail.contact.default.set', '设为默认联系人');
         //联系方式展开、收起
         const contactWayClassName = classNames('iconfont', {
-            'icon-up-twoline': isExpanded,
-            'icon-down-twoline': !isExpanded
+            'icon-up-twoline handle-btn-item': isExpanded,
+            'icon-down-twoline handle-btn-item': !isExpanded
         });
         return (
             <span className="contact-item-title">
@@ -169,7 +170,7 @@ class ContactItem extends React.Component {
                         </Button>
                     </span>) : this.props.disableEdit ? null : (
                     <span className="contact-item-buttons">
-                        <span className="iconfont icon-delete" title={Intl.get('common.delete', '删除')}
+                        <span className="iconfont icon-delete handle-btn-item" title={Intl.get('common.delete', '删除')}
                             data-tracename="点击删除联系人按钮"
                             onClick={this.showDeleteContactConfirm}/>
                         <span className={contactWayClassName}
@@ -389,6 +390,10 @@ class ContactItem extends React.Component {
                                 type='input'
                                 label={'QQ'}
                                 hasEditPrivilege={hasEditPrivilege}
+                                validateRules={[{
+                                    message: Intl.get('common.correct.qq', '请输入正确的QQ号'),
+                                    pattern: qqRegex,
+                                }]}
                                 placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                                 saveEditData={this.saveContactInfo.bind(this, 'qq')}
                                 noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
@@ -403,6 +408,10 @@ class ContactItem extends React.Component {
                                 type='input'
                                 label={Intl.get('crm.58', '微信')}
                                 hasEditPrivilege={hasEditPrivilege}
+                                validateRules={[{
+                                    message: Intl.get('common.correct.wechat','请输入正确的微信号'),
+                                    pattern: wechatRegex,
+                                }]}
                                 placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                 saveEditData={this.saveContactInfo.bind(this, 'weChat')}
                                 noDataTip={Intl.get('crm.contact.wechat.none', '暂无微信')}

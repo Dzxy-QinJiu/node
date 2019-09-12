@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -24,7 +25,7 @@ var en_US = {
     'menu.order.stage': 'Order Stage', // 订单阶段
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
-    'menu.sales.process': 'Sales Process', // 销售流程
+    'menu.sales.process': 'Customer Stage', // 客户阶段
     'menu.clue.allocation': 'Clue allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
@@ -54,6 +55,7 @@ var en_US = {
     'menu.download.app': 'Download APP',//下载APP
     'menu.leave.apply.list.management': 'Application for approval',//申请审批
     'menu.active.user.lists': 'Active users',//活跃用户
+    'menu.online.consulting': 'Online consulting',//在线咨询
     //公共部分提取start
     'common.actived': 'Activated',//已激活
     'common.no.data': 'No data',//暂无数据
@@ -70,6 +72,7 @@ var en_US = {
     'common.password.unequal': 'Passwords do not match',//两次输入密码不一致！
     'common.correct.email': 'Please enter the correct email account',//请输入正确的邮箱Please input the correct email
     'common.correct.qq': 'Please enter the correct QQ account',//请输入正确的QQ号
+    'common.correct.wechat': 'please enter the correct WeChat account',//请输入正确的微信号
     'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
     'common.password.validate.rule': 'Please enter the password with 6-18 digits, letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
@@ -144,8 +147,7 @@ var en_US = {
     'common.upload.error': 'Upload failed, please try again!',//上传失败，请重试!
     'common.client': 'Client',//客户端
     'common.operate.record': 'Operational Records',//操作记录
-    'common.add.app': 'Add Applications',//添加应用
-    'common.app': 'Application',//应用
+    'common.add.product': 'Add Products',//添加产品
     'common.sure': 'Confirm',//确定
     'common.name.is.existed': 'The name is already exists!', // 姓名已存在！
     'common.name.is.unique': 'The name already exists!', // 姓名唯一性校验出错！
@@ -189,7 +191,6 @@ var en_US = {
     'common.belong.customer': 'Customers',//所属客户
     'common.belong.sales': 'Sales',//所属销售
     'common.belong.team': 'Team',//所属团队
-    'common.app.name': 'Application',//应用名称
     'common.type': 'Type',//类型
     'common.official': 'Signed',//签约
     'common.trial': 'Trial',//试用
@@ -229,7 +230,7 @@ var en_US = {
     'common.user.lang': 'Language',//语言
     'common.filter.by.key': 'Filter by {key}',//根据{key}过滤
     'common.upload.img.change': 'Change',//更改
-    'common.table.customize': 'Customize Table\'s Columns',//'自定义表格列',    
+    'common.table.customize': 'Customize Table\'s Columns',//'自定义表格列',
     'common.label.times': 'times',//'次',
     'common.label.days': 'days',//'天',
     'common.label.hours': 'hours',//'小时',
@@ -260,6 +261,8 @@ var en_US = {
     'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
     'common.import.template': 'Template',//模板
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'common.create': 'Create', // 创建
+    'common.stage.describe': 'the description of stage', // 阶段描述
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -389,15 +392,15 @@ var en_US = {
     'user.import.no.match.customer.tips': 'The customer which the user belongs to is not found. There may be no the customer or the customer name is inconsistent. Please modify the data and re-import.', // 未找到用户所属客户，可能没有此客户或客户名不一致，请修改数据后重新导入
     'user.user.add.success': 'Add successfully',//添加成功
     'user.user.basic': 'Basic information',//基本信息
-    'user.user.app.select': 'Select applications',//选择应用
-    'user.detail.addApp.selectAndConfig': 'Select and config apps',//'选择应用并配置',
+    'user.user.product.select': 'Select product',//选择产品
+    'user.detail.addProduct.selectAndConfig': 'Select and config products',//选择产品并配置
     'user.detail.addApp.setRolePermissions': 'Config role and permissions',//'设置角色权限',
     'user.detail.errorTip.getRoleTimeout': 'get role data time out',//'获取角色列表超时',
     'user.detail.errorTip.getPermissionTimeout': 'get permissions data time out',
-    'user.user.app.set': 'Application Configuration',//应用设置
+    'user.user.product.set': 'Product Configuration',//产品设置
     'user.batch.operation': 'Batch operations',//批量操作
     'user.operator': 'Operator',//操作人
-    'user.app.all': 'All Applications',//全部应用
+    'user.product.all': 'All products',//全部产品
     'user.search.placeholder': 'Search by keywords',//请输入关键词搜索Please input keywords for searching
     'user.time.start': 'Open time',//开通时间
     'user.time.end': 'Expire time',//到期时间
@@ -415,10 +418,10 @@ var en_US = {
     'user.remark.set.tip': 'Configure remarks',//设置备注
     'user.user.list.click': 'Please click at user list',//请在用户列表中点击
     'user.user.list.select': 'Select users',//选择用户
-    'user.app.open': 'Open application',//开通应用
-    'user.no.app': 'No application',//暂无应用
-    'user.no.related.app': 'No related application',////暂无符合条件的应用  无相关应用
-    'user.app.select.tip': 'Please select at least one application',//至少选择一个应用
+    'user.product.open': 'Open product',//开通产品
+    'user.no.product': 'No product',//暂无产品
+    'user.no.related.product': 'No related product',//无相关产品
+    'user.product.select.tip': 'Please select at least one product',//至少选择一个产品
     'user.app.add.success': 'Add the application successfully',//添加应用成功
     'user.app.edit.success': 'Edit the application successfully',//修改应用成功
     'user.phone': 'Phone',//手机号
@@ -522,7 +525,7 @@ var en_US = {
     'user.password.tip': 'In secrecy',//保密中
     'user.failed': 'Failure',//失败
     'user.select.user.tip': 'Please select users in list',//请在用户列表中选择用户
-    'user.app.select.please': 'Please select applications',//请选择应用
+    'user.product.select.please': 'Please select products',//请选择产品
     'user.operate.success': 'Operate successfully',//操作成功
     'user.batch.app.open': 'Applications',//开通产品
     'user.batch.open.type': 'Types',//开通类型
@@ -645,8 +648,10 @@ var en_US = {
     'user.jscode.copy': 'Copy',//复制
     'user.copy.success.tip': 'Copied success',//复制成功！
     'user.access.way.tip': 'If you use the following products, you can also access users in the following ways',//您如果使用了以下产品，还可以通过以下方式接入用户
-    'user.jscode.test.btn': 'Click test',//点击测试
-    'user.jscode.use.tip': 'Please add the above JS code to the header of the application page if it has been added ',//请将以上js代码添加到应用页面的header中，如已添加
+    'user.access.way.other.tip': 'Acess user in other ways', //其他方式接入
+    'user.jscode.test.btn': 'Test',//测试
+    'user.jscode.use.tip': 'Please {copyAndTraceCode} into your product <header>',//请{copyAndTraceCode}到产品页面的header中
+    'user.jscode.copy.trace': 'copy the trace code',//复制跟踪代码
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
     // 用户分析
@@ -657,10 +662,56 @@ var en_US = {
     'user.login.history.activity.score': 'Historical activity score', // 历史活跃度分数
     'user.login.history.immersion.score': 'Historical immersion score', // 历史沉浸度分数
     'user.login.last.year': 'The latest a year', // 近一年
+    'user.login.last.six.month': 'The latest six month', // 近六个月
     'user.login.last.month': 'The latest a month', // 近一月
     'user.login.last.week': 'The latest a week', // 近一周
     'user.login.last.title': 'Active statistics of {title}', // {title}的活跃统计
     'user.login.last.failed': 'Failed to get user recent login statistic', // 获取用户最近登录统计信息失败
+    'user.login.analysis.user': 'Users analysis',//用户分析
+    'user.login.analysis.signed': 'Signed users analysis',//签约用户分析
+    'user.login.analysis.delayed': 'Deferred users analysis',//延期用户分析
+    'user.login.analysis.expired': 'Expired users analysis',//过期用户分析
+    'user.login.analysis.new.add': 'New users analysis',//新增用户分析
+    'user.login.analysis.new.expire': 'New expired users analysis',//新增过期用户分析
+    'user.login.analysis.call': 'Call analysis',//通话分析
+    'user.login.analysis.number.durant': 'Quantity and duration statistics',//数量与时长统计
+    'user.login.analysis.call.other': 'Other analysis',//其他分析
+    'user.login.analysis.chance': 'Sales opportunity analysis',//销售机会分析
+    'user.login.analysis.clue': 'Clue analysis',//线索分析
+    'user.login.analysis.contract': 'Contract analysis',//合同分析
+    'user.login.analysis.new.contract': 'New contract analysis',//新增合同分析
+    'user.login.analysis.cost': 'Cost analysis',//费用分析
+    'user.login.analysis.repay': 'Repay analysis',//回款分析
+    'user.login.analysis.customer': 'Customer analysis',//客户分析
+    'user.login.analysis.customer.active': 'Customer active analysis',//客户活跃度分析
+    'user.login.analysis.customer.new': 'New customer analysis',//新增客户分析
+    'user.login.analysis.customer.other': 'other',//其他
+    'user.login.analysis.customer.signed': 'Singed customer analysis',//签约客户分析
+    'user.login.analysis.customer.stage': 'Stage change analysis',//阶段变更分析
+    'user.login.analysis.customer.qualified': 'Qualified customer analysis',//试用合格客户分析
+    'user.login.analysis.order': 'Order analysis',//订单分析
+
+    //统计
+    'user.statistics.new': 'New user count',//新增用户数统计
+    'user.statistics.new.source': 'New user statistics source ',//新增用户来源分类统计
+    'user.statistics.new.industry': 'New user industry statistics',//新增用户行业统计
+    'user.statistics.new.team': 'New user team statistics',//新增用户团队统计
+    'user.statistics.expire': 'Expired number of users',//过期用户数统计
+    'user.statistics.expire.industry': 'Expired user industry statistics',//过期用户行业统计
+    'user.statistics.expire.team': 'Expired user team statistics',//过期用户团队分布统计
+    'user.statistics.expire.new': 'New expired user statistics',//新增过期用户数统计
+    'user.statistics.expire.new.industry': 'New expired user industry statistics',//新增过期用户行业统计
+    'user.statistics.expire.new.team': 'New expired user team statistics',//新增过期用户团队分布统计
+    'user.statistics.expire.new.area': 'New expired user area statistics',//新增过期用户地域统计
+    'user.statistics.total.user': 'Overall user count',//总体用户数统计
+    'user.statistics.total.user.source': 'Total User Source Statistics',//总用户来源分类统计
+    'user.statistics.total.user.area': 'User geographic statistics',//总用户地域统计
+    'user.statistics.total.user.industry': 'Total User Industry Statistics',//总用户行业统计
+    'user.statistics.total.user.team': 'Total User Team Statistics',//总用户团队统计
+    'user.login.create.account': 'Salesman staff opened account statistics',//销售开通用户统计
+    'user.retain.day': 'User retention of day',//用户天留存
+    'user.retain.week': 'User retention of week',//用户周留存
+    'user.retain.mon': 'User retention of month',//用户月留存
     //第三方应用
     'third.party.app': 'Open Application Platform',//开放应用平台',
     'third.party.app.add': 'Add application of the open plateform',//添加应用
@@ -748,6 +799,7 @@ var en_US = {
     'member.get.role.lists': 'Getting role lists',//正在获取角色列表
     'member.is.building': 'Setting up',//创建中
     'member.create.time': 'Creating Time',//创建时间
+    'member.disable.time': 'Disable Time', // 停用时间
     'member.forbidden.self': 'Can\'t disable yourself', // 禁止禁用自己
     'member.email.extra.tip': 'The mailbox will be used as the user name for login',//邮箱会作为登录时的用户名使用
     'member.save.logo.tip': 'Do you want to save the uploaded head ?',//是否保存上传的头像？
@@ -784,6 +836,12 @@ var en_US = {
     'member.position.set.default': 'Setting default', // 设为默认
     'member.continue.add.member': 'Continue', // 继续添加成员
     'member.add.member.rule': 'The username can only be mailbox or composed of letters, Numbers, dash, underlined, and length from 1 to 50 (including 50).', // 用户名只能是邮箱或由字母、数字、横线、下划线组成，且长度在1到50（包括50）之间
+    'member.record.member.operate': 'The member was {operate}', // {operate}了该成员。
+    'member.record.change.field': 'Changed {field} for the member', // 修改了该成员的{field}。
+    'member.record.change.field.name': 'Changed {field} of the member to {name}', // 修改了该成员的{field}，改为{name}
+    'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
+    'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
+    'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量已达{number}个上限
     //后台管理-成员end
 
     //组织管理start
@@ -848,6 +906,7 @@ var en_US = {
     'sales.process.customer.stage.nodata.tips': 'No customer stage, please add first', // 暂无客户阶段，请先添加
     'sales.process.customer.stage.toplimit': 'The number of customer stages has reached the upper limit(8).', // 客户阶段个数已达上限（8个）
     'sales.process.delete.customer.stage.tips': 'Are you sure to delete the customer stage?', // 确定删除这个客户阶段么
+    'sales.process.change.order.success': 'Success to change the order of customer stages', // 变更客户阶段顺序成功
     'sales.process.change.order.failed': 'Failed to change the order of customer stages', // 变更客户阶段顺序失败
     'sales.process.customer.stage.play': 'Play', // 剧本
     'sales.process.customer.stage.play.placeholder': 'Please enter scenarios', // 请输入剧本
@@ -858,7 +917,30 @@ var en_US = {
     'sales.process.select.action.placeholder': 'Please select sale action', // 请选择动作
     'sales.process.add.activity.failed': 'Failed to add the sales behaviors', // 添加销售行为失败
     'sales.process.customer.stage.detail.title': 'Set up scenarios, sales behaviors, and automatic change conditions for the information phase.', // 设置信息阶段的剧本、销售行为、自动变更条件。
+    'sales.process.customer.stage.auto.conditions': 'Automatically changes', // 自动变更
+    'sales.process.customer.stage.auto.conditions.title': 'The customer automatically changes to the phase when the following conditions', // 当符合以下条件时，客户自动变更为该阶段
+    'sales.process.auto.conditions.label': 'Selection condition', // 选择条件
+    'sales.process.auto.conditions.placeholder': 'Please select the conditions of the automatically change', // 请选择自动变更的条件
+    'sales.process.auto.conditions.no.conditions': 'Unconditional', // 暂无条件
+    'sales.process.status.auto.conditions.tip': 'Are you sure you want to {status} the automatically changes of the customer stage?', // 确定要{status}该客户阶段的自动变更条件吗？
     // 后台管理-销售流程end
+
+    // 后台管理-客户阶段start
+    'customer.stage.define.new': 'Define  New Customer Stage', // 定义新客户阶段
+    'customer.stage.add.customer.stage': 'Add Customer Stage ', // 添加客户阶段
+    'customer.stage.default.stage.tips': 'Uneditable by default', // 默认不可编辑
+    'customer.stage.stage.title': 'Setting the stage', // 阶段设置
+    'customer.stage.name.placeholder': 'Please enter the stage of customer', // 请输入客户阶段
+    'customer.stage.set.scope': 'Set scope', // 设置适用范围
+    'customer.stage.click.show.detail': 'Click for details', // 点击查看详细信息
+    'customer.stage.edit.stage': 'Edit the {stage} stage', // 编辑{stage}阶段
+    'customer.stage.exist.stage.tips': 'This customer stage already exists', // 该客户阶段已存在
+    'customer.stage.add.stage': 'Add a customer stage', // 添加一个客户阶段
+    'customer.stage.delete.stage': 'Delete customer stage', // 删除客户阶段
+    'customer.stage.select.team.user.placeholder': 'Select the team or individual that use the stage', // 请选择适用该阶段的团队或个人
+    'customer.stage.add.stage.title': 'Customer Stage {num}', // 客户阶段{num}
+    'customer.stage.click.add.stage': 'Add stage', // 添加阶段
+    // 后台管理-客户阶段end
 
     //应用管理start
     'app.title': 'application management', // 应用管理
@@ -1050,6 +1132,14 @@ var en_US = {
     'config.product.manage': 'Product manage',//产品管理
     'config.product.reload': 'Reload product',//重新获取产品
     'config.product.add': 'Add product',//添加产品
+    'config.product.add.code': 'Add product code',//添加产品编号
+    'config.product.add.spec': 'Add product specifications',//添加规格/版本
+    'config.product.add.price': 'Add product price',//添加产品单价
+    'config.product.price.not.null': 'Product price should not be empty',//产品单价不能为空
+    'config.product.add.sales_unit': 'Add sales unit',//添加计价单位
+    'config.product.sales_unit.not.null': 'Sales unit should not be empty',//计价单位不能为空
+    'config.product.add.address': 'Add access address',//添加访问地址
+    'config.product.add.desc': 'Add product description',//添加产品描述
     'config.product.modify': 'Modify product',//修改产品
     'config.product.input.name': 'Please input production name',//请输入产品名称
     'config.product.name.rule': '1 ~ 10 characters', // 最少1个字符,最多10个字符
@@ -1147,8 +1237,9 @@ var en_US = {
     'user.apply.presenter': 'presenter', // 申请人
     'user.apply.id': 'Account apply', // 账号申请
     'user.apply.no.match.retry': 'no match apply list', // 暂无符合查询条件的用户申请
+    'user.apply.no.apply': 'User applications that do not yet need to be approved',//还没有需要审批的用户申请
+    'user.apply.no.unread': 'No unread reply',//已无未读回复的申请
     'user.apply.show.update.tip': 'The data has been updated, Whether to', // 数据已更新,是否
-    'user.apply.no.apply': 'no apply list', // 还没有用户审批诶...
     'user.apply.total.apply': '{number} applies {apply_type}', // apply_type: null=>全部 已通过 已驳回 待审批 已撤销  共{number}条申请{apply_type}@
     'user.apply.detail.order': 'Order', // 订单
     'user.apply.detail.change.username.title': 'change username', // 修改用户名
@@ -1419,6 +1510,12 @@ var en_US = {
     'crm.sales.clue.customer.recommend': 'Customer recommendation',//客户推荐
     'crm.access.channel.placeholder': 'Please select access channels',//请选择接入渠道
     'crm.clue.source.placeholder': 'Please select the source of the clues',//请选择线索来源
+    'crm.suggest.clue.search': 'Please input clue name to implement search',//请输入线索名称搜索
+    'crm.suggest.clue.not.found': 'Clue not found',//未找到该线索
+    'crm.clue.suggest.create.clue': 'Create clue', //创建线索
+    'crm.suggest.select.clue.tip': 'Please choose a clue from the dropdown list',//请在下拉框中选择线索
+    'crm.suggest.select.clue': 'Please choose a clue', //请选择线索
+    'crm。suggest.select.clue.first': 'Please choose a clue first',//请先选择线索
     'crm.sales.clue': 'Clue',//线索
     'crm.sales.clue.add.disable': '\'{label}\' tags cannot be added manually',//不能手动添加'{label}'标签
     'crm.clue.require.one': 'Telephone, mail, QQ and weChat required one',//电话、邮箱、QQ必填一项
@@ -1612,6 +1709,34 @@ var en_US = {
     'crm.customer.extract.time': 'Extract time',//释放时间
     'crm.customer.release.customer': 'Release customer',//释放客户
     'crm.customer.extract.limit.tip': 'Up to 20 customers at a time',//一次最多提取20个客户
+    'crm.customer.rule.name': 'Rules set',//规则设置
+    'crm.add.customer.pool.rule': 'Add rules',//添加规则
+    'crm.customer.pool.rule.name': '{name} customer pool',//{name}客户池
+    'crm.customer.pool.default.visible.range': 'Customer original team',//客户原始团队
+    'crm.customer.pool.all.visible.range': 'Owner',//所有人
+    'crm.customer.visible.range': 'Visible range',//可见范围
+    'crm.customer.pool.select.range': 'Please select the visibility range',//请选择可见范围
+    'crm.customer.pool.source': 'Customer source',//客户来源
+    'crm.customer.pool.unlimited': 'Unlimited',//不限
+    'crm.customer.pool.rule.form.name': 'Rule name',//规则名称
+    'crm.customer.pool.rule.range.tip': 'Please select which teams or members can see the customer',//请选择客户能被哪些团队或者成员看到
+    'crm.customer.pool.rule.add.source': 'Add source',//增加来源
+    'crm.customer.pool.rule.original.team': 'Original team',//原始团队
+    'crm.customer.pool.rule.original.team.select.tip': 'Please select original team',//请选择原始团队
+    'crm.customer.pool.rule.select.customer.stage': 'Please select customer stage',//请选择客户阶段
+    'crm.customer.pool.rule.select.customer.label': 'Please select customer label',//请选择客户标签
+    'crm.customer.pool.rule.source.max.length.tip': 'Customer source Settings up to 5',//客户来源设置最多5个
+    'crm.customer.pool.rule.default.tip': 'When there is no original team, everyone is visible by default',//没有原始团队时，默认所有人可见
+    'crm.get.customer.pool.rule.faild': 'Failed to get customer pool configuration!!!',//获取客户池配置失败！！！
+    'crm.customer.pool.rule.get.stage.lists': 'Getting the customer phase list',//正在获取客户阶段列表
+    'crm.customer.pool.rule.sure.delete.tip': 'Are you sure you want to delete this rule?',//确认要删除此项规则吗？
+    'crm.pool.single.extract.tip': 'Are you sure you want to extract this customer?',//您确定要提取此客吗？
+    'crm.pool.batch.extract.tip': 'Are you sure you want to extract the selected customers?',//您确定要提取选中的客吗？
+    'crm.pool.extract.distribute': 'To extract and assign the person in charge',//提取并分配负责人
+    'crm.pool.select.customer.tip': 'Click {icon} in the list to select customers',//请点击列表中的{icon}选择客户
+    'crm.pool.max.selected.num': 'Extract {num} at most each time',//每次最多提取{num}个
+    'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
+    'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -1678,7 +1803,7 @@ var en_US = {
     'oplate_customer_analysis.salesNewCustomerCount': 'Statistic of new customers created by sales', //'销售新开客户数统计',
     'oplate_customer_analysis.newCustomerCount': 'Count of new customers created by sales', //'新开客户数',
     'oplate_customer_analysis.tatolNewCustomerCount': 'Total count of new customer', //'新开账号数总数',
-    'oplate_customer_analysis.customerLoginCount': 'New login customer count', //'新开客户登录数',
+    'oplate_customer_analysis.customerLoginCount': 'Number of customers logged in', //'登录过的客户数',
     'oplate_customer_analysis.type.all': 'all',
     'oplate_customer_analysis.type.trial': 'trial',
     'oplate_customer_analysis.type.formal': 'formal',
@@ -2052,8 +2177,8 @@ var en_US = {
     'user.analysis.moveoutCustomer': 'Move-out customer ',// '转出客户统计',
     'user.analysis.sales.users': 'Sales and opening of user statistics',//销售开通用户统计
     'user.analysis.active.user.area.statistics': 'Active user area statistics',//活跃用户地域统计
-    'user.analysis.account.login.statistics': 'Account login statistics', // 开通账号登录统计
-    'user.analysis.account.count': 'Number of open accounts', // 开通账号数
+    'user.analysis.account.login.statistics': 'Account login statistics', // 开通用户登录统计
+    'user.analysis.account.count': 'Number of open users', // 开通用户数
     'user.analysis.account.login.count': 'Actual number of login accounts', // 实际登录数
 
     //销售首页-新增客户分析
@@ -2290,6 +2415,10 @@ var en_US = {
     'errorcode.wechat.bound.other': 'Your Wechat has been bound to other accounts',//您的微信已绑定到其他账号
     'errorcode.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
     'errorcode.17331': 'Statistics of call customers by region, stage, industry distribution failure',//统计通话的客户的地域,阶段,行业分布失败
+    'errorcode.162': 'You has achevie the max limit',//已达到一天的提取上限
+    'errorcode.163': 'The number of members has been reached.', // 成员数量已达上限
+    'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
+    'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2449,8 +2578,10 @@ var en_US = {
     'crm.alert.topic': 'Title',//标题
     'crm.contact.time': 'Contact time',//联系时间
     'crm.alert.time': 'Alert time',//提醒时间
-    'crm.schedule.n.hour.later': '{n} hours later',//{n}小时后
+    'crm.schedule.n.hour.later': '{n} hour(s) later',//{n}小时后
+    'crm.schedule.n.hour.later,confirm': 'Are you sure to contact this customer after {n} hour(s)',//确定{n}小时之后再联系吗？
     'crm.alert.after.n.day': '{n} days later',//{n}天后
+    'crm.alert.after.n.day.confirm': 'Are you sure to contact this customer after {n} day(s)',//确定{n}天之后再联系吗？
     'crm.alert.after.1.week': '1 week later',//1周后
     'crm.not.alert': 'Not remind',//不提醒
     'crm.alert.not.finish': 'Not finish',//未完成
@@ -2522,9 +2653,10 @@ var en_US = {
     'clue.customer.clue.name': 'clue names',//线索名称
     'clue.customer.fillin.clue.name': 'Please fill in the clue names',//请填写线索名称
     'clue.customer.register.user': 'registered user',//注册用户
+    'clue.customer,add,schedule,success': 'This schedule has been added',//联系计划已添加
+    'clue,customer.add.schedule.error': 'This schedule fail to add',//联系计划添加失败
     'batch.failed.add.schedule': '{customerName} failed to add schedule',//{customerName}添加联系计划失败
     'batch.success.add.schedule': 'All schedules are added successfully',//所有联系计划均添加成功
-    'shedule.list.add.todo': 'Add to do',//待办
     'crm.get.phone.failed': 'Failed to get phone number',//获取座机号失败!
     'crm.call.phone.success': 'Call out successlly',//拨打成功
     'crm.call.phone.failed': 'Failed to call out',//拨打失败
@@ -2775,7 +2907,12 @@ var en_US = {
     'clue.has.similar.clue': 'similar clue',//有相似线索
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.extract.clue': 'Extract clue', // 提取线索
+    'clue.release': 'Release Clue',//释放线索
     'clue.pool': 'Clue Pool', // 线索池
+    'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
+    'clue.customer.batch.release': 'Batch release',//批量释放
+    'clue.customer.release.confirm.tip': 'After release to the clue pool, other people can view and extract. Do you confirm the release?',//释放到线索池后，其他人也可以查看、提取，您确认释放吗？
+    'clue.customer.fail.to.release.tip': 'Fail to release to clue pool',//释放线索失败
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
     'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
     'clue.extract.batch.extract.failed': 'Failed to extract clues in bulk', // 批量提取线索失败
@@ -2796,6 +2933,12 @@ var en_US = {
     'user.info.binding.phone': 'Bind phone',//绑定手机号
     'user.info.no.set.phone': 'You have not bound your phone yet, {bindPhone}',//您还没有绑定手机号，{bindPhone}
     'apply.delay.endTime': 'End time',//'到期',
+    'apply.error.bind': 'You have not bound email yet, please {bindEmail}', //您还没有绑定邮箱，请先绑定邮箱
+    'apply.error.active': 'You have not activated email yet, please {activeEmail}',//您还没有激活邮箱，请先激活邮箱
+    'apply.error.subscribe': 'You have not subscribed notification email, please {subscribe}',//您还没有订阅邮件提醒, 请先订阅
+    'apply.subscribe.email.tip': 'subscribe',//订阅
+    'apply.bind.email.tips': 'bind email',//绑定邮箱
+    'apply.active.email.tips': 'active email',//激活邮箱
     'shear.expand': 'expand', //'展开'
     'crm.order.stage.manage': 'Order stage management',//订单阶段管理
     'crm.order.stage.add': 'Add Order stage',//添加订单阶段
@@ -3096,6 +3239,7 @@ var en_US = {
     'common.oppertunity.number': 'oppertunity number',//机会数量
     'common.performance': 'performance',//业绩
     'common.sales.manager.performance.ranking': 'sales manager performance ranking',//销售经理业绩排名
+    'common.customer.manager.performance.ranking': 'customer manager performance ranking',//客户经理业绩排名
     'common.current.week': 'current week',//本周
     'common.current.quarter': 'current quarter',//本季度
     'common.current.year': 'current year',//本年
@@ -3134,6 +3278,8 @@ var en_US = {
     'crm.104': 'Changing customers will exceed the maximum number of customers this person has. Please reduce the number of changing {num} customers',//变更负责人后会超过该负责人拥有客户的上限，请减少{num}个客户后再变更负责人
     'clue.customer.has.transfer': 'Has transfer',//已转化
     'clue.confirm.clue.invalid': 'Confirm Invalid',//确认无效
+    'clue.invalid.reason.not.empty': 'Invalid reason cannot be empty', //无效原因不能为空
+    'clue.describe.invalid.reason': 'Please input a invalid reason',//请描述一下无效原因
     'contract.amount.check.tip': 'The total product amount cannot be greater than the total contract amount {num} yuan, please check it',// 产品总额不能大于合同总额{amount}元，请核对
     'contract.profit.check.tip': 'The gross profit can not be greater than {num} yuan of the total contract amount, please check it',//产品毛利不能大于合同总额{amount}元，请核对
     'customer.has.similar.lists': 'Similar customer',//相似客户
@@ -3154,6 +3300,9 @@ var en_US = {
     'common.clue.convert': 'clue convert',//线索转化
     'common.clue.name.need.at.least.two.char.to.do.customer.convert': 'clue name need at least two char to do customer convert',//线索名称必须在两个字或以上，才能进行转为客户的操作
     'app.manege.access.no.amdin.tip': 'No user,please contact the administrator to access the user',//暂无用户，请联系管理员接入用户
+    'app.manage.no.user.info': 'No user infomation', //暂无用户信息
+    'app.manage.access.user': 'Access User', //接入用户
+    'app.manage.configure.access.info': 'Configure Access Infomation', //配置接入信息
     'common.new.customer.conversion.rate.statistics': 'new customer conversion rate statistics',//新增客户转化率统计
     'common.number.of.new.customers': 'number of new customers',//新增客户数
     'common.number.of.open.user.customers': 'number of open user customers',//开通用户客户数
@@ -3194,7 +3343,7 @@ var en_US = {
     'clue.customer.condition.change': 'modify condition',//修改条件
     'clue.customer.recommend.clue.lists': 'Recommendation clues',//推荐线索
     'clue.customer.confirm.valid': 'Confirm valid',//确认有效
-    'clue.customer.customer.level': 'Customer score',//客户分数
+    'clue.customer.customer.level': 'Customer level',//客户评级
     'clue.customer.score.good': 'high quality',//优质
     'clue.customer.above.limit': '{score} above',//{score}以上
     'clue.customer.level.score': 'Customer rating rules',//客户评分规则
@@ -3209,6 +3358,7 @@ var en_US = {
     'clue.customer.this.month': 'This month',//本月
     'clue.customer.this.quarter': 'This quarter',//本季度
     'clue.customer.this.year': 'This year',//今年
+    'clue.customer.last.three.month': 'Last three months',//近三个月
     'clue.customer.last.week': 'Last week',//近一周
     'clue.customer.last.month': 'Last month',//近一月
     'clue.customer.last.quarter': 'Last quarter',//近一季度
@@ -3262,7 +3412,27 @@ var en_US = {
     'no.data.add.import.tip': 'Add {type} to the guest suite',//向客套中添加{type}
     'import.excel.data.ketao': 'Import {type} from excel into the guest suite',//将excel中的{type}导入到客套中
     'import.excel.no.data': 'Try to give you a set of {recommend}',//试下客套给您{recommend}的功能
-    'common.number.of.new.user.customer': 'number of new user customer',//新开用户客户数
-    'clue.customer.register.time': 'Register time'//注册时间
+    'import.recommend.clue.lists': 'Recommend clues',//推荐线索
+    'menu.sales.auto.manage.config': 'Sales auto',//销售自动化
+    'customer.score.status.rules': 'Are you sure to {status} this rule?',//确定要{status}该规则？
+    'common.signed.customer.activity': 'Signed customer activity',//签约客户活跃度
+    'common.number.of.new.user.customer': 'Number of customers opening  accounts',//开通了用户的客户数
+    'clue.customer.register.time': 'Register time',//注册时间
+    'self.setting.has.no.apply': 'There is no suited apply',//暂无符合条件的申请
+    'failed.distribute.apply': 'Failed assign!',//分配失败！
+    'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
+    'clue.recommed.keyword.list': 'Keyword',//关键词
+    'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
+    'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization today has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
+    'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
+    'clue.customer.noty.all.list': 'Click to see all clues?',//查看所有线索？
+    'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
+    'common.collection.of.gross.profit.margin.score': 'Collection of gross profit margin score',//回款毛利率分数
+    'common.indicators.for.details': 'Indicators for details',//指标详情
+    'common.the.numerical': 'The numerical',//数值
+    'common.gross.margin.score.of.newly.signed.refund': 'Gross margin score of newly signed refund',//新签回款毛利分数
+    'common.loss.contract.amount': 'Loss contract amount',//流失合同额
+    'common.cost.date': 'Cost date',//费用日期
+    'clue.customer.fail.get.all.lists': 'Failed to get all visit apply',//获取全部拜访申请失败
 };
 export default en_US;

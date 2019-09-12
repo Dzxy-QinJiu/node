@@ -85,27 +85,35 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'rulename': Intl.get('apply.rule.text', '文字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.within.32', '32个字符以内'),
-        'component_type': ALL_COMPONENTS.INPUT
+        'component_type': ALL_COMPONENTS.INPUT,
+        component: InputContent,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.textare', '多行文字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.over.32', '32个字符以上'),
         'component_type': ALL_COMPONENTS.INPUT,
-        'type': ALL_COMPONENTS_TYPE.TEXTAREA
+        'type': ALL_COMPONENTS_TYPE.TEXTAREA,
+        component: InputContent,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.number', '数字输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.limit.int', '仅限整数'),
         'component_type': ALL_COMPONENTS.INPUTNUMBER,
+        component: InputNumber,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.count', '金额输入'),
         'iconfontCls': 'icon-fuwu',
         'placeholder': Intl.get('apply.rule.allow.point', '允许小数点'),
         'component_type': ALL_COMPONENTS.INPUT,
-        'addonAfter': Intl.get('contract.82', '元')
+        'addonAfter': Intl.get('contract.82', '元'),
+        component: InputContent,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.hour', '时长输入'), 'iconfontCls': 'icon-fuwu',
@@ -136,6 +144,8 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             value: 'hour'
         }],
         'component_type': ALL_COMPONENTS.RANGEINPUT,
+        component: RangeInput,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.radio', '单选'), 'iconfontCls': 'icon-fuwu',
@@ -143,19 +153,25 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'unitLabel': Intl.get('apply.time.range.unit.select.label', '选项'),
         'component_type': ALL_COMPONENTS.SELECTOPTION,
         'type': 'radio',
+        component: SelectOption,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.check', '多选'), 'iconfontCls': 'icon-fuwu',
         'select_arr': [Intl.get('apply.approve.option.one', '选项一'), Intl.get('apply.approve.option.two', '选项二')],
         'unitLabel': Intl.get('apply.time.range.unit.select.label', '选项'),
         'component_type': ALL_COMPONENTS.SELECTOPTION,
-        'type': 'checkbox'
+        'type': 'checkbox',
+        component: SelectOption,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.date', '日期选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.DATETIME,
         'type': 'date',
-        'defaultValue': moment(moment().format(oplateConsts.DATE_FORMAT), oplateConsts.DATE_FORMAT)
+        'defaultValue': moment(moment().format(oplateConsts.DATE_FORMAT), oplateConsts.DATE_FORMAT),
+        component: DatePicker,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.date.and.time', '日期+时间选择'), 'iconfontCls': 'icon-fuwu',
@@ -164,6 +180,8 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'defaultValue': moment(moment().format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT), oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT),
         'showTime': {format: 'HH:mm'},
         'format': oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT,
+        component: DatePicker,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
 
     },
     {
@@ -177,14 +195,19 @@ exports.ADDAPPLYFORMCOMPONENTS = [
             value: '0.5day'
         }],
         'unitMsg': Intl.get('apply.time.distinct.am', '区分上下午'),
-        'selectedValue': '1day',
-        'component_type': ALL_COMPONENTS.TIMEPERIOD
+        'selected_value': '1day',
+        'component_type': ALL_COMPONENTS.TIMEPERIOD,
+        component: TimePeriod,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.customer', '客户选择'), 'iconfontCls': 'icon-fuwu',
         'component_type': ALL_COMPONENTS.CUSTOMERSEARCH,
         'displayType': 'edit',
-        'hideButtonBlock': true
+        'hideButtonBlock': true,
+        'key': 'customers',
+        component: CustomerSuggest,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     },
     {
         'rulename': Intl.get('apply.rule.production', '产品配置'), 'iconfontCls': 'icon-fuwu',
@@ -192,7 +215,9 @@ exports.ADDAPPLYFORMCOMPONENTS = [
         'type': 'option',
         'placeholder': Intl.get('leave.apply.select.product', '请选择产品'),
         'notshowInList': true,
-        'default_value': []
+        'default_value': [],
+        component: SelectOption,
+        is_required_errmsg: Intl.get('user.apply.reply.placeholder', '请填写内容')
     }
 ];
 
@@ -202,7 +227,12 @@ const INNER_SETTING_FLOW = {
     LEAVE: 'leave',//请假
     BUSINESSOPPORTUNITIES: 'businessopportunities',//销售机会
     USERAPPLY: 'userapply',//用户申请
+
 };
+const SELF_SETTING_FLOW = {
+    VISITAPPLY: 'visitapply'//拜访申请
+};
+exports.SELF_SETTING_FLOW = SELF_SETTING_FLOW;
 exports.INNER_SETTING_FLOW = INNER_SETTING_FLOW;
 exports.APPROVER_TYPE = [{
     name: Intl.get('apply.add.approver.higher.level', '上级'),
@@ -223,16 +253,16 @@ exports.getTeamHigerLevel = function() {
         name: Intl.get('apply.approve.first.higher.level', '直属上级'),
         value: 'team_0_true'
     }];
-    var levels = [{name: Intl.get('user.number.first', '一'),value: '1'},
-        {name: Intl.get('user.number.second', '二'),value: '2'},
-        {name: Intl.get('user.number.three', '三'),value: '3'},
-        {name: Intl.get('user.number.four', '四'),value: '4'},
-        {name: Intl.get('apply.approve.level.five', '五'),value: '5'},
-        {name: Intl.get('apply.approve.level.six', '六'),value: '6'},
-        {name: Intl.get('user.num.seven', '七'),value: '7'},
-        {name: Intl.get('apply.approve.level.eight', '八'),value: '8'},
-        {name: Intl.get('apply.approve.level.nine', '九'),value: '9'},
-        {name: Intl.get('user.num.ten', '十'),value: '10'}];
+    var levels = [
+        {name: Intl.get('user.number.second', '二'),value: '1'},
+        {name: Intl.get('user.number.three', '三'),value: '2'},
+        {name: Intl.get('user.number.four', '四'),value: '3'},
+        {name: Intl.get('apply.approve.level.five', '五'),value: '4'},
+        {name: Intl.get('apply.approve.level.six', '六'),value: '5'},
+        {name: Intl.get('user.num.seven', '七'),value: '6'},
+        {name: Intl.get('apply.approve.level.eight', '八'),value: '7'},
+        {name: Intl.get('apply.approve.level.nine', '九'),value: '8'},
+        {name: Intl.get('user.num.ten', '十'),value: '9'}];
     _.forEach(levels, item => {
         teamList.push({
             name: Intl.get('apply.approve.some.level', '第{n}级上级',{n: item.name}),
@@ -281,6 +311,10 @@ exports.CONDITION_LIMITE = [{
 exports.isSalesOpportunityFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.BUSINESSOPPORTUNITIES;
 };
+//是拜访机会申请流程
+exports.isVisitApplyFlow = function(itemType) {
+    return itemType === SELF_SETTING_FLOW.VISITAPPLY;
+};
 //是出差申请流程
 exports.isBussinessTripFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.BUSSINESSTRIP;
@@ -289,4 +323,4 @@ exports.isBussinessTripFlow = function(itemType) {
 exports.isLeaveFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.LEAVE;
 };
-exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales'];
+exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit'];

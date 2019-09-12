@@ -16,6 +16,14 @@ const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
     'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
 };
+const QUERYCLUE = {
+    'MANAGER': 'CLUECUSTOMER_QUERY_MANAGER', //管理员通过关键词查询线索的权限
+    'USER': 'CLUECUSTOMER_QUERY_USER'//普通销售通过关键词查询线索的权限
+};
+const BATCH_RELEASE = {
+    MANAGER: 'LEAD_POOL_RELEASE_MANAGER', //管理员进行批量释放
+    USER: 'LEAD_POOL_RELEASE_USER'//普通销售进行批量释放
+};
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
 var userData = require('PUB_DIR/sources/user-data');
@@ -245,6 +253,36 @@ exports.getClueFulltext = function(queryObj) {
     });
     return Deferred.promise();
 };
+//通过关键字获取线索列表
+let getClueListByKeywordAjax;
+exports.getClueListByKeyword = function(queryObj) {
+    let pageSize = queryObj.pageSize;
+    delete queryObj.pageSize;
+    let sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
+    delete queryObj.sorter;
+    let type = '';
+    if(hasPrivilege(QUERYCLUE.USER)) {
+        type = 'user';
+    }else if (hasPrivilege(QUERYCLUE.MANAGER)){
+        type = 'manager';
+    }
+    let url = `/rest/clue/${type}/${pageSize}/${sorter.field}/${sorter.order}`;
+    let Deferred = $.Deferred();
+    getClueListByKeywordAjax && getClueListByKeywordAjax.abort();
+    getClueListByKeywordAjax = $.ajax({
+        url: url ,
+        dataType: 'json',
+        type: 'post',
+        data: queryObj,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 //有待我处理筛选项是获取全文搜索的线索
 var getClueFulltextSelfHandleAjax;
 exports.getClueFulltextSelfHandle = function(queryObj) {
@@ -390,6 +428,53 @@ exports.getRecommendClueLists = function(obj) {
         },
         error: function(errorMsg) {
             Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+//释放线索
+exports.releaseClue = function(reqData) {
+    let Deferred = $.Deferred();
+    let authType = 'user';
+    if(hasPrivilege(BATCH_RELEASE.MANAGER)){
+        authType = 'manager';
+    }
+    $.ajax({
+        url: `/rest/clue/release/${authType}`,
+        dataType: 'json',
+        type: 'post',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr, textStatus) {
+            if (textStatus !== 'abort') {
+                Deferred.reject(xhr.responseJSON || Intl.get('clue.customer.fail.to.release.tip', '释放线索失败'));
+            }
+        }
+    });
+    return Deferred.promise();
+};
+
+//批量释放线索
+exports.batchReleaseClue = function(condition) {
+    var Deferred = $.Deferred();
+    var jsonStr = JSON.stringify(condition);
+    let authType = 'user';
+    if(hasPrivilege(BATCH_RELEASE.MANAGER)){
+        authType = 'manager';
+    }
+    $.ajax({
+        url: `/rest/clue/batch/release/${authType}`,
+        dataType: 'json',
+        contentType: 'application/json',
+        type: 'post',
+        data: jsonStr,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON || Intl.get('errorcode.20', '批量操作失败'));
         }
     });
     return Deferred.promise();

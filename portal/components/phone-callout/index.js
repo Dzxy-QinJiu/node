@@ -55,15 +55,16 @@ class PhoneCallout extends React.Component {
 
     };
     renderPhoneIcon = () => {
+        //如果是在线索池中，电话按钮隐藏
         //容联电话系统，如果正在打电话，不展示拨打电话的按钮
-        if (isRongLianPhoneSystem() && Oplate.isCalling) {
+        if ((isRongLianPhoneSystem() && Oplate.isCalling) || this.props.hidePhoneIcon) {
             return null;
         }
         var contentTip = showDisabledCallTip();
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;
         var visible = this.state.visible;
-        var iconCls = classNames('iconfont icon-active-call_record-ico',{
+        var iconCls = classNames('iconfont icon-active-call_record-ico handle-btn-item',{
             'default-show': this.props.showPhoneIcon || this.props.hidePhoneNumber
         });
         return (
@@ -89,6 +90,7 @@ PhoneCallout.defaultProps = {
     contactName: '',//（非必传）拨打电话时，用来在弹屏上展示的联系人姓名
     showPhoneIcon: false,//是否一直展示电话图标
     hidePhoneNumber: false,//是否不展示电话号码，不展示时，电话图标会一直显示
+    hidePhoneIcon: false,//是否隐藏电话图标
     showClueDetailPanel: function(){},
     onCallSuccess: function(){},//打电话成功的处理（首页）
 };
@@ -100,5 +102,6 @@ PhoneCallout.propTypes = {
     hidePhoneNumber: PropTypes.bool,
     showClueDetailPanel: PropTypes.func,
     onCallSuccess: PropTypes.func,
+    hidePhoneIcon: PropTypes.bool,
 };
 export default PhoneCallout;

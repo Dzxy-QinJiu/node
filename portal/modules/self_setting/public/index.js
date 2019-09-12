@@ -26,9 +26,10 @@ var NoData = require('CMP_DIR/analysis-nodata');
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 class LeaveApplyManagement extends React.Component {
     state = {
-        showAddApplyPanel: false,//是否展示添加请假申请面板
+        showAddApplyPanel: false,//是否展示添加申请面板
         teamTreeList: [],
         ...LeaveApplyStore.getState()
     };
@@ -41,14 +42,14 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
-        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE]){
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY]){
             this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
             this.getAllLeaveApplyList();
         }
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.pushDataListener);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
         this.getUnreadReplyList();
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
@@ -85,7 +86,7 @@ class LeaveApplyManagement extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
-            type: _.get(workFlowConfigs,'[0].type'),
+            type: SELF_SETTING_FLOW.VISITAPPLY,
             comment_unread: this.state.isCheckUnreadApplyList,
         };
         //如果是选择的全部类型，不需要传status这个参数
@@ -111,24 +112,24 @@ class LeaveApplyManagement extends React.Component {
         }
     };
 
-    //获取全部请假申请
+    //获取全部申请
     getAllLeaveApplyList = () => {
         var queryObj = this.getQueryParams();
         LeaveApplyAction.getAllLeaveApplyList(queryObj,(count) => {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
             if (this.state.applyListType === 'ongoing') {
                 //触发更新待审批数
-                commonMethodUtil.updateUnapprovedCount('unhandlePersonalLeave','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                commonMethodUtil.updateUnapprovedCount('unhandleVisitApply','SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
         });
     };
 
-    //获取自己发起的请假申请
+    //获取自己发起的申请
     getSelfLeaveApplyList() {
         LeaveApplyAction.getSelfApplyList();
     }
 
-    //获取由自己审批的请假申请
+    //获取由自己审批的申请
     getWorklistLeaveApplyList() {
         LeaveApplyAction.getWorklistLeaveApplyList();
     }
@@ -137,7 +138,7 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.unlisten(this.onStoreChange);
         LeaveApplyAction.setInitState();
         LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.pushDataListener);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
 
@@ -201,7 +202,7 @@ class LeaveApplyManagement extends React.Component {
             );
             var noDataMsg = (
                 <span>
-                    {Intl.get('leave.apply.no.leave.apply','暂无符合条件的请假申请')}
+                    {Intl.get('self.setting.has.no.apply', '暂无符合条件的申请')}
                     <span>,</span>
                     <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
                         {Intl.get('common.get.again', '重新获取')}
@@ -298,15 +299,15 @@ class LeaveApplyManagement extends React.Component {
         var applyDetail = null;
         if (!noShowApplyDetail) {
             applyDetail = {detail: _.get(this.state, 'applyListObj.list[0]'), apps: this.state.allApps};
-        };
+        }
         return (
             <div className="sales-opportunity-apply-container apply_manage_wrap">
                 <div className="leave-apply-list-detail-wrap">
-                    <div className="col-md-4 leave-apply-list" data-tracename="请假申请列表">
+                    <div className="col-md-4 leave-apply-list" data-tracename="拜访申请列表">
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
-                            addPrivilege='WORKFLOW_CONFIG_CUSTOMIZE'
+                            addPrivilege='WORKFLOW_BASE_PERMISSION'
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}

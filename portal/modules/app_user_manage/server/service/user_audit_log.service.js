@@ -143,6 +143,8 @@ function handleLoginInfo(req, res, obj, url, param){
         reqUrl = url.replace(':type', req.params.type);
         // 过滤ip局域网配置，默认是0,0：不过滤，1：过滤，由于界面上数据是过滤局域网的，所以设置为1
         tempObj.ip = 1;
+        tempObj.app_id = app_id;
+        delete tempObj.appid;
     } else {
         reqUrl = url.replace(':app_id', app_id ).replace(':user_id',user_id);
         delete tempObj.appid;

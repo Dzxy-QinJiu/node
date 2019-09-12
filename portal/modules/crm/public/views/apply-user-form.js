@@ -524,7 +524,9 @@ const ApplyUserForm = createReactClass({
                 name="user_name"
                 placeholder={placeholder}
                 value={userName}
-                onChange={this.onUserNameChange}/>
+                onChange={this.onUserNameChange}
+                autocomplete="off"
+                autoFocus/>
         );
         let customerContacts = this.state.customerContacts;
         let emailList = [];//联系人的邮箱列表
@@ -645,10 +647,10 @@ const ApplyUserForm = createReactClass({
                 let targetObj = _.find(customerContacts,contact => contact.def_contancts === 'true');
                 if (targetObj){
                     var userName = '',nickName = '';
-                    if (_.isArray(targetObj.email) && _.get(targetObj,'email.length')){
+                    if (_.isArray(targetObj.phone) && _.get(targetObj, 'phone.length')) {
+                        userName = _.get(targetObj, 'phone[0]');
+                    }else if (_.isArray(targetObj.email) && _.get(targetObj, 'email.length')) {
                         userName = _.get(targetObj,'email[0]');
-                    }else if (_.isArray(targetObj.phone) && _.get(targetObj,'phone.length')){
-                        userName = _.get(targetObj,'phone[0]');
                     }else if (_.isArray(targetObj.qq) && _.get(targetObj,'qq.length')){
                         userName = _.get(targetObj,'qq[0]');
                     }
@@ -772,19 +774,19 @@ const ApplyUserForm = createReactClass({
                                 </FormItem>) : null}
                             <FormItem
                                 {...formItemLayout}
-                                label={Intl.get('common.app', '应用')}
+                                label={Intl.get('common.product','产品')}
                                 validateStatus={this.getValidateStatus('selectAppIds')}
                                 help={this.getHelpMessage('selectAppIds')}
                                 required
                             >
                                 <Validator rules={[{
                                     required: true,
-                                    message: Intl.get('user.app.select.please', '请选择应用'),
+                                    message: Intl.get('user.product.select.please','请选择产品'),
                                     type: 'array'
                                 }]}>
                                     <Select mode="tags" value={selectAppIds} name='selectAppIds'
                                         dropdownClassName="apply-user-apps-dropdown"
-                                        placeholder={Intl.get('user.app.select.please', '请选择应用')}
+                                        placeholder={Intl.get('user.product.select.please','请选择产品')}
                                         onChange={this.handleChangeApps.bind(this)}>
                                         {this.getAppOptions(selectAppIds)}
                                     </Select>

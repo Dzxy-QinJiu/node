@@ -5,7 +5,7 @@
  */
 const PropTypes = require('prop-types');
 var React = require('react');
-import {Button, Tag, Select, Input, Menu, Dropdown, Icon} from 'antd';
+import {Button, Tag, Select, Input, Menu, Dropdown, Icon, Popconfirm} from 'antd';
 const {TextArea} = Input;
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
@@ -14,12 +14,15 @@ import {getCallClient, AcceptButton, ReleaseButton} from 'PUB_DIR/sources/utils/
 var phoneAlertAction = require('../action/phone-alert-action');
 var phoneAlertStore = require('../store/phone-alert-store');
 var ClueAction = require('MOD_DIR/clue_customer/public/action/clue-customer-action');
+var clueFilterStore = require('MOD_DIR/clue_customer/public/store/clue-filter-store');
 var ScheduleAction = require('MOD_DIR/clue_customer/public/action/schedule-action');
 var AlertTimer = require('CMP_DIR/alert-timer');
 var className = require('classnames');
 import {AVALIBILITYSTATUS, SELECT_TYPE} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {TIME_CALCULATE_CONSTS} from 'PUB_DIR/sources/utils/consts';
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 class phoneStatusTop extends React.Component {
     constructor(props) {
         super(props);
@@ -49,6 +52,16 @@ class phoneStatusTop extends React.Component {
     componentDidMount() {
         phoneAlertStore.listen(this.onStoreChange);
     }
+
+    componentDidUpdate= () => {
+        //当自定义计划添加成功并且当前未通过"n小时/n天后"button添加计划时
+        if(_.get(this.props, 'isAddingScheduleSuccess') && !_.get(this.state, 'hasAddedSchedlue')){
+            this.showMessage(Intl.get('clue.customer,add,schedule,success','联系计划已添加'), 'success');
+            this.setState({
+                hasAddedSchedlue: true
+            });
+        }
+    };
 
     onStoreChange = () => {
         this.setState(phoneAlertStore.getState());
@@ -86,6 +99,16 @@ class phoneStatusTop extends React.Component {
         if ((showClueModal) && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
             this.setInitialData(phonemsgObj);
         }
+        var curClue = _.isEmpty(nextProps.curClue) ? this.state.curClue : nextProps.curClue;
+        //如果电话已经接通，并且是待我审批的线索，需要把待我处理左侧数字减一
+        if (phonemsgObj.billsec > 0) {
+            subtracteGlobalClue(curClue, (flag) => {
+                if(flag){
+                    clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
+                }
+            });
+        }
+
     }
 
     setInitialData() {
@@ -97,6 +120,8 @@ class phoneStatusTop extends React.Component {
 
     handleEditContent = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-update'), '点击编辑跟进记录按钮');
+        //提示父组件此时跟进为编辑状态
+        this.props.setTraceEditStatus('edit');
         phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ''});
         this.setState({
             showCancelBtn: true,
@@ -121,6 +146,7 @@ class phoneStatusTop extends React.Component {
     handleTraceCancel = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.trace-content-container'), '取消保存跟进记录');
         phoneAlertAction.setEditStatus({isEdittingTrace: false, submittingTraceMsg: ''});
+        this.props.setTraceEditStatus('text');
         this.setState({
             showCancelBtn: false
         });
@@ -156,6 +182,8 @@ class phoneStatusTop extends React.Component {
                 isConnected: false,
                 showCancelBtn: false,
             });
+            //回调给父组件提示父组件此时跟进已经变为展示状态
+            this.props.setTraceEditStatus('text');
             //写了跟进记录后，对应的首页我的工作完成
             if (window.location.pathname === '/home') {
                 myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
@@ -325,30 +353,14 @@ class phoneStatusTop extends React.Component {
         }
         return desTipObj;
     }
-
-    //将线索标为无效
-    handleSetClueInvalid = () => {
-        var item = {};
-        if (this.state.selectedClueId) {
-            item = _.find(this.state.clueInfoArr, item => item.id === this.state.selectedClueId);
-        }
-        this.props.handleSetClueInvalid(item, (updateValue) => {
-            item.availability = updateValue;
-            if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY) {
-                this.setState({
-                    showMarkClueInvalid: false
-                });
-            } else {
-                this.setState({
-                    showMarkClueInvalid: true
-                });
-            }
-        });
-    };
     //点击添加联系计划
     handleAddPlan = () => {
         this.props.handleAddPlan();
     };
+    //关闭自定义联系计划面板
+    closeAddPlan = () => {
+        this.props.closeAddPlan();
+    }
     //挂断电话
     releaseCall = (called) => {
         if (getCallClient()) {
@@ -378,9 +390,11 @@ class phoneStatusTop extends React.Component {
                 this.setState({
                     hasAddedSchedlue: true
                 });
-                this.showMessage(Intl.get('user.user.add.success', '添加成功'), 'success');
+                //当打开自定义面板未进行提交编辑又选择了其他天数、小时数联系计划并确认后，关闭自定义添加的面板
+                this.closeAddPlan();
+                this.showMessage(Intl.get('clue.customer,add,schedule,success','联系计划已添加'), 'success');
             } else {
-                this.showMessage(resData || Intl.get('crm.154', '添加失败'), 'error');
+                this.showMessage(resData || Intl.get('clue,customer.add.schedule.error', '联系计划添加失败'), 'error');
             }
         });
     };
@@ -441,10 +455,6 @@ class phoneStatusTop extends React.Component {
                     {/*已转化的线索和无效线索不能展示这两个按钮*/}
                     {!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo && ![SELECT_TYPE.HAS_TRANSFER].includes(_.get(this, 'state.curClue.status')) && _.get(this, 'state.curClue.availability') === AVALIBILITYSTATUS.AVALIBILITY ?
                         <div className="add-trace-and-plan">
-                            <div className="add-more-info-container">
-                                <Button size="small"
-                                    onClick={this.handleSetClueInvalid}>{this.state.showMarkClueInvalid ? Intl.get('clue.customer.set.invalid', '标为无效') : Intl.get('clue.cancel.set.invalid', '改为有效')}</Button>
-                            </div>
                             {this.state.showMarkClueInvalid ? <div className="add-plan-info-container">
                                 <div className="contact-tip">{Intl.get('crm.clue.next.contact.time', '下次联系时间')}
                                     <div className="indicator">
@@ -461,18 +471,31 @@ class phoneStatusTop extends React.Component {
                                 </div>
 
                                 <div className="btn-wrap">
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWO, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}
-
-                                    </Button>
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.SIX, 'h').valueOf())}>{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(3 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
-                                    <Button disabled={this.state.hasAddedSchedlue} size="small"
-                                        onClick={this.addScheduleItem.bind(this, moment().add(5 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
+                                    <Popconfirm
+                                        title={Intl.get('crm.schedule.n.hour.later,confirm', '确定{n}小时之后在联系吗？', {n: 2})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWO, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 2})}</Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title={Intl.get('crm.schedule.n.hour.later,confirm', '确定{n}小时之后在联系吗？', {n: 6})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.SIX, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.schedule.n.hour.later', '{n}小时后', {n: 6})}</Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title={Intl.get('crm.alert.after.n.day.confirm', '确定{n}天之后再联系吗？', {n: 1})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 1})}</Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title={Intl.get('crm.alert.after.n.day.confirm', '确定{n}天之后再联系吗？', {n: 3})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(3 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 3})}</Button>
+                                    </Popconfirm>
+                                    <Popconfirm
+                                        title={Intl.get('crm.alert.after.n.day.confirm', '确定{n}天之后再联系吗？', {n: 5})}
+                                        onConfirm={this.addScheduleItem.bind(this, moment().add(5 * TIME_CALCULATE_CONSTS.TWENTY_FOUR, 'h').valueOf())}>
+                                        <Button disabled={this.state.hasAddedSchedlue} size="small">{Intl.get('crm.alert.after.n.day', '{n}天后', {n: 5})}</Button>
+                                    </Popconfirm>
                                     <Button disabled={this.state.hasAddedSchedlue} size="small"
                                         onClick={this.handleAddPlan}>{Intl.get('user.time.custom', '自定义')}</Button>
                                     {this.state.addClueSchedule ? <Icon type="loading"/> : null}
@@ -497,10 +520,11 @@ phoneStatusTop.defaultProps = {
     detailClueId: '',
     isAddingMoreProdctInfo: false,
     contactNameObj: {},
-    handleSetClueInvalid: function() {
-    },
     isAddingPlanInfo: false,
     handleAddPlan: function() {
+
+    },
+    closeAddPlan: function() {
 
     },
     commonPhoneDesArray: [],
@@ -517,11 +541,12 @@ phoneStatusTop.propTypes = {
     detailClueId: PropTypes.string,
     isAddingMoreProdctInfo: PropTypes.bool,
     contactNameObj: PropTypes.object,
-    handleSetClueInvalid: PropTypes.func,
     isAddingPlanInfo: PropTypes.bool,
     handleAddPlan: PropTypes.bool,
     commonPhoneDesArray: PropTypes.object,
     showMarkClueInvalid: PropTypes.func,
     curClue: PropTypes.object,
+    closeAddPlan: PropTypes.func,
+    setTraceEditStatus: PropTypes.func //添加跟进内容回调，获取编辑状态 'edit' 'text'
 };
 export default phoneStatusTop;

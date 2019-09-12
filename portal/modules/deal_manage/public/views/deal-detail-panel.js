@@ -67,7 +67,7 @@ class DealDetailPanel extends React.Component {
             this.getDealDetail(this.props.currDealId);
         }
     }
-
+    
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps, 'currDeal') && _.get(nextProps, 'currDeal.id') !== _.get(this.state, 'currDeal.id')) {
             let initData = this.getInitStateData(nextProps);
@@ -75,6 +75,9 @@ class DealDetailPanel extends React.Component {
         }
         if (nextProps.currDealId && nextProps.currDealId !== this.state.currDealId) {
             this.getDealDetail(nextProps.currDealId);
+        }
+        if(nextProps.currDeal){
+            this.getCurrDeal(nextProps.currDeal);
         }
     }
 
@@ -90,6 +93,11 @@ class DealDetailPanel extends React.Component {
         }, (errorMsg) => {
             this.setState({loading: false, errorMsg: errorMsg || Intl.get('errorcode.118', '获取数据失败')});
         });
+    }
+
+    //当拖动改变时更新状态
+    getCurrDeal(currDeal){
+        this.setState({currDeal});
     }
 
     //获取应用列表（ketao:产品列表+oplate的应用列表， curtao: 产品列表）
@@ -354,7 +362,7 @@ class DealDetailPanel extends React.Component {
                                     </Button>
                                 </span>) : (
                                 <PrivilegeChecker check={HAS_DELETE}>
-                                    <span className="iconfont icon-delete" 
+                                    <span className="iconfont icon-delete handle-btn-item" 
                                         title={Intl.get('common.delete', '删除')}
                                         onClick={this.showDelConfirmTip}/>
                                 </PrivilegeChecker>

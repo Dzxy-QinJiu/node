@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 //客户开通用户的列表
 @click-active-color: #2196f3;
 .crm-user-list-container {
@@ -231,4 +232,25 @@
 .crm_user_apply_panel {
   width: 700px !important;
   transform: translate(700px, 0) !important;
+}
+
+//popover错误提示框
+.apply-invalid-popover {
+  .ant-popover-inner-content {
+    overflow: hidden;
+    //申请时错误提示
+    .apply-error-tip {
+      font-size: 14px;
+      .icon-warn-icon {
+        position: relative;
+        top: 1px;
+        color: @reply-message-tip-color;
+        margin-right:4px;
+      }
+      .apply-error-text {
+        margin-left: 5px;
+        color: #333333;
+      }
+    }
+  }
 }

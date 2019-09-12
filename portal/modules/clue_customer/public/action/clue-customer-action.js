@@ -29,6 +29,7 @@ function ClueCustomerActions() {
         'removeClueItem',//删除某条线索
         'afterModifiedAssocaitedCustomer',//修改当前线索的绑定客户后在列表中修改该条线索所绑定的客户
         'afterAddClueTrace',//添加完线索的跟进记录后
+        'afterReleaseClue', //在释放线索之后
         'afterAssignSales',//分配销售之后
         'setKeyWord',//设置关键字
         'setLastClueId',//用于设置下拉加载的最后一个线索的id
@@ -41,9 +42,9 @@ function ClueCustomerActions() {
         'setLoadingFalse',
         'changeFilterFlag',
         'saveSettingCustomerRecomment',
-        'saveQueryObj',
         'updateRecommendClueLists',
-        'addInvalidClueNum'
+        'updateClueTabNum',
+        'updateClueItemAfterAssign'
     );
     //获取销售列表
     this.getSalesManList = function(cb) {
@@ -111,6 +112,14 @@ function ClueCustomerActions() {
             _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
         });
     };
+    //线索标记为无效
+    this.updateClueAvailability = function(submitObj,callback) {
+        clueCustomerAjax.updateClueItemDetail(submitObj).then((result) => {
+            _.isFunction(callback) && callback();
+        },(errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+        });
+    };
     //线索关联某个客户
     this.setClueAssociatedCustomer = function(submitObj,callback) {
         clueCustomerAjax.setClueAssociatedCustomer(submitObj).then((result) => {
@@ -144,7 +153,7 @@ function ClueCustomerActions() {
         });
         clueCustomerAjax.getClueFulltext(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
@@ -159,7 +168,7 @@ function ClueCustomerActions() {
         });
         clueCustomerAjax.getClueFulltextSelfHandle(queryObj).then((result) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback});
+            this.dispatch({error: false, loading: false, clueCustomerObj: result,callback: callback,queryObj: queryObj});
         }, (errorMsg) => {
             this.dispatch({
                 error: true,
@@ -173,6 +182,22 @@ function ClueCustomerActions() {
         getAllSalesUserList((allUserList) => {
             this.dispatch(allUserList);
             if (cb) cb(allUserList);
+        });
+    };
+    //释放线索
+    this.releaseClue = function(clueIds, callback) {
+        clueCustomerAjax.releaseClue({lead_ids: clueIds}).then(() => {
+            _.isFunction(callback) && callback(clueIds);
+        }, (errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg);
+        });
+    };
+    //批量释放线索
+    this.batchReleaseClue = function(condition, callback) {
+        clueCustomerAjax.batchReleaseClue(condition).then(data => {
+            _.isFunction(callback) && callback(data);
+        }, errorMsg => {
+            _.isFunction(callback) && callback(errorMsg);
         });
     };
 }

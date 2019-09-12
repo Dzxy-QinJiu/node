@@ -1,6 +1,10 @@
+@import "../../../../public/css/common-variables";
 @font-color: #8DA8C5;
 @btn-color: #8da8c5;
 @label-color: #999999;
+
+@drag-over-color: #fff;
+@click-color: #2196f3;
 
 .sales-process-container {
   padding: 12px;
@@ -9,7 +13,6 @@
     .sale-process-top-nav {
       padding: 24px;
       height: 80px;
-      border-bottom: 1px solid #E5E5E5;
     }
     .sales-process-content {
         .content-zone {
@@ -19,7 +22,7 @@
             .process-box {
               position: relative;
               width: 300px;
-              border: 1px solid #E5E5E5;
+              border: 1px solid @border-color;
               border-radius:4px;
               color: #333;
               margin: 16px 16px 0 0;
@@ -67,7 +70,469 @@
               }
             }
           }
+          // 客户阶段新版样式
+          .customer-stage-zone {
+            margin: 0 24px 16px 24px;
+            .customer-stage-block {
+              margin-bottom: 16px;
+              height: 132px;
+              border: 1px solid @border-color;
+              padding: 16px;
+              // 阶段名称
+              .customer-stage-name {
+                margin-bottom: 16px;
+                height: 24px;
+                color: #333333;
+                .stage-name {
+                  height:16px;
+                  font-size:16px;
+                  font-weight:500;
+                }
+                .stage-delete-operator {
+                  float: right;
+                  visibility: hidden
+                }
+              }
+              .customer-stage-set {
+                margin-bottom: 16px;
+              }
+              .customer-stage-set, .customer-stage-team-user {
+                .customer-stage-label {
+                  font-size:14px;
+                  color: @label-color;
+                  padding-right: 12px;
+                }
+                .stage-content {
+                  height:24px;
+                  color: @content-font-color;
+                  .color-lump {
+                    width: 104px;
+                    display: inline-block;
+                    color: @tag-font-color;
+                    background-color: #999;
+                    margin-right: 1px;
+                    border-radius: 4px;
+                    text-align: center;
+                    padding: 5px 0;
+                  }
+                  .customer-stage-color-lump0 { // 信息
+                    background-color: @customer-stage-first-color;
+                  }
+                  .customer-stage-color-lump1 { // 意向
+                    background-color: @customer-stage-second-color;
+                  }
+                  .customer-stage-color-lump2 { // 试用
+                    background-color: @customer-stage-third-color;
+                  }
+                  .customer-stage-color-lump3 { // 机会
+                    background-color: @customer-stage-fourth-color;
+                  }
+                  .customer-stage-color-lump4 { // 流失
+                    background-color: @customer-stage-fifth-color;
+                  }
+                  .customer-stage-color-lump5 { // 签约
+                    background-color: @customer-stage-sixth-color;
+                  }
+                  .customer-stage-color-lump6 { // 续约
+                    background-color: @customer-stage-seventh-color;
+                  }
+                  .customer-stage-color-lump7 {
+                    background-color: @customer-stage-eighth-color;
+                  }
+                }
+              }
+              .customer-stage-team-user {
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+              }
+              &:hover {
+                background-color: @mouse-enter-zone-background;
+                .customer-stage-name {
+                  .stage-delete-operator {
+                    visibility: visible;
+                    .stage-default-tips {
+                      font-size: 14px;
+                      color: @sub-content-font-color;
+                    }
+                    .item-delete-buttons {
+                      font-size: 14px;
+                      .item-delete-confirm {
+                        background-color: @confirm-delete-background;
+                        color: @tag-font-color;
+                        margin-right: 12px;
+                      }
+                      .item-delete-cancel {
+                        color: @label-color;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            // 自定义客户阶段客户编辑，设置鼠标为手型
+            .custom-customer-stage-block {
+              &:hover {
+                cursor: pointer;
+              }
+            }
+            // 选中查看详情的样式
+            .select-customer-stage {
+              background-color: @select-btn-color;
+            }
+          }
         }
+    }
+    // 选择销售部门、个人面板样式
+    .select-team-user-panel {
+      .right-panel-modal-content {
+        form {
+          .buttons-wrap {
+            text-align: right;
+            margin-right: 20px;
+            .alert-timer {
+              display: inline-block;
+              margin-right: 16px;
+              .ant-alert-success, .ant-alert-error {
+                border: none;
+                background: none;
+                display: inline;
+              }
+              .ant-alert-success .ant-alert-message {
+                color: #2196F3;
+              }
+              .ant-alert-error .ant-alert-message {
+                color: #EB5E57;
+              }
+            }
+            .ant-btn-primary {
+              margin-right:16px;
+            }
+          }
+        }
+      }
+    }
+    // 新版客户阶段详情样式
+    .customer-stage-detail-container {
+      .right-panel-modal-content {
+        .right-panel-modal-title {
+          margin-bottom: 0;
+          .right-panel-title-zone {
+            .customer-stage-zone {
+              float: left;
+              cursor: pointer;
+              .basic-edit-field-input {
+                form {
+                  .ant-form-item {
+                    padding-right: 8px;
+                  }
+                }
+                .hover-show-edit {
+                  .icon-edit-btn {
+                    float: right;
+                  }
+                }
+              }
+            }
+            .edit-content-zone {
+              float: none;
+            }
+            .delete-operator {
+              cursor: pointer;
+              text-align: right;
+              .delete-buttons {
+                font-size: 14px;
+                .delete-confirm {
+                  background-color: @confirm-delete-background;
+                  color: @tag-font-color;
+                  margin-right: 12px;
+                }
+                .delete-cancel {
+                  color: @label-color;
+                }
+              }
+              &:hover {
+                color: @confirm-delete-background;
+              }
+            }
+          }
+        }
+        .stage-detail-wrap {
+          padding: 16px 24px;
+          .stage-content-set-stage, .stage-content-team-user {
+            background-color: @content-zone-background;
+            padding: 12px;
+            .stage-label {
+              color: @label-color;
+              height: 20px;
+              margin-bottom: 8px;
+            }
+          }
+          .stage-content-set-stage, .stage-content-team-user {
+            .stage-set-title-zone {
+              cursor: pointer;
+              color: @label-color;
+              height: 20px;
+              margin-bottom: 8px;
+              .stage-label {
+                float: left;
+              }
+              .operate-zone {
+                visibility: hidden;
+                text-align: right;
+                .add-stage {
+                  margin-right: 16px;
+                }
+                .iconfont {
+                  font-size: 14px;
+                }
+              }
+              &:hover {
+                .operate-zone {
+                  visibility: visible;
+                  cursor: pointer;
+                  color: @hover-btn-color;
+                }
+              }
+            }
+            .select-zone {
+              form {
+                .buttons-wrap {
+                  text-align: right;
+                  margin-right: 20px;
+                  .alert-timer {
+                    display: inline-block;
+                    margin-right: 16px;
+                  }
+                  .ant-btn-primary {
+                    margin-right:16px;
+                  }
+                }
+              }
+            }
+            margin-bottom: 8px;
+            .stage-content {
+              .customer-stage-table-block {
+                .customer-stage-block {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  bottom: 0;
+                  right: 0;
+                  margin: auto;
+                  z-index: 10;
+                }
+                .customer-stage-timeline {
+                  .customer-stage-timeline-item {
+                    position: relative;
+                    padding-bottom: 12px;
+                    //线
+                    .customer-stage-timeline-item-tail {
+                      position: absolute;
+                      left: 10px;
+                      top: 40px;
+                      height: 100%;
+                      border-left: 4px dotted #8DA8C5;
+                    }
+                    //序号
+                    .customer-stage-timeline-item-head {
+                      position: absolute;
+                      top: 30px;
+                      width: 24px;
+                      height: 24px;
+                      border-radius: 100px;
+                      color: #fff;
+                      text-align: center;
+                      line-height: 24px;
+                      font-size: 14px;
+                    }
+                    .customer-stage-color-lump0 { // 信息
+                      background-color: @customer-stage-first-color;
+                    }
+                    .customer-stage-color-lump1 { // 意向
+                      background-color: @customer-stage-second-color;
+                    }
+                    .customer-stage-color-lump2 { // 试用
+                      background-color: @customer-stage-third-color;
+                    }
+                    .customer-stage-color-lump3 { // 机会
+                      background-color: @customer-stage-fourth-color;
+                    }
+                    .customer-stage-color-lump4 { // 流失
+                      background-color: @customer-stage-fifth-color;
+                    }
+                    .customer-stage-color-lump5 { // 签约
+                      background-color: @customer-stage-sixth-color;
+                    }
+                    .customer-stage-color-lump6 { // 续约
+                      background-color: @customer-stage-seventh-color;
+                    }
+                    .customer-stage-color-lump7 {
+                      background-color: @customer-stage-eighth-color;
+                    }
+                    .customer-stage-timeline-item-right {
+                      width: 20px;
+                      border: 1px solid #8DA8C5;
+                      position: relative;
+                      top: 40px;
+                      left: 24px;
+                    }
+
+                    //内容
+                    .customer-stage-timeline-item-content {
+                      cursor: pointer;
+                      font-size: 12px;
+                      position: relative;
+                      border: 1px solid @border-color;
+                      margin-left: 44px;
+                      height: 68px;
+                      &:hover {
+                        background: #F1F8FE;
+                      }
+
+                      .customer-stage-content {
+                        width: 100%;
+                        float: left;
+                        padding: 12px;
+                        .customer-stage-content-name {
+                          font-size: 14px;
+                          font-weight: bold;
+                          color: #333;
+                          .iconfont {
+                            margin-left: 16px;
+                          }
+                        }
+
+                        .customer-stage-content-describe {
+                          color: #999;
+                        }
+                      }
+
+                      // 编辑和删除某个阶段样式
+                      .operation-btn {
+                        position: relative;
+                        bottom: 30px;
+                        .iconfont {
+                          border: 0;
+                          width: 26px;
+                          float: right;
+                          background-color: #b6c2c9;
+                          margin-right: 12px;
+                          text-align: center;
+                          padding: 0;
+                          color: #fff;
+                          font-size: 14px;
+                          border-radius: 100px;
+                        }
+                        visibility: hidden;
+                      }
+                      .single-stage-card {
+                        cursor: grab;
+                      }
+                    }
+                    &:hover {
+                      .operation-btn {
+                        visibility: visible;
+                      }
+                    }
+
+                    // 删除某个阶段
+                    .delete-operator {
+                      position: relative;
+                      bottom: 28px;
+                      cursor: pointer;
+                      float: right;
+                      .delete-buttons {
+                        font-size: 14px;
+                        .delete-confirm {
+                          background-color: @confirm-delete-background;
+                          color: @tag-font-color;
+                          margin-right: 12px;
+                        }
+                        .delete-cancel {
+                          color: @label-color;
+                        }
+                      }
+                      &:hover {
+                        color: @confirm-delete-background;
+                      }
+                    }
+
+                    &:last-child {
+                      .customer-stage-timeline-item-tail {
+                        display: none;
+                      }
+                      .order-arrow {
+                        .down-arrow {
+                          display: none;
+                        }
+                      }
+                    }
+
+                    &:first-child {
+                      .order-arrow {
+                        .up-arrow {
+                          visibility: hidden;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              .add-customer-stage-zone {
+                width: 366px;
+                position: relative;
+                top: -80px;
+                left: 42px;
+              }
+              .edit-customer-stage-zone {
+                width: 366px;
+                position: relative;
+                left: 42px;
+              }
+            }
+          }
+          .stage-content-team-user {
+            .stage-content {
+              border-top: 1px solid @border-color;
+              padding-top: 12px;
+              font-size: 14px;
+              color: @content-font-color;
+            }
+          }
+        }
+      }
+    }
+    // 新版添加客户阶段样式
+    .add-customer-stage-panel {
+      .item-set-stage-wrap {
+        margin-bottom: 12px;
+        width: 364px;
+        min-height: 96px;
+        padding: 12px;
+        background: #fff;
+        .ant-form-item-control {
+          line-height: 0;
+          .operator-zone {
+            cursor: pointer;
+            float: right;
+            display: inline-block;
+            position: relative;
+            top: -18px;
+            right: -24px;
+          }
+          .no-show-delete-icon {
+            display: none;
+          }
+        }
+      }
+      .add-stage {
+        cursor: pointer;
+        color: #8DA8C5;
+      }
+      .no-show-add-stage-tips {
+        display: none;
+      }
     }
   }
 
@@ -101,13 +566,60 @@
             display: block;
             float: right;
             font-size: 16px;
-            color: @btn-color;
             cursor: pointer;
           }
         }
         form {
           .ant-form-item {
             padding-right: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 表格样式
+#app {
+  .stage-list-table-wrap {
+    .antc-table {
+      .ant-table-wrapper {
+        // 表头
+        .ant-table-thead {
+          th {
+            color: #999 !important;
+            font-weight: normal;
+            padding: 9px 16px !important;
+          }
+        }
+        // 表体
+        .ant-table tbody {
+          tr {
+            cursor: pointer;
+            background:#fff !important;
+            td {
+              padding: 9px 6px 9px 16px !important;
+              .customer-stage-name {
+                .default {
+                  float: right;
+                  padding: 0 5px;
+                  font-size: 12px;
+                  color: @tag-font-color;
+                  background-color: #b8c4ca;
+                }
+              }
+              .stage-operate {
+                  .iconfont {
+                    margin-right: 16px;
+                  }
+              }
+            }
+          }
+          .current-row {
+            background: #E4F2FE !important;
+            &:hover {
+              background: #E4F2FE !important;
+            }
           }
         }
       }

@@ -32,6 +32,7 @@ const DATE_TIME_FORMAT = oplateConsts.DATE_TIME_FORMAT;
 import {getInvalidPhone,addInvalidPhone} from 'LIB_DIR/utils/invalidPhone';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import ShearContent from 'CMP_DIR/shear-content';
 //接听状态
 let CALL_STATUS_MAP = {
     'ANSWERED': Intl.get('call.record.state.answer', '已接听'),
@@ -567,6 +568,36 @@ class CallRecord extends React.Component {
             </Menu>
         );
     }
+    //编辑时光标移动到尾部
+    cursorBackward = (record,oldValue) =>{
+        if(oldValue){
+            const id = record.id;
+            let obj = $('.new-custom-tbody #content' + id);
+            obj.val("").focus().val(oldValue).scrollTop(obj.height());
+
+        }
+    }
+    //修改跟进记录的按钮和内容
+    editButton = (record) =>{
+        if(record.remark){
+            return(
+                <span className="text-show line-clamp " >
+                    <ShearContent lines={2}>{record.remark}</ShearContent>
+                    <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn" 
+                            onClick={this.handleClickTextArea.bind(this, record)}
+                            title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+                </span>
+            );
+        }else{
+            return(
+                <span className="text-show line-clamp " >
+                <i className="iconfont icon-edit-btn-plus handle-btn-item " 
+                    onClick={this.handleClickTextArea.bind(this, record)}
+                    title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+            </span>
+            );
+        }                      
+    }
 
     //通话记录表格列
     getCallRecordColumns = () => {
@@ -695,7 +726,7 @@ class CallRecord extends React.Component {
                                 </div>
                             ) : (
                                 <Dropdown overlay={this.getAddCustomerMenus(record)} trigger={['click']}>
-                                    <Icon type="plus" className="add-customer-icon"/>
+                                    <Icon type="plus" className="add-customer-icon handle-btn-item"/>
                                 </Dropdown>
                             )}
                         </div>
@@ -726,17 +757,14 @@ class CallRecord extends React.Component {
                                     record.showTextEdit ? <textarea
                                         autoFocus
                                         className="textarea-fix"
-                                        row={2}
                                         defaultValue={record.remark}
+                                        onFocus={this.cursorBackward.bind(this,record, record.remark)}
                                         onBlur={this.toggleConfirm.bind(this, record, record.remark)}
                                         type="text"
                                         id={'content' + record.id}
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
-                                    /> :
-                                        <span className="text-show line-clamp line-clamp-2" onClick={this.handleClickTextArea.bind(this, record)}>
-                                            {record.remark}
-                                        </span>
+                                    /> :this.editButton(record)
                                 }
                             </Popconfirm>
                         </div>
@@ -758,7 +786,10 @@ class CallRecord extends React.Component {
         const id = record.id;
         let value = $('.new-custom-tbody #content' + id).val();
         if (oldValue) { // 有内容时，对应的是修改
-            if (value === oldValue) { // 没做修改，直接返回，不出现确认框
+            if (value === oldValue) {
+                 // 没做修改，直接返回，不出现确认框
+                 record.showTextEdit = ! record.showTextEdit;
+                 this.setState(this.state);
                 return;
             } else { // 修改内容时，出现确认框
                 CallRecordActions.toggleConfirm({ id, flag: true });
@@ -766,6 +797,9 @@ class CallRecord extends React.Component {
         } else { // 添加跟进内容时
             if (_.trim(value)) {
                 CallRecordActions.toggleConfirm({ id, flag: true });
+            }else{
+                record.showTextEdit = ! record.showTextEdit;
+                this.setState(this.state);
             }
         }
     };

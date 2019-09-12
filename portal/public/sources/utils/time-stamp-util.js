@@ -21,9 +21,19 @@ exports.getThisWeekTimeStamp = () => {
     return getTimeStamp(DatePickerUtils.getThisWeekTime('true'));
 };
 
+// 获取上一周的开始、结束时间的毫秒数
+exports.getLastWeekTimeStamp = () => {
+    return getTimeStamp(DatePickerUtils.getLastWeekTime());
+};
+
 // 获取本月的开始、结束时间的毫秒数
 exports.getThisMonthTimeStamp = () => {
     return getTimeStamp(DatePickerUtils.getThisMonthTime('true'));
+};
+
+// 获取本季度的开始、结束时间的毫秒数
+exports.getThisQuarterTimeStamp = () => {
+    return getTimeStamp(DatePickerUtils.getThisQuarterTime('true'));
 };
 
 // 获取近一周的开始、结束时间的毫秒数

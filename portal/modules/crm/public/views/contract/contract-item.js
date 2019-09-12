@@ -101,8 +101,8 @@ class ContractItem extends React.Component {
             'contract-filed': contract.stage === '归档'
         });
         let contractClass = classNames('iconfont',{
-            'icon-down-twoline': !contract.isShowAllContractInfo,
-            'icon-up-twoline': contract.isShowAllContractInfo
+            'icon-down-twoline handle-btn-item': !contract.isShowAllContractInfo,
+            'icon-up-twoline handle-btn-item': contract.isShowAllContractInfo
 
         });
         let contractTitle = contract.isShowAllContractInfo ? Intl.get('crm.basic.detail.hide', '收起详情') :
@@ -137,7 +137,7 @@ class ContractItem extends React.Component {
                                 </Button>
                             </span>) : (
                             !this.props.disableEdit && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && contract.stage === '待审' ? (
-                                <span className='iconfont icon-delete' title={Intl.get('common.delete', '删除')}
+                                <span className='iconfont icon-delete handle-btn-item' title={Intl.get('common.delete', '删除')}
                                     onClick={this.showDeleteContractConfirm}/>
                             ) : null
                         )
@@ -349,7 +349,7 @@ class ContractItem extends React.Component {
                                         handleCancel={this.handleShowAddProduct.bind(this, false)}
                                     />
                                 ) : (
-                                    hasEditPrivilege ? <a className="no-data-descr__link" onClick={this.handleShowAddProduct.bind(this, true)}>{Intl.get('config.product.add', '添加产品')}</a>
+                                    hasEditPrivilege ? <a className="no-data-descr__link handle-btn-item" onClick={this.handleShowAddProduct.bind(this, true)}>{Intl.get('config.product.add', '添加产品')}</a>
                                         : Intl.get('crm.contract.no.product.info', '暂无产品信息')
                                 )}
                             </span>

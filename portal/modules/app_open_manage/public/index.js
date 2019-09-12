@@ -220,7 +220,7 @@ class OpenApp extends React.Component {
                                 </fieldset>
                             ))
                         }
-                    </div>) : <NoDataIconTip tipContent={Intl.get('user.no.app', '暂无应用')}/>}
+                    </div>) : <NoDataIconTip tipContent={Intl.get('user.no.product','暂无产品')}/>}
                 <RightPanel
                     className="app-detail-wrapper"
                     showFlag={this.state.isShowAppDetail}

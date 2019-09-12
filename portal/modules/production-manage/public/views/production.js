@@ -4,14 +4,13 @@
  * Created by liwenjun on 2018/10/31.
  */
 
-require('../style/production-info.less');
-
-import { Form, Input, Icon, Radio, Button, Select, Checkbox, message } from 'antd';
-const Option = Select.Option;
+import '../style/production-info.less';
+import {Form, Icon, Input, Switch} from 'antd';
 import Trace from 'LIB_DIR/trace';
-import {productNameRule} from 'PUB_DIR/sources/utils/validate-util';
+import {productNameRule, getNumberValidateRule, productNameRuleForValidator} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 
 let HeadIcon = require('../../../../components/headIcon');
 let FormItem = Form.Item;
@@ -22,14 +21,17 @@ let ProductionAction = require('../action/production-actions');
 let AlertTimer = require('../../../../components/alert-timer');
 let util = require('../utils/production-util');
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-import {getUemJSCode} from 'PUB_DIR/sources/utils/uem-js-code';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
-import CustomVariable from 'MOD_DIR/app_user_manage/public/views/integrate-config/custom-variable';
+import CustomVariable from 'CMP_DIR/custom-variable/custom_variable';
+import DetailCard from 'CMP_DIR/detail-card';
+import classNames from 'classnames';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
-    TITLE_H: 94//标题的高度
+    TITLE_H: 94,//标题的高度
+    TITLE_EDIT_FIELD_WIDTH: 256,//标题输入框宽度
+    EDIT_FIELD_WIDTH: 340,//卡片输入框宽度
+    BOTTOM: 50,//底部长度
 };
 
 class Production extends React.Component {
@@ -65,10 +67,11 @@ class Production extends React.Component {
             productType: '',//产品类型
             isAddingProduct: false, //正在添加产品
             addErrorMsg: '',//添加失败的错误提示
-            testResult: '',
-            isTesting: false,
-            jsCopied: false,
             firstLoaded: false, // 是否第一次加载完
+            isJsCardShow: !_.isEmpty(_.get(this.props.info,'integration_type')),//是否展示Js采集用户信息card
+            addUemProductErrorMsg: '',//改为集成错误信息
+            isAddingUemProduct: false,//正在添加为集成产品
+            saveLogoErrorMsg: ''//保存产品Logo错误信息
         };
     };
 
@@ -113,92 +116,27 @@ class Production extends React.Component {
                 let oldProduct = this.props.info;
                 //数据处理
                 _.each(values, (value, key) => {
-                    //添加
                     if (this.props.formType === util.CONST.ADD) {
                         if (key === 'price') {
                             production.price = _.toNumber(_.trim(value));
                         } else if (key !== 'useJS') {
                             production[key] = _.trim(value);
                         }
-                    } else {//修改（修改哪些项传哪些项）
-                        if (key === 'price') {
-                            let priceVal = _.toNumber(_.trim(value));
-                            if (priceVal !== oldProduct.price) {
-                                production.price = priceVal;
-                            }
-                        } else if (key !== 'useJS') {
-                            let newVal = _.trim(value);
-                            if (newVal !== oldProduct[key]) {
-                                production[key] = newVal;
-                            }
-                        }
                     }
                 });
                 //添加
                 if (this.props.formType === util.CONST.ADD) {
                     production.create_time = new Date().getTime();
-                    if (values.useJS) {
-                        //添加集成类型为uem的产品，
-                        this.addUemProduction(production);
-                    } else {//添加默认的产品
-                        //设置正在保存中
-                        ProductionFormAction.setSaveFlag(true);
-                        ProductionFormAction.addProduction(production);
-                    }
-                } else {//修改
-                    //是否修改基本信息
-                    production.isEditBasic = true;
-                    if (_.isEmpty(production)) {
-                        //未修改基本信息
-                        production.isEditBasic = false;
-                    }
-                    //选中了使用js集成用户数据，并且之前不是集成类型时
-                    if (values.useJS && !_.get(this.props, 'info.integration_type')) {
-                        //由普通产品改为uem集成类型的产品
-                        production.changeType = INTEGRATE_TYPES.UEM;
-                    } else if (!values.useJS && _.get(this.props, 'info.integration_type') === INTEGRATE_TYPES.UEM) {
-                        //由uem集成类型的产品改为普通产品
-                        production.changeType = INTEGRATE_TYPES.NORMAL;
-                    }
-                    //未修改基本信息，也未修改集成类型
-                    if (!production.isEditBasic && !production.changeType) return;
-                    production.id = oldProduct.id;
-                    //设置正在保存中
                     ProductionFormAction.setSaveFlag(true);
-                    ProductionFormAction.editProduction(production);
-
+                    ProductionFormAction.addProduction(production);
                 }
+                production.id = oldProduct.id;
+                //设置正在保存中
+                ProductionFormAction.setSaveFlag(true);
+                ProductionFormAction.editProduction(production);
             }
         });
     };
-
-    addUemProduction = (production) => {
-        this.setState({isAddingProduct: true});
-        $.ajax({
-            url: '/rest/product/uem',
-            type: 'post',
-            dataType: 'json',
-            data: production,
-            success: (result) => {
-                if (result) {
-                    let integration_id = _.get(result, 'integration_id');
-                    this.setState({addErrorMsg: '', isAddingProduct: false, uemSiteId: integration_id});
-                    this.props.afterOperation(this.props.formType, result);
-                } else {
-                    this.setState({
-                        isAddingProduct: false,
-                        addErrorMsg: Intl.get('crm.154', '添加失败')
-                    });
-                }
-            },
-            error: (xhr) => {
-                this.setState({
-                    isAddingProduct: false,
-                    addErrorMsg: xhr.responseJSON || Intl.get('crm.154', '添加失败')
-                });
-            }
-        });
-    }
 
     uploadImg = (src) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'), '上传产品logo');
@@ -208,93 +146,10 @@ class Production extends React.Component {
     //去掉保存后提示信息
     hideSaveTooltip = () => {
         this.props.afterOperation(this.props.formType, this.state.savedProduction);
-        //将普通产品成功修改为uem产品时
-        if (_.get(this.state, 'savedProduction.changeType') === INTEGRATE_TYPES.UEM && _.get(this.state, 'savedProduction.id')) {
-            //获取该产品的integration_id更新列表中的integration_id
-            ProductionAction.getProductById(this.state.savedProduction.id, (data) => {
-                if (_.get(data, 'integration_id')) {
-                    this.setState({uemSiteId: data.integration_id});
-                }
-            });
-        } else {
-            this.props.closeRightPanel();
-        }
-    };
-    testUemProduct = () => {
-        let integration_id = this.state.uemSiteId;
-        if (!integration_id) return;
-        this.setState({isTesting: true});
-        $.ajax({
-            url: '/rest/product/uem/test',
-            type: 'get',
-            dataType: 'json',
-            data: {integration_id},
-            success: (result) => {
-                if (result) {
-                    this.setState({
-                        testResult: 'success',
-                        isTesting: false,
-                    });
-                } else {
-                    this.setState({
-                        testResult: 'error',
-                        isTesting: false,
-                    });
-                }
-            },
-            error: (xhr) => {
-                this.setState({
-                    testResult: 'error',
-                    isTesting: false,
-                });
-            }
-        });
-    }
-    copyJSCode = () => {
-        this.setState({jsCopied: true});
-        setTimeout(() => {
-            this.setState({jsCopied: false});
-        }, 1000);
-    }
-    // 添加自定义属性
-    saveCustomVariable = (saveObj, successFunc, errorFunc) => {
-        //是否修改基本信息
-        saveObj.isEditBasic = true;
-        $.ajax({
-            url: '/rest/product',
-            type: 'put',
-            dataType: 'json',
-            data: saveObj,
-            success: (data) => {
-                //修改成功{editBasicSuccess: true, editTypeSuccess:true}
-                if (_.get(data,'editBasicSuccess') && _.get(data, 'editTypeSuccess')) {
-                    //保存成功后的处理
-                    message.success(Intl.get('user.user.add.success', '添加成功'));
-                    _.isFunction(successFunc) && successFunc();
-                    this.props.afterOperation(this.props.formType, saveObj);
-                } else {
-                    _.isFunction(errorFunc) && errorFunc(Intl.get('member.add.failed', '添加失败！'));
-                }
-            },
-            error: (xhr) => {
-                _.isFunction(errorFunc) && errorFunc(xhr.responseJSON);
-            }
-        });
+        this.props.openRightPanel();
     };
 
-    renderTestResult() {
-        if (this.state.testResult === 'success') {
-            return (<span className="test-success-tip">
-                {Intl.get('user.user.add.success', '添加成功')},
-                <a href="/user/list">{Intl.get('user.list.check.refresh', '刷新查看用户列表')}</a>
-            </span>);
-        } else if (this.state.testResult === 'error') {
-            return (<span className="test-error-tip">{Intl.get('user.test.error.tip', '测试失败')}</span>);
-        } else {
-            return null;
-        }
-    }
-
+    //渲染添加面板内容
     renderFormContent() {
         const {getFieldDecorator} = this.props.form;
         let values = this.props.form.getFieldsValue();
@@ -306,10 +161,6 @@ class Production extends React.Component {
             labelCol: {span: 5},
             wrapperCol: {span: 19},
         };
-        let jsCode = '';
-        if(this.state.uemSiteId && values.useJS !== false) {
-            jsCode = getUemJSCode(this.state.uemSiteId, _.get(this.props.info,'custom_variable',{}));
-        }
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
                 <FormItem id="preview_image">
@@ -353,7 +204,7 @@ class Production extends React.Component {
                                 {getFieldDecorator('price', {
                                     initialValue: this.props.info.price || 0,
                                     rules: [{
-                                        required: true,
+                                        required: false,
                                         type: 'number',
                                         message: Intl.get('config.product.input.number', '请输入数字'),
                                         transform: (value) => {
@@ -361,7 +212,9 @@ class Production extends React.Component {
                                         }
                                     }]
                                 })(
-                                    <Input name="price" id="price" type="text"/>
+                                    <Input
+                                        placeholder={Intl.get( 'config.product.input.price', '请输入产品单价')}
+                                        name="price" id="price" type="text"/>
                                 )}
                                 < div className='currency_unit'>{Intl.get('contract.82', '元')}</div>
                             </FormItem>
@@ -372,11 +225,13 @@ class Production extends React.Component {
                                 {getFieldDecorator('sales_unit', {
                                     initialValue: this.props.info.sales_unit,
                                     rules: [{
-                                        required: true,
+                                        required: false,
                                         message: Intl.get('config.product.input.sales_unit', '请输入计价单位')
                                     }]
                                 })(
-                                    <Input name="sales_unit" id="sales_unit" type="text"/>
+                                    <Input
+                                        placeholder={Intl.get('config.product.input.sales_unit', '请输入计价单位')}
+                                        name="sales_unit" id="sales_unit" type="text"/>
                                 )}
                             </FormItem>
                             <FormItem
@@ -430,89 +285,14 @@ class Production extends React.Component {
                                         placeholder={Intl.get('config.product.input.desc', '请输入产品描述')}/>
                                 )}
                             </FormItem>
-                            {this.state.create_time ?
-                                <FormItem
-                                    label={Intl.get('config.product.create_time', '创建时间')}
-                                    {...formItemLayout}
-                                >
-                                    {getFieldDecorator('create_time', {
-                                        initialValue: this.state.create_time
-                                    })(
-                                        <Input disabled='true' name="create_time" id="create_time" type="text"/>
-                                    )}
-                                </FormItem> : null
-                            }
-                            {this.state.integrateType === INTEGRATE_TYPES.UEM ? (
-                                <FormItem
-                                    label=' '
-                                    labelCol={{span: 2}}
-                                    wrapperCol={{span: 22}}
-                                    colon={false}
-                                    className='useJS-form-item'
-                                >
-                                    {getFieldDecorator('useJS', {
-                                        initialValue: !!_.get(this.props, 'info.integration_type'),//编辑时，集成类型存在，选中
-                                        valuePropName: 'checked'
-                                    })(
-                                        <Checkbox>{Intl.get('config.product.js.collect.user', '使用JS脚本采集用户数据')}</Checkbox>
-                                    )}
-                                </FormItem>) : null}
-                            {this.state.uemSiteId && values.useJS !== false ? (
-                                <FormItem>
-                                    <CustomVariable
-                                        id={_.get(this.props.info,'id')}
-                                        value={_.get(this.props.info,'custom_variable',{})}
-                                        hasEditPrivilege={true}
-                                        editFormLayout={{
-                                            labelCol: {span: 5},
-                                            wrapperCol: {span: 19}
-                                        }}
-                                        addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
-                                        saveEditInput={this.saveCustomVariable}
-                                    />
-                                </FormItem>
-                            ) : null}
-                            {this.state.uemSiteId && values.useJS !== false ? (
-                                <FormItem
-                                    className='jscode-form-item'
-                                    label={Intl.get('common.trace.code', '跟踪代码')}
-                                    {...formItemLayout}
-                                >
-                                    <CopyToClipboard text={jsCode}
-                                        onCopy={this.copyJSCode}>
-                                        <Button size='default' type="primary" className='copy-btn'>
-                                            {Intl.get('user.jscode.copy', '复制')}
-                                        </Button>
-                                    </CopyToClipboard>
-                                    {this.state.jsCopied ? (
-                                        <span className="copy-success-tip">
-                                            {Intl.get('user.copy.success.tip', '复制成功！')}
-                                        </span>) : null}
-                                </FormItem>) : null}
-                            {
-                                this.state.uemSiteId && values.useJS !== false ? (
-                                    <FormItem>
-                                        <div className="access-step-tip margin-style js-code-contianer">
-                                            <pre id='matomo-js-code'>{jsCode}</pre>
-                                            <span className="js-code-user-tip">
-                                                <span className="attention-flag"> * </span>
-                                                {Intl.get('user.jscode.use.tip', '请将以上js代码添加到应用页面的header中，如已添加')}
-                                                <Button size='default' type="primary"
-                                                    onClick={this.testUemProduct}>{Intl.get('user.jscode.test.btn', '点击测试')}</Button>
-                                                {this.renderTestResult()}
-                                            </span>
-                                        </div>
-                                    </FormItem>) : null}
-                            {//添加完uem产品，展示jscode时，不需要再展示保存按钮
-                                this.props.formType === util.CONST.ADD && this.state.uemSiteId ? null : (
-                                    <FormItem>
-                                        <SaveCancelButton
-                                            loading={this.state.isSaving || this.state.isAddingProduct}
-                                            saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : this.state.addErrorMsg}
-                                            handleSubmit={this.handleSubmit.bind(this)}
-                                            handleCancel={this.handleCancel.bind(this)}
-                                        />
-                                    </FormItem>)}
+                            <FormItem>
+                                <SaveCancelButton
+                                    loading={this.state.isSaving || this.state.isAddingProduct}
+                                    saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : this.state.addErrorMsg}
+                                    handleSubmit={this.handleSubmit.bind(this)}
+                                    handleCancel={this.handleCancel.bind(this)}
+                                />
+                            </FormItem>
                             <FormItem>
                                 <div className="indicator">
                                     {saveResult === 'success' ?
@@ -532,23 +312,313 @@ class Production extends React.Component {
         );
     }
 
+    onSwitchChange = (checked) => {
+        //如果为打开switch,尝试将产品变为uem集成
+        if(checked) {
+            this.setState({
+                isAddingUemProduct: true,
+            });
+            let production = _.get(this.props, 'info');
+            production.isEditBasic = false;
+            production.changeType = INTEGRATE_TYPES.UEM;
+
+            ProductionFormAction.editProduction(production, errorMsg => {
+                //如果编辑成功
+                if(_.isEmpty(errorMsg)) {
+                    this.setState({
+                        addUemProductErrorMsg: '',
+                        isAddingUemProduct: false,
+                        isJsCardShow: true
+                    });
+                    this.props.afterOperation(this.props.formType, production);
+                } else { //如果编辑失败
+                    this.setState({
+                        isAddingUemProduct: false,
+                        addUemProductErrorMsg: Intl.get('common.edit.failed','修改失败')
+                    });
+                }
+            });
+        } else { //如果关闭switch，尝试将uem产品变为普通产品
+            this.setState({
+                isAddingUemProduct: true,
+            });
+            let production = _.get(this.props, 'info');
+            production.isEditBasic = false;
+            production.changeType = INTEGRATE_TYPES.NORMAL;
+
+            ProductionFormAction.editProduction(production, errorMsg => {
+                if(_.isEmpty(errorMsg)) {
+                    this.setState({
+                        addUemProductErrorMsg: '',
+                        isAddingUemProduct: false,
+                        isJsCardShow: checked
+                    });
+                    this.props.afterOperation(this.props.formType, production);
+                } else {
+                    this.setState({
+                        isAddingUemProduct: false,
+                        addUemProductErrorMsg: Intl.get('common.edit.failed','修改失败')
+                    });
+                }
+            });
+        }
+    }
+
+    saveProductItem = (saveObj, successFunc, errorFunc) => {
+        let isProductLogo = false;
+        //如果保存的内容是logo，手动为其添加id属性
+        if(!_.get(saveObj, 'id')) {
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.head-image-container .update-logo-desr'), '上传产品logo');
+            this.props.form.setFieldsValue({preview_image: saveObj});
+            saveObj = {
+                id: this.props.info.id,
+                preview_image: saveObj,
+            };
+            isProductLogo = true;
+        }
+        let production = {
+            isEditBasic: true,
+        };
+        //为saveObj的输入内容做trim
+        saveObj = _.mapValues(saveObj, obj => _.trim(obj));
+        //如果保存的是产品单价，将其转化为number类型
+        if(_.has(saveObj, 'price')) {
+            saveObj.price = _.toNumber(saveObj.price);
+        }
+        _.extend(production, saveObj);
+        ProductionFormAction.setSaveFlag(true);
+        ProductionFormAction.editProduction(production, errorMsg => {
+            if(_.isEmpty(errorMsg)) {
+                //头像保存没有"successFunc"回调函数
+                if(!isProductLogo){
+                    successFunc();
+                } else {
+                    //头像保存成功，提示错误信息置空
+                    this.setState({
+                        saveLogoErrorMsg: ''
+                    });
+                }
+                this.props.afterOperation(this.props.formType, _.extend(this.props.info, saveObj));
+            } else {
+                //头像保存失败的提示信息需要自己添加
+                if(isProductLogo) {
+                    this.setState({
+                        saveLogoErrorMsg: Intl.get('common.save.failed','保存失败')
+                    });
+                }
+                errorFunc(errorMsg);
+            }
+        });
+    }
+    
+    //渲染使用JS脚本采集用户数据card
+    renderCustomVariable = () => {
+        let dataWrapClass = classNames('add-user-data-warp',{'show-js-card': _.get(this.state, 'isJsCardShow')});
+        return (
+            <div className={dataWrapClass}>
+                <div className="float-operation-content">
+                    {_.get(this.state, 'isAddingUemProduct') ? <Icon type="loading" className="save-loading"/> : null}
+                    {_.get(this.state, 'addUemProductErrorMsg') ? <span className="add-uem-error">{this.state.addUemProductErrorMsg}</span> : null}
+                    <Switch size="small" onChange={this.onSwitchChange} checked={this.state.isJsCardShow}/>
+                </div>
+                {_.get(this.state, 'isJsCardShow') ? <div className="add-user-data-details">
+                    <CustomVariable
+                        addProduct={_.get(this.props, 'info')}
+                        realValue={this.state.custom_variable}
+                        hasEditPrivilege={true}
+                        addBtnTip={Intl.get('app.user.manage.add.custom.text', '添加属性')}
+                    />
+                </div> : null}
+            </div>
+        );
+    }
+
+    //渲染编辑面板内容
+    renderProductDetails = () => {
+        //产品单价
+        let productPrice = (<div className="product-detail-item">
+            <span className="product-detail-item-title">{Intl.get('config.product.price', '产品单价')}：</span>
+            <span className="product-detail-item-des">
+                <BasicEditInputField
+                    width={LAYOUT_CONST.EDIT_FIELD_WIDTH}
+                    hasEditPrivilege={true}
+                    id={this.props.info.id}
+                    saveEditInput={this.saveProductItem}
+                    value={_.toString(this.props.info.price)}
+                    afterTextTip={Intl.get('contract.82', '元')}
+                    field='price'
+                    type='textarea'
+                    validators={[getNumberValidateRule()]}
+                    addDataTip={Intl.get('config.product.add.price', '添加产品单价')}
+                    placeholder={Intl.get( 'config.product.input.price', '请输入产品单价')}
+                />
+            </span>
+        </div>);
+        //产品单位
+        let priceUnit = (<div className="product-detail-item">
+            <span className="product-detail-item-title">{Intl.get('config.product.sales_unit', '计价单位')}：</span>
+            <span className="product-detail-item-des">
+                <BasicEditInputField
+                    width={LAYOUT_CONST.EDIT_FIELD_WIDTH}
+                    hasEditPrivilege={true}
+                    id={this.props.info.id}
+                    saveEditInput={this.saveProductItem}
+                    value={this.props.info.sales_unit}
+                    field='sales_unit'
+                    type='textarea'
+                    addDataTip={Intl.get('config.product.add.sales_unit', '添加计价单位')}
+                    placeholder={Intl.get( 'config.product.input.sales_unit', '请输入计价单位')}
+                />
+            </span>
+        </div>);
+        //访问地址
+        let accessAddress = (<div className="product-detail-item">
+            <span className="product-detail-item-title">{Intl.get('config.product.url', '访问地址')}：</span>
+            <span className="product-detail-item-des">
+                <BasicEditInputField
+                    width={LAYOUT_CONST.EDIT_FIELD_WIDTH}
+                    hasEditPrivilege={true}
+                    id={this.props.info.id}
+                    saveEditInput={this.saveProductItem}
+                    value={this.props.info.url}
+                    field='url'
+                    type='textarea'
+                    addDataTip={Intl.get('config.product.add.address', '添加访问地址')}
+                    placeholder={Intl.get('config.product.input.url', '请输入访问地址')}
+                />
+            </span>
+        </div>);
+        //产品描述
+        let productDescription = (<div className="product-detail-item">
+            <span className="product-detail-item-title">{Intl.get('config.product.desc', '产品描述')}：</span>
+            <span className="product-detail-item-des">
+                <BasicEditInputField
+                    width={LAYOUT_CONST.EDIT_FIELD_WIDTH}
+                    hasEditPrivilege={true}
+                    id={this.props.info.id}
+                    saveEditInput={this.saveProductItem}
+                    value={this.props.info.description}
+                    field='description'
+                    type='textarea'
+                    addDataTip={Intl.get('config.product.add.desc', '添加产品描述')}
+                    placeholder={Intl.get('config.product.input.desc', '请输入产品描述')}
+                />
+            </span>
+        </div>);
+        //创建时间
+        let foundTime = (<div className="product-detail-item">
+            <span className="product-detail-item-title">{Intl.get('config.product.create_time', '创建时间')}：</span>
+            <span className="product-detail-item-des">
+                <BasicEditInputField
+                    width={LAYOUT_CONST.EDIT_FIELD_WIDTH}
+                    hasEditPrivilege={false}
+                    id={this.props.info.id}
+                    value={this.state.create_time}
+                    field='create_time'
+                    type='textarea'
+                />
+            </span>
+        </div>);
+        let height = $(window).height() - $('.product-info-title').height() - LAYOUT_CONST.BOTTOM;
+        return (<div className="product-details-content">
+            <div className="product-info-title">
+                <div className="product-icon">
+                    <HeadIcon
+                        headIcon={this.props.info.preview_image}
+                        isNotShowUserName={true}
+                        isEdit={true}
+                        onChange={this.saveProductItem}
+                        isUserHeadIcon={true}
+                        userName={this.props.info.name}
+                    />
+                    {_.get(this.state, 'saveLogoErrorMsg') ? <span className="save-logo-error">{_.get(this.state, 'saveLogoErrorMsg')}</span> : null}
+                </div>
+                <div className="product-info">
+                    <div className="product-title">
+                        <BasicEditInputField
+                            hasEditPrivilege={true}
+                            id={this.props.info.id}
+                            saveEditInput={this.saveProductItem}
+                            value={this.props.info.name}
+                            field='name'
+                            type='textarea'
+                            validators={[productNameRuleForValidator]}
+                            placeholder={Intl.get('config.product.input.name', '请输入产品名称')}
+                            hasMoreRow={true}
+                        />
+                    </div>
+                    <div className="product-item product-version">
+                        <div className="product-item-key">{Intl.get('config.product.spec', '规格/版本')}：</div>
+                        <div className="product-item-editor">
+                            <BasicEditInputField
+                                width={LAYOUT_CONST.TITLE_EDIT_FIELD_WIDTH}
+                                hasEditPrivilege={true}
+                                id={this.props.info.id}
+                                saveEditInput={this.saveProductItem}
+                                value={this.props.info.specifications}
+                                field='specifications'
+                                type='textarea'
+                                addDataTip={Intl.get('config.product.add.spec','添加产品规格(或版本)')}
+                                placeholder={Intl.get('config.product.input.spec', '请输入产品规格(或版本)')}
+                                hasMoreRow={true}
+                            />
+                        </div>
+                    </div>
+                    <div className="product-item product-identifier">
+                        <div className="product-item-key">{Intl.get('config.product.code', '产品编号')}：</div>
+                        <div className="product-item-editor">
+                            <BasicEditInputField
+                                width={LAYOUT_CONST.TITLE_EDIT_FIELD_WIDTH}
+                                hasEditPrivilege={true}
+                                id={this.props.info.id}
+                                saveEditInput={this.saveProductItem}
+                                value={this.props.info.code}
+                                field='code'
+                                type='textarea'
+                                addDataTip={Intl.get('config.product.add.code', '添加产品编号')}
+                                placeholder={Intl.get('config.product.input.code', '请输入产品编号')}
+                                hasMoreRow={true}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="product-card-items" style={{height: height}}>
+                <GeminiScrollBar>
+                    <DetailCard content={productPrice}/>
+                    <DetailCard content={priceUnit}/>
+                    <DetailCard content={accessAddress}/>
+                    <DetailCard content={productDescription}/>
+                    <DetailCard content={foundTime}/>
+                    {_.isEqual(_.get(this.state, 'integrateType'), INTEGRATE_TYPES.UEM) ?
+                        <div className="product-card-with-switch">
+                            <DetailCard
+                                className="product-add-user-data-card"
+                                title={`${Intl.get('config.product.js.collect.user','使用JS脚本采集用户数据')}:`}
+                                content={this.renderCustomVariable()}
+                                titleBottomBorderNone={!_.get(this.state, 'isJsCardShow')}
+                            />
+                        </div>
+                        : null}
+                </GeminiScrollBar>
+            </div>
+        </div>);
+    }
+
     render() {
         let isShowModal = true;
-        let title = Intl.get('config.product.add', '添加产品');
         let dataTracename = Intl.get('config.product.add', '添加产品');
-        let content = this.renderFormContent();
         if (this.props.formType === util.CONST.EDIT) {
             isShowModal = false;
-            title = Intl.get('config.product.modify', '修改产品');
             dataTracename = Intl.get('config.product.modify', '修改产品');
         }
+        let content = this.props.formType === util.CONST.EDIT ? this.renderProductDetails() : this.renderFormContent();
         return (
             <RightPanelModal
                 className="product-add-container"
                 isShowMadal={isShowModal}
                 isShowCloseBtn={true}
                 onClosePanel={this.handleCancel.bind(this)}
-                title={title}
                 content={content}
                 dataTracename={dataTracename}
             />);
@@ -561,6 +631,7 @@ Production.propTypes = {
     formType: PropTypes.string,
     closeRightPanel: PropTypes.func,
     form: PropTypes.object,
-    afterOperation: PropTypes.func
+    afterOperation: PropTypes.func,
+    openRightPanel: PropTypes.func
 };
 module.exports = Form.create()(Production);

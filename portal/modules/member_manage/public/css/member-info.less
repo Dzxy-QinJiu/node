@@ -39,7 +39,7 @@
       }
     }
     //成员名称
-    .memeber-name-container {
+    .member-name-container {
       .member-name-label {
         min-height: 26px;
         line-height: 20px;
@@ -48,11 +48,18 @@
           margin-left: 0;
           font-weight: bold;
         }
-        //编辑按钮
-        .icon-edit-btn {
-          float: right;
-          margin-left: 6px;
-          cursor: pointer;
+        .edit-container.hover-show-edit {
+          .icon-edit-btn {
+            margin-left: 6px;
+            cursor: pointer;
+          }
+          &:hover {
+            background: #E8F5FE;
+            .icon-edit-btn{
+              float: right;
+              display: inline-block;
+            }
+          }
         }
       }
     }
@@ -74,7 +81,6 @@
     .member-title-btns {
       float: right;
       .iconfont {
-        color: @btn-color;
         cursor: pointer;
       }
       .status-switch-container {
@@ -109,7 +115,6 @@
         display: block;
         float: right;
         font-size: 16px;
-        color: @btn-color;
         cursor: pointer;
       }
     }

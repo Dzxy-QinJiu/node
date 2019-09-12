@@ -45,6 +45,10 @@ const unhandleApplyNumObj = [
         name: APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,
         cls: 'application_document_write_ico',
         style: 'unhandleDocumentWriteNumSyle'
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,
+        cls: 'application_self_setting_ico',
+        style: 'unhandleVisitNumSyle'
     }];
 
 //顶部导航外层div
@@ -192,6 +196,14 @@ class TopNav extends React.Component {
             }
             //点击到数字上，进行跳转
             history.push('/application/document_write', {clickUnhandleNum: true});
+        });
+        $('.topNav').on('click', '.application_self_setting_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/self_setting', {clickUnhandleNum: true});
         });
 
     }

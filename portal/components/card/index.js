@@ -87,7 +87,7 @@ class Card extends React.Component {
             }, DELETE_CREATEREALM_DELAYTIME);
         }
         let userName = card.userName ? card.userName.value : '';
-        let deleteClassName = 'iconfont icon-delete';
+        let deleteClassName = 'iconfont icon-delete handle-btn-item';
         let deleteTitle = Intl.get('common.delete', '删除');
         //当显示字符串为客套时，添加特有css
         let buildingIcon = classNames('building-icon',{

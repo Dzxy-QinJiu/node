@@ -347,4 +347,22 @@ export const deleteEmptyProperty = function(data) {
         }
     }
 };
-
+export const COMMON_OTHER_ITEM = 'otherSelectedItem';
+export const SIMILAR_CUSTOMER = '有相似客户';
+export const SIMILAR_CLUE = '有相似线索';
+export const clueStatusTabNum = [{
+    numName: 'invalidClue',
+    status: 'invalidClue',
+},{
+    numName: 'willDistribute',
+    status: SELECT_TYPE.WILL_DISTRIBUTE,
+},{
+    numName: 'willTrace',
+    status: SELECT_TYPE.WILL_TRACE,
+},{
+    numName: 'hasTrace',
+    status: SELECT_TYPE.HAS_TRACE,
+},{
+    numName: 'hasTransfer',
+    status: SELECT_TYPE.HAS_TRANSFER,
+},];

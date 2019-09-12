@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/3/27.
  */
 require('../style/add_apply_form.less');
-import {Tabs, Input} from 'antd';
+import {Tabs, Input,Form} from 'antd';
 const TabPane = Tabs.TabPane;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 const TAB_KEYS = {
@@ -68,21 +68,31 @@ class ApplyFormAndRules extends React.Component {
             //如果是编辑状态
             if (formItem.isEditting) {
                 return (
-                    <ComponentEdit
-                        key={formItem.key}
-                        formItem={formItem}
-                        handleCancel={this.handleCancelEditFormItem}
-                        handleSubmit={this.handleSubmitInput}
-                    />
+                    <Form>
+                        <ComponentEdit
+                            form={this.props.form}
+                            formItemKey={formItem.key}
+                            formItem={formItem}
+                            handleCancel={this.handleCancelEditFormItem}
+                            handleSubmit={this.handleSubmitInput}
+                            componentTemple={true}
+                        />
+                    </Form>
+
                 );
             } else {
                 return (
-                    <ComponentShow
-                        key={formItem.key}
-                        formItem={formItem}
-                        handleRemoveItem={this.removeTargetFormItem}
-                        handleEditItem={this.handleEditItem}
-                    />
+                    <Form>
+                        <ComponentShow
+                            form={this.props.form}
+                            formItemKey={formItem.key}
+                            formItem={formItem}
+                            handleRemoveItem={this.removeTargetFormItem}
+                            handleEditItem={this.handleEditItem}
+                            componentTemple={true}
+                        />
+                    </Form>
+
                 );
             }
         });
@@ -162,6 +172,9 @@ class ApplyFormAndRules extends React.Component {
             if (submitObj.applyRulesAndSetting) {
                 delete submitObj.applyRulesAndSetting;
             }
+            if (!submitObj.customiz_form){
+                submitObj['customiz_form'] = [];
+            }
             applyApproveManageAction.editSelfSettingWorkFlow(submitObj, () => {
                 //userData上的属性也修改
                 var targetItem = this.updateUserData();
@@ -237,7 +250,7 @@ class ApplyFormAndRules extends React.Component {
     handleAddComponents = (ruleItem) => {
         var applyTypeData = this.state.applyTypeData;
         var customiz_form = _.get(applyTypeData, 'customiz_form', []);
-        customiz_form.push({...ruleItem, 'key': uuid(), 'isEditting': true});
+        customiz_form.push({...ruleItem, 'key': ruleItem.key || ruleItem.component_type + '_' + uuid(), 'isEditting': true});
         applyTypeData.customiz_form = customiz_form;
         this.setState({
             applyTypeData: applyTypeData
@@ -422,6 +435,7 @@ ApplyFormAndRules.defaultProps = {
 
 ApplyFormAndRules.propTypes = {
     closeAddPanel: PropTypes.func,
-    applyTypeData: PropTypes.object
+    applyTypeData: PropTypes.object,
+    form: PropTypes.object,
 };
-export default ApplyFormAndRules;
+export default Form.create()(ApplyFormAndRules);

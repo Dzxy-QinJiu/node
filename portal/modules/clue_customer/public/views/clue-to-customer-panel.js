@@ -18,6 +18,11 @@ const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
 //联系人store
 const ContactStore = require('MOD_DIR/crm/public/store/contact-store');
 const noop = function() {};
+import {
+    SELECT_TYPE,
+} from '../utils/clue-customer-utils';
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+
 //视图类型
 //联系方式种类
 const CONTACT_WAY_TYPES = [
@@ -502,7 +507,8 @@ class ClueToCustomerPanel extends React.Component {
         Trace.traceEvent(e, '点击合并客户面板中的"确认合并"按钮');
 
         const contacts = this.state.customerContacts;
-        const clueId = this.props.clue.id;
+        var clue = this.props.clue;
+        const clueId = clue.id;
 
         //变化了的联系人（新增或需要更新的）
         const changedContacts = _.filter(contacts, contact => contact.isNew || !_.isEmpty(contact.updateFields));
@@ -570,7 +576,7 @@ class ClueToCustomerPanel extends React.Component {
         $.when(...promises)
             .done(() => {
                 message.success(Intl.get('common.merge.success', '合并成功'));
-
+                subtracteGlobalClue(clue);
                 this.props.onMerged(this.state.customerId, this.state.customerName);
             })
             .fail(err => {
@@ -647,7 +653,7 @@ class ClueToCustomerPanel extends React.Component {
         const existingCustomers = this.props.existingCustomers;
 
         //客户列表标题区域高度
-        const titleBlockHeight = 45;
+        const titleBlockHeight = 135;
         //转为新客户按钮区域高度
         const convertToNewCustomerBtnBlockHeight = 60;
         //列表容器最大高度
@@ -849,6 +855,7 @@ class ClueToCustomerPanel extends React.Component {
                     ref={ref => {this.refs[contactId] = ref;}}
                     type="edit"
                     contact={contact}
+                    isValidatePhoneOnDidMount={true}
                 />
             </div>
         );

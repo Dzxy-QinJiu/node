@@ -1,4 +1,4 @@
-import { emailRegex } from 'PUB_DIR/sources/utils/validate-util';
+import { emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/sources/utils/validate-util';
 
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -8,7 +8,9 @@ import { emailRegex } from 'PUB_DIR/sources/utils/validate-util';
 var React = require('react');
 require('../../css/clue_detail_overview.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
-import {Button, Icon, message} from 'antd';
+import {Button, Form, Icon, message, Input} from 'antd';
+const FormItem = Form.Item;
+const {TextArea} = Input;
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import DatePickerField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
@@ -22,7 +24,20 @@ var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {SELECT_TYPE, AVALIBILITYSTATUS,getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,handleSubmitClueItemData,handleSubmitContactData,contactNameRule,getClueStatusValue,editCluePrivilege,assignSalesPrivilege} from '../../utils/clue-customer-utils';
+import {
+    SELECT_TYPE,
+    AVALIBILITYSTATUS,
+    getClueSalesList,
+    getLocalSalesClickCount,
+    SetLocalSalesClickCount,
+    handleSubmitClueItemData,
+    handleSubmitContactData,
+    contactNameRule,
+    getClueStatusValue,
+    editCluePrivilege,
+    assignSalesPrivilege,
+    handlePrivilegeType
+} from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const EDIT_FEILD_WIDTH = 300;
@@ -38,7 +53,11 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DetailCard from 'CMP_DIR/detail-card';
 import ClueTraceList from 'MOD_DIR/clue_customer/public/views/clue_trace_list';
+import moment from 'moment';
+import ClueTraceAction from '../../action/clue-trace-action';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
+const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -56,11 +75,14 @@ class ClueDetailOverview extends React.Component {
         similarCustomerLists: [],//相似客户列表
         showLargerCustomerLists: false,//展示大于3个的客户列表
         showLargerClueLists: false,//展示大于3个的线索列表
+        submitReason: '',//要提交的无效原因
+        submitInvalidateClueMsg: '',//提交标记无效出错的信息
+        submitInvalidateLoading: false,//正在提交无效记录
+        isShowInvalidateInputPanel: false //正在展示无效信息输入框
     };
-    
+
     componentDidMount() {
         clueCustomerStore.listen(this.onClueCustomerStoreChange);
-        var curClue = this.state.curClue;
         //获取相似线索列表
         this.getSimilarClueLists();
         //获取相似客户列表
@@ -371,9 +393,7 @@ class ClueDetailOverview extends React.Component {
             return;
         }
         var curClue = this.state.curClue;
-        if (Oplate && Oplate.unread && curClue.status === SELECT_TYPE.WILL_TRACE) {
-            subtracteGlobalClue(curClue);
-        }
+        subtracteGlobalClue(curClue);
         saveObj.lead_id = saveObj.id;
         saveObj.type = 'other';
         delete saveObj.id;
@@ -411,7 +431,7 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    //分配线索给某个销售
+    //分配线索给某个销售 && 这个销售不是当前账号
     handleChangeAssignedSales = (submitObj, successFunc, errorFunc) => {
         var user_id = _.get(this.state.curClue,'user_id');
         var curClue = this.state.curClue;
@@ -440,8 +460,12 @@ class ClueDetailOverview extends React.Component {
                 } else {
 
                     if (_.isFunction(successFunc)) successFunc();
-                    if (Oplate && Oplate.unread && curClue.status === SELECT_TYPE.WILL_TRACE) {
-                        subtracteGlobalClue(curClue);
+                    if (submitObj.user_id !== userData.getUserData().user_id) {
+                        subtracteGlobalClue(curClue, (flag) => {
+                            if(flag){
+                                clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
+                            }
+                        });
                     }
                     this.setState({
                         clickAssigenedBtn: false
@@ -563,12 +587,9 @@ class ClueDetailOverview extends React.Component {
         );
     };
 
-    //标记线索无效或者有效
-    handleClickInvalidBtn = (item, callback) => {
-        var updateValue = AVALIBILITYSTATUS.INAVALIBILITY;
-        if (item.availability === AVALIBILITYSTATUS.INAVALIBILITY){
-            updateValue = AVALIBILITYSTATUS.AVALIBILITY;
-        }
+    //标记线索有效
+    handleClickValidBtn = (item, callback) => {
+        var updateValue = AVALIBILITYSTATUS.AVALIBILITY;
         var submitObj = {
             id: item.id,
             availability: updateValue
@@ -585,10 +606,7 @@ class ClueDetailOverview extends React.Component {
             } else {
                 _.isFunction(callback) && callback(updateValue);
                 clueCustomerAction.deleteClueById(item);
-                if (updateValue === AVALIBILITYSTATUS.INAVALIBILITY){
-                    clueCustomerAction.addInvalidClueNum();
-                }
-
+                clueCustomerAction.updateClueTabNum(item.status);
                 this.setState({
                     isInvaliding: false,
                     editInvalidClueId: ''
@@ -602,7 +620,12 @@ class ClueDetailOverview extends React.Component {
         });
     };
     renderItemSelfSettingContent = (curClue,item) => {
-        return <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true} showClueDetailPanel={this.props.showClueDetailPanel.bind(this, curClue)}
+        let hasPrivilege = editCluePrivilege(curClue);
+        return <PhoneCallout
+            phoneNumber={item}
+            showPhoneNum={addHyphenToPhoneNumber(item)}
+            showPhoneIcon={true}
+            hidePhoneIcon={!hasPrivilege}
         />;
     };
     renderItemSelfSettingForm = (key, index, that) => {
@@ -687,21 +710,159 @@ class ClueDetailOverview extends React.Component {
         );
     };
     showConfirmInvalid = (item) => {
+        let availability = item.availability;
+        //如果当前用户状态为有效，点击无效时标记flag
+        if(_.isEqual(availability, AVALIBILITYSTATUS.AVALIBILITY)) {
+            this.setState({
+                isShowInvalidateInputPanel: true,
+                editInvalidClueId: item.id
+            }, () => {
+                if (this['addTextarea']) {
+                    this['addTextarea'].focus();
+                }
+            });
+        } else {
+            this.setState({
+                editInvalidClueId: item.id
+            });
+        }
+    };
+    //取消无效处理
+    handleInvalidateCancelBtn = (item) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn-cancel'), '取消保存跟进内容');
         this.setState({
-            editInvalidClueId: item.id
+            submitInvalidateClueMsg: '',
+            submitReason: '',
+            editInvalidClueId: '',
+            isShowInvalidateInputPanel: false,
+            invalidateClueStatus: ''
         });
     };
-    renderInvalidConfirm = (salesClueItem) => {
+    //输入框改变时数据处理
+    handleInvalidateInputChange = (e) => {
+        this.setState({
+            submitReason: e.target.value
+        });
+    };
+    //确认无效处理
+    handleInvalidateBtn = (item, callback) => {
+        if (this.state.submitInvalidateLoading) {
+            return;
+        }
+        let invalidReason = _.trim(this.state.submitReason);
+        if (!invalidReason) {
+            this.setState({
+                submitInvalidateClueMsg: Intl.get('clue.invalid.reason.not.empty', '无效原因不能为空'),
+                invalidateClueStatus: 'error'
+            });
+        } else {
+            let updateAvailability = AVALIBILITYSTATUS.INAVALIBILITY;
+            let updateObj = {
+                id: item.id,
+                availability: updateAvailability,
+                invalid_info: {
+                    invalid_reason: invalidReason
+                }
+            };
+            updateObj = JSON.stringify(updateObj);
+            let clueState = {
+                updateItem: 'availability',
+                updateObj: updateObj,
+                type: handlePrivilegeType(true)
+            };
+            this.setState({
+                submitInvalidateLoading: true,
+            });
+            clueCustomerAction.updateClueAvailability(clueState, (result) => {
+                if (_.isString(result)) {
+                    this.setState({
+                        submitInvalidateLoading: false,
+                        invalidateClueStatus: 'error',
+                        submitInvalidateClueMsg: result
+                    });
+                } else {
+                    _.isFunction(callback) && callback(updateAvailability);
+                    clueCustomerAction.deleteClueById(item);
+                    clueCustomerAction.updateClueTabNum('invalidClue');
+                    //前端更新跟进记录
+                    let newTrace = {
+                        remark: invalidReason,
+                        user_id: userData.getUserData().user_id || '',
+                        nick_name: userData.getUserData().nick_name,
+                        add_time: moment().valueOf(),
+                        time: moment().valueOf(),
+                        type: 'other',
+                        showAdd: false
+                    };
+                    subtracteGlobalClue(item);
+                    ClueTraceAction.addClueTraceWithoutAjax(newTrace);
+                    this.setState({
+                        submitInvalidateLoading: false,
+                        editInvalidClueId: '',
+                        invalidateClueStatus: '',
+                        submitReason: '',
+                        submitInvalidateClueMsg: '',
+                        isShowInvalidateInputPanel: false,
+                    });
+                }
+            });
+        }
+    };
+    //渲染确认无效原因输入框
+    renderInvalidatePanel = (salesClueItem) => {
+        return (
+            <div className="confirm-invalidate-item">
+                <div className="confirm-invalidate-panel">
+                    <Form className="confirm-invalidate-input">
+                        <FormItem
+                            validateStatus={_.get(this.state, 'invalidateClueStatus')}
+                            help={_.get(this.state, 'submitInvalidateClueMsg')}
+                        >
+                            <TextArea
+                                ref={addTextarea => this['addTextarea'] = addTextarea}
+                                placeholder={Intl.get('clue.describe.invalid.reason', '请描述一下无效原因')}
+                                value={this.state.submitReason}
+                                onChange={this.handleInvalidateInputChange.bind(this)}
+                            />
+                        </FormItem
+                        >
+                        <div className="save-cancel-btn">
+                            <Button className="ant-btn-cancel"
+                                onClick={this.handleInvalidateCancelBtn.bind(this,salesClueItem)}
+                            >{Intl.get('common.cancel', '取消')}</Button>
+                            <Button type='primary'
+                                onClick={this.handleInvalidateBtn.bind(this, salesClueItem)}
+                                className="ant-btn-save"
+                                disabled={this.state.submitInvalidateLoading} data-tracename="保存无效原因">
+                                {Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                                {this.state.submitInvalidateLoading ? <Icon type="loading"/> : null}
+                            </Button>
+                        </div>
+                    </Form>
+                </div>
+            </div>
+        );
+    };
+    //渲染确认有效按钮
+    renderValidConfirm = (salesClueItem) => {
         var isEditting = this.state.isInvaliding;
-        var isInvalid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
         return (
             <span className="invalid-confirm">
-                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickInvalidBtn.bind(this, salesClueItem)}>
-                    {isInvalid ? Intl.get('clue.customer.confirm.valid', '确认有效') : Intl.get('clue.confirm.clue.invalid', '确认无效')}
+                <Button className='confirm-btn' disabled={isEditting} type='primary' onClick={this.handleClickValidBtn.bind(this, salesClueItem)}>
+                    {Intl.get('clue.customer.confirm.valid', '确认有效')}
                     {isEditting ? <Icon type="loading"/> : null}
                 </Button>
                 <Button onClick={this.cancelInvalidClue}>{Intl.get('common.cancel', '取消')}</Button>
             </span>
+        );
+    }
+    renderInvalidConfirm = (salesClueItem) => {
+        let isInvalid = salesClueItem.availability === AVALIBILITYSTATUS.INAVALIBILITY;
+        return (
+            <div>
+                {isInvalid ? this.renderValidConfirm(salesClueItem) : this.renderInvalidatePanel(salesClueItem)}
+            </div>
+
         );
     };
     renderAvailabilityClue = (curClue) => {
@@ -715,7 +876,7 @@ class ClueDetailOverview extends React.Component {
                     onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id, curClue.name, curClue.phones)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
                 <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>
-                    {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('sales.clue.is.enable', '无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
+                    {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid','标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
 
                 </Button>
             </div>;
@@ -724,18 +885,9 @@ class ClueDetailOverview extends React.Component {
         }
 
     };
-
     renderAssociatedAndInvalidClueHandle = (curClue) => {
         return (
-            <div>
-                <div className="clue-info-item">
-                    <div className="clue-info-label">
-                        {Intl.get('clue.handle.clue', '线索处理')}
-                    </div>
-                    <div className="clue-info-detail no-handled">
-                        {Intl.get('clue.has.no.handle', '暂未处理')}
-                    </div>
-                </div>
+            <div className="invalid-valid-container">
                 <div className="btn-container">
                     {this.state.editInvalidClueId === curClue.id ? this.renderInvalidConfirm(curClue) : this.renderAvailabilityClue(curClue)}
                 </div>
@@ -747,12 +899,16 @@ class ClueDetailOverview extends React.Component {
         var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
                             || (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         var associatedClue = (curClue.clue_type !== 'clue_pool')
-                                && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);                                             
-        if(avalibility && associatedClue){
-            return ({height: this.state.divHeight - HAS_BTN_HEIGHT});
+                                && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);
+        let height = this.state.divHeight;
+        if(_.get(this.state, 'isShowInvalidateInputPanel')){
+            height = this.props.divHeight - HAS_INPUT_HEIGHT;
+        }else if(avalibility && associatedClue){
+            height = this.props.divHeight - HAS_BTN_HEIGHT;
         }else{
-            return ({height: this.state.divHeight});
-        }                  
+            height = this.props.divHeight;
+        }
+        return ({height: height});
     }
 
     handleCancelCustomerSuggest = () => {
@@ -814,7 +970,6 @@ class ClueDetailOverview extends React.Component {
         return (<ClueTraceList
             curClue={curClue}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
-            showClueDetailPanel={true}
             isOverViewPanel={true}
             changeActiveKey={this.props.changeActiveKey}
         />);
@@ -830,7 +985,6 @@ class ClueDetailOverview extends React.Component {
             <DetailCard
                 title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
                 titleBottomBorderNone={noTraceData}
-                titleDescr={noTraceData ? Intl.get('clue.add.trace.content', '添加跟进内容') : ''}
                 content={this.renderTraceList()}
                 disableEdit={hasPrivilegeAddEditTrace}
             />);
@@ -1043,6 +1197,10 @@ class ClueDetailOverview extends React.Component {
                                                 type='input'
                                                 label={'QQ'}
                                                 hasEditPrivilege={hasPrivilegeEdit}
+                                                validateRules={[{
+                                                    message: Intl.get('common.correct.qq', '请输入正确的QQ号'),
+                                                    pattern: qqRegex,
+                                                }]}
                                                 placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'qq',id: contactItem.id})}
                                                 noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
@@ -1057,6 +1215,10 @@ class ClueDetailOverview extends React.Component {
                                                 type='input'
                                                 label={Intl.get('crm.58', '微信')}
                                                 hasEditPrivilege={hasPrivilegeEdit}
+                                                validateRules={[{
+                                                    message: Intl.get('common.correct.wechat','请输入正确的微信号'),
+                                                    pattern: wechatRegex,
+                                                }]}
                                                 placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'weChat',id: contactItem.id})}
                                                 noDataTip={Intl.get('crm.contact.wechat.none', '暂无微信')}
@@ -1122,7 +1284,7 @@ class ClueDetailOverview extends React.Component {
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
                     return <div className="similar-block">
                         <div className="similar-title">
-                            {isClueType ? renderClueStatus(listItem.status) : null}
+                            {isClueType ? renderClueStatus(listItem) : null}
                             <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
                             {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
 
@@ -1257,7 +1419,7 @@ class ClueDetailOverview extends React.Component {
         //分配线索给销售的权限
         var hasAssignedPrivilege = assignSalesPrivilege(curClue);
         return (
-            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer )}>
+            <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer)}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
                     {this.renderClueCustomerLists(curClue)}
@@ -1302,9 +1464,6 @@ ClueDetailOverview.defaultProps = {
     removeUpdateClueItem: function() {
 
     },
-    showClueDetailPanel: function() {
-
-    },
     hideRightPanel: function() {
 
     },
@@ -1337,7 +1496,6 @@ ClueDetailOverview.propTypes = {
     updateClueClassify: PropTypes.func,
     salesManList: PropTypes.object,
     removeUpdateClueItem: PropTypes.func,
-    showClueDetailPanel: PropTypes.func,
     hideRightPanel: PropTypes.func,
     updateClueProperty: PropTypes.func,
     afterTransferClueSuccess: PropTypes.func,

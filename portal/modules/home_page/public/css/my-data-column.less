@@ -7,6 +7,21 @@
     border-bottom: 4px solid @border-color;
     border-radius: 0;
   }
+  .my-data-call-time-card{
+    &.has-loading{
+      min-height: 150px;
+      position: relative;
+    }
+    .call-time-select-wrapper{
+      .ant-select-selection{
+        height: 24px;
+        margin-right: 5px;
+        .ant-select-selection__rendered{
+          line-height: 24px;
+        }
+      }
+    }
+  }
 }
 
 .my-data-title {
@@ -104,5 +119,49 @@
   .progress-bar-wrap {
     float: right;
     width: 80%;
+  }
+}
+
+// 到期合同样式
+.contract-expire-wrapper{
+  .antc-analysis{
+    .analysis-charts{
+      padding: 0;
+    }
+    .ant-row{
+      .ant-col-sm-24{
+        margin-bottom: 0!important;
+      }
+    }
+    .ant-table-pagination{
+      margin-bottom: 10px;
+    }
+    .card-container{
+      .card-title{
+        font-weight: normal;
+        color: #333;
+        font-size: 14px;
+        line-height: 24px;
+        .title-name{
+          font-size: 14px;
+          padding: 0;
+        }
+        .additional-content{
+          float: left;
+          .type-switch{
+            .ant-select{
+              margin-left: 0;
+            }
+            .ant-select-selection{
+              height: 24px;
+              margin-right: 5px;
+              .ant-select-selection__rendered{
+                line-height: 24px;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

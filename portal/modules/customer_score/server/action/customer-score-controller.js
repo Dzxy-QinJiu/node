@@ -29,7 +29,13 @@ exports.saveCustomerRules = (req, res) => {
         res.status(500).json(err && err.message);
     });
 };
-
+exports.saveCustomerLevels = (req, res) => {
+    customerScoreService.saveCustomerLevels(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (err) => {
+        res.status(500).json(err && err.message);
+    });
+};
 
 
 

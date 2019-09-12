@@ -24,7 +24,8 @@ var applyApproveManageAction = require('../../action/apply_approve_manage_action
 const FORMLAYOUT = {
     PADDINGTOTAL: 260,
 };
-import {FLOW_TYPES, ADDTIONPROPERTIES, ASSIGEN_APPROVER, isSalesOpportunityFlow} from '../../utils/apply-approve-utils';
+import {FLOW_TYPES, ADDTIONPROPERTIES, ASSIGEN_APPROVER, isSalesOpportunityFlow, isVisitApplyFlow} from '../../utils/apply-approve-utils';
+import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 class RegRulesView extends React.Component {
     constructor(props) {
         super(props);
@@ -137,8 +138,17 @@ class RegRulesView extends React.Component {
                 if (_.isArray(elementsArr)) {
                     _.forEach(elementsArr, (elem, elemIndex) => {
                         //如果该节点是流程的倒数第二个节点（最后一个节点是endtask），并且是销售机会申请，那么在最后一个节点要加上可以分配销售的
-                        if (elemIndex + 2 === elementsArr.length && isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type')) && key === FLOW_TYPES.DEFAULTFLOW){
-                            elem.distributeSales = true;
+                        if (elemIndex + 2 === elementsArr.length && key === FLOW_TYPES.DEFAULTFLOW){
+                            if (isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))){
+                                elem.distributeSales = true;
+                            }else{
+                                elem.distributeSales = false;
+                            }
+                            if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))){
+                                elem.distributeSalesToVisit = true;
+                            }else{
+                                elem.distributeSalesToVisit = false;
+                            }
                         }
 
                         var previousNode = null;
@@ -167,6 +177,9 @@ class RegRulesView extends React.Component {
                             //如果是销售机会，最后一个节点才加这个分配销售的字段
                             if(isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))){
                                 elem.distributeSales = true;
+                            }
+                            if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))){
+                                elem.distributeSalesToVisit = true;
                             }
 
                             var nextNode = elementRegistry.get(elem.next);
@@ -278,14 +291,14 @@ class RegRulesView extends React.Component {
                                 <span className="addition-text">{Intl.get('apply.add.approver.submit.files', '可提交文件')}</span> : null}
                             {item.assignNextNodeApprover + '' === 'true' ?
                                 <span className="addition-text">{Intl.get('apply.add.approver.distribute', '指定下一审批人')}</span> : null}
-                            {item.distributeSales + '' === 'true' ? <span className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
+                            {item.distributeSales + '' === 'true' || item.distributeSalesToVisit + '' === 'true' ? <span className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
                             <span className="connet-bar"></span>
                         </div>
                     );
                 })}
                 <div className="item-node">
                     <div className="icon-container add-node" onClick={this.addApplyNode.bind(this, flowType)}>
-                        <i className="iconfont icon-add"></i>
+                        <i className="iconfont icon-add handle-btn-item"></i>
                     </div>
                 </div>
             </div>
@@ -601,7 +614,7 @@ class RegRulesView extends React.Component {
                                                 onClick={this.handleCancelDeleteItem}>{Intl.get('common.cancel', '取消')}</Button>
                                         </span> : <span className="iconfont-wrap"> <i className="iconfont icon-update"
                                             onClick={this.handleUpdateConditionItem.bind(this, key)}></i>
-                                        <i className="iconfont icon-delete"
+                                        <i className="iconfont icon-delete handle-btn-item"
                                             onClick={this.handleDeleteConditionItem.bind(this, key)}></i></span>}
 
                                     </span>
@@ -629,7 +642,7 @@ class RegRulesView extends React.Component {
                                         <div className="rule-content apply-node-lists">
                                             <div className="icon-container add-node"
                                                 onClick={this.addApplyNode.bind(this, key)}>
-                                                <i className="iconfont icon-add"></i>
+                                                <i className="iconfont icon-add handle-btn-item"></i>
                                             </div>
                                         </div>
                                     }
@@ -695,10 +708,10 @@ class RegRulesView extends React.Component {
                             <div className="rule-content info-container">
                                 <RadioGroup onChange={this.onRadioChange}
                                     value={_.get(this, 'state.applyRulesAndSetting.ccInformation')}>
-                                    <Radio value='apply'>{Intl.get('apply.cc.when,submit', '提交申请时抄送')}</Radio>
-                                    <Radio value='approve'>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送')}</Radio>
+                                    <Radio value={CC_INFO.APPLY}>{Intl.get('apply.cc.when,submit', '提交申请时抄送')}</Radio>
+                                    <Radio value={CC_INFO.APPROVE}>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送')}</Radio>
                                     <Radio
-                                        value='apply_and_approve'>{Intl.get('apply.cc.when.submit.and.approve', '提交申请和审批通过后都抄送')}</Radio>
+                                        value={CC_INFO.APPLY_AND_APPROVE}>{Intl.get('apply.cc.when.submit.and.approve', '提交申请和审批通过后都抄送')}</Radio>
                                 </RadioGroup>
                             </div>
 

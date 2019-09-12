@@ -122,13 +122,6 @@ var NavSidebar = createReactClass({
             menus: menuUtil.getFirstLevelMenus(),
             userInfoLogo: getUserInfoLogo(),
             userInfo: getUserName(),
-            messages: {
-                unhandleClue: 0,//待处理的线索数
-                approve: 0,//用户申请待审批数
-                unhandleCustomerVisit: 0,//出差申请待我审批数
-                unhandleBusinessOpportunities: 0,//销售机会申请待我审批数
-                unhandlePersonalLeave: 0//请假申请待我审批数
-            },
             //需要加引导功能的某个元素
             $introElement: '',
             isShowIntroModal: false,//是否展示引导的模态框
@@ -395,11 +388,20 @@ var NavSidebar = createReactClass({
             </div>
         );
     },
-
+    //在线咨询
+    onChatClick() {
+        //如果有客服时，点击触发出客服界面
+        $('#newBridge #nb_icon_wrap').trigger('click');
+    },
     // 渲染二级子菜单，isShowLogOut用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
     renderSubMenuLinks(linkList, isShowLogOut) {
         return (
             <ul className="ul-unstyled">
+                {Oplate.isCurtao === 'true' ? (
+                    <li onClick={this.onChatClick}>
+                        <a>{Intl.get('menu.online.consulting', '在线咨询')}</a>
+                    </li>
+                ) : null}
                 {
                     _.map(linkList, obj =>
                         <li key={obj.id} onClick={this.closeNotificationPanel}>
@@ -529,12 +531,19 @@ var NavSidebar = createReactClass({
     //展示未读回复的图标提示
     renderUnreadReplyTip(category) {
         //是申请审批，有未读回复数并且，所有申请待审批数都为0
+        //所有申请的待审批总数
+        var allUnhandleApplyTotal = 0;
+        if (_.has(Oplate, 'unread')) {
+            _.forEach(Oplate.unread, (value) => {
+                if (value && _.isNumber(value)){
+                    allUnhandleApplyTotal += value;
+                }
+            });
+        }
         let unreadReplyTipShowFlag = category === 'application' &&//申请审批
             (this.state.hasUnreadReply || this.state.hasDiffApplyUnreadReply) &&//有用户审批或者其他类型审批的未读回复
-            this.state.messages.approve === 0 &&//用户申请待审批数
-            this.state.messages.unhandleCustomerVisit === 0 && //出差申请待我审批数
-            this.state.messages.unhandleBusinessOpportunities === 0 &&//销售机会申请待我审批数
-            this.state.messages.unhandlePersonalLeave === 0;//请假申请待我审批数
+            allUnhandleApplyTotal === 0;//总的待我审批数为0
+
         if (unreadReplyTipShowFlag) {
             return (
                 <span className="iconfont icon-apply-message-tip"

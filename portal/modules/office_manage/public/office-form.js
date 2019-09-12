@@ -25,7 +25,7 @@ class OfficeForm extends React.Component{
             return {
                 ...itemOffice,
                 name: '',
-                customer_num: 1
+                customer_num: 1000
             };
         }
     };

@@ -207,7 +207,7 @@ class competingProduct extends React.Component {
                                                 data-tracename="点击删除某个竞品按钮"
                                                 className="ant-btn"
                                             >
-                                                <i className="iconfont icon-delete"></i>
+                                                <i className="iconfont icon-delete handle-btn-item"></i>
                                             </span>
                                             { this.state.DeletingItemId === item ? (
                                                 <span ><Icon type="loading"/></span>

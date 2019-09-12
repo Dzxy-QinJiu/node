@@ -9,7 +9,7 @@ import MemberFormStore from '../store/member-form-store';
 import MemberFormAction from '../action/member-form-actions';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule} from 'PUB_DIR/sources/utils/validate-util';
+import {nameLengthRule, emailRegex, commonPhoneRegex, userNameRule, checkQQ} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import MemberManageAjax from '../ajax';
@@ -168,6 +168,19 @@ class MemberForm extends React.Component {
     // 返回详细信息展示页
     returnInfoPanel = (newMember) => {
         this.resetValidatFlags();
+        //添加完成员返回详情页角色的处理
+        let rolesIds = _.get(newMember, 'roleIds');
+        let length = _.get(rolesIds, 'length', 0);
+        if (_.isArray(rolesIds) && length) {
+            let roleList = this.props.roleList;
+            let roleListLength = _.get(roleList, 'length');
+            if (_.isArray(roleList) && roleListLength) {
+                let role = _.filter(roleList, role => rolesIds.indexOf(role.roleId) !== -1);
+                if (_.isArray(role) && role.length) {
+                    newMember.roleNames = _.map(role, 'roleName');
+                }
+            }
+        }
         this.props.returnInfoPanel(newMember);
     };
 
@@ -502,6 +515,7 @@ class MemberForm extends React.Component {
                                         {getFieldDecorator('position', {
                                         })(
                                             <Select
+                                                showSearch
                                                 name="position"
                                                 id="position"
                                                 optionFilterProp="children"
@@ -531,6 +545,26 @@ class MemberForm extends React.Component {
                                     <Input name="phone" id="phone" type="text"
                                         initialValue={values.phone}
                                         placeholder={Intl.get('user.input.phone', '请输入手机号')}
+                                    />
+                                )}
+                            </FormItem>
+                            <FormItem
+                                label={'QQ'}
+                                colon={false}
+                                {...formItemLayout}
+                            >
+                                {getFieldDecorator('qq', {
+                                    rules: [{
+                                        type: 'qq',
+                                        validator: checkQQ
+                                    }]
+                                })(
+                                    <Input
+                                        name="qq"
+                                        id="qq" t
+                                        ype="qq"
+                                        initialValue={values.qq}
+                                        placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                                     />
                                 )}
                             </FormItem>
@@ -564,7 +598,7 @@ class MemberForm extends React.Component {
                                                 {this.renderTeamOptions()}
                                             </Select>
                                         )}
-                                        {this.props.isShowAddGroupFrom ? <i title={Intl.get('guide.add.member.team.tip', '添加新部门')} className="iconfont icon-add" onClick={this.setAddGroupForm.bind(this, true)}/> : null}
+                                        {this.props.isShowAddGroupFrom ? <i title={Intl.get('guide.add.member.team.tip', '添加新部门')} className="iconfont icon-add handle-btn-item" onClick={this.setAddGroupForm.bind(this, true)}/> : null}
                                     </div>)
                                 }
                             </FormItem>) : null}

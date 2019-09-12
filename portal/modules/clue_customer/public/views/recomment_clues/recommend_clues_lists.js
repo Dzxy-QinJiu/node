@@ -6,7 +6,7 @@
 import { BOOT_PROCESS_KEYS } from 'PUB_DIR/sources/utils/consts';
 
 require('../../css/recommend_clues_lists.less');
-import {Button,message} from 'antd';
+import {Button,message,Popover} from 'antd';
 import {RightPanel, RightPanelClose} from 'CMP_DIR/rightPanel';
 var clueCustomerAction = require('../../action/clue-customer-action');
 var clueCustomerStore = require('../../store/clue-customer-store');
@@ -27,6 +27,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
+const maxLimitExtractNumber = 100;
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -35,6 +36,9 @@ class RecommendCustomerRightPanel extends React.Component {
             singleExtractLoading: false, // 单个提取的loading
             batchExtractLoading: false,
             closeFocusCustomer: false,
+            hasExtractCount: 0,//已经提取的推荐线索的数量
+            tablePopoverVisible: '',//单个提取展示popover的那条推荐线索
+            batchPopoverVisible: false,//批量操作展示popover
             ...clueCustomerStore.getState()
         };
     }
@@ -48,7 +52,35 @@ class RecommendCustomerRightPanel extends React.Component {
         clueCustomerStore.listen(this.onStoreChange);
         //获取推荐的线索
         this.getRecommendClueLists();
+
+
     }
+    //获取某个安全域已经提取多少推荐线索数量
+    getRecommendClueCount(callback){
+        $.ajax({
+            url: '/rest/recommend/clue/count',
+            dataType: 'json',
+            type: 'get',
+            data: {
+                timeStart: moment().startOf('day').valueOf(),
+                timeEnd: moment().endOf('day').valueOf(),
+            },
+            success: (data) => {
+                var count = _.get(data,'total', 0);
+                this.setState({
+                    hasExtractCount: count
+                });
+                _.isFunction(callback) && callback(count);
+
+            },
+            error: (errorInfo) => {
+                this.setState({
+                    hasExtractCount: 0
+                });
+            }
+        });
+    }
+
     isShowRecommendSettingPanel = () => {
         var hasCondition = false;
         var settedCustomerRecommend = this.state.settedCustomerRecommend;
@@ -157,11 +189,11 @@ class RecommendCustomerRightPanel extends React.Component {
                     message.error(Intl.get('clue.extract.failed', '提取失败'));
                 }
             },
-            error: (xhr) => {
+            error: (errorInfo) => {
                 this.setState({
                     singleExtractLoading: false,
                 });
-                message.error(Intl.get('clue.extract.failed', '提取失败'));
+                message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }
         });
 
@@ -184,6 +216,11 @@ class RecommendCustomerRightPanel extends React.Component {
         clueCustomerAction.setSalesMan({'salesMan': salesMan});
     };
     clearSelectSales = () => {
+        this.setState({
+            tablePopoverVisible: '',
+            batchPopoverVisible: false,
+            hasExtractCount: 0
+        });
         clueCustomerAction.setSalesMan({'salesMan': ''});
         clueCustomerAction.setSalesManName({'salesManNames': ''});
     };
@@ -213,14 +250,29 @@ class RecommendCustomerRightPanel extends React.Component {
         if (!this.state.salesMan && flag) {
             clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
         } else {
-            let submitObj = this.handleBeforeSumitChangeSales([record.id]);
             this.setState({
                 singleExtractLoading: true
             });
-            this.handleExtractRecommendClues(submitObj);
+            //提取线索前，先发请求获取还能提取的线索数量
+            this.getRecommendClueCount((count) => {
+                if (count >= maxLimitExtractNumber){
+                    this.setState({
+                        tablePopoverVisible: record.id,
+                        singleExtractLoading: false
+                    });
+                }else{
+                    this.setState({
+                        tablePopoverVisible: ''
+                    });
+                    let submitObj = this.handleBeforeSumitChangeSales([record.id]);
+                    this.handleExtractRecommendClues(submitObj);
+                }
+            });
         }
     }
     extractClueOperator = (hasAssignedPrivilege, record, assigenCls, isDetailExtract) => {
+        var checkRecord = this.state.tablePopoverVisible === record.id;
+        var maxLimitTip = Intl.get('clue.recommend.extract.num.limit', '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',{maxLimit: maxLimitExtractNumber});
         if (hasAssignedPrivilege) {
             return (
                 <AntcDropdown
@@ -238,19 +290,38 @@ class RecommendCustomerRightPanel extends React.Component {
                     isSaving={this.state.singleExtractLoading}
                     overlayContent={this.renderSalesBlock()}
                     handleSubmit={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
-                    unSelectDataTip={this.state.unSelectDataTip}
+                    unSelectDataTip={checkRecord ? maxLimitTip : this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectSales}
                     btnAtTop={false}
                 />
             );
         } else {
             return (
-                <span
-                    onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
+                <Popover
+                    placement="left"
+                    content={<div>
+                        <p>
+                            {maxLimitTip}
+                        </p>
+                    </div>}
+                    trigger="click"
+                    visible={checkRecord}
+                    onVisibleChange={this.handleTablePopoverChange}
                 >
-                    {Intl.get('clue.extract', '提取')}
-                </span>
+                    <span
+                        onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
+                    >
+                        {Intl.get('clue.extract', '提取')}
+                    </span>
+                </Popover>
             );
+        }
+    };
+    handleTablePopoverChange = visible => {
+        if (!visible){
+            this.setState({
+                tablePopoverVisible: ''
+            });
         }
     };
     getRecommendClueTableColunms = () => {
@@ -265,6 +336,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 dataIndex: 'startTime',
                 width: '200px',
                 align: 'left',
+                sorter: (a, b) => a.startTime - b.startTime,
                 render: (text, record, index) => {
                     return (
                         <span>{text ? moment(text).format(oplateConsts.DATE_FORMAT) : null}
@@ -287,7 +359,8 @@ class RecommendCustomerRightPanel extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !this.isCommonSales();
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue',{'assign-privilege': hasAssignedPrivilege});
+                    let containerCls = classNames('singl-extract-clue',{'assign-privilege handle-btn-item': hasAssignedPrivilege},);
+
                     return (
                         <div className={containerCls} ref='trace-person'>
                             {this.extractClueOperator(hasAssignedPrivilege, record, assigenCls, false)}
@@ -309,7 +382,23 @@ class RecommendCustomerRightPanel extends React.Component {
         if (_.isEmpty(submitObj)){
             return;
         }else{
-            this.handleBatchAssignClues(submitObj);
+            //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
+            this.getRecommendClueCount((count) => {
+                if (count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
+                    this.setState({
+                        batchPopoverVisible: true,
+                        singleExtractLoading: false
+                    });
+                }else{
+                    this.setState({
+                        batchPopoverVisible: false
+                    });
+                    this.handleBatchAssignClues(submitObj);
+                }
+            });
+
+
+
         }
     };
     //批量提取,发请求前的参数处理
@@ -318,7 +407,7 @@ class RecommendCustomerRightPanel extends React.Component {
             let saleLoginData = userData.getUserData();
             let submitObj = {
                 'user_id': saleLoginData.user_id,
-                'user_name': saleLoginData.user_name,
+                'user_name': saleLoginData.nick_name,
                 'sales_team_id': saleLoginData.team_id,
                 'sales_team': saleLoginData.team_name,
             };
@@ -438,25 +527,39 @@ class RecommendCustomerRightPanel extends React.Component {
 
                 }
             },
-            error: (errorMsg) => {
+            error: (errorInfo) => {
                 this.setState({
                     batchExtractLoading: false
                 });
-                message.error(errorMsg || Intl.get('clue.extract.failed', '提取失败'));
+                message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }
         });
     };
     renderBatchChangeClues = () => {
+        var checkRecord = this.state.batchPopoverVisible;
+        var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: maxLimitExtractNumber - this.state.hasExtractCount});
         if (this.isCommonSales()) { // 普通销售批量提取线索
             return (
-                <Button
-                    type="primary"
-                    data-tracename="点击批量提取线索按钮"
-                    className='btn-item common-sale-batch-extract'
-                    onClick={this.handleSubmitAssignSalesBatch}
+                <Popover
+                    placement="right"
+                    content={<div>
+                        <p>
+                            {maxLimitTip}
+                        </p>
+                    </div>}
+                    trigger="click"
+                    visible={checkRecord}
+                    onVisibleChange={this.handleBatchVisibleChange}
                 >
-                    {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
-                </Button>
+                    <Button
+                        type="primary"
+                        data-tracename="点击批量提取线索按钮"
+                        className='btn-item common-sale-batch-extract'
+                        onClick={this.handleSubmitAssignSalesBatch}
+                    >
+                        {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                    </Button>
+                </Popover>
             );
         } else { // 管理员或是销售领导批量提取线索
             return (
@@ -477,7 +580,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     isSaving={this.state.batchExtractLoading}
                     overlayContent={this.renderSalesBlock()}
                     handleSubmit={this.handleSubmitAssignSalesBatch}
-                    unSelectDataTip={this.state.unSelectDataTip}
+                    unSelectDataTip={checkRecord ? maxLimitTip : this.state.unSelectDataTip}
                     clearSelectData={this.clearSelectSales}
                     btnAtTop={false}
                 />
@@ -486,39 +589,45 @@ class RecommendCustomerRightPanel extends React.Component {
             );
         }
     };
-
+    handleBatchVisibleChange = (visible) => {
+        if (!visible){
+            this.setState({
+                batchPopoverVisible: false
+            });
+        }
+    };
     render() {
         var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
         return (
-            <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
-                <RightPanelClose data-tracename="关闭推荐线索列表" onClick={this.closeRecommendCluePanel}/>
-                <div className="recommend-clue-panel">
-                    <TopNav>
-                        <div className='recommend-customer-top-nav-wrap'>
-                            <Button className="btn-item" data-tracename="点击换一批按钮"
-                                onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
-                            <Button className="btn-item" data-tracename="点击修改推荐条件"
-                                onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
-                            {
-                                hasSelectedClue ? this.renderBatchChangeClues() : null
-                            }
-
-
+            <div className="recommend-clues-lists-container">
+                <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
+                    <RightPanelClose data-tracename="关闭推荐线索列表" onClick={this.closeRecommendCluePanel}/>
+                    <div className="recommend-clue-panel">
+                        <TopNav>
+                            <div className='recommend-customer-top-nav-wrap'>
+                                <Button className="btn-item" data-tracename="点击换一批按钮"
+                                    onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
+                                <Button className="btn-item" data-tracename="点击修改推荐条件"
+                                    onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
+                                {
+                                    hasSelectedClue ? this.renderBatchChangeClues() : null
+                                }
+                            </div>
+                        </TopNav>
+                        <div className="recommend-clue-content-container">
+                            {this.renderRecommendClueLists()}
                         </div>
-                    </TopNav>
-                    <div className="recommend-clue-content-container">
-                        {this.renderRecommendClueLists()}
+
                     </div>
+                </RightPanel>
+                {this.state.showEditConditionPanel || this.isShowRecommendSettingPanel() ?
+                    <RecommendCluesForm
+                        hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
+                        hideFocusCustomerPanel={this.hideFocusCustomerPanel}
+                        saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
+                    /> : null}
+            </div>
 
-                </div>
-                {this.state.showEditConditionPanel || this.isShowRecommendSettingPanel() ? <RecommendCluesForm
-                    hasSavedRecommendParams={this.state.settedCustomerRecommend.obj}
-                    hideFocusCustomerPanel={this.hideFocusCustomerPanel}
-                    saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
-                /> : null}
-
-
-            </RightPanel>
 
         );
     }

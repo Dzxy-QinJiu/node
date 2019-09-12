@@ -14,7 +14,10 @@ class DataTable extends React.Component {
         columns: PropTypes.array,
         data: PropTypes.obj,
         dataField: PropTypes.string,
-        onRowClick: PropTypes.func,
+        onRowClick: PropTypes.oneOfType([
+            PropTypes.func,
+            PropTypes.object
+        ]),
         backendPagination: PropTypes.bool
     };
 
@@ -22,7 +25,7 @@ class DataTable extends React.Component {
         columns: [],
         data: {},
         dataField: 'list',
-        onRowClick: function() {},
+        onRowClick: null,
         backendPagination: false
     };
 
@@ -34,11 +37,15 @@ class DataTable extends React.Component {
         let tableProps = {
             columns: props.columns,
             dataSource,
-            onRowClick: props.onRowClick,
             pagination: {
                 showTotal: total => `共${total}条`
             }
         };
+
+        if (props.onRowClick) {
+            tableProps.onRowClick = props.onRowClick;
+            tableProps.rowClassName = () => 'clickable';
+        }
 
         if (props.backendPagination) {
             const total = data.total;

@@ -32,7 +32,6 @@ class ProductionManage extends React.Component {
         ...ProductionStore.getState(),
         integrateType: '', //集成类型uem、oplate、matomo
         productList: productList, //集成的oplate\matomo产品列表
-        isAddingProduct: false,//正在导入产品
         addErrorMsg: ''//导入产品失败的提示
     };
 
@@ -292,6 +291,7 @@ class ProductionManage extends React.Component {
                                 formType={this.state.currentProduction.id ? util.CONST.EDIT : util.CONST.ADD}
                                 info={this.state.currentProduction}
                                 closeRightPanel={this.events_closeRightPanel}
+                                openRightPanel={this.events_showDetail.bind(this, this.state.currentProduction)}
                                 afterOperation={this.events_afterOperation}
                             /> : null}
                         {this.state.deleteError ? (<message></message>) : null}

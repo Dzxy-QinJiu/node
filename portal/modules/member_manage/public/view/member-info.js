@@ -20,7 +20,7 @@ import MemberInfoAction from '../action/member-info-action';
 import Trace from 'LIB_DIR/trace';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from './radio-card';
-import {checkPhone, nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, nameLengthRule, checkQQ} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -29,10 +29,12 @@ import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
 import { StatusWrapper } from 'antc';
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
+import MemberRecord from './member-record';
 
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
-    LOG_TAB: '2'//操作日志
+    LOG_TAB: '2',//操作日志
+    RECORD_TAB: '3', // 变更记录
 };
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 class MemberInfo extends React.Component {
@@ -140,18 +142,17 @@ class MemberInfo extends React.Component {
         }
     };
 
-    //获取团队下拉列表
+    //获取部门下拉列表
     getTeamOptions = () => {
-        const userTeamList = this.state.userTeamList;
-        if (_.isArray(userTeamList) && userTeamList.length > 0) {
-            return userTeamList.map(function(team) {
+        return _.map(this.state.userTeamList, team => {
+            if(team.group_name) {
                 return <Option key={team.group_id} value={team.group_id}>
                     {team.group_name}
                 </Option>;
-            });
-        } else {
-            return [];
-        }
+            } else {
+                return <Option value='' >&nbsp;</Option>;
+            }
+        });
     };
 
     //团队的选择事件
@@ -174,20 +175,22 @@ class MemberInfo extends React.Component {
         let updateTeam = _.find(this.state.userTeamList, team => team.group_id === member.team);
         if (_.isFunction(this.props.afterEditTeamSuccess)) {
             this.props.afterEditTeamSuccess(member);
-        } else {
             MemberManageAction.updateMemberTeam(updateTeam);
+        } else {
             this.props.changeMemberFieldSuccess({...member, teamName: _.get(updateTeam, 'group_name')});
         }
     };
 
-    afterEditRoleSuccess = (user) => {
+    afterEditRoleSuccess = (member) => {
         //更新详情中的角色
         let roleList = this.props.roleList;
-        let curRole = _.find(roleList, role => role.roleId === user.role);
+        let curRole = _.find(roleList, role => role.roleId === member.role);
         let roleObj = {roleIds: [_.get(curRole, 'roleId')], roleNames: [_.get(curRole, 'roleName')]};
-        MemberManageAction.updateMemberRoles(roleObj); 
         if (_.isFunction(this.props.afterEditRoleSuccess)) {
-            this.props.afterEditRoleSuccess(user);
+            this.props.afterEditRoleSuccess(member);
+            MemberManageAction.updateMemberRoles(roleObj);
+        } else {
+            this.props.changeMemberFieldSuccess({...member, roleNames: _.get(roleObj, 'roleNames')});
         }
     };
 
@@ -321,6 +324,14 @@ class MemberInfo extends React.Component {
         delete saveObj.id;
         MemberManageAjax.editUser(saveObj).then((result) => {
             if (result) {
+                //如果修改的是自己的邮箱，userdata数据更新
+                if(_.isEqual(type, 'email')) {
+                    let userId = UserData.getUserData().user_id;
+                    if(_.isEqual(saveObj.user_id, userId)) {
+                        UserData.setUserData('email', saveObj.email);
+                        UserData.setUserData('emailEnable', false);
+                    }
+                }
                 if (_.isFunction(successFunc)) successFunc();
                 this.changeMemberFieldSuccess(updateObj);
                 //如果是密码的修改，取消密码框的展示
@@ -387,16 +398,30 @@ class MemberInfo extends React.Component {
     //保存编辑的团队
     saveEditTeam = (saveObj, successFunc, errorFunc) => {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '保存成员部门的修改');
-        MemberManageAjax.updateMemberTeam(saveObj).then((result) => {
-            if (result) {
-                if (_.isFunction(successFunc)) successFunc();
-                this.afterEditTeamSuccess(saveObj);
-            } else {
-                if (_.isFunction(errorFunc)) errorFunc();
-            }
-        }, (errorMsg) => {
-            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
-        });
+        if (saveObj.team) { // 修改成员的部门
+            MemberManageAjax.updateMemberTeam(saveObj).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.afterEditTeamSuccess(saveObj);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        } else { // 清空成员的部门
+            MemberManageAjax.clearMemberDepartment(saveObj.id).then((result) => {
+                if (result) {
+                    if (_.isFunction(successFunc)) successFunc();
+                    this.afterEditTeamSuccess(saveObj);
+                } else {
+                    if (_.isFunction(errorFunc)) errorFunc();
+                }
+            }, (errorMsg) => {
+                if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+            });
+        }
+
     };
 
     // 职务选择事件
@@ -422,8 +447,8 @@ class MemberInfo extends React.Component {
         };
         if (_.isFunction(this.props.afterEditPositionSuccess)) {
             this.props.afterEditPositionSuccess(updateMember);
-        } else {
             MemberManageAction.updateMemberPosition(updatePosition);
+        } else {
             this.props.changeMemberFieldSuccess(updateMember);
         }
 
@@ -488,6 +513,12 @@ class MemberInfo extends React.Component {
                 return <Option value='' >&nbsp;</Option>;
             }
         });
+
+        let loginUserInfo = UserData.getUserData();
+        // 自己不能停用自己状态，所以自己查看自己的详情不显示停用时间、启用状态下不显示停用时间
+        let isShowDisableDate = memberInfo.status === 1 || memberInfo.id === loginUserInfo.user_id ? false : true;
+        let disableDate = _.get(memberInfo, 'disableDate');
+
         return (
             <div>
                 <div className="basic-info-item">
@@ -568,6 +599,21 @@ class MemberInfo extends React.Component {
                         hasEditPrivilege={false}
                     />
                 </div>
+                {
+                    isShowDisableDate ? (
+                        <div className="basic-info-item">
+                            <span className="basic-info-label">
+                                {Intl.get('member.disable.time', '停用时间')}:
+                            </span>
+                            <BasicEditDateField
+                                width={EDIT_FEILD_WIDTH}
+                                value={disableDate ? moment(disableDate).format(oplateConsts.DATE_FORMAT) : ''}
+                                hasEditPrivilege={false}
+                            />
+                        </div>
+                    ) : null
+                }
+
             </div>
         );
     };
@@ -671,13 +717,34 @@ class MemberInfo extends React.Component {
                         addDataTip={Intl.get('user.info.add.email', '添加邮箱')}
                     />
                 </div>
+                <div className="basic-info-item">
+                    <span className="basic-info-label">QQ:</span>
+                    <BasicEditInputField
+                        width={EDIT_FEILD_LESS_WIDTH}
+                        id={memberInfo.id}
+                        value={memberInfo.qq}
+                        field="qq"
+                        type="text"
+                        hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                        validators={[{validator: checkQQ}]}
+                        placeholder={Intl.get('member.input.qq', '请输入QQ号')}
+                        saveEditInput={this.saveEditMemberInfo.bind(this, 'qq')}
+                        noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
+                        addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
+                    />
+                </div>
             </div>
         );
     }
 
     //切换tab时的处理
     changeActiveKey = (key) => {
-        let keyName = key === TAB_KEYS.BASIC_INFO_TAB ? '基本信息' : '操作日志';
+        let keyName = '基本信息';
+        if (key === TAB_KEYS.LOG_TAB) {
+            keyName = '操作日志';
+        } else if (key === TAB_KEYS.RECORD_TAB) {
+            keyName = '变更记录';
+        }
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
         this.setState({
             activeKey: key
@@ -779,7 +846,7 @@ class MemberInfo extends React.Component {
                 )}
                 <div className="member-title-btns">
                     {hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? (
-                        <span className="iconfont icon-edit-pw"
+                        <span className="iconfont icon-edit-pw handle-btn-item"
                             title={Intl.get('common.edit.password', '修改密码')}
                             onClick={this.onPasswordDisplayChange.bind(this)}/>) : null}
                     {this.renderMemberStatus(memberInfo)}
@@ -851,7 +918,9 @@ class MemberInfo extends React.Component {
     }
 
     renderDetailTabs() {
-        let containerHeight = this.getContainerHeight();
+        const containerHeight = this.getContainerHeight();
+        const memberInfo = this.state.memberInfo;
+        const memberId = memberInfo.id;
         return (
             <Tabs
                 defaultActiveKey={TAB_KEYS.BASIC_INFO_TAB}
@@ -880,6 +949,19 @@ class MemberInfo extends React.Component {
                                 getContainerHeight={this.getContainerHeight}
                                 userName={_.get(this.state, 'memberInfo.userName.value') ||
                                        _.get(this.state, 'memberInfo.userName', '')}
+                            />
+                        ) : null
+                    }
+                </TabPane>
+                <TabPane
+                    tab={Intl.get('user.change.record', '变更记录')}
+                    key={TAB_KEYS.RECORD_TAB}
+                >
+                    {
+                        this.state.activeKey === TAB_KEYS.RECORD_TAB ? (
+                            <MemberRecord
+                                memberId={memberId}
+                                getContainerHeight={this.getContainerHeight}
                             />
                         ) : null
                     }

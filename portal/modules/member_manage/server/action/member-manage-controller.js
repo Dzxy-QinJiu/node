@@ -2,9 +2,18 @@
 // 成员管理服务
 const memberManageService = require('../service/member-manage-service');
 const BackendIntl = require('../../../../lib/utils/backend_intl');
+const _ = require('lodash');
 
-// 获取成员列表
-exports.getMemberList = (req, res) => {
+// 获取成员的组织信息
+exports.getMemberOrganization = (req, res) => {
+    memberManageService.getMemberOrganization(req, res, req.query).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+function handleMemberReqData(req, res) {
     let params = {};
     let isGetAllUser = false;
     let pageSize = req.query.pageSize;
@@ -32,8 +41,27 @@ exports.getMemberList = (req, res) => {
     if(req.query.id){
         params.id = req.query.id;
     }
-
-    memberManageService.getMemberList(req, res, params === {} ? null : params, isGetAllUser, teamrole_id).on('success', (data) => {
+    return {
+        params: _.isEmpty(params) ? null : params,
+        isGetAllUser: isGetAllUser,
+        teamrole_id: teamrole_id
+    };
+}
+// 获取成员列表
+exports.getMemberList = (req, res) => {
+    var submitObj = handleMemberReqData(req, res);
+    var params = submitObj.params, isGetAllUser = submitObj.isGetAllUser, teamrole_id = submitObj.teamrole_id;
+    memberManageService.getMemberList(req, res, params, isGetAllUser, teamrole_id).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+//获取不同角色的成员列表
+exports.getMemberListByRoles = (req, res) => {
+    var submitObj = handleMemberReqData(req, res);
+    var params = submitObj.params, isGetAllUser = submitObj.isGetAllUser, teamrole_id = submitObj.teamrole_id;
+    memberManageService.getMemberListByRoles(req, res, params, isGetAllUser, teamrole_id).on('success', (data) => {
         res.status(200).json(data);
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
@@ -92,6 +120,16 @@ exports.updateUserTeam = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 清空成员的部门
+exports.clearMemberDepartment = (req, res) => {
+    memberManageService.clearMemberDepartment(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
 
 exports.updateUserRoles = function(req, res) {
     let user = {
@@ -209,4 +247,13 @@ exports.setSalesGoals = function(req, res) {
         }).on('error', function(err) {
             res.status(500).json(err.message);
         });
+};
+
+// 获取成员变动记录
+exports.getMemberChangeRecord = (req, res) => {
+    memberManageService.getMemberChangeRecord(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (err) => {
+        res.status(500).json(err.message);
+    });
 };

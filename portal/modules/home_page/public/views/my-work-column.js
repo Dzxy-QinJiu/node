@@ -26,6 +26,7 @@ import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-v
 import LeaveApplyDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail';
 import DocumentApplyDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
 import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
+import VisitApplyDetail from 'MOD_DIR/self_setting/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
@@ -42,6 +43,8 @@ import clueAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import Trace from 'LIB_DIR/trace';
+import CustomerLabel from 'CMP_DIR/customer_label';
+import AddSchedule from 'CMP_DIR/add-schedule';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -89,7 +92,6 @@ class MyWorkColumn extends React.Component {
             curWorkType: '',//当前筛选类型
             myWorkList: [],
             //我的工作类型
-            myWorkTypes: [{name: Intl.get('home.page.work.all', '全部事务'), value: ''}],
             loading: false,
             load_id: '',//用于下拉加载的id
             totalCount: 0,//共多少条工作
@@ -107,7 +109,6 @@ class MyWorkColumn extends React.Component {
     componentDidMount() {
         this.getUserList();
         this.getGuideConfig();
-        this.getMyWorkTypes();
         this.getMyWorkList();
         //关闭详情前，已完成工作处理的监听
         myWorkEmitter.on(myWorkEmitter.HANDLE_FINISHED_WORK, this.handleFinishedWork);
@@ -122,6 +123,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
 
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
@@ -138,6 +140,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
     }
 
     // 获取销售人员
@@ -190,17 +193,7 @@ class MyWorkColumn extends React.Component {
         this.setState({guideConfig});
     }
 
-    getMyWorkTypes() {
-        myWorkAjax.getMyWorkTypes().then((typeList) => {
-            let workTypes = _.map(typeList, item => {
-                return {name: item.name, value: item.key};
-            });
-            workTypes.unshift({name: Intl.get('home.page.work.all', '全部事务'), value: ''});
-            this.setState({myWorkTypes: workTypes});
-        }, (errorMsg) => {
 
-        });
-    }
 
     getMyWorkList() {
         let queryParams = {
@@ -243,29 +236,7 @@ class MyWorkColumn extends React.Component {
         });
     }
 
-    onChangeWorkType = ({key}) => {
-        this.setState({curWorkType: key === 'item_0' ? '' : key, myWorkList: [], load_id: ''}, () => {
-            this.getMyWorkList();
-        });
-    }
 
-    getWorkTypeDropdown() {
-        const workTypeMenu = (
-            <Menu onClick={this.onChangeWorkType}>
-                {_.map(this.state.myWorkTypes, item => {
-                    return (<Menu.Item key={item.value}>{item.name}</Menu.Item>);
-                })}
-            </Menu>);
-        const curWorkType = _.find(this.state.myWorkTypes, item => item.value === this.state.curWorkType);
-        const curWorkTypeName = _.get(curWorkType, 'name', this.state.myWorkTypes[0].name);
-        return (
-            <Dropdown overlay={workTypeMenu} trigger={['click']} placement='bottomRight'>
-                <span className='my-work-dropdown-trigger'>
-                    {curWorkTypeName}
-                    <Icon type='down' className='dropdown-icon'/>
-                </span>
-            </Dropdown>);
-    }
 
     openClueDetail = (clueId, work) => {
         //打开新详情前先将之前已完成的工作处理掉
@@ -383,16 +354,7 @@ class MyWorkColumn extends React.Component {
         });
         return (
             <div className='work-name'>
-                {customer_label ? (
-                    <Tag
-                        className={crmUtil.getCrmLabelCls(customer_label)}>
-                        {customer_label}</Tag>) : null
-                }
-                {/*qualify_label ? (
-                 <Tag className={crmUtil.getCrmLabelCls(qualify_label)}>
-                 {qualify_label === 1 ? crmUtil.CUSTOMER_TAGS.QUALIFIED :
-                 qualify_label === 2 ? crmUtil.CUSTOMER_TAGS.HISTORY_QUALIFIED : ''}</Tag>) : null
-                 */}
+                <CustomerLabel label={customer_label} />
                 <span className={nameCls} title={titleTip}
                     onClick={this.openCustomerOrClueDetail.bind(this, id, index, item)}>
                     {_.get(workObj, 'name', '')}
@@ -410,11 +372,15 @@ class MyWorkColumn extends React.Component {
         return (
             <div className="contacts-containers">
                 {_.map(contacts, (contact) => {
-                    var cls = classNames('contacts-item',
-                        {'def-contact-item': contact.def_contancts === 'true'});
+                    //只有一个电话的联系人后面紧跟打电话的按钮，不需要展示电话
+                    let onlyOnePhone = _.get(contact, 'phone.length') === 1;
+                    const cls = classNames('contacts-item', {
+                        'def-contact-item': contact.def_contancts === 'true',
+                        'only-one-phone-style': onlyOnePhone
+                    });
                     return (
                         <div className={cls}>
-                            <div className="contacts-name-content">
+                            <div className='contacts-name-content'>
                                 <i className="iconfont icon-contact-default"/>
                                 {contact.name}
                             </div>
@@ -426,6 +392,7 @@ class MyWorkColumn extends React.Component {
                                                 phoneNumber={phone}
                                                 contactName={contact.name}
                                                 showPhoneIcon={true}
+                                                hidePhoneNumber={onlyOnePhone}
                                                 onCallSuccess={this.onCallSuccess.bind(this, item)}
                                             />
                                         </div>
@@ -458,18 +425,43 @@ class MyWorkColumn extends React.Component {
         } else if (item.type === WORK_TYPES.LEAD) {
             contacts = _.get(item, 'lead.contacts', []);
         }
-        let phones = _.map(contacts, 'phone');
-        if (!_.isEmpty(contacts) && !_.isEmpty(phones)) {
+        let phones = [];
+        _.each(contacts, contact => {
+            if (_.get(contact, 'phone[0]')) {
+                phones.push(contact.phone);
+            }
+        });
+        //将各个电话数组整合到一个数组中进行判断
+        let phoneNumArray = _.flatten(phones);
+        if (!_.isEmpty(contacts) && !_.isEmpty(phoneNumArray)) {
             let contactsContent = this.renderPopoverContent(contacts, item);
+            let phoneCount = _.get(phoneNumArray, 'length');
+            let phoneContactName = '';
+            //只有一个电话时，点击拨号按钮可以直接拨打出去
+            if (phoneCount === 1) {
+                let contact = _.find(contacts, con => _.includes(con.phone, phoneNumArray[0]));
+                phoneContactName = _.get(contact, 'name', '');
+            }
             return (
                 <div className='work-hover-show-detail' onClick={this.preventOpenDetail}>
-                    <Popover content={contactsContent} placement="bottom"
-                        overlayClassName='contact-phone-popover'
-                        getPopupContainer={() => document.getElementById(`home-page-work${item.id}`)}>
-                        <span className='work-contact-phone'>
-                            <i className="iconfont icon-phone-call-out"/>
+                    {phoneCount === 1 ? (
+                        <span className='work-contact-phone only-one-phone-btn'>
+                            <PhoneCallout
+                                phoneNumber={phoneNumArray[0]}
+                                contactName={phoneContactName}
+                                showPhoneIcon={true}
+                                hidePhoneNumber={true}
+                                onCallSuccess={this.onCallSuccess.bind(this, item)}
+                            />
                         </span>
-                    </Popover>
+                    ) : (
+                        <Popover content={contactsContent} placement="bottom"
+                            overlayClassName='contact-phone-popover'
+                            getPopupContainer={() => document.getElementById(`home-page-work${item.id}`)}>
+                            <span className='work-contact-phone'>
+                                <i className="iconfont icon-active-call_record-ico"/>
+                            </span>
+                        </Popover>)}
                 </div>);
         }
     }
@@ -525,6 +517,7 @@ class MyWorkColumn extends React.Component {
 
     getApplyType(type) {
         const APPLY_TYPE_MAP = {
+            'visitapply': Intl.get('apply.my.self.setting.work.flow', '拜访申请'),
             'business_opportunities': Intl.get('leave.apply.sales.oppotunity', '机会申请'),
             'customer_visit': Intl.get('leave.apply.add.leave.apply', '出差申请'),
             'personal_leave': Intl.get('leave.apply.leave.application', '请假申请'),
@@ -783,8 +776,8 @@ class MyWorkColumn extends React.Component {
                 showIcon
                 onHide={this.hideEditStatusTip.bind(this, item)}/>);
         } else {
-            //不是普通销售的线索类型，需要展示分配按钮
-            if (item.type === WORK_TYPES.LEAD && !userData.getUserData().isCommonSales) {
+            //不是普通销售的线索类型，需要展示分配按钮（线索tags中需要有lead，线索的日程不需要要展示分配按钮）
+            if (item.type === WORK_TYPES.LEAD && _.includes(item.tags, WORK_TYPES.LEAD) && !userData.getUserData().isCommonSales) {
                 const distributeBtn = (
                     <div className='handle-work-finish' data-tracename="点击分配线索按钮">
                         <span className='work-finish-text approval-btn'>
@@ -1056,15 +1049,11 @@ class MyWorkColumn extends React.Component {
                 }
                 {this.state.curOpenDetailWork ? this.renderWorkDetail() : null}
                 {/*添加日程*/}
-                {this.state.isShowAddToDo ? (
-                    <RightPanelModal
-                        className="todo-add-container"
-                        isShowMadal={true}
-                        isShowCloseBtn={true}
-                        onClosePanel={this.handleCancel}
-                        title={Intl.get('home.page.add.schedule', '添加日程')}
-                        content={this.renderCrmFormContent()}
-                        dataTracename='添加日程'/>) : null}
+                <AddSchedule 
+                    isShowAddToDo={this.state.isShowAddToDo}
+                    handleCancelAddToDo={this.handleCancel}
+                    handleScheduleAdd={this.afterAddSchedule}
+                />
                 {this.renderExtractClue()}
             </div>);
     }
@@ -1072,26 +1061,11 @@ class MyWorkColumn extends React.Component {
     afterAddSchedule = () => {
         setTimeout(() => {
             this.refreshMyworkList();
-        }, 1000);
-    }
-    // 渲染添加日程界面
-    renderCrmFormContent() {
-        return (
-            <DetailCard className='add-todo' content={
-                <CrmScheduleForm
-                    isAddToDoClicked
-                    handleScheduleAdd={this.afterAddSchedule}
-                    handleScheduleCancel={this.handleCancel}
-                    currentSchedule={{}}/>
-            }>
-            </DetailCard>
-
-        );
+        }, 1500);
     }
 
     //处理添加日程的关闭事件
-    handleCancel = (e) => {
-        e && e.preventDefault();
+    handleCancel = () => {
         this.setState({
             isShowAddToDo: false
         });
@@ -1113,6 +1087,15 @@ class MyWorkColumn extends React.Component {
                 topic: this.getApplyType(_.get(work, 'apply.apply_type', ''))
             };
             switch (_.get(work, 'apply.apply_type')) {
+                case APPLY_APPROVE_TYPES.VISIT_APPLY: //拜访申请
+                    detailContent = (
+                        <VisitApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishApplyWork}
+                        />);
+                    break;
                 case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES://销售机会申请
                     detailContent = (
                         <OpportunityApplyDetail
@@ -1198,7 +1181,6 @@ class MyWorkColumn extends React.Component {
         return (
             <ColumnItem contianerClass='my-work-wrap'
                 title={title}
-                titleHandleElement={this.getWorkTypeDropdown()}
                 content={this.renderWorkContent()}
             />);
     }

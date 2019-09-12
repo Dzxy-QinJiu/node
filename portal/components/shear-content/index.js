@@ -72,7 +72,7 @@ class ShearContent extends React.Component {
                     {this.props.children}
                 </div>
                 <div className={showCls}>
-                    {this.props.children}<span className="append-icon collapse-btn">{Intl.get('crm.contact.way.hide', '收起')}</span>
+                    {this.props.children}<span className="append-icon collapse-btn handle-btn-item">{Intl.get('crm.contact.way.hide', '收起')}</span>
                 </div>
             </span>
         );

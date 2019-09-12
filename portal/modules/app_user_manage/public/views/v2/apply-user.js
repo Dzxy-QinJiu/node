@@ -114,12 +114,12 @@ class ApplyUser extends React.Component {
                     image_field="client_image"
                     search_fields={['client_name']}
                     onItemsChange={this.onAppsChange}
-                    notFoundContent={Intl.get('user.no.related.app', '无相关应用')}
+                    notFoundContent={Intl.get('user.no.related.product','无相关产品')}
                 />
                 {
                     !this.state.appValid ? (
                         <div className="has-error">
-                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.app.select.tip" defaultMessage="至少选择一个应用" /></div>
+                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.product.select.tip" defaultMessage="至少选择一个产品" /></div>
                         </div>
                     ) : null
                 }
@@ -143,7 +143,7 @@ class ApplyUser extends React.Component {
                         title={Intl.get('user.apply.user', '申请用户')}
                         current={this.state.step}
                     >
-                        <OperationSteps.Step action={Intl.get('user.user.app.select', '选择应用')}></OperationSteps.Step>
+                        <OperationSteps.Step action={Intl.get('user.user.product.select','选择产品')}></OperationSteps.Step>
                         <OperationSteps.Step action={Intl.get('user.apply.user', '申请用户')}></OperationSteps.Step>
                     </OperationSteps>
                     <Carousel

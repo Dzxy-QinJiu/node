@@ -172,7 +172,7 @@ class ThirdAppEdit extends React.Component {
                         isUserHeadIcon={true}
                         onChange={this.uploadImg.bind(this)}
                     />}
-                <FormItem {...itemLayout} label={Intl.get('common.app.name', '应用名称')}>
+                <FormItem {...itemLayout} label={Intl.get('common.product.name','产品名称')}>
                     {
                         this.displayOnly() ? this.state.app.name : getFieldDecorator('app.name', {
                             initialValue: this.state.app && this.state.app.name,

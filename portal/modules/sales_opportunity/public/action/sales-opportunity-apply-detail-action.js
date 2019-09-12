@@ -28,7 +28,6 @@ function ApplyViewDetailActions() {
         'hideCancelBtns',//审批完后不再显示撤销按钮
         'setDetailInfoObjAfterAdd',
         'setApplyCandate',
-        'setAssignedSales',
         'setSalesMan',
         'setNextCandidateIds',
         'setNextCandidateName',//下一节点审批人的名字

@@ -24,8 +24,13 @@ var tabNameList = {
 var noop = function() {
 
 };
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
+import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 const DYNAMICHEIGHT = {
     LAYOUT: 117,
+    HAS_PHONE_PANEL: 225,
+    PHONE_PANEL_HAS_CUSTOMER_SCHEDULE: 235,
+    PHONE_PANEL_HAS_TRACE_FINISHED: 65
 };
 import PropTypes from 'prop-types';
 import {renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
@@ -267,6 +272,12 @@ class ClueRightPanel extends React.Component {
                 this.setState({
                     isRemoveClue: {},
                 });
+                var curClue = this.state.curClue;
+                subtracteGlobalClue(curClue, (flag) => {
+                    if(flag){
+                        clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curClue);
+                    }
+                });
                 _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel(e);
             }
         });
@@ -285,15 +296,7 @@ class ClueRightPanel extends React.Component {
             isRemoveClue: {},
         });
     };
-    showClueDetailPanel = (curClue) => {
-        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
-            clue_params: {
-                currentId: curClue.id,
-                curClue: curClue,
-                hideRightPanel: this.hideRightPanel
-            }
-        });
-    };
+
     updateClueProperty = (updateProperty) => {
         var curClue = this.state.curClue;
         for (var key in updateProperty){
@@ -308,11 +311,29 @@ class ClueRightPanel extends React.Component {
         this.updateClueProperty({status: SELECT_TYPE.HAS_TRACE});
         this.props.updateCustomerLastContact(saveObj);
     };
+
+    getCluePanelHeight = () => {
+        let baseHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        //如果有电话跟进面板
+        if(_.get(this.props, 'hasPhonePanel')) {
+            baseHeight -= DYNAMICHEIGHT.HAS_PHONE_PANEL;
+            //如果电话跟进面板正在添加自定义计划
+            if(_.get(this.props, 'phonePanelHasCustomerSchedule')) {
+                baseHeight -= DYNAMICHEIGHT.PHONE_PANEL_HAS_CUSTOMER_SCHEDULE;
+            }
+            //如果电话跟进面板跟进计划是text状态
+            if(_.get(this.props, 'phonePanelFinishTrace')) {
+                baseHeight += DYNAMICHEIGHT.PHONE_PANEL_HAS_TRACE_FINISHED;
+            }
+        }
+        return baseHeight;
+    };
+
     render() {
-        var curClue = this.state.curClue;
+        let curClue = _.get(this.state, 'curClue');
         //是否没有权限修改线索详情
         var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
-        var divHeight = $(window).height() - DYNAMICHEIGHT.LAYOUT;
+        var divHeight = this.getCluePanelHeight();
         var cls = 'clue_customer_rightpanel white-space-nowrap';
         if (this.props.className){
             cls += ` ${this.props.className}`;
@@ -326,7 +347,7 @@ class ClueRightPanel extends React.Component {
                         <div className="clue-basic-info-container">
                             <div className="clue-name-wrap">
                                 {
-                                    curClue.clue_type === 'clue_pool' ? null : renderClueStatus(curClue.status)
+                                    curClue.clue_type === 'clue_pool' ? null : renderClueStatus(curClue)
                                 }
                                 <div className="clue-name-title">
                                     <BasicEditInputField
@@ -341,7 +362,7 @@ class ClueRightPanel extends React.Component {
                             </div>
                             {hasPrivilege('CLUECUSTOMER_DELETE') && editCluePrivilege(curClue) ?
                                 <div className="remove-clue">
-                                    <i className="iconfont icon-delete"
+                                    <i className="iconfont icon-delete handle-btn-item"
                                         onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
                                 </div> : null}
                         </div>
@@ -369,7 +390,6 @@ class ClueRightPanel extends React.Component {
                                             divHeight={divHeight}
                                             removeUpdateClueItem={this.props.removeUpdateClueItem}
                                             hideRightPanel={this.hideRightPanel}
-                                            showClueDetailPanel={this.showClueDetailPanel}
                                             updateClueProperty={this.updateClueProperty}
                                             afterTransferClueSuccess={this.props.afterTransferClueSuccess}
                                             onConvertToCustomerBtnClick={this.props.onConvertToCustomerBtnClick}
@@ -390,7 +410,6 @@ class ClueRightPanel extends React.Component {
                                             curClue={curClue}
                                             divHeight={divHeight}
                                             updateCustomerLastContact={this.updateCustomerLastContact}
-                                            showClueDetailPanel={this.showClueDetailPanel}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -444,11 +463,15 @@ ClueRightPanel.defaultProps = {
     showFlag: false,
     currentId: '',
     className: '',
+    hasPhonePanel: false, //判断是否此时线索详情面板上有电话跟进面板
+    phonePanelHasCustomerSchedule: false, //判断电话跟进面板是否在编辑自定义计划
+    phonePanelFinishTrace: false,//判断电话跟进面板是否正在编辑跟进记录
     removeUpdateClueItem: noop,
     updateRemarks: noop,
     updateCustomerLastContact: noop,
     afterTransferClueSuccess: noop,
     onConvertToCustomerBtnClick: noop,
+    showClueToCustomerPanel: noop,
 };
 ClueRightPanel.propTypes = {
     curClue: PropTypes.object,
@@ -464,5 +487,9 @@ ClueRightPanel.propTypes = {
     type: PropTypes.string,
     onConvertToCustomerBtnClick: PropTypes.func,
     extractClueOperator: PropTypes.func,
+    showClueToCustomerPanel: PropTypes.func,
+    hasPhonePanel: PropTypes.bool,
+    phonePanelHasCustomerSchedule: PropTypes.bool,
+    phonePanelFinishTrace: PropTypes.bool,
 };
 export default ClueRightPanel;

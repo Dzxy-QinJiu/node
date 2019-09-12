@@ -1,8 +1,6 @@
-import Trace from 'LIB_DIR/trace';
 import {CUSTOMER_TAGS} from '../utils/crm-util';
-import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {FilterList} from 'CMP_DIR/filter';
-import {FILTER_RANGE, COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
+import {COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
 import filterAJax from '../ajax/filter-ajax';
 const otherFilterArray = [
     {
@@ -11,13 +9,11 @@ const otherFilterArray = [
     }
 ];
 //合格标签的筛选
-const qualifyLabelList = [{//合格
-    name: CUSTOMER_TAGS.QUALIFIED, value: '1'
-}, {//曾经合格
-    name: CUSTOMER_TAGS.HISTORY_QUALIFIED, value: '2'
-}, {//从未合格
-    name: CUSTOMER_TAGS.NEVER_QUALIFIED, value: '3'
-}];
+const qualifyLabelMap = {
+    '1': CUSTOMER_TAGS.QUALIFIED,//合格
+    '2': CUSTOMER_TAGS.HISTORY_QUALIFIED,//曾经合格
+    '3': CUSTOMER_TAGS.NEVER_QUALIFIED//从未合格
+};
 
 class CustomerPoolFilter extends React.Component {
     constructor(props) {
@@ -25,6 +21,7 @@ class CustomerPoolFilter extends React.Component {
         let condition = this.getInitialCondition();
         this.state = {
             ...condition,
+            qualifyLabelList: [],//合格标签列表
             customerLabelList: [],//客户阶段
             immutableLabelsList: [], //系统标签
             labelsList: [],//标签列表
@@ -50,6 +47,8 @@ class CustomerPoolFilter extends React.Component {
     componentDidMount() {
         //获取客户阶段
         this.getFilterCustomerLabels();
+        //获取合格标签
+        this.getFilterQualifyTags();
         //获取系统标签
         this.getFilterSystemTags();
         //获取自定义标签
@@ -58,6 +57,21 @@ class CustomerPoolFilter extends React.Component {
         this.getFilterIndustries();
         //获取地域列表
         this.getFilterProvinces();
+    }
+
+    getFilterQualifyTags() {
+        //获取合格标签
+        filterAJax.getCustomerPoolFilterItems({field: 'qualify_label'}).then((data) => {
+            let labels = [];
+            _.each(data, label => {
+                if (qualifyLabelMap[label]) {
+                    labels.push({name: qualifyLabelMap[label], value: label});
+                }
+            });
+            this.setState({
+                qualifyLabelList: labels || [],
+            });
+        });
     }
 
     getFilterCustomerLabels() {
@@ -113,7 +127,7 @@ class CustomerPoolFilter extends React.Component {
         data.forEach(item => {
             if (item.groupId) {
                 condition[item.groupId] = _.map(item.data, x => x.value);
-                if (['customer_label','immutable_labels', 'labels', COMMON_OTHER_ITEM].includes(item.groupId)) {
+                if (['customer_label', 'immutable_labels', 'labels', COMMON_OTHER_ITEM].includes(item.groupId)) {
                     condition[item.groupId] = condition[item.groupId].join(',');
                 } else if (item.singleSelect) {
                     condition[item.groupId] = condition[item.groupId][0] || '';
@@ -168,7 +182,7 @@ class CustomerPoolFilter extends React.Component {
                 groupName: Intl.get('common.qualified', '合格'),
                 groupId: 'qualify_label',
                 singleSelect: true,
-                data: _.map(qualifyLabelList, x => {
+                data: _.map(this.state.qualifyLabelList, x => {
                     return {
                         name: x.name,
                         value: x.value,

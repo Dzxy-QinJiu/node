@@ -61,6 +61,13 @@ module.exports = {
             'USER_MANAGE_EDIT_USER'
         ]
     }, {
+        'method': 'delete',
+        'path': '/rest/member/department/reset/:memberId',
+        'handler': 'clearMemberDepartment',
+        'passport': {
+            'needLogin': true
+        },
+    },{
         'method': 'put',
         'path': '/rest/user/user_roles',
         'handler': 'updateUserRoles',
@@ -142,6 +149,28 @@ module.exports = {
         'method': 'post',
         'path': '/rest/set/contract/goal/users',
         'handler': 'setSalesGoals',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        'method': 'get', // 获取成员变动记录
+        'path': '/rest/get/member/record/timeline',
+        'handler': 'getMemberChangeRecord',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        'method': 'get', // 根据不同角色获取不同的用户列表
+        'path': '/rest/get/member/by/roles',
+        'handler': 'getMemberListByRoles',
+        'passport': {
+            'needLogin': true
+        }
+    }, {
+        // 获取成员的组织信息
+        'method': 'get',
+        'path': '/rest/get/member/organization',
+        'handler': 'getMemberOrganization',
         'passport': {
             'needLogin': true
         }
