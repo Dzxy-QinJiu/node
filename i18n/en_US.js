@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -261,6 +262,7 @@ var en_US = {
     'common.import.template': 'Template',//模板
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
     'common.create': 'Create', // 创建
+    'common.stage.describe': 'the description of stage', // 阶段描述
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -653,7 +655,7 @@ var en_US = {
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
     // 用户分析
-    'user.login.total.score': 'Total score', // 总分
+    'user.login.total.score': 'Total score', // 总评分
     'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
     'user.login.latest.immersion.score': 'Latest immersion score', // 最新沉浸度分数
     'user.login.freshness.score': 'Freshness score', // 新鲜度分数
@@ -839,6 +841,7 @@ var en_US = {
     'member.record.change.field.name': 'Changed {field} of the member to {name}', // 修改了该成员的{field}，改为{name}
     'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
     'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
+    'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量已达{number}个上限
     //后台管理-成员end
 
     //组织管理start
@@ -903,6 +906,7 @@ var en_US = {
     'sales.process.customer.stage.nodata.tips': 'No customer stage, please add first', // 暂无客户阶段，请先添加
     'sales.process.customer.stage.toplimit': 'The number of customer stages has reached the upper limit(8).', // 客户阶段个数已达上限（8个）
     'sales.process.delete.customer.stage.tips': 'Are you sure to delete the customer stage?', // 确定删除这个客户阶段么
+    'sales.process.change.order.success': 'Success to change the order of customer stages', // 变更客户阶段顺序成功
     'sales.process.change.order.failed': 'Failed to change the order of customer stages', // 变更客户阶段顺序失败
     'sales.process.customer.stage.play': 'Play', // 剧本
     'sales.process.customer.stage.play.placeholder': 'Please enter scenarios', // 请输入剧本
@@ -923,6 +927,10 @@ var en_US = {
 
     // 后台管理-客户阶段start
     'customer.stage.define.new': 'Define  New Customer Stage', // 定义新客户阶段
+    'customer.stage.add.customer.stage': 'Add Customer Stage ', // 添加客户阶段
+    'customer.stage.default.stage.tips': 'Uneditable by default', // 默认不可编辑
+    'customer.stage.stage.title': 'Setting the stage', // 阶段设置
+    'customer.stage.name.placeholder': 'Please enter the stage of customer', // 请输入客户阶段
     'customer.stage.set.scope': 'Set scope', // 设置适用范围
     'customer.stage.click.show.detail': 'Click for details', // 点击查看详细信息
     'customer.stage.edit.stage': 'Edit the {stage} stage', // 编辑{stage}阶段
@@ -931,6 +939,7 @@ var en_US = {
     'customer.stage.delete.stage': 'Delete customer stage', // 删除客户阶段
     'customer.stage.select.team.user.placeholder': 'Select the team or individual that use the stage', // 请选择适用该阶段的团队或个人
     'customer.stage.add.stage.title': 'Customer Stage {num}', // 客户阶段{num}
+    'customer.stage.click.add.stage': 'Add stage', // 添加阶段
     // 后台管理-客户阶段end
 
     //应用管理start
@@ -2407,8 +2416,9 @@ var en_US = {
     'errorcode.17334': 'Get recent contact customer statistics failed',//获取最近联系客户统计失败
     'errorcode.17331': 'Statistics of call customers by region, stage, industry distribution failure',//统计通话的客户的地域,阶段,行业分布失败
     'errorcode.162': 'You has achevie the max limit',//已达到一天的提取上限
+    'errorcode.163': 'The number of members has been reached.', // 成员数量已达上限
     'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
-    'errorcode.163': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
+    'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2647,7 +2657,6 @@ var en_US = {
     'clue,customer.add.schedule.error': 'This schedule fail to add',//联系计划添加失败
     'batch.failed.add.schedule': '{customerName} failed to add schedule',//{customerName}添加联系计划失败
     'batch.success.add.schedule': 'All schedules are added successfully',//所有联系计划均添加成功
-    'shedule.list.add.todo': 'Add to do',//待办
     'crm.get.phone.failed': 'Failed to get phone number',//获取座机号失败!
     'crm.call.phone.success': 'Call out successlly',//拨打成功
     'crm.call.phone.failed': 'Failed to call out',//拨打失败
@@ -3349,6 +3358,7 @@ var en_US = {
     'clue.customer.this.month': 'This month',//本月
     'clue.customer.this.quarter': 'This quarter',//本季度
     'clue.customer.this.year': 'This year',//今年
+    'clue.customer.last.three.month': 'Last three months',//近三个月
     'clue.customer.last.week': 'Last week',//近一周
     'clue.customer.last.month': 'Last month',//近一月
     'clue.customer.last.quarter': 'Last quarter',//近一季度
@@ -3416,6 +3426,15 @@ var en_US = {
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization today has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.customer.noty.all.list': 'Click to see all clues?',//查看所有线索？
-    'clue.customer.fail.get.all.lists': 'Failed to get all visit apply'//获取全部拜访申请失败
+    'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
+    'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
+    'common.collection.of.gross.profit.margin.score': 'Collection of gross profit margin score',//回款毛利率分数
+    'common.indicators.for.details': 'Indicators for details',//指标详情
+    'common.the.numerical': 'The numerical',//数值
+    'common.gross.margin.score.of.newly.signed.refund': 'Gross margin score of newly signed refund',//新签回款毛利分数
+    'common.loss.contract.amount': 'Loss contract amount',//流失合同额
+    'common.cost.date': 'Cost date',//费用日期
+    'clue.customer.fail.get.all.lists': 'Failed to get all visit apply',//获取全部拜访申请失败
+    'user.manage.setting.rules': 'How to set socre rules?'//如何设置评分规则？
 };
 export default en_US;

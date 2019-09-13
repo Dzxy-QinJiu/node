@@ -1513,6 +1513,15 @@ class UserTabContent extends React.Component {
             return '';
         }
     };
+        //是否可以批量变更
+        isShowBatchOperate = () => {
+            //当前视图
+            let currentView = AppUserUtil.getCurrentView();
+            //是否是从某个客户详情中跳转过来的
+            let isCustomerDetailJump = currentView === 'user' && this.props.customer_id;
+            //管理员：可以进行批量变更，销售：从某个客户详情中跳转过来时，可以批量变更（销售只可以批量操作同一客户下的用户）
+            return hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) || (isCustomerDetailJump && hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES));
+        };
 
     //渲染表格区域
     renderTableBlock = () => {
@@ -1533,7 +1542,7 @@ class UserTabContent extends React.Component {
         const hasSelectAuth = hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) ||
             hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
         //只有oplate的用户才有批量操作
-        var rowSelection = hasSelectAuth && isOplateUser() ? this.getRowSelection() : null;
+        var rowSelection = hasSelectAuth && isOplateUser()&& this.isShowBatchOperate() ? this.getRowSelection() : null;
         var divHeight = getTableContainerHeight() - (this.state.filterAreaExpanded ? $(this.refs.filter_adv).outerHeight() || 0 : 0);
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,

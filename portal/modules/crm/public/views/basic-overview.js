@@ -160,22 +160,19 @@ class BasicOverview extends React.Component {
     //获取客户开通的用户列表
     getCrmUserList = (curCustomer) => {
         if(!_.get(curCustomer,'id')) return;
+        basicOverviewAction.setCrmUserList([]);
         //该客户开通的用户个数
-        let appUserLength = _.get(curCustomer, 'app_user_ids.length', 0);
-        if (appUserLength) {
-            basicOverviewAction.getCrmUserList({
-                customer_id: curCustomer.id,
-                id: '',
-                page_size: appUserLength
-            });
-        } else {
-            basicOverviewAction.setCrmUserList([]);
-            //销售及销售主管才有用户申请
-            if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
+        basicOverviewAction.getCrmUserList({
+            customer_id: curCustomer.id,
+            id: '',
+            page_size: _.get(curCustomer, 'app_user_ids.length', 1)
+        }, (result) => {
+            //没有用户列表,销售及销售主管才有用户申请
+            if (!_.get(result,'data[0]') && (userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
                 //该客户没有用户时需要引导申请，申请用户时需要应用列表
                 this.getAppList();
             }
-        }
+        });
     };
 
     //获取未完成的日程列表
@@ -195,6 +192,7 @@ class BasicOverview extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
+        basicOverviewAction.setUserListLoading(true);
         if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
                 if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
@@ -394,7 +392,7 @@ class BasicOverview extends React.Component {
     renderApplyUserBlock = () => {
         //只有销售和销售主管才会申请
         let hasApplyPrivilege = userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER);
-        if (hasApplyPrivilege && !this.props.isMerge && this.state.isOplateUser) {
+        if (!this.state.isUserLoading && hasApplyPrivilege && !this.props.isMerge && this.state.isOplateUser) {
             if (this.state.applyFormShowFlag) {
                 return (
                     <ApplyUserForm
@@ -530,7 +528,7 @@ class BasicOverview extends React.Component {
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
                     {!this.props.disableEdit ? (
-                        hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(basicData, 'app_user_ids[0]') ?
+                        hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(this.state.crmUserList, '[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     {/*<CustomerStageCard*/}
                     {/*isMerge={this.props.isMerge}*/}
@@ -555,7 +553,7 @@ class BasicOverview extends React.Component {
                     {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             showUserDetail={this.props.showUserDetail}
-                            customerUserSize={_.get(basicData, 'app_user_ids.length', 0)}/>) : null
+                            customerUserSize={_.get(this.state.crmUserList, 'length', 0)}/>) : null
                     }
                     <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
                         placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}

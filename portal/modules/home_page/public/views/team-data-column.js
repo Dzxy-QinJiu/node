@@ -11,9 +11,19 @@ import myDataAjax from '../ajax';
 import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
 import userData from 'PUB_DIR/sources/user-data';
-import {getTodayTimeStamp, getThisWeekTimeStamp, getLastWeekTimeStamp} from 'PUB_DIR/sources/utils/time-stamp-util';
+import {
+    getTodayTimeStamp,
+    getThisWeekTimeStamp,
+    getLastWeekTimeStamp,
+    getThisMonthTimeStamp,
+    getThisQuarterTimeStamp,
+    getNearlyThreeMonthsTimeStamp
+} from 'PUB_DIR/sources/utils/time-stamp-util';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
+import {contractChart} from 'ant-chart-collection';
+import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
+import { AntcAnalysis } from 'antc';
 
 const performance = {
     image_1: require('../images/performance_1.png'),
@@ -25,6 +35,9 @@ const DATE_TYPE_KEYS = {
     YESTERDAY: 'yesterday',
     CURRENT_WEEK: 'week',
     LAST_WEEK: 'lastWeek',
+    THIS_MONTH: 'this_month',
+    THIS_QUARTER: 'this_quarter',
+    NEARLY_THREE_MONTH: 'nearly_three_month',
 };
 const DATE_TYPE_MAP = [
     {
@@ -44,6 +57,8 @@ const DATE_TYPE_MAP = [
         value: DATE_TYPE_KEYS.LAST_WEEK
     },
 ];
+
+const TABLE_MAX_WIDTH = 615;
 
 
 class TeamDataColumn extends React.Component {
@@ -318,12 +333,160 @@ class TeamDataColumn extends React.Component {
             className='my-data-contact-customers-card'/>);
     }
 
+    // 到期合同（可选本月，本季度，近三个月）
+    renderExpireContracts() {
+        // 开通营收中心后才能显示
+        if (isOpenCash()) {
+            let chart = contractChart.getContractExpireRemindChart();
+
+            //表格列
+            const columns = _.get(chart, 'option.columns');
+
+            // 设置table最大宽度
+            chart.option.scroll = {x: TABLE_MAX_WIDTH};
+
+            //负责人列索引
+            const endTimeColumnIndex = _.findIndex(columns, column => column.dataIndex === 'end_time');
+
+            _.each(columns, column => {
+                if(column.dataIndex === 'customer_name') {
+                    column.width = 150;
+                }else {
+                    column.width = 100;
+                }
+            });
+
+            //需要加两列毛利 回款额
+            if (endTimeColumnIndex !== -1) {
+                columns.splice(endTimeColumnIndex, 0, {
+                    title: Intl.get('contract.109', '毛利'),
+                    dataIndex: 'gross_profit',
+                    width: 75,
+                }, {
+                    title: Intl.get('contract.28', '回款额'),
+                    dataIndex: 'total_gross_profit',
+                    width: 85,
+                });
+            }
+
+            // 构建我们自己需要的chart
+            const newChart = {
+                // 添加类型选择框
+                cardContainer: {
+                    selectors: [{
+                        options: [{
+                            name: Intl.get('clue.customer.this.month', '本月'),
+                            value: DATE_TYPE_KEYS.THIS_MONTH,
+                        },{
+                            name: Intl.get('clue.customer.this.quarter', '本季度'),
+                            value: DATE_TYPE_KEYS.THIS_QUARTER,
+                        },{
+                            name: Intl.get('clue.customer.last.three.month', '近三个月'),
+                            value: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
+                        }],
+                        activeOption: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
+                        conditionName: 'date_type',
+                    }],
+                },
+                conditions: _.concat(_.get(chart,'conditions', []), [{
+                    name: 'date_type',
+                    value: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
+                }]),
+                argCallback: arg => {
+                    arg.query.load_size = 10000;
+
+                    let date_type = arg.query.date_type;
+
+                    if (date_type === DATE_TYPE_KEYS.THIS_MONTH) {//本月
+                        arg.query.starttime = getThisMonthTimeStamp().start_time;
+                        arg.query.endtime = getThisMonthTimeStamp().end_time;
+                    }else if(date_type === DATE_TYPE_KEYS.THIS_QUARTER) {//本季度
+                        arg.query.starttime = getThisQuarterTimeStamp().start_time;
+                        arg.query.endtime = getThisQuarterTimeStamp().end_time;
+                    }else {//近三个月
+                        arg.query.starttime = moment().valueOf();
+                        arg.query.endtime = moment().add(3, 'months').valueOf();
+                    }
+                    delete arg.query.date_type;
+                },
+                noExportCsv: true,
+                processData: (data, chart) => {
+                    const total = _.get(data, 'total', 0);
+                    chart.option.pagination = total > 10;
+                    chart.title = Intl.get('contract.expire.statistics', '到期合同统计') + `(${Intl.get('sales.home.total.count', '共{count}个', {count: total})})`;
+
+                    data = _.get(data, 'expired_contracts', []);
+
+                    let processedData = [];
+
+                    _.each(data, item => {
+                        let processedDataItem = {
+                            contract_amount: item.contract_amount,
+                            gross_profit: item.gross_profit,
+                            total_gross_profit: item.total_gross_profit,
+                            end_time: moment(item.end_time).format(oplateConsts.DATE_FORMAT),
+                            customer_name: '',
+                            user_name: '',
+                        };
+
+                        const buyer = item.buyer;
+                        //所属客户
+                        const customers = item.customers || [];
+                        //客户数
+                        const customerNum = customers.length;
+
+                        _.each(customers, (customer, index) => {
+                            let customerName = customer.customer_name;
+                            let userName = customer.customer_sales_name || '';
+
+                            if (index !== customerNum - 1) {
+                                const suffix = ', ';
+                                customerName += suffix;
+                                userName += suffix;
+                            } else {
+
+                                //如果所属客户不止一个，则在最后一个客户后面显示甲方
+                                if (buyer && customerNum > 1) {
+                                    customerName += '（' + Intl.get('contract.4', '甲方') + '：' + buyer + '）';
+                                }
+                            }
+
+                            processedDataItem.customer_name += customerName;
+                            processedDataItem.user_name += userName;
+                        });
+
+                        processedData.push(processedDataItem);
+                    });
+
+                    return processedData;
+                }
+            };
+
+            // 合并chart
+            chart = {...chart, ...newChart};
+
+            const charts = [chart];
+
+            return (
+                <div className="contract-expire-wrapper">
+                    <AntcAnalysis
+                        charts={charts}
+                        isGetDataOnMount={true}
+                    />
+                </div>
+            );
+        } else {
+            return null;
+        }
+    }
+
     renderTeamDataContent() {
         return (
             <div data-tracename="我的数据">
                 {this.renderPerformanceData()}
                 {this.renderCallTime()}
                 {this.renderContactCustomers()}
+                {this.renderExpireContracts()}
             </div>);
     }
 

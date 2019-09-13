@@ -3,8 +3,8 @@
  * 选择适用该客户阶段的适用团队、个人
  */
 
-import {Form, TreeSelect, Button, Icon} from 'antd';
-const { SHOW_PARENT } = TreeSelect;
+import {Form, TreeSelect, Button, Icon, message} from 'antd';
+const { SHOW_ALL } = TreeSelect;
 const FormItem = Form.Item;
 import Trace from 'LIB_DIR/trace';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -17,8 +17,6 @@ class StageSelectTeamUserPanel extends React.Component {
         super(props);
         this.state = {
             loading: false,
-            saveResult: '', // 保存的结果，默认是false，成功是success，失败是error
-            saveMsgTips: '', // 错误提示信息
             ...SalesProcessStore.getState(),
         };
     }
@@ -38,8 +36,8 @@ class StageSelectTeamUserPanel extends React.Component {
     // 取消事件
     handleCancel(event) {
         event.preventDefault();
+        this.props.cancelEditCustomerScope();
         Trace.traceEvent(event, '关闭选择使用该客户阶段的部门、个人面板');
-        this.props.closeSelectTeamUserPanel();
     }
 
     // 处理选择团队、个人的数据，转为后端需要的数据
@@ -83,60 +81,50 @@ class StageSelectTeamUserPanel extends React.Component {
             if (err) return;
             let selectTeamUserData = {
                 scope: values.scope,
-                id: _.get(this.props.currentStage, 'id')
+                id: _.get(this.props.currentCustomerStage, 'id')
             };
             let submitObj = this.handleProcessSubmitData(selectTeamUserData);
 
             CustomerStageAjax.updateSalesProcess(submitObj).then( (result) => {
+                this.props.cancelEditCustomerScope();
                 if (result) {
                     this.setState({
                         loading: false,
-                        saveResult: 'success',
-                        saveMsgTips: Intl.get('common.save.success', '保存成功')
                     });
                     this.props.changeSaleProcessFieldSuccess(submitObj);
+                    message.success(Intl.get('crm.218', '修改成功！'));
                 } else {
                     this.setState({
                         loading: false,
-                        saveResult: 'error',
-                        saveMsgTips: Intl.get('common.save.failed', '保存失败')
                     });
+                    message.error(Intl.get('crm.219', '修改失败！'));
                 }
             }, (errMsg) => {
+                this.props.cancelEditCustomerScope();
                 this.setState({
                     loading: false,
-                    saveResult: 'error',
-                    saveMsgTips: errMsg || Intl.get('common.save.failed', '保存失败')
                 });
+                message.error(errMsg || Intl.get('crm.219', '修改失败！'));
             } );
         });
     }
 
-    hideSaveMsgTips = () => {
-        this.setState({
-            saveMsgTips: ''
-        }, () => {
-            this.props.closeSelectTeamUserPanel();
-        });
-    };
-
-    renderFormContent() {
+    render() {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
             colon: false,
             labelCol: {span: 5},
-            wrapperCol: {span: 19},
+            wrapperCol: {span: 24},
         };
-        let currentStage = this.props.currentStage;
-        let teams = _.map(currentStage.teams, 'id');
-        let users = _.map(currentStage.users, 'id');
+        let currentCustomerStage = this.props.currentCustomerStage;
+        let teams = _.map(currentCustomerStage.teams, 'id');
+        let users = _.map(currentCustomerStage.users, 'id');
         let scope = _.concat(teams, users);
 
         return (
             <Form layout='horizontal' className="form">
                 <FormItem
                     {...formItemLayout}
-                    label={Intl.get('sales.process.suitable.objects', '适用范围')}
                 >
                     {getFieldDecorator('scope', {
                         initialValue: scope,
@@ -146,24 +134,13 @@ class StageSelectTeamUserPanel extends React.Component {
                             treeData={this.props.treeSelectData}
                             treeCheckable={true}
                             treeDefaultExpandAll={true}
-                            showCheckedStrategy={SHOW_PARENT}
-                            searchPlaceholder={Intl.get('customer.stage.select.team.user.placeholder', '请选择适用该阶段的团队或个人')}
+                            showCheckedStrategy={SHOW_ALL}
+                            searchPlaceholder={Intl.get('contract.choose', '请选择')}
                             dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
                         />
                     )}
                 </FormItem>
                 <div className="buttons-wrap">
-                    {
-                        this.state.saveMsgTips ?
-                            (
-                                <AlertTimer
-                                    time={3000}
-                                    message={this.state.saveMsgTips}
-                                    type={this.state.saveResult}
-                                    onHide={this.hideSaveMsgTips}
-                                />
-                            ) : ''
-                    }
                     <Button
                         disabled={this.state.loading}
                         type='primary'
@@ -183,18 +160,18 @@ class StageSelectTeamUserPanel extends React.Component {
         );
     }
 
-    render = () => {
-        return (
-            <RightPanelModal
-                className="select-team-user-panel"
-                isShowMadal={false}
-                isShowCloseBtn={true}
-                onClosePanel={this.handleCancel.bind(this)}
-                content={this.renderFormContent()}
-                title={_.get(this.props.currentStage, 'name')}
-                dataTracename='选择使用该客户阶段的部门、个人'
-            />);
-    }
+    // render = () => {
+    //     return (
+    //         <RightPanelModal
+    //             className="select-team-user-panel"
+    //             isShowMadal={false}
+    //             isShowCloseBtn={true}
+    //             onClosePanel={this.handleCancel.bind(this)}
+    //             content={this.renderFormContent()}
+    //             title={_.get(this.props.currentCustomerStage, 'name')}
+    //             dataTracename='选择使用该客户阶段的部门、个人'
+    //         />);
+    // }
 }
 function noop() {
 }
@@ -203,14 +180,15 @@ StageSelectTeamUserPanel.defaultProps = {
     closeSelectTeamUserPanel: noop,
     changeSaleProcessFieldSuccess: noop,
     treeSelectData: [],
-    currentStage: {}
+    currentCustomerStage: {}
 };
 StageSelectTeamUserPanel.propTypes = {
     form: PropTypes.object,
     closeSelectTeamUserPanel: PropTypes.func,
     changeSaleProcessFieldSuccess: PropTypes.func,
     treeSelectData: PropTypes.array,
-    currentStage: PropTypes.Object,
+    currentCustomerStage: PropTypes.Object,
+    cancelEditCustomerScope: PropTypes.func,
 };
 
 export default Form.create()(StageSelectTeamUserPanel);

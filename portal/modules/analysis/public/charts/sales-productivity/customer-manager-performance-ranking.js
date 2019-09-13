@@ -2,7 +2,11 @@
  * 客户经理业绩排名
  */
 
-import { listPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { listPanelEmitter, detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
+import ajax from 'ant-ajax';
+import { Row, Col } from 'antd';
+
+let conditionCache = {};
 
 export function getCustomerManagerPerformanceRankingChart() {
     return {
@@ -29,17 +33,17 @@ export function getCustomerManagerPerformanceRankingChart() {
                     dataIndex: 'member_name',
                     width: '10%',
                 }, {
-                    title: '新签回款毛利分数',
+                    title: Intl.get('common.gross.margin.score.of.newly.signed.refund', '新签回款毛利分数'),
                     dataIndex: 'new_gross_profit_performance',
                     render: clickableCellRender.bind(null, conditions, 'new_gross_profit_performance'),
                     width: '10%',
                 }, {
-                    title: '个人贡献分数',
+                    title: Intl.get('common.personal.contribution.score', '个人贡献分数'),
                     dataIndex: 'contribution_performance',
                     render: clickableCellRender.bind(null, conditions, 'contribution_performance'),
                     width: '10%',
                 }, {
-                    title: '回款毛利率分数',
+                    title: Intl.get('common.collection.of.gross.profit.margin.score', '回款毛利率分数'),
                     dataIndex: 'gross_profit_rate_performance',
                     render: clickableCellRender.bind(null, conditions, 'gross_profit_rate_performance'),
                     width: '10%',
@@ -100,14 +104,16 @@ function handleNumberClick(conditions, type, record) {
         value: record.member_id
     });
 
+    conditionCache = conditions;
+
     const columns = [
         {
-            title: '指标',
+            title: Intl.get('clue.customer.score.indicator', '指标'),
             dataIndex: 'title',
             width: '10%'
         },
         {
-            title: '数值',
+            title: Intl.get('common.the.numerical', '数值'),
             dataIndex: 'value',
             width: '10%'
         },
@@ -119,7 +125,86 @@ function handleNumberClick(conditions, type, record) {
         dataField: null,
         conditions,
         columns,
+        onRowClick: showDetail
     };
 
     listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+}
+
+function showDetail(record) {
+    const type = record.key;
+    let query = {};
+
+    _.each(conditionCache, item => {
+        query[item.name] = item.value;
+    });
+
+    query.type = type;
+
+    ajax.send({
+        url: '/rest/analysis/contract/contract/v2/all/performance/metrics/account_manager/detail',
+        query
+    }).then(result => {
+        const title = record.title + Intl.get('common.indicators.for.details', '指标详情');
+
+        const data = _.get(result, '[0]');
+        let items = [];
+
+        _.each(data, (value, key) => {
+            let name;
+
+            if (key === 'num') {
+                name = Intl.get('contract.24', '合同号');
+            } else if (key === 'contract_name') {
+                name = Intl.get('contract.name', '合同名称');
+            } else if (key === 'date') {
+                value = moment(value).format(oplateConsts.DATE_FORMAT);
+
+                if (type === 'cost') {
+                    name = Intl.get('common.cost.date', '费用日期');
+                } else if (_.includes(type, 'repay')) {
+                    name = Intl.get('contract.237', '回款日期');
+                } else {
+                    name = Intl.get('crm.146', '日期');
+                }
+            } else if (key === 'value') {
+                if (type === 'cost') {
+                    name = Intl.get('contract.133', '费用');
+                } else if (type === 'repayment_amount') {
+                    name = Intl.get('contract.28', '回款额');
+                } else if (type === 'repayment_gross_profit') {
+                    name = Intl.get('contract.29', '回款毛利');
+                } else if (type === 'newrepayment_gross_profit') {
+                    name = Intl.get('contract.158', '新增回款毛利');
+                } else if (type === 'churn_amount') {
+                    name = Intl.get('common.loss.contract.amount', '流失合同额');
+                } else {
+                    name = Intl.get('common.the.numerical', '数值');
+                }
+            } else {
+                name = key;
+            }
+
+            items.push({
+                name,
+                value
+            });
+        });
+
+        const content = (
+            <div style={{fontSize: 14}}>
+                {_.map(items, item => (
+                    <Row>
+                        <Col span={6} style={{textAlign: 'right', fontWeight: 'bold', paddingRight: 8, marginBottom: 10}}>{item.name}: </Col>
+                        <Col span={18}>{item.value}</Col>
+                    </Row>
+                ))}
+            </div>
+        );
+
+        detailPanelEmitter.emit(detailPanelEmitter.SHOW, {
+            title,
+            content
+        });
+    });
 }

@@ -166,5 +166,13 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        // 获取成员的组织信息
+        'method': 'get',
+        'path': '/rest/get/member/organization',
+        'handler': 'getMemberOrganization',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

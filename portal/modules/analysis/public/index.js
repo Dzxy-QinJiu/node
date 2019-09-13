@@ -7,6 +7,7 @@ import {storageUtil} from 'ant-utils';
 import Store from './store';
 import ajax from 'ant-ajax';
 import TableListPanel from 'CMP_DIR/table-list-panel';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import TopBar from './top-bar';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
@@ -35,6 +36,7 @@ import {
     teamTreeEmitter,
     dateSelectorEmitter,
     analysisCustomerListEmitter,
+    detailPanelEmitter,
     callDeviceTypeEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 
@@ -68,6 +70,8 @@ class CurtaoAnalysis extends React.Component {
             isCallDeviceTypeSelectorShow: false,
             //是否显示右侧面板
             isRightPanelShow: false,
+            //是否显示详情面板
+            isDetailPanelShow: false,
             //是否显示客户列表
             isCustomerListShow: false,
             //是否显示试用合格客户统计历史最高值明细
@@ -86,6 +90,7 @@ class CurtaoAnalysis extends React.Component {
         this.getCallSystemConfig();
 
         analysisCustomerListEmitter.on(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+        detailPanelEmitter.on(detailPanelEmitter.SHOW, this.showDetailPanel);
 
         //将页面body元素的overflow样式设为hidden，以防止出现纵向滚动条
         this.setBodyOverflow('hidden');
@@ -93,6 +98,7 @@ class CurtaoAnalysis extends React.Component {
 
     componentWillUnmount() {
         analysisCustomerListEmitter.removeListener(analysisCustomerListEmitter.SHOW_CUSTOMER_LIST, this.handleCustomerListEvent);
+        detailPanelEmitter.removeListener(detailPanelEmitter.SHOW, this.showDetailPanel);
 
         //恢复页面body元素的overflow样式
         this.setBodyOverflow('auto');
@@ -504,6 +510,21 @@ class CurtaoAnalysis extends React.Component {
         }];
     }
 
+    //显示详情面板
+    showDetailPanel = detailPanelParams => {
+        this.setState({
+            isDetailPanelShow: true,
+            detailPanelParams
+        });
+    }
+
+    //隐藏详情面板
+    hideDetailPanel = () => {
+        this.setState({
+            isDetailPanelShow: false,
+        });
+    }
+
     render() {
         //当前页是否只能选择单个产品
         const isCanOnlySelectSingleApp = this.state.currentPage.isCanOnlySelectSingleApp;
@@ -563,7 +584,16 @@ class CurtaoAnalysis extends React.Component {
                         {this.renderContent()}
                     </Col>
                 </Row>
+
                 <TableListPanel/>
+
+                {this.state.isDetailPanelShow ? (
+                    <RightPanelModal
+                        isShowCloseBtn={true}
+                        onClosePanel={this.hideDetailPanel}
+                        {...this.state.detailPanelParams}
+                    />
+                ) : null}
             </div>
         );
     }

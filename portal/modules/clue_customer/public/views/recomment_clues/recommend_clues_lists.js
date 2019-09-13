@@ -358,7 +358,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     // 提取线索分配给相关的销售人员的权限
                     let hasAssignedPrivilege = !this.isCommonSales();
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
-                    let containerCls = classNames('singl-extract-clue',{'assign-privilege ': hasAssignedPrivilege},'handle-btn-item');
+                    let containerCls = classNames('singl-extract-clue',{'assign-privilege handle-btn-item': hasAssignedPrivilege},);
 
                     return (
                         <div className={containerCls} ref='trace-person'>
@@ -536,7 +536,7 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     renderBatchChangeClues = () => {
         var checkRecord = this.state.batchPopoverVisible;
-        var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount: 0;
+        var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract});
         if (this.isCommonSales()) { // 普通销售批量提取线索
             return (

@@ -9,16 +9,19 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 var GeminiScrollbar = require('CMP_DIR/react-gemini-scrollbar');
 var DefaultUserLogoTitle = require('CMP_DIR/default-user-logo-title');
 import { AntcChart } from 'antc';
-import { Progress, Tooltip, Icon, Alert, Select } from 'antd';
+import { Progress, Tooltip, Icon, Alert, Select,Popover } from 'antd';
 const Option = Select.Option;
 import PropTypes from 'prop-types';
 import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
-
+//是否在蚁坊域的判断方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
+import history from 'PUB_DIR/sources/history';
 //日历热力图颜色
 const CALENDER_COLOR = {
     BORDER: '#A2A2A2',
     CONTENT: ['#90caf9', '#2196f3', '#006bc0']
 };
+import userData from 'PUB_DIR/sources/user-data';
 
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
@@ -175,7 +178,13 @@ class UserLoginAnalysis extends React.Component {
         let type = this.getUserLoginType();
         UserLoginAnalysisAction.getLoginUserScore(reqData, type);
     };
-
+    handleVisibleChange = visible => {
+        this.setState({ visible });
+    };
+    //跳转到销售自动化页面
+    jumpToSalesAuto = () => {
+        history.push('/background_management/sales_auto', {});
+    };
     // 用户分数
     renderUserLoginScore = (app) => {
         let loginScore = _.get(this.state.appUserDataMap, [app.app_id, 'loginScore']) || {};
@@ -192,88 +201,105 @@ class UserLoginAnalysis extends React.Component {
         if (_.get(loginScore.data, 'score') === undefined) {
             return null;
         } else {
+            var isEefungRealm = isOrganizationEefung();
             const {userEngagementScore, userBasicScore} = this.props;
+            var userBasicScoreActive = !_.isEmpty(userBasicScore) && _.get(userBasicScore, 'status') === 'enable';
+            var userEngagementScoreActive = !_.isEmpty(userEngagementScore) && _.get(userEngagementScore, 'status') === 'enable';
+            var showPopoverPrivilege = !isEefungRealm && !userBasicScoreActive && !userEngagementScoreActive && this.state.visible && userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
             return (
                 <div className='login-score'>
-                    <div className="score-container total-score">
-                        <span className="over-icon">{Intl.get('user.login.total.score', '总分')}</span>
-                        <Progress
-                            type="circle"
-                            width={100}
-                            percent={this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}
-                            format={percent => `${percent}`}
-                        />
-                    </div>
-                    <ul className="score-container">
-                        <li>
-                            <span>{Intl.get('user.login.latest.activity.score', '最新活跃度')}:</span>
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.activity', '最近30天的活跃天数/30。该分项在总分中占比30%')}>
+                    <Popover
+                        content={<a onClick={this.jumpToSalesAuto}>{Intl.get( 'user.manage.setting.rules', '如何设置评分规则？')}</a>}
+                        trigger="hover"
+                        visible={showPopoverPrivilege}
+                        onVisibleChange={this.handleVisibleChange}
+                        placement="right"
+                    >
+                        <div className="score-container total-score">
+                            <span className="over-icon">{Intl.get('user.login.total.score', '总评分')}</span>
+                            <Progress
+                                type="circle"
+                                width={100}
+                                percent={this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}
+                                format={percent => `${percent}`}
+                            />
+                        </div>
+                    </Popover>
+                    {isEefungRealm ?
+                        <ul className="score-container">
+                            <li>
+                                <span>{Intl.get('user.login.latest.activity.score', '最新活跃度')}:</span>
+                                <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}
+                                    <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.activity', '最近30天的活跃天数/30。该分项在总分中占比30%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
-                        </li>
-                        <li>
-                            <span>{Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:</span>
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.deep', '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%')}>
+                            </li>
+                            <li>
+                                <span>{Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:</span>
+                                <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}
+                                    <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.deep', '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
-                        </li>
-                        <li>
-                            <span>{Intl.get('user.login.freshness.score', '新鲜度')}:</span>
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.fresh', '距离最近的登录时间。该分项在总分中占比20%')}>
+                            </li>
+                            <li>
+                                <span>{Intl.get('user.login.freshness.score', '新鲜度')}:</span>
+                                <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}
+                                    <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.fresh', '距离最近的登录时间。该分项在总分中占比20%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
-                        </li>
-                        <li>
-                            <span>{Intl.get('user.login.history.activity.score', '历史活跃度')}:</span>
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyActivity', '总活跃天数/开通的总天数。该分项在总分中占比10%')}>
+                            </li>
+                            <li>
+                                <span>{Intl.get('user.login.history.activity.score', '历史活跃度')}:</span>
+                                <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}
+                                    <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyActivity', '总活跃天数/开通的总天数。该分项在总分中占比10%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
-                        </li>
-                        <li>
-                            <span>{Intl.get('user.login.history.immersion.score', '历史沉浸度')}:</span>
-                            <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}
-                                <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyFresh', '总在线分钟数/开通总分钟数。该分项在总分中占比10%')}>
+                            </li>
+                            <li>
+                                <span>{Intl.get('user.login.history.immersion.score', '历史沉浸度')}:</span>
+                                <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}
+                                    <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyFresh', '总在线分钟数/开通总分钟数。该分项在总分中占比10%')}>
                                     <Icon type="question-circle-o" />
                                 </Tooltip>
                             </span>
-                        </li>
-                        {/*{!_.isEmpty(userBasicScore) && _.get(userBasicScore,'status') === 'enable' ?*/}
-                        {/*_.map(_.get(userBasicScore,'detail'), userBasic => {*/}
-                        {/*var targetObj = _.find(this.props.userIndicator, indicatorItem => indicatorItem.indicator === userBasic.indicator);*/}
-                        {/*if (_.get(targetObj,'desc')){*/}
-                        {/*return <li>*/}
-                        {/*<span>{_.get(targetObj,'desc')}:</span>*/}
-                        {/*<span className="login-stress">{this.transScoreInteger(_.get(loginScore.data,`${userBasic.indicator}`) || 0)}*/}
-                        {/*<Tooltip trigger="click">*/}
-                        {/*<Icon type="question-circle-o" />*/}
-                        {/*</Tooltip>*/}
-                        {/*</span>*/}
-                        {/*</li>;*/}
-                        {/*}else{*/}
-                        {/*return null;*/}
-                        {/*}*/}
+                            </li>
+                        </ul>
+                        : <ul className="score-container">
+                            { userBasicScoreActive?
+                                _.map(_.get(userBasicScore, 'detail'), userBasic => {
+                                    var targetObj = _.find(this.props.userIndicator, indicatorItem => indicatorItem.indicator === userBasic.indicator);
+                                    if (_.get(targetObj, 'desc')) {
+                                        return <li>
+                                            <span>{_.get(targetObj, 'desc')}:</span>
+                                            <span
+                                                className="login-stress">{this.transScoreInteger(_.get(loginScore.data, `${userBasic.indicator}`) || 0)}
+                                                <Tooltip trigger="click">
+                            <Icon type="question-circle-o"/>
+                            </Tooltip>
+                            </span>
+                                        </li>;
+                                    } else {
+                                        return null;
+                                    }
+                                })
+                                : null}
+                            {userEngagementScoreActive?
+                                <li>
+                                    <span>{Intl.get('user.score.particate.in.score', '参与度评分')}:</span>
+                                    <span
+                                        className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'user_engagement_score') || 0)}
+                                        <Tooltip trigger="click">
+                            <Icon type="question-circle-o"/>
+                            </Tooltip>
+                            </span>
+                                </li>
+                                : null}
+                        </ul>}
 
-                        {/*})*/}
-                        {/*: null}*/}
-                        {/*{!_.isEmpty(userEngagementScore) && _.get(userBasicScore,'status') === 'enable' ?*/}
-                        {/*<li>*/}
-                        {/*<span>{Intl.get('user.score.particate.in.score', '参与度评分')}:</span>*/}
-                        {/*<span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'user_engagement_score') || 0)}*/}
-                        {/*<Tooltip trigger="click">*/}
-                        {/*<Icon type="question-circle-o" />*/}
-                        {/*</Tooltip>*/}
-                        {/*</span>*/}
-                        {/*</li>*/}
-                        {/*: null}*/}
-                    </ul>
                 </div>
             );
         }

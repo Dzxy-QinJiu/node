@@ -345,7 +345,7 @@ exports.exportData = function(req, res) {
                     value = value === '1' ? backendIntl.get('user.yes', '是') : backendIntl.get('user.no', '否');
                 }
                 //处理特殊字符
-                value = _.isString(value) ? value.replace(/,/g, '，'): '';
+                value = _.isString(value) ? value.replace(/,/g, '，') : '';
                 value = value.replace(/\n/g, ' ');
                 return value;
             });

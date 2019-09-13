@@ -127,7 +127,7 @@ const options = {
         let obj = { target: {} };
         obj.target.value = value.replace(/-/g, '');
 
-        props.onChange(obj);
+        _.isFunction(props.onChange) && props.onChange(obj);
     },
     mapPropsToFields(props) {
         let instance = instanceMap[props.id];
