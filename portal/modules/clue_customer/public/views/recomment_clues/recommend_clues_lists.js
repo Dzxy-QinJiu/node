@@ -27,6 +27,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
+import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 const maxLimitExtractNumber = 100;
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
@@ -52,8 +53,6 @@ class RecommendCustomerRightPanel extends React.Component {
         clueCustomerStore.listen(this.onStoreChange);
         //获取推荐的线索
         this.getRecommendClueLists();
-
-
     }
     //获取某个安全域已经提取多少推荐线索数量
     getRecommendClueCount(callback){
@@ -255,7 +254,7 @@ class RecommendCustomerRightPanel extends React.Component {
             });
             //提取线索前，先发请求获取还能提取的线索数量
             this.getRecommendClueCount((count) => {
-                if (count >= maxLimitExtractNumber){
+                if (_.get(getOrganization(),'type') === Intl.get( 'common.trial', '试用') && count >= maxLimitExtractNumber){
                     this.setState({
                         tablePopoverVisible: record.id,
                         singleExtractLoading: false
@@ -384,7 +383,7 @@ class RecommendCustomerRightPanel extends React.Component {
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
             this.getRecommendClueCount((count) => {
-                if (count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
+                if (_.get(getOrganization(),'type') === Intl.get( 'common.trial', '试用') && count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
                     this.setState({
                         batchPopoverVisible: true,
                         singleExtractLoading: false
@@ -537,7 +536,8 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     renderBatchChangeClues = () => {
         var checkRecord = this.state.batchPopoverVisible;
-        var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: maxLimitExtractNumber - this.state.hasExtractCount});
+        var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
+        var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract});
         if (this.isCommonSales()) { // 普通销售批量提取线索
             return (
                 <Popover
