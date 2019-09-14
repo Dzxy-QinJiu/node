@@ -23,18 +23,17 @@ class HomePage extends React.Component {
     };
 
     render() {
+        let realm = window.location.hostname;
         return (
             <Row className='home-page-container' data-tracename="新版首页">
                 <Col span={10}><MyWorkColumn/></Col>
                 <Col span={7}><TeamDataColumn/></Col>
                 <Col span={7}><MyInsterestColumn/></Col>
                 {/*判断所处域名，curtao下不显示返回旧版 */}
-                {Oplate.isCurtao === 'true' ? <div onClick={this.returnOldPage}
-                    className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div> : null}
+                {realm.indexOf('curtao') === -1 ? <div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div> : null}
             </Row>);
     }
 }
-
 HomePage.propTypes = {
     history: PropTypes.obj
 };
