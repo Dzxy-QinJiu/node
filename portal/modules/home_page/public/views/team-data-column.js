@@ -486,7 +486,7 @@ class TeamDataColumn extends React.Component {
                 {this.renderPerformanceData()}
                 {this.renderCallTime()}
                 {this.renderContactCustomers()}
-                {this.renderExpireContracts()}
+                {/*{this.renderExpireContracts()}*/}
             </div>);
     }
 
