@@ -278,13 +278,6 @@ let routers = [
                 showPrivileges: ['PRODUCTS_MANAGE']
             },
             {
-                id: 'SALES_PROCESS', // 唯一标识
-                name: 'menu.sales.process',// 客户阶段
-                routePath: '/background_management/customer_stage',
-                component: `${MODULE_PATH}sales_process/public`,
-                showPrivileges: ['CRM_GET_SALES_PROCESS']
-            },
-            {
                 id: 'ORDERSTAGE',
                 name: 'menu.order.stage',// 订单阶段
                 routePath: '/background_management/sales_stage',
