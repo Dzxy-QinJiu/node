@@ -3435,6 +3435,11 @@ var en_US = {
     'common.loss.contract.amount': 'Loss contract amount',//流失合同额
     'common.cost.date': 'Cost date',//费用日期
     'clue.customer.fail.get.all.lists': 'Failed to get all visit apply',//获取全部拜访申请失败
-    'user.manage.setting.rules': 'How to set socre rules?'//如何设置评分规则？
+    'user.manage.setting.rules': 'How to set socre rules?',//如何设置评分规则？
+    'user.score.last.month.time': 'Online time rate*50 in the past month',//近一个月在线时长率*50
+    'user.score.last.month.days': 'Online rate in the past month*50',//近一个月在线天数率*50
+    'user.score.online.day.score': 'Active days score during the specified time',//指定时间内活跃天数分数
+    'user.score.online.time.score': 'Online time score within a specified time',//指定时间内在线时长分数
+    'user.score.engagement.score': 'User engagement (operation) score within the specified time'//指定时间内用户参与度（操作）分数
 };
 export default en_US;

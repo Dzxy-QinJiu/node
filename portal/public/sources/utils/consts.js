@@ -646,3 +646,16 @@ export const CC_INFO = {
 
 // 客户阶段中的每个阶段的颜色
 export const CUSTOMER_STAGE_COLOR = ['#D0C628', '#9BBD33', '#38BB3B', '#07B3C2', '#2196F3', '#806FE6', '#D078D1', '#D18F78'];
+export const INDICATOR_TOOLTIP = [{
+    key: 'online_time_rate',
+    value: Intl.get('user.score.last.month.time', '近一个月在线时长率*50')
+}, {
+    key: 'active_days_rate',
+    value: Intl.get('user.score.last.month.days', '近一个月在线天数率*50')
+}, {
+    key: 'active_days',
+    value: Intl.get('user.score.online.day.score', '指定时间内活跃天数分数')
+}, {
+    key: 'online_time',
+    value: Intl.get('user.score.online.time.score', '指定时间内在线时长分数')
+}];

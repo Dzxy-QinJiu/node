@@ -26,7 +26,8 @@ import {
     ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM,
     FINAL_TASK,
     ORGANIZATION_APP_TYPES,
-    REALM_REMARK
+    REALM_REMARK,
+    INDICATOR_TOOLTIP
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -990,6 +991,11 @@ exports.isCiviwRealm = () => {
     var userDetail = userData.getUserData();
     var realmId = _.get(userDetail, 'auth.realm_id');
     return realmId === REALM_REMARK.CIVIW;
+};
+//获取某种indicator的tooltip
+exports.getCertainTypeTooltip = (indicator) => {
+    var target = _.find(INDICATOR_TOOLTIP, item => item.key === indicator);
+    return _.get(target,'value','');
 };
 
 //客户名唯一性验证的提示信息
