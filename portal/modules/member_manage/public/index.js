@@ -71,8 +71,8 @@ class MemberManage extends React.Component {
         MemberManageAjax.getMemberOrganization().then( (result) => {
             if (result) {
                 this.setState({
-                    currentMemberNumber: _.get(result, 'membernumber'),
-                    maxMemberNumber: _.get(result, 'max_membernumber')
+                    currentMemberNumber: _.get(result, 'membernumber', 0),
+                    maxMemberNumber: _.get(result, 'max_membernumber', -1)
                 });
             }
         });

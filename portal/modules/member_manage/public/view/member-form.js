@@ -542,8 +542,9 @@ class MemberForm extends React.Component {
                                         validator: this.getValidator()
                                     }]
                                 })(
-                                    <Input name="phone" id="phone" type="text"
-                                        initialValue={values.phone}
+                                    <Input
+                                        name="phone"
+                                        id="phone"
                                         placeholder={Intl.get('user.input.phone', '请输入手机号')}
                                     />
                                 )}
@@ -561,9 +562,7 @@ class MemberForm extends React.Component {
                                 })(
                                     <Input
                                         name="qq"
-                                        id="qq" t
-                                        ype="qq"
-                                        initialValue={values.qq}
+                                        id="qq"
                                         placeholder={Intl.get('member.input.qq', '请输入QQ号')}
                                     />
                                 )}
