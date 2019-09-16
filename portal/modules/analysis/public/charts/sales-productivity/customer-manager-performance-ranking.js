@@ -19,8 +19,12 @@ export function getCustomerManagerPerformanceRankingChart() {
             name: 'page_size',
             value: 1000,
         }],
+        argCallback: arg => {
+            conditionCache = arg.query;
+        },
         dataField: 'list',
         option: {
+            onRowClick: onRankingRowClick,
             columns: [{
                 title: Intl.get('user.user.team', '团队'),
                 dataIndex: 'sales_team',
@@ -73,18 +77,19 @@ export function getCustomerManagerPerformanceRankingChart() {
     }
 }
 
-function handleNumberClick(conditions, type, record) {
-    conditions = _.filter(conditions, item => _.includes(['interval', 'start_time', 'end_time'], item.name));
+//排名表格行点击处理事件
+function onRankingRowClick(record) {
+    let conditions = _.map(conditionCache, (value, key) => {
+        return {
+            name: key,
+            value
+        };
+    });
 
     conditions.push({
-        name: 'type',
-        value: type
-    }, {
         name: 'member_ids',
         value: record.member_id
     });
-
-    conditionCache = conditions;
 
     const columns = [
         {
