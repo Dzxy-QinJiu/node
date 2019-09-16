@@ -205,6 +205,7 @@ class UserLoginAnalysis extends React.Component {
             const {userEngagementScore, userBasicScore} = this.props;
             var userBasicScoreActive = !_.isEmpty(userBasicScore) && _.get(userBasicScore, 'status') === 'enable';
             var userEngagementScoreActive = !_.isEmpty(userEngagementScore) && _.get(userEngagementScore, 'status') === 'enable';
+            //展示pop提示的权限  不是蚁坊域 && 用户基础评分没有开始 && 参与度评分禁用 && visible为true  && 是管理员角色
             var showPopoverPrivilege = !isEefungRealm && !userBasicScoreActive && !userEngagementScoreActive && this.state.visible && userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
             return (
                 <div className='login-score'>
@@ -220,7 +221,7 @@ class UserLoginAnalysis extends React.Component {
                             <Progress
                                 type="circle"
                                 width={100}
-                                percent={this.transScoreInteger(_.get(loginScore.data, 'score') || 0)}
+                                percent={isEefungRealm ? this.transScoreInteger(_.get(loginScore.data, 'score') || 0) : _.get(loginScore.data, 'score') || 0}
                                 format={percent => `${percent}`}
                             />
                         </div>
@@ -269,14 +270,14 @@ class UserLoginAnalysis extends React.Component {
                             </li>
                         </ul>
                         : <ul className="score-container">
-                            { userBasicScoreActive?
+                            { userBasicScoreActive ?
                                 _.map(_.get(userBasicScore, 'detail'), userBasic => {
                                     var targetObj = _.find(this.props.userIndicator, indicatorItem => indicatorItem.indicator === userBasic.indicator);
                                     if (_.get(targetObj, 'desc')) {
                                         return <li>
                                             <span>{_.get(targetObj, 'desc')}:</span>
                                             <span
-                                                className="login-stress">{this.transScoreInteger(_.get(loginScore.data, `${userBasic.indicator}`) || 0)}
+                                                className="login-stress">{_.get(loginScore.data, `${userBasic.indicator}_score`) || 0}
                                                 <Tooltip trigger="click">
                             <Icon type="question-circle-o"/>
                             </Tooltip>
@@ -287,11 +288,11 @@ class UserLoginAnalysis extends React.Component {
                                     }
                                 })
                                 : null}
-                            {userEngagementScoreActive?
+                            {userEngagementScoreActive ?
                                 <li>
                                     <span>{Intl.get('user.score.particate.in.score', '参与度评分')}:</span>
                                     <span
-                                        className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'user_engagement_score') || 0)}
+                                        className="login-stress">{_.get(loginScore.data, 'user_engagement_score') || 0}
                                         <Tooltip trigger="click">
                             <Icon type="question-circle-o"/>
                             </Tooltip>
