@@ -185,19 +185,19 @@ function ClueCustomerActions() {
         });
     };
     //释放线索
-    this.releaseClue = function(clueIds, callback) {
+    this.releaseClue = function(clueIds, successFunc, errorFunc) {
         clueCustomerAjax.releaseClue({lead_ids: clueIds}).then(() => {
-            _.isFunction(callback) && callback(clueIds);
+            _.isFunction(successFunc) && successFunc(clueIds);
         }, (errorMsg) => {
-            _.isFunction(callback) && callback(errorMsg);
+            _.isFunction(errorFunc) && errorFunc(errorMsg);
         });
     };
     //批量释放线索
-    this.batchReleaseClue = function(condition, callback) {
+    this.batchReleaseClue = function(condition, successFunc, errorFunc) {
         clueCustomerAjax.batchReleaseClue(condition).then(data => {
-            _.isFunction(callback) && callback(data);
+            _.isFunction(successFunc) && successFunc(data);
         }, errorMsg => {
-            _.isFunction(callback) && callback(errorMsg);
+            _.isFunction(errorFunc) && errorFunc(errorMsg);
         });
     };
 }
