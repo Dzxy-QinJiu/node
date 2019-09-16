@@ -192,7 +192,6 @@ class BasicOverview extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
-        basicOverviewAction.setUserListLoading(true);
         if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
                 if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
