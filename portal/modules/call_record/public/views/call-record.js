@@ -453,6 +453,9 @@ class CallRecord extends React.Component {
         this.setState({
             isAddFlag: false
         });
+        setTimeout(() =>{
+            this.handleRefresh();
+        },1000);
     };
 
     showRightPanel = (id) => {
