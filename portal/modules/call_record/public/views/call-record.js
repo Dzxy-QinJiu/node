@@ -1195,7 +1195,6 @@ class CallRecord extends React.Component {
 
         //第一次加载时的loading或报错信息
         const renderLoading = () =>{
-            if(hiddenModule){
                 if(isLoading){
                     return( <div className="load-content">
                                 <Spinner />
@@ -1207,14 +1206,12 @@ class CallRecord extends React.Component {
                                 <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
                             </div>);
                 }
-            }else{
-                return null;
-            }
+
         }
 
         return (
             <div>
-                {renderLoading()}
+                {hiddenModule ?renderLoading():null}
             <div style={{ display: hiddenModule? "none" : "block" }}>
                 <div
                     className={tableClassnames}
