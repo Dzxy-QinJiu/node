@@ -350,6 +350,12 @@ class RecommendCustomerRightPanel extends React.Component {
                 title: Intl.get('common.phone', '电话'),
                 dataIndex: 'telephones',
                 width: '300px',
+                render: (text, record, index) => {
+                    return (
+                        <span>{_.isArray(text) ? text.join('，') : null}
+                        </span>
+                    );
+                }
             },{
                 title: Intl.get('common.operate', '操作'),
                 dataIndex: 'oprate_btn',
