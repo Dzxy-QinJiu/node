@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import {DATE_SELECT} from 'PUB_DIR/sources/utils/consts';
 //是否在蚁坊域的判断方法
 const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
+import {getCertainTypeTooltip} from 'PUB_DIR/sources/utils/common-method-util';
 import history from 'PUB_DIR/sources/history';
 //日历热力图颜色
 const CALENDER_COLOR = {
@@ -207,6 +208,7 @@ class UserLoginAnalysis extends React.Component {
             var userEngagementScoreActive = !_.isEmpty(userEngagementScore) && _.get(userEngagementScore, 'status') === 'enable';
             //展示pop提示的权限  不是蚁坊域 && 用户基础评分没有开始 && 参与度评分禁用 && visible为true  && 是管理员角色
             var showPopoverPrivilege = !isEefungRealm && !userBasicScoreActive && !userEngagementScoreActive && this.state.visible && userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+            var totalScore = _.get(loginScore.data, 'score',0);
             return (
                 <div className='login-score'>
                     <Popover
@@ -221,7 +223,7 @@ class UserLoginAnalysis extends React.Component {
                             <Progress
                                 type="circle"
                                 width={100}
-                                percent={isEefungRealm ? this.transScoreInteger(_.get(loginScore.data, 'score') || 0) : _.get(loginScore.data, 'score') || 0}
+                                percent={isEefungRealm ? this.transScoreInteger(totalScore) : totalScore}
                                 format={percent => `${percent}`}
                             />
                         </div>
@@ -232,41 +234,41 @@ class UserLoginAnalysis extends React.Component {
                                 <span>{Intl.get('user.login.latest.activity.score', '最新活跃度')}:</span>
                                 <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_activity_score') || 0)}
                                     <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.activity', '最近30天的活跃天数/30。该分项在总分中占比30%')}>
-                                    <Icon type="question-circle-o" />
-                                </Tooltip>
-                            </span>
+                                        <Icon type="question-circle-o" />
+                                    </Tooltip>
+                                </span>
                             </li>
                             <li>
                                 <span>{Intl.get('user.login.latest.immersion.score', '最新沉浸度')}:</span>
                                 <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'latest_immersion_score') || 0)}
                                     <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.deep', '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%')}>
-                                    <Icon type="question-circle-o" />
-                                </Tooltip>
-                            </span>
+                                        <Icon type="question-circle-o" />
+                                    </Tooltip>
+                                </span>
                             </li>
                             <li>
                                 <span>{Intl.get('user.login.freshness.score', '新鲜度')}:</span>
                                 <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'freshness_score') || 0)}
                                     <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.fresh', '距离最近的登录时间。该分项在总分中占比20%')}>
-                                    <Icon type="question-circle-o" />
-                                </Tooltip>
-                            </span>
+                                        <Icon type="question-circle-o" />
+                                    </Tooltip>
+                                </span>
                             </li>
                             <li>
                                 <span>{Intl.get('user.login.history.activity.score', '历史活跃度')}:</span>
                                 <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_activity_score') || 0)}
                                     <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyActivity', '总活跃天数/开通的总天数。该分项在总分中占比10%')}>
-                                    <Icon type="question-circle-o" />
-                                </Tooltip>
-                            </span>
+                                        <Icon type="question-circle-o" />
+                                    </Tooltip>
+                                </span>
                             </li>
                             <li>
                                 <span>{Intl.get('user.login.history.immersion.score', '历史沉浸度')}:</span>
                                 <span className="login-stress">{this.transScoreInteger(_.get(loginScore.data, 'history_immersion_score') || 0)}
                                     <Tooltip trigger="click" title={Intl.get('user.detail.analysis.tip.historyFresh', '总在线分钟数/开通总分钟数。该分项在总分中占比10%')}>
-                                    <Icon type="question-circle-o" />
-                                </Tooltip>
-                            </span>
+                                        <Icon type="question-circle-o" />
+                                    </Tooltip>
+                                </span>
                             </li>
                         </ul>
                         : <ul className="score-container">
@@ -277,11 +279,11 @@ class UserLoginAnalysis extends React.Component {
                                         return <li>
                                             <span>{_.get(targetObj, 'desc')}:</span>
                                             <span
-                                                className="login-stress">{_.get(loginScore.data, `${userBasic.indicator}_score`) || 0}
-                                                <Tooltip trigger="click">
-                            <Icon type="question-circle-o"/>
-                            </Tooltip>
-                            </span>
+                                                className="login-stress">{_.get(loginScore.data, `${userBasic.indicator}_score`,0)}
+                                                <Tooltip trigger="click" title={getCertainTypeTooltip(userBasic.indicator)}>
+                                                    <Icon type="question-circle-o"/>
+                                                </Tooltip>
+                                            </span>
                                         </li>;
                                     } else {
                                         return null;
@@ -292,11 +294,11 @@ class UserLoginAnalysis extends React.Component {
                                 <li>
                                     <span>{Intl.get('user.score.particate.in.score', '参与度评分')}:</span>
                                     <span
-                                        className="login-stress">{_.get(loginScore.data, 'user_engagement_score') || 0}
-                                        <Tooltip trigger="click">
-                            <Icon type="question-circle-o"/>
-                            </Tooltip>
-                            </span>
+                                        className="login-stress">{_.get(loginScore.data, 'user_engagement_score',0)}
+                                        <Tooltip trigger="click" title={Intl.get('user.score.engagement.score', '指定时间内用户参与度（操作）分数')}>
+                                            <Icon type="question-circle-o"/>
+                                        </Tooltip>
+                                    </span>
                                 </li>
                                 : null}
                         </ul>}
