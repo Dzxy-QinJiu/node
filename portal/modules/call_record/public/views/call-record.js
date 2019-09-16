@@ -1166,7 +1166,7 @@ class CallRecord extends React.Component {
     };
 
     renderCallRecordContent = () => {
-        let is_loading = this.state.callRecord.is_loading;
+        let isLoading = this.state.callRecord.is_loading;
         //只有第一页和过滤表头不显示的时候，显示loading和错误信息
         let hiddenModule = this.state.callRecord.page === 1 && !this.state.isFilter;
         
@@ -1193,19 +1193,29 @@ class CallRecord extends React.Component {
         // 是否显示过滤时的加载状态， 当前页数为1时，并且通话记录数组长度为0，显示过滤头，请求数据中
         const isFilterLoading = this.state.callRecord.page === 1 && this.state.callRecord.data_list.length === 0 && this.state.isFilter && this.state.callRecord.is_loading;
 
+        //第一次加载时的loading或报错信息
+        const renderLoading = () =>{
+            if(hiddenModule){
+                if(isLoading){
+                    return( <div className="load-content">
+                                <Spinner />
+                                <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
+                            </div>);
+                }else{
+                    return( <div className="errmsg-wrap">
+                                <i className="iconfont icon-data-error"></i>
+                                <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
+                            </div>);
+                }
+            }else{
+                return null;
+            }
+        }
+
         return (
             <div>
-                {hiddenModule? is_loading? 
-                    <div className="load-content">
-                        <Spinner />
-                        <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
-                    </div>:
-                    <div className="errmsg-wrap">
-                        <i className="iconfont icon-data-error"></i>
-                        <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
-                    </div>:null
-                    }
-            <div style={{display: hiddenModule?"none":"block"}}>
+                {renderLoading()}
+            <div style={{ display: hiddenModule? "none" : "block" }}>
                 <div
                     className={tableClassnames}
                     ref="thead"
@@ -1223,7 +1233,7 @@ class CallRecord extends React.Component {
                         locale={{emptyText: isFilterLoading ? Intl.get('common.sales.frontpage.loading', '加载中') : Intl.get('common.no.data', '暂无数据')}}
                         scroll={{ x: this.state.isFilter ? 1450 : 1150, y: this.state.tableHeight }}
                     />
-                    { isFilterLoading ? <Spinner /> : null }
+                    { isFilterLoading||isLoading ? <Spinner /> : null }
                 </div>
              </div>
              </div>
