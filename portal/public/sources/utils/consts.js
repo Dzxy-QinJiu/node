@@ -659,3 +659,4 @@ export const INDICATOR_TOOLTIP = [{
     key: 'online_time',
     value: Intl.get('user.score.online.time.score', '指定时间内在线时长分数')
 }];
+export const extractIcon = (<i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>);

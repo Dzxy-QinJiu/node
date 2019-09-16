@@ -35,7 +35,7 @@ import { batchPushEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { RightPanel } from 'CMP_DIR/rightPanel';
 import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import filterEmitter from 'CMP_DIR/filter/emitter';
-
+import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     FILTER_TOP: 64,//筛选框高度
@@ -629,7 +629,7 @@ class ClueExtract extends React.Component {
                             data-tracename="点击提取按钮"
                             className={assigenCls}
                         >
-                            <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>
+                            {extractIcon}
                         </span>}
                     overlayTitle={Intl.get('user.salesman', '销售人员')}
                     okTitle={Intl.get('common.confirm', '确认')}
@@ -647,7 +647,7 @@ class ClueExtract extends React.Component {
                 <span className={assigenCls}
                     onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
                 >
-                    <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>
+                    {extractIcon}
                 </span>
             );
         }
