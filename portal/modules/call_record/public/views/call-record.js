@@ -453,9 +453,17 @@ class CallRecord extends React.Component {
         this.setState({
             isAddFlag: false
         });
-        setTimeout(() =>{
-            this.handleRefresh();
-        },1000);
+        let newData = _.cloneDeep(this.state);
+        let list =  newData.callRecord.data_list;
+        let phone = _.get(customer,'[0].phones[0]');
+
+        _.map(list,(cont) =>{
+            if(cont.dst === phone){
+                cont.customer_name =customer[0].name;
+                cont.customer_id = customer[0].id;
+            }
+        });
+        this.setState(newData);
     };
 
     showRightPanel = (id) => {
@@ -1207,7 +1215,6 @@ class CallRecord extends React.Component {
 
         // 是否显示过滤时的加载状态， 当前页数为1时，并且通话记录数组长度为0，显示过滤头，请求数据中
         const isFilterLoading = this.state.callRecord.page === 1 && this.state.callRecord.data_list.length === 0 && this.state.isFilter && this.state.callRecord.is_loading;
-
         return (
             <div style={{ position: 'relative' }}>
                 <div
