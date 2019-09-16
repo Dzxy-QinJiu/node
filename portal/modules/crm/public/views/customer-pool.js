@@ -23,7 +23,7 @@ import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
 import {FilterInput} from 'CMP_DIR/filter';
 import CustomerPoolFilter from './customer-pool-filter';
 import classNames from 'classnames';
-import {COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
+import {COMMON_OTHER_ITEM, extractIcon} from 'PUB_DIR/sources/utils/consts';
 import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import CustomerPoolRule from './customer_pool_rule';
@@ -393,7 +393,6 @@ class CustomerPool extends React.Component {
                 title: Intl.get('common.operate', '操作'),
                 width: 40,
                 render: (text, record, index) => {
-                    const extractIcon = (<i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>);
                     return userData.getUserData().isCommonSales ? (
                         <Popconfirm
                             placement="left"
