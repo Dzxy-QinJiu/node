@@ -3547,6 +3547,11 @@ var zh_CN = {
     'common.loss.contract.amount': '流失合同额',
     'common.cost.date': '费用日期',
     'clue.customer.fail.get.all.lists': '获取全部拜访申请失败',
-    'user.manage.setting.rules': '如何设置评分规则？'
+    'user.manage.setting.rules': '如何设置评分规则？',
+    'user.score.last.month.time': '近一个月在线时长率*50',
+    'user.score.last.month.days': '近一个月在线天数率*50',
+    'user.score.online.day.score': '指定时间内活跃天数分数',
+    'user.score.online.time.score': '指定时间内在线时长分数',
+    'user.score.engagement.score': '指定时间内用户参与度（操作）分数'
 };
 export default zh_CN;
