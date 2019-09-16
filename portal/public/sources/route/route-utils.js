@@ -16,7 +16,8 @@ const ROUTE_CONST = {
 };
 const isOpenCaller = require('../utils/common-method-util').isOpenCaller;
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-
+//是否在蚁坊域的判断方法
+const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
@@ -251,6 +252,13 @@ function filterRoute(allRoutes) {
     }else {
         //如果展示的是申请审批的提示页面，把申请申请页面过滤掉
         user.routes = _.filter(user.routes, item => item.id !== 'application_apply_management');
+    }
+    //如果是蚁坊的组织，需要把销售自动化的去掉
+    if(isOrganizationEefung()){
+        var backgroundObj = _.find(user.routes, item => item.id === 'background_management');
+        if(_.get(backgroundObj,'routes')){
+            backgroundObj.routes = _.filter(backgroundObj.routes, item => item.id !== 'sales_auto');
+        }
     }
     //路由配置
     const routePaths = [

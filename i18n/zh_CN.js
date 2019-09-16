@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -2928,7 +2927,7 @@ var zh_CN = {
     'common.ranking': '排名',
     'common.telephone.statistics': '电话量统计',
     'common.ketao.app.telephone.statistics': '客套APP电话量统计',
-    'common.trial.qualified.customer.statistics': '试用合格客户数统计', 
+    'common.trial.qualified.customer.statistics': '试用合格客户数统计',
     'clue.has.similar.customer': '有相似客户',
     'clue.has.similar.clue': '有相似线索',
     'clue.export.clue.list': '导出线索',
@@ -3465,6 +3464,7 @@ var zh_CN = {
     'clue.customer.this.month': '本月',
     'clue.customer.this.quarter': '本季度',
     'clue.customer.this.year': '今年',
+    'clue.customer.last.three.month': '近三个月',
     'clue.customer.last.week': '近一周',
     'clue.customer.last.month': '近一月',
     'clue.customer.last.quarter': '近一季度',
@@ -3538,6 +3538,7 @@ var zh_CN = {
     'clue.recommend.extract.num.limit': '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
     'clue.customer.noty.all.list': '查看所有线索？',
+    'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
     'common.personal.contribution.score': '个人贡献分数',
     'common.collection.of.gross.profit.margin.score': '回款毛利率分数',
     'common.indicators.for.details': '指标详情',
@@ -3546,5 +3547,6 @@ var zh_CN = {
     'common.loss.contract.amount': '流失合同额',
     'common.cost.date': '费用日期',
     'clue.customer.fail.get.all.lists': '获取全部拜访申请失败',
+    'user.manage.setting.rules': '如何设置评分规则？'
 };
 export default zh_CN;

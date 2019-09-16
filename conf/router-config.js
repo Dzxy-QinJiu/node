@@ -16,15 +16,6 @@ let routers = [
         showPrivileges: ['USER_INFO_USER']
     },
     {
-        id: 'CRM',
-        name: 'call.record.customer',//客户
-        routePath: '/crm',
-        component: `${MODULE_PATH}crm/public`,
-        shortName: 'call.record.customer',//客户
-        //有这个权限，才显示入口图标
-        showPrivileges: ['CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL']
-    },
-    {
         id: 'ClUE_CUSTOMER',
         name: 'crm.sales.clue',//线索
         routePath: '/clue_customer',
@@ -32,6 +23,15 @@ let routers = [
         shortName: 'crm.sales.clue',//线索
         //有这个权限，才显示入口图标
         showPrivileges: ['CLUECUSTOMER_VIEW']
+    },
+    {
+        id: 'CRM',
+        name: 'call.record.customer',//客户
+        routePath: '/crm',
+        component: `${MODULE_PATH}crm/public`,
+        shortName: 'call.record.customer',//客户
+        //有这个权限，才显示入口图标
+        showPrivileges: ['CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL']
     },
     {
         id: 'DEAL_MANAGE',
@@ -276,13 +276,6 @@ let routers = [
                 component: `${MODULE_PATH}apply_approve_manage/public`,
                 //todo 权限名称待修改= 有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE']
-            },
-            {
-                id: 'SALES_PROCESS', // 唯一标识
-                name: 'menu.sales.process',// 客户阶段
-                routePath: '/background_management/customer_stage',
-                component: `${MODULE_PATH}sales_process/public`,
-                showPrivileges: ['CRM_GET_SALES_PROCESS']
             },
             {
                 id: 'ORDERSTAGE',

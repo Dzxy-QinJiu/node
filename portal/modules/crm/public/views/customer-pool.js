@@ -42,7 +42,7 @@ class CustomerPool extends React.Component {
 
     getInitStateData() {
         return {
-            searchValue: '',
+            searchValue: {},
             lastId: '',
             isLoading: false,
             poolCustomerList: [],
@@ -153,17 +153,14 @@ class CustomerPool extends React.Component {
             queryObj.cursor = curState.cursor;
         }
 
-        /*const condition = _.extend({}, this.state.searchValue);
+        const condition = _.extend({}, this.state.searchValue);
 
         //去除查询条件中值为空的项
         removeEmptyItem(condition);
         if(!_.isEmpty(condition)) {
             queryObj = {...queryObj, ...condition};
-        }*/
-
-        if (this.state.searchValue) {
-            queryObj.name = this.state.searchValue;
         }
+
         let filterParams = this.getFilterParams();
         if (!_.isEmpty(filterParams)) {
             queryObj = {...queryObj, ...filterParams};
@@ -321,15 +318,9 @@ class CustomerPool extends React.Component {
     };
 
     onSearchInputChange = (keyword, selectedField) => {
-        let searchValue = _.trim(keyword);
-        if (searchValue !== this.state.searchValue) {
-            this.setState({searchValue: searchValue}, () => {
-                this.getPoolCustomer(true);
-            });
-        }
-        /*this.setState({searchValue: this.refs.searchInput.state.formData}, () => {
+        this.setState({searchValue: this.refs.searchInput.state.formData}, () => {
             this.getPoolCustomer(true);
-        });*/
+        });
     };
 
     getColumns() {
@@ -637,7 +628,7 @@ class CustomerPool extends React.Component {
         let selectCustomerLength = _.get(this.state.selectedCustomer, 'length');
         // 没有在加载，并且有错误信息或者（在翻页时没有数据）
         let showRefresh = !this.state.isLoading && (this.state.errorMsg || (!_.get(this.state.poolCustomerList,'[0]') && !_.isEqual(this.state.pageValue, 0)));
-        /*const searchFields = [
+        const searchFields = [
             {
                 name: Intl.get('crm.41', '客户名'),
                 field: 'name'
@@ -646,7 +637,7 @@ class CustomerPool extends React.Component {
                 name: Intl.get('common.phone', '电话'),
                 field: 'phone'
             },
-        ];*/
+        ];
         return (
             <div className="customer-pool" data-tracename="客户池列表">
                 <TopNav>
@@ -662,9 +653,8 @@ class CustomerPool extends React.Component {
                         <SearchInput
                             ref="searchInput"
                             className="btn-item"
-                            // type="select"
-                            // type="input"
-                            // searchFields={searchFields}
+                            type="select"
+                            searchFields={searchFields}
                             searchPlaceHolder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
                             searchEvent={this.onSearchInputChange}
                         />

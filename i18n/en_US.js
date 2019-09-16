@@ -655,7 +655,7 @@ var en_US = {
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
     // 用户分析
-    'user.login.total.score': 'Total score', // 总分
+    'user.login.total.score': 'Total score', // 总评分
     'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
     'user.login.latest.immersion.score': 'Latest immersion score', // 最新沉浸度分数
     'user.login.freshness.score': 'Freshness score', // 新鲜度分数
@@ -3358,6 +3358,7 @@ var en_US = {
     'clue.customer.this.month': 'This month',//本月
     'clue.customer.this.quarter': 'This quarter',//本季度
     'clue.customer.this.year': 'This year',//今年
+    'clue.customer.last.three.month': 'Last three months',//近三个月
     'clue.customer.last.week': 'Last week',//近一周
     'clue.customer.last.month': 'Last month',//近一月
     'clue.customer.last.quarter': 'Last quarter',//近一季度
@@ -3425,6 +3426,7 @@ var en_US = {
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization today has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
     'clue.customer.noty.all.list': 'Click to see all clues?',//查看所有线索？
+    'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
     'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
     'common.collection.of.gross.profit.margin.score': 'Collection of gross profit margin score',//回款毛利率分数
     'common.indicators.for.details': 'Indicators for details',//指标详情
@@ -3433,5 +3435,6 @@ var en_US = {
     'common.loss.contract.amount': 'Loss contract amount',//流失合同额
     'common.cost.date': 'Cost date',//费用日期
     'clue.customer.fail.get.all.lists': 'Failed to get all visit apply',//获取全部拜访申请失败
+    'user.manage.setting.rules': 'How to set socre rules?'//如何设置评分规则？
 };
 export default en_US;
