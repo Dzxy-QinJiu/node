@@ -561,7 +561,7 @@ class MemberForm extends React.Component {
                                 })(
                                     <Input
                                         name="qq"
-                                        id="qq" t
+                                        id="qq"
                                         ype="qq"
                                         initialValue={values.qq}
                                         placeholder={Intl.get('member.input.qq', '请输入QQ号')}
