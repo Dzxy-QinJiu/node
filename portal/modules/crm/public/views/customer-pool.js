@@ -580,7 +580,7 @@ class CustomerPool extends React.Component {
         } else {//销售、管理员
             const batchExtractBtn = (
                 <Button className="btn-item extract-btn" disabled={!selectCustomerLength}>
-                    {extractIcon}
+                    {Intl.get('clue.extract', '提取')}
                 </Button>);
             //选择客户后可以进行批量提取
             if (selectCustomerLength) {
