@@ -1619,9 +1619,11 @@ class Crm extends React.Component {
                 render: (text, record, index) => {
                     return (
                         <span className="cus-op" data-tracename="删除客户">
-                            <Button className="order-btn-class" icon="delete"
+                            <Button className="order-btn-class handle-btn-item" 
                                 onClick={this.deleteDuplicatImportCustomer.bind(this, index)}
-                                title={Intl.get('common.delete', '删除')}/>
+                                title={Intl.get('common.delete', '删除')}>
+                                     <i className="iconfont icon-delete"></i>
+                                </Button>
                         </span>
                     );
                 }
@@ -1852,9 +1854,11 @@ class Crm extends React.Component {
                         <span>
                             <span className="cus-op" data-tracename="删除客户">
                                 {isDeleteBtnShow ? (
-                                    <Button className="order-btn-class delete-btn handle-btn-item" icon="delete"
+                                    <Button className="order-btn-class delete-btn handle-btn-item" 
                                         onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
-                                        title={Intl.get('common.delete', '删除')} />
+                                        title={Intl.get('common.delete', '删除')} >
+                                             <i className="iconfont icon-delete"></i>
+                                        </Button>
                                 ) : null}
                             </span>
                             {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
