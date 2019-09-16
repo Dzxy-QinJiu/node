@@ -1,5 +1,5 @@
 require('../css/member-add-form.less');
-import {Form, Input, Select, Icon} from 'antd';
+import {Form, Input, Select, Icon, Button, message} from 'antd';
 const Option = Select.Option;
 const FormItem = Form.Item;
 import HeadIcon from 'CMP_DIR/headIcon';
@@ -16,6 +16,7 @@ import MemberManageAjax from '../ajax';
 import AddEditGroupForm from 'MOD_DIR/home_page/public/views/boot-process/components/add-edit-group-from';
 import classNames from 'classnames';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
+import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
 
 function noop() {
 }
@@ -54,7 +55,8 @@ class MemberForm extends React.Component {
             },
             phoneEmailCheck: true, //电话邮箱必填一项的验证
             positionList: [], // 职务列表
-
+            isMatchPositionListFlag: true, // 是否是选中列表中的值，true,
+            isAddPositionLoading: false, // 保存新添加的职务
         };
     };
 
@@ -109,6 +111,13 @@ class MemberForm extends React.Component {
             } else {
                 //所有者各项唯一性验证均不存在且没有出错再添加
                 var user = _.extend({}, values);
+                let positionName = user.position;
+                if (positionName) {
+                    let matchPosition = _.find(this.state.positionList, item => item.name === positionName);
+                    if (matchPosition) {
+                        user.position = matchPosition.id;
+                    }
+                }
                 if (user.phone) {
                     user.phone = _.trim(user.phone);
                 }
@@ -316,7 +325,7 @@ class MemberForm extends React.Component {
         let positionOptions = '';
         let positionList = this.state.positionList;
         if (_.isArray(positionList) && _.get(positionList, 'length')) {
-            positionOptions = _.map(positionList, item => <Option value={item.id} key={item.id}>{item.name}</Option>);
+            positionOptions = _.map(positionList, item => <Option key={item.id} value={item.name}>{item.name}</Option>);
         } else {
             positionOptions =
                 <Option value="">{Intl.get('member.no.position', '暂无职务')}</Option>;
@@ -349,6 +358,9 @@ class MemberForm extends React.Component {
     };
 
     handlePositionSelect = () => {
+        this.setState({
+            isMatchPositionListFlag: true
+        });
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择职务');
     };
 
@@ -360,18 +372,79 @@ class MemberForm extends React.Component {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择部门');
     };
 
+    handleBlurPositionSelect = () => {
+        let positionList = this.state.positionList;
+        let positionSelectValue = _.trim(this.props.form.getFieldValue('position'));
+        if (positionSelectValue) {
+            let isMatchPositionListFlag = _.find(positionList, item => item.name === positionSelectValue);
+            if (isMatchPositionListFlag ) {
+                this.setState({
+                    isMatchPositionListFlag: true
+                });
+            } else {
+                this.setState({
+                    isMatchPositionListFlag: false,
+                });
+            }
+        }
+    };
+
+    handleFocusPositionSelect = () => {
+        this.setState({
+            isMatchPositionListFlag: true
+        });
+    };
+
+    // 获取职务的颜色
+    getPositionColor = () => {
+        // 职务列表中已存在的颜色列表
+        let existColors = _.map(this.state.positionList, 'color');
+        //第一个不在已有角色的颜色列表中的颜色，作为当前添加角色的颜色
+        return _.find(COLOR_LIST, color => existColors.indexOf(color) === -1);
+    };
+
+    handleSavePosition = () => {
+        let positionSelectValue = _.trim(this.props.form.getFieldValue('position'));
+        let color = this.getPositionColor();
+        let submitObj = {
+            name: positionSelectValue,
+            color: color,
+            customer_num: 1000
+        };
+        MemberManageAjax.addPosition(submitObj).then( (result) => {
+            this.setState({
+                isAddPositionLoading: false,
+                isMatchPositionListFlag: true
+            });
+            if (result && _.get(result, 'id')) {
+                let positionList = this.state.positionList;
+                positionList.push(result);
+                this.setState({
+                    positionList: positionList
+                });
+            } else {
+                message.error(Intl.get('member.add.failed', '添加失败！'));
+            }
+        }, (errMsg) => {
+            this.setState({
+                isAddPositionLoading: false,
+                isMatchPositionListFlag: true
+            });
+            message.error(errMsg || Intl.get('member.add.failed', '添加失败！'));
+        } );
+    };
+
+    handleCancelPosition = () => {
+        this.props.form.setFieldsValue({position: ''});
+        this.setState({
+            isMatchPositionListFlag: true
+        });
+    };
+
     state = this.initData();
 
     renderFormContent() {
         let values = this.props.form.getFieldsValue();
-        var className = 'right-panel-content';
-        if (this.props.isShowMemberForm) {
-            if (this.props.formType === 'add') {
-                className += ' right-form-add';
-            } else {
-                className += ' right-panel-content-slide';
-            }
-        }
         const {getFieldDecorator} = this.props.form;
         const saveResult = this.state.saveResult;
         const headDescr = Intl.get('member.head.logo', '头像');
@@ -390,6 +463,8 @@ class MemberForm extends React.Component {
         if (filterRoleObj) {
             roleId = filterRoleObj.roleId;
         }
+
+        let positionSelectValue = _.trim(this.props.form.getFieldValue('position'));
 
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
@@ -506,29 +581,67 @@ class MemberForm extends React.Component {
                                 label={Intl.get('member.position', '职务')}
                                 {...formItemLayout}
                             >
-                                {this.state.isLoadingPosition ? (
-                                    <div className="role-list-loading">
-                                        {Intl.get('member.is.get.position.lists', '正在获取职务列表')}
-                                        <Icon type="loading"/>
-                                    </div>) : (
-                                    <div>
-                                        {getFieldDecorator('position', {
-                                        })(
-                                            <Select
-                                                showSearch
-                                                name="position"
-                                                id="position"
-                                                optionFilterProp="children"
-                                                placeholder={Intl.get('member.select.position', '请选择职务')}
-                                                searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
-                                                notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
-                                                onSelect={this.handlePositionSelect}
-                                                getPopupContainer={() => document.getElementById('user-add-form')}
-                                            >
-                                                {this.renderPositionOptions()}
-                                            </Select>
-                                        )}
-                                    </div>)
+                                {
+                                    this.state.isLoadingPosition ? (
+                                        <div className="role-list-loading">
+                                            {Intl.get('member.is.get.position.lists', '正在获取职务列表')}
+                                            <Icon type="loading"/>
+                                        </div>) : (
+                                        <div>
+                                            {
+                                                getFieldDecorator('position')(
+                                                    <Select
+                                                        combobox
+                                                        name="position"
+                                                        id="position"
+                                                        optionFilterProp="children"
+                                                        placeholder={Intl.get('member.select.position', '请选择职务')}
+                                                        searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
+                                                        notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
+                                                        onSelect={this.handlePositionSelect}
+                                                        className={this.state.isMatchPositionListFlag ? '' : 'input-red-border'}
+                                                        onBlur={(e) => {
+                                                            this.handleBlurPositionSelect(e);
+                                                        }}
+                                                        onFocus={(e) => {
+                                                            this.handleFocusPositionSelect(e);
+                                                        }}
+                                                        getPopupContainer={() => document.getElementById('user-add-form')}
+                                                    >
+                                                        {this.renderPositionOptions()}
+                                                    </Select>
+                                                )
+                                            }
+                                            {
+                                                this.state.isMatchPositionListFlag ? null : (
+                                                    <div className="no-position-tips">
+                                                        <div className="content-tips">
+                                                            {Intl.get('member.add.member.no.position.tips', '系统中暂无职务{name}，是否添加?', {
+                                                                name: positionSelectValue
+                                                            })}
+                                                        </div>
+                                                        <div className="operator-buttons-zone">
+                                                            <Button
+                                                                className="add-btn"
+                                                                disabled={this.state.isAddPositionLoading}
+                                                                onClick={this.handleSavePosition}
+                                                            >
+                                                                {
+                                                                    this.state.isAddPositionLoading ? <Icon type="loading"/> : null
+                                                                }
+                                                                {Intl.get('common.add', '添加')}
+                                                            </Button>
+                                                            <Button
+                                                                className="cancel-btn"
+                                                                onClick={this.handleCancelPosition}
+                                                            >
+                                                                {Intl.get('common.cancel', '取消')}
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
+                                        </div>)
                                 }
                             </FormItem>
                             <FormItem
@@ -617,12 +730,16 @@ class MemberForm extends React.Component {
                                 </FormItem>
                             ) : (
                                 <FormItem>
-                                    <SaveCancelButton
-                                        loading={this.state.isSaving}
-                                        saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
-                                        handleSubmit={this.handleSubmit.bind(this)}
-                                        handleCancel={this.handleCancel.bind(this)}
-                                    />
+                                    {
+                                        this.state.isMatchPositionListFlag ? (
+                                            <SaveCancelButton
+                                                loading={this.state.isSaving}
+                                                saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
+                                                handleSubmit={this.handleSubmit.bind(this)}
+                                                handleCancel={this.handleCancel.bind(this)}
+                                            />
+                                        ) : null
+                                    }
                                 </FormItem>
                             )}
                             <FormItem>
