@@ -1233,7 +1233,7 @@ class CallRecord extends React.Component {
                         locale={{emptyText: isFilterLoading ? Intl.get('common.sales.frontpage.loading', '加载中') : Intl.get('common.no.data', '暂无数据')}}
                         scroll={{ x: this.state.isFilter ? 1450 : 1150, y: this.state.tableHeight }}
                     />
-                    { isFilterLoading||isLoading ? <Spinner /> : null }
+                    { isFilterLoading ? <Spinner /> : null }
                 </div>
              </div>
              </div>
