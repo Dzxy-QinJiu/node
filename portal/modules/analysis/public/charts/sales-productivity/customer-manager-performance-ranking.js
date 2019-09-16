@@ -20,47 +20,38 @@ export function getCustomerManagerPerformanceRankingChart() {
             value: 1000,
         }],
         dataField: 'list',
-        processData: (data, chart, analysisInstance) => {
-            const conditions = _.cloneDeep(analysisInstance.state.conditions);
-
-            chart.option = {
-                columns: [{
-                    title: Intl.get('user.user.team', '团队'),
-                    dataIndex: 'sales_team',
-                    width: '10%',
-                }, {
-                    title: Intl.get('sales.home.sales', '销售'),
-                    dataIndex: 'member_name',
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.gross.margin.score.of.newly.signed.refund', '新签回款毛利分数'),
-                    dataIndex: 'new_gross_profit_performance',
-                    render: clickableCellRender.bind(null, conditions, 'new_gross_profit_performance'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.personal.contribution.score', '个人贡献分数'),
-                    dataIndex: 'contribution_performance',
-                    render: clickableCellRender.bind(null, conditions, 'contribution_performance'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.collection.of.gross.profit.margin.score', '回款毛利率分数'),
-                    dataIndex: 'gross_profit_rate_performance',
-                    render: clickableCellRender.bind(null, conditions, 'gross_profit_rate_performance'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.total.points', '总分'),
-                    dataIndex: 'performance',
-                    sorter: sorter.bind(null, 'performance'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.rank', '名次'),
-                    dataIndex: 'order',
-                    sorter: sorter.bind(null, 'order'),
-                    width: '10%',
-                }],
-            };
-
-            return data;
+        option: {
+            columns: [{
+                title: Intl.get('user.user.team', '团队'),
+                dataIndex: 'sales_team',
+                width: '10%',
+            }, {
+                title: Intl.get('sales.home.sales', '销售'),
+                dataIndex: 'member_name',
+                width: '10%',
+            }, {
+                title: Intl.get('common.gross.margin.score.of.newly.signed.refund', '新签回款毛利分数'),
+                dataIndex: 'new_gross_profit_performance',
+                width: '10%',
+            }, {
+                title: Intl.get('common.personal.contribution.score', '个人贡献分数'),
+                dataIndex: 'contribution_performance',
+                width: '10%',
+            }, {
+                title: Intl.get('common.collection.of.gross.profit.margin.score', '回款毛利率分数'),
+                dataIndex: 'gross_profit_rate_performance',
+                width: '10%',
+            }, {
+                title: Intl.get('common.total.points', '总分'),
+                dataIndex: 'performance',
+                sorter: sorter.bind(null, 'performance'),
+                width: '10%',
+            }, {
+                title: Intl.get('common.rank', '名次'),
+                dataIndex: 'order',
+                sorter: sorter.bind(null, 'order'),
+                width: '10%',
+            }],
         },
         processOption: option => {
             const uniqTeams = _.uniqBy(option.dataSource, 'sales_team');
@@ -80,17 +71,6 @@ export function getCustomerManagerPerformanceRankingChart() {
     function sorter(f, a, b) {
         return a[f] - b[f];
     }
-}
-
-function clickableCellRender(conditions, type, value, record) {
-    return (
-        <span
-            style={{cursor: 'pointer'}}
-            onClick={handleNumberClick.bind(null, conditions, type, record)}
-        >
-            {value}
-        </span>
-    );
 }
 
 function handleNumberClick(conditions, type, record) {
