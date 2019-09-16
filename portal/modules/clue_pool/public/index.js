@@ -629,7 +629,7 @@ class ClueExtract extends React.Component {
                             data-tracename="点击提取按钮"
                             className={assigenCls}
                         >
-                            {Intl.get('clue.extract', '提取')}
+                            <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>
                         </span>}
                     overlayTitle={Intl.get('user.salesman', '销售人员')}
                     okTitle={Intl.get('common.confirm', '确认')}
@@ -647,7 +647,7 @@ class ClueExtract extends React.Component {
                 <span className={assigenCls}
                     onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
                 >
-                    {Intl.get('clue.extract', '提取')}
+                    <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>
                 </span>
             );
         }
