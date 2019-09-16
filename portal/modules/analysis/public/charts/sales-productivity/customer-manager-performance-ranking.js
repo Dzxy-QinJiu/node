@@ -79,17 +79,7 @@ export function getCustomerManagerPerformanceRankingChart() {
 
 //排名表格行点击处理事件
 function onRankingRowClick(record) {
-    let conditions = _.map(conditionCache, (value, key) => {
-        return {
-            name: key,
-            value
-        };
-    });
-
-    conditions.push({
-        name: 'member_ids',
-        value: record.member_id
-    });
+    conditionCache.member_ids = record.member_id;
 
     const columns = [
         {
@@ -104,16 +94,17 @@ function onRankingRowClick(record) {
         },
     ];
 
-    const paramObj = {
-        listType: 'customer',
+    ajax.send({
         url: '/rest/analysis/contract/contract/v2/all/performance/order/account_manager/detail',
-        dataField: null,
-        conditions,
-        columns,
-        onRowClick: showDetail
-    };
-
-    listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+        query: conditionCache
+    }).then(result => {
+        const paramObj = {
+            content: 'k',
+            onRowClick: showDetail
+        };
+    
+        listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+    });
 }
 
 function showDetail(record) {
