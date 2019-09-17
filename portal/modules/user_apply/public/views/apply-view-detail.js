@@ -590,7 +590,8 @@ const ApplyViewDetail = createReactClass({
     renderDetailCustomerBlock: function(detailInfo) {
         var tagsArray = [];
         if (_.isArray(detailInfo.immutable_labels) && detailInfo.immutable_labels.length) {
-            tagsArray = detailInfo.immutable_labels;
+            //下面加上了回访时间，上面就不展示 已回访 那个标签了
+            tagsArray = _.filter(detailInfo.immutable_labels, item => item !== Intl.get('common.has.callback', '已回访'));
         }
         var tags = tagsArray.map((tag, index) => {
             return (<Tag key={index}>{tag}</Tag>);
