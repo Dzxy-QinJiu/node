@@ -91,6 +91,7 @@ let routers = [
         name: 'user.detail.analysis',//分析
         routePath: '/analysis',
         shortName: 'user.detail.analysis',//分析
+        isNotShow: '() => location.hostname === \'csm.curtao.com\'',
         subMenu: [
             {
                 id: 'ANALYSIS',//唯一标识
