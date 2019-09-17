@@ -1499,9 +1499,31 @@ class ClueCustomer extends React.Component {
         });
     };
 
+    //调整线索转客户面板和转为新客户面板z-index的顺序
+    adjustPanelOrder(op) {
+        const ctcPanel = $('.clue-to-customer-panel');
+        const addPanel = $('.crm-add-container');
+
+        if (ctcPanel.length && addPanel.length) {
+            const ctcPanelZindex = parseInt(ctcPanel.css('z-index'));
+            const addPanelZindex = parseInt(addPanel.css('z-index'));
+
+            if (
+                (op === 'showAdd' && addPanelZindex < ctcPanelZindex) ||
+                (op === 'showCtc' && ctcPanelZindex < addPanelZindex)
+            ) {
+
+                addPanel.css('z-index', ctcPanelZindex);
+                ctcPanel.css('z-index', addPanelZindex);
+            }
+        }
+    }
+
     //显示添加客户面板
     showAddCustomerPanel = () => {
-        this.setState({isShowAddCustomerPanel: true});
+        this.setState({isShowAddCustomerPanel: true}, () => {
+            this.adjustPanelOrder('showAdd');
+        });
     };
 
     //隐藏添加客户面板
@@ -2444,6 +2466,8 @@ class ClueCustomer extends React.Component {
             isShowClueToCustomerPanel: true,
             //显示线索转客户面板上的搜索界面
             clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_SEARCH,
+        }, () => {
+            this.adjustPanelOrder('showCtc');
         });
     }
 
