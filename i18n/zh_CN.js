@@ -879,6 +879,7 @@ var zh_CN = {
     'organization.no.realms': '还没有安全域诶..',
     'organization.name.existed': '组织名称已存在!',
     'organization.name.is.unique': '组织名称唯一性校验出错！',
+    'organization.tree.name.placeholder': '请输入{name}名称',
     //组织管理end
 
     // 后台管理-产品start

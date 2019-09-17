@@ -175,16 +175,10 @@ export const nameRule = (name) => {
     };
 };
 
-// 名称长度以及规则限定
-export const nameRuleRegex = (length) => {
-    regex.getNameRegex(length);
-};
-
 // 名称验证
-export const validatorNameRuleRegex = (required, length, name) => {
+export const validatorNameRuleRegex = (length, name) => {
     return {
-        required: required,
-        pattern: nameRuleRegex(length),
+        pattern: regex.getNameRegex(length),
         message: Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间', {name: name, length: length}),
     };
 };

@@ -874,6 +874,7 @@ var en_US = {
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
     'organization.name.existed': 'The name of organization was existed', // 组织名称已存在!
     'organization.name.is.unique': 'The name of organization already exists', // 组织名称唯一性校验出错！
+    'organization.tree.name.placeholder': 'Please enter the name of {name}', // 请输入{name}名称
     //组织管理end
 
     // 后台管理- 产品start

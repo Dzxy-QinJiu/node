@@ -317,7 +317,8 @@ var SalesTeamForm = createReactClass({
                             validateStatus={this.renderValidateStyle('title')}
                             help={status.title.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.title.errors && status.title.errors.join(','))}>
                             <Validator
-                                rules={[validatorNameRuleRegex(true, 10, name)]}
+                                rules={[{required: true, message: Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name})},
+                                    validatorNameRuleRegex(10, name)]}
                             >
                                 <Input
                                     name="title"
@@ -325,7 +326,7 @@ var SalesTeamForm = createReactClass({
                                     value={formData.title}
                                     onChange={this.onChangeTeamName.bind(this)}
                                     className={this.state.checkNameExist || this.state.checkNameError ? 'input-red-border' : ''}
-                                    placeholder={Intl.get('sales.team.search.placeholder', '请输入团队名称')}
+                                    placeholder={Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name})}
                                     data-tracename="填写团队名称"
                                     onBlur={(e) => {
                                         this.checkOrganizationName(e);
