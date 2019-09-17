@@ -226,13 +226,6 @@ var UserDetailAddApp = createReactClass({
                 UserDetailAddAppAction.setRolePermissionSelectedAppError(true);
                 return;
             }
-            // 没有选择角色，则提示错误
-            if(!this.state.formData.roles.length) {
-                UserDetailAddAppAction.batchChangePermissionNoSelectRoleError(Intl.get('user.role.select.tip', '至少选择一个角色'));
-                return;
-            } else {
-                UserDetailAddAppAction.batchChangePermissionNoSelectRoleError('');
-            }
         }
         //开通产品需要选择应用
         if(this.hasApplyAppBlock()) {

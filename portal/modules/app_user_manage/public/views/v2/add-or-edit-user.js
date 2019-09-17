@@ -343,16 +343,7 @@ const AddOrEditUser = createReactClass({
         let products = JSON.parse(submitData.products);
         //选中的应用列表
         const selectedApps = this.state.selectedApps;
-        let noSelectRoleApps = AppUserUtil.handleNoSelectRole(products, selectedApps);
-        if (noSelectRoleApps.length) {
-            AppUserFormActions.someAppsNoSelectRoleError(
-                Intl.get('user.add.apps.role.select.tip', '{appName}未设置角色',
-                    {appName: noSelectRoleApps.length > 3 ? noSelectRoleApps.slice(0,3).join('、').concat('...') : noSelectRoleApps.join('、')})
-            );
-            return;
-        } else {
-            AppUserFormActions.noSelectRoleError('');
-        }
+
         //获取批量更新使用的额外数据
         const extraData = this.getExtraData();
         //添加用户

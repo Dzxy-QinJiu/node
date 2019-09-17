@@ -727,12 +727,6 @@ const UserDetailAddApp = createReactClass({
         //选中的应用列表
         const selectedApps = this.state.selectedApps;
         let noSelectRoleApps = AppUserUtil.handleNoSelectRole(submitData, selectedApps);
-        if (noSelectRoleApps.length) {
-            UserDetailAddAppActions.someAppsNoSelectRoleError(Intl.get('user.add.apps.role.select.tip', '{appName}未设置角色', { appName: noSelectRoleApps.join('、') }));
-            return;
-        } else {
-            UserDetailAddAppActions.noSelectRoleError('');
-        }
         //添加应用
         UserDetailAddAppActions.addUserApps(submitData, (apps) => {
             if (apps && _.isArray(apps)) {
@@ -767,7 +761,7 @@ const UserDetailAddApp = createReactClass({
                             >
                                 <OperationSteps.Step
                                     action={<span className={this.state.step === 0 ? 'active' : ''}>
-                                        {Intl.get(    'user.detail.addProduct.selectAndConfig', '选择产品并配置')}<span className="icon-ellipsis">....</span></span>}
+                                        {Intl.get( 'user.detail.addProduct.selectAndConfig', '选择产品并配置')}<span className="icon-ellipsis">....</span></span>}
                                 >
                                 </OperationSteps.Step>
                                 <OperationSteps.Step
