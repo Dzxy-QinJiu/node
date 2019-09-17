@@ -261,7 +261,7 @@ class LeftTree extends React.Component {
 
     element = (item, type) => {
         //团队人数的统计(递归计算该团队及所有子团队的人数)
-        let organizationName = _.get(getOrganization(), 'name', '');
+        let organizationId = _.get(getOrganization(), 'id', '');
         let teamMemberCount = commonMethodUtil.getTeamMemberCount(item, 0, this.props.teamMemberCountList, false);
         let isShowMoreBtn = this.props.mouseZoneHoverKey === item.key; // 是否显示更多按钮
         let isAddGroup = _.get(item, 'isAddGroup', false);
@@ -274,7 +274,8 @@ class LeftTree extends React.Component {
             'sale-team-detele-item-group': isDeleteGroup
         });
         let groupName = item.title;
-        if (groupName === organizationName) {
+        let groupId = item.key;
+        if (groupId === organizationId) {
             // 编辑组织，增加标识，为了区分是组织还是部门，
             item.isOrganizationFlag = true;
         }
@@ -284,7 +285,7 @@ class LeftTree extends React.Component {
                 onMouseEnter={this.handleMouseEnterItemLine.bind(this, item)}
             >
                 {
-                    groupName === organizationName ? (
+                    groupId === organizationId ? (
                         <div className='member-info'>
                             <div className='member-info-name'>
                                 <span className="sales-team-name-text">{groupName}</span>

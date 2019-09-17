@@ -57,17 +57,21 @@ function SalesTeamAction() {
         }
         );
     };
+
     this.getSalesTeamList = function() {
         getMyTeamTreeAndFlattenList(data => {
             if(data.errorMsg) {
                 this.dispatch(data.errorMsg || Intl.get('common.get.sale.lists.failed', '获取销售团队列表失败'));
             } else {
                 let teamList = _.get(data, 'teamList');
-                let organizationName = _.get(getOrganization(), 'name', '');
-                let organizationId = _.get(getOrganization(), 'id', '');
-                teamList.unshift({group_name: organizationName, group_id: organizationId});
-
-                this.dispatch(teamList);
+                SalesTeamAjax.getMemberOrganization().then( (result) => {
+                    let organizationName = _.get(result, 'name');
+                    let organizationId = _.get(result, 'id');
+                    teamList.unshift({group_name: organizationName, group_id: organizationId});
+                    this.dispatch(teamList);
+                }, () => {
+                    this.dispatch(teamList);
+                } );
             }
         },true);
     };
