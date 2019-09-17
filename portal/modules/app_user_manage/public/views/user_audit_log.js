@@ -302,7 +302,6 @@ class LogView extends React.Component {
                 title: Intl.get('common.username', '用户名'),
                 dataIndex: 'user_name',
                 className: 'has-filter click-show-user-detail',
-                sorter: true,
                 width: '100px',
                 key: 'user_name',
                 render: function($1, row) {
@@ -322,7 +321,6 @@ class LogView extends React.Component {
                 title: Intl.get('common.nickname', '昵称'),
                 dataIndex: 'nick_name',
                 className: 'has-filter click-show-user-detail',
-                sorter: true,
                 width: '130px',
                 key: 'nick_name'
             },
@@ -365,7 +363,6 @@ class LogView extends React.Component {
                 title: Intl.get('common.operate', '操作'),
                 dataIndex: 'operate',
                 className: 'has-filter click-show-user-detail',
-                sorter: true,
                 width: '100px',
                 key: 'operation_name',
                 render: function(operate, rowData, idx) {
@@ -378,7 +375,6 @@ class LogView extends React.Component {
                 title: Intl.get('user.log.operate.detail', '操作详情'),
                 dataIndex: 'operate_detail',
                 className: 'has-filter operate-detail',
-                sorter: true,
                 width: '200px',
                 key: 'operate_detail',
                 render: function(text, record, index) {
@@ -411,7 +407,6 @@ class LogView extends React.Component {
                 title: Intl.get('common.ip.location', 'IP归属地'),
                 dataIndex: 'location',
                 className: 'has-filter click-show-user-detail',
-                sorter: true,
                 width: '110px',
                 key: 'location',
                 render: function(text, record, index) {
@@ -430,7 +425,6 @@ class LogView extends React.Component {
                 title: Intl.get('user.log.area', '运营商'),
                 dataIndex: 'area',
                 className: 'has-filter click-show-user-detail',
-                sorter: true,
                 width: '100px',
                 key: 'area'
             },
