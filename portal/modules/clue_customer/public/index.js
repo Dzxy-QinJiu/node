@@ -37,7 +37,7 @@ const RadioGroup = Radio.Group;
 const Option = Select.Option;
 import TopNav from 'CMP_DIR/top-nav';
 import queryString from 'query-string';
-import {removeSpacesAndEnter, getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
+import {removeSpacesAndEnter, getTableContainerHeight, getCertainTabsTitle} from 'PUB_DIR/sources/utils/common-method-util';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 require('./css/index.less');
 import {
@@ -1211,23 +1211,23 @@ class ClueCustomer extends React.Component {
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
             {isSalesRole() ? null : <span className={willDistCls}
-                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)} title={getCertainTabsTitle(SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span className="clue-status-num">{_.get(statics,'willDistribute',0)}</span>
             </span>}
             <span className={willTrace}
-                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_TRACE)}>{Intl.get('sales.home.will.trace', '待跟进')}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_TRACE)} title={getCertainTabsTitle(SELECT_TYPE.WILL_TRACE)}>{Intl.get('sales.home.will.trace', '待跟进')}
                 <span className="clue-status-num">{_.get(statics,'willTrace',0)}</span>
             </span>
             <span className={hasTrace}
-                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)} title={getCertainTabsTitle(SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
                 <span className="clue-status-num">{_.get(statics,'hasTrace',0)}</span>
             </span>
             {filterAllotNoTraced || isSalesRole() ? null : <span className={hasTransfer}
-                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
+                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)} title={getCertainTabsTitle(SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num">{_.get(statics,'hasTransfer',0)}</span>
             </span>}
             {filterAllotNoTraced ? null : <span className={invalidClue}
-                onClick={this.handleChangeSelectedType.bind(this, 'avaibility')}>{Intl.get('sales.clue.is.enable', '无效')}
+                onClick={this.handleChangeSelectedType.bind(this, 'avaibility')} title={getCertainTabsTitle('invalidClue')}>{Intl.get('sales.clue.is.enable', '无效')}
                 <span className="clue-status-num">{_.get(statics,'invalidClue',0)}</span>
             </span>}
         </span>;

@@ -3553,6 +3553,11 @@ var zh_CN = {
     'user.score.last.month.days': '近一个月在线天数率*50',
     'user.score.online.day.score': '指定时间内活跃天数分数',
     'user.score.online.time.score': '指定时间内在线时长分数',
-    'user.score.engagement.score': '指定时间内用户参与度（操作）分数'
+    'user.score.engagement.score': '指定时间内用户参与度（操作）分数',
+    'clue.diff.type.tab.title.noassign': '未分配负责人',
+    'clue.diff.type.tab.title.notrace': '未做有效跟进（电话未打通或未写跟进记录）',
+    'clue.diff.type.tab.title.hastrace': '已做有效跟进（已打通或已写跟进记录）',
+    'clue.diff.type.tab.title.hastransfer': '已转化为客户',
+    'clue.diff.type.tab.title.mark.invalid': '标记为无效'
 };
 export default zh_CN;

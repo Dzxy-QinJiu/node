@@ -3441,6 +3441,11 @@ var en_US = {
     'user.score.last.month.days': 'Online rate in the past month*50',//近一个月在线天数率*50
     'user.score.online.day.score': 'Active days score during the specified time',//指定时间内活跃天数分数
     'user.score.online.time.score': 'Online time score within a specified time',//指定时间内在线时长分数
-    'user.score.engagement.score': 'User engagement (operation) score within the specified time'//指定时间内用户参与度（操作）分数
+    'user.score.engagement.score': 'User engagement (operation) score within the specified time',//指定时间内用户参与度（操作）分数
+    'clue.diff.type.tab.title.noassign': 'Unassigned person in charge',//未分配负责人
+    'clue.diff.type.tab.title.notrace': 'No effective follow-up (phone not open or not written follow-up record)',//未做有效跟进（电话未打通或未写跟进记录）
+    'clue.diff.type.tab.title.hastrace': 'Has been effectively followed up (has been opened or has written follow-up records)',//已做有效跟进（已打通或已写跟进记录）
+    'clue.diff.type.tab.title.hastransfer': 'Converted to customer',//已转化为客户
+    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid'//标记为无效
 };
 export default en_US;
