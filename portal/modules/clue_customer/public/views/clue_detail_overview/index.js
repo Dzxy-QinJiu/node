@@ -1293,7 +1293,7 @@ class ClueDetailOverview extends React.Component {
                         <div className="similar-title">
                             {isClueType ? renderClueStatus(listItem) : null}
                             {hasPrivilege ? (
-                                <div>
+                                <div className="similar-title-name">
                                     <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
                                     {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
                                 </div>) :
