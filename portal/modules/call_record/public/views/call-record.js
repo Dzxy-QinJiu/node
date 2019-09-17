@@ -636,7 +636,6 @@ class CallRecord extends React.Component {
                 dataIndex: 'nick_name',
                 key: 'nick_name',
                 width: this.state.isFilter ? '150px' : '100px',
-                sorter: !this.state.isFilter,
                 className: this.state.isFilter ? 'call-user' : 'has-filter call-user has-sorter'
             }, {
                 title: this.getColumnTitle('sales_team', Intl.get('call.record.team', '团队')),
