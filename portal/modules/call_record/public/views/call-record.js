@@ -453,17 +453,17 @@ class CallRecord extends React.Component {
         this.setState({
             isAddFlag: false
         });
-        let newData = _.cloneDeep(this.state);
-        let list =  newData.callRecord.data_list;
+        let callRecord = _.cloneDeep(this.state.callRecord);
+        let list = callRecord.data_list;
         let phone = _.get(customer,'[0].phones[0]');
 
-        _.map(list,(cont) =>{
+        _.map(list,(cont) => {
             if(cont.dst === phone){
-                cont.customer_name =customer[0].name;
-                cont.customer_id = customer[0].id;
+                cont.customer_name = _.get(customer, '[0].name');
+                cont.customer_id = _.get(customer,'[0].id');
             }
         });
-        this.setState(newData);
+        this.setState({callRecord});
     };
 
     showRightPanel = (id) => {
