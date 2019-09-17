@@ -1257,10 +1257,10 @@ class ClueDetailOverview extends React.Component {
         );
     };
     renderSimilarLists = (listType) => {
-        var isClueType = listType === 'clue';
+        var isSimilarClue = listType === 'clue';
         var moreListShowFlag = this.state.showLargerClueLists;
         var similarLists = this.state.similarClueLists;
-        if (!isClueType){
+        if (!isSimilarClue){
             similarLists = this.state.similarCustomerLists;
             moreListShowFlag = this.state.showLargerCustomerLists;
         }
@@ -1279,7 +1279,7 @@ class ClueDetailOverview extends React.Component {
             <div className="similar-content similar-customer-list">
                 <div className="similar-tip">
                     <i className="iconfont icon-phone-call-out-tip"></i>
-                    {isClueType ? Intl.get('clue.has.similar.lists', '相似线索') : Intl.get('customer.has.similar.lists', '相似客户')}
+                    {isSimilarClue ? Intl.get('clue.has.similar.lists', '相似线索') : Intl.get('customer.has.similar.lists', '相似客户')}
                 </div>
                 {_.map(similarLists,(listItem) => {
                     var sameContact = this.getSamePhoneContact(_.get(listItem,'contacts',[]));
@@ -1291,11 +1291,11 @@ class ClueDetailOverview extends React.Component {
                     let hasPrivilege = ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClients) && !isClueType) || isClueType;
                     return <div className="similar-block">
                         <div className="similar-title">
-                            {isClueType ? renderClueStatus(listItem) : null}
+                            {isSimilarClue ? renderClueStatus(listItem) : null}
                             {hasPrivilege ? (
                                 <div className="similar-title-name">
-                                    <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                                    {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                                    <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
+                                    {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
                                 </div>) :
                                 <Popover
                                     placement="topLeft"
@@ -1318,10 +1318,10 @@ class ClueDetailOverview extends React.Component {
                                 </div>
                             );
                         }) : null}
-                        {traceAddTime && isClueType ? <span className="trace-time">{Intl.get('clue.detail.last.contact.time', '最后跟进时间') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
+                        {traceAddTime && isSimilarClue ? <span className="trace-time">{Intl.get('clue.detail.last.contact.time', '最后跟进时间') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
                     </div>;
                 })}
-                {listMoreThanThree ? <div className="show-hide-tip" onClick={isClueType ? this.handleToggleClueTip : this.handleToggleCustomerTip}>
+                {listMoreThanThree ? <div className="show-hide-tip" onClick={isSimilarClue ? this.handleToggleClueTip : this.handleToggleCustomerTip}>
                     {moreListShowFlag ? Intl.get('crm.contact.way.hide', '收起') : Intl.get('notification.system.more', '展开全部')}</div> : null}
             </div>
         );
