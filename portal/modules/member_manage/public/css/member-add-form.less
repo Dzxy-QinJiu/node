@@ -42,7 +42,6 @@
         position: relative;
         display: inline-block;
         width: 100%;
-        padding: 6px 7px;
         border: 1px solid @error_tips_color;
         line-height: 1.5;
         color: #666;
@@ -64,6 +63,19 @@
           color: #8DA8C5;
           cursor: pointer;
         }
+      }
+      .ant-form-item {
+          .no-position-tips {
+            .content-tips {
+              color: @error_tips_color;
+            }
+            .operator-buttons-zone {
+              text-align: right;
+              .cancel-btn {
+                margin-left: 12px;
+              }
+            }
+          }
       }
     }
   }
