@@ -411,6 +411,9 @@ class MemberForm extends React.Component {
             color: color,
             customer_num: 1000
         };
+        this.setState({
+            isAddPositionLoading: true
+        });
         MemberManageAjax.addPosition(submitObj).then( (result) => {
             this.setState({
                 isAddPositionLoading: false,
