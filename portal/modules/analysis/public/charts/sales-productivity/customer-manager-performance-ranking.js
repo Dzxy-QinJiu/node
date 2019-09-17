@@ -99,12 +99,21 @@ function onRankingRowClick(record) {
         query: conditionCache
     }).then(result => {
         const paramObj = {
-            content: 'k',
+            content: getPerformanceDetailContent(result),
             onRowClick: showDetail
         };
     
         listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
     });
+}
+
+//获取业绩详情内容
+function getPerformanceDetailContent(result) {
+    return (
+        <div>
+            k
+        </div>
+    );
 }
 
 function showDetail(record) {
