@@ -1288,7 +1288,7 @@ class ClueDetailOverview extends React.Component {
                     let user_id = userData.getUserData().user_id;
                     let isMyClients = _.isEqual(_.get(listItem, 'user_id'), user_id);
                     //当展示的是相似线索的时候按照正常逻辑展示，展示相似客户的时候判断当前客户是否属于此销售，管理员也有权限查看
-                    let hasPrivilege = ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClients) && !isClueType) || isClueType;
+                    let hasPrivilege = ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClients) && !isSimilarClue) || isSimilarClue;
                     return <div className="similar-block">
                         <div className="similar-title">
                             {isSimilarClue ? renderClueStatus(listItem) : null}
