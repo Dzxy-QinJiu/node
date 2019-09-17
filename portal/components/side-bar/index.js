@@ -54,22 +54,30 @@ class SideBar extends React.Component {
         let appBottom = 2 * singleSideBarHeight - appHeight;
         let weixinClassName = classNames('qrcode', 'weixin', {'hide': !this.state.showWeixin});
         let appClassName = classNames('qrcode', 'app', {'hide': !this.state.showApp});
+        let onlyService = classNames('single-bar-box', {
+            'only-service': _.get(this.state, 'showChat')
+        });
+
         return (
             <div className='side-bar-content'>
                 <div className='side-bar'>
-                    <div className='single-bar-box'>
-                        <i className='iconfont icon-weixin' onMouseEnter={this.weixinMouseEnter}
-                            onMouseLeave={this.weixinMouseLeave}
-                        ></i>
-                        <i className='single-bar-label'>{Intl.get('weixin.mini.program', '小程序')}</i>
-                    </div>
-                    <div className='single-bar-box'>
-                        <i className='iconfont icon-ketao-app' onMouseEnter={this.appMouseEnter}
-                            onMouseLeave={this.appMouseLeave}></i>
-                        <i className='single-bar-label'>{Intl.get('login.ketao.app.name', '客套APP')}</i>
-                    </div>
+                    {this.state.showChat ? null : (
+                        <React.Fragment>
+                            <div className='single-bar-box'>
+                                <i className='iconfont icon-weixin' onMouseEnter={this.weixinMouseEnter}
+                                    onMouseLeave={this.weixinMouseLeave}
+                                ></i>
+                                <i className='single-bar-label'>{Intl.get('weixin.mini.program', '小程序')}</i>
+                            </div>
+                            <div className='single-bar-box'>
+                                <i className='iconfont icon-ketao-app' onMouseEnter={this.appMouseEnter}
+                                    onMouseLeave={this.appMouseLeave}></i>
+                                <i className='single-bar-label'>{Intl.get('login.ketao.app.name', '客套APP')}</i>
+                            </div>
+                        </React.Fragment>
+                    )}
                     {this.state.showChat ? (
-                        <div className='single-bar-box'>
+                        <div className={onlyService}>
                             <i className='iconfont icon-apply-message-tip' onClick={this.chatClick}></i>
                             <i className='single-bar-label'>{Intl.get('customer.service', '客服')}</i>
                         </div>) : (<div className='single-bar-box is-placeholder'/>)}
