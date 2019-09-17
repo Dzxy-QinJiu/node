@@ -127,7 +127,7 @@ class ClueCustomer extends React.Component {
         showRecommendCustomerCondition: false,
         isReleasingClue: false,//是否正在释放线索
         selectedClue: [],//选中的线索
-        isBatchChangeTraceFinish: true,//线索批量分配是否完成
+        isBatchChangeTraceLoading: false,//线索批量分配是否正在进行
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -263,13 +263,13 @@ class ClueCustomer extends React.Component {
         });
         this.setState({
             selectedClues: [],
-            isBatchChangeTraceFinish: false
+            isBatchChangeTraceLoading: true
         });
         //当最后一个推送完成后
         if(_.isEqual(taskInfo.running, 0)) {
             //批量操作删除之后，才允许进行下一次批量操作
             this.setState({
-                isBatchChangeTraceFinish: true
+                isBatchChangeTraceLoading: false
             });
         }
     };
@@ -1743,7 +1743,7 @@ class ClueCustomer extends React.Component {
             }else{
                 //更新是否批量处理结束状态
                 this.setState({
-                    isBatchChangeTraceFinish: false
+                    isBatchChangeTraceLoading: true
                 });
                 //这个是批量修改联系人
                 if (this.refs.changesales) {
@@ -2360,8 +2360,8 @@ class ClueCustomer extends React.Component {
     renderBatchChangeButton = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
         let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
-        //是否批量分配结束
-        let isBatchTraceFinish = _.get(this.state, 'isBatchChangeTraceFinish');
+        //批量分配是否结束
+        let isBatchTraceFinish = !_.get(this.state, 'isBatchChangeTraceLoading');
         //批量操作的警告信息
         let batchWarningContent = (<span className="batch-error-tip">
             <span className="iconfont icon-warn-icon"></span>
