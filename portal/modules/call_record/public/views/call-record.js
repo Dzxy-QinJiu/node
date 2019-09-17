@@ -453,7 +453,7 @@ class CallRecord extends React.Component {
         this.setState({
             isAddFlag: false
         });
-        let callRecord = _.cloneDeep(this.state.callRecord);
+        let callRecord = this.state.callRecord;
         let list = callRecord.data_list;
         let phone = _.get(customer,'[0].phones[0]');
 
