@@ -3358,6 +3358,7 @@ var zh_CN = {
     'common.sales.productivity.analysis': '销售生产力分析',
     'common.convert.to.customer': '转为客户',
     'common.merge.to.customer': '合并到此客户',
+    'common.check.customer.detail.warning': '此客户已在其他销售名下',
     'common.merge.to.other.customer': '合并到其他客户',
     'common.modify.name.to': '修改姓名为',
     'common.convert.to.new.customer': '转为新客户',
