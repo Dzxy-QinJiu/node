@@ -2072,6 +2072,7 @@ var zh_CN = {
     'contract.purchase.contract.type.other': '其他',
     'contract.start.time.greater.than.end.time.warning': '起始时间不能大于结束时间',
     'contract.end.time.less.than.start.time.warning': '结束时间不能小于起始时间',
+    'contract.start.time.greater.than.today': '起始时间不能选在今日之前',
     'contract.introTip': '拖动字段到行、列、筛选条件',
     'contract.analysis.error.tip': '请填写分析表名称',
     'contract.analysis.title.placeholder': '新的分析，请再次输入标题',
