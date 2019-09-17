@@ -2039,7 +2039,6 @@ var en_US = {
     'contract.purchase.contract.type.optical.fiber': 'Optical fiber', // 光纤,
     'contract.purchase.contract.type.other': 'Other', // 其他,
     'contract.start.time.greater.than.end.time.warning': 'The start time cannot be greater than the end time', // 起始时间不能大于结束时间,
-    'contract.start.time.greater.than.today': 'Starting time can not be before today',//起始时间不能在今日之前
     'contract.end.time.less.than.start.time.warning': 'The end time cannot be less than the start time', // 结束时间不能小于起始时间,
     'contract.introTip': 'Drag fields to the row,columns and filters\' zone', //"拖动字段到行、列、筛选条件"
     'contract.analysis.error.tip': 'Please fill in the name of the analysis table', // 请填写分析表名称

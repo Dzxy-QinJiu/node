@@ -257,7 +257,6 @@ class AddBusinessApply extends React.Component {
             var formData = this.state.formData;
             const begin_time = formData.begin_time;
             const endTime = formData.end_time;
-            const today = new Date().getTime() - 1000;
             const isBeginTime = timeType === 'begin_time' ? true : false;
             if (endTime && begin_time) {
                 if (formData.begin_type && formData.end_type){
@@ -270,8 +269,6 @@ class AddBusinessApply extends React.Component {
                     } else if (moment(endTime).isSame(begin_time,'day') && formData.begin_type === AM_AND_PM.PM && formData.end_type === AM_AND_PM.AM){
                         //是同一天的时候，不能开始时间选下午，结束时间选上午
                         callback(Intl.get('contract.start.time.greater.than.end.time.warning', '起始时间不能大于结束时间'));
-                    }else if(moment(begin_time).isBefore(today)) {
-                        callback(Intl.get('contract.start.time.greater.than.today', '起始时间不能选在今日之前'));
                     }else{
                         callback();
                     }
