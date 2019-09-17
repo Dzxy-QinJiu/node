@@ -18,7 +18,7 @@ var salesTeamRestApis = {
     getSalesGoals: '/rest/contract/v2/goal',
     saveSalesGoals: '/rest/contract/v2/goal',
     getOrganizationInfoByName: '/rest/base/v1/realm/organization', // 根据组织属性获取组织信息
-    changeOrganizationName: '/rest/base/v1/realm/organization/nam', // 修改组织名称
+    changeOrganizationName: '/rest/base/v1/realm/organization/name', // 修改组织名称
 };
 exports.urls = salesTeamRestApis;
 

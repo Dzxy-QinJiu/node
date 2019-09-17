@@ -120,6 +120,13 @@ var SalesTeamForm = createReactClass({
                         user_ids: JSON.stringify(formData.userIds),
                         parent_group: formData.superiorTeam//上级团队
                     };
+                    if (formData.isOrganizationFlag) { // 修改组织名称
+                        editGroupData = {
+                            id: formData.key,
+                            name: formData.title,
+                            isOrganizationFlag: true
+                        };
+                    }
                     formData.isTeamSaving = true;
                     this.setState({formData: formData});
                     SalesTeamActions.saveEditGroup(editGroupData, result => {
@@ -242,15 +249,15 @@ var SalesTeamForm = createReactClass({
                     });
                 } else {
                     if (data) {
-                        //不存在
+                        // 已存在
                         this.setState({
-                            checkNameExist: false,
+                            checkNameExist: true,
                             checkNameError: false
                         });
                     } else {
-                        //已存在
+                        //不存在
                         this.setState({
-                            checkNameExist: true,
+                            checkNameExist: false,
                             checkNameError: false
                         });
                     }
