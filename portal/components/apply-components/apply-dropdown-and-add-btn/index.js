@@ -10,6 +10,7 @@ require('./index.less');
 var classNames = require('classnames');
 import {getUnreadReplyTitle} from 'PUB_DIR/sources/utils/common-method-util';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
+import userData from 'PUB_DIR/sources/user-data';
 
 class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
@@ -98,7 +99,8 @@ class ApplyDropdownAndAddBtn extends React.Component {
                         </Dropdown>
                     }
                 </div>
-                {hasPrivilege(this.props.addPrivilege) ?
+                {/* 管理员不需要申请 */}
+                {hasPrivilege(this.props.addPrivilege) && !userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ?
                     this.renderApplyButton()
                     : null}
                 <div className="pull-right search-btns">
