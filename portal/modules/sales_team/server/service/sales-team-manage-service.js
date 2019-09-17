@@ -16,9 +16,21 @@ var salesTeamRestApis = {
     editGroup: '/rest/base/v1/group',
     addGroup: '/rest/base/v1/group',
     getSalesGoals: '/rest/contract/v2/goal',
-    saveSalesGoals: '/rest/contract/v2/goal'
+    saveSalesGoals: '/rest/contract/v2/goal',
+    getOrganizationInfoByName: '/rest/base/v1/realm/organization', // 根据组织属性获取组织信息
+    changeOrganizationName: '/rest/base/v1/realm/organization/name', // 修改组织名称
 };
 exports.urls = salesTeamRestApis;
+
+// 根据组织属性获取组织信息
+exports.getOrganizationInfoByName = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: salesTeamRestApis.getOrganizationInfoByName,
+            req: req,
+            res: res
+        }, req.query);
+};
 
 exports.getSalesGoals = function(req, res, team_id) {
     return restUtil.authRest.get(
@@ -123,9 +135,14 @@ exports.deleteGroup = function(req, res, groupId) {
 };
 
 exports.editGroup = function(req, res, salesTeam) {
+    let url = salesTeamRestApis.editGroup; // 修改子部门的URL
+    if (salesTeam && salesTeam.isOrganizationFlag) { // 修改组织的URL
+        url = salesTeamRestApis.changeOrganizationName;
+        delete salesTeam.isOrganizationFlag;
+    }
     return restUtil.authRest.put(
         {
-            url: salesTeamRestApis.editGroup,
+            url: url,
             req: req,
             res: res
         },

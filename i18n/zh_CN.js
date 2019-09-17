@@ -269,6 +269,7 @@ var zh_CN = {
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'common.create': '创建',
     'common.stage.describe': '阶段描述',
+    'common.name.rule.regex': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间',
 
     //公共部分--end
     'login.login': '登录',
@@ -879,6 +880,9 @@ var zh_CN = {
     'organization.save.delete.group.failed': '删除组织失败',
     'organization.get.add.organization.member.list.failed': '获取可加入组织的成员列表失败',
     'organization.no.realms': '还没有安全域诶..',
+    'organization.name.existed': '组织名称已存在!',
+    'organization.name.is.unique': '组织名称唯一性校验出错！',
+    'organization.tree.name.placeholder': '请输入{name}名称',
     //组织管理end
 
     // 后台管理-产品start

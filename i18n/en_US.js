@@ -263,6 +263,7 @@ var en_US = {
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
     'common.create': 'Create', // 创建
     'common.stage.describe': 'the description of stage', // 阶段描述
+    'common.name.rule.regex': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and {length}', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -875,6 +876,9 @@ var en_US = {
     'organization.save.delete.group.failed': 'Delete organization failed',//删除组织失败
     'organization.get.add.organization.member.list.failed': 'Failed to get member lists that who can join  the organization',//获取可加入组织的成员列表失败
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
+    'organization.name.existed': 'The name of organization was existed', // 组织名称已存在!
+    'organization.name.is.unique': 'The name of organization already exists', // 组织名称唯一性校验出错！
+    'organization.tree.name.placeholder': 'Please enter the name of {name}', // 请输入{name}名称
     //组织管理end
 
     // 后台管理- 产品start
