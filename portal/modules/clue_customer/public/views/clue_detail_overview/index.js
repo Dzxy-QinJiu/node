@@ -8,7 +8,7 @@ import { emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/sources/utils/validate
 var React = require('react');
 require('../../css/clue_detail_overview.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
-import {Button, Form, Icon, message, Input} from 'antd';
+import {Button, Form, Icon, message, Input, Popover} from 'antd';
 const FormItem = Form.Item;
 const {TextArea} = Input;
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -157,12 +157,8 @@ class ClueDetailOverview extends React.Component {
             similarCustomerErrmsg: ''
         });
         var curClue = this.state.curClue;
-        var type = 'self';
-        if(hasPrivilege('CRM_QUERY_SIMILARITY_CUSTOMER_ALL')){
-            type = 'all';
-        }
         $.ajax({
-            url: '/rest/get/similar/customerlists/' + type,
+            url: '/rest/get/similar/customerlists/all',
             type: 'get',
             dateType: 'json',
             data: {
@@ -1272,7 +1268,13 @@ class ClueDetailOverview extends React.Component {
         if (!moreListShowFlag && listMoreThanThree){
             similarLists = _.cloneDeep(similarLists).splice(0,3);
         }
-
+        let warningContent = (
+            <span className="client-error-tip">
+                <span className="iconfont icon-warn-icon"></span>
+                <span className="client-error-text">
+                    {Intl.get('common.check.customer.detail.warning', '此客户已在其他销售名下')}
+                </span>
+            </span>);
         return (
             <div className="similar-content similar-customer-list">
                 <div className="similar-tip">
@@ -1282,12 +1284,27 @@ class ClueDetailOverview extends React.Component {
                 {_.map(similarLists,(listItem) => {
                     var sameContact = this.getSamePhoneContact(_.get(listItem,'contacts',[]));
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
+                    //查看当前客户是否属于此销售，如果不属于，用popover提示
+                    let user_id = userData.getUserData().user_id;
+                    let isMyClients = _.isEqual(_.get(listItem, 'user_id'), user_id);
+                    //当展示的是相似线索的时候按照正常逻辑展示，展示相似客户的时候判断当前客户是否属于此销售，管理员也有权限查看
+                    let hasPrivilege = ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClients) && !isClueType) || isClueType;
                     return <div className="similar-block">
                         <div className="similar-title">
                             {isClueType ? renderClueStatus(listItem) : null}
-                            <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                            {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
-
+                            {hasPrivilege ? (
+                                <div>
+                                    <span onClick={isClueType ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
+                                    {!isClueType && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                                </div>) :
+                                <Popover
+                                    placement="topLeft"
+                                    overlayClassName="client-invalid-popover"
+                                    content={warningContent}
+                                    trigger="click">
+                                    <span>{listItem.name}</span> :
+                                </Popover>
+                            }
                         </div>
                         {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
                             return (
