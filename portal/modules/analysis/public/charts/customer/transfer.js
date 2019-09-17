@@ -31,18 +31,15 @@ export function getCustomerTransferChart() {
                 }, {
                     title: Intl.get('crm.41', '客户名'),
                     dataIndex: 'customer_name',
-                    sorter: true,
                     width: 300,
                     isSetCsvValueBlank: true
                 }, {
                     title: Intl.get('crm.customer.transfer.sales', '销售代表'),
                     dataIndex: 'old_member_nick_name',
-                    sorter: true,
                     width: 100,
                 }, {
                     title: Intl.get('crm.customer.transfer.manager', '客户经理'),
                     dataIndex: 'new_member_nick_name',
-                    sorter: true,
                     width: 100,
                 }, {
                     title: Intl.get('user.sales.team', '销售团队'),
