@@ -120,9 +120,9 @@ class ContactForm extends React.Component {
             }
         }
         //联系人姓名和部门必填一项的验证
-        this.validateContactNameDepartment();
+        let isValid = this.validateContactNameDepartment(true);
         //未通过姓名和部门必填一项的验证
-        if (!this.state.isValidNameDepartment) {
+        if (!isValid) {
             return false;
         }
         let hasPhone = _.some(phoneArray, phone => phone);
@@ -347,11 +347,12 @@ class ContactForm extends React.Component {
     }
 
     //联系人名和部门必填一项的验证
-    validateContactNameDepartment = () => {
+    validateContactNameDepartment = (needReturn) => {
         //是否通过联系人名和部门必填一项的验证
         let formData = this.props.form.getFieldsValue(['name', 'department']);
         let isValid = validateRequiredOne(formData.name, formData.department);
         this.setState({isValidNameDepartment: isValid});
+        if(needReturn) return isValid;
     };
 
     //渲染联系人名和部门必填一项的提示
