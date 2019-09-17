@@ -440,17 +440,17 @@
 
           //  form样式
           .group-form-div, .group-form-edit-group {
-            height: @edit-team-form-height;
+            min-height: @edit-team-form-height;
             .item-border-style {
-              height: @edit-team-form-height;
+              min-height: @edit-team-form-height;
               background-color: #EFF8F9;
             }
           }
           //没有上级团队的编辑界面高度去掉上级团队选项的高度
           .group-form-no-superior.group-form-div, .group-form-no-superior.group-form-edit-group {
-            height: @edit-teamName-form-height;
+            min-height: @edit-teamName-form-height;
             .edit-sales-team-form {
-              height: @edit-teamName-form-height;
+              min-height: @edit-teamName-form-height;
             }
             .item-border-style {
               height: @edit-teamName-form-height;
@@ -459,7 +459,7 @@
           }
           .edit-sales-team-form {
             cursor: default;
-            height: @edit-team-form-height;
+            min-height: @edit-team-form-height;
             .form {
               padding-right: 10px;
               .ant-form-item {
