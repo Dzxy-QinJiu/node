@@ -31,6 +31,7 @@ import {
     Menu,
     Dropdown,
     Popconfirm,
+    Popover,
 } from 'antd';
 const {TextArea} = Input;
 const RadioGroup = Radio.Group;
@@ -126,6 +127,7 @@ class ClueCustomer extends React.Component {
         showRecommendCustomerCondition: false,
         isReleasingClue: false,//是否正在释放线索
         selectedClue: [],//选中的线索
+        isBatchChangeTraceFinish: true,//线索批量分配是否完成
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -260,8 +262,16 @@ class ClueCustomer extends React.Component {
             }
         });
         this.setState({
-            selectedClues: []
+            selectedClues: [],
+            isBatchChangeTraceFinish: false
         });
+        //当最后一个推送完成后
+        if(_.isEqual(taskInfo.running, 0)) {
+            //批量操作删除之后，才允许进行下一次批量操作
+            this.setState({
+                isBatchChangeTraceFinish: true
+            });
+        }
     };
     removeClueItem = (item) => {
         //在列表中删除线索
@@ -1731,6 +1741,10 @@ class ClueCustomer extends React.Component {
                     this['changesale' + clue_id].handleCancel();
                 }
             }else{
+                //更新是否批量处理结束状态
+                this.setState({
+                    isBatchChangeTraceFinish: false
+                });
                 //这个是批量修改联系人
                 if (this.refs.changesales) {
                     //隐藏批量变更销售面板
@@ -2342,6 +2356,51 @@ class ClueCustomer extends React.Component {
         });
     };
 
+    //渲染批量分配按钮
+    renderBatchChangeButton = () => {
+        //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
+        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
+        //是否批量分配结束
+        let isBatchTraceFinish = _.get(this.state, 'isBatchChangeTraceFinish');
+        //批量操作的警告信息
+        let batchWarningContent = (<span className="batch-error-tip">
+            <span className="iconfont icon-warn-icon"></span>
+            <span className="batch-error-text">
+                {Intl.get('clue.batch.assign.sales.pending', '批量分配进行中，请稍后再试!')}
+            </span>
+        </span>);
+        if(showBatchChange) {
+            if(isBatchTraceFinish) {
+                return (<AntcDropdown
+                    ref='changesales'
+                    content={<Button type="primary"
+                        data-tracename="点击分配线索客户按钮"
+                        className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
+                    overlayTitle={Intl.get('user.salesman', '销售人员')}
+                    okTitle={Intl.get('common.confirm', '确认')}
+                    cancelTitle={Intl.get('common.cancel', '取消')}
+                    isSaving={this.state.distributeBatchLoading}
+                    overlayContent={this.renderSalesBlock()}
+                    handleSubmit={this.handleSubmitAssignSalesBatch}
+                    unSelectDataTip={this.state.unSelectDataTip}
+                    clearSelectData={this.clearSelectSales}
+                    btnAtTop={false}
+                />);
+            } else {
+                return (<Popover
+                    overlayClassName="batch-invalid-popover"
+                    placement="bottomRight"
+                    content={batchWarningContent}
+                    trigger="click"
+                >
+                    <Button type="primary" className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>
+                </Popover>);
+            }
+        } else {
+            return null;
+        }
+    }
+
     //渲染批量操作按钮
     renderBatchChangeClues = () => {
         let filterClueStatus = clueFilterStore.getState().filterClueStatus;
@@ -2351,28 +2410,10 @@ class ClueCustomer extends React.Component {
         let filterStore = clueFilterStore.getState();
         //只有待跟进和已跟进和无效tab才有批量操作
         let batchRule = _.isEqual(curStatus.status, SELECT_TYPE.WILL_TRACE) || _.isEqual(curStatus.status, SELECT_TYPE.HAS_TRACE) || _.isEqual(filterStore.filterClueAvailability, AVALIBILITYSTATUS.INAVALIBILITY);
-        //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
-        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
         return (
             <div className="pull-right">
                 <div className="pull-right">
-                    { showBatchChange ?
-                        (<AntcDropdown
-                            ref='changesales'
-                            content={<Button type="primary"
-                                data-tracename="点击分配线索客户按钮"
-                                className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
-                            overlayTitle={Intl.get('user.salesman', '销售人员')}
-                            okTitle={Intl.get('common.confirm', '确认')}
-                            cancelTitle={Intl.get('common.cancel', '取消')}
-                            isSaving={this.state.distributeBatchLoading}
-                            overlayContent={this.renderSalesBlock()}
-                            handleSubmit={this.handleSubmitAssignSalesBatch}
-                            unSelectDataTip={this.state.unSelectDataTip}
-                            clearSelectData={this.clearSelectSales}
-                            btnAtTop={false}
-                        />) : null
-                    }
+                    {this.renderBatchChangeButton()}
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
