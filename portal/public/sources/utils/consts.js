@@ -659,3 +659,20 @@ export const INDICATOR_TOOLTIP = [{
     key: 'online_time',
     value: Intl.get('user.score.online.time.score', '指定时间内在线时长分数')
 }];
+export const extractIcon = (<i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}/>);
+export const DIFF_STATUS_TAB = [{
+    key: '0',
+    value: Intl.get('clue.diff.type.tab.title.noassign', '未分配负责人')
+}, {
+    key: '1',
+    value: Intl.get('clue.diff.type.tab.title.notrace', '未做有效跟进（电话未打通或未写跟进记录）')
+}, {
+    key: '2',
+    value: Intl.get('clue.diff.type.tab.title.hastrace', '已做有效跟进（已打通或已写跟进记录）')
+}, {
+    key: '3',
+    value: Intl.get('clue.diff.type.tab.title.hastransfer', '已转化为客户')
+}, {
+    key: 'invalidClue',
+    value: Intl.get('clue.diff.type.tab.title.mark.invalid', '标记为无效')
+},];

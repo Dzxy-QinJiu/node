@@ -595,6 +595,7 @@ function getApplyBasicDetail(req, res, apply_id) {
                     if (detailObj && detailObj.customer_id) {
                         getQueryCustomerById(req, res, detailObj.customer_id).then((result) => {
                             if (_.isArray(result.result) && result.result.length) {
+                                detailObj.last_call_back_time = result.result[0].last_call_back_time;
                                 detailObj.last_contact_time = result.result[0].last_contact_time;
                                 detailObj.immutable_labels = _.get(result, 'result[0].immutable_labels');
                                 detailObj.customer_label = _.get(result,'result[0].customer_label');

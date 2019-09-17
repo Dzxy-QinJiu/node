@@ -65,8 +65,15 @@ function getAllMenu() {
 function getFirstLevelMenus() {
     let menus = getIntledMenus();
     return _.filter(menus, (menu) => {
+        //需要用eval将isNotShow属性由字符串转成js代码，以便回调函数形式的值能执行
+        let isNotShow = eval(menu.isNotShow);
+
+        if (_.isFunction(isNotShow)) {
+            isNotShow = isNotShow();
+        }
+
         //过滤掉不展示的，没有名称的，需要展示到底部的
-        if (menu.isNotShow || !menu.name || menu.bottom === true) {
+        if (isNotShow || !menu.name || menu.bottom === true) {
             return false;
         } else {
             return true;

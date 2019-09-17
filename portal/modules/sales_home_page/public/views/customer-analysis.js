@@ -964,7 +964,6 @@ class CustomerAnalysis extends React.Component {
                         isSetCsvValueBlank: true,
                         key: 'customer_name',
                         className: 'customer-name',
-                        sorter: true,
                         width: 300,
                         render: (text, item, index) => {
                             return (
@@ -976,13 +975,11 @@ class CustomerAnalysis extends React.Component {
                         title: Intl.get('crm.customer.transfer.sales', '销售代表'),
                         dataIndex: 'old_member_nick_name',
                         key: 'old_member_nick_name',
-                        sorter: true,
                         width: 100,
                     }, {
                         title: Intl.get('crm.customer.transfer.manager', '客户经理'),
                         dataIndex: 'new_member_nick_name',
                         key: 'new_member_nick_name',
-                        sorter: true,
                         width: 100,
                     }, {
                         title: Intl.get('user.sales.team', '销售团队'),

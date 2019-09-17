@@ -4,6 +4,7 @@
  * Created by liwenjun on 2018/12/19.
  */
 const MODULE_PATH = 'modules/';
+const config = require('./config');
 
 let routers = [
     {
@@ -91,6 +92,7 @@ let routers = [
         name: 'user.detail.analysis',//分析
         routePath: '/analysis',
         shortName: 'user.detail.analysis',//分析
+        isNotShow: '() => location.hostname === \'' + config.curtaoUrl + '\'',
         subMenu: [
             {
                 id: 'ANALYSIS',//唯一标识

@@ -128,6 +128,9 @@
           margin:8px 0;
           overflow: hidden;
           cursor: pointer;
+          .similar-title-name {
+            display: inline;
+          }
           .clue-stage {
             margin-right: 8px;
             font-size: 14px;
@@ -336,6 +339,26 @@
     position: relative;
     .title-descr-style {
       padding-left: 8px;
+    }
+  }
+}
+//popover错误提示框
+.client-invalid-popover {
+  .ant-popover-inner-content {
+    overflow: hidden;
+    //错误提示
+    .client-error-tip {
+      font-size: 14px;
+      .icon-warn-icon {
+        position: relative;
+        top: 1px;
+        color: @reply-message-tip-color;
+        margin-right:4px;
+      }
+      .client-error-text {
+        margin-left: 5px;
+        color: #333333;
+      }
     }
   }
 }

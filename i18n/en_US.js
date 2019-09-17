@@ -842,6 +842,7 @@ var en_US = {
     'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
     'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
     'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量已达{number}个上限
+    'member.add.member.no.position.tips': 'There is no office in system. whether to add', // 系统中暂无职务{name}，是否添加?
     //后台管理-成员end
 
     //组织管理start
@@ -3247,6 +3248,7 @@ var en_US = {
     'common.sales.productivity.analysis': 'Sales productivity analysis',//销售生产力分析
     'common.convert.to.customer': 'convert to customer',//转为客户
     'common.merge.to.customer': 'convert to customer',//合并到此客户
+    'common.check.customer.detail.warning': 'This customer has belonged to other sales',//此客户已在其他销售名下
     'common.merge.to.other.customer': 'convert to existing customer',//合并到其他客户
     'common.modify.name.to': 'modify name to',//修改姓名为
     'common.convert.to.new.customer': 'convert to new customer',//转为新客户
@@ -3440,6 +3442,11 @@ var en_US = {
     'user.score.last.month.days': 'Online rate in the past month*50',//近一个月在线天数率*50
     'user.score.online.day.score': 'Active days score during the specified time',//指定时间内活跃天数分数
     'user.score.online.time.score': 'Online time score within a specified time',//指定时间内在线时长分数
-    'user.score.engagement.score': 'User engagement (operation) score within the specified time'//指定时间内用户参与度（操作）分数
+    'user.score.engagement.score': 'User engagement (operation) score within the specified time',//指定时间内用户参与度（操作）分数
+    'clue.diff.type.tab.title.noassign': 'Unassigned person in charge',//未分配负责人
+    'clue.diff.type.tab.title.notrace': 'No effective follow-up (phone not open or not written follow-up record)',//未做有效跟进（电话未打通或未写跟进记录）
+    'clue.diff.type.tab.title.hastrace': 'Has been effectively followed up (has been opened or has written follow-up records)',//已做有效跟进（已打通或已写跟进记录）
+    'clue.diff.type.tab.title.hastransfer': 'Converted to customer',//已转化为客户
+    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid'//标记为无效
 };
 export default en_US;

@@ -846,6 +846,7 @@ var zh_CN = {
     'member.record.get.record.failed': '获取成员变更失败',
     'member.record.no.record': '暂无变更记录',
     'member.number.toplimit': '成员数量已达{number}个上限',
+    'member.add.member.no.position.tips': '系统中暂无职务{name}，是否添加?',
     //后台管理-成员end
 
     //组织管理start
@@ -3357,6 +3358,7 @@ var zh_CN = {
     'common.sales.productivity.analysis': '销售生产力分析',
     'common.convert.to.customer': '转为客户',
     'common.merge.to.customer': '合并到此客户',
+    'common.check.customer.detail.warning': '此客户已在其他销售名下',
     'common.merge.to.other.customer': '合并到其他客户',
     'common.modify.name.to': '修改姓名为',
     'common.convert.to.new.customer': '转为新客户',
@@ -3552,6 +3554,11 @@ var zh_CN = {
     'user.score.last.month.days': '近一个月在线天数率*50',
     'user.score.online.day.score': '指定时间内活跃天数分数',
     'user.score.online.time.score': '指定时间内在线时长分数',
-    'user.score.engagement.score': '指定时间内用户参与度（操作）分数'
+    'user.score.engagement.score': '指定时间内用户参与度（操作）分数',
+    'clue.diff.type.tab.title.noassign': '未分配负责人',
+    'clue.diff.type.tab.title.notrace': '未做有效跟进（电话未打通或未写跟进记录）',
+    'clue.diff.type.tab.title.hastrace': '已做有效跟进（已打通或已写跟进记录）',
+    'clue.diff.type.tab.title.hastransfer': '已转化为客户',
+    'clue.diff.type.tab.title.mark.invalid': '标记为无效'
 };
 export default zh_CN;
