@@ -89,7 +89,6 @@ class DealTable extends React.Component {
             {
                 title: Intl.get('common.belong.customer', '所属客户'),
                 dataIndex: 'customer_name',
-                sorter: true,
                 render: (text, record, index) => {
                     let cls = classNames('deal-customer-name', {
                         'customer-name-active': record.customer_id && record.customer_id === this.props.curShowCustomerId
@@ -118,7 +117,6 @@ class DealTable extends React.Component {
                 title: Intl.get('deal.stage', '阶段'),
                 dataIndex: 'sale_stages_num',
                 className: 'has-filter',
-                sorter: true,
                 align: 'left',
                 render: (text, record, index) => {
                     let stage = record.sale_stages;
@@ -158,7 +156,6 @@ class DealTable extends React.Component {
                 title: Intl.get('crm.6', '负责人'),
                 dataIndex: 'user_name',
                 className: 'has-filter',
-                sorter: true,
                 render: (text, record, index) => {
                     let teamName = record.sales_team_id ? this.getTeamNameById(record.sales_team_id) : '';
                     if (teamName) {

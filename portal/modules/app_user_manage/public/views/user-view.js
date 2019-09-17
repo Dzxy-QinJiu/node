@@ -454,7 +454,6 @@ class UserTabContent extends React.Component {
                     key: 'account_name',
                     width: multiWordWidth,
                     className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                    sorter: sortable,
                     render: function($1, rowData, idx) {
                         var user_name = rowData.user && rowData.user.user_name || '';
                         var user_id = rowData.user && rowData.user.user_id || '';
@@ -493,7 +492,6 @@ class UserTabContent extends React.Component {
                     key: 'account_nickname',
                     width: multiWordWidth,
                     className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                    sorter: sortable,
                     render: function($1, rowData, idx) {
                         var nick_name = rowData.user && rowData.user.nick_name || '';
                         return (
@@ -509,7 +507,6 @@ class UserTabContent extends React.Component {
                     key: 'customer_name',
                     width: multiWordWidth,
                     className: sortable ? 'has-sorter has-filter owner-customer-wrap' : 'has-filter owner-customer-wrap',
-                    sorter: sortable,
                     render: function($1, rowData, idx) {
                         var customer_name = rowData.customer && rowData.customer.customer_name || '';
                         var customer_id = rowData.customer && rowData.customer.customer_id || '';
@@ -577,7 +574,6 @@ class UserTabContent extends React.Component {
                     width: fourWordWidth,
                     key: 'member_name',
                     className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                    sorter: sortable,
                     render: function(sales, rowData, idx) {
                         var sales_name = rowData.sales && rowData.sales.sales_name || '';
                         return (
@@ -665,7 +661,6 @@ class UserTabContent extends React.Component {
                     key: 'account_name',
                     width: multiWordWidth,
                     className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                    sorter: sortable,
                     render: function($1, rowData, idx) {
                         var user_name = rowData.user && rowData.user.user_name || '';
                         var user_id = rowData.user && rowData.user.user_id || '';
@@ -704,7 +699,6 @@ class UserTabContent extends React.Component {
                     key: 'account_nickname',
                     width: multiWordWidth,
                     className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                    sorter: sortable,
                     render: function($1, rowData, idx) {
                         var nick_name = rowData.user && rowData.user.nick_name || '';
                         return (
@@ -720,7 +714,6 @@ class UserTabContent extends React.Component {
                     key: 'customer_name',
                     width: multiWordWidth,
                     className: sortable ? 'has-sorter has-filter owner-customer-wrap' : 'has-filter owner-customer-wrap',
-                    sorter: sortable,
                     render: function($1, rowData, idx) {
                         var customer_name = rowData.customer && rowData.customer.customer_name || '';
                         var customer_id = rowData.customer && rowData.customer.customer_id || '';
@@ -777,7 +770,6 @@ class UserTabContent extends React.Component {
                     width: fourWordWidth,
                     key: 'member_name',
                     className: sortable ? 'has-sorter has-filter' : 'has-filter',
-                    sorter: sortable,
                     render: function(sales, rowData, idx) {
                         var sales_name = rowData.sales && rowData.sales.sales_name || '';
                         return (

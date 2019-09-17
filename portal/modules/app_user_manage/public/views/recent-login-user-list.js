@@ -291,7 +291,6 @@ class RecentLoginUsers extends React.Component {
                 key: 'account_name',
                 width: null,
                 className: 'has-filter',
-                //sorter: sortable,
                 render: function($1, rowData, idx) {
                     var user_name = rowData.user && rowData.user.user_name || '';
                     var user_id = rowData.user && rowData.user.user_id || '';
@@ -316,7 +315,6 @@ class RecentLoginUsers extends React.Component {
                 key: 'account_nickname',
                 width: null,
                 className: 'has-filter',
-                //sorter: sortable,
                 render: function($1, rowData, idx) {
                     var nick_name = rowData.user && rowData.user.nick_name || '';
                     return (
@@ -332,7 +330,6 @@ class RecentLoginUsers extends React.Component {
                 key: 'customer_name',
                 width: null,
                 className: 'has-filter',
-                //sorter: sortable,
                 render: function($1, rowData, idx) {
                     var customer_name = rowData.customer && rowData.customer.customer_name || '';
                     return (
@@ -373,7 +370,6 @@ class RecentLoginUsers extends React.Component {
                 width: Oplate.hideUserManageItem ? '120px' : '85px',
                 key: 'grant_create_date',
                 className: 'has-filter',
-                //sorter: sortable,
                 render: function($1, rowData, idx) {
                     return getTimeList('create_time', rowData);
                 }
@@ -384,7 +380,6 @@ class RecentLoginUsers extends React.Component {
                 width: Oplate.hideUserManageItem ? '120px' : '85px',
                 key: 'end_date',
                 className: 'has-filter',
-                //sorter: sortable,
                 render: function($1, rowData, idx) {
                     return getTimeList('end_time', rowData);
                 }
@@ -395,7 +390,6 @@ class RecentLoginUsers extends React.Component {
                 width: '85px',
                 key: 'member_name',
                 className: 'has-filter',
-                //sorter: sortable,
                 render: function(sales, rowData, idx) {
                     var sales_name = rowData.sales && rowData.sales.sales_name || '';
                     return (
@@ -408,7 +402,6 @@ class RecentLoginUsers extends React.Component {
                 key: 'logins',
                 width: '100px',
                 className: 'has-filter',
-                //sorter: sortable,
                 render: function(text, rowData, idx) {
                     let loginCount = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {
