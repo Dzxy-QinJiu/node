@@ -102,7 +102,6 @@ function onRankingRowClick(record) {
         const paramObj = {
             title: record.sales_team + record.member_name + '业绩明细',
             content: getPerformanceDetailContent(result),
-            onRowClick: showDetail
         };
     
         listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
@@ -150,6 +149,10 @@ function getPerformanceDetailContent(result) {
 
 //获取业绩详情表格
 function getPerformanceDetailTable(title, columns, data) {
+    _.each(columns, column => {
+        column.render = metricsValueRender.bind(column);
+    });
+
     columns.unshift({
         title: '',
         dataIndex: 'row_title',
@@ -173,21 +176,27 @@ function getPerformanceDetailTable(title, columns, data) {
     );
 }
 
-function showDetail(record) {
-    const type = record.key;
-    let query = {};
+function metricsValueRender(value) {
+    return (
+        <span
+            style={{cursor: 'pointer'}}
+            onClick={showMetricsDetail.bind(null, this.dataIndex, this.title)}
+        >
+            {value}
+        </span>
+    );
+}
 
-    _.each(conditionCache, item => {
-        query[item.name] = item.value;
-    });
+function showMetricsDetail(metricsKey, metricsTitle) {
+    let query = _.clone(conditionCache);
 
-    query.type = type;
+    query.type = metricsKey;
 
     ajax.send({
         url: '/rest/analysis/contract/contract/v2/all/performance/metrics/account_manager/detail',
         query
     }).then(result => {
-        const title = record.title + Intl.get('common.indicators.for.details', '指标详情');
+        const title = metricsTitle + Intl.get('common.indicators.for.details', '指标详情');
 
         const data = _.get(result, '[0]');
         let items = [];
