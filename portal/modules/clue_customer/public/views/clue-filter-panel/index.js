@@ -144,7 +144,7 @@ class ClueFilterPanel extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         return getClueStatusValue(filterClueStatus);
     };
-    onSelectDate = (start_time, end_time) => {
+    onSelectDate = (start_time, end_time, range) => {
         if (!start_time) {
             //为了防止开始时间不传，后端默认时间是从1970年开始的问题
             start_time = clueStartTime;
@@ -152,7 +152,7 @@ class ClueFilterPanel extends React.Component {
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();
         }
-        FilterAction.setTimeRange({start_time: start_time, end_time: end_time});
+        FilterAction.setTimeRange({start_time: start_time, end_time: end_time, range: range});
         clueCustomerAction.setClueInitialData();
         setTimeout(() => {
             this.props.getClueList();
