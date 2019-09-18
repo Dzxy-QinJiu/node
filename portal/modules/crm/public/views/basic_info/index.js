@@ -25,7 +25,7 @@ let customerLabelList = [];//存储客户阶段的列表
 class BasicData extends React.Component {
     state = {
         ...CrmOverviewStore.getState(),
-        basicData: this.props.curCustomer || {},
+        basicData: {},
         salesObj: {salesTeam: SalesTeamStore.getState().salesTeamList},
         showDetailFlag: false,//控制客户详情展示隐藏的标识
         editNameFlag: false,//编辑客户名的标识
