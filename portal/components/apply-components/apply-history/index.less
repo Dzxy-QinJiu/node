@@ -1,31 +1,75 @@
 @import "../apply-common-style/index";
-//回复列表外层容器
-.apply-detail-reply-list {
-  //position: relative;
-  //float: left;
-  //width: 100%;
+//列表外层容器
+.apply-history-list {
   .reply-info-block {
     .reply-list-container {
+      .history-apply-title{
+        font-size: 14px;
+        color: #999;
+        margin-bottom: 10px;
+
+      }
       li {
         word-break: break-all;
         margin-bottom: 6px;
         overflow: hidden;
+
+         .apply-item-title{
+           background-color: #FAFAFA;
+           height: 32px;
+           line-height: 32px;
+           &:hover{
+             background-color: #F1F8FE;
+           }
+         }
+
+        &:hover{
+
+            .apply-item-topic{
+              cursor: pointer;
+            }
+            .reply-btns{
+              color:#09a9fe;
+              cursor: pointer;
+            }
+          .reply-date-text{
+            display: none;
+          }
+          .user-info-text{
+            display: inline-block;
+          }
+
+        }
+        .apply-applicate{
+          margin: 0 5px;
+        }
       }
-      //回复
-      .ant-input-group-wrapper {
-        margin-top: 4px;
-      }
-      .ant-input-group-addon {
-        padding: 4px 14px;
-        background-color: #fff;
+      .reply-content{
+        font-size: 12px;
+        overflow: hidden;
+        margin:5px 0;
+        .reply-content-name{
+          color: #333;
+        }
+        .reply-content-time{
+          color: #999;
+          float: right;
+        }
       }
     }
     .apply-info-label {
       margin-top: 0;
-      .reply-date-text {
+      .apply-item-topic{
+        color: #333;
+      }
+      .reply-date-text ,.user-info-text{
         float: right;
         padding-right: 0;
       }
+      .user-info-text{
+        display: none;
+      }
+
     }
     .refresh-reply-data-tip {
       display: inline-block;

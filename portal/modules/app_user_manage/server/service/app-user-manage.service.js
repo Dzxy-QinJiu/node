@@ -346,7 +346,8 @@ exports.getApplyList = function(req, res, obj) {
                 });
                 Promise.all(promiseList).then((dataList) => {
                     _.forEach(data.list, (item,index) => {
-                        item['replyLists'] = dataList[index];
+                        var replyList = _.filter(dataList[index], item => !_.get(item,'approve_status',''));
+                        item['replyLists'] = replyList;
                     });
                     eventEmitter.emit('success', data);
                 }).catch((err) => {

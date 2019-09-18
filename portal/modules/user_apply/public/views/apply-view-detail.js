@@ -46,6 +46,7 @@ import Trace from 'LIB_DIR/trace';
 var moment = require('moment');
 import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount, isFinalTask, isApprovedByManager} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
+import ApplyHistory from 'CMP_DIR/apply-components/apply-history';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {getAllUserList,getNotSalesRoleUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import CustomerLabel from 'CMP_DIR/customer_label';
@@ -415,7 +416,7 @@ const ApplyViewDetail = createReactClass({
         let replyList = _.cloneDeep(replyListInfo.list);
         if (_.isArray(replyList) && replyList.length) {
             //过滤掉点击通过，驳回或撤销按钮后的回复消息
-            replyList = _.filter(replyList, item => !_.has(item,'approve_status'));
+            replyList = _.filter(replyList, item => _.has(item,'approve_status'));
             {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/
             }
             {/*title={Intl.get("common.get.again", "重新获取")}/>*/
@@ -510,7 +511,14 @@ const ApplyViewDetail = createReactClass({
             </Steps>
         );
     },
-
+    renderSameCustomerHistoricalApply(){
+        return (
+            <ApplyHistory
+                detailInfo={this.state.detailInfoObj.info}
+                sameHistoryApplyLists={this.state.sameHistoryApplyLists}
+            />
+        );
+    },
     //渲染申请单详情
     renderApplyDetailInfo() {
         var detailInfo = this.state.detailInfoObj.info;
@@ -589,6 +597,7 @@ const ApplyViewDetail = createReactClass({
                                     </div>
                                 </div>
                             </div>
+                            {hasPrivilege('GET_APPLY_COMMENTS') ? this.renderSameCustomerHistoricalApply() : null}
                         </GeminiScrollbar>
                     )}
                 </div>

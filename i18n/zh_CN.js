@@ -3559,6 +3559,13 @@ var zh_CN = {
     'clue.diff.type.tab.title.notrace': '未做有效跟进（电话未打通或未写跟进记录）',
     'clue.diff.type.tab.title.hastrace': '已做有效跟进（已打通或已写跟进记录）',
     'clue.diff.type.tab.title.hastransfer': '已转化为客户',
-    'clue.diff.type.tab.title.mark.invalid': '标记为无效'
+    'clue.diff.type.tab.title.mark.invalid': '标记为无效',
+    'user.apply.loading.historical.lists': '正在努力加载历史申请列表 ......',
+    'user.apply.history.apply.lists': '申请历史',
+    'user.apply.applicate.time': '申请于',
+    'user.apply.click.reply': '查看回复',
+    'user.apply.hide.reply': '收起回复',
+    'user.apply.no.rely.list': '无回复'
+
 };
 export default zh_CN;

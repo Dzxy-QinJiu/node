@@ -312,7 +312,8 @@ class ApplyViewDetailStore {
         } else {
             //正常情况
             sameHistoryApplyLists.result = '';
-            sameHistoryApplyLists.list = resultObj.list;
+            sameHistoryApplyLists.list = _.get(resultObj,'data.list');
+
             sameHistoryApplyLists.errorMsg = '';
         }
     }
