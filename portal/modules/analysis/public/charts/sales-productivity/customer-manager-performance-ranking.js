@@ -198,9 +198,12 @@ function showMetricsDetail(metricsKey, metricsTitle) {
     }).then(result => {
         const title = metricsTitle + Intl.get('common.indicators.for.details', '指标详情');
 
+        let tableTitle;
         let columns;
 
         if (metricsKey === 'cost') {
+            tableTitle = '个人销售费用（单位万元）';
+
             columns = [{
                 dataIndex: 'date',
                 title: '时间',
@@ -214,6 +217,8 @@ function showMetricsDetail(metricsKey, metricsTitle) {
                 title: '费用类型',
             }];
         } else {
+            tableTitle = '合同详情（单位万元）';
+
             columns = [{
                 dataIndex: 'num',
                 title: '合同号',
@@ -251,6 +256,8 @@ function showMetricsDetail(metricsKey, metricsTitle) {
 
         const content = (
             <div style={{margin: '0 24px'}}>
+                <div style={{fontSize: 14, fontWeight: 'bold', marginBottom: 10}}>{tableTitle}</div>
+
                 <AntcTable
                     columns={columns}
                     dataSource={result}
