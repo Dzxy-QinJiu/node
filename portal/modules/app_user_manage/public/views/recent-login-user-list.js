@@ -417,7 +417,6 @@ class RecentLoginUsers extends React.Component {
                 key: 'login_day_count',
                 width: '100px',
                 className: 'has-filter',
-                //sorter: sortable,
                 render: function(text, rowData, idx) {
                     let loginDays = 0;
                     if (rowData && _.isArray(rowData.apps) && rowData.apps[0]) {

@@ -163,9 +163,11 @@ class CustomerImport extends React.Component {
                 render: (text, record, index) => {
                     return (
                         <span className="cus-op" data-tracename="删除客户">
-                            <Button className="order-btn-class" icon="delete"
+                            <Button className="order-btn-class handle-btn-item" 
                                 onClick={this.deleteDuplicatImportCustomer.bind(this, index)}
-                                title={Intl.get('common.delete', '删除')}/>
+                                title={Intl.get('common.delete', '删除')}>
+                                    <i className="iconfont icon-delete"></i>
+                                </Button>
                         </span>
                     );
                 }

@@ -17,7 +17,6 @@ import {
     getLastWeekTimeStamp,
     getThisMonthTimeStamp,
     getThisQuarterTimeStamp,
-    getNearlyThreeMonthsTimeStamp
 } from 'PUB_DIR/sources/utils/time-stamp-util';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
@@ -58,8 +57,23 @@ const DATE_TYPE_MAP = [
     },
 ];
 
-const TABLE_MAX_WIDTH = 615;
+const TABLE_CONSTS = {
+    TABLE_MIN_WIDTH: 650,
+    COLUMN_WIDTH_150: 150,
+    COLUMN_WIDTH_100: 100,
+    LOAD_SIZE: 10000,
+};
 
+const LAYOUT_CONSTANTS = {
+    MY_DATA_TITLE_HEIGHT: 45, //顶部（我的数据）标题的高度
+    EXPIRE_TITLE_HEIGHT: 45, //到期合同的title高度
+    MARGIN_BOTTOM: 12, //card-container的margin-bottom:4px
+    EXPIRE_PADDING: 24, //到期合同card的padding
+    TABLE_TH_HEIGHT: 46, //table的表头高度
+    PAGINATION_DISTANCE: 44, // 分页器的高度
+};
+
+let tableHeight = 0;
 
 class TeamDataColumn extends React.Component {
     constructor(props) {
@@ -83,7 +97,30 @@ class TeamDataColumn extends React.Component {
         this.getPerformanceData();
         this.getCallTimeData();
         this.getContactCustomerCount();
+        this.changeTableHeight();
+        $(window).on('resize', e => this.changeTableHeight());
     }
+
+    componentWillUnmount() {
+        $(window).off('resize', this.changeTableHeight);
+        tableHeight = 0;
+    }
+
+    componentDidUpdate() {
+        this.changeTableHeight();
+    }
+
+    changeTableHeight = () => {
+        tableHeight = $(window).height()
+            - $('.my-data-preformance-card').outerHeight()
+            - $('.my-data-call-time-card').outerHeight()
+            - $('.my-data-contact-customers-card').outerHeight()
+            - LAYOUT_CONSTANTS.MY_DATA_TITLE_HEIGHT
+            - LAYOUT_CONSTANTS.EXPIRE_TITLE_HEIGHT
+            - LAYOUT_CONSTANTS.MARGIN_BOTTOM
+            - LAYOUT_CONSTANTS.EXPIRE_PADDING
+            - LAYOUT_CONSTANTS.TABLE_TH_HEIGHT;
+    };
 
     getContactCustomerCount() {
         let params = {
@@ -343,16 +380,16 @@ class TeamDataColumn extends React.Component {
             const columns = _.get(chart, 'option.columns');
 
             // 设置table最大宽度
-            chart.option.scroll = {x: TABLE_MAX_WIDTH};
+            chart.option.scroll = {x: TABLE_CONSTS.TABLE_MIN_WIDTH, y: tableHeight};
 
             //负责人列索引
             const endTimeColumnIndex = _.findIndex(columns, column => column.dataIndex === 'end_time');
 
             _.each(columns, column => {
                 if(column.dataIndex === 'customer_name') {
-                    column.width = 150;
+                    column.width = TABLE_CONSTS.COLUMN_WIDTH_150;
                 }else {
-                    column.width = 100;
+                    column.width = TABLE_CONSTS.COLUMN_WIDTH_100;
                 }
             });
 
@@ -361,11 +398,11 @@ class TeamDataColumn extends React.Component {
                 columns.splice(endTimeColumnIndex, 0, {
                     title: Intl.get('contract.109', '毛利'),
                     dataIndex: 'gross_profit',
-                    width: 75,
+                    width: TABLE_CONSTS.COLUMN_WIDTH_100,
                 }, {
                     title: Intl.get('contract.28', '回款额'),
                     dataIndex: 'total_gross_profit',
-                    width: 85,
+                    width: TABLE_CONSTS.COLUMN_WIDTH_100,
                 });
             }
 
@@ -393,7 +430,7 @@ class TeamDataColumn extends React.Component {
                     value: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
                 }]),
                 argCallback: arg => {
-                    arg.query.load_size = 10000;
+                    arg.query.load_size = TABLE_CONSTS.LOAD_SIZE;
 
                     let date_type = arg.query.date_type;
 
@@ -412,7 +449,10 @@ class TeamDataColumn extends React.Component {
                 noExportCsv: true,
                 processData: (data, chart) => {
                     const total = _.get(data, 'total', 0);
-                    chart.option.pagination = total > 10;
+                    chart.option.pagination = total > 10;//默认每页显示10条，但小于10条时，不显示分页
+                    if(chart.option.pagination) {
+                        chart.option.scroll.y = tableHeight - LAYOUT_CONSTANTS.PAGINATION_DISTANCE;
+                    }
                     chart.title = Intl.get('contract.expire.statistics', '到期合同统计') + `(${Intl.get('sales.home.total.count', '共{count}个', {count: total})})`;
 
                     data = _.get(data, 'expired_contracts', []);
@@ -471,6 +511,7 @@ class TeamDataColumn extends React.Component {
                 <div className="contract-expire-wrapper">
                     <AntcAnalysis
                         charts={charts}
+                        forceUpdate
                         isGetDataOnMount={true}
                     />
                 </div>

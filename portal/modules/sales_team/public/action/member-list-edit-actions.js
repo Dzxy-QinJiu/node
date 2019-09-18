@@ -2,8 +2,10 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 //联系人的ajax
-var SalesTeamAjax = require('../ajax/sales-team-ajax');
-var SalesTeamActions = require('./sales-team-actions');
+const SalesTeamAjax = require('../ajax/sales-team-ajax');
+const SalesTeamActions = require('./sales-team-actions');
+const SalesTeamAction = require('../action/sales-team-actions');
+import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 
 function SalesTeamMemberAction() {
 
@@ -48,11 +50,15 @@ function SalesTeamMemberAction() {
             } else if (type === 'edit') {
                 SalesTeamActions.afterEditMember(obj);
             }
-            //刷新团队成员列表
-            SalesTeamActions.setTeamMemberLoading(true);
-            SalesTeamActions.getSalesTeamMemberList(obj.groupId || obj.group_id);
-            //刷新添加时展示的不属于任何团队的成员列表
-            SalesTeamActions.getMemberList();
+            let groupId = obj.groupId || obj.group_id;
+            let organizationId = _.get(getOrganization(), 'id', '');
+            if (groupId !== organizationId) {
+                //刷新团队成员列表
+                SalesTeamActions.setTeamMemberLoading(true);
+                SalesTeamActions.getSalesTeamMemberList(groupId);
+                //刷新添加时展示的不属于任何团队的成员列表
+                SalesTeamActions.getMemberList();
+            }
         }
         this.dispatch();
     };

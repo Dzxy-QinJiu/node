@@ -337,8 +337,10 @@ class CustomerRepeat extends React.Component {
                             onConfirm={this.delRepeatCustomer.bind(this, customer)}
                             okText={Intl.get('common.sure', '确认')}
                             cancelText={Intl.get('common.cancel', '取消')}>
-                            <Button className="repeat-del-btn handle-btn-item" icon="delete"
-                                title={Intl.get('common.delete', '删除')}/>
+                            <Button className="repeat-del-btn handle-btn-item"
+                                title={Intl.get('common.delete', '删除')}>
+                                     <i className="iconfont icon-delete"></i>
+                                </Button>
                         </Popconfirm>
                     </PrivilegeChecker>
                 </Col>

@@ -8,10 +8,10 @@ var Option = Select.Option;
 var UserAuditLogAction = require('../action/user_audit_log_action');
 var UserAuditLogStore = require('../store/user_audit_log_store');
 import { AntcDatePicker as DatePicker } from 'antc';
-import {SearchInput} from 'antc';
+import { SearchInput } from 'antc';
 var GeminiScrollBar = require('../../../../components/react-gemini-scrollbar');
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
-import {LITERAL_CONSTANT, FIRSR_SELECT_DATA} from 'PUB_DIR/sources/utils/consts';
+import { LITERAL_CONSTANT, FIRSR_SELECT_DATA } from 'PUB_DIR/sources/utils/consts';
 //顶部导航
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 var classnames = require('classnames');
@@ -26,8 +26,8 @@ var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import userData from 'PUB_DIR/sources/user-data';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {RETRY_GET_APP} from '../util/consts';
+import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { RETRY_GET_APP } from '../util/consts';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 
 // 用户类型的常量
@@ -91,9 +91,9 @@ class LogView extends React.Component {
         UserAuditLogAction.resetState();
     }
     // 获取团队或是成员的id
-    getTeamOrMemberId = (list, selectValue,isSelectedTeam) => {
+    getTeamOrMemberId = (list, selectValue, isSelectedTeam) => {
         //如果选中的不是最低级的团队的时候，要取到低级团队的id
-        if(isSelectedTeam){
+        if (isSelectedTeam) {
             //在团队树中查看该团队是否有下级团队
             var selectedTeams = _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
             //实际要传到后端的团队,默认是选中的团队
@@ -106,7 +106,7 @@ class LogView extends React.Component {
             //跟据包含下级团队的所有团队详情的列表teamTotalArr，获取包含所有的团队id的数组totalRequestTeams
             totalRequestTeams = _.union(totalRequestTeams, commonMethodUtil.getRequestTeamIds(teamTotalArr));
             return _.uniq(totalRequestTeams);
-        }else{
+        } else {
             return _.chain(list).filter(item => selectValue.indexOf(item.name) > -1).map('id').value();
         }
 
@@ -114,8 +114,8 @@ class LogView extends React.Component {
 
     // 获取团队或成员的参数
     getTeamMemberParam = () => {
-        let teamList = _.get(this.state,'teamList.list',[]); // 团队数据
-        let memberList = _.get(this.state, 'memberList.list',[]); // 成员数据
+        let teamList = _.get(this.state, 'teamList.list', []); // 团队数据
+        let memberList = _.get(this.state, 'memberList.list', []); // 成员数据
         let secondSelectValue = this.state.secondSelectValue;
         let params = {};
         if (this.state.firstSelectValue === LITERAL_CONSTANT.TEAM && teamList.length > 1) { // 团队时
@@ -143,7 +143,7 @@ class LogView extends React.Component {
         var queryObj = {
             load_size: this.state.loadSize, // 每次加载的条数
             appid: queryParams && 'appid' in queryParams ? queryParams.appid : this.state.selectAppId,
-            sort_field: _.get(queryParams,'sort_field') || this.state.sortField,
+            sort_field: _.get(queryParams, 'sort_field') || this.state.sortField,
             sort_order: _.get(queryParams, 'sort_order') || this.state.sortOrder,
         };
         // 搜索字段
@@ -186,7 +186,7 @@ class LogView extends React.Component {
     };
     // 应用下拉框的选择
     getAppOptions = () => {
-        var list = this.state.userAppArray.map(function(item) {
+        var list = this.state.userAppArray.map(function (item) {
             return <Option
                 key={item.app_id}
                 value={item.app_id}
@@ -195,12 +195,12 @@ class LogView extends React.Component {
                 {item.app_name}
             </Option>;
         });
-        if (!this.state.userAppArray.length){
-            var clickMsg = Intl.get('app.user.manager.click.get.app','点击获取应用');
-            if (this.state.userAppArrayErrMsg){
-                clickMsg = Intl.get('app.user.failed.get.apps','获取失败') + '，' + clickMsg;
-            }else{
-                clickMsg = Intl.get('user.no.product','暂无产品') + '，' + clickMsg;
+        if (!this.state.userAppArray.length) {
+            var clickMsg = Intl.get('app.user.manager.click.get.app', '点击获取应用');
+            if (this.state.userAppArrayErrMsg) {
+                clickMsg = Intl.get('app.user.failed.get.apps', '获取失败') + '，' + clickMsg;
+            } else {
+                clickMsg = Intl.get('user.no.product', '暂无产品') + '，' + clickMsg;
             }
             list.unshift(<Option value={RETRY_GET_APP} key={RETRY_GET_APP} className="get-applist-container">
                 <div className="retry-get-appList" onClick={this.handleClickRetryAppLists}>
@@ -227,7 +227,7 @@ class LogView extends React.Component {
 
     // 搜索框
     handleSearchEvent = (inputContent) => {
-        Trace.traceEvent('用户审计日志','搜索框输入');
+        Trace.traceEvent('用户审计日志', '搜索框输入');
         GeminiScrollBar.scrollTo(this.refs.tableWrap, 0);
         inputContent = inputContent ? inputContent : '';
         if (_.trim(inputContent) !== _.trim(this.state.searchName)) {
@@ -292,7 +292,7 @@ class LogView extends React.Component {
                 width: '150px',
                 key: 'timestamp',
                 align: 'left',
-                render: function(timestamp, rowData, idx) {
+                render: function (timestamp, rowData, idx) {
                     return (<span>
                         {moment(timestamp).format(oplateConsts.DATE_TIME_FORMAT)}
                     </span>);
@@ -304,7 +304,7 @@ class LogView extends React.Component {
                 className: 'has-filter click-show-user-detail',
                 width: '100px',
                 key: 'user_name',
-                render: function($1, row) {
+                render: function ($1, row) {
                     var userInputClass = classnames({
                         'user_id_hidden': true, // 点击查看详情的类
                         'userNoIdClass': row.user_id ? false : true // userId为空时的类
@@ -330,9 +330,9 @@ class LogView extends React.Component {
                 key: 'customer_name',
                 className: 'has-filter owner-customer-wrap',
                 width: '160px',
-                render: function($1, rowData, idx) {
-                    var customer_name = _.get(rowData,'customer_name','');
-                    var customer_id = _.get(rowData,'customer_id','');
+                render: function ($1, rowData, idx) {
+                    var customer_name = _.get(rowData, 'customer_name', '');
+                    var customer_id = _.get(rowData, 'customer_id', '');
                     return (
                         <div title={customer_name} className="owner-customer"
                             onClick={_this.showCustomerDetail.bind(this, customer_id)}
@@ -347,7 +347,7 @@ class LogView extends React.Component {
                 className: 'has-filter click-show-user-detail',
                 width: '90px',
                 key: 'tags',
-                render: function(userType, record, index) {
+                render: function (userType, record, index) {
                     let text = '';
                     if (_.isArray(userType) && userType.length) {
                         text = AppUserUtil.getUserTypeText(userType[0]);
@@ -365,7 +365,7 @@ class LogView extends React.Component {
                 className: 'has-filter click-show-user-detail',
                 width: '100px',
                 key: 'operation_name',
-                render: function(operate, rowData, idx) {
+                render: function (operate, rowData, idx) {
                     return (<span title={operate}>
                         {operate === 'null' ? '' : operate}
                     </span>);
@@ -377,7 +377,7 @@ class LogView extends React.Component {
                 className: 'has-filter operate-detail',
                 width: '200px',
                 key: 'operate_detail',
-                render: function(text, record, index) {
+                render: function (text, record, index) {
                     return (
                         <div>
                             <span title={text} className="operate-detail-style">
@@ -409,7 +409,7 @@ class LogView extends React.Component {
                 className: 'has-filter click-show-user-detail',
                 width: '110px',
                 key: 'location',
-                render: function(text, record, index) {
+                render: function (text, record, index) {
                     return (
                         <div>
                             {(record.country ? record.country : '') +
@@ -435,7 +435,7 @@ class LogView extends React.Component {
                 sorter: true,
                 width: '210px',
                 key: 'browser',
-                render: function(text, record, index) {
+                render: function (text, record, index) {
                     return (
                         <div>
                             {record.browser_version ? (text + ' ' + record.browser_version) : text}
@@ -568,7 +568,7 @@ class LogView extends React.Component {
             this.getAuditLog();
         });
     };
-    renderTeamMembersSelect(){
+    renderTeamMembersSelect() {
         let teamList = this.state.teamList.list; // 团队数据
         let memberList = this.state.memberList.list; // 成员数据
 
@@ -607,7 +607,7 @@ class LogView extends React.Component {
                     >
                         {firstOptions}
                     </SelectFullWidth>
-                ) : null }
+                ) : null}
                 <SelectFullWidth
                     multiple
                     value={this.state.secondSelectValue}
@@ -622,7 +622,7 @@ class LogView extends React.Component {
     }
     renderLogHeader = () => {
         var appOptions = this.getAppOptions();
-        let teamList = _.get(this.state,'teamList.list',[]); // 团队数据
+        let teamList = _.get(this.state, 'teamList.list', []); // 团队数据
         return (
             <div className="user_audit_log_container">
                 <ButtonZones>
@@ -796,7 +796,7 @@ class LogView extends React.Component {
                         values={{
                             'number': this.state.total
                         }}
-                    />}/> : null}
+                    />} /> : null}
             </div>
         );
     };

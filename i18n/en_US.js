@@ -263,6 +263,7 @@ var en_US = {
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
     'common.create': 'Create', // 创建
     'common.stage.describe': 'the description of stage', // 阶段描述
+    'common.name.rule.regex': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and {length}', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -842,6 +843,7 @@ var en_US = {
     'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
     'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
     'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量已达{number}个上限
+    'member.add.member.no.position.tips': 'There is no office in system. whether to add', // 系统中暂无职务{name}，是否添加?
     //后台管理-成员end
 
     //组织管理start
@@ -874,6 +876,9 @@ var en_US = {
     'organization.save.delete.group.failed': 'Delete organization failed',//删除组织失败
     'organization.get.add.organization.member.list.failed': 'Failed to get member lists that who can join  the organization',//获取可加入组织的成员列表失败
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
+    'organization.name.existed': 'The name of organization was existed', // 组织名称已存在!
+    'organization.name.is.unique': 'The name of organization already exists', // 组织名称唯一性校验出错！
+    'organization.tree.name.placeholder': 'Please enter the name of {name}', // 请输入{name}名称
     //组织管理end
 
     // 后台管理- 产品start
@@ -3195,6 +3200,7 @@ var en_US = {
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
+    'clue.batch.assign.sales.pending': 'Batch Assignment is in progress. please try it later!',//批量分配进行中，请稍后再试!
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
@@ -3441,6 +3447,11 @@ var en_US = {
     'user.score.last.month.days': 'Online rate in the past month*50',//近一个月在线天数率*50
     'user.score.online.day.score': 'Active days score during the specified time',//指定时间内活跃天数分数
     'user.score.online.time.score': 'Online time score within a specified time',//指定时间内在线时长分数
-    'user.score.engagement.score': 'User engagement (operation) score within the specified time'//指定时间内用户参与度（操作）分数
+    'user.score.engagement.score': 'User engagement (operation) score within the specified time',//指定时间内用户参与度（操作）分数
+    'clue.diff.type.tab.title.noassign': 'Unassigned person in charge',//未分配负责人
+    'clue.diff.type.tab.title.notrace': 'No effective follow-up (phone not open or not written follow-up record)',//未做有效跟进（电话未打通或未写跟进记录）
+    'clue.diff.type.tab.title.hastrace': 'Has been effectively followed up (has been opened or has written follow-up records)',//已做有效跟进（已打通或已写跟进记录）
+    'clue.diff.type.tab.title.hastransfer': 'Converted to customer',//已转化为客户
+    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid'//标记为无效
 };
 export default en_US;

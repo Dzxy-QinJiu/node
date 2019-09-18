@@ -269,6 +269,7 @@ var zh_CN = {
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'common.create': '创建',
     'common.stage.describe': '阶段描述',
+    'common.name.rule.regex': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间',
 
     //公共部分--end
     'login.login': '登录',
@@ -846,6 +847,7 @@ var zh_CN = {
     'member.record.get.record.failed': '获取成员变更失败',
     'member.record.no.record': '暂无变更记录',
     'member.number.toplimit': '成员数量已达{number}个上限',
+    'member.add.member.no.position.tips': '系统中暂无职务{name}，是否添加?',
     //后台管理-成员end
 
     //组织管理start
@@ -878,6 +880,9 @@ var zh_CN = {
     'organization.save.delete.group.failed': '删除组织失败',
     'organization.get.add.organization.member.list.failed': '获取可加入组织的成员列表失败',
     'organization.no.realms': '还没有安全域诶..',
+    'organization.name.existed': '组织名称已存在!',
+    'organization.name.is.unique': '组织名称唯一性校验出错！',
+    'organization.tree.name.placeholder': '请输入{name}名称',
     //组织管理end
 
     // 后台管理-产品start
@@ -3223,6 +3228,7 @@ var zh_CN = {
     'business.leave.time.range': '出差时长',
     'clue.batch.select.clues': '已选择{num}个线索',
     'clue.batch.assign.sales': '批量分配',
+    'clue.batch.assign.sales.pending': '批量分配进行中，请稍后再试!',
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
     'clue.batch.change.trace.man': '变更跟进人',
     'crm.user.use.default.contact': '使用默认联系人申请',
@@ -3553,6 +3559,11 @@ var zh_CN = {
     'user.score.last.month.days': '近一个月在线天数率*50',
     'user.score.online.day.score': '指定时间内活跃天数分数',
     'user.score.online.time.score': '指定时间内在线时长分数',
-    'user.score.engagement.score': '指定时间内用户参与度（操作）分数'
+    'user.score.engagement.score': '指定时间内用户参与度（操作）分数',
+    'clue.diff.type.tab.title.noassign': '未分配负责人',
+    'clue.diff.type.tab.title.notrace': '未做有效跟进（电话未打通或未写跟进记录）',
+    'clue.diff.type.tab.title.hastrace': '已做有效跟进（已打通或已写跟进记录）',
+    'clue.diff.type.tab.title.hastransfer': '已转化为客户',
+    'clue.diff.type.tab.title.mark.invalid': '标记为无效'
 };
 export default zh_CN;

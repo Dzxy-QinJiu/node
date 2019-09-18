@@ -28,6 +28,7 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 const maxLimitExtractNumber = 100;
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
@@ -281,7 +282,7 @@ class RecommendCustomerRightPanel extends React.Component {
                             data-tracename="点击提取按钮"
                             className={assigenCls}
                         >
-                            {Intl.get('clue.extract', '提取')}
+                            {extractIcon}
                         </span>}
                     overlayTitle={Intl.get('user.salesman', '销售人员')}
                     okTitle={Intl.get('common.confirm', '确认')}
@@ -310,7 +311,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     <span
                         onClick={this.handleExtractClueAssignToSale.bind(this, record, hasAssignedPrivilege, isDetailExtract)}
                     >
-                        {Intl.get('clue.extract', '提取')}
+                        {extractIcon}
                     </span>
                 </Popover>
             );
@@ -350,6 +351,12 @@ class RecommendCustomerRightPanel extends React.Component {
                 title: Intl.get('common.phone', '电话'),
                 dataIndex: 'telephones',
                 width: '300px',
+                render: (text, record, index) => {
+                    return (
+                        <span>{_.isArray(text) ? text.join('，') : null}
+                        </span>
+                    );
+                }
             },{
                 title: Intl.get('common.operate', '操作'),
                 dataIndex: 'oprate_btn',
