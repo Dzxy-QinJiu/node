@@ -141,6 +141,8 @@ function getPerformanceDetailContent(result) {
     return (
         <div>
             {getPerformanceDetailTable('新签回款毛利 (占30%)', newGrossProfitColumns, [result.new_gross_profit_performance])}
+            {getPerformanceDetailTable('个人贡献(占40%)', contributionColumns, [result.contribution_performance])}
+            {getPerformanceDetailTable('回款毛利率(占30%)', grossProfitRateColumns, [result.gross_profit_rate_performance])}
         </div>
     );
 }
