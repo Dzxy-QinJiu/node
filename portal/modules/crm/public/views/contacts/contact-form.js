@@ -392,8 +392,8 @@ class ContactForm extends React.Component {
                     label={index ? ' ' : Intl.get('common.phone', '电话')}
                     placeholder={Intl.get('crm.95', '请输入联系人电话')}
                     initialValue={curPhone.value}
-                    labelCol={{span: 2}}
-                    wrapperCol={{span: 12}}
+                    labelCol={{span: 3}}
+                    wrapperCol={{span: 11}}
                     key={curPhone.id}
                     validateRules={this.getPhoneInputValidateRules()}
                     suffix={this.renderContactWayBtns(index, size, CONTACT_KEYS_MAP.PHONE)}
@@ -423,8 +423,8 @@ class ContactForm extends React.Component {
             <FormItem
                 colon={false}
                 label={options.index ? ' ' : options.label}
-                labelCol={{span: 2}}
-                wrapperCol={{span: 12}}
+                labelCol={{span: 3}}
+                wrapperCol={{span: 11}}
                 key={curContactWay.id}
             >
                 {
@@ -494,11 +494,11 @@ class ContactForm extends React.Component {
                     <FormItem
                         colon={false}
                         label={Intl.get('common.name', '姓名')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        labelCol={{span: 3}}
+                        wrapperCol={{span: 21}}
                         required={true}
                     >
-                        <Col span={12} className="form-col-padding">
+                        <Col span={11} className="form-col-padding">
                             <FormItem>
                                 {
                                     getFieldDecorator('name', {
@@ -553,8 +553,8 @@ class ContactForm extends React.Component {
                         className="contact-role-item"
                         colon={false}
                         label={Intl.get('user.apply.detail.table.role', '角色')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        labelCol={{span: 3}}
+                        wrapperCol={{span: 21}}
                     >
                         {
                             getFieldDecorator('role', {
@@ -585,8 +585,8 @@ class ContactForm extends React.Component {
                         className="contact-sex-item"
                         colon={false}
                         label={Intl.get('crm.contact.sex', '性别')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        labelCol={{span: 3}}
+                        wrapperCol={{span: 21}}
                     >
                         {
                             getFieldDecorator('sex', {
@@ -605,8 +605,8 @@ class ContactForm extends React.Component {
                         className="contact-birthday-item"
                         colon={false}
                         label={Intl.get('crm.contact.birthday', '生日')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        labelCol={{span: 3}}
+                        wrapperCol={{span: 21}}
                     >
                         {
                             getFieldDecorator('birthday', {
@@ -623,8 +623,8 @@ class ContactForm extends React.Component {
                         className="contact-hobby-item"
                         colon={false}
                         label={Intl.get('crm.contact.hobby', '爱好')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        labelCol={{span: 3}}
+                        wrapperCol={{span: 21}}
                     >
                         {
                             getFieldDecorator('hobby', {
@@ -641,8 +641,8 @@ class ContactForm extends React.Component {
                         className="contact-remark-item"
                         colon={false}
                         label={Intl.get('common.remark', '备注')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        labelCol={{span: 3}}
+                        wrapperCol={{span: 21}}
                     >
                         {
                             getFieldDecorator('remark', {
