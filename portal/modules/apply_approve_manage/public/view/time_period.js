@@ -163,7 +163,7 @@ class TimePeriod extends React.Component {
     };
     disabledDate = (current) => {
         //不允许选择大于当前的时刻
-        return current && current.valueOf() < moment().startOf('day');
+        return !this.props.todayBefore ? current && current.valueOf() < moment().startOf('day') : null;
     };
 
     render = () => {
@@ -325,6 +325,7 @@ TimePeriod.defaultProps = {
     },
     component_type: '',
     labelKey: '',
+    todayBefore: true,
 };
 
 TimePeriod.propTypes = {
@@ -338,6 +339,7 @@ TimePeriod.propTypes = {
     onEndTimeChange: PropTypes.func,
     onEndTypeChange: PropTypes.func,
     onSaveAllData: PropTypes.func,
-    form: PropTypes.object
+    form: PropTypes.object,
+    todayBefore: PropTypes.bool,
 };
 export default TimePeriod;
