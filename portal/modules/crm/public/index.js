@@ -14,7 +14,8 @@ const VIEW_TYPE = {
 };
 class CrmIndex extends React.Component {
     state = {
-        customerViewType: VIEW_TYPE.CUSTOMER//客户展示的视图
+        customerViewType: VIEW_TYPE.CUSTOMER,//客户展示的视图
+        crmSearchCondition: {},//客户列表中搜索的筛选条件
     };
 
     componentDidMount() {
@@ -40,17 +41,19 @@ class CrmIndex extends React.Component {
         });
     };
     //展示客户池
-    showCustomerPool = () => {
+    showCustomerPool = (searchCondition) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.filter-block .customer-pool-btn'), '点击客户池');
         this.setState({
-            customerViewType: VIEW_TYPE.CUSTOMER_POOL
+            customerViewType: VIEW_TYPE.CUSTOMER_POOL,
+            crmSearchCondition: searchCondition
         });
     };
 
     //返回客户列表视图
     returnCustomerView = () => {
         this.setState({
-            customerViewType: VIEW_TYPE.CUSTOMER
+            customerViewType: VIEW_TYPE.CUSTOMER,
+            searchCondition: {}
         });
     };
 
@@ -80,7 +83,7 @@ class CrmIndex extends React.Component {
             case VIEW_TYPE.CUSTOMER_POOL:
                 currView = (
                     <div data-tracename="客户池">
-                        <CustomerPool closeCustomerPool={this.returnCustomerView}/>
+                        <CustomerPool crmSearchCondition={this.state.crmSearchCondition} closeCustomerPool={this.returnCustomerView}/>
                     </div>);
                 break;
         }

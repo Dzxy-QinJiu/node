@@ -66,6 +66,12 @@ class CustomerPool extends React.Component {
     }
 
     componentDidMount() {
+        // 如果是从客户过来的
+        if(!_.isEmpty(this.props.crmSearchCondition)) {
+            this.refs.searchInput.state.keyword = _.get(this.props.crmSearchCondition, 'name', '');
+            let searchValue = this.state.searchValue;
+            searchValue.name = this.refs.searchInput.state.keyword;
+        }
         this.getPoolCustomer();
         this.getUserList();
         let _this = this;
@@ -709,6 +715,7 @@ class CustomerPool extends React.Component {
 }
 CustomerPool.propTypes = {
     closeCustomerPool: PropTypes.func,
+    crmSearchCondition: PropTypes.object,
 };
 
 export default CustomerPool;
