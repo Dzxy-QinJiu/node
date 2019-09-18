@@ -2983,6 +2983,9 @@ var zh_CN = {
     'crm.order.stage.destrip.palceholder': '请输入阶段的描述信息',
     'crm.order.stage.nodata.tips': '暂无订单阶段，请先添加',
     'crm.order.stage.name.verify': '该阶段名称已存在',
+    'crm.release.no.permissions': '您不能释放共同跟进的客户',
+    'crm.no.permissions.update.sales': '您没有权限修改负责人',
+    'crm.no.permissions.update.second.team': '您没有权限修改联合跟进人',
 
     'leave.apply.add.leave.person': '出差人员',
     'leave.apply.add.leave.destination': '目的地',

@@ -317,14 +317,23 @@ class SalesTeamCard extends React.Component {
     }
     //修改负责人及团队的处理
     handleEditSalesTeam = (saveObj, successFunc, errorFunc) => {
-        //在变更销售之前，先检查是否会超过该销售所拥有客户的数量
-        CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
-            //result>0 ，不可转入或变更客户
-            if (_.isNumber(result) && result > 0) {
-                if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.should.reduce.customer', '该负责人拥有客户数已达到上限！'));
-            } else {
-                this.saveSalesTeam(saveObj, successFunc, errorFunc);
+        // 变更之前，验证是否有权限修改负责人
+        CrmBasicAjax.checkCrmUpdateUserByCustomerId(this.state.customerId).then((res) => {
+            if(res) {
+                //在变更销售之前，先检查是否会超过该销售所拥有客户的数量
+                CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
+                    //result>0 ，不可转入或变更客户
+                    if (_.isNumber(result) && result > 0) {
+                        if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.should.reduce.customer', '该负责人拥有客户数已达到上限！'));
+                    } else {
+                        this.saveSalesTeam(saveObj, successFunc, errorFunc);
+                    }
+                });
+            }else {
+                _.isFunction(errorFunc) && errorFunc(Intl.get('crm.no.permissions.update.sales', '您没有权限修改负责人'));
             }
+        }, (errorMsg) => {
+            _.isFunction(errorFunc) && errorFunc(errorMsg);
         });
     };
 
@@ -467,6 +476,21 @@ class SalesTeamCard extends React.Component {
             callback();
         }
     };
+
+    // 修改联合跟进人的处理
+    handleEditSecondSales = (saveObj, successFunc, errorFunc) => {
+        // 需要验证是否有权限修改联合跟进人
+        CrmBasicAjax.checkCrmJoinUserByCustomerId(this.state.customerId).then((res) => {
+            if(res) {
+                this.saveSecondSales(saveObj, successFunc, errorFunc);
+            }else {
+                _.isFunction(errorFunc) && errorFunc(Intl.get('crm.no.permissions.update.second.team', '您没有权限修改联合跟进人'));
+            }
+        }, (errorMsg) => {
+            _.isFunction(errorFunc) && errorFunc(errorMsg);
+        });
+    };
+
     renderContent = () => {
         let secondUserName = _.get(this.state, 'secondUserName');
         let salesTeam = classNames('sales-team',{'duplicate-sales-warning': this.state.duplicateSalesWarning});
@@ -507,7 +531,7 @@ class SalesTeamCard extends React.Component {
                             selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
                             hasEditPrivilege={this.enableEditSecondSales() && (this.isMyTeamOrChildUser(this.state.secondTeamId, this.state.secondUserId) || this.isManager())}
                             placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
-                            saveEditSelect={this.saveSecondSales}
+                            saveEditSelect={this.handleEditSecondSales}
                             validators={[{ validator: this.checkSecondSales }]}
                             noDataTip={Intl.get('crm.no.second.sales', '暂无联合跟进人')}
                             addDataTip={Intl.get('crm.set.second.sales', '设置联合跟进人')}
