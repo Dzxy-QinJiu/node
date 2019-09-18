@@ -198,65 +198,65 @@ function showMetricsDetail(metricsKey, metricsTitle) {
     }).then(result => {
         const title = metricsTitle + Intl.get('common.indicators.for.details', '指标详情');
 
-        const data = _.get(result, '[0]');
-        let items = [];
+        let columns;
 
-        _.each(data, (value, key) => {
-            let name;
-
-            if (key === 'num') {
-                name = Intl.get('contract.24', '合同号');
-            } else if (key === 'contract_name') {
-                name = Intl.get('contract.name', '合同名称');
-            } else if (key === 'date') {
-                value = moment(value).format(oplateConsts.DATE_FORMAT);
-
-                if (type === 'cost') {
-                    name = Intl.get('common.cost.date', '费用日期');
-                } else if (_.includes(type, 'repay')) {
-                    name = Intl.get('contract.237', '回款日期');
-                } else {
-                    name = Intl.get('crm.146', '日期');
-                }
-            } else if (key === 'value') {
-                if (type === 'cost') {
-                    name = Intl.get('contract.133', '费用');
-                } else if (type === 'repayment_amount') {
-                    name = Intl.get('contract.28', '回款额');
-                } else if (type === 'repayment_gross_profit') {
-                    name = Intl.get('contract.29', '回款毛利');
-                } else if (type === 'newrepayment_gross_profit') {
-                    name = Intl.get('contract.158', '新增回款毛利');
-                } else if (type === 'churn_amount') {
-                    name = Intl.get('common.loss.contract.amount', '流失合同额');
-                } else {
-                    name = Intl.get('common.the.numerical', '数值');
-                }
-            } else {
-                name = key;
-            }
-
-            items.push({
-                name,
-                value
-            });
-        });
+        if (metricsKey === 'cost') {
+            columns = [{
+                dataIndex: 'date',
+                title: '费用日期',
+            }, {
+                dataIndex: 'cost',
+                title: '费用',
+            }, {
+                dataIndex: 'type',
+                title: '费用类型',
+            }];
+        } else {
+            columns = [{
+                dataIndex: 'num',
+                title: '合同号',
+            }, {
+                dataIndex: 'customer_name',
+                title: '客户名',
+            }, {
+                dataIndex: 'start_time',
+                title: '开始时间',
+            }, {
+                dataIndex: 'end_time',
+                title: '结束时间',
+            }, {
+                dataIndex: 'contract_amount',
+                title: '合同额',
+            }, {
+                dataIndex: 'gross_profit',
+                title: '合同毛利',
+            }, {
+                dataIndex: 'total_amount',
+                title: '回款额',
+            }, {
+                dataIndex: 'total_gross_profit',
+                title: '回款毛利',
+            }, {
+                dataIndex: 'label',
+                title: '签约类型',
+            }];
+        }
 
         const content = (
-            <div style={{fontSize: 14}}>
-                {_.map(items, item => (
-                    <Row>
-                        <Col span={6} style={{textAlign: 'right', fontWeight: 'bold', paddingRight: 8, marginBottom: 10}}>{item.name}: </Col>
-                        <Col span={18}>{item.value}</Col>
-                    </Row>
-                ))}
+            <div style={{margin: '0 24px'}}>
+                <AntcTable
+                    columns={columns}
+                    dataSource={result}
+                    pagination={false}
+                    bordered={true}
+                />
             </div>
         );
 
         detailPanelEmitter.emit(detailPanelEmitter.SHOW, {
             title,
             content,
-            width: 800
+            width: 1200
         });
     });
 }
