@@ -52,7 +52,8 @@ class ListPanel extends React.Component {
         if (paramObj.content) {
             this.setState({
                 isShow: true,
-                content: paramObj.content
+                content: paramObj.content,
+                title: paramObj.title
             });
         //否则组件属性里的列表类型和事件参数里的列表类型相匹配时才显示面板
         } else if (this.props.listType === paramObj.listType) {
@@ -92,6 +93,7 @@ class ListPanel extends React.Component {
                     className='panel-wrap'
                 >
                     <TopNav>
+                        <div className="panel-title">{this.state.title || null}</div>
                         <RightPanelClose
                             title={Intl.get('common.app.status.close', '关闭')}
                             onClick={this.hide}

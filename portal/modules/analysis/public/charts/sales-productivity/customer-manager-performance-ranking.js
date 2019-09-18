@@ -100,6 +100,7 @@ function onRankingRowClick(record) {
         query: conditionCache
     }).then(result => {
         const paramObj = {
+            title: record.sales_team + record.member_name + '业绩明细',
             content: getPerformanceDetailContent(result),
             onRowClick: showDetail
         };
