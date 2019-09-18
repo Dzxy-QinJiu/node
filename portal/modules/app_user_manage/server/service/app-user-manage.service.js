@@ -325,6 +325,7 @@ exports.getApplyList = function(req, res, obj) {
     } else {
         delete obj.isUnreadApply;
     }
+    //如果
     return restUtil.authRest.get({
         url: url,
         req: req,
@@ -336,10 +337,31 @@ exports.getApplyList = function(req, res, obj) {
                 var applyList = applyDto.toRestObject(data.list || []);
                 data.list = applyList;
             }
-            eventEmitter.emit('success', data);
+            //如果是根据客户id查询申请列表的时候，还需要格外查询这些申请的回复列表
+            if (obj.customer_id){
+                var emitter = new EventEmitter();
+                var promiseList = [];
+                _.forEach(data.list, item => {
+                    promiseList.push(getReplyItem(req, res, _.get(item, 'id')));
+                });
+                Promise.all(promiseList).then((dataList) => {
+                    _.forEach(data.list, (item,index) => {
+                        item['replyLists'] = dataList[index];
+                    });
+                    eventEmitter.emit('success', data);
+                }).catch((err) => {
+                    emitter.emit('error', err);
+                });
+                return emitter;
+            }else{
+                eventEmitter.emit('success', data);
+            }
         }
     });
 };
+
+
+
 //获取未读回复列表
 exports.getUnreadReplyList = function(req, res) {
     return restUtil.authRest.get({
@@ -895,26 +917,41 @@ exports.addReply = function(req, res, postData) {
         res: res
     }, postData);
 };
-
+function getReplyItem(req, res, apply_id) {
+    return new Promise((resolve, reject) => {
+        return restUtil.authRest.get({
+            url: AppUserRestApis.getReplyList,
+            req: req,
+            res: res
+        }, {
+            apply_id: apply_id,
+            page_size: 1000
+        }, {
+            success: function(eventEmitter, data) {
+                var list = [];
+                //处理数据
+                if (data && data.list && data.list.length) {
+                    list = replyDto.toRestObject(data.list);
+                }
+                resolve(list);
+            },
+            error: function(eventEmitter, errorDesc) {
+                reject(errorDesc);
+            }
+        });
+    });
+}
 //获取一个申请单的回复列表
 exports.getReplyList = function(req, res, apply_id) {
-    return restUtil.authRest.get({
-        url: AppUserRestApis.getReplyList,
-        req: req,
-        res: res
-    }, {
-        apply_id: apply_id,
-        page_size: 1000
-    }, {
-        success: function(eventEmitter, data) {
-            var list = [];
-            //处理数据
-            if (data && data.list && data.list.length) {
-                list = replyDto.toRestObject(data.list);
-            }
-            eventEmitter.emit('success', list);
-        }
+    var emitter = new EventEmitter();
+    let promiseList = [getReplyItem(req, res, apply_id)];
+    Promise.all(promiseList).then((dataList) => {
+        var result = dataList[0] ? dataList[0] : [];
+        emitter.emit('success', result);
+    }).catch((err) => {
+        emitter.emit('error', err);
     });
+    return emitter;
 };
 
 //获取团队信息

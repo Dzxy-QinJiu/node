@@ -13,7 +13,10 @@ exports.saveSelectAppKeyUserId = JSON.stringify(UserData.user_id);
 //emitter使用的事件提取常量
 exports.EMITTER_CONSTANTS = {
     //回复列表滚动到最后
-    REPLY_LIST_SCROLL_TO_BOTTOM: 'replyListScrollToBottom'
+    REPLY_LIST_SCROLL_TO_BOTTOM: 'replyListScrollToBottom',
+    //获取申请详情成功后
+    GET_APPLY_DETAIL_CUSTOMERID: 'getApplyDetailCustomerId'
+
 };
 
 //暴露一个emitter，做自定义事件

@@ -228,6 +228,7 @@ const ApplyViewDetail = createReactClass({
         }
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
+        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
         this.getIntegrateConfig();
         this.getAllUserList();
         this.getNotSalesRoleUserList();
@@ -236,10 +237,18 @@ const ApplyViewDetail = createReactClass({
     componentWillUnmount() {
         emitter.removeListener('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
+        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
     },
 
     closeRightPanel() {
         ApplyViewDetailActions.closeRightPanel();
+    },
+    getHistoryApplyListByCustomerId(customerId){
+        if(customerId){
+            ApplyViewDetailActions.getHistoryApplyListsByCustomerId(customerId);
+        }else{
+            ApplyViewDetailActions.setHistoryApplyStatus();
+        }
     },
 
     componentWillReceiveProps(nextProps) {

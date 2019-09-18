@@ -1,0 +1,61 @@
+@import "../apply-common-style/index";
+//回复列表外层容器
+.apply-detail-reply-list {
+  //position: relative;
+  //float: left;
+  //width: 100%;
+  .reply-info-block {
+    .reply-list-container {
+      li {
+        word-break: break-all;
+        margin-bottom: 6px;
+        overflow: hidden;
+      }
+      //回复
+      .ant-input-group-wrapper {
+        margin-top: 4px;
+      }
+      .ant-input-group-addon {
+        padding: 4px 14px;
+        background-color: #fff;
+      }
+    }
+    .apply-info-label {
+      margin-top: 0;
+      .reply-date-text {
+        float: right;
+        padding-right: 0;
+      }
+    }
+    .refresh-reply-data-tip {
+      display: inline-block;
+      width: 100%;
+      line-height: 27px;
+      text-align: center;
+    }
+    //loading外层容器
+    .reply-loading-wrap {
+      display: block;
+      text-align: center;
+      margin: 0 0 0 8px;
+      font-size: 18px;
+    }
+    //loading文字容器
+    .reply-loading-text {
+      font-size: 12px;
+      margin: 0 0 0 10px;
+    }
+    //提示容器
+    .ant-alert {
+      display: inline-block;
+    }
+    //刷新样式
+    .anticon-reload {
+      cursor: pointer;
+      &.pull-right {
+        margin: 10px 10px 0 0;
+        font-size: 14px;
+      }
+    }
+  }
+}

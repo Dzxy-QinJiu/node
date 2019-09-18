@@ -7,6 +7,7 @@ import { APPLY_MULTI_TYPE_VALUES } from 'PUB_DIR/sources/utils/consts';
 import {updateUnapprovedCount} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 class ApplyViewDetailActions {
     constructor() {
         this.generateActions(
@@ -68,7 +69,8 @@ class ApplyViewDetailActions {
             'setNextCandidateIds',//设置下一节点的审批人
             'setNextCandidateName',//下一节点审批人的名字
             'setNextCandidate',
-            'showOrHideApprovalBtns'
+            'showOrHideApprovalBtns',
+            'setHistoryApplyStatus'
         );
     }
 
@@ -86,14 +88,32 @@ class ApplyViewDetailActions {
         //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
         if (applyData) {
             this.dispatch({loading: false, error: false, detail: applyData.detail});
+            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,_.get(applyData,'detail.customer_id',''));
+
         } else {
             this.dispatch({loading: true, error: false});
             AppUserAjax.getApplyDetail(id).then((detail, apps) => {
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,_.get(detail,'customer_id',''));
                 this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState});
             }, (errorMsg) => {
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });
         }
+    }
+    //在审批详情中得到客户的id，然后根据客户的id获取历史申请审批
+    getHistoryApplyListsByCustomerId(customerId){
+        this.dispatch({loading: true, error: false});
+        AppUserAjax.getApplyList({customer_id: customerId}).then((data) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            //给 自己申请的并且是未通过的审批加上可以撤销的标识
+            this.dispatch({error: false, loading: false, data: data});
+        },(errorMsg) => {
+            this.dispatch({
+                error: true,
+                loading: false,
+                errorMsg: errorMsg || Intl.get('apply.failed.get.type.application', '获取全部{type}申请失败', {type: Intl.get('crm.detail.user', '用户')})
+            });});
     }
 
     //获取回复列表
