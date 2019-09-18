@@ -73,13 +73,6 @@ class ApplyDropdownAndAddBtn extends React.Component {
         );
     }
 
-    //是否是销售
-    isSales =() => {
-        let isSales = userData.hasRole(userData.ROLE_CONSTANS.SALES) || 
-        userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER) || 
-        userData.hasRole(userData.ROLE_CONSTANS.SECRETARY);
-        return isSales;
-    } 
     render(){
         // 筛选菜单
         var menuList = (
