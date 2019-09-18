@@ -14,7 +14,7 @@ import { clueNameContactRule, emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/s
 var uuid = require('uuid/v4');
 //滚动条
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-const CONTACT_ITEMS_HEIGHHT = 300;
+const CONTACT_ITEMS_HEIGHHT = 301;
 
 // 生成联系方式最基本的数据结构
 function generatorBDS(value) {
