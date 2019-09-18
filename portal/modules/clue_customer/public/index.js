@@ -91,7 +91,7 @@ var LAYOUT_CONSTANTS = {
 import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
 import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
-import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class ClueCustomer extends React.Component {
     state = {
@@ -126,6 +126,7 @@ class ClueCustomer extends React.Component {
         showRecommendCustomerCondition: false,
         isReleasingClue: false,//是否正在释放线索
         selectedClue: [],//选中的线索
+        isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -148,6 +149,7 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.on(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
+        notificationEmitter.on(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
             this.showAddForm();
@@ -281,6 +283,35 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.removeListener(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
+        notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
+    }
+
+    //有新线索时线索面板添加刷新提示
+    showRefreshPrompt = (data) => {
+        if(!_.isEmpty(data) && _.isObject(data)) {
+            //如果当前无线索，直接展示刷新提示
+            if(_.isEmpty(this.state.curClueLists)) {
+                this.setState({
+                    isShowRefreshPrompt: true
+                });
+            } else {
+                let clue_list = _.get(data, 'clue_list', []);
+                _.map(clue_list, clue => {
+                    //判断是否推送的线索为当前tab下的线索
+                    let status = clue.status;
+                    //线索类型
+                    let typeFilter = this.getFilterStatus();
+                    if(_.isEqual(status, typeFilter.status)) {
+                        //如果当前已经展示了刷新提示，不做操作
+                        if(!_.get(this.state, 'isShowRefreshPrompt')) {
+                            this.setState({
+                                isShowRefreshPrompt: true
+                            });
+                        }
+                    }
+                });
+            }
+        }
     }
 
     //展示右侧面板
@@ -654,6 +685,7 @@ class ClueCustomer extends React.Component {
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
         var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
+        console.log('filterAll' + filterAllotNoTraced);
         if (filterAllotNoTraced){
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);

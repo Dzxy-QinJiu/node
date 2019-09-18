@@ -157,6 +157,8 @@ function clueUnhandledListener(data) {
             updateUnreadByPushMessage('unhandleClue', clueList.length, clueList);
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
+        //线索面板刷新提示
+        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data);
         var clueArr = _.get(data, 'clue_list',[]);
         var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
         if (canPopDesktop()) {
