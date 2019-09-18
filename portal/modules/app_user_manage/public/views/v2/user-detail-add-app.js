@@ -726,7 +726,7 @@ const UserDetailAddApp = createReactClass({
         const submitData = this.getSubmitData();
         //选中的应用列表
         const selectedApps = this.state.selectedApps;
-        let noSelectRoleApps = AppUserUtil.handleNoSelectRole(submitData, selectedApps);
+        
         //添加应用
         UserDetailAddAppActions.addUserApps(submitData, (apps) => {
             if (apps && _.isArray(apps)) {
