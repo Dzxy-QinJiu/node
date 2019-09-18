@@ -166,6 +166,7 @@ function getPerformanceDetailTable(title, columns, data) {
                 columns={columns}
                 dataSource={data}
                 pagination={false}
+                bordered={true}
             />
         </div>
     );
