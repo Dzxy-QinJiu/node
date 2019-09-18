@@ -796,6 +796,13 @@ class Crm extends React.Component {
                     type: 'time'
                 };
                 break;
+            case OTHER_FILTER_ITEMS.EXTRACT_TIME://从客户池提取的客户
+                this.state.rangParams[0] = {
+                    from: moment().year(2019).startOf('year').valueOf(),
+                    name: 'extract_time',
+                    type: 'time'
+                };
+                break;
         }
         //近30天拨打未接通的客户筛选
         if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {
@@ -846,8 +853,9 @@ class Crm extends React.Component {
                 type: 'time'
             };
         } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER
-            && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED) {
-            //既不是超xx天未联系的客户、也不是xx天的活跃、不是多个订单客户、也不是本周未联系考核的过滤时，传默认的设置
+            && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED
+            && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.EXTRACT_TIME ) {
+            //既不是超xx天未联系的客户、也不是xx天的活跃、不是多个订单客户、不是本周未联系考核、也不是从客户池提取的客户的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }
         if (interval) {
@@ -888,6 +896,15 @@ class Crm extends React.Component {
         //设置了关注客户置顶后的处理
         if (this.state.isConcernCustomerTop) {
             params = this.handleSortParams(params);
+        }
+        // 如果常用筛选选中了从客户池中提取的客户
+        if(_.get(filterStoreCondition,'otherSelectedItem') === OTHER_FILTER_ITEMS.EXTRACT_TIME) {
+            let sort_and_orders = JSON.parse(params.sort_and_orders || '[]');
+            sort_and_orders.splice(1, 0, {
+                key: OTHER_FILTER_ITEMS.EXTRACT_TIME,
+                value: _.get(this.state, 'sorter.order', 'ascend')
+            });
+            params.sort_and_orders = JSON.stringify(sort_and_orders);
         }
 
         //如果是通过列表面板打开的

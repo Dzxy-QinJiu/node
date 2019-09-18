@@ -74,6 +74,9 @@ const otherFilterArray = [
     },{
         name: Intl.get('crm.this.week.contact', '本周联系过的客户'),
         value: 'this_week_contacted'
+    },{
+        name: Intl.get('crm.filter.extract.from.customer.pool', '从客户池中提取的客户'),
+        value: 'extract_time'
     }
 ];
 //只有管理员可以过滤未分配的客户
