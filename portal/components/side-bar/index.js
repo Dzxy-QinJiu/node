@@ -11,6 +11,7 @@ const weixinHeight = 100;//二维码高度
 const appHeight = 108;
 const QRCode = require('qrcode.react');
 import classNames from 'classnames';
+import { Button } from 'antd';
 
 class SideBar extends React.Component {
     constructor(props) {
@@ -61,6 +62,16 @@ class SideBar extends React.Component {
         return (
             <div className='side-bar-content'>
                 <div className='side-bar'>
+                    {
+                        this.state.showChat ? (
+                            <Button className='apply-btn'>
+                                <a href="https://www.curtao.com" target="_blank" rel="noopener noreferrer">
+                                    {Intl.get('login.apply.trial', '申请试用')}
+                                </a>
+                            </Button>
+                        ) : null
+                    }
+
                     {this.state.showChat ? null : (
                         <React.Fragment>
                             <div className='single-bar-box'>

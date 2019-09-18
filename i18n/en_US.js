@@ -9,6 +9,7 @@ var en_US = {
     'service.not.available': 'Sorry, service is temporarily not available, please try again later...',
     'weixin.mini.program': 'Mini program',
     'customer.service': 'Customer service',
+    'login.apply.trial': '', // 申请试用
     //菜单
     'menu.crm': 'Customers',//客户管理
     'menu.call': 'Call Records',//通话记录
