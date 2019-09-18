@@ -8,6 +8,7 @@ var zh_CN = {
     'service.not.available': '对不起，服务暂时不可用,请稍后重试。',
     'weixin.mini.program': '小程序',
     'customer.service': '客服',
+    'login.apply.trial': '申请试用',
     //菜单
     'menu.crm': '客户管理',
     'menu.call': '通话记录',
