@@ -255,7 +255,8 @@ function showMetricsDetail(metricsKey, metricsTitle) {
 
         detailPanelEmitter.emit(detailPanelEmitter.SHOW, {
             title,
-            content
+            content,
+            width: 800
         });
     });
 }
