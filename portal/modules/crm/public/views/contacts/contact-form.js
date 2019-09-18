@@ -397,6 +397,7 @@ class ContactForm extends React.Component {
                     key={curPhone.id}
                     validateRules={this.getPhoneInputValidateRules()}
                     suffix={this.renderContactWayBtns(index, size, CONTACT_KEYS_MAP.PHONE)}
+                    required={true}
                 />
                 {this.state.showNeedPhone && index === 0 ?
                     <div className="validate-error-tip">{Intl.get('crm.95', '请输入联系人电话')} </div> : null}
@@ -495,6 +496,7 @@ class ContactForm extends React.Component {
                         label={Intl.get('common.name', '姓名')}
                         labelCol={{span: 2}}
                         wrapperCol={{span: 22}}
+                        required={true}
                     >
                         <Col span={12} className="form-col-padding">
                             <FormItem>
