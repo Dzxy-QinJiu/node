@@ -4,6 +4,7 @@ var scrollBarEmitter = require('../../public/sources/utils/emitters').scrollBarE
 var cardEmitter = require('../../public/sources/utils/emitters').cardEmitter;
 
 var Card = require('../card');
+import StrategyCard from '../clue-strategy-card';
 //滚动条
 var GeminiScrollbar = require('../react-gemini-scrollbar');
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -26,6 +27,11 @@ var MINCARDWIDTH = 332;
 var TYPES = {
     APP_MANAGE: 'appManage',
     USER_MANAGE: 'userManage'
+};
+
+const CARD_TYPE = {
+    PRODUCTION: 'production',
+    STRATEGY: 'clue-strategy'
 };
 function noop() {
 }
@@ -269,14 +275,36 @@ class CardList extends React.Component {
         var bulkOpersShow = _this.props.bulkOpersShow;
         var curCardListLen = _this.props.curCardList.length;
         var cards = '';
+        let isProductionCard = _.isEqual(this.props.cardType, CARD_TYPE.PRODUCTION);
         // 当前页中的应用列表遍历
-        if (_this.props.curCardList && curCardListLen > 0) {
+        if (_this.props.curCardList && curCardListLen > 0 && isProductionCard) {
             cards = _this.props.curCardList.map(function(card, index) {
                 var selectCards = _this.props.selectCards;
                 var isSelect = _.includes(selectCards, card.id);
                 return <Card key={index}
                     curCard={card}
                     imgUrl={card.image}
+                    bulkOpersShow={bulkOpersShow}
+                    selectCard={_this.selectCard}
+                    unselectCard={_this.unSelectCard}
+                    isSelect={isSelect}
+                    showCardInfo={_this.showCardInfo}
+                    cardWidth={_this.state.cardWidth}
+                    showRightFullScreen={_this.props.showRightFullScreen}
+                    showAppOverViewPanel={_this.props.showAppOverViewPanel}
+                    type={_this.props.type}
+                    removeFailRealm={_this.props.removeFailRealm}
+                    showDelete={card.showDelete}
+                    deleteItem={_this.props.deleteItem}
+                    leftFlagDesc={card.leftFlagDesc}
+                />;
+            });
+        } else if(_this.props.curCardList && curCardListLen > 0) {
+            cards = _this.props.curCardList.map(function(card, index) {
+                var selectCards = _this.props.selectCards;
+                var isSelect = _.includes(selectCards, card.id);
+                return <StrategyCard key={index}
+                    curCard={card}
                     bulkOpersShow={bulkOpersShow}
                     selectCard={_this.selectCard}
                     unselectCard={_this.unSelectCard}
@@ -332,6 +360,11 @@ class CardList extends React.Component {
         );
     }
 }
+
+CardList.defaultProps = {
+    cardType: 'production' //card类型 ‘production'产品卡片  'clue-strategy'线索策略卡片
+};
+
 CardList.propTypes = {
     updatePageSize: PropTypes.func,
     changePageEvent: PropTypes.func,
@@ -348,6 +381,7 @@ CardList.propTypes = {
     curPage: PropTypes.number,
     cardListSize: PropTypes.number,
     listTipMsg: PropTypes.string,
+    cardType: PropTypes.string,
 };
 
 module.exports = CardList;

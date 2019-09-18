@@ -5,19 +5,130 @@
  */
 import './style/index.less';
 
-import {Button, Icon} from 'antd';
-import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import ClueAssignmentStore from './store';
+import ClueAssignmentAction from './action';
 
+import {Button, Icon} from 'antd';
+import NoStrategy from './views/no_assign_strategy';
+import StrategyForm from './views/strategy-form';
+import StrategyInfo from './views/strategy-info';
+import CardList from 'CMP_DIR/cardList';
+import Spinner from 'CMP_DIR/spinner';
+import Trace from 'LIB_DIR/trace';
+
+//当前页面布局常量
+const LAYOUT = {
+    PADDING: 56, //最外层padding宽度12px
+    TOP_ZONE_HEIGHT: 80,
+    NO_DATA_WIDTH: 306,
+    ERROR_WIDTH: 304
+};
+//编辑，展示线索分配策略
+const EDIT_TYPE = {
+    EDIT: 'edit',
+    ADD: 'add',
+};
 
 class ClueAssignment extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            ...ClueAssignmentStore.getState(),
+        };
     }
 
+    componentDidMount = () => {
+        ClueAssignmentStore.listen(this.onStoreChange);
+        ClueAssignmentAction.getAllSalesManList();
+    }
+
+    componentWillUnmount = () => {
+        ClueAssignmentAction.setInitialData();
+        ClueAssignmentStore.unlisten(this.onStoreChange);
+    }
+
+    onStoreChange = () => {
+        this.setState(ClueAssignmentStore.getState());
+    }
+
+    //关闭右侧添加面板
+    closeInfoRightPanel = () => {
+        ClueAssignmentAction.closeInfoRightPanel();
+    }
+
+    //关闭右侧相信信息面板
+    closeFormRightPanel = () => {
+        ClueAssignmentAction.closeFormRightPanel();
+    }
+
+
     //添加分配策略
-    addAssignmentStrategy = () => {
-        console.log('hi');
+    addAssignmentStrategy = (type) => {
+        ClueAssignmentAction.showStrategyForm(type);
+    }
+
+    //一页展示多少
+    updatePageSize = () => {
+
+    };
+    //切换页数时，当前页展示数据的修改
+    events_onChangePage = () => {
+    };
+
+    //获取线索分类策略
+    getStrategyCardList = () => {
+        let strategyList = _.isArray(this.state.strategyList) ? this.state.strategyList : [];
+        return strategyList.map(strategy => {
+            let provinceTips = _.join(strategy.condition[0].province, '、');
+            let needsContent = `${Intl.get('clue.assignment.needs.region','地域')} (${provinceTips})`;
+            return {
+                id: strategy.id,
+                name: strategy.name,
+                status: strategy.status,
+                description: {
+                    label: Intl.get('clue.assignment.description', '描述') + ':',
+                    value: strategy.description,
+                    showOnCard: true
+                },
+                condition: {
+                    label: Intl.get('clue.assignment.needs', '满足条件') + ':',
+                    value: needsContent,
+                    showOnCard: true
+                },
+                assignee: {
+                    label: Intl.get('clue.assignment.assignee', '分配给') + ':',
+                    value: strategy.user_name,
+                    showOnCard: true
+                }
+            };
+        });
+    }
+
+    showDetailPanel = (strategy) => {
+        Trace.traceEvent('线索分配', '点击查看线索分配策略详情');
+        ClueAssignmentAction.setCurStrategy(strategy.id);
+        ClueAssignmentAction.showStrategyInfoPanel();
+    };
+
+    //渲染加载或者有错误信息的状态
+    renderLoadingAndErrAndNodataContent = () => {
+        //当加载完成并且没有错误信息并且有数据列表的时候
+        let hasClueAssignList = !_.isEmpty(this.state.strategyList) && _.isEmpty(_.get(this.state, 'getStrategyListErrMsg')) && !_.get(this.state, 'isGetStrategyDetailLoading');
+        //错误信息提示padding
+        let paddingTop = ($(window).height() - LAYOUT.ERROR_WIDTH) / 2;
+        //如果加载完成并且有错误信息
+        if(!_.isEmpty(_.get(this.state, 'getStrategyListErrMsg')) && !_.get(this.state, 'isGetStrategyDetailLoading')) {
+            return (
+                <div className="err-content" style={{paddingTop: paddingTop}}>
+                    <i className="iconfont icon-data-error"></i>
+                    <p className="abnornal-status-tip">{_.get(this.state, 'getStrategyListErrMsg')}</p>
+                </div>
+            );
+        } else if(hasClueAssignList) {
+            return this.renderClueAssignList();
+        } else {
+            return this.renderClueAssignNoData();
+        }
     }
 
     //渲染顶端操作项
@@ -25,14 +136,89 @@ class ClueAssignment extends React.Component {
         return (
             <div className="add-clue-assignment-top">
                 <div className="add-clue-assignment-btn">
-                    <Button
-                        className="add-btn-item"
-                        onClick={this.addAssignmentStrategy}
-                        data-tracename="添加分配策略"
-                    >
-                        <Icon type="plus" />
-                        {Intl.get('clue.assignment.strategy.add','添加分配策略')}
-                    </Button>
+                    {this.renderAddStrategyBtn()}
+                </div>
+            </div>
+        );
+    }
+
+    //当前有分配策略时的展示
+    renderClueAssignList = () => {
+        let height = $(window).height() - LAYOUT.PADDING;
+        let cardContainerHeight = height - LAYOUT.TOP_ZONE_HEIGHT;
+        return(
+            <div className="clue-assignment-list-container">
+                <div className="clue-top-nav">
+                    {this.renderTopNavOperation()}
+                </div>
+                <CardList
+                    cardListSize={this.state.strategyTotal}
+                    selectCards={this.state.currentStrategy}
+                    curCardList={this.getStrategyCardList()}
+                    listTipMsg={this.state.listTipMsg}
+                    curPage={this.state.curPage}
+                    pageSize={this.state.pageSize}
+                    updatePageSize={this.updatePageSize.bind(this)}
+                    changePageEvent={this.events_onChangePage.bind(this)}
+                    showCardInfo={this.showDetailPanel.bind(this)}
+                    cardType='clue-strategy'
+                    cardContainerHeight={cardContainerHeight}
+                />
+            </div>
+        );
+    }
+
+    //添加分配策略按钮
+    renderAddStrategyBtn = () => {
+        return(
+            <Button
+                className="add-btn-item"
+                onClick={this.addAssignmentStrategy.bind(this, EDIT_TYPE.ADD)}
+                data-tracename="添加分配策略"
+            >
+                <Icon type="plus" />
+                <div className="add-btn-char">
+                    {Intl.get('clue.assignment.strategy.add','添加分配策略')}
+                </div>
+            </Button>);
+    }
+
+    //当前无分配策略时的展示
+    renderClueAssignNoData = () => {
+        let paddingTop = ($(window).height() - LAYOUT.NO_DATA_WIDTH) / 2;
+        return (
+            <div className="no-strategy-data-container" style={{paddingTop: paddingTop}}>
+                <NoStrategy
+                    renderAddStrategyBtn={this.renderAddStrategyBtn}
+                />
+            </div>
+        );
+    }
+
+    //渲染主体内容
+    renderClueAssignmentContent = () => {
+        let height = $(window).height() - LAYOUT.PADDING;
+        return (
+            <div className="clue-assignment-content" style={{height: height}}>
+                {this.renderLoadingAndErrAndNodataContent()}
+                <div className="clue-assignment-right-panel">
+                    {
+                        _.get(this.state, 'isShowStrategyForm') ?
+                            <StrategyForm
+                                clueSourceArray={[]}
+                                accessChannel={[]}
+                                clueClassifyArray={[]}
+                                assigneeArray={[]}
+                                closeRightPanel={this.closeFormRightPanel}
+                            /> : null
+                    }
+                    {
+                        _.get(this.state, 'isShowStrategyDetail') ?
+                            <StrategyInfo
+                                closeRightPanel={this.closeInfoRightPanel}
+                                strategyInfo={this.state.currentStrategy}
+                            /> : null
+                    }
                 </div>
             </div>
         );
@@ -40,15 +226,17 @@ class ClueAssignment extends React.Component {
 
 
     render() {
-        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
-        let containerHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
-            <div style={{height: height}}
+            <div
                 className="clue-assignment-container"
                 data-tracename="线索分配"
             >
-                <div className="clue-top-nav">
-                    {this.renderTopNavOperation()}
+                <div className="clue-assignment-content">
+                    {
+                        _.get(this.state, 'isGetStrategyDetailLoading') ? <Spinner/> : (
+                            this.renderClueAssignmentContent()
+                        )
+                    }
                 </div>
             </div>
         );

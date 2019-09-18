@@ -1,15 +1,57 @@
 /*线索分配样式*/
 @import "../../../../public/css/common-variables";
+@font-color: #8DA8C5;
+@btn-color: #8da8c5;
+@label-color: #999999;
+@white: #fff;
 
 .clue-assignment-container{
-  padding: 12px;
-  background: #fff;
-  //添加策略顶部按钮部分
-  .add-clue-assignment-top {
-    .add-clue-assignment-btn {
-      .add-btn-item {
-        font-size: 14px;
+  margin: 12px;
+  .clue-assignment-content {
+    height: 100%;
+    width: 100%;
+    background: @white;
+    //添加策略顶部按钮部分
+    .add-clue-assignment-top {
+      padding: 24px;
+      height: 80px;
+      border-bottom: 1px solid #E5E5E5;
+      .add-clue-assignment-btn {
       }
+    }
+    //错误信息展示
+    .err-content {
+      padding-top: 260px;
+      font-size: 20px;
+      color: #cecece;
+      text-align: center;
+      .icon-data-error, .icon-no-data {
+        font-size: 96px;
+      }
+      .abnornal-status-tip {
+        text-align: center;
+        color: #999;
+        font-size: 20px;
+        margin-top: 10px;
+      }
+    }
+  }
+  //添加分配策略按钮
+  .add-btn-item {
+    font-size: 16px;
+    height: 32px;
+    vertical-align: middle;
+    color: @btn-color;
+    border-radius: 4px;
+    border-color: #DEDFE2;
+    &:hover {
+      color: #09a9fe;
+      border-color: #09a9fe;
+    }
+    .add-btn-char{
+      margin-left: 0.5em;
+      display: inline-block;
+      height: 20px;
     }
   }
 }
