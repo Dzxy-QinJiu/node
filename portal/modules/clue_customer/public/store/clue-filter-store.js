@@ -70,6 +70,7 @@ ClueFilterStore.prototype.setCondition = function(list) {
 ClueFilterStore.prototype.setTimeRange = function(timeRange) {
     this.rangeParams[0].from = timeRange.start_time;
     this.rangeParams[0].to = timeRange.end_time;
+    this.timeType = timeRange.range;
 };
 //设置时间的类型
 ClueFilterStore.prototype.setTimeType = function(timeType) {
