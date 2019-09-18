@@ -5,6 +5,7 @@
   }
 }
 @icon-width: 48px;
+@color: #efa246;
 .side-bar-content {
   .side-bar {
     width: @icon-width;
@@ -12,6 +13,20 @@
     bottom: 30%;
     right: 24px;
     z-index: 99999;
+    .apply-btn {
+      position: fixed;
+      top: 60px;
+      right: 24px;
+      color: #fff;
+      background-color: @color;
+      border-color: @color;
+      width: 96px;
+      height: 32px;
+      font-size: 16px;
+      a {
+        text-decoration: none;
+      }
+    }
     .single-bar-box {
       &.only-service {
         margin-bottom: 120px;
