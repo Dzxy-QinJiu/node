@@ -2358,8 +2358,6 @@ class ClueCustomer extends React.Component {
 
     //渲染批量分配按钮
     renderBatchChangeButton = () => {
-        //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
-        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
         //批量分配是否结束
         let isBatchTraceFinish = !_.get(this.state, 'isBatchChangeTraceLoading');
         //批量操作的警告信息
@@ -2369,40 +2367,38 @@ class ClueCustomer extends React.Component {
                 {Intl.get('clue.batch.assign.sales.pending', '批量分配进行中，请稍后再试!')}
             </span>
         </span>);
-        if(showBatchChange) {
-            if(isBatchTraceFinish) {
-                return (<AntcDropdown
-                    ref='changesales'
-                    content={<Button type="primary"
-                        data-tracename="点击分配线索客户按钮"
-                        className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
-                    overlayTitle={Intl.get('user.salesman', '销售人员')}
-                    okTitle={Intl.get('common.confirm', '确认')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    isSaving={this.state.distributeBatchLoading}
-                    overlayContent={this.renderSalesBlock()}
-                    handleSubmit={this.handleSubmitAssignSalesBatch}
-                    unSelectDataTip={this.state.unSelectDataTip}
-                    clearSelectData={this.clearSelectSales}
-                    btnAtTop={false}
-                />);
-            } else {
-                return (<Popover
-                    overlayClassName="batch-invalid-popover"
-                    placement="bottomRight"
-                    content={batchWarningContent}
-                    trigger="click"
-                >
-                    <Button type="primary" className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>
-                </Popover>);
-            }
+        if(isBatchTraceFinish) {
+            return (<AntcDropdown
+                ref='changesales'
+                content={<Button type="primary"
+                    data-tracename="点击分配线索客户按钮"
+                    className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
+                overlayTitle={Intl.get('user.salesman', '销售人员')}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                isSaving={this.state.distributeBatchLoading}
+                overlayContent={this.renderSalesBlock()}
+                handleSubmit={this.handleSubmitAssignSalesBatch}
+                unSelectDataTip={this.state.unSelectDataTip}
+                clearSelectData={this.clearSelectSales}
+                btnAtTop={false}
+            />);
         } else {
-            return null;
+            return (<Popover
+                overlayClassName="batch-invalid-popover"
+                placement="bottomRight"
+                content={batchWarningContent}
+                trigger="click"
+            >
+                <Button type="primary" className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>
+            </Popover>);
         }
     }
 
     //渲染批量操作按钮
     renderBatchChangeClues = () => {
+        //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
+        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
         let filterClueStatus = clueFilterStore.getState().filterClueStatus;
         let curStatus = getClueStatusValue(filterClueStatus);
         //除了运营不能释放线索，管理员、销售都可以释放
@@ -2413,7 +2409,7 @@ class ClueCustomer extends React.Component {
         return (
             <div className="pull-right">
                 <div className="pull-right">
-                    {this.renderBatchChangeButton()}
+                    {showBatchChange ? this.renderBatchChangeButton() : null}
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
