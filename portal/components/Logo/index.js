@@ -30,7 +30,13 @@ class Logo extends React.Component {
         return (
             <Link to={this.props.jumpUrl || '/'} className="logo" style={aStyle}>
                 <img style={imgStyle} src={this.props.logoSrc || LogoSrc}/>
-                <span style={textStyle}>{this.props.logoText || Intl.get('customer.ketao.app', '客套')}</span>
+                <span style={textStyle}>
+                    {
+                        this.props.logoText ? this.props.logoText : (
+                            <i className="iconfont icon-ketao-logo"></i>
+                        )
+                    }
+                </span>
             </Link>
         );
     }
