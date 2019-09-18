@@ -5,6 +5,7 @@
 import { listPanelEmitter, detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
 import { Row, Col } from 'antd';
+import { AntcTable } from 'antc';
 
 let conditionCache = {};
 
@@ -109,9 +110,61 @@ function onRankingRowClick(record) {
 
 //获取业绩详情内容
 function getPerformanceDetailContent(result) {
+    _.each(result, (value, key) => {
+        value.row_title = '数值';
+    });
+
+    const newGrossProfitColumns = [{
+        title: '个人新签回款毛利',
+        dataIndex: 'new_repayment_gross_profit',
+    }];
+
+    const contributionColumns = [{
+        title: '个人回款毛利',
+        dataIndex: 'repayment_gross_profit',
+    }, {
+        title: '流失合同金额',
+        dataIndex: 'churn_amount',
+    }, {
+        title: '个人销售费用',
+        dataIndex: 'cost',
+    }];
+
+    const grossProfitRateColumns = [{
+        title: '个人回款',
+        dataIndex: 'repayment_amount',
+    }, {
+        title: '个人回款毛利',
+        dataIndex: 'repayment_gross_profit',
+    }];
+
     return (
         <div>
-            k
+            {getPerformanceDetailTable('新签回款毛利 (占30%)', newGrossProfitColumns, [result.new_gross_profit_performance])}
+        </div>
+    );
+}
+
+//获取业绩详情表格
+function getPerformanceDetailTable(title, columns, data) {
+    columns.unshift({
+        title: '',
+        dataIndex: 'row_title',
+    });
+
+    columns.push({
+        title: '最大值',
+        dataIndex: 'max',
+    });
+
+    return (
+        <div>
+            <div>{title}</div>
+            <AntcTable
+                columns={columns}
+                dataSource={data}
+                pagination={false}
+            />
         </div>
     );
 }
