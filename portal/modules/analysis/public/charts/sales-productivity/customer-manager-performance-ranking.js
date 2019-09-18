@@ -159,7 +159,7 @@ function getPerformanceDetailTable(title, columns, data) {
 
     return (
         <div>
-            <div>{title}</div>
+            <div style={{fontSize: '16px', fontWeight: 'bold', paddingTop: '20px'}}>{title}</div>
             <AntcTable
                 columns={columns}
                 dataSource={data}
