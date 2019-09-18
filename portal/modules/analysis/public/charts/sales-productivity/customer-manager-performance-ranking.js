@@ -203,7 +203,9 @@ function showMetricsDetail(metricsKey, metricsTitle) {
         if (metricsKey === 'cost') {
             columns = [{
                 dataIndex: 'date',
-                title: '费用日期',
+                title: '时间',
+                align: 'left',
+                render: value => <span>{moment(value).format(oplateConsts.DATE_FORMAT)}</span>
             }, {
                 dataIndex: 'cost',
                 title: '费用',
@@ -221,9 +223,13 @@ function showMetricsDetail(metricsKey, metricsTitle) {
             }, {
                 dataIndex: 'start_time',
                 title: '开始时间',
+                align: 'left',
+                render: value => <span>{moment(value).format(oplateConsts.DATE_FORMAT)}</span>
             }, {
                 dataIndex: 'end_time',
                 title: '结束时间',
+                align: 'left',
+                render: value => <span>{moment(value).format(oplateConsts.DATE_FORMAT)}</span>
             }, {
                 dataIndex: 'contract_amount',
                 title: '合同额',
@@ -239,6 +245,7 @@ function showMetricsDetail(metricsKey, metricsTitle) {
             }, {
                 dataIndex: 'label',
                 title: '签约类型',
+                render: value => <span>{value === 'new' ? '新签' : '续签'}</span>
             }];
         }
 
