@@ -2054,20 +2054,20 @@ class ClueCustomer extends React.Component {
     }
     getCluePrevList = () => {
         var _this = this;
+        var requiredText = <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
+            {Intl.get('apply.components.required.item', '必填')}
+        </span>;
         let previewColumns = [
             {
                 title: Intl.get('clue.analysis.consult.time', '咨询时间'),
                 dataIndex: 'source_time',
-                render: function(text, record, index) {
+                render: function(text, record) {
                     if (text) {
                         return (
                             <span>{record.source_time ? moment(record.source_time).format(oplateConsts.DATE_FORMAT) : null}</span>
                         );
                     }else{
-                        return (
-                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
-                                {Intl.get('apply.components.required.item', '必填')}
-                            </span>);
+                        return requiredText;
                     }
                 }
             },
@@ -2095,10 +2095,7 @@ class ClueCustomer extends React.Component {
                         }
                         return (<span className={cls} title={title}>{text}</span>);
                     } else {//必填
-                        return (
-                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
-                                {Intl.get('apply.components.required.item', '必填')}
-                            </span>);
+                        return requiredText;
                     }
                 }
             },
@@ -2141,10 +2138,7 @@ class ClueCustomer extends React.Component {
                             return (<div className={cls} title={title} key={index}>{item}</div>);
                         });
                     }else{
-                        return (
-                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
-                                {Intl.get('apply.components.required.item', '必填')}
-                            </span>);
+                        return requiredText;
                     }
                 }
             },
