@@ -101,7 +101,7 @@ function onRankingRowClick(record) {
         query: conditionCache
     }).then(result => {
         const paramObj = {
-            title: record.sales_team + record.member_name + '业绩明细',
+            title: record.sales_team + record.member_name + Intl.get('common.the.performance.of.subsidiary', '业绩明细'),
             content: getPerformanceDetailContent(result),
         };
     
@@ -112,38 +112,38 @@ function onRankingRowClick(record) {
 //获取业绩详情内容
 function getPerformanceDetailContent(result) {
     _.each(result, (value, key) => {
-        value.row_title = '数值';
+        value.row_title = Intl.get('common.the.numerical', '数值');
     });
 
     const newGrossProfitColumns = [{
-        title: '个人新签回款毛利',
+        title: Intl.get('common.personal.newly.signed.gross.profit', '个人新签回款毛利'),
         dataIndex: 'new_repayment_gross_profit',
     }];
 
     const contributionColumns = [{
-        title: '个人回款毛利',
+        title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利'),
         dataIndex: 'repayment_gross_profit',
     }, {
-        title: '流失合同金额',
+        title: Intl.get('common.lost.contract.amount', '流失合同金额'),
         dataIndex: 'churn_amount',
     }, {
-        title: '个人销售费用',
+        title: Intl.get('common.personal.sales.expenses', '个人销售费用'),
         dataIndex: 'cost',
     }];
 
     const grossProfitRateColumns = [{
-        title: '个人回款',
+        title: Intl.get('common.personal.collection', '个人回款'),
         dataIndex: 'repayment_amount',
     }, {
-        title: '个人回款毛利',
+        title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利'),
         dataIndex: 'repayment_gross_profit',
     }];
 
     return (
         <div style={{width: 600, margin: '0 auto'}}>
-            {getPerformanceDetailTable('新签回款毛利 (占30%)', newGrossProfitColumns, [result.new_gross_profit_performance])}
-            {getPerformanceDetailTable('个人贡献(占40%)', contributionColumns, [result.contribution_performance])}
-            {getPerformanceDetailTable('回款毛利率(占30%)', grossProfitRateColumns, [result.gross_profit_rate_performance])}
+            {getPerformanceDetailTable(Intl.get('common.gross.profit.of.newly.signed.payment.30.percent', '新签回款毛利(占30%)'), newGrossProfitColumns, [result.new_gross_profit_performance])}
+            {getPerformanceDetailTable(Intl.get('common.personal.contribution.40.percent', '个人贡献(占40%)'), contributionColumns, [result.contribution_performance])}
+            {getPerformanceDetailTable(Intl.get('common.gross.profit.rate.30.percent', '回款毛利率(占30%)'), grossProfitRateColumns, [result.gross_profit_rate_performance])}
         </div>
     );
 }
@@ -160,7 +160,7 @@ function getPerformanceDetailTable(title, columns, data) {
     });
 
     columns.push({
-        title: '最大值',
+        title: Intl.get('contract.max', '最大值'),
         dataIndex: 'max',
     });
 
@@ -219,60 +219,60 @@ function showMetricsDetail(metricsKey, metricsTitle) {
         let columns;
 
         if (metricsKey === 'cost') {
-            tableTitle = '个人销售费用（单位万元）';
+            tableTitle = Intl.get('common.personal.sales.expenses.ten.thousand.yuan', '个人销售费用（单位万元）');
 
             columns = [{
                 dataIndex: 'date',
-                title: '时间',
+                title: Intl.get('common.login.time', '时间'),
                 align: 'left',
                 render: dateValueRender
             }, {
                 dataIndex: 'cost',
-                title: '费用',
+                title: Intl.get('contract.133', '费用'),
                 render: amountValueRender
             }, {
                 dataIndex: 'type',
-                title: '费用类型',
+                title: Intl.get('contract.135', '费用类型'),
             }];
         } else {
-            tableTitle = '合同详情（单位万元）';
+            tableTitle = Intl.get('common.contract.details.ten.thousand.yuan', '合同详情（单位万元）');
 
             columns = [{
                 dataIndex: 'num',
-                title: '合同号',
+                title: Intl.get('contract.24', '合同号'),
             }, {
                 dataIndex: 'customer_name',
-                title: '客户名',
+                title: Intl.get('crm.41', '客户名'),
             }, {
                 dataIndex: 'start_time',
-                title: '开始时间',
+                title: Intl.get('contract.120', '开始时间'),
                 align: 'left',
                 render: dateValueRender
             }, {
                 dataIndex: 'end_time',
-                title: '结束时间',
+                title: Intl.get('contract.105', '结束时间'),
                 align: 'left',
                 render: dateValueRender
             }, {
                 dataIndex: 'contract_amount',
-                title: '合同额',
+                title: Intl.get('contract.25', '合同额'),
                 render: amountValueRender
             }, {
                 dataIndex: 'gross_profit',
-                title: '合同毛利',
+                title: Intl.get('contract.27', '合同毛利'),
                 render: amountValueRender
             }, {
                 dataIndex: 'total_amount',
-                title: '回款额',
+                title: Intl.get('contract.28', '回款额'),
                 render: amountValueRender
             }, {
                 dataIndex: 'total_gross_profit',
-                title: '回款毛利',
+                title: Intl.get('contract.29', '回款毛利'),
                 render: amountValueRender
             }, {
                 dataIndex: 'label',
-                title: '签约类型',
-                render: value => <span>{value === 'new' ? '新签' : '续签'}</span>
+                title: Intl.get('contract.164', '签约类型'),
+                render: value => <span>{value === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('common.to.renew', '续签')}</span>
             }];
         }
 
