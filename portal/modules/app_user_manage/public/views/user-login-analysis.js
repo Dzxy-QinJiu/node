@@ -23,7 +23,7 @@ const CALENDER_COLOR = {
     CONTENT: ['#90caf9', '#2196f3', '#006bc0']
 };
 import userData from 'PUB_DIR/sources/user-data';
-import userScoreAction from 'MOD_DIR/user_score/public/action/index';
+
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
         userId: '1',
@@ -64,28 +64,16 @@ class UserLoginAnalysis extends React.Component {
         this.getUserScoreLists();
         //获取用户参与度评分规则
         this.getUserEngagementRule();
-        this.getUserIndicator();
+        this.getUserScoreIndicator();
     };
-    getUserIndicator() {
-        userScoreAction.getUserScoreIndicator((result) => {
-            this.setState({
-                userIndicator: _.cloneDeep(result)
-            });
-        });
+    getUserScoreIndicator() {
+        UserLoginAnalysisAction.getUserScoreIndicator();
     }
     getUserEngagementRule() {
-        userScoreAction.getUserEngagementRule((result) => {
-            this.setState({
-                userEngagementScore: _.cloneDeep(result)
-            });
-        });
+        UserLoginAnalysisAction.getUserEngagementRule();
     }
     getUserScoreLists() {
-        userScoreAction.getUserScoreLists((result) => {
-            this.setState({
-                userBasicScore: _.cloneDeep(result)
-            });
-        });
+        UserLoginAnalysisAction.getUserScoreLists();
     }
 
     componentWillReceiveProps(nextProps) {

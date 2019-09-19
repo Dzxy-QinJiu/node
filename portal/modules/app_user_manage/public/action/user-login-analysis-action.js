@@ -7,7 +7,7 @@ var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var ShareObj = require('../util/app-id-share-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
-
+import userScoreAction from 'MOD_DIR/user_score/public/action/index';
 function UserLoginAnalysisAction() {
     this.generateActions(
         'resetState', // 切换用户时，恢复到默认状态
@@ -151,6 +151,28 @@ function UserLoginAnalysisAction() {
         } else {
             this.dispatch({paramsObj: loginParam, loading: false, error: true, errorMsg: Intl.get('user.login.last.failed', '获取用户最近登录统计信息失败')});
         }
+    };
+    this.getUserScoreIndicator = function() {
+        userScoreAction.getUserScoreIndicator((result) => {
+            this.dispatch({
+                list: _.cloneDeep(result)
+            });
+        });
+    };
+    this.getUserEngagementRule = function() {
+        userScoreAction.getUserEngagementRule((result) => {
+            this.dispatch({
+                list: _.cloneDeep(result)
+            });
+        });
+    };
+    this.getUserScoreLists = function() {
+        userScoreAction.getUserScoreLists((result) => {
+            this.dispatch({
+                list: _.cloneDeep(result)
+            });
+
+        });
     };
 }
 
