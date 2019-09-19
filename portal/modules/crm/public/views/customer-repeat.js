@@ -286,8 +286,10 @@ class CustomerRepeat extends React.Component {
                     <Col span={2}
                         className="repeat-customer-col">{Intl.get('call.record.contacts', '联系人')}</Col>
                     <Col span={3} className="repeat-customer-col">{Intl.get('crm.5', '联系方式')}</Col>
-                    <Col span={2}
-                        className="repeat-customer-col">{Intl.get('user.apply.detail.order', '订单')}</Col>
+                    {Oplate.isCurtao === 'true' ? null : (
+                        <Col span={2} className="repeat-customer-col">
+                            {Intl.get('user.apply.detail.order', '订单')}
+                        </Col>)}
                     <Col span={2} className="repeat-customer-col">{Intl.get('crm.6', '负责人')}</Col>
                     <Col span={2}
                         className="repeat-customer-col">{Intl.get('member.create.time', '创建时间')}</Col>

@@ -357,7 +357,10 @@ class CustomerRecycleBin extends React.Component {
                 }
             }
         ];
-
+        //csm.curtao.com域名下不展示订单
+        if (Oplate.isCurtao === 'true') {
+            columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
+        }
         //没有恢复、彻底删除的权限，就去掉操作列
         if (!hasPrivilege('CRM_RECOVERY_CUSTOMER') && !hasPrivilege('CRM_DELETE_CUSTOMER')) {
             columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));

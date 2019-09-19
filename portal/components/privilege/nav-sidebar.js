@@ -395,13 +395,16 @@ var NavSidebar = createReactClass({
     },
     // 渲染二级子菜单，isShowLogOut用来区分是后台管理的二级菜单还是个人信息的二级菜单，个人信息包含退出操作
     renderSubMenuLinks(linkList, isShowLogOut) {
+        //过滤掉不展示的二级菜单
+        linkList = _.filter(linkList, menu => !menuUtil.menuIsNotShow(menu));
         return (
             <ul className="ul-unstyled">
-                {Oplate.isCurtao === 'true' ? (
-                    <li onClick={this.onChatClick}>
-                        <a>{Intl.get('menu.online.consulting', '在线咨询')}</a>
-                    </li>
-                ) : null}
+                {//是csm.curtao.com域名下，并且是个人资料下的二级菜单中加入在线咨询
+                    Oplate.isCurtao === 'true' && isShowLogOut ? (
+                        <li onClick={this.onChatClick}>
+                            <a>{Intl.get('menu.online.consulting', '在线咨询')}</a>
+                        </li>
+                    ) : null}
                 {
                     _.map(linkList, obj =>
                         <li key={obj.id} onClick={this.closeNotificationPanel}>
@@ -606,7 +609,7 @@ var NavSidebar = createReactClass({
                 <div className="container">
                     <div className="logo-and-menus" ref="logoAndMenus"
                     >
-                        <div className="header-logo">
+                        <div className="header-logo" title={Intl.get('menu.home.page', '首页')}>
                             <Logo/>
                         </div>
                         <div className="collapse navbar-collapse">
@@ -642,7 +645,7 @@ var NavSidebar = createReactClass({
                                 />
                             ) : null
                         }
-                        {this.getNotificationBlock()}
+                        {Oplate.isCurtao === 'true' ? null : this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}
                         {this.getUserInfoBlock()}
                     </div>
