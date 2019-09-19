@@ -23,22 +23,16 @@ const CALENDER_COLOR = {
     CONTENT: ['#90caf9', '#2196f3', '#006bc0']
 };
 import userData from 'PUB_DIR/sources/user-data';
-
+import userScoreAction from 'MOD_DIR/user_score/public/action/index';
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
         userId: '1',
-        userEngagementScore: {},
-        userBasicScore: {},
-        userIndicator: []
     };
 
     static propTypes = {
         userId: PropTypes.string,
         selectedAppId: PropTypes.string,
         height: PropTypes.number,
-        userEngagementScore: PropTypes.object,
-        userBasicScore: PropTypes.object,
-        userIndicator: PropTypes.Array,
     };
 
     onStateChange = () => {
@@ -61,6 +55,37 @@ class UserLoginAnalysis extends React.Component {
         UserLoginAnalysisAction.resetState();
         let userId = this.props.userId;
         this.getUserAnalysisInfo(userId, this.props.selectedAppId);
+
+        //获取配置过的用户评分规则
+        this.getUserScoreConfig();
+    }
+    getUserScoreConfig = () => {
+        //获取用户基础评分规则
+        this.getUserScoreLists();
+        //获取用户参与度评分规则
+        this.getUserEngagementRule();
+        this.getUserIndicator();
+    };
+    getUserIndicator() {
+        userScoreAction.getUserScoreIndicator((result) => {
+            this.setState({
+                userIndicator: _.cloneDeep(result)
+            });
+        });
+    }
+    getUserEngagementRule() {
+        userScoreAction.getUserEngagementRule((result) => {
+            this.setState({
+                userEngagementScore: _.cloneDeep(result)
+            });
+        });
+    }
+    getUserScoreLists() {
+        userScoreAction.getUserScoreLists((result) => {
+            this.setState({
+                userBasicScore: _.cloneDeep(result)
+            });
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -203,7 +228,7 @@ class UserLoginAnalysis extends React.Component {
             return null;
         } else {
             var isEefungRealm = isOrganizationEefung();
-            const {userEngagementScore, userBasicScore} = this.props;
+            const {userEngagementScore, userBasicScore} = this.state;
             var userBasicScoreActive = !_.isEmpty(userBasicScore) && _.get(userBasicScore, 'status') === 'enable';
             var userEngagementScoreActive = !_.isEmpty(userEngagementScore) && _.get(userEngagementScore, 'status') === 'enable';
             //展示pop提示的权限  不是蚁坊域 && 用户基础评分没有开始 && 参与度评分禁用 && visible为true  && 是管理员角色
@@ -274,7 +299,7 @@ class UserLoginAnalysis extends React.Component {
                         : <ul className="score-container">
                             { userBasicScoreActive ?
                                 _.map(_.get(userBasicScore, 'detail'), userBasic => {
-                                    var targetObj = _.find(this.props.userIndicator, indicatorItem => indicatorItem.indicator === userBasic.indicator);
+                                    var targetObj = _.find(this.state.userIndicator, indicatorItem => indicatorItem.indicator === userBasic.indicator);
                                     if (_.get(targetObj, 'desc')) {
                                         return <li>
                                             <span>{_.get(targetObj, 'desc')}:</span>
