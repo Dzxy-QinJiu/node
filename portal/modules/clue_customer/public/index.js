@@ -681,11 +681,16 @@ class ClueCustomer extends React.Component {
     };
     //获取线索列表
     getClueList = () => {
+        //如果有刷新提示，点击刷新提示获取线索列表的，将刷新提示清除
+        if(_.get(this.state, 'isShowRefreshPrompt')) {
+            this.setState({
+                isShowRefreshPrompt: false
+            });
+        }
         var filterStoreData = clueFilterStore.getState();
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
         var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
-        console.log('filterAll' + filterAllotNoTraced);
         if (filterAllotNoTraced){
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
@@ -1237,7 +1242,8 @@ class ClueCustomer extends React.Component {
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
             'firefox-padding': this.isFireFoxBrowser(),
-            'status-type-hide': isFirstLoading
+            'status-type-hide': isFirstLoading,
+            'has-refresh-tip': _.get(this.state, 'isShowRefreshPrompt')
         });
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
@@ -2498,6 +2504,32 @@ class ClueCustomer extends React.Component {
         });
     }
 
+    //渲染有新线索，刷新页面提示
+    getClueRefreshPrompt = () => {
+        return (
+            <div className="new-clue-prompt">
+                <span className="iconfont icon-warn-icon"></span>
+                <div className="prompt-sentence">
+                    <ReactIntl.FormattedMessage
+                        id="clue.customer.refresh.tip"
+                        defaultMessage={'有新线索，{refreshPage}查看'}
+                        values={{
+                            'refreshPage': <a
+                                onClick={this.getClueList}>{Intl.get('clue.customer.refresh.page', '刷新页面')}</a>
+                        }}
+                    />
+                </div>
+                <span className="iconfont icon-close" onClick={this.closeRefreshPrompt}></span>
+            </div>
+        );
+    }
+    //关闭刷新界面
+    closeRefreshPrompt = () => {
+        this.setState({
+            isShowRefreshPrompt: false
+        });
+    }
+
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2554,6 +2586,7 @@ class ClueCustomer extends React.Component {
                             />
                         </div>
                         <div className={contentClassName}>
+                            {_.get(this.state, 'isShowRefreshPrompt') ? this.getClueRefreshPrompt() : null}
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
