@@ -41,8 +41,10 @@ class CustomerPool extends React.Component {
     }
 
     getInitStateData() {
+        let name = _.get(this.props.crmSearchCondition, 'name', '');
+        let searchValue = name ? {name} : {};
         return {
-            searchValue: {},
+            searchValue,
             lastId: '',
             isLoading: false,
             poolCustomerList: [],
@@ -66,11 +68,9 @@ class CustomerPool extends React.Component {
     }
 
     componentDidMount() {
-        // 如果是从客户过来的
+        // 如果是从没有符合条件的客户点击跳转过来的,将搜索框中的关键字置为搜索的客户名称
         if(!_.isEmpty(this.props.crmSearchCondition)) {
             this.refs.searchInput.state.keyword = _.get(this.props.crmSearchCondition, 'name', '');
-            let searchValue = this.state.searchValue;
-            searchValue.name = this.refs.searchInput.state.keyword;
         }
         this.getPoolCustomer();
         this.getUserList();
