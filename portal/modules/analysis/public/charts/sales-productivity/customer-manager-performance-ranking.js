@@ -26,6 +26,7 @@ export function getCustomerManagerPerformanceRankingChart() {
         dataField: 'list',
         option: {
             onRowClick: onRankingRowClick,
+            rowClassName: () => 'clickable',
             columns: [{
                 title: Intl.get('user.user.team', '团队'),
                 dataIndex: 'sales_team',
