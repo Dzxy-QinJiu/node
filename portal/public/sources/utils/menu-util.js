@@ -65,15 +65,8 @@ function getAllMenu() {
 function getFirstLevelMenus() {
     let menus = getIntledMenus();
     return _.filter(menus, (menu) => {
-        //需要用eval将isNotShow属性由字符串转成js代码，以便回调函数形式的值能执行
-        let isNotShow = eval(menu.isNotShow);
-
-        if (_.isFunction(isNotShow)) {
-            isNotShow = isNotShow();
-        }
-
         //过滤掉不展示的，没有名称的，需要展示到底部的
-        if (isNotShow || !menu.name || menu.bottom === true) {
+        if (menuIsNotShow(menu) || !menu.name || menu.bottom === true) {
             return false;
         } else {
             return true;
@@ -136,6 +129,15 @@ function findRoute(menus, path) {
     });
     return subMenus;
 }
+//菜单是否不展示
+const menuIsNotShow = function(menu) {
+    //需要用eval将isNotShow属性由字符串转成js代码，以便回调函数形式的值能执行
+    let isNotShow = eval(menu.isNotShow);
+    if (_.isFunction(isNotShow)) {
+        isNotShow = isNotShow();
+    }
+    return isNotShow;
+};
 
 /**
  * 获取下级菜单
@@ -160,6 +162,8 @@ const innerGetSubMenus = function(rootPath) {
         if (rootPath.match(/^\/[^\/|^\\]*$/g)) {
             //返回子菜单
             subMenus = findRoute(menus, rootPath);
+            //过滤掉不展示的子菜单
+            subMenus = _.filter(subMenus, menu => !menuIsNotShow(menu));
         } else {
             //  如果是二级路径，todo 三级路径未处理
             _.find(menus, (menu) => {
@@ -185,3 +189,5 @@ exports.getAllMenu = getAllMenu;
 const memoizeOneGetSubMenus = memoizeOne(innerGetSubMenus);
 //获取下级菜单项
 exports.getSubMenus = memoizeOneGetSubMenus;
+//菜单是否不展示
+exports.menuIsNotShow = memoizeOne(menuIsNotShow);

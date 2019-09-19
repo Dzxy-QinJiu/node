@@ -377,12 +377,29 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
         promiseList.push(getTypeClueLists(req, res, cloneObj));
     }
     Promise.all(promiseList).then((dataList) => {
+        //data[0]和data[1]的数据结构相同
+        // {
+        //     result:[],
+        //     msg:'操作完成',
+        //     total:100,
+        //     agg_list:[]
+        // }
         var data = dataList[0] || {};
         var avalibilityData = dataList[1] || {};
+        //无效线索的agg_list
+        //     agg_list:[{
+        //         availability:[{total:11,name:’1’}]
+        //     }],
+        //有效线索的agg_list
+        //      agg_list:[{
+        //          status:[{name:0,total:10},{name:1,total:20},{name:2,total:20},{name:3,total:20}],
+        //          availability:[{total:11,name:0},{total:11,name:1}]
+        //      }]
         if(searchInvalidClue && !_.isEmpty(avalibilityData) && _.get(data,'agg_list.length') === 1){
             var targetObj = _.find(_.get(avalibilityData,'agg_list'), item => item.status);
             data['agg_list'].unshift(targetObj);
         }
+        //当前类型没有线索
         if (!_.get(data, 'total') && req.body.firstLogin === 'true'){
             delete req.body.firstLogin;
             //如果想要查询线索类型的不存在，需要找统计值中有值的发请求
@@ -403,21 +420,22 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
             staticsData = _.sortBy(staticsData, item => item.name);
             //没有数据
             var noData = !_.get(staticsData,'[0]') && !_.get(avalibilityData,'[0]');
+            //没有有效的线索，有无效的线索时
             if(!_.get(staticsData,'[0]') && _.get(avalibilityData,'[0]')){
-                if (selfHandleFlag){
+                if (selfHandleFlag){//待我处理
                     data.filterAllotNoTraced = 'yes';
                 }
-                data.setting_avaliability = '1';
+                data.setting_avaliability = '1';//无效
                 emitter.emit('success', data);
             }else if (selfHandleFlag && ((_.get(staticsData,'[0].name') === '3' && !_.get(avalibilityData,'[0]')) || noData)){
-                //如果是发我待我处理的数据并且只有已转化有数据
+                //如果是发我待我处理的数据并且只有已转化有数据, 无需选中已转化
                 data.agg_list = [{status: [], availability: []}];
                 data.filterAllotNoTraced = 'no';
                 emitter.emit('success', data);
-            }else if (noData){
+            }else if (noData){//没有数据
                 data.agg_list = [{status: [],availability: []}];
                 emitter.emit('success', data);
-            }else{
+            }else{//找到有数据的发有数据的请求
                 if (obj.bodyObj.query){
                     obj.bodyObj.query.status = _.get(staticsData,'[0].name');
                     //如果是已跟进或者已转化状态，需要按跟进时间倒序排列

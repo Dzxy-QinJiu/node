@@ -13,7 +13,7 @@ import { FILTER_RANGE, STAGE_OPTIONS, DAY_TIME, UNKNOWN, COMMON_OTHER_ITEM } fro
 let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
 
 
-const otherFilterArray = [
+let otherFilterArray = [
     {
         name: Intl.get('common.all', '全部'),
         value: ''
@@ -76,6 +76,10 @@ const otherFilterArray = [
         value: 'this_week_contacted'
     }
 ];
+//csm.curtao.com域名下不展示订单，所以不需要多个订单的客户筛选
+if (Oplate.isCurtao === 'true') {
+    otherFilterArray = _.filter(otherFilterArray, item => item.value !== 'multi_order');
+}
 //只有管理员可以过滤未分配的客户
 if (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)) {
     otherFilterArray.push({
