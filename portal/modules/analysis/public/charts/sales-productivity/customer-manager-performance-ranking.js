@@ -195,6 +195,14 @@ function amountValueRender(value) {
     );
 }
 
+function dateValueRender(value) {
+    return (
+        <span>
+            {moment(value).format(oplateConsts.DATE_FORMAT)}
+        </span>
+    );
+}
+
 function showMetricsDetail(metricsKey, metricsTitle) {
     let query = _.clone(conditionCache);
 
@@ -216,7 +224,7 @@ function showMetricsDetail(metricsKey, metricsTitle) {
                 dataIndex: 'date',
                 title: '时间',
                 align: 'left',
-                render: value => <span>{moment(value).format(oplateConsts.DATE_FORMAT)}</span>
+                render: dateValueRender
             }, {
                 dataIndex: 'cost',
                 title: '费用',
@@ -238,12 +246,12 @@ function showMetricsDetail(metricsKey, metricsTitle) {
                 dataIndex: 'start_time',
                 title: '开始时间',
                 align: 'left',
-                render: value => <span>{moment(value).format(oplateConsts.DATE_FORMAT)}</span>
+                render: dateValueRender
             }, {
                 dataIndex: 'end_time',
                 title: '结束时间',
                 align: 'left',
-                render: value => <span>{moment(value).format(oplateConsts.DATE_FORMAT)}</span>
+                render: dateValueRender
             }, {
                 dataIndex: 'contract_amount',
                 title: '合同额',
