@@ -7,7 +7,7 @@ var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var ShareObj = require('../util/app-id-share-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
-import userScoreAction from 'MOD_DIR/user_score/public/action/index';
+import UserScoreCommonAjax from '../../../common/public/ajax/user-score';
 function UserLoginAnalysisAction() {
     this.generateActions(
         'resetState', // 切换用户时，恢复到默认状态
@@ -153,26 +153,33 @@ function UserLoginAnalysisAction() {
         }
     };
     this.getUserScoreIndicator = function() {
-        userScoreAction.getUserScoreIndicator((result) => {
+        UserScoreCommonAjax.getUserScoreIndicatorAjax().sendRequest().success((result) => {
             this.dispatch({
                 list: _.cloneDeep(result)
             });
-        });
+        }).error(
+
+        );
     };
     this.getUserEngagementRule = function() {
-        userScoreAction.getUserEngagementRule((result) => {
+        UserScoreCommonAjax.getUserEngagementRuleAjax().sendRequest().success((result) => {
             this.dispatch({
                 list: _.cloneDeep(result)
             });
-        });
+        }).error(errorMsg => {
+
+        }
+        );
     };
     this.getUserScoreLists = function() {
-        userScoreAction.getUserScoreLists((result) => {
+        UserScoreCommonAjax.getUserScoreListsAjax().sendRequest().success((result) => {
             this.dispatch({
                 list: _.cloneDeep(result)
             });
+        }).error(errorMsg => {
+        }
+        );
 
-        });
     };
 }
 
