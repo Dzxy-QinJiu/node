@@ -162,27 +162,27 @@ class ApplyTabContent extends React.Component {
     };
 
     renderApplyListError = () => {
-        let noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 ;
+        let noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0;
         let tipMsg = '';
 
         if(this.state.applyListObj.loadingResult === 'error'){
             let retry = (
                 <span>
                     {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
-                        onClick={this.retryFetchApplyList}>{Intl.get("common.retry","重试")}</a>
+                        onClick={this.retryFetchApplyList}>{Intl.get('common.retry','重试')}</a>
                 </span>
             );
             return (
                 <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                   <Alert message={retry} type="error" showIcon={true}/>
+                    <Alert message={retry} type="error" showIcon={true}/>
                 </div>);  
         }else if(noData){
-            if(  this.state.searchKeyword !== ''){
+            if( this.state.searchKeyword !== ''){
                 tipMsg = (
                     <span>
-                        {Intl.get("user.apply.no.match.retry","暂无符合查询条件的用户申请")}<span>,</span>
+                        {Intl.get('user.apply.no.match.retry','暂无符合查询条件的用户申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get("common.get.again","重新获取")}
+                            {Intl.get('common.get.again','重新获取')}
                         </a>
                     </span>
                 );
@@ -191,7 +191,7 @@ class ApplyTabContent extends React.Component {
                     <span>
                         {Intl.get('user.apply.no.unread','已无未读回复的申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get("common.get.again","重新获取")}
+                            {Intl.get('common.get.again','重新获取')}
                         </a>
                     </span>
                 );
@@ -200,28 +200,14 @@ class ApplyTabContent extends React.Component {
                     <span>
                         {Intl.get('user.apply.no.apply','还没有需要审批的用户申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get("common.get.again","重新获取")}
+                            {Intl.get('common.get.again','重新获取')}
                         </a>
                     </span>
                 );
             }
-            return  <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                        <Alert message={tipMsg} type="info" showIcon={true}/>
-                    </div>;
-        }
-    };
-
-    getApplyStateText = (obj) => {
-        if (obj.isConsumed === 'true') {
-            if (obj.approval_state === '1') {
-                return Intl.get('user.apply.pass', '已通过');
-            } else if (obj.approval_state === '2') {
-                return Intl.get('user.apply.reject', '已驳回');
-            } else if (obj.approval_state === '3') {
-                return Intl.get('user.apply.backout', '已撤销');
-            }
-        } else {
-            return Intl.get('user.apply.false', '待审批');
+            return <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
+                <Alert message={tipMsg} type="info" showIcon={true}/>
+            </div>;
         }
     };
 
@@ -278,7 +264,7 @@ class ApplyTabContent extends React.Component {
                                         <span>{obj.topic || Intl.get('user.apply.id', '账号申请')}</span>
                                         {hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
                                             title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
-                                        <em className={btnClass}>{this.getApplyStateText(obj)}</em>
+                                        <em className={btnClass}>{commonMethodUtil.getApplyStateText(obj)}</em>
                                     </dt>
                                     <dd className="clearfix" title={obj.customer_name}>
                                         <span>{obj.customer_name}</span>

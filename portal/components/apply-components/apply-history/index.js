@@ -10,6 +10,8 @@ require('./index.less');
 import {getApplyResultDscr, getReportSendApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
 import {APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
 const UserData = require('PUB_DIR/sources/user-data');
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+var classNames = require('classnames');
 class ApplyDetailRemarks extends React.Component {
     constructor(props) {
         super(props);
@@ -31,14 +33,13 @@ class ApplyDetailRemarks extends React.Component {
             this.setState({
                 sameHistoryApplyLists: nextProps.sameHistoryApplyLists,
                 openReplyListApplyIds: this.getInitialApplyId(nextProps),
-                detailInfo: nextProps.detailInfo
             });
         }
     };
 
     renderReplyLists(replyList) {
         return (
-            <div>
+            <div className="reply-container">
                 {replyList.map((replyItem, index) => {
                     return (
                         <p key={index} className="reply-content">
@@ -101,12 +102,18 @@ class ApplyDetailRemarks extends React.Component {
                     {replyList.map((replyItem, index) => {
                         var showReplyLists = _.some(this.state.openReplyListApplyIds, item => item === replyItem.id);
                         var replyLists = _.get(replyItem, 'replyLists', []);
+                        var btnClass = classNames({
+                            processed: replyItem.isConsumed === 'true'
+                        });
                         return (
                             <li key={index} className="apply-info-label">
                                 <p className="apply-item-title">
                                     <span className="apply-item-topic user-info-label">
-                                        {replyItem.topic} &gt;
-                                        <span className="apply-item-"></span>
+                                        {replyItem.topic}
+                                        <span className="apply-item-status">
+                                            <em className={btnClass}>{commonMethodUtil.getApplyStateText(replyItem)}</em>
+                                           &gt;
+                                        </span>
                                     </span>
 
                                     <span className="user-info-text">

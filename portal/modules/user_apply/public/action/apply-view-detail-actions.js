@@ -104,7 +104,7 @@ class ApplyViewDetailActions {
     //在审批详情中得到客户的id，然后根据客户的id获取历史申请审批
     getHistoryApplyListsByCustomerId(customerId){
         this.dispatch({loading: true, error: false});
-        AppUserAjax.getApplyList({customer_id: customerId}).then((data) => {
+        AppUserAjax.getApplyList({customer_id: customerId, page_size: 100}).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             //给 自己申请的并且是未通过的审批加上可以撤销的标识
             this.dispatch({error: false, loading: false, data: data});

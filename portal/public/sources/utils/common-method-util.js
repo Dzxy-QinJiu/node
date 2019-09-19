@@ -1003,6 +1003,19 @@ exports.getCertainTabsTitle = (status) => {
     var target = _.find(DIFF_STATUS_TAB, item => item.key === status);
     return _.get(target,'value','');
 };
+exports.getApplyStateText = (obj) => {
+    if (obj.isConsumed === 'true') {
+        if (obj.approval_state === '1') {
+            return Intl.get('user.apply.pass', '已通过');
+        } else if (obj.approval_state === '2') {
+            return Intl.get('user.apply.reject', '已驳回');
+        } else if (obj.approval_state === '3') {
+            return Intl.get('user.apply.backout', '已撤销');
+        }
+    } else {
+        return Intl.get('user.apply.false', '待审批');
+    }
+};
 
 //客户名唯一性验证的提示信息
 /**

@@ -3,7 +3,7 @@
 .apply-history-list {
   .reply-info-block {
     .reply-list-container {
-      .history-apply-title{
+      .history-apply-title {
         font-size: 14px;
         color: #999;
         margin-bottom: 10px;
@@ -13,60 +13,74 @@
         word-break: break-all;
         margin-bottom: 6px;
         overflow: hidden;
+        padding-left: 5px;
+        .apply-item-title {
+          background-color: #FAFAFA;
+          height: 32px;
+          line-height: 32px;
+          padding-left: 10px;
+          &:hover {
+            background-color: #F1F8FE;
+          }
+        }
+        &:hover {
 
-         .apply-item-title{
-           background-color: #FAFAFA;
-           height: 32px;
-           line-height: 32px;
-           &:hover{
-             background-color: #F1F8FE;
-           }
-         }
-
-        &:hover{
-
-            .apply-item-topic{
-              cursor: pointer;
-            }
-            .reply-btns{
-              color:#09a9fe;
-              cursor: pointer;
-            }
-          .reply-date-text{
+          .apply-item-topic {
+            cursor: pointer;
+          }
+          .reply-btns {
+            color: #09a9fe;
+            cursor: pointer;
+          }
+          .reply-date-text {
             display: none;
           }
-          .user-info-text{
+          .user-info-text {
             display: inline-block;
           }
 
         }
-        .apply-applicate{
+        .apply-applicate {
           margin: 0 5px;
         }
+        .reply-container {
+          padding-left: 10px;
+        }
       }
-      .reply-content{
+
+      .reply-content {
         font-size: 12px;
         overflow: hidden;
-        margin:5px 0;
-        .reply-content-name{
+        margin: 5px 0;
+        em {
+          float: right;
+          line-height: 20px;
+          font-size: 13px;
+          color: @approval-pending-color;
+          &.processed {
+            color: #999;
+          }
+        }
+        .reply-content-name {
           color: #333;
         }
-        .reply-content-time{
+        .reply-content-time {
           color: #999;
           float: right;
         }
+
       }
     }
     .apply-info-label {
       margin-top: 0;
-      .apply-item-topic{
+      .apply-item-topic {
         color: #333;
       }
-      .reply-date-text ,.user-info-text{
+      .reply-date-text, .user-info-text {
         float: right;
         padding-right: 0;
       }
-      .user-info-text{
+      .user-info-text {
         display: none;
       }
 
