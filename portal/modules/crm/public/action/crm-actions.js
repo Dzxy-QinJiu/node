@@ -128,8 +128,13 @@ function CrmActions() {
         });
     };
     //联系人电话唯一性的验证
-    this.checkOnlyContactPhone = function(phone, callback) {
-        crmAjax.checkOnlyCustomer({phone: phone}).then(function(data) {
+    this.checkOnlyContactPhone = function(phone, callback, customerId) {
+        // 客户内使用需传入customerId
+        let queryObj = {phone: phone};
+        if (customerId) {
+            queryObj.customer_id = customerId;
+        }
+        crmAjax.checkOnlyCustomer(queryObj).then(function(data) {
             if (callback) {
                 callback(data);
             }
