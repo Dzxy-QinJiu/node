@@ -24,7 +24,6 @@ import classNames from 'classnames';
 import {contractChart} from 'ant-chart-collection';
 import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis } from 'antc';
-
 const performance = {
     image_1: require('../images/performance_1.png'),
     image_2: require('../images/performance_2.png'),
@@ -80,7 +79,10 @@ class TeamDataColumn extends React.Component {
     }
 
     componentDidMount() {
-        this.getPerformanceData();
+        //开通了营收中心，才获取业绩排名数据
+        if(isOpenCash()){
+            this.getPerformanceData();
+        }
         this.getCallTimeData();
         this.getContactCustomerCount();
     }
@@ -483,7 +485,7 @@ class TeamDataColumn extends React.Component {
     renderTeamDataContent() {
         return (
             <div data-tracename="我的数据">
-                {this.renderPerformanceData()}
+                {isOpenCash() ? this.renderPerformanceData() : null}
                 {this.renderCallTime()}
                 {this.renderContactCustomers()}
                 {/*{this.renderExpireContracts()}*/}

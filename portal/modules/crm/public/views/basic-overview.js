@@ -93,16 +93,20 @@ class BasicOverview extends React.Component {
             this.getCompetitorList();
             this.getIntegrateConfig();
             // this.getCustomerStageByTeamId(teamId); // 获取客户阶段
-            if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
-                setTimeout(() => {
+            setTimeout(() => {
+                //有获取客户下用户列表的权限，并且不是csm.curtao.com
+                if (hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !this.isCurtaoFunc()) {
                     this.getCrmUserList(this.props.curCustomer);
-                    //需要展示未处理的电联的联系计划
-                    this.getNotCompletedScheduleList(this.props.curCustomer);
-                });
-            }
+                }
+                //需要展示未处理的电联的联系计划
+                this.getNotCompletedScheduleList(this.props.curCustomer);
+            });
         }
     }
-
+    //是否是csm.curtao.com域名
+    isCurtaoFunc = () => {
+        return Oplate.isCurtao === 'true';
+    }
     // 获取客户阶段
     getCustomerStageByTeamId = (teamId) => {
         crmAjax.getCustomerStageByTeamId(teamId).then( (result) => {
@@ -194,13 +198,14 @@ class BasicOverview extends React.Component {
         basicOverviewAction.getBasicData(nextProps.curCustomer);
         if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
-                if(hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE)){
+                //有获取客户下用户列表的权限，并且不是csm.curtao.com
+                if (hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !this.isCurtaoFunc()) {
                     this.getCrmUserList(nextProps.curCustomer);
                 }
                 //需要展示未处理的电联的联系计划
                 this.getNotCompletedScheduleList(nextProps.curCustomer);
-                let teamId = _.get(nextProps.curCustomer, 'sales_team_id');
-                this.getCustomerStageByTeamId(teamId); // 获取客户阶段
+                // let teamId = _.get(nextProps.curCustomer, 'sales_team_id');
+                // this.getCustomerStageByTeamId(teamId); // 获取客户阶段
             });
         }
     }
