@@ -14,7 +14,8 @@ import { clueNameContactRule, emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/s
 var uuid = require('uuid/v4');
 //滚动条
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-const CONTACT_ITEMS_HEIGHHT = 300;
+const CONTACT_ITEMS_HEIGHHT = 301;
+
 
 // 生成联系方式最基本的数据结构
 function generatorBDS(value) {
@@ -393,11 +394,12 @@ class ContactForm extends React.Component {
                     label={index ? ' ' : Intl.get('common.phone', '电话')}
                     placeholder={Intl.get('crm.95', '请输入联系人电话')}
                     initialValue={curPhone.value}
-                    labelCol={{span: 2}}
+                    labelCol={{span: 3}}
                     wrapperCol={{span: 12}}
                     key={curPhone.id}
                     validateRules={this.getPhoneInputValidateRules()}
                     suffix={this.renderContactWayBtns(index, size, CONTACT_KEYS_MAP.PHONE)}
+                    required={true}
                 />
                 {this.state.showNeedPhone && index === 0 ?
                     <div className="validate-error-tip">{Intl.get('crm.95', '请输入联系人电话')} </div> : null}
@@ -423,7 +425,7 @@ class ContactForm extends React.Component {
             <FormItem
                 colon={false}
                 label={options.index ? ' ' : options.label}
-                labelCol={{span: 2}}
+                labelCol={{span: 3}}
                 wrapperCol={{span: 12}}
                 key={curContactWay.id}
             >
@@ -487,6 +489,10 @@ class ContactForm extends React.Component {
     renderContactForm = () => {
         var formData = this.state.formData;
         let {getFieldDecorator} = this.props.form;
+        const formLayout = {
+            labelCol: {span: 3},
+            wrapperCol: {span: 21}
+        }
 
         return (
             <Form layout='horizontal' style={{height: CONTACT_ITEMS_HEIGHHT}} className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
@@ -494,10 +500,10 @@ class ContactForm extends React.Component {
                     <FormItem
                         colon={false}
                         label={Intl.get('common.name', '姓名')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        {...formLayout}
+                        required={true}
                     >
-                        <Col span={12} className="form-col-padding">
+                        <Col span={11} className="form-col-padding">
                             <FormItem>
                                 {
                                     getFieldDecorator('name', {
@@ -552,8 +558,7 @@ class ContactForm extends React.Component {
                         className="contact-role-item"
                         colon={false}
                         label={Intl.get('user.apply.detail.table.role', '角色')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        {...formLayout}
                     >
                         {
                             getFieldDecorator('role', {
@@ -584,8 +589,7 @@ class ContactForm extends React.Component {
                         className="contact-sex-item"
                         colon={false}
                         label={Intl.get('crm.contact.sex', '性别')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        {...formLayout}
                     >
                         {
                             getFieldDecorator('sex', {
@@ -604,8 +608,7 @@ class ContactForm extends React.Component {
                         className="contact-birthday-item"
                         colon={false}
                         label={Intl.get('crm.contact.birthday', '生日')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        {...formLayout}
                     >
                         {
                             getFieldDecorator('birthday', {
@@ -622,8 +625,7 @@ class ContactForm extends React.Component {
                         className="contact-hobby-item"
                         colon={false}
                         label={Intl.get('crm.contact.hobby', '爱好')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        {...formLayout}
                     >
                         {
                             getFieldDecorator('hobby', {
@@ -640,8 +642,7 @@ class ContactForm extends React.Component {
                         className="contact-remark-item"
                         colon={false}
                         label={Intl.get('common.remark', '备注')}
-                        labelCol={{span: 2}}
-                        wrapperCol={{span: 22}}
+                        {...formLayout}
                     >
                         {
                             getFieldDecorator('remark', {
