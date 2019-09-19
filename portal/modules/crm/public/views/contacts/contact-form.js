@@ -15,6 +15,10 @@ var uuid = require('uuid/v4');
 //滚动条
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 const CONTACT_ITEMS_HEIGHHT = 301;
+const TITLE_LENGTH = 3;
+const INPUT_LENGTH = 21; 
+const INPUT_LENGTH_NAME = 11;
+const INPUT_LENGTH_DEPARTMENT = 6;
 
 // 生成联系方式最基本的数据结构
 function generatorBDS(value) {
@@ -392,7 +396,7 @@ class ContactForm extends React.Component {
                     label={index ? ' ' : Intl.get('common.phone', '电话')}
                     placeholder={Intl.get('crm.95', '请输入联系人电话')}
                     initialValue={curPhone.value}
-                    labelCol={{span: 3}}
+                    labelCol={{span: TITLE_LENGTH}}
                     wrapperCol={{span: 11}}
                     key={curPhone.id}
                     validateRules={this.getPhoneInputValidateRules()}
@@ -423,7 +427,7 @@ class ContactForm extends React.Component {
             <FormItem
                 colon={false}
                 label={options.index ? ' ' : options.label}
-                labelCol={{span: 3}}
+                labelCol={{span: TITLE_LENGTH}}
                 wrapperCol={{span: 11}}
                 key={curContactWay.id}
             >
@@ -494,7 +498,7 @@ class ContactForm extends React.Component {
                     <FormItem
                         colon={false}
                         label={Intl.get('common.name', '姓名')}
-                        labelCol={{span: 3}}
+                        labelCol={{span: TITLE_LENGTH}}
                         wrapperCol={{span: 21}}
                         required={true}
                     >
@@ -516,7 +520,7 @@ class ContactForm extends React.Component {
                                 }
                             </FormItem>
                         </Col>
-                        <Col span={6} className="form-col-padding">
+                        <Col span={INPUT_LENGTH_DEPARTMENT} className="form-col-padding">
                             <FormItem>
                                 {
                                     getFieldDecorator('department', {
@@ -532,7 +536,7 @@ class ContactForm extends React.Component {
                                 }
                             </FormItem>
                         </Col>
-                        <Col span={6}>
+                        <Col span={INPUT_LENGTH_DEPARTMENT}>
                             <FormItem>
                                 {
                                     getFieldDecorator('position', {
@@ -553,7 +557,7 @@ class ContactForm extends React.Component {
                         className="contact-role-item"
                         colon={false}
                         label={Intl.get('user.apply.detail.table.role', '角色')}
-                        labelCol={{span: 3}}
+                        labelCol={{span: TITLE_LENGTH}}
                         wrapperCol={{span: 21}}
                     >
                         {
@@ -585,7 +589,7 @@ class ContactForm extends React.Component {
                         className="contact-sex-item"
                         colon={false}
                         label={Intl.get('crm.contact.sex', '性别')}
-                        labelCol={{span: 3}}
+                        labelCol={{span: TITLE_LENGTH}}
                         wrapperCol={{span: 21}}
                     >
                         {
@@ -605,7 +609,7 @@ class ContactForm extends React.Component {
                         className="contact-birthday-item"
                         colon={false}
                         label={Intl.get('crm.contact.birthday', '生日')}
-                        labelCol={{span: 3}}
+                        labelCol={{span: TITLE_LENGTH}}
                         wrapperCol={{span: 21}}
                     >
                         {
@@ -623,7 +627,7 @@ class ContactForm extends React.Component {
                         className="contact-hobby-item"
                         colon={false}
                         label={Intl.get('crm.contact.hobby', '爱好')}
-                        labelCol={{span: 3}}
+                        labelCol={{span: TITLE_LENGTH}}
                         wrapperCol={{span: 21}}
                     >
                         {
@@ -641,7 +645,7 @@ class ContactForm extends React.Component {
                         className="contact-remark-item"
                         colon={false}
                         label={Intl.get('common.remark', '备注')}
-                        labelCol={{span: 3}}
+                        labelCol={{span: TITLE_LENGTH}}
                         wrapperCol={{span: 21}}
                     >
                         {
