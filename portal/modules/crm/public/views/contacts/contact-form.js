@@ -303,6 +303,7 @@ class ContactForm extends React.Component {
                     //获取当前已添加的电话列表
                     let curPhoneArray = this.getCurPhoneArray();
                     let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
+                    let customerId = this.props.customer_id;
                     //如果需要在组件装载后立即校验电话输入框中的内容是否符合规则
                     if (this.props.isValidatePhoneOnDidMount) {
                         //用于绕过下面的判断逻辑，直接抵达发请求验证电话是否已存在的地方
@@ -326,10 +327,10 @@ class ContactForm extends React.Component {
                                         callback();
                                     } else {
                                         //已存在
-                                        callback(Intl.get('crm.83', '该电话已存在'));
+                                        callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
                                     }
                                 }
-                            });
+                            },customerId);
                         }
                     } else {//该联系人员电话列表中已存在该电话
                         if (phoneCount.length > 1) {
