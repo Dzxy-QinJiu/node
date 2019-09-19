@@ -4,7 +4,7 @@
 
 import { listPanelEmitter, detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
-import { Row, Col } from 'antd';
+import { num as antUtilNum } from 'ant-utils';
 import { AntcTable } from 'antc';
 
 let conditionCache = {};
@@ -187,6 +187,14 @@ function metricsValueRender(value) {
     );
 }
 
+function amountValueRender(value) {
+    return (
+        <span>
+            {antUtilNum.formatAmount(value)}
+        </span>
+    );
+}
+
 function showMetricsDetail(metricsKey, metricsTitle) {
     let query = _.clone(conditionCache);
 
@@ -238,6 +246,7 @@ function showMetricsDetail(metricsKey, metricsTitle) {
             }, {
                 dataIndex: 'contract_amount',
                 title: '合同额',
+                render: amountValueRender
             }, {
                 dataIndex: 'gross_profit',
                 title: '合同毛利',
