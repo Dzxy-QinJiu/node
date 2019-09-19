@@ -7,7 +7,7 @@ var FilterAction = require('../action/filter-action');
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import userData from 'PUB_DIR/sources/user-data';
 import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime} from '../utils/clue-customer-utils';
-import {getStartEndTimeOfDiffRange, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+import {getStartEndTimeOfDiffRange, isSalesRole, getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueFilterStore() {
     this.setInitialData();
     //绑定action方法
@@ -61,7 +61,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     //筛选相似线索
     this.filterLabels = [];
     //如果是销售领导或者销售角色或者运营 默认选中 待我处理 进行筛选
-    this.filterAllotNoTraced = (isSalesRole() || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) ? '0' : '';
+    this.filterAllotNoTraced = getClueUnhandledPrivilege() ? '0' : '';
 };
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {

@@ -11,7 +11,7 @@ var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import { AntcDatePicker as DatePicker } from 'antc';
 import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE } from '../../utils/clue-customer-utils';
-import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
@@ -199,7 +199,7 @@ class ClueFilterPanel extends React.Component {
     };
     setDefaultSelectCommonFilter = (commonData,notSelfHandle,callback) => {
         var targetIndex = '';
-        if ((isSalesRole() || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) && !notSelfHandle){
+        if (getClueUnhandledPrivilege() && !notSelfHandle){
             targetIndex = _.findIndex(commonData, item => item.value === SELECT_TYPE.WAIT_ME_HANDLE);
         }
         _.isFunction(callback) && callback(targetIndex);
@@ -213,7 +213,7 @@ class ClueFilterPanel extends React.Component {
         const clueClassifyArray = this.state.clueClassifyArray;
         const clueProvinceList = this.handleClueProvinceList();
         //如果是销售或者运营，增加待我处理筛选项
-        if (!(isSalesRole() || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON))) {
+        if (!getClueUnhandledPrivilege()) {
             otherFilterArray = _.filter(otherFilterArray, item => item.value !== SELECT_TYPE.WAIT_ME_HANDLE);
         }
         const commonData = otherFilterArray.map(x => {
