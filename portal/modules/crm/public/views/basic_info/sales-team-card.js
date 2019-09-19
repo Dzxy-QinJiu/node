@@ -74,12 +74,18 @@ class SalesTeamCard extends React.Component {
             secondTeamId: '',//联合跟进人所在团队
             secondTeamName: '',
             isLoadingSecondSales: true,//正在获取联合跟进人
+            isUnableEditSales: true,//不能编辑负责人
+            isUnableEditSecondSales: true,//不能编辑联合跟进人
         };
     }
 
     componentDidMount() {
         //不是普通销售时，获取负责人、联合跟进人修改时的下拉列表
         if (!this.isCommonSales()) {
+            // 验证是否能修改负责人和联合跟进人
+            this.checkCanEditSales(this.state.customerId);
+            this.checkCanEditSecondSales(this.state.customerId);
+
             let isManager = this.isManager();
             //管理员修改客户的所属销售时
             if (this.enableEditSales() && isManager) {
@@ -106,6 +112,9 @@ class SalesTeamCard extends React.Component {
         if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
             this.setState(this.getInitStateData(nextProps));
+            // 验证是否能修改负责人和联合跟进人
+            this.checkCanEditSales(nextProps.customerId);
+            this.checkCanEditSecondSales(nextProps.customerId);
             //获取销售及联合跟进人
             this.getSalesByCustomerId(nextProps.customerId);
         }
@@ -433,6 +442,24 @@ class SalesTeamCard extends React.Component {
         return hasPrivilege(EDIT_PRIVILIGES.EDIT_SECOND_SALES) && !this.props.disableEdit && !this.isCommonSales();
     }
 
+    // 验证是否可以处理负责人
+    checkCanEditSales(customerId) {
+        CrmBasicAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
+            if(res) {
+                this.setState({isUnableEditSales: false});
+            }
+        });
+    }
+
+    // 验证是否可以处理联合跟进人
+    checkCanEditSecondSales(customerId) {
+        CrmBasicAjax.checkCrmJoinUserByCustomerId(customerId).then((res) => {
+            if(res) {
+                this.setState({isUnableEditSecondSales: false});
+            }
+        });
+    }
+
     //负责人选择改变时
     handleChangeSalesTeam = (selectVal) => {
         let userId = _.split(selectVal, '&&')[0];
@@ -494,6 +521,9 @@ class SalesTeamCard extends React.Component {
     renderContent = () => {
         let secondUserName = _.get(this.state, 'secondUserName');
         let salesTeam = classNames('sales-team',{'duplicate-sales-warning': this.state.duplicateSalesWarning});
+        const hasEditSalesPrivilege = this.enableEditSales() && !this.state.isUnableEditSales && (this.isMyTeamOrChildUser(this.state.salesTeamId, this.state.userId) || this.isManager());
+        const hasEditSecondSalesPrivilege = this.enableEditSecondSales() && !this.state.isUnableEditSecondSales && (this.isMyTeamOrChildUser(this.state.secondTeamId, this.state.secondUserId) || this.isManager());
+
         return (
             <div className="sales-team-show-block">
                 <div className={salesTeam}>
@@ -507,7 +537,7 @@ class SalesTeamCard extends React.Component {
                         field={SALES_EDIT_TYPES.SALES_TEAM}
                         selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SALES_TEAM)}
                         onSelectChange={this.handleChangeSalesTeam}
-                        hasEditPrivilege={this.enableEditSales() && (this.isMyTeamOrChildUser(this.state.salesTeamId, this.state.userId) || this.isManager())}
+                        hasEditPrivilege={hasEditSalesPrivilege}
                         placeholder={Intl.get('contract.63', '请选择负责人')}
                         saveEditSelect={this.handleEditSalesTeam}
                         cancelEditField={this.handleCancelSalesTeam}
@@ -529,7 +559,7 @@ class SalesTeamCard extends React.Component {
                             value={this.getSelectValue(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
                             field={SALES_EDIT_TYPES.SECOND_SALES_TEAM}
                             selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
-                            hasEditPrivilege={this.enableEditSecondSales() && (this.isMyTeamOrChildUser(this.state.secondTeamId, this.state.secondUserId) || this.isManager())}
+                            hasEditPrivilege={hasEditSecondSalesPrivilege}
                             placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
                             saveEditSelect={this.handleEditSecondSales}
                             validators={[{ validator: this.checkSecondSales }]}
