@@ -2056,6 +2056,22 @@ class ClueCustomer extends React.Component {
         var _this = this;
         let previewColumns = [
             {
+                title: Intl.get('clue.analysis.consult.time', '咨询时间'),
+                dataIndex: 'source_time',
+                render: function(text, record, index) {
+                    if (text) {
+                        return (
+                            <span>{record.source_time ? moment(record.source_time).format(oplateConsts.DATE_FORMAT) : null}</span>
+                        );
+                    }else{
+                        return (
+                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
+                                {Intl.get('apply.components.required.item', '必填')}
+                            </span>);
+                    }
+                }
+            },
+            {
                 title: Intl.get('clue.customer.clue.name', '线索名称'),
                 dataIndex: 'name',
                 render: function(text, record, index) {
@@ -2099,7 +2115,7 @@ class ClueCustomer extends React.Component {
             {
                 title: Intl.get('common.phone', '电话'),
                 render: (text, record, index) => {
-                    if (_.isArray(_.get(record, 'contacts[0].phone'))) {
+                    if (text && _.isArray(_.get(record, 'contacts[0].phone'))) {
                         return _.map(_.get(record, 'contacts[0].phone'), (item, index) => {
                             //电话规则不匹配的电话列表
                             let phone_verify_list = _.get(record, 'errors.phone_verify');
@@ -2124,6 +2140,11 @@ class ClueCustomer extends React.Component {
                             }
                             return (<div className={cls} title={title} key={index}>{item}</div>);
                         });
+                    }else{
+                        return (
+                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
+                                {Intl.get('apply.components.required.item', '必填')}
+                            </span>);
                     }
                 }
             },
