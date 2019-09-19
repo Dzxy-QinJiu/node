@@ -74,7 +74,9 @@ class ApplyDetailRemarks extends React.Component {
             </span>
         );
     }
+    handleOpenApplyDetail(applyItem){
 
+    }
     //渲染历史申请列表
     renderHistoricalList() {
         let sameHistoryApplyLists = this.state.sameHistoryApplyLists;
@@ -102,17 +104,16 @@ class ApplyDetailRemarks extends React.Component {
                     {replyList.map((replyItem, index) => {
                         var showReplyLists = _.some(this.state.openReplyListApplyIds, item => item === replyItem.id);
                         var replyLists = _.get(replyItem, 'replyLists', []);
-                        var btnClass = classNames({
+                        var btnClass = classNames('clue-status',{
                             processed: replyItem.isConsumed === 'true'
                         });
                         return (
                             <li key={index} className="apply-info-label">
-                                <p className="apply-item-title">
+                                <p className="apply-item-title" onClick={this.props.handleOpenApplyDetail.bind(this,replyItem)}>
                                     <span className="apply-item-topic user-info-label">
                                         {replyItem.topic}
                                         <span className="apply-item-status">
-                                            <em className={btnClass}>{commonMethodUtil.getApplyStateText(replyItem)}</em>
-                                           &gt;
+                                            <span className={btnClass}>[{commonMethodUtil.getApplyStateText(replyItem)}]</span>&gt;
                                         </span>
                                     </span>
 
@@ -152,6 +153,8 @@ class ApplyDetailRemarks extends React.Component {
 }
 ApplyDetailRemarks.defaultProps = {
     sameHistoryApplyLists: {},
+    handleOpenApplyDetail: function(){},
+
     replyFormInfo: {},
     refreshReplyList: function() {
 
@@ -163,6 +166,8 @@ ApplyDetailRemarks.defaultProps = {
 };
 ApplyDetailRemarks.propTypes = {
     sameHistoryApplyLists: PropTypes.object,
+    handleOpenApplyDetail: PropTypes.func,
+
     replyFormInfo: PropTypes.object,
     refreshReplyList: PropTypes.func,
     commentInputChange: PropTypes.func,

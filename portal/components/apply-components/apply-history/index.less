@@ -52,15 +52,8 @@
         font-size: 12px;
         overflow: hidden;
         margin: 5px 0;
-        em {
-          float: right;
-          line-height: 20px;
-          font-size: 13px;
-          color: @approval-pending-color;
-          &.processed {
-            color: #999;
-          }
-        }
+
+
         .reply-content-name {
           color: #333;
         }
@@ -75,6 +68,18 @@
       margin-top: 0;
       .apply-item-topic {
         color: #333;
+        .apply-item-status{
+          color: #999999;
+          .clue-status {
+            margin:0 10px;
+            line-height: 20px;
+            font-size: 13px;
+            color: @approval-pending-color;
+            &.processed {
+              color: #999;
+            }
+          }
+        }
       }
       .reply-date-text, .user-info-text {
         float: right;

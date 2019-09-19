@@ -244,9 +244,9 @@ const ApplyViewDetail = createReactClass({
     closeRightPanel() {
         ApplyViewDetailActions.closeRightPanel();
     },
-    getHistoryApplyListByCustomerId(customerId){
-        if(customerId){
-            ApplyViewDetailActions.getHistoryApplyListsByCustomerId(customerId);
+    getHistoryApplyListByCustomerId(apply){
+        if(!_.isEmpty(apply)){
+            ApplyViewDetailActions.getHistoryApplyListsByCustomerId(apply);
         }else{
             ApplyViewDetailActions.setHistoryApplyStatus();
         }
@@ -516,6 +516,7 @@ const ApplyViewDetail = createReactClass({
             <ApplyHistory
                 detailInfo={this.state.detailInfoObj.info}
                 sameHistoryApplyLists={this.state.sameHistoryApplyLists}
+                handleOpenApplyDetail={this.props.handleOpenApplyDetail}
             />
         );
     },

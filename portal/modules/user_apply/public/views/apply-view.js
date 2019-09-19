@@ -460,6 +460,16 @@ class ApplyTabContent extends React.Component {
             return false;
         }
     };
+    handleOpenApplyDetail = (applyItem) => {
+        this.setState({
+            showHistoricalItem: applyItem
+        });
+    };
+    hideHistoricalApplyItem = () => {
+        this.setState({
+            showHistoricalItem: {}
+        });
+    };
 
     render() {
         //列表高度
@@ -535,6 +545,18 @@ class ApplyTabContent extends React.Component {
                         )
                     }
                 </div>
+                {!_.isEmpty(this.state.showHistoricalItem) ? (
+                    <div className="historical-apply-detail">
+                        <span className="iconfont icon-close " onClick={this.hideHistoricalApplyItem}
+                            data-tracename="关闭审批详情面板"></span>
+                        <ApplyViewDetail
+                            isHomeMyWork={true}
+                            detailItem={this.state.showHistoricalItem}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishApplyWork}
+                        />
+                    </div>
+                ) : null}
                 {noShowApplyDetail ? null : (
                     <ApplyViewDetail
                         applyData={this.state.applyId ? applyDetail : null}
@@ -542,9 +564,9 @@ class ApplyTabContent extends React.Component {
                         isUnreadDetail={this.getIsUnreadDetail()}
                         showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                         applyListType={this.state.applyListType}
+                        handleOpenApplyDetail={this.handleOpenApplyDetail}
                     />
                 )}
-
             </div>
         );
     }

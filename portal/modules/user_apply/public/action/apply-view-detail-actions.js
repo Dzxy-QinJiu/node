@@ -88,12 +88,12 @@ class ApplyViewDetailActions {
         //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
         if (applyData) {
             this.dispatch({loading: false, error: false, detail: applyData.detail});
-            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,_.get(applyData,'detail.customer_id',''));
+            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,_.get(applyData,'detail',''));
 
         } else {
             this.dispatch({loading: true, error: false});
             AppUserAjax.getApplyDetail(id).then((detail, apps) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,_.get(detail,'customer_id',''));
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
                 this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState});
             }, (errorMsg) => {
                 AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
@@ -102,11 +102,12 @@ class ApplyViewDetailActions {
         }
     }
     //在审批详情中得到客户的id，然后根据客户的id获取历史申请审批
-    getHistoryApplyListsByCustomerId(customerId){
+    getHistoryApplyListsByCustomerId(apply){
         this.dispatch({loading: true, error: false});
-        AppUserAjax.getApplyList({customer_id: customerId, page_size: 100}).then((data) => {
+        AppUserAjax.getApplyList({customer_id: _.get(apply,'customer_id',''), page_size: 100}).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
-            //给 自己申请的并且是未通过的审批加上可以撤销的标识
+            //过滤掉本条申请
+            data.list = _.filter(data.list, item => item.id !== _.get(apply, 'id',''));
             this.dispatch({error: false, loading: false, data: data});
         },(errorMsg) => {
             this.dispatch({
