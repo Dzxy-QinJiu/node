@@ -220,6 +220,7 @@ function showMetricsDetail(metricsKey, metricsTitle) {
             }, {
                 dataIndex: 'cost',
                 title: '费用',
+                render: amountValueRender
             }, {
                 dataIndex: 'type',
                 title: '费用类型',
@@ -250,12 +251,15 @@ function showMetricsDetail(metricsKey, metricsTitle) {
             }, {
                 dataIndex: 'gross_profit',
                 title: '合同毛利',
+                render: amountValueRender
             }, {
                 dataIndex: 'total_amount',
                 title: '回款额',
+                render: amountValueRender
             }, {
                 dataIndex: 'total_gross_profit',
                 title: '回款毛利',
+                render: amountValueRender
             }, {
                 dataIndex: 'label',
                 title: '签约类型',
