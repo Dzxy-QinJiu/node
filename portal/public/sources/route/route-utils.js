@@ -16,8 +16,8 @@ const ROUTE_CONST = {
 };
 const isOpenCaller = require('../utils/common-method-util').isOpenCaller;
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-//是否在蚁坊域的判断方法
-const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
+//是否是csm.curtao.com，是否在蚁坊域的判断方法
+import {isCurtao, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
@@ -228,7 +228,35 @@ function dealCallRecordRoute(userRoutes) {
         }
     }
 }
-
+//过滤掉curtao域名下不显示的菜单
+function filterCurtaoRoutes(routes) {
+    //curtao域名下不显示的一级菜单
+    const filterFirstMenuIds = [
+        'deal_manage',//订单
+        'app_user_manage',//用户
+        'oplate_analysis',//分析
+        'application_apply_management',//申请审批
+        'application_apply_management1',//拜访申请
+        'notification',//通知
+    ];
+    //curtao域名下后台管理中不显示的菜单
+    const filterBackgroundMenuIds = [
+        'apply_approve',//审批流程配置
+        'orderstage',//订单阶段
+        'sales_auto',//销售自动化（用户、客户评分）
+        'sales_process',//客户阶段的配置
+    ];
+    if(isCurtao()){
+        //过滤掉不显示的一级菜单
+        routes = _.filter(routes, item => !_.includes(filterFirstMenuIds, item.id));
+        let backgroundRoutes = _.find(routes, item => item.id === 'background_management');
+        //过滤掉后端管理中不显示的菜单
+        if(_.get(backgroundRoutes, 'routes[0]')){
+            backgroundRoutes.routes = _.filter(backgroundRoutes.routes, item => !_.includes(filterBackgroundMenuIds, item.id));
+        }
+    }
+    return routes;
+}
 /**
  * 过滤路由，返回界面上需要的路由
  * @param allRoutes
@@ -260,6 +288,8 @@ function filterRoute(allRoutes) {
             backgroundObj.routes = _.filter(backgroundObj.routes, item => item.id !== 'sales_auto');
         }
     }
+    //过滤掉curtao域名下不显示的菜单
+    user.routes = filterCurtaoRoutes(user.routes);
     //路由配置
     const routePaths = [
         {

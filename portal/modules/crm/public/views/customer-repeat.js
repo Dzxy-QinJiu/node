@@ -20,6 +20,7 @@ let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from 'LIB_DIR/trace';
 import ShearContent from '../../../../components/shear-content';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
+import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 
 let CONSTANTS = {
     PADDING_TOP: 84,
@@ -286,7 +287,7 @@ class CustomerRepeat extends React.Component {
                     <Col span={2}
                         className="repeat-customer-col">{Intl.get('call.record.contacts', '联系人')}</Col>
                     <Col span={3} className="repeat-customer-col">{Intl.get('crm.5', '联系方式')}</Col>
-                    {Oplate.isCurtao === 'true' ? null : (
+                    {isCurtao() ? null : (
                         <Col span={2} className="repeat-customer-col">
                             {Intl.get('user.apply.detail.order', '订单')}
                         </Col>)}

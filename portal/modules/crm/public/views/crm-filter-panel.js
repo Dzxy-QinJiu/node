@@ -9,6 +9,7 @@ import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import userData from 'PUB_DIR/sources/user-data';
 import { FilterList } from 'CMP_DIR/filter';
 import { FILTER_RANGE, STAGE_OPTIONS, DAY_TIME, UNKNOWN, COMMON_OTHER_ITEM } from 'PUB_DIR/sources/utils/consts';
+import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 //行政级别筛选项
 let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
 
@@ -77,7 +78,7 @@ let otherFilterArray = [
     }
 ];
 //csm.curtao.com域名下不展示订单，所以不需要多个订单的客户筛选
-if (Oplate.isCurtao === 'true') {
+if (isCurtao()) {
     otherFilterArray = _.filter(otherFilterArray, item => item.value !== 'multi_order');
 }
 //只有管理员可以过滤未分配的客户
@@ -267,16 +268,6 @@ class CrmFilterPanel extends React.Component {
         let selectedLevel = _.get(this.state, 'condition.administrative_level', '').split(',');
         const advancedData = [
             {
-                groupName: Intl.get('crm.order.stage', '订单阶段'),
-                groupId: 'sales_opportunities',
-                singleSelect: true,
-                data: _.drop(stageArray).map(x => ({
-                    name: x.show_name,
-                    value: x.name,
-                    selected: x.name === _.get(this.state, 'condition.sales_opportunities[0].sale_stages', '')
-                }))
-            },
-            {
                 groupName: Intl.get('weekly.report.customer.stage', '客户阶段'),
                 groupId: 'customer_label',
                 data: _.drop(this.state.stageTagList).map(x => ({
@@ -365,6 +356,18 @@ class CrmFilterPanel extends React.Component {
                     }))
             }
         ];
+        if(!isCurtao()){
+            advancedData.unshift({
+                groupName: Intl.get('crm.order.stage', '订单阶段'),
+                groupId: 'sales_opportunities',
+                singleSelect: true,
+                data: _.drop(stageArray).map(x => ({
+                    name: x.show_name,
+                    value: x.name,
+                    selected: x.name === _.get(this.state, 'condition.sales_opportunities[0].sale_stages', '')
+                }))
+            });
+        }
         //普通销售展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
         if (userData.getUserData().isCommonSales) {
             let loginUserName = userData.getUserData().nick_name;

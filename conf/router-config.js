@@ -4,9 +4,6 @@
  * Created by liwenjun on 2018/12/19.
  */
 const MODULE_PATH = 'modules/';
-const config = require('./config');
-//是否是csm.curtao.com域名下访问的
-const isCurtao = '() => Oplate.isCurtao === "true"';
 let routers = [
     {
         id: 'HOME_PAGE', //唯一标识，首页
@@ -41,7 +38,6 @@ let routers = [
         routePath: '/deal_manage',
         component: `${MODULE_PATH}deal_manage/public`,
         shortName: 'user.apply.detail.order',//订单
-        isNotShow: isCurtao,
         //有这个权限，才显示入口图标
         showPrivileges: ['CRM_MANAGER_LIST_SALESOPPORTUNITY','CRM_USER_LIST_SALESOPPORTUNITY']
     },
@@ -59,7 +55,6 @@ let routers = [
         name: 'crm.detail.user',//用户
         routePath: '/user',
         shortName: 'crm.detail.user',//用户
-        isNotShow: isCurtao,
         subMenu: [{
             id: 'APP_USER_MANAGE_USER',
             name: 'menu.appuser.list',//用户列表
@@ -95,7 +90,6 @@ let routers = [
         name: 'user.detail.analysis',//分析
         routePath: '/analysis',
         shortName: 'user.detail.analysis',//分析
-        isNotShow: isCurtao,
         subMenu: [
             {
                 id: 'ANALYSIS',//唯一标识
@@ -185,7 +179,6 @@ let routers = [
         name: 'crm.109',//申请
         routePath: '/application',
         shortName: 'crm.109',//申请
-        isNotShow: isCurtao,
         subMenu: [{
             id: 'APP_USER_MANAGE_APPLY',
             name: 'menu.appuser.apply',//用户审批
@@ -247,7 +240,6 @@ let routers = [
         routePath: '/notification_system',
         component: `${MODULE_PATH}notification/public`,
         shortName: 'menu.notification',//通知
-        isNotShow: isCurtao,
         bottom: true,
         //有这个权限，才显示入口图标
         showPrivileges: ['NOTIFICATION_SYSTEM_LIST']
@@ -281,7 +273,6 @@ let routers = [
                 name: 'menu.apply.approve',//申请审批
                 routePath: '/background_management/apply_approve',
                 component: `${MODULE_PATH}apply_approve_manage/public`,
-                isNotShow: isCurtao,
                 //todo 权限名称待修改= 有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE']
             },
@@ -290,7 +281,6 @@ let routers = [
                 name: 'menu.order.stage',// 订单阶段
                 routePath: '/background_management/sales_stage',
                 component: `${MODULE_PATH}sales_stage/public`,
-                isNotShow: isCurtao,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['BGM_SALES_STAGE_ADD']
             },
@@ -315,7 +305,6 @@ let routers = [
                 name: 'menu.sales.auto.manage.config',// 销售自动化
                 routePath: '/background_management/sales_auto',
                 component: `${MODULE_PATH}sales_auto/public`,
-                isNotShow: isCurtao,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CURTAO_RULE_MANAGE']
             },
@@ -324,7 +313,6 @@ let routers = [
                 name: 'menu.sales.process',// 客户阶段
                 routePath: '/background_management/customer_stage',
                 component: `${MODULE_PATH}sales_process/public`,
-                isNotShow: isCurtao,
                 showPrivileges: ['CRM_GET_SALES_PROCESS']
             }]
     },
@@ -354,7 +342,6 @@ let routers = [
         id: 'APPLICATION_APPLY_MANAGEMENT1',
         name: 'crm.109',//申请
         routePath: '/application',
-        isNotShow: isCurtao,
         shortName: 'crm.109',//申请
         component: `${MODULE_PATH}/setting_workflow_tip/public`,
     },

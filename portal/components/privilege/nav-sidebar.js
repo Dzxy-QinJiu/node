@@ -20,7 +20,7 @@ import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter,phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
@@ -400,7 +400,7 @@ var NavSidebar = createReactClass({
         return (
             <ul className="ul-unstyled">
                 {//是csm.curtao.com域名下，并且是个人资料下的二级菜单中加入在线咨询
-                    Oplate.isCurtao === 'true' && isShowLogOut ? (
+                    isCurtao() && isShowLogOut ? (
                         <li onClick={this.onChatClick}>
                             <a>{Intl.get('menu.online.consulting', '在线咨询')}</a>
                         </li>
@@ -645,7 +645,7 @@ var NavSidebar = createReactClass({
                                 />
                             ) : null
                         }
-                        {Oplate.isCurtao === 'true' ? null : this.getNotificationBlock()}
+                        {isCurtao() ? null : this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}
                         {this.getUserInfoBlock()}
                     </div>
