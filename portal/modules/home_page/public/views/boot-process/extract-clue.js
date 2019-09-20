@@ -66,9 +66,9 @@ class ExtractClues extends React.Component {
 
         // 如果提取给的销售是自己，则需要提示刷新
         let {
-            user_id
+            userId
         } = taskParams;
-        if(_.isEqual(user_id, userData.getUserData().user_id)) {
+        if(_.isEqual(userId, userData.getUserData().user_id)) {
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, {});
         }
 
@@ -206,7 +206,7 @@ class ExtractClues extends React.Component {
             let saleLoginData = userData.getUserData();
             let submitObj = {
                 'user_id': saleLoginData.user_id,
-                'nick_name': saleLoginData.nick_name,
+                'user_name': saleLoginData.nick_name,
                 'sales_team_id': saleLoginData.team_id,
                 'sales_team': saleLoginData.team_name,
             };
