@@ -2941,6 +2941,8 @@ var zh_CN = {
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',
     'clue.release': '释放线索',
+    'clue.customer.refresh.tip': '有新线索，{refreshPage}查看',
+    'clue.customer.refresh.page': '刷新页面',
     'clue.customer.release.pool': '释放到线索池',
     'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确认释放吗？',
     'clue.customer.batch.release': '批量释放',
