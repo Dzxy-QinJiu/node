@@ -8,7 +8,14 @@ import { administrativeLevels, CUSTOMER_TAGS } from '../utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import userData from 'PUB_DIR/sources/user-data';
 import { FilterList } from 'CMP_DIR/filter';
-import { FILTER_RANGE, STAGE_OPTIONS, DAY_TIME, UNKNOWN, COMMON_OTHER_ITEM } from 'PUB_DIR/sources/utils/consts';
+import {
+    FILTER_RANGE,
+    STAGE_OPTIONS,
+    DAY_TIME,
+    UNKNOWN,
+    COMMON_OTHER_ITEM,
+    OTHER_FILTER_ITEMS
+} from 'PUB_DIR/sources/utils/consts';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 //行政级别筛选项
 let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
@@ -75,6 +82,9 @@ let otherFilterArray = [
     },{
         name: Intl.get('crm.this.week.contact', '本周联系过的客户'),
         value: 'this_week_contacted'
+    },{
+        name: Intl.get('crm.filter.extract.from.customer.pool', '从客户池中提取的客户'),
+        value: 'extract_time'
     }
 ];
 //csm.curtao.com域名下不展示订单，所以不需要多个订单的客户筛选
@@ -227,7 +237,13 @@ class CrmFilterPanel extends React.Component {
         });
         return memberIds;
     }
-
+    setDefaultSelectCommonFilter = (commonData,notSelfHandle,callback) => {
+        var targetIndex = '';
+        if (!notSelfHandle){
+            targetIndex = _.findIndex(commonData, item => item.value === OTHER_FILTER_ITEMS.EXTRACT_TIME);
+        }
+        _.isFunction(callback) && callback(targetIndex);
+    };
     render() {
         const teams = this.state.condition.sales_team_id.split(',');
         //用Store.getState()方法获取存在store里的state时，若state下的某个属性所在层次较深且其值为空时，该属性会被丢掉
@@ -467,6 +483,8 @@ class CrmFilterPanel extends React.Component {
                         commonLoading={this.state.commonFilterList.loading}
                         commonData={commonData.concat(this.state.commonFilterList.data)}
                         advancedData={advancedData}
+                        setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
+                        hasSettedDefaultCommonSelect={this.props.isExtractSuccess}
                         onDelete={this.onDelete.bind(this)}
                         onFilterChange={this.handleFilterChange.bind(this)}
                     />
@@ -478,7 +496,8 @@ class CrmFilterPanel extends React.Component {
 CrmFilterPanel.propTypes = {
     showSelectTip: PropTypes.bool,
     style: PropTypes.object,
-    search: PropTypes.func
+    search: PropTypes.func,
+    isExtractSuccess: PropTypes.bool,
 };
 module.exports = CrmFilterPanel;
 
