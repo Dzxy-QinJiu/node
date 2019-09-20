@@ -1,5 +1,6 @@
 
 
+
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -3449,5 +3450,8 @@ var en_US = {
     'common.gross.profit.of.newly.signed.payment.30.percent': 'gross profit of newly signed payment (30%)',//新签回款毛利 (占30%)
     'common.lost.contract.amount': 'lost contract amount',//流失合同金额
     'common.to.renew': 'to renew',//续签
+    'common.maximum.personal.contribution': 'maximum personal contribution',//个人贡献最大值
+    'common.the.maximum.gross.profit.rate': 'the maximum gross profit rate',//回款毛利率最大值
+    'common.maximum.gross.margin.of.newly.signed.payment': 'maximum gross margin of newly signed payment',//新签回款毛利最大值
 };
 export default en_US;

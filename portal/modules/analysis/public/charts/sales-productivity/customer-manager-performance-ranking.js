@@ -118,6 +118,9 @@ function getPerformanceDetailContent(result) {
     const newGrossProfitColumns = [{
         title: Intl.get('common.personal.newly.signed.gross.profit', '个人新签回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'new_repayment_gross_profit',
+    }, {
+        title: Intl.get('common.maximum.gross.margin.of.newly.signed.payment', '新签回款毛利最大值') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'max',
     }];
 
     const contributionColumns = [{
@@ -129,6 +132,9 @@ function getPerformanceDetailContent(result) {
     }, {
         title: Intl.get('common.personal.sales.expenses', '个人销售费用') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'cost',
+    }, {
+        title: Intl.get('common.maximum.personal.contribution', '个人贡献最大值') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'max',
     }];
 
     const grossProfitRateColumns = [{
@@ -137,6 +143,9 @@ function getPerformanceDetailContent(result) {
     }, {
         title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'repayment_gross_profit',
+    }, {
+        title: Intl.get('common.the.maximum.gross.profit.rate', '回款毛利率最大值') + '（%）',
+        dataIndex: 'max',
     }];
 
     return (
@@ -157,11 +166,6 @@ function getPerformanceDetailTable(title, columns, data) {
     columns.unshift({
         title: '',
         dataIndex: 'row_title',
-    });
-
-    columns.push({
-        title: Intl.get('contract.max', '最大值'),
-        dataIndex: 'max',
     });
 
     return (
