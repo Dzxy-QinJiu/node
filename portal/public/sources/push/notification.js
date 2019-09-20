@@ -11,7 +11,10 @@ function showNotification(options) {
 }
 //更新一个通知中的内容
 function updateText(notify , options) {
-    var contentHtml = content ? `<div class="noty-content">${content}</div>` : '';
+    var {title,content,type} = options;
+    let iconHtml = type ? `<div class="noty-icon">${switchIcon(type)}</div>` : '';
+    var titleHtml = title ? `<div class="noty-title${!type ? ' noIcon' : ''}">${iconHtml}<h5>${title}</h5></div>` : '';
+    var contentHtml = content ? `<div class="noty-content${!type ? ' noIcon' : ''}">${content}</div>` : '';
     var text = `<div class="noty-container">${titleHtml}${contentHtml}</div>`;
     notify.setText(text);
 }
