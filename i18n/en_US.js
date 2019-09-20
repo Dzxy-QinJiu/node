@@ -2426,6 +2426,7 @@ var en_US = {
     'errorcode.163': 'The number of members has been reached.', // 成员数量已达上限
     'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
+    'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索

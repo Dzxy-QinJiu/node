@@ -2463,6 +2463,7 @@ var zh_CN = {
     'errorcode.163': '成员数量已达上限',
     'errorcode.phone.busy': '座机繁忙，请稍后再试！',
     'errorcode.164': '获取即将到期的客户统计数据失败',
+    'errorcode.organization.expire': '您的账号已到期',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
