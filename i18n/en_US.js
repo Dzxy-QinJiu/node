@@ -2426,6 +2426,7 @@ var en_US = {
     'errorcode.163': 'The number of members has been reached.', // 成员数量已达上限
     'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
+    'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2915,6 +2916,8 @@ var en_US = {
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.extract.clue': 'Extract clue', // 提取线索
     'clue.release': 'Release Clue',//释放线索
+    'clue.customer.refresh.tip': 'You have new clues, please {refreshPage} to check',//有新线索，{refreshPage}查看
+    'clue.customer.refresh.page': 'refresh page',//刷新页面
     'clue.pool': 'Clue Pool', // 线索池
     'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
@@ -3454,6 +3457,7 @@ var en_US = {
     'clue.diff.type.tab.title.notrace': 'No effective follow-up (phone not open or not written follow-up record)',//未做有效跟进（电话未打通或未写跟进记录）
     'clue.diff.type.tab.title.hastrace': 'Has been effectively followed up (has been opened or has written follow-up records)',//已做有效跟进（已打通或已写跟进记录）
     'clue.diff.type.tab.title.hastransfer': 'Converted to customer',//已转化为客户
-    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid'//标记为无效
+    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid',//标记为无效
+    'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
 };
 export default en_US;

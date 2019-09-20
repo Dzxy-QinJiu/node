@@ -63,6 +63,8 @@ exports.notificationEmitter.APPLY_UPDATED_VISIT = 'applyUpdatedVisit';
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
 //更新待我处理的数据
 exports.notificationEmitter.UPDATED_MY_HANDLE_CLUE = 'updateMyHandleClue';
+//未处理线索更新提示
+exports.notificationEmitter.UPDATE_CLUE = 'updateClue';
 //新分配线索更新带我处理
 exports.notificationEmitter.UPDATED_HANDLE_CLUE = 'updateMyHandleClue';
 //电话系统初始化成功

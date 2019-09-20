@@ -183,13 +183,16 @@ function loginSuccess(req, res) {
                     }
                 });
             }).on('error', errorObj => {
-                if (req.xhr) {
+                // 获取组织失败后的处理
+                req.session.user = '';
+                loginError(req, res)(errorObj);
+                /*if (req.xhr) {
                     //session失效时，登录成功后的处理
                     res.status(200).json('success');
                 } else {
                     //登录界面，登录成功后的处理
-                    res.redirect('/');
-                }
+                    res.redirect('/login?lang=' + lang);
+                }*/
             });
         });
     };

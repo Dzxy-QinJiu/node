@@ -2463,6 +2463,7 @@ var zh_CN = {
     'errorcode.163': '成员数量已达上限',
     'errorcode.phone.busy': '座机繁忙，请稍后再试！',
     'errorcode.164': '获取即将到期的客户统计数据失败',
+    'errorcode.organization.expire': '您的账号已到期',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
@@ -2941,6 +2942,8 @@ var zh_CN = {
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',
     'clue.release': '释放线索',
+    'clue.customer.refresh.tip': '有新线索，{refreshPage}查看',
+    'clue.customer.refresh.page': '刷新页面',
     'clue.customer.release.pool': '释放到线索池',
     'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确认释放吗？',
     'clue.customer.batch.release': '批量释放',
@@ -3566,6 +3569,7 @@ var zh_CN = {
     'clue.diff.type.tab.title.notrace': '未做有效跟进（电话未打通或未写跟进记录）',
     'clue.diff.type.tab.title.hastrace': '已做有效跟进（已打通或已写跟进记录）',
     'clue.diff.type.tab.title.hastransfer': '已转化为客户',
-    'clue.diff.type.tab.title.mark.invalid': '标记为无效'
+    'clue.diff.type.tab.title.mark.invalid': '标记为无效',
+    'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
 };
 export default zh_CN;
