@@ -357,23 +357,21 @@ class ContractItem extends React.Component {
                     ) : null
                 }
                 {
-                    contract.remarks ? (
-                        contract.isShowAllContractInfo ? (
-                            <div className={itemClassName}>
-                                <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
-                                <BasicEditInputField
-                                    width={EDIT_WIDTH}
-                                    id={contract.id}
-                                    type="textarea"
-                                    field='remarks'
-                                    value={contract.remarks}
-                                    hasEditPrivilege={hasEditPrivilege}
-                                    saveEditInput={this.saveContractBasicInfo.bind(this, 'remarks')}
-                                    noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
-                                    addDataTip={Intl.get('crm.contract.add.remarks', '添加备注')}
-                                />
-                            </div>
-                        ) : null
+                    contract.isShowAllContractInfo ? (
+                        <div className={itemClassName}>
+                            <span className='contract-label'>{Intl.get('common.remark', '备注')}:</span>
+                            <BasicEditInputField
+                                width={EDIT_WIDTH}
+                                id={contract.id}
+                                type="textarea"
+                                field='remarks'
+                                value={contract.remarks}
+                                hasEditPrivilege={hasEditPrivilege}
+                                saveEditInput={this.saveContractBasicInfo.bind(this, 'remarks')}
+                                noDataTip={Intl.get('crm.basic.no.remark', '暂无备注')}
+                                addDataTip={Intl.get('crm.contract.add.remarks', '添加备注')}
+                            />
+                        </div>
                     ) : null
                 }
             </div>

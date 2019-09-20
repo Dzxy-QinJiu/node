@@ -161,7 +161,10 @@ class TimePeriod extends React.Component {
 
         return submitObj;
     };
-
+    disabledDate = (current) => {
+        //不允许选择大于当前的时刻
+        return !this.props.isBeforeTodayAble ? current && current.valueOf() < moment().startOf('day') : null;
+    };
 
     render = () => {
         var formData = this.state.formData;
@@ -222,6 +225,7 @@ class TimePeriod extends React.Component {
                                                 format="YYYY-MM-DD"
                                                 onChange={this.onBeginTimeChange.bind(this, _.get(formItem, 'formItemKey') + '.begin_time')}
                                                 value={formData.begin_time ? moment(formData.begin_time) : moment()}
+                                                disabledDate={this.disabledDate}
                                             />
                                         )}
                                         {getFieldDecorator(_.get(formItem, 'formItemKey') + '.begin_type',{
@@ -263,6 +267,7 @@ class TimePeriod extends React.Component {
                                                 format="YYYY-MM-DD"
                                                 onChange={this.onEndTimeChange.bind(this, _.get(formItem, 'formItemKey') + '.end_time')}
                                                 value={formData.end_time ? moment(formData.end_time) : moment()}
+                                                disabledDate={this.disabledDate}
                                             />
                                         )}
 
@@ -320,6 +325,7 @@ TimePeriod.defaultProps = {
     },
     component_type: '',
     labelKey: '',
+    isBeforeTodayAble: true,
 };
 
 TimePeriod.propTypes = {
@@ -333,6 +339,7 @@ TimePeriod.propTypes = {
     onEndTimeChange: PropTypes.func,
     onEndTypeChange: PropTypes.func,
     onSaveAllData: PropTypes.func,
-    form: PropTypes.object
+    form: PropTypes.object,
+    isBeforeTodayAble: PropTypes.bool,//是否可用选中今天之前的时间
 };
 export default TimePeriod;

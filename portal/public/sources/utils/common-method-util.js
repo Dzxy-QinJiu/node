@@ -27,7 +27,8 @@ import {
     FINAL_TASK,
     ORGANIZATION_APP_TYPES,
     REALM_REMARK,
-    INDICATOR_TOOLTIP
+    INDICATOR_TOOLTIP,
+    DIFF_STATUS_TAB
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -998,6 +999,11 @@ exports.isCiviwRealm = () => {
 //获取某种indicator的tooltip
 exports.getCertainTypeTooltip = (indicator) => {
     var target = _.find(INDICATOR_TOOLTIP, item => item.key === indicator);
+    return _.get(target,'value','');
+};
+//获取某个tab的title
+exports.getCertainTabsTitle = (status) => {
+    var target = _.find(DIFF_STATUS_TAB, item => item.key === status);
     return _.get(target,'value','');
 };
 

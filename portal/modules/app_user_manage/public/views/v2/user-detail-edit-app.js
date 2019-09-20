@@ -140,12 +140,7 @@ const UserDetailEditApp = createReactClass({
         submitData.user_id = this.props.initialUser.user.user_id;
         //多次登录(平台部的单词拼错了)
         submitData.mutilogin = savedAppSetting.multilogin.value;
-        if (submitData.roles.length) {
-            UserDetailEditAppActions.setAppNoSelectRoleError('');
-        } else {
-            UserDetailEditAppActions.setAppNoSelectRoleError(Intl.get('user.role.select.tip', '至少选择一个角色'));
-            return;
-        }
+
         let changeAppInfo = this.getChangeAppInfo(submitData);
         //修改用户
         UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (flag) => {

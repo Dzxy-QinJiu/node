@@ -44,7 +44,8 @@ exports.scheduleMsgToFrontend = function(scheduleMsg) {
         contacts: scheduleMsg.contacts,//联系人列表
         customer_name: scheduleMsg.customer_name,//客户名
         content: scheduleMsg.content,//日程内容
-        topic: scheduleMsg.topic
+        topic: scheduleMsg.topic,
+        type: scheduleMsg.type,//日程类型
     };
 };
 

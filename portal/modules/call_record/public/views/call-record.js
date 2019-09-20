@@ -453,6 +453,17 @@ class CallRecord extends React.Component {
         this.setState({
             isAddFlag: false
         });
+        let callRecord = this.state.callRecord;
+        let list = callRecord.data_list;
+        let phone = _.get(customer,'[0].phones[0]');
+
+        _.map(list,(cont) => {
+            if(cont.dst === phone){
+                cont.customer_name = _.get(customer, '[0].name');
+                cont.customer_id = _.get(customer,'[0].id');
+            }
+        });
+        this.setState({callRecord});
     };
 
     showRightPanel = (id) => {
@@ -569,32 +580,32 @@ class CallRecord extends React.Component {
         );
     }
     //编辑时光标移动到尾部
-    cursorBackward = (record,oldValue) =>{
+    cursorBackward = (record,oldValue) => {
         if(oldValue){
             const id = record.id;
             let obj = $('.new-custom-tbody #content' + id);
-            obj.val("").focus().val(oldValue).scrollTop(obj.height());
+            obj.val('').focus().val(oldValue).scrollTop(obj.height());
 
         }
     }
     //修改跟进记录的按钮和内容
-    editButton = (record) =>{
+    editButton = (record) => {
         if(record.remark){
             return(
                 <span className="text-show line-clamp " >
                     <ShearContent lines={2}>{record.remark}</ShearContent>
                     <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn" 
-                            onClick={this.handleClickTextArea.bind(this, record)}
-                            title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+                        onClick={this.handleClickTextArea.bind(this, record)}
+                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
                 </span>
             );
         }else{
             return(
                 <span className="text-show line-clamp " >
-                <i className="iconfont icon-edit-btn-plus handle-btn-item " 
-                    onClick={this.handleClickTextArea.bind(this, record)}
-                    title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
-            </span>
+                    <i className="iconfont icon-edit-btn-plus handle-btn-item " 
+                        onClick={this.handleClickTextArea.bind(this, record)}
+                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+                </span>
             );
         }                      
     }
@@ -763,7 +774,7 @@ class CallRecord extends React.Component {
                                         id={'content' + record.id}
                                         onKeyUp={this.checkEnter.bind(this, record.id)}
                                         onScroll={event => event.stopPropagation()}
-                                    /> :this.editButton(record)
+                                    /> : this.editButton(record)
                                 }
                             </Popconfirm>
                         </div>
@@ -786,9 +797,9 @@ class CallRecord extends React.Component {
         let value = $('.new-custom-tbody #content' + id).val();
         if (oldValue) { // 有内容时，对应的是修改
             if (value === oldValue) {
-                 // 没做修改，直接返回，不出现确认框
-                 record.showTextEdit = ! record.showTextEdit;
-                 this.setState(this.state);
+                // 没做修改，直接返回，不出现确认框
+                record.showTextEdit = !record.showTextEdit;
+                this.setState(this.state);
                 return;
             } else { // 修改内容时，出现确认框
                 CallRecordActions.toggleConfirm({ id, flag: true });
@@ -797,7 +808,7 @@ class CallRecord extends React.Component {
             if (_.trim(value)) {
                 CallRecordActions.toggleConfirm({ id, flag: true });
             }else{
-                record.showTextEdit = ! record.showTextEdit;
+                record.showTextEdit = !record.showTextEdit;
                 this.setState(this.state);
             }
         }
@@ -1165,22 +1176,10 @@ class CallRecord extends React.Component {
     };
 
     renderCallRecordContent = () => {
+        let isLoading = this.state.callRecord.is_loading;
         //只有第一页和过滤表头不显示的时候，显示loading和错误信息
-        if (this.state.callRecord.page === 1 && !this.state.isFilter) {
-            if (this.state.callRecord.is_loading){
-                return (
-                    <div className="load-content">
-                        <Spinner />
-                        <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
-                    </div>
-                );
-            }else if (this.state.callRecord.errorMsg) {
-                return <div className="errmsg-wrap">
-                    <i className="iconfont icon-data-error"></i>
-                    <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
-                </div>;
-            }
-        }
+        let hiddenModule = this.state.callRecord.page === 1 && !this.state.isFilter;
+        
         //首次加载时不显示下拉加载状态
         const handleScrollLoading = () => {
             if (this.state.callRecord.page === 1) {
@@ -1203,27 +1202,45 @@ class CallRecord extends React.Component {
 
         // 是否显示过滤时的加载状态， 当前页数为1时，并且通话记录数组长度为0，显示过滤头，请求数据中
         const isFilterLoading = this.state.callRecord.page === 1 && this.state.callRecord.data_list.length === 0 && this.state.isFilter && this.state.callRecord.is_loading;
+        //第一次加载时的loading或报错信息
+        const renderLoading = () => {
+            if(isLoading){
+                return( <div className="load-content">
+                    <Spinner />
+                    <p className="abnornal-status-tip">{Intl.get('common.sales.frontpage.loading', '加载中')}</p>
+                </div>);
+            }else{
+                return( <div className="errmsg-wrap">
+                    <i className="iconfont icon-data-error"></i>
+                    <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
+                </div>);
+            }
+
+        };
 
         return (
-            <div style={{ position: 'relative' }}>
-                <div
-                    className={tableClassnames}
-                    ref="thead"
-                >
-                    <AntcTable
-                        dropLoad={dropLoadConfig}
-                        util={{zoomInSortArea: true}}
-                        ref={this.tableBody}
-                        dataSource={this.state.callRecord.data_list}
-                        rowKey={this.getRowKey}
-                        columns={this.getCallRecordColumns()}
-                        rowClassName={this.handleRowClassName}
-                        onChange={this.onSortChange}
-                        pagination={false}
-                        locale={{emptyText: isFilterLoading ? Intl.get('common.sales.frontpage.loading', '加载中') : Intl.get('common.no.data', '暂无数据')}}
-                        scroll={{ x: this.state.isFilter ? 1450 : 1150, y: this.state.tableHeight }}
-                    />
-                    { isFilterLoading ? <Spinner /> : null }
+            <div>
+                {hiddenModule ? renderLoading() : null}
+                <div style={{ display: hiddenModule ? 'none' : 'block' }}>
+                    <div
+                        className={tableClassnames}
+                        ref="thead"
+                    >
+                        <AntcTable
+                            dropLoad={dropLoadConfig}
+                            util={{zoomInSortArea: true}}
+                            ref={this.tableBody}
+                            dataSource={this.state.callRecord.data_list}
+                            rowKey={this.getRowKey}
+                            columns={this.getCallRecordColumns()}
+                            rowClassName={this.handleRowClassName}
+                            onChange={this.onSortChange}
+                            pagination={false}
+                            locale={{emptyText: isFilterLoading ? Intl.get('common.sales.frontpage.loading', '加载中') : Intl.get('common.no.data', '暂无数据')}}
+                            scroll={{ x: this.state.isFilter ? 1450 : 1150, y: this.state.tableHeight }}
+                        />
+                        { isFilterLoading ? <Spinner /> : null }
+                    </div>
                 </div>
             </div>
         );

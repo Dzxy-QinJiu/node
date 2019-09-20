@@ -54,7 +54,7 @@ class CrmIndex extends React.Component {
         this.setState({
             customerViewType: VIEW_TYPE.CUSTOMER,
             searchCondition: {},
-			isExtractSuccess
+            isExtractSuccess
         });
     };
 

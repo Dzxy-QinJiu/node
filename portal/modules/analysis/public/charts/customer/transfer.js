@@ -40,7 +40,6 @@ export function getCustomerTransferChart() {
                 }, {
                     title: Intl.get('crm.customer.transfer.manager', '客户经理'),
                     dataIndex: 'new_member_nick_name',
-                    sorter: true,
                     width: 100,
                 }, {
                     title: Intl.get('user.sales.team', '销售团队'),

@@ -48,9 +48,15 @@ class ListPanel extends React.Component {
     }
 
     show = paramObj => {
-        //组件属性里的列表类型和事件参数里的列表类型相匹配时才显示面板
-        if (this.props.listType === paramObj.listType) {
-
+        //如果事件参数里指定了内容，则直接显示内容
+        if (paramObj.content) {
+            this.setState({
+                isShow: true,
+                content: paramObj.content,
+                title: paramObj.title
+            });
+        //否则组件属性里的列表类型和事件参数里的列表类型相匹配时才显示面板
+        } else if (this.props.listType === paramObj.listType) {
             delete paramObj.listType;
 
             this.setState({
@@ -78,6 +84,8 @@ class ListPanel extends React.Component {
             });
         }
 
+        const content = this.state.content || childrenWithProps;
+
         return (
             <div className='list-panel'>
                 <RightPanel
@@ -85,6 +93,7 @@ class ListPanel extends React.Component {
                     className='panel-wrap'
                 >
                     <TopNav>
+                        <div className="panel-title">{this.state.title || null}</div>
                         <RightPanelClose
                             title={Intl.get('common.app.status.close', '关闭')}
                             onClick={this.hide}
@@ -92,7 +101,7 @@ class ListPanel extends React.Component {
                     </TopNav>
 
                     <div className='panel-content' style={this.props.style}>
-                        {this.state.isShow ? childrenWithProps : null}
+                        {this.state.isShow ? content : null}
                     </div>
                 </RightPanel>
             </div>

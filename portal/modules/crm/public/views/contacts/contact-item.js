@@ -249,6 +249,7 @@ class ContactItem extends React.Component {
                     let curPhoneArray = this.getCurPhoneArray(that);
                     // 判断当前添加的电话列表中是否已存在该电话
                     let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
+                    let customerId = _.get(this.props, 'contact.contact.customer_id', '');
                     //该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
                         if (phoneCount.length > 1) {
@@ -265,10 +266,10 @@ class ContactItem extends React.Component {
                                         callback();
                                     } else {
                                         //已存在
-                                        callback(Intl.get('crm.83', '该电话已存在'));
+                                        callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
                                     }
                                 }
-                            });
+                            },customerId);
                         }
                     } else {//该联系人员电话列表中已存在该电话
                         if (phoneCount.length > 1) {

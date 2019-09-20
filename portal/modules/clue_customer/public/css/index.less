@@ -569,3 +569,22 @@
     text-align: center;
   }
 }
+//批量分配popover错误提示框
+.batch-invalid-popover {
+  .ant-popover-inner-content {
+    overflow: hidden;
+    //申请时错误提示
+    .batch-error-tip {
+      font-size: 14px;
+      .icon-warn-icon {
+        position: relative;
+        color: @reply-message-tip-color;
+        margin-right:4px;
+      }
+      .batch-error-text {
+        margin-left: 5px;
+        color: #333333;
+      }
+    }
+  }
+}

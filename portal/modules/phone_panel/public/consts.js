@@ -13,15 +13,15 @@ export const PHONERINGSTATUS = {
     call_back: 'call_back'//通话结束后，运营人员的回访电话，后端推送过来的最后一个状态
 };
 export const commonPhoneDesArray = [
-    Intl.get('call.record.state.no.answer', '未接听'),
-    Intl.get('phone.status.other.hang.out', '对方挂断'),
-    Intl.get('phone.status.contact.later', '联系人现在不在，之后再联系'),
-    Intl.get('apply.phone.close', '手机关机'),
-    Intl.get('crm.clue.phone.on.meeting', '在开会，不方便接听')
-
+    {key: false, value: Intl.get('call.record.state.no.answer', '未接听')},
+    {key: false, value: Intl.get('phone.status.other.hang.out', '对方挂断')},
+    {key: false, value: Intl.get('apply.phone.close', '手机关机')},
+    {key: true, value: Intl.get('phone.status.contact.later', '联系人现在不在，之后再联系')},
+    {key: true, value: Intl.get('crm.clue.phone.on.meeting', '在开会，不方便接听')},
 ];
 export const cluePhoneDesArray = _.concat(commonPhoneDesArray, [
-    Intl.get('call.record.phone.err.msg', '电话号码错误')
+    {key: false, value: Intl.get('call.record.phone.err.msg', '电话号码错误')}
+
 ]);
 //挂断电话时推送过来的通话状态，phone：私有呼叫中心（目前有：eefung长沙、济南的电话系统），curtao_phone: 客套呼叫中心（目前有: eefung北京、合天的电话系统）, call_back:回访
 export const HANG_UP_TYPES = [PHONERINGSTATUS.phone, PHONERINGSTATUS.curtao_phone, PHONERINGSTATUS.call_back];

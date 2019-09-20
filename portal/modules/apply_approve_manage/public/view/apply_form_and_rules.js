@@ -28,6 +28,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 let userData = require('PUB_DIR/sources/user-data');
 var uuid = require('uuid/v4');
+import ApplyApproveManageStore from '../store/apply_approve_manage_store';
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
@@ -37,16 +38,20 @@ class ApplyFormAndRules extends React.Component {
             isEdittingApplyName: false,//正在修改申请审批的标题
             updateApplyName: '',//修改后标题的名称
             applyTypeData: applyTypeData,//编辑某个审批的相关数据
+            ...ApplyApproveManageStore.getState()
         };
     }
 
     onStoreChange = () => {
-
+        this.setState(ApplyApproveManageStore.getState());
     };
     componentDiDMount = () => {
         //如果还没有配置过，就只有一个默认的规则
-
+        ApplyApproveManageStore.listen(this.onStoreChange);
     };
+    componentWillUnmount(){
+        ApplyApproveManageStore.unlisten(this.onStoreChange);
+    }
     handleTabChange = (key) => {
         let keyName = key === TAB_KEYS.FORM_CONTENT ? Intl.get('apply.add.form.content', '表单内容') : Intl.get('apply.add.form.regex', '审批规则');
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-tabs-nav-wrap .ant-tabs-nav'), '查看' + keyName);
@@ -175,6 +180,7 @@ class ApplyFormAndRules extends React.Component {
             if (!submitObj.customiz_form){
                 submitObj['customiz_form'] = [];
             }
+            this.setState({editWorkFlowLoading: true});
             applyApproveManageAction.editSelfSettingWorkFlow(submitObj, () => {
                 //userData上的属性也修改
                 var targetItem = this.updateUserData();
