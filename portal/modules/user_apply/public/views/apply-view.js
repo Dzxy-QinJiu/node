@@ -5,7 +5,10 @@ var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
 import UserApplyActions from '../action/user-apply-actions';
 import UserApplyStore from '../store/user-apply-store';
-import ApplyViewDetail from './apply-view-detail';
+import ApplyViewDetailWrap from './apply-view-detail-wrap';
+// import ApplyViewDetail from './apply-view-detail';
+import HistoricalApplyViewDetailStore from '../store/historical-apply-view-detail-store';
+import HistoricalApplyViewDetailAction from '../action/historical-apply-view-detail-actions';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 var classNames = require('classnames');
@@ -19,6 +22,7 @@ var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavE
 const session = storageUtil.session;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 class ApplyTabContent extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -162,27 +166,27 @@ class ApplyTabContent extends React.Component {
     };
 
     renderApplyListError = () => {
-        let noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0 ;
+        let noData = this.state.applyListObj.loadingResult === '' && this.state.applyListObj.list.length === 0;
         let tipMsg = '';
 
         if(this.state.applyListObj.loadingResult === 'error'){
             let retry = (
                 <span>
                     {this.state.applyListObj.errorMsg}，<a href="javascript:void(0)"
-                        onClick={this.retryFetchApplyList}>{Intl.get("common.retry","重试")}</a>
+                        onClick={this.retryFetchApplyList}>{Intl.get('common.retry','重试')}</a>
                 </span>
             );
             return (
                 <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                   <Alert message={retry} type="error" showIcon={true}/>
+                    <Alert message={retry} type="error" showIcon={true}/>
                 </div>);  
         }else if(noData){
-            if(  this.state.searchKeyword !== ''){
+            if( this.state.searchKeyword !== ''){
                 tipMsg = (
                     <span>
-                        {Intl.get("user.apply.no.match.retry","暂无符合查询条件的用户申请")}<span>,</span>
+                        {Intl.get('user.apply.no.match.retry','暂无符合查询条件的用户申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get("common.get.again","重新获取")}
+                            {Intl.get('common.get.again','重新获取')}
                         </a>
                     </span>
                 );
@@ -191,7 +195,7 @@ class ApplyTabContent extends React.Component {
                     <span>
                         {Intl.get('user.apply.no.unread','已无未读回复的申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get("common.get.again","重新获取")}
+                            {Intl.get('common.get.again','重新获取')}
                         </a>
                     </span>
                 );
@@ -200,28 +204,14 @@ class ApplyTabContent extends React.Component {
                     <span>
                         {Intl.get('user.apply.no.apply','还没有需要审批的用户申请')}<span>,</span>
                         <a href="javascript:void(0)" onClick={this.retryFetchApplyList}>
-                            {Intl.get("common.get.again","重新获取")}
+                            {Intl.get('common.get.again','重新获取')}
                         </a>
                     </span>
                 );
             }
-            return  <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
-                        <Alert message={tipMsg} type="info" showIcon={true}/>
-                    </div>;
-        }
-    };
-
-    getApplyStateText = (obj) => {
-        if (obj.isConsumed === 'true') {
-            if (obj.approval_state === '1') {
-                return Intl.get('user.apply.pass', '已通过');
-            } else if (obj.approval_state === '2') {
-                return Intl.get('user.apply.reject', '已驳回');
-            } else if (obj.approval_state === '3') {
-                return Intl.get('user.apply.backout', '已撤销');
-            }
-        } else {
-            return Intl.get('user.apply.false', '待审批');
+            return <div className="app_user_manage_apply_list app_user_manage_apply_list_error">
+                <Alert message={tipMsg} type="info" showIcon={true}/>
+            </div>;
         }
     };
 
@@ -278,7 +268,7 @@ class ApplyTabContent extends React.Component {
                                         <span>{obj.topic || Intl.get('user.apply.id', '账号申请')}</span>
                                         {hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
                                             title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
-                                        <em className={btnClass}>{this.getApplyStateText(obj)}</em>
+                                        <em className={btnClass}>{commonMethodUtil.getApplyStateText(obj)}</em>
                                     </dt>
                                     <dd className="clearfix" title={obj.customer_name}>
                                         <span>{obj.customer_name}</span>
@@ -474,6 +464,26 @@ class ApplyTabContent extends React.Component {
             return false;
         }
     };
+    handleOpenApplyDetail = (applyItem) => {
+        this.setState({
+            showHistoricalItem: applyItem
+        });
+    };
+    hideHistoricalApplyItem = () => {
+        this.setState({
+            showHistoricalItem: {}
+        });
+    };
+    renderHistoricalContent = () => {
+        return <ApplyViewDetailWrap
+            isHomeMyWork={true}
+            detailItem={this.state.showHistoricalItem}
+            applyListType='false'//待审批状态
+            afterApprovedFunc={this.afterFinishApplyWork}
+            ApplyViewDetailStore={HistoricalApplyViewDetailStore}
+            ApplyViewDetailAction={HistoricalApplyViewDetailAction}
+        />;
+    };
 
     render() {
         //列表高度
@@ -549,20 +559,31 @@ class ApplyTabContent extends React.Component {
                         )
                     }
                 </div>
+                {!_.isEmpty(this.state.showHistoricalItem) ? (
+                    <RightPanelModal
+                        className="historical-detail-panel"
+                        isShowMadal={false}
+                        isShowCloseBtn={true}
+                        onClosePanel={this.hideHistoricalApplyItem}
+                        content={this.renderHistoricalContent()}
+                        dataTracename="申请详情"
+                    />
+                ) : null}
                 {noShowApplyDetail ? null : (
-                    <ApplyViewDetail
+                    <ApplyViewDetailWrap
                         applyData={this.state.applyId ? applyDetail : null}
                         detailItem={this.state.selectedDetailItem}
                         isUnreadDetail={this.getIsUnreadDetail()}
                         showNoData={!this.state.lastApplyId && this.state.applyListObj.loadingResult === 'error'}
                         applyListType={this.state.applyListType}
+                        handleOpenApplyDetail={this.handleOpenApplyDetail}
                     />
                 )}
-
             </div>
         );
     }
 }
+
 ApplyTabContent.defaultProps = {
     applyId: '',
 };
