@@ -5,7 +5,10 @@ var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
 import UserApplyActions from '../action/user-apply-actions';
 import UserApplyStore from '../store/user-apply-store';
-import ApplyViewDetail from './apply-view-detail';
+import ApplyViewDetailWrap from './apply-view-detail-wrap';
+// import ApplyViewDetail from './apply-view-detail';
+import HistoricalApplyViewDetailStore from '../store/historical-apply-view-detail-store';
+import HistoricalApplyViewDetailAction from '../action/historical-apply-view-detail-actions';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 var classNames = require('classnames');
@@ -19,6 +22,7 @@ var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavE
 const session = storageUtil.session;
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 class ApplyTabContent extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -470,6 +474,16 @@ class ApplyTabContent extends React.Component {
             showHistoricalItem: {}
         });
     };
+    renderHistoricalContent = () => {
+        return <ApplyViewDetailWrap
+            isHomeMyWork={true}
+            detailItem={this.state.showHistoricalItem}
+            applyListType='false'//待审批状态
+            afterApprovedFunc={this.afterFinishApplyWork}
+            ApplyViewDetailStore={HistoricalApplyViewDetailStore}
+            ApplyViewDetailAction={HistoricalApplyViewDetailAction}
+        />;
+    };
 
     render() {
         //列表高度
@@ -546,19 +560,17 @@ class ApplyTabContent extends React.Component {
                     }
                 </div>
                 {!_.isEmpty(this.state.showHistoricalItem) ? (
-                    <div className="historical-apply-detail">
-                        <span className="iconfont icon-close " onClick={this.hideHistoricalApplyItem}
-                            data-tracename="关闭审批详情面板"></span>
-                        <ApplyViewDetail
-                            isHomeMyWork={true}
-                            detailItem={this.state.showHistoricalItem}
-                            applyListType='false'//待审批状态
-                            afterApprovedFunc={this.afterFinishApplyWork}
-                        />
-                    </div>
+                    <RightPanelModal
+                        className="historical-detail-panel"
+                        isShowMadal={false}
+                        isShowCloseBtn={true}
+                        onClosePanel={this.hideHistoricalApplyItem}
+                        content={this.renderHistoricalContent()}
+                        dataTracename="申请详情"
+                    />
                 ) : null}
                 {noShowApplyDetail ? null : (
-                    <ApplyViewDetail
+                    <ApplyViewDetailWrap
                         applyData={this.state.applyId ? applyDetail : null}
                         detailItem={this.state.selectedDetailItem}
                         isUnreadDetail={this.getIsUnreadDetail()}
@@ -571,6 +583,7 @@ class ApplyTabContent extends React.Component {
         );
     }
 }
+
 ApplyTabContent.defaultProps = {
     applyId: '',
 };

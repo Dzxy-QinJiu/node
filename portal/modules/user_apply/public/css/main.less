@@ -328,7 +328,7 @@
   }
 }
 
-.apply_manage_wrap.user-manage-v2, .my-work-detail-panel {
+.apply_manage_wrap.user-manage-v2, .my-work-detail-panel, .historical-detail-panel {
   @font-color: #999999;
   @bordercolor: #e1e9eb;
   padding: 0;
@@ -1030,6 +1030,19 @@
   }
   .ant-dropdown-menu-item a:hover {
     color: #57c5f7;
+  }
+}
+//申请审批详情宽度设置
+.historical-detail-panel:not(.show-modal) {
+  width: calc(@apply-detail-width + 24px);
+
+  .close-modal-btn{
+    right: @apply-detail-width;
+  }
+}
+.historical-detail-panel{
+  .right-panel-modal-content{
+    width: @apply-detail-width;
   }
 }
 

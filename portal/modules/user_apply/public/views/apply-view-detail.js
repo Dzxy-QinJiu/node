@@ -6,9 +6,10 @@ const Validator = Validation.Validator;
  * 新版审批详情界面
  */
 require('../css/apply-detail.less');
-import ApplyViewDetailStore from '../store/apply-view-detail-store';
+import DefaultApplyViewDetailStore from '../store/apply-view-detail-store';
 import {AntcTable} from 'antc';
-import ApplyViewDetailActions from '../action/apply-view-detail-actions';
+// import ApplyViewDetailActions from '../action/apply-view-detail-actions';
+import DefaultApplyViewDetailActions from '../action/apply-view-detail-actions';
 import UserApplyAction from '../action/user-apply-actions';
 import AppUserUtil from '../util/app-user-util';
 import Spinner from '../../../../components/spinner';
@@ -144,7 +145,8 @@ const ApplyViewDetail = createReactClass({
         isUnreadDetail: PropTypes.bool,
         applyListType: PropTypes.object,
         isHomeMyWork: PropTypes.bool,
-        afterApprovedFunc: PropTypes.func
+        afterApprovedFunc: PropTypes.func,
+        handleOpenApplyDetail: PropTypes.func,
     },
     displayName: 'ApplyViewDetail',
     mixins: [FieldMixin, UserNameTextField],
@@ -160,11 +162,15 @@ const ApplyViewDetail = createReactClass({
             isUnreadDetail: false,//是否有未读回复
             isHomeMyWork: false,//是否是首页我的工作中打开的详情
             afterApprovedFunc: function() {//审批完后的外部处理方法
+            },
+            handleOpenApplyDetail: function() {
+                
             }
         };
     },
 
     getInitialState() {
+        var ApplyViewDetailStore = this.getApplyViewDetailStore();
         return {
             appConfig: appConfig,
             isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
@@ -183,11 +189,28 @@ const ApplyViewDetail = createReactClass({
     },
 
     onStoreChange() {
+        var ApplyViewDetailStore = this.getApplyViewDetailStore();
         this.setState(ApplyViewDetailStore.getState());
+    },
+    getApplyViewDetailStore(){
+        if(!_.isEmpty(this.props.ApplyViewDetailStore)){
+            return this.props.ApplyViewDetailStore;
+        }else{
+            return DefaultApplyViewDetailStore;
+        }
+
+    },
+    getApplyViewDetailAction(){
+        if(!_.isEmpty(this.props.ApplyViewDetailAction)){
+            return this.props.ApplyViewDetailAction;
+        }else{
+            return DefaultApplyViewDetailActions;
+        }
     },
 
     getApplyDetail(detailItem, applyData) {
         setTimeout(() => {
+            var ApplyViewDetailActions = this.getApplyViewDetailAction();
             ApplyViewDetailActions.showDetailLoading(detailItem);
             //1代表已通过，2代表已驳回，3 代表已撤销
             var approval_state = '';
@@ -219,6 +242,8 @@ const ApplyViewDetail = createReactClass({
         });
     },
     componentDidMount() {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
+        var ApplyViewDetailStore = this.getApplyViewDetailStore();
         ApplyViewDetailStore.listen(this.onStoreChange);
         var applyId = this.props.detailItem.id;
         if (applyId) {
@@ -230,21 +255,28 @@ const ApplyViewDetail = createReactClass({
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+
         this.getIntegrateConfig();
         this.getAllUserList();
         this.getNotSalesRoleUserList();
     },
 
     componentWillUnmount() {
+        var ApplyViewDetailStore = this.getApplyViewDetailStore();
+        ApplyViewDetailStore.unlisten(this.onStoreChange);
         emitter.removeListener('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
     },
 
     closeRightPanel() {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.closeRightPanel();
     },
     getHistoryApplyListByCustomerId(apply){
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         if(!_.isEmpty(apply)){
             ApplyViewDetailActions.getHistoryApplyListsByCustomerId(apply);
         }else{
@@ -377,6 +409,7 @@ const ApplyViewDetail = createReactClass({
     refreshReplyList(e) {
         Trace.traceEvent(e, '点击了重新获取');
         var applyId = _.get(this, 'props.detailItem.id');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         if (applyId) {
             ApplyViewDetailActions.getReplyList(applyId);
             //获取该审批所在节点的位置
@@ -665,6 +698,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     toggleApplyExpanded(flag, user_id) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.toggleApplyExpanded({flag, user_id});
     },
     getIntegrateConfig(){
@@ -713,6 +747,7 @@ const ApplyViewDetail = createReactClass({
     //将用户名设置为编辑状态
     editUserName(e) {
         Trace.traceEvent(e, '点击修改用户名');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setUserNameEdit(true);
         setTimeout(() => {
             this.refs.validation.validate(function() {
@@ -721,6 +756,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     renderEditUserName() {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setUserNameEdit(true);
     },
 
@@ -732,6 +768,7 @@ const ApplyViewDetail = createReactClass({
             if (!valid) {
                 return;
             }
+            var ApplyViewDetailActions = this.getApplyViewDetailAction();
             ApplyViewDetailActions.saveUserName(formData.user_name);
             ApplyViewDetailActions.setUserNameEdit(false);
         });
@@ -739,6 +776,7 @@ const ApplyViewDetail = createReactClass({
 
     userNameCancel(e) {
         Trace.traceEvent(e, '取消修改用户名');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.cancelUserName();
         ApplyViewDetailActions.setUserNameEdit(false);
     },
@@ -888,6 +926,7 @@ const ApplyViewDetail = createReactClass({
     //将昵称设置为编辑状态
     editNickName(e) {
         Trace.traceEvent(e, '点击修改昵称');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setNickNameEdit(true);
     },
 
@@ -895,6 +934,7 @@ const ApplyViewDetail = createReactClass({
         Trace.traceEvent(e, '保存修改昵称');
         const formData = this.state.formData;
         if (formData.nick_name !== '') {
+            var ApplyViewDetailActions = this.getApplyViewDetailAction();
             ApplyViewDetailActions.saveNickName(formData.nick_name);
             ApplyViewDetailActions.setNickNameEdit(false);
         }
@@ -902,6 +942,7 @@ const ApplyViewDetail = createReactClass({
 
     nickNameCancel(e) {
         Trace.traceEvent(e, '取消修改昵称');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.cancelNickName();
         ApplyViewDetailActions.setNickNameEdit(false);
     },
@@ -1053,6 +1094,7 @@ const ApplyViewDetail = createReactClass({
 
     // 应用app的配置面板
     showAppConfigPanel(app, userType) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.showAppConfigPanel(app);
         appConfig.user_type = (userType === '1' ? Intl.get('common.trial.official', '正式用户') : Intl.get('common.trial.user', '试用用户'));
         appConfig.config_name = (userType === '1' ? Intl.get('common.trial.official', '正式用户') : Intl.get('common.trial.user', '试用用户'));
@@ -1606,28 +1648,33 @@ const ApplyViewDetail = createReactClass({
 
     //显示用户详情
     showUserDetail: function(userId) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.showUserDetail(userId);
     },
 
     //延期时间数字修改
     delayTimeNumberModify: function(value) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.delayTimeNumberModify(value);
     },
 
     //延期时间单位改变
     delayTimeUnitModify: function(unit) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.delayTimeUnitModify(unit);
     },
 
     //将延迟时间设置为修改状态
     setDelayTimeModify(e) {
         Trace.traceEvent(e, '点击修改延期时间');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setDelayTimeModify(true);
     },
 
     //保存修改的延迟时间
     saveModifyDelayTime(e) {
         Trace.traceEvent(e, '保存修改延期时间');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         if (this.state.formData.delayTimeUnit === SELECT_CUSTOM_TIME_TYPE) {
             ApplyViewDetailActions.saveModifyDelayTime(this.state.formData.end_date);
         } else {
@@ -1638,6 +1685,7 @@ const ApplyViewDetail = createReactClass({
 
     cancelModifyDelayTime(e) {
         Trace.traceEvent(e, '取消修改延期时间');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.cancelModifyDelayTime();
     },
 
@@ -1653,6 +1701,7 @@ const ApplyViewDetail = createReactClass({
     // 将延期时间设置为截止时间（具体到xx年xx月xx日）
     setDelayDeadlineTime(value) {
         let timestamp = value && value.valueOf() || '';
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setDelayDeadlineTime(timestamp);
     },
 
@@ -1715,6 +1764,7 @@ const ApplyViewDetail = createReactClass({
 
     //显示客户详情
     showCustomerDetail: function(customerId) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.showCustomerDetail(customerId);
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
@@ -1946,6 +1996,7 @@ const ApplyViewDetail = createReactClass({
         this.setField('comment', event);
         var val = _.trim(event.target.value);
         if (val) {
+            var ApplyViewDetailActions = this.getApplyViewDetailAction();
             ApplyViewDetailActions.hideReplyCommentEmptyError();
         }
     },
@@ -1953,6 +2004,7 @@ const ApplyViewDetail = createReactClass({
     // 隐藏撤销申请的模态框
     hideBackoutModal: function() {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-cancel'), '点击取消按钮');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setRolesNotSettingModalDialog({
             show: false,
             appNames: []
@@ -1971,6 +2023,7 @@ const ApplyViewDetail = createReactClass({
             remark: _.trim(this.state.formData.comment),
             notice_url: getApplyDetailUrl(this.state.detailInfoObj.info)
         };
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.saleBackoutApply(backoutObj);
     },
     renderCancelApplyApprove() {
@@ -2128,6 +2181,7 @@ const ApplyViewDetail = createReactClass({
         //转出操作后，把之前的待审批人都去掉，这条申请只留转出的那个人审批
         submitObj.user_ids_delete = deleteUserIds;
         var memberId = userData.getUserData().user_id;
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.transferNextCandidate(submitObj, (flag) => {
             //关闭下拉框
             if (flag) {
@@ -2166,12 +2220,15 @@ const ApplyViewDetail = createReactClass({
         });
     },
     onSelectApplyNextCandidate(updateUser){
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setNextCandidateIds(updateUser);
     },
     setSelectContent(nextCandidateName){
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setNextCandidateName(nextCandidateName);
     },
     clearNextCandidateIds(){
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.setNextCandidateIds('');
         ApplyViewDetailActions.setNextCandidateName('');
     },
@@ -2312,6 +2369,7 @@ const ApplyViewDetail = createReactClass({
     },
 
     submitApprovalForm(approval) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         const state = this.state;
         if (approval === '1') {
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.btn-primary-sure'), '点击通过按钮');
@@ -2491,6 +2549,7 @@ const ApplyViewDetail = createReactClass({
             showBackoutConfirmType: ''
         });
         this.getApplyDetail(this.props.detailItem);
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         //设置这条审批不再展示通过和驳回的按钮
         ApplyViewDetailActions.hideApprovalBtns();
     },
@@ -2498,6 +2557,7 @@ const ApplyViewDetail = createReactClass({
     //继续提交
     continueSubmit(e) {
         Trace.traceEvent(e, '点击了继续');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.rolesNotSettingContinueSubmit();
         setTimeout(() => {
             this.submitApprovalForm(this.state.showBackoutConfirmType);
@@ -2510,21 +2570,25 @@ const ApplyViewDetail = createReactClass({
         this.setState({
             showBackoutConfirmType: ''
         });
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.cancelSendApproval();
     },
 
     // 申请应用的配置界面
     showAppConfigRightPanle() {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.showAppConfigRightPanle();
     },
 
     // 应用配置取消保存
     handleCancel() {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.handleCancel();
     },
 
     // 应用配置保存成功时
     handleSaveAppConfig(appId) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.handleSaveAppConfig();
         this.getApplyDetail(this.props.detailItem);
         //this.getAppConfigExtra( appId ,appConfig.user_type);
@@ -2532,6 +2596,7 @@ const ApplyViewDetail = createReactClass({
 
     // 假设没有默认配置，默认配置成功
     getAppConfigExtra(client_id, user_type) {
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.getApplyAppDefaultInfo({client_id, user_type});
     },
 
@@ -2594,7 +2659,7 @@ const ApplyViewDetail = createReactClass({
             'app_user_manage_apply_detail_wrap': true
         });
         let customerOfCurUser = this.state.customerOfCurUser;
-        let detailWrapWidth = $('.user_apply_page').width() - APPLY_LIST_WIDTH;
+        let detailWrapWidth = this.props.isHomeMyWork ? '100%' : $('.user_apply_page').width() - APPLY_LIST_WIDTH;
         let divHeight = $(window).height();
         //不是首页我的工作中打开的申请详情（申请列表中），高度需要-头部导航的高度
         if (!this.props.isHomeMyWork) {

@@ -15,7 +15,9 @@ exports.EMITTER_CONSTANTS = {
     //回复列表滚动到最后
     REPLY_LIST_SCROLL_TO_BOTTOM: 'replyListScrollToBottom',
     //获取申请详情成功后
-    GET_APPLY_DETAIL_CUSTOMERID: 'getApplyDetailCustomerId'
+    GET_APPLY_DETAIL_CUSTOMERID: 'getApplyDetailCustomerId',
+    GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID: 'getHistoricalApplyDetailCustomerId'
+
 
 };
 

@@ -131,7 +131,7 @@ class ApplyDetailRemarks extends React.Component {
                     })}
                 </ul>);
         } else {
-            return Intl.get('apply.approve.no.comment', '暂无回复内容！');
+            return Intl.get('user.apply.approve.no.comment', '暂无申请历史！');
         }
     }
 

@@ -1311,6 +1311,7 @@ var zh_CN = {
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
     'user.apply.no.new.refresh.tip': '无新申请',
     'user.apply.last.follow.date': '最新跟进日期',
+    'user.apply.approve.no.comment': '暂无申请历史！',
     // 用户审批end
 
     // 在线用户start
@@ -3565,7 +3566,7 @@ var zh_CN = {
     'user.apply.applicate.time': '申请于',
     'user.apply.click.reply': '查看回复',
     'user.apply.hide.reply': '收起回复',
-    'user.apply.no.rely.list': '无回复'
+    'user.apply.no.rely.list': '无回复',
 
 };
 export default zh_CN;
