@@ -62,15 +62,15 @@ class SideBar extends React.Component {
         return (
             <div className='side-bar-content'>
                 <div className='side-bar'>
-                    {
-                        this.state.showChat ? (
-                            <Button className='apply-btn'>
-                                <a href="https://www.curtao.com/apply" target="_blank" rel="noopener noreferrer">
-                                    {Intl.get('login.apply.trial', '申请试用')}
-                                </a>
-                            </Button>
-                        ) : null
-                    }
+                    {/*{*/}
+                    {/*this.state.showChat ? (*/}
+                    {/*<Button className='apply-btn'>*/}
+                    {/*<a href="https://www.curtao.com/apply" target="_blank" rel="noopener noreferrer">*/}
+                    {/*{Intl.get('login.apply.trial', '申请试用')}*/}
+                    {/*</a>*/}
+                    {/*</Button>*/}
+                    {/*) : null*/}
+                    {/*}*/}
 
                     {this.state.showChat ? null : (
                         <React.Fragment>
@@ -88,10 +88,13 @@ class SideBar extends React.Component {
                         </React.Fragment>
                     )}
                     {this.state.showChat ? (
+                        null
+                        /***
                         <div className={onlyService}>
                             <i className='iconfont icon-apply-message-tip' onClick={this.chatClick}></i>
                             <i className='single-bar-label'>{Intl.get('customer.service', '客服')}</i>
-                        </div>) : (<div className='single-bar-box is-placeholder'/>)}
+                        </div> ***/
+                    ) : (<div className='single-bar-box is-placeholder'/>)}
                 </div>
                 <img className={weixinClassName} src={weixinImgUrl}
                     style={{'margin-bottom': weixinBottom + 'px'}}></img>
