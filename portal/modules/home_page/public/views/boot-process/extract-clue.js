@@ -206,7 +206,7 @@ class ExtractClues extends React.Component {
             let saleLoginData = userData.getUserData();
             let submitObj = {
                 'user_id': saleLoginData.user_id,
-                'user_name': saleLoginData.user_name,
+                'nick_name': saleLoginData.nick_name,
                 'sales_team_id': saleLoginData.team_id,
                 'sales_team': saleLoginData.team_name,
             };
