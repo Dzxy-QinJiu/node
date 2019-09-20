@@ -91,7 +91,7 @@ var LAYOUT_CONSTANTS = {
 import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
 import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
-import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class ClueCustomer extends React.Component {
     state = {
@@ -126,6 +126,7 @@ class ClueCustomer extends React.Component {
         showRecommendCustomerCondition: false,
         isReleasingClue: false,//是否正在释放线索
         selectedClue: [],//选中的线索
+        isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -148,6 +149,7 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.on(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
+        notificationEmitter.on(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
             this.showAddForm();
@@ -281,6 +283,35 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.removeListener(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
+        notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
+    }
+
+    //有新线索时线索面板添加刷新提示
+    showRefreshPrompt = (data) => {
+        if(!_.isEmpty(data) && _.isObject(data)) {
+            //如果当前无线索，直接展示刷新提示
+            if(_.isEmpty(this.state.curClueLists)) {
+                this.setState({
+                    isShowRefreshPrompt: true
+                });
+            } else {
+                let clue_list = _.get(data, 'clue_list', []);
+                _.map(clue_list, clue => {
+                    //判断是否推送的线索为当前tab下的线索
+                    let status = clue.status;
+                    //线索类型
+                    let typeFilter = this.getFilterStatus();
+                    if(_.isEqual(status, typeFilter.status)) {
+                        //如果当前已经展示了刷新提示，不做操作
+                        if(!_.get(this.state, 'isShowRefreshPrompt')) {
+                            this.setState({
+                                isShowRefreshPrompt: true
+                            });
+                        }
+                    }
+                });
+            }
+        }
     }
 
     //展示右侧面板
@@ -650,6 +681,12 @@ class ClueCustomer extends React.Component {
     };
     //获取线索列表
     getClueList = () => {
+        //如果有刷新提示，点击刷新提示获取线索列表的，将刷新提示清除
+        if(_.get(this.state, 'isShowRefreshPrompt')) {
+            this.setState({
+                isShowRefreshPrompt: false
+            });
+        }
         var filterStoreData = clueFilterStore.getState();
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
@@ -1205,7 +1242,8 @@ class ClueCustomer extends React.Component {
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
             'firefox-padding': this.isFireFoxBrowser(),
-            'status-type-hide': isFirstLoading
+            'status-type-hide': isFirstLoading,
+            'has-refresh-tip': _.get(this.state, 'isShowRefreshPrompt')
         });
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
@@ -2481,6 +2519,32 @@ class ClueCustomer extends React.Component {
         });
     }
 
+    //渲染有新线索，刷新页面提示
+    getClueRefreshPrompt = () => {
+        return (
+            <div className="new-clue-prompt">
+                <span className="iconfont icon-warn-icon"></span>
+                <div className="prompt-sentence">
+                    <ReactIntl.FormattedMessage
+                        id="clue.customer.refresh.tip"
+                        defaultMessage={'有新线索，{refreshPage}查看'}
+                        values={{
+                            'refreshPage': <a
+                                onClick={this.getClueList}>{Intl.get('clue.customer.refresh.page', '刷新页面')}</a>
+                        }}
+                    />
+                </div>
+                <span className="iconfont icon-close" onClick={this.closeRefreshPrompt}></span>
+            </div>
+        );
+    }
+    //关闭刷新界面
+    closeRefreshPrompt = () => {
+        this.setState({
+            isShowRefreshPrompt: false
+        });
+    }
+
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2537,6 +2601,7 @@ class ClueCustomer extends React.Component {
                             />
                         </div>
                         <div className={contentClassName}>
+                            {_.get(this.state, 'isShowRefreshPrompt') ? this.getClueRefreshPrompt() : null}
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>

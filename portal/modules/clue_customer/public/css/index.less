@@ -3,6 +3,8 @@
 //线索标签颜色
 @white_color: #ffffff;
 @filter-width: 300px;
+//x颜色
+@x_color: #cdcdcd;
 .clue_customer_content {
   //线索顶部筛选区域
   .date-picker-wrap {
@@ -105,12 +107,43 @@
   //线索列表
   .clue-content-container {
     position: absolute;
-    top: 73px;
+    top: 63px;
     right: 0;
     left: 70px;
     bottom: 0;
     padding-left: 24px;
     padding-right:12px;
+    //线索刷新列表提示
+    .new-clue-prompt {
+      position: relative;
+      display: flex;
+      margin-top: -10px;
+      background: @import_bg_color;
+      height: 48px;
+      justify-content: center;
+      .icon-close {
+        position: absolute;
+        right: 12px;
+        font-size: 14px;
+        align-self: center;
+        cursor: pointer;
+        color: @x_color;
+        &:hover {
+          color: darken(@x_color, 5%);
+        }
+      }
+      .icon-warn-icon {
+        color: @reply-message-tip-color;
+        align-self: center;
+      }
+      .prompt-sentence {
+        display: inline-block;
+        font-size: 14px;
+        margin-left: 8px;
+        align-self: center;
+        transform: translateY(0.5px);
+      }
+    }
     //加载中，加载完毕和出错的状态
     .load-content, .err-content {
       padding-top: 200px;
@@ -178,6 +211,7 @@
     }
     .content-container {
       padding-left: @filter-width + 27px;
+      padding-top: 10px;
       &.content-full {
         padding-left: 0;
       }
@@ -190,7 +224,7 @@
         font-size: 14px;
         color:#999;
         left: 70px;
-        top: 10px;
+        top: 20px;
         z-index: 10;
         &.firefox-padding{
           left: 120px;
@@ -200,6 +234,9 @@
         }
         &.status-type-hide{
           visibility: hidden;
+        }
+        &.has-refresh-tip{
+          top: 58px;
         }
         .clue-status-tab{
           display: inline-block;
