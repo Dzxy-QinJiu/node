@@ -3457,6 +3457,7 @@ var en_US = {
     'clue.diff.type.tab.title.notrace': 'No effective follow-up (phone not open or not written follow-up record)',//未做有效跟进（电话未打通或未写跟进记录）
     'clue.diff.type.tab.title.hastrace': 'Has been effectively followed up (has been opened or has written follow-up records)',//已做有效跟进（已打通或已写跟进记录）
     'clue.diff.type.tab.title.hastransfer': 'Converted to customer',//已转化为客户
-    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid'//标记为无效
+    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid',//标记为无效
+    'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
 };
 export default en_US;

@@ -3569,6 +3569,7 @@ var zh_CN = {
     'clue.diff.type.tab.title.notrace': '未做有效跟进（电话未打通或未写跟进记录）',
     'clue.diff.type.tab.title.hastrace': '已做有效跟进（已打通或已写跟进记录）',
     'clue.diff.type.tab.title.hastransfer': '已转化为客户',
-    'clue.diff.type.tab.title.mark.invalid': '标记为无效'
+    'clue.diff.type.tab.title.mark.invalid': '标记为无效',
+    'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
 };
 export default zh_CN;
