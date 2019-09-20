@@ -3290,8 +3290,8 @@ var en_US = {
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From {source}',//来自“{source}”
     'clue.item.acceess.channel': 'Detail: {content}',//详情：“{content}”
-    'clue.show.no.show.tip': 'There has {num} notices not showing',//还有{num}个提醒未展示
-    'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
+    'clue.show.no.show.tip': 'There has {num} new clues not showing',//还有{num}个新线索未展示
+    'clue.close.all.noty': 'Close all',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
     /*自定义审批 start*/
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
@@ -3460,7 +3460,7 @@ var en_US = {
     'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization today has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
-    'clue.customer.noty.all.list': 'Click to see all clues?',//查看所有线索？
+    'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
     'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
     'common.collection.of.gross.profit.margin.score': 'Collection of gross profit margin score',//回款毛利率分数
