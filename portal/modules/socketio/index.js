@@ -30,6 +30,8 @@ const applyUnreadReplyChannel = 'com.antfact.ketao.apply.comment';
 const clueUnhandledNum = 'com.antfact.ketao.clue.notice';
 //出差，销售机会和请假申请
 const applyApproveChannel = 'com.antfact.curtao.workflow.notice';
+//客户操作的推送通道
+const crmOperatorChannel = 'com.curtao.customer.operator.message.notice.channel';
 //批量操作处理文件
 var userBatch = require('./batch');
 var _ = require('lodash');
@@ -134,6 +136,17 @@ function scheduleAlertListener(data) {
     let scheduleAlertObj = data || {};
     //将数据推送到浏览器
     emitMsgBySocket(scheduleAlertObj && scheduleAlertObj.member_id, 'scheduleAlertMsg', pushDto.scheduleMsgToFrontend(scheduleAlertObj));
+}
+
+/*
+ *
+ * 操作客户提醒的消息监听器*/
+function crmOperatorListener(data) {
+    // pushLogger.debug('后端推送的操作客户的数据：' + JSON.stringify(data));
+    // 将查询结果返给浏览器
+    let crmOperatorAlertObj = JSON.parse(data) || {};
+    //将数据推送到浏览器
+    emitMsgBySocket(crmOperatorAlertObj && crmOperatorAlertObj.member_id, 'crm_operator_alert_msg', pushDto.crmOperatorMsgToFrontend(crmOperatorAlertObj));
 }
 
 /**
@@ -259,6 +272,8 @@ function createBackendClient() {
     client.on(clueUnhandledNum, clueUnhandledNumListener);
     //创建申请审批数量变化通道
     client.on(applyApproveChannel, applyApproveNumListener);
+    //创建客户操作提醒的通道
+    client.on(crmOperatorChannel, crmOperatorListener);
 
     //监听 disconnect
     client.on('disconnect', function() {
