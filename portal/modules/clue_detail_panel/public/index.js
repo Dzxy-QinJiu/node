@@ -139,7 +139,7 @@ class ClueDetailPanel extends React.Component {
         //如果切换了线索，那么重置状态
         let nextId = _.get(nextProps, 'paramObj.clue_params.currentId', '');
         let currentId = _.get(this.state, 'paramObj.clue_params.currentId');
-        if(!_.isEqual(nextId, currentId)) {
+        if(!_.isEqual(nextId, currentId) && !_.isEmpty(nextProps.paramObj.clue_params)) {
             paramObj.call_params = null;
             phoneAlertAction.setInitialState();
             this.setState({
