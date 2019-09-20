@@ -1779,7 +1779,6 @@ class Crm extends React.Component {
                     return this.getContactList(text, record, index);
                 }
             },
-
             {
                 title: Intl.get('user.apply.detail.order', '订单'),
                 width: column_width,
@@ -1873,6 +1872,10 @@ class Crm extends React.Component {
                 }
             }
         ];
+        //csm.curtao.com域名下不展示订单
+        if (Oplate.isCurtao === 'true') {
+            columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
+        }
         if(!hasPrivilege('CRM_CUSTOMER_SCORE_RECORD')){
             columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
         }

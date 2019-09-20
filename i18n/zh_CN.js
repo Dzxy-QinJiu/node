@@ -8,6 +8,7 @@ var zh_CN = {
     'service.not.available': '对不起，服务暂时不可用,请稍后重试。',
     'weixin.mini.program': '小程序',
     'customer.service': '客服',
+    'login.apply.trial': '申请试用',
     //菜单
     'menu.crm': '客户管理',
     'menu.call': '通话记录',
@@ -269,6 +270,7 @@ var zh_CN = {
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'common.create': '创建',
     'common.stage.describe': '阶段描述',
+    'common.name.rule.regex': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间',
 
     //公共部分--end
     'login.login': '登录',
@@ -879,6 +881,9 @@ var zh_CN = {
     'organization.save.delete.group.failed': '删除组织失败',
     'organization.get.add.organization.member.list.failed': '获取可加入组织的成员列表失败',
     'organization.no.realms': '还没有安全域诶..',
+    'organization.name.existed': '组织名称已存在!',
+    'organization.name.is.unique': '组织名称唯一性校验出错！',
+    'organization.tree.name.placeholder': '请输入{name}名称',
     //组织管理end
 
     // 后台管理-产品start
@@ -1566,6 +1571,7 @@ var zh_CN = {
     'crm.sales.customerStage': '客户阶段变更统计',
     'crm.sales.newTrailCustomer': '新开客户数统计',
     'crm.repeat.phone': '电话重复',
+    'crm.repeat.phone.user': '该电话已被客户"{userName}"使用',
     'crm.repeat.phone.unhandle': '您还有未处理的重复电话：',
     'crm.order.stage': '订单阶段',
     'crm.basic.detail.show': '展开详情',
@@ -3224,6 +3230,7 @@ var zh_CN = {
     'business.leave.time.range': '出差时长',
     'clue.batch.select.clues': '已选择{num}个线索',
     'clue.batch.assign.sales': '批量分配',
+    'clue.batch.assign.sales.pending': '批量分配进行中，请稍后再试!',
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
     'clue.batch.change.trace.man': '变更跟进人',
     'crm.user.use.default.contact': '使用默认联系人申请',

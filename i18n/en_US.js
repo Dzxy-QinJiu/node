@@ -9,6 +9,7 @@ var en_US = {
     'service.not.available': 'Sorry, service is temporarily not available, please try again later...',
     'weixin.mini.program': 'Mini program',
     'customer.service': 'Customer service',
+    'login.apply.trial': '', // 申请试用
     //菜单
     'menu.crm': 'Customers',//客户管理
     'menu.call': 'Call Records',//通话记录
@@ -263,6 +264,7 @@ var en_US = {
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
     'common.create': 'Create', // 创建
     'common.stage.describe': 'the description of stage', // 阶段描述
+    'common.name.rule.regex': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and {length}', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -875,6 +877,9 @@ var en_US = {
     'organization.save.delete.group.failed': 'Delete organization failed',//删除组织失败
     'organization.get.add.organization.member.list.failed': 'Failed to get member lists that who can join  the organization',//获取可加入组织的成员列表失败
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
+    'organization.name.existed': 'The name of organization was existed', // 组织名称已存在!
+    'organization.name.is.unique': 'The name of organization already exists', // 组织名称唯一性校验出错！
+    'organization.tree.name.placeholder': 'Please enter the name of {name}', // 请输入{name}名称
     //组织管理end
 
     // 后台管理- 产品start
@@ -1549,6 +1554,7 @@ var en_US = {
     'crm.sales.customerStage': 'customer stage statistic',//'客户阶段变更统计',
     'crm.sales.newTrailCustomer': 'new customer statistic',//'新开试用、签约客户数统计',
     'crm.repeat.phone': 'Phone repeating',//电话重复
+    'crm.repeat.phone.user': 'The phone has been used by customer {userName}',//该电话已被客户"{userName}"使用
     'crm.repeat.phone.unhandle': 'You have an unprocessed repeat phone: ',//您还有未处理的重复电话：
     'crm.order.stage': 'Order stage',//订单阶段
     'crm.basic.detail.show': 'Show detail',//展开详情
@@ -3196,6 +3202,7 @@ var en_US = {
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
+    'clue.batch.assign.sales.pending': 'Batch Assignment is in progress. please try it later!',//批量分配进行中，请稍后再试!
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请

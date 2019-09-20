@@ -231,13 +231,13 @@ class SalesTeamPage extends React.Component {
 
     // 渲染成员列表
     renderMemberList = (containerHeight, salesTeamMemberWidth) => {
-        let organizationName = _.get(getOrganization(), 'name', '');
-        let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
+        let organizationId = _.get(getOrganization(), 'id', '');
+        let groupId = _.get(this.state.curShowTeamMemberObj, 'groupId');
         // 职务和组织上的成员列表，使用是MemberManage组件，团队的成员列表，使用的是MemberList组件
         // 由于使用了两个组件，所以需要判断之前展示的是否是团队的成员列表数据
-        let isBeforeShowTeamList = groupName !== organizationName; // true 说明是切换了， false 没有切换
+        let isBeforeShowTeamList = groupId !== organizationId; // true 说明是切换了， false 没有切换
         if (this.state.activeKey === '1') { // tab为部门时的成员列表
-            if (groupName === organizationName) { // 组织
+            if (groupId === organizationId) { // 组织
                 return (
                     <div
                         className='member-zone'

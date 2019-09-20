@@ -4,6 +4,9 @@ var ShareObj = require('../util/app-id-share-util');
 function UserLoginAnalysisStore(){
     this.userOwnAppArray = [];
     this.selectedLogAppId = '';
+    this.userIndicator = [];
+    this.userEngagementScore = [];
+    this.userBasicScore = [];
     this.loginInfoInitialState();
     //绑定action
     this.bindActions(UserLoginAnalysisAction);
@@ -42,6 +45,7 @@ UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
     
     //存放不同应用下数据
     this.appUserDataMap = {};
+
 };
 //恢复默认状态
 UserLoginAnalysisStore.prototype.resetState = function() {
@@ -72,6 +76,15 @@ UserLoginAnalysisStore.prototype.getSingleUserAppList = function({appId,appList,
 UserLoginAnalysisStore.prototype.setSelectedAppId = function(appId){
     this.selectedLogAppId = appId;
     ShareObj.share_differ_user_keep_app_id = this.selectedLogAppId;
+};
+UserLoginAnalysisStore.prototype.getUserScoreIndicator = function(result){
+    this.userIndicator = _.get(result,'list',[]);
+};
+UserLoginAnalysisStore.prototype.getUserEngagementRule = function(result){
+    this.userEngagementScore = _.get(result,'list',[]);
+};
+UserLoginAnalysisStore.prototype.getUserScoreLists = function(result){
+    this.userBasicScore = _.get(result,'list',[]);
 };
  
 // 用户登录信息（时长、次数、首次和最后一次登录时间）

@@ -229,7 +229,11 @@ class AddLeaveApply extends React.Component {
                                                 );
 
                                             }else{
-                                                return <ApplyComponent {...propertyObj} form={this.props.form}/>;
+                                                if(target.component_type === ALL_COMPONENTS.TIMEPERIOD){
+                                                    return <ApplyComponent {...propertyObj} form={this.props.form} isBeforeTodayAble={false}/>;
+                                                }else{
+                                                    return <ApplyComponent {...propertyObj} form={this.props.form}/>;
+                                                }
                                             }
 
                                         }
