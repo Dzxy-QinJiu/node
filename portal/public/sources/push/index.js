@@ -473,9 +473,9 @@ function crmOperatorAlertListener(data) {
     if(_.isObject(data)) {
         switch (_.get(data, 'type')) {
             //释放客户后的提醒消息
-            case 'release_notice':
-            case 'batch_release_notice':
-            case 'need_extract':// 给联合跟进人用的，将来有可能要单独处理，比如提取操作
+            case 'release_notice'://单个释放时，通知客户负责人以及所属领导
+            case 'batch_release_notice'://批量释放时，通知客户负责人以及所属领导
+            case 'need_extract':// 释放客户时给联合跟进人用的，因为不能分辨单个还是批量释放，所以用这一个类型
                 crmReleaseListener(data);
                 break;
             default:
