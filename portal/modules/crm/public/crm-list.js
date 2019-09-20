@@ -1691,6 +1691,36 @@ class Crm extends React.Component {
                 <span>{Intl.get('call.record.contacts', '联系人')}</span>
             </span>);
     }
+    // 去客户池查看是否有该客户
+    handleClickCustomerPool() {
+        this.props.showCustomerPool({name: _.get(this.state.condition, 'name', '')});
+    }
+
+    renderNotFoundCustomer() {
+        //搜索客户名称时，未查到客户，以及没有选中客户的情况下，才显示是否去客户池中查询
+        const isShowCustomerpoolTip = _.get(this.state.condition, 'name', '')
+            && !_.get(this.state.curPageCustomers, 'length', 0)
+            && !this.state.selectedCustomer.length;
+        if(isShowCustomerpoolTip){
+            return (
+                <div>
+                    <ReactIntl.FormattedMessage
+                        id="crm.search.customer.name.no.found.tip"
+                        defaultMessage={'没有符合条件的客户，您可以去{customerpool}查看是否有该客户'}
+                        values={{
+                            'customerpool': <a
+                                style={{textDecoration: 'underline'}}
+                                onClick={this.handleClickCustomerPool.bind(this)}>
+                                {Intl.get('crm.customer.pool', '客户池')}</a>
+                        }}
+                    />
+                </div>
+            );
+        }else {
+            return Intl.get('common.no.filter.crm', '没有符合条件的客户');
+        }
+    }
+
     render() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
@@ -1995,7 +2025,7 @@ class Crm extends React.Component {
                                 renderAddDataContent={this.renderAddDataContent}
                                 renderImportDataContent={this.renderImportDataContent}
                                 showAddBtn={this.hasNoFilterCondition() && hasPrivilege('CUSTOMER_ADD')}
-                                noDataTip={this.hasNoFilterCondition() ? Intl.get('contract.60', '暂无客户') : Intl.get('common.no.filter.crm', '没有符合条件的客户')}
+                                noDataTip={this.hasNoFilterCondition() ? Intl.get('contract.60', '暂无客户') : this.renderNotFoundCustomer()}
                             />}
                         </div>
 

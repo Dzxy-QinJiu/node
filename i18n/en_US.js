@@ -3445,6 +3445,7 @@ var en_US = {
     'user.score.last.month.days': 'Online rate in the past month*50',//近一个月在线天数率*50
     'user.score.online.day.score': 'Active days score during the specified time',//指定时间内活跃天数分数
     'user.score.online.time.score': 'Online time score within a specified time',//指定时间内在线时长分数
-    'user.score.engagement.score': 'User engagement (operation) score within the specified time'//指定时间内用户参与度（操作）分数
+    'user.score.engagement.score': 'User engagement (operation) score within the specified time',//指定时间内用户参与度（操作）分数
+    'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
 };
 export default en_US;

@@ -3557,6 +3557,7 @@ var zh_CN = {
     'user.score.last.month.days': '近一个月在线天数率*50',
     'user.score.online.day.score': '指定时间内活跃天数分数',
     'user.score.online.time.score': '指定时间内在线时长分数',
-    'user.score.engagement.score': '指定时间内用户参与度（操作）分数'
+    'user.score.engagement.score': '指定时间内用户参与度（操作）分数',
+    'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
 };
 export default zh_CN;
