@@ -134,43 +134,56 @@ class ClueDetailPanel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        //获取线索详情
-        //只把线索详情赋值
-        let paramObj = this.state.paramObj;
+        let paramObj = _.cloneDeep(this.state.paramObj);
         paramObj.clue_params = _.cloneDeep(_.get(nextProps, 'paramObj.clue_params', null));
-        if (nextProps.paramObj.call_params) {
-            var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
-            if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
-                //最新的通话状态
-                if (phonemsgObj.callid === phoneRecordObj.callid) {
-                    phoneRecordObj.received_time = phonemsgObj.recevied_time;
-                } else {
-                    phoneRecordObj.received_time = phonemsgObj.recevied_time;
-                    phoneRecordObj.callid = phonemsgObj.callid;
-                    //如果是从线索详情中打的电话，则不需要再获取线索详情
-                    if (!this.isClueDetailCall(nextProps.paramObj)) {
-                        //根据线索的id获取线索的详情
-                        phoneAlertAction.setInitialClueArr();
-                        this.getClueInfoByClueId(phonemsgObj);
-                    }
-                }
-                //页面上如果存在上次打电话的模态框，再次拨打电话的时候
-                var $modal = $('#clue-phone-status-content');
-                // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
-                // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
-                if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
-                    this.setInitialData(phonemsgObj);
-                }
-                paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
-            }
-            //如果打电话的模态框展示，将flag值变为true
+        //如果切换了线索，那么重置状态
+        let nextId = _.get(nextProps, 'paramObj.clue_params.currentId', '');
+        let currentId = _.get(this.state, 'paramObj.clue_params.currentId');
+        if(!_.isEqual(nextId, currentId)) {
+            paramObj.call_params = null;
+            phoneAlertAction.setInitialState();
             this.setState({
-                hasPhonePanel: true
+                paramObj: paramObj,
+                hasPhonePanel: false
+            });
+        } else {
+            //如果未切换线索，只把线索详情赋值
+            // let paramObj = this.state.paramObj;
+            // paramObj.clue_params = _.cloneDeep(_.get(nextProps, 'paramObj.clue_params', null));
+            if (nextProps.paramObj.call_params) {
+                var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
+                if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
+                    //最新的通话状态
+                    if (phonemsgObj.callid === phoneRecordObj.callid) {
+                        phoneRecordObj.received_time = phonemsgObj.recevied_time;
+                    } else {
+                        phoneRecordObj.received_time = phonemsgObj.recevied_time;
+                        phoneRecordObj.callid = phonemsgObj.callid;
+                        //如果是从线索详情中打的电话，则不需要再获取线索详情
+                        if (!this.isClueDetailCall(nextProps.paramObj)) {
+                            //根据线索的id获取线索的详情
+                            phoneAlertAction.setInitialClueArr();
+                            this.getClueInfoByClueId(phonemsgObj);
+                        }
+                    }
+                    //页面上如果存在上次打电话的模态框，再次拨打电话的时候
+                    var $modal = $('#clue-phone-status-content');
+                    // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
+                    // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
+                    if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
+                        this.setInitialData(phonemsgObj);
+                    }
+                    paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
+                }
+                //如果打电话的模态框展示，将flag值变为true
+                this.setState({
+                    hasPhonePanel: true
+                });
+            }
+            this.setState({
+                paramObj: paramObj
             });
         }
-        this.setState({
-            paramObj: paramObj
-        });
     }
 
     setInitialData(phonemsgObj) {
