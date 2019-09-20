@@ -11,6 +11,8 @@ function showNotification(options) {
 }
 //更新一个通知中的内容
 function updateText(notify , options) {
+    var {title,content} = options;
+    var titleHtml = title ? `<div class="noty-title">${title}</div>` : '';
     var contentHtml = content ? `<div class="noty-content">${content}</div>` : '';
     var text = `<div class="noty-container">${titleHtml}${contentHtml}</div>`;
     notify.setText(text);
