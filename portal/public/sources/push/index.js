@@ -168,7 +168,7 @@ function clueUnhandledListener(data) {
             showDesktopNotification(title, tipContent, true);
         } else {//系统弹出通知
             var clueHtml = '',titleHtml = '';
-            titleHtml += '<p class=\'clue-title\'>' + '<i class=\'iconfont icon-clue\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
+            titleHtml += '<p class=\'clue-title\'>' + '<span class=\'title-tip\'>' + title + '</span>';
             _.each(clueArr, (clueItem) => {
                 clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' + '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
             });
@@ -177,6 +177,7 @@ function clueUnhandledListener(data) {
             notificationUtil.showNotification({
                 title: titleHtml,
                 content: tipContent,
+                type: 'clue',
                 closeWith: ['button'],
                 maxVisible: 3,
                 callback: { // 关闭的时候
@@ -204,9 +205,10 @@ function clueUnhandledListener(data) {
         if (!hasAddCloseBtn) {
             hasAddCloseBtn = true;
             ulHtml.before(`<p id="noty-quene-tip-container">
-${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示，', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}，<a href="#" onclick='openAllClues()'>
-${Intl.get('clue.customer.noty.all.list', '查看所有线索？')}</a><a href="#" onclick='closeAllNoty()'>
-${Intl.get('clue.close.all.noty', '关闭所有提醒？')}</a></p>`);
+            <span class="iconfont icon-warn-icon"></span>
+${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示 ', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}<a href="#" class="handle-btn-item" onclick='openAllClues()'>
+${Intl.get('clue.customer.noty.all.list', '查看全部')}</a><a href="#" class="handle-btn-item" onclick='closeAllNoty()'>
+${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
         } else {
             var queueNum = $('#queue-num');
             if (queueNum) {
@@ -503,9 +505,28 @@ function scheduleAlertListener(scheduleAlertMsg) {
             phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out handle-btn-item\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
         });
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
+        let type = scheduleAlertMsg.type;
+        switch(type){
+            case 'calls':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;
+                break;
+            case 'visit':title = '【' + Intl.get('common.visit', '拜访') + '】 ' + scheduleAlertMsg.topic;
+                break;
+            case 'other':title = '【' + Intl.get('user.login.analysis.customer.other', '其他') + '】 ' + scheduleAlertMsg.topic;
+                break;
+            default:title = scheduleAlertMsg.topic;
+        }
+        if(type === 'calls'){
+            title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;
+        }else if(type === 'visit'){
+            title = '【' + Intl.get('common.visit', '拜访') + '】 ' + scheduleAlertMsg.topic;
+        }else{
+            title = '【' + Intl.get('user.login.analysis.customer.other', '其他') + '】 ' + scheduleAlertMsg.topic;
+        }
+        // notificationUtil.showNotiSchedule({title,content: tipContent,type});
         notificationUtil.showNotification({
             title: title,
             content: tipContent,
+            type: type,
             closeWith: ['button']
         });
     }
