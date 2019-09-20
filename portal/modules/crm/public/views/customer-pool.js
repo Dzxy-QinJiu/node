@@ -64,6 +64,7 @@ class CustomerPool extends React.Component {
             userList: [],
             showFilterList: false,
             showCustomerRulePanel: false, //显示规则设置面板
+            isExtractSuccess: false,//是否提取成功
         };
     }
 
@@ -82,6 +83,8 @@ class CustomerPool extends React.Component {
             var id = $tr.find('.record-id').text();
             _this.showRightPanel(id);
         });
+        // 一进来就要显示筛选
+        _.isFunction(this.refs.filterinput.handleToggle) && this.refs.filterinput.handleToggle();
     }
 
     componentWillUnmount() {
@@ -261,7 +264,8 @@ class CustomerPool extends React.Component {
                 poolCustomerList,
                 customersBack: poolCustomerList,
                 selectedCustomer,
-                totalSize
+                totalSize,
+                isExtractSuccess: true
             });
             message.success(Intl.get('clue.extract.success', '提取成功'));
             //隐藏批量提取面板
@@ -319,7 +323,7 @@ class CustomerPool extends React.Component {
     returnCustomerList = (e) => {
         Trace.traceEvent(e, '点击返回按钮回到客户列表页面');
         if (_.isFunction(this.props.closeCustomerPool)) {
-            this.props.closeCustomerPool();
+            this.props.closeCustomerPool(this.state.isExtractSuccess);
         }
     };
 

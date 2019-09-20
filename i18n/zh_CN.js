@@ -1761,6 +1761,7 @@ var zh_CN = {
     'crm.customer.pool.max.selected.num': '每次最多提取{num}个',
     'crm.customer.pool.rule.release.setting': '释放设置',
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
+    'crm.filter.extract.from.customer.pool': '从客户池中提取的客户',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
