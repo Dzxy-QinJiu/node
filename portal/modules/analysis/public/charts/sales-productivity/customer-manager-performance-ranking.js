@@ -149,7 +149,7 @@ function getPerformanceDetailContent(result) {
     }];
 
     return (
-        <div style={{width: 600, margin: '0 auto'}}>
+        <div style={{width: 740, margin: '0 auto'}}>
             {getPerformanceDetailTable(Intl.get('common.gross.profit.of.newly.signed.payment.30.percent', '新签回款毛利(占30%)'), newGrossProfitColumns, [result.new_gross_profit_performance])}
             {getPerformanceDetailTable(Intl.get('common.personal.contribution.40.percent', '个人贡献(占40%)'), contributionColumns, [result.contribution_performance])}
             {getPerformanceDetailTable(Intl.get('common.gross.profit.rate.30.percent', '回款毛利率(占30%)'), grossProfitRateColumns, [result.gross_profit_rate_performance])}
