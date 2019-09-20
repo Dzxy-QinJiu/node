@@ -104,20 +104,20 @@ class ClueAssignmentStore {
                 }else{
                     this.strategyList = strategyList;
                 }
+                //去重
+                let oldStrategyList = _.cloneDeep(this.strategyList);
+                this.strategyList = _.uniqBy(oldStrategyList, 'id');
                 this.lastId = _.last(this.strategyList).id;
                 let strategyListHandling = _.cloneDeep(this.strategyList);
                 this.handleStrategy(strategyListHandling);
             }
         }
-        //获取最后一个线索分配策略的id
-        // let newLastId = _.isEmpty(strategyList) ? '' : _.nth(strategyList, -1).id;
-        // if(!_.isEqual(newLastId, this.lastId)) {
-        //     this.strategyList = _.concat(this.strategyList, strategyList);
-        // }
-
     }
     //添加线索分配策略
     addStrategy(strategy){
+        if(_.isEmpty(this.lastId)) {
+            this.lastId = strategy.id;
+        }
         this.strategyList.unshift(strategy);
         this.strategyTotal++;
         //添加完后处理当前的地域列表

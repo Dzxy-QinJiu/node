@@ -33,7 +33,9 @@ class StrategyForm extends React.Component {
 
     componentDidMount = () => {
         StrategyFormStore.listen(this.onStoreChange);
-        StrategyFormAction.initialForm();
+        setTimeout(() => {
+            StrategyFormAction.initialForm();
+        });
     }
 
     componentWillUnmount = () => {

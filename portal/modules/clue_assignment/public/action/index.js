@@ -11,7 +11,6 @@ class ClueAssignmentAction {
             'setStrategyLoading', // 设置当前策略的loading
             'showStrategyInfoPanel', // 显示分配策略详情面板
             'showStrategyForm',// 显示分配策略的编辑面板
-            'setInitialData', // 初始化分配策略
             'addStrategy',//添加线索分配策略
             'deleteStrategyById',//删除线索分配策略
             'updateStrategy',//更新线索分配策略列表

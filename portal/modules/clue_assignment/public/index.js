@@ -50,7 +50,6 @@ class ClueAssignment extends React.Component {
     }
 
     componentWillUnmount = () => {
-        ClueAssignmentAction.setInitialData();
         ClueAssignmentStore.unlisten(this.onStoreChange);
     }
 
@@ -84,13 +83,15 @@ class ClueAssignment extends React.Component {
     };
     //切换页数时，当前页展示数据的修改
     onChangePage = (count, curPage) => {
-        setTimeout(() => {
-            ClueAssignmentAction.updateCurPage(curPage);
-            let requestBody = {};
-            requestBody.pageSize = 10;
-            requestBody.sortId = this.state.lastId;
-            ClueAssignmentAction.getAssignmentStrategies(requestBody);
-        });
+        if(_.isEmpty(this.state.getStrategyListErrMsg)) {
+            setTimeout(() => {
+                ClueAssignmentAction.updateCurPage(curPage);
+                let requestBody = {};
+                requestBody.pageSize = 10;
+                requestBody.sortId = this.state.lastId;
+                ClueAssignmentAction.getAssignmentStrategies(requestBody);
+            });
+        }
     };
     //获取线索分类策略
     getStrategyCardList = () => {
@@ -129,19 +130,17 @@ class ClueAssignment extends React.Component {
 
     //渲染加载或者有错误信息的状态
     renderLoadingAndErrAndNodataContent = () => {
-        //当加载完成并且没有错误信息并且有数据列表的时候
-        let hasClueAssignList = !_.isEmpty(this.state.strategyList) && _.isEmpty(_.get(this.state, 'getStrategyListErrMsg'));
         //错误信息提示padding
         let paddingTop = ($(window).height() - LAYOUT.ERROR_WIDTH) / 2;
-        //如果加载完成并且有错误信息
-        if(!_.isEmpty(_.get(this.state, 'getStrategyListErrMsg')) && !_.get(this.state, 'isGetStrategyDetailLoading')) {
+        //如果加载完成并且有错误信息,并且不是首次加载时，提示错误
+        if(!_.isEmpty(_.get(this.state, 'getStrategyListErrMsg')) && !_.get(this.state, 'isGetStrategyDetailLoading') && !_.get(this.state, 'lastId')) {
             return (
                 <div className="err-content" style={{paddingTop: paddingTop}}>
                     <i className="iconfont icon-data-error"></i>
                     <p className="abnornal-status-tip">{_.get(this.state, 'getStrategyListErrMsg')}</p>
                 </div>
             );
-        } else if(hasClueAssignList) {
+        } else if(_.get(this.state, 'strategyList[0]')) {
             return this.renderClueAssignList();
         } else {
             return this.renderClueAssignNoData();
