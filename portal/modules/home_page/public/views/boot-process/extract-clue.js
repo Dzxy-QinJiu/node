@@ -65,10 +65,7 @@ class ExtractClues extends React.Component {
         }
 
         // 如果提取给的销售是自己，则需要提示刷新
-        let {
-            user_id
-        } = taskParams;
-        if(_.isEqual(user_id, userData.getUserData().user_id)) {
+        if(_.isEqual(_.get(taskParams,'user_id'), userData.getUserData().user_id)) {
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, {});
         }
 
