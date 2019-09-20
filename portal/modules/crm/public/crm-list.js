@@ -1048,12 +1048,21 @@ class Crm extends React.Component {
     //释放客户
     releaseCustomer = (customerId) => {
         if(this.state.isReleasingCustomer) return;
-        this.setState({isReleasingCustomer: true});
-        crmAjax.releaseCustomer({id: customerId}).then(result => {
-            this.setState({isReleasingCustomer: false});
-            CrmAction.afterReleaseCustomer(customerId);
+        // 单个释放需判断，验证是否有权限处理跟进人
+        crmAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
+            if(res) {
+                this.setState({isReleasingCustomer: true});
+                crmAjax.releaseCustomer({id: customerId}).then(result => {
+                    this.setState({isReleasingCustomer: false});
+                    CrmAction.afterReleaseCustomer(customerId);
+                }, (errorMsg) => {
+                    this.setState({isReleasingCustomer: false});
+                    message.error(errorMsg);
+                });
+            }else {
+                message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
+            }
         }, (errorMsg) => {
-            this.setState({isReleasingCustomer: false});
             message.error(errorMsg);
         });
     };
