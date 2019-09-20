@@ -99,6 +99,10 @@ var crmRestApis = {
     getCustomerPoolFilterItems: '/customerpool/resource/customers/field/aggregation',
     // 通过团队id获取客户阶段（销售流程）
     getCustomerStageByTeamId: '/rest/customer/v3/salesprocess/:team_id',
+    // 验证是否有权限处理跟进人
+    checkCustomerUpdateUser: '/rest/customer/v3/customer/check/update/user/:customer_id',
+    // 是否有权限处理联合跟进人
+    checkCustomerJoinUser: '/rest/customer/v3/customer/check/join/user/:customer_id',
 };
 exports.urls = crmRestApis;
 
@@ -617,4 +621,22 @@ exports.getCustomerPoolFilterItems = function(req, res) {
             req: req,
             res: res,
         }, req.query);
+};
+//验证是否有权限处理跟进人
+exports.checkCustomerUpdateUser = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.checkCustomerUpdateUser.replace(':customer_id', req.params.customer_id),
+            req: req,
+            res: res,
+        });
+};
+//是否有权限处理联合跟进人
+exports.checkCustomerJoinUser = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: crmRestApis.checkCustomerJoinUser.replace(':customer_id', req.params.customer_id),
+            req: req,
+            res: res,
+        });
 };

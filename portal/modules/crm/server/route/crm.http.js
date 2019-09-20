@@ -371,6 +371,20 @@ module.exports = {
             passport: {
                 needLogin: true
             }
+        }, {// 验证是否有权限处理跟进人
+            method: 'get',
+            path: '/rest/customer/check/update/:customer_id',
+            handler: 'checkCustomerUpdateUser',
+            passport: {
+                needLogin: true
+            }
+        }, {// 是否有权限处理联合跟进人
+            method: 'get',
+            path: '/rest/customer/check/join/:customer_id',
+            handler: 'checkCustomerJoinUser',
+            passport: {
+                needLogin: true
+            }
         }
     ]
 };
