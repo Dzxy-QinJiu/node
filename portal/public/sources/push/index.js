@@ -515,13 +515,6 @@ function scheduleAlertListener(scheduleAlertMsg) {
                 break;
             default:title = scheduleAlertMsg.topic;
         }
-        if(type === 'calls'){
-            title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;
-        }else if(type === 'visit'){
-            title = '【' + Intl.get('common.visit', '拜访') + '】 ' + scheduleAlertMsg.topic;
-        }else{
-            title = '【' + Intl.get('user.login.analysis.customer.other', '其他') + '】 ' + scheduleAlertMsg.topic;
-        }
         // notificationUtil.showNotiSchedule({title,content: tipContent,type});
         notificationUtil.showNotification({
             title: title,

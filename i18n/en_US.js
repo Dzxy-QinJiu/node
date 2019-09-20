@@ -3264,7 +3264,7 @@ var en_US = {
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From {source}',//来自“{source}”
     'clue.item.acceess.channel': 'Detail: {content}',//详情：“{content}”
-    'clue.show.no.show.tip': 'There has {num} new clues not showing',//还有{num}个提醒未展示
+    'clue.show.no.show.tip': 'There has {num} new clues not showing',//还有{num}个新线索未展示
     'clue.close.all.noty': 'Close all',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
     /*自定义审批 start*/
