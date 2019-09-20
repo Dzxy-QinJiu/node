@@ -44,7 +44,23 @@ exports.scheduleMsgToFrontend = function(scheduleMsg) {
         contacts: scheduleMsg.contacts,//联系人列表
         customer_name: scheduleMsg.customer_name,//客户名
         content: scheduleMsg.content,//日程内容
-        topic: scheduleMsg.topic
+        topic: scheduleMsg.topic,
+        type: scheduleMsg.type,//日程类型
+    };
+};
+
+//操作客户提醒数据
+exports.crmOperatorMsgToFrontend = function(crmOperatorMsg) {
+    return {
+        customer_id: crmOperatorMsg.customer_id,//客户id
+        operator_id: crmOperatorMsg.operator_id,//操作人id
+        member_id: crmOperatorMsg.member_id,//释放客户后通知给谁
+        status: crmOperatorMsg.status,//0是未处理 1是已经处理
+        customer_ids: crmOperatorMsg.customer_ids,//批量消息团队id
+        type: crmOperatorMsg.type,//操作客户的类型如（批量释放：batch_release_notice，单个释放客户：release_notice）
+        date: crmOperatorMsg.date,//推送时间
+        operator_nickname: crmOperatorMsg.operator_nickname,//操作人昵称
+        customer_name: crmOperatorMsg.customer_name,//客户名称
     };
 };
 

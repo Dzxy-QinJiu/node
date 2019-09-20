@@ -50,10 +50,11 @@ class CrmIndex extends React.Component {
     };
 
     //返回客户列表视图
-    returnCustomerView = () => {
+    returnCustomerView = (isExtractSuccess = false) => {
         this.setState({
             customerViewType: VIEW_TYPE.CUSTOMER,
-            searchCondition: {}
+            searchCondition: {},
+            isExtractSuccess
         });
     };
 
@@ -64,6 +65,7 @@ class CrmIndex extends React.Component {
                 currView = (
                     <div data-tracename="客户管理">
                         <CrmList {...this.props} showRepeatCustomer={this.showRepeatCustomer}
+                            isExtractSuccess={this.state.isExtractSuccess}
                             showCustomerPool={this.showCustomerPool}
                             showCustomerRecycleBin={this.showCustomerRecycleBin}/>
                     </div>);
