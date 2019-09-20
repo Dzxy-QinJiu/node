@@ -116,26 +116,26 @@ function getPerformanceDetailContent(result) {
     });
 
     const newGrossProfitColumns = [{
-        title: Intl.get('common.personal.newly.signed.gross.profit', '个人新签回款毛利'),
+        title: Intl.get('common.personal.newly.signed.gross.profit', '个人新签回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'new_repayment_gross_profit',
     }];
 
     const contributionColumns = [{
-        title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利'),
+        title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'repayment_gross_profit',
     }, {
-        title: Intl.get('common.lost.contract.amount', '流失合同金额'),
+        title: Intl.get('common.lost.contract.amount', '流失合同金额') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'churn_amount',
     }, {
-        title: Intl.get('common.personal.sales.expenses', '个人销售费用'),
+        title: Intl.get('common.personal.sales.expenses', '个人销售费用') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'cost',
     }];
 
     const grossProfitRateColumns = [{
-        title: Intl.get('common.personal.collection', '个人回款'),
+        title: Intl.get('common.personal.collection', '个人回款') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'repayment_amount',
     }, {
-        title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利'),
+        title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
         dataIndex: 'repayment_gross_profit',
     }];
 
