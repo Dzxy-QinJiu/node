@@ -29,7 +29,7 @@ exports.editAssignmentStrategy = function(id, reqBody) {
     editClueAssignmentStrategyAjax && editClueAssignmentStrategyAjax.abort();
     let Deferred = $.Deferred();
     editClueAssignmentStrategyAjax = $.ajax({
-        url: '/rest/rule/sales_auto/lead/' + id,
+        url: '/rest/rule/sales_auto/lead',
         dataType: 'json',
         type: 'put',
         data: reqBody,
@@ -65,14 +65,16 @@ exports.deleteAssignmentStrategy = function(id) {
 
 //获取线索分配策略列表
 let getClueAssignmentStrategiesAjax = null;
-exports.getAssignmentStrategies = function(sort_id) {
+exports.getAssignmentStrategies = function(queryBody) {
     getClueAssignmentStrategiesAjax && getClueAssignmentStrategiesAjax.abort();
     let Deferred = $.Deferred();
+    let pageSize = queryBody.pageSize;
+    delete queryBody.pageSize;
     getClueAssignmentStrategiesAjax = $.ajax({
-        url: '/rest/rule/sales_auto/lead/{:page_size}',
+        url: '/rest/rule/sales_auto/lead/' + pageSize,
         dataType: 'json',
         type: 'post',
-        data: sort_id,
+        data: queryBody,
         success: function(data) {
             Deferred.resolve(data);
         },

@@ -24,7 +24,7 @@ exports.getSalesDataList = (salesManList) => {
 
 //将获取到的销售人员格式化输出
 exports.getFormattedSalesMan = (salesMan) => {
-    let user_name = '', member_id = '', sales_team_name = '', sales_team_id = '';
+    let user_name = '', member_id = '', sales_team = '', sales_team_id = '';
     //select的value为"销售id&&所属团队id^销售名称 - 团队名称"的格式
     let salesInfo = salesMan.split('^');
     //被选择的“销售名称 - 团队名称“
@@ -39,23 +39,23 @@ exports.getFormattedSalesMan = (salesMan) => {
     let nameArray = _.split(salesInfo[1], '-');
     if (_.isArray(nameArray) && nameArray.length) {
         user_name = nameArray[0];//销售的名字
-        sales_team_name = _.trim(nameArray[1]) || '';//团队的名字
+        sales_team = _.trim(nameArray[1]) || '';//团队的名字
     }
     return ({
         user_name,
         member_id,
         sales_team_id,
-        sales_team_name,
+        sales_team,
         selectedSalesName
     });
 };
 
 //获取格式化后的销售人员select的value
 exports.getSelectedSaleManValue = (salesMan) => {
-    let {sales_team_name, user_name} = salesMan;
+    let {sales_team, user_name} = salesMan;
     let selectedValue = user_name;
-    if(!_.isEmpty(sales_team_name)) {
-        selectedValue += ` - ${sales_team_name}`;
+    if(!_.isEmpty(sales_team)) {
+        selectedValue += ` - ${sales_team}`;
     }
     return selectedValue;
 };

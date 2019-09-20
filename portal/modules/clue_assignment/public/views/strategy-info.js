@@ -3,17 +3,16 @@ import '../style/strategy-info.less';
 import StrategyInfoAction from '../action/strategy-info-action';
 import StrategyInfoStore from '../store/strategy-info-store';
 import ClueAssignmentAction from '../action';
-import ClueAssignmentStore from '../store';
 
 import {Switch, Popconfirm, Icon} from 'antd';
-import Trace from 'LIB_DIR/trace';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import DetailCard from 'CMP_DIR/detail-card';
-import AlertTimer from 'CMP_DIR/alert-timer';
+import classNames from 'classnames';
 import {getSalesDataList, getSelectedSaleManValue, getFormattedSalesMan} from '../utils/clue_assignment_utils';
+import {clueAssignmentStrategyForValidator} from 'PUB_DIR/sources/utils/validate-util';
 
 const LAYOUT = {
     TITLE_INPUT_WIDTH: 88,//顶部
@@ -37,40 +36,44 @@ class StrategyInfo extends React.Component {
         super(props);
         this.state = {
             strategyInfo: this.props.strategyInfo, //线索分配策略
-            status: this.props.strategyInfo.status, // 当前线索分配策略的启停状态
-            start_stop_visible: false, //启停状态popconfirm的展示与否
+            startStopVisible: false, //启停状态popconfirm的展示与否
             availableRegions: '', //可选择的地域
-            ...ClueAssignmentStore.getState(),
+            startStopErrorMsg: '', //启停项的错误提示
+            isStartStopSaving: false,//启停项操作时加载的icon展示与否
             ...StrategyInfoStore.getState()
         };
     }
     componentWillReceiveProps = (nextProps) => {
         this.setState({
             strategyInfo: nextProps.strategyInfo,
-            status: nextProps.strategyInfo.status
+            status: nextProps.strategyInfo.status,
+            startStopVisible: false,
+            availableRegions: '',
+            startStopErrorMsg: '',
+            isStartStopSaving: false,
         });
+
     }
 
     componentDidMount = () => {
-        ClueAssignmentStore.listen(this.onStoreChange);
-        ClueAssignmentAction.getAllSalesManList();
         StrategyInfoStore.listen(this.onStoreChange);
         // 在编辑面板地域下拉选择要展示自己已选择的地域
-        let regions = _.cloneDeep(this.state.regions);
-        let selectedRegions = _.get(this.props, 'strategyInfo.condition[0].province', []);
+        let regions = _.cloneDeep(this.props.regions);
+        let selectedRegions = _.get(this.props, 'strategyInfo.condition.province', []);
         this.setState({
             availableRegions: _.concat(regions, selectedRegions)
         });
     }
 
     componentWillUnmount = () => {
-        ClueAssignmentStore.unlisten(this.onStoreChange);
+        setTimeout(() => {
+            StrategyInfoAction.initialInfo();
+        });
         StrategyInfoStore.unlisten(this.onStoreChange);
     }
 
     onStoreChange = () => {
         this.setState({
-            ...ClueAssignmentStore.getState(),
             ...StrategyInfoStore.getState()
         });
     }
@@ -90,12 +93,11 @@ class StrategyInfo extends React.Component {
             savedObj.user_name = salesMan.user_name;
             savedObj.member_id = salesMan.member_id;
             savedObj.sales_team_id = salesMan.sales_team_id;
-            savedObj.sales_team_name = salesMan.sales_team_name;
+            savedObj.sales_team = salesMan.sales_team;
         } else if(_.has(savedObj, SAVE_CONTENT.REGION)) {
-            let condition = [];
-            let province = savedObj.region;
+            let condition = {};
+            condition.province = savedObj.region;
             delete savedObj.region;
-            condition.push({province: province});
             savedObj.condition = condition;
         }
         this.handleEditSave(savedObj, successFunc, errorFunc);
@@ -103,10 +105,13 @@ class StrategyInfo extends React.Component {
 
     //启停线索分配策略状态
     handleSwitchConfirm = () => {
-        let curStatus = this.state.status;
+        let curStatus = this.state.strategyInfo.status;
         let savedObj = {};
         savedObj.id = _.get(this.state, 'strategyInfo.id');
         savedObj.status = _.isEqual(curStatus, 'enable') ? 'disable' : 'enable';
+        this.setState({
+            isStartStopSaving: true
+        });
         this.handleEditSave(savedObj);
     }
 
@@ -116,21 +121,29 @@ class StrategyInfo extends React.Component {
         StrategyInfoAction.deleteAssignmentStrategy(id, result => {
             let isSuccess = result.deleteResult;
             if(_.isEqual(isSuccess, 'success')) {
-                //线索分配策略列表同步更新
-                ClueAssignmentAction.deleteStrategyById(id);
+                setTimeout(() => {
+                    //线索分配策略列表同步更新
+                    ClueAssignmentAction.deleteStrategyById(id);
+                    this.props.closeRightPanel();
+                }, 600);
+            } else {
+                //三秒后清除错误消息
+                setTimeout(() => {
+                    StrategyInfoAction.clearDeleteMsg();
+                }, 3000);
             }
         });
     }
 
     handleSwitchClick = () => {
         this.setState({
-            start_stop_visible: true
+            startStopVisible: true
         });
     }
 
     handleSwitchCancel = () => {
         this.setState({
-            start_stop_visible: false
+            startStopVisible: false
         });
     }
 
@@ -147,25 +160,34 @@ class StrategyInfo extends React.Component {
         StrategyInfoAction.editAssignmentStrategy(strategyInfo, (result) => {
             let { saveResult, saveMsg } = result;
             if(_.isEqual(saveResult, 'success')) {
-                //如果没有传入successFunc说明此时修改的是分配策略的启停状态
-                if(_.isEmpty(successFunc)) {
-                    let status = this.state.status;
-                    this.setState({
-                        status: _.isEqual(status, 'enable') ? 'disable' : 'enable'
-                    });
-                } else {
+                if(_.isFunction(successFunc)) {
                     successFunc();
+                } else {//如果没有传入successFunc说明此时修改的是分配策略的启停状态
+                    this.setState({
+                        startStopVisible: false,
+                        isStartStopSaving: false
+                    });
                 }
                 //在线索分配策略列表同步更新
                 ClueAssignmentAction.updateStrategy(strategyInfo);
                 this.setState({
                     strategyInfo
                 });
-
             } else {
-                //如果没有传入errorFunc说明此时修改的是分配策略的启停状态
-                if(!_.isEmpty(errorFunc)) {
+                if(_.isFunction(errorFunc)) {
                     errorFunc(saveMsg);
+                } else {//如果没有传入errorFunc说明此时修改的是分配策略的启停状态,错误提示信息单独处理
+                    this.setState({
+                        startStopErrorMsg: saveMsg,
+                        isStartStopSaving: false,
+                        startStopVisible: false
+                    });
+                    //三秒后清除错误信息
+                    setTimeout(() => {
+                        this.setState({
+                            startStopErrorMsg: '',
+                        });
+                    }, 3000);
                 }
             }
         });
@@ -187,14 +209,23 @@ class StrategyInfo extends React.Component {
             Intl.get('clue.assignment.strategy.switch.tip', '确定要{action}该线索分配策略？', {action: stop}) :
             Intl.get('clue.assignment.strategy.switch.tip', '确定要{action}该线索分配策略？', {action: start});
         let deleteConfirmText = Intl.get('clue.assignment.strategy.delete', '确定要删除该线索分配策略？');
+        let strategyName = classNames('strategy-name', {
+            'start-stop-has-error': !_.isEmpty(this.state.startStopErrorMsg) || !_.isEmpty(this.state.deleteResult),
+            'is-loading': this.state.isStartStopSaving || this.state.isDeleting
+        });
+        let deleteResult = classNames('delete-tip', {
+            'success-tip': _.isEqual(this.state.deleteResult, 'success'),
+            'error-tip': _.isEqual(this.state.deleteResult, 'error')
+        });
         return (
             <div className="strategy-info-title">
                 <div className="strategy-name-container">
-                    <div className="strategy-name">
+                    <div className={strategyName}>
                         <BasicEditInputField
                             width={LAYOUT.NAME_EDIT_FIELD_WIDTH}
                             id={strategyInfo.id}
                             value={strategyInfo.name}
+                            validators={[clueAssignmentStrategyForValidator]}
                             field="name"
                             type="input"
                             placeholder={Intl.get('clue.assignment.name.tip', '请输入线索分配策略名称')}
@@ -203,10 +234,19 @@ class StrategyInfo extends React.Component {
                         />
                     </div>
                     <div className="strategy-stop-start">
+                        {!_.isEmpty(this.state.startStopErrorMsg) ?
+                            (<div className='start-stop-error-msg'>
+                                {Intl.get('crm.219', '修改失败')}
+                            </div>) : null}
+                        {!_.isEmpty(this.state.deleteResult) ?
+                            (<div className={deleteResult}>
+                                {_.get(this.state, 'deleteMsg')}
+                            </div>) : null
+                        }
+                        {this.state.isStartStopSaving || this.state.isDeleting ? <Icon type="loading"/> : null}
                         <div className="strategy-switch">
-                            {this.state.isSaving ? <Icon type="loading"/> : null}
                             <Popconfirm
-                                visible={this.state.start_stop_visible}
+                                visible={this.state.startStopVisible}
                                 placement="bottomRight"
                                 title={switchConfirmText}
                                 onConfirm={this.handleSwitchConfirm}
@@ -216,7 +256,7 @@ class StrategyInfo extends React.Component {
                                 <span onClick={this.handleSwitchClick}>
                                     <Switch
                                         size="small"
-                                        checked={_.isEqual(this.state.status, 'enable') ? true : false}
+                                        checked={_.isEqual(this.state.strategyInfo.status, 'enable') ? true : false}
                                     />
                                 </span>
                             </Popconfirm>
@@ -252,6 +292,13 @@ class StrategyInfo extends React.Component {
 
     renderDetailCardContent = () => {
         let strategyInfo = this.state.strategyInfo;
+        //展示的地域取值
+        let displayRegions = '';
+        if(_.get(strategyInfo, 'condition.province.length') === 1) {
+            displayRegions = strategyInfo.condition.province;
+        } else {
+            displayRegions = strategyInfo.condition.province.join('、');
+        }
         return (<div className="strategy-needs-details">
             <div className="needs-content">
                 <div id="condition-province">
@@ -261,8 +308,8 @@ class StrategyInfo extends React.Component {
                         id={strategyInfo.id}
                         field={SAVE_CONTENT.REGION}
                         multiple={true}
-                        displayText={strategyInfo.condition[0].province}
-                        value={strategyInfo.condition[0].province}
+                        displayText={displayRegions}
+                        value={strategyInfo.condition.province}
                         placeholder={Intl.get('clue.assignment.needs.region.tip', '请选择或输入地域')}
                         hasEditPrivilege={true}
                         selectOptions={this.getRegionOptions()}
@@ -352,7 +399,7 @@ class StrategyInfo extends React.Component {
                     value={getSelectedSaleManValue(this.state.strategyInfo)}
                     placeholder={Intl.get('clue.assignment.assignee.tip', '请选择或输入被分配人')}
                     hasEditPrivilege={true}
-                    selectOptions={getSalesDataList(_.get(this.state, 'salesManList', []))}
+                    selectOptions={getSalesDataList(_.get(this.props, 'salesManList', []))}
                     validators={[{
                         required: true,
                         message: Intl.get('clue.assignment.assignee.required.tip', '被分配人不能为空'),
@@ -362,7 +409,6 @@ class StrategyInfo extends React.Component {
                 />
             </div>
         );
-        let deleteResult = this.state.deleteResult;
         return (
             <GeminiScrollbar>
                 <div className="strategy-detail-card-container" height={{height: this.getContainerHeight()}}>
@@ -375,16 +421,6 @@ class StrategyInfo extends React.Component {
                         className='strategy-card-assignee'
                         content={assigneeContent}
                     />
-                    <div className="indicator">
-                        {deleteResult ?
-                            (
-                                <AlertTimer time={deleteResult === 'error' ? 3000 : 600}
-                                    message={this.state.deleteMsg}
-                                    type={deleteResult} showIcon
-                                    onHide={deleteResult === 'error' ? function(){} : this.hideSaveTooltip}/>
-                            ) : null
-                        }
-                    </div>
                 </div>
             </GeminiScrollbar>
         );
@@ -404,12 +440,16 @@ class StrategyInfo extends React.Component {
     }
 }
 StrategyInfo.defaultProps = {
-    strategyInfo: null
+    strategyInfo: null,
+    regions: [],//地域列表
+    salesManList: []//销售人员列表
 };
 
 StrategyInfo.propTypes = {
     strategyInfo: PropTypes.object,
-    closeRightPanel: PropTypes.func
+    closeRightPanel: PropTypes.func,
+    regions: PropTypes.array,
+    salesManList: PropTypes.array
 };
 
 module.exports = StrategyInfo;

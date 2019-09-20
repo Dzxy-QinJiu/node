@@ -3399,12 +3399,13 @@ var en_US = {
     'apply.approve.required.err.msg': 'Please input tips',//请输入未填写时的提示
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
+    'clue.assignment.strategy.fail.to.get': 'Fail to fetch clue assignment strategy list',//获取线索分配策略列表失败
     'clue.assignment.no.strategy.tip': 'There is no clue assignment strategy yet',//您还没有线索分配策略
     'clue.assignment.name': 'Name',//名称
     'clue.assignment.name.tip': 'Please input clue assignment name',//请输入线索分配策略名称
     'clue.assignment.no.description.tip': 'There is no clue assignment strategy description',//暂无线索分配策略描述
     'clue.assignment.add.description.tip': 'Add clue assignment strategy description',//添加线索分配策略描述
-    'clue.assignment.name.required.tip': 'Clue assignment name should not be empty',//线索分配策略名称不能为空
+    'clue.assignment.name.required.tip': 'The name of clue assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
     'clue.assignment.description': 'Description',//描述
     'clue.assignment.description.tip': 'Please describe clue assignment strategy',//请描述一下线索分配策略
     'clue.assignment.needs': 'Needs',//满足条件

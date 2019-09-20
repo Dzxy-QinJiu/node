@@ -3513,10 +3513,11 @@ var zh_CN = {
     'apply.approve.required.err.msg': '请输入未填写时的提示',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
+    'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
     'clue.assignment.no.strategy.tip': '您还没有线索分配策略',
     'clue.assignment.name': '名称',
     'clue.assignment.name.tip': '请输入线索分配策略名称',
-    'clue.assignment.name.required.tip': '线索分配策略名称不能为空',
+    'clue.assignment.name.required.tip': '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
     'clue.assignment.description': '描述',
     'clue.assignment.description.tip': '请描述一下线索分配策略',
     'clue.assignment.no.description.tip': '暂无线索分配策略描述',

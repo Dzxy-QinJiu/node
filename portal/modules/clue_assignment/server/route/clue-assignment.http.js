@@ -5,32 +5,32 @@
  */
 require('../action/clue-assignment-controller');
 module.exports = {
-    module: 'clue_assignment/server/action/clue-customer-controller',
+    module: 'clue_assignment/server/action/clue-assignment-controller',
     routes: [{//保存线索分配策略
         method: 'post',
         path: '/rest/rule/sales_auto/lead',
-        handler: 'saveAssignmentStrategy',
+        handler: 'saveClueAssignmentStrategy',
         passport: {
             needLogin: true
         }
     }, {//修改线索分配策略
         method: 'put',
-        path: '/rest/rule/sales_auto/lead/{:id}',
-        handler: 'editAssignmentStrategy',
+        path: '/rest/rule/sales_auto/lead',
+        handler: 'editClueAssignmentStrategy',
         passport: {
             needLogin: true
         }
     }, {//修改线索分配策略
         method: 'delete',
-        path: '/rest/rule/sales_auto/lead/{:id}',
-        handler: 'deleteAssignmentStrategy',
+        path: '/rest/rule/sales_auto/lead/:id',
+        handler: 'deleteClueAssignmentStrategy',
         passport: {
             needLogin: true
         }
     },{//获取线索分配策略列表
         method: 'post',
-        path: '/rest/rule/sales_auto/lead/{:page_size}',
-        handler: 'getAssignmentStrategies',
+        path: '/rest/rule/sales_auto/lead/:page_size',
+        handler: 'getClueAssignmentStrategies',
         passport: {
             needLogin: true
         }

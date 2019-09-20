@@ -10,47 +10,14 @@ let emptyStrategy = {
     user_name: '',
     member_id: '',
     sales_team_id: '',
-    sales_team_name: '',
+    sales_team: '',
     description: '',
     status: 'enable'
 };
 
-let tempStrategys = [
-    {
-        id: '1',
-        name: '山东的线索',
-        condition: [{province: ['山东', '宁夏']}],
-        user_name: 'frank',
-        member_id: '123',
-        sales_team_id: '123',
-        sales_team_name: '测试',
-        description: '山东的线索',
-        status: 'enable'
-    }, {
-        id: '2',
-        name: '北京的线索',
-        condition: [{province: ['北京']}],
-        user_name: 'cindy',
-        member_id: '123',
-        sales_team_id: '123',
-        sales_team_name: '测试',
-        description: '北京的线索',
-        status: 'disable'
-    }, {
-        id: '3',
-        name: '上海的线索',
-        condition: [{province: ['上海']}],
-        user_name: 'dan',
-        member_id: '123',
-        sales_team_id: '123',
-        sales_team_name: '测试',
-        description: '上海的线索',
-        status: 'enable'
-    }
-];
 class ClueAssignmentStore {
     constructor() {
-        this.pageSize = 20;
+        this.pageSize = 10;
         this.setInitialData();
         this.bindActions(ClueAssignmentAction);
     }
@@ -59,22 +26,21 @@ class ClueAssignmentStore {
     setInitialData() {
         this.loading = false; // 获取线索分配策略的loading
         this.listenScrollBottom = false;
-        this.strategyList = tempStrategys; //线索分配策略数组
-        this.strategyTotal = 3; // 线索分配策略数量
+        this.strategyList = []; //线索分配策略数组
+        this.strategyTotal = 0; // 线索分配策略数量
         this.getStrategyListErrMsg = ''; // 获取策略列表失败的信息
         this.currentStrategy = emptyStrategy; // 编辑/添加 状态时，需要提交的线索分配策略
         this.formType = 'add'; //表单的类型：添加/修改
         this.isShowStrategyDetail = false; // 是否显示策略详情，默认false
         this.isShowStrategyForm = false; // 是否显示策略表单，默认false
         this.isGetStrategyDetailLoading = false; // 获取策略详情的loading
-        this.resultType = '';
-        this.errorMsg = '';
         this.selectedRegions = [];//已选择的地域
         this.salesManList = [];//所有销售人员的列表
-        this.allRegions = [];//全部的地域
         this.regions = [];//可选择的地域
+        this.lastId = '';//最后一个线索分配策略
+        this.pageSize = 10;//一页可以展示的个数
+        this.curPage = 1;//当前第几页
         this.initialRegion();
-        this.handleRegions(tempStrategys);
     }
 
     // 设置当前成员的loading
@@ -112,24 +78,50 @@ class ClueAssignmentStore {
         this.isShowStrategyForm = false;
     }
     //处理线索分配策略列表
-    handleRegions(strategyList) {
+    handleStrategy(strategyList) {
         //取出来所有已经选择的地域并且剔除掉
-        let selectedRegions = _.map(strategyList, strategy => strategy.condition[0].province);
+        let selectedRegions = _.map(strategyList, strategy => strategy.condition.province);
         selectedRegions = _.reduce(selectedRegions, (mergedRegion, region) => _.concat(mergedRegion, region), []);
         this.deleteRegion(selectedRegions);
+        //获取最后一个线索分配策略的id
+        this.lastId = _.isEmpty(strategyList) ? '' : _.nth(strategyList, -1).id;
     }
     //获取线索分配策略列表
-    getAssignmentStrategies({isGetStrategyDetailLoading, getMemberListErrMsg, strategyList}) {
-        this.isGetStrategyDetailLoading = isGetStrategyDetailLoading;
-        this.getMemberListErrMsg = getMemberListErrMsg;
-        this.strategyList = strategyList;
+    getAssignmentStrategies({isGetStrategyDetailLoading, getStrategyListErrMsg, strategyList, strategyTotal}) {
+        if(isGetStrategyDetailLoading){
+            this.isGetStrategyDetailLoading = isGetStrategyDetailLoading;
+            this.getStrategyListErrMsg = '';
+        }else if(getStrategyListErrMsg){
+            this.isGetStrategyDetailLoading = false;
+            this.getStrategyListErrMsg = getStrategyListErrMsg;
+        }else{
+            this.isGetStrategyDetailLoading = false;
+            this.getStrategyListErrMsg = '';
+            this.strategyTotal = strategyTotal;
+            if(_.get(strategyList, '[0]')){
+                if(this.lastId){
+                    this.strategyList = this.strategyList.concat(strategyList);
+                }else{
+                    this.strategyList = strategyList;
+                }
+                this.lastId = _.last(this.strategyList).id;
+                let strategyListHandling = _.cloneDeep(this.strategyList);
+                this.handleStrategy(strategyListHandling);
+            }
+        }
+        //获取最后一个线索分配策略的id
+        // let newLastId = _.isEmpty(strategyList) ? '' : _.nth(strategyList, -1).id;
+        // if(!_.isEqual(newLastId, this.lastId)) {
+        //     this.strategyList = _.concat(this.strategyList, strategyList);
+        // }
+
     }
     //添加线索分配策略
     addStrategy(strategy){
         this.strategyList.unshift(strategy);
         this.strategyTotal++;
         //添加完后处理当前的地域列表
-        let selectedRegions = strategy.condition[0].province;
+        let selectedRegions = strategy.condition.province;
         this.deleteRegion(selectedRegions);
     }
     //删除线索分配策略
@@ -139,21 +131,25 @@ class ClueAssignmentStore {
         this.strategyList = _.filter(strategyList, list => !_.isEqual(list.id , id));
         this.strategyTotal--;
         //添加完后处理当前的地域列表
-        let selectedRegions = deletedStrategy.condition[0].province;
+        let selectedRegions = deletedStrategy.condition.province;
         this.addRegion(selectedRegions);
     }
     //更新线索分配策略列表
-    updateStrategy(strategy) {
-        let updateStrategy = _.find(this.strategyList, strategy => strategy.id === strategy.id);
+    updateStrategy(newStrategy) {
         //更新前处理当前的地域列表
         //将之前选择的地域加回可选择的地域列表
-        let oldRegions = updateStrategy.condition[0].province;
+        let updateStrategy = _.find(this.strategyList, strategy => newStrategy.id === strategy.id);
+        let oldRegions = updateStrategy.condition.province;
         this.addRegion(oldRegions);
         //将更新后的地域从可选择的地域列表中删除
-        let newRegions = strategy.condition[0].province;
+        let newRegions = newStrategy.condition.province;
         this.deleteRegion(newRegions);
         //更新线索分配策略
-        _.extend(updateStrategy, strategy);
+        _.map(this.strategyList, strategy => {
+            if(newStrategy.id === strategy.id){
+                _.extend(strategy,newStrategy);
+            }
+        });
     }
     //初始select里的地域
     initialRegion() {
@@ -181,6 +177,13 @@ class ClueAssignmentStore {
         this.selectedRegions = _.uniq(_.cloneDeep(selectedRegions));
         //将已选择的地域展示回去
         this.regions = _.concat(regions, list);
+    }
+    //更新每页的个数
+    updatePageSize(pageSize) {
+        this.pageSize = pageSize;
+    }
+    updateCurPage(curPage){
+        this.curPage = curPage;
     }
 }
 

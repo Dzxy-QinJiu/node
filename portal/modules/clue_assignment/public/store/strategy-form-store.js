@@ -7,7 +7,12 @@ class StrategyFormStore {
         this.saveMsg = ''; //保存后的提示信息
         this.bindActions(StrategyFormAction);
     }
-
+    //初始化编辑面板
+    initialForm() {
+        this.isSaving = false;
+        this.saveResult = '';
+        this.saveMsg = '';
+    }
     //保存线索分配策略
     saveClueAssignmentStrategy({isSaving, saveResult, saveMsg}) {
         this.isSaving = isSaving;

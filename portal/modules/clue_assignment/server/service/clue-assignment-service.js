@@ -6,16 +6,17 @@
 'use strict';
 let restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 let restUtil = require('ant-auth-request').restUtil(restLogger);
-const clueBaseUrl = '';
+let _ = require('lodash');
+
 const restApis = {
     //保存线索分配策略
-    saveClueAssignmentStrategy: clueBaseUrl + '/rest/rule/sales_auto/lead',
+    saveClueAssignmentStrategy: '/rest/rule/sales_auto/lead',
     //编辑线索分配策略
-    editClueAssignmentStrategy: clueBaseUrl + '/rest/rule/sales_auto/lead/{:id}',
-    //编辑线索分配策略
-    deleteClueAssignmentStrategy: clueBaseUrl + '/rest/rule/sales_auto/lead/{:id}',
+    editClueAssignmentStrategy: '/rest/rule/sales_auto/lead',
+    //删除线索分配策略
+    deleteClueAssignmentStrategy: '/rest/rule/sales_auto/lead/:id',
     //获取线索分配策略列表
-    getClueAssignmentStrategies: clueBaseUrl + '/rest/rule/sales_auto/lead/{:page_size}'
+    getClueAssignmentStrategies: '/rest/rule/sales_auto/lead/:page_size'
 };
 
 //保存线索分配策略
@@ -31,26 +32,32 @@ exports.saveClueAssignmentStrategy = function(req, res) {
 exports.editClueAssignmentStrategy = function(req, res) {
     return restUtil.authRest.put(
         {
-            url: restApis.editClueAssignmentStrategy.replace(':id',res.id),
+            url: restApis.editClueAssignmentStrategy,
             req: req,
             res: res
         }, req.body);
 };
 //删除线索分配策略
 exports.deleteClueAssignmentStrategy = function(req, res) {
-    return restUtil.authRest.delete(
+    return restUtil.authRest.del(
         {
-            url: restApis.deleteClueAssignmentStrategy.replace(':id',res.id),
+            url: restApis.deleteClueAssignmentStrategy.replace(':id',req.params.id),
             req: req,
             res: res
-        });
+        }, req.body);
 };
 //获取线索分配策略列表
 exports.getClueAssignmentStrategies = function(req, res) {
+    let body = _.get(req, 'body.requestBody', {});
+    let sortId = _.get(req, 'body.sortId', '');
+    let url = restApis.getClueAssignmentStrategies.replace(':page_size', req.params.page_size);
+    if(!_.isEmpty(sortId)) {
+        url += (`?sort_id='${sortId}'`);
+    }
     return restUtil.authRest.post(
         {
-            url: restApis.getClueAssignmentStrategies.replace(':page_size',req.id) + `?sort_id=${req.sort_size}`,
+            url: url,
             req: req,
             res: res
-        });
+        }, body);
 };

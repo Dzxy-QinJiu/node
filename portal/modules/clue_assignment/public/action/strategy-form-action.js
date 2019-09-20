@@ -3,21 +3,18 @@ import {saveAssignmentStrategy} from '../ajax';
 class StrategyFormAction {
     constructor() {
         this.generateActions(
+            'initialForm', //初始化编辑面板
         );
     }
 
     saveClueAssignmentStrategy(strategy, callback) {
         this.dispatch({isSaving: true, saveResult: '', saveMsg: ''});
         saveAssignmentStrategy(strategy).then(result => {
-            if(!_.isEmpty(callback) && _.isFunction(callback)) {
-                callback(result.strategy);
-            }
-            this.dispatch({ isSaving: false, saveResult: 'success', saveMsg: result });
+            _.isFunction(callback) && callback(result);
+            this.dispatch({ isSaving: false, saveResult: 'success', saveMsg: Intl.get('common.save.success', '保存成功') });
         }, errorMsg => {
-            if(!_.isEmpty(callback) && _.isFunction(callback)) {
-                callback();
-            }
-            this.dispatch({ isSaving: false, saveResult: 'error', saveMsg: errorMsg });
+            _.isFunction(callback) && callback();
+            this.dispatch({ isSaving: false, saveResult: 'error', saveMsg: errorMsg || Intl.get('common.save.failed', '保存失败') });
         });
     }
 }

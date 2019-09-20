@@ -8,6 +8,12 @@
         overflow: hidden;
         margin-bottom: 11px;
         .strategy-name {
+          &.start-stop-has-error {
+            width: 72%;
+          }
+          &.is-loading {
+            width: 80%;
+          }
           width: 85%;
           font-size: 16px;
           float: left;
@@ -21,11 +27,20 @@
                 }
               }
             }
+            .button-container {
+              .save-error {
+                font-weight: normal;
+                font-size: 14px;
+              }
+            }
           }
           .basic-edit-field {
             .edit-container {
               .icon-edit-btn {
                 float: right;
+                &:hover {
+                  cursor: pointer;
+                }
               }
               .basic-info-text {
                 transform: translateY(-2px);
@@ -36,6 +51,30 @@
         }
         .strategy-stop-start {
           float: right;
+          .anticon-loading {
+            margin-right: 5px;
+          }
+          .start-stop-error-msg {
+            float: left;
+            transform: translateY(2px);
+            font-size: 14px;
+            font-weight: normal;
+            color:@error_tips_color;
+            margin-right: 5px;
+          }
+          .delete-tip {
+            float: left;
+            transform: translateY(2px);
+            font-size: 14px;
+            font-weight: normal;
+            margin-right: 5px;
+            &.error-tip {
+              color:@error_tips_color;
+            }
+            &.success-tip {
+              color: @icon_choose_color;
+            }
+          }
           .strategy-switch {
             line-height: 24px;
             display: inline-block;
@@ -74,6 +113,9 @@
           .edit-container {
             .icon-edit-btn {
               float: right;
+              &:hover {
+                cursor: pointer;
+              }
             }
           }
           .basic-info-text {
@@ -101,6 +143,9 @@
       }
       .icon-edit-btn {
         float: right;
+        &:hover {
+          cursor: pointer;
+        }
       }
       .ant-form-item {
         padding-right: 6px;
@@ -150,7 +195,7 @@
         .basic-edit-field {
           .edit-container {
             .basic-info-text {
-              transform: translateY(-0.5px);
+              transform: translateY(-1.5px);
             }
           }
         }

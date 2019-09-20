@@ -246,7 +246,6 @@ class CardList extends React.Component {
         var everyLoadedPageSize = this.getRequestPageSize();
         // 计算剩余还没加载卡边的个数  cardListSize总卡片数  loadedCardCount已加载卡片数
         var restNeedLoadedData = this.props.cardListSize - this.state.loadedCardCount;
-
         // 已加载的卡片数
         if (restNeedLoadedData < everyLoadedPageSize) {
             this.state.loadedCardCount += restNeedLoadedData;

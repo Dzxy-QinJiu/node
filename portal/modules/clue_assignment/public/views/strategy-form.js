@@ -3,7 +3,6 @@ import '../style/strategy-form.less';
 import StrategyFormAction from '../action/strategy-form-action';
 import StrategyFormStore from '../store/strategy-form-store';
 import ClueAssignmentAction from '../action';
-import ClueAssignmentStore from '../store';
 
 import {Form, Input, Select, Switch} from 'antd';
 const Option = Select.Option;
@@ -14,7 +13,7 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import {getSalesDataList, getFormattedSalesMan} from '../utils/clue_assignment_utils';
-import Trace from 'LIB_DIR/trace';
+import {clueAssignmentStrategy} from 'PUB_DIR/sources/utils/validate-util';
 
 function noop() {
 }
@@ -25,38 +24,36 @@ class StrategyForm extends React.Component {
         super(props);
         this.state = {
             formData: this.initForm(),
-            locationList: [],
-            selectedSalesMan: '',
+            locationList: [],//地域列表
+            selectedSalesMan: '',//选择的销售人员
+            savedStrategy: {},//保存后的策略
             ...StrategyFormStore.getState(),
-            ...ClueAssignmentStore.getState()
         };
     }
 
     componentDidMount = () => {
         StrategyFormStore.listen(this.onStoreChange);
-        ClueAssignmentAction.getAllSalesManList();
+        StrategyFormAction.initialForm();
     }
 
     componentWillUnmount = () => {
         StrategyFormStore.unlisten(this.onStoreChange);
-        ClueAssignmentStore.unlisten(this.onStoreChange);
     };
 
     onStoreChange = () => {
         this.setState({
             ...StrategyFormStore.getState(),
-            ...ClueAssignmentStore.getState()
         });
     }
 
     initForm = () => {
         return {
             name: '',
-            condition: [{province: []}],
+            condition: {province: []},
             user_name: '',
             member_id: '',
             sales_team_id: '',
-            sales_team_name: '',
+            sales_team: '',
             description: '',
             status: 'enable'
         };
@@ -76,7 +73,7 @@ class StrategyForm extends React.Component {
         formData.user_name = savedSalesMan.user_name;
         formData.member_id = savedSalesMan.member_id;
         formData.sales_team_id = savedSalesMan.sales_team_id;
-        formData.sales_team_name = savedSalesMan.sales_team_name;
+        formData.sales_team = savedSalesMan.sales_team;
         this.setState({
             selectedSalesMan: salesValue,
             formData
@@ -97,12 +94,15 @@ class StrategyForm extends React.Component {
             let name = _.get(values, 'name');
             let province = _.get(values, 'province');
             let formData = _.cloneDeep(this.state.formData);
-            formData.condition[0].province = province;
+            formData.condition.province = province;
             formData.name = name;
             formData.description = description;
             StrategyFormAction.saveClueAssignmentStrategy(formData, strategy => {
                 if(!_.isEmpty(strategy)) {
                     ClueAssignmentAction.addStrategy(strategy);
+                    this.setState({
+                        savedStrategy: strategy
+                    });
                 }
             });
         });
@@ -140,7 +140,6 @@ class StrategyForm extends React.Component {
         // }
         let saveResult = this.state.saveResult;
         let formData = this.state.formData;
-        //todo 修改
         let height = $(window).height() - 70;
         return (
             <GeminiScrollbar>
@@ -152,10 +151,7 @@ class StrategyForm extends React.Component {
                             {...formItemLayout}
                         >
                             {getFieldDecorator('name', {
-                                rules: [{
-                                    required: true,
-                                    message: Intl.get('clue.assignment.name.required.tip', '线索分配策略名称不能为空')
-                                }]
+                                rules: [clueAssignmentStrategy]
                             })(
                                 <Input
                                     name="name"
@@ -188,7 +184,7 @@ class StrategyForm extends React.Component {
                                                     getPopupContainer={() => document.getElementById('condition-province')}
                                                     filterOption={(input, option) => ignoreCase(input, option)}
                                                 >
-                                                    {_.map(this.state.regions, (item, index) => {
+                                                    {_.map(this.props.regions, (item, index) => {
                                                         return (<Option key={index} value={item}>{item}</Option>);
                                                     })}
                                                 </Select>
@@ -301,7 +297,7 @@ class StrategyForm extends React.Component {
                                         filterOption={(input, option) => ignoreCase(input, option)}
                                         onChange={this.onSalesManChange}
                                     >
-                                        {getSalesDataList(_.get(this.state, 'salesManList', []))}
+                                        {getSalesDataList(_.get(this.props, 'salesManList', []))}
                                     </Select>
                                 )}
                         </FormItem>
@@ -345,7 +341,7 @@ class StrategyForm extends React.Component {
                                 <div className="indicator">
                                     {saveResult ?
                                         (
-                                            <AlertTimer time={saveResult === 'error' ? 3000 : 600}
+                                            <AlertTimer time={saveResult === 'error' ? 9999999999999 : 600}
                                                 message={this.state.saveMsg}
                                                 type={saveResult} showIcon
                                                 onHide={saveResult === 'error' ? function(){} : this.hideSaveTooltip}/>
@@ -375,11 +371,15 @@ class StrategyForm extends React.Component {
 }
 StrategyForm.defaultProps = {
     closeRightPanel: noop(),
+    regions: [],//地域列表
+    salesManList: []//销售人员列表
 };
 
 StrategyForm.propTypes = {
     form: PropTypes.form,
     closeRightPanel: PropTypes.func,
+    regions: PropTypes.array,
+    salesManList: PropTypes.array
 };
 
 module.exports = Form.create()(StrategyForm);

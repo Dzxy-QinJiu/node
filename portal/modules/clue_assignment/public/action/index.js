@@ -1,5 +1,6 @@
 import {getAssignmentStrategies} from '../ajax';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
+let scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 
 class ClueAssignmentAction {
     constructor() {
@@ -15,16 +16,22 @@ class ClueAssignmentAction {
             'deleteStrategyById',//删除线索分配策略
             'updateStrategy',//更新线索分配策略列表
             'getRegionList', //获取地域列表
+            'updatePageSize',//更新页面个数
+            'updateCurPage',//更新当前页面
         );
     }
 
     //获取线索分配策略列表
-    getAssignmentStrategies() {
-        this.dispatch({isGetStrategyDetailLoading: true, getMemberListErrMsg: '', strategyList: []});
-        getAssignmentStrategies().then(result => {
-            this.dispatch({isGetStrategyDetailLoading: false, getMemberListErrMsg: result.result, strategyList: result.strategyList});
+    getAssignmentStrategies(queryBody) {
+        this.dispatch({isGetStrategyDetailLoading: true});
+        getAssignmentStrategies(queryBody).then(result => {
+            scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({isGetStrategyDetailLoading: false, getStrategyListErrMsg: '', strategyList: result.detail, strategyTotal: result.total});
         }, error => {
-            this.dispatch({isGetStrategyDetailLoading: false, getMemberListErrMsg: error, strategyList: []});
+            scrollBarEmitter.emit(scrollBarEmitter.STOP_LOADED_DATA);
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
+            this.dispatch({isGetStrategyDetailLoading: false, getStrategyListErrMsg: error || Intl.get('clue.assignment.strategy.fail.to.get', '获取线索分配策略列表失败'), strategyList: [], strategyTotal: 0});
         });
     }
     // 获取所有成员
