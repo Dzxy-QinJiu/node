@@ -326,23 +326,14 @@ class SalesTeamCard extends React.Component {
     }
     //修改负责人及团队的处理
     handleEditSalesTeam = (saveObj, successFunc, errorFunc) => {
-        // 变更之前，验证是否有权限修改负责人
-        CrmBasicAjax.checkCrmUpdateUserByCustomerId(this.state.customerId).then((res) => {
-            if(res) {
-                //在变更销售之前，先检查是否会超过该销售所拥有客户的数量
-                CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
-                    //result>0 ，不可转入或变更客户
-                    if (_.isNumber(result) && result > 0) {
-                        if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.should.reduce.customer', '该负责人拥有客户数已达到上限！'));
-                    } else {
-                        this.saveSalesTeam(saveObj, successFunc, errorFunc);
-                    }
-                });
-            }else {
-                _.isFunction(errorFunc) && errorFunc(Intl.get('crm.no.permissions.update.sales', '您没有权限修改负责人'));
+        //在变更销售之前，先检查是否会超过该销售所拥有客户的数量
+        CrmAction.getCustomerLimit({member_id: this.state.userId, num: 1}, (result) => {
+            //result>0 ，不可转入或变更客户
+            if (_.isNumber(result) && result > 0) {
+                if (_.isFunction(errorFunc)) errorFunc(Intl.get('crm.should.reduce.customer', '该负责人拥有客户数已达到上限！'));
+            } else {
+                this.saveSalesTeam(saveObj, successFunc, errorFunc);
             }
-        }, (errorMsg) => {
-            _.isFunction(errorFunc) && errorFunc(errorMsg);
         });
     };
 
@@ -509,7 +500,7 @@ class SalesTeamCard extends React.Component {
         // 需要验证是否有权限修改联合跟进人
         CrmBasicAjax.checkCrmJoinUserByCustomerId(this.state.customerId).then((res) => {
             if(res) {
-                this.saveSecondSales(saveObj, successFunc, errorFunc);
+
             }else {
                 _.isFunction(errorFunc) && errorFunc(Intl.get('crm.no.permissions.update.second.team', '您没有权限修改联合跟进人'));
             }
@@ -561,7 +552,7 @@ class SalesTeamCard extends React.Component {
                             selectOptions={this.getSelectOptions(SALES_EDIT_TYPES.SECOND_SALES_TEAM)}
                             hasEditPrivilege={hasEditSecondSalesPrivilege}
                             placeholder={Intl.get('crm.select.second.sales', '请选择联合跟进人')}
-                            saveEditSelect={this.handleEditSecondSales}
+                            saveEditSelect={this.saveSecondSales}
                             validators={[{ validator: this.checkSecondSales }]}
                             noDataTip={Intl.get('crm.no.second.sales', '暂无联合跟进人')}
                             addDataTip={Intl.get('crm.set.second.sales', '设置联合跟进人')}
