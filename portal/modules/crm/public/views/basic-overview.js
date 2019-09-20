@@ -24,6 +24,7 @@ import ScheduleItem from './schedule/schedule-item';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
+import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
@@ -31,7 +32,8 @@ import CrmScoreCard from './basic_info/crm-score-card';
 import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import CustomerStageCard from './basic_info/customer-stage-card';
-import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate'; const PRIVILEGE_MAP = {
+import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
+const PRIVILEGE_MAP = {
     USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
     CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
     EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
@@ -95,7 +97,7 @@ class BasicOverview extends React.Component {
             // this.getCustomerStageByTeamId(teamId); // 获取客户阶段
             setTimeout(() => {
                 //有获取客户下用户列表的权限，并且不是csm.curtao.com
-                if (hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !this.isCurtaoFunc()) {
+                if (hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !isCurtao()) {
                     this.getCrmUserList(this.props.curCustomer);
                 }
                 //需要展示未处理的电联的联系计划
@@ -103,10 +105,7 @@ class BasicOverview extends React.Component {
             });
         }
     }
-    //是否是csm.curtao.com域名
-    isCurtaoFunc = () => {
-        return Oplate.isCurtao === 'true';
-    }
+
     // 获取客户阶段
     getCustomerStageByTeamId = (teamId) => {
         crmAjax.getCustomerStageByTeamId(teamId).then( (result) => {
@@ -199,7 +198,7 @@ class BasicOverview extends React.Component {
         if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
                 //有获取客户下用户列表的权限，并且不是csm.curtao.com
-                if (hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !this.isCurtaoFunc()) {
+                if (hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !isCurtao()) {
                     this.getCrmUserList(nextProps.curCustomer);
                 }
                 //需要展示未处理的电联的联系计划
@@ -531,7 +530,7 @@ class BasicOverview extends React.Component {
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
-                    {!this.props.disableEdit ? (
+                    {!this.props.disableEdit && !isCurtao() ? (
                         hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(this.state.crmUserList, '[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     {/*<CustomerStageCard*/}

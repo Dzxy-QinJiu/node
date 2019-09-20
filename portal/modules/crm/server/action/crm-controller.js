@@ -501,3 +501,21 @@ exports.getCustomerStageByTeamId = (req, res) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 验证是否有权限处理跟进人
+exports.checkCustomerUpdateUser = (req, res) => {
+    crmService.checkCustomerUpdateUser(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 是否有权限处理联合跟进人
+exports.checkCustomerJoinUser = (req, res) => {
+    crmService.checkCustomerJoinUser(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

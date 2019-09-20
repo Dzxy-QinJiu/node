@@ -18,9 +18,6 @@ export function getCallRecordChart(paramObj = {}) {
         conditions: [{
             name: 'filter_phone',
             value: false 
-        }, {
-            name: 'filter_invalid_phone',
-            value: true, 
         }],
         processData: (data, chart, analysisInstance, chartIndex) => {
             _.set(chart, 'cardContainer.props.subTitle', renderFilter114(analysisInstance, chartIndex));

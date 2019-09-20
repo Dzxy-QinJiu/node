@@ -20,7 +20,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import contactUtil from '../utils/contact-util';
 const RightPanel = rightPanelUtil.RightPanel;
-import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOpenCash, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 //权限常量
 const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
@@ -128,7 +128,6 @@ class CrmRightPanel extends React.Component {
     };
 
     renderCustomerDetail(){
-        const isCurtao = Oplate.isCurtao === 'true';
         return (
             <div className="customer-detail-content">
                 <BasicInfo isRepeat={this.props.isRepeat}
@@ -192,7 +191,7 @@ class CrmRightPanel extends React.Component {
                                 ) : null}
                             </TabPane>
                             {//用获取客户的用户列表的权限，并且不是从回收站中打开客户详情,并且不是csm.curtao.com域名下，才展示用户列表
-                                hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !this.props.disableEdit && !isCurtao ? (
+                                hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !this.props.disableEdit && !isCurtao() ? (
                                     <TabPane
                                         tab={Intl.get('crm.detail.user', '用户')}
                                         key={TAB_KEYS.USER_TAB}
@@ -212,7 +211,7 @@ class CrmRightPanel extends React.Component {
                                     </TabPane>
                                 ) : null}
                             {//csm.curtao.com域名下不展示订单
-                                isCurtao ? null : (
+                                isCurtao() ? null : (
                                     <TabPane
                                         tab={Intl.get('user.apply.detail.order', '订单')}
                                         key={TAB_KEYS.ORDER_TAB}

@@ -51,6 +51,7 @@ import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -1048,12 +1049,21 @@ class Crm extends React.Component {
     //释放客户
     releaseCustomer = (customerId) => {
         if(this.state.isReleasingCustomer) return;
-        this.setState({isReleasingCustomer: true});
-        crmAjax.releaseCustomer({id: customerId}).then(result => {
-            this.setState({isReleasingCustomer: false});
-            CrmAction.afterReleaseCustomer(customerId);
+        // 单个释放需判断，验证是否有权限处理跟进人
+        crmAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
+            if(res) {
+                this.setState({isReleasingCustomer: true});
+                crmAjax.releaseCustomer({id: customerId}).then(result => {
+                    this.setState({isReleasingCustomer: false});
+                    CrmAction.afterReleaseCustomer(customerId);
+                }, (errorMsg) => {
+                    this.setState({isReleasingCustomer: false});
+                    message.error(errorMsg);
+                });
+            }else {
+                message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
+            }
         }, (errorMsg) => {
-            this.setState({isReleasingCustomer: false});
             message.error(errorMsg);
         });
     };
@@ -1903,7 +1913,7 @@ class Crm extends React.Component {
             }
         ];
         //csm.curtao.com域名下不展示订单
-        if (Oplate.isCurtao === 'true') {
+        if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
         }
         if(!hasPrivilege('CRM_CUSTOMER_SCORE_RECORD')){
