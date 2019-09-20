@@ -7,6 +7,7 @@ import './css/index.less';
 import MyWorkColumn from './views/my-work-column';
 import MyInsterestColumn from './views/my-insterest-column';
 import TeamDataColumn from './views/team-data-column';
+import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import {Row, Col} from 'antd';
 import Trace from 'LIB_DIR/trace';
 
@@ -23,14 +24,13 @@ class HomePage extends React.Component {
     };
 
     render() {
-        let realm = window.location.hostname;
         return (
             <Row className='home-page-container' data-tracename="新版首页">
                 <Col span={10}><MyWorkColumn/></Col>
                 <Col span={7}><TeamDataColumn/></Col>
                 <Col span={7}><MyInsterestColumn/></Col>
                 {/*判断所处域名，curtao下不显示返回旧版 */}
-                {realm.indexOf('curtao') === -1 ? <div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div> : null}
+                {isCurtao() ? null : (<div onClick={this.returnOldPage} className='return-old-btn'>{Intl.get('home.page.return.old', '返回旧版')}</div>)}
             </Row>);
     }
 }

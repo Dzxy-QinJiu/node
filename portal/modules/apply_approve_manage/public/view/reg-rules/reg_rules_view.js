@@ -26,6 +26,7 @@ const FORMLAYOUT = {
 };
 import {FLOW_TYPES, ADDTIONPROPERTIES, ASSIGEN_APPROVER, isSalesOpportunityFlow, isVisitApplyFlow} from '../../utils/apply-approve-utils';
 import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
+import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
 class RegRulesView extends React.Component {
     constructor(props) {
         super(props);
@@ -33,12 +34,13 @@ class RegRulesView extends React.Component {
         this.state = {
             applyRulesAndSetting: applyRulesAndSetting,
             addNodePanelFlow: '',
-            showAddConditionPanel: false
+            showAddConditionPanel: false,
+            ...ApplyApproveManageStore.getState()
         };
     }
 
     onStoreChange = () => {
-
+        this.setState(ApplyApproveManageStore.getState());
     };
 
     componentWillReceiveProps(nextProps) {
@@ -60,8 +62,11 @@ class RegRulesView extends React.Component {
 
         });
         this.createBpmnTool(bpmnModeler);
+        ApplyApproveManageStore.listen(this.onStoreChange);
     }
-
+    componentWillUnmount(){
+        ApplyApproveManageStore.unlisten(this.onStoreChange);
+    }
     createBpmnTool = (bpmnModeler) => {
         //在这个对象上加上相应的操作方法
         this.setState({

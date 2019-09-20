@@ -336,7 +336,7 @@ var CRMAddForm = createReactClass({
                                 callback();
                             } else {
                                 //已存在
-                                callback(Intl.get('crm.83', '该电话已存在'));
+                                callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
                             }
                         }
                     });

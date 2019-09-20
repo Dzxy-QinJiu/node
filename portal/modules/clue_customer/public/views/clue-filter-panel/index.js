@@ -11,7 +11,7 @@ var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import { AntcDatePicker as DatePicker } from 'antc';
 import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE } from '../../utils/clue-customer-utils';
-import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
@@ -144,7 +144,7 @@ class ClueFilterPanel extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         return getClueStatusValue(filterClueStatus);
     };
-    onSelectDate = (start_time, end_time) => {
+    onSelectDate = (start_time, end_time, range) => {
         if (!start_time) {
             //为了防止开始时间不传，后端默认时间是从1970年开始的问题
             start_time = clueStartTime;
@@ -152,7 +152,7 @@ class ClueFilterPanel extends React.Component {
         if (!end_time) {
             end_time = moment().endOf('day').valueOf();
         }
-        FilterAction.setTimeRange({start_time: start_time, end_time: end_time});
+        FilterAction.setTimeRange({start_time: start_time, end_time: end_time, range: range});
         clueCustomerAction.setClueInitialData();
         setTimeout(() => {
             this.props.getClueList();
@@ -199,7 +199,7 @@ class ClueFilterPanel extends React.Component {
     };
     setDefaultSelectCommonFilter = (commonData,notSelfHandle,callback) => {
         var targetIndex = '';
-        if (isSalesRole() && !notSelfHandle){
+        if (getClueUnhandledPrivilege() && !notSelfHandle){
             targetIndex = _.findIndex(commonData, item => item.value === SELECT_TYPE.WAIT_ME_HANDLE);
         }
         _.isFunction(callback) && callback(targetIndex);
@@ -212,8 +212,8 @@ class ClueFilterPanel extends React.Component {
         //线索分类
         const clueClassifyArray = this.state.clueClassifyArray;
         const clueProvinceList = this.handleClueProvinceList();
-        //如果是销售，增加待我处理筛选项
-        if (!isSalesRole()){
+        //如果是销售或者运营，增加待我处理筛选项
+        if (!getClueUnhandledPrivilege()) {
             otherFilterArray = _.filter(otherFilterArray, item => item.value !== SELECT_TYPE.WAIT_ME_HANDLE);
         }
         const commonData = otherFilterArray.map(x => {

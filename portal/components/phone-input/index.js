@@ -56,7 +56,6 @@ class PhoneInput extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-
         return (
             <FormItem
                 label={this.props.hideLable ? '' : (this.props.label ? this.props.label : Intl.get('common.phone', '电话'))}
@@ -64,6 +63,7 @@ class PhoneInput extends React.Component {
                 key={this.props.id}
                 labelCol={this.props.labelCol}
                 wrapperCol={this.props.wrapperCol}
+                required={this.props.label !== ' ' ? this.props.required : false}
             >
                 {getFieldDecorator(this.props.id, {
                     initialValue: addHyphenToPhoneNumber(this.props.initialValue),
@@ -97,6 +97,7 @@ PhoneInput.defaultProps = {
     id: '',
     form: {},
     handleInputChange: noop,
+    required: false,
 };
 PhoneInput.propTypes = {
     label: PropTypes.string,
@@ -112,6 +113,7 @@ PhoneInput.propTypes = {
     id: PropTypes.string,
     form: PropTypes.object,
     handleInputChange: PropTypes.func,
+    required: PropTypes.bool,
 };
 
 const options = {

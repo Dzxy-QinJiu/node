@@ -44,7 +44,6 @@ export function getCustomerTransferChart() {
                 }, {
                     title: Intl.get('user.sales.team', '销售团队'),
                     dataIndex: 'sales_team',
-                    isSetCsvValueBlank: true,
                     width: 100,
                 }
 

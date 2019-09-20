@@ -14,7 +14,7 @@ import CrmScheduleForm from 'MOD_DIR/crm/public/views/schedule/form';
 import DetailCard from 'CMP_DIR/detail-card';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 import Spinner from 'CMP_DIR/spinner';
-import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
+import crmUtil, {AUTHS, TAB_KEYS} from 'MOD_DIR/crm/public/utils/crm-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
@@ -45,6 +45,10 @@ import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import Trace from 'LIB_DIR/trace';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import AddSchedule from 'CMP_DIR/add-schedule';
+import ajax from 'ant-ajax';
+import {CLUE_TO_CUSTOMER_VIEW_TYPE} from 'MOD_DIR/clue_customer/public/consts';
+import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
+import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -103,6 +107,8 @@ class MyWorkColumn extends React.Component {
             isShowRecormendClue: false,//是否展示推荐线索的面板
             guideConfig: [], // 引导流程列表
             userList: [],//分配线索的成员列表
+            isShowClueToCustomerPanel: false,//是否展示线索转客户面板
+            isShowAddCustomerPanel: false//是否展示添加客户面板
         };
     }
 
@@ -124,9 +130,9 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
-
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
     }
 
     componentWillUnmount() {
@@ -140,6 +146,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
     }
 
@@ -247,9 +254,155 @@ class MyWorkColumn extends React.Component {
                 currentId: clueId,
                 hideRightPanel: this.hideClueRightPanel,
                 afterDeleteClue: this.afterDeleteClue,
+                onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick
             }
         });
     }
+    //显示添加客户面板
+    showAddCustomerPanel = () => {
+        this.setState({isShowAddCustomerPanel: true}, () => {
+            this.adjustPanelOrder('showAdd');
+        });
+    };
+    //线索转为新客户完成后的回调事件
+    onConvertClueToNewCustomerDone = (customers) => {
+        const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
+        message.success(msgInfo);
+
+        const curCustomer = _.get(customers, '[0]');
+        const customerId = _.get(curCustomer, 'id');
+
+        if (curCustomer) {
+            //打开客户面板，显示合并后的客户信息
+            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                customer_params: {
+                    curCustomer,
+                    currentId: customerId,
+                    activeKey: TAB_KEYS.CONTACT_TAB,
+                    isUseCustomerContacts: true
+                }
+            });
+        }
+
+        //隐藏添加客户面板
+        this.hideAddCustomerPanel();
+        //隐藏转为客户面板
+        this.hideClueToCustomerPanel();
+    };
+    //隐藏线索转客户面板
+    hideClueToCustomerPanel = () => {
+        this.setState({
+            isShowClueToCustomerPanel: false,
+            clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST
+        });
+    };
+    //合并到其他客户
+    mergeToExistingCustomer = () => {
+        this.setState({
+            //显示线索转客户面板
+            isShowClueToCustomerPanel: true,
+            //显示线索转客户面板上的搜索界面
+            clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_SEARCH,
+        }, () => {
+            this.adjustPanelOrder('showCtc');
+        });
+    }
+
+    //调整线索转客户面板和转为新客户面板z-index的顺序
+    adjustPanelOrder(type) {
+        if(_.isEqual(type, 'showCtc')) {
+            const ctcPanel = $('.clue-to-customer-panel');
+            if (ctcPanel.length) {
+                let ctcPanelZindex = parseInt(ctcPanel.css('z-index'));
+                ctcPanelZindex++;
+                ctcPanel.css('z-index', ctcPanelZindex);
+            }
+        } else {
+            const addPanel = $('.crm-add-container');
+            if (addPanel.length) {
+                let ctcPanelZindex = parseInt(addPanel.css('z-index'));
+                ctcPanelZindex++;
+                addPanel.css('z-index', ctcPanelZindex);
+            }
+        }
+    }
+
+    //调整线索面板面板z-index
+    onAdjustClueToCustomerPanel = () => {
+        const cluePanel = $('.right-pannel-default');
+        if (cluePanel.length) {
+            let cluePanelZindex = parseInt(cluePanel.css('z-index'));
+            //线索面板z-index减一后让转为客户面板展示出来
+            cluePanelZindex--;
+            cluePanel.css('z-index', cluePanelZindex);
+        }
+    }
+
+    //转为客户按钮点击事件
+    onConvertToCustomerBtnClick = (clueId, clueName, phones, e) => {
+        Trace.traceEvent(e, '点击客户列表中的转为客户按钮');
+
+        clueName = _.trim(clueName);
+
+        //线索名为空时不能执行转为客户的操作
+        //此时提示用户完善客户名
+        if (!clueName) {
+            message.error(Intl.get('clue.need.complete.clue.name', '请先完善线索名'));
+            return;
+        }
+
+        if (clueName.length < 2) {
+            message.error(Intl.get('common.clue.name.need.at.least.two.char.to.do.customer.convert', '线索名称必须在两个字或以上，才能进行转为客户的操作'));
+            return;
+        }
+
+        if (_.isArray(phones)) {
+            phones = phones.join(',');
+        } else {
+            phones = '';
+        }
+        //权限类型
+        const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
+
+        //根据线索名称查询相似客户
+        ajax.send({
+            url: `/rest/customer/v3/customer/query/${authType}/similarity/customer`,
+            query: {
+                name: clueName,
+                phones
+            }
+        })
+            .done(result => {
+                const existingCustomers = _.get(result, 'similarity_list');
+
+                let state = {
+                };
+
+                //若存在相似客户
+                if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
+                    state.isShowClueToCustomerPanel = true;
+                    state.isShowAddCustomerPanel = false;
+                    state.existingCustomers = existingCustomers;
+                    state.clueToCustomerPanelViewType = CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST;
+                } else {
+                    state.isShowClueToCustomerPanel = false;
+                    state.isShowAddCustomerPanel = true;
+                }
+                this.setState(state, () => {
+                    this.onAdjustClueToCustomerPanel();
+                });
+            })
+            .fail(err => {
+                const errMsg = Intl.get('member.apply.approve.tips', '操作失败') + Intl.get('user.info.retry', '请重试');
+                message.error(errMsg);
+            });
+    };
+
+    //隐藏添加客户面板
+    hideAddCustomerPanel = () => {
+        this.setState({isShowAddCustomerPanel: false});
+    };
+
     hideClueRightPanel = () => {
 
     }
@@ -303,7 +456,6 @@ class MyWorkColumn extends React.Component {
             isShowCustomerUserListPanel: true,
             customerOfCurUser: data.customerObj
         });
-
     };
 
     closeCustomerUserListPanel = () => {
@@ -1037,6 +1189,38 @@ class MyWorkColumn extends React.Component {
                         /> : null
                     }
                 </RightPanel>
+                {this.state.isShowClueToCustomerPanel ? (
+                    <ClueToCustomerPanel
+                        showFlag={this.state.isShowClueToCustomerPanel}
+                        viewType={this.state.clueToCustomerPanelViewType}
+                        clue={_.get(this.state, 'handlingWork.lead', {})}
+                        existingCustomers={this.state.existingCustomers}
+                        hidePanel={this.hideClueToCustomerPanel}
+                        showAddCustomerPanel={this.showAddCustomerPanel}
+                        onMerged={this.onClueMergedToCustomer}
+                    />
+                ) : null}
+                {this.state.isShowAddCustomerPanel ? (
+                    <CRMAddForm
+                        hideAddForm={this.hideAddCustomerPanel}
+                        addOne={this.onConvertClueToNewCustomerDone}
+                        formData={_.get(this.state, 'handlingWork.lead', {})}
+                        isAssociateClue={true}
+                        isConvert={true}
+                        phoneNum={_.get(this.state, 'handlingWork.lead.phones[0]', '')}
+                        isShowMadal={false}
+                        title={(
+                            <div>
+                                <span className="panel-title">
+                                    {Intl.get('common.convert.to.new.customer', ' 转为新客户')}
+                                </span>
+                                <span className="op-btn" onClick={this.mergeToExistingCustomer}>
+                                    {Intl.get('common.merge.to.other.customer', '合并到其他客户')}
+                                </span>
+                            </div>
+                        )}
+                    />
+                ) : null}
                 {
                     this.state.curShowUserId ?
                         <RightPanel

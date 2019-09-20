@@ -31,6 +31,7 @@ import {
     Menu,
     Dropdown,
     Popconfirm,
+    Popover,
 } from 'antd';
 const {TextArea} = Input;
 const RadioGroup = Radio.Group;
@@ -91,7 +92,7 @@ var LAYOUT_CONSTANTS = {
 import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
 import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
-import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 class ClueCustomer extends React.Component {
     state = {
@@ -126,7 +127,7 @@ class ClueCustomer extends React.Component {
         showRecommendCustomerCondition: false,
         isReleasingClue: false,//是否正在释放线索
         selectedClue: [],//选中的线索
-        //显示内容
+        isShowRefreshPrompt: false,//是否展示刷新线索面板的提示        isBatchChangeTraceLoading: false,//线索批量分配是否正在进行        //显示内容
         ...clueCustomerStore.getState()
     };
     isCommonSales = () => {
@@ -148,6 +149,7 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.on(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
+        notificationEmitter.on(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
             this.showAddForm();
@@ -260,8 +262,16 @@ class ClueCustomer extends React.Component {
             }
         });
         this.setState({
-            selectedClues: []
+            selectedClues: [],
+            isBatchChangeTraceLoading: true
         });
+        //当最后一个推送完成后
+        if(_.isEqual(taskInfo.running, 0)) {
+            //批量操作删除之后，才允许进行下一次批量操作
+            this.setState({
+                isBatchChangeTraceLoading: false
+            });
+        }
     };
     removeClueItem = (item) => {
         //在列表中删除线索
@@ -281,6 +291,35 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.removeListener(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
+        notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
+    }
+
+    //有新线索时线索面板添加刷新提示
+    showRefreshPrompt = (data) => {
+        if(!_.isEmpty(data) && _.isObject(data)) {
+            //如果当前无线索，直接展示刷新提示
+            if(_.isEmpty(this.state.curClueLists)) {
+                this.setState({
+                    isShowRefreshPrompt: true
+                });
+            } else {
+                let clue_list = _.get(data, 'clue_list', []);
+                _.map(clue_list, clue => {
+                    //判断是否推送的线索为当前tab下的线索
+                    let status = clue.status;
+                    //线索类型
+                    let typeFilter = this.getFilterStatus();
+                    if(_.isEqual(status, typeFilter.status)) {
+                        //如果当前已经展示了刷新提示，不做操作
+                        if(!_.get(this.state, 'isShowRefreshPrompt')) {
+                            this.setState({
+                                isShowRefreshPrompt: true
+                            });
+                        }
+                    }
+                });
+            }
+        }
     }
 
     //展示右侧面板
@@ -650,6 +689,12 @@ class ClueCustomer extends React.Component {
     };
     //获取线索列表
     getClueList = () => {
+        //如果有刷新提示，点击刷新提示获取线索列表的，将刷新提示清除
+        if(_.get(this.state, 'isShowRefreshPrompt')) {
+            this.setState({
+                isShowRefreshPrompt: false
+            });
+        }
         var filterStoreData = clueFilterStore.getState();
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
@@ -1205,7 +1250,8 @@ class ClueCustomer extends React.Component {
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
             'firefox-padding': this.isFireFoxBrowser(),
-            'status-type-hide': isFirstLoading
+            'status-type-hide': isFirstLoading,
+            'has-refresh-tip': _.get(this.state, 'isShowRefreshPrompt')
         });
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
@@ -1731,6 +1777,10 @@ class ClueCustomer extends React.Component {
                     this['changesale' + clue_id].handleCancel();
                 }
             }else{
+                //更新是否批量处理结束状态
+                this.setState({
+                    isBatchChangeTraceLoading: true
+                });
                 //这个是批量修改联系人
                 if (this.refs.changesales) {
                     //隐藏批量变更销售面板
@@ -2059,7 +2109,23 @@ class ClueCustomer extends React.Component {
     }
     getCluePrevList = () => {
         var _this = this;
+        var requiredText = <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
+            {Intl.get('apply.components.required.item', '必填')}
+        </span>;
         let previewColumns = [
+            {
+                title: Intl.get('clue.analysis.consult.time', '咨询时间'),
+                dataIndex: 'source_time',
+                render: function(text, record) {
+                    if (text) {
+                        return (
+                            <span>{record.source_time ? moment(record.source_time).format(oplateConsts.DATE_FORMAT) : null}</span>
+                        );
+                    }else{
+                        return requiredText;
+                    }
+                }
+            },
             {
                 title: Intl.get('clue.customer.clue.name', '线索名称'),
                 dataIndex: 'name',
@@ -2084,10 +2150,7 @@ class ClueCustomer extends React.Component {
                         }
                         return (<span className={cls} title={title}>{text}</span>);
                     } else {//必填
-                        return (
-                            <span className='repeat-item-name' title={Intl.get('crm.import.required', '必填项，不能为空')}>
-                                {Intl.get('apply.components.required.item', '必填')}
-                            </span>);
+                        return requiredText;
                     }
                 }
             },
@@ -2104,7 +2167,7 @@ class ClueCustomer extends React.Component {
             {
                 title: Intl.get('common.phone', '电话'),
                 render: (text, record, index) => {
-                    if (_.isArray(_.get(record, 'contacts[0].phone'))) {
+                    if (text && _.isArray(_.get(record, 'contacts[0].phone'))) {
                         return _.map(_.get(record, 'contacts[0].phone'), (item, index) => {
                             //电话规则不匹配的电话列表
                             let phone_verify_list = _.get(record, 'errors.phone_verify');
@@ -2129,6 +2192,8 @@ class ClueCustomer extends React.Component {
                             }
                             return (<div className={cls} title={title} key={index}>{item}</div>);
                         });
+                    }else{
+                        return requiredText;
                     }
                 }
             },
@@ -2342,8 +2407,49 @@ class ClueCustomer extends React.Component {
         });
     };
 
+    //渲染批量分配按钮
+    renderBatchChangeButton = () => {
+        //批量分配是否结束
+        let isBatchTraceFinish = !_.get(this.state, 'isBatchChangeTraceLoading');
+        //批量操作的警告信息
+        let batchWarningContent = (<span className="batch-error-tip">
+            <span className="iconfont icon-warn-icon"></span>
+            <span className="batch-error-text">
+                {Intl.get('clue.batch.assign.sales.pending', '批量分配进行中，请稍后再试!')}
+            </span>
+        </span>);
+        if(isBatchTraceFinish) {
+            return (<AntcDropdown
+                ref='changesales'
+                content={<Button type="primary"
+                    data-tracename="点击分配线索客户按钮"
+                    className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
+                overlayTitle={Intl.get('user.salesman', '销售人员')}
+                okTitle={Intl.get('common.confirm', '确认')}
+                cancelTitle={Intl.get('common.cancel', '取消')}
+                isSaving={this.state.distributeBatchLoading}
+                overlayContent={this.renderSalesBlock()}
+                handleSubmit={this.handleSubmitAssignSalesBatch}
+                unSelectDataTip={this.state.unSelectDataTip}
+                clearSelectData={this.clearSelectSales}
+                btnAtTop={false}
+            />);
+        } else {
+            return (<Popover
+                overlayClassName="batch-invalid-popover"
+                placement="bottomRight"
+                content={batchWarningContent}
+                trigger="click"
+            >
+                <Button type="primary" className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>
+            </Popover>);
+        }
+    }
+
     //渲染批量操作按钮
     renderBatchChangeClues = () => {
+        //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
+        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
         let filterClueStatus = clueFilterStore.getState().filterClueStatus;
         let curStatus = getClueStatusValue(filterClueStatus);
         //除了运营不能释放线索，管理员、销售都可以释放
@@ -2351,28 +2457,10 @@ class ClueCustomer extends React.Component {
         let filterStore = clueFilterStore.getState();
         //只有待跟进和已跟进和无效tab才有批量操作
         let batchRule = _.isEqual(curStatus.status, SELECT_TYPE.WILL_TRACE) || _.isEqual(curStatus.status, SELECT_TYPE.HAS_TRACE) || _.isEqual(filterStore.filterClueAvailability, AVALIBILITYSTATUS.INAVALIBILITY);
-        //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
-        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
         return (
             <div className="pull-right">
                 <div className="pull-right">
-                    { showBatchChange ?
-                        (<AntcDropdown
-                            ref='changesales'
-                            content={<Button type="primary"
-                                data-tracename="点击分配线索客户按钮"
-                                className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
-                            overlayTitle={Intl.get('user.salesman', '销售人员')}
-                            okTitle={Intl.get('common.confirm', '确认')}
-                            cancelTitle={Intl.get('common.cancel', '取消')}
-                            isSaving={this.state.distributeBatchLoading}
-                            overlayContent={this.renderSalesBlock()}
-                            handleSubmit={this.handleSubmitAssignSalesBatch}
-                            unSelectDataTip={this.state.unSelectDataTip}
-                            clearSelectData={this.clearSelectSales}
-                            btnAtTop={false}
-                        />) : null
-                    }
+                    {showBatchChange ? this.renderBatchChangeButton() : null}
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
@@ -2471,6 +2559,32 @@ class ClueCustomer extends React.Component {
         });
     }
 
+    //渲染有新线索，刷新页面提示
+    getClueRefreshPrompt = () => {
+        return (
+            <div className="new-clue-prompt">
+                <span className="iconfont icon-warn-icon"></span>
+                <div className="prompt-sentence">
+                    <ReactIntl.FormattedMessage
+                        id="clue.customer.refresh.tip"
+                        defaultMessage={'有新线索，{refreshPage}查看'}
+                        values={{
+                            'refreshPage': <a
+                                onClick={this.getClueList}>{Intl.get('clue.customer.refresh.page', '刷新页面')}</a>
+                        }}
+                    />
+                </div>
+                <span className="iconfont icon-close" onClick={this.closeRefreshPrompt}></span>
+            </div>
+        );
+    }
+    //关闭刷新界面
+    closeRefreshPrompt = () => {
+        this.setState({
+            isShowRefreshPrompt: false
+        });
+    }
+
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2527,6 +2641,7 @@ class ClueCustomer extends React.Component {
                             />
                         </div>
                         <div className={contentClassName}>
+                            {_.get(this.state, 'isShowRefreshPrompt') ? this.getClueRefreshPrompt() : null}
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>

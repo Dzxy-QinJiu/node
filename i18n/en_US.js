@@ -1,4 +1,6 @@
 
+
+
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -9,6 +11,7 @@ var en_US = {
     'service.not.available': 'Sorry, service is temporarily not available, please try again later...',
     'weixin.mini.program': 'Mini program',
     'customer.service': 'Customer service',
+    'login.apply.trial': '', // 申请试用
     //菜单
     'menu.crm': 'Customers',//客户管理
     'menu.call': 'Call Records',//通话记录
@@ -263,6 +266,22 @@ var en_US = {
     'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
     'common.create': 'Create', // 创建
     'common.stage.describe': 'the description of stage', // 阶段描述
+    'common.name.rule.regex': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and {length}', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间
+    'common.the.performance.of.subsidiary': 'the performance of subsidiary',//业绩明细
+    'common.personal.collection': 'personal collection',//个人回款
+    'common.personal.collection.gross.profit': 'personal collection gross profit',//个人回款毛利
+    'common.personal.newly.signed.gross.profit': 'personal newly signed gross profit',//个人新签回款毛利
+    'common.personal.contribution.40.percent': 'personal contribution (40%)',//个人贡献(占40%)
+    'common.personal.sales.expenses': 'personal sales expenses',//个人销售费用
+    'common.personal.sales.expenses.ten.thousand.yuan': 'personal sales expenses (ten thousand yuan)',//个人销售费用（单位万元）
+    'common.contract.details.ten.thousand.yuan': 'contract details (ten thousand yuan)',//合同详情（单位万元）
+    'common.gross.profit.rate.30.percent': 'gross profit rate (30%)',//回款毛利率(占30%)
+    'common.gross.profit.of.newly.signed.payment.30.percent': 'gross profit of newly signed payment (30%)',//新签回款毛利 (占30%)
+    'common.lost.contract.amount': 'lost contract amount',//流失合同金额
+    'common.to.renew': 'to renew',//续签
+    'common.maximum.personal.contribution': 'maximum personal contribution',//个人贡献最大值
+    'common.the.maximum.gross.profit.rate': 'the maximum gross profit rate',//回款毛利率最大值
+    'common.maximum.gross.margin.of.newly.signed.payment': 'maximum gross margin of newly signed payment',//新签回款毛利最大值
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -875,6 +894,9 @@ var en_US = {
     'organization.save.delete.group.failed': 'Delete organization failed',//删除组织失败
     'organization.get.add.organization.member.list.failed': 'Failed to get member lists that who can join  the organization',//获取可加入组织的成员列表失败
     'organization.no.realms': 'There is no realm',//还没有安全域诶..
+    'organization.name.existed': 'The name of organization was existed', // 组织名称已存在!
+    'organization.name.is.unique': 'The name of organization already exists', // 组织名称唯一性校验出错！
+    'organization.tree.name.placeholder': 'Please enter the name of {name}', // 请输入{name}名称
     //组织管理end
 
     // 后台管理- 产品start
@@ -1550,6 +1572,7 @@ var en_US = {
     'crm.sales.customerStage': 'customer stage statistic',//'客户阶段变更统计',
     'crm.sales.newTrailCustomer': 'new customer statistic',//'新开试用、签约客户数统计',
     'crm.repeat.phone': 'Phone repeating',//电话重复
+    'crm.repeat.phone.user': 'The phone has been used by customer {userName}',//该电话已被客户"{userName}"使用
     'crm.repeat.phone.unhandle': 'You have an unprocessed repeat phone: ',//您还有未处理的重复电话：
     'crm.order.stage': 'Order stage',//订单阶段
     'crm.basic.detail.show': 'Show detail',//展开详情
@@ -1711,6 +1734,9 @@ var en_US = {
     'crm.customer.extract.time': 'Extract time',//释放时间
     'crm.customer.release.customer': 'Release customer',//释放客户
     'crm.customer.extract.limit.tip': 'Up to 20 customers at a time',//一次最多提取20个客户
+    'crm.customer.release.push.tip': 'The customer {customerName} is released to the customer pool by {operatorName}',//客户{customerName}被{operatorName}释放到了客户池
+    'crm.customer.batch.release.push.tip': '{customerName}, etc. {count} customers are released to the customer pool by {operatorName}',//{customerName}等{count}个客户被{operatorName}释放到了客户池
+
     'crm.customer.rule.name': 'Rules set',//规则设置
     'crm.add.customer.pool.rule': 'Add rules',//添加规则
     'crm.customer.pool.rule.name': '{name} customer pool',//{name}客户池
@@ -1739,6 +1765,7 @@ var en_US = {
     'crm.pool.max.selected.num': 'Extract {num} at most each time',//每次最多提取{num}个
     'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
     'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
+    'crm.filter.extract.from.customer.pool': 'Customers extracted from the customer pool',//从客户池中提取的客户
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -2421,6 +2448,7 @@ var en_US = {
     'errorcode.163': 'The number of members has been reached.', // 成员数量已达上限
     'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
+    'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2910,6 +2938,8 @@ var en_US = {
     'clue.export.clue.list': 'Export clue',//导出线索
     'clue.extract.clue': 'Extract clue', // 提取线索
     'clue.release': 'Release Clue',//释放线索
+    'clue.customer.refresh.tip': 'You have new clues, please {refreshPage} to check',//有新线索，{refreshPage}查看
+    'clue.customer.refresh.page': 'refresh page',//刷新页面
     'clue.pool': 'Clue Pool', // 线索池
     'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
@@ -2950,6 +2980,9 @@ var en_US = {
     'crm.order.stage.destrip.palceholder': 'Please fill in stage description',//请输入阶段的描述信息
     'crm.order.stage.nodata.tips': 'No order stage, please add first', // 暂无订单阶段，请先添加
     'crm.order.stage.name.verify': 'The stage name is existed', // 该阶段名称已存在
+    'crm.release.no.permissions': 'You cannot release a co-follow up customer',//您不能释放共同跟进的客户
+    'crm.no.permissions.update.sales': 'You do not have permission to modify the person in charge',//您没有权限修改负责人
+    'crm.no.permissions.update.second.team': 'You do not have permission to modify the joint followup',//您没有权限修改联合跟进人
 
     'failed.get.all.leave.apply': 'Failed to get all business trip lists',//获取全部出差申请失败
     'failed.get.all.sales.oppotunity': 'Failed to get all sales oppotunities',//获取全部销售机会申请失败
@@ -3197,6 +3230,7 @@ var en_US = {
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
+    'clue.batch.assign.sales.pending': 'Batch Assignment is in progress. please try it later!',//批量分配进行中，请稍后再试!
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
@@ -3258,8 +3292,8 @@ var en_US = {
     'clue.filter.wait.me.handle': 'Wait me to handle',//待我处理
     'clue.item.source.from': 'From {source}',//来自“{source}”
     'clue.item.acceess.channel': 'Detail: {content}',//详情：“{content}”
-    'clue.show.no.show.tip': 'There has {num} notices not showing',//还有{num}个提醒未展示
-    'clue.close.all.noty': 'Close all notices',//关闭所有提醒？
+    'clue.show.no.show.tip': 'There has {num} new clues not showing',//还有{num}个新线索未展示
+    'clue.close.all.noty': 'Close all',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
     /*自定义审批 start*/
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
@@ -3428,7 +3462,7 @@ var en_US = {
     'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization today has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} today and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
-    'clue.customer.noty.all.list': 'Click to see all clues?',//查看所有线索？
+    'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
     'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
     'common.collection.of.gross.profit.margin.score': 'Collection of gross profit margin score',//回款毛利率分数
@@ -3448,6 +3482,7 @@ var en_US = {
     'clue.diff.type.tab.title.notrace': 'No effective follow-up (phone not open or not written follow-up record)',//未做有效跟进（电话未打通或未写跟进记录）
     'clue.diff.type.tab.title.hastrace': 'Has been effectively followed up (has been opened or has written follow-up records)',//已做有效跟进（已打通或已写跟进记录）
     'clue.diff.type.tab.title.hastransfer': 'Converted to customer',//已转化为客户
-    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid'//标记为无效
+    'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid',//标记为无效
+    'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
 };
 export default en_US;
