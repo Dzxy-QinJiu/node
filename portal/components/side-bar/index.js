@@ -65,7 +65,7 @@ class SideBar extends React.Component {
                     {
                         this.state.showChat ? (
                             <Button className='apply-btn'>
-                                <a href="https://www.curtao.com" target="_blank" rel="noopener noreferrer">
+                                <a href="https://www.curtao.com/apply" target="_blank" rel="noopener noreferrer">
                                     {Intl.get('login.apply.trial', '申请试用')}
                                 </a>
                             </Button>
