@@ -14,8 +14,8 @@ class RightPanelModal extends React.Component {
         return (
             <div className={panelClass} data-tracename={this.props.dataTracename || ''}>
                 {this.props.isShowCloseBtn ? (
-                    <span className="iconfont icon-close close-modal-btn" onClick={this.props.onClosePanel}/>) : null}
-                <div className="right-panel-modal-content">
+                    <span className="iconfont icon-close close-modal-btn" onClick={this.props.onClosePanel} style={this.props.width ? {right: this.props.width} : null}/>) : null}
+                <div className="right-panel-modal-content" style={this.props.width ? {width: this.props.width} : null}>
                     {this.props.title ? (
                         <div className="right-panel-modal-title">
                             {this.props.title}
@@ -29,6 +29,8 @@ class RightPanelModal extends React.Component {
 
 RightPanelModal.propTypes = {
     className: PropTypes.string,
+    //面板宽度
+    width: PropTypes.number,
     //是否展示遮罩层
     isShowMadal: PropTypes.bool,
     //是否展示关闭按钮

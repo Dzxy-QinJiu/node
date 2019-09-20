@@ -191,7 +191,7 @@ class phoneStatusTop extends React.Component {
         });
     };
     onClickMenu = ({ key }) => {
-        var inputContent = commonPhoneDesArray[key];
+        var inputContent = _.get(commonPhoneDesArray,`[${key}].value`);
         phoneAlertAction.setContent(inputContent);
         if (this['addTextare']) {
             this['addTextare'].focus();
@@ -212,12 +212,17 @@ class phoneStatusTop extends React.Component {
             <Option value={item.id} key={item.id}>{item.name}</Option>
         ));
         const menu =
-            <Menu onClick={this.onClickMenu}>{_.isArray(commonPhoneDesArray) ? commonPhoneDesArray.map((Des, idx) => {
-                //如果电话已经接通，不需要展示 “未接通这个提示”
-                if (phonemsgObj.billsec > 0 && idx === 0) {
-                    return;
+            <Menu onClick={this.onClickMenu}>{_.isArray(commonPhoneDesArray) ? commonPhoneDesArray.map((item, idx) => {
+                if (phonemsgObj.billsec > 0) {
+                    if (!item.key){
+                        return;
+                    }
+                }else{
+                    if (item.key){
+                        return;
+                    }
                 }
-                return (<Menu.Item key={idx} value={Des}>{Des}</Menu.Item>);
+                return (<Menu.Item key={idx} value={item.value}>{item.value}</Menu.Item>);
             }) : null}</Menu>
         ;
         //通话记录的编辑状态

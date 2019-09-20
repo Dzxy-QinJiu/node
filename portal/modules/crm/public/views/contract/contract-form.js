@@ -31,6 +31,7 @@ class Contract extends React.Component {
             end_time: moment().add(1, 'year').valueOf(),
             contract_amount: 0,
             gross_profit: 0,
+            remarks: '',
         }, // 合同信息
         products: [] // 产品数据
     };
@@ -235,6 +236,20 @@ class Contract extends React.Component {
                                 onChange={this.handleProductChange}
                             />
                         </FormItem>
+                        <FormItem {...formItemLayout} label={Intl.get('common.remark', '备注')}>
+                            {
+                                getFieldDecorator('remarks', {
+                                    initialValue: _.get(formData, 'remarks', '')
+                                })(
+                                    <Input.TextArea
+                                        className="ant-textarea"
+                                        autosize={{minRows: 2, maxRows: 6}}
+                                        placeholder={Intl.get('user.input.remark', '请输入备注')}
+
+                                    />
+                                )
+                            }
+                        </FormItem>
                     </Form>
                 </div>
             </div>
@@ -267,12 +282,13 @@ class Contract extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         Trace.traceEvent(event, '点击保存按钮');
-        this.props.form.validateFields((err) => {
+        this.props.form.validateFields((err, values) => {
             if (err) {
                 return;
             } else {
                 // 添加时的数据
                 let reqData = _.cloneDeep(this.state.formData);
+                reqData.remarks = _.get(values, 'remarks', '');//备注
                 reqData.category = this.state.contractType; // 合同类型
                 reqData.label = this.state.contractLabel; // 合同签约类型
                 reqData.user_id = UserData.getUserData().user_id || '';

@@ -262,18 +262,39 @@ class Crm extends React.Component {
         if (query.add === 'true') {
             this.showAddForm();
         }
+        // 一进来就要显示筛选
+        if(this.props.isExtractSuccess) {
+            setTimeout(() => {
+                _.isFunction(this.refs.filterinput.handleToggle) && this.refs.filterinput.handleToggle();
+            });
+        }
     }
-    //设置了关注客户置顶后的参数处理
-    handleSortParams(params){
-        //字符串类型的排序字段，key需要在字段后面加上.row
+    //处理sort_and_orders字段
+    handleSortParams(params, filterStoreCondition){
         const customerSortMap = crmUtil.CUSOTMER_SORT_MAP;
-        params.sort_and_orders = JSON.stringify([
-            {key: customerSortMap['interest_member_ids'], value: 'ascend'},
-            {
+        let sort_and_orders = [];
+        //字符串类型的排序字段，key需要在字段后面加上.row
+        //设置了关注客户置顶后的处理
+        if (this.state.isConcernCustomerTop) {
+            sort_and_orders = [
+                {key: customerSortMap['interest_member_ids'], value: 'ascend'}
+            ];
+        }
+        //如果常用筛选选中了从客户池中提取的客户
+        if(_.get(filterStoreCondition,'otherSelectedItem') === OTHER_FILTER_ITEMS.EXTRACT_TIME) {
+            sort_and_orders.push({
+                key: OTHER_FILTER_ITEMS.EXTRACT_TIME,
+                value: _.get(this.state, 'sorter.order', 'ascend')
+            });
+        }
+        if(_.get(sort_and_orders,'[0]')) {
+            sort_and_orders.push({
                 key: customerSortMap[this.state.sorter.field] || customerSortMap['id'],
                 value: _.get(this.state, 'sorter.order', 'ascend')
-            }
-        ]);
+            });
+            params.sort_and_orders = JSON.stringify(sort_and_orders);
+        }
+
         return params;
     }
 
@@ -797,6 +818,13 @@ class Crm extends React.Component {
                     type: 'time'
                 };
                 break;
+            case OTHER_FILTER_ITEMS.EXTRACT_TIME://从客户池提取的客户
+                this.state.rangParams[0] = {
+                    from: moment().year(2019).startOf('year').valueOf(),
+                    name: 'extract_time',
+                    type: 'time'
+                };
+                break;
         }
         //近30天拨打未接通的客户筛选
         if(condition.otherSelectedItem === OTHER_FILTER_ITEMS.THIRTY_NO_CONNECTION) {
@@ -847,8 +875,9 @@ class Crm extends React.Component {
                 type: 'time'
             };
         } else if (condition.otherSelectedItem !== OTHER_FILTER_ITEMS.MULTI_ORDER
-            && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED) {
-            //既不是超xx天未联系的客户、也不是xx天的活跃、不是多个订单客户、也不是本周未联系考核的过滤时，传默认的设置
+            && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.THIS_WEEK_CONTACTED
+            && condition.otherSelectedItem !== OTHER_FILTER_ITEMS.EXTRACT_TIME ) {
+            //既不是超xx天未联系的客户、也不是xx天的活跃、不是多个订单客户、不是本周未联系考核、也不是从客户池提取的客户的过滤时，传默认的设置
             this.state.rangParams[0] = DEFAULT_RANGE_PARAM;
         }
         if (interval) {
@@ -886,10 +915,8 @@ class Crm extends React.Component {
         if (_.get(rangParams, '[0].from') || _.get(rangParams, '[0].to')) {
             params.rangParams = JSON.stringify(rangParams);
         }
-        //设置了关注客户置顶后的处理
-        if (this.state.isConcernCustomerTop) {
-            params = this.handleSortParams(params);
-        }
+        //处理sort_and_orders字段
+        params = this.handleSortParams(params, filterStoreCondition);
 
         //如果是通过列表面板打开的
         if (this.props.listPanelParamObj) {
@@ -1939,6 +1966,9 @@ class Crm extends React.Component {
         const tableLoadingClassName = classNames('table-loading-wrap', {
             'content-full': !this.state.showFilterList
         });
+        var filterCls = classNames('filter-container',{
+            'filter-close': !this.state.showFilterList
+        });
 
         return (<RightContent>
             <div className="crm_content">
@@ -1991,7 +2021,7 @@ class Crm extends React.Component {
                         {
                             !this.props.fromSalesHome ?
                                 <div
-                                    className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
+                                    className={filterCls}>
                                     <CrmFilterPanel
                                         ref="crmfilterpanel"
                                         search={this.search.bind(this, true)}
@@ -1999,6 +2029,7 @@ class Crm extends React.Component {
                                         style={{ width: 300, height: this.state.tableHeight + 100 }}
                                         filterPanelHeight={this.state.filterPanelHeight}
                                         changeTableHeight={this.changeTableHeight}
+                                        isExtractSuccess={this.props.isExtractSuccess}
                                     />
                                 </div> : null
                         }
@@ -2115,6 +2146,7 @@ class Crm extends React.Component {
 Crm.defaultProps = {
     location: {},
     fromSalesHome: false,
+    isExtractSuccess: false,
     showRepeatCustomer: function() {
     },
     params: {},
@@ -2130,6 +2162,7 @@ Crm.propTypes = {
     params: PropTypes.object,
     showCustomerRecycleBin: PropTypes.func,
     showCustomerPool: PropTypes.func,
+    isExtractSuccess: PropTypes.bool,
 };
 
 module.exports = Crm;

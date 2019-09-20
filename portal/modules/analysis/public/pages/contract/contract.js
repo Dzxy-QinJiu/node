@@ -33,13 +33,6 @@ function getCharts() {
         contractChart.getContractIndustryChart(),
         //地域分布
         contractChart.getContractZoneChart(),
-        //团队分布及完成率
-        contractChart.getContractTeamChart({
-            contractType: 'added',
-            noShowCondition: {
-                callback: () => isSales()
-            }
-        }),
         //签单情况统计表
         contractChart.getSingingChart(),
     ];
