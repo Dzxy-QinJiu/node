@@ -1,3 +1,5 @@
+
+
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -271,6 +273,21 @@ var zh_CN = {
     'common.create': '创建',
     'common.stage.describe': '阶段描述',
     'common.name.rule.regex': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间',
+    'common.the.performance.of.subsidiary': '业绩明细',
+    'common.personal.collection': '个人回款',
+    'common.personal.collection.gross.profit': '个人回款毛利',
+    'common.personal.newly.signed.gross.profit': '个人新签回款毛利',
+    'common.personal.contribution.40.percent': '个人贡献(占40%)',
+    'common.personal.sales.expenses': '个人销售费用',
+    'common.personal.sales.expenses.ten.thousand.yuan': '个人销售费用（单位万元）',
+    'common.contract.details.ten.thousand.yuan': '合同详情（单位万元）',
+    'common.gross.profit.rate.30.percent': '回款毛利率(占30%)',
+    'common.gross.profit.of.newly.signed.payment.30.percent': '新签回款毛利(占30%)',
+    'common.lost.contract.amount': '流失合同金额',
+    'common.to.renew': '续签',
+    'common.maximum.personal.contribution': '个人贡献最大值',
+    'common.the.maximum.gross.profit.rate': '回款毛利率最大值',
+    'common.maximum.gross.margin.of.newly.signed.payment': '新签回款毛利最大值',
 
     //公共部分--end
     'login.login': '登录',

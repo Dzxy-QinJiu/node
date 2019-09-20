@@ -4,7 +4,8 @@
 
 import { listPanelEmitter, detailPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
-import { Row, Col } from 'antd';
+import { num as antUtilNum } from 'ant-utils';
+import { AntcTable } from 'antc';
 
 let conditionCache = {};
 
@@ -19,48 +20,44 @@ export function getCustomerManagerPerformanceRankingChart() {
             name: 'page_size',
             value: 1000,
         }],
+        argCallback: arg => {
+            conditionCache = arg.query;
+        },
         dataField: 'list',
-        processData: (data, chart, analysisInstance) => {
-            const conditions = _.cloneDeep(analysisInstance.state.conditions);
-
-            chart.option = {
-                columns: [{
-                    title: Intl.get('user.user.team', '团队'),
-                    dataIndex: 'sales_team',
-                    width: '10%',
-                }, {
-                    title: Intl.get('sales.home.sales', '销售'),
-                    dataIndex: 'member_name',
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.gross.margin.score.of.newly.signed.refund', '新签回款毛利分数'),
-                    dataIndex: 'new_gross_profit_performance',
-                    render: clickableCellRender.bind(null, conditions, 'new_gross_profit_performance'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.personal.contribution.score', '个人贡献分数'),
-                    dataIndex: 'contribution_performance',
-                    render: clickableCellRender.bind(null, conditions, 'contribution_performance'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.collection.of.gross.profit.margin.score', '回款毛利率分数'),
-                    dataIndex: 'gross_profit_rate_performance',
-                    render: clickableCellRender.bind(null, conditions, 'gross_profit_rate_performance'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.total.points', '总分'),
-                    dataIndex: 'performance',
-                    sorter: sorter.bind(null, 'performance'),
-                    width: '10%',
-                }, {
-                    title: Intl.get('common.rank', '名次'),
-                    dataIndex: 'order',
-                    sorter: sorter.bind(null, 'order'),
-                    width: '10%',
-                }],
-            };
-
-            return data;
+        option: {
+            onRowClick: onRankingRowClick,
+            rowClassName: () => 'clickable',
+            columns: [{
+                title: Intl.get('user.user.team', '团队'),
+                dataIndex: 'sales_team',
+                width: '10%',
+            }, {
+                title: Intl.get('sales.home.sales', '销售'),
+                dataIndex: 'member_name',
+                width: '10%',
+            }, {
+                title: Intl.get('common.gross.margin.score.of.newly.signed.refund', '新签回款毛利分数'),
+                dataIndex: 'new_gross_profit_performance',
+                width: '10%',
+            }, {
+                title: Intl.get('common.personal.contribution.score', '个人贡献分数'),
+                dataIndex: 'contribution_performance',
+                width: '10%',
+            }, {
+                title: Intl.get('common.collection.of.gross.profit.margin.score', '回款毛利率分数'),
+                dataIndex: 'gross_profit_rate_performance',
+                width: '10%',
+            }, {
+                title: Intl.get('common.total.points', '总分'),
+                dataIndex: 'performance',
+                sorter: sorter.bind(null, 'performance'),
+                width: '10%',
+            }, {
+                title: Intl.get('common.rank', '名次'),
+                dataIndex: 'order',
+                sorter: sorter.bind(null, 'order'),
+                width: '10%',
+            }],
         },
         processOption: option => {
             const uniqTeams = _.uniqBy(option.dataSource, 'sales_team');
@@ -82,29 +79,9 @@ export function getCustomerManagerPerformanceRankingChart() {
     }
 }
 
-function clickableCellRender(conditions, type, value, record) {
-    return (
-        <span
-            style={{cursor: 'pointer'}}
-            onClick={handleNumberClick.bind(null, conditions, type, record)}
-        >
-            {value}
-        </span>
-    );
-}
-
-function handleNumberClick(conditions, type, record) {
-    conditions = _.filter(conditions, item => _.includes(['interval', 'start_time', 'end_time'], item.name));
-
-    conditions.push({
-        name: 'type',
-        value: type
-    }, {
-        name: 'member_ids',
-        value: record.member_id
-    });
-
-    conditionCache = conditions;
+//排名表格行点击处理事件
+function onRankingRowClick(record) {
+    conditionCache.member_ids = record.member_id;
 
     const columns = [
         {
@@ -119,92 +96,207 @@ function handleNumberClick(conditions, type, record) {
         },
     ];
 
-    const paramObj = {
-        listType: 'customer',
+    ajax.send({
         url: '/rest/analysis/contract/contract/v2/all/performance/order/account_manager/detail',
-        dataField: null,
-        conditions,
-        columns,
-        onRowClick: showDetail
-    };
-
-    listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+        query: conditionCache
+    }).then(result => {
+        const paramObj = {
+            title: record.sales_team + record.member_name + Intl.get('common.the.performance.of.subsidiary', '业绩明细'),
+            content: getPerformanceDetailContent(result),
+        };
+    
+        listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+    });
 }
 
-function showDetail(record) {
-    const type = record.key;
-    let query = {};
-
-    _.each(conditionCache, item => {
-        query[item.name] = item.value;
+//获取业绩详情内容
+function getPerformanceDetailContent(result) {
+    _.each(result, (value, key) => {
+        value.row_title = Intl.get('common.the.numerical', '数值');
     });
 
-    query.type = type;
+    const newGrossProfitColumns = [{
+        title: Intl.get('common.personal.newly.signed.gross.profit', '个人新签回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'new_repayment_gross_profit',
+    }, {
+        title: Intl.get('common.maximum.gross.margin.of.newly.signed.payment', '新签回款毛利最大值') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'max',
+    }];
+
+    const contributionColumns = [{
+        title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'repayment_gross_profit',
+    }, {
+        title: Intl.get('common.lost.contract.amount', '流失合同金额') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'churn_amount',
+    }, {
+        title: Intl.get('common.personal.sales.expenses', '个人销售费用') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'cost',
+    }, {
+        title: Intl.get('common.maximum.personal.contribution', '个人贡献最大值') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'max',
+    }];
+
+    const grossProfitRateColumns = [{
+        title: Intl.get('common.personal.collection', '个人回款') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'repayment_amount',
+    }, {
+        title: Intl.get('common.personal.collection.gross.profit', '个人回款毛利') + '（' + Intl.get('contract.155', '元') + '）',
+        dataIndex: 'repayment_gross_profit',
+    }, {
+        title: Intl.get('common.the.maximum.gross.profit.rate', '回款毛利率最大值') + '（%）',
+        dataIndex: 'max',
+    }];
+
+    return (
+        <div style={{width: 740, margin: '0 auto'}}>
+            {getPerformanceDetailTable(Intl.get('common.gross.profit.of.newly.signed.payment.30.percent', '新签回款毛利(占30%)'), newGrossProfitColumns, [result.new_gross_profit_performance])}
+            {getPerformanceDetailTable(Intl.get('common.personal.contribution.40.percent', '个人贡献(占40%)'), contributionColumns, [result.contribution_performance])}
+            {getPerformanceDetailTable(Intl.get('common.gross.profit.rate.30.percent', '回款毛利率(占30%)'), grossProfitRateColumns, [result.gross_profit_rate_performance])}
+        </div>
+    );
+}
+
+//获取业绩详情表格
+function getPerformanceDetailTable(title, columns, data) {
+    _.each(columns, column => {
+        column.render = metricsValueRender.bind(column);
+    });
+
+    columns.unshift({
+        title: '',
+        dataIndex: 'row_title',
+    });
+
+    return (
+        <div>
+            <div style={{fontSize: 16, fontWeight: 'bold', paddingTop: 50, paddingBottom: 10}}>{title}</div>
+            <AntcTable
+                columns={columns}
+                dataSource={data}
+                pagination={false}
+                bordered={true}
+            />
+        </div>
+    );
+}
+
+function metricsValueRender(value) {
+    return (
+        <span
+            style={{cursor: 'pointer'}}
+            onClick={showMetricsDetail.bind(null, this.dataIndex, this.title)}
+        >
+            {value}
+        </span>
+    );
+}
+
+function amountValueRender(value) {
+    return (
+        <span>
+            {antUtilNum.formatAmount(value)}
+        </span>
+    );
+}
+
+function dateValueRender(value) {
+    return (
+        <span>
+            {moment(value).format(oplateConsts.DATE_FORMAT)}
+        </span>
+    );
+}
+
+function showMetricsDetail(metricsKey, metricsTitle) {
+    let query = _.clone(conditionCache);
+
+    query.type = metricsKey;
 
     ajax.send({
         url: '/rest/analysis/contract/contract/v2/all/performance/metrics/account_manager/detail',
         query
     }).then(result => {
-        const title = record.title + Intl.get('common.indicators.for.details', '指标详情');
+        const title = metricsTitle + Intl.get('common.indicators.for.details', '指标详情');
 
-        const data = _.get(result, '[0]');
-        let items = [];
+        let tableTitle;
+        let columns;
 
-        _.each(data, (value, key) => {
-            let name;
+        if (metricsKey === 'cost') {
+            tableTitle = Intl.get('common.personal.sales.expenses.ten.thousand.yuan', '个人销售费用（单位万元）');
 
-            if (key === 'num') {
-                name = Intl.get('contract.24', '合同号');
-            } else if (key === 'contract_name') {
-                name = Intl.get('contract.name', '合同名称');
-            } else if (key === 'date') {
-                value = moment(value).format(oplateConsts.DATE_FORMAT);
+            columns = [{
+                dataIndex: 'date',
+                title: Intl.get('common.login.time', '时间'),
+                align: 'left',
+                render: dateValueRender
+            }, {
+                dataIndex: 'cost',
+                title: Intl.get('contract.133', '费用'),
+                render: amountValueRender
+            }, {
+                dataIndex: 'type',
+                title: Intl.get('contract.135', '费用类型'),
+            }];
+        } else {
+            tableTitle = Intl.get('common.contract.details.ten.thousand.yuan', '合同详情（单位万元）');
 
-                if (type === 'cost') {
-                    name = Intl.get('common.cost.date', '费用日期');
-                } else if (_.includes(type, 'repay')) {
-                    name = Intl.get('contract.237', '回款日期');
-                } else {
-                    name = Intl.get('crm.146', '日期');
-                }
-            } else if (key === 'value') {
-                if (type === 'cost') {
-                    name = Intl.get('contract.133', '费用');
-                } else if (type === 'repayment_amount') {
-                    name = Intl.get('contract.28', '回款额');
-                } else if (type === 'repayment_gross_profit') {
-                    name = Intl.get('contract.29', '回款毛利');
-                } else if (type === 'newrepayment_gross_profit') {
-                    name = Intl.get('contract.158', '新增回款毛利');
-                } else if (type === 'churn_amount') {
-                    name = Intl.get('common.loss.contract.amount', '流失合同额');
-                } else {
-                    name = Intl.get('common.the.numerical', '数值');
-                }
-            } else {
-                name = key;
-            }
-
-            items.push({
-                name,
-                value
-            });
-        });
+            columns = [{
+                dataIndex: 'num',
+                title: Intl.get('contract.24', '合同号'),
+            }, {
+                dataIndex: 'customer_name',
+                title: Intl.get('crm.41', '客户名'),
+            }, {
+                dataIndex: 'start_time',
+                title: Intl.get('contract.120', '开始时间'),
+                align: 'left',
+                render: dateValueRender
+            }, {
+                dataIndex: 'end_time',
+                title: Intl.get('contract.105', '结束时间'),
+                align: 'left',
+                render: dateValueRender
+            }, {
+                dataIndex: 'contract_amount',
+                title: Intl.get('contract.25', '合同额'),
+                render: amountValueRender
+            }, {
+                dataIndex: 'gross_profit',
+                title: Intl.get('contract.27', '合同毛利'),
+                render: amountValueRender
+            }, {
+                dataIndex: 'total_amount',
+                title: Intl.get('contract.28', '回款额'),
+                render: amountValueRender
+            }, {
+                dataIndex: 'total_gross_profit',
+                title: Intl.get('contract.29', '回款毛利'),
+                render: amountValueRender
+            }, {
+                dataIndex: 'label',
+                title: Intl.get('contract.164', '签约类型'),
+                render: value => <span>{value === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('common.to.renew', '续签')}</span>
+            }];
+        }
 
         const content = (
-            <div style={{fontSize: 14}}>
-                {_.map(items, item => (
-                    <Row>
-                        <Col span={6} style={{textAlign: 'right', fontWeight: 'bold', paddingRight: 8, marginBottom: 10}}>{item.name}: </Col>
-                        <Col span={18}>{item.value}</Col>
-                    </Row>
-                ))}
+            <div style={{margin: '0 24px'}}>
+                <div style={{fontSize: 14, fontWeight: 'bold', marginBottom: 10}}>{tableTitle}</div>
+
+                <AntcTable
+                    columns={columns}
+                    dataSource={result}
+                    pagination={false}
+                    bordered={true}
+                />
             </div>
         );
 
         detailPanelEmitter.emit(detailPanelEmitter.SHOW, {
             title,
-            content
+            content,
+            width: 1200
         });
     });
 }
