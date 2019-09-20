@@ -1730,6 +1730,8 @@ var zh_CN = {
     'crm.customer.extract.time': '释放时间',
     'crm.customer.release.customer': '释放客户',
     'crm.customer.extract.limit.tip': '一次最多提取20个客户',
+    'crm.customer.release.push.tip': '客户 {customerName} 被 {operatorName} 释放到了客户池',
+    'crm.customer.batch.release.push.tip': '{customerName} 等{count}个客户被 {operatorName} 释放到了客户池',
 
     'crm.pool.single.extract.tip': '您确定要提取此客吗？',
     'crm.pool.batch.extract.tip': '您确定要提取选中的客吗？',

@@ -1710,6 +1710,9 @@ var en_US = {
     'crm.customer.extract.time': 'Extract time',//释放时间
     'crm.customer.release.customer': 'Release customer',//释放客户
     'crm.customer.extract.limit.tip': 'Up to 20 customers at a time',//一次最多提取20个客户
+    'crm.customer.release.push.tip': 'The customer {customerName} is released to the customer pool by {operatorName}',//客户{customerName}被{operatorName}释放到了客户池
+    'crm.customer.batch.release.push.tip': '{customerName}, etc. {count} customers are released to the customer pool by {operatorName}',//{customerName}等{count}个客户被{operatorName}释放到了客户池
+
     'crm.customer.rule.name': 'Rules set',//规则设置
     'crm.add.customer.pool.rule': 'Add rules',//添加规则
     'crm.customer.pool.rule.name': '{name} customer pool',//{name}客户池

@@ -217,6 +217,37 @@ ${Intl.get('clue.close.all.noty', '关闭所有提醒？')}</a></p>`);
     }
 }
 
+//处理释放客户的数据
+function crmReleaseListener(data) {
+    if (_.isObject(data)) {
+        var crmReleaseLength = _.get(data, 'customer_ids.length',0);
+        var title = Intl.get( 'crm.customer.release.customer', '释放客户'),tipContent = Intl.get('crm.customer.release.push.tip', '客户{customerName}被{operatorName}释放到了客户池',{
+            customerName: _.get(data, 'customer_name', ''),
+            operatorName: _.get(data, 'operator_nickname', '')
+        });
+        if(crmReleaseLength > 1) {
+            tipContent = Intl.get('crm.customer.batch.release.push.tip', '{customerName}等{count}个客户被{operatorName}释放到了客户池',{
+                customerName: _.get(data, 'customer_name', ''),
+                operatorName: _.get(data, 'operator_nickname', ''),
+                count: crmReleaseLength
+            });
+        }
+        if (canPopDesktop()) {
+            //桌面通知的展示
+            showDesktopNotification(title, tipContent, true);
+        } else {//系统弹出通知
+            var contentHtml = '';
+            var titleHtml = '<p class=\'customer-title\'>' + '<i class=\'iconfont icon-crm\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
+            contentHtml = `<div class=\'customer-item\'>${tipContent}</div>`;
+            notificationUtil.showNotification({
+                title: titleHtml,
+                content: contentHtml,
+                closeWith: ['button']
+            });
+        }
+    }
+}
+
 //监听系统消息
 function listenSystemNotice(notice) {
     if (_.isObject(notice)) {
@@ -438,6 +469,22 @@ function phoneEventListener(phonemsgObj) {
         }
     }
 }
+/*
+ * 监听客户操作消息的推送*/
+function crmOperatorAlertListener(data) {
+    if(_.isObject(data)) {
+        switch (_.get(data, 'type')) {
+            //释放客户后的提醒消息
+            case 'release_notice'://单个释放时，通知客户负责人以及所属领导
+            case 'batch_release_notice'://批量释放时，通知客户负责人以及所属领导
+            case 'need_extract':// 释放客户时给联合跟进人用的，因为不能分辨单个还是批量释放，所以用这一个类型
+                crmReleaseListener(data);
+                break;
+            default:
+                break;
+        }
+    }
+}
 
 //可否弹出桌面通知
 function canPopDesktop() {
@@ -647,6 +694,7 @@ function disconnectListener() {
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         socketIo.off('cluemsg', clueUnhandledListener);
         socketIo.off('applyApprovemsg', applyApproveUnhandledListener);
+        socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -673,6 +721,8 @@ function startSocketIo() {
         socketIo.on('phonemsg', phoneEventListener);
         //监听日程管理
         socketIo.on('scheduleAlertMsg', scheduleAlertListener);
+        //监听客户操作
+        socketIo.on('crm_operator_alert_msg', crmOperatorAlertListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开
