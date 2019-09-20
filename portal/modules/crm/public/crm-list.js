@@ -51,6 +51,7 @@ import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -1908,7 +1909,7 @@ class Crm extends React.Component {
             }
         ];
         //csm.curtao.com域名下不展示订单
-        if (Oplate.isCurtao === 'true') {
+        if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
         }
         if(!hasPrivilege('CRM_CUSTOMER_SCORE_RECORD')){

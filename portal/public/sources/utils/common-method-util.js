@@ -980,7 +980,10 @@ exports.isOpenCash = () => {
     let organization = getOrganization();
     return _.includes(_.get(organization,'functions', []), ORGANIZATION_APP_TYPES.CASH);
 };
-
+//是否是csm.curtao.com域名访问的
+exports.isCurtao = () => {
+    return Oplate.isCurtao === 'true';
+};
 // 设置是否已有专属号码
 exports.setExclusiveNumber = (phoneType) => {
     let isDefault = _.isEqual(phoneType, 'default');

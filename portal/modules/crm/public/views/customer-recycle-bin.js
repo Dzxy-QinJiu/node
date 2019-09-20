@@ -16,7 +16,7 @@ import {message, Popconfirm, Icon} from 'antd';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
-import {getTableContainerHeight} from 'PUB_DIR/sources/utils/common-method-util';
+import {getTableContainerHeight, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 const PRIVILEGES = {
     MANAGER_CUSTOMER_BAK_AUTH: 'CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD'//管理员获取回收站中客户列表的权限
 };
@@ -358,7 +358,7 @@ class CustomerRecycleBin extends React.Component {
             }
         ];
         //csm.curtao.com域名下不展示订单
-        if (Oplate.isCurtao === 'true') {
+        if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
         }
         //没有恢复、彻底删除的权限，就去掉操作列
