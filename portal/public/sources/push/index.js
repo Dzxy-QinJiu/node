@@ -157,6 +157,9 @@ function clueUnhandledListener(data) {
             updateUnreadByPushMessage('unhandleClue', clueList.length, clueList);
             notificationEmitter.emit(notificationEmitter.UPDATED_MY_HANDLE_CLUE, data);
         }
+        notificationEmitter.emit(notificationEmitter.UPDATED_HANDLE_CLUE, data);
+        //线索面板刷新提示
+        notificationEmitter.emit(notificationEmitter.UPDATE_CLUE, data);
         var clueArr = _.get(data, 'clue_list',[]);
         var title = Intl.get('clue.has.distribute.clue','您有新的线索'),tipContent = '';
         if (canPopDesktop()) {
@@ -167,7 +170,7 @@ function clueUnhandledListener(data) {
             showDesktopNotification(title, tipContent, true);
         } else {//系统弹出通知
             var clueHtml = '',titleHtml = '';
-            titleHtml += '<p class=\'clue-title\'>' + '<i class=\'iconfont icon-clue\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
+            titleHtml += '<p class=\'clue-title\'>' + '<span class=\'title-tip\'>' + title + '</span>';
             _.each(clueArr, (clueItem) => {
                 clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' + '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
             });
@@ -176,6 +179,7 @@ function clueUnhandledListener(data) {
             notificationUtil.showNotification({
                 title: titleHtml,
                 content: tipContent,
+                type: 'clue',
                 closeWith: ['button'],
                 maxVisible: 3,
                 callback: { // 关闭的时候
@@ -203,14 +207,46 @@ function clueUnhandledListener(data) {
         if (!hasAddCloseBtn) {
             hasAddCloseBtn = true;
             ulHtml.before(`<p id="noty-quene-tip-container">
-${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示，', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}，<a href="#" onclick='openAllClues()'>
-${Intl.get('clue.customer.noty.all.list', '查看所有线索？')}</a><a href="#" onclick='closeAllNoty()'>
-${Intl.get('clue.close.all.noty', '关闭所有提醒？')}</a></p>`);
+            <span class="iconfont icon-warn-icon"></span>
+${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示 ', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}<a href="#" class="handle-btn-item" onclick='openAllClues()'>
+${Intl.get('clue.customer.noty.all.list', '查看全部')}</a><a href="#" class="handle-btn-item" onclick='closeAllNoty()'>
+${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
         } else {
             var queueNum = $('#queue-num');
             if (queueNum) {
                 queueNum.text(_.get($.noty, 'queue.length'));
             }
+        }
+    }
+}
+
+//处理释放客户的数据
+function crmReleaseListener(data) {
+    if (_.isObject(data)) {
+        var crmReleaseLength = _.get(data, 'customer_ids.length',0);
+        var title = Intl.get( 'crm.customer.release.customer', '释放客户'),tipContent = Intl.get('crm.customer.release.push.tip', '客户{customerName}被{operatorName}释放到了客户池',{
+            customerName: _.get(data, 'customer_name', ''),
+            operatorName: _.get(data, 'operator_nickname', '')
+        });
+        if(crmReleaseLength > 1) {
+            tipContent = Intl.get('crm.customer.batch.release.push.tip', '{customerName}等{count}个客户被{operatorName}释放到了客户池',{
+                customerName: _.get(data, 'customer_name', ''),
+                operatorName: _.get(data, 'operator_nickname', ''),
+                count: crmReleaseLength
+            });
+        }
+        if (canPopDesktop()) {
+            //桌面通知的展示
+            showDesktopNotification(title, tipContent, true);
+        } else {//系统弹出通知
+            var contentHtml = '';
+            var titleHtml = '<p class=\'customer-title\'>' + '<i class=\'iconfont icon-crm\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
+            contentHtml = `<div class=\'customer-item\'>${tipContent}</div>`;
+            notificationUtil.showNotification({
+                title: titleHtml,
+                content: contentHtml,
+                closeWith: ['button']
+            });
         }
     }
 }
@@ -436,6 +472,22 @@ function phoneEventListener(phonemsgObj) {
         }
     }
 }
+/*
+ * 监听客户操作消息的推送*/
+function crmOperatorAlertListener(data) {
+    if(_.isObject(data)) {
+        switch (_.get(data, 'type')) {
+            //释放客户后的提醒消息
+            case 'release_notice'://单个释放时，通知客户负责人以及所属领导
+            case 'batch_release_notice'://批量释放时，通知客户负责人以及所属领导
+            case 'need_extract':// 释放客户时给联合跟进人用的，因为不能分辨单个还是批量释放，所以用这一个类型
+                crmReleaseListener(data);
+                break;
+            default:
+                break;
+        }
+    }
+}
 
 //可否弹出桌面通知
 function canPopDesktop() {
@@ -502,9 +554,21 @@ function scheduleAlertListener(scheduleAlertMsg) {
             phoneHtml += '<p class=\'phone-item\'>' + '<i class=\'iconfont icon-phone-call-out handle-btn-item\' title=\'' + Intl.get('crm.click.call.phone', '点击拨打电话') + '\' onclick=\'handleClickPhone(' + JSON.stringify(phoneObj) + ')\'></i>' + '<span class=\'customer-name\' title=\'' + phoneItem.customer_name + '\'>' + phoneItem.customer_name + '</span>' + ' ' + phoneItem.phone + '</p>';
         });
         tipContent = `<div>${tipContent}<p>${phoneHtml}</p></div>`;
+        let type = scheduleAlertMsg.type;
+        switch(type){
+            case 'calls':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;
+                break;
+            case 'visit':title = '【' + Intl.get('common.visit', '拜访') + '】 ' + scheduleAlertMsg.topic;
+                break;
+            case 'other':title = '【' + Intl.get('user.login.analysis.customer.other', '其他') + '】 ' + scheduleAlertMsg.topic;
+                break;
+            default:title = scheduleAlertMsg.topic;
+        }
+        // notificationUtil.showNotiSchedule({title,content: tipContent,type});
         notificationUtil.showNotification({
             title: title,
             content: tipContent,
+            type: type,
             closeWith: ['button']
         });
     }
@@ -645,6 +709,7 @@ function disconnectListener() {
         socketIo.off('apply_unread_reply', applyUnreadReplyListener);
         socketIo.off('cluemsg', clueUnhandledListener);
         socketIo.off('applyApprovemsg', applyApproveUnhandledListener);
+        socketIo.off('crm_operator_alert_msg', crmOperatorAlertListener);
         phoneMsgEmitter.removeListener(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         socketEmitter.removeListener(socketEmitter.DISCONNECT, socketEmitterListener);
     }
@@ -671,6 +736,8 @@ function startSocketIo() {
         socketIo.on('phonemsg', phoneEventListener);
         //监听日程管理
         socketIo.on('scheduleAlertMsg', scheduleAlertListener);
+        //监听客户操作
+        socketIo.on('crm_operator_alert_msg', crmOperatorAlertListener);
         //监听后端消息
         phoneMsgEmitter.on(phoneMsgEmitter.SEND_PHONE_NUMBER, listPhoneNum);
         //如果接受到主动断开的方法，调用socket的断开

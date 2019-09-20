@@ -120,11 +120,18 @@ class AddLeaveApply extends React.Component {
             isShowAddCustomer: false
         });
     };
+    //添加完成后关闭面板
+    addOne = () => {
+        this.setState({
+            isShowAddCustomer: false
+        });
+    }
     //渲染添加客户内容
     renderAddCustomer = () => {
         return (
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
+                addOne = {this.addOne}
             />
         );
     };
@@ -222,7 +229,11 @@ class AddLeaveApply extends React.Component {
                                                 );
 
                                             }else{
-                                                return <ApplyComponent {...propertyObj} form={this.props.form}/>;
+                                                if(target.component_type === ALL_COMPONENTS.TIMEPERIOD){
+                                                    return <ApplyComponent {...propertyObj} form={this.props.form} />;
+                                                }else{
+                                                    return <ApplyComponent {...propertyObj} form={this.props.form}/>;
+                                                }
                                             }
 
                                         }

@@ -11,7 +11,7 @@ var RightPanel = require('../../../components/rightPanel').RightPanel;
 var AppUserStore = require('./store/app-user-store');
 var AppUserPanelSwitchStore = require('./store/app-user-panelswitch-store');
 var AppUserAction = require('./action/app-user-actions');
-import userScoreAction from 'MOD_DIR/user_score/public/action/index';
+
 var AppUserUtil = require('./util/app-user-util');
 
 var UserView = require('./views/user-view');
@@ -105,37 +105,6 @@ class AppUserManage extends React.Component {
         //记住上一次路由
         this.prevRoutePath = currentView;
 
-        //获取配置过的用户评分规则
-        this.getUserScoreConfig();
-    }
-    getUserScoreConfig = () => {
-        //获取用户基础评分规则
-        this.getUserScoreLists();
-        //获取用户参与度评分规则
-        this.getUserEngagementRule();
-        this.getUserIndicator();
-    };
-    getUserIndicator() {
-        userScoreAction.getUserScoreIndicator((result) => {
-            this.setState({
-                userIndicator: _.cloneDeep(result)
-            });
-        });
-    }
-    getUserEngagementRule() {
-        userScoreAction.getUserEngagementRule((result) => {
-            this.setState({
-                userEngagementScore: _.cloneDeep(result)
-            });
-        });
-    }
-
-    getUserScoreLists() {
-        userScoreAction.getUserScoreLists((result) => {
-            this.setState({
-                userBasicScore: _.cloneDeep(result)
-            });
-        });
     }
 
     getIntegrationConfig(getUserDataCallback) {
@@ -932,9 +901,6 @@ class AppUserManage extends React.Component {
                             isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
                             selectedAppId={this.state.selectedAppId}
                             userConditions={this.state.userConditions}
-                            userEngagementScore={this.state.userEngagementScore}
-                            userBasicScore={this.state.userBasicScore}
-                            userIndicator={this.state.userIndicator}
                         />
                     );
                     break;

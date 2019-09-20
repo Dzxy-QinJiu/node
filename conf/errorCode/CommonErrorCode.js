@@ -372,6 +372,8 @@ function getConfigJson(req) {
         '20001': {'httpCode': 500, 'message': backendIntl.get('errorcode.122', '网络请求异常')},
         '20002': {'httpCode': 500, 'message': ERROR_TIP.ILLEGAL_REQUEST},//非法请求，界面上不提示此类错误，展示具体的错误描述
         '20004': {'httpCode': 500, 'message': backendIntl.get('errorcode.161', '文件上传失败')},
+        '20007': {'httpCode': 500, 'message': backendIntl.get('errorcode.organization.expire', '您的账号已到期')},
+        '20008': {'httpCode': 500, 'message': backendIntl.get('errorcode.organization.expire', '您的账号已到期')},
         /*扫码登录*/
         '11058': {'httpCode': 500, 'message': ''},//请用APP扫描二维码的错误码，界面上不需要提示此错误
         '11059': {'httpCode': 500, 'message': backendIntl.get('errorcode.147', '二维码已失效')},
@@ -391,6 +393,9 @@ function getConfigJson(req) {
         '100006': {'httpCode': 500, 'message': backendIntl.get('errorcode.158', '更新客户流程失败')},
         '100007': {'httpCode': 500, 'message': backendIntl.get('errorcode.159', '删除销售流程失败')},
         '100008': {'httpCode': 500, 'message': backendIntl.get('errorcode.160', '删除客户流程失败')},
+        /*负责人及联合跟进人*/
+        '14015': {'httpCode': 500, 'message': backendIntl.get('crm.no.permissions.update.sales', '您没有权限修改负责人')},
+        '14016': {'httpCode': 500, 'message': backendIntl.get('crm.no.permissions.update.second.team', '您没有权限修改联合跟进人')},
         /*其他*/
         'error-code-not-found': {'httpCode': 500, 'message': backendIntl.get('errorcode.132', '未知错误')},
         'request-timeout': {'httpCode': 500, 'message': backendIntl.get('errorcode.133', '服务器繁忙或网络不正常，请稍后再试')},

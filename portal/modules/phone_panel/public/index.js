@@ -149,38 +149,48 @@ class PhonePanel extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         //获取客户详情
-        //只把客户详情赋值
-        let paramObj = this.state.paramObj;
+        let paramObj = _.cloneDeep(this.state.paramObj);
         paramObj.customer_params = _.cloneDeep(_.get(nextProps, 'paramObj.customer_params', null));
-        if (nextProps.paramObj.call_params) {
-            var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
-            if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
-                //最新的通话状态
-                if (phonemsgObj.callid === phoneRecordObj.callid) {
-                    phoneRecordObj.received_time = phonemsgObj.recevied_time;
-                } else {
-                    phoneRecordObj.received_time = phonemsgObj.recevied_time;
-                    phoneRecordObj.callid = phonemsgObj.callid;
-                    //如果是从客户详情中打的电话，则不需要再获取客户详情
-                    if (!this.isCustomerDetailCall(nextProps.paramObj)) {
-                        //根据客户的id获取客户的详情
-                        phoneAlertAction.setInitialCustomerArr();
-                        this.getCustomerInfoByCustomerId(phonemsgObj);
+        //如果切换了客户，那么重置状态
+        let nextId = _.get(nextProps, 'paramObj.customer_params.currentId', '');
+        let currentId = _.get(this.state, 'paramObj.customer_params.currentId', '');
+        if(!_.isEqual(nextId, currentId)){
+            paramObj.call_params = null;
+            phoneAlertAction.setInitialState();
+            this.setState({
+                paramObj: paramObj
+            });
+        } else {//如果未切换客户，只把客户详情赋值
+            if (nextProps.paramObj.call_params) {
+                var phonemsgObj = this.getPhonemsgObj(nextProps.paramObj);
+                if (phonemsgObj.recevied_time > phoneRecordObj.received_time) {
+                    //最新的通话状态
+                    if (phonemsgObj.callid === phoneRecordObj.callid) {
+                        phoneRecordObj.received_time = phonemsgObj.recevied_time;
+                    } else {
+                        phoneRecordObj.received_time = phonemsgObj.recevied_time;
+                        phoneRecordObj.callid = phonemsgObj.callid;
+                        //如果是从客户详情中打的电话，则不需要再获取客户详情
+                        if (!this.isCustomerDetailCall(nextProps.paramObj)) {
+                            //根据客户的id获取客户的详情
+                            phoneAlertAction.setInitialCustomerArr();
+                            this.getCustomerInfoByCustomerId(phonemsgObj);
+                        }
                     }
+                    //页面上如果存在上次打电话的模态框，再次拨打电话的时候
+                    var $modal = $('#phone-status-content');
+                    // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
+                    // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
+                    if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
+                        this.setInitialData(phonemsgObj);
+                    }
+                    paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
                 }
-                //页面上如果存在上次打电话的模态框，再次拨打电话的时候
-                var $modal = $('#phone-status-content');
-                // 去掉了&&this.state.paramObj.callParams.phonemsgObj.type==PHONERINGSTATUS.phone的判断（之前的逻辑时上次通话结束后，来新的电话时会清空数据）
-                // 我认为：上次通话不管是否结束，只要来了新的电话，都需要清空数据，所以去掉了，需测试后再确定
-                if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
-                    this.setInitialData(phonemsgObj);
-                }
-                paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
             }
+            this.setState({
+                paramObj: paramObj
+            });
         }
-        this.setState({
-            paramObj: paramObj
-        });
     }
 
     setInitialData(phonemsgObj) {

@@ -376,9 +376,9 @@ exports.renderClueStatus = function(listItem) {
     return statusDes;
 };
 //获取线索未处理的权限
-//只有銷售才有展示线索未读数的权限
+//销售和运营有展示线索未读数的权限
 exports.getClueUnhandledPrivilege = function() {
-    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && isSalesRole();
+    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && (isSalesRole() || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON));
 };
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {
@@ -981,7 +981,10 @@ exports.isOpenCash = () => {
     let organization = getOrganization();
     return _.includes(_.get(organization,'functions', []), ORGANIZATION_APP_TYPES.CASH);
 };
-
+//是否是csm.curtao.com域名访问的
+exports.isCurtao = () => {
+    return Oplate.isCurtao === 'true';
+};
 // 设置是否已有专属号码
 exports.setExclusiveNumber = (phoneType) => {
     let isDefault = _.isEqual(phoneType, 'default');

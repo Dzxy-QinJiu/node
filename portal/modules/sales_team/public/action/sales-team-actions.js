@@ -57,17 +57,24 @@ function SalesTeamAction() {
         }
         );
     };
+
     this.getSalesTeamList = function() {
+        // 获取销售部门的数据
         getMyTeamTreeAndFlattenList(data => {
             if(data.errorMsg) {
                 this.dispatch(data.errorMsg || Intl.get('common.get.sale.lists.failed', '获取销售团队列表失败'));
             } else {
                 let teamList = _.get(data, 'teamList');
-                let organizationName = _.get(getOrganization(), 'name', '');
-                let organizationId = _.get(getOrganization(), 'id', '');
-                teamList.unshift({group_name: organizationName, group_id: organizationId});
-
-                this.dispatch(teamList);
+                // 获取组织信息
+                SalesTeamAjax.getMemberOrganization().then( (result) => {
+                    let organizationName = _.get(result, 'name');
+                    let organizationId = _.get(result, 'id');
+                    // 部门树的数据是由组织和部门信息组成的
+                    teamList.unshift({group_name: organizationName, group_id: organizationId});
+                    this.dispatch(teamList);
+                }, () => {
+                    this.dispatch(teamList);
+                } );
             }
         },true);
     };

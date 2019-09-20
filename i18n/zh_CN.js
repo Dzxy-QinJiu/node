@@ -1,3 +1,5 @@
+
+
 /**
  * Copyright (c) 2016-2017 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -8,6 +10,7 @@ var zh_CN = {
     'service.not.available': '对不起，服务暂时不可用,请稍后重试。',
     'weixin.mini.program': '小程序',
     'customer.service': '客服',
+    'login.apply.trial': '申请试用',
     //菜单
     'menu.crm': '客户管理',
     'menu.call': '通话记录',
@@ -269,6 +272,22 @@ var zh_CN = {
     'common.name.rule': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间',
     'common.create': '创建',
     'common.stage.describe': '阶段描述',
+    'common.name.rule.regex': '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间',
+    'common.the.performance.of.subsidiary': '业绩明细',
+    'common.personal.collection': '个人回款',
+    'common.personal.collection.gross.profit': '个人回款毛利',
+    'common.personal.newly.signed.gross.profit': '个人新签回款毛利',
+    'common.personal.contribution.40.percent': '个人贡献(占40%)',
+    'common.personal.sales.expenses': '个人销售费用',
+    'common.personal.sales.expenses.ten.thousand.yuan': '个人销售费用（单位万元）',
+    'common.contract.details.ten.thousand.yuan': '合同详情（单位万元）',
+    'common.gross.profit.rate.30.percent': '回款毛利率(占30%)',
+    'common.gross.profit.of.newly.signed.payment.30.percent': '新签回款毛利(占30%)',
+    'common.lost.contract.amount': '流失合同金额',
+    'common.to.renew': '续签',
+    'common.maximum.personal.contribution': '个人贡献最大值',
+    'common.the.maximum.gross.profit.rate': '回款毛利率最大值',
+    'common.maximum.gross.margin.of.newly.signed.payment': '新签回款毛利最大值',
 
     //公共部分--end
     'login.login': '登录',
@@ -879,6 +898,9 @@ var zh_CN = {
     'organization.save.delete.group.failed': '删除组织失败',
     'organization.get.add.organization.member.list.failed': '获取可加入组织的成员列表失败',
     'organization.no.realms': '还没有安全域诶..',
+    'organization.name.existed': '组织名称已存在!',
+    'organization.name.is.unique': '组织名称唯一性校验出错！',
+    'organization.tree.name.placeholder': '请输入{name}名称',
     //组织管理end
 
     // 后台管理-产品start
@@ -1567,6 +1589,7 @@ var zh_CN = {
     'crm.sales.customerStage': '客户阶段变更统计',
     'crm.sales.newTrailCustomer': '新开客户数统计',
     'crm.repeat.phone': '电话重复',
+    'crm.repeat.phone.user': '该电话已被客户"{userName}"使用',
     'crm.repeat.phone.unhandle': '您还有未处理的重复电话：',
     'crm.order.stage': '订单阶段',
     'crm.basic.detail.show': '展开详情',
@@ -1731,6 +1754,8 @@ var zh_CN = {
     'crm.customer.extract.time': '释放时间',
     'crm.customer.release.customer': '释放客户',
     'crm.customer.extract.limit.tip': '一次最多提取20个客户',
+    'crm.customer.release.push.tip': '客户 {customerName} 被 {operatorName} 释放到了客户池',
+    'crm.customer.batch.release.push.tip': '{customerName} 等{count}个客户被 {operatorName} 释放到了客户池',
 
     'crm.pool.single.extract.tip': '您确定要提取此客吗？',
     'crm.pool.batch.extract.tip': '您确定要提取选中的客吗？',
@@ -1760,6 +1785,7 @@ var zh_CN = {
     'crm.customer.pool.max.selected.num': '每次最多提取{num}个',
     'crm.customer.pool.rule.release.setting': '释放设置',
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
+    'crm.filter.extract.from.customer.pool': '从客户池中提取的客户',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
@@ -2458,6 +2484,7 @@ var zh_CN = {
     'errorcode.163': '成员数量已达上限',
     'errorcode.phone.busy': '座机繁忙，请稍后再试！',
     'errorcode.164': '获取即将到期的客户统计数据失败',
+    'errorcode.organization.expire': '您的账号已到期',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
@@ -2936,6 +2963,8 @@ var zh_CN = {
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',
     'clue.release': '释放线索',
+    'clue.customer.refresh.tip': '有新线索，{refreshPage}查看',
+    'clue.customer.refresh.page': '刷新页面',
     'clue.customer.release.pool': '释放到线索池',
     'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确认释放吗？',
     'clue.customer.batch.release': '批量释放',
@@ -2985,6 +3014,9 @@ var zh_CN = {
     'crm.order.stage.destrip.palceholder': '请输入阶段的描述信息',
     'crm.order.stage.nodata.tips': '暂无订单阶段，请先添加',
     'crm.order.stage.name.verify': '该阶段名称已存在',
+    'crm.release.no.permissions': '您不能释放共同跟进的客户',
+    'crm.no.permissions.update.sales': '您没有权限修改负责人',
+    'crm.no.permissions.update.second.team': '您没有权限修改联合跟进人',
 
     'leave.apply.add.leave.person': '出差人员',
     'leave.apply.add.leave.destination': '目的地',
@@ -3225,6 +3257,7 @@ var zh_CN = {
     'business.leave.time.range': '出差时长',
     'clue.batch.select.clues': '已选择{num}个线索',
     'clue.batch.assign.sales': '批量分配',
+    'clue.batch.assign.sales.pending': '批量分配进行中，请稍后再试!',
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
     'clue.batch.change.trace.man': '变更跟进人',
     'crm.user.use.default.contact': '使用默认联系人申请',
@@ -3372,8 +3405,8 @@ var zh_CN = {
     'clue.filter.wait.me.handle': '待我处理',
     'clue.item.source.from': '来自{source}',
     'clue.item.acceess.channel': '详情：{content}',
-    'clue.show.no.show.tip': '还有{num}个提醒未展示',
-    'clue.close.all.noty': '关闭所有提醒？',
+    'clue.show.no.show.tip': '还有{num}个新线索未展示',
+    'clue.close.all.noty': '关闭全部',
     'clue.fail.customer.trace.statics': '获取跟进记录的分类统计失败',
     'clue.customer.trace.clues': '跟进线索',
     'clue.need.complete.clue.name': '请先完善线索名',
@@ -3540,7 +3573,7 @@ var zh_CN = {
     'clue.recommend.input.keyword': '请输入关键词',
     'clue.recommend.extract.num.limit': '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
-    'clue.customer.noty.all.list': '查看所有线索？',
+    'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
     'common.personal.contribution.score': '个人贡献分数',
     'common.collection.of.gross.profit.margin.score': '回款毛利率分数',
@@ -3567,6 +3600,7 @@ var zh_CN = {
     'user.apply.click.reply': '查看回复',
     'user.apply.hide.reply': '收起回复',
     'user.apply.no.rely.list': '无回复',
+    'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
 
 };
 export default zh_CN;

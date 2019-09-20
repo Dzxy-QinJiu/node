@@ -72,5 +72,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        'method': 'get',
+        'path': '/rest/get/organization/info',
+        'handler': 'getOrganizationInfoByName',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

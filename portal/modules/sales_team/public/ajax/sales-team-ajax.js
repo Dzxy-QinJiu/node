@@ -4,6 +4,24 @@
 let teamAjax = require('../../../common/public/ajax/team');
 let memberAjax = require('../../../member_manage/public/ajax');
 
+// 获取成员的组织信息
+exports.getMemberOrganization = () => {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/member/organization',
+        dataType: 'json',
+        type: 'get',
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+
 //获取统计团队内成员个数的列表
 let teamMemberCountAjax;
 exports.getTeamMemberCountList = function() {
@@ -178,3 +196,19 @@ exports.saveSalesGoals = function(salesGoals) {
     return Deferred.promise();
 };
 
+// 根据组织属性获取组织信息
+exports.getOrganizationInfoByName = (queryObj) => {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/organization/info',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: (list) => {
+            Deferred.resolve(list);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

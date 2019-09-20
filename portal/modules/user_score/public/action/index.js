@@ -6,6 +6,7 @@
 import userScoreAjax from '../ajax';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getAppList} from 'PUB_DIR/sources/utils/common-data-util';
+import UserScoreCommonAjax from '../../../common/public/ajax/user-score';
 class UserScoreActions {
     constructor() {
         this.generateActions(
@@ -17,22 +18,23 @@ class UserScoreActions {
     }
 
     getUserScoreIndicator(callback) {
-        userScoreAjax.getUserScoreIndicator().then((result) => {
+        UserScoreCommonAjax.getUserScoreIndicatorAjax().sendRequest().success((result) => {
             this.dispatch({resData: result});
             _.isFunction(callback) && callback(result);
-        }, (errorMsg) => {
-
-        });
+        }).error(
+          
+        );
     }
 
     getUserEngagementRule(callback) {
         this.dispatch({loading: true, error: false});
-        userScoreAjax.getUserEngagementRule().then((result) => {
+        UserScoreCommonAjax.getUserEngagementRuleAjax().sendRequest().success((result) => {
             _.isFunction(callback) && callback(result);
             this.dispatch({loading: false, error: false, resData: result});
-        }, (errorMsg) => {
+        }).error(errorMsg => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+        }
+        );
     }
     saveUserScoreLists(queryObj, callback) {
         this.dispatch({loading: true, error: false});
@@ -65,12 +67,13 @@ class UserScoreActions {
 
     getUserScoreLists(callback) {
         this.dispatch({loading: true, error: false});
-        userScoreAjax.getUserScoreLists().then((result) => {
+        UserScoreCommonAjax.getUserScoreListsAjax().sendRequest().success((result) => {
             _.isFunction(callback) && callback(result);
             this.dispatch({loading: false, error: false, resData: result});
-        }, (errorMsg) => {
+        }).error(errorMsg => {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
-        });
+        }
+        );
     }
 
 

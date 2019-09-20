@@ -507,3 +507,36 @@ exports.getCustomerStageByTeamId = (teamId) => {
     });
     return Deferred.promise();
 };
+
+// 验证是否有权限处理跟进人
+exports.checkCrmUpdateUserByCustomerId = (customerId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/customer/check/update/${customerId}`,
+        dataType: 'json',
+        type: 'get',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+// 是否有权限处理联合跟进人
+exports.checkCrmJoinUserByCustomerId = (customerId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/customer/check/join/${customerId}`,
+        dataType: 'json',
+        type: 'get',
+        success: (result) => {
+            Deferred.resolve(result);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
