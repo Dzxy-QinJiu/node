@@ -495,20 +495,6 @@ class SalesTeamCard extends React.Component {
         }
     };
 
-    // 修改联合跟进人的处理
-    handleEditSecondSales = (saveObj, successFunc, errorFunc) => {
-        // 需要验证是否有权限修改联合跟进人
-        CrmBasicAjax.checkCrmJoinUserByCustomerId(this.state.customerId).then((res) => {
-            if(res) {
-
-            }else {
-                _.isFunction(errorFunc) && errorFunc(Intl.get('crm.no.permissions.update.second.team', '您没有权限修改联合跟进人'));
-            }
-        }, (errorMsg) => {
-            _.isFunction(errorFunc) && errorFunc(errorMsg);
-        });
-    };
-
     renderContent = () => {
         let secondUserName = _.get(this.state, 'secondUserName');
         let salesTeam = classNames('sales-team',{'duplicate-sales-warning': this.state.duplicateSalesWarning});
