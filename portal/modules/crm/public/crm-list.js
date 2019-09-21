@@ -1125,7 +1125,8 @@ class Crm extends React.Component {
             //存储批量操作参数，后续更新时使用
             batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
                 showPop: true,
-                urlPath: '/crm'
+                urlPath: '/crm',
+                showFailed: true, //是否显示失败数
             });
             //立即在界面上显示推送通知
             //界面上立即显示一个初始化推送
