@@ -347,6 +347,7 @@ class ContractItem extends React.Component {
                                         isEdit={this.state.isShowProductEdit}
                                         onSave={this.handleProductSave}
                                         handleCancel={this.handleShowAddProduct.bind(this, false)}
+                                        addBtnText={Intl.get('common.product', '产品')}
                                     />
                                 ) : (
                                     hasEditPrivilege ? <a className="no-data-descr__link handle-btn-item" onClick={this.handleShowAddProduct.bind(this, true)}>{Intl.get('config.product.add', '添加产品')}</a>
