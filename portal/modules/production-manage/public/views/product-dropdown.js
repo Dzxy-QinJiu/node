@@ -87,7 +87,9 @@ class ProductDropdown extends React.Component {
                     });
                 }
                 //隐藏批量变更标签面板
-                this.productDropdownRef.handleCancel();
+                if(_.isFunction(_.get(this.productDropdownRef, 'handleCancel'))){
+                    this.productDropdownRef.handleCancel();
+                }
                 message.success(Intl.get('config.product.import.finish', '导入完成'));
             },
             error: (xhr) => {
