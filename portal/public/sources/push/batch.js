@@ -58,16 +58,22 @@ function batchOperateListener(data) {
     //当类型为批量操作，一直有弹框，或者是创建安全域创建完成且失败的时候有弹框
     //不同的类型，展示内容不同
     //拼出不同title和content
-    handleBatchOperation(data);
+    handleBatchOperation(data, taskParams);
 }
 
 //除了创建安全域的批量操作（如用户，客户），开始任务时渲染notify提示框，如果有错误时，再次更新渲染错误提示内容
-function handleBatchOperation(data) {
+function handleBatchOperation(data, taskParams) {
     var content = '';
     var title = '';
     var operate_type = data.typeText;
     var taskId = data.taskId;
-    content = Intl.get('user.complete.ratio', '完成进度') + `:${data.total - data.running}/${data.total}`;
+    var taskConfig = taskParams.taskConfig;
+    let showFailed = _.get(taskConfig, 'showFailed', false);
+    content = Intl.get('user.complete.ratio', '完成进度') + `: ${data.total - data.running}/${data.total}`;
+    if(showFailed) {
+        content += ', ' + Intl.get('batch.success.count', '成功数: {count}', {count: _.get(data, 'succeed')});
+        content += ', ' + Intl.get('batch.faild.count', '失败数: {count}', {count: _.get(data, 'failed')});
+    }
     title = Intl.get('user.batch.operation', '批量操作');
     if (operate_type) {
         title += `-${operate_type}`;
@@ -97,12 +103,14 @@ function updateNotifyContentGeneral(title, content, taskId, data) {
         //如果存在创建失败的任务列表，将错误提示都展示出来
         if (data.failedTasks && data.failedTasks.length !== 0) {
             data.failedTasks.forEach(function(failedTask) {
-                failedTask.taskDetail && (errTip += failedTask.taskDetail.remark + '<br/>');
+                failedTask.taskDetail && failedTask.taskDetail.remark && (errTip += failedTask.taskDetail.remark + '<br/>');
             });
-            notificationUtil.updateText(notify, {
-                title: title,
-                content: errTip
-            });
+            if(errTip) {
+                notificationUtil.updateText(notify, {
+                    title: title,
+                    content: errTip
+                });
+            }
         }
         clearTimeout(notyCloseTimeoutMap[taskId]);
         notyCloseTimeoutMap[taskId] = setTimeout(() => {
@@ -152,6 +160,12 @@ const SESSION_STORAGE_TASKID = 'batch_operation_taskid_list';
  *  showPop : true,
  *  //在哪个界面才进行处理
  *  urlPath : '/user/list'
+ *  //是否需要显示错误
+ *  showFailed : true
+ *  //错误数点击监听函数
+ *  onHandleErrorClick : function() {}
+ *  //成功数点击监听函数
+ *  onHandleSuccessClick : function() {}
  */
 function saveTaskParamByTaskId(taskId, params, taskConfig) {
     var sessionStorageKey = TASK_PARAMS_PRE + taskId;

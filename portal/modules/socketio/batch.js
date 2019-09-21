@@ -107,6 +107,7 @@ Batch.prototype.listener = function(data) {
                         running: data.running,
                         tasks: tasks,
                         failed: data.failed,
+                        succeed: data.succeed,
                         failedTasks: failedTasks
                     };
                     socket.emit('batchOperate' , messageObj);

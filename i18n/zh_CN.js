@@ -3601,6 +3601,7 @@ var zh_CN = {
     'user.apply.hide.reply': '收起回复',
     'user.apply.no.rely.list': '无回复',
     'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
-
+    'batch.faild.count': '失败数: {count}',
+    'batch.success.count': '成功数: {count}',
 };
 export default zh_CN;
