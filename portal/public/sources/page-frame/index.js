@@ -196,7 +196,6 @@ class PageFrame extends React.Component {
     closeNotificationPanel = () => {
         this.setState({
             isShowNotificationPanel: false,
-            phonePanelShow: false
         });
     };
 
