@@ -154,7 +154,7 @@ class PhonePanel extends React.Component {
         //如果切换了客户，那么重置状态
         let nextId = _.get(nextProps, 'paramObj.customer_params.currentId', '');
         let currentId = _.get(this.state, 'paramObj.customer_params.currentId', '');
-        if(!_.isEqual(nextId, currentId)){
+        if(!_.isEqual(nextId, currentId) && !_.isEmpty(nextProps.paramObj.customer_params)){
             paramObj.call_params = null;
             phoneAlertAction.setInitialState();
             this.setState({

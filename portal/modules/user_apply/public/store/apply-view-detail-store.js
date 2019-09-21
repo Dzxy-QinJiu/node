@@ -139,6 +139,15 @@ class ApplyViewDetailStore {
         this.isLeader = false; //当前账号是否是待审批人的上级领导
         //该审批的所在的节点
         this.applyNode = [];
+        //获取相同客户的历史申请
+        this.sameHistoryApplyLists = {
+            //三种状态,loading,error,success
+            result: 'loading',
+            //列表数组
+            list: [],
+            //服务端错误信息
+            errorMsg: ''
+        };
     }
     //获取应用列表
     getApps(result) {
@@ -178,6 +187,16 @@ class ApplyViewDetailStore {
             this.formData.delayTimeNumber = 365 * years + 30 * months + 7 * weeks + days;
             this.formData.delayTimeUnit = 'days';
         }
+    }
+    setHistoryApplyStatus(){
+        this.sameHistoryApplyLists = {
+            //三种状态,loading,error,''
+            result: '',
+            //列表数组
+            list: [],
+            //服务端错误信息
+            errorMsg: ''
+        };
     }
     //获取审批详情
     getApplyDetail(obj) {
@@ -277,6 +296,25 @@ class ApplyViewDetailStore {
         }else{
             this.backApplyResult.submitResult = 'success';
             this.backApplyResult.errorMsg = '';
+        }
+    }
+    getHistoryApplyListsByCustomerId(resultObj){
+        var sameHistoryApplyLists = this.sameHistoryApplyLists;
+        if (resultObj.loading) {
+            sameHistoryApplyLists.result = 'loading';
+            sameHistoryApplyLists.list = [];
+            sameHistoryApplyLists.errorMsg = '';
+        } else if (resultObj.error) {
+            //出错的情况
+            sameHistoryApplyLists.result = 'error';
+            sameHistoryApplyLists.list = [];
+            sameHistoryApplyLists.errorMsg = resultObj.errorMsg;
+        } else {
+            //正常情况
+            sameHistoryApplyLists.result = '';
+            sameHistoryApplyLists.list = _.get(resultObj,'data.list');
+
+            sameHistoryApplyLists.errorMsg = '';
         }
     }
 
