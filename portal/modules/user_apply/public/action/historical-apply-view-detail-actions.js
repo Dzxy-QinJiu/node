@@ -88,15 +88,15 @@ class ApplyViewDetailActions {
         //如果已获取了某个详情数据，针对从url中的申请id获取的详情数据
         if (applyData) {
             this.dispatch({loading: false, error: false, detail: applyData.detail});
-            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,_.get(applyData,'detail',''));
+            AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID,_.get(applyData,'detail',''));
 
         } else {
             this.dispatch({loading: true, error: false});
             AppUserAjax.getApplyDetail(id).then((detail, apps) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID,detail);
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID,detail);
                 this.dispatch({loading: false, error: false, detail: detail,approvalState: approvalState});
             }, (errorMsg) => {
-                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID);
+                AppUserUtil.emitter.emit(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID);
                 this.dispatch({loading: false, error: true, errorMsg: errorMsg});
             });
         }

@@ -240,10 +240,11 @@ function crmReleaseListener(data) {
             showDesktopNotification(title, tipContent, true);
         } else {//系统弹出通知
             var contentHtml = '';
-            var titleHtml = '<p class=\'customer-title\'>' + '<i class=\'iconfont icon-crm\'></i>' + '<span class=\'title-tip\'>' + title + '</span>';
+            var titleHtml = '<p class=\'customer-title\'>' + '<span class=\'title-tip\'>' + title + '</span>';
             contentHtml = `<div class=\'customer-item\'>${tipContent}</div>`;
             notificationUtil.showNotification({
                 title: titleHtml,
+                type: 'release',
                 content: contentHtml,
                 closeWith: ['button']
             });

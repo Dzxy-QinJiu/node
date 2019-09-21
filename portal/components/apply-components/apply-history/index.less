@@ -1,0 +1,124 @@
+@import "../apply-common-style/index";
+//列表外层容器
+.apply-history-list {
+  .reply-info-block {
+    .reply-list-container {
+      .history-apply-title {
+        font-size: 14px;
+        color: #999;
+        margin-bottom: 10px;
+
+      }
+      li {
+        word-break: break-all;
+        margin-bottom: 6px;
+        overflow: hidden;
+        padding-left: 5px;
+        .apply-item-title {
+          background-color: #FAFAFA;
+          height: 32px;
+          line-height: 32px;
+          padding-left: 10px;
+          &:hover {
+            background-color: #F1F8FE;
+          }
+        }
+        &:hover {
+
+          .apply-item-topic {
+            cursor: pointer;
+          }
+          .reply-btns {
+            color: #09a9fe;
+            cursor: pointer;
+          }
+          .reply-date-text {
+            display: none;
+          }
+          .user-info-text {
+            display: inline-block;
+          }
+
+        }
+        .apply-applicate {
+          margin: 0 5px;
+        }
+        .reply-container {
+          padding-left: 10px;
+        }
+      }
+
+      .reply-content {
+        font-size: 12px;
+        overflow: hidden;
+        margin: 5px 0;
+
+
+        .reply-content-name {
+          color: #333;
+        }
+        .reply-content-time {
+          color: #999;
+          float: right;
+        }
+
+      }
+    }
+    .apply-info-label {
+      margin-top: 0;
+      .apply-item-topic {
+        color: #333;
+        .apply-item-status{
+          color: #999999;
+          .clue-status {
+            margin:0 10px;
+            line-height: 20px;
+            font-size: 13px;
+            color: @approval-pending-color;
+            &.processed {
+              color: #999;
+            }
+          }
+        }
+      }
+      .reply-date-text, .user-info-text {
+        float: right;
+        padding-right: 0;
+      }
+      .user-info-text {
+        display: none;
+      }
+
+    }
+    .refresh-reply-data-tip {
+      display: inline-block;
+      width: 100%;
+      line-height: 27px;
+      text-align: center;
+    }
+    //loading外层容器
+    .reply-loading-wrap {
+      display: block;
+      text-align: center;
+      margin: 0 0 0 8px;
+      font-size: 18px;
+    }
+    //loading文字容器
+    .reply-loading-text {
+      font-size: 12px;
+      margin: 0 0 0 10px;
+    }
+    //提示容器
+    .ant-alert {
+      display: inline-block;
+    }
+    //刷新样式
+    .anticon-reload {
+      cursor: pointer;
+      &.pull-right {
+        margin: 10px 10px 0 0;
+        font-size: 14px;
+      }
+    }
+  }
+}

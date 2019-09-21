@@ -11,6 +11,8 @@ import dealBoardAction from '../action/deal-board-action';
 import dealBoardStore from '../store/deal-board-store';
 import DealStageBoard from './deal-stage-board';
 import dealAjax from '../ajax';
+let DealBoardContainerEl = null;
+let DealBoardScrollLeft = 0;
 
 class DealBoardList extends React.Component {
     constructor(props) {
@@ -24,6 +26,7 @@ class DealBoardList extends React.Component {
     componentDidMount() {
         dealBoardStore.listen(this.onStoreChange);
         this.getDealBoardData();
+        DealBoardContainerEl = $('.deal-board-view-container');
     }
 
     componentWillReceiveProps(nextProps) {
@@ -35,6 +38,8 @@ class DealBoardList extends React.Component {
     componentWillUnmount() {
         dealBoardAction.setInitData();
         dealBoardStore.unlisten(this.onStoreChange);
+        DealBoardContainerEl = null;
+        DealBoardScrollLeft = 0;
     }
 
     onStoreChange = () => {
@@ -96,12 +101,15 @@ class DealBoardList extends React.Component {
             property: 'sale_stages'
         };
         dealBoardAction.setIsSavingDragData(true);
+        // 获取横向滚动条的位置
+        if(DealBoardContainerEl) DealBoardScrollLeft = DealBoardContainerEl.scrollLeft();
         dealAjax.editDeal(editParams).then(result => {
             dealBoardAction.setIsSavingDragData(false);
             if (result && result.code === 0) {
                 //不同列拖动时的处理(从源列中移除，从目标列中加入)
                 dealBoardAction.dragDealEnd({source, destination, draggableId});
                 this.props.dragChangeStageMsg(editParams);
+                this.setScrollLeft();
                 message.success(Intl.get('user.edit.success', '修改成功'));
             } else {
                 message.error(Intl.get('common.edit.failed', '修改失败'));
@@ -125,12 +133,15 @@ class DealBoardList extends React.Component {
         };
         if (saveDeal.customer_id && saveDeal.id) {
             dealBoardAction.setIsSavingDragData(true);
+            // 获取横向滚动条的位置
+            if(DealBoardContainerEl) DealBoardScrollLeft = DealBoardContainerEl.scrollLeft();
             dealAjax.editDeal(saveDeal).then(result => {
                 dealBoardAction.setIsSavingDragData(false);
                 if (result && result.code === 0) {
                     //不同列拖动时的处理(从源列中移除，从目标列中加入)
                     dealBoardAction.dragDealEnd({source, destination, draggableId});
                     this.props.dragChangeStageMsg(saveDeal);
+                    this.setScrollLeft();
                     message.success(Intl.get('user.edit.success', '修改成功'));
                 } else {
                     message.error(Intl.get('common.edit.failed', '修改失败'));
@@ -141,6 +152,11 @@ class DealBoardList extends React.Component {
                 message.error(errorMsg || Intl.get('common.edit.failed', '修改失败'));
             });
         }
+    };
+
+    // 拖放后，保持横向滚动条的位置不变
+    setScrollLeft = () => {
+        if(DealBoardContainerEl) DealBoardContainerEl.scrollLeft(DealBoardScrollLeft || 0);
     };
 
     render() {
@@ -186,7 +202,8 @@ DealBoardList.propTypes = {
     searchObj: PropTypes.object,
     showDetailPanel: PropTypes.func,
     showCustomerDetail: PropTypes.func,
-    dragChangeStage:PropTypes.func,
+    dragChangeStage: PropTypes.func,
+    dragChangeStageMsg: PropTypes.func,
 };
 
 export default DealBoardList;

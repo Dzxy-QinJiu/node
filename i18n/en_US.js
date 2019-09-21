@@ -1323,6 +1323,7 @@ var en_US = {
     'user.apply.new.refresh.tip': 'Have a new application，refresh',//有新申请,点此刷新
     'user.apply.no.new.refresh.tip': 'No new application',//无新申请
     'user.apply.last.follow.date': 'Latest follow up date',//最新跟进日期
+    'user.apply.approve.no.comment': 'There is no historical application!',//暂无申请历史！
     // 用户审批end
 
     // 在线用户start
@@ -3483,5 +3484,7 @@ var en_US = {
     'clue.diff.type.tab.title.hastransfer': 'Converted to customer',//已转化为客户
     'clue.diff.type.tab.title.mark.invalid': 'Mark as invalid',//标记为无效
     'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
+    'batch.faild.count': 'The number of failed: {count}',//失败数{count}
+    'batch.success.count': 'The number of successful: {count}',//成功数{count}
 };
 export default en_US;

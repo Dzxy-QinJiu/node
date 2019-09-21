@@ -1333,6 +1333,7 @@ var zh_CN = {
     'user.apply.new.refresh.tip': '有新申请，点此刷新',
     'user.apply.no.new.refresh.tip': '无新申请',
     'user.apply.last.follow.date': '最新跟进日期',
+    'user.apply.approve.no.comment': '暂无申请历史！',
     // 用户审批end
 
     // 在线用户start
@@ -3593,6 +3594,14 @@ var zh_CN = {
     'clue.diff.type.tab.title.hastrace': '已做有效跟进（已打通或已写跟进记录）',
     'clue.diff.type.tab.title.hastransfer': '已转化为客户',
     'clue.diff.type.tab.title.mark.invalid': '标记为无效',
+    'user.apply.loading.historical.lists': '正在努力加载历史申请列表 ......',
+    'user.apply.history.apply.lists': '申请历史',
+    'user.apply.applicate.time': '申请于',
+    'user.apply.click.reply': '查看回复',
+    'user.apply.hide.reply': '收起回复',
+    'user.apply.no.rely.list': '无回复',
     'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
+    'batch.faild.count': '失败数: {count}',
+    'batch.success.count': '成功数: {count}',
 };
 export default zh_CN;
