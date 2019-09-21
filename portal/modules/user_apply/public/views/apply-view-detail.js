@@ -2423,15 +2423,15 @@ const ApplyViewDetail = createReactClass({
                                 //权限
                                 permissions: app_config.permissions,
                                 //到期停用
-                                over_draft: app_config.over_draft.value,
+                                over_draft: _.get(app_config, 'over_draft.value'),
                                 //开始时间
-                                begin_date: app_config.time.start_time,
+                                begin_date: _.get(app_config, 'time.start_time'),
                                 //结束时间
-                                end_date: app_config.time.end_time,
+                                end_date: _.get(app_config, 'time.end_time'),
                             };
                             //已有用户申请没法指定个数
                             if (!isExistUserApply) {
-                                appObj.number = app_config.number.value;
+                                appObj.number = _.get(app_config, 'number.value');
                             }
                             products.push(appObj);
                         }

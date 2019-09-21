@@ -27,6 +27,10 @@ class AntcDropdown extends React.Component {
         };
     }
 
+    componentWillUnmount() {
+        this.handleCancel();
+    }
+
     handleVisibleChange(flag) {
         //如果content内容中有下拉框的时候，选中某一项之后，会把AntcDropdown组件也隐藏掉
         //加上stopContentHide 这个属性，打开内容区域后设置为true，关闭后设置为false，避免内容区有select下拉框，选中选项后会关闭content内容区域

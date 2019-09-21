@@ -204,8 +204,6 @@ var CrmBatchChange = createReactClass({
                     running: totalSelectedSize,
                     typeText: title
                 });
-                //隐藏批量变更销售面板
-                this.refs.changeSales.handleCancel();
             } else {
                 var errorMsg = result.msg;
                 message.error(errorMsg);
@@ -285,8 +283,6 @@ var CrmBatchChange = createReactClass({
                     running: totalSelectedSize,
                     typeText: typeText
                 });
-                //隐藏批量变更标签面板
-                this.refs.changeTag.handleCancel();
             } else {
                 var errorMsg = result.msg;
                 message.error(errorMsg);
@@ -345,8 +341,6 @@ var CrmBatchChange = createReactClass({
                     running: totalSelectedSize,
                     typeText: Intl.get('crm.20', '变更行业')
                 });
-                //隐藏批量变更行业面板
-                this.refs.changeIndustry.handleCancel();
             } else {
                 var errorMsg = result.msg;
                 message.error(errorMsg);
@@ -401,8 +395,6 @@ var CrmBatchChange = createReactClass({
                     running: totalSelectedSize,
                     typeText: Intl.get('crm.21', '变更地域')
                 });
-                //隐藏批量变更地域面板
-                this.refs.changeAddress.handleCancel();
                 //清空选择的地域信息
                 this.updateLocation('');
             } else {
@@ -459,8 +451,6 @@ var CrmBatchChange = createReactClass({
                     running: totalSelectedSize,
                     typeText: Intl.get('crm.administrative.level.change', '变更行政级别')
                 });
-                //隐藏批量变更行业面板
-                this.refs.changeAdministrativeLevel.handleCancel();
             } else {
                 var errorMsg = result.msg;
                 message.error(errorMsg);
@@ -471,12 +461,16 @@ var CrmBatchChange = createReactClass({
     //批量添加联系计划
     doAddScheduleLists: function() {
         //调用子组件中保存数据的方法
-        this.refs.crmScheduleForm.handleSave();
+        if (_.isFunction(_.get(this.refs, 'crmScheduleForm.handleSave'))) {
+            this.refs.crmScheduleForm.handleSave();
+        }
     },
 
     //添加完联系计划后，关闭下拉面板
     closeContent: function() {
-        this.refs.addSchedule.handleCancel();
+        if (_.isFunction(_.get(this.refs, 'addSchedule.handleCancel'))) {
+            this.refs.addSchedule.handleCancel();
+        }
     },
 
     //取消添加日程
@@ -484,7 +478,9 @@ var CrmBatchChange = createReactClass({
         this.setState({
             stopContentHide: false
         });
-        this.refs.crmScheduleForm.handleCancel();
+        if (_.isFunction(_.get(this.refs, 'crmScheduleForm.handleCancel'))) {
+            this.refs.crmScheduleForm.handleCancel();
+        }
     },
 
     handleSubmit: function(e) {
@@ -739,7 +735,6 @@ var CrmBatchChange = createReactClass({
                     (this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_TAG ||
                     this.state.currentTab === 'addTag' || this.state.currentTab === 'removeTag') && isShowDropDownContent ? (
                             <AntcDropdown
-                                ref="changeTag"
                                 content={changeBtns.btn}
                                 overlayTitle={Intl.get('common.tag', '标签')}
                                 isSaving={this.state.isLoading}
@@ -757,7 +752,6 @@ var CrmBatchChange = createReactClass({
                 {
                     this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_INDUSTRY && isShowDropDownContent ? (
                         <AntcDropdown
-                            ref="changeIndustry"
                             content={changeBtns.btn}
                             overlayTitle={Intl.get('common.industry', '行业')}
                             isSaving={this.state.isLoading}
@@ -775,7 +769,6 @@ var CrmBatchChange = createReactClass({
                 {
                     this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_TERRITORY && isShowDropDownContent ? (
                         <AntcDropdown
-                            ref="changeAddress"
                             content={changeBtns.btn}
                             overlayTitle={Intl.get('crm.96', '地域')}
                             isSaving={this.state.isLoading}
@@ -793,7 +786,6 @@ var CrmBatchChange = createReactClass({
                 {
                     this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_SALES && isShowDropDownContent ? (
                         <AntcDropdown
-                            ref="changeSales"
                             content={changeBtns.btn}
                             overlayTitle={Intl.get('crm.6', '负责人')}
                             isSaving={this.state.isLoading}
@@ -811,7 +803,6 @@ var CrmBatchChange = createReactClass({
                 {
                     this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_ADMINISTRATIVE_LEVEL && isShowDropDownContent ? (
                         <AntcDropdown
-                            ref="changeAdministrativeLevel"
                             content={changeBtns.btn}
                             overlayTitle={Intl.get('crm.administrative.level', '行政级别')}
                             isSaving={this.state.isLoading}
