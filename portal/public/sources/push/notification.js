@@ -35,9 +35,5 @@ function switchIcon(type) {
 }
 
 
-function reduceTitle(title) {
-
-}
-
 exports.showNotification = showNotification;
 exports.updateText = updateText;
