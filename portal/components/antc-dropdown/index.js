@@ -28,7 +28,9 @@ class AntcDropdown extends React.Component {
     }
 
     componentWillUnmount() {
-        this.handleCancel();
+        setTimeout(() => {
+            this.handleCancel();
+        });
     }
 
     handleVisibleChange(flag) {
