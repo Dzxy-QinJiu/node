@@ -1006,7 +1006,7 @@ exports.getCertainTabsTitle = (status) => {
     var target = _.find(DIFF_STATUS_TAB, item => item.key === status);
     return _.get(target,'value','');
 };
-exports.getApplyStateText = (obj) => {
+exports.getUserApplyStateText = (obj) => {
     if (obj.isConsumed === 'true') {
         if (obj.approval_state === '1') {
             return Intl.get('user.apply.pass', '已通过');
