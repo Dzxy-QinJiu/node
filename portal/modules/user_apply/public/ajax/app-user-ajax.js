@@ -7,6 +7,7 @@ const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 var applyListAjax;
 exports.getApplyList = function(obj) {
     var Deferred = $.Deferred();
+    applyListAjax && applyListAjax.abort();
     applyListAjax = $.ajax({
         url: '/rest/appuser/apply_list',
         dataType: 'json',
