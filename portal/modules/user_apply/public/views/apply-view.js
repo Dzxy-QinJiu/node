@@ -268,7 +268,7 @@ class ApplyTabContent extends React.Component {
                                         <span>{obj.topic || Intl.get('user.apply.id', '账号申请')}</span>
                                         {hasUnreadReply ? <span className="iconfont icon-apply-message-tip"
                                             title={Intl.get('user.apply.unread.reply', '有未读回复')}/> : null}
-                                        <em className={btnClass}>{commonMethodUtil.getApplyStateText(obj)}</em>
+                                        <em className={btnClass}>{commonMethodUtil.getUserApplyStateText(obj)}</em>
                                     </dt>
                                     <dd className="clearfix" title={obj.customer_name}>
                                         <span>{obj.customer_name}</span>
