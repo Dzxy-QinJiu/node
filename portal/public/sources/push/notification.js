@@ -3,6 +3,7 @@ var noty = require('noty');
 function showNotification(options) {
     var {title,content,type,...props} = options;
     let iconHtml = type ? `<div class="noty-icon">${switchIcon(type)}</div>` : '';
+    title.length > 17 ? title = _.chunk(title,17)[0].join('') + '...' : null;
     var titleHtml = title ? `<div class="noty-title${!type ? ' noIcon' : ''}">${iconHtml}<h5>${title}</h5></div>` : '';
     var contentHtml = content ? `<div class="noty-content${!type ? ' noIcon' : ''}">${content}</div>` : '';
     var text = `<div class="noty-container">${titleHtml}${contentHtml}</div>`;
@@ -31,6 +32,11 @@ function switchIcon(type) {
     };
     let icon = `<span class="iconfont ${_.get(list,type,'')}"></span>`;
     return icon;
+}
+
+
+function reduceTitle(title) {
+
 }
 
 exports.showNotification = showNotification;
