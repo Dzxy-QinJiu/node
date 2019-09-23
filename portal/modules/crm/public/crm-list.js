@@ -1389,7 +1389,6 @@ class Crm extends React.Component {
                     message.error(Intl.get('crm.customer.uninterested.error', '取消关注失败'));
                 }
                 //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
-                message.error('sbai');
                 //还原详情中的关注图标颜色
                 if(this.state.currentId === interestObj.id) {
                     let detailCustomer = _.find(initalCurPageCustomers, item => item.id === interestObj.id);
