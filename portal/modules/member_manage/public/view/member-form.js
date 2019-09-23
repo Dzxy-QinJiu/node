@@ -55,6 +55,7 @@ class MemberForm extends React.Component {
             },
             phoneEmailCheck: true, //电话邮箱必填一项的验证
             positionList: [], // 职务列表
+            newAddPosition: {}, // 新添加的职务
             isMatchPositionListFlag: true, // 是否是选中列表中的值，true,
             isAddPositionLoading: false, // 保存新添加的职务
         };
@@ -110,12 +111,16 @@ class MemberForm extends React.Component {
                 return;
             } else {
                 //所有者各项唯一性验证均不存在且没有出错再添加
-                var user = _.extend({}, values);
+                let user = _.extend({}, values);
                 let positionName = user.position;
                 if (positionName) {
-                    let matchPosition = _.find(this.state.positionList, item => item.name === positionName);
-                    if (matchPosition) {
-                        user.position = matchPosition.id;
+                    if (this.state.newAddPosition) { // 新添加的职务
+                        user.position = this.state.newAddPosition.id;
+                    } else { // 已存在的职务
+                        let matchPosition = _.find(this.state.positionList, item => item.name === positionName);
+                        if (matchPosition) {
+                            user.position = matchPosition.id;
+                        }
                     }
                 }
                 if (user.phone) {
@@ -326,9 +331,6 @@ class MemberForm extends React.Component {
         let positionList = this.state.positionList;
         if (_.isArray(positionList) && _.get(positionList, 'length')) {
             positionOptions = _.map(positionList, item => <Option key={item.id} value={item.name}>{item.name}</Option>);
-        } else {
-            positionOptions =
-                <Option value="">{Intl.get('member.no.position', '暂无职务')}</Option>;
         }
         return positionOptions;
     };
@@ -390,9 +392,15 @@ class MemberForm extends React.Component {
     };
 
     handleFocusPositionSelect = () => {
-        this.setState({
-            isMatchPositionListFlag: true
-        });
+        if (this.state.positionList.length) {
+            this.setState({
+                isMatchPositionListFlag: true
+            });
+        } else {
+            this.setState({
+                isMatchPositionListFlag: false
+            });
+        }
     };
 
     // 获取职务的颜色
@@ -420,10 +428,8 @@ class MemberForm extends React.Component {
                 isMatchPositionListFlag: true
             });
             if (result && _.get(result, 'id')) {
-                let positionList = this.state.positionList;
-                positionList.push(result);
                 this.setState({
-                    positionList: positionList
+                    newAddPosition: result
                 });
             } else {
                 message.error(Intl.get('member.add.failed', '添加失败！'));
