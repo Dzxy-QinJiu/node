@@ -167,25 +167,6 @@ class ClueFilterPanel extends React.Component {
                 <RangePicker
                     disabledDate={this.disabledDate}
                     onChange={this.changeRangePicker}/>
-
-                {/*<DatePicker*/}
-                {/*disableDateAfterToday={true}*/}
-                {/*range={this.state.timeType}*/}
-                {/*onSelect={this.onSelectDate}>*/}
-                {/*<DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option*/}
-                {/*value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option*/}
-                {/*value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option*/}
-                {/*value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option*/}
-                {/*value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option*/}
-                {/*value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>*/}
-                {/*<DatePicker.Option*/}
-                {/*value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>*/}
-                {/*</DatePicker>*/}
             </div>
         );
     };
