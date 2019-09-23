@@ -219,6 +219,8 @@ function showMetricsDetail(metricsKey, metricsTitle) {
         url: '/rest/analysis/contract/contract/v2/all/performance/metrics/account_manager/detail',
         query
     }).then(result => {
+        //去掉指标标题中的单位，该标题显示在指标详情中时不需要单位
+        metricsTitle = metricsTitle.replace(/（.*）/, '');
         const title = metricsTitle + Intl.get('common.indicators.for.details', '指标详情');
 
         let tableTitle;
