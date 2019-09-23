@@ -645,13 +645,13 @@ class CallRecord extends React.Component {
                     );
                 }
             }, {
-                title: isCommonSales ? Intl.get('call.record.caller', '呼叫者') : this.getColumnTitle('nick_name', Intl.get('call.record.caller', '呼叫者')),
+                title: this.getColumnTitle('nick_name', Intl.get('call.record.caller', '呼叫者')),
                 dataIndex: 'nick_name',
                 key: 'nick_name',
                 width: this.state.isFilter ? '150px' : '100px',
                 className: this.state.isFilter ? 'call-user' : 'has-filter call-user has-sorter'
             }, {
-                title: isCommonSales ? Intl.get('call.record.team', '团队') : this.getColumnTitle('sales_team', Intl.get('call.record.team', '团队')),
+                title: this.getColumnTitle('sales_team', Intl.get('call.record.team', '团队')),
                 dataIndex: 'sales_team',
                 width: this.state.isFilter ? 150 : 70,
                 key: 'sales_team'
@@ -785,6 +785,14 @@ class CallRecord extends React.Component {
             }
         ];
     };
+
+    isSales = () => {
+        let list = this.getCallRecordColumns();
+        list = _.filter(list,(o) => {
+            return o.dataIndex !== 'nick_name' && o.dataIndex !== 'sales_team';
+        });
+        return list;
+    }
 
     // 检测回车，触发确认对话框
     checkEnter = (id, event) => {
@@ -1234,7 +1242,7 @@ class CallRecord extends React.Component {
                             ref={this.tableBody}
                             dataSource={this.state.callRecord.data_list}
                             rowKey={this.getRowKey}
-                            columns={this.getCallRecordColumns()}
+                            columns={isCommonSales ? this.isSales() : this.getCallRecordColumns()}
                             rowClassName={this.handleRowClassName}
                             onChange={this.onSortChange}
                             pagination={false}
