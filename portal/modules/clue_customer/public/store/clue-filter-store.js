@@ -78,11 +78,6 @@ ClueFilterStore.prototype.setTimeType = function(timeType) {
     this.timeType = timeType;
     if (timeType === 'all'){
         this.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf()});
-    }else{
-        var timeObj = getStartEndTimeOfDiffRange(this.timeType, true);
-        var start_time = datePickerUtils.getMilliseconds(timeObj.start_time);
-        var end_time = datePickerUtils.getMilliseconds(timeObj.end_time, true);
-        this.setTimeRange({start_time: start_time, end_time: end_time});
     }
 
 };
