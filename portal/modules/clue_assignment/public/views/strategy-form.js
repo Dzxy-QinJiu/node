@@ -162,7 +162,8 @@ class StrategyForm extends React.Component {
                             {...formItemLayout}
                         >
                             {getFieldDecorator('name', {
-                                rules: [clueAssignmentStrategy]
+                                rules: [clueAssignmentStrategy],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input
                                     name="name"
@@ -184,7 +185,8 @@ class StrategyForm extends React.Component {
                                             getFieldDecorator('province', {
                                                 rules: [{
                                                     required: true, message: Intl.get('clue.assignment.needs.region.required.tip', '地域不能为空')
-                                                }]
+                                                }],
+                                                validateTrigger: 'onBlur'
                                             })(
                                                 <Select
                                                     mode="multiple"
@@ -297,7 +299,8 @@ class StrategyForm extends React.Component {
                                     rules: [{
                                         required: true,
                                         message: Intl.get('clue.assignment.assignee.required.tip', '被分配人不能为空')
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Select
                                         showSearch
