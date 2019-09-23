@@ -52,7 +52,7 @@ exports.getClueAssignmentStrategies = function(req, res) {
     let sortId = _.get(req, 'body.sortId', '');
     let url = restApis.getClueAssignmentStrategies.replace(':page_size', req.params.page_size);
     if(!_.isEmpty(sortId)) {
-        url += (`?sort_id='${sortId}'`);
+        url += (`?sort_id=${sortId}`);
     }
     return restUtil.authRest.post(
         {

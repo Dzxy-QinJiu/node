@@ -306,7 +306,7 @@ let routers = [
                 name: 'menu.clue.allocation', //线索分配
                 routePath: '/background_management/clue_assignment',
                 component: `${MODULE_PATH}clue_assignment/public`,
-                // todo 权限
+                showPrivileges: ['CURTAO_RULE_MANAGE']
             },
             {
                 id: 'SALES_AUTO',

@@ -27,8 +27,17 @@ class StrategyForm extends React.Component {
             locationList: [],//地域列表
             selectedSalesMan: '',//选择的销售人员
             savedStrategy: {},//保存后的策略
+            regions: this.props.regions,//地域列表
+            salesManList: this.props.salesManList,//销售列表
             ...StrategyFormStore.getState(),
         };
+    }
+
+    componentWillReceiveProps = (nextProps) => {
+        this.setState({
+            salesManList: nextProps.salesManList,
+            regions: nextProps.regions
+        });
     }
 
     componentDidMount = () => {
@@ -186,7 +195,7 @@ class StrategyForm extends React.Component {
                                                     getPopupContainer={() => document.getElementById('condition-province')}
                                                     filterOption={(input, option) => ignoreCase(input, option)}
                                                 >
-                                                    {_.map(this.props.regions, (item, index) => {
+                                                    {_.map(this.state.regions, (item, index) => {
                                                         return (<Option key={index} value={item}>{item}</Option>);
                                                     })}
                                                 </Select>
@@ -299,7 +308,7 @@ class StrategyForm extends React.Component {
                                         filterOption={(input, option) => ignoreCase(input, option)}
                                         onChange={this.onSalesManChange}
                                     >
-                                        {getSalesDataList(_.get(this.props, 'salesManList', []))}
+                                        {getSalesDataList(_.get(this.state, 'salesManList', []))}
                                     </Select>
                                 )}
                         </FormItem>

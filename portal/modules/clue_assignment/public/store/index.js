@@ -17,7 +17,6 @@ let emptyStrategy = {
 
 class ClueAssignmentStore {
     constructor() {
-        this.pageSize = 10;
         this.setInitialData();
         this.bindActions(ClueAssignmentAction);
     }
@@ -38,7 +37,7 @@ class ClueAssignmentStore {
         this.salesManList = [];//所有销售人员的列表
         this.regions = [];//可选择的地域
         this.lastId = '';//最后一个线索分配策略
-        this.pageSize = 10;//一页可以展示的个数
+        this.pageSize = 20;//一页可以展示的个数
         this.curPage = 1;//当前第几页
         this.initialRegion();
     }
@@ -78,13 +77,11 @@ class ClueAssignmentStore {
         this.isShowStrategyForm = false;
     }
     //处理线索分配策略列表
-    handleStrategy(strategyList) {
+    handleStrategy() {
         //取出来所有已经选择的地域并且剔除掉
-        let selectedRegions = _.map(strategyList, strategy => strategy.condition.province);
+        let selectedRegions = _.map(this.strategyList, strategy => strategy.condition.province);
         selectedRegions = _.reduce(selectedRegions, (mergedRegion, region) => _.concat(mergedRegion, region), []);
         this.deleteRegion(selectedRegions);
-        //获取最后一个线索分配策略的id
-        this.lastId = _.isEmpty(strategyList) ? '' : _.nth(strategyList, -1).id;
     }
     //获取线索分配策略列表
     getAssignmentStrategies({isGetStrategyDetailLoading, getStrategyListErrMsg, strategyList, strategyTotal}) {
@@ -105,11 +102,9 @@ class ClueAssignmentStore {
                     this.strategyList = strategyList;
                 }
                 //去重
-                let oldStrategyList = _.cloneDeep(this.strategyList);
-                this.strategyList = _.uniqBy(oldStrategyList, 'id');
+                this.strategyList = _.uniqBy(this.strategyList, 'id');
                 this.lastId = _.last(this.strategyList).id;
-                let strategyListHandling = _.cloneDeep(this.strategyList);
-                this.handleStrategy(strategyListHandling);
+                this.handleStrategy();
             }
         }
     }
@@ -139,17 +134,19 @@ class ClueAssignmentStore {
         //更新前处理当前的地域列表
         //将之前选择的地域加回可选择的地域列表
         let updateStrategy = _.find(this.strategyList, strategy => newStrategy.id === strategy.id);
-        let oldRegions = updateStrategy.condition.province;
-        this.addRegion(oldRegions);
-        //将更新后的地域从可选择的地域列表中删除
-        let newRegions = newStrategy.condition.province;
-        this.deleteRegion(newRegions);
-        //更新线索分配策略
-        _.map(this.strategyList, strategy => {
-            if(newStrategy.id === strategy.id){
-                _.extend(strategy,newStrategy);
-            }
-        });
+        if(!_.isEmpty(updateStrategy)) {
+            let oldRegions = updateStrategy.condition.province;
+            this.addRegion(oldRegions);
+            //将更新后的地域从可选择的地域列表中删除
+            let newRegions = newStrategy.condition.province;
+            this.deleteRegion(newRegions);
+            //更新线索分配策略
+            _.forEach(this.strategyList, strategy => {
+                if(newStrategy.id === strategy.id){
+                    _.extend(strategy,newStrategy);
+                }
+            });
+        }
     }
     //初始select里的地域
     initialRegion() {
@@ -162,21 +159,15 @@ class ClueAssignmentStore {
     }
     //将已选择的地域清除
     deleteRegion(list) {
-        let regions = _.cloneDeep(this.regions);
-        let selectedRegions = _.cloneDeep(this.selectedRegions);
-        selectedRegions = _.concat(selectedRegions, list);
-        this.selectedRegions = _.uniq(_.cloneDeep(selectedRegions));
+        this.selectedRegions = _.uniq(_.concat(this.selectedRegions, list));
         //将已选择的地域剔除出去
-        this.regions = _.difference(regions, selectedRegions);
+        this.regions = _.difference(this.regions, this.selectedRegions);
     }
     //当删除线索分配策略时，地域可以被重新展示
     addRegion(list) {
-        let regions = _.cloneDeep(this.regions);
-        let selectedRegions = _.cloneDeep(this.selectedRegions);
-        selectedRegions = _.difference(selectedRegions, list);
-        this.selectedRegions = _.uniq(_.cloneDeep(selectedRegions));
+        this.selectedRegions = _.uniq(_.difference(this.selectedRegions, list));
         //将已选择的地域展示回去
-        this.regions = _.concat(regions, list);
+        this.regions = _.concat(this.regions, list);
     }
     //更新每页的个数
     updatePageSize(pageSize) {

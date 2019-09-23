@@ -40,6 +40,8 @@ class StrategyInfo extends React.Component {
             availableRegions: '', //可选择的地域
             startStopErrorMsg: '', //启停项的错误提示
             isStartStopSaving: false,//启停项操作时加载的icon展示与否
+            regions: this.props.regions,//地域列表
+            salesManList: this.props.salesManList,//销售列表
             ...StrategyInfoStore.getState()
         };
     }
@@ -47,22 +49,21 @@ class StrategyInfo extends React.Component {
         this.setState({
             strategyInfo: nextProps.strategyInfo,
             status: nextProps.strategyInfo.status,
+            regions: nextProps.regions,//地域列表
+            salesManList: nextProps.salesManList,//销售列表
             startStopVisible: false,
             availableRegions: '',
             startStopErrorMsg: '',
             isStartStopSaving: false,
+        }, () => {
+            this.handleRegions();
         });
-
     }
 
     componentDidMount = () => {
         StrategyInfoStore.listen(this.onStoreChange);
         // 在编辑面板地域下拉选择要展示自己已选择的地域
-        let regions = _.cloneDeep(this.props.regions);
-        let selectedRegions = _.get(this.props, 'strategyInfo.condition.province', []);
-        this.setState({
-            availableRegions: _.concat(regions, selectedRegions)
-        });
+        this.handleRegions();
     }
 
     componentWillUnmount = () => {
@@ -75,6 +76,15 @@ class StrategyInfo extends React.Component {
     onStoreChange = () => {
         this.setState({
             ...StrategyInfoStore.getState()
+        });
+    }
+
+    //处理地域列表
+    handleRegions = () => {
+        let regions = _.cloneDeep(this.state.regions);
+        let selectedRegions = _.get(this.state, 'strategyInfo.condition.province', []);
+        this.setState({
+            availableRegions: _.concat(regions, selectedRegions)
         });
     }
 
@@ -399,7 +409,7 @@ class StrategyInfo extends React.Component {
                     value={getSelectedSaleManValue(this.state.strategyInfo)}
                     placeholder={Intl.get('clue.assignment.assignee.tip', '请选择或输入被分配人')}
                     hasEditPrivilege={true}
-                    selectOptions={getSalesDataList(_.get(this.props, 'salesManList', []))}
+                    selectOptions={getSalesDataList(_.get(this.state, 'salesManList', []))}
                     validators={[{
                         required: true,
                         message: Intl.get('clue.assignment.assignee.required.tip', '被分配人不能为空'),

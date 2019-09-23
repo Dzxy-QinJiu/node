@@ -30,7 +30,7 @@ const EDIT_TYPE = {
 };
 //默认一页展示的数量
 const PAGE_SIZE = {
-    SIZE: 10
+    SIZE: 20
 };
 
 class ClueAssignment extends React.Component {
@@ -87,7 +87,7 @@ class ClueAssignment extends React.Component {
             setTimeout(() => {
                 ClueAssignmentAction.updateCurPage(curPage);
                 let requestBody = {};
-                requestBody.pageSize = 10;
+                requestBody.pageSize = PAGE_SIZE.SIZE;
                 requestBody.sortId = this.state.lastId;
                 ClueAssignmentAction.getAssignmentStrategies(requestBody);
             });
