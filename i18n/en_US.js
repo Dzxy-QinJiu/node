@@ -1003,6 +1003,11 @@ var en_US = {
     'user.log.single.record': 'View the operation records for nearly three months', // 只能查看近三个月的操作记录
     'user.log.single.get.error': 'Failed to get single audit log',//获取单个审计日志失败
     //用户管理---用户审计日志end
+
+    //用户管理--- 活跃用户start
+    'user.active.tips': 'The user who has logged within the selection time', // 选择时间内登录过的用户
+    //用户管理--- 活跃用户end
+
     //基本资料start
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
