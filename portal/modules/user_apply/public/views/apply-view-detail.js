@@ -184,6 +184,7 @@ const ApplyViewDetail = createReactClass({
             showWariningTip: false,//是否展示密码的提示信息
             curEditExpireDateAppIdr: '',//正在展示修改到期时间的应用id
             updateDelayTime: '',//修改后的到期时间
+            isHomeMyWork: this.props.isHomeMyWork,
             ...ApplyViewDetailStore.getState()
         };
     },
@@ -254,9 +255,11 @@ const ApplyViewDetail = createReactClass({
         }
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
-        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
-        AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
-
+        if (this.state.isHomeMyWork){
+            AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+        }else{
+            AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+        }
         this.getIntegrateConfig();
         this.getAllUserList();
         this.getNotSalesRoleUserList();
@@ -266,9 +269,15 @@ const ApplyViewDetail = createReactClass({
         var ApplyViewDetailStore = this.getApplyViewDetailStore();
         ApplyViewDetailStore.unlisten(this.onStoreChange);
         emitter.removeListener('user_detail_close_right_panel', this.closeRightPanel);
+        if (this.state.isHomeMyWork){
+            AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+        }else{
+            AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+        }
+
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
-        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
-        AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+
+
     },
 
     closeRightPanel() {
@@ -300,6 +309,9 @@ const ApplyViewDetail = createReactClass({
                 phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
             }
         }
+        this.setState({
+            isHomeMyWork: nextProps.isHomeMyWork
+        });
     },
 
     getApplyListDivHeight: function() {

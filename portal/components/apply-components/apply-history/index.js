@@ -113,7 +113,7 @@ class ApplyDetailRemarks extends React.Component {
                                     <span className="apply-item-topic user-info-label">
                                         {replyItem.topic}
                                         <span className="apply-item-status">
-                                            <span className={btnClass}>[{commonMethodUtil.getApplyStateText(replyItem)}]</span>&gt;
+                                            <span className={btnClass}>[{commonMethodUtil.getUserApplyStateText(replyItem)}]</span>&gt;
                                         </span>
                                     </span>
 
