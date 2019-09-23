@@ -2546,6 +2546,10 @@ var en_US = {
     'user.login.abnormal.get.failed': 'Failed to get Exception login',//获取异常登录信息失败
     'crm.customer.interested': 'Add attention',//添加关注
     'crm.customer.uninterested': 'Unsubscribe',//取消关注
+    'crm.customer.interested.succ': 'Add attention success',//添加关注成功
+    'crm.customer.interested.error': 'Add attention fail',//添加关注失败
+    'crm.customer.uninterested.succ': 'Unsubscribe success',//取消关注成功
+    'crm.customer.uninterested.error': 'Unsubscribe fail',//取消关注失败
     'crm.customer.failed.interested': 'Failed to update the information!',//修改失败
     'call.record.play': 'PLAY',//播放录音
     'call.record.pick.phone': 'Please pick up the phone',//请拿起话机
