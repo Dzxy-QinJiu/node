@@ -78,6 +78,7 @@
           .strategy-switch {
             line-height: 24px;
             display: inline-block;
+            transform: translateY(-1px);
             .ant-switch {
               display: inline-block;
               margin-bottom: 4px;
@@ -88,8 +89,12 @@
             color: @cursor;
             margin-left: 12px;
             display: inline-block;
+            font-weight: normal;
             &:hover {
               color: darken(@cursor , 5%)
+            }
+            .iconfont {
+              font-size: 18px;
             }
           }
         }
