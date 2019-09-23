@@ -160,7 +160,9 @@ function getPerformanceDetailContent(result) {
 //获取业绩详情表格
 function getPerformanceDetailTable(title, columns, data) {
     _.each(columns, column => {
-        column.render = metricsValueRender.bind(column);
+        if (column.dataIndex !== 'max') {
+            column.render = metricsValueRender.bind(column);
+        }
     });
 
     columns.unshift({
