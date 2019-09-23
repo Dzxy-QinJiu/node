@@ -274,7 +274,7 @@ class ClueAddForm extends React.Component {
                                     rules: [{
                                         required: true,
                                     }],
-                                    initialValue: moment()
+                                    initialValue: moment(),
                                 })(
                                     <DatePicker
                                         allowClear={false}
@@ -290,7 +290,8 @@ class ClueAddForm extends React.Component {
                                     rules: [{
                                         required: true,
                                         message: Intl.get('clue.customer.fillin.clue.name', '请填写线索名称')
-                                    }, {validator: checkClueName}]
+                                    }, {validator: checkClueName}],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="name"
@@ -351,7 +352,7 @@ class ClueAddForm extends React.Component {
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('source_ip',{
-                                    rules: [{validator: checkClueSourceIP}]
+                                    rules: [{validator: checkClueSourceIP}],
                                 })(
                                     <Input
                                         name="source_ip"

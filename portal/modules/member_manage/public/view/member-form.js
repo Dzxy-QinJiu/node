@@ -505,7 +505,8 @@ class MemberForm extends React.Component {
                                         required: true,
                                         type: 'userName',
                                         validator: this.userNameValidationRules()
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="userName"
@@ -523,7 +524,8 @@ class MemberForm extends React.Component {
                                     rules: [{
                                         required: true,
                                         message: nameLengthRule
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="name"
@@ -546,7 +548,8 @@ class MemberForm extends React.Component {
                                         required: true,
                                         type: 'email',
                                         message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="email"
@@ -571,7 +574,8 @@ class MemberForm extends React.Component {
                                     rules: [{
                                         required: true,
                                         message: Intl.get('member.select.role', '请选择角色')
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Select
                                         size='large'
@@ -662,7 +666,8 @@ class MemberForm extends React.Component {
                                     rules: [{
                                         type: 'phone',
                                         validator: this.getValidator()
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="phone"
@@ -680,7 +685,8 @@ class MemberForm extends React.Component {
                                     rules: [{
                                         type: 'qq',
                                         validator: checkQQ
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="qq"

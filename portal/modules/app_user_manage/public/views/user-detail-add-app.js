@@ -731,6 +731,7 @@ var UserDetailAddApp = createReactClass({
                 >
                     <Validator
                         rules={[{validator: this.checkPass}]}
+                        trigger='onBlur'
                     >
                         <Input
                             name="password"
@@ -768,6 +769,7 @@ var UserDetailAddApp = createReactClass({
                             {required: true,whitespace: true,message: Intl.get('common.password.unequal', '两次输入密码不一致！')},
                             {validator: this.checkPass2}
                         ]}
+                        trigger='onBlur'
                     >
                         <Input
                             name="repassword"

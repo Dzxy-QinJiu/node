@@ -253,7 +253,8 @@ class AddReportSendApply extends React.Component {
                                     >
                                         {getFieldDecorator('customer', {
                                             rules: [{validator: _this.checkCustomerName}],
-                                            initialValue: ''
+                                            initialValue: '',
+                                            validateTrigger: 'onBlur'
                                         })(
                                             <CustomerSuggest
                                                 field='customer'

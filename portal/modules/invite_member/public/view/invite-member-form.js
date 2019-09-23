@@ -180,7 +180,8 @@ class InviteMemberForm extends React.Component{
                                 rules: [{
                                     required: true,
                                     message: nameLengthRule
-                                }]
+                                }],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input
                                     name='nickname'
@@ -203,7 +204,8 @@ class InviteMemberForm extends React.Component{
                                     required: true,
                                     type: 'email',
                                     message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                }]
+                                }],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input
                                     name='email'
