@@ -152,19 +152,19 @@ var CrmBatchChange = createReactClass({
                     message.warn(warningTip);
                     BatchChangeActions.setLoadingState(false);
                 }else{
-                    this.batchSubmitData(transferType, title);
+                    this.batchSubmitData(transferType, title, member_id);
                 }
             });
         }else{
-            this.batchSubmitData(transferType, title);
+            this.batchSubmitData(transferType, title, member_id);
         }
     },
 
-    batchSubmitData: function(transferType, title) {
+    batchSubmitData: function(transferType, title, member_id) {
         let condition = {
             query_param: {},
             update_param: {
-                user_id: this.state.sales_man.split('&&')[0]
+                user_id: member_id
             }
         };
         //选中全部搜索结果时，将搜索条件传给后端
