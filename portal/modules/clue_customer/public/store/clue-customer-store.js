@@ -25,9 +25,10 @@ function ClueCustomerStore() {
 }
 ClueCustomerStore.prototype.resetState = function() {
     this.salesManList = [];//销售列表
-    this.listenScrollBottom = true;//是否监测下拉加载
     this.curClueLists = [];//查询到的线索列表
     this.pageSize = 20; //一页可显示的客户的个数
+    //当前页数
+    this.pageNum = 1;
     this.isLoading = true;//加载线索客户列表数据中。。。
     this.clueCustomerErrMsg = '';//获取线索客户列表失败
     this.customersSize = 0;//线索客户列表的数量
@@ -35,7 +36,6 @@ ClueCustomerStore.prototype.resetState = function() {
     this.curClue = {}; //当前展示的线索详情
     this.submitTraceErrMsg = '';//提交跟进内容报错的情况
     this.submitTraceLoading = false;//正在提交跟进内容
-    this.lastCustomerId = '';//用于下拉加载的客户的id
     this.sorter = {
         field: 'source_time',
         order: 'descend'
@@ -99,12 +99,8 @@ ClueCustomerStore.prototype.changeFilterFlag = function(filterFlag) {
 ClueCustomerStore.prototype.setClueInitialData = function() {
     this.curClueLists = [];//查询到的线索列表
     this.customersSize = 0;
-    this.lastCustomerId = '';
     this.isLoading = true;
-    this.listenScrollBottom = true;
-};
-ClueCustomerStore.prototype.setLastClueId = function(updateId) {
-    this.lastCustomerId = updateId;
+    this.pageNum = 1;
 };
 ClueCustomerStore.prototype.setSortField = function(updateSortField) {
     this.sorter.field = updateSortField;
@@ -128,6 +124,9 @@ ClueCustomerStore.prototype.updateCurrentClueRemark = function(submitObj) {
         clue.customer_traces[0].remark = submitObj.remark;
     }
 },
+ClueCustomerStore.prototype.setPageNum = function(pageNum) {
+    this.pageNum = pageNum;
+};
 ClueCustomerStore.prototype.handleClueData = function(clueData) {
     if (clueData.loading) {
         this.isLoading = true;
@@ -135,16 +134,13 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
     } else if (clueData.error) {
         this.isLoading = false;
         this.clueCustomerErrMsg = clueData.errorMsg;
+        this.pageNum = 1;
+        this.customersSize = 0;
     } else {
         let data = clueData.clueCustomerObj;
         let list = data ? data.result : [];
-        if (this.lastCustomerId) {
-            this.curClueLists = this.curClueLists.concat(this.processForList(list));
-        } else {
-            this.curClueLists = this.processForList(list);
-        }
+        this.curClueLists = this.processForList(list);
         this.customersSize = data ? data.total : 0;
-        this.listenScrollBottom = this.customersSize > this.curClueLists.length;
         //把线索详情中电话，邮箱，微信，qq里的空值删掉
         _.forEach(this.curClueLists, (clueItem) => {
             if (_.isArray(clueItem.contacts) && clueItem.contacts.length) {
@@ -219,19 +215,16 @@ ClueCustomerStore.prototype.handleClueData = function(clueData) {
                 });
             }else{
                 this.isLoading = false;
-                this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
                 this.firstLogin = false;
             }
         }else{
             this.isLoading = false;
-            this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
             this.firstLogin = false;
         }
     }
 },
 ClueCustomerStore.prototype.setLoadingFalse = function() {
     this.isLoading = false;
-    this.lastCustomerId = _.last(this.curClueLists) ? _.last(this.curClueLists).id : '';
     this.firstLogin = false;
 },
 ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
