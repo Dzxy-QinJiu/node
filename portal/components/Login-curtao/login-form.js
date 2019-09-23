@@ -32,7 +32,9 @@ class LoginForm extends React.Component {
         //登录按钮是否可用
         loginButtonDisabled: true,
         //登录状态
-        logining: false
+        logining: false,
+        //是否显示密码
+        passwordVisible: false,
     };
 
     beforeSubmit = (event) => {
@@ -133,6 +135,12 @@ class LoginForm extends React.Component {
         this.setState({
             password: evt.target.value
         }, () => this.props.setErrorMsg(''));
+    };
+
+    showPassword = () => {
+        this.setState({
+            passwordVisible: !this.state.passwordVisible 
+        });
     };
 
     renderCaptchaBlock = (hasWindow) => {
@@ -256,10 +264,15 @@ class LoginForm extends React.Component {
                     <div className="input-item">
                         <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
                         <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
-                            type="password" tabIndex="2"
+                            type={this.state.passwordVisible ? 'tsxt' : 'password'} 
+                            tabIndex="2"
                             ref="password_input"
                             logininput="password"
+                            className="input-pwd"
                             onChange={this.passwordChange} value={this.state.password} autoComplete="new-password"/>
+                        <i className={this.state.passwordVisible ? 'iconfont icon-password-visible' :
+                            'iconfont icon-password-invisible'} 
+                        onClick={this.showPassword}></i>
                     </div>
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
