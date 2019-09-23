@@ -277,13 +277,13 @@ class MemberForm extends React.Component {
         if (this.state.nickNameExist) {
             return (
                 <div className="phone-email-check">
-                    {Intl.get('common.name.is.existed', '姓名已存在！')}
+                    {Intl.get('common.nickname.is.existed', '昵称已存在！')}
                 </div>
             );
         } else if (this.state.nickNameError) {
             return (
                 <div className="phone-email-check">
-                    {Intl.get('common.name.is.unique', '姓名唯一性校验出错！')}
+                    {Intl.get('common.nickname.is.unique', '昵称唯一性校验出错！')}
                 </div>
             );
         } else {
@@ -517,12 +517,11 @@ class MemberForm extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
-                                label={Intl.get('common.name', '姓名')}
+                                label={Intl.get('common.nickname', '昵称')}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('name', {
                                     rules: [{
-                                        required: true,
                                         message: nameLengthRule
                                     }],
                                     validateTrigger: 'onBlur'
@@ -531,7 +530,7 @@ class MemberForm extends React.Component {
                                         name="name"
                                         id="name"
                                         type="text"
-                                        placeholder={Intl.get('crm.90', '请输入姓名')}
+                                        placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}
                                         className={this.state.nickNameExist || this.state.nickNameError ? 'input-red-border' : ''}
                                         onBlur={this.checkOnlyNickName}
                                         onFocus={this.resetNickNameFlags}
@@ -572,7 +571,6 @@ class MemberForm extends React.Component {
                                 {getFieldDecorator('role', {
                                     initialValue: roleId,
                                     rules: [{
-                                        required: true,
                                         message: Intl.get('member.select.role', '请选择角色')
                                     }],
                                     validateTrigger: 'onBlur'

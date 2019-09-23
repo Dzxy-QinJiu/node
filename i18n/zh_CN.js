@@ -162,6 +162,8 @@ var zh_CN = {
     'common.name.is.unique': '姓名唯一性校验出错！',
     'common.is.existed': '用户名已存在！',
     'common.username.is.unique': '用户名唯一性校验出错！',
+    'common.nickname.is.existed': '昵称已存在！',
+    'common.nickname.is.unique': '昵称唯一性校验出错！',
     'common.phone.is.existed': '电话已存在！',
     'common.phone.is.unique': '电话唯一性校验出错！',
     'common.email.is.existed': '邮箱已存在！',
