@@ -2977,6 +2977,7 @@ var zh_CN = {
     'clue.extract.failed': '提取失败',
     'clue.extract.success': '提取成功',
     'clue.list.clue.availibility': '无效线索',
+    'clue.list.total.num': '共{num}个线索',
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
@@ -3603,5 +3604,6 @@ var zh_CN = {
     'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
     'batch.faild.count': '失败数: {count}',
     'batch.success.count': '成功数: {count}',
+
 };
 export default zh_CN;

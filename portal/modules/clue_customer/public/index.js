@@ -628,10 +628,6 @@ class ClueCustomer extends React.Component {
         }else{
             sorter.field = 'source_time';
         }
-        if (!this.state.lastCustomerId){
-            //清除线索的选择
-            this.clearSelectedClue();
-        }
         if (!isGetAllClue){
             //选中的线索来源
             var filterClueSource = filterStoreData.filterClueSource;
@@ -672,7 +668,6 @@ class ClueCustomer extends React.Component {
             queryParam: {
                 rangeParams: rangeParams,
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
-                id: _.isBoolean(isGetAllClue) ? '' : this.state.lastCustomerId,
                 statistics_fields: 'status,availability',
             },
             bodyParam: {
@@ -682,6 +677,7 @@ class ClueCustomer extends React.Component {
                 rang_params: rangeParams,
                 ...bodyField,
             },
+            pageNum: this.state.pageNum,//路径中需要加的参数
             pageSize: this.state.pageSize,//路径中需要加的参数
             sorter: sorter,
             firstLogin: this.state.firstLogin
@@ -1669,29 +1665,51 @@ class ClueCustomer extends React.Component {
             return null;
         }
     };
+    onPageChange = (page) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.antc-table .ant-table-wrapper'), '翻页至第' + page + '页');
+        if (page === this.state.pageNum) {
+            return;
+        } else {
+            let selectedCustomer = this.state.selectedCustomer;
+            //不是全选时，清空翻页前选择的客户
+            if (_.isArray(selectedCustomer) && selectedCustomer.length && !this.state.selectAllMatched) {
+                this.state.selectedCustomer = [];
+                this.setState({ selectedCustomer: [] });
+            }
+            //设置要跳转到的页码数值
+            clueCustomerAction.setPageNum(page);
+            setTimeout(() => {
+                this.getClueList();
+            });
+        }
+    };
     renderClueCustomerLists = () => {
         var customerList = this.state.curClueLists;
-        const dropLoadConfig = {
-            listenScrollBottom: this.state.listenScrollBottom,
-            handleScrollBottom: this.handleScrollBarBottom,
-            showNoMoreDataTip: this.showNoMoreDataTip(),
-            noMoreDataText: Intl.get('common.no.more.clue', '没有更多线索了'),
-            loading: this.state.isLoading,
-        };
         var rowSelection = this.getRowSelection();
         function rowKey(record, index) {
             return record.id;
         }
         return (
             <AntcTable
+                loading={this.state.isLoading}
                 rowSelection={rowSelection}
                 rowKey={rowKey}
-                dropLoad={dropLoadConfig}
                 dataSource={customerList}
-                pagination={false}
                 columns={this.getClueTableColunms()}
                 rowClassName={this.setInvalidClassName}
                 scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                // locale={{
+                //     emptyText: !this.state.isLoading ? (this.state.getErrMsg ? this.state.getErrMsg : Intl.get('common.no.more.filter.crm', '没有符合条件的客户')) : ''
+                // }}
+                pagination={{
+                    total: this.state.customersSize,
+                    showTotal: total => {
+                        return Intl.get('clue.list.total.num', '共{num}个线索', { num: total });
+                    },
+                    pageSize: this.state.pageSize,
+                    onChange: this.onPageChange,
+                    current: this.state.pageNum
+                }}
             />);
 
     };
@@ -1861,13 +1879,6 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.setSalesManName({'salesManNames': salesManNames});
     };
 
-    handleScrollBarBottom = () => {
-        // 判断加载的条件
-        if (this.state.listenScrollBottom && !this.state.isLoading) {
-            this.getClueList();
-        }
-    };
-
     renderClueCustomerBlock = () => {
         var divHeight = getTableContainerHeight();
         if (this.state.curClueLists.length) {
@@ -1886,10 +1897,6 @@ class ClueCustomer extends React.Component {
         }
     };
 
-    showNoMoreDataTip = () => {
-        return !this.state.isLoading &&
-            this.state.curClueLists.length >= 20 && !this.state.listenScrollBottom;
-    };
 
     onTypeChange = () => {
         clueCustomerAction.setClueInitialData();
@@ -1937,7 +1944,7 @@ class ClueCustomer extends React.Component {
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent = () => {
         //加载中的展示
-        if (this.state.isLoading && !this.state.lastCustomerId) {
+        if (this.state.isLoading) {
             return (
                 <div className="load-content">
                     <Spinner />
@@ -2528,7 +2535,7 @@ class ClueCustomer extends React.Component {
         });
     };
     isFirstLoading = () => {
-        return this.state.isLoading && !this.state.lastCustomerId && this.state.firstLogin;
+        return this.state.isLoading && this.state.firstLogin;
     };
     isShowRecommendSettingPanel = () => {
         var settedCustomerRecommend = this.state.settedCustomerRecommend;

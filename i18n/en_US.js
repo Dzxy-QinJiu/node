@@ -2953,6 +2953,7 @@ var en_US = {
     'clue.extract.failed': 'Failed', // 提取失败
     'clue.extract.success': 'Success', // 提取成功
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
+    'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
