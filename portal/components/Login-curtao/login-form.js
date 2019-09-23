@@ -248,8 +248,8 @@ class LoginForm extends React.Component {
         const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
         const hasWindow = this.props.hasWindow;
-        let displayPwd = classNames('iconfont',{'icon-password-visible': this.state.passwordVisible},
-            {'icon-password-invisible': !this.state.passwordVisible});
+        let displayPwd = classNames('iconfont',{'icon-password-visible': this.state.passwordVisible,
+            'icon-password-invisible': !this.state.passwordVisible},);
         return (
             <form action="/login" method="post" className="login-form" onSubmit={this.beforeSubmit} autoComplete="off">
                 <div className="input-area">
