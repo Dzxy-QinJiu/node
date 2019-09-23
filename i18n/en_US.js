@@ -1362,7 +1362,7 @@ var en_US = {
     'crm.11': 'selected {count}', // 已选当前页{count}项
     'crm.12': 'selected all {count}', // 选择全部{count}项
     'crm.14': '{count} records', // 共{count}条记录
-    'crm.15': 'Delete  {cusName}?', // 是否删除此客户
+    'crm.15': 'Delete  "{cusName}"?', // 是否删除此客户
     'crm.16': 'Batch change labels and sales personnel', // 批量变更标签和销售人员
     'crm.17': 'Please selected sales personnel', // 请选择销售人员
     'crm.18': 'Change sales personnel', // 变更销售人员

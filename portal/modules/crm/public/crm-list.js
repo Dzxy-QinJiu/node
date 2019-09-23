@@ -2140,7 +2140,7 @@ class Crm extends React.Component {
                     </BootstrapModal.Header>
                     <BootstrapModal.Body>
                         <p>
-                            {Intl.get('crm.15', '是否删除{cusName}？', { cusName: this.state.deleteCusName })}
+                            {Intl.get('crm.15', '是否删除“{cusName}”？', { cusName: this.state.deleteCusName })}
                         </p>
                     </BootstrapModal.Body>
                     <BootstrapModal.Footer>
