@@ -461,7 +461,7 @@ const ApplyViewDetail = createReactClass({
         let replyList = _.cloneDeep(replyListInfo.list);
         if (_.isArray(replyList) && replyList.length) {
             //过滤掉点击通过，驳回或撤销按钮后的回复消息
-            replyList = _.filter(replyList, item => _.has(item,'approve_status'));
+            replyList = _.filter(replyList, item => !_.get(item,'approve_status',''));
             {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/
             }
             {/*title={Intl.get("common.get.again", "重新获取")}/>*/
@@ -1965,6 +1965,7 @@ const ApplyViewDetail = createReactClass({
     //添加一条回复
     addReply: function(e) {
         Trace.traceEvent(e, '点击回复按钮');
+        var ApplyViewDetailActions = this.getApplyViewDetailAction();
         //如果ajax没有执行完，则不提交
         if (this.state.replyFormInfo.result === 'loading') {
             return;
