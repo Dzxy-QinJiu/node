@@ -2843,7 +2843,7 @@ class ClueCustomer extends React.Component {
                     </BootstrapModal.Header>
                     <BootstrapModal.Body>
                         <p>
-                            {Intl.get('crm.15', '是否删除{cusName}？', { cusName: this.state.curDeleteClue.name })}
+                            {Intl.get('crm.15', '是否删除“{cusName}”？', { cusName: this.state.curDeleteClue.name })}
                         </p>
                     </BootstrapModal.Body>
                     <BootstrapModal.Footer>
