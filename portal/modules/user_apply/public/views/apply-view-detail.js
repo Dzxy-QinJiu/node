@@ -461,7 +461,7 @@ const ApplyViewDetail = createReactClass({
         let replyList = _.cloneDeep(replyListInfo.list);
         if (_.isArray(replyList) && replyList.length) {
             //过滤掉点击通过，驳回或撤销按钮后的回复消息
-            replyList = _.filter(replyList, item => !_.get(item,'approve_status',''));
+            replyList = _.filter(replyList, item => !_.get(item,'approve_status'));
             {/*<Icon type="reload" onClick={this.refreshReplyList} className="pull-right"*/
             }
             {/*title={Intl.get("common.get.again", "重新获取")}/>*/
