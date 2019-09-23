@@ -1396,7 +1396,7 @@ class ClueDetailOverview extends React.Component {
     renderExtractClueBtn = (curClue) => {
         const user = userData.getUserData();
         const hasAssignedPrivilege = !user.isCommonSales;
-        const assigenCls = 'detail-extract-clue-btn ant-btn';
+        const assigenCls = 'detail-extract-clue-btn';
         return (
             <div className="clue-info-item">
                 <div className="clue-info-label">
