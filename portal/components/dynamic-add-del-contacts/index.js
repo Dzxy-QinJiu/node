@@ -185,7 +185,7 @@ class DynamicAddDelContacts extends React.Component {
                         rules: _.get(validateContactName,'[0]') ? validateContactName : [{
                             required: true,
                             message: Intl.get('crm.90', '请输入姓名')
-                        }]
+                        }],
                     })(
                         <Input className='contact-name' placeholder={Intl.get('call.record.contacts', '联系人')}/>
                     )}

@@ -261,7 +261,8 @@ class TimePeriod extends React.Component {
                                                 required: true,
                                                 message: Intl.get('leave.apply.fill.in.end.time', '请填写结束时间')
                                             }, {validator: _this.validateStartAndEndTime('end_time')}],
-                                            initialValue: moment(formData.end_time)
+                                            initialValue: moment(formData.end_time),
+                                            validateTrigger: 'onBlur'
                                         })(
                                             <DatePicker
                                                 format="YYYY-MM-DD"

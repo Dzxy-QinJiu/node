@@ -188,7 +188,8 @@ class Production extends React.Component {
                             >
                                 {getFieldDecorator('name', {
                                     initialValue: this.props.info.name,
-                                    rules: [productNameRule]
+                                    rules: [productNameRule],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="name"
