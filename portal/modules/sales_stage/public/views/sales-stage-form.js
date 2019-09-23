@@ -113,7 +113,8 @@ class SalesStageForm extends React.Component {
                         rules: [{
                             required: true,
                             validator: this.getValidator()
-                        }, nameRule(Intl.get('crm.order.stage', '订单阶段'))]
+                        }, nameRule(Intl.get('crm.order.stage', '订单阶段'))],
+                        validateTrigger: 'onBlur'
                     })(
                         <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
                     )}
@@ -129,7 +130,8 @@ class SalesStageForm extends React.Component {
                             min: 1,
                             max: 200,
                             message: Intl.get('sales.stage.input.length200.tip', '最少1个字符,最多200个字符')
-                        }]
+                        }],
+                        validateTrigger: 'onBlur'
                     })(
                         <TextArea autosize={{minRows: 2, maxRows: 6}}
                             placeholder={Intl.get('crm.order.stage.destrip.palceholder', '请输入阶段的描述信息')}
