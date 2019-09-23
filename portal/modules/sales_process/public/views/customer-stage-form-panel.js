@@ -106,7 +106,8 @@ class CustomerStageFormPanel extends React.Component {
                     {getFieldDecorator(`names[${key}]`, {
                         rules: [{
                             validator: this.getValidator()
-                        }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))]
+                        }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))],
+                        validateTrigger: 'onBlur'
                     })(
                         <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
                     )}
@@ -127,7 +128,8 @@ class CustomerStageFormPanel extends React.Component {
                             min: 1,
                             max: 200,
                             message: Intl.get('sales.stage.input.length200.tip', '最少1个字符,最多200个字符')
-                        }]
+                        }],
+                        validateTrigger: 'onBlur'
                     })(
                         <TextArea
                             autosize={{minRows: 1, maxRows: 6}}
@@ -191,7 +193,8 @@ class CustomerStageFormPanel extends React.Component {
                                 rules: [{
                                     required: true,
                                     validator: this.getValidator()
-                                }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))]
+                                }, nameRule(Intl.get('weekly.report.customer.stage', '客户阶段'))],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input placeholder={Intl.get('crm.order.stage.name.placeholder', '请输入阶段名称')}/>
                             )}
@@ -203,7 +206,8 @@ class CustomerStageFormPanel extends React.Component {
                             {getFieldDecorator('customer_stages', {
                                 rules: [{
                                     required: true,
-                                }]
+                                }],
+                                validateTrigger: 'onBlur'
                             })(
                                 <div>{this.renderCustomerStage()}</div>
                             )}
@@ -221,7 +225,8 @@ class CustomerStageFormPanel extends React.Component {
                             {getFieldDecorator('scope', {
                                 rules: [{
                                     required: true,
-                                }]
+                                }],
+                                validateTrigger: 'onBlur'
                             })(
                                 <TreeSelect
                                     allowClear={true}
