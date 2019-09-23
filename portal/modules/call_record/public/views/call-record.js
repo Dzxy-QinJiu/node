@@ -39,6 +39,8 @@ let CALL_STATUS_MAP = {
     'NO ANSWER': Intl.get('call.record.state.no.answer', '未接听'),
     'BUSY': Intl.get('call.record.state.busy', '用户忙')
 };
+//是否普通销售
+let isCommonSales = userData.getUserData().isCommonSales;
 let searchInputTimeOut = null;
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 // 通话状态的常量
@@ -643,13 +645,13 @@ class CallRecord extends React.Component {
                     );
                 }
             }, {
-                title: this.getColumnTitle('nick_name', Intl.get('call.record.caller', '呼叫者')),
+                title: isCommonSales ? Intl.get('call.record.caller', '呼叫者') : this.getColumnTitle('nick_name', Intl.get('call.record.caller', '呼叫者')),
                 dataIndex: 'nick_name',
                 key: 'nick_name',
                 width: this.state.isFilter ? '150px' : '100px',
                 className: this.state.isFilter ? 'call-user' : 'has-filter call-user has-sorter'
             }, {
-                title: this.getColumnTitle('sales_team', Intl.get('call.record.team', '团队')),
+                title: isCommonSales ? Intl.get('call.record.team', '团队') : this.getColumnTitle('sales_team', Intl.get('call.record.team', '团队')),
                 dataIndex: 'sales_team',
                 width: this.state.isFilter ? 150 : 70,
                 key: 'sales_team'
