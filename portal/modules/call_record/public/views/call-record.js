@@ -614,7 +614,7 @@ class CallRecord extends React.Component {
 
     //通话记录表格列
     getCallRecordColumns = () => {
-        return [
+        let list = [
             {
                 title: this.getColumnTitle('type', Intl.get('common.type', '类型')),
                 dataIndex: 'type',
@@ -784,15 +784,13 @@ class CallRecord extends React.Component {
                 }
             }
         ];
-    };
-
-    isSales = () => {
-        let list = this.getCallRecordColumns();
-        list = _.filter(list,(o) => {
-            return o.dataIndex !== 'nick_name' && o.dataIndex !== 'sales_team';
-        });
+        if(isCommonSales){
+            list = _.filter(list,(o) => {
+                return o.dataIndex !== 'nick_name' && o.dataIndex !== 'sales_team';
+            });
+        }
         return list;
-    }
+    };
 
     // 检测回车，触发确认对话框
     checkEnter = (id, event) => {
@@ -1242,7 +1240,7 @@ class CallRecord extends React.Component {
                             ref={this.tableBody}
                             dataSource={this.state.callRecord.data_list}
                             rowKey={this.getRowKey}
-                            columns={isCommonSales ? this.isSales() : this.getCallRecordColumns()}
+                            columns={this.getCallRecordColumns()}
                             rowClassName={this.handleRowClassName}
                             onChange={this.onSortChange}
                             pagination={false}
