@@ -342,8 +342,8 @@ class CustomerRepeat extends React.Component {
                             cancelText={Intl.get('common.cancel', '取消')}>
                             <Button className="repeat-del-btn handle-btn-item"
                                 title={Intl.get('common.delete', '删除')}>
-                                     <i className="iconfont icon-delete"></i>
-                                </Button>
+                                <i className="iconfont icon-delete"></i>
+                            </Button>
                         </Popconfirm>
                     </PrivilegeChecker>
                 </Col>
@@ -374,7 +374,7 @@ class CustomerRepeat extends React.Component {
                         <Col span={1}>
                             <PrivilegeChecker check="CUSTOMER_MERGE_CUSTOMER" className="repeat-merge-btn handle-btn-item"
                                 onClick={this.showMergePanel.bind(this, repeatObj.repeatList)}>
-                                {Intl.get('crm.54', '合并')}
+                                 <span className="iconfont icon-merge-btn" title={Intl.get('crm.54', '合并')}></span>
                             </PrivilegeChecker>
                         </Col>
                     </Row>);
