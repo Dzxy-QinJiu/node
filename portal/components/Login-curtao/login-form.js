@@ -11,6 +11,7 @@ const PropTypes = require('prop-types');
 const classnames = require('classnames');
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
 import {Icon} from 'antd';
+import classNames from 'classnames';
 //常量定义
 const CAPTCHA = '/captcha';
 //错误信息提示
@@ -247,7 +248,8 @@ class LoginForm extends React.Component {
         const loginButtonClassName = classnames('login-button', {'not-allowed': this.state.loginButtonDisabled});
 
         const hasWindow = this.props.hasWindow;
-
+        let displayPwd = classNames('iconfont',{'icon-password-visible': this.state.passwordVisible},
+            {'icon-password-invisible': !this.state.passwordVisible});
         return (
             <form action="/login" method="post" className="login-form" onSubmit={this.beforeSubmit} autoComplete="off">
                 <div className="input-area">
@@ -264,15 +266,13 @@ class LoginForm extends React.Component {
                     <div className="input-item">
                         <input type="password" className="password-hidden-input" name="password" id="hidedInput" ref="password"/>
                         <input placeholder={hasWindow ? Intl.get('common.password', '密码') : null}
-                            type={this.state.passwordVisible ? 'tsxt' : 'password'} 
+                            type={this.state.passwordVisible ? 'text' : 'password'} 
                             tabIndex="2"
                             ref="password_input"
                             logininput="password"
                             className="input-pwd"
                             onChange={this.passwordChange} value={this.state.password} autoComplete="new-password"/>
-                        <i className={this.state.passwordVisible ? 'iconfont icon-password-visible' :
-                            'iconfont icon-password-invisible'} 
-                        onClick={this.showPassword}></i>
+                        <i className={displayPwd} onClick={this.showPassword}></i>
                     </div>
                     {this.renderCaptchaBlock(hasWindow)}
                 </div>
