@@ -1006,6 +1006,11 @@ var zh_CN = {
     'user.log.single.record': '只能查看近三个月的操作记录',
     'user.log.single.get.error': '获取单个审计日志失败',
     //用户管理---用户审计日志end
+
+    //用户管理--- 活跃用户start
+    'user.active.tips': '选择时间内登录过的用户',
+    //用户管理--- 活跃用户end
+
     //基本资料start
     'user.info.log.record.tip': '以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}',
     'user.info.login.address': '地点',

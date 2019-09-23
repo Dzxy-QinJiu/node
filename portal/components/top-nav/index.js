@@ -14,6 +14,7 @@ require('./index.less');
 var notificationEmitter = require('../../public/sources/utils/emitters').notificationEmitter;
 let history = require('../../public/sources/history');
 let RIGHT_MARGIN = 10;//右边预留宽度，用户计算
+import {Popover, Icon} from 'antd';
 /**
  * 待处理的数据列表
  * name:待处理数在Oplate.unread对象中的key或key数组
@@ -306,7 +307,20 @@ TopNav.MenuList = class extends React.Component {
 
                             var liContent = (<NavLink to={menu.routePath}
                                 activeClassName="active"
-                                ref={(element) => this.navLinks = element}> {menu.name}</NavLink>);
+                                ref={(element) => this.navLinks = element}>
+                                {menu.name}
+                                {
+                                    menu.id === 'active_user_list' ? (
+                                        <Popover
+                                            content={Intl.get('user.active.tips','选择时间内登录过的用户')}
+                                            trigger='click'
+                                            placement="right"
+                                        >
+                                            <Icon type="question-circle-o" />
+                                        </Popover>
+                                    ) : null
+                                }
+                            </NavLink>);
                             return (
                                 <li className={cls} key={i}>
                                     {liContent}
