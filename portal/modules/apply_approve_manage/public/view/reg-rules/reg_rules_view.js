@@ -732,17 +732,17 @@ class RegRulesView extends React.Component {
                         {/*</Checkbox>*/}
                         {/*</div>*/}
                         {/*</div>*/}
-                        <div className="other-wrap rule-item">
-                            <span className="item-label">
-                                {Intl.get('crm.186', '其他')}
-                            </span>
-                            <div className="rule-content">
-                                <Checkbox onChange={this.handleOtherCheckChange}
-                                    checked={_.get(this, 'state.applyRulesAndSetting.mergeSameApprover')}>
-                                    {Intl.get('apply.workflow.merge.same.approver', '合并相同审批人（通过后，后面自动通过）')}
-                                </Checkbox>
-                            </div>
-                        </div>
+                        {/*<div className="other-wrap rule-item">*/}
+                        {/*<span className="item-label">*/}
+                        {/*{Intl.get('crm.186', '其他')}*/}
+                        {/*</span>*/}
+                        {/*<div className="rule-content">*/}
+                        {/*<Checkbox onChange={this.handleOtherCheckChange}*/}
+                        {/*checked={_.get(this, 'state.applyRulesAndSetting.mergeSameApprover')}>*/}
+                        {/*{Intl.get('apply.workflow.merge.same.approver', '合并相同审批人（通过后，后面自动通过）')}*/}
+                        {/*</Checkbox>*/}
+                        {/*</div>*/}
+                        {/*</div>*/}
                         <div className="containers" id="bpmn-container" ref="content">
                             <div className="canvas" id="canvas" ref="canvas"></div>
                             <div className="properties-panel-parent" id="js-properties-panel"></div>
