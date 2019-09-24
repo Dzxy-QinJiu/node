@@ -498,8 +498,8 @@ class SalesTeamCard extends React.Component {
     renderContent = () => {
         let secondUserName = _.get(this.state, 'secondUserName');
         let salesTeam = classNames('sales-team',{'duplicate-sales-warning': this.state.duplicateSalesWarning});
-        const hasEditSalesPrivilege = this.enableEditSales() && !this.state.isUnableEditSales && (this.isMyTeamOrChildUser(this.state.salesTeamId, this.state.userId) || this.isManager());
-        const hasEditSecondSalesPrivilege = this.enableEditSecondSales() && !this.state.isUnableEditSecondSales && (this.isMyTeamOrChildUser(this.state.secondTeamId, this.state.secondUserId) || this.isManager());
+        const hasEditSalesPrivilege = !this.props.disableEdit && !this.state.isUnableEditSales;
+        const hasEditSecondSalesPrivilege = !this.props.disableEdit && !this.state.isUnableEditSecondSales;
 
         return (
             <div className="sales-team-show-block">
