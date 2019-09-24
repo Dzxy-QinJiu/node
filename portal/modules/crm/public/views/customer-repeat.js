@@ -381,7 +381,7 @@ class CustomerRepeat extends React.Component {
             });
         } else {
             return (
-                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.more.crm', '没有更多客户了')}/>
+                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.more.repeat.crm', '没有重复的客户')}/>
                 </div>);
         }
     };

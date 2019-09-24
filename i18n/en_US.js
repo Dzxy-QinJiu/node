@@ -167,6 +167,7 @@ var en_US = {
     'common.no.more.data': 'There is no more data',//没有更多数据了
     'common.no.more.user': 'There is no more user',//沒有更多用戶了
     'common.no.more.crm': 'There is no more customer',//没有更多客户了
+    'common.no.more.repeat.crm': 'There is no more repeat customer',//没有重复的客户
     'common.no.more.filter.crm': 'There is no customer match condition',//没有符合条件的客户了
     'common.no.filter.crm': 'There is no customer match condition',//没有符合条件的客户
     'common.no.more.schedule': 'There is no schedule',//暂无计划
