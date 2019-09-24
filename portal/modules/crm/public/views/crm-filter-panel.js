@@ -84,7 +84,7 @@ let otherFilterArray = [
         value: 'this_week_contacted'
     },{
         name: Intl.get('crm.filter.extract.from.customer.pool', '从客户池中提取的客户'),
-        value: 'extract_time'
+        value: 'extract_date'
     }
 ];
 //csm.curtao.com域名下不展示订单，所以不需要多个订单的客户筛选
