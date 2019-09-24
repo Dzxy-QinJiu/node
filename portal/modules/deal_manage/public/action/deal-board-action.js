@@ -38,13 +38,17 @@ function dealBoardAction() {
         });
     };
     //获取各阶段的订单列表
-    this.getStageDealList = function(stage, searchObj, pageNum) {
+    this.getStageDealList = function(stage, searchObj, pageNum, type) {
         let params = {
             page_size: 20,
             page_num: pageNum,
             sort_field: 'time',
             sort_order: 'descend'
         };
+        //‘update’表明此个刷新列表是通过emitter的触发进行的刷新，page_size 需要-1来获取值
+        if(!_.isEmpty(type) && _.isEqual(type, 'update')) {
+            params.page_size = 19;
+        }
         let bodyData = {query: {sales_opportunities: [{sale_stages: stage}]}};
         if (searchObj.field) {
             bodyData.query[searchObj.field] = searchObj.value;

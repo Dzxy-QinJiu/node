@@ -23,6 +23,7 @@ import dealAction from '../action';
 import dealAjax from '../ajax';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import { PrivilegeChecker,hasPrivilege } from 'CMP_DIR/privilege/checker';
+import { orderEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 const TOP_STAGE_HEIGHT = 110;//头部阶段
 //展示申请签约用户的阶段
@@ -148,6 +149,8 @@ class DealDetailPanel extends React.Component {
                 } else {
                     dealAction.afterDeleteDeal(deal.id);
                 }
+                //触发列表更新emitter
+                orderEmitter.emit(orderEmitter.REFRESH_ORDER_LIST);
             }, (errorMsg) => {
                 this.setState({isDeleting: false});
                 message.error(errorMsg || Intl.get('crm.139', '删除失败'));

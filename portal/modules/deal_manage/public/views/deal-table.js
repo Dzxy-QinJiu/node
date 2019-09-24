@@ -14,6 +14,7 @@ import Trace from 'LIB_DIR/trace';
 import classNames from 'classnames';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
+import {orderEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {num as antUtilsNum} from 'ant-utils';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 const parseAmount = antUtilsNum.parseAmount;
@@ -47,11 +48,13 @@ class DealTable extends React.Component {
                 _this.props.showDetailPanel(currDeal);
             }
         });
+        orderEmitter.on(orderEmitter.REFRESH_ORDER_LIST, this.refreshOrderList);
     }
 
     componentWillUnmount() {
         dealAction.setInitData();
         dealStore.unlisten(this.onStoreChange);
+        orderEmitter.removeListener(orderEmitter.REFRESH_ORDER_LIST, this.refreshOrderList);
     }
 
     onStoreChange = () => {
@@ -66,16 +69,25 @@ class DealTable extends React.Component {
         });
     }
 
-    getDealList() {
+    getDealList(type) {
         let body = this.props.getSearchBody();
         let sorter = this.state.sorter;
-        dealAction.getDealList({
-            page_size: PAGE_SIZE,
-            page_num: _.get(this.state, 'dealListObj.pageNum', 1),
-            sort_field: sorter.field,
-            sort_order: sorter.order
-        }, body);
-
+        //‘update’表明此个刷新列表是通过emitter的触发进行的刷新，page_size 需要-1来获取值
+        if(!_.isEmpty(type) && _.isEqual(type, 'update')) {
+            dealAction.getDealList({
+                page_size: PAGE_SIZE - 1,
+                page_num: _.get(this.state, 'dealListObj.pageNum', 1),
+                sort_field: sorter.field,
+                sort_order: sorter.order
+            }, body);
+        } else {
+            dealAction.getDealList({
+                page_size: PAGE_SIZE,
+                page_num: _.get(this.state, 'dealListObj.pageNum', 1),
+                sort_field: sorter.field,
+                sort_order: sorter.order
+            }, body);
+        }
     }
 
     showCustomerDetail = (customerId) => {
@@ -83,6 +95,19 @@ class DealTable extends React.Component {
             this.props.showCustomerDetail(customerId);
         }
     };
+
+    //刷新订单列表
+    refreshOrderList = () => {
+        let total = _.get(this.state, 'dealListObj.total', 0);
+        let list = _.get(this.state, 'dealListObj.list', []);
+        //当前列表长度小于总长度时并且总长度的个数大于20个时，更新列表
+        if(list.length <= total && total >= 20) {
+            //服务器端有延迟，一秒后再更新
+            setTimeout(() => {
+                this.getDealList('update');
+            }, 1000);
+        }
+    }
 
     getDealColumns() {
         return [
