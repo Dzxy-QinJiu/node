@@ -16,7 +16,6 @@ function FilterAction() {
         var _this = this;
         FilterAjax.getAppList().then(function(list) {
             list = _.isArray(list) ? list : [];
-            list.unshift({client_id: '', client_name: Intl.get('common.all', '全部')});
             _this.dispatch(list);
         }, function(errorMsg) {
             // eslint-disable-next-line no-console
@@ -27,7 +26,6 @@ function FilterAction() {
     this.getTeamList = function(cb) {
         getMyTeamTreeAndFlattenList(data => {
             let list = data.teamList || [];
-            list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
             this.dispatch({teamList: list, teamTreeList: data.teamTreeList});
             if (_.isFunction(cb)) cb(list);
         });
@@ -57,10 +55,9 @@ function FilterAction() {
             systemTagList = systemTagList.map(tag => {
                 return {name: tag, show_name: tag};
             });
-            systemTagList.unshift({name: '', show_name: Intl.get('common.all', '全部')});
             this.dispatch(systemTagList);
         }, (errorMsg) => {
-            this.dispatch([{name: '', show_name: Intl.get('common.all', '全部')}]);
+            this.dispatch([]);
         });
     };
     this.getTagList = function() {
@@ -74,10 +71,9 @@ function FilterAction() {
                 name: Intl.get('crm.tag.unknown', '未打标签的客户'),
                 show_name: Intl.get('crm.tag.unknown', '未打标签的客户')
             });
-            list.unshift({name: '', show_name: Intl.get('common.all', '全部')});
             _this.dispatch(list);
         }, function(errorMsg) {
-            this.dispatch([{name: '', show_name: Intl.get('common.all', '全部')}]);
+            this.dispatch([]);
         });
     };
     //获取阶段标签列表
@@ -103,10 +99,9 @@ function FilterAction() {
             competitorList = competitorList.map(tag => {
                 return {name: tag, show_name: tag};
             });
-            competitorList.unshift({name: '', show_name: Intl.get('common.all', '全部')});
             this.dispatch(competitorList);
         }, (errorMsg) => {
-            this.dispatch([{name: '', show_name: Intl.get('common.all', '全部')}]);
+            this.dispatch([]);
         });
     };
     //获取行业列表

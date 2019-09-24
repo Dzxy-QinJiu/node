@@ -85,7 +85,7 @@ FilterStore.prototype.getStageList = function(list) {
 };
 
 FilterStore.prototype.getStageTagList = function(data) {
-    let stageTagList = [{ name: '', show_name: Intl.get('common.all', '全部') }];
+    let stageTagList = [];
     if (!data.errorMsg && _.isArray(data.list)) {
         let list = _.map(data.list, tag => {
             return { name: tag, show_name: tag };
@@ -96,7 +96,7 @@ FilterStore.prototype.getStageTagList = function(data) {
 };
 
 FilterStore.prototype.getSalesRoleList = function(data) {
-    let salesRoleList = [{ name: '', show_name: Intl.get('common.all', '全部') }];
+    let salesRoleList = [];
     if (!data.errorMsg && _.isArray(data.list)) {
         let list = _.map(data.list, role => {
             return { name: role, show_name: role };
@@ -142,9 +142,8 @@ FilterStore.prototype.setCondition = function(conditionObj) {
 
 //将查询条件转换为前端展示用的格式
 const getFilterItemFromConditionItem = function(item) {
-    let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
+    let filterLevelArray = administrativeLevels;
     const stageArray = this.stageList.concat(STAGE_OPTIONS);
-    const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.industryList);
     let filters = [];
     let plainFilters = [];
     //将处理好的筛选项组装成FilterList所需的格式

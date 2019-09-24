@@ -251,7 +251,7 @@ class CrmFilterPanel extends React.Component {
         const currentStage = this.state.condition.sales_opportunities[0].sale_stages || '';
         const selectedStages = currentStage.split(',');
         const stageArray = STAGE_OPTIONS.concat(this.state.stageList);
-        const industryArray = ['', Intl.get('user.unknown', '未知')].concat(this.state.industryList);
+        const industryArray = [Intl.get('user.unknown', '未知')].concat(this.state.industryList);
         const commonData = _.drop(otherFilterArray).map(x => {
             x.readOnly = true;
             x.groupId = COMMON_OTHER_ITEM;
@@ -286,10 +286,10 @@ class CrmFilterPanel extends React.Component {
             {
                 groupName: Intl.get('weekly.report.customer.stage', '客户阶段'),
                 groupId: 'customer_label',
-                data: _.drop(this.state.stageTagList).map(x => ({
+                data: _.map(this.state.stageTagList, x => ({
                     name: x.show_name,
                     value: x.name,
-                    selected: _.indexOf(selectedCustomerLabels, x.name) !== -1
+                    selected: x.name && _.indexOf(selectedCustomerLabels, x.name) !== -1
                 }))
             },
             {
@@ -300,18 +300,18 @@ class CrmFilterPanel extends React.Component {
                     return {
                         name: x.name,
                         value: x.value,
-                        selected: x.value === _.get(this.state, 'condition.qualify_label', '')
+                        selected: x.value && x.value === _.get(this.state, 'condition.qualify_label', '')
                     };
                 })
             },
             {
                 groupName: Intl.get('crm.system.labels', '系统标签'),
                 groupId: 'immutable_labels',
-                data: _.drop(this.state.systemTagList).map(x => {
+                data: _.map(this.state.systemTagList, x => {
                     const item = {
                         name: x.show_name,
                         value: x.name,
-                        selected: _.indexOf(selectedLabels, x.name) !== -1
+                        selected: x.name && _.indexOf(selectedLabels, x.name) !== -1
                     };
                     return item;
                 })
@@ -319,7 +319,7 @@ class CrmFilterPanel extends React.Component {
             {
                 groupName: Intl.get('common.tag', '标签'),
                 groupId: 'labels',
-                data: _.drop(this.state.tagList).map(x => {
+                data: _.map(this.state.tagList, x => {
                     const item = {
                         name: x.show_name,
                         value: x.name,
@@ -334,17 +334,17 @@ class CrmFilterPanel extends React.Component {
             {
                 groupName: Intl.get('crm.competing.products', '竞品'),
                 groupId: 'competing_products',
-                data: _.drop(this.state.competitorList).map(x => ({
+                data: _.map(this.state.competitorList, x => ({
                     name: x.show_name,
                     value: x.name,
-                    selected: _.indexOf(selectedCompetings, x.name) !== -1
+                    selected: x.name && _.indexOf(selectedCompetings, x.name) !== -1
                 }))
             },
             {
                 groupName: Intl.get('common.industry', '行业'),
                 groupId: 'industry',
                 singleSelect: true,
-                data: _.drop(industryArray).map(x => ({
+                data: _.map(industryArray, x => ({
                     name: x,
                     value: x,
                     selected: x === _.get(this.state, 'condition.industry', '')
@@ -353,10 +353,10 @@ class CrmFilterPanel extends React.Component {
             {
                 groupName: Intl.get('crm.administrative.level', '行政级别'),
                 groupId: 'administrative_level',
-                data: _.drop(filterLevelArray).map(x => ({
+                data: _.map(filterLevelArray, x => ({
                     name: x.level,
                     value: x.id,
-                    selected: _.indexOf(selectedLevel, x.id) !== -1
+                    selected: x.id && _.indexOf(selectedLevel, x.id) !== -1
                 }))
             },
             {
@@ -377,7 +377,7 @@ class CrmFilterPanel extends React.Component {
                 groupName: Intl.get('crm.order.stage', '订单阶段'),
                 groupId: 'sales_opportunities',
                 singleSelect: true,
-                data: _.drop(stageArray).map(x => ({
+                data: _.map(stageArray, x => ({
                     name: x.show_name,
                     value: x.name,
                     selected: x.name === _.get(this.state, 'condition.sales_opportunities[0].sale_stages', '')
@@ -394,7 +394,7 @@ class CrmFilterPanel extends React.Component {
                 data: [{
                     name: loginUserName,
                     value: loginUserName,
-                    selected: loginUserName === _.get(this.state, 'condition.second_nickname', '')
+                    selected: loginUserName && loginUserName === _.get(this.state, 'condition.second_nickname', '')
                 }]
             });
             advancedData.unshift({
@@ -404,7 +404,7 @@ class CrmFilterPanel extends React.Component {
                 data: [{
                     name: loginUserName,
                     value: loginUserName,
-                    selected: loginUserName === _.get(this.state, 'condition.nickname', '')
+                    selected: loginUserName && loginUserName === _.get(this.state, 'condition.nickname', '')
                 }]
             });
         } else {//非普通销售才有销售角色和团队
@@ -436,7 +436,7 @@ class CrmFilterPanel extends React.Component {
                     data: _.map(userList, x => ({
                         name: x.nickname,
                         value: x.nickname,
-                        selected: x.nickname === _.get(this.state, 'condition.second_nickname', '')
+                        selected: x.nickname && x.nickname === _.get(this.state, 'condition.second_nickname', '')
                     }))
                 });
                 advancedData.unshift({
@@ -446,7 +446,7 @@ class CrmFilterPanel extends React.Component {
                     data: _.map(userList, x => ({
                         name: x.nickname,
                         value: x.nickname,
-                        selected: x.nickname === _.get(this.state, 'condition.nickname', '')
+                        selected: x.nickname && x.nickname === _.get(this.state, 'condition.nickname', '')
                     }))
                 });
             }
@@ -456,19 +456,19 @@ class CrmFilterPanel extends React.Component {
                 {
                     groupName: Intl.get('crm.detail.sales.role', '销售角色'),
                     groupId: 'member_role',
-                    data: _.drop(this.state.salesRoleList).map(x => ({
+                    data: _.map(this.state.salesRoleList, x => ({
                         name: x.show_name,
                         value: x.name,
-                        selected: _.indexOf(selectedRoles, x.name) !== -1
+                        selected: x.name && _.indexOf(selectedRoles, x.name) !== -1
                     }))
                 },
                 {
                     groupName: Intl.get('user.sales.team', '销售团队'),
                     groupId: 'sales_team_id',
-                    data: _.drop(this.state.teamList).map(x => ({
+                    data: _.map(this.state.teamList, x => ({
                         name: x.group_name,
                         value: x.group_id,
-                        selected: _.indexOf(salesTeamId.split(','), x.group_id) !== -1
+                        selected: x.group_id && _.indexOf(salesTeamId.split(','), x.group_id) !== -1
                     }))
                 }
             );

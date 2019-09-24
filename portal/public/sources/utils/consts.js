@@ -309,10 +309,6 @@ export const DAY_TIME = {
 
 export const STAGE_OPTIONS = [
     {
-        name: '',
-        show_name: Intl.get('common.all', '全部')
-    },
-    {
         name: Intl.get('user.unknown', '未知'),
         show_name: Intl.get('user.unknown', '未知')
     }
