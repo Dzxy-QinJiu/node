@@ -12,7 +12,6 @@ import {removeSpacesAndEnter, getTableContainerHeight } from 'PUB_DIR/sources/ut
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import { getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount } from './utils/clue-pool-utils';
 import ShearContent from 'CMP_DIR/shear-content';
-import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import cluePoolStore from './store';
 import cluePoolAction from './action';
 import classNames from 'classnames';
@@ -26,7 +25,7 @@ import {
     getClueStatusValue,
     SELECT_TYPE
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {Button, message, Tag} from 'antd';
+import {Button, message} from 'antd';
 
 const Spinner = require('CMP_DIR/spinner');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
@@ -685,21 +684,21 @@ class ClueExtract extends React.Component {
                     let ifShowTags = !isInvalidClients && !isConvertedClients;
                     return (
                         <div className="clue-top-title">
-                            <span
+                            <div
                                 className="clue-name"
                                 data-tracename="查看线索详情"
                                 onClick={this.showClueDetailPanel.bind(this, salesClueItem)}
                             >
                                 <div className="clue-name-item">{salesClueItem.name}</div>
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
-                                    <Tag className="clue-label intent-tag-style">
+                                    <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.clue', '有相似线索')}
-                                    </Tag> : null}
+                                    </span> : null}
                                 {ifShowTags && _.indexOf(similarClue, '有相似客户') !== -1 ?
-                                    <Tag className="clue-label intent-tag-style">
+                                    <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
-                                    </Tag> : null}
-                            </span>
+                                    </span> : null}
+                            </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>

@@ -3322,6 +3322,7 @@ var en_US = {
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
     'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
+    'clue.check.customer.detail.warning': 'This clue has belonged to other sales',//此线索已在其他销售名下
     'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
     'clue.manage.contact.clue': 'Contact clue',//联系线索
     'crm.103': 'Change in charge',//变更负责人

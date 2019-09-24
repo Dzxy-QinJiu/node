@@ -3427,6 +3427,7 @@ var zh_CN = {
     'apply.phone.close': '手机关机',
     'apply.select.trace.clue': '请选择要跟进的线索',
     'clue.has.no.schedule.list': '该线索还没有联系计划',
+    'clue.check.customer.detail.warning': '此线索已在其他销售名下',
     'fail.get.clue.schedule.list': '获取联系计划列表失败',
     'clue.manage.contact.clue': '联系线索',
     'crm.103': '变更负责人',
