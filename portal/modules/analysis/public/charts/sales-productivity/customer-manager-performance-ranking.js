@@ -161,6 +161,7 @@ function getPerformanceDetailContent(result) {
 function getPerformanceDetailTable(title, columns, data) {
     _.each(columns, column => {
         if (column.dataIndex !== 'max') {
+            column.className = 'clickable';
             column.render = metricsValueRender.bind(column);
         }
     });
@@ -186,7 +187,6 @@ function getPerformanceDetailTable(title, columns, data) {
 function metricsValueRender(value) {
     return (
         <span
-            style={{cursor: 'pointer'}}
             onClick={showMetricsDetail.bind(null, this.dataIndex, this.title)}
         >
             {value}
