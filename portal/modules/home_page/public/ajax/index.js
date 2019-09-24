@@ -167,3 +167,22 @@ exports.updateMyInterestStatus = function(reqData) {
     return Deferred.promise();
 };
 
+//获取过期合同数据
+let getExpireContractAjax = null;
+exports.getExpireContractData = function(reqData) {
+    var Deferred = $.Deferred();
+    getExpireContractAjax && getExpireContractAjax.abort();
+    $.ajax({
+        url: '/rest/analysis/contract/contract/total/count/expired',
+        dataType: 'json',
+        type: 'get',
+        data: reqData,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

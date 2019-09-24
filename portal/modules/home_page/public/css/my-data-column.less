@@ -1,6 +1,9 @@
 @font-color: #333333;
 @border-color: #e3e8ec;
 .team-data-wrap {
+  .column-item-content{
+    background-color: unset;
+  }
   .detail-card-container {
     margin-top: 0;
     padding-top: 10px;
@@ -50,9 +53,11 @@
   color: #2196F3;
 }
 
-.contact-customer-count {
-  color: #28AF6A;
+.contact-customer-count, .contact-clue-count, .expire-contract-count {
+  //color: #28AF6A;
+  color: #333;
 }
+
 
 .call-time-item {
   float: left;
@@ -169,5 +174,12 @@
         }
       }
     }
+  }
+}
+.see-expire-contract-btn{
+  color: #333333;
+  text-decoration: underline;
+  &:hover{
+    text-decoration: underline;
   }
 }
