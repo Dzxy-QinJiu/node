@@ -493,25 +493,10 @@ class Crm extends React.Component {
         this.setState({ tableHeight, filterPanelHeight });
     };
 
-    confirmDelete = (cusId, cusName) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.cus-op'), '删除客户');
-        this.state.currentId = cusId;
-        this.state.deleteCusName = cusName;
-        this.state.showDeleteConfirm = true;
-        this.setState(this.state);
-    };
-
-    hideDeleteModal = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-cancel'), '关闭删除客户的确认模态框');
-        this.state.showDeleteConfirm = false;
-        this.setState(this.state);
-    };
-
-    deleteCustomer = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除客户');
-        this.hideDeleteModal();
-        if(this.state.currentId){
-            CrmAction.deleteCustomer(this.state.currentId);
+    confirmDelete = (cusId) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn .ant-btn-primary'), '确定删除客户');
+        if(cusId){
+            CrmAction.deleteCustomer(cusId);
         }
     };
 
@@ -1919,11 +1904,20 @@ class Crm extends React.Component {
                         <span>
                             <span className="cus-op" data-tracename="删除客户">
                                 {isDeleteBtnShow ? (
-                                    <Button className="order-btn-class delete-btn handle-btn-item" 
-                                        onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
-                                        title={Intl.get('common.delete', '删除')} >
-                                        <i className="iconfont icon-delete"></i>
-                                    </Button>
+                                    isRepeat ?
+                                        <Button className="order-btn-class delete-btn handle-btn-item" 
+                                            onClick={_this.deleteDuplicatImportCustomer.bind(_this, index)}
+                                            title={Intl.get('common.delete', '删除')} >
+                                            <i className="iconfont icon-delete"></i>
+                                        </Button> : 
+                                        <Popconfirm placement="topRight" 
+                                            onConfirm={this.confirmDelete.bind(this,record.id)}
+                                            title={Intl.get('crm.customer.delete', '删除后，您可以从回收站中找回客户')}>
+                                            <a className='release-customer'
+                                                title={Intl.get('common.delete', '删除')}>
+                                                <i className="iconfont icon-delete order-btn-class handle-btn-item"></i>
+                                            </a>
+                                        </Popconfirm>
                                 ) : null}
                             </span>
                             {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
@@ -2118,28 +2112,6 @@ class Crm extends React.Component {
                         /> : null
                     }
                 </RightPanel>
-                <BootstrapModal
-                    show={this.state.showDeleteConfirm}
-                    onHide={this.hideDeleteModal}
-                    container={this}
-                    aria-labelledby="contained-modal-title"
-                >
-                    <BootstrapModal.Header closeButton>
-                        <BootstrapModal.Title />
-                    </BootstrapModal.Header>
-                    <BootstrapModal.Body>
-                        <p>
-                            {Intl.get('crm.15', '是否删除{cusName}？', { cusName: this.state.deleteCusName })}
-                        </p>
-                    </BootstrapModal.Body>
-                    <BootstrapModal.Footer>
-                        <BootstrapButton className="btn-ok" onClick={this.deleteCustomer}><ReactIntl.FormattedMessage
-                            id="common.sure" defaultMessage="确定" /></BootstrapButton>
-                        <BootstrapButton className="btn-cancel"
-                            onClick={this.hideDeleteModal}><ReactIntl.FormattedMessage id="common.cancel"
-                                defaultMessage="取消" /></BootstrapButton>
-                    </BootstrapModal.Footer>
-                </BootstrapModal>
             </div>
         </RightContent>);
     }
