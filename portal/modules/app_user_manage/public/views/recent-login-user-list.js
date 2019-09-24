@@ -71,24 +71,16 @@ class RecentLoginUsers extends React.Component {
         };
     }
 
-    changeTableHeight = () => {
-        this.setState({
-            windowHeight: $(window).height()
-        });
-    };
-
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         RecentUserStore.listen(this.onStoreChange);
         RecentUserAction.getSaleMemberList(commonMethodUtil.getParamByPrivilege());
-        $(window).off('resize', this.changeTableHeight);
         this.getRecentLoginUsers();
         $(this.refs.recentLoginUsersTable).on('click', 'tr', this.onRowClick.bind(this));
     }
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
         RecentUserStore.unlisten(this.onStoreChange);
-        $(window).off('resize', this.changeTableHeight);
     }
     onStoreChange = () => {
         var stateData = RecentUserStore.getState();
