@@ -1733,6 +1733,7 @@ var en_US = {
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
     'crm.customer.release': 'Release',//释放
     'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
+    'crm.customer.delete': 'After deletion, you can retrieve customers from the recycle bin',//删除后，您可以从回收站中找回客户
     'crm.customer.release.confirm.tip': 'After release to the customer pool, other people can view and extract. Do you confirm the release?',//释放到客户池后，其他人也可以查看、提取，您确认释放吗？
     'crm.customer.release.failed': 'Customer Release Failed',//释放客户失败
     'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
