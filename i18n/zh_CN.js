@@ -3578,6 +3578,7 @@ var zh_CN = {
     'common.personal.contribution.score': '个人贡献分数',
     'common.collection.of.gross.profit.margin.score': '回款毛利率分数',
     'common.indicators.for.details': '指标详情',
+    'common.details': '详情',
     'common.the.numerical': '数值',
     'common.gross.margin.score.of.newly.signed.refund': '新签回款毛利分数',
     'common.loss.contract.amount': '流失合同额',
