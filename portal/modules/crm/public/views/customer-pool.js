@@ -650,6 +650,10 @@ class CustomerPool extends React.Component {
         return (
             <div className="customer-pool" data-tracename="客户池列表">
                 <TopNav>
+                    <Button className='customer-back-btn' onClick={this.returnCustomerList} type="primary">
+                        <span className="iconfont icon-return-btn"/>
+                        <span className="return-btn-font">  {Intl.get('crm.52', '返回')}</span>
+                    </Button>
                     <div className="search-input-wrapper">
                         <FilterInput
                             ref="filterinput"
@@ -676,7 +680,6 @@ class CustomerPool extends React.Component {
                             disabled={this.state.isLoading}
                         >{Intl.get('common.refresh', '刷新')}</Button>
                     ) : null}
-                    <RightPanelClose onClick={this.returnCustomerList}/>
                     {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
                         <Button
                             className="btn-item extract-btn"

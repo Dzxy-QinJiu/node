@@ -12,7 +12,7 @@ import Trace from 'LIB_DIR/trace';
 import {AntcTable} from 'antc';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import {SearchInput} from 'antc';
-import {message, Popconfirm, Icon} from 'antd';
+import {message, Popconfirm, Icon, Button} from 'antd';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
@@ -484,8 +484,10 @@ class CustomerRecycleBin extends React.Component {
             <div className="customer-recycle-bin" data-tracename="回收站客户列表">
                 <TopNav>
                     <div className="return-btn-container" onClick={this.returnCustomerList}>
-                        <span className="iconfont icon-return-btn"/>
-                        <span className="return-btn-font">{Intl.get('crm.52', '返回')}</span>
+                        <Button className='customer-back-btn' type="primary">
+                            <span className="iconfont icon-return-btn"/>
+                            <span className="return-btn-font">  {Intl.get('crm.52', '返回')}</span>
+                        </Button>
                     </div>
                     <div className="customer-search-block">
                         <SearchInput

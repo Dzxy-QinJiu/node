@@ -417,8 +417,10 @@ class CustomerRepeat extends React.Component {
                 <div className="return-btn-container" onClick={(e) => {
                     this.returnCustomerList(e);
                 }}>
-                    <span className="iconfont icon-return-btn"/>
-                    <span className="return-btn-font">{Intl.get('crm.52', '返回')}</span>
+                    <Button className='customer-back-btn' type="primary">
+                        <span className="iconfont icon-return-btn"/>
+                        <span className="return-btn-font">  {Intl.get('crm.52', '返回')}</span>
+                    </Button>
                 </div>
             </TopNav> : null}
             <div className="content-block customer-repeat-table splice-table">
