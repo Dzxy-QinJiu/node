@@ -2042,6 +2042,7 @@ class Crm extends React.Component {
                                         filterPanelHeight={this.state.filterPanelHeight}
                                         changeTableHeight={this.changeTableHeight}
                                         isExtractSuccess={this.props.isExtractSuccess}
+                                        toggleList={this.toggleList.bind(this)}
                                     />
                                 </div> : null
                         }

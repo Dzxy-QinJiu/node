@@ -1149,6 +1149,7 @@ class ClueExtract extends React.Component {
                                 height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT
                             }}
                             showSelectTip={_.get(this.state.selectedClues, 'length')}
+                            toggleList={this.toggleList.bind(this)}
                         />
                     </div>
                     <div className={contentClassName}>

@@ -2692,6 +2692,7 @@ class ClueCustomer extends React.Component {
                                 getClueList={this.getClueList}
                                 style={{width: LAYOUT_CONSTANTS.FILTER_WIDTH, height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT}}
                                 showSelectTip={_.get(this.state.selectedClues, 'length')}
+                                toggleList={this.toggleList.bind(this)}
                             />
                         </div>
                         <div className={contentClassName}>
