@@ -402,6 +402,8 @@ var zh_CN = {
     'home.page.apply.approve': '审批',
     'home.page.return.old': '返回旧版',
     'home.page.try.new': '试用新版',
+    'home.page.contacts.clues.week': '本周已联系线索总数',
+    'home.page.expire.contract.at.time': '{time}即将到期合同统计',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
