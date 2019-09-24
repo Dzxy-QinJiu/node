@@ -109,14 +109,15 @@ class DealBoardList extends React.Component {
                 //不同列拖动时的处理(从源列中移除，从目标列中加入)
                 dealBoardAction.dragDealEnd({source, destination, draggableId});
                 this.props.dragChangeStageMsg(editParams);
-                this.setScrollLeft();
                 message.success(Intl.get('user.edit.success', '修改成功'));
             } else {
                 message.error(Intl.get('common.edit.failed', '修改失败'));
             }
+            this.setScrollLeft();
         }, (errorMsg) => {
             dealBoardAction.setIsSavingDragData(false);
             message.error(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+            this.setScrollLeft();
         });
     }
 
@@ -141,15 +142,15 @@ class DealBoardList extends React.Component {
                     //不同列拖动时的处理(从源列中移除，从目标列中加入)
                     dealBoardAction.dragDealEnd({source, destination, draggableId});
                     this.props.dragChangeStageMsg(saveDeal);
-                    this.setScrollLeft();
                     message.success(Intl.get('user.edit.success', '修改成功'));
                 } else {
                     message.error(Intl.get('common.edit.failed', '修改失败'));
                 }
-
+                this.setScrollLeft();
             }, (errorMsg) => {
                 dealBoardAction.setIsSavingDragData(false);
                 message.error(errorMsg || Intl.get('common.edit.failed', '修改失败'));
+                this.setScrollLeft();
             });
         }
     };
