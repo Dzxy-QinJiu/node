@@ -37,9 +37,9 @@ export const pathParamRegex = /:([a-zA-Z_\-0-9]+)/g;
 //普通的电话号码
 export const commonPhoneRegex = /^1[3456789]\d{9}$/;
 // 区号 座机电话
-export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
+export const areaPhoneRegex = /^0\d{2,3}-?[02-9]\d{6,7}$/;
 // 可自动填充横线的 座机电话
-export const autoLineAreaPhoneRegex = /^((010|02\d|0[3-9]\d{2}|852|853)-?)?[02-9]\d{6,7}$/;
+export const autoLineAreaPhoneRegex = /^(010|02\d|0[3-9]\d{2}|852|853)-?[02-9]\d{6,7}$/;
 // 400 客服电话
 export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
 //1010开头的电话
