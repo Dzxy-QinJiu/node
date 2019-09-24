@@ -291,6 +291,7 @@ class SalesReport extends React.Component {
                                 <Avatar
                                     className="avatar"
                                     size="100px"
+                                    lineHeight="100px"
                                     src={currentMember.user_logo}
                                     userName={currentMember.user_name}
                                     nickName={currentMember.nick_name}

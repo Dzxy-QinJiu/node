@@ -477,7 +477,8 @@ var NavSidebar = createReactClass({
                     <div className="avatar_container">
                         <Avatar
                             className="avatar"
-                            size="51px"
+                            size="50px"
+                            lineHeight="43px"
                             src={this.state.userInfoLogo}
                             userName={this.state.userInfo.user_name}
                             nickName={this.state.userInfo.nick_name}
