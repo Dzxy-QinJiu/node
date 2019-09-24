@@ -1802,6 +1802,7 @@ var en_US = {
     'crm.contract.add.category': 'Add contract type',//添加合同类型
     'crm.contract.add.label': 'Add signing type',//添加签约类型
     'crm.contract.no.label': 'No signing type',//暂无签约类型
+    'crm.batch.change.customer.pending': 'The batch operation was not completed last time, please try again later',//上次批量操作未完成，请稍后再试
     // 客户管理end
 
     //客户分析 start
