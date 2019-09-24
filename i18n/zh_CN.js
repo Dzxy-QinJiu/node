@@ -3517,6 +3517,7 @@ var zh_CN = {
     'clue.customer.last.month': '近一月',
     'clue.customer.last.quarter': '近一季度',
     'clue.customer.last.year': '近一年',
+    'clue.customer.close.filter.panel': '收起筛选',
     'user.score.level.rule': '用户评分规则',
     'user.score.basic.score': '基础评分',
     'user.score.particate.in.score': '参与度评分',

@@ -285,6 +285,7 @@ class ClueFilterPanel extends React.Component {
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                         showAdvancedPanel={true}
+                        toggleList={this.props.toggleList}
                     />
                 </div>
             </div>
@@ -299,7 +300,10 @@ ClueFilterPanel.defaultProps = {
 
     },
     style: {},
-    showSelectTip: false
+    showSelectTip: false,
+    toggleList: function () {
+
+    }
 };
 ClueFilterPanel.propTypes = {
     clueSourceArray: PropTypes.object,
@@ -307,7 +311,8 @@ ClueFilterPanel.propTypes = {
     clueClassifyArray: PropTypes.object,
     getClueList: PropTypes.func,
     style: PropTypes.object,
-    showSelectTip: PropTypes.bool
+    showSelectTip: PropTypes.bool,
+    toggleList: PropTypes.func,
 };
 
 export default ClueFilterPanel;
