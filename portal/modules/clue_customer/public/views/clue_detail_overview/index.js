@@ -1258,19 +1258,19 @@ class ClueDetailOverview extends React.Component {
     };
 
     renderClueSimilarLists = (listItem, isSimilarClue) => {
-        let clientWarningContent = (
+        let warningContent = (
             <span className="client-error-tip">
                 <span className="iconfont icon-warn-icon"></span>
                 <span className="client-error-text">
-                    {Intl.get('common.check.customer.detail.warning', '此客户已在其他销售名下')}
+                    {isSimilarClue ? Intl.get('clue.check.customer.detail.warning', '此线索已在其他销售名下') : Intl.get('common.check.customer.detail.warning', '此客户已在其他销售名下')}
                 </span>
             </span>);
         let curClue = this.state.curClue;
-        //查看当前客户是否属于此销售，如果不属于，用popover提示
+        //查看当前客户或线索是否属于此销售，如果不属于，用popover提示
         let user_id = userData.getUserData().user_id;
-        let isMyClients = _.isEqual(_.get(listItem, 'user_id'), user_id);
-        //当展示的是相似线索的时候按照正常逻辑展示，展示相似客户的时候判断当前客户是否属于此销售，管理员也有权限查看
-        let hasPrivilege = ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClients) && !isSimilarClue) || isSimilarClue;
+        let isMyClientsOrClues = _.isEqual(_.get(listItem, 'user_id'), user_id);
+        //展示相似客户，相似线索的时候判断当前客户或线索是否属于此销售，管理员也有权限查看
+        let hasPrivilege = (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClientsOrClues);
         //如果在线索池中，相似客户相似线索都不能点击查看，只能展示
         if(_.isEqual(curClue.clue_type,'clue_pool')){
             return (<span>{listItem.name}</span>);
@@ -1286,7 +1286,7 @@ class ClueDetailOverview extends React.Component {
                     <Popover
                         placement="topLeft"
                         overlayClassName="client-invalid-popover"
-                        content={clientWarningContent}
+                        content={warningContent}
                         trigger="click">
                         <span>{listItem.name}</span> :
                     </Popover>
