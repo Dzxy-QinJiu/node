@@ -1256,6 +1256,45 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
+
+    renderClueSimilarLists = (listItem, isSimilarClue) => {
+        let clientWarningContent = (
+            <span className="client-error-tip">
+                <span className="iconfont icon-warn-icon"></span>
+                <span className="client-error-text">
+                    {Intl.get('common.check.customer.detail.warning', '此客户已在其他销售名下')}
+                </span>
+            </span>);
+        let curClue = this.state.curClue;
+        //查看当前客户是否属于此销售，如果不属于，用popover提示
+        let user_id = userData.getUserData().user_id;
+        let isMyClients = _.isEqual(_.get(listItem, 'user_id'), user_id);
+        //当展示的是相似线索的时候按照正常逻辑展示，展示相似客户的时候判断当前客户是否属于此销售，管理员也有权限查看
+        let hasPrivilege = ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClients) && !isSimilarClue) || isSimilarClue;
+        //如果在线索池中，相似客户相似线索都不能点击查看，只能展示
+        if(_.isEqual(curClue.clue_type,'clue_pool')){
+            return (<span>{listItem.name}</span>);
+        } else {
+            if(hasPrivilege) {
+                return (
+                    <div className="similar-title-name">
+                        <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
+                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                    </div>);
+            } else {
+                return (
+                    <Popover
+                        placement="topLeft"
+                        overlayClassName="client-invalid-popover"
+                        content={clientWarningContent}
+                        trigger="click">
+                        <span>{listItem.name}</span> :
+                    </Popover>
+                );
+            }
+        }
+    }
+
     renderSimilarLists = (listType) => {
         var isSimilarClue = listType === 'clue';
         var moreListShowFlag = this.state.showLargerClueLists;
@@ -1268,13 +1307,6 @@ class ClueDetailOverview extends React.Component {
         if (!moreListShowFlag && listMoreThanThree){
             similarLists = _.cloneDeep(similarLists).splice(0,3);
         }
-        let warningContent = (
-            <span className="client-error-tip">
-                <span className="iconfont icon-warn-icon"></span>
-                <span className="client-error-text">
-                    {Intl.get('common.check.customer.detail.warning', '此客户已在其他销售名下')}
-                </span>
-            </span>);
         return (
             <div className="similar-content similar-customer-list">
                 <div className="similar-tip">
@@ -1284,27 +1316,10 @@ class ClueDetailOverview extends React.Component {
                 {_.map(similarLists,(listItem) => {
                     var sameContact = this.getSamePhoneContact(_.get(listItem,'contacts',[]));
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
-                    //查看当前客户是否属于此销售，如果不属于，用popover提示
-                    let user_id = userData.getUserData().user_id;
-                    let isMyClients = _.isEqual(_.get(listItem, 'user_id'), user_id);
-                    //当展示的是相似线索的时候按照正常逻辑展示，展示相似客户的时候判断当前客户是否属于此销售，管理员也有权限查看
-                    let hasPrivilege = ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClients) && !isSimilarClue) || isSimilarClue;
                     return <div className="similar-block">
                         <div className="similar-title">
                             {isSimilarClue ? renderClueStatus(listItem) : null}
-                            {hasPrivilege ? (
-                                <div className="similar-title-name">
-                                    <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                                    {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
-                                </div>) :
-                                <Popover
-                                    placement="topLeft"
-                                    overlayClassName="client-invalid-popover"
-                                    content={warningContent}
-                                    trigger="click">
-                                    <span>{listItem.name}</span> :
-                                </Popover>
-                            }
+                            {this.renderClueSimilarLists(listItem, isSimilarClue)}
                         </div>
                         {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
                             return (
@@ -1371,7 +1386,8 @@ class ClueDetailOverview extends React.Component {
             showLargerClueLists: !this.state.showLargerClueLists
         });
     }
-    renderSimilarClueCustomerLists = () => {
+
+    renderClueCustomerLists = () => {
         if (_.get(this,'state.similarClueLists[0]') || _.get(this, 'state.similarCustomerLists[0]')){
             return (
                 <div className="similar-wrap">
@@ -1381,14 +1397,6 @@ class ClueDetailOverview extends React.Component {
             );
         }else{
             return null;
-        }
-    };
-    // 渲染相似客户
-    renderClueCustomerLists = (curClue) => {
-        if (curClue.clue_type === 'clue_pool') { // 线索池详情，不显示相似客户
-            return null;
-        } else {
-            return this.renderSimilarClueCustomerLists();
         }
     };
 
@@ -1439,7 +1447,7 @@ class ClueDetailOverview extends React.Component {
             <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer)}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
-                    {this.renderClueCustomerLists(curClue)}
+                    {this.renderClueCustomerLists()}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
                     <div className="assign-sales-warp clue-detail-block">
