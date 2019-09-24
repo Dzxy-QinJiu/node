@@ -9,12 +9,13 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import { AntcDatePicker as DatePicker } from 'antc';
 import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE } from '../../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
+import { DatePicker } from 'antd';
+const { RangePicker } = DatePicker;
 let otherFilterArray = [
     {
         name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
@@ -144,42 +145,28 @@ class ClueFilterPanel extends React.Component {
         var filterClueStatus = clueFilterStore.getState().filterClueStatus;
         return getClueStatusValue(filterClueStatus);
     };
-    onSelectDate = (start_time, end_time, range) => {
-        if (!start_time) {
-            //为了防止开始时间不传，后端默认时间是从1970年开始的问题
-            start_time = clueStartTime;
+    changeRangePicker = (date, dateString) => {
+        if (!_.get(date,'[0]')){
+            FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
+        }else{
+            FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).valueOf(), end_time: moment(_.get(date, '[1]')).valueOf(), range: ''});
         }
-        if (!end_time) {
-            end_time = moment().endOf('day').valueOf();
-        }
-        FilterAction.setTimeRange({start_time: start_time, end_time: end_time, range: range});
         clueCustomerAction.setClueInitialData();
         setTimeout(() => {
             this.props.getClueList();
         });
     };
+    //今天之后的日期不可以选
+    disabledDate = (current) => {
+        return current > moment().endOf('day');
+    };
     renderTimeRangeSelect = () => {
         return(
             <div className="time-range-wrap">
                 <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
-                <DatePicker
-                    disableDateAfterToday={true}
-                    range={this.state.timeType}
-                    onSelect={this.onSelectDate}>
-                    <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                </DatePicker>
+                <RangePicker
+                    disabledDate={this.disabledDate}
+                    onChange={this.changeRangePicker}/>
             </div>
         );
     };

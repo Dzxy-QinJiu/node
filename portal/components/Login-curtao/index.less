@@ -3,6 +3,7 @@
 @font-color: #333333;
 @title-border-color: #dedfe2;
 @form-width: 276px;
+@import '../../public/sources/page-frame/index-zh_CN.less';
 .login-wrap {
     position: absolute;
     top: 0;
@@ -75,6 +76,27 @@
             padding: 0;
             margin: 0;
         }
+        .input-pwd{
+            padding-right: 26px;
+        }
+        .input-item{
+            position: relative;
+            .iconfont{
+                position: absolute;
+                bottom:4px;
+                right:0px;
+                cursor: pointer;
+                .handle-btn-item;
+            }
+            .iconfont.icon-password-visible{
+                right: 2px;
+                font-size: 19px;
+            }
+            .iconfont.icon-password-invisible{
+                font-size: 15px;
+                bottom:6px;
+            }
+        }
         .login-error-msg{
             width: @form-width;
             margin: 0 auto;
@@ -82,14 +104,15 @@
     }
     .login-error-tip, .register-error-tip {
         margin-top: 4px;
-        padding-left: 21px;
         line-height: 22px;
         font-size: 14px;
         color: #ee5b44;
-        background: no-repeat url("./image/error.png") 0 2px;
     }
     .login-error-tip{
         width: 276px;
         margin: 0 auto;
+        .icon-warn-icon{
+            margin-right: 10px;
+        }
     }
 }

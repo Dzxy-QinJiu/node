@@ -176,7 +176,8 @@ class ThirdAppEdit extends React.Component {
                     {
                         this.displayOnly() ? this.state.app.name : getFieldDecorator('app.name', {
                             initialValue: this.state.app && this.state.app.name,
-                            rules: [{ required: true, message: Intl.get('user.third.thirdapp.name.reuqired', '请填写应用名称') }]
+                            rules: [{ required: true, message: Intl.get('user.third.thirdapp.name.reuqired', '请填写应用名称') }],
+                            validateTrigger: 'onBlur'
                         })(
                             <Input />
                         )
@@ -186,7 +187,8 @@ class ThirdAppEdit extends React.Component {
                     {
                         this.displayOnly() ? this.state.app.platform : getFieldDecorator('app.platform', {
                             initialValue: this.state.app && this.state.app.platform,
-                            rules: [{ required: true, message: Intl.get('user.third.thirdapp.platform.reuqired', '请选择或填写应用平台') }]
+                            rules: [{ required: true, message: Intl.get('user.third.thirdapp.platform.reuqired', '请选择或填写应用平台') }],
+                            validateTrigger: 'onBlur'
                         })(
                             <Select combobox
                                 filterOption={(input, option) => ignoreCase(input, option)}
@@ -206,7 +208,8 @@ class ThirdAppEdit extends React.Component {
                     {
                         this.displayOnly() ? this.state.app.app_key : getFieldDecorator('app.app_key', {
                             initialValue: this.state.app && this.state.app.app_key,
-                            rules: [{ required: true, message: Intl.get('user.third.thirdapp.platform.reuqired', '请填写APP Key') }]
+                            rules: [{ required: true, message: Intl.get('user.third.thirdapp.platform.reuqired', '请填写APP Key') }],
+                            validateTrigger: 'onBlur'
                         })(
                             <Input />
                         )
@@ -216,7 +219,8 @@ class ThirdAppEdit extends React.Component {
                     {
                         this.displayOnly() ? this.state.app.app_secret : getFieldDecorator('app.app_secret', {
                             initialValue: this.state.app && this.state.app.app_secret,
-                            rules: [{ required: true, message: Intl.get('user.third.thirdapp.secret.reuqired', '请填写APP Secret') }]
+                            rules: [{ required: true, message: Intl.get('user.third.thirdapp.secret.reuqired', '请填写APP Secret') }],
+                            validateTrigger: 'onBlur'
                         })(
                             <Input />
                         )

@@ -281,7 +281,7 @@ var CRMAddForm = createReactClass({
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 let list = _.get(data,'list');
                 //客户名是否重复
-                let repeatCustomer = _.some(list,{'name':customerName});
+                let repeatCustomer = _.some(list,{'name': customerName});
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true, existCustomerList: []});
@@ -438,7 +438,7 @@ var CRMAddForm = createReactClass({
                         help={status.name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.name.errors && status.name.errors.join(','))}
                     >
                         <Validator
-                            rules={[{validator: this.checkCustomerName}]}>
+                            rules={[{validator: this.checkCustomerName}]} trigger='onBlur'>
                             <Input name="name" id="name"
                                 value={formData.name}
                                 onBlur={(e) => {

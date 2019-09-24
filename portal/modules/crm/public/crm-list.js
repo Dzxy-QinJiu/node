@@ -1376,8 +1376,19 @@ class Crm extends React.Component {
             { curPageCustomers: curPageCustomers }
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
-            //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
-            if (errorMsg) {
+            if (!errorMsg) {
+                if(interestObj.user_id){
+                    message.success(Intl.get('crm.customer.interested.succ', '添加关注成功'));
+                }else{
+                    message.success(Intl.get('crm.customer.uninterested.succ', '取消关注成功'));
+                }
+            }else{
+                if(interestObj.user_id){
+                    message.error(Intl.get('crm.customer.interested.error', '添加关注失败'));
+                }else{
+                    message.error(Intl.get('crm.customer.uninterested.error', '取消关注失败'));
+                }
+                //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
                 //还原详情中的关注图标颜色
                 if(this.state.currentId === interestObj.id) {
                     let detailCustomer = _.find(initalCurPageCustomers, item => item.id === interestObj.id);
@@ -2129,7 +2140,7 @@ class Crm extends React.Component {
                     </BootstrapModal.Header>
                     <BootstrapModal.Body>
                         <p>
-                            {Intl.get('crm.15', '是否删除{cusName}？', { cusName: this.state.deleteCusName })}
+                            {Intl.get('crm.15', '是否删除“{cusName}”？', { cusName: this.state.deleteCusName })}
                         </p>
                     </BootstrapModal.Body>
                     <BootstrapModal.Footer>

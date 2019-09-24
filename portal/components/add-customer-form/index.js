@@ -136,7 +136,7 @@ class AddCustomerForm extends React.Component {
             CrmAction.checkOnlyCustomerName(customerName, (data) => {
                 let list = _.get(data,'list');
                 //客户名是否重复
-                let repeatCustomer = _.some(list,{'name':customerName});
+                let repeatCustomer = _.some(list,{'name': customerName});
                 if (_.isString(data)) {
                     //唯一性验证出错了
                     this.setState({customerNameExist: false, checkNameError: true});
@@ -419,7 +419,8 @@ class AddCustomerForm extends React.Component {
                                                 required: true,
                                                 message: Intl.get('crm.81', '请填写客户名称')
                                             }, {validator: this.checkCustomerName,}],
-                                            initialValue: formData.name
+                                            initialValue: formData.name,
+                                            validateTrigger: 'onBlur'
                                         })(
                                             <Input
                                                 name="name"
@@ -443,6 +444,7 @@ class AddCustomerForm extends React.Component {
                                             </div>) : (
                                             getFieldDecorator('industry', {
                                                 rules: [{required: true, message: Intl.get('crm.22', '请选择行业')}],
+                                                validateTrigger: 'onBlur'
                                             })(
                                                 <Select
                                                     showSearch
@@ -574,7 +576,8 @@ class AddCustomerForm extends React.Component {
                                         {getFieldDecorator('contacts0_role',
                                             {
                                                 rules: [{required: true, message: Intl.get('crm.93', '请输入联系人角色')}],
-                                                initialValue: [ContactUtil.roleArray.length ? ContactUtil.roleArray[0] : '']
+                                                initialValue: [ContactUtil.roleArray.length ? ContactUtil.roleArray[0] : ''],
+                                                validateTrigger: 'onBlur'
                                             })(
                                             <Select
                                                 name="contacts0_role"

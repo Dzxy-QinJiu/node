@@ -156,6 +156,8 @@ var en_US = {
     'common.name.is.unique': 'The name already exists!', // 姓名唯一性校验出错！
     'common.is.existed': 'The username is already exists!',//用户名已存在！
     'common.username.is.unique': 'The username already exists!',//用户名唯一性校验出错！
+    'common.nickname.is.existed': 'The nickname is already exists!', // 昵称已存在！
+    'common.nickname.is.unique': 'The nickname already exists!', // 昵称唯一性校验出错！
     'common.phone.is.existed': 'The phone number already exists!',//电话已存在！
     'common.phone.is.unique': 'The phone number already exists!',//电话唯一性校验出错！
     'common.email.is.existed': 'The email already exists!',//邮箱已存在！
@@ -1003,6 +1005,11 @@ var en_US = {
     'user.log.single.record': 'View the operation records for nearly three months', // 只能查看近三个月的操作记录
     'user.log.single.get.error': 'Failed to get single audit log',//获取单个审计日志失败
     //用户管理---用户审计日志end
+
+    //用户管理--- 活跃用户start
+    'user.active.tips': 'The user who has logged within the selection time', // 选择时间内登录过的用户
+    //用户管理--- 活跃用户end
+
     //基本资料start
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
@@ -1355,7 +1362,7 @@ var en_US = {
     'crm.11': 'selected {count}', // 已选当前页{count}项
     'crm.12': 'selected all {count}', // 选择全部{count}项
     'crm.14': '{count} records', // 共{count}条记录
-    'crm.15': 'Delete  {cusName}?', // 是否删除此客户
+    'crm.15': 'Delete  "{cusName}"?', // 是否删除此客户
     'crm.16': 'Batch change labels and sales personnel', // 批量变更标签和销售人员
     'crm.17': 'Please selected sales personnel', // 请选择销售人员
     'crm.18': 'Change sales personnel', // 变更销售人员
@@ -2546,6 +2553,10 @@ var en_US = {
     'user.login.abnormal.get.failed': 'Failed to get Exception login',//获取异常登录信息失败
     'crm.customer.interested': 'Add attention',//添加关注
     'crm.customer.uninterested': 'Unsubscribe',//取消关注
+    'crm.customer.interested.succ': 'Add attention success',//添加关注成功
+    'crm.customer.interested.error': 'Add attention fail',//添加关注失败
+    'crm.customer.uninterested.succ': 'Unsubscribe success',//取消关注成功
+    'crm.customer.uninterested.error': 'Unsubscribe fail',//取消关注失败
     'crm.customer.failed.interested': 'Failed to update the information!',//修改失败
     'call.record.play': 'PLAY',//播放录音
     'call.record.pick.phone': 'Please pick up the phone',//请拿起话机
@@ -2953,6 +2964,7 @@ var en_US = {
     'clue.extract.failed': 'Failed', // 提取失败
     'clue.extract.success': 'Success', // 提取成功
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
+    'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',

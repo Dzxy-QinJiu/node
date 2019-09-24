@@ -230,7 +230,7 @@ class FilterList extends React.Component {
                     if (!data || data.errorMsg) {
                         message.error(Intl.get('crm.139', '删除失败'));
                     } else {
-                        commonData = commonData.filter(x => x.name !== item.name);
+                        commonData = commonData.filter(x => x.id !== item.id);
                         this.setState({
                             commonData,
                             //当删除选中的筛选项时，去除选中状态

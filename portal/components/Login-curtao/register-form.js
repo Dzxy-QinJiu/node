@@ -264,7 +264,8 @@ class RegisterForm extends React.Component {
                     <div className="register-step-item">
                         <FormItem hasFeedback={false}>
                             {getFieldDecorator('name', {
-                                rules: [{validator: this.validatorCompanyName.bind(this)}]
+                                rules: [{validator: this.validatorCompanyName.bind(this)}],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input placeholder={Intl.get('register.company.name', '公司标识')}
                                     addonAfter={COMPANY_SUFFIX}/>
@@ -285,7 +286,8 @@ class RegisterForm extends React.Component {
                     <div className="register-step-item">
                         <FormItem>
                             {getFieldDecorator('phone', {
-                                rules: [{validator: this.validatePhone}]
+                                rules: [{validator: this.validatePhone}],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input placeholder={Intl.get('user.phone', '手机号')}/>
                             )}
@@ -293,6 +295,7 @@ class RegisterForm extends React.Component {
                         <FormItem>
                             {getFieldDecorator('code', {
                                 rules: [{validator: this.validateCode.bind(this)}],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input className='captcha-code-input'
                                     placeholder={Intl.get('register.phone.code', '短信验证码')}/>
@@ -317,7 +320,8 @@ class RegisterForm extends React.Component {
                         <Input type="password" className='password-hidden-input' name="pwd"/>
                         <FormItem>
                             {getFieldDecorator('pwd', {
-                                rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}]
+                                rules: [{required: true, message: Intl.get('common.input.password', '请输入密码')}],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input type='password' placeholder={Intl.get('common.password', '密码')}
                                     autocomplete="off"/>
@@ -325,14 +329,16 @@ class RegisterForm extends React.Component {
                         </FormItem>
                         <FormItem>
                             {getFieldDecorator('nickname', {
-                                rules: [{required: true, message: Intl.get('user.info.input.nickname', '请输入昵称')}]
+                                rules: [{required: true, message: Intl.get('user.info.input.nickname', '请输入昵称')}],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input placeholder={Intl.get('common.nickname', '昵称')}/>
                             )}
                         </FormItem>
                         <FormItem>
                             {getFieldDecorator('organization_name', {
-                                rules: [{required: true, message: Intl.get('register.company.name.fill', '请输入公司名称')}]
+                                rules: [{required: true, message: Intl.get('register.company.name.fill', '请输入公司名称')}],
+                                validateTrigger: 'onBlur'
                             })(
                                 <Input placeholder={Intl.get('register.company.nickname', '公司名称')}/>
                             )}

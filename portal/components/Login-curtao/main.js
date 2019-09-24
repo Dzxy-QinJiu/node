@@ -293,7 +293,7 @@ class LoginMain extends React.Component {
                                     {...this.props}
                                 />}
                             {this.state.errorMsg ?
-                                <div className="login-error-tip">{this.state.errorMsg}</div> : null}
+                                <div className="login-error-tip"><span className="iconfont icon-warn-icon"></span>{this.state.errorMsg}</div> : null}
                         </div>
                     ) : null
                     }

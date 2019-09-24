@@ -162,6 +162,8 @@ var zh_CN = {
     'common.name.is.unique': '姓名唯一性校验出错！',
     'common.is.existed': '用户名已存在！',
     'common.username.is.unique': '用户名唯一性校验出错！',
+    'common.nickname.is.existed': '昵称已存在！',
+    'common.nickname.is.unique': '昵称唯一性校验出错！',
     'common.phone.is.existed': '电话已存在！',
     'common.phone.is.unique': '电话唯一性校验出错！',
     'common.email.is.existed': '邮箱已存在！',
@@ -1006,6 +1008,11 @@ var zh_CN = {
     'user.log.single.record': '只能查看近三个月的操作记录',
     'user.log.single.get.error': '获取单个审计日志失败',
     //用户管理---用户审计日志end
+
+    //用户管理--- 活跃用户start
+    'user.active.tips': '选择时间内登录过的用户',
+    //用户管理--- 活跃用户end
+
     //基本资料start
     'user.info.log.record.tip': '以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}',
     'user.info.login.address': '地点',
@@ -1365,7 +1372,7 @@ var zh_CN = {
     'crm.11': '已选当前页{count}项',
     'crm.12': '选择全部{count}项',
     'crm.14': '共{count}条记录',
-    'crm.15': '是否删除{cusName}？',
+    'crm.15': '是否删除“{cusName}”？',
     'crm.16': '批量变更标签和销售人员',
     'crm.17': '请选择销售人员',
     'crm.18': '变更销售人员',
@@ -1529,6 +1536,10 @@ var zh_CN = {
     'crm.recent.month.active': '近一个月的活跃客户',
     'crm.customer.interested': '添加关注',
     'crm.customer.uninterested': '取消关注',
+    'crm.customer.interested.succ': '添加关注成功',
+    'crm.customer.interested.error': '添加关注失败',
+    'crm.customer.uninterested.succ': '取消关注成功',
+    'crm.customer.uninterested.error': '取消关注失败',
     'crm.customer.failed.interested': '修改失败',
     'crm.tag.unknown': '未打标签的客户',
     'crm.administrative.level': '行政级别',
@@ -2977,6 +2988,7 @@ var zh_CN = {
     'clue.extract.failed': '提取失败',
     'clue.extract.success': '提取成功',
     'clue.list.clue.availibility': '无效线索',
+    'clue.list.total.num': '共{num}个线索',
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
@@ -3603,5 +3615,6 @@ var zh_CN = {
     'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
     'batch.faild.count': '失败数: {count}',
     'batch.success.count': '成功数: {count}',
+
 };
 export default zh_CN;

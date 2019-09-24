@@ -55,6 +55,7 @@ class MemberForm extends React.Component {
             },
             phoneEmailCheck: true, //电话邮箱必填一项的验证
             positionList: [], // 职务列表
+            newAddPosition: {}, // 新添加的职务
             isMatchPositionListFlag: true, // 是否是选中列表中的值，true,
             isAddPositionLoading: false, // 保存新添加的职务
         };
@@ -110,12 +111,16 @@ class MemberForm extends React.Component {
                 return;
             } else {
                 //所有者各项唯一性验证均不存在且没有出错再添加
-                var user = _.extend({}, values);
+                let user = _.extend({}, values);
                 let positionName = user.position;
                 if (positionName) {
-                    let matchPosition = _.find(this.state.positionList, item => item.name === positionName);
-                    if (matchPosition) {
-                        user.position = matchPosition.id;
+                    if (this.state.newAddPosition) { // 新添加的职务
+                        user.position = this.state.newAddPosition.id;
+                    } else { // 已存在的职务
+                        let matchPosition = _.find(this.state.positionList, item => item.name === positionName);
+                        if (matchPosition) {
+                            user.position = matchPosition.id;
+                        }
                     }
                 }
                 if (user.phone) {
@@ -272,13 +277,13 @@ class MemberForm extends React.Component {
         if (this.state.nickNameExist) {
             return (
                 <div className="phone-email-check">
-                    {Intl.get('common.name.is.existed', '姓名已存在！')}
+                    {Intl.get('common.nickname.is.existed', '昵称已存在！')}
                 </div>
             );
         } else if (this.state.nickNameError) {
             return (
                 <div className="phone-email-check">
-                    {Intl.get('common.name.is.unique', '姓名唯一性校验出错！')}
+                    {Intl.get('common.nickname.is.unique', '昵称唯一性校验出错！')}
                 </div>
             );
         } else {
@@ -326,9 +331,6 @@ class MemberForm extends React.Component {
         let positionList = this.state.positionList;
         if (_.isArray(positionList) && _.get(positionList, 'length')) {
             positionOptions = _.map(positionList, item => <Option key={item.id} value={item.name}>{item.name}</Option>);
-        } else {
-            positionOptions =
-                <Option value="">{Intl.get('member.no.position', '暂无职务')}</Option>;
         }
         return positionOptions;
     };
@@ -390,9 +392,15 @@ class MemberForm extends React.Component {
     };
 
     handleFocusPositionSelect = () => {
-        this.setState({
-            isMatchPositionListFlag: true
-        });
+        if (this.state.positionList.length) {
+            this.setState({
+                isMatchPositionListFlag: true
+            });
+        } else {
+            this.setState({
+                isMatchPositionListFlag: false
+            });
+        }
     };
 
     // 获取职务的颜色
@@ -420,10 +428,8 @@ class MemberForm extends React.Component {
                 isMatchPositionListFlag: true
             });
             if (result && _.get(result, 'id')) {
-                let positionList = this.state.positionList;
-                positionList.push(result);
                 this.setState({
-                    positionList: positionList
+                    newAddPosition: result
                 });
             } else {
                 message.error(Intl.get('member.add.failed', '添加失败！'));
@@ -499,7 +505,8 @@ class MemberForm extends React.Component {
                                         required: true,
                                         type: 'userName',
                                         validator: this.userNameValidationRules()
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="userName"
@@ -510,20 +517,20 @@ class MemberForm extends React.Component {
                                 )}
                             </FormItem>
                             <FormItem
-                                label={Intl.get('common.name', '姓名')}
+                                label={Intl.get('common.nickname', '昵称')}
                                 {...formItemLayout}
                             >
                                 {getFieldDecorator('name', {
                                     rules: [{
-                                        required: true,
                                         message: nameLengthRule
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="name"
                                         id="name"
                                         type="text"
-                                        placeholder={Intl.get('crm.90', '请输入姓名')}
+                                        placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}
                                         className={this.state.nickNameExist || this.state.nickNameError ? 'input-red-border' : ''}
                                         onBlur={this.checkOnlyNickName}
                                         onFocus={this.resetNickNameFlags}
@@ -540,7 +547,8 @@ class MemberForm extends React.Component {
                                         required: true,
                                         type: 'email',
                                         message: Intl.get('common.correct.email', '请输入正确的邮箱')
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="email"
@@ -563,9 +571,9 @@ class MemberForm extends React.Component {
                                 {getFieldDecorator('role', {
                                     initialValue: roleId,
                                     rules: [{
-                                        required: true,
                                         message: Intl.get('member.select.role', '请选择角色')
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Select
                                         size='large'
@@ -656,7 +664,8 @@ class MemberForm extends React.Component {
                                     rules: [{
                                         type: 'phone',
                                         validator: this.getValidator()
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="phone"
@@ -674,7 +683,8 @@ class MemberForm extends React.Component {
                                     rules: [{
                                         type: 'qq',
                                         validator: checkQQ
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input
                                         name="qq"

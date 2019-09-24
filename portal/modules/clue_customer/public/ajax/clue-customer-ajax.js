@@ -230,13 +230,15 @@ var getClueFulltextAjax;
 exports.getClueFulltext = function(queryObj) {
     var pageSize = queryObj.pageSize;
     delete queryObj.pageSize;
+    var pageNum = queryObj.pageNum;
+    delete queryObj.pageNum;
     var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
     var type = 'user';
     if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
         type = 'manager';
     }
-    var url = '/rest/get/clue/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order + '/' + type;
+    var url = '/rest/get/clue/fulltext/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order + '/' + type;
     var Deferred = $.Deferred();
     getClueFulltextAjax && getClueFulltextAjax.abort();
     getClueFulltextAjax = $.ajax({
@@ -294,7 +296,9 @@ exports.getClueFulltextSelfHandle = function(queryObj) {
     if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
         type = 'manager';
     }
-    var url = '/rest/get/clue/selfhandle/fulltext/' + pageSize + '/' + sorter.field + '/' + sorter.order + '/' + type;
+    var pageNum = queryObj.pageNum;
+    delete queryObj.pageNum;
+    var url = '/rest/get/clue/selfhandle/fulltext/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order + '/' + type;
     var Deferred = $.Deferred();
     getClueFulltextSelfHandleAjax && getClueFulltextSelfHandleAjax.abort();
     getClueFulltextSelfHandleAjax = $.ajax({
