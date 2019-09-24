@@ -221,7 +221,7 @@ function showMetricsDetail(metricsKey, metricsTitle) {
     }).then(result => {
         //去掉指标标题中的单位，该标题显示在指标详情中时不需要单位
         metricsTitle = metricsTitle.replace(/（.*）/, '');
-        const title = metricsTitle + Intl.get('common.indicators.for.details', '指标详情');
+        const title = metricsTitle + Intl.get('common.details', '详情');
 
         let tableTitle;
         let columns;
