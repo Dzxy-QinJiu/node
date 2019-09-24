@@ -31,8 +31,8 @@ class UserScoreActions {
         UserScoreCommonAjax.getUserEngagementRuleAjax().sendRequest().success((result) => {
             _.isFunction(callback) && callback(result);
             this.dispatch({loading: false, error: false, resData: result});
-        }).error(errorMsg => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        }).error(error => {
+            this.dispatch({loading: false, error: true, errorMsg: error.responseText});
         }
         );
     }
@@ -70,8 +70,8 @@ class UserScoreActions {
         UserScoreCommonAjax.getUserScoreListsAjax().sendRequest().success((result) => {
             _.isFunction(callback) && callback(result);
             this.dispatch({loading: false, error: false, resData: result});
-        }).error(errorMsg => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        }).error(error => {
+            this.dispatch({loading: false, error: true, errorMsg: error.responseText});
         }
         );
     }

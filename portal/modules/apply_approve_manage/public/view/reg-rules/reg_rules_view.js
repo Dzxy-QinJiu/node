@@ -713,10 +713,10 @@ class RegRulesView extends React.Component {
                             <div className="rule-content info-container">
                                 <RadioGroup onChange={this.onRadioChange}
                                     value={_.get(this, 'state.applyRulesAndSetting.ccInformation')}>
-                                    <Radio value={CC_INFO.APPLY}>{Intl.get('apply.cc.when,submit', '提交申请时抄送')}</Radio>
-                                    <Radio value={CC_INFO.APPROVE}>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送')}</Radio>
+                                    <Radio value={CC_INFO.APPLY}>{Intl.get('apply.cc.when,submit', '提交申请时抄送审批人')}</Radio>
+                                    <Radio value={CC_INFO.APPROVE}>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送申请人')}</Radio>
                                     <Radio
-                                        value={CC_INFO.APPLY_AND_APPROVE}>{Intl.get('apply.cc.when.submit.and.approve', '提交申请和审批通过后都抄送')}</Radio>
+                                        value={CC_INFO.APPLY_AND_APPROVE}>{Intl.get('apply.cc.when.submit.and.approve', '提交申请时抄送审批人和审批通过后抄送申请人')}</Radio>
                                 </RadioGroup>
                             </div>
 

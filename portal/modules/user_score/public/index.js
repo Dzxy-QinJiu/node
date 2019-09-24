@@ -297,8 +297,9 @@ class userScore extends React.Component {
         </span>;
     };
     renderUserBasicScoreLists = () => {
-        const {userIndicator, userIndicatorRange, userIndicatorType, userScoreFormData, isEditUserBasicRule, userLevelObj} = this.state;
+        const {userIndicator, userIndicatorRange, userScoreFormData, isEditUserBasicRule, userLevelObj} = this.state;
         var userScoreDetailList = _.get(userScoreFormData, 'detail', []);
+
         if (!userScoreDetailList.length) {
             //如果没有配置过用户评分，默认展示 近期活跃天数分数 和 近期在线时长分数
             var defaultArr = _.filter(userIndicator, item => this.isRateItem(item));
