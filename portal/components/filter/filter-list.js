@@ -560,6 +560,9 @@ class FilterList extends React.Component {
             </div>
         );
     }
+    closeFilterPanel = () => {
+        this.props.toggleList();
+    }
 
     render() {
         const { commonLoading, advancedLoading, commonData, advancedData } = this.props;
@@ -579,169 +582,179 @@ class FilterList extends React.Component {
         var noCommonStatus = !this.state.commonData || this.state.commonData.length === 0;
         var commonStatusCls = noCommonStatus ? ' no-content' : '';
         return (
-            <GeminiScrollbar style={this.props.style} className={this.props.className}>
-                <div className="filter-wrapper filter-list-wrapper">
-                    {_.isFunction(this.props.renderOtherDataContent) ? this.props.renderOtherDataContent() : null}
-                    <StatusWrapper
-                        loading={commonLoading}
-                        errorMsg={this.props.commonErrorMsg}
-                        size="small"
-                        className={commonStatusCls}
-                    >
-                        {noCommonStatus ?
-                            null :
-                            <div className="common-container">
-                                {/* icon-common-filter */}
-                                <h4 className="title">常用筛选</h4>
-                                {/* todo 用props.commonData */}
-                                <ul>
-                                    {
-                                        this.state.commonData.map((x, index) => {
-                                            //当前索引小于预设展示数量，或面板为展开时，显示item
-                                            const showItem = (index < this.props.showCommonListLength) || !this.state.collapsedCommon;
-                                            const getHoverContent = filterList => (
-                                                <ul className="filter-list-container">
-                                                    {
-                                                        filterList.map((filter, idx) => {
-                                                            return (
-                                                                <li key={idx}>
-                                                                    {filter.name}
-                                                                </li>
-                                                            );
-                                                        })
-                                                    }
-                                                </ul>
-                                            );
-                                            const getClickContent = (item, index) => (
-                                                <ul className="btn-container">
-                                                    <li onClick={this.delCommonItem.bind(this, item, index)}>删除</li>
-                                                </ul>
-                                            );
-                                            const commonItemClass = classNames('titlecut', {
-                                                'hide': !showItem,
-                                                'active': index === this.state.selectedCommonIndex
-                                            });
-                                            //todo 没有多个高级筛选的常用筛选不展示popover
-                                            if (x.plainFilterList && !x.readOnly) {
-                                                return (
-                                                    //todo plainFilterList 根据接口数据统一结构
-                                                    <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
-                                                        onVisibleChange={this.handleShowPop.bind(this, 'hover')}
-                                                    // visible={this.state.showHoverPop && !this.state.showClickPop}
-                                                    >
+            <div>
+                <div className="close-filter-panel" onClick={this.closeFilterPanel}>
+                        <span className="filter-panel-arrow">
+                            &lt;
+                        </span>
+                    {Intl.get('clue.customer.close.filter.panel', '收起筛选')}
+                </div>
+                <GeminiScrollbar style={this.props.style} className={this.props.className}>
+                    <div className="filter-wrapper filter-list-wrapper">
+
+                        {_.isFunction(this.props.renderOtherDataContent) ? this.props.renderOtherDataContent() : null}
+                        <StatusWrapper
+                            loading={commonLoading}
+                            errorMsg={this.props.commonErrorMsg}
+                            size="small"
+                            className={commonStatusCls}
+                        >
+                            {noCommonStatus ?
+                                null :
+                                <div className="common-container">
+                                    {/* icon-common-filter */}
+                                    <h4 className="title">常用筛选</h4>
+                                    {/* todo 用props.commonData */}
+                                    <ul>
+                                        {
+                                            this.state.commonData.map((x, index) => {
+                                                //当前索引小于预设展示数量，或面板为展开时，显示item
+                                                const showItem = (index < this.props.showCommonListLength) || !this.state.collapsedCommon;
+                                                const getHoverContent = filterList => (
+                                                    <ul className="filter-list-container">
+                                                        {
+                                                            filterList.map((filter, idx) => {
+                                                                return (
+                                                                    <li key={idx}>
+                                                                        {filter.name}
+                                                                    </li>
+                                                                );
+                                                            })
+                                                        }
+                                                    </ul>
+                                                );
+                                                const getClickContent = (item, index) => (
+                                                    <ul className="btn-container">
+                                                        <li onClick={this.delCommonItem.bind(this, item, index)}>删除</li>
+                                                    </ul>
+                                                );
+                                                const commonItemClass = classNames('titlecut', {
+                                                    'hide': !showItem,
+                                                    'active': index === this.state.selectedCommonIndex
+                                                });
+                                                //todo 没有多个高级筛选的常用筛选不展示popover
+                                                if (x.plainFilterList && !x.readOnly) {
+                                                    return (
+                                                        //todo plainFilterList 根据接口数据统一结构
+                                                        <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
+                                                                 onVisibleChange={this.handleShowPop.bind(this, 'hover')}
+                                                            // visible={this.state.showHoverPop && !this.state.showClickPop}
+                                                        >
+                                                            <li
+                                                                className={commonItemClass}
+                                                                key={index}
+                                                            >
+                                                                {/* //todo 鼠标经过左右滚动标题 */}
+                                                                <span className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
+                                                                {
+                                                                    x.readOnly ?
+                                                                        null :
+                                                                        <Popover placement="bottom" content={getClickContent(x, index)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
+                                                                            <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
+                                                                        </Popover>
+                                                                }
+                                                            </li>
+                                                        </Popover>);
+                                                } else {
+                                                    return (
                                                         <li
                                                             className={commonItemClass}
                                                             key={index}
                                                         >
-                                                            {/* //todo 鼠标经过左右滚动标题 */}
-                                                            <span className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
+                                                            <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
                                                             {
                                                                 x.readOnly ?
                                                                     null :
-                                                                    <Popover placement="bottom" content={getClickContent(x, index)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
+                                                                    <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
                                                                         <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
                                                                     </Popover>
                                                             }
                                                         </li>
-                                                    </Popover>);
-                                            } else {
-                                                return (
-                                                    <li
-                                                        className={commonItemClass}
-                                                        key={index}
-                                                    >
-                                                        <span title={x.name} className="common-item-content" onClick={this.handleCommonItemClick.bind(this, x, index)}>{x.name}</span>
-                                                        {
-                                                            x.readOnly ?
-                                                                null :
-                                                                <Popover placement="bottom" content={getClickContent(x)} trigger="click" onVisibleChange={this.handleShowPop.bind(this, 'click')}>
-                                                                    <span className="btn" onClick={this.showCommonItemModal.bind(this, x)}>...</span>
-                                                                </Popover>
-                                                        }
-                                                    </li>
-                                                );
-                                            }
-                                        })
-                                    }
-                                    {
-                                        commonData.length > this.props.showCommonListLength ?
-                                            <li className="collapse-btn" onClick={this.toggleCollapse.bind(this, 'common')}>
-                                                {
-                                                    this.state.collapsedCommon ?
-                                                        '更多' : '收起'
+                                                    );
                                                 }
-                                            </li> : null
-                                    }
-                                </ul>
-                            </div>
-                        }
-                    </StatusWrapper>
-                    {
-                        this.state.advancedData.length > 0 ?
-                            <StatusWrapper
-                                loading={advancedLoading}
-                                errorMsg={this.props.advancedErrorMsg}
-                                size="small"
-                            >
-                                <div className="advanced-container">
-                                    {this.props.hideAdvancedTitle ? null : <h4 className="title" onClick={this.toggleCollapse.bind(this, 'advanced')}>
-                                        {/* todo icon-advanced-filter */}
-                                        <p className="">高级筛选</p>
-                                        <Icon
-                                            type={this.state.collapsedAdvanced ? 'down' : 'up'}
-                                        />
-                                    </h4>}
+                                            })
+                                        }
+                                        {
+                                            commonData.length > this.props.showCommonListLength ?
+                                                <li className="collapse-btn" onClick={this.toggleCollapse.bind(this, 'common')}>
+                                                    {
+                                                        this.state.collapsedCommon ?
+                                                            '更多' : '收起'
+                                                    }
+                                                </li> : null
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </StatusWrapper>
+                        {
+                            this.state.advancedData.length > 0 ?
+                                <StatusWrapper
+                                    loading={advancedLoading}
+                                    errorMsg={this.props.advancedErrorMsg}
+                                    size="small"
+                                >
+                                    <div className="advanced-container">
+                                        {this.props.hideAdvancedTitle ? null : <h4 className="title" onClick={this.toggleCollapse.bind(this, 'advanced')}>
+                                            {/* todo icon-advanced-filter */}
+                                            <p className="">高级筛选</p>
+                                            <Icon
+                                                type={this.state.collapsedAdvanced ? 'down' : 'up'}
+                                            />
+                                        </h4>}
 
-                                    {
-                                        !this.state.collapsedAdvanced ?
-                                            <div className="advanced-items-wrapper" data-tracename="高级筛选">
-                                                {
-                                                    this.state.advancedData.map((groupItem, index) => {
-                                                        if (!groupItem.data || groupItem.data.length === 0) {
-                                                            return null;
-                                                        } else {
-                                                            return (
-                                                                <div key={index} className="group-container">
-                                                                    <h4 className="title">
-                                                                        {groupItem.groupName}
-                                                                        {
-                                                                            isGroupSelected(groupItem) ?
-                                                                                <span
-                                                                                    className="clear-btn"
-                                                                                    onClick={this.clearSelect.bind(this, groupItem.groupName)}
-                                                                                >
+                                        {
+                                            !this.state.collapsedAdvanced ?
+                                                <div className="advanced-items-wrapper" data-tracename="高级筛选">
+                                                    {
+                                                        this.state.advancedData.map((groupItem, index) => {
+                                                            if (!groupItem.data || groupItem.data.length === 0) {
+                                                                return null;
+                                                            } else {
+                                                                return (
+                                                                    <div key={index} className="group-container">
+                                                                        <h4 className="title">
+                                                                            {groupItem.groupName}
+                                                                            {
+                                                                                isGroupSelected(groupItem) ?
+                                                                                    <span
+                                                                                        className="clear-btn"
+                                                                                        onClick={this.clearSelect.bind(this, groupItem.groupName)}
+                                                                                    >
                                                                                     清空
                                                                                 </span> : null
-                                                                        }
-                                                                    </h4>
-                                                                    {_.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) : (
-                                                                        <ul className="item-container">
-                                                                            {_.map(groupItem.data, (x, idx) => {
-                                                                                return (
-                                                                                    <li
-                                                                                        className={x.selected ? 'active titlecut' : 'titlecut'}
-                                                                                        key={idx}
-                                                                                        title={x.name}
-                                                                                        onClick={this.handleAdvanedItemClick.bind(this, groupItem, x)}
-                                                                                    >
-                                                                                        {x.name}
-                                                                                    </li>);
-                                                                            })
                                                                             }
-                                                                        </ul>)
-                                                                    }
-                                                                </div>
-                                                            );
-                                                        }
-                                                    })
-                                                }
-                                            </div> : null
-                                    }
-                                </div>
-                            </StatusWrapper> : null
-                    }
-                </div>
-            </GeminiScrollbar>
+                                                                        </h4>
+                                                                        {_.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) : (
+                                                                            <ul className="item-container">
+                                                                                {_.map(groupItem.data, (x, idx) => {
+                                                                                    return (
+                                                                                        <li
+                                                                                            className={x.selected ? 'active titlecut' : 'titlecut'}
+                                                                                            key={idx}
+                                                                                            title={x.name}
+                                                                                            onClick={this.handleAdvanedItemClick.bind(this, groupItem, x)}
+                                                                                        >
+                                                                                            {x.name}
+                                                                                        </li>);
+                                                                                })
+                                                                                }
+                                                                            </ul>)
+                                                                        }
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        })
+                                                    }
+                                                </div> : null
+                                        }
+                                    </div>
+                                </StatusWrapper> : null
+                        }
+                    </div>
+                </GeminiScrollbar>
+            </div>
+
         );
     }
 }
@@ -761,7 +774,8 @@ FilterList.defaultProps = {
 
     },
     hasSettedDefaultCommonSelect: false,
-    showAdvancedPanel: false
+    showAdvancedPanel: false,
+    toggleList: function() { },
 };
 /**
  * advancedData=[
@@ -814,5 +828,7 @@ FilterList.propTypes = {
     setDefaultSelectCommonFilter: PropTypes.func,
     hasSettedDefaultCommonSelect: PropTypes.bool,
     showAdvancedPanel: PropTypes.bool,
+    toggleList: PropTypes.func,
+
 };
 export default FilterList;

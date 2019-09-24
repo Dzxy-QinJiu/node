@@ -297,13 +297,14 @@ class TeamDataColumn extends React.Component {
             <div>
                 <div className='my-data-title'>
                     <div className="call-time-select-wrapper">
+                        <span>{Intl.get('home.page.callout.time', '呼出总时长')}</span>
                         <Select
                             value={this.state.currentDateType}
                             onChange={this.handleDateChange}
+                            className="call-time-select"
                         >
                             {callTimeOptions}
                         </Select>
-                        <span>{Intl.get('home.page.callout.time', '呼出总时长')}</span>
                     </div>
                 </div>
                 {

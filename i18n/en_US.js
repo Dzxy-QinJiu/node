@@ -167,6 +167,7 @@ var en_US = {
     'common.no.more.data': 'There is no more data',//没有更多数据了
     'common.no.more.user': 'There is no more user',//沒有更多用戶了
     'common.no.more.crm': 'There is no more customer',//没有更多客户了
+    'common.no.more.repeat.crm': 'There is no more repeat customer',//没有重复的客户
     'common.no.more.filter.crm': 'There is no customer match condition',//没有符合条件的客户了
     'common.no.filter.crm': 'There is no customer match condition',//没有符合条件的客户
     'common.no.more.schedule': 'There is no schedule',//暂无计划
@@ -3321,6 +3322,7 @@ var en_US = {
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
     'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
+    'clue.check.customer.detail.warning': 'This clue has belonged to other sales',//此线索已在其他销售名下
     'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
     'clue.manage.contact.clue': 'Contact clue',//联系线索
     'crm.103': 'Change in charge',//变更负责人
@@ -3412,6 +3414,7 @@ var en_US = {
     'clue.customer.last.month': 'Last month',//近一月
     'clue.customer.last.quarter': 'Last quarter',//近一季度
     'clue.customer.last.year': 'Last year',//近一年
+    'clue.customer.close.filter.panel': 'Close filter panel',//收起筛选
     'user.score.level.rule': 'User rating rules',//用户评分规则
     'user.score.basic.score': 'Basic rating',//基础评分
     'user.score.particate.in.score': 'Participation score',//参与度评分

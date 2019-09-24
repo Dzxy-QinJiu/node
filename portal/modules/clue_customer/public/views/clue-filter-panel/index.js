@@ -10,7 +10,7 @@ var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
 import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE } from '../../utils/clue-customer-utils';
-import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
@@ -225,36 +225,41 @@ class ClueFilterPanel extends React.Component {
             }];
             return x;
         });
-        const advancedData = [
-            {
-                groupName: Intl.get('clue.analysis.source', '来源'),
-                groupId: 'clue_source',
-                data: clueSourceArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
-                groupId: 'clue_access',
-                data: accessChannelArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('clue.customer.classify', '线索分类'),
-                groupId: 'clue_classify',
-                data: clueClassifyArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('crm.96', '地域'),
-                groupId: 'clue_province',
-                data: clueProvinceList.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            }];
+        const advancedData = [{
+            groupName: Intl.get('crm.96', '地域'),
+            groupId: 'clue_province',
+            data: clueProvinceList.map(x => ({
+                name: x,
+                value: x
+            }))
+        }];
+        //非销售角色才有来源、渠道、分类筛选项
+        if(!isSalesRole()) {
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('clue.analysis.source', '来源'),
+                    groupId: 'clue_source',
+                    data: clueSourceArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                },{
+                    groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
+                    groupId: 'clue_access',
+                    data: accessChannelArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                },{
+                    groupName: Intl.get('clue.customer.classify', '线索分类'),
+                    groupId: 'clue_classify',
+                    data: clueClassifyArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                }
+            );
+        }
         //非普通销售才有销售角色和团队
         if (!userData.getUserData().isCommonSales) {
             var ownerList = _.uniqBy(this.state.teamMemberList, 'nickname');
@@ -285,6 +290,7 @@ class ClueFilterPanel extends React.Component {
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                         showAdvancedPanel={true}
+                        toggleList={this.props.toggleList}
                     />
                 </div>
             </div>
@@ -299,7 +305,10 @@ ClueFilterPanel.defaultProps = {
 
     },
     style: {},
-    showSelectTip: false
+    showSelectTip: false,
+    toggleList: function () {
+
+    }
 };
 ClueFilterPanel.propTypes = {
     clueSourceArray: PropTypes.object,
@@ -307,7 +316,8 @@ ClueFilterPanel.propTypes = {
     clueClassifyArray: PropTypes.object,
     getClueList: PropTypes.func,
     style: PropTypes.object,
-    showSelectTip: PropTypes.bool
+    showSelectTip: PropTypes.bool,
+    toggleList: PropTypes.func,
 };
 
 export default ClueFilterPanel;
