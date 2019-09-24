@@ -3273,7 +3273,89 @@ var en_US = {
     'common.net.increase': 'net increase',//净增
     'common.reflux': 'reflux',//回流
     'user.info.get.user.condition.failed': 'Failed to get user query condition',//获取用户查询条件失败
+    /*自定义流程 start*/
     'apply.upload.same.name': 'The file name cannot be repeat!',//该文件名称已存在
+    'apply.add.apply.type': 'Add application type',//添加申请类型
+    'apply.add.form.content': 'Form content',//表单内容
+    'apply.add.form.regex': 'Approval rule',//审批规则
+    'apply.approve.manage.add.from.right': 'Please add the form content from the right',//请从右边添加表单内容
+    'apply.approve.manage.no.content': 'No form content',//暂无表单内容
+    'config.apply.manage': 'Application for approval management',//申请审批管理
+    'apply.approve.qualified.user': 'Dedicated user',//可申用户
+    'apply.approve.name.apply': 'Application type name',//申请类型名称
+    'apply.rule.text': 'Text input',//文字输入
+    'apply.rule.textare': 'Multi-line text input',//多行文字输入
+    'apply.rule.number': 'Digital input',//数字输入
+    'apply.rule.count': 'Amount input',//金额输入
+    'apply.rule.hour': 'Duration input',//时长输入
+    'apply.rule.radio': 'Radio',//单选
+    'apply.rule.check': 'Multiple selection',//多选
+    'apply.rule.date': 'Date selection',//日期选择
+    'apply.rule.date.and.time': 'Date + time selection',//日期+时间选择
+    'apply.rule.period': 'Cycle selection',//周期选择
+    'apply.rule.customer': 'Customer choice',//客户选择
+    'apply.rule.production': 'Product configuration',//产品配置
+    'apply.rule.within.32': 'Within 32 characters',//32个字符以内
+    'apply.rule.over.32': '32 characters or more',//32个字符以上
+    'apply.rule.allow.point': 'Allow decimal point',//允许小数点
+    'apply.rule.limit.int': 'Integer only',//仅限整数
+    'apply.components.name': 'Component name',//组件名称
+    'apply.components.tip.msg': 'Prompt description',//提示说明
+    'apply.components.required.item': 'Required',//必填
+    'apply.components.write.title': 'Please fill in the title!',//请填写标题！
+    'apply.components.length.character': 'Title length cannot exceed 6 characters',//标题长度不能超过6个字符
+    'apply.default.apply.workflow': 'Default approval process',//默认审批流程
+    'apply.default.cc.email': 'Default CC',//默认抄送人
+    'apply.condition.work.flow': 'Conditional approval process',//条件审批流程
+    'apply.info.cc.email': 'CC notification',//抄送通知
+    'apply.info.cancel.privilege': 'Revoke permission',//撤销权限
+    'apply.workflow.merge.same.approver': 'Merging the same approver (after passing, automatically passed later)',//合并相同审批人（通过后，后面自动通过）
+    'apply.workflow.cancel.approve': 'Cancellation after passing (after approval, the application can be revoked with the consent of the approver)',//通过后允许撤销（审批通过后，经审批人同意，可撤销申请）
+    'apply.cc.when,submit': 'Copy the approver when submitting the application',//提交申请时抄送审批人
+    'apply.cc.when.approve.apply': 'Copy and approve the applicant after approval',//审批通过后抄送申请人
+    'apply.cc.when.submit.and.approve': 'Copy the copy approver at the time of submitting the application and copy the applicant after approval',//提交申请时抄送审批人和审批通过后抄送申请人
+    'apply.add.condition.workflow': 'Add condition approval process',//添加条件审批流程
+    'apply.add.apply.approver': 'Add approver',//添加审批人
+    'apply.add.approver.higher.level': 'Superior',//上级
+    'apply.add.approver.setting.role': 'Specified role',//指定角色
+    'apply.add.approver.setting.user': 'Designated member',//指定成员
+    'apply.add.approver.applicant.setting': 'Applicant specified',//申请人指定
+    'apply.add.approver.applicant.self': 'Applicant himself',//申请人自己
+    'apply.add.approver.submit.files': 'Submittable file',//可提交文件
+    'apply.add.approver.distribute': 'Specify the next approver',//指定下一审批人
+    'apply.add.approve.node.team.owner': 'Department manager',//部门经理
+    'apply.add.approve.node.team.owner.and.higher.level.owner': 'Team owner or superior team owner',//团队所有者或者上级团队所有者
+    'apply.add.approve.node.higher.level.owner': 'Superior team owner',//上级团队所有者
+    'apply.add.approve.node.all.higher.level.owner': 'All superior team owners',//所有上级团队所有者
+    'apply.add.approve.node.operation': 'Operator',//运营人员
+    'apply.empty.approve.higher.level': 'When vacancies are approved by the next level in the organization',//空缺时，由组织中的更上一级代审批
+    'apply.empty.admin.approve': 'Approved by the administrator when there is no approver',//没有审批人时，由管理员审批
+    'apply.add.approve.num.person': '{num} people',//{num}人
+    'apply.add.condition.process': 'Add condition approval process',//添加条件审批流程
+    'apply.add.qualify.condition': 'To meet the conditions',//满足条件
+    'apply.add.reg.name': 'Please fill in the name',//请填写名称
+    'apply.add.apply.condition': 'Add condition',//添加条件
+    'apply.add.condition.larger': 'greater',//大于
+    'apply.add.condition.larger.and.equal': 'greater or equal to',//大于等于
+    'apply.add.condition.less': 'Less than',//小于
+    'apply.add.condition.less.and.equal': 'Less than or equal to',//小于等于
+    'apply.add.condition.equal': 'equal',//等于
+    'apply.add.condition.within': 'Between',//介于
+    'apply.condition.meet.rule': 'To meet the conditions',//满足条件
+    'apply.condition.apply.approve': 'Approval Process',//审批流程
+    'apply.condition.item.add.cc': 'Cc',//抄送人
+    'apply.condition.item.money': 'Amount',//金额
+    'apply.time.range.unit.select': 'Unit option',//单位选项
+    'apply.approve.option.one': 'Option one',//选项一
+    'apply.approve.option.two': 'Option two',//选项二
+    'apply.time.range.unit.select.label': 'Option',//选项
+    'apply.time.select.period': 'Cycle selection',//周期选择
+    'apply.time.distinct.am': 'Distinguish between afternoon and afternoon',//区分上下午
+    'apply.form.has.edit.components': 'Do you have a component or edit state?',//您有组件还是编辑状态
+    'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
+    'apply.approve.set.approver': 'Assgin approver',//指定审批人
+    'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
+    /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
     'app.user.manage.product.key.validate': 'The custom attribute key can contain only letters and underscores',//自定义属性key只能包含字母、下划线
@@ -3308,10 +3390,6 @@ var en_US = {
     'clue.show.no.show.tip': 'There has {num} new clues not showing',//还有{num}个新线索未展示
     'clue.close.all.noty': 'Close all',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
-    /*自定义审批 start*/
-    'apply.approve.set.approver': 'Assgin approver',//指定审批人
-    'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
-    /*自定义审批 end*/
     'clue.customer.trace.clues': 'Trace clue',//跟进线索
     'clue.need.complete.clue.name': 'Please complete the clue name first.',//请先完善线索名
     'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
