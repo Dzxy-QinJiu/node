@@ -320,6 +320,9 @@ class BootProcess extends React.Component {
         this.setState({curCustomerAddType: type});
     };
 
+    //显示继续添加按钮
+    showContinueAddButton = () => {};
+
     // 拨号结束后，触发事件
     triggerDialFinished = () => {
         let dialGuide = _.find(this.state.guideConfig, guide => guide.key === BOOT_PROCESS_KEYS_MAP.dial.key);
