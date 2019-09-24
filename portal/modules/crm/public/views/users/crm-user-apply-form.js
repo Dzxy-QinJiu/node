@@ -1,4 +1,3 @@
-var React = require('react');
 /**
  * Created by wangliping on 2017/9/20.
  */
