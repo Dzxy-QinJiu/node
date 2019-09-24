@@ -806,7 +806,7 @@ class Crm extends React.Component {
             case OTHER_FILTER_ITEMS.EXTRACT_TIME://从客户池提取的客户
                 this.state.rangParams[0] = {
                     from: moment().year(2019).startOf('year').valueOf(),
-                    name: 'extract_time',
+                    name: 'extract_date',
                     type: 'time'
                 };
                 break;
