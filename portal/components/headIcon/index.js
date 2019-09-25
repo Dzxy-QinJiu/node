@@ -1,20 +1,20 @@
 /**
  * Created by wangliping on 2016/1/7.
  */
-var React = require('react');
-var language = require('../../public/language/getLanguage');
+const language = require('../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('./headIcon-es_VE.less');
 } else if (language.lan() === 'zh') {
     require('./headIcon-zh_CN.less');
 }
-var limitSize = 100;//图片大小限制100KB
-var message = require('antd').message;
-var DefaultUserLogoTitle = require('../default-user-logo-title');
+const limitSize = 100;//图片大小限制100KB
+const message = require('antd').message;
+const DefaultUserLogoTitle = require('../default-user-logo-title');
 
 class HeadIcon extends React.Component {
     state = {
-        headIcon: this.props.headIcon
+        headIcon: this.props.headIcon,
+        isChangeImageFlag: false, // 是否修改头像，默认false
     };
 
     componentWillReceiveProps(nextProps) {
@@ -58,39 +58,79 @@ class HeadIcon extends React.Component {
         });
     };
 
+    handleMouseEnter = () => {
+        this.setState({
+            isChangeImageFlag: true
+        });
+    };
+
+    handleMouseLeave = () => {
+        this.setState({
+            isChangeImageFlag: false
+        });
+    }
+
+    renderHeadImg = (headIcon) => {
+        if (this.props.isUserHeadIcon) {
+            return (
+                <DefaultUserLogoTitle
+                    userName={this.props.userName}
+                    nickName={this.props.iconDescr}
+                    userLogo={headIcon}
+                >
+                </DefaultUserLogoTitle>
+            );
+        } else {
+            return (
+                <img
+                    src={headIcon}
+                    style={{cursor: 'pointer'}}
+                    onError={this.setDefaultImg}
+                />
+            );
+        }
+    };
+
     render() {
-        var headIcon = this.state.headIcon;
+        const headIcon = this.state.headIcon;
         return (
             <div className="head-image-container">
-                <div className="cirle-image">
-                    {this.props.isEdit ? ( <div className="upload-img-container" title={Intl.get('common.image.upload.size','请上传小于100KB的图片')}>
-                        <div className="update-logo-desr"> {Intl.get('common.upload.img.change','更改')}</div>
-                        <input className="upload-img-select" type="file" name="imgUpload" data-tracename="上传头像"
-                            onChange={this.uploadImg}
-                            accept="image/*"/>
-                        {
-                            this.props.isUserHeadIcon ?
-                                (<DefaultUserLogoTitle
-                                    userName={this.props.userName}
-                                    nickName={this.props.iconDescr}
-                                    userLogo={headIcon}
-                                >
-                                </DefaultUserLogoTitle>) :
-                                (<img src={headIcon} style={{cursor: 'pointer'}}
-                                    onError={this.setDefaultImg}/>)
-                        }
-                    </div>) : (
-                        this.props.isUserHeadIcon ?
-                            (<DefaultUserLogoTitle
-                                userName={this.props.userName}
-                                nickName={this.props.iconDescr}
-                                userLogo={headIcon}
-                            >
-                            </DefaultUserLogoTitle>) :
-                            (<img src={headIcon} style={{cursor: 'pointer'}}
-                                onError={this.setDefaultImg}/>))
-                    }
-                </div>
+                {
+                    this.props.isEdit ? (
+                        <div
+                            className="cirle-image"
+                            onMouseEnter={this.handleMouseEnter}
+                            onMouseLeave={this.handleMouseLeave}
+                        >
+                            {
+                                this.state.isChangeImageFlag ? (
+                                    <div
+                                        className="upload-img-container"
+                                        title={Intl.get('common.image.upload.size','请上传小于100KB的图片')}
+                                    >
+                                        <input
+                                            className="upload-img-select"
+                                            type="file"
+                                            name="imgUpload"
+                                            data-tracename="上传头像"
+                                            onChange={this.uploadImg}
+                                            accept="image/*"
+                                        />
+                                        <div className="change-img-container">
+                                            <span>
+                                                {Intl.get('common.upload.img.change','更改')}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ) : this.renderHeadImg(headIcon)
+                            }
+                        </div>
+                    ) : (
+                        <div className="cirle-image">
+                            {this.renderHeadImg(headIcon)}
+                        </div>
+                    )
+                }
                 {
                     this.props.isNotShowUserName ? null : <p>{this.props.iconDescr}</p>
                 }
