@@ -9,6 +9,14 @@ import { Form, Input } from 'antd';
 const FormItem = Form.Item;
 const noop = function() {};
 let instanceMap = {};
+const errorMsg = Intl.get('crm.196', '请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555');
+
+function validate(value) {
+    return commonPhoneRegex.test(value) ||
+        autoLineAreaPhoneRegex.test(value) ||
+        hotlinePhoneRegex.test(value) ||
+        phone1010Regex.test(value);
+}
 
 class PhoneInput extends React.Component {
     componentDidMount() {
@@ -31,16 +39,12 @@ class PhoneInput extends React.Component {
                 return;
             }
 
-            if (commonPhoneRegex.test(value) ||
-                autoLineAreaPhoneRegex.test(value) ||
-                hotlinePhoneRegex.test(value) ||
-                phone1010Regex.test(value)
-            ) {
+            if (validate(value)) {
                 callback();
             } else {
                 //延迟1秒钟后再显示错误信息，以防止一输入就报错
                 setTimeout(() => {
-                    callback(Intl.get('crm.196', '请输入正确的电话号码，格式例如：13877775555，010-77775555 或 400-777-5555'));
+                    callback(errorMsg);
                 }, 1000);
             }
         };
@@ -118,18 +122,31 @@ PhoneInput.propTypes = {
 
 const options = {
     onFieldsChange(props, fields) {
-        if (_.isEmpty(fields) || !instanceMap[props.id]) return;
-
-        //暂存变化了的字段
-        instanceMap[props.id].changedFields = fields;
-        //标识电话值的变化来自于用户输入而非外部属性变更
-        instanceMap[props.id].changeFromInput = true;
-
-        let value = fields[props.id].value;
-        let obj = { target: {} };
-        obj.target.value = value.replace(/-/g, '');
-
-        _.isFunction(props.onChange) && props.onChange(obj);
+        //变化的字段为空时，是自动添加横线后的情况，此时不能自动触发组件验证，需要手工处理一下，否则会出现一直转圈但不显示验证错误信息的情况
+        if (_.isEmpty(fields)) {
+            let instance = instanceMap[props.id];
+            const changedField = instance.changedFields[props.id];
+            changedField.validating = false;
+            if (!validate(changedField.value)) {
+                changedField.errors = [{
+                    message: errorMsg,
+                    field: props.id,
+                }];
+            }
+        } else {
+            if (!instanceMap[props.id]) return;
+    
+            //暂存变化了的字段
+            instanceMap[props.id].changedFields = fields;
+            //标识电话值的变化来自于用户输入而非外部属性变更
+            instanceMap[props.id].changeFromInput = true;
+    
+            let value = fields[props.id].value;
+            let obj = { target: {} };
+            obj.target.value = value.replace(/-/g, '');
+    
+            _.isFunction(props.onChange) && props.onChange(obj);
+        }
     },
     mapPropsToFields(props) {
         let instance = instanceMap[props.id];
