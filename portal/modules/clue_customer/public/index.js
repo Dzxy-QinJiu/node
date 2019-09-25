@@ -507,8 +507,7 @@ class ClueCustomer extends React.Component {
                 <Popover trigger="hover"
                     placement="bottom"
                     content={Intl.get('clue.pool.explain', '存放释放的线索')}
-                    overlayClassName="explain-pop"
-                    className="acc">
+                    overlayClassName="explain-pop">
                     <Button onClick={this.showExtractCluePanel} className="btn-item">
                         <span className="clue-container">
                             {Intl.get('clue.pool','线索池')}
