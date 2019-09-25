@@ -384,6 +384,10 @@ function getConfigJson(req) {
         '30008': {'httpCode': 500, 'message': backendIntl.get('contract.invocie.delete.faild', '删除发票额失败')},
         /*周报统计*/
         '90008': {'httpCode': 500, 'message': backendIntl.get('errorcode.148', '电话时长统计视图获取失败')},
+        /*批量处理线索*/
+        '90012': {'httpCode': 500, 'message': backendIntl.get('errorcode.clue.batch.change.pending', '上次批量操作未完成，请稍后再试')},
+        '90054': {'httpCode': 500, 'message': backendIntl.get('errorcode.clue.batch.change.pending', '上次批量操作未完成，请稍后再试')},
+        '90055': {'httpCode': 500, 'message': backendIntl.get('errorcode.clue.batch.change.pending', '上次批量操作未完成，请稍后再试')},
         /*销售流程*/
         '100001': {'httpCode': 500, 'message': backendIntl.get('errorcode.153', '添加销售流程失败')},
         '100002': {'httpCode': 500, 'message': backendIntl.get('errorcode.154', '获取销售流程失败')},
