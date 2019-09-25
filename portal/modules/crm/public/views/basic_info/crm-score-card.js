@@ -10,7 +10,9 @@ import classNames from 'classnames';
 import crmAjax from '../../ajax';
 import crmAction from '../../action/crm-actions';
 import {AntcChart} from 'antc';
-import {Tag} from 'antd';
+import {Tag,Popover, Icon} from 'antd';
+import history from 'PUB_DIR/sources/history';
+const userData = require('PUB_DIR/sources/user-data');
 const QUALIFIED_USER_SIZE = 200;//客户的所有合格用户默认先用200个
 const QUALIFY_LABEL = 1; //合格的用户
 
@@ -159,7 +161,19 @@ class CrmScoreCard extends React.Component {
     showUserDetail(userId) {
         this.props.showUserDetail(userId);
     }
-
+    //客户分数解释内容
+    scoreExplain = () => {
+        //判断是不是管理员
+        if(userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
+            return(<div className="handle-btn-item"
+                onClick={() => {history.push('/background_management/sales_auto');}}>
+                {Intl.get('user.login.score.explain.mananer', '设置分数规则？')}
+            </div>);
+        }else{
+            return (Intl.get('user.login.score.explain.other', '按客户评分规则生成的分数，了解详情请联系管理员'));
+        }
+    }
+    
     renderScoreDetail() {
         const chartOption = {
             grid: {
@@ -232,7 +246,15 @@ class CrmScoreCard extends React.Component {
             <div className="crm-score-title">
                 <span className="crm-score-label">{Intl.get('crm.score.label', '客户评分')}:</span>
                 <span className="crm-score-label crm-score-text">
-                    {customerScore || customerScore === 0 ? Intl.get('crm.score.text', '{score}分', {score: customerScore}) : ''}
+                    {customerScore || customerScore === 0 ? <span>
+                        {Intl.get('crm.score.text', '{score}分', {score: customerScore})}
+                        <Popover 
+                            content={this.scoreExplain()}
+                            trigger='click'
+                            placement="right">
+                            <Icon type="question-circle-o"></Icon>
+                        </Popover>
+                    </span> : ''}
                 </span>
                 <span className={expandIconCls} title={ expandIconTip}
                     onClick={this.toggleScoreDetail.bind(this)}/>
