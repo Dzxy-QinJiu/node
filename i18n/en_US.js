@@ -1513,6 +1513,7 @@ var en_US = {
     'crm.218': 'Edit successfully',//修改成功
     'crm.219': 'Edit Failed',//修改失败
     'crm.customer.recycle.bin': 'Recycle bin',//回收站
+    'crm.customer.recycle.bin.explain': 'Store deleted or merged customers',//存放删除或合并的客户
     'crm.customer.recovery': 'Recovery',//恢复
     'crm.customer.delete.time': 'Delete time',//删除时间
     'crm.recovery.customer.success': 'Rcovery customer success',//恢复客户成功
@@ -1741,6 +1742,7 @@ var en_US = {
     'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
     'crm.customer.extract.failed': 'Failure to extract customer',//提取客户失败
     'crm.customer.pool': 'Customer pool',//客户池
+    'crm.customer.pool.explain': 'Deposit released customers',//存放释放的客户
     'crm.customer.label': 'Customer label',//客户标签
     'crm.customer.extract.time': 'Extract time',//释放时间
     'crm.customer.release.customer': 'Release customer',//释放客户
@@ -2956,6 +2958,7 @@ var en_US = {
     'clue.customer.refresh.tip': 'You have new clues, please {refreshPage} to check',//有新线索，{refreshPage}查看
     'clue.customer.refresh.page': 'refresh page',//刷新页面
     'clue.pool': 'Clue Pool', // 线索池
+    'clue.pool.explain': 'Store release clues',//存放释放的线索
     'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
     'clue.customer.release.confirm.tip': 'After release to the clue pool, other people can view and extract. Do you confirm the release?',//释放到线索池后，其他人也可以查看、提取，您确认释放吗？

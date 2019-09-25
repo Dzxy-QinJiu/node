@@ -508,11 +508,16 @@ class ClueCustomer extends React.Component {
     renderExtractClue = () => {
         return (
             <div className="extract-clue-customer-container pull-right">
-                <Button onClick={this.showExtractCluePanel} className="btn-item">
-                    <span className="clue-container">
-                        {Intl.get('clue.pool','线索池')}
-                    </span>
-                </Button>
+                <Popover trigger="hover"
+                    placement="bottom"
+                    content={Intl.get('clue.pool.explain', '存放释放的线索')}
+                    overlayClassName="explain-pop">
+                    <Button onClick={this.showExtractCluePanel} className="btn-item">
+                        <span className="clue-container">
+                            {Intl.get('clue.pool','线索池')}
+                        </span>
+                    </Button>
+                </Popover>
             </div>
         );
     };

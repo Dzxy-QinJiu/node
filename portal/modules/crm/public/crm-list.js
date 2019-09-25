@@ -1,6 +1,6 @@
 var React = require('react');
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm} from 'antd';
+import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm, Popover} from 'antd';
 import { AntcTable } from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -1196,6 +1196,15 @@ class Crm extends React.Component {
                 >
                     {isWebMini ? <i className="iconfont icon-search-repeat" /> : <Button>{Intl.get('crm.1', '客户查重')}</Button>}
                 </PrivilegeChecker>
+                <Popover content={'crm.customer.pool.explain', '存放释放的客户'}
+                    trigger="hover"
+                    placement="bottom"
+                    overlayClassName="explain-pop">
+                    <Button className='btn-item customer-pool-btn' 
+                        onClick={this.props.showCustomerPool}>
+                        {Intl.get('crm.customer.pool', '客户池')}
+                    </Button>
+                </Popover>
                 {hasPrivilege('CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD')
                 || hasPrivilege('CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD') ? (
                         <div className={btnClass + ' customer-recycle-btn btn-m-r-2'}
@@ -1203,10 +1212,16 @@ class Crm extends React.Component {
                             onClick={this.props.showCustomerRecycleBin}
                         >
                             {isWebMini ? <i className="iconfont icon-delete handle-btn-item"/> :
-                                <Button>{Intl.get('crm.customer.recycle.bin', '回收站')}</Button>}
+                                <Popover content={'crm.customer.recycle.bin.explain', '存放删除或合并的客户'}
+                                    trigger="hover"
+                                    placement="bottomRight"
+                                    overlayClassName="explain-pop">
+                                    <Button>
+                                        {Intl.get('crm.customer.recycle.bin', '回收站')}
+                                    </Button>
+                                </Popover>}
                         </div>) : null
                 }
-                <Button className='btn-item customer-pool-btn' onClick={this.props.showCustomerPool}>{Intl.get('crm.customer.pool', '客户池')}</Button>
             </div>);
         }
     };
