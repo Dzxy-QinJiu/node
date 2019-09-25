@@ -36,6 +36,7 @@ import { RightPanel } from 'CMP_DIR/rightPanel';
 import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import filterEmitter from 'CMP_DIR/filter/emitter';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
+import BackMainPage from 'CMP_DIR/btn-back';
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     FILTER_TOP: 64,//筛选框高度
@@ -1109,6 +1110,8 @@ class ClueExtract extends React.Component {
             <div className="extract-clue-panel">
                 <div className='extract-clue-top-nav-wrap date-picker-wrap'>
                     <div className="search-container">
+                        {hasSelectedClue ? null : <BackMainPage className="clue-back-btn" 
+                            handleBackClick={this.closeExtractCluePanel}></BackMainPage>}
                         <div className="search-input-wrapper">
                             <FilterInput
                                 ref="filterinput"
@@ -1129,9 +1132,6 @@ class ClueExtract extends React.Component {
                             hasSelectedClue ? this.renderBatchChangeClues() : null
                         }
                     </div>
-                    {
-                        hasSelectedClue ? null : <RightPanelClose onClick={this.closeExtractCluePanel}/>
-                    }
                 </div>
                 <div className='extract-clue-content-container'>
                     <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>

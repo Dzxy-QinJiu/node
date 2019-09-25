@@ -17,6 +17,7 @@ import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import {getTableContainerHeight, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import BackMainPage from 'CMP_DIR/btn-back';
 const PRIVILEGES = {
     MANAGER_CUSTOMER_BAK_AUTH: 'CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD'//管理员获取回收站中客户列表的权限
 };
@@ -484,10 +485,8 @@ class CustomerRecycleBin extends React.Component {
             <div className="customer-recycle-bin" data-tracename="回收站客户列表">
                 <TopNav>
                     <div className="return-btn-container" onClick={this.returnCustomerList}>
-                        <Button className='customer-back-btn' type="primary">
-                            <span className="iconfont icon-return-btn"/>
-                            <span className="return-btn-font">  {Intl.get('crm.52', '返回')}</span>
-                        </Button>
+                        <BackMainPage className="customer-back-btn" 
+                            handleBackClick={this.returnCustomerList}></BackMainPage>
                     </div>
                     <div className="customer-search-block">
                         <SearchInput

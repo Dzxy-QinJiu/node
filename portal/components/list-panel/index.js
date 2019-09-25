@@ -8,6 +8,7 @@ require('./style.less');
 import TopNav from 'CMP_DIR/top-nav';
 import rightPanelUtil from 'CMP_DIR/rightPanel';
 import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
+import BackMainPage from 'CMP_DIR/btn-back';
 
 const RightPanel = rightPanelUtil.RightPanel;
 const RightPanelClose = rightPanelUtil.RightPanelClose;
@@ -94,10 +95,7 @@ class ListPanel extends React.Component {
                 >
                     <TopNav>
                         <div className="panel-title">{this.state.title || null}</div>
-                        <RightPanelClose
-                            title={Intl.get('common.app.status.close', '关闭')}
-                            onClick={this.hide}
-                        />
+                        <BackMainPage className="analysis-back-btn" handleBackClick={this.hide}></BackMainPage>
                     </TopNav>
 
                     <div className='panel-content' style={this.props.style}>

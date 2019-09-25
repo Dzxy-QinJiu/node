@@ -14,6 +14,7 @@ import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
+import BackMainPage from 'CMP_DIR/btn-back';
 import {
     authType,
     dataType,
@@ -298,10 +299,7 @@ class CurtaoAnalysis extends React.Component {
                     showFlag={this.state.isRightPanelShow}
                 >
                     <div className="topNav">
-                        <RightPanelClose
-                            title={Intl.get('common.app.status.close', '关闭')}
-                            onClick={this.hideRightPanel}
-                        />
+                        <BackMainPage className="analysis-back-btn" handleBackClick={this.hideRightPanel}></BackMainPage>
                     </div>
                     <div className="right-panel-content">
 
