@@ -159,6 +159,7 @@ class MemberManageStore {
         }
         this.isShowMemberDetail = true;
         this.isShowMemberForm = false;
+        this.isContinueAddButtonShow = true;
     }
     // 编辑成员后的处理
     afterEditMember(modifiedMember) {

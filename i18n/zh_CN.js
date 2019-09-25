@@ -869,6 +869,7 @@ var zh_CN = {
     'member.record.no.record': '暂无变更记录',
     'member.number.toplimit': '成员数量已达{number}个上限',
     'member.add.member.no.position.tips': '系统中暂无职务{name}，是否添加?',
+    'member.add.member.success.tips': '该成员登录后可以拨打电话了',
     //后台管理-成员end
 
     //组织管理start

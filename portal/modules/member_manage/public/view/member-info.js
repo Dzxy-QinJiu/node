@@ -864,11 +864,23 @@ class MemberInfo extends React.Component {
         return logListHeight;
     }
 
+    // 添加成员成功后的提示信息
+    renderAddMemberSuccessTips = () => {
+        return (
+            <div className="add-member-success-tips">
+                <i className="iconfont icon-add-success"></i>
+                <span>
+                    {Intl.get('member.add.member.success.tips', '该成员登录后可以拨打电话了')}
+                </span>
+            </div>
+        );
+    }
+
     renderBasicContent() {
         if (this.state.isGetMemberDetailLoading) {
             return (<Spinner/>);
         } else {
-            var memberInfo = this.state.memberInfo;
+            let memberInfo = this.state.memberInfo;
             let isSales = false;
             if (_.isArray(memberInfo.roleNames) && memberInfo.roleNames.length) {
                 if (_.indexOf(memberInfo.roleNames, Intl.get('sales.home.sales', '销售')) > -1) {
@@ -881,6 +893,14 @@ class MemberInfo extends React.Component {
                 <div className="member-detail-basic-container" style={{height: this.getContainerHeight()}}>
                     <GeminiScrollbar>
                         <div className="member-detail-basic-content">
+                            {
+                                this.props.isContinueAddButtonShow ? (
+                                    <DetailCard
+                                        content={this.renderAddMemberSuccessTips()}
+                                        className='member-info-success-tips-card-container'
+                                    />
+                                ) : null
+                            }
                             <DetailCard
                                 content={this.renderMemberInfoContent()}
                                 className='member-info-card-container'
