@@ -88,7 +88,7 @@ var CrmAlertForm = createReactClass({
         //用户切换添加"线索"或"客户"类型代办时，更新formData里的scheduleType初始值
         if(_.has(nextProps, 'topicValue')) {
             let scheduleType = _.isEqual(_.get(nextProps,'topicValue'), 'customer') ? 'calls' : 'lead';
-            let formData = this.getInitialFormData(nextProps);
+            let formData = this.state.formData;
             formData.scheduleType = scheduleType;
             this.setState({
                 formData,
