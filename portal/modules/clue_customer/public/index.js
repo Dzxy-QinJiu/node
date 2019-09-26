@@ -641,6 +641,11 @@ class ClueCustomer extends React.Component {
             if (_.isArray(filterClueAccess) && filterClueAccess.length){
                 typeFilter.access_channel = filterClueAccess.join(',');
             }
+            //选中线索的销售团队
+            let filterTeamList = filterStoreData.filterTeamList;
+            if (_.isArray(filterTeamList) && filterTeamList.length){
+                typeFilter.sales_team_id = filterTeamList.join(',');
+            }
             //选中的线索分类
             var filterClueClassify = filterStoreData.filterClueClassify;
             if (_.isArray(filterClueClassify) && filterClueClassify.length){

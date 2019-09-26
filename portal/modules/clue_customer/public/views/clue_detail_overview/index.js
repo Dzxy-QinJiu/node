@@ -1,4 +1,4 @@
-import { emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/sources/utils/validate-util';
+import { emailRegex, qqRegex, checkWechat } from 'PUB_DIR/sources/utils/validate-util';
 
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -1211,10 +1211,7 @@ class ClueDetailOverview extends React.Component {
                                                 type='input'
                                                 label={Intl.get('crm.58', '微信')}
                                                 hasEditPrivilege={hasPrivilegeEdit}
-                                                validateRules={[{
-                                                    message: Intl.get('common.correct.wechat','请输入正确的微信号'),
-                                                    pattern: wechatRegex,
-                                                }]}
+                                                validateRules={[{validator: checkWechat}]}
                                                 placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'weChat',id: contactItem.id})}
                                                 noDataTip={Intl.get('crm.contact.wechat.none', '暂无微信')}

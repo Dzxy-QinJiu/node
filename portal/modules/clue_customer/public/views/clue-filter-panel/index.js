@@ -50,6 +50,8 @@ class ClueFilterPanel extends React.Component {
         this.getClueProvinceList();
         //获取所有销售列表
         FilterAction.getTeamMemberList();
+        //获取团队列表
+        FilterAction.getTeamList();
     };
     componentWillReceiveProps = (nextProps) => {
         this.setState({
@@ -101,6 +103,9 @@ class ClueFilterPanel extends React.Component {
                 }else if (item.groupId === 'clue_access'){
                     //线索接入渠道
                     FilterAction.setFilterClueAccess( _.get(item,'data'));
+                }else if (item.groupId === 'sales_team_id'){
+                    //线索接入渠道
+                    FilterAction.setFilterTeamList( _.get(item,'data'));
                 }else if (item.groupId === 'clue_classify'){
                     //线索分类
                     FilterAction.setFilterClueClassify( _.get(item,'data'));
@@ -162,7 +167,7 @@ class ClueFilterPanel extends React.Component {
         if (!_.get(date,'[0]')){
             FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
         }else{
-            FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).valueOf(), end_time: moment(_.get(date, '[1]')).valueOf(), range: ''});
+            FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).startOf('day').valueOf(), end_time: moment(_.get(date, '[1]')).endOf('day').valueOf(), range: ''});
         }
         clueCustomerAction.setClueInitialData();
         setTimeout(() => {
@@ -273,9 +278,9 @@ class ClueFilterPanel extends React.Component {
                 }
             );
         }
-        //非普通销售才有销售角色和团队
+        //非普通销售才有销团队和负责人
         if (!userData.getUserData().isCommonSales) {
-            var ownerList = _.uniqBy(this.state.teamMemberList, 'nickname');
+            let ownerList = _.uniqBy(this.state.teamMemberList, 'nickname');
             advancedData.unshift(
                 {
                     groupName: Intl.get('crm.6', '负责人'),
@@ -284,6 +289,16 @@ class ClueFilterPanel extends React.Component {
                     data: _.map(ownerList, x => ({
                         name: x.nickname,
                         value: x.nickname
+                    }))
+                }
+            );
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('user.sales.team', '销售团队'),
+                    groupId: 'sales_team_id',
+                    data: _.drop(this.state.teamList).map(x => ({
+                        name: x.group_name,
+                        value: x.group_id,
                     }))
                 }
             );

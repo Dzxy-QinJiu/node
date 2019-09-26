@@ -306,7 +306,7 @@ class ClueExtract extends React.Component {
         //选中的销售团队
         let filterClueTeamIds = filterStoreData.salesTeamId;
         if (_.isArray(filterClueTeamIds) && filterClueTeamIds.length){
-            typeFilter.sales_team_id = filterClueProvince.join(',');
+            typeFilter.sales_team_id = filterClueTeamIds.join(',');
         }
         //相似客户和线索
         let filterLabels = filterStoreData.filterLabels;
