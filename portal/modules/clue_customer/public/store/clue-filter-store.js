@@ -50,6 +50,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterClueAvailability = AVALIBILITYSTATUS.AVALIBILITY;
     //筛选线索的地域
     this.filterClueProvince = [];
+    //筛选集客方式
+    this.filterSourceClassify = [];
     //筛选存在的字段
     this.exist_fields = [];
     //筛选不存在的字段
@@ -115,6 +117,16 @@ ClueFilterStore.prototype.setFilterClueClassify = function(updateClassify) {
         selectedClassify.push(item.value);
     });
     this.filterClueClassify = selectedClassify;
+};
+//设置筛选集客方式
+ClueFilterStore.prototype.setFilterSourceClassify = function(updateSourceClassify) {
+    let selectedSourceClassify = [];
+    _.forEach(updateSourceClassify, (item) => {
+        if (item.selected) {
+            selectedSourceClassify.push(item.value);
+        }
+    });
+    this.filterSourceClassify = selectedSourceClassify;
 };
 ClueFilterStore.prototype.setFilterClueUsername = function(updateUsers) {
     var filterClueUsers = [];

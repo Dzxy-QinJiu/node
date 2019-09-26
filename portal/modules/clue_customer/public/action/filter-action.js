@@ -14,6 +14,7 @@ function FilterAction() {
         'setFilterClueAccess',
         'setFilterClueClassify',
         'setFilterClueAvailbility',
+        'setFilterSourceClassify',
         'setFilterClueProvince',
         'setFilterClueAllotNoTrace',
         'setExistedFiled',

@@ -2820,6 +2820,12 @@ var en_US = {
     'failed.to.get.clue.classify': 'Failed to get clue classify',//获取线索分类出错了
     'clue.customer.classify': 'clue  classification',//线索分类
     'crm.clue.classify.placeholder': 'Please select or enter the clue classify',//请选择或输入线索分类
+    'crm.clue.client.source': 'Client Source',//集客方式
+    'crm.clue.client.source.placeholder': 'Please select the client source',//请选择集客方式
+    'crm.clue.client.source.add': 'Add client source',//添加集客方式
+    'crm.clue.client.source.inbound': 'inbound',//市场
+    'crm.clue.client.source.outbound': 'outbound',//自拓
+    'crm.clue.client.source.other': 'other', //未知
     'clue.customer.classify.agend': 'Agents',//代理商
     'clue.customer.classify.search': 'Academic research',//学术研究
     'clue.customer.may.associate.customer': 'The customer may be associated with the clue',//该线索可能关联的客户

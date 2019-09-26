@@ -85,6 +85,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import {SOURCE_CLASSIFY_TEXT, SOURCE_CLASSIFY} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -592,6 +593,7 @@ class ClueCustomer extends React.Component {
         if (_.isEmpty(filterStoreData.filterClueSource)
             && _.isEmpty(filterStoreData.filterClueAccess)
             && _.isEmpty(filterStoreData.filterClueClassify)
+            && _.isEmpty(filterStoreData.filterSourceClassify)
             && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime
             && this.state.keyword === ''
             && _.isEmpty(filterStoreData.exist_fields)
@@ -652,6 +654,11 @@ class ClueCustomer extends React.Component {
             var filterClueClassify = filterStoreData.filterClueClassify;
             if (_.isArray(filterClueClassify) && filterClueClassify.length){
                 typeFilter.clue_classify = filterClueClassify.join(',');
+            }
+            //选中的集客方式
+            let filterSourceClassify = filterStoreData.filterSourceClassify;
+            if (_.isArray(filterSourceClassify) && filterSourceClassify.length){
+                typeFilter.source_classify = filterSourceClassify.join(',');
             }
             //选中的线索地域
             var filterClueProvince = filterStoreData.filterClueProvince;
@@ -2268,8 +2275,21 @@ class ClueCustomer extends React.Component {
                         });
                     }
                 }
-            },
-            {
+            }, {
+                title: Intl.get('crm.clue.client.source', '集客方式'),
+                render: function(text, record, index) {
+                    let type = _.get(record, 'source_classify');
+                    let displayText = '';
+                    if(_.isEqual(type, SOURCE_CLASSIFY.OTHER)) {
+                        displayText = SOURCE_CLASSIFY_TEXT.OTHER;
+                    } else if(_.isEqual(type, SOURCE_CLASSIFY.INBOUND)) {
+                        displayText = SOURCE_CLASSIFY_TEXT.INBOUND;
+                    } else if(_.isEqual(type, SOURCE_CLASSIFY.OUTBOUND)) {
+                        displayText = SOURCE_CLASSIFY_TEXT.OUTBOUND;
+                    }
+                    return displayText;
+                }
+            }, {
                 title: Intl.get('clue.analysis.source', '来源'),
                 dataIndex: 'clue_source',
             }, {

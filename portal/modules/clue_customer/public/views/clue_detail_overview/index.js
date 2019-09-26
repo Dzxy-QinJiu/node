@@ -58,6 +58,7 @@ import ClueTraceAction from '../../action/clue-trace-action';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import {SOURCE_CLASSIFY_TEXT, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -293,6 +294,14 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
+    cancelEditSourceClassify = () => {
+        let curClue = this.state.curClue;
+        curClue.source_classify = this.props.curClue.source_classify;
+        this.setState({
+            curClue: curClue
+        });
+    };
+
     cancelEditSales = () => {
         var curClue = this.state.curClue;
         curClue.user_name = this.props.curClue.user_name;
@@ -329,6 +338,13 @@ class ClueDetailOverview extends React.Component {
     onSelectClueSales = (updateUser) => {
         var curClue = this.state.curClue;
         curClue.user_name = updateUser;
+        this.setState({
+            curClue: curClue
+        });
+    };
+    onSelectSourceClassify = (updateSource) => {
+        let curClue = this.state.curClue;
+        curClue.source_classify = updateSource;
         this.setState({
             curClue: curClue
         });
@@ -1007,6 +1023,18 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
+    //获取集客方式
+    getSourceClassify = (sourceClassify) => {
+        let displayText = '';
+        if(_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
+            displayText = '';
+        } else if(_.isEqual(sourceClassify, SOURCE_CLASSIFY.INBOUND)) {
+            displayText = SOURCE_CLASSIFY_TEXT.INBOUND;
+        } else if(_.isEqual(sourceClassify, SOURCE_CLASSIFY.OUTBOUND)) {
+            displayText = SOURCE_CLASSIFY_TEXT.OUTBOUND;
+        }
+        return displayText;
+    };
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
@@ -1047,6 +1075,28 @@ class ClueDetailOverview extends React.Component {
                                 noDataTip={Intl.get('common.unknown', '未知')}
                                 addDataTip={Intl.get('clue.add.clue.describe', '添加线索描述')}
                                 placeholder={Intl.get('clue.add.clue.placeholder', '请填写线索描述')}
+                            />
+                        </div>
+                    </div>
+                    <div className="clue-info-item">
+                        <div className="clue-info-label">
+                            {Intl.get('crm.clue.client.source', '集客方式')}
+                        </div>
+                        <div className="clue-info-detail">
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                id={curClue.id}
+                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'source_classify')}
+                                cancelEditField={this.cancelEditSourceClassify}
+                                selectOptions={sourceClassifyOptions}
+                                displayText={this.getSourceClassify(curClue.source_classify)}
+                                onSelectChange={this.onSelectSourceClassify}
+                                value={curClue.source_classify}
+                                placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择集客方式')}
+                                addDataTip={Intl.get('crm.clue.client.source.add', '添加集客方式')}
+                                field="source_classify"
+                                noDataTip={Intl.get('common.unknown', '未知')}
                             />
                         </div>
                     </div>
