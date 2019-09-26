@@ -600,7 +600,6 @@ class ClueCustomer extends React.Component {
     //获取查询线索的参数
     getClueSearchCondition = (isGetAllClue) => {
         var filterStoreData = clueFilterStore.getState();
-        console.log(filterStoreData);
         var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
             to: moment().endOf('day').valueOf(),
