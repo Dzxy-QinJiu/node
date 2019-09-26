@@ -84,7 +84,6 @@ class HeadIcon extends React.Component {
             return (
                 <img
                     src={headIcon}
-                    style={{cursor: 'pointer'}}
                     onError={this.setDefaultImg}
                 />
             );
