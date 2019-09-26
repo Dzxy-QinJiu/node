@@ -913,6 +913,10 @@ var en_US = {
     'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
     // 后台管理- 产品end
 
+    // 后台管理-行业start
+    'industry.add.check.tips': 'The name of industry was existed', // 该行业名称已存在
+    // 后台管理-行业end
+
     // 后台管理-竞品start
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
     // 后台管理-竞品end

@@ -1,12 +1,14 @@
 require('./index.less');
 const Spinner = require('CMP_DIR/spinner');
-import {Icon, Alert, Input, Button} from 'antd';
+import {Icon, Alert, Input, Button, Form} from 'antd';
+const FormItem = Form.Item;
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import {ajustTagWidth} from 'PUB_DIR/sources/utils/common-method-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 const PAGE_SIZE = 1000;
+import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 
 class Industry extends React.Component {
     state = {
@@ -18,7 +20,6 @@ class Industry extends React.Component {
         getErrMsg: '', //加载失败的提示信息
         addErrMsg: '', //添加失败的信息
         deleteErrMsg: '', // 删除行业失败
-        inputValue: '', // 添加行业，input框中的值
     };
 
     //获取初始行业列表
@@ -89,36 +90,36 @@ class Industry extends React.Component {
     handleSubmit = (e) => {
         Trace.traceEvent(e, '点击添加行业按钮');
         e.preventDefault();
-        //输入的行业名称去左右空格
-        let inputValue = _.trim(this.state.inputValue);
-        // 判断是否是空格
-        if(!inputValue) {
-            return;
-        }
-        //显示添加的loading效果
-        this.setState({
-            isAddloading: 0
-        });
-        $.ajax({
-            url: '/rest/add_industries',
-            type: 'post',
-            dateType: 'json',
-            data: {industry: inputValue},
-            success: (result) => {
-                //数组开头添加输入的标签
-                this.state.TagLists.unshift(result);
-                this.setState({
-                    TagLists: this.state.TagLists,
-                    isAddloading: -1,
-                    inputValue: ''
-                });
-            },
-            error: (errorInfo) => {
-                this.setState({
-                    isAddloading: -1,
-                    addErrMsg: errorInfo.responseJSON || Intl.get('config.manage.add.industry.error','添加行业失败')
-                });
-            }
+        this.props.form.validateFields((err, values) => {
+            if (err) return;
+            //显示添加的loading效果
+            this.setState({
+                isAddloading: 0
+            });
+            let submitObj = {
+                industry: _.trim(values.industry)
+            };
+            $.ajax({
+                url: '/rest/add_industries',
+                type: 'post',
+                dateType: 'json',
+                data: submitObj,
+                success: (result) => {
+                    this.props.form.setFieldsValue({industry: ''});
+                    //数组开头添加输入的标签
+                    this.state.TagLists.unshift(result);
+                    this.setState({
+                        TagLists: this.state.TagLists,
+                        isAddloading: -1,
+                    });
+                },
+                error: (errorInfo) => {
+                    this.setState({
+                        isAddloading: -1,
+                        addErrMsg: errorInfo.responseJSON || Intl.get('config.manage.add.industry.error','添加行业失败')
+                    });
+                }
+            });
         });
 
     };
@@ -164,37 +165,73 @@ class Industry extends React.Component {
         );
     };
 
-    handleInputChange = (event) => {
-        let value = _.get(event, 'target.value');
+    // 行业唯一性校验
+    getValidator = (name) => {
+        return (rule, value, callback) => {
+            let industryValue = _.trim(value); // 文本框中的值
+            let existIndustryList = this.state.TagLists;
+            let isExist = _.find(existIndustryList, item => item.industry === industryValue);
+
+            if (industryValue) {
+                if (isExist) { // 和已存在的订单阶段名称是相同
+                    callback(Intl.get('industry.add.check.tips', '该行业名称已存在'));
+                } else {
+                    callback();
+                }
+            } else {
+                callback(Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name}));
+            }
+
+        };
+    };
+
+    resetIndustryFlags = () => {
         this.setState({
-            inputValue: value
+            addErrMsg: ''
         });
     };
 
     renderTopNavOperation = () => {
+        const { getFieldDecorator } = this.props.form;
+        const name = Intl.get('common.industry', '行业');
+        const addErrMsg = this.state.addErrMsg;
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
-                    <Input
-                        placeholder={Intl.get('crm.basic.add.industry', '添加行业')}
-                        value={this.state.inputValue}
-                        onChange={this.handleInputChange}
-                        onPressEnter={this.handleSubmit}
-                        className='add-input'
-                    />
-                    <Button
-                        className='add-btn'
-                        onClick={this.handleSubmit}
-                        disabled={this.state.isAddloading === 0}
-                    >
-                        <Icon type="plus" />
-                        {
-                            this.state.isAddloading === 0 ?
-                                <Icon type="loading" style={{marginLeft: 12}}/> : null
-                        }
-                    </Button>
+                    <Form layout='horizontal' className='form' autoComplete='off'>
+                        <FormItem
+                            label=''
+                        >
+                            {getFieldDecorator('industry', {
+                                rules: [{
+                                    required: true,
+                                    validator: this.getValidator(name),
+                                }, validatorNameRuleRegex(10, name)]
+                            })(
+                                <Input
+                                    placeholder={Intl.get('crm.basic.add.industry', '添加行业')}
+                                    onPressEnter={this.handleSubmit}
+                                    className={addErrMsg ? 'input-red-border' : ''}
+                                    onFocus={this.resetIndustryFlags}
+                                />
+                            )}
+                        </FormItem>
+                        <Button
+                            className='add-btn'
+                            onClick={this.handleSubmit}
+                            disabled={this.state.isAddloading === 0}
+                        >
+                            <Icon type="plus" />
+                            {
+                                this.state.isAddloading === 0 ?
+                                    <Icon type="loading" style={{marginLeft: 12}}/> : null
+                            }
+                        </Button>
+                    </Form>
                     {
-                        this.state.addErrMsg !== '' ? this.handleAddIndustryFail() : null
+                        addErrMsg ? (
+                            <div className="industry-check">{addErrMsg}</div>
+                        ) : null
                     }
                 </div>
             </div>
@@ -282,4 +319,8 @@ class Industry extends React.Component {
     }
 }
 
-module.exports = Industry;
+Industry.propTypes = {
+    form: PropTypes.form
+};
+
+module.exports = Form.create()(Industry);
