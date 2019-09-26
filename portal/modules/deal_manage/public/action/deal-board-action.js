@@ -46,7 +46,7 @@ function dealBoardAction() {
             sort_order: 'descend'
         };
         //‘update’表明此个刷新列表是通过emitter的触发进行的刷新，page_size 需要-1来获取值
-        if(!_.isEmpty(type) && _.isEqual(type, 'update')) {
+        if(_.isEqual(type, 'update')) {
             params.page_size = 19;
         }
         let bodyData = {query: {sales_opportunities: [{sale_stages: stage}]}};

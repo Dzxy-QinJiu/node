@@ -72,22 +72,17 @@ class DealTable extends React.Component {
     getDealList(type) {
         let body = this.props.getSearchBody();
         let sorter = this.state.sorter;
+        let pageSize = PAGE_SIZE;
         //‘update’表明此个刷新列表是通过emitter的触发进行的刷新，page_size 需要-1来获取值
-        if(!_.isEmpty(type) && _.isEqual(type, 'update')) {
-            dealAction.getDealList({
-                page_size: PAGE_SIZE - 1,
-                page_num: _.get(this.state, 'dealListObj.pageNum', 1),
-                sort_field: sorter.field,
-                sort_order: sorter.order
-            }, body);
-        } else {
-            dealAction.getDealList({
-                page_size: PAGE_SIZE,
-                page_num: _.get(this.state, 'dealListObj.pageNum', 1),
-                sort_field: sorter.field,
-                sort_order: sorter.order
-            }, body);
+        if(_.isEqual(type, 'update')) {
+            pageSize -= 1;
         }
+        dealAction.getDealList({
+            page_size: pageSize,
+            page_num: _.get(this.state, 'dealListObj.pageNum', 1),
+            sort_field: sorter.field,
+            sort_order: sorter.order
+        }, body);
     }
 
     showCustomerDetail = (customerId) => {
