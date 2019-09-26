@@ -394,12 +394,6 @@ export const sourceClassifyArray = [
         value: SOURCE_CLASSIFY.OTHER
     }
 ];
-//用于导入线索的集客类型输出
-export const SOURCE_CLASSIFY_TEXT = {
-    OTHER: Intl.get('crm.clue.client.source.other', '其他'),
-    OUTBOUND: Intl.get('crm.clue.client.source.outbound', '自拓'),
-    INBOUND: Intl.get('crm.clue.client.source.inbound', '市场')
-};
 //集客方式options
 export const sourceClassifyOptions = sourceClassifyWithoutOtherArray.map((source, index) => {
     return (<Option value={source.value} key={index}>{source.title}</Option>);

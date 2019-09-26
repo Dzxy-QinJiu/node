@@ -53,7 +53,8 @@ import {
     AVALIBILITYSTATUS,
     assignSalesPrivilege,
     editCluePrivilege,
-    handlePrivilegeType
+    handlePrivilegeType,
+    sourceClassifyArray
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -85,7 +86,6 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
 import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
-import {SOURCE_CLASSIFY_TEXT, SOURCE_CLASSIFY} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
@@ -2279,15 +2279,8 @@ class ClueCustomer extends React.Component {
                 title: Intl.get('crm.clue.client.source', '集客方式'),
                 render: function(text, record, index) {
                     let type = _.get(record, 'source_classify');
-                    let displayText = '';
-                    if(_.isEqual(type, SOURCE_CLASSIFY.OTHER)) {
-                        displayText = SOURCE_CLASSIFY_TEXT.OTHER;
-                    } else if(_.isEqual(type, SOURCE_CLASSIFY.INBOUND)) {
-                        displayText = SOURCE_CLASSIFY_TEXT.INBOUND;
-                    } else if(_.isEqual(type, SOURCE_CLASSIFY.OUTBOUND)) {
-                        displayText = SOURCE_CLASSIFY_TEXT.OUTBOUND;
-                    }
-                    return displayText;
+                    let displayObj = _.find(sourceClassifyArray, item => _.isEqual(item.value, type));
+                    return displayObj.name;
                 }
             }, {
                 title: Intl.get('clue.analysis.source', '来源'),
