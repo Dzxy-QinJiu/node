@@ -81,11 +81,7 @@ exports.checkWechat = (rule,value,callback) => {
         if (rule.required) {
             callback(new Error(Intl.get('common.correct.no.wechat', '请输入微信号')));
         } else {
-            if (rule.required) {
-                callback(new Error(Intl.get('common.correct.no.wechat', '请输入微信号')));
-            } else {
-                callback();
-            }
+            callback();
         }
     }
 }
