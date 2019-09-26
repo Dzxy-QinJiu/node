@@ -10,7 +10,7 @@ import CrmAction from '../../action/crm-actions';
 import {validateRequiredOne, disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
 
 import DetailCard from 'CMP_DIR/detail-card';
-import { clueNameContactRule, emailRegex, qqRegex, checkWechat } from 'PUB_DIR/sources/utils/validate-util';
+import { clueNameContactRule, emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/sources/utils/validate-util';
 var uuid = require('uuid/v4');
 //滚动条
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -465,7 +465,10 @@ class ContactForm extends React.Component {
             case CONTACT_KEYS_MAP.WE_CHAT:
                 wayOptions.label = Intl.get('crm.58', '微信');
                 wayOptions.placeholder = Intl.get('member.input.wechat', '请输入微信号');
-                wayOptions.rules = [{validator: checkWechat}];
+                wayOptions.rules = [{
+                    message: Intl.get('common.correct.wechat','请输入正确的微信号'),
+                    pattern: wechatRegex,
+                }];
                 break;
             case CONTACT_KEYS_MAP.EMAIL:
                 wayOptions.label = Intl.get('common.email', '邮箱');
