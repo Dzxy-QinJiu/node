@@ -350,6 +350,7 @@ export const deleteEmptyProperty = function(data) {
 export const COMMON_OTHER_ITEM = 'otherSelectedItem';
 export const SIMILAR_CUSTOMER = '有相似客户';
 export const SIMILAR_CLUE = '有相似线索';
+export const NOT_CONNECTED = Intl.get('clue.customer.not.connect.phone', '未打通电话的线索');
 export const clueStatusTabNum = [{
     numName: 'invalidClue',
     status: 'invalidClue',
@@ -365,4 +366,4 @@ export const clueStatusTabNum = [{
 },{
     numName: 'hasTransfer',
     status: SELECT_TYPE.HAS_TRANSFER,
-},];
+}];

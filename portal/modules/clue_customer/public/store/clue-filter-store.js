@@ -64,9 +64,20 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterLabels = [];
     //如果是销售领导或者销售角色或者运营 默认选中 待我处理 进行筛选
     this.filterAllotNoTraced = getClueUnhandledPrivilege() ? '0' : '';
+    //未打通电话的线索
+    this.notConnectedClues = '';
     //销售团队
     this.teamList = [];
 };
+//获取未打通电话的线索
+ClueFilterStore.prototype.setNotConnectedClues = function(flag) {
+    if (flag){
+        this.notConnectedClues = true;
+    }else{
+        this.notConnectedClues = '';
+    }
+};
+
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {
     this.provinceList = list;
