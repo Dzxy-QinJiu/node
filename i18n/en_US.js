@@ -3502,6 +3502,7 @@ var en_US = {
     'clue.customer.last.quarter': 'Last quarter',//近一季度
     'clue.customer.last.year': 'Last year',//近一年
     'clue.customer.close.filter.panel': 'Close filter panel',//收起筛选
+    'clue.customer.not.connect.phone': 'Not connected clues',//未打通电话的线索
     'user.score.level.rule': 'User rating rules',//用户评分规则
     'user.score.basic.score': 'Basic rating',//基础评分
     'user.score.particate.in.score': 'Participation score',//参与度评分

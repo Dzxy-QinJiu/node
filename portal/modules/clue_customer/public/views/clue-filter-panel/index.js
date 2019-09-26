@@ -9,7 +9,7 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE } from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED } from '../../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
@@ -26,6 +26,9 @@ let otherFilterArray = [
     },{
         name: Intl.get( 'clue.has.similar.clue','有相似线索'),
         value: SIMILAR_CLUE
+    },{
+        name: Intl.get('clue.customer.not.connect.phone', '未打通电话的线索'),
+        value: NOT_CONNECTED
     }
 ];
 class ClueFilterPanel extends React.Component {
@@ -80,6 +83,7 @@ class ClueFilterPanel extends React.Component {
             FilterAction.setUnexistedFiled();
             FilterAction.setFilterClueAllotNoTrace();
             FilterAction.setSimilarFiled();
+            FilterAction.setNotConnectedClues();
         }
         data.forEach(item => {
             if (item.groupId) {
@@ -115,11 +119,13 @@ class ClueFilterPanel extends React.Component {
                         FilterAction.setUnexistedFiled();
                         FilterAction.setFilterClueAllotNoTrace();
                         FilterAction.setSimilarFiled(SIMILAR_CUSTOMER);
+                        FilterAction.setNotConnectedClues();
                     }else if(item.value === SIMILAR_CLUE){
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
                         FilterAction.setFilterClueAllotNoTrace();
                         FilterAction.setSimilarFiled(SIMILAR_CLUE);
+                        FilterAction.setNotConnectedClues();
                     }else if (item.value === SELECT_TYPE.WAIT_ME_HANDLE){
                         //如果筛选的是待我处理的线索
                         FilterAction.setExistedFiled();
@@ -130,6 +136,13 @@ class ClueFilterPanel extends React.Component {
                         if(this.getFilterStatus().status === SELECT_TYPE.HAS_TRANSFER){
                             FilterAction.setFilterType(SELECT_TYPE.WILL_TRACE);
                         }
+                        FilterAction.setNotConnectedClues();
+                    }else if (item.value === NOT_CONNECTED){
+                        FilterAction.setNotConnectedClues(true);
+                        FilterAction.setExistedFiled();
+                        FilterAction.setUnexistedFiled();
+                        FilterAction.setFilterClueAllotNoTrace();
+                        FilterAction.setSimilarFiled();
                     }
                 }else if (item.groupId === 'user_name'){
                     FilterAction.setFilterClueUsername( _.get(item,'data'));
@@ -306,7 +319,7 @@ ClueFilterPanel.defaultProps = {
     },
     style: {},
     showSelectTip: false,
-    toggleList: function () {
+    toggleList: function() {
 
     }
 };

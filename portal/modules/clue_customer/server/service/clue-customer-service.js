@@ -81,26 +81,6 @@ const restApis = {
     batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type'
 };
 
-//查询客户
-exports.getClueCustomerList = function(req, res) {
-    let queryObj = {};
-    queryObj.query = JSON.parse(req.body.clueCustomerTypeFilter);
-    let baseUrl = restApis.queryCluecustomer;
-    if (req.body.hasManageAuth){
-        baseUrl = restApis.queryCluecustomerManager;
-    }
-    baseUrl = baseUrl + '/' + req.params.pageSize + '/' + req.params.sortField + '/' + req.params.sortOrder;
-    if (req.body.lastCustomerId) {
-        baseUrl += '?id=' + req.body.lastCustomerId;
-    }
-    queryObj.rang_params = JSON.parse(req.body.rangeParams);
-    return restUtil.authRest.post(
-        {
-            url: baseUrl,
-            req: req,
-            res: res
-        }, queryObj);
-};
 //获取线索来源
 exports.getClueSource = function(req, res) {
     return restUtil.authRest.get(

@@ -665,6 +665,10 @@ class ClueCustomer extends React.Component {
                 bodyField.unexist_fields = unExistFileds;
             }
         }
+        var queryRangeParam = _.cloneDeep(rangeParams);
+        if (filterStoreData.notConnectedClues){
+            queryRangeParam = [{name: 'no_answer_times', from: 1}];
+        }
         //查询线索列表的请求参数
         return {
             queryParam: {
@@ -676,7 +680,7 @@ class ClueCustomer extends React.Component {
                 query: {
                     ...typeFilter
                 },
-                rang_params: rangeParams,
+                rang_params: queryRangeParam,
                 ...bodyField,
             },
             pageNum: this.state.pageNum,//路径中需要加的参数

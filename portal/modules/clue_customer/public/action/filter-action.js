@@ -20,6 +20,7 @@ function FilterAction() {
         'setUnexistedFiled',
         'setFilterClueUsername',
         'setSimilarFiled',
+        'setNotConnectedClues',
         //获取负责人列表
         this.getTeamMemberList = function() {
             getTeamTreeMemberLists((result) => {

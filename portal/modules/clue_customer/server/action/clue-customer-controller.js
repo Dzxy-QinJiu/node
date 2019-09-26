@@ -36,16 +36,6 @@ function getClueDiffType(backendIntl) {
         }];
 }
 const contactWays = ['phone','qq','email','weChat'];
-//获取线索客户列表
-exports.getClueCustomerList = function(req, res) {
-    clueCustomerService.getClueCustomerList(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        })
-        .on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
 //获取线索来源
 exports.getClueSource = function(req, res) {
     clueCustomerService.getClueSource(req, res)
