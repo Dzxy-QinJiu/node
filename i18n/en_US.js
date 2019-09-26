@@ -430,6 +430,8 @@ var en_US = {
     'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
     'user.login.score': 'Score', // 分数
+    'user.login.score.explain.mananer': 'to View Score Rules ?',//查看分数规则？
+    'user.login.score.explain.other': 'Scores generated according to customer rating rules. For more information, please contact the administrator.',//按客户评分规则生成的分数，了解详情请联系管理员
     'user.login.days': 'Active days', // 活跃天数
     'user.detail.return': 'return to basic info', //'返回基本信息',
     'user.detail.loginAnalysis.title': 'Statistic of login times in a year',//'近一年的活跃统计',

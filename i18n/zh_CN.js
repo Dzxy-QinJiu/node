@@ -439,6 +439,8 @@ var zh_CN = {
     'user.time.end': '到期时间',
     'user.login.times': '登录次数',
     'user.login.score': '分数',
+    'user.login.score.explain.mananer': '查看分数规则？',
+    'user.login.score.explain.other': '按客户评分规则生成的分数，了解详情请联系管理员',
     'user.login.days': '活跃天数',
     'user.remark.write.tip': '请填写备注',
     'user.remark.set.tip': '设置备注',
