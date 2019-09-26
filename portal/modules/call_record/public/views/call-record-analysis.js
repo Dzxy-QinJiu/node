@@ -19,6 +19,7 @@ import {CALL_TYPE_OPTION} from 'PUB_DIR/sources/utils/consts';
 import {dateSelectorEmitter, teamTreeEmitter, callDeviceTypeEmitter} from 'PUB_DIR/sources/utils/emitters';
 import callChart from 'MOD_DIR/analysis/public/charts/call';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
+import BackMainPage from 'CMP_DIR/btn-back';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -363,6 +364,7 @@ class CallRecordAnalyis extends React.Component {
                             {/**
                              * 通话类型的筛选条件
                              * */}
+                            <BackMainPage className="call-back-btn" handleBackClick={this.props.closeCallAnalysisPanel}></BackMainPage>
                             <div>
                                 {this.filterCallTypeSelect()}
                             </div>
@@ -394,7 +396,6 @@ class CallRecordAnalyis extends React.Component {
                                 }
                             </div>
                         </div>
-                        <RightPanelClose onClick={this.props.closeCallAnalysisPanel}/>
                     </TopNav>
                     <div className="call-data-analysis">
 
