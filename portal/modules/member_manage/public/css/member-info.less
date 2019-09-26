@@ -1,6 +1,7 @@
 //成员详情样式文件
 @btn-color: #8da8c5;
 @label-color: #999999;
+
 .member-detail-container {
   //成员详情头部样式设置
   .right-panel-modal-content {
@@ -23,9 +24,36 @@
     //头像
     .head-image-container {
       float: left;
-      height: auto;
       margin-bottom: 0;
       margin-top: 0;
+      width: 48px;
+      height:48px;
+      .cirle-image {
+        .upload-img-container {
+          width: 48px;
+          height:48px;
+          margin: 0;
+          .upload-img-select,.change-img-container {
+            width: 48px;
+            height:48px;
+          }
+          .change-img-container {
+            span {
+              font-size: 14px;
+              height: 20px;
+              left: -10px;
+            }
+          }
+        }
+        .no-user-logo-div, img {
+          width: 48px;
+          height:48px;
+          line-height: inherit;
+          .icon-user-ico {
+            font-size: 32px;
+          }
+        }
+      }
       p {
         float: left;
         width: 0;
@@ -66,7 +94,6 @@
     //名称、密码区域的公共的样式
     .member-name-container, .password-edit-container {
       float: left;
-      margin-top: 10px;
       margin-left: 10px;
       .ant-form-item {
         padding-right: 0;

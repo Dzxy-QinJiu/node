@@ -1,7 +1,6 @@
 'use strict';
-var React = require('react');
 import {NavLink} from 'react-router-dom';
-var DefaultUserLogoTitle = require('../default-user-logo-title');
+const DefaultUserLogoTitle = require('../default-user-logo-title');
 
 // 头像组件
 class Avatar extends React.Component {
