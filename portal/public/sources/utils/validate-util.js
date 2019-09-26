@@ -66,6 +66,26 @@ exports.checkQQ = (rule, value, callback) => {
         }
     }
 };
+//微信验证，微信验证允许输入手机号、微信号、QQ号
+exports.checkWechat = (rule,value,callback) => {
+    value = _.trim(value);
+    if(value) {
+        if((commonPhoneRegex.test(value)) || 
+        (wechatRegex.test(value)) || 
+        (qqRegex.test(value))){
+            callback();
+        }else{
+            callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
+        }
+    }else{
+        if (rule.required) {
+            callback(new Error(Intl.get('common.correct.no.wechat', '请输入微信号')));
+        } else {
+            callback();
+        }
+    }
+}
+
 //IP的正则表达式
 export const ipRegex = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/;
 
