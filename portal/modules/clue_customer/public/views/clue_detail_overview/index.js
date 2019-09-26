@@ -58,7 +58,7 @@ import ClueTraceAction from '../../action/clue-trace-action';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
-import {SOURCE_CLASSIFY_TEXT, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {sourceClassifyArray, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -1028,10 +1028,11 @@ class ClueDetailOverview extends React.Component {
         let displayText = '';
         if(_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
             displayText = '';
-        } else if(_.isEqual(sourceClassify, SOURCE_CLASSIFY.INBOUND)) {
-            displayText = SOURCE_CLASSIFY_TEXT.INBOUND;
-        } else if(_.isEqual(sourceClassify, SOURCE_CLASSIFY.OUTBOUND)) {
-            displayText = SOURCE_CLASSIFY_TEXT.OUTBOUND;
+        } else {
+            let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
+            if(!_.isEmpty(displayObj)){
+                displayText = displayObj.name;
+            }
         }
         return displayText;
     };
@@ -1082,7 +1083,7 @@ class ClueDetailOverview extends React.Component {
                         <div className="clue-info-label">
                             {Intl.get('crm.clue.client.source', '集客方式')}
                         </div>
-                        <div className="clue-info-detail">
+                        <div className="clue-info-detail source-classify">
                             <BasicEditSelectField
                                 width={EDIT_FEILD_WIDTH}
                                 hasEditPrivilege={hasPrivilegeEdit}
