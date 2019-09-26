@@ -25,6 +25,7 @@ import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
+import clueStartTime from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
@@ -399,7 +400,7 @@ class SalesHomePage extends React.Component {
     getExpiredScheduleList = (lastId) => {
         var constObj = {
             page_size: this.state.page_size,
-            start_time: new Date().getTime() - 2 * 365 * oplateConsts.ONE_DAY_TIME_RANGE,//开始时间传一个两年前的今天,
+            start_time: clueStartTime,//开始时间10年开始
             //把今天0点作为判断是否过期的时间点
             end_time: this.getTodayStartAndEndTime().start_time,//今日早上的零点作为结束时间
             status: false//日程的状态，未完成的日程

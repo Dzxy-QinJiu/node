@@ -149,7 +149,7 @@ class ClueFilterPanel extends React.Component {
         if (!_.get(date,'[0]')){
             FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
         }else{
-            FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).valueOf(), end_time: moment(_.get(date, '[1]')).valueOf(), range: ''});
+            FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).startOf('day').valueOf(), end_time: moment(_.get(date, '[1]')).endOf('day').valueOf(), range: ''});
         }
         clueCustomerAction.setClueInitialData();
         setTimeout(() => {
