@@ -1,0 +1,70 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2019/09/25.
+*/
+@import '../../../../public/css/common-variables';
+@font_color: #999999;
+//添加、编辑面板样式
+.contact-form-container {
+  .crm-contact-form {
+    .validate-error-tip {
+      margin-left: 53px;
+      margin-top: -10px;
+      color: @error_tips_color;
+    }
+    .contact-role-item {
+      .ant-form-item-label, .ant-form-item-control {
+        line-height: 24px;
+      }
+    }
+    .ant-row.ant-form-item {
+      width: 100%;
+      padding-right: 0;
+      .ant-form-item-label {
+        label {
+          font-size: 12px !important;
+          color: @font_color !important;
+        }
+      }
+      .form-col-padding {
+        padding-right: 4px;
+      }
+      input, textarea, .ant-calendar-picker {
+        width: 100%;
+      }
+      .ant-radio-group {
+        padding-left: 6px;
+        label {
+          margin-right: 20px;
+          margin-bottom: 0;
+          .ant-radio + span {
+            margin-left: 4px;
+            color: #5D5D5D;
+          }
+        }
+      }
+      .contact-way-buttons {
+        position: absolute;
+        width: 50px;
+        top: 0;
+        right: -50px;
+        .anticon{
+          margin-left: 6px;
+          line-height: 30px;
+          font-size: 16px;
+          color: #90a8c4;
+          cursor: pointer;
+          &:hover{
+            color: #4d96d1;
+          }
+        }
+      }
+      .ant-form-explain {
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-all;
+      }
+    }
+  }
+}
