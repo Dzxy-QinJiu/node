@@ -48,7 +48,7 @@ class ClueAddForm extends React.Component {
                 source: '',//线索描述
                 source_ip: '',//客户来源的ip
                 source_time: today,//线索时间，默认：今天,
-                source_classify: Intl.get('crm.clue.client.source.outbound', '自拓'),//集客类型，默认：自拓
+                source_classify: 'outbound',//集客类型，默认：自拓
             },
             isSaving: false,
             saveMsg: '',
