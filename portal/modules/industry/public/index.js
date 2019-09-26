@@ -185,13 +185,6 @@ class Industry extends React.Component {
         };
     };
 
-    renderIndustryMsg = () => {
-        if (this.state.addErrMsg) {
-            return (
-                <div className="industry-check">{this.state.addErrMsg}</div>);
-        }
-    };
-
     resetIndustryFlags = () => {
         this.setState({
             addErrMsg: ''
@@ -200,7 +193,8 @@ class Industry extends React.Component {
 
     renderTopNavOperation = () => {
         const { getFieldDecorator } = this.props.form;
-        let name = Intl.get('common.industry', '行业');
+        const name = Intl.get('common.industry', '行业');
+        const addErrMsg = this.state.addErrMsg;
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
@@ -217,7 +211,7 @@ class Industry extends React.Component {
                                 <Input
                                     placeholder={Intl.get('crm.basic.add.industry', '添加行业')}
                                     onPressEnter={this.handleSubmit}
-                                    className={this.state.addErrMsg ? 'input-red-border' : ''}
+                                    className={addErrMsg ? 'input-red-border' : ''}
                                     onFocus={this.resetIndustryFlags}
                                 />
                             )}
@@ -234,7 +228,11 @@ class Industry extends React.Component {
                             }
                         </Button>
                     </Form>
-                    {this.renderIndustryMsg()}
+                    {
+                        addErrMsg ? (
+                            <div className="industry-check">{addErrMsg}</div>
+                        ) : null
+                    }
                 </div>
             </div>
         );
