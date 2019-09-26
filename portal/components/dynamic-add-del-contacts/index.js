@@ -7,7 +7,7 @@ var React = require('react');
  */
 require('./index.less');
 import PropTypes from 'prop-types';
-import {emailRegex, qqRegex, wechatRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {emailRegex, qqRegex, checkWechat} from 'PUB_DIR/sources/utils/validate-util';
 import PhoneInput from 'CMP_DIR/phone-input';
 import classNames from 'classnames';
 import {Form, Input, Icon} from 'antd';
@@ -41,18 +41,6 @@ class DynamicAddDelContacts extends React.Component {
         }
     }
 
-    checkWechat = (rule, value, callback) => {
-        value = _.trim(value);
-        if(value){
-            if(wechatRegex.test(value)){
-                callback();
-            }else{
-                callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
-            }
-        } else {
-            callback();
-        }
-    }
 
     checkEmail = (rule, value, callback) => {
         value = _.trim(value);
@@ -218,7 +206,7 @@ class DynamicAddDelContacts extends React.Component {
                         return this.renderContacWayFormItem(index, contactKey, 'email', email.key, email.value, emailIndex, emailArray.length, this.checkEmail);
                     })}
                     {_.map(weChatArray, (weChat, weChatIndex) => {
-                        return this.renderContacWayFormItem(index, contactKey, 'weChat', weChat.key, weChat.value, weChatIndex, weChatArray.length, this.checkWechat);
+                        return this.renderContacWayFormItem(index, contactKey, 'weChat', weChat.key, weChat.value, weChatIndex, weChatArray.length, checkWechat);
                     })}
                 </div>
             </div>
