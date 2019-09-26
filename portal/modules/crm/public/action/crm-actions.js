@@ -66,15 +66,15 @@ function CrmActions() {
     };
     //通过线索添加客户
     this.addCustomerByClue = function(newCus, isConvert, cb) {
-        newCus.contacts0_phone = [newCus.contacts0_phone];
-        newCus.contacts = [{}];
-        for (var p in newCus) {
-            if (p.indexOf('contacts0') > -1) {
-                var arr = p.split('_');
-                newCus.contacts[0][arr[1]] = newCus[p];
-                delete newCus[p];
-            }
-        }
+        // newCus.contacts0_phone = [newCus.contacts0_phone];
+        // newCus.contacts = [{}];
+        // for (var p in newCus) {
+        //     if (p.indexOf('contacts0') > -1) {
+        //         var arr = p.split('_');
+        //         newCus.contacts[0][arr[1]] = newCus[p];
+        //         delete newCus[p];
+        //     }
+        // }
         newCus.contacts[0].def_contancts = 'true';
         crmAjax.addCustomerByClue(newCus, isConvert).then((data) => {
             cb(data);
