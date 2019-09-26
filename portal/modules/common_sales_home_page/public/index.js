@@ -25,7 +25,7 @@ import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
-import clueStartTime from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {clueStartTime} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils.js';
 const LAYOUT_CONSTS = {
     PADDDING_TOP_AND_BOTTOM: 97,
 };
