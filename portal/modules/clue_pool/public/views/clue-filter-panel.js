@@ -10,6 +10,8 @@ import {
     SIMILAR_CUSTOMER,
     SIMILAR_CLUE
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+
 let otherFilterArray = [
     {
         name: Intl.get( 'clue.has.similar.customer','有相似客户'),
@@ -163,45 +165,50 @@ class ClueFilterPanel extends React.Component {
             }];
             return x;
         });
-        const advancedData = [
-            {
-                groupName: Intl.get('crm.6', '负责人'),
-                groupId: 'clue_pool_user_name',
-                singleSelect: true,
-                data: _.map(clueLeadingArray, x => ({
-                    name: x,
-                    value: x
-                }))
-            },
-            {
-                groupName: Intl.get('clue.analysis.source', '来源'),
-                groupId: 'clue_pool_source',
-                data: clueSourceArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
-                groupId: 'clue_pool_access',
-                data: accessChannelArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('clue.customer.classify', '线索分类'),
-                groupId: 'clue_pool_classify',
-                data: clueClassifyArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('crm.96', '地域'),
-                groupId: 'clue_pool_province',
-                data: clueProvinceList.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            }];
+        const advancedData = [{
+            groupName: Intl.get('crm.6', '负责人'),
+            groupId: 'clue_pool_user_name',
+            singleSelect: true,
+            data: _.map(clueLeadingArray, x => ({
+                name: x,
+                value: x
+            }))
+        },
+        {
+            groupName: Intl.get('crm.96', '地域'),
+            groupId: 'clue_pool_province',
+            data: clueProvinceList.map(x => ({
+                name: x,
+                value: x
+            }))
+        }];
+        //非销售角色才有来源、渠道、分类筛选项
+        if(!isSalesRole()) {
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('clue.analysis.source', '来源'),
+                    groupId: 'clue_source',
+                    data: clueSourceArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                },{
+                    groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
+                    groupId: 'clue_access',
+                    data: accessChannelArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                },{
+                    groupName: Intl.get('clue.customer.classify', '线索分类'),
+                    groupId: 'clue_classify',
+                    data: clueClassifyArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                }
+            );
+        }
         //非普通销售才有销团队
         if (!userData.getUserData().isCommonSales) {
             advancedData.unshift(
@@ -246,7 +253,7 @@ ClueFilterPanel.defaultProps = {
     },
     style: {},
     showSelectTip: false,
-    toggleList:function() {
+    toggleList: function() {
 
     },
 };

@@ -600,6 +600,7 @@ class ClueCustomer extends React.Component {
     //获取查询线索的参数
     getClueSearchCondition = (isGetAllClue) => {
         var filterStoreData = clueFilterStore.getState();
+        console.log(filterStoreData);
         var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
             to: moment().endOf('day').valueOf(),
@@ -640,6 +641,11 @@ class ClueCustomer extends React.Component {
             var filterClueAccess = filterStoreData.filterClueAccess;
             if (_.isArray(filterClueAccess) && filterClueAccess.length){
                 typeFilter.access_channel = filterClueAccess.join(',');
+            }
+            //选中线索的销售团队
+            let filterTeamList = filterStoreData.filterTeamList;
+            if (_.isArray(filterTeamList) && filterTeamList.length){
+                typeFilter.sales_team_id = filterTeamList.join(',');
             }
             //选中的线索分类
             var filterClueClassify = filterStoreData.filterClueClassify;

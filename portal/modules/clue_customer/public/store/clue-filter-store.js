@@ -50,6 +50,8 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterClueAvailability = AVALIBILITYSTATUS.AVALIBILITY;
     //筛选线索的地域
     this.filterClueProvince = [];
+    //筛选线索的销售团队
+    this.filterTeamList = [];
     //筛选存在的字段
     this.exist_fields = [];
     //筛选不存在的字段
@@ -62,11 +64,18 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterLabels = [];
     //如果是销售领导或者销售角色或者运营 默认选中 待我处理 进行筛选
     this.filterAllotNoTraced = getClueUnhandledPrivilege() ? '0' : '';
+    //销售团队
+    this.teamList = [];
 };
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {
     this.provinceList = list;
 };
+//获取销售团队列表
+ClueFilterStore.prototype.getTeamList = function(list) {
+    this.teamList = list;
+};
+
 //设置开始和结束时间
 ClueFilterStore.prototype.setTimeRange = function(timeRange) {
     this.rangeParams[0].from = timeRange.start_time;
@@ -115,6 +124,16 @@ ClueFilterStore.prototype.setFilterClueClassify = function(updateClassify) {
         selectedClassify.push(item.value);
     });
     this.filterClueClassify = selectedClassify;
+};
+//设置销售团队列表
+ClueFilterStore.prototype.setFilterTeamList = function(updateTeamList) {
+    let selectedTeam = [];
+    _.forEach(updateTeamList, (item) => {
+        if (item.selected){
+            selectedTeam.push(item.value);
+        }
+    });
+    this.filterTeamList = selectedTeam;
 };
 ClueFilterStore.prototype.setFilterClueUsername = function(updateUsers) {
     var filterClueUsers = [];
