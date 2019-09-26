@@ -2465,6 +2465,7 @@ var en_US = {
     'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
     'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
+    'errorcode.clue.batch.change.pending': 'Last batch operation has not completed, please try again later',//上次批量操作未完成，请稍后再试
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -3252,7 +3253,6 @@ var en_US = {
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
-    'clue.batch.assign.sales.pending': 'Batch Assignment is in progress. please try it later!',//批量分配进行中，请稍后再试!
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请

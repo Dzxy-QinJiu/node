@@ -2505,6 +2505,7 @@ var zh_CN = {
     'errorcode.phone.busy': '座机繁忙，请稍后再试！',
     'errorcode.164': '获取即将到期的客户统计数据失败',
     'errorcode.organization.expire': '您的账号已到期',
+    'errorcode.clue.batch.change.pending': '上次批量操作未完成，请稍后再试',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
@@ -3279,7 +3280,6 @@ var zh_CN = {
     'business.leave.time.range': '出差时长',
     'clue.batch.select.clues': '已选择{num}个线索',
     'clue.batch.assign.sales': '批量分配',
-    'clue.batch.assign.sales.pending': '批量分配进行中，请稍后再试!',
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
     'clue.batch.change.trace.man': '变更跟进人',
     'crm.user.use.default.contact': '使用默认联系人申请',

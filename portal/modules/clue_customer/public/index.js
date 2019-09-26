@@ -129,9 +129,10 @@ class ClueCustomer extends React.Component {
         showRecommendCustomerCondition: false,
         isReleasingClue: false,//是否正在释放线索
         selectedClue: [],//选中的线索
-        isShowRefreshPrompt: false,//是否展示刷新线索面板的提示        isBatchChangeTraceLoading: false,//线索批量分配是否正在进行        //显示内容
+        isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
         showDeleteConfirm: false,//是否展示删除线索的模态框
         curDeleteClue: {},//当前删除的线索
+        //显示内容
         ...clueCustomerStore.getState()
     };
     isCommonSales = () => {
@@ -267,15 +268,7 @@ class ClueCustomer extends React.Component {
         });
         this.setState({
             selectedClues: [],
-            isBatchChangeTraceLoading: true
         });
-        //当最后一个推送完成后
-        if(_.isEqual(taskInfo.running, 0)) {
-            //批量操作删除之后，才允许进行下一次批量操作
-            this.setState({
-                isBatchChangeTraceLoading: false
-            });
-        }
     };
     removeClueItem = (item) => {
         //在列表中删除线索
@@ -1472,7 +1465,7 @@ class ClueCustomer extends React.Component {
             columns.push({
                 dataIndex: 'clue_action',
                 className: 'action-td-clue',
-                width: '60px',
+                width: '80px',
                 render: (text, salesClueItem, index) => {
                     return(
                         <React.Fragment>
@@ -1841,10 +1834,6 @@ class ClueCustomer extends React.Component {
                     this['changesale' + clue_id].handleCancel();
                 }
             }else{
-                //更新是否批量处理结束状态
-                this.setState({
-                    isBatchChangeTraceLoading: true
-                });
                 //这个是批量修改联系人
                 if (this.refs.changesales) {
                     //隐藏批量变更销售面板
@@ -2460,45 +2449,6 @@ class ClueCustomer extends React.Component {
         });
     };
 
-    //渲染批量分配按钮
-    renderBatchChangeButton = () => {
-        //批量分配是否结束
-        let isBatchTraceFinish = !_.get(this.state, 'isBatchChangeTraceLoading');
-        //批量操作的警告信息
-        let batchWarningContent = (<span className="batch-error-tip">
-            <span className="iconfont icon-warn-icon"></span>
-            <span className="batch-error-text">
-                {Intl.get('clue.batch.assign.sales.pending', '批量分配进行中，请稍后再试!')}
-            </span>
-        </span>);
-        if(isBatchTraceFinish) {
-            return (<AntcDropdown
-                ref='changesales'
-                content={<Button type="primary"
-                    data-tracename="点击分配线索客户按钮"
-                    className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
-                overlayTitle={Intl.get('user.salesman', '销售人员')}
-                okTitle={Intl.get('common.confirm', '确认')}
-                cancelTitle={Intl.get('common.cancel', '取消')}
-                isSaving={this.state.distributeBatchLoading}
-                overlayContent={this.renderSalesBlock()}
-                handleSubmit={this.handleSubmitAssignSalesBatch}
-                unSelectDataTip={this.state.unSelectDataTip}
-                clearSelectData={this.clearSelectSales}
-                btnAtTop={false}
-            />);
-        } else {
-            return (<Popover
-                overlayClassName="batch-invalid-popover"
-                placement="bottomRight"
-                content={batchWarningContent}
-                trigger="click"
-            >
-                <Button type="primary" className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>
-            </Popover>);
-        }
-    }
-
     //渲染批量操作按钮
     renderBatchChangeClues = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
@@ -2513,7 +2463,22 @@ class ClueCustomer extends React.Component {
         return (
             <div className="pull-right">
                 <div className="pull-right">
-                    {showBatchChange ? this.renderBatchChangeButton() : null}
+                    {showBatchChange ?
+                        <AntcDropdown
+                            ref='changesales'
+                            content={<Button type="primary"
+                                data-tracename="点击分配线索客户按钮"
+                                className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
+                            overlayTitle={Intl.get('user.salesman', '销售人员')}
+                            okTitle={Intl.get('common.confirm', '确认')}
+                            cancelTitle={Intl.get('common.cancel', '取消')}
+                            isSaving={this.state.distributeBatchLoading}
+                            overlayContent={this.renderSalesBlock()}
+                            handleSubmit={this.handleSubmitAssignSalesBatch}
+                            unSelectDataTip={this.state.unSelectDataTip}
+                            clearSelectData={this.clearSelectSales}
+                            btnAtTop={false}
+                        /> : null}
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
