@@ -2280,7 +2280,7 @@ class ClueCustomer extends React.Component {
                 render: function(text, record, index) {
                     let type = _.get(record, 'source_classify');
                     let displayObj = _.find(sourceClassifyArray, item => _.isEqual(item.value, type));
-                    return displayObj.name;
+                    return _.get(displayObj, 'name', '');
                 }
             }, {
                 title: Intl.get('clue.analysis.source', '来源'),
