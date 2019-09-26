@@ -665,7 +665,7 @@ class ClueCustomer extends React.Component {
                 bodyField.unexist_fields = unExistFileds;
             }
         }
-        var queryRangeParam = rangeParams;
+        var queryRangeParam = _.cloneDeep(rangeParams);
         if (filterStoreData.notConnectedClues){
             queryRangeParam = [{name: 'no_answer_times', from: 1}];
         }
