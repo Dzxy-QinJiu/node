@@ -113,7 +113,7 @@ var esType = {
     type: 'log4js-elasticsearch',
     indexName: function(loggingEvent) {
         //es索引名称
-        return 'oplateweb_write';
+        return 'curtaoweb_write';
     },
     url: global.config.esUrl,
     logId: function(loggingEvent) {
