@@ -1287,7 +1287,8 @@ class ClueCustomer extends React.Component {
        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
            clue_params: {
                curClue: salesClueItem,
-               currentId: salesClueItem.id
+               currentId: salesClueItem.id               ,
+               onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick,
            }
        });
    };
