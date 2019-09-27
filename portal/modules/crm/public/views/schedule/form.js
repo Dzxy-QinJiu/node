@@ -87,14 +87,7 @@ var CrmAlertForm = createReactClass({
     },
     //还原初值
     initialFormData: function(props){
-        let formData = '';
-        let scheduleType = _.isEqual(_.get(props,'topicValue'), 'customer') ? 'calls' : 'lead';
-        formData.topic = '';
-        formData.scheduleType = scheduleType;
-        formData.content = '';
-        formData.start_time = moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
-        formData.end_time = moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
-        formData.alert_time = '';
+        formData = this.getInitialFormData();
         this.setState({
             formData,
             selectedTimeRange: '1h',
