@@ -160,6 +160,9 @@ class TeamDataColumn extends React.Component {
                 rangeParams
             },
             bodyParam: {
+                query: {
+                    status: ''
+                },
                 rang_params: rangeParams
             },
             pageNum: 1,
