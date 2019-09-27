@@ -1,6 +1,9 @@
+@import "../../../../public/css/common-variables";
+
 //成员详情样式文件
 @btn-color: #8da8c5;
 @label-color: #999999;
+
 .member-detail-container {
   //成员详情头部样式设置
   .right-panel-modal-content {
@@ -23,9 +26,36 @@
     //头像
     .head-image-container {
       float: left;
-      height: auto;
       margin-bottom: 0;
       margin-top: 0;
+      width: 48px;
+      height:48px;
+      .cirle-image {
+        .upload-img-container {
+          width: 48px;
+          height:48px;
+          margin: 0;
+          .upload-img-select,.change-img-container {
+            width: 48px;
+            height:48px;
+          }
+          .change-img-container {
+            span {
+              font-size: 14px;
+              height: 20px;
+              left: -10px;
+            }
+          }
+        }
+        .no-user-logo-div, img {
+          width: 48px;
+          height:48px;
+          line-height: inherit;
+          .icon-user-ico {
+            font-size: 32px;
+          }
+        }
+      }
       p {
         float: left;
         width: 0;
@@ -64,9 +94,8 @@
       }
     }
     //名称、密码区域的公共的样式
-    .member-name-container, .password-edit-container {
+    .member-name-container {
       float: left;
-      margin-top: 10px;
       margin-left: 10px;
       .ant-form-item {
         padding-right: 0;
@@ -173,4 +202,56 @@
     }
   }
 
+  // 添加成员成功后的提示信息的样式
+  .member-info-success-tips-card-container {
+    border-radius: 4px;
+    background-color: #fff;
+    background-clip: padding-box;
+    box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.2);
+    .add-member-success-tips {
+      .icon-add-success {
+        color: #28af6a;
+      }
+      span {
+        font-size: 14px;
+        color: #333;
+        margin-left: 8px;
+      }
+    }
+  }
+  // 修改密码区域的样式
+  .password-card-container-wrap {
+    .show-password-text-zone {
+      height: 24px;
+      .hide-password-text {
+        color: @content-font-color;
+        font-size: 14px;
+        margin-left: 6px;
+        font-weight: bolder;
+        vertical-align: sub;
+      }
+      .password-change-zone {
+        float: right;
+        cursor: pointer;
+        color: @CLICK-BLUE;
+        display: none;
+      }
+      &:hover {
+        background: @mouse-enter-zone-background;
+        .password-change-zone {
+          display: inline-block;
+        }
+      }
+    }
+    .password-edit-container {
+        .basic-info-item {
+          padding-bottom: 12px;
+          .basic-info-label {
+            width: 70px;
+            text-align: right;
+            padding: 7px;
+          }
+        }
+    }
+  }
 }

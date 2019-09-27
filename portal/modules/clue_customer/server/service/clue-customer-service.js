@@ -46,9 +46,9 @@ const restApis = {
     //获取线索趋势统计
     getClueTrendStatics: '/rest/analysis/customer/v2/:type/clue/trend/statistic',
     //线索的全文搜索
-    getClueFulltext: clueBaseUrl + '/query/lead/range/fulltext/:type/:page_size/:sort_field/:order',
+    getClueFulltext: clueBaseUrl + '/query/lead/range/fulltext/:type/:page_size/:page_num/:sort_field/:order',
     //有待我处理筛选项时的全文搜索
-    getClueFullTextWithSelfHandle: clueBaseUrl + '/query/self_no_traced/range/fulltext/:type/:page_size/:sort_field/:order',
+    getClueFullTextWithSelfHandle: clueBaseUrl + '/query/self_no_traced/range/fulltext/:type/:page_size/:page_num/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: clueBaseUrl + '/dynamic/:clue_id/:page_size',
     //根据线索的id查询线索的详情
@@ -81,26 +81,6 @@ const restApis = {
     batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type'
 };
 
-//查询客户
-exports.getClueCustomerList = function(req, res) {
-    let queryObj = {};
-    queryObj.query = JSON.parse(req.body.clueCustomerTypeFilter);
-    let baseUrl = restApis.queryCluecustomer;
-    if (req.body.hasManageAuth){
-        baseUrl = restApis.queryCluecustomerManager;
-    }
-    baseUrl = baseUrl + '/' + req.params.pageSize + '/' + req.params.sortField + '/' + req.params.sortOrder;
-    if (req.body.lastCustomerId) {
-        baseUrl += '?id=' + req.body.lastCustomerId;
-    }
-    queryObj.rang_params = JSON.parse(req.body.rangeParams);
-    return restUtil.authRest.post(
-        {
-            url: baseUrl,
-            req: req,
-            res: res
-        }, queryObj);
-};
 //获取线索来源
 exports.getClueSource = function(req, res) {
     return restUtil.authRest.get(
@@ -314,7 +294,7 @@ function handleClueParams(req, clueUrl) {
     if (_.isString(req.body.reqData)){
         reqBody = JSON.parse(req.body.reqData);
     }
-    var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':order',req.params.order);
+    var url = clueUrl.replace(':type',req.params.type).replace(':page_size',req.params.page_size).replace(':page_num',req.params.page_num).replace(':order',req.params.order);
     var queryParams = _.get(reqBody,'queryParam');
     var rangeParams = _.get(queryParams,'rangeParams');
     if (rangeParams[0].from){

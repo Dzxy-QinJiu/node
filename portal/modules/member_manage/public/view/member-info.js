@@ -37,6 +37,8 @@ const TAB_KEYS = {
     RECORD_TAB: '3', // 变更记录
 };
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
+const EDIT_PASSWORD_WIDTH = 340;
+
 class MemberInfo extends React.Component {
     state = {
         isGetMemberDetailLoading: this.props.isGetMemberDetailLoading,
@@ -792,64 +794,32 @@ class MemberInfo extends React.Component {
                         isUserHeadIcon={true}
                     />
                 </Popconfirm>
-                {this.state.isPasswordInputShow ? (
-                    <div className="password-edit-container">
+                <div className="member-name-container">
+                    <div className="member-info-label">
+                        {memberInfo.userName || ''}
+                    </div>
+                    <div className="member-info-label member-name-label">
                         <BasicEditInputField
-                            ref="password"
                             width={TITLE_INPUT_WIDTH}
                             id={memberInfo.id}
-                            field="password"
-                            type="password"
-                            displayType="edit"
-                            hideButtonBlock={true}
-                            showPasswordStrength={true}
-                            validators={[{validator: this.checkPass}]}
-                            placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
-                            title={Intl.get('user.batch.password.reset', '重置密码')}
-                            onDisplayTypeChange={this.onPasswordDisplayTypeChange}
-                            onValueChange={this.onPasswordValueChange}
-                        />
-                        <BasicEditInputField
-                            ref="confirmPassword"
-                            width={TITLE_INPUT_WIDTH}
-                            id={memberInfo.id}
-                            displayType="edit"
-                            field="password"
-                            type="password"
-                            placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
-                            validators={[{validator: this.checkRePass}]}
-                            onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
-                            saveEditInput={this.saveEditMemberInfo.bind(this, 'password')}
+                            value={memberInfo.name}
+                            field="nick_name"
+                            type="text"
+                            validators={[nameLengthRule]}
+                            placeholder={Intl.get('crm.90', '请输入姓名')}
+                            hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
+                            saveEditInput={this.saveEditMemberInfo.bind(this, 'nick_name')}
+                            noDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
+                            addDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
                         />
                     </div>
-                ) : (
-                    <div className="member-name-container">
-                        <div className="member-info-label">
-                            {memberInfo.userName || ''}
-                        </div>
-                        <div className="member-info-label member-name-label">
-                            <BasicEditInputField
-                                width={TITLE_INPUT_WIDTH}
-                                id={memberInfo.id}
-                                value={memberInfo.name}
-                                field="nick_name"
-                                type="text"
-                                validators={[nameLengthRule]}
-                                placeholder={Intl.get('crm.90', '请输入姓名')}
-                                hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
-                                saveEditInput={this.saveEditMemberInfo.bind(this, 'nick_name')}
-                                noDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
-                                addDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
-                            />
-                        </div>
-                    </div>
-                )}
+                </div>
                 <div className="member-title-btns">
-                    {hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? (
-                        <span className="iconfont icon-edit-pw handle-btn-item"
-                            title={Intl.get('common.edit.password', '修改密码')}
-                            onClick={this.onPasswordDisplayChange.bind(this)}/>) : null}
-                    {this.renderMemberStatus(memberInfo)}
+                    {
+                        hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? (
+                            <div>{this.renderMemberStatus(memberInfo)}</div>
+                        ) : null
+                    }
                 </div>
             </div>
         );
@@ -864,11 +834,82 @@ class MemberInfo extends React.Component {
         return logListHeight;
     }
 
+    // 添加成员成功后的提示信息
+    renderAddMemberSuccessTips = () => {
+        return (
+            <div className="add-member-success-tips">
+                <i className="iconfont icon-add-success"></i>
+                <span>
+                    {Intl.get('member.add.member.success.tips', '该成员登录后可以拨打电话了')}
+                </span>
+            </div>
+        );
+    }
+
+    renderPasswordContent = (memberInfo) => {
+        if (this.state.isPasswordInputShow) {
+            return (
+                <div className="password-edit-container">
+                    <div className="basic-info-item">
+                        <span className="basic-info-label">
+                            {Intl.get('user.password.new.password', '新密码')}
+                        </span>
+                        <BasicEditInputField
+                            ref="password"
+                            width={EDIT_PASSWORD_WIDTH}
+                            id={memberInfo.id}
+                            field="password"
+                            type="password"
+                            displayType="edit"
+                            hideButtonBlock={true}
+                            showPasswordStrength={true}
+                            validators={[{validator: this.checkPass}]}
+                            placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
+                            title={Intl.get('user.batch.password.reset', '重置密码')}
+                            onDisplayTypeChange={this.onPasswordDisplayTypeChange}
+                            onValueChange={this.onPasswordValueChange}
+                        />
+                    </div>
+                    <div className="basic-info-item">
+                        <span className="basic-info-label">
+                            {Intl.get('common.confirm.password', '确认密码')}
+                        </span>
+                        <BasicEditInputField
+                            ref="confirmPassword"
+                            width={EDIT_PASSWORD_WIDTH}
+                            id={memberInfo.id}
+                            displayType="edit"
+                            field="password"
+                            type="password"
+                            placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
+                            validators={[{validator: this.checkRePass}]}
+                            onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
+                            saveEditInput={this.saveEditMemberInfo.bind(this, 'password')}
+                        />
+                    </div>
+                </div>
+            );
+        } else {
+            return (
+                <div className="basic-info-item show-password-text-zone">
+                    <span className="basic-info-label">{Intl.get('common.password', '密码')}:</span>
+                    <span className="hide-password-text">********</span>
+                    <span
+                        className="password-change-zone"
+                        onClick={this.onPasswordDisplayChange.bind(this)}
+                    >
+                        {Intl.get('common.edit.password', '修改密码')}
+                    </span>
+                </div>
+            );
+        }
+    };
+
     renderBasicContent() {
         if (this.state.isGetMemberDetailLoading) {
             return (<Spinner/>);
         } else {
-            var memberInfo = this.state.memberInfo;
+            let memberInfo = this.state.memberInfo;
             let isSales = false;
             if (_.isArray(memberInfo.roleNames) && memberInfo.roleNames.length) {
                 if (_.indexOf(memberInfo.roleNames, Intl.get('sales.home.sales', '销售')) > -1) {
@@ -876,11 +917,18 @@ class MemberInfo extends React.Component {
                     isSales = true;
                 }
             }
-
             return (
                 <div className="member-detail-basic-container" style={{height: this.getContainerHeight()}}>
                     <GeminiScrollbar>
                         <div className="member-detail-basic-content">
+                            {
+                                this.props.isContinueAddButtonShow ? (
+                                    <DetailCard
+                                        content={this.renderAddMemberSuccessTips()}
+                                        className='member-info-success-tips-card-container'
+                                    />
+                                ) : null
+                            }
                             <DetailCard
                                 content={this.renderMemberInfoContent()}
                                 className='member-info-card-container'
@@ -900,6 +948,14 @@ class MemberInfo extends React.Component {
                                 content={this.renderContactContent()}
                                 className='member-contact-card-container'
                             />
+                            {
+                                hasPrivilege('UPDATE_MEMBER_BASE_INFO') ? (
+                                    <DetailCard
+                                        className='password-card-container-wrap'
+                                        content={this.renderPasswordContent(memberInfo)}
+                                    />
+                                ) : null
+                            }
                             {this.props.isContinueAddButtonShow ? (
                                 <div className="btn-add-member"
                                     onClick={this.props.showEditForm.bind(null, 'add')}

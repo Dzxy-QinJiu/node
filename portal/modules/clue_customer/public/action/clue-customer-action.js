@@ -32,7 +32,6 @@ function ClueCustomerActions() {
         'afterReleaseClue', //在释放线索之后
         'afterAssignSales',//分配销售之后
         'setKeyWord',//设置关键字
-        'setLastClueId',//用于设置下拉加载的最后一个线索的id
         'setSortField',
         'updateClueCustomers',//更新线索列表
         //添加、补充跟进记录后，列表中最后联系数据的更新
@@ -44,7 +43,8 @@ function ClueCustomerActions() {
         'saveSettingCustomerRecomment',
         'updateRecommendClueLists',
         'updateClueTabNum',
-        'updateClueItemAfterAssign'
+        'updateClueItemAfterAssign',
+        'setPageNum'
     );
     //获取销售列表
     this.getSalesManList = function(cb) {

@@ -50,6 +50,10 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterClueAvailability = AVALIBILITYSTATUS.AVALIBILITY;
     //筛选线索的地域
     this.filterClueProvince = [];
+    //筛选集客方式
+    this.filterSourceClassify = [];
+    //筛选线索的销售团队
+    this.filterTeamList = [];
     //筛选存在的字段
     this.exist_fields = [];
     //筛选不存在的字段
@@ -62,11 +66,29 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.filterLabels = [];
     //如果是销售领导或者销售角色或者运营 默认选中 待我处理 进行筛选
     this.filterAllotNoTraced = getClueUnhandledPrivilege() ? '0' : '';
+    //未打通电话的线索
+    this.notConnectedClues = '';
+    //销售团队
+    this.teamList = [];
 };
+//获取未打通电话的线索
+ClueFilterStore.prototype.setNotConnectedClues = function(flag) {
+    if (flag){
+        this.notConnectedClues = true;
+    }else{
+        this.notConnectedClues = '';
+    }
+};
+
 //获取线索来源
 ClueFilterStore.prototype.setCondition = function(list) {
     this.provinceList = list;
 };
+//获取销售团队列表
+ClueFilterStore.prototype.getTeamList = function(list) {
+    this.teamList = list;
+};
+
 //设置开始和结束时间
 ClueFilterStore.prototype.setTimeRange = function(timeRange) {
     this.rangeParams[0].from = timeRange.start_time;
@@ -78,11 +100,6 @@ ClueFilterStore.prototype.setTimeType = function(timeType) {
     this.timeType = timeType;
     if (timeType === 'all'){
         this.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf()});
-    }else{
-        var timeObj = getStartEndTimeOfDiffRange(this.timeType, true);
-        var start_time = datePickerUtils.getMilliseconds(timeObj.start_time);
-        var end_time = datePickerUtils.getMilliseconds(timeObj.end_time, true);
-        this.setTimeRange({start_time: start_time, end_time: end_time});
     }
 
 };
@@ -120,6 +137,26 @@ ClueFilterStore.prototype.setFilterClueClassify = function(updateClassify) {
         selectedClassify.push(item.value);
     });
     this.filterClueClassify = selectedClassify;
+};
+//设置筛选集客方式
+ClueFilterStore.prototype.setFilterSourceClassify = function(updateSourceClassify) {
+    let selectedSourceClassify = [];
+    _.forEach(updateSourceClassify, (item) => {
+        if (item.selected) {
+            selectedSourceClassify.push(item.value);
+        }
+    });
+    this.filterSourceClassify = selectedSourceClassify;
+};
+//设置销售团队列表
+ClueFilterStore.prototype.setFilterTeamList = function(updateTeamList) {
+    let selectedTeam = [];
+    _.forEach(updateTeamList, (item) => {
+        if (item.selected){
+            selectedTeam.push(item.value);
+        }
+    });
+    this.filterTeamList = selectedTeam;
 };
 ClueFilterStore.prototype.setFilterClueUsername = function(updateUsers) {
     var filterClueUsers = [];

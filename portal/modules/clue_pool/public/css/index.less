@@ -24,6 +24,12 @@
       .search-container {
         float: none;
         padding-left: 24px;
+        .clue-back-btn{
+          float: left;
+          margin-right: 15px;
+          position: relative;
+          top: -1px;
+        }
         .common-sale-batch-extract {
           float: right;
         }
@@ -62,7 +68,6 @@
         position: absolute;
         transition: all 0.5s;
         background: #fff;
-        padding-left: 14px;
         &.filter-close {
           left: 0 - @filter-width - 20;
           border-right: 1px solid transparent;
@@ -85,18 +90,9 @@
             font-weight: initial;
             color: #333333;
           }
-          .range-datepicker {
-            margin-top: 2px;
-            .datepicker_wrap {
-              position: fixed;
-              top: 129px;
-              left: 24px !important;
-              .ant-radio-wrapper {
-                .ant-radio+span {
-                  margin-left: 8px;
-                  position: relative;
-                }
-              }
+          .ant-calendar-picker-input {
+            .ant-calendar-range-picker-input{
+              height: 20px;
             }
           }
         }
@@ -121,7 +117,7 @@
             left: 120px;
           }
           &.show-clue-filter{
-            left: 400px;
+            left: 370px;
           }
           &.status-type-hide{
             visibility: hidden;
@@ -214,7 +210,10 @@
               color: @white_color;
             }
             .clue-label.intent-tag-style {
-              background-color: @intent-tag-color;
+              color: #EFA246;
+              background: #fff;
+              border: 1px solid #EFA246;
+              border-radius: 4px;
             }
           }
           .recent-contacter-detail{

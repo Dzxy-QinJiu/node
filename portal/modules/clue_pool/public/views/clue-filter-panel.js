@@ -1,15 +1,19 @@
 import { FilterList } from 'CMP_DIR/filter';
-import { AntcDatePicker as DatePicker } from 'antc';
 import FilterAction from '../action/filter-action';
 import clueFilterStore from '../store/filter-store';
 import cluePoolAction from '../action';
 import {clueStartTime} from '../utils/clue-pool-utils';
 import userData from 'PUB_DIR/sources/user-data';
+import { DatePicker } from 'antd';
+const { RangePicker } = DatePicker;
 import {
     COMMON_OTHER_ITEM,
     SIMILAR_CUSTOMER,
-    SIMILAR_CLUE
+    SIMILAR_CLUE,
+    sourceClassifyArray
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+
 let otherFilterArray = [
     {
         name: Intl.get( 'clue.has.similar.customer','有相似客户'),
@@ -72,6 +76,8 @@ class ClueFilterPanel extends React.Component {
             }else if (groupId === 'clue_pool_province'){
                 //线索地域
                 FilterAction.setFilterClueProvince(data);
+            } else if(groupId === 'source_classify') {
+                FilterAction.setFilterSourceClassify(data);
             } else if (groupId === 'clue_pool_user_name'){
                 FilterAction.setFilterClueUsername(data);
             } else if(groupId === 'clue_pool_sales_team_id') {
@@ -93,42 +99,28 @@ class ClueFilterPanel extends React.Component {
             this.props.getClueList();
         });
     };
-    onSelectDate = (start_time, end_time) => {
-        if (!start_time) {
-            //为了防止开始时间不传，后端默认时间是从1970年开始的问题
-            start_time = clueStartTime;
-        }
-        if (!end_time) {
-            end_time = moment().endOf('day').valueOf();
-        }
-        FilterAction.setTimeRange({start_time, end_time});
-        cluePoolAction.setClueInitialData();
-        setTimeout(() => {
-            this.props.getClueList();
-        });
-    };
+        //今天之后的日期不可以选
+        disabledDate = (current) => {
+            return current > moment().endOf('day');
+        };
+        changeRangePicker = (date, dateString) => {
+            if (!_.get(date,'[0]')){
+                FilterAction.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf(), range: 'all'});
+            }else{
+                FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).startOf('day').valueOf(), end_time: moment(_.get(date, '[1]')).endOf('day').valueOf(), range: ''});
+            }
+            cluePoolAction.setClueInitialData();
+            setTimeout(() => {
+                this.props.getClueList();
+            });
+        };
     renderTimeRangeSelect = () => {
         return(
             <div className="time-range-wrap">
                 <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
-                <DatePicker
-                    disableDateAfterToday={true}
-                    range={this.state.timeType}
-                    onSelect={this.onSelectDate}>
-                    <DatePicker.Option value="all">{Intl.get('user.time.all', '全部时间')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="day">{Intl.get('common.time.unit.day', '天')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="week">{Intl.get('common.time.unit.week', '周')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="month">{Intl.get('common.time.unit.month', '月')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="quarter">{Intl.get('common.time.unit.quarter', '季度')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="year">{Intl.get('common.time.unit.year', '年')}</DatePicker.Option>
-                    <DatePicker.Option
-                        value="custom">{Intl.get('user.time.custom', '自定义')}</DatePicker.Option>
-                </DatePicker>
+                <RangePicker
+                    disabledDate={this.disabledDate}
+                    onChange={this.changeRangePicker}/>
             </div>
         );
     };
@@ -163,45 +155,57 @@ class ClueFilterPanel extends React.Component {
             }];
             return x;
         });
-        const advancedData = [
-            {
-                groupName: Intl.get('crm.6', '负责人'),
-                groupId: 'clue_pool_user_name',
-                singleSelect: true,
-                data: _.map(clueLeadingArray, x => ({
-                    name: x,
-                    value: x
-                }))
-            },
-            {
-                groupName: Intl.get('clue.analysis.source', '来源'),
-                groupId: 'clue_pool_source',
-                data: clueSourceArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
-                groupId: 'clue_pool_access',
-                data: accessChannelArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('clue.customer.classify', '线索分类'),
-                groupId: 'clue_pool_classify',
-                data: clueClassifyArray.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            },{
-                groupName: Intl.get('crm.96', '地域'),
-                groupId: 'clue_pool_province',
-                data: clueProvinceList.map(x => ({
-                    name: x,
-                    value: x
-                }))
-            }];
+        const advancedData = [{
+            groupName: Intl.get('crm.6', '负责人'),
+            groupId: 'clue_pool_user_name',
+            singleSelect: true,
+            data: _.map(clueLeadingArray, x => ({
+                name: x,
+                value: x
+            }))
+        },
+        {
+            groupName: Intl.get('crm.96', '地域'),
+            groupId: 'clue_pool_province',
+            data: clueProvinceList.map(x => ({
+                name: x,
+                value: x
+            }))
+        },{
+            groupName: Intl.get('crm.clue.client.source', '集客方式'),
+            groupId: 'source_classify',
+            data: sourceClassifyArray.map(x => ({
+                name: x.name,
+                value: x.value
+            }))
+        }];
+        //非销售角色才有来源、渠道、分类筛选项
+        if(!isSalesRole()) {
+            advancedData.unshift(
+                {
+                    groupName: Intl.get('clue.analysis.source', '来源'),
+                    groupId: 'clue_source',
+                    data: clueSourceArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                },{
+                    groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
+                    groupId: 'clue_access',
+                    data: accessChannelArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                },{
+                    groupName: Intl.get('clue.customer.classify', '线索分类'),
+                    groupId: 'clue_classify',
+                    data: clueClassifyArray.map(x => ({
+                        name: x,
+                        value: x
+                    }))
+                }
+            );
+        }
         //非普通销售才有销团队
         if (!userData.getUserData().isCommonSales) {
             advancedData.unshift(
@@ -230,6 +234,7 @@ class ClueFilterPanel extends React.Component {
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                         showAdvancedPanel={true}
+                        toggleList={this.props.toggleList}
                     />
                 </div>
             </div>
@@ -244,7 +249,10 @@ ClueFilterPanel.defaultProps = {
 
     },
     style: {},
-    showSelectTip: false
+    showSelectTip: false,
+    toggleList: function() {
+
+    },
 };
 ClueFilterPanel.propTypes = {
     clueLeadingArray: PropTypes.array,
@@ -254,7 +262,8 @@ ClueFilterPanel.propTypes = {
     clueProvinceArray: PropTypes.array,
     getClueList: PropTypes.func,
     style: PropTypes.object,
-    showSelectTip: PropTypes.bool
+    showSelectTip: PropTypes.bool,
+    toggleList: PropTypes.func,
 };
 
 export default ClueFilterPanel;

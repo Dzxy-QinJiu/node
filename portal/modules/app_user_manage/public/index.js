@@ -49,6 +49,7 @@ import TopNav from 'CMP_DIR/top-nav';
 import ImportUser from './views/import';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
+import BackMainPage from 'CMP_DIR/btn-back';
 
 const UPLOAD_USER_TIPS = {
     EXIST: 'data exist', // （用户名、邮箱 ）已存在
@@ -812,7 +813,7 @@ class AppUserManage extends React.Component {
         return (<ButtonZones>{/*如果是从客户页面跳转过来的，增加一个返回按钮*/}
             {this.state.customer_id ?
                 <div className={topNavLeftClass}>
-                    <RightPanelReturn onClick={this.hideCustomerUserList}/>
+                    <BackMainPage className="customer_user_back" handleBackClick={this.hideCustomerUserList}></BackMainPage>
                     <div className="customer_name_wrap">
                         {Intl.get('crm.customer.user', '{customer}客户的用户', {'customer': this.state.customer_name})}
                     </div>

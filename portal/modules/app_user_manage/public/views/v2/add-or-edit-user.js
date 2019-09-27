@@ -561,7 +561,7 @@ const AddOrEditUser = createReactClass({
                                 validateStatus={this.renderValidateStyle('user_name')}
                                 help={status.user_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.user_name.errors && status.user_name.errors.join(','))}
                             >
-                                <Validator rules={{validator: this.checkUserValid}} ref="userNameValidator">
+                                <Validator rules={{validator: this.checkUserValid}} trigger='onBlur' ref="userNameValidator">
                                     <Input name="user_name"
                                         id="user_name"
                                         placeholder={Intl.get('user.username.write.tip', '请填写用户名')}
@@ -603,7 +603,7 @@ const AddOrEditUser = createReactClass({
                                             <Validator rules={[{
                                                 required: true,
                                                 message: Intl.get('user.nickname.write.tip', '请填写昵称')
-                                            }]}>
+                                            }]} trigger='onBlur'>
                                                 <Input name="nick_name"
                                                     placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
                                                     value={formData.nick_name}
@@ -624,7 +624,7 @@ const AddOrEditUser = createReactClass({
                                             validateStatus={this.renderValidateStyle('phone')}
                                             help={status.phone.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.phone.errors && status.phone.errors.join(','))}
                                         >
-                                            <Validator rules={[{validator: this.getRestFieldValidator('phone')}]}>
+                                            <Validator rules={[{validator: this.getRestFieldValidator('phone')}]} trigger='onBlur'>
                                                 <Input name="phone"
                                                     placeholder={Intl.get('user.phone.write.tip', '请填写手机号')}
                                                     value={formData.phone}
@@ -645,7 +645,7 @@ const AddOrEditUser = createReactClass({
                                             validateStatus={this.renderValidateStyle('email')}
                                             help={status.email.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.email.errors && status.email.errors.join(','))}
                                         >
-                                            <Validator rules={[{validator: this.getRestFieldValidator('email')}]}>
+                                            <Validator rules={[{validator: this.getRestFieldValidator('email')}]} trigger='onBlur'>
                                                 <Input name="email"
                                                     placeholder={Intl.get('user.email.write.tip', '请填写邮箱')}
                                                     value={formData.email}

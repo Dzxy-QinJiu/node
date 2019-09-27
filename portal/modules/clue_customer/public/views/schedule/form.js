@@ -575,7 +575,7 @@ var CrmAlertForm = createReactClass({
                                 {...formItemLayout}
                                 label={Intl.get('crm.alert.topic', '标题')}
                             >
-                                <Validator rules={[{required: true}]}>
+                                <Validator rules={[{required: true}]} trigger= 'onBlur'>
                                     {hasOverOneCustomer ?
                                         <Select onChange={this.handleTopicChange} value={formData.lead_id} >
                                             {_.map(this.props.clueArr, (clueItem) => {
@@ -615,6 +615,7 @@ var CrmAlertForm = createReactClass({
                         <div className="content-wrap">
                             <Validator
                                 rules={[{required: true, message: Intl.get('crm.schedule.fill.content', '请填写联系内容')}]}
+                                trigger= 'onBlur'
                             >
                                 <Input
                                     name="content"

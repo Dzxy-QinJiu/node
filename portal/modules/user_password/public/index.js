@@ -187,7 +187,8 @@ var UserPwdPage = createReactClass({
                                     rules: [{
                                         required: true,
                                         message: Intl.get('user.password.input.initial.password', '输入原密码')
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input type="password" autoComplete="off"
                                         placeholder={Intl.get('user.password.input.initial.password', '输入原密码')}
@@ -205,7 +206,8 @@ var UserPwdPage = createReactClass({
                                         message: Intl.get('common.password.validate.rule', '请输入6-18位数字、字母、符号组成的密码')
                                     }, {
                                         validator: this.checkPass
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input type="password" autoComplete="off"
                                         placeholder={Intl.get('common.password.compose.rule', '6-18位数字、字母、符号的组合')}
@@ -227,7 +229,8 @@ var UserPwdPage = createReactClass({
                                         required: true, message: Intl.get('common.password.unequal', '两次输入密码不一致')
                                     }, {
                                         validator: this.checkPass2
-                                    }]
+                                    }],
+                                    validateTrigger: 'onBlur'
                                 })(
                                     <Input type="password"
                                         placeholder={Intl.get('login.please_enter_new_password', '确认新密码')}

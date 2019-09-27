@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/8/27.
  */
 import {getTeamTreeMemberLists} from 'PUB_DIR/sources/utils/common-data-util';
+import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
 function FilterAction() {
     this.generateActions(
         'setInitialData',
@@ -13,19 +14,32 @@ function FilterAction() {
         'setFilterClueSoure',
         'setFilterClueAccess',
         'setFilterClueClassify',
+        'setFilterTeamList',
         'setFilterClueAvailbility',
+        'setFilterSourceClassify',
         'setFilterClueProvince',
         'setFilterClueAllotNoTrace',
         'setExistedFiled',
         'setUnexistedFiled',
         'setFilterClueUsername',
         'setSimilarFiled',
-        //获取负责人列表
-        this.getTeamMemberList = function() {
-            getTeamTreeMemberLists((result) => {
-                this.dispatch(result);
-            });
-        }
+        'setNotConnectedClues'
     );
+    //获取负责人列表
+    this.getTeamMemberList = function() {
+        getTeamTreeMemberLists((result) => {
+            this.dispatch(result);
+        });
+    };
+
+    //获取销售团队列表
+    this.getTeamList = function(cb) {
+        getMyTeamTreeAndFlattenList(data => {
+            let list = data.teamList || [];
+            list.unshift({group_id: '', group_name: Intl.get('common.all', '全部')});
+            this.dispatch(list);
+            if (_.isFunction(cb)) cb(list);
+        });
+    };
 }
 module.exports = alt.createActions(FilterAction);

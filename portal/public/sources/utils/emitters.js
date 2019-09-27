@@ -234,3 +234,8 @@ export { userBasicInfoEmitter };
 const clueEmitter = new EventEmitter();
 clueEmitter.REMOVE_CLUE_ITEM = 'remove_clue_item';
 export { clueEmitter };
+
+//订单相关事件
+const orderEmitter = new EventEmitter();
+orderEmitter.REFRESH_ORDER_LIST = 'refresh_order_list';
+export { orderEmitter };

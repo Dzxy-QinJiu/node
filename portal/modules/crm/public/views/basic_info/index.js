@@ -220,9 +220,19 @@ class BasicData extends React.Component {
         CrmOverviewActions.updateBasicData(basicData);
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
             if (errorMsg) {
+                if(interestObj.user_id){
+                    message.error(Intl.get('crm.customer.interested.error', '添加关注失败'));
+                }else{
+                    message.error(Intl.get('crm.customer.uninterested.error', '取消关注失败'));
+                }
                 //将星星的颜色修改回原来的状态
                 CrmOverviewActions.updateBasicData(initialBasicData);
             } else {
+                if(interestObj.user_id){
+                    message.success(Intl.get('crm.customer.interested.succ', '添加关注成功'));
+                }else{
+                    message.success(Intl.get('crm.customer.uninterested.succ', '取消关注成功'));
+                }
                 interestObj.interest_member_ids = [interestObj.user_id];
                 delete interestObj.type;
                 delete interestObj.user_id;

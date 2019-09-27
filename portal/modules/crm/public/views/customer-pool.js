@@ -27,6 +27,7 @@ import {COMMON_OTHER_ITEM, extractIcon} from 'PUB_DIR/sources/utils/consts';
 import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import CustomerPoolRule from './customer_pool_rule';
+import BackMainPage from 'CMP_DIR/btn-back';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -650,6 +651,8 @@ class CustomerPool extends React.Component {
         return (
             <div className="customer-pool" data-tracename="客户池列表">
                 <TopNav>
+                    <BackMainPage className="customer-back-btn" 
+                        handleBackClick={this.returnCustomerList}></BackMainPage>
                     <div className="search-input-wrapper">
                         <FilterInput
                             ref="filterinput"
@@ -676,7 +679,6 @@ class CustomerPool extends React.Component {
                             disabled={this.state.isLoading}
                         >{Intl.get('common.refresh', '刷新')}</Button>
                     ) : null}
-                    <RightPanelClose onClick={this.returnCustomerList}/>
                     {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
                         <Button
                             className="btn-item extract-btn"

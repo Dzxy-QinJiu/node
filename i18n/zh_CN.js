@@ -77,6 +77,7 @@ var zh_CN = {
     'common.correct.email': '请输入正确的邮箱',
     'common.correct.qq': '请输入正确的QQ号',
     'common.correct.wechat': '请输入正确的微信号',
+    'common.correct.no.wechat': '请输入微信号',
     'common.password.length': '密码长度应大于6位小于18位',
     'common.password.compose.rule': '6-18位数字、字母、符号的组合',
     'common.password.validate.rule': '请输入6-18位数字、字母、符号组成的密码',
@@ -162,6 +163,8 @@ var zh_CN = {
     'common.name.is.unique': '姓名唯一性校验出错！',
     'common.is.existed': '用户名已存在！',
     'common.username.is.unique': '用户名唯一性校验出错！',
+    'common.nickname.is.existed': '昵称已存在！',
+    'common.nickname.is.unique': '昵称唯一性校验出错！',
     'common.phone.is.existed': '电话已存在！',
     'common.phone.is.unique': '电话唯一性校验出错！',
     'common.email.is.existed': '邮箱已存在！',
@@ -171,6 +174,7 @@ var zh_CN = {
     'common.no.more.data': '没有更多数据了',
     'common.no.more.user': '没有更多用户了',
     'common.no.more.crm': '没有更多客户了',
+    'common.no.more.repeat.crm': '没有重复的客户',
     'common.no.more.filter.crm': '没有符合条件的客户了',
     'common.no.filter.crm': '没有符合条件的客户',
     'common.no.more.schedule': '暂无计划',
@@ -399,6 +403,8 @@ var zh_CN = {
     'home.page.apply.approve': '审批',
     'home.page.return.old': '返回旧版',
     'home.page.try.new': '试用新版',
+    'home.page.contacts.clues.week': '本周已联系线索总数',
+    'home.page.expire.contract.at.time': '{time}即将到期合同统计',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -434,6 +440,8 @@ var zh_CN = {
     'user.time.end': '到期时间',
     'user.login.times': '登录次数',
     'user.login.score': '分数',
+    'user.login.score.explain.mananer': '查看分数规则？',
+    'user.login.score.explain.other': '按客户评分规则生成的分数，了解详情请联系管理员',
     'user.login.days': '活跃天数',
     'user.remark.write.tip': '请填写备注',
     'user.remark.set.tip': '设置备注',
@@ -866,6 +874,7 @@ var zh_CN = {
     'member.record.no.record': '暂无变更记录',
     'member.number.toplimit': '成员数量已达{number}个上限',
     'member.add.member.no.position.tips': '系统中暂无职务{name}，是否添加?',
+    'member.add.member.success.tips': '该成员登录后可以拨打电话了',
     //后台管理-成员end
 
     //组织管理start
@@ -908,8 +917,13 @@ var zh_CN = {
     'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
     // 后台管理-产品end
 
+    // 后台管理-行业start
+    'industry.add.check.tips': '该行业名称已存在',
+    // 后台管理-行业end
+
     // 后台管理-竞品start
     'competing.product.add.placeholder': '添加竞品',
+    'competing.add.check.tips': '该竞品名称已存在',
     // 后台管理-竞品end
 
     // 后台管理-销售流程start
@@ -1006,6 +1020,11 @@ var zh_CN = {
     'user.log.single.record': '只能查看近三个月的操作记录',
     'user.log.single.get.error': '获取单个审计日志失败',
     //用户管理---用户审计日志end
+
+    //用户管理--- 活跃用户start
+    'user.active.tips': '选择时间内登录过的用户',
+    //用户管理--- 活跃用户end
+
     //基本资料start
     'user.info.log.record.tip': '以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}',
     'user.info.login.address': '地点',
@@ -1365,7 +1384,7 @@ var zh_CN = {
     'crm.11': '已选当前页{count}项',
     'crm.12': '选择全部{count}项',
     'crm.14': '共{count}条记录',
-    'crm.15': '是否删除{cusName}？',
+    'crm.15': '是否删除“{cusName}”？',
     'crm.16': '批量变更标签和销售人员',
     'crm.17': '请选择销售人员',
     'crm.18': '变更销售人员',
@@ -1514,6 +1533,7 @@ var zh_CN = {
     'crm.218': '修改成功',
     'crm.219': '修改失败',
     'crm.customer.recycle.bin': '回收站',
+    'crm.customer.recycle.bin.explain': '存放删除或合并的客户',
     'crm.customer.recovery': '恢复',
     'crm.customer.delete.time': '删除时间',
     'crm.recovery.customer.success': '恢复客户成功',
@@ -1529,6 +1549,10 @@ var zh_CN = {
     'crm.recent.month.active': '近一个月的活跃客户',
     'crm.customer.interested': '添加关注',
     'crm.customer.uninterested': '取消关注',
+    'crm.customer.interested.succ': '添加关注成功',
+    'crm.customer.interested.error': '添加关注失败',
+    'crm.customer.uninterested.succ': '取消关注成功',
+    'crm.customer.uninterested.error': '取消关注失败',
     'crm.customer.failed.interested': '修改失败',
     'crm.tag.unknown': '未打标签的客户',
     'crm.administrative.level': '行政级别',
@@ -1743,6 +1767,7 @@ var zh_CN = {
     'crm.import.phone.repeat': '导入数据中存在相同的电话',
     'crm.system.phone.repeat': '电话已被其他{type}使用',
     'crm.import.phone.verify': '电话只能是11位手机号或11-12位带区号的座机号',
+    'crm.customer.delete': '删除后，您可以从回收站中找回客户',
     'crm.customer.release': '释放',
     'crm.customer.release.pool': '释放到客户池',
     'crm.customer.release.confirm.tip': '释放到客户池后，其他人也可以查看、提取，您确认释放吗？',
@@ -1750,6 +1775,7 @@ var zh_CN = {
     'crm.customer.pool.failed': '获取客户池客户失败',
     'crm.customer.extract.failed': '提取客户失败',
     'crm.customer.pool': '客户池',
+    'crm.customer.pool.explain': '存放释放的客户',
     'crm.customer.label': '客户标签',
     'crm.customer.extract.time': '释放时间',
     'crm.customer.release.customer': '释放客户',
@@ -1814,6 +1840,7 @@ var zh_CN = {
     'crm.contract.add.category': '添加合同类型',
     'crm.contract.add.label': '添加签约类型',
     'crm.contract.no.label': '暂无签约类型',
+    'crm.batch.change.customer.pending': '上次批量操作未完成，请稍后再试',
     // 客户管理end
 
     // 客户分析start
@@ -2485,6 +2512,7 @@ var zh_CN = {
     'errorcode.phone.busy': '座机繁忙，请稍后再试！',
     'errorcode.164': '获取即将到期的客户统计数据失败',
     'errorcode.organization.expire': '您的账号已到期',
+    'errorcode.clue.batch.change.pending': '上次批量操作未完成，请稍后再试',
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
@@ -2827,6 +2855,12 @@ var zh_CN = {
     'failed.to.get.clue.classify': '获取线索分类出错了',
     'clue.customer.classify': '线索分类',
     'crm.clue.classify.placeholder': '请选择或输入线索分类',
+    'crm.clue.client.source': '集客方式',
+    'crm.clue.client.source.placeholder': '请选择集客方式',
+    'crm.clue.client.source.add': '添加集客方式',
+    'crm.clue.client.source.inbound': '市场',
+    'crm.clue.client.source.outbound': '自拓',
+    'crm.clue.client.source.other': '未知',
     'clue.customer.classify.agend': '代理商',
     'clue.customer.classify.search': '学术研究',
     'clue.customer.may.associate.customer': '该线索可能关联的客户',
@@ -2962,6 +2996,7 @@ var zh_CN = {
     'clue.export.clue.list': '导出线索',
     'clue.extract.clue': '提取线索',
     'clue.pool': '线索池',
+    'clue.pool.explain': '存放释放的线索',
     'clue.release': '释放线索',
     'clue.customer.refresh.tip': '有新线索，{refreshPage}查看',
     'clue.customer.refresh.page': '刷新页面',
@@ -2977,6 +3012,7 @@ var zh_CN = {
     'clue.extract.failed': '提取失败',
     'clue.extract.success': '提取成功',
     'clue.list.clue.availibility': '无效线索',
+    'clue.list.total.num': '共{num}个线索',
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
@@ -3257,7 +3293,6 @@ var zh_CN = {
     'business.leave.time.range': '出差时长',
     'clue.batch.select.clues': '已选择{num}个线索',
     'clue.batch.assign.sales': '批量分配',
-    'clue.batch.assign.sales.pending': '批量分配进行中，请稍后再试!',
     'clue.export.trace.msg': '{traceman}于{tracetime}添加',
     'clue.batch.change.trace.man': '变更跟进人',
     'crm.user.use.default.contact': '使用默认联系人申请',
@@ -3325,9 +3360,9 @@ var zh_CN = {
     'apply.info.cancel.privilege': '撤销权限',
     'apply.workflow.merge.same.approver': '合并相同审批人（通过后，后面自动通过）',
     'apply.workflow.cancel.approve': '通过后允许撤销（审批通过后，经审批人同意，可撤销申请）',
-    'apply.cc.when,submit': '提交申请时抄送',
-    'apply.cc.when.approve.apply': '审批通过后抄送',
-    'apply.cc.when.submit.and.approve': '提交申请和审批通过后都抄送',
+    'apply.cc.when,submit': '提交申请时抄送审批人',
+    'apply.cc.when.approve.apply': '审批通过后抄送申请人',
+    'apply.cc.when.submit.and.approve': '提交申请时抄送审批人和审批通过后抄送申请人',
     'apply.add.condition.workflow': '添加条件审批流程',
     'apply.add.apply.approver': '添加审批人',
     'apply.add.approver.higher.level': '上级',
@@ -3414,6 +3449,7 @@ var zh_CN = {
     'apply.phone.close': '手机关机',
     'apply.select.trace.clue': '请选择要跟进的线索',
     'clue.has.no.schedule.list': '该线索还没有联系计划',
+    'clue.check.customer.detail.warning': '此线索已在其他销售名下',
     'fail.get.clue.schedule.list': '获取联系计划列表失败',
     'clue.manage.contact.clue': '联系线索',
     'crm.103': '变更负责人',
@@ -3505,6 +3541,8 @@ var zh_CN = {
     'clue.customer.last.month': '近一月',
     'clue.customer.last.quarter': '近一季度',
     'clue.customer.last.year': '近一年',
+    'clue.customer.close.filter.panel': '收起筛选',
+    'clue.customer.not.connect.phone': '未打通电话的线索',
     'user.score.level.rule': '用户评分规则',
     'user.score.basic.score': '基础评分',
     'user.score.particate.in.score': '参与度评分',
@@ -3604,5 +3642,40 @@ var zh_CN = {
     'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
     'batch.faild.count': '失败数: {count}',
     'batch.success.count': '成功数: {count}',
+    // 线索分配策略
+    'clue.assignment.strategy.add': '添加分配策略',
+    'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
+    'clue.assignment.no.strategy.tip': '您还没有线索分配策略',
+    'clue.assignment.name': '名称',
+    'clue.assignment.name.tip': '请输入线索分配策略名称',
+    'clue.assignment.name.required.tip': '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
+    'clue.assignment.description': '描述',
+    'clue.assignment.description.tip': '请描述一下线索分配策略',
+    'clue.assignment.no.description.tip': '暂无线索分配策略描述',
+    'clue.assignment.add.description.tip': '添加线索分配策略描述',
+    'clue.assignment.needs': '满足条件',
+    'clue.assignment.needs.region': '地域',
+    'clue.assignment.needs.region.tip': '请选择或输入地域',
+    'clue.assignment.needs.region.required.tip': '地域不能为空',
+    'clue.assignment.needs.region.no.data': '暂无此地域',
+    'clue.assignment.needs.region.add.data': '添加地域',
+    'clue.assignment.needs.source': '来源',
+    'clue.assignment.needs.source.tip': '请选择或输入线索来源',
+    'clue.assignment.needs.source.required.tip': '线索来源不能为空',
+    'clue.assignment.needs.access.channel': '接入渠道',
+    'clue.assignment.needs.access.channel.tip': '请选择或输入接入渠道',
+    'clue.assignment.needs.access.channel.required.tip': '接入渠道不能为空',
+    'clue.assignment.needs.clue.classify': '线索分类',
+    'clue.assignment.needs.clue.type': '线索类型',
+    'clue.assignment.needs.clue.classify.tip': '请选择或输入线索分类',
+    'clue.assignment.needs.clue.classify.required.tip': '线索分类不能为空',
+    'clue.assignment.assignee': '分配给',
+    'clue.assignment.assignee.tip': '请选择或输入被分配人',
+    'clue.assignment.assignee.required.tip': '被分配人不能为空',
+    'clue.assignment.assignee.no.data.tip': '暂无此分配人',
+    'clue.assignment.active.state': '启停状态',
+    'clue.assignment.strategy.tip': '本策略对新加线索生效',
+    'clue.assignment.strategy.switch.tip': '确定要{action}该线索分配策略？',
+    'clue.assignment.strategy.delete': '确定要删除该线索分配策略？'
 };
 export default zh_CN;

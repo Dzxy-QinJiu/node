@@ -487,6 +487,7 @@ class CrmFilterPanel extends React.Component {
                         hasSettedDefaultCommonSelect={this.props.isExtractSuccess}
                         onDelete={this.onDelete.bind(this)}
                         onFilterChange={this.handleFilterChange.bind(this)}
+                        toggleList={this.props.toggleList}
                     />
                 </div>
             </div>
@@ -498,6 +499,8 @@ CrmFilterPanel.propTypes = {
     style: PropTypes.object,
     search: PropTypes.func,
     isExtractSuccess: PropTypes.bool,
+    toggleList: PropTypes.func,
+
 };
 module.exports = CrmFilterPanel;
 

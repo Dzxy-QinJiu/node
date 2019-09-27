@@ -22,6 +22,8 @@ import MemberForm from 'MOD_DIR/member_manage/public/view/member-form';
 import MemberFormAction from 'MOD_DIR/member_manage/public/action/member-form-actions';
 import MemberMangeAjax from 'MOD_DIR/member_manage/public/ajax';
 import MemberManageAction from 'MOD_DIR/member_manage/public/action';
+import MemberManageStore from 'MOD_DIR/member_manage/public/store';
+import MemberInfo from 'MOD_DIR/member_manage/public/view/member-info';
 import { hasCalloutPrivilege } from 'PUB_DIR/sources/utils/common-method-util';
 import {storageUtil} from 'ant-utils';
 import {BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
@@ -147,13 +149,18 @@ class BootProcess extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            ...MemberManageStore.getState(),
             loading: false,
             guideConfig: this.dealGuideConfig(props.guideConfig),
             isShowDialUpKeyboard: false,//是否展示拨号键盘的标识
             roleList: [], //角色列表
-            ...this.getInitialState()
+            ...this.getInitialState(),
         };
     }
+
+    onChange = () => {
+        this.setState(MemberManageStore.getState());
+    };
 
     addCustomerType = CUSTOMER_ADD_TYPES.ADD;
 
@@ -187,11 +194,14 @@ class BootProcess extends React.Component {
         this.setState({
             isShowDialUpKeyboard
         });
+        MemberManageStore.listen(this.onChange);
         phoneEmitter.on(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
         phoneEmitter.on(phoneEmitter.CALL_FINISHED, this.triggerDialFinished);
     }
 
     componentWillUnmount() {
+        MemberManageStore.unlisten(this.onChange);
+        MemberManageAction.setInitialData();
         phoneEmitter.removeListener(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
         phoneEmitter.removeListener(phoneEmitter.CALL_FINISHED, this.triggerDialFinished);
     }
@@ -320,6 +330,9 @@ class BootProcess extends React.Component {
         this.setState({curCustomerAddType: type});
     };
 
+    //显示继续添加按钮
+    showContinueAddButton = () => {};
+
     // 拨号结束后，触发事件
     triggerDialFinished = () => {
         let dialGuide = _.find(this.state.guideConfig, guide => guide.key === BOOT_PROCESS_KEYS_MAP.dial.key);
@@ -329,9 +342,10 @@ class BootProcess extends React.Component {
     };
 
     // 添加成员成功后
-    addMemberFinished = () => {
+    addMemberFinished = (newMember) => {
         let memberGuide = _.find(this.state.guideConfig, guide => guide.key === BOOT_PROCESS_KEYS_MAP.perfact_organization.key);
         this.setGuideMark((curGuideItem) => {
+            MemberManageAction.returnInfoPanel(newMember);
             this.setState({
                 curGuideItem,
                 curMemberAddType: MEMBER_ADD_TYPES.FINISHED
@@ -382,6 +396,11 @@ class BootProcess extends React.Component {
         MemberFormAction.getRoleList();
         MemberManageAction.showMemberForm('add');
         MemberFormAction.setAddGroupForm(false);
+    };
+
+    // 修改成员字段成功的处理
+    changeMemberFieldSuccess = (member) => {
+        MemberManageAction.afterEditMember(member);
     };
 
     renderGuideCard(item, index) {
@@ -502,28 +521,24 @@ class BootProcess extends React.Component {
                     />
                 );
             case MEMBER_ADD_TYPES.FINISHED:
-                let FinishedBlock = this.renderFinishedBlock({
-                    text: Intl.get('user.user.add.success', '添加成功'),
-                    goText: Intl.get('guide.see.member', '查看成员'),
-                    // 继续添加函数
-                    continueFn: (e) => {
-                        Trace.traceEvent(e, '继续添加成员');
-                        this.setState({
-                            curMemberAddType: MEMBER_ADD_TYPES.ADD
-                        });
-                    },
-                    // 查看成员
-                    goFn: () => {
-                        history.push('/background_management/member');
-                    }
-                });
-
                 return (
-                    <RightPanelModal
-                        isShowMadal
-                        isShowCloseBtn
-                        onClosePanel={this.closeGuidDetailPanel}
-                        content={FinishedBlock}
+                    <MemberInfo
+                        memberInfo={this.state.currentMember}
+                        closeRightPanel={this.closeGuidDetailPanel}
+                        showEditForm={(type, e) => {
+                            Trace.traceEvent(e, '继续添加成员');
+                            this.setState({
+                                curMemberAddType: MEMBER_ADD_TYPES.ADD
+                            });
+                            MemberManageAction.setInitialData();
+                        }}
+                        isContinueAddButtonShow
+                        changeMemberFieldSuccess={this.changeMemberFieldSuccess}
+                        resultType={this.state.resultType}
+                        errorMsg={this.state.errorMsg}
+                        isGetMemberDetailLoading={this.state.isGetMemberDetailLoading}
+                        getMemberDetailErrMsg={this.state.getMemberDetailErrMsg}
+                        roleList={this.state.roleList}
                     />
                 );
         }

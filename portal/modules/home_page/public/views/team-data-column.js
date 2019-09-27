@@ -7,10 +7,13 @@ import '../css/my-data-column.less';
 import {Progress, Tooltip, Select} from 'antd';
 const Option = Select.Option;
 import ColumnItem from './column-item';
+import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import myDataAjax from '../ajax';
+import {getClueFulltext} from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import DetailCard from 'CMP_DIR/detail-card';
 import Spinner from 'CMP_DIR/spinner';
 import userData from 'PUB_DIR/sources/user-data';
+import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {
     getTodayTimeStamp,
     getThisWeekTimeStamp,
@@ -23,6 +26,7 @@ import classNames from 'classnames';
 import {contractChart} from 'ant-chart-collection';
 import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis } from 'antc';
+import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
 const performance = {
     image_1: require('../images/performance_1.png'),
     image_2: require('../images/performance_2.png'),
@@ -85,10 +89,15 @@ class TeamDataColumn extends React.Component {
             callTimeData: [],
             //本周联系客户总数
             contactCustomerCount: 0,
+            //本周联系线索总数
+            contactClueCount: 0,
             // 当前选择的时间类型
             currentDateType: type,
             callTimeLoading: false,
             callTimeErrMsg: '',
+            curExpireContractDateType: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
+            expireContracts: {},
+            isShowExpireContractPanel: false,
         };
     }
 
@@ -99,6 +108,8 @@ class TeamDataColumn extends React.Component {
         }
         this.getCallTimeData();
         this.getContactCustomerCount();
+        this.getContactClueCount();
+        this.getExpireContractData();
         this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
     }
@@ -114,9 +125,6 @@ class TeamDataColumn extends React.Component {
 
     changeTableHeight = () => {
         tableHeight = $(window).height()
-            - $('.my-data-preformance-card').outerHeight()
-            - $('.my-data-call-time-card').outerHeight()
-            - $('.my-data-contact-customers-card').outerHeight()
             - LAYOUT_CONSTANTS.MY_DATA_TITLE_HEIGHT
             - LAYOUT_CONSTANTS.EXPIRE_TITLE_HEIGHT
             - LAYOUT_CONSTANTS.MARGIN_BOTTOM
@@ -137,6 +145,52 @@ class TeamDataColumn extends React.Component {
             this.setState({contactCustomerCount: _.get(data, 'total')});
         }, (errorMsg) => {
 
+        });
+    }
+
+    getContactClueCount() {
+        let rangeParams = [{
+            from: TimeUtil.getStartTime('week'),
+            to: TimeUtil.getEndTime('week'),
+            name: 'last_contact_time',
+            type: 'time'
+        }];
+        let queryObj = {
+            queryParam: {
+                rangeParams
+            },
+            bodyParam: {
+                query: {
+                    status: ''
+                },
+                rang_params: rangeParams
+            },
+            pageNum: 1,
+            pageSize: 1,
+        };
+        getClueFulltext(queryObj).then((result) => {
+            this.setState({ contactClueCount: _.get(result, 'total', 0) });
+        });
+    }
+
+    getExpireContractData() {
+        let currentDateType = this.state.curExpireContractDateType;
+        let queryObj = {
+            sort_order: 'asc',
+            load_size: TABLE_CONSTS.LOAD_SIZE
+        };
+        if (currentDateType === DATE_TYPE_KEYS.THIS_MONTH) {//本月
+            queryObj.starttime = getThisMonthTimeStamp().start_time;
+            queryObj.endtime = getThisMonthTimeStamp().end_time;
+        }else if(currentDateType === DATE_TYPE_KEYS.THIS_QUARTER) {//本季度
+            queryObj.starttime = getThisQuarterTimeStamp().start_time;
+            queryObj.endtime = getThisQuarterTimeStamp().end_time;
+        }else {//近三个月
+            queryObj.starttime = moment().valueOf();
+            queryObj.endtime = moment().add(3, 'months').valueOf();
+        }
+        myDataAjax.getExpireContractData(queryObj).then((result) => {
+            this.setState({expireContracts: result});
         });
     }
 
@@ -297,13 +351,14 @@ class TeamDataColumn extends React.Component {
             <div>
                 <div className='my-data-title'>
                     <div className="call-time-select-wrapper">
+                        <span>{Intl.get('home.page.callout.time', '呼出总时长')}</span>
                         <Select
                             value={this.state.currentDateType}
                             onChange={this.handleDateChange}
+                            className="call-time-select"
                         >
                             {callTimeOptions}
                         </Select>
-                        <span>{Intl.get('home.page.callout.time', '呼出总时长')}</span>
                     </div>
                 </div>
                 {
@@ -372,8 +427,48 @@ class TeamDataColumn extends React.Component {
             className='my-data-contact-customers-card'/>);
     }
 
-    // 到期合同（可选本月，本季度，近三个月）
+    //本周已联系线索总数
+    renderContactClues() {
+        const contactClueContent = (
+            <div>
+                <div className='my-data-title'>{Intl.get('home.page.contacts.clues.week', '本周已联系客户总数')}</div>
+                <div className='contact-clue-count my-data-title-data'>
+                    {Intl.get('sales.home.count', '{count}个', {count: this.state.contactClueCount})}
+                </div>
+            </div>);
+        return (
+            <DetailCard
+                content={contactClueContent}
+                className='my-data-contact-clues-card'
+            />
+        );
+    }
+
+    //近三月到期合同统计
     renderExpireContracts() {
+        const expireContractsContent = (
+            <div>
+                <div className='my-data-title'>{Intl.get('home.page.expire.contract.at.time', '{time}即将到期合同统计', {
+                    time: Intl.get('clue.customer.last.three.month', '近三个月')
+                })}</div>
+                <div className='expire-contract-count my-data-title-data'>
+                    <a className='see-expire-contract-btn' title={Intl.get('call.record.show.customer.detail', '查看详情')} onClick={this.setExpireContractPanel.bind(this,true)}>{Intl.get('sales.home.count', '{count}个', {count: _.get(this.state.expireContracts, 'total', 0)})}</a>
+                </div>
+            </div>);
+        return (
+            <DetailCard
+                content={expireContractsContent}
+                className='my-data-expire-contract-card'
+            />
+        );
+    }
+
+    setExpireContractPanel = (flag) => {
+        this.setState({ isShowExpireContractPanel: flag });
+    };
+
+    // 到期合同（可选本月，本季度，近三个月）
+    renderExpireContractsPanel() {
         // 开通营收中心后才能显示
         if (isOpenCash()) {
             let chart = contractChart.getContractExpireRemindChart();
@@ -410,8 +505,9 @@ class TeamDataColumn extends React.Component {
 
             // 构建我们自己需要的chart
             const newChart = {
+                url: '',
                 // 添加类型选择框
-                cardContainer: {
+                /*cardContainer: {
                     selectors: [{
                         options: [{
                             name: Intl.get('clue.customer.this.month', '本月'),
@@ -430,7 +526,7 @@ class TeamDataColumn extends React.Component {
                 conditions: _.concat(_.get(chart,'conditions', []), [{
                     name: 'date_type',
                     value: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
-                }]),
+                }]),*/
                 argCallback: arg => {
                     arg.query.load_size = TABLE_CONSTS.LOAD_SIZE;
 
@@ -455,7 +551,9 @@ class TeamDataColumn extends React.Component {
                     if(chart.option.pagination) {
                         chart.option.scroll.y = tableHeight - LAYOUT_CONSTANTS.PAGINATION_DISTANCE;
                     }
-                    chart.title = Intl.get('contract.expire.statistics', '到期合同统计') + `(${Intl.get('sales.home.total.count', '共{count}个', {count: total})})`;
+                    chart.title = Intl.get('home.page.expire.contract.at.time', '{time}即将到期合同统计', {
+                        time: Intl.get('clue.customer.last.three.month', '近三个月')
+                    }) + `(${Intl.get('sales.home.total.count', '共{count}个', {count: total})})`;
 
                     data = _.get(data, 'expired_contracts', []);
 
@@ -501,7 +599,9 @@ class TeamDataColumn extends React.Component {
                     });
 
                     return processedData;
-                }
+                },
+                data: this.state.expireContracts,
+                resultType: '',
             };
 
             // 合并chart
@@ -525,11 +625,26 @@ class TeamDataColumn extends React.Component {
 
     renderTeamDataContent() {
         return (
-            <div data-tracename="我的数据">
-                {isOpenCash() ? this.renderPerformanceData() : null}
-                {this.renderCallTime()}
-                {this.renderContactCustomers()}
-                {/*{this.renderExpireContracts()}*/}
+            <div className='my-data-content' style={{height: getColumnHeight()}} data-tracename="我的数据">
+                <GeminiScrollbar>
+                    {isOpenCash() ? this.renderPerformanceData() : null}
+                    {this.renderCallTime()}
+                    {this.renderContactCustomers()}
+                    {this.renderContactClues()}
+                    {isOpenCash() ? this.renderExpireContracts() : null}
+                </GeminiScrollbar>
+                {
+                    this.state.isShowExpireContractPanel ? (
+                        <RightPanelModal
+                            width={1000}
+                            className=""
+                            isShowMadal
+                            isShowCloseBtn
+                            onClosePanel={this.setExpireContractPanel.bind(this, false)}
+                            content={this.renderExpireContractsPanel()}
+                        />
+                    ) : null
+                }
             </div>);
     }
 

@@ -713,10 +713,10 @@ class RegRulesView extends React.Component {
                             <div className="rule-content info-container">
                                 <RadioGroup onChange={this.onRadioChange}
                                     value={_.get(this, 'state.applyRulesAndSetting.ccInformation')}>
-                                    <Radio value={CC_INFO.APPLY}>{Intl.get('apply.cc.when,submit', '提交申请时抄送')}</Radio>
-                                    <Radio value={CC_INFO.APPROVE}>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送')}</Radio>
+                                    <Radio value={CC_INFO.APPLY}>{Intl.get('apply.cc.when,submit', '提交申请时抄送审批人')}</Radio>
+                                    <Radio value={CC_INFO.APPROVE}>{Intl.get('apply.cc.when.approve.apply', '审批通过后抄送申请人')}</Radio>
                                     <Radio
-                                        value={CC_INFO.APPLY_AND_APPROVE}>{Intl.get('apply.cc.when.submit.and.approve', '提交申请和审批通过后都抄送')}</Radio>
+                                        value={CC_INFO.APPLY_AND_APPROVE}>{Intl.get('apply.cc.when.submit.and.approve', '提交申请时抄送审批人和审批通过后抄送申请人')}</Radio>
                                 </RadioGroup>
                             </div>
 
@@ -732,17 +732,17 @@ class RegRulesView extends React.Component {
                         {/*</Checkbox>*/}
                         {/*</div>*/}
                         {/*</div>*/}
-                        <div className="other-wrap rule-item">
-                            <span className="item-label">
-                                {Intl.get('crm.186', '其他')}
-                            </span>
-                            <div className="rule-content">
-                                <Checkbox onChange={this.handleOtherCheckChange}
-                                    checked={_.get(this, 'state.applyRulesAndSetting.mergeSameApprover')}>
-                                    {Intl.get('apply.workflow.merge.same.approver', '合并相同审批人（通过后，后面自动通过）')}
-                                </Checkbox>
-                            </div>
-                        </div>
+                        {/*<div className="other-wrap rule-item">*/}
+                        {/*<span className="item-label">*/}
+                        {/*{Intl.get('crm.186', '其他')}*/}
+                        {/*</span>*/}
+                        {/*<div className="rule-content">*/}
+                        {/*<Checkbox onChange={this.handleOtherCheckChange}*/}
+                        {/*checked={_.get(this, 'state.applyRulesAndSetting.mergeSameApprover')}>*/}
+                        {/*{Intl.get('apply.workflow.merge.same.approver', '合并相同审批人（通过后，后面自动通过）')}*/}
+                        {/*</Checkbox>*/}
+                        {/*</div>*/}
+                        {/*</div>*/}
                         <div className="containers" id="bpmn-container" ref="content">
                             <div className="canvas" id="canvas" ref="canvas"></div>
                             <div className="properties-panel-parent" id="js-properties-panel"></div>

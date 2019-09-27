@@ -29,6 +29,7 @@ import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
+import BackMainPage from 'CMP_DIR/btn-back';
 const maxLimitExtractNumber = 100;
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
@@ -608,10 +609,11 @@ class RecommendCustomerRightPanel extends React.Component {
         return (
             <div className="recommend-clues-lists-container">
                 <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
-                    <RightPanelClose data-tracename="关闭推荐线索列表" onClick={this.closeRecommendCluePanel}/>
                     <div className="recommend-clue-panel">
                         <TopNav>
                             <div className='recommend-customer-top-nav-wrap'>
+                                <BackMainPage className="clue-back-btn" 
+                                    handleBackClick={this.closeRecommendCluePanel}></BackMainPage>
                                 <Button className="btn-item" data-tracename="点击换一批按钮"
                                     onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
                                 <Button className="btn-item" data-tracename="点击修改推荐条件"

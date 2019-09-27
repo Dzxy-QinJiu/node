@@ -39,6 +39,8 @@ let CALL_STATUS_MAP = {
     'NO ANSWER': Intl.get('call.record.state.no.answer', '未接听'),
     'BUSY': Intl.get('call.record.state.busy', '用户忙')
 };
+//是否普通销售
+let isCommonSales = userData.getUserData().isCommonSales;
 let searchInputTimeOut = null;
 var audioMsgEmitter = require('PUB_DIR/sources/utils/emitters').audioMsgEmitter;
 // 通话状态的常量
@@ -612,7 +614,7 @@ class CallRecord extends React.Component {
 
     //通话记录表格列
     getCallRecordColumns = () => {
-        return [
+        let list = [
             {
                 title: this.getColumnTitle('type', Intl.get('common.type', '类型')),
                 dataIndex: 'type',
@@ -782,6 +784,12 @@ class CallRecord extends React.Component {
                 }
             }
         ];
+        if(isCommonSales){
+            list = _.filter(list,(o) => {
+                return o.dataIndex !== 'nick_name' && o.dataIndex !== 'sales_team';
+            });
+        }
+        return list;
     };
 
     // 检测回车，触发确认对话框

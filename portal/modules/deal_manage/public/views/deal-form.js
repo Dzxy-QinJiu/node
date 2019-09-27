@@ -149,9 +149,13 @@ class DealForm extends React.Component {
     };
     //渲染添加客户内容
     renderAddCustomer = () => {
+        let customerName = _.get(this.state.formData,'customer.name');
         return (
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
+                formData={{
+                    name: customerName
+                }}
             />
         );
     };

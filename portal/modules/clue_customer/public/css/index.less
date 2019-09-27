@@ -22,7 +22,7 @@
       float: left;
       .search-input-wrapper {
         float: left;
-        .hide-filter-input{
+        .hide-filter-input {
           width: 0;
         }
         .search-wrapper {
@@ -89,7 +89,7 @@
           border-color: @BUTTON-HOVER;
         }
       }
-      .manual-add-btn{
+      .manual-add-btn {
         height: 32px;
       }
       button.ant-btn-primary {
@@ -111,8 +111,7 @@
     right: 0;
     left: 70px;
     bottom: 0;
-    padding-left: 24px;
-    padding-right:12px;
+    padding-right: 12px;
     //线索刷新列表提示
     .new-clue-prompt {
       position: relative;
@@ -198,14 +197,14 @@
           font-weight: initial;
           color: #333333;
         }
-        .range-datepicker {
-          margin-top: 2px;
-          .datepicker_wrap {
-            position: fixed;
-            top: 129px;
-            left: 103px !important;
+        .ant-calendar-picker{
+          .ant-calendar-picker-input {
+            .ant-calendar-range-picker-input{
+              height: 20px;
+            }
           }
         }
+
       }
 
     }
@@ -213,67 +212,89 @@
       padding-left: @filter-width + 27px;
       padding-top: 10px;
       &.content-full {
-        padding-left: 0;
+        padding-left: 24px;
       }
       .ant-table tbody .current-row:hover,
       .ant-table tbody .current-row {
         background: #DFEAF3 !important;
       }
-      .clue-status-wrap{
+      .clue-status-wrap {
         position: absolute;
         font-size: 14px;
-        color:#999;
+        color: #999;
         left: 70px;
         top: 20px;
         z-index: 10;
-        &.firefox-padding{
+        &.firefox-padding {
           left: 120px;
         }
-        &.show-clue-filter{
-          left: 400px;
+        &.show-clue-filter {
+          left: 370px;
         }
-        &.status-type-hide{
+        &.status-type-hide {
           visibility: hidden;
         }
-        &.has-refresh-tip{
+        &.has-refresh-tip {
           top: 58px;
         }
-        .clue-status-tab{
+        .clue-status-tab {
           display: inline-block;
           padding: 0px 0 6px 0;
           margin-right: 20px;
           font-size: 14px;
           cursor: pointer;
-          color:#999;
-          .clue-status-num{
+          color: #999;
+          .clue-status-num {
             padding-left: 5px;
           }
-          &.active-tab{
+          &.active-tab {
             color: @has-follow-color;
             border-bottom: 2px solid @has-follow-color;
           }
         }
       }
       //table表格中相关样式的调整
-      #clue-content-block #area.clue-customer-list{
-        td, th{
-          border-right:none !important;
+      #clue-content-block #area.clue-customer-list {
+        td, th {
+          border-right: none !important;
         }
-        th{
+        th {
           position: relative;
-          padding-bottom: 0!important;
+          padding-bottom: 0 !important;
           height: 40px;
         }
 
-
-        .ant-table-tbody{
-          tr{
-            .icon-active-call_record-ico{
-              visibility:hidden;
+        .ant-table-tbody {
+          tr {
+            .icon-active-call_record-ico {
+              visibility: hidden;
             }
-            &:hover{
-              .icon-active-call_record-ico{
+            &:hover {
+              .icon-active-call_record-ico {
                 visibility: visible;
+              }
+            }
+          }
+          .action-td-clue {
+            .release-clue-btn {
+              float: left;
+              transform: translateY(2px);
+              width: 25px;
+              height: 28px;
+              margin-left: 6px;
+              .icon-release {
+                font-size: 14px;
+                margin-left: 6px;
+              }
+            }
+            .order-btn-class {
+              margin-left: 10px;
+              width: 25px;
+              text-align: center;
+              font-size: 16px;
+              border-radius: 100px;
+              .icon-delete {
+                font-size: 18px;
               }
             }
           }
@@ -285,7 +306,7 @@
             margin-right: 8px;
             font-size: 14px;
             font-weight: bold;
-            padding:4px;
+            padding: 4px;
           }
           .clue-name {
             cursor: pointer;
@@ -295,47 +316,47 @@
             .clue-name-item {
               margin-right: 4px;
             }
-            .icon-new-clue{
+            .icon-new-clue {
               display: inline-block;
               width: 20px;
               height: 20px;
               position: relative;
-              top:4px;
+              top: 4px;
               margin-right: 4px;
               background: transparent url("../../../../static/images/new.png") 0 0;
             }
           }
-          .clue-trace-content{
+          .clue-trace-content {
             margin-top: 5px;
             font-size: 14px;
-            color:#777;
+            color: #777;
           }
         }
-        .recent-contacter-detail{
+        .recent-contacter-detail {
           background: none;
           padding: 0;
           overflow: hidden;
-          text-overflow:ellipsis;
+          text-overflow: ellipsis;
           white-space: nowrap;
-          &.has-more-icon{
+          &.has-more-icon {
             min-width: 180px;
           }
         }
         //联系人面板
-        .contact-container{
+        .contact-container {
           position: relative;
-          .contact-name{
+          .contact-name {
             display: inline-block;
             max-width: 82px;
             overflow: hidden;
-            text-overflow:ellipsis;
+            text-overflow: ellipsis;
             white-space: nowrap;
             position: relative;
-            top:6px;
+            top: 6px;
           }
-          .iconfont.icon-more{
+          .iconfont.icon-more {
             position: absolute;
-            color:#ddd;
+            color: #ddd;
             font-size: 25px;
             cursor: pointer;
             right: 0;
@@ -343,54 +364,55 @@
           }
         }
         //当前跟进人
-        .handle-and-trace{
+        .handle-and-trace {
           font-size: 14px;
-          &.assign-privilege{
+          &.assign-privilege {
             cursor: pointer;
           }
         }
         //跟进内容
-        .clue-foot{
+        .clue-foot {
           //編輯跟进内容
-          .edit-trace-content{
+          .edit-trace-content {
             padding: 14px 28px 12px 4px;
-            .ant-alert-error{
+            .ant-alert-error {
               width: 100%;
             }
-            .save-cancel-btn{
-              margin-top:8px;
+            .save-cancel-btn {
+              margin-top: 8px;
               text-align: right;
-              button{
-               margin-left: 4px;
+              button {
+                margin-left: 4px;
               }
             }
           }
           //展示跟进内容
-          .foot-text-content{
-            .add-trace-content{
-              cursor:pointer;
-            };
-            .trace-author{
-              .trace-name{
+          .foot-text-content {
+            .add-trace-content {
+              cursor: pointer;
+            }
+          ;
+            .trace-author {
+              .trace-name {
                 font-weight: bold;
-                margin:0 10px;
+                margin: 0 10px;
               }
             }
-            .iconfont.icon-edit-btn{
+            .iconfont.icon-edit-btn {
               cursor: pointer;
               margin-left: 10px;
             }
 
           }
-          .record-trace-container{
-            .trace-time{
+          .record-trace-container {
+            .trace-time {
               margin-right: 10px;
             }
           }
 
         }
         //关联客户
-        .avalibity-or-invalid-container{
+        .avalibity-or-invalid-container {
           .edit-invalid-trace-content {
             padding: 14px 28px 12px 4px;
             .ant-alert-error {
@@ -404,25 +426,25 @@
               }
             }
           }
-          .invalid-confirm{
-            button.confirm-btn{
-              color:#fff;
+          .invalid-confirm {
+            button.confirm-btn {
+              color: #fff;
               margin-right: 10px;
               border-color: #f04134;
               background-color: #f04134;
             }
           }
           //有效客户
-          .avalibility-container{
-            .associate-btn{
+          .avalibility-container {
+            .associate-btn {
               margin-right: 24px;
             }
-            .associate-customer{
-              .customer-name{
+            .associate-customer {
+              .customer-name {
                 cursor: pointer;
               }
-              .arrow-right{
-                margin-left:5px;
+              .arrow-right {
+                margin-left: 5px;
               }
             }
           }
@@ -434,7 +456,7 @@
         }
       }
       //线索标签
-      .clue-label{
+      .clue-label {
         transform: translateY(-2px);
         display: inline-block;
         height: 20px;
@@ -443,13 +465,13 @@
         margin-right: 4px;
         margin-left: 0;
         font-size: 12px;
-        font-weight:normal;
+        font-weight: normal;
         color: @white_color;
       }
       .clue-label.intent-tag-style {
         color: #EFA246;
         background: #fff;
-        border:1px solid #EFA246;
+        border: 1px solid #EFA246;
         border-radius: 4px;
       }
     }
@@ -490,12 +512,12 @@
     }
   }
   //添加客户的面板的z-index设置大一些，避免被线索详情覆盖
-  .right-panel-modal.crm-add-container{
-    z-index:120;
+  .right-panel-modal.crm-add-container {
+    z-index: 120;
   }
   //转化客户的面板的z-index设置大一些，避免被线索详情覆盖
-  .clue-right-panel.clue-to-customer-panel{
-    z-index:121;
+  .clue-right-panel.clue-to-customer-panel {
+    z-index: 121;
   }
 }
 
@@ -526,65 +548,58 @@
     color: #58ABF5;
   }
 }
+
 //表格中样式的调整
-#app #clue-content-block .ant-table{
-  tr.ant-table-row.invalid-clue{
-    td{
-      opacity:0.5;
+#app #clue-content-block {
+  .ant-table {
+    tr.ant-table-row.invalid-clue {
+      td {
+        opacity: 0.5;
+      }
+      td.invalid-td-clue {
+        opacity: 1;
+      }
     }
-    td.invalid-td-clue{
-      opacity: 1;
+    tr > td {
+      font-size: 14px;
+      .can-edit {
+        cursor: pointer;
+      }
+      .clue-stage.will-distribute {
+        background: @will-distribute-background;
+        color: @will-distribute-color;
+      }
+      .clue-stage.has-distribute {
+        background: @has-distribute-background;
+        color: @has-distribute-color;
+      }
+      .clue-stage.has-follow {
+        color: @has-follow-color;
+        background: @has-follow-background;
+      }
+      .clue-stage.has-transfer {
+        color: @has-transfer-color;
+        background: @has-transfer-background;
+      }
+      .clue-stage.has-invalid {
+        color: @has-invalid-color;
+        background: @has-invalid-background;
+      }
     }
+
   }
-  tr>td{
-    font-size: 14px;
-    .can-edit{
-      cursor: pointer;
-    }
-    .clue-stage.will-distribute {
-      background: @will-distribute-background;
-      color: @will-distribute-color;
-    }
-    .clue-stage.has-distribute {
-      background: @has-distribute-background;
-      color: @has-distribute-color;
-    }
-    .clue-stage.has-follow {
-      color: @has-follow-color;
-      background: @has-follow-background;
-    }
-    .clue-stage.has-transfer {
-      color: @has-transfer-color;
-      background: @has-transfer-background;
-    }
-    .clue-stage.has-invalid {
-      color: @has-invalid-color;
-      background: @has-invalid-background;
-    }
+  .ant-table-pagination li:first-child {
+    position: absolute;
+    left: 5px;
+  }
+  .load8.spinner-fix{
+    left: 0;
   }
 }
-.norm-add-dropdown{
-  li{
+
+.norm-add-dropdown {
+  li {
     font-size: 14px;
     text-align: center;
-  }
-}
-//批量分配popover错误提示框
-.batch-invalid-popover {
-  .ant-popover-inner-content {
-    overflow: hidden;
-    //申请时错误提示
-    .batch-error-tip {
-      font-size: 14px;
-      .icon-warn-icon {
-        position: relative;
-        color: @reply-message-tip-color;
-        margin-right:4px;
-      }
-      .batch-error-text {
-        margin-left: 5px;
-        color: #333333;
-      }
-    }
   }
 }

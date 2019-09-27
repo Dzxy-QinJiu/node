@@ -1,6 +1,6 @@
 var React = require('react');
 require('./css/index.less');
-import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm} from 'antd';
+import { Tag, Modal, message, Button, Icon, Dropdown, Menu, Popconfirm, Popover} from 'antd';
 import { AntcTable } from 'antc';
 var RightContent = require('../../../components/privilege/right-content');
 var FilterBlock = require('../../../components/filter-block');
@@ -15,6 +15,7 @@ var CrmStore = require('./store/crm-store');
 var FilterStore = require('./store/filter-store');
 var FilterAction = require('./action/filter-actions');
 var CrmAction = require('./action/crm-actions');
+// var CRMAddForm = require('./views/crm-add-form');
 var CRMAddForm = require('./views/crm-add-form');
 var CrmFilter = require('./views/crm-filter');
 var CrmFilterPanel = require('./views/crm-filter-panel');
@@ -493,25 +494,10 @@ class Crm extends React.Component {
         this.setState({ tableHeight, filterPanelHeight });
     };
 
-    confirmDelete = (cusId, cusName) => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.cus-op'), '删除客户');
-        this.state.currentId = cusId;
-        this.state.deleteCusName = cusName;
-        this.state.showDeleteConfirm = true;
-        this.setState(this.state);
-    };
-
-    hideDeleteModal = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-cancel'), '关闭删除客户的确认模态框');
-        this.state.showDeleteConfirm = false;
-        this.setState(this.state);
-    };
-
-    deleteCustomer = () => {
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.modal-footer .btn-ok'), '确定删除客户');
-        this.hideDeleteModal();
-        if(this.state.currentId){
-            CrmAction.deleteCustomer(this.state.currentId);
+    confirmDelete = (cusId) => {
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-btn .ant-btn-primary'), '确定删除客户');
+        if(cusId){
+            CrmAction.deleteCustomer(cusId);
         }
     };
 
@@ -1211,6 +1197,15 @@ class Crm extends React.Component {
                 >
                     {isWebMini ? <i className="iconfont icon-search-repeat" /> : <Button>{Intl.get('crm.1', '客户查重')}</Button>}
                 </PrivilegeChecker>
+                <Popover content={'crm.customer.pool.explain', '存放释放的客户'}
+                    trigger="hover"
+                    placement="bottom"
+                    overlayClassName="explain-pop">
+                    <Button className='btn-item customer-pool-btn' 
+                        onClick={this.props.showCustomerPool}>
+                        {Intl.get('crm.customer.pool', '客户池')}
+                    </Button>
+                </Popover>
                 {hasPrivilege('CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD')
                 || hasPrivilege('CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD') ? (
                         <div className={btnClass + ' customer-recycle-btn btn-m-r-2'}
@@ -1218,10 +1213,16 @@ class Crm extends React.Component {
                             onClick={this.props.showCustomerRecycleBin}
                         >
                             {isWebMini ? <i className="iconfont icon-delete handle-btn-item"/> :
-                                <Button>{Intl.get('crm.customer.recycle.bin', '回收站')}</Button>}
+                                <Popover content={'crm.customer.recycle.bin.explain', '存放删除或合并的客户'}
+                                    trigger="hover"
+                                    placement="bottomRight"
+                                    overlayClassName="explain-pop">
+                                    <Button>
+                                        {Intl.get('crm.customer.recycle.bin', '回收站')}
+                                    </Button>
+                                </Popover>}
                         </div>) : null
                 }
-                <Button className='btn-item customer-pool-btn' onClick={this.props.showCustomerPool}>{Intl.get('crm.customer.pool', '客户池')}</Button>
             </div>);
         }
     };
@@ -1376,8 +1377,19 @@ class Crm extends React.Component {
             { curPageCustomers: curPageCustomers }
         );
         CrmAction.updateCustomer(interestObj, (errorMsg) => {
-            //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
-            if (errorMsg) {
+            if (!errorMsg) {
+                if(interestObj.user_id){
+                    message.success(Intl.get('crm.customer.interested.succ', '添加关注成功'));
+                }else{
+                    message.success(Intl.get('crm.customer.uninterested.succ', '取消关注成功'));
+                }
+            }else{
+                if(interestObj.user_id){
+                    message.error(Intl.get('crm.customer.interested.error', '添加关注失败'));
+                }else{
+                    message.error(Intl.get('crm.customer.uninterested.error', '取消关注失败'));
+                }
+                //将星星的颜色修改回原来的状态及是否关注的状态改成初始状态
                 //还原详情中的关注图标颜色
                 if(this.state.currentId === interestObj.id) {
                     let detailCustomer = _.find(initalCurPageCustomers, item => item.id === interestObj.id);
@@ -1919,11 +1931,20 @@ class Crm extends React.Component {
                         <span>
                             <span className="cus-op" data-tracename="删除客户">
                                 {isDeleteBtnShow ? (
-                                    <Button className="order-btn-class delete-btn handle-btn-item" 
-                                        onClick={isRepeat ? _this.deleteDuplicatImportCustomer.bind(_this, index) : _this.confirmDelete.bind(null, record.id, record.name)}
-                                        title={Intl.get('common.delete', '删除')} >
-                                        <i className="iconfont icon-delete"></i>
-                                    </Button>
+                                    isRepeat ?
+                                        <Button className="order-btn-class delete-btn handle-btn-item" 
+                                            onClick={_this.deleteDuplicatImportCustomer.bind(_this, index)}
+                                            title={Intl.get('common.delete', '删除')} >
+                                            <i className="iconfont icon-delete"></i>
+                                        </Button> : 
+                                        <Popconfirm placement="topRight" 
+                                            onConfirm={this.confirmDelete.bind(this,record.id)}
+                                            title={Intl.get('crm.customer.delete', '删除后，您可以从回收站中找回客户')}>
+                                            <a className='release-customer'
+                                                title={Intl.get('common.delete', '删除')}>
+                                                <i className="iconfont icon-delete order-btn-class handle-btn-item"></i>
+                                            </a>
+                                        </Popconfirm>
                                 ) : null}
                             </span>
                             {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
@@ -2031,6 +2052,7 @@ class Crm extends React.Component {
                                         filterPanelHeight={this.state.filterPanelHeight}
                                         changeTableHeight={this.changeTableHeight}
                                         isExtractSuccess={this.props.isExtractSuccess}
+                                        toggleList={this.toggleList.bind(this)}
                                     />
                                 </div> : null
                         }
@@ -2118,28 +2140,6 @@ class Crm extends React.Component {
                         /> : null
                     }
                 </RightPanel>
-                <BootstrapModal
-                    show={this.state.showDeleteConfirm}
-                    onHide={this.hideDeleteModal}
-                    container={this}
-                    aria-labelledby="contained-modal-title"
-                >
-                    <BootstrapModal.Header closeButton>
-                        <BootstrapModal.Title />
-                    </BootstrapModal.Header>
-                    <BootstrapModal.Body>
-                        <p>
-                            {Intl.get('crm.15', '是否删除{cusName}？', { cusName: this.state.deleteCusName })}
-                        </p>
-                    </BootstrapModal.Body>
-                    <BootstrapModal.Footer>
-                        <BootstrapButton className="btn-ok" onClick={this.deleteCustomer}><ReactIntl.FormattedMessage
-                            id="common.sure" defaultMessage="确定" /></BootstrapButton>
-                        <BootstrapButton className="btn-cancel"
-                            onClick={this.hideDeleteModal}><ReactIntl.FormattedMessage id="common.cancel"
-                                defaultMessage="取消" /></BootstrapButton>
-                    </BootstrapModal.Footer>
-                </BootstrapModal>
             </div>
         </RightContent>);
     }

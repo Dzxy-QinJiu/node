@@ -219,7 +219,8 @@ class AddSalesOpportunityApply extends React.Component {
                                     >
                                         {getFieldDecorator('customer', {
                                             rules: [{validator: _this.checkCustomerName}],
-                                            initialValue: ''
+                                            initialValue: '',
+                                            validateTrigger: 'onBlur'
                                         })(
                                             <CustomerSuggest
                                                 field='customer'
@@ -251,7 +252,8 @@ class AddSalesOpportunityApply extends React.Component {
                                                 // 先remove是处理已经带着逗号的数字，parse后会有多个逗号的问题
                                                 return parseAmount(removeCommaFromNum(event.target.value));
                                             },
-                                            initialValue: ''
+                                            initialValue: '',
+                                            validateTrigger: 'onBlur'
                                         })(
                                             <Input
                                                 name="budget"
@@ -267,6 +269,7 @@ class AddSalesOpportunityApply extends React.Component {
                                         {
                                             getFieldDecorator('apps',{
                                                 rules: [{required: true, message: Intl.get('leave.apply.select.atleast.one.app','请选择至少一个产品')}],
+                                                validateTrigger: 'onBlur'
                                             })(
                                                 <Select
                                                     mode='multiple'
@@ -302,7 +305,8 @@ class AddSalesOpportunityApply extends React.Component {
                                         {...formItemLayout}
                                     >
                                         {getFieldDecorator('remark', {
-                                            initialValue: ''
+                                            initialValue: '',
+                                            validateTrigger: 'onBlur'
                                         })(
                                             <Input
                                                 type="textarea" id="remark" rows="3"

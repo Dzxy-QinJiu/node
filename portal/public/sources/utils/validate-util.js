@@ -37,9 +37,9 @@ export const pathParamRegex = /:([a-zA-Z_\-0-9]+)/g;
 //普通的电话号码
 export const commonPhoneRegex = /^1[3456789]\d{9}$/;
 // 区号 座机电话
-export const areaPhoneRegex = /^(0\d{2,3}-?)?[02-9]\d{6,7}$/;
+export const areaPhoneRegex = /^0\d{2,3}-?[02-9]\d{6,7}$/;
 // 可自动填充横线的 座机电话
-export const autoLineAreaPhoneRegex = /^((010|02\d|0[3-9]\d{2}|852|853)-?)?[02-9]\d{6,7}$/;
+export const autoLineAreaPhoneRegex = /^(010|02\d|0[3-9]\d{2}|852|853)-?[02-9]\d{6,7}$/;
 // 400 客服电话
 export const hotlinePhoneRegex = /^400-?\d{3}-?\d{4}$/;
 //1010开头的电话
@@ -66,6 +66,26 @@ exports.checkQQ = (rule, value, callback) => {
         }
     }
 };
+//微信验证，微信验证允许输入手机号、微信号、QQ号
+exports.checkWechat = (rule,value,callback) => {
+    value = _.trim(value);
+    if(value) {
+        if((commonPhoneRegex.test(value)) || 
+        (wechatRegex.test(value)) || 
+        (qqRegex.test(value))){
+            callback();
+        }else{
+            callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
+        }
+    }else{
+        if (rule.required) {
+            callback(new Error(Intl.get('common.correct.no.wechat', '请输入微信号')));
+        } else {
+            callback();
+        }
+    }
+};
+
 //IP的正则表达式
 export const ipRegex = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/;
 
@@ -152,7 +172,19 @@ export const productNameRule = {
     pattern: productNameLengthRule,
     message: Intl.get('product.name.rule', '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间'),
 };
-
+// 线索分配策略长度的验证规则（包含大小写字母、下划线、中英文括号、点及汉字，长度1-10之间）
+export const clueAssignmentStrategyRule = regex.getNameRegex(10);
+export const clueAssignmentStrategyForValidator = {
+    required: true,
+    min: 1,
+    max: 10,
+    message: Intl.get('clue.assignment.name.required.tip', '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间')
+};
+export const clueAssignmentStrategy = {
+    required: true,
+    pattern: clueAssignmentStrategyRule,
+    message: Intl.get('clue.assignment.name.required.tip', '线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间'),
+};
 // 用户名校验规则（字母、数字、横线或下划线组成的字符）
 export const userNameRule = /^[a-zA-Z0-9_-]{1,50}$/;
 

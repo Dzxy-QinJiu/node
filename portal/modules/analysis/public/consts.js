@@ -94,23 +94,23 @@ export const ACCOUNT_MENUS = {
         key: 'account_overall'
     },
     SIGNED: {
-        name:  Intl.get('user.login.analysis.signed','签约用户分析'),
+        name: Intl.get('user.login.analysis.signed','签约用户分析'),
         key: 'signed'
     },
     DELAYED: {
-        name:  Intl.get('user.login.analysis.delayed','延期用户分析'),
+        name: Intl.get('user.login.analysis.delayed','延期用户分析'),
         key: 'delayed'
     },
     EXPIRED: {
-        name:  Intl.get('user.login.analysis.expired','过期用户分析'),
+        name: Intl.get('user.login.analysis.expired','过期用户分析'),
         key: 'expired'
     },
     NEW_ADD: {
-        name:  Intl.get('user.login.analysis.new.add','新增用户分析'),
+        name: Intl.get('user.login.analysis.new.add','新增用户分析'),
         key: 'new_add'
     },
     NEW_ADD_EXPIRE: {
-        name:  Intl.get('user.login.analysis.new.expire','新增过期用户分析'),
+        name: Intl.get('user.login.analysis.new.expire','新增过期用户分析'),
         key: 'new_add_expire'
     }
 };
@@ -118,15 +118,15 @@ export const ACCOUNT_MENUS = {
 // 通话分析菜单
 export const CALL_MENUS = {
     INDEX: {
-        name:  Intl.get('user.login.analysis.call','通话分析'),
+        name: Intl.get('user.login.analysis.call','通话分析'),
         key: 'call'
     },
     NUMBER_DURATION: {
-        name:  Intl.get('user.login.analysis.number.durant','数量与时长统计'),
+        name: Intl.get('user.login.analysis.number.durant','数量与时长统计'),
         key: 'number_duration'
     },
     OTHER: {
-        name:  Intl.get('user.login.analysis.call.other','其他分析'),
+        name: Intl.get('user.login.analysis.call.other','其他分析'),
         key: 'call_other'
     }
 };

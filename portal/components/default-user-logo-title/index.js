@@ -1,9 +1,8 @@
 /**
  * Created by xiaojinfeng on 2016/04/28.
  */
-var React = require('react');
 require('./default-img-title.less');
-var classNames = require('classnames');
+const classNames = require('classnames');
 
 class DefaultUserLogoTitle extends React.Component {
     state = {
@@ -41,10 +40,20 @@ class DefaultUserLogoTitle extends React.Component {
                 (<div
                     className={headIconDefIconClass}
                     style={this.props.style}
-                >{nickName.substr(0, 1)}</div>)
+                ><i className="iconfont icon-user-ico"></i></div>)
         );
     }
 }
+
+DefaultUserLogoTitle.propTypes = {
+    className: PropTypes.string,
+    userName: PropTypes.string,
+    nickName: PropTypes.string,
+    name: PropTypes.string,
+    defaultImgClass: PropTypes.string,
+    style: PropTypes.string,
+    userLogo: PropTypes.string,
+};
 
 module.exports = DefaultUserLogoTitle;
 

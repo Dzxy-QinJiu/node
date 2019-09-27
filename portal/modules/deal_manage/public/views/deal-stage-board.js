@@ -13,6 +13,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DealCard from './deal-card';
 import dealBoardAction from '../action/deal-board-action';
 import {formatNumHasDotToFixed} from 'PUB_DIR/sources/utils/common-method-util';
+import {orderEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {num as antUtilsNum} from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
 const BOARD_TITLE_HEIGHT = 40;//看板卡片头部标题的高度
@@ -21,13 +22,33 @@ const BOARD_CARD_MARGIN = 20;//看板卡片的marginRight
 class DealStageBoard extends React.Component {
 
     //监听下拉加载
-    handleScrollBarBottom = () => {
+    handleScrollBarBottom = (type) => {
         let stageName = _.get(this.props, 'stageObj.stage', '');
         if (stageName) {
             let pageNum = _.get(this.props, 'stageObj.pageNum', 1);
-            dealBoardAction.getStageDealList(stageName, this.props.searchObj, pageNum);
+            dealBoardAction.getStageDealList(stageName, this.props.searchObj, pageNum, type);
         }
     };
+
+    componentDidMount = () => {
+        orderEmitter.on(orderEmitter.REFRESH_ORDER_LIST, this.refreshOrderList);
+    }
+
+    componentWillUnMount = () => {
+        orderEmitter.removeListener(orderEmitter.REFRESH_ORDER_LIST, this.refreshOrderList);
+    }
+
+    refreshOrderList = () => {
+        let total = _.get(this.props, 'stageObj.total', 0);
+        let list = _.get(this.props, 'stageObj.list', []);
+        //当前列表长度小于总长度时并且总长度的个数大于20个时，更新列表
+        if(list.length <= total && total >= 20) {
+            //服务器端有延迟，一秒后再更新
+            setTimeout(() => {
+                this.handleScrollBarBottom('update');
+            }, 1000);
+        }
+    }
 
     renderDealCardList() {
         let stageObj = this.props.stageObj;

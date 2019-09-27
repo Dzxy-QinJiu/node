@@ -1,3 +1,6 @@
+// 错误提示的字体以及边框颜色
+@error_tips_color: #f04134;
+
 .competing-product-container {
   padding: 12px;
   .competing-product-content-wrap {
@@ -7,12 +10,21 @@
       height: 80px;
       border-bottom: 1px solid #E5E5E5;
       .pull-left {
-        .add-input {
-          width: 225px;
+        .ant-form-item {
+          display: inline-block;
+          input {
+            min-width: 225px;
+          }
         }
         .add-btn {
           height: 30px;
           border-radius: 3px;
+        }
+        .competing-product-check {
+          float: left;
+          width: 100%;
+          margin-top: -22px;
+          color: @error_tips_color;
         }
       }
     }
@@ -50,6 +62,7 @@
               height: 24px;
               border-radius: 50%;
               background-color: #8DA8C5;
+              padding-left: 1px;
               .icon-delete {
                 color: #fff;
                 width: 14px;

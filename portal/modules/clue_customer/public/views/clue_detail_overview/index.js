@@ -1,4 +1,4 @@
-import { emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/sources/utils/validate-util';
+import { emailRegex, qqRegex, checkWechat } from 'PUB_DIR/sources/utils/validate-util';
 
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -58,6 +58,7 @@ import ClueTraceAction from '../../action/clue-trace-action';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import {sourceClassifyArray, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -293,6 +294,14 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
+    cancelEditSourceClassify = () => {
+        let curClue = this.state.curClue;
+        curClue.source_classify = this.props.curClue.source_classify;
+        this.setState({
+            curClue: curClue
+        });
+    };
+
     cancelEditSales = () => {
         var curClue = this.state.curClue;
         curClue.user_name = this.props.curClue.user_name;
@@ -329,6 +338,13 @@ class ClueDetailOverview extends React.Component {
     onSelectClueSales = (updateUser) => {
         var curClue = this.state.curClue;
         curClue.user_name = updateUser;
+        this.setState({
+            curClue: curClue
+        });
+    };
+    onSelectSourceClassify = (updateSource) => {
+        let curClue = this.state.curClue;
+        curClue.source_classify = updateSource;
         this.setState({
             curClue: curClue
         });
@@ -1007,6 +1023,19 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
+    //获取集客方式
+    getSourceClassify = (sourceClassify) => {
+        let displayText = '';
+        if(_.isEqual(sourceClassify, SOURCE_CLASSIFY.OTHER)) {
+            displayText = '';
+        } else {
+            let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
+            if(!_.isEmpty(displayObj)){
+                displayText = displayObj.name;
+            }
+        }
+        return displayText;
+    };
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
@@ -1047,6 +1076,28 @@ class ClueDetailOverview extends React.Component {
                                 noDataTip={Intl.get('common.unknown', '未知')}
                                 addDataTip={Intl.get('clue.add.clue.describe', '添加线索描述')}
                                 placeholder={Intl.get('clue.add.clue.placeholder', '请填写线索描述')}
+                            />
+                        </div>
+                    </div>
+                    <div className="clue-info-item">
+                        <div className="clue-info-label">
+                            {Intl.get('crm.clue.client.source', '集客方式')}
+                        </div>
+                        <div className="clue-info-detail source-classify">
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                id={curClue.id}
+                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'source_classify')}
+                                cancelEditField={this.cancelEditSourceClassify}
+                                selectOptions={sourceClassifyOptions}
+                                displayText={this.getSourceClassify(curClue.source_classify)}
+                                onSelectChange={this.onSelectSourceClassify}
+                                value={curClue.source_classify}
+                                placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择集客方式')}
+                                addDataTip={Intl.get('crm.clue.client.source.add', '添加集客方式')}
+                                field="source_classify"
+                                noDataTip={Intl.get('common.unknown', '未知')}
                             />
                         </div>
                     </div>
@@ -1211,10 +1262,7 @@ class ClueDetailOverview extends React.Component {
                                                 type='input'
                                                 label={Intl.get('crm.58', '微信')}
                                                 hasEditPrivilege={hasPrivilegeEdit}
-                                                validateRules={[{
-                                                    message: Intl.get('common.correct.wechat','请输入正确的微信号'),
-                                                    pattern: wechatRegex,
-                                                }]}
+                                                validateRules={[{validator: checkWechat}]}
                                                 placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                                 saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'weChat',id: contactItem.id})}
                                                 noDataTip={Intl.get('crm.contact.wechat.none', '暂无微信')}
@@ -1256,6 +1304,45 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
+
+    renderClueSimilarLists = (listItem, isSimilarClue) => {
+        let warningContent = (
+            <span className="client-error-tip">
+                <span className="iconfont icon-warn-icon"></span>
+                <span className="client-error-text">
+                    {isSimilarClue ? Intl.get('clue.check.customer.detail.warning', '此线索已在其他销售名下') : Intl.get('common.check.customer.detail.warning', '此客户已在其他销售名下')}
+                </span>
+            </span>);
+        let curClue = this.state.curClue;
+        //查看当前客户或线索是否属于此销售，如果不属于，用popover提示
+        let user_id = userData.getUserData().user_id;
+        let isMyClientsOrClues = _.isEqual(_.get(listItem, 'user_id'), user_id);
+        //展示相似客户，相似线索的时候判断当前客户或线索是否属于此销售，管理员也有权限查看
+        let hasPrivilege = (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClientsOrClues);
+        //如果在线索池中，相似客户相似线索都不能点击查看，只能展示
+        if(_.isEqual(curClue.clue_type,'clue_pool')){
+            return (<span>{listItem.name}</span>);
+        } else {
+            if(hasPrivilege) {
+                return (
+                    <div className="similar-title-name">
+                        <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
+                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                    </div>);
+            } else {
+                return (
+                    <Popover
+                        placement="topLeft"
+                        overlayClassName="client-invalid-popover"
+                        content={warningContent}
+                        trigger="click">
+                        <span>{listItem.name}</span> :
+                    </Popover>
+                );
+            }
+        }
+    }
+
     renderSimilarLists = (listType) => {
         var isSimilarClue = listType === 'clue';
         var moreListShowFlag = this.state.showLargerClueLists;
@@ -1268,13 +1355,6 @@ class ClueDetailOverview extends React.Component {
         if (!moreListShowFlag && listMoreThanThree){
             similarLists = _.cloneDeep(similarLists).splice(0,3);
         }
-        let warningContent = (
-            <span className="client-error-tip">
-                <span className="iconfont icon-warn-icon"></span>
-                <span className="client-error-text">
-                    {Intl.get('common.check.customer.detail.warning', '此客户已在其他销售名下')}
-                </span>
-            </span>);
         return (
             <div className="similar-content similar-customer-list">
                 <div className="similar-tip">
@@ -1284,27 +1364,10 @@ class ClueDetailOverview extends React.Component {
                 {_.map(similarLists,(listItem) => {
                     var sameContact = this.getSamePhoneContact(_.get(listItem,'contacts',[]));
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
-                    //查看当前客户是否属于此销售，如果不属于，用popover提示
-                    let user_id = userData.getUserData().user_id;
-                    let isMyClients = _.isEqual(_.get(listItem, 'user_id'), user_id);
-                    //当展示的是相似线索的时候按照正常逻辑展示，展示相似客户的时候判断当前客户是否属于此销售，管理员也有权限查看
-                    let hasPrivilege = ((userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClients) && !isSimilarClue) || isSimilarClue;
                     return <div className="similar-block">
                         <div className="similar-title">
                             {isSimilarClue ? renderClueStatus(listItem) : null}
-                            {hasPrivilege ? (
-                                <div className="similar-title-name">
-                                    <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                                    {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
-                                </div>) :
-                                <Popover
-                                    placement="topLeft"
-                                    overlayClassName="client-invalid-popover"
-                                    content={warningContent}
-                                    trigger="click">
-                                    <span>{listItem.name}</span> :
-                                </Popover>
-                            }
+                            {this.renderClueSimilarLists(listItem, isSimilarClue)}
                         </div>
                         {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
                             return (
@@ -1371,7 +1434,8 @@ class ClueDetailOverview extends React.Component {
             showLargerClueLists: !this.state.showLargerClueLists
         });
     }
-    renderSimilarClueCustomerLists = () => {
+
+    renderClueCustomerLists = () => {
         if (_.get(this,'state.similarClueLists[0]') || _.get(this, 'state.similarCustomerLists[0]')){
             return (
                 <div className="similar-wrap">
@@ -1381,14 +1445,6 @@ class ClueDetailOverview extends React.Component {
             );
         }else{
             return null;
-        }
-    };
-    // 渲染相似客户
-    renderClueCustomerLists = (curClue) => {
-        if (curClue.clue_type === 'clue_pool') { // 线索池详情，不显示相似客户
-            return null;
-        } else {
-            return this.renderSimilarClueCustomerLists();
         }
     };
 
@@ -1439,7 +1495,7 @@ class ClueDetailOverview extends React.Component {
             <div className="clue-detail-container" data-tracename="线索基本信息" style={this.hasButtonTabHeight(curClue, associatedCustomer)}>
                 <GeminiScrollbar>
                     {this.renderClueBasicDetailInfo()}
-                    {this.renderClueCustomerLists(curClue)}
+                    {this.renderClueCustomerLists()}
                     {/*分配线索给某个销售*/}
                     {/*有分配的权限，但是该线索没有分配给某个销售的时候，展示分配按钮，其他情况都展示分配详情就可以*/}
                     <div className="assign-sales-warp clue-detail-block">

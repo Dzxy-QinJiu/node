@@ -11,8 +11,22 @@ const _ = require('lodash');
 const moment = require('moment');
 const multiparty = require('multiparty');
 const fs = require('fs');
-
 const DATE_FORMAT = oplateConsts.DATE_FORMAT;
+function getClueSourceClassify(backendIntl) {
+    return [
+        {
+            name: backendIntl.get('crm.clue.client.source.inbound', '市场'),
+            value: 'inbound'
+        },{
+            name: backendIntl.get( 'crm.clue.client.source.outbound', '自拓'),
+            value: 'outbound'
+        },{
+            name: backendIntl.get( 'crm.clue.client.source.other', '未知'),
+            value: 'other'
+        }
+    ];
+
+}
 function getClueDiffType(backendIntl) {
     return [
         {
@@ -36,16 +50,6 @@ function getClueDiffType(backendIntl) {
         }];
 }
 const contactWays = ['phone','qq','email','weChat'];
-//获取线索客户列表
-exports.getClueCustomerList = function(req, res) {
-    clueCustomerService.getClueCustomerList(req, res)
-        .on('success', function(data) {
-            res.status(200).json(data);
-        })
-        .on('error', function(err) {
-            res.status(500).json(err && err.message);
-        });
-};
 //获取线索来源
 exports.getClueSource = function(req, res) {
     clueCustomerService.getClueSource(req, res)
@@ -248,6 +252,10 @@ function getClueListColumns(backendIntl) {
             dataIndex: 'source_time',
         },
         {
+            title: backendIntl.get('crm.clue.client.source', '集客方式'),
+            dataIndex: 'source_classify'
+        },
+        {
             title: backendIntl.get('clue.analysis.source', '来源'),
             dataIndex: 'clue_source',
         },{
@@ -317,6 +325,13 @@ exports.exportData = function(req, res) {
                 if (column.dataIndex === 'source_time' && value){
                     value = moment(value).format(DATE_FORMAT);
                 }
+                if (column.dataIndex === 'source_classify' && value){
+                    const sourceClassifyArray = getClueSourceClassify(backendIntl);
+                    var targetObj = _.find(sourceClassifyArray,(item) => {
+                        return value === item.value;
+                    });
+                    value = _.get(targetObj,'name') || value;
+                }
                 if (column.dataIndex === 'contacts' && _.isArray(value)){
                     var contactDes = '';
                     _.forEach(value, (contactItem) => {
@@ -336,7 +351,7 @@ exports.exportData = function(req, res) {
 
                     traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
                     var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
-                    value = _.get(value,'[0].remark') + '(' + backendIntl.get('clue.export.trace.msg', '{traceman}于{tracetime}添加',{'traceman': tracePersonName, 'tracetime': traceAddTime}) + ')';
+                    value = _.get(value,'[0].remark','') + '(' + backendIntl.get('clue.export.trace.msg', '{traceman}于{tracetime}添加',{'traceman': tracePersonName, 'tracetime': traceAddTime}) + ')';
                 }
                 if (column.dataIndex === 'user_name' && item.sales_team){
                     value += `—${item.sales_team}`;

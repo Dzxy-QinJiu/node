@@ -1,6 +1,7 @@
 import {Col, Form, Input, Icon, Radio, DatePicker} from 'antd';
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+require('../../css/contact-form.less');
 var ContactUtil = require('../../utils/contact-util');
 var ContactAction = require('../../action/contact-action');
 import PhoneInput from 'CMP_DIR/phone-input';
@@ -26,13 +27,23 @@ function generatorBDS(value) {
 }
 
 // 联系方式键值映射
-const CONTACT_KEYS_MAP = {
+const CONTACT_WAY_KEYS_MAP = {
     PHONE: 'phone',
     QQ: 'qq',
     WE_CHAT: 'weChat',
     EMAIL: 'email'
 };
-
+//其他项键值映射
+const CONTACT_OTHER_KEYS = {
+    NAME: 'name',//联系人姓名
+    DEPARTMENT: 'department',//部门
+    POSITION: 'position',//职位
+    ROLE: 'role', //角色
+    SEX: 'sex',//性别
+    BIRTHDAY: 'birthday',//生日
+    HOBBY: 'hobby',//爱好
+    REMARK: 'remark',//备注
+};
 
 class ContactForm extends React.Component {
     constructor(props) {
@@ -53,10 +64,10 @@ class ContactForm extends React.Component {
             def_contancts: contact.def_contancts
         };
 
-        this.formatContact(CONTACT_KEYS_MAP.PHONE, contact.phone, formData);
-        this.formatContact(CONTACT_KEYS_MAP.QQ, contact.qq, formData);
-        this.formatContact(CONTACT_KEYS_MAP.WE_CHAT, contact.weChat, formData);
-        this.formatContact(CONTACT_KEYS_MAP.EMAIL, contact.email, formData);
+        this.formatContact(CONTACT_WAY_KEYS_MAP.PHONE, contact.phone, formData);
+        this.formatContact(CONTACT_WAY_KEYS_MAP.QQ, contact.qq, formData);
+        this.formatContact(CONTACT_WAY_KEYS_MAP.WE_CHAT, contact.weChat, formData);
+        this.formatContact(CONTACT_WAY_KEYS_MAP.EMAIL, contact.email, formData);
 
         this.state = {
             isLoading: false,
@@ -102,22 +113,22 @@ class ContactForm extends React.Component {
         var phoneArray = [], qqArray = [], weChatArray = [], emailArray = [];
         for (var key in formData) {
             let contactVal = _.trim(formData[key]);
-            if (key.indexOf(CONTACT_KEYS_MAP.PHONE) !== -1) {
+            if (key.indexOf(CONTACT_WAY_KEYS_MAP.PHONE) !== -1) {
                 if(contactVal) phoneArray.push(contactVal);
                 delete formData[key];
-                delete stateFormData[CONTACT_KEYS_MAP.PHONE];
-            } else if (key.indexOf(CONTACT_KEYS_MAP.QQ) !== -1) {
+                delete stateFormData[CONTACT_WAY_KEYS_MAP.PHONE];
+            } else if (key.indexOf(CONTACT_WAY_KEYS_MAP.QQ) !== -1) {
                 if(contactVal) qqArray.push(contactVal);
                 delete formData[key];
-                delete stateFormData[CONTACT_KEYS_MAP.QQ];
-            } else if (key.indexOf(CONTACT_KEYS_MAP.WE_CHAT) !== -1) {
+                delete stateFormData[CONTACT_WAY_KEYS_MAP.QQ];
+            } else if (key.indexOf(CONTACT_WAY_KEYS_MAP.WE_CHAT) !== -1) {
                 if(contactVal) weChatArray.push(contactVal);
                 delete formData[key];
-                delete stateFormData[CONTACT_KEYS_MAP.WE_CHAT];
-            } else if (key.indexOf(CONTACT_KEYS_MAP.EMAIL) !== -1) {
+                delete stateFormData[CONTACT_WAY_KEYS_MAP.WE_CHAT];
+            } else if (key.indexOf(CONTACT_WAY_KEYS_MAP.EMAIL) !== -1) {
                 if(contactVal) emailArray.push(contactVal);
                 delete formData[key];
-                delete stateFormData[CONTACT_KEYS_MAP.EMAIL];
+                delete stateFormData[CONTACT_WAY_KEYS_MAP.EMAIL];
             }
         }
         //联系人姓名和部门必填一项的验证
@@ -256,7 +267,7 @@ class ContactForm extends React.Component {
             formData[type].push(generatorBDS());
             _this.setState({formData});
 
-            ContactAction.addContactWay(_this.state.contact, type);
+            // ContactAction.addContactWay(_this.state.contact, type);
             Trace.traceEvent(ReactDOM.findDOMNode(_this), '添加新建联系人的联系方式' + type);
         };
     }
@@ -268,7 +279,7 @@ class ContactForm extends React.Component {
             formData[type].splice(index, 1);
 
             Trace.traceEvent(ReactDOM.findDOMNode(_this), '删除新建联系人的联系方式' + type);
-            _this.state.contact.contactWayAddObj[type] = _this.state.contact.contactWayAddObj[type].filter((x, idx) => idx !== index);
+            // _this.state.contact.contactWayAddObj[type] = _this.state.contact.contactWayAddObj[type].filter((x, idx) => idx !== index);
             _this.setState({
                 formData: _this.state.formData,
                 contact: _this.state.contact
@@ -281,7 +292,7 @@ class ContactForm extends React.Component {
         let values = this.props.form.getFieldsValue();
         let phoneArray = [];
         _.each(values, (val, key) => {
-            if (key.indexOf(CONTACT_KEYS_MAP.PHONE) !== -1) {
+            if (key.indexOf(CONTACT_WAY_KEYS_MAP.PHONE) !== -1) {
                 phoneArray.push(_.trim(val));
             }
         });
@@ -350,11 +361,15 @@ class ContactForm extends React.Component {
 
     //联系人名和部门必填一项的验证
     validateContactNameDepartment = (needReturn) => {
-        //是否通过联系人名和部门必填一项的验证
-        let formData = this.props.form.getFieldsValue(['name', 'department']);
-        let isValid = validateRequiredOne(formData.name, formData.department);
-        this.setState({isValidNameDepartment: isValid});
-        if(needReturn) return isValid;
+        if(this.props.isRequiredContactName) {
+            //是否通过联系人名和部门必填一项的验证
+            let formData = this.props.form.getFieldsValue(['name', 'department']);
+            let isValid = validateRequiredOne(formData.name, formData.department);
+            this.setState({isValidNameDepartment: isValid});
+            if(needReturn) return isValid;
+        }else {
+            if(needReturn) return true;
+        }
     };
 
     //渲染联系人名和部门必填一项的提示
@@ -384,7 +399,7 @@ class ContactForm extends React.Component {
      * @param formData: 联系人的表单数据
      */
     renderPhoneInput(index, size, formData) {
-        const phoneKey = CONTACT_KEYS_MAP.PHONE;
+        const phoneKey = CONTACT_WAY_KEYS_MAP.PHONE;
         const curPhone = formData[phoneKey][index];
         return (
             <div key={curPhone.id}>
@@ -399,7 +414,7 @@ class ContactForm extends React.Component {
                     wrapperCol={{span: 12}}
                     key={curPhone.id}
                     validateRules={this.getPhoneInputValidateRules()}
-                    suffix={this.renderContactWayBtns(index, size, CONTACT_KEYS_MAP.PHONE)}
+                    suffix={this.renderContactWayBtns(index, size, CONTACT_WAY_KEYS_MAP.PHONE)}
                     required={true}
                 />
                 {this.state.showNeedPhone && index === 0 ?
@@ -454,7 +469,7 @@ class ContactForm extends React.Component {
             formData
         };
         switch (type) {
-            case CONTACT_KEYS_MAP.QQ:
+            case CONTACT_WAY_KEYS_MAP.QQ:
                 wayOptions.label = 'QQ';
                 wayOptions.placeholder = Intl.get('member.input.qq', '请输入QQ号');
                 wayOptions.rules = [{
@@ -462,7 +477,7 @@ class ContactForm extends React.Component {
                     pattern: qqRegex,
                 }];
                 break;
-            case CONTACT_KEYS_MAP.WE_CHAT:
+            case CONTACT_WAY_KEYS_MAP.WE_CHAT:
                 wayOptions.label = Intl.get('crm.58', '微信');
                 wayOptions.placeholder = Intl.get('member.input.wechat', '请输入微信号');
                 wayOptions.rules = [{
@@ -470,7 +485,7 @@ class ContactForm extends React.Component {
                     pattern: wechatRegex,
                 }];
                 break;
-            case CONTACT_KEYS_MAP.EMAIL:
+            case CONTACT_WAY_KEYS_MAP.EMAIL:
                 wayOptions.label = Intl.get('common.email', '邮箱');
                 wayOptions.placeholder = Intl.get('member.input.email', '请输入邮箱');
                 wayOptions.rules = [{
@@ -487,176 +502,204 @@ class ContactForm extends React.Component {
         });
     }
 
-    renderContactForm = () => {
+    renderContactFormItems() {
         var formData = this.state.formData;
         let {getFieldDecorator} = this.props.form;
         const formLayout = {
             labelCol: {span: 3},
             wrapperCol: {span: 21}
-        }
-
-        return (
-            <Form layout='horizontal' style={{height: CONTACT_ITEMS_HEIGHHT}} className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
-                <GeminiScrollbar className="srollbar-out-card-style">
-                    <FormItem
-                        colon={false}
-                        label={Intl.get('common.name', '姓名')}
-                        {...formLayout}
-                        required={true}
-                    >
-                        <Col span={11} className="form-col-padding">
-                            <FormItem>
-                                {
-                                    getFieldDecorator('name', {
-                                        initialValue: _.get(formData, 'name', ''),
-                                        rules: [clueNameContactRule]
-                                    })(
-                                        <Input
-                                            name="name"
-                                            value={formData.name}
-                                            autocomplete="off"
-                                            placeholder={Intl.get('crm.contact.name.length', '请输入最多50个字符')}
-                                            onBlur={this.validateContactNameDepartment.bind(this)}
-                                        />
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                        <Col span={6} className="form-col-padding">
-                            <FormItem>
-                                {
-                                    getFieldDecorator('department', {
-                                        initialValue: _.get(formData, 'department', ''),
-                                    })(
-                                        <Input
-                                            value={formData.department}
-                                            autocomplete="off"
-                                            placeholder={Intl.get('crm.contact.deparment.input', '请输入部门')}
-                                            onBlur={this.validateContactNameDepartment.bind(this)}
-                                        />
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                        <Col span={6}>
-                            <FormItem>
-                                {
-                                    getFieldDecorator('position', {
-                                        initialValue: _.get(formData, 'position', ''),
-                                    })(
-                                        <Input
-                                            value={formData.position}
-                                            autocomplete="off"
-                                            placeholder={Intl.get('crm.114', '请输入职位')}
-                                        />
-                                    )
-                                }
-                            </FormItem>
-                        </Col>
-                    </FormItem>
-                    {this.renderValidNameDepartmentTip()}
-                    <FormItem
-                        className="contact-role-item"
-                        colon={false}
-                        label={Intl.get('user.apply.detail.table.role', '角色')}
-                        {...formLayout}
-                    >
-                        {
-                            getFieldDecorator('role', {
-                                initialValue: _.get(formData, 'role', ''),
-                            })(
-                                <RadioGroup
-                                    value={_.get(formData, 'role', Intl.get('crm.115', '经办人'))}>
-                                    {ContactUtil.roleArray.map(function(role, index) {
-                                        return (<Radio value={role} key={index}>{role}</Radio>);
-                                    })}
-                                </RadioGroup>
-                            )
-                        }
-                    </FormItem>
+        };
+        const formContent = (
+            <div>
+                <FormItem
+                    colon={false}
+                    label={Intl.get('common.name', '姓名')}
+                    {...formLayout}
+                    className="contact-name-wrapper"
+                    required={this.props.isRequiredContactName}
+                >
+                    <Col span={11} className="form-col-padding">
+                        <FormItem>
+                            {
+                                getFieldDecorator('name', {
+                                    initialValue: _.get(formData, 'name', ''),
+                                    rules: [clueNameContactRule]
+                                })(
+                                    <Input
+                                        name="name"
+                                        value={formData.name}
+                                        autocomplete="off"
+                                        placeholder={Intl.get('crm.contact.name.length', '请输入最多50个字符')}
+                                        onBlur={this.validateContactNameDepartment.bind(this)}
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+                    <Col span={6} className="form-col-padding">
+                        <FormItem>
+                            {
+                                getFieldDecorator('department', {
+                                    initialValue: _.get(formData, 'department', ''),
+                                })(
+                                    <Input
+                                        value={formData.department}
+                                        autocomplete="off"
+                                        placeholder={Intl.get('crm.contact.deparment.input', '请输入部门')}
+                                        onBlur={this.validateContactNameDepartment.bind(this)}
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+                    <Col span={6}>
+                        <FormItem>
+                            {
+                                getFieldDecorator('position', {
+                                    initialValue: _.get(formData, 'position', ''),
+                                })(
+                                    <Input
+                                        value={formData.position}
+                                        autocomplete="off"
+                                        placeholder={Intl.get('crm.114', '请输入职位')}
+                                    />
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+                </FormItem>
+                {this.renderValidNameDepartmentTip()}
+                <div className="contact-other-item-wrapper">
+                    {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.ROLE) ? null : (
+                        <FormItem
+                            className="contact-role-item"
+                            colon={false}
+                            label={Intl.get('user.apply.detail.table.role', '角色')}
+                            {...formLayout}
+                        >
+                            {
+                                getFieldDecorator('role', {
+                                    initialValue: _.get(formData, 'role', ''),
+                                })(
+                                    <RadioGroup
+                                        value={_.get(formData, 'role', Intl.get('crm.115', '经办人'))}>
+                                        {ContactUtil.roleArray.map(function(role, index) {
+                                            return (<Radio value={role} key={index}>{role}</Radio>);
+                                        })}
+                                    </RadioGroup>
+                                )
+                            }
+                        </FormItem>
+                    )}
                     {//电话
-                        _.map(formData[CONTACT_KEYS_MAP.PHONE], (contact, index) => {
-                            return this.renderPhoneInput(index, formData[CONTACT_KEYS_MAP.PHONE].length, formData);
+                        _.map(formData[CONTACT_WAY_KEYS_MAP.PHONE], (contact, index) => {
+                            return this.renderPhoneInput(index, formData[CONTACT_WAY_KEYS_MAP.PHONE].length, formData);
                         })
                     }
-                    {/*qq*/}
-                    {this.renderContactWayBlock(CONTACT_KEYS_MAP.QQ)}
-                    {/*微信*/}
-                    {this.renderContactWayBlock(CONTACT_KEYS_MAP.WE_CHAT)}
-                    {/*邮箱*/}
-                    {this.renderContactWayBlock(CONTACT_KEYS_MAP.EMAIL)}
+                    <div style={{display: this.props.isContactWayExpanded ? 'block' : 'none'}}>
+                        {/*qq*/}
+                        {this.renderContactWayBlock(CONTACT_WAY_KEYS_MAP.QQ)}
+                        {/*微信*/}
+                        {this.renderContactWayBlock(CONTACT_WAY_KEYS_MAP.WE_CHAT)}
+                        {/*邮箱*/}
+                        {this.renderContactWayBlock(CONTACT_WAY_KEYS_MAP.EMAIL)}
 
-                    <FormItem
-                        className="contact-sex-item"
-                        colon={false}
-                        label={Intl.get('crm.contact.sex', '性别')}
-                        {...formLayout}
-                    >
-                        {
-                            getFieldDecorator('sex', {
-                                initialValue: _.get(formData, 'sex', '')
-                            })(
-                                <Radio.Group
-                                >
-                                    {_.map(ContactUtil.sexArray, (sex, index) => {
-                                        return (<Radio key={index} value={sex}>{sex}</Radio>);
-                                    })}
-                                </Radio.Group>
-                            )
-                        }
-                    </FormItem>
-                    <FormItem
-                        className="contact-birthday-item"
-                        colon={false}
-                        label={Intl.get('crm.contact.birthday', '生日')}
-                        {...formLayout}
-                    >
-                        {
-                            getFieldDecorator('birthday', {
-                                initialValue: formData.birthday ? moment(formData.birthday, 'YYYY-MM-DD') : null
-                            })(
-                                <DatePicker
-                                    showToday={false}
-                                    disabledDate={disabledAfterToday}
-                                />
-                            )
-                        }
-                    </FormItem>
-                    <FormItem
-                        className="contact-hobby-item"
-                        colon={false}
-                        label={Intl.get('crm.contact.hobby', '爱好')}
-                        {...formLayout}
-                    >
-                        {
-                            getFieldDecorator('hobby', {
-                                initialValue: _.get(formData, 'hobby', '')
-                            })(
-                                <Input
-                                    value={_.get(formData, 'hobby', '')}
-                                    placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}
-                                />
-                            )
-                        }
-                    </FormItem>
-                    <FormItem
-                        className="contact-remark-item"
-                        colon={false}
-                        label={Intl.get('common.remark', '备注')}
-                        {...formLayout}
-                    >
-                        {
-                            getFieldDecorator('remark', {
-                                initialValue: _.get(formData, 'remark', '')
-                            })(
-                                <Input.TextArea
-                                    autosize={{minRows: 2, maxRows: 6}}
-                                    placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                />
-                            )
-                        }
-                    </FormItem>
+                        {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.SEX) ? null : (
+                            <FormItem
+                                className="contact-sex-item"
+                                colon={false}
+                                label={Intl.get('crm.contact.sex', '性别')}
+                                {...formLayout}
+                            >
+                                {
+                                    getFieldDecorator('sex', {
+                                        initialValue: _.get(formData, 'sex', '')
+                                    })(
+                                        <Radio.Group
+                                        >
+                                            {_.map(ContactUtil.sexArray, (sex, index) => {
+                                                return (<Radio key={index} value={sex}>{sex}</Radio>);
+                                            })}
+                                        </Radio.Group>
+                                    )
+                                }
+                            </FormItem>)}
+                        {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.BIRTHDAY) ? null : (
+                            <FormItem
+                                className="contact-birthday-item"
+                                colon={false}
+                                label={Intl.get('crm.contact.birthday', '生日')}
+                                {...formLayout}
+                            >
+                                {
+                                    getFieldDecorator('birthday', {
+                                        initialValue: formData.birthday ? moment(formData.birthday, 'YYYY-MM-DD') : null
+                                    })(
+                                        <DatePicker
+                                            showToday={false}
+                                            disabledDate={disabledAfterToday}
+                                        />
+                                    )
+                                }
+                            </FormItem>
+                        )}
+                        {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.HOBBY) ? null : (
+                            <FormItem
+                                className="contact-hobby-item"
+                                colon={false}
+                                label={Intl.get('crm.contact.hobby', '爱好')}
+                                {...formLayout}
+                            >
+                                {
+                                    getFieldDecorator('hobby', {
+                                        initialValue: _.get(formData, 'hobby', '')
+                                    })(
+                                        <Input
+                                            value={_.get(formData, 'hobby', '')}
+                                            placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}
+                                        />
+                                    )
+                                }
+                            </FormItem>
+                        )}
+                        {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.REMARK) ? null : (
+                            <FormItem
+                                className="contact-remark-item"
+                                colon={false}
+                                label={Intl.get('common.remark', '备注')}
+                                {...formLayout}
+                            >
+                                {
+                                    getFieldDecorator('remark', {
+                                        initialValue: _.get(formData, 'remark', '')
+                                    })(
+                                        <Input.TextArea
+                                            autosize={{minRows: 2, maxRows: 6}}
+                                            placeholder={Intl.get('user.input.remark', '请输入备注')}
+                                        />
+                                    )
+                                }
+                            </FormItem>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+        if(this.props.isUseGeminiScrollbar) {
+            return (
+                <GeminiScrollbar className="srollbar-out-card-style">
+                    {formContent}
                 </GeminiScrollbar>
+            );
+        }else {
+            return formContent;
+        }
+    }
+
+    renderContactForm = () => {
+        return (
+            <Form key={this.props.uid} layout='horizontal' style={{height: this.props.height}} className="crm-contact-form" autocomplete="off" data-trace="联系人表单">
+                {this.renderContactFormItems()}
             </Form>
         );
     };
@@ -665,7 +708,7 @@ class ContactForm extends React.Component {
         return (
             <DetailCard
                 content={this.renderContactForm()}
-                isEdit={true}
+                isEdit={this.props.hasSaveAndCancelBtn}
                 className="contact-form-container"
                 loading={this.state.isLoading}
                 saveErrorMsg={this.state.errorMsg}
@@ -678,15 +721,28 @@ class ContactForm extends React.Component {
 ContactForm.defaultProps = {
     contact: ContactUtil.newViewContactObject(),
     type: 'add',
+    uid: '',
     //是否在组件装载完后立即对电话输入框中的内容进行校验
     isValidatePhoneOnDidMount: false,
     // 是否在外部进行验证
     isValidateOnExternal: false,
+    height: CONTACT_ITEMS_HEIGHHT,
+    //是否有提交保存按钮（默认显示）
+    hasSaveAndCancelBtn: true,
+    //不显示的formItem数组，如['remark', 'sex', 'birthday']
+    notShowFormItems: [],
+    //联系人名称是否必填（默认必填）
+    isRequiredContactName: true,
+    //展示qq，邮箱，微信，是给添加客户用的
+    isContactWayExpanded: true,
+    //是否使用滚动条（默认使用）
+    isUseGeminiScrollbar: true,
 };
 ContactForm.propTypes = {
     form: PropTypes.object,
     contact: PropTypes.object,
     isMerge: PropTypes.bool,
+    uid: PropTypes.string,
     //是否在组件装载完后立即对电话输入框中的内容进行校验
     isValidatePhoneOnDidMount: PropTypes.bool,
     type: PropTypes.string,
@@ -696,7 +752,17 @@ ContactForm.propTypes = {
     updateMergeCustomerContact: PropTypes.func,
     updateCustomerDefContact: PropTypes.func,
     isValidateOnExternal: PropTypes.bool,
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    hasSaveAndCancelBtn: PropTypes.bool,
+    notShowFormItems: PropTypes.array,
+    isRequiredContactName: PropTypes.bool,
+    isContactWayExpanded: PropTypes.bool,
+    isUseGeminiScrollbar: PropTypes.bool,
 };
 
-module.exports = Form.create()(ContactForm);
+let ContactFormWrapper = Form.create()(ContactForm);
+ContactFormWrapper.CONTACT_WAY_KEYS_MAP = CONTACT_WAY_KEYS_MAP;
+ContactFormWrapper.CONTACT_OTHER_KEYS = CONTACT_OTHER_KEYS;
+
+module.exports = ContactFormWrapper;
 

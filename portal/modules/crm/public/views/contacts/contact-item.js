@@ -13,7 +13,7 @@ import BasicEditDateField from 'CMP_DIR/basic-edit-field-new/date-picker';
 import CrmAction from '../../action/crm-actions';
 import contactAjax from '../../ajax/contact-ajax';
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
-import {emailRegex,qqRegex,wechatRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {emailRegex,qqRegex,checkWechat} from 'PUB_DIR/sources/utils/validate-util';
 import {disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
 import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
@@ -409,10 +409,7 @@ class ContactItem extends React.Component {
                                 type='input'
                                 label={Intl.get('crm.58', '微信')}
                                 hasEditPrivilege={hasEditPrivilege}
-                                validateRules={[{
-                                    message: Intl.get('common.correct.wechat','请输入正确的微信号'),
-                                    pattern: wechatRegex,
-                                }]}
+                                validateRules={[{validator: checkWechat}]}
                                 placeholder={Intl.get('member.input.wechat', '请输入微信号')}
                                 saveEditData={this.saveContactInfo.bind(this, 'weChat')}
                                 noDataTip={Intl.get('crm.contact.wechat.none', '暂无微信')}

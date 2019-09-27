@@ -1,7 +1,6 @@
 'use strict';
-var React = require('react');
 import {NavLink} from 'react-router-dom';
-var DefaultUserLogoTitle = require('../default-user-logo-title');
+const DefaultUserLogoTitle = require('../default-user-logo-title');
 
 // 头像组件
 class Avatar extends React.Component {
@@ -17,10 +16,18 @@ class Avatar extends React.Component {
         return (
             <div className={this.props.className} style={ innerStyle }>
                 {this.props.link ?
-                    (<Aimg url={this.props.url} round={this.props.round} src={this.props.src}
+                    (<Aimg
+                        url={this.props.url}
+                        round={this.props.round}
+                        src={this.props.src}
                         size={this.props.size}
-                        userName={this.props.userName} nickName={this.props.nickName}
-                        showName={this.props.showName} name={this.props.name} isActiveFlag={this.props.isActiveFlag}/>) :
+                        userName={this.props.userName}
+                        nickName={this.props.nickName}
+                        showName={this.props.showName}
+                        name={this.props.name}
+                        isActiveFlag={this.props.isActiveFlag}
+                        lineHeight={this.props.lineHeight}
+                    />) :
                     (<a style={aStyle}><Img {...this.props}/>
                         {this.props.showName ? <Name name={this.props.name}/> : ''}</a>)
                 }
@@ -34,9 +41,15 @@ class Aimg extends React.Component {
     render() {
         return (
             <NavLink to={this.props.url} activeClassName="active">
-                <Img alt={this.props.name} src={this.props.src} round={this.props.round}
-                    userName={this.props.userName} nickName={this.props.nickName}
-                    size={this.props.size} isActiveFlag={this.props.isActiveFlag}
+                <Img
+                    alt={this.props.name}
+                    src={this.props.src}
+                    round={this.props.round}
+                    userName={this.props.userName}
+                    nickName={this.props.nickName}
+                    size={this.props.size}
+                    isActiveFlag={this.props.isActiveFlag}
+                    lineHeight={this.props.lineHeight}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
             </NavLink>
@@ -47,11 +60,11 @@ class Aimg extends React.Component {
 // 图片组件
 class Img extends React.Component {
     render() {
-        var imgStyle = {
+        const imgStyle = {
             width: '100%',
             height: '100%',
             fontSize: this.props.fontSize || '24px',
-            lineHeight: this.props.size || '45px',
+            lineHeight: this.props.lineHeight || '45px',
             borderRadius: this.props.round ? '50%' : 0,
         };
         if (this.props.isActiveFlag) {
@@ -92,7 +105,8 @@ Aimg.propTypes = {
     userName: PropTypes.string,
     nickName: PropTypes.string,
     showName: PropTypes.string,
-    name: PropTypes.string
+    name: PropTypes.string,
+    lineHeight: PropTypes.string,
 };
 
 Img.propTypes = {
@@ -103,7 +117,8 @@ Img.propTypes = {
     userName: PropTypes.string,
     nickName: PropTypes.string,
     name: PropTypes.string,
-    fontSize: PropTypes.string
+    fontSize: PropTypes.string,
+    lineHeight: PropTypes.string,
 };
 
 Name.propTypes = {
@@ -122,7 +137,8 @@ Avatar.propTypes = {
     nickName: PropTypes.string,
     showName: PropTypes.string,
     name: PropTypes.string,
-    fontSize: PropTypes.string
+    fontSize: PropTypes.string,
+    lineHeight: PropTypes.string,
 };
 
 module.exports = Avatar;

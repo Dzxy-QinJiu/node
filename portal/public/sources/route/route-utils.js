@@ -18,6 +18,7 @@ const isOpenCaller = require('../utils/common-method-util').isOpenCaller;
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 //是否是csm.curtao.com，是否在蚁坊域的判断方法
 import {isCurtao, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
     //当组件即将加载的时候，跳转到第一个路由
@@ -277,6 +278,16 @@ function filterRoute(allRoutes) {
         //如果有内置或者自定义的流程，过滤掉申请审批的提示页面
         childRoutes = _.filter(childRoutes, item => item.id !== 'application_apply_management1');
         user.routes = _.filter(user.routes, item => item.id !== 'application_apply_management1');
+        //如果没有获取用户列表的权限，需要把用户审批tab也去掉
+        if(!hasPrivilege(PRIVILEGE_MAP.APP_USER_LIST)){
+            var userApplyObj = _.find(user.routes, item => item.id === 'application_apply_management');
+            if(_.get(userApplyObj,'routes')){
+                userApplyObj.routes = _.filter(userApplyObj.routes, item => item.id !== 'app_user_manage_apply');
+            }
+            if(_.get(targetObj,'routes')){
+                targetObj.routes = _.filter(targetObj.routes, item => item.id !== 'app_user_manage_apply');
+            }
+        }
     }else {
         //如果展示的是申请审批的提示页面，把申请申请页面过滤掉
         user.routes = _.filter(user.routes, item => item.id !== 'application_apply_management');

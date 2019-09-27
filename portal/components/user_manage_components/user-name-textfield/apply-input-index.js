@@ -44,7 +44,7 @@ const UserNameTextFieldMixin = {
                     validateStatus={this.renderValidateStyle('user_name')}
                     help={status.user_name.isValidating ? Intl.get('common.is.validiting', '正在校验中..') : (status.user_name.errors && status.user_name.errors.join(','))}
                 >
-                    <Validator rules={validators}>
+                    <Validator rules={validators} trigger='onBlur'>
                         <Input name="user_name"
                             placeholder={Intl.get('user.username.write.tip', '请填写用户名')}
                             value={formData.user_name}
@@ -71,7 +71,7 @@ const UserNameTextFieldMixin = {
                     wrapperCol={{span: 24}}
                     validateStatus={this.renderValidateStyle('nick_name')}
                 >
-                    <Validator rules={validators}>
+                    <Validator rules={validators} trigger='onBlur'>
                         <Input name="nick_name"
                             placeholder={Intl.get('user.nickname.write.tip', '请填写昵称')}
                             value={formData.nick_name}

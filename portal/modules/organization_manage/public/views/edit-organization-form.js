@@ -273,7 +273,7 @@ var OrganizationForm = createReactClass({
                             validateStatus={this.renderValidateStyle('title')}
                             help={status.title.isValidating ? (this.formatMessage(messages.common_is_validiting)) : (status.title.errors && status.title.errors.join(','))}>
                             <Validator
-                                rules={[{required: true, min: 1, max: 20 , message: this.formatMessage(messages.common_input_character_rules)}]}>
+                                rules={[{required: true, min: 1, max: 20 , message: this.formatMessage(messages.common_input_character_rules)}]} trigger='onBlur'>
                                 <Input name="title" id="title" value={formData.title}
                                     onChange={this.setField.bind(this, 'title')}
                                     placeholder={this.formatMessage(messages.common_required_tip)}/>
@@ -290,7 +290,7 @@ var OrganizationForm = createReactClass({
                                     help={status.superiorTeam.errors ? status.superiorTeam.errors.join(',') : null}
                                 >
                                     <Validator
-                                        rules={[{required: true, message: Intl.get('organization.select.parent.department', '请选择上级部门')}]}>
+                                        rules={[{required: true, message: Intl.get('organization.select.parent.department', '请选择上级部门')}]} trigger='onBlur'>
                                         <Select size="large" style={{width: '100%'}}
                                             name="superiorTeam"
                                             value={formData.superiorTeam}

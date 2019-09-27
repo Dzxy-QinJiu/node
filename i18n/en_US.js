@@ -76,6 +76,7 @@ var en_US = {
     'common.correct.email': 'Please enter the correct email account',//请输入正确的邮箱Please input the correct email
     'common.correct.qq': 'Please enter the correct QQ account',//请输入正确的QQ号
     'common.correct.wechat': 'please enter the correct WeChat account',//请输入正确的微信号
+    'common.correct.no.wechat': 'please enter the WeChat account',//请输入微信号
     'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
     'common.password.validate.rule': 'Please enter the password with 6-18 digits, letters and symbols',//请输入6-18位数字、字母、符号组成的密码,
@@ -156,6 +157,8 @@ var en_US = {
     'common.name.is.unique': 'The name already exists!', // 姓名唯一性校验出错！
     'common.is.existed': 'The username is already exists!',//用户名已存在！
     'common.username.is.unique': 'The username already exists!',//用户名唯一性校验出错！
+    'common.nickname.is.existed': 'The nickname is already exists!', // 昵称已存在！
+    'common.nickname.is.unique': 'The nickname already exists!', // 昵称唯一性校验出错！
     'common.phone.is.existed': 'The phone number already exists!',//电话已存在！
     'common.phone.is.unique': 'The phone number already exists!',//电话唯一性校验出错！
     'common.email.is.existed': 'The email already exists!',//邮箱已存在！
@@ -165,6 +168,7 @@ var en_US = {
     'common.no.more.data': 'There is no more data',//没有更多数据了
     'common.no.more.user': 'There is no more user',//沒有更多用戶了
     'common.no.more.crm': 'There is no more customer',//没有更多客户了
+    'common.no.more.repeat.crm': 'There is no more repeat customer',//没有重复的客户
     'common.no.more.filter.crm': 'There is no customer match condition',//没有符合条件的客户了
     'common.no.filter.crm': 'There is no customer match condition',//没有符合条件的客户
     'common.no.more.schedule': 'There is no schedule',//暂无计划
@@ -390,6 +394,8 @@ var en_US = {
     'home.page.apply.approve': 'Approval',//审批
     'home.page.return.old': 'Return old',//返回旧版
     'home.page.try.new': 'Try new',//试用新版
+    'home.page.contacts.clues.week': 'Total leads contacted this week',//本周已联系线索总数
+    'home.page.expire.contract.at.time': '{time} expiring contract statistics',//{time}即将到期合同统计
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -425,6 +431,8 @@ var en_US = {
     'user.time.end': 'Expire time',//到期时间
     'user.login.times': 'Login Times',//登录次数
     'user.login.score': 'Score', // 分数
+    'user.login.score.explain.mananer': 'to View Score Rules ?',//查看分数规则？
+    'user.login.score.explain.other': 'Scores generated according to customer rating rules. For more information, please contact the administrator.',//按客户评分规则生成的分数，了解详情请联系管理员
     'user.login.days': 'Active days', // 活跃天数
     'user.detail.return': 'return to basic info', //'返回基本信息',
     'user.detail.loginAnalysis.title': 'Statistic of login times in a year',//'近一年的活跃统计',
@@ -862,6 +870,7 @@ var en_US = {
     'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
     'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量已达{number}个上限
     'member.add.member.no.position.tips': 'There is no office in system. whether to add', // 系统中暂无职务{name}，是否添加?
+    'member.add.member.success.tips': 'The member can call after logged.', // 该成员登录后可以拨打电话了
     //后台管理-成员end
 
     //组织管理start
@@ -904,8 +913,13 @@ var en_US = {
     'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
     // 后台管理- 产品end
 
+    // 后台管理-行业start
+    'industry.add.check.tips': 'The name of industry was existed', // 该行业名称已存在
+    // 后台管理-行业end
+
     // 后台管理-竞品start
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
+    'competing.add.check.tips': 'The name of competing product was existed', // 该竞品名称已存在
     // 后台管理-竞品end
 
     // 后台管理-销售流程start
@@ -1003,6 +1017,11 @@ var en_US = {
     'user.log.single.record': 'View the operation records for nearly three months', // 只能查看近三个月的操作记录
     'user.log.single.get.error': 'Failed to get single audit log',//获取单个审计日志失败
     //用户管理---用户审计日志end
+
+    //用户管理--- 活跃用户start
+    'user.active.tips': 'The user who has logged within the selection time', // 选择时间内登录过的用户
+    //用户管理--- 活跃用户end
+
     //基本资料start
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
@@ -1355,7 +1374,7 @@ var en_US = {
     'crm.11': 'selected {count}', // 已选当前页{count}项
     'crm.12': 'selected all {count}', // 选择全部{count}项
     'crm.14': '{count} records', // 共{count}条记录
-    'crm.15': 'Delete  {cusName}?', // 是否删除此客户
+    'crm.15': 'Delete  "{cusName}"?', // 是否删除此客户
     'crm.16': 'Batch change labels and sales personnel', // 批量变更标签和销售人员
     'crm.17': 'Please selected sales personnel', // 请选择销售人员
     'crm.18': 'Change sales personnel', // 变更销售人员
@@ -1503,6 +1522,7 @@ var en_US = {
     'crm.218': 'Edit successfully',//修改成功
     'crm.219': 'Edit Failed',//修改失败
     'crm.customer.recycle.bin': 'Recycle bin',//回收站
+    'crm.customer.recycle.bin.explain': 'Store deleted or merged customers',//存放删除或合并的客户
     'crm.customer.recovery': 'Recovery',//恢复
     'crm.customer.delete.time': 'Delete time',//删除时间
     'crm.recovery.customer.success': 'Rcovery customer success',//恢复客户成功
@@ -1725,11 +1745,13 @@ var en_US = {
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
     'crm.customer.release': 'Release',//释放
     'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
+    'crm.customer.delete': 'After deletion, you can retrieve customers from the recycle bin',//删除后，您可以从回收站中找回客户
     'crm.customer.release.confirm.tip': 'After release to the customer pool, other people can view and extract. Do you confirm the release?',//释放到客户池后，其他人也可以查看、提取，您确认释放吗？
     'crm.customer.release.failed': 'Customer Release Failed',//释放客户失败
     'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
     'crm.customer.extract.failed': 'Failure to extract customer',//提取客户失败
     'crm.customer.pool': 'Customer pool',//客户池
+    'crm.customer.pool.explain': 'Deposit released customers',//存放释放的客户
     'crm.customer.label': 'Customer label',//客户标签
     'crm.customer.extract.time': 'Extract time',//释放时间
     'crm.customer.release.customer': 'Release customer',//释放客户
@@ -1794,6 +1816,7 @@ var en_US = {
     'crm.contract.add.category': 'Add contract type',//添加合同类型
     'crm.contract.add.label': 'Add signing type',//添加签约类型
     'crm.contract.no.label': 'No signing type',//暂无签约类型
+    'crm.batch.change.customer.pending': 'The batch operation was not completed last time, please try again later',//上次批量操作未完成，请稍后再试
     // 客户管理end
 
     //客户分析 start
@@ -2449,6 +2472,7 @@ var en_US = {
     'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
     'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
+    'errorcode.clue.batch.change.pending': 'Last batch operation has not completed, please try again later',//上次批量操作未完成，请稍后再试
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2546,6 +2570,10 @@ var en_US = {
     'user.login.abnormal.get.failed': 'Failed to get Exception login',//获取异常登录信息失败
     'crm.customer.interested': 'Add attention',//添加关注
     'crm.customer.uninterested': 'Unsubscribe',//取消关注
+    'crm.customer.interested.succ': 'Add attention success',//添加关注成功
+    'crm.customer.interested.error': 'Add attention fail',//添加关注失败
+    'crm.customer.uninterested.succ': 'Unsubscribe success',//取消关注成功
+    'crm.customer.uninterested.error': 'Unsubscribe fail',//取消关注失败
     'crm.customer.failed.interested': 'Failed to update the information!',//修改失败
     'call.record.play': 'PLAY',//播放录音
     'call.record.pick.phone': 'Please pick up the phone',//请拿起话机
@@ -2803,6 +2831,12 @@ var en_US = {
     'failed.to.get.clue.classify': 'Failed to get clue classify',//获取线索分类出错了
     'clue.customer.classify': 'clue  classification',//线索分类
     'crm.clue.classify.placeholder': 'Please select or enter the clue classify',//请选择或输入线索分类
+    'crm.clue.client.source': 'Client Source',//集客方式
+    'crm.clue.client.source.placeholder': 'Please select the client source',//请选择集客方式
+    'crm.clue.client.source.add': 'Add client source',//添加集客方式
+    'crm.clue.client.source.inbound': 'inbound',//市场
+    'crm.clue.client.source.outbound': 'outbound',//自拓
+    'crm.clue.client.source.other': 'other', //未知
     'clue.customer.classify.agend': 'Agents',//代理商
     'clue.customer.classify.search': 'Academic research',//学术研究
     'clue.customer.may.associate.customer': 'The customer may be associated with the clue',//该线索可能关联的客户
@@ -2941,6 +2975,7 @@ var en_US = {
     'clue.customer.refresh.tip': 'You have new clues, please {refreshPage} to check',//有新线索，{refreshPage}查看
     'clue.customer.refresh.page': 'refresh page',//刷新页面
     'clue.pool': 'Clue Pool', // 线索池
+    'clue.pool.explain': 'Store release clues',//存放释放的线索
     'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
     'clue.customer.release.confirm.tip': 'After release to the clue pool, other people can view and extract. Do you confirm the release?',//释放到线索池后，其他人也可以查看、提取，您确认释放吗？
@@ -2953,6 +2988,7 @@ var en_US = {
     'clue.extract.failed': 'Failed', // 提取失败
     'clue.extract.success': 'Success', // 提取成功
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
+    'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
@@ -3230,7 +3266,6 @@ var en_US = {
     'business.leave.time.range': 'Bussiness range',//出差时长
     'clue.batch.select.clues': 'Has selected {num} clues',//已选择{num}个线索
     'clue.batch.assign.sales': 'Assign in batch',//批量分配
-    'clue.batch.assign.sales.pending': 'Batch Assignment is in progress. please try it later!',//批量分配进行中，请稍后再试!
     'clue.export.trace.msg': '{traceman} added in {tracetime}',//{traceman}于{tracetime}添加
     'clue.batch.change.trace.man': 'Change follower',//变更跟进人
     'crm.user.use.default.contact': 'User default contact to apply',//使用默认联系人申请
@@ -3260,7 +3295,89 @@ var en_US = {
     'common.net.increase': 'net increase',//净增
     'common.reflux': 'reflux',//回流
     'user.info.get.user.condition.failed': 'Failed to get user query condition',//获取用户查询条件失败
+    /*自定义流程 start*/
     'apply.upload.same.name': 'The file name cannot be repeat!',//该文件名称已存在
+    'apply.add.apply.type': 'Add application type',//添加申请类型
+    'apply.add.form.content': 'Form content',//表单内容
+    'apply.add.form.regex': 'Approval rule',//审批规则
+    'apply.approve.manage.add.from.right': 'Please add the form content from the right',//请从右边添加表单内容
+    'apply.approve.manage.no.content': 'No form content',//暂无表单内容
+    'config.apply.manage': 'Application for approval management',//申请审批管理
+    'apply.approve.qualified.user': 'Dedicated user',//可申用户
+    'apply.approve.name.apply': 'Application type name',//申请类型名称
+    'apply.rule.text': 'Text input',//文字输入
+    'apply.rule.textare': 'Multi-line text input',//多行文字输入
+    'apply.rule.number': 'Digital input',//数字输入
+    'apply.rule.count': 'Amount input',//金额输入
+    'apply.rule.hour': 'Duration input',//时长输入
+    'apply.rule.radio': 'Radio',//单选
+    'apply.rule.check': 'Multiple selection',//多选
+    'apply.rule.date': 'Date selection',//日期选择
+    'apply.rule.date.and.time': 'Date + time selection',//日期+时间选择
+    'apply.rule.period': 'Cycle selection',//周期选择
+    'apply.rule.customer': 'Customer choice',//客户选择
+    'apply.rule.production': 'Product configuration',//产品配置
+    'apply.rule.within.32': 'Within 32 characters',//32个字符以内
+    'apply.rule.over.32': '32 characters or more',//32个字符以上
+    'apply.rule.allow.point': 'Allow decimal point',//允许小数点
+    'apply.rule.limit.int': 'Integer only',//仅限整数
+    'apply.components.name': 'Component name',//组件名称
+    'apply.components.tip.msg': 'Prompt description',//提示说明
+    'apply.components.required.item': 'Required',//必填
+    'apply.components.write.title': 'Please fill in the title!',//请填写标题！
+    'apply.components.length.character': 'Title length cannot exceed 6 characters',//标题长度不能超过6个字符
+    'apply.default.apply.workflow': 'Default approval process',//默认审批流程
+    'apply.default.cc.email': 'Default CC',//默认抄送人
+    'apply.condition.work.flow': 'Conditional approval process',//条件审批流程
+    'apply.info.cc.email': 'CC notification',//抄送通知
+    'apply.info.cancel.privilege': 'Revoke permission',//撤销权限
+    'apply.workflow.merge.same.approver': 'Merging the same approver (after passing, automatically passed later)',//合并相同审批人（通过后，后面自动通过）
+    'apply.workflow.cancel.approve': 'Cancellation after passing (after approval, the application can be revoked with the consent of the approver)',//通过后允许撤销（审批通过后，经审批人同意，可撤销申请）
+    'apply.cc.when,submit': 'Copy the approver when submitting the application',//提交申请时抄送审批人
+    'apply.cc.when.approve.apply': 'Copy and approve the applicant after approval',//审批通过后抄送申请人
+    'apply.cc.when.submit.and.approve': 'Copy the copy approver at the time of submitting the application and copy the applicant after approval',//提交申请时抄送审批人和审批通过后抄送申请人
+    'apply.add.condition.workflow': 'Add condition approval process',//添加条件审批流程
+    'apply.add.apply.approver': 'Add approver',//添加审批人
+    'apply.add.approver.higher.level': 'Superior',//上级
+    'apply.add.approver.setting.role': 'Specified role',//指定角色
+    'apply.add.approver.setting.user': 'Designated member',//指定成员
+    'apply.add.approver.applicant.setting': 'Applicant specified',//申请人指定
+    'apply.add.approver.applicant.self': 'Applicant himself',//申请人自己
+    'apply.add.approver.submit.files': 'Submittable file',//可提交文件
+    'apply.add.approver.distribute': 'Specify the next approver',//指定下一审批人
+    'apply.add.approve.node.team.owner': 'Department manager',//部门经理
+    'apply.add.approve.node.team.owner.and.higher.level.owner': 'Team owner or superior team owner',//团队所有者或者上级团队所有者
+    'apply.add.approve.node.higher.level.owner': 'Superior team owner',//上级团队所有者
+    'apply.add.approve.node.all.higher.level.owner': 'All superior team owners',//所有上级团队所有者
+    'apply.add.approve.node.operation': 'Operator',//运营人员
+    'apply.empty.approve.higher.level': 'When vacancies are approved by the next level in the organization',//空缺时，由组织中的更上一级代审批
+    'apply.empty.admin.approve': 'Approved by the administrator when there is no approver',//没有审批人时，由管理员审批
+    'apply.add.approve.num.person': '{num} people',//{num}人
+    'apply.add.condition.process': 'Add condition approval process',//添加条件审批流程
+    'apply.add.qualify.condition': 'To meet the conditions',//满足条件
+    'apply.add.reg.name': 'Please fill in the name',//请填写名称
+    'apply.add.apply.condition': 'Add condition',//添加条件
+    'apply.add.condition.larger': 'greater',//大于
+    'apply.add.condition.larger.and.equal': 'greater or equal to',//大于等于
+    'apply.add.condition.less': 'Less than',//小于
+    'apply.add.condition.less.and.equal': 'Less than or equal to',//小于等于
+    'apply.add.condition.equal': 'equal',//等于
+    'apply.add.condition.within': 'Between',//介于
+    'apply.condition.meet.rule': 'To meet the conditions',//满足条件
+    'apply.condition.apply.approve': 'Approval Process',//审批流程
+    'apply.condition.item.add.cc': 'Cc',//抄送人
+    'apply.condition.item.money': 'Amount',//金额
+    'apply.time.range.unit.select': 'Unit option',//单位选项
+    'apply.approve.option.one': 'Option one',//选项一
+    'apply.approve.option.two': 'Option two',//选项二
+    'apply.time.range.unit.select.label': 'Option',//选项
+    'apply.time.select.period': 'Cycle selection',//周期选择
+    'apply.time.distinct.am': 'Distinguish between afternoon and afternoon',//区分上下午
+    'apply.form.has.edit.components': 'Do you have a component or edit state?',//您有组件还是编辑状态
+    'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
+    'apply.approve.set.approver': 'Assgin approver',//指定审批人
+    'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
+    /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
     'app.user.manage.product.key.validate': 'The custom attribute key can contain only letters and underscores',//自定义属性key只能包含字母、下划线
@@ -3295,10 +3412,6 @@ var en_US = {
     'clue.show.no.show.tip': 'There has {num} new clues not showing',//还有{num}个新线索未展示
     'clue.close.all.noty': 'Close all',//关闭所有提醒？
     'clue.fail.customer.trace.statics': 'Failed to get trace type statics!',//获取跟进记录的分类统计失败
-    /*自定义审批 start*/
-    'apply.approve.set.approver': 'Assgin approver',//指定审批人
-    'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
-    /*自定义审批 end*/
     'clue.customer.trace.clues': 'Trace clue',//跟进线索
     'clue.need.complete.clue.name': 'Please complete the clue name first.',//请先完善线索名
     'apply.select.search.clear.value': 'Modify the filter range, the checked {type} will be cleared',//修改筛选范围，已勾选的{type}将被清空
@@ -3309,6 +3422,7 @@ var en_US = {
     'common.confirm.merge': 'confirm merge',//确认合并
     'common.merge.success': 'merge success',//合并成功
     'clue.has.no.schedule.list': 'This clue has no schedule',//该线索还没有联系计划
+    'clue.check.customer.detail.warning': 'This clue has belonged to other sales',//此线索已在其他销售名下
     'fail.get.clue.schedule.list': 'Failed to get schedule list',//获取联系计划列表失败
     'clue.manage.contact.clue': 'Contact clue',//联系线索
     'crm.103': 'Change in charge',//变更负责人
@@ -3400,6 +3514,8 @@ var en_US = {
     'clue.customer.last.month': 'Last month',//近一月
     'clue.customer.last.quarter': 'Last quarter',//近一季度
     'clue.customer.last.year': 'Last year',//近一年
+    'clue.customer.close.filter.panel': 'Close filter panel',//收起筛选
+    'clue.customer.not.connect.phone': 'Not connected clues',//未打通电话的线索
     'user.score.level.rule': 'User rating rules',//用户评分规则
     'user.score.basic.score': 'Basic rating',//基础评分
     'user.score.particate.in.score': 'Participation score',//参与度评分
@@ -3487,5 +3603,40 @@ var en_US = {
     'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
     'batch.faild.count': 'The number of failed: {count}',//失败数{count}
     'batch.success.count': 'The number of successful: {count}',//成功数{count}
+    // 线索分配策略
+    'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
+    'clue.assignment.strategy.fail.to.get': 'Fail to fetch clue assignment strategy list',//获取线索分配策略列表失败
+    'clue.assignment.no.strategy.tip': 'There is no clue assignment strategy yet',//您还没有线索分配策略
+    'clue.assignment.name': 'Name',//名称
+    'clue.assignment.name.tip': 'Please input clue assignment name',//请输入线索分配策略名称
+    'clue.assignment.no.description.tip': 'There is no clue assignment strategy description',//暂无线索分配策略描述
+    'clue.assignment.add.description.tip': 'Add clue assignment strategy description',//添加线索分配策略描述
+    'clue.assignment.name.required.tip': 'The name of clue assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'clue.assignment.description': 'Description',//描述
+    'clue.assignment.description.tip': 'Please describe clue assignment strategy',//请描述一下线索分配策略
+    'clue.assignment.needs': 'Needs',//满足条件
+    'clue.assignment.needs.region': 'Region',//地域
+    'clue.assignment.needs.region.tip': 'please select or input region',//请选择或输入地域
+    'clue.assignment.needs.region.required.tip': 'Region should not be empty',//地域不能为空
+    'clue.assignment.needs.region.no.data': 'No this region',//暂无此地域
+    'clue.assignment.needs.region.add.data': 'Add Region',//添加地域
+    'clue.assignment.needs.source': 'Source',//来源
+    'clue.assignment.needs.source.tip': 'Please select or input clue source',//请选择或输入线索来源
+    'clue.assignment.needs.source.required.tip': 'Clue source should not be empty',//线索来源不能为空
+    'clue.assignment.needs.access.channel': 'Access Channel',//接入渠道
+    'clue.assignment.needs.access.channel.tip': 'Please input ',//请选择或输入接入渠道
+    'clue.assignment.needs.access.channel.required.tip': 'Access channel should not be empty',//接入渠道不能为空
+    'clue.assignment.needs.clue.classify': 'Clue Classify',//线索分类
+    'clue.assignment.needs.clue.type': 'Clue Type',//线索类型
+    'clue.assignment.needs.clue.classify.tip': 'Please select or input clue classify',//请选择或输入线索分类
+    'clue.assignment.needs.clue.classify.required.tip': 'Clue type should not be empty',//线索分类不能为空
+    'clue.assignment.assignee': 'Assignee',//分配给
+    'clue.assignment.assignee.tip': 'Please select or input assignee',//请选择或输入被分配人
+    'clue.assignment.assignee.required.tip': 'Assignee should not be empty',//被分配人不能为空
+    'clue.assignment.assignee.no.data.tip': 'No this assignee',//暂无此分配人
+    'clue.assignment.active.state': 'Start/Stop State',//启停状态
+    'clue.assignment.strategy.tip': 'This strategy works for new-added strategy',//本策略对新加线索生效
+    'clue.assignment.strategy.switch.tip': 'Are you sure to {action} this strategy?',//确定要{action}该线索分配策略？
+    'clue.assignment.strategy.delete': 'Are you sure to delete this strategy?'//确定要删除该线索分配策略?
 };
 export default en_US;

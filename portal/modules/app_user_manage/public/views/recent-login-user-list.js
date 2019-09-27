@@ -1,14 +1,12 @@
-var React = require('react');
 /**
  * 近期登录用户列表
  * Created by wangliping on 2017/8/31.
  */
 require('../css/recent-login-user-list.less');
-import { Select, Table } from 'antd';
+import { Select} from 'antd';
 import ShareObj from '../util/app-id-share-util';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
-import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import { RightPanelClose } from 'CMP_DIR/rightPanel/index';
 import { AntcDatePicker as DatePicker } from 'antc';
 import DateSelectorUtils from 'CMP_DIR/datepicker/utils';
@@ -43,6 +41,7 @@ const ALL_MEMBER_VALUE = 'ALL_MEMBER';
 import {isEqualArray} from 'LIB_DIR/func';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import { AntcTable } from 'antc';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -73,12 +72,14 @@ class RecentLoginUsers extends React.Component {
     }
 
     componentDidMount() {
+        $('body').css('overflow', 'hidden');
         RecentUserStore.listen(this.onStoreChange);
         RecentUserAction.getSaleMemberList(commonMethodUtil.getParamByPrivilege());
         this.getRecentLoginUsers();
         $(this.refs.recentLoginUsersTable).on('click', 'tr', this.onRowClick.bind(this));
     }
     componentWillUnmount() {
+        $('body').css('overflow', 'auto');
         RecentUserStore.unlisten(this.onStoreChange);
     }
     onStoreChange = () => {
@@ -278,18 +279,17 @@ class RecentLoginUsers extends React.Component {
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
     }
 
-    handleScrollBottom() {
+    handleScrollBottom = () => {
         this.getRecentLoginUsers();
     }
 
     getTableColumns() {
-        var _this = this;
-        var columns = [
+        return [
             {
                 title: Intl.get('common.username', '用户名'),
                 dataIndex: 'account_name',
                 key: 'account_name',
-                width: null,
+                width: '100px',
                 className: 'has-filter',
                 render: function($1, rowData, idx) {
                     var user_name = rowData.user && rowData.user.user_name || '';
@@ -313,7 +313,7 @@ class RecentLoginUsers extends React.Component {
                 title: Intl.get('common.nickname', '昵称'),
                 dataIndex: 'account_nickname',
                 key: 'account_nickname',
-                width: null,
+                width: '100px',
                 className: 'has-filter',
                 render: function($1, rowData, idx) {
                     var nick_name = rowData.user && rowData.user.nick_name || '';
@@ -328,7 +328,7 @@ class RecentLoginUsers extends React.Component {
                 title: Intl.get('common.belong.customer', '所属客户'),
                 dataIndex: 'customer_name',
                 key: 'customer_name',
-                width: null,
+                width: '100px',
                 className: 'has-filter',
                 render: function($1, rowData, idx) {
                     var customer_name = rowData.customer && rowData.customer.customer_name || '';
@@ -341,7 +341,7 @@ class RecentLoginUsers extends React.Component {
                 title: Intl.get('common.product.name','产品名称'),
                 dataIndex: 'apps',
                 key: 'appName',
-                width: null,
+                width: '100px',
                 render: function(apps, rowData, idx) {
                     return getAppNameList(apps, rowData);
                 }
@@ -431,7 +431,7 @@ class RecentLoginUsers extends React.Component {
                 title: Intl.get('common.remark', '备注'),
                 dataIndex: 'user',
                 key: 'description',
-                width: null,
+                width: '100px',
                 render: function(user, rowData, idx) {
                     return (
                         <div title={user.description}>{user.description}</div>
@@ -439,7 +439,6 @@ class RecentLoginUsers extends React.Component {
                 }
             }
         ];
-        return columns;
     }
 
     onSelectDate(start_time, end_time) {
@@ -597,46 +596,67 @@ class RecentLoginUsers extends React.Component {
         );
     }
 
-    render() {
-        let divHeight = commonMethodUtil.getTableContainerHeight();
+    //是否显示没有更多数据了
+    showNoMoreDataTip = () => {
+        return !this.state.isLoadingUserList &&
+            this.state.recentLoginUsers.length >= 10 && !this.state.listenScrollBottom;
+    };
 
-        let columns = this.getTableColumns();
+    renderTableContent = () => {
+        const isLoading = this.state.isLoadingUserList;
+        let doNotShow = false;
+        if (isLoading && this.state.lastUserId === '') {
+            doNotShow = true;
+        }
+        let tableHeight = commonMethodUtil.getTableContainerHeight();
+        const columns = this.getTableColumns();
+
+        const dropLoadConfig = {
+            listenScrollBottom: this.state.listenScrollBottom,
+            handleScrollBottom: this.handleScrollBottom,
+            loading: isLoading,
+            showNoMoreDataTip: this.showNoMoreDataTip(),
+            noMoreDataText: Intl.get('common.no.more.user', '没有更多用户了')
+        };
+        return (
+            <div
+                className="user-list-table-wrap scroll-load"
+                id="new-table"
+                style={{ display: doNotShow ? 'none' : 'block' }}
+            >
+                <div style={{ height: tableHeight }} ref="recentLoginUsersTable">
+                    <AntcTable
+                        dropLoad={dropLoadConfig}
+                        util={{
+                            zoomInSortArea: true
+                        }}
+                        dataSource={this.state.recentLoginUsers}
+                        columns={columns}
+                        pagination={false}
+                        rowClassName={this.handleRowClassName}
+                        locale={{ emptyText: this.state.getUserListErrorMsg }}
+                        scroll={{ x: 800, y: tableHeight }}
+                    />
+                </div>
+                {this.state.totalUserSize ?
+                    <BottomTotalCount totalCount={<ReactIntl.FormattedMessage
+                        id="user.total.data"
+                        defaultMessage={'共{number}个用户'}
+                        values={{
+                            'number': this.state.totalUserSize
+                        }}
+                    />}/> : null
+                }
+            </div>
+        );
+    };
+
+    render() {
         return (
             <div className="recent-login-users-container" data-tracename="近期登录用户列表">
                 {this.renderRecentLoginHeader()}
-                <div className="recent-login-users-table-wrap splice-table">
-                    <div className="user-list-thead custom-thead">
-                        <Table
-                            columns={columns}
-                            dataSource={[]}
-                            pagination={false}
-                        />
-                    </div>
-                    <div className="user-list-tbody custom-tbody" id="custom-tbody" style={{ height: divHeight }}
-                        ref="recentLoginUsersTable">
-                        <GeminiScrollBar
-                            listenScrollBottom={this.state.listenScrollBottom}
-                            handleScrollBottom={this.handleScrollBottom.bind(this)}
-                            itemCssSelector=".recent-login-users-container .ant-table-tbody>tr"
-                        >
-                            <Table
-                                dataSource={this.state.recentLoginUsers}
-                                columns={columns}
-                                loading={this.state.isLoadingUserList}
-                                pagination={false}
-                                locale={{emptyText: this.state.getUserListErrorMsg || Intl.get('common.no.more.user', '没有更多用户了') }}
-                            />
-                        </GeminiScrollBar>
-                    </div>
-                    {this.state.totalUserSize ?
-                        <BottomTotalCount totalCount={<ReactIntl.FormattedMessage
-                            id="user.total.data"
-                            defaultMessage={'共{number}个用户'}
-                            values={{
-                                'number': this.state.totalUserSize
-                            }}
-                        />}/> : null
-                    }
+                <div className="recent-login-users-table-wrap">
+                    {this.renderTableContent()}
                 </div>
                 <RightPanel
                     className="app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"

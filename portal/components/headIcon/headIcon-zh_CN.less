@@ -5,10 +5,10 @@
 .upload-img-public {
   position: absolute;
   margin: auto;
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   height: 70px;
   width: 70px;
 }
@@ -25,15 +25,21 @@
     height: 70px;
     margin: 0 auto;
   }
-  .update-logo-desr {
-    text-align: center;
-    color: #ffffff;
-    z-index: 1;
-    background-color: #99a5ad;
-    height: 20px;
-    bottom: 0;
-    top: auto;
-    &:extend(.upload-img-public);
+  .change-img-container {
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 70px;
+    height: 70px;
+    background-color: #000000;
+    span {
+      font-size: 24px;
+      text-align: center;
+      color: #ffffff;
+      height: 36px;
+      bottom: 0;
+      &:extend(.upload-img-public);
+    }
   }
   .upload-img-select {
     text-align: center;
@@ -51,6 +57,7 @@
     height: @img-size;
     width: @img-size;
     border-radius: 50%;
+    cursor: pointer;
   }
   p {
     width: @right-pannel-width;

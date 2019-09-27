@@ -38,6 +38,8 @@ class FilterStore {
         this.filterClueClassify = [];
         //筛选线索的地域
         this.filterClueProvince = [];
+        //筛选集客方式
+        this.filterSourceClassify = [];
         //按销售进行筛选
         this.filterClueUsers = [];
         //按照销售团队进行筛选
@@ -100,6 +102,16 @@ class FilterStore {
     // 设置筛选线索的接入渠道
     setFilterClueAccess(updateAccess) {
         this.filterClueAccess = _.map(updateAccess, 'value');
+    }
+    //设置筛选集客方式
+    setFilterSourceClassify(updateSourceClassify) {
+        let selectedSourceClassify = [];
+        _.forEach(updateSourceClassify, (item) => {
+            if (item.selected) {
+                selectedSourceClassify.push(item.value);
+            }
+        });
+        this.filterSourceClassify = selectedSourceClassify;
     }
 
     // 设置筛选线索的分类

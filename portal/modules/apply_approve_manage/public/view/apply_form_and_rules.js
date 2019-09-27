@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/3/27.
  */
 require('../style/add_apply_form.less');
-import {Tabs, Input,Form} from 'antd';
+import {Tabs, Input,Form,Button} from 'antd';
 const TabPane = Tabs.TabPane;
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 const TAB_KEYS = {
@@ -296,7 +296,7 @@ class ApplyFormAndRules extends React.Component {
                     {/*todo 待优化部分*/}
                     {/*保存表单内容*/}
                     {hasFormItem || true ?
-                        <div className="save-cancel-container">
+                        <div className="change-form-item">
                             <SaveCancelButton
                                 loading={this.state.editWorkFlowLoading}
                                 handleSubmit={this.handleSubmitApproveForm}
@@ -424,7 +424,8 @@ class ApplyFormAndRules extends React.Component {
                         </span>}
 
                     </div>
-                    <i className="pull-right iconfont icon-close" onClick={this.handleClickCloseAddPanel}></i>
+                    <Button className="add-apply-form-back-btn" onClick={this.handleClickCloseAddPanel}>
+                        {Intl.get('common.cancel', '取消')}</Button>
                 </div>
                 {this.renderAddApplyContent()}
             </div>

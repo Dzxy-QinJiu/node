@@ -12,7 +12,6 @@ import {removeSpacesAndEnter, getTableContainerHeight } from 'PUB_DIR/sources/ut
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import { getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount } from './utils/clue-pool-utils';
 import ShearContent from 'CMP_DIR/shear-content';
-import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import cluePoolStore from './store';
 import cluePoolAction from './action';
 import classNames from 'classnames';
@@ -26,7 +25,7 @@ import {
     getClueStatusValue,
     SELECT_TYPE
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import {Button, message, Tag} from 'antd';
+import {Button, message} from 'antd';
 
 const Spinner = require('CMP_DIR/spinner');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
@@ -36,6 +35,7 @@ import { RightPanel } from 'CMP_DIR/rightPanel';
 import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
 import filterEmitter from 'CMP_DIR/filter/emitter';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
+import BackMainPage from 'CMP_DIR/btn-back';
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     FILTER_TOP: 64,//筛选框高度
@@ -306,7 +306,12 @@ class ClueExtract extends React.Component {
         //选中的销售团队
         let filterClueTeamIds = filterStoreData.salesTeamId;
         if (_.isArray(filterClueTeamIds) && filterClueTeamIds.length){
-            typeFilter.sales_team_id = filterClueProvince.join(',');
+            typeFilter.sales_team_id = filterClueTeamIds.join(',');
+        }
+        //选中的集客方式
+        let filterSourceClassify = filterStoreData.filterSourceClassify;
+        if (_.isArray(filterSourceClassify) && filterSourceClassify.length){
+            typeFilter.source_classify = filterSourceClassify.join(',');
         }
         //相似客户和线索
         let filterLabels = filterStoreData.filterLabels;
@@ -685,21 +690,21 @@ class ClueExtract extends React.Component {
                     let ifShowTags = !isInvalidClients && !isConvertedClients;
                     return (
                         <div className="clue-top-title">
-                            <span
+                            <div
                                 className="clue-name"
                                 data-tracename="查看线索详情"
                                 onClick={this.showClueDetailPanel.bind(this, salesClueItem)}
                             >
                                 <div className="clue-name-item">{salesClueItem.name}</div>
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
-                                    <Tag className="clue-label intent-tag-style">
+                                    <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.clue', '有相似线索')}
-                                    </Tag> : null}
+                                    </span> : null}
                                 {ifShowTags && _.indexOf(similarClue, '有相似客户') !== -1 ?
-                                    <Tag className="clue-label intent-tag-style">
+                                    <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
-                                    </Tag> : null}
-                            </span>
+                                    </span> : null}
+                            </div>
                             <div className="clue-trace-content" key={salesClueItem.id + index}>
                                 <ShearContent>
                                     <span>
@@ -1109,6 +1114,8 @@ class ClueExtract extends React.Component {
             <div className="extract-clue-panel">
                 <div className='extract-clue-top-nav-wrap date-picker-wrap'>
                     <div className="search-container">
+                        {hasSelectedClue ? null : <BackMainPage className="clue-back-btn" 
+                            handleBackClick={this.closeExtractCluePanel}></BackMainPage>}
                         <div className="search-input-wrapper">
                             <FilterInput
                                 ref="filterinput"
@@ -1129,9 +1136,6 @@ class ClueExtract extends React.Component {
                             hasSelectedClue ? this.renderBatchChangeClues() : null
                         }
                     </div>
-                    {
-                        hasSelectedClue ? null : <RightPanelClose onClick={this.closeExtractCluePanel}/>
-                    }
                 </div>
                 <div className='extract-clue-content-container'>
                     <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>
@@ -1149,6 +1153,7 @@ class ClueExtract extends React.Component {
                                 height: getTableContainerHeight() + LAYOUT_CONSTANTS.TABLE_TITLE_HEIGHT
                             }}
                             showSelectTip={_.get(this.state.selectedClues, 'length')}
+                            toggleList={this.toggleList.bind(this)}
                         />
                     </div>
                     <div className={contentClassName}>

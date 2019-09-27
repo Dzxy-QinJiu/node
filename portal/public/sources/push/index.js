@@ -40,6 +40,8 @@ var contactNameObj = {};
 var socketIo;
 var hasAddCloseBtn = false;
 import history from 'PUB_DIR/sources/history';
+var clueTotalCount = 0;
+const CLUE_MAX_NUM = 3;//最多展示线索通知框的个数
 //推送过来新的消息后，将未读数加/减一
 function updateUnreadByPushMessage(type, isAdd, isAddLists) {
     //将未读数加一
@@ -141,6 +143,7 @@ function applyApproveUnhandledListener(data) {
 
 }
 window.closeAllNoty = function() {
+    clueTotalCount = 0;
     hasAddCloseBtn = false;
     $('#noty-quene-tip-container').remove();
     $.noty.closeAll();
@@ -169,6 +172,7 @@ function clueUnhandledListener(data) {
             //桌面通知的展示
             showDesktopNotification(title, tipContent, true);
         } else {//系统弹出通知
+            clueTotalCount++;
             var clueHtml = '',titleHtml = '';
             titleHtml += '<p class=\'clue-title\'>' + '<span class=\'title-tip\'>' + title + '</span>';
             _.each(clueArr, (clueItem) => {
@@ -181,18 +185,19 @@ function clueUnhandledListener(data) {
                 content: tipContent,
                 type: 'clue',
                 closeWith: ['button'],
-                maxVisible: 3,
+                maxVisible: CLUE_MAX_NUM,//最多展示几个线索的提醒
                 callback: { // 关闭的时候
                     onClose: () => {
                         //关闭之后，队列中还有几个未展示的提醒
-                        var noteLength = _.get($.noty, 'queue.length') - 1;
-                        if (noteLength === 0){
+                        clueTotalCount > 0 && clueTotalCount--;
+                        var addtionClueCount = clueTotalCount - CLUE_MAX_NUM;//还未展示的线索提醒的数量
+                        if (addtionClueCount === 0){
                             hasAddCloseBtn = false;
                             $('#noty-quene-tip-container').remove();
-                        }else if(noteLength > 0 && hasAddCloseBtn){
+                        }else if(addtionClueCount > 0 && hasAddCloseBtn){
                             var queueNum = $('#queue-num');
                             if (queueNum) {
-                                queueNum.text(noteLength);
+                                queueNum.text(addtionClueCount);
                             }
                         }
                     }
@@ -202,19 +207,21 @@ function clueUnhandledListener(data) {
         }
     }
     //如果总共的数量超过3个，就需要展示关闭所有的按钮
-    if (_.get($.noty, 'queue.length') > 0) {
+    //最好不要用noty的 queue的length来展示，因为如果有其他类型的，这个计数也许不准
+    var showNum = clueTotalCount - CLUE_MAX_NUM;
+    if (showNum > 0) {
         var ulHtml = $('#noty_topRight_layout_container');
         if (!hasAddCloseBtn) {
             hasAddCloseBtn = true;
             ulHtml.before(`<p id="noty-quene-tip-container">
             <span class="iconfont icon-warn-icon"></span>
-${Intl.get('clue.show.no.show.tip', '还有{num}个提醒未展示 ', {num: `<span id="queue-num">${_.get($.noty, 'queue.length')}</span>`})}<a href="#" class="handle-btn-item" onclick='openAllClues()'>
+${Intl.get('clue.show.no.show.tip', '还有{num}个新线索未展示 ', {num: `<span id="queue-num">${showNum}</span>`})}<a href="#" class="handle-btn-item" onclick='openAllClues()'>
 ${Intl.get('clue.customer.noty.all.list', '查看全部')}</a><a href="#" class="handle-btn-item" onclick='closeAllNoty()'>
 ${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
         } else {
             var queueNum = $('#queue-num');
             if (queueNum) {
-                queueNum.text(_.get($.noty, 'queue.length'));
+                queueNum.text(showNum);
             }
         }
     }
@@ -835,6 +842,7 @@ function unreadListener(type) {
         //如果是未处理的线索，要和审批的区分开，避免会加上两个监听的情况，未读数要在发ajax请求后再进行监听，避免出现监听数据比获取的数据早的情况
         if (type === 'unhandleClue'){
             //监听未处理的线索
+            clueTotalCount = 0;
             socketIo.on('cluemsg', clueUnhandledListener);
         } else if (type === 'unread_reply') {
             //申请审批未读回复的监听

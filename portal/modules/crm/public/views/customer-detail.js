@@ -21,11 +21,7 @@ import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import contactUtil from '../utils/contact-util';
 const RightPanel = rightPanelUtil.RightPanel;
 import {isOpenCash, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
-//权限常量
-const PRIVILEGE_MAP = {
-    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
-    USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS'//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
-};
+import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 
 class CrmRightPanel extends React.Component {
     state = {
@@ -190,8 +186,8 @@ class CrmRightPanel extends React.Component {
                                     />
                                 ) : null}
                             </TabPane>
-                            {//用获取客户的用户列表的权限，并且不是从回收站中打开客户详情,并且不是csm.curtao.com域名下，才展示用户列表
-                                hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !this.props.disableEdit && !isCurtao() ? (
+                            {//用获取客户的用户列表的权限并且有获取用户列表的权限，并且不是从回收站中打开客户详情,并且不是csm.curtao.com域名下，才展示用户列表
+                                hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && hasPrivilege(PRIVILEGE_MAP.APP_USER_LIST) && !this.props.disableEdit && !isCurtao() ? (
                                     <TabPane
                                         tab={Intl.get('crm.detail.user', '用户')}
                                         key={TAB_KEYS.USER_TAB}

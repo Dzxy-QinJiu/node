@@ -21,6 +21,7 @@ import Trace from 'LIB_DIR/trace';
 import ShearContent from '../../../../components/shear-content';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import BackMainPage from 'CMP_DIR/btn-back';
 
 let CONSTANTS = {
     PADDING_TOP: 84,
@@ -374,14 +375,14 @@ class CustomerRepeat extends React.Component {
                         <Col span={1}>
                             <PrivilegeChecker check="CUSTOMER_MERGE_CUSTOMER" className="repeat-merge-btn handle-btn-item"
                                 onClick={this.showMergePanel.bind(this, repeatObj.repeatList)}>
-                                 <span className="iconfont icon-merge-btn" title={Intl.get('crm.54', '合并')}></span>
+                                <span className="iconfont icon-merge-btn" title={Intl.get('crm.54', '合并')}></span>
                             </PrivilegeChecker>
                         </Col>
                     </Row>);
             });
         } else {
             return (
-                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.more.crm', '没有更多客户了')}/>
+                <div className="alert-tip-wrap"><Alert showIcon={true} message={Intl.get('common.no.more.repeat.crm', '没有重复的客户')}/>
                 </div>);
         }
     };
@@ -417,8 +418,8 @@ class CustomerRepeat extends React.Component {
                 <div className="return-btn-container" onClick={(e) => {
                     this.returnCustomerList(e);
                 }}>
-                    <span className="iconfont icon-return-btn"/>
-                    <span className="return-btn-font">{Intl.get('crm.52', '返回')}</span>
+                    <BackMainPage className="customer-back-btn" 
+                        handleBackClick={this.returnCustomerList}></BackMainPage>
                 </div>
             </TopNav> : null}
             <div className="content-block customer-repeat-table splice-table">

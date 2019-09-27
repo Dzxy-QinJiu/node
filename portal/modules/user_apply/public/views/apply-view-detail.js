@@ -1436,6 +1436,8 @@ const ApplyViewDetail = createReactClass({
     //旧版申请展示
     //销售渲染申请开通状态
     renderDetailChangeStatus: function(detailInfo) {
+        let users = this.getDetailInfoUserCount(detailInfo);
+        var userCount = _.get(users,'length');
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1447,6 +1449,13 @@ const ApplyViewDetail = createReactClass({
                             {detailInfo.status === '1' ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}
                         </span>
                     </div>
+                    {userCount ? <div className="apply-info-label">
+                        <span className="user-info-label">{this.renderApplyUserCount()}:</span>
+                        <span className="user-info-text">
+                            {userCount}
+                        </span>
+                    </div> : null}
+
                 </div>
             </div>
         );
@@ -1455,13 +1464,8 @@ const ApplyViewDetail = createReactClass({
     //销售渲染申请开通状态
     renderMultiAppDetailChangeStatus: function(detailInfo) {
         //把apps数据根据user_id重组
-        let users = _.uniqBy(detailInfo.apps, 'user_id').map(app => {
-            const item = _.pick(app, 'user_id', 'user_name', 'nickname');
-            return {
-                ...item,
-                apps: _.filter(detailInfo.apps, x => x.user_id === item.user_id)
-            };
-        });
+        let users = this.getDetailInfoUserCount(detailInfo);
+        var userCount = _.get(users,'length');
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1471,6 +1475,12 @@ const ApplyViewDetail = createReactClass({
                             {detailInfo.status === 1 ? Intl.get('common.enabled', '启用') : Intl.get('common.stop', '停用')}
                         </span>
                     </div>
+                    {userCount ? <div className="apply-info-label">
+                        <span className="user-info-label">{this.renderApplyUserCount()}:</span>
+                        <span className="user-info-text">
+                            {userCount}
+                        </span>
+                    </div> : null}
                     {_.map(users, (user, idx) => (
                         <div key={idx} className="user-item-container">
                             {this.renderApplyDetailSingleUserName(user)}
@@ -1544,16 +1554,17 @@ const ApplyViewDetail = createReactClass({
     //渲染销售申请修改其他信息
     renderDetailChangeOther: function(detailInfo) {
         //把apps数据根据user_id重组
-        let users = _.uniqBy(detailInfo.apps, 'user_id').map(app => {
-            const item = _.pick(app, 'user_id', 'user_name', 'nickname');
-            return {
-                ...item,
-                apps: _.filter(detailInfo.apps, x => x.user_id === item.user_id)
-            };
-        });
+        let users = this.getDetailInfoUserCount(detailInfo);
+        var userCount = _.get(users,'length');
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
+                    {userCount ? <div className="apply-info-label">
+                        <span className="user-info-label">{this.renderApplyUserCount()}:</span>
+                        <span className="user-info-text">
+                            {userCount}
+                        </span>
+                    </div> : null}
                     {_.map(users, (user, idx) => (
                         <div key={idx} className="user-item-container">
                             {this.renderApplyDetailSingleUserName(user)}
@@ -1592,6 +1603,8 @@ const ApplyViewDetail = createReactClass({
     //旧版申请展示
     //渲染用户延期
     renderDetailDelayTime: function(detailInfo) {
+        let users = this.getDetailInfoUserCount(detailInfo);
+        var userCount = _.get(users,'length');
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1604,13 +1617,32 @@ const ApplyViewDetail = createReactClass({
                             {this.showPassWordPrivilege() ? this.renderModifyDelayTime() : null}
                         </span>
                     </div>
+                    {userCount ? <div>
+                        <div className="user-info-label">{this.renderApplyUserCount()}:</div>
+                        <span className="user-info-text">
+                            {userCount}
+                        </span>
+                    </div> : null}
                 </div>
             </div>
         );
     },
+    renderApplyUserCount: function() {
+        return Intl.get('crm.158', '用户数');
+    },
     //延期申请的类型不展示配置按钮的判断
     showConfigOfDelayApply: function(detailInfo) {
         return _.get(detailInfo, 'changedUserType');
+    },
+    //获取user
+    getDetailInfoUserCount: function(detailInfo) {
+        return _.uniqBy(detailInfo.apps, 'user_id').map(app => {
+            const item = _.pick(app, 'user_id', 'user_name', 'nickname');
+            return {
+                ...item,
+                apps: _.filter(detailInfo.apps, x => x.user_id === item.user_id)
+            };
+        });
     },
     //新版申请展示
     //渲染用户延期
@@ -1620,15 +1652,10 @@ const ApplyViewDetail = createReactClass({
         //是否是待审批
         const isUnApproved = this.isUnApproved();
         //把apps数据根据user_id重组
-        let users = _.uniqBy(detailInfo.apps, 'user_id').map(app => {
-            const item = _.pick(app, 'user_id', 'user_name', 'nickname');
-            return {
-                ...item,
-                apps: _.filter(detailInfo.apps, x => x.user_id === item.user_id)
-            };
-        });
+        let users = this.getDetailInfoUserCount(detailInfo);
         //修改后的用户类型，如果没有说明未修改用户类型，不用设置角色、权限
         let changedUserType = this.showConfigOfDelayApply(detailInfo);
+        var userCount = _.get(users,'length');
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
@@ -1638,6 +1665,12 @@ const ApplyViewDetail = createReactClass({
                             {this.state.isModifyDelayTime ? null : this.renderApplyDelayModifyTime()}
                             {this.showPassWordPrivilege() ? this.renderModifyDelayTime() : null}
                         </span>
+                        {userCount ? <div>
+                            <div className="user-info-label label-fix">{this.renderApplyUserCount()}:</div>
+                            <span className="user-info-text edit-fix">
+                                {userCount}
+                            </span>
+                        </div> : null}
                     </div>
                     {
                         _.map(users, (user, idx) => {

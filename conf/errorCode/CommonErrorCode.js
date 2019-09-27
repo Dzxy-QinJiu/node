@@ -384,6 +384,10 @@ function getConfigJson(req) {
         '30008': {'httpCode': 500, 'message': backendIntl.get('contract.invocie.delete.faild', '删除发票额失败')},
         /*周报统计*/
         '90008': {'httpCode': 500, 'message': backendIntl.get('errorcode.148', '电话时长统计视图获取失败')},
+        /*批量处理线索*/
+        '90012': {'httpCode': 500, 'message': backendIntl.get('errorcode.clue.batch.change.pending', '上次批量操作未完成，请稍后再试')},
+        '90054': {'httpCode': 500, 'message': backendIntl.get('errorcode.clue.batch.change.pending', '上次批量操作未完成，请稍后再试')},
+        '90055': {'httpCode': 500, 'message': backendIntl.get('errorcode.clue.batch.change.pending', '上次批量操作未完成，请稍后再试')},
         /*销售流程*/
         '100001': {'httpCode': 500, 'message': backendIntl.get('errorcode.153', '添加销售流程失败')},
         '100002': {'httpCode': 500, 'message': backendIntl.get('errorcode.154', '获取销售流程失败')},
@@ -396,6 +400,8 @@ function getConfigJson(req) {
         /*负责人及联合跟进人*/
         '14015': {'httpCode': 500, 'message': backendIntl.get('crm.no.permissions.update.sales', '您没有权限修改负责人')},
         '14016': {'httpCode': 500, 'message': backendIntl.get('crm.no.permissions.update.second.team', '您没有权限修改联合跟进人')},
+        /*批量变更客户*/
+        '14020': {'httpCode': 500, 'message': backendIntl.get('crm.batch.change.customer.pending', '上次批量操作未完成，请稍后再试')},
         /*其他*/
         'error-code-not-found': {'httpCode': 500, 'message': backendIntl.get('errorcode.132', '未知错误')},
         'request-timeout': {'httpCode': 500, 'message': backendIntl.get('errorcode.133', '服务器繁忙或网络不正常，请稍后再试')},
