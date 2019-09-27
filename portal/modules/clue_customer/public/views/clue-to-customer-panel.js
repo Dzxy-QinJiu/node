@@ -128,9 +128,9 @@ class ClueToCustomerPanel extends React.Component {
 
     componentDidUpdate() {
         //设置联系人列表容器的高度
-        this.setContactListWrapHeight(); 
+        // this.setContactListWrapHeight();
         //调整联系人表单
-        this.adjustContactForm();
+        // this.adjustContactForm();
     }
 
     //设置联系人列表容器的高度
@@ -843,11 +843,16 @@ class ClueToCustomerPanel extends React.Component {
         return (
             <div className="crm-pannel-contacts">
                 <ContactForm
+                    uid={'contact' + contact.id}
                     wrappedComponentRef={ref => this[`form${contactId}Ref`] = ref}
                     type="edit"
+                    height='auto'
                     contact={contact}
+                    notShowFormItems={['sex', 'birthday', 'hobby', 'remark']}
                     isValidateOnExternal
                     isValidatePhoneOnDidMount={true}
+                    hasSaveAndCancelBtn={false}
+                    isUseGeminiScrollbar={false}
                 />
             </div>
         );
@@ -914,6 +919,14 @@ class ClueToCustomerPanel extends React.Component {
 
     //渲染客户合并
     renderCustomerMerge() {
+        //客户列表标题区域高度
+        const titleBlockHeight = 135;
+        // 转为客户后，线索相关内容都将转入客户不在提示内容高度
+        const clueWillDisappearTipBlockHeight = 40;
+        //转为新客户按钮区域高度
+        const convertToNewCustomerBtnBlockHeight = 60;
+        let contactListWrapMaxHeight = $(window).height() - titleBlockHeight - convertToNewCustomerBtnBlockHeight;
+        if(this.state.isShowClueWillDisappearTip) contactListWrapMaxHeight -= clueWillDisappearTipBlockHeight;
         return (
             <div className="customer-merge">
                 <div className="customer-name">
@@ -933,14 +946,16 @@ class ClueToCustomerPanel extends React.Component {
                 ) : null}
 
                 <div className="contact-list-wrap">
-                    <div className="contact-list">
-                        {_.map(this.state.customerContacts, (contact, contactIndex) => {
-                            if (contact.isNew) {
-                                return this.renderContactForm(contact);
-                            } else {
-                                return this.renderContact(contact, contactIndex);
-                            }
-                        })}
+                    <div className="contact-list" style={{height: contactListWrapMaxHeight}}>
+                        <GeminiScrollbar>
+                            {_.map(this.state.customerContacts, (contact, contactIndex) => {
+                                if (contact.isNew) {
+                                    return this.renderContactForm(contact);
+                                } else {
+                                    return this.renderContact(contact, contactIndex);
+                                }
+                            })}
+                        </GeminiScrollbar>
                     </div>
                 </div>
 
