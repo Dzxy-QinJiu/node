@@ -97,14 +97,16 @@ exports.getAudioRecordUrl = function(itemLocal, itemRecord, phoneType) {
     }
 };
 //去除json对象中的空白项
-const removeEmptyItem = function(obj) {
+const removeEmptyItem = function(obj, removeMoreEmptyType = false) {
     _.each(obj, (v, k) => {
-        if (v === '') delete obj[k];
+        let flag = removeMoreEmptyType ? _.isNil(v) : false;
+        if (v === '' || flag) delete obj[k];
         if (_.isArray(v)) {
             _.each(v, (subv) => {
-                if (subv === '') delete obj[k];
+                let flag = removeMoreEmptyType ? _.isNil(v) : false;
+                if (subv === '' || flag) delete obj[k];
                 else if (_.isObject(subv)) {
-                    removeEmptyItem(subv);
+                    removeEmptyItem(subv, removeMoreEmptyType);
                     if (Object.keys(subv).length === 0) delete obj[k];
                 }
             });

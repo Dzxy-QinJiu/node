@@ -15,6 +15,7 @@ var CrmStore = require('./store/crm-store');
 var FilterStore = require('./store/filter-store');
 var FilterAction = require('./action/filter-actions');
 var CrmAction = require('./action/crm-actions');
+// var CRMAddForm = require('./views/crm-add-form');
 var CRMAddForm = require('./views/crm-add-form');
 var CrmFilter = require('./views/crm-filter');
 var CrmFilterPanel = require('./views/crm-filter-panel');
