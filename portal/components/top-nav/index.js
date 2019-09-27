@@ -304,22 +304,34 @@ TopNav.MenuList = class extends React.Component {
                             var cls = classNames(icoClassName, {
                                 'topNav-menu-item-selected': locationPath === menu.routePath
                             });
+                            // 2019/09/27 暂时改为:鼠标悬停显示解释信息
+                            let isExplainShowActiveUserFlag = menu.id === 'active_user_list';
 
                             var liContent = (<NavLink to={menu.routePath}
                                 activeClassName="active"
                                 ref={(element) => this.navLinks = element}>
-                                {menu.name}
                                 {
-                                    menu.id === 'active_user_list' ? (
+                                    isExplainShowActiveUserFlag ? (
                                         <Popover
                                             content={Intl.get('user.active.tips','选择时间内登录过的用户')}
-                                            trigger='click'
                                             placement="right"
                                         >
-                                            <Icon type="question-circle-o" />
+                                            {menu.name}
                                         </Popover>
-                                    ) : null
+                                    ) : (menu.name)
                                 }
+                                {/**2019/09/27 todo 这样展示不好，待设计在进行调整，先注释掉*/}
+                                {/*{*/}
+                                {/*menu.id === 'active_user_list' ? (*/}
+                                {/*<Popover*/}
+                                {/*content={Intl.get('user.active.tips','选择时间内登录过的用户')}*/}
+                                {/*trigger='click'*/}
+                                {/*placement="right"*/}
+                                {/*>*/}
+                                {/*<Icon type="question-circle-o" />*/}
+                                {/*</Popover>*/}
+                                {/*) : null*/}
+                                {/*}*/}
                             </NavLink>);
                             return (
                                 <li className={cls} key={i}>
