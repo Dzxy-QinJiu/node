@@ -67,39 +67,36 @@ var CrmAlertForm = createReactClass({
             topicValue: this.props.topicValue
         };
     },
-
+    //初始化值数据还原初值
     getInitialFormData: function(props) {
         let formData = _.cloneDeep(props.currentSchedule);
-        formData.topic = formData.topic || formData.customer_name || '';
+        let scheduleType = _.isEqual(_.get(props,'topicValue'), 'customer') ? 'calls' : 'lead';
+        console.log(scheduleType);
+        //从用户调用会传入用户名
+        formData.topic = formData.customer_name || '';
         //代办类型的默认值
-        formData.scheduleType = formData.scheduleType || 'calls';
+        formData.scheduleType = scheduleType || 'calls';
         //内容的默认值
-        formData.content = formData.content || '';
+        formData.content = '';
         //联系的开始时间
-        formData.start_time = formData.start_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
+        formData.start_time = moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
         //联系的结束时间
-        formData.end_time = formData.end_time || moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
+        formData.end_time = moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
         //提醒时间
-        formData.alert_time = formData.alert_time || moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').subtract(TIME_CALCULATE_CONSTS.TEN, 'm').valueOf();
+        formData.alert_time = '';
+        this.setState({
+            formData,
+            selectedTimeRange: '1h',
+            selectedAlertTimeRange: 'not_remind',
+            topicValue: props.topicValue,
+        });
         return formData;
     },
 
     componentWillReceiveProps: function(nextProps) {
         //用户切换添加"线索"或"客户"类型代办时，更新formData里的scheduleType初始值数据还原初值
         if(_.has(nextProps, 'topicValue')) {
-            let scheduleType = _.isEqual(_.get(nextProps,'topicValue'), 'customer') ? 'calls' : 'lead';
-            let formData = this.state.formData;
-            formData.scheduleType = scheduleType;
-            formData.content = '';
-            formData.start_time = moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
-            formData.end_time =  moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
-            formData.alert_time = '';       
-            this.setState({
-                formData,
-                selectedTimeRange: '1h',
-                selectedAlertTimeRange: 'not_remind',
-                topicValue: nextProps.topicValue,
-            });
+            this.getInitialFormData(nextProps);
         }
     },
     //是否是今天
@@ -444,9 +441,7 @@ var CrmAlertForm = createReactClass({
         if(this.props.isAddToDoClicked) return;
         //如果是批量添加联系计划,关闭后应该清空数据
         if (_.isArray(this.props.selectedCustomer)) {
-            this.setState({
-                formData: this.getInitialFormData(this.props)
-            });
+            this.getInitialFormData(this.props);
         } else {
             ScheduleAction.cancelEdit();
         }
