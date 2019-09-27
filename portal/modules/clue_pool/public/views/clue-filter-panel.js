@@ -8,7 +8,8 @@ import userData from 'PUB_DIR/sources/user-data';
 import {
     COMMON_OTHER_ITEM,
     SIMILAR_CUSTOMER,
-    SIMILAR_CLUE
+    SIMILAR_CLUE,
+    sourceClassifyArray
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 
@@ -74,6 +75,8 @@ class ClueFilterPanel extends React.Component {
             }else if (groupId === 'clue_pool_province'){
                 //线索地域
                 FilterAction.setFilterClueProvince(data);
+            } else if(groupId === 'source_classify') {
+                FilterAction.setFilterSourceClassify(data);
             } else if (groupId === 'clue_pool_user_name'){
                 FilterAction.setFilterClueUsername(data);
             } else if(groupId === 'clue_pool_sales_team_id') {
@@ -180,6 +183,13 @@ class ClueFilterPanel extends React.Component {
             data: clueProvinceList.map(x => ({
                 name: x,
                 value: x
+            }))
+        },{
+            groupName: Intl.get('crm.clue.client.source', '集客方式'),
+            groupId: 'source_classify',
+            data: sourceClassifyArray.map(x => ({
+                name: x.name,
+                value: x.value
             }))
         }];
         //非销售角色才有来源、渠道、分类筛选项

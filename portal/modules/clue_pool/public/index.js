@@ -308,6 +308,11 @@ class ClueExtract extends React.Component {
         if (_.isArray(filterClueTeamIds) && filterClueTeamIds.length){
             typeFilter.sales_team_id = filterClueTeamIds.join(',');
         }
+        //选中的集客方式
+        let filterSourceClassify = filterStoreData.filterSourceClassify;
+        if (_.isArray(filterSourceClassify) && filterSourceClassify.length){
+            typeFilter.source_classify = filterSourceClassify.join(',');
+        }
         //相似客户和线索
         let filterLabels = filterStoreData.filterLabels;
         if(_.isArray(filterLabels) && filterLabels.length){

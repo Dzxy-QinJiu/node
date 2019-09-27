@@ -13,6 +13,7 @@ class FilterAction {
             'setFilterClueSoure',
             'setFilterClueAccess',
             'setFilterClueClassify',
+            'setFilterSourceClassify',
             'setFilterClueProvince',
             'setFilterClueTeam',
             'setExistedFiled',
