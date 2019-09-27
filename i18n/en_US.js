@@ -3602,5 +3602,40 @@ var en_US = {
     'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
     'batch.faild.count': 'The number of failed: {count}',//失败数{count}
     'batch.success.count': 'The number of successful: {count}',//成功数{count}
+    // 线索分配策略
+    'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
+    'clue.assignment.strategy.fail.to.get': 'Fail to fetch clue assignment strategy list',//获取线索分配策略列表失败
+    'clue.assignment.no.strategy.tip': 'There is no clue assignment strategy yet',//您还没有线索分配策略
+    'clue.assignment.name': 'Name',//名称
+    'clue.assignment.name.tip': 'Please input clue assignment name',//请输入线索分配策略名称
+    'clue.assignment.no.description.tip': 'There is no clue assignment strategy description',//暂无线索分配策略描述
+    'clue.assignment.add.description.tip': 'Add clue assignment strategy description',//添加线索分配策略描述
+    'clue.assignment.name.required.tip': 'The name of clue assignment strategy can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10',//线索分配策略名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'clue.assignment.description': 'Description',//描述
+    'clue.assignment.description.tip': 'Please describe clue assignment strategy',//请描述一下线索分配策略
+    'clue.assignment.needs': 'Needs',//满足条件
+    'clue.assignment.needs.region': 'Region',//地域
+    'clue.assignment.needs.region.tip': 'please select or input region',//请选择或输入地域
+    'clue.assignment.needs.region.required.tip': 'Region should not be empty',//地域不能为空
+    'clue.assignment.needs.region.no.data': 'No this region',//暂无此地域
+    'clue.assignment.needs.region.add.data': 'Add Region',//添加地域
+    'clue.assignment.needs.source': 'Source',//来源
+    'clue.assignment.needs.source.tip': 'Please select or input clue source',//请选择或输入线索来源
+    'clue.assignment.needs.source.required.tip': 'Clue source should not be empty',//线索来源不能为空
+    'clue.assignment.needs.access.channel': 'Access Channel',//接入渠道
+    'clue.assignment.needs.access.channel.tip': 'Please input ',//请选择或输入接入渠道
+    'clue.assignment.needs.access.channel.required.tip': 'Access channel should not be empty',//接入渠道不能为空
+    'clue.assignment.needs.clue.classify': 'Clue Classify',//线索分类
+    'clue.assignment.needs.clue.type': 'Clue Type',//线索类型
+    'clue.assignment.needs.clue.classify.tip': 'Please select or input clue classify',//请选择或输入线索分类
+    'clue.assignment.needs.clue.classify.required.tip': 'Clue type should not be empty',//线索分类不能为空
+    'clue.assignment.assignee': 'Assignee',//分配给
+    'clue.assignment.assignee.tip': 'Please select or input assignee',//请选择或输入被分配人
+    'clue.assignment.assignee.required.tip': 'Assignee should not be empty',//被分配人不能为空
+    'clue.assignment.assignee.no.data.tip': 'No this assignee',//暂无此分配人
+    'clue.assignment.active.state': 'Start/Stop State',//启停状态
+    'clue.assignment.strategy.tip': 'This strategy works for new-added strategy',//本策略对新加线索生效
+    'clue.assignment.strategy.switch.tip': 'Are you sure to {action} this strategy?',//确定要{action}该线索分配策略？
+    'clue.assignment.strategy.delete': 'Are you sure to delete this strategy?'//确定要删除该线索分配策略?
 };
 export default en_US;

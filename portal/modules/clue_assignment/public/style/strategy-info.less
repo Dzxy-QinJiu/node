@@ -1,0 +1,210 @@
+@import "../../../../public/css/common-variables";
+@cursor: #8DA8C5;
+.assignment-strategy-info-container {
+  .right-panel-modal-title {
+    margin-bottom: 0 !important;
+    .strategy-info-title {
+      .strategy-name-container {
+        overflow: hidden;
+        margin-bottom: 11px;
+        .strategy-name {
+          &.start-stop-has-error {
+            width: 72%;
+          }
+          &.is-loading {
+            width: 80%;
+          }
+          width: 85%;
+          font-size: 16px;
+          float: left;
+          color: @title-color;
+          .inputWrap {
+            .ant-row.ant-form-item {
+              padding-right: 0;
+              .ant-form-item-control {
+                .ant-input {
+                  margin-left: 0;
+                }
+              }
+            }
+            .button-container {
+              .save-error {
+                font-weight: normal;
+                font-size: 14px;
+              }
+            }
+          }
+          .basic-edit-field {
+            .edit-container {
+              .icon-edit-btn {
+                float: right;
+                &:hover {
+                  cursor: pointer;
+                }
+              }
+              .basic-info-text {
+                transform: translateY(-2px);
+                margin-left: 0;
+              }
+            }
+          }
+        }
+        .strategy-stop-start {
+          float: right;
+          .anticon-loading {
+            margin-right: 5px;
+          }
+          .start-stop-error-msg {
+            float: left;
+            transform: translateY(2px);
+            font-size: 14px;
+            font-weight: normal;
+            color:@error_tips_color;
+            margin-right: 5px;
+          }
+          .delete-tip {
+            float: left;
+            transform: translateY(2px);
+            font-size: 14px;
+            font-weight: normal;
+            margin-right: 5px;
+            &.error-tip {
+              color:@error_tips_color;
+            }
+            &.success-tip {
+              color: @icon_choose_color;
+            }
+          }
+          .strategy-switch {
+            line-height: 24px;
+            display: inline-block;
+            transform: translateY(-1px);
+            .ant-switch {
+              display: inline-block;
+              margin-bottom: 4px;
+            }
+          }
+          .strategy-delete {
+            cursor: pointer;
+            color: @cursor;
+            margin-left: 12px;
+            display: inline-block;
+            font-weight: normal;
+            &:hover {
+              color: darken(@cursor , 5%)
+            }
+            .iconfont {
+              font-size: 18px;
+            }
+          }
+        }
+      }
+      .strategy-description-container {
+        overflow: hidden;
+        font-weight: normal;
+        font-size: 14px;
+        color: @LOADING_ERR_TIP;
+        .inputWrap {
+          .ant-row.ant-form-item {
+            padding-right: 0;
+            .ant-form-item-control {
+              .ant-input {
+                margin-left: 0;
+              }
+            }
+          }
+        }
+        .basic-edit-field-textarea {
+          .edit-container {
+            .icon-edit-btn {
+              float: right;
+              &:hover {
+                cursor: pointer;
+              }
+            }
+          }
+          .basic-info-text {
+            transform: translateY(-1px);
+          }
+        }
+        .strategy-info-label {
+          float: left;
+          line-height: 24px;
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+  .strategy-detail-card-container {
+    overflow: hidden;
+    padding: 24px;
+    //全部的basicedit组件统一修改样式
+    .basic-edit-field {
+      .edit-container {
+        .basic-info-text {
+          transform: translateY(-1.5px);
+          color: @title-color;
+        }
+      }
+      .icon-edit-btn {
+        float: right;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .ant-form-item {
+        padding-right: 6px;
+      }
+    }
+    .strategy-card-needs {
+      margin-top: 0;
+      font-size: 14px;
+      color: @LOADING_ERR_TIP;
+      .detail-card-content {
+        .strategy-needs-details {
+          .needs-label {
+            float: left;
+            color: #333;
+          }
+          #condition-province {
+            .needs-label {
+              line-height: 22px;
+              margin-right: 9px;
+              font-size: 14px;
+              color: @LOADING_ERR_TIP
+            }
+            .ant-form-item {
+              margin-bottom: 0;
+            }
+          }
+          .channel-content,.classify-content {
+            .basic-edit-field {
+              .edit-container {
+                .basic-info-text {
+                  transform: translateY(-0.7px);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .strategy-card-assignee {
+      .assignee-card {
+        font-size: 14px;
+        .assignee-label {
+          float: left;
+          color: @LOADING_ERR_TIP;
+          line-height: 23px;
+        }
+        .basic-edit-field {
+          .edit-container {
+            .basic-info-text {
+              transform: translateY(-1.5px);
+            }
+          }
+        }
+      }
+    }
+  }
+}
