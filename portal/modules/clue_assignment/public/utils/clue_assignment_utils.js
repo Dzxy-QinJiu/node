@@ -32,8 +32,8 @@ exports.getFormattedSalesMan = (salesMan) => {
     }
     //通过value获取销售的名字和团队的名字
     //销售的名字和团队的名字格式是“销售名称 - 团队名称”
-    let salesman = _.find(salesmanList, salesman => _.isEqual(salesman.value, salesMan));
-    let selectedSalesName = _.get(salesman, 'name');
+    let selectedSalesman = _.find(salesmanList, salesman => _.isEqual(salesman.value, salesMan));
+    let selectedSalesName = _.get(selectedSalesman, 'name');
     let nameArray = _.split(selectedSalesName, '-');
     if (_.isArray(nameArray) && nameArray.length) {
         user_name = nameArray[0];//销售的名字
