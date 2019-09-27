@@ -926,6 +926,7 @@ class ClueCustomer extends React.Component {
                 submitTraceErrMsg: '',
             });
         };
+        let btnSize = !_.get(this.state, 'showFilterList') ? 'default' : 'small';
         return (
             <div className="edit-trace-content">
                 {this.state.submitTraceErrMsg ? (
@@ -945,12 +946,15 @@ class ClueCustomer extends React.Component {
                     onChange={this.handleInputChange}
                 />
                 <div className="save-cancel-btn">
-                    <Button type='primary' onClick={this.handleSubmitContent.bind(this, salesClueItem)}
+                    <Button type='primary'
+                        size={btnSize}
+                        onClick={this.handleSubmitContent.bind(this, salesClueItem)}
                         disabled={this.state.submitTraceLoading} data-tracename="保存跟进内容">
                         {Intl.get('common.save', '保存')}
                         {this.state.submitTraceLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className='cancel-btn'
+                        size={btnSize}
                         onClick={this.handleCancelBtn}>{Intl.get('common.cancel', '取消')}</Button>
                 </div>
             </div>
@@ -1161,6 +1165,7 @@ class ClueCustomer extends React.Component {
                 submitInvalidateClueMsg: '',
             });
         };
+        let invalidBtnSize = !_.get(this.state, 'showFilterList') ? 'default' : 'small';
         return (
             <div className="edit-invalid-trace-content">
                 {this.state.submitInvalidateClueMsg ? (
@@ -1181,11 +1186,13 @@ class ClueCustomer extends React.Component {
                 />
                 <div className="save-cancel-btn">
                     <Button type='primary' onClick={this.handleInvalidateBtn.bind(this, salesClueItem)}
+                        size={invalidBtnSize}
                         disabled={this.state.submitInvalidateLoading} data-tracename="保存无效原因">
                         {Intl.get('clue.confirm.clue.invalid', '确认无效')}
                         {this.state.submitInvalidateLoading ? <Icon type="loading"/> : null}
                     </Button>
                     <Button className='cancel-btn'
+                        size={invalidBtnSize}
                         onClick={this.handleInvalidateCancelBtn}>{Intl.get('common.cancel', '取消')}</Button>
                 </div>
             </div>
