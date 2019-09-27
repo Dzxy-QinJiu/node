@@ -1839,6 +1839,7 @@ var zh_CN = {
     'crm.contract.add.category': '添加合同类型',
     'crm.contract.add.label': '添加签约类型',
     'crm.contract.no.label': '暂无签约类型',
+    'crm.batch.change.customer.pending': '上次批量操作未完成，请稍后再试',
     // 客户管理end
 
     // 客户分析start

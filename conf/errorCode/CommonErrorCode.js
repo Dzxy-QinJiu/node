@@ -400,6 +400,8 @@ function getConfigJson(req) {
         /*负责人及联合跟进人*/
         '14015': {'httpCode': 500, 'message': backendIntl.get('crm.no.permissions.update.sales', '您没有权限修改负责人')},
         '14016': {'httpCode': 500, 'message': backendIntl.get('crm.no.permissions.update.second.team', '您没有权限修改联合跟进人')},
+        /*批量变更客户*/
+        '14020': {'httpCode': 500, 'message': backendIntl.get('crm.batch.change.customer.pending', '上次批量操作未完成，请稍后再试')},
         /*其他*/
         'error-code-not-found': {'httpCode': 500, 'message': backendIntl.get('errorcode.132', '未知错误')},
         'request-timeout': {'httpCode': 500, 'message': backendIntl.get('errorcode.133', '服务器繁忙或网络不正常，请稍后再试')},
