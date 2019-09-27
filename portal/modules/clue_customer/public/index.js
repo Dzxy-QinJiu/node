@@ -53,7 +53,8 @@ import {
     AVALIBILITYSTATUS,
     assignSalesPrivilege,
     editCluePrivilege,
-    handlePrivilegeType
+    handlePrivilegeType,
+    sourceClassifyArray
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -585,6 +586,7 @@ class ClueCustomer extends React.Component {
         if (_.isEmpty(filterStoreData.filterClueSource)
             && _.isEmpty(filterStoreData.filterClueAccess)
             && _.isEmpty(filterStoreData.filterClueClassify)
+            && _.isEmpty(filterStoreData.filterSourceClassify)
             && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime
             && this.state.keyword === ''
             && _.isEmpty(filterStoreData.exist_fields)
@@ -650,6 +652,11 @@ class ClueCustomer extends React.Component {
             var filterClueClassify = filterStoreData.filterClueClassify;
             if (_.isArray(filterClueClassify) && filterClueClassify.length){
                 typeFilter.clue_classify = filterClueClassify.join(',');
+            }
+            //选中的集客方式
+            let filterSourceClassify = filterStoreData.filterSourceClassify;
+            if (_.isArray(filterSourceClassify) && filterSourceClassify.length){
+                typeFilter.source_classify = filterSourceClassify.join(',');
             }
             //选中的线索地域
             var filterClueProvince = filterStoreData.filterClueProvince;
@@ -2266,8 +2273,14 @@ class ClueCustomer extends React.Component {
                         });
                     }
                 }
-            },
-            {
+            }, {
+                title: Intl.get('crm.clue.client.source', '集客方式'),
+                render: function(text, record, index) {
+                    let type = _.get(record, 'source_classify');
+                    let displayObj = _.find(sourceClassifyArray, item => _.isEqual(item.value, type));
+                    return _.get(displayObj, 'name', '');
+                }
+            }, {
                 title: Intl.get('clue.analysis.source', '来源'),
                 dataIndex: 'clue_source',
             }, {

@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP,contactNameRule} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions} from '../utils/clue-customer-utils';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
@@ -34,7 +34,6 @@ var initialContact = {
 const FORMLAYOUT = {
     PADDINGTOTAL: 70
 };
-
 class ClueAddForm extends React.Component {
     constructor(props) {
         super(props);
@@ -48,7 +47,8 @@ class ClueAddForm extends React.Component {
                 access_channel: '',//接入渠道
                 source: '',//线索描述
                 source_ip: '',//客户来源的ip
-                source_time: today,//线索时间，默认：今天
+                source_time: today,//线索时间，默认：今天,
+                source_classify: 'outbound',//集客类型，默认：自拓
             },
             isSaving: false,
             saveMsg: '',
@@ -323,6 +323,25 @@ class ClueAddForm extends React.Component {
                                         type="textarea" id="source" rows="3"
                                     />
                                 )}
+                            </FormItem>
+                            <FormItem
+                                label={Intl.get('crm.clue.client.source', '集客方式')}
+                                id="source_classify"
+                                {...formItemLayout}
+                            >
+                                {
+                                    getFieldDecorator('source_classify', {
+                                        initialValue: formData.source_classify
+                                    })(
+                                        <Select
+                                            placeholder={Intl.get('crm.clue.client.source.placeholder', '请选择集客方式')}
+                                            name="source_classify"
+                                            value={formData.source_classify}
+                                            getPopupContainer={() => document.getElementById('sales-clue-form')}
+                                        >
+                                            {sourceClassifyOptions}
+                                        </Select>
+                                    )}
                             </FormItem>
                             <FormItem
                                 label={Intl.get('clue.analysis.source', '来源')}

@@ -9,7 +9,7 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED } from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED, sourceClassifyArray } from '../../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
@@ -118,7 +118,9 @@ class ClueFilterPanel extends React.Component {
                         }
                     });
                     FilterAction.setFilterClueProvince(provinceList);
-                }else if (item.groupId === COMMON_OTHER_ITEM){
+                } else if(item.groupId === 'source_classify') {
+                    FilterAction.setFilterSourceClassify( _.get(item,'data'));
+                } else if (item.groupId === COMMON_OTHER_ITEM){
                     if(item.value === SIMILAR_CUSTOMER){
                         FilterAction.setExistedFiled();
                         FilterAction.setUnexistedFiled();
@@ -249,6 +251,13 @@ class ClueFilterPanel extends React.Component {
             data: clueProvinceList.map(x => ({
                 name: x,
                 value: x
+            }))
+        }, {
+            groupName: Intl.get('crm.clue.client.source', '集客方式'),
+            groupId: 'source_classify',
+            data: sourceClassifyArray.map(x => ({
+                name: x.name,
+                value: x.value
             }))
         }];
         //非销售角色才有来源、渠道、分类筛选项
