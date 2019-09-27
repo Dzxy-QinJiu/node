@@ -22,7 +22,6 @@ import { customerNameRegex } from 'PUB_DIR/sources/utils/validate-util';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import { renderCustomerNameMsg } from 'PUB_DIR/sources/utils/common-method-util';
 import ContactForm from 'MOD_DIR/crm/public/views/contacts/contact-form';
-
 const ADD_TITLE_HEIGHT = 70 + 24;//添加客户标题的高度+下边距marginBottom
 var uuid = require('uuid/v4');
 
@@ -575,7 +574,6 @@ class CRMAddForm extends React.Component {
                                             wrappedComponentRef={ref => this[`form${contact.uid}Ref`] = ref}
                                             contact={{contact}}
                                             height='auto'
-                                            // notShowFormItems={['sex', 'birthday', 'hobby', 'remark']}
                                             hasSaveAndCancelBtn={false}
                                             isRequiredContactName={false}
                                             isUseGeminiScrollbar={false}

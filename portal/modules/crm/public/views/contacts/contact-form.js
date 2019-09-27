@@ -27,13 +27,23 @@ function generatorBDS(value) {
 }
 
 // 联系方式键值映射
-const CONTACT_KEYS_MAP = {
+const CONTACT_WAY_KEYS_MAP = {
     PHONE: 'phone',
     QQ: 'qq',
     WE_CHAT: 'weChat',
     EMAIL: 'email'
 };
-
+//其他项键值映射
+const CONTACT_OTHER_KEYS = {
+    NAME: 'name',//联系人姓名
+    DEPARTMENT: 'department',//部门
+    POSITION: 'position',//职位
+    ROLE: 'role', //角色
+    SEX: 'sex',//性别
+    BIRTHDAY: 'birthday',//生日
+    HOBBY: 'hobby',//爱好
+    REMARK: 'remark',//备注
+};
 
 class ContactForm extends React.Component {
     constructor(props) {
@@ -54,10 +64,10 @@ class ContactForm extends React.Component {
             def_contancts: contact.def_contancts
         };
 
-        this.formatContact(CONTACT_KEYS_MAP.PHONE, contact.phone, formData);
-        this.formatContact(CONTACT_KEYS_MAP.QQ, contact.qq, formData);
-        this.formatContact(CONTACT_KEYS_MAP.WE_CHAT, contact.weChat, formData);
-        this.formatContact(CONTACT_KEYS_MAP.EMAIL, contact.email, formData);
+        this.formatContact(CONTACT_WAY_KEYS_MAP.PHONE, contact.phone, formData);
+        this.formatContact(CONTACT_WAY_KEYS_MAP.QQ, contact.qq, formData);
+        this.formatContact(CONTACT_WAY_KEYS_MAP.WE_CHAT, contact.weChat, formData);
+        this.formatContact(CONTACT_WAY_KEYS_MAP.EMAIL, contact.email, formData);
 
         this.state = {
             isLoading: false,
@@ -103,22 +113,22 @@ class ContactForm extends React.Component {
         var phoneArray = [], qqArray = [], weChatArray = [], emailArray = [];
         for (var key in formData) {
             let contactVal = _.trim(formData[key]);
-            if (key.indexOf(CONTACT_KEYS_MAP.PHONE) !== -1) {
+            if (key.indexOf(CONTACT_WAY_KEYS_MAP.PHONE) !== -1) {
                 if(contactVal) phoneArray.push(contactVal);
                 delete formData[key];
-                delete stateFormData[CONTACT_KEYS_MAP.PHONE];
-            } else if (key.indexOf(CONTACT_KEYS_MAP.QQ) !== -1) {
+                delete stateFormData[CONTACT_WAY_KEYS_MAP.PHONE];
+            } else if (key.indexOf(CONTACT_WAY_KEYS_MAP.QQ) !== -1) {
                 if(contactVal) qqArray.push(contactVal);
                 delete formData[key];
-                delete stateFormData[CONTACT_KEYS_MAP.QQ];
-            } else if (key.indexOf(CONTACT_KEYS_MAP.WE_CHAT) !== -1) {
+                delete stateFormData[CONTACT_WAY_KEYS_MAP.QQ];
+            } else if (key.indexOf(CONTACT_WAY_KEYS_MAP.WE_CHAT) !== -1) {
                 if(contactVal) weChatArray.push(contactVal);
                 delete formData[key];
-                delete stateFormData[CONTACT_KEYS_MAP.WE_CHAT];
-            } else if (key.indexOf(CONTACT_KEYS_MAP.EMAIL) !== -1) {
+                delete stateFormData[CONTACT_WAY_KEYS_MAP.WE_CHAT];
+            } else if (key.indexOf(CONTACT_WAY_KEYS_MAP.EMAIL) !== -1) {
                 if(contactVal) emailArray.push(contactVal);
                 delete formData[key];
-                delete stateFormData[CONTACT_KEYS_MAP.EMAIL];
+                delete stateFormData[CONTACT_WAY_KEYS_MAP.EMAIL];
             }
         }
         //联系人姓名和部门必填一项的验证
@@ -282,7 +292,7 @@ class ContactForm extends React.Component {
         let values = this.props.form.getFieldsValue();
         let phoneArray = [];
         _.each(values, (val, key) => {
-            if (key.indexOf(CONTACT_KEYS_MAP.PHONE) !== -1) {
+            if (key.indexOf(CONTACT_WAY_KEYS_MAP.PHONE) !== -1) {
                 phoneArray.push(_.trim(val));
             }
         });
@@ -389,7 +399,7 @@ class ContactForm extends React.Component {
      * @param formData: 联系人的表单数据
      */
     renderPhoneInput(index, size, formData) {
-        const phoneKey = CONTACT_KEYS_MAP.PHONE;
+        const phoneKey = CONTACT_WAY_KEYS_MAP.PHONE;
         const curPhone = formData[phoneKey][index];
         return (
             <div key={curPhone.id}>
@@ -404,7 +414,7 @@ class ContactForm extends React.Component {
                     wrapperCol={{span: 12}}
                     key={curPhone.id}
                     validateRules={this.getPhoneInputValidateRules()}
-                    suffix={this.renderContactWayBtns(index, size, CONTACT_KEYS_MAP.PHONE)}
+                    suffix={this.renderContactWayBtns(index, size, CONTACT_WAY_KEYS_MAP.PHONE)}
                     required={true}
                 />
                 {this.state.showNeedPhone && index === 0 ?
@@ -459,7 +469,7 @@ class ContactForm extends React.Component {
             formData
         };
         switch (type) {
-            case CONTACT_KEYS_MAP.QQ:
+            case CONTACT_WAY_KEYS_MAP.QQ:
                 wayOptions.label = 'QQ';
                 wayOptions.placeholder = Intl.get('member.input.qq', '请输入QQ号');
                 wayOptions.rules = [{
@@ -467,7 +477,7 @@ class ContactForm extends React.Component {
                     pattern: qqRegex,
                 }];
                 break;
-            case CONTACT_KEYS_MAP.WE_CHAT:
+            case CONTACT_WAY_KEYS_MAP.WE_CHAT:
                 wayOptions.label = Intl.get('crm.58', '微信');
                 wayOptions.placeholder = Intl.get('member.input.wechat', '请输入微信号');
                 wayOptions.rules = [{
@@ -475,7 +485,7 @@ class ContactForm extends React.Component {
                     pattern: wechatRegex,
                 }];
                 break;
-            case CONTACT_KEYS_MAP.EMAIL:
+            case CONTACT_WAY_KEYS_MAP.EMAIL:
                 wayOptions.label = Intl.get('common.email', '邮箱');
                 wayOptions.placeholder = Intl.get('member.input.email', '请输入邮箱');
                 wayOptions.rules = [{
@@ -560,39 +570,41 @@ class ContactForm extends React.Component {
                 </FormItem>
                 {this.renderValidNameDepartmentTip()}
                 <div className="contact-other-item-wrapper">
-                    <FormItem
-                        className="contact-role-item"
-                        colon={false}
-                        label={Intl.get('user.apply.detail.table.role', '角色')}
-                        {...formLayout}
-                    >
-                        {
-                            getFieldDecorator('role', {
-                                initialValue: _.get(formData, 'role', ''),
-                            })(
-                                <RadioGroup
-                                    value={_.get(formData, 'role', Intl.get('crm.115', '经办人'))}>
-                                    {ContactUtil.roleArray.map(function(role, index) {
-                                        return (<Radio value={role} key={index}>{role}</Radio>);
-                                    })}
-                                </RadioGroup>
-                            )
-                        }
-                    </FormItem>
+                    {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.ROLE) ? null : (
+                        <FormItem
+                            className="contact-role-item"
+                            colon={false}
+                            label={Intl.get('user.apply.detail.table.role', '角色')}
+                            {...formLayout}
+                        >
+                            {
+                                getFieldDecorator('role', {
+                                    initialValue: _.get(formData, 'role', ''),
+                                })(
+                                    <RadioGroup
+                                        value={_.get(formData, 'role', Intl.get('crm.115', '经办人'))}>
+                                        {ContactUtil.roleArray.map(function(role, index) {
+                                            return (<Radio value={role} key={index}>{role}</Radio>);
+                                        })}
+                                    </RadioGroup>
+                                )
+                            }
+                        </FormItem>
+                    )}
                     {//电话
-                        _.map(formData[CONTACT_KEYS_MAP.PHONE], (contact, index) => {
-                            return this.renderPhoneInput(index, formData[CONTACT_KEYS_MAP.PHONE].length, formData);
+                        _.map(formData[CONTACT_WAY_KEYS_MAP.PHONE], (contact, index) => {
+                            return this.renderPhoneInput(index, formData[CONTACT_WAY_KEYS_MAP.PHONE].length, formData);
                         })
                     }
                     <div style={{display: this.props.isContactWayExpanded ? 'block' : 'none'}}>
                         {/*qq*/}
-                        {this.renderContactWayBlock(CONTACT_KEYS_MAP.QQ)}
+                        {this.renderContactWayBlock(CONTACT_WAY_KEYS_MAP.QQ)}
                         {/*微信*/}
-                        {this.renderContactWayBlock(CONTACT_KEYS_MAP.WE_CHAT)}
+                        {this.renderContactWayBlock(CONTACT_WAY_KEYS_MAP.WE_CHAT)}
                         {/*邮箱*/}
-                        {this.renderContactWayBlock(CONTACT_KEYS_MAP.EMAIL)}
+                        {this.renderContactWayBlock(CONTACT_WAY_KEYS_MAP.EMAIL)}
 
-                        {_.includes(this.props.notShowFormItems,'sex') ? null : (
+                        {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.SEX) ? null : (
                             <FormItem
                                 className="contact-sex-item"
                                 colon={false}
@@ -612,7 +624,7 @@ class ContactForm extends React.Component {
                                     )
                                 }
                             </FormItem>)}
-                        {_.includes(this.props.notShowFormItems,'birthday') ? null : (
+                        {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.BIRTHDAY) ? null : (
                             <FormItem
                                 className="contact-birthday-item"
                                 colon={false}
@@ -631,7 +643,7 @@ class ContactForm extends React.Component {
                                 }
                             </FormItem>
                         )}
-                        {_.includes(this.props.notShowFormItems,'hobby') ? null : (
+                        {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.HOBBY) ? null : (
                             <FormItem
                                 className="contact-hobby-item"
                                 colon={false}
@@ -650,7 +662,7 @@ class ContactForm extends React.Component {
                                 }
                             </FormItem>
                         )}
-                        {_.includes(this.props.notShowFormItems,'remark') ? null : (
+                        {_.includes(this.props.notShowFormItems, CONTACT_OTHER_KEYS.REMARK) ? null : (
                             <FormItem
                                 className="contact-remark-item"
                                 colon={false}
@@ -748,5 +760,9 @@ ContactForm.propTypes = {
     isUseGeminiScrollbar: PropTypes.bool,
 };
 
-module.exports = Form.create()(ContactForm);
+let ContactFormWrapper = Form.create()(ContactForm);
+ContactFormWrapper.CONTACT_WAY_KEYS_MAP = CONTACT_WAY_KEYS_MAP;
+ContactFormWrapper.CONTACT_OTHER_KEYS = CONTACT_OTHER_KEYS;
+
+module.exports = ContactFormWrapper;
 

@@ -15,6 +15,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DetailCard from 'CMP_DIR/detail-card';
 //联系人表单
 const ContactForm = require('MOD_DIR/crm/public/views/contacts/contact-form');
+const CONTACT_OTHER_KEYS = ContactForm.CONTACT_OTHER_KEYS;
 //联系人store
 const ContactStore = require('MOD_DIR/crm/public/store/contact-store');
 const noop = function() {};
@@ -48,6 +49,13 @@ const CONTACT_WAY_TYPES = [
 const CONTACT_WAY_TYPE_FIELDS = _.map(CONTACT_WAY_TYPES, 'field');
 
 let queryCustomerTimeout = null;
+//联系人不用展示的项
+const NOT_SHOW_FORM_ITEMS = [
+    CONTACT_OTHER_KEYS.SEX,
+    CONTACT_OTHER_KEYS.BIRTHDAY,
+    CONTACT_OTHER_KEYS.HOBBY,
+    CONTACT_OTHER_KEYS.REMARK
+];
 
 class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
@@ -848,7 +856,7 @@ class ClueToCustomerPanel extends React.Component {
                     type="edit"
                     height='auto'
                     contact={contact}
-                    notShowFormItems={['sex', 'birthday', 'hobby', 'remark']}
+                    notShowFormItems={NOT_SHOW_FORM_ITEMS}
                     isValidateOnExternal
                     isValidatePhoneOnDidMount={true}
                     hasSaveAndCancelBtn={false}
