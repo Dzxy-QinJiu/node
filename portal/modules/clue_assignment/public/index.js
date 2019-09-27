@@ -211,35 +211,6 @@ class ClueAssignment extends React.Component {
         );
     }
 
-    //渲染主体内容
-    renderClueAssignmentContent = () => {
-        return (
-            <div className="clue-assignment-content">
-                {this.renderLoadingAndErrAndNodataContent()}
-                <div className="clue-assignment-right-panel">
-                    {
-                        _.get(this.state, 'isShowStrategyForm') ?
-                            <StrategyForm
-                                closeRightPanel={this.closeFormRightPanel}
-                                regions={this.state.regions}
-                                salesManList={this.state.salesManList}
-                            /> : null
-                    }
-                    {
-                        _.get(this.state, 'isShowStrategyDetail') ?
-                            <StrategyInfo
-                                closeRightPanel={this.closeInfoRightPanel}
-                                strategyInfo={this.state.currentStrategy}
-                                regions={this.state.regions}
-                                salesManList={this.state.salesManList}
-                            /> : null
-                    }
-                </div>
-            </div>
-        );
-    }
-
-
     render() {
         let height = $(window).height() - LAYOUT.PADDING;
         return (
@@ -250,7 +221,28 @@ class ClueAssignment extends React.Component {
                 <div className="clue-assignment-content" style={{height: height}}>
                     {
                         _.get(this.state, 'isGetStrategyDetailLoading') && !this.state.lastId ? <Spinner/> : (
-                            this.renderClueAssignmentContent()
+                            <div className="clue-assignment-content">
+                                {this.renderLoadingAndErrAndNodataContent()}
+                                <div className="clue-assignment-right-panel">
+                                    {
+                                        _.get(this.state, 'isShowStrategyForm') ?
+                                            <StrategyForm
+                                                closeRightPanel={this.closeFormRightPanel}
+                                                regions={this.state.regions}
+                                                salesManList={this.state.salesManList}
+                                            /> : null
+                                    }
+                                    {
+                                        _.get(this.state, 'isShowStrategyDetail') ?
+                                            <StrategyInfo
+                                                closeRightPanel={this.closeInfoRightPanel}
+                                                strategyInfo={this.state.currentStrategy}
+                                                regions={this.state.regions}
+                                                salesManList={this.state.salesManList}
+                                            /> : null
+                                    }
+                                </div>
+                            </div>
                         )
                     }
                 </div>
