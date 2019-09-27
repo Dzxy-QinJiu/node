@@ -30,17 +30,9 @@ import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import CrmScoreCard from './basic_info/crm-score-card';
 import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
-import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {INTEGRATE_TYPES, PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 import CustomerStageCard from './basic_info/customer-stage-card';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
-const PRIVILEGE_MAP = {
-    USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
-    CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
-    EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
-    EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM',//销售修改所属团队的权限
-    EDIT_ASSERT_CUSTOMER_SALES: 'CRM_ASSERT_CUSTOMER_SALES',//修改客户联合跟进人的权限
-};
-
 class BasicOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -531,7 +523,7 @@ class BasicOverview extends React.Component {
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
                     {!this.props.disableEdit && !isCurtao() ? (
-                        hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(this.state.crmUserList, '[0]') ?
+                        hasPrivilege(PRIVILEGE_MAP.APP_USER_LIST) && hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(this.state.crmUserList, '[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     {/*<CustomerStageCard*/}
                     {/*isMerge={this.props.isMerge}*/}

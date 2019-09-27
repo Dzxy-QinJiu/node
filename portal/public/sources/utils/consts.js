@@ -673,3 +673,13 @@ export const DIFF_STATUS_TAB = [{
     key: 'invalidClue',
     value: Intl.get('clue.diff.type.tab.title.mark.invalid', '标记为无效')
 },];
+export const PRIVILEGE_MAP = {
+    USER_BASE_PRIVILEGE: 'GET_CUSTOMER_USERS',//获取客户用户列表的权限（用户基础角色的权限，开通用户管理应用后会有此权限）
+    CRM_CUSTOMER_SCORE_RECORD: 'CRM_CUSTOMER_SCORE_RECORD',//获取分数趋势的权限
+    EDIT_TEAM_MANAGER: 'CRM_MANAGER_UPDATE_CUSTOMER_SALES_TEAM',//管理员修改所属团队的权限
+    EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM',//销售修改所属团队的权限
+    EDIT_ASSERT_CUSTOMER_SALES: 'CRM_ASSERT_CUSTOMER_SALES',//修改客户联合跟进人的权限
+    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
+    APP_USER_LIST: 'APP_USER_LIST'//获取用户列表的权限
+
+};
