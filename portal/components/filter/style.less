@@ -104,6 +104,9 @@
         .filter-panel-arrow{
             margin-right: 5px;
         }
+        &:hover {
+            color: @font-lightblue;
+        }
     }
     .gm-scroll-view {
         padding-right: 25px;
@@ -175,8 +178,10 @@
             padding-left: @pd-l;
             &>.title {
                 &:hover {
-                    color: @font-lightblue;
-                    background: @bg-blue;
+                    .anticon{
+                        color: @font-lightblue;
+                    }
+                    //background: @bg-blue;
                     margin: 0 -4px;
                     padding: 0 4px;
                     border-radius: 4px;

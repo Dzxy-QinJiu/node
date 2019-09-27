@@ -47,9 +47,9 @@ const LAYOUT_CONSTANTS = {
 };
 //线索池字段的宽度
 const TABLE_WIDTH = {
-    TITLE: 340,
-    CONTACT: 260,
-    TRACE: 280,
+    TITLE: 330,
+    CONTACT: 250,
+    TRACE: 270,
     EXTRACT: 56
 };
 
