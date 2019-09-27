@@ -1,5 +1,4 @@
 import { FilterList } from 'CMP_DIR/filter';
-// import { AntcDatePicker as DatePicker } from 'antc';
 import FilterAction from '../action/filter-action';
 import clueFilterStore from '../store/filter-store';
 import cluePoolAction from '../action';
