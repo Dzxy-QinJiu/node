@@ -146,7 +146,7 @@ class CRMAddForm extends React.Component {
         this.props.form.validateFields((error, values) => {
             let contactErrors = [];
             let contacts = [];
-            let notNeedContactKeys = ['id', 'customer_id', 'sex', 'birthday', 'hobby', 'remark'];
+            let notNeedContactKeys = ['id', 'customer_id'];
             //验证联系人
             this.state.formData.contacts.map(contact => {
                 let res = this[`form${contact.uid}Ref`].handleSubmit();
