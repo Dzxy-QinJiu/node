@@ -744,17 +744,20 @@ class ClueCustomer extends React.Component {
         if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
             type = 'manager';
         }
+        var isGetAll = this.state.exportRange === 'all';
+        const reqData = isGetAll ? this.getClueSearchCondition(true) : this.getClueSearchCondition(false);
         const params = {
-            page_size: 10000,
+            page_size: isGetAll ? 10000 : reqData.pageSize,
             sort_field: sorter.field,
             order: sorter.order,
-            type: type
+            type: type,
+            page_num: reqData.pageNum
         };
-        const route = '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type';
+        const route = '/rest/customer/v2/customer/range/clue/export/:page_size/:page_num/:sort_field/:order/:type';
         const url = route.replace(pathParamRegex, function($0, $1) {
             return params[$1];
         });
-        const reqData = this.state.exportRange === 'all' ? this.getClueSearchCondition(true) : this.getClueSearchCondition(false);
+
         let form = $('<form>', {action: url, method: 'post'});
         form.append($('<input>', {name: 'reqData', value: JSON.stringify(reqData)}));
         //将构造的表单添加到body上
