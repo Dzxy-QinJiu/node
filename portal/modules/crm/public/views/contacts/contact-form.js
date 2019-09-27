@@ -591,85 +591,85 @@ class ContactForm extends React.Component {
                         {this.renderContactWayBlock(CONTACT_KEYS_MAP.WE_CHAT)}
                         {/*邮箱*/}
                         {this.renderContactWayBlock(CONTACT_KEYS_MAP.EMAIL)}
-                    </div>
 
-                    {_.includes(this.props.notShowFormItems,'sex') ? null : (
-                        <FormItem
-                            className="contact-sex-item"
-                            colon={false}
-                            label={Intl.get('crm.contact.sex', '性别')}
-                            {...formLayout}
-                        >
-                            {
-                                getFieldDecorator('sex', {
-                                    initialValue: _.get(formData, 'sex', '')
-                                })(
-                                    <Radio.Group
-                                    >
-                                        {_.map(ContactUtil.sexArray, (sex, index) => {
-                                            return (<Radio key={index} value={sex}>{sex}</Radio>);
-                                        })}
-                                    </Radio.Group>
-                                )
-                            }
-                        </FormItem>)}
-                    {_.includes(this.props.notShowFormItems,'birthday') ? null : (
-                        <FormItem
-                            className="contact-birthday-item"
-                            colon={false}
-                            label={Intl.get('crm.contact.birthday', '生日')}
-                            {...formLayout}
-                        >
-                            {
-                                getFieldDecorator('birthday', {
-                                    initialValue: formData.birthday ? moment(formData.birthday, 'YYYY-MM-DD') : null
-                                })(
-                                    <DatePicker
-                                        showToday={false}
-                                        disabledDate={disabledAfterToday}
-                                    />
-                                )
-                            }
-                        </FormItem>
-                    )}
-                    {_.includes(this.props.notShowFormItems,'hobby') ? null : (
-                        <FormItem
-                            className="contact-hobby-item"
-                            colon={false}
-                            label={Intl.get('crm.contact.hobby', '爱好')}
-                            {...formLayout}
-                        >
-                            {
-                                getFieldDecorator('hobby', {
-                                    initialValue: _.get(formData, 'hobby', '')
-                                })(
-                                    <Input
-                                        value={_.get(formData, 'hobby', '')}
-                                        placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}
-                                    />
-                                )
-                            }
-                        </FormItem>
-                    )}
-                    {_.includes(this.props.notShowFormItems,'remark') ? null : (
-                        <FormItem
-                            className="contact-remark-item"
-                            colon={false}
-                            label={Intl.get('common.remark', '备注')}
-                            {...formLayout}
-                        >
-                            {
-                                getFieldDecorator('remark', {
-                                    initialValue: _.get(formData, 'remark', '')
-                                })(
-                                    <Input.TextArea
-                                        autosize={{minRows: 2, maxRows: 6}}
-                                        placeholder={Intl.get('user.input.remark', '请输入备注')}
-                                    />
-                                )
-                            }
-                        </FormItem>
-                    )}
+                        {_.includes(this.props.notShowFormItems,'sex') ? null : (
+                            <FormItem
+                                className="contact-sex-item"
+                                colon={false}
+                                label={Intl.get('crm.contact.sex', '性别')}
+                                {...formLayout}
+                            >
+                                {
+                                    getFieldDecorator('sex', {
+                                        initialValue: _.get(formData, 'sex', '')
+                                    })(
+                                        <Radio.Group
+                                        >
+                                            {_.map(ContactUtil.sexArray, (sex, index) => {
+                                                return (<Radio key={index} value={sex}>{sex}</Radio>);
+                                            })}
+                                        </Radio.Group>
+                                    )
+                                }
+                            </FormItem>)}
+                        {_.includes(this.props.notShowFormItems,'birthday') ? null : (
+                            <FormItem
+                                className="contact-birthday-item"
+                                colon={false}
+                                label={Intl.get('crm.contact.birthday', '生日')}
+                                {...formLayout}
+                            >
+                                {
+                                    getFieldDecorator('birthday', {
+                                        initialValue: formData.birthday ? moment(formData.birthday, 'YYYY-MM-DD') : null
+                                    })(
+                                        <DatePicker
+                                            showToday={false}
+                                            disabledDate={disabledAfterToday}
+                                        />
+                                    )
+                                }
+                            </FormItem>
+                        )}
+                        {_.includes(this.props.notShowFormItems,'hobby') ? null : (
+                            <FormItem
+                                className="contact-hobby-item"
+                                colon={false}
+                                label={Intl.get('crm.contact.hobby', '爱好')}
+                                {...formLayout}
+                            >
+                                {
+                                    getFieldDecorator('hobby', {
+                                        initialValue: _.get(formData, 'hobby', '')
+                                    })(
+                                        <Input
+                                            value={_.get(formData, 'hobby', '')}
+                                            placeholder={Intl.get('crm.contact.hobby.placeholder', '请输入联系人的兴趣爱好')}
+                                        />
+                                    )
+                                }
+                            </FormItem>
+                        )}
+                        {_.includes(this.props.notShowFormItems,'remark') ? null : (
+                            <FormItem
+                                className="contact-remark-item"
+                                colon={false}
+                                label={Intl.get('common.remark', '备注')}
+                                {...formLayout}
+                            >
+                                {
+                                    getFieldDecorator('remark', {
+                                        initialValue: _.get(formData, 'remark', '')
+                                    })(
+                                        <Input.TextArea
+                                            autosize={{minRows: 2, maxRows: 6}}
+                                            placeholder={Intl.get('user.input.remark', '请输入备注')}
+                                        />
+                                    )
+                                }
+                            </FormItem>
+                        )}
+                    </div>
                 </div>
             </div>
         );

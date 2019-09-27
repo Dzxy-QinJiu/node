@@ -575,7 +575,7 @@ class CRMAddForm extends React.Component {
                                             wrappedComponentRef={ref => this[`form${contact.uid}Ref`] = ref}
                                             contact={{contact}}
                                             height='auto'
-                                            notShowFormItems={['sex', 'birthday', 'hobby', 'remark']}
+                                            // notShowFormItems={['sex', 'birthday', 'hobby', 'remark']}
                                             hasSaveAndCancelBtn={false}
                                             isRequiredContactName={false}
                                             isUseGeminiScrollbar={false}
