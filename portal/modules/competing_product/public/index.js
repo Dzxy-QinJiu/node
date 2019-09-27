@@ -1,16 +1,16 @@
-const React = require('react');
 require('./index.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
-import {Icon, Alert, Input, Button} from 'antd';
+import {Icon, Alert, Input, Button, Form} from 'antd';
+const FormItem = Form.Item;
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import {ajustTagWidth} from 'PUB_DIR/sources/utils/common-method-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
-
+import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 
-class competingProduct extends React.Component {
+class CometingProduct extends React.Component {
     state = {
         isLoading: true, // 获取竞品列表的loading效果是否显示
         productList: [], //竞品列表
@@ -19,7 +19,6 @@ class competingProduct extends React.Component {
         getErrMsg: '', //加载失败的提示信息
         addErrMsg: '', //添加失败的信息
         deleteErrMsg: '', // 删除竞品失败
-        inputValue: '' // 添加竞品时，input框中的值
     };
 
     //获取竞品列表
@@ -88,62 +87,46 @@ class competingProduct extends React.Component {
     handleSubmit = (e) => {
         Trace.traceEvent(e, '点击添加竞品按钮');
         e.preventDefault();
-        //输入的竞品名称去左右空格
-        let product = _.trim(this.state.inputValue);
-        // 判断是否是空格
-        if(!product) {
-            return;
-        }
-        //显示添加的loading效果
-        this.setState({
-            isAddloading: true
-        });
-        $.ajax({
-            url: '/rest/competing_product',
-            type: 'post',
-            dateType: 'json',
-            data: {product: product},
-            success: (resData) => {
-                let flag = _.get(resData, 'result');
-                if (flag) {
-                    //数组开头添加输入的竞品
-                    this.state.productList.unshift(product);
+        this.props.form.validateFields((err, values) => {
+            if (err) return;
+            //显示添加的loading效果
+            this.setState({
+                isAddloading: true
+            });
+            let product = _.trim(values.product);
+
+            $.ajax({
+                url: '/rest/competing_product',
+                type: 'post',
+                dateType: 'json',
+                data: {product: product},
+                success: (resData) => {
+                    let flag = _.get(resData, 'result');
+                    if (flag) {
+                        this.props.form.setFieldsValue({product: ''});
+                        //数组开头添加输入的竞品
+                        this.state.productList.unshift(product);
+                        this.setState({
+                            productList: this.state.productList,
+                            isAddloading: false,
+                        });
+                    } else {
+                        this.setState({
+                            isAddloading: false,
+                            addErrMsg: Intl.get('crm.154','添加失败')
+                        });
+                    }
+                },
+                error: (errorInfo) => {
                     this.setState({
-                        productList: this.state.productList,
                         isAddloading: false,
-                        inputValue: ''
-                    });
-                } else {
-                    this.setState({
-                        isAddloading: false,
-                        addErrMsg: Intl.get('crm.154','添加失败')
+                        addErrMsg: errorInfo.responseJSON || Intl.get('crm.154','添加失败')
                     });
                 }
-
-            },
-            error: (errorInfo) => {
-                this.setState({
-                    isAddloading: false,
-                    addErrMsg: errorInfo.responseJSON || Intl.get('crm.154','添加失败')
-                });
-            }
+            });
         });
 
-    };
 
-    //增加竞品失败
-    handleAddCompetingProductFail = () => {
-        let hide = () => {
-            this.setState({
-                addErrMsg: '',
-                isAddloading: false
-            });
-        };
-        return (
-            <div className="add-config-fail">
-                {this.renderErrorAlert(this.state.addErrMsg, hide)}
-            </div>
-        );
     };
 
     renderErrorAlert = (errorMsg, hide) => {
@@ -224,37 +207,72 @@ class competingProduct extends React.Component {
         );
     };
 
-    handleInputChange = (event) => {
-        let value = _.get(event, 'target.value');
+    // 竞品唯一性校验
+    getValidator = (name) => {
+        return (rule, value, callback) => {
+            let productValue = _.trim(value); // 文本框中的值
+            let existProductList = this.state.productList;
+            let isExist = _.find(existProductList, item => item === productValue);
+            if (productValue) {
+                if (isExist) {
+                    callback(Intl.get('competing.add.check.tips', '该竞品名称已存在'));
+                } else {
+                    callback();
+                }
+            } else {
+                callback(Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name}));
+            }
+
+        };
+    };
+
+    resetCompetingProductFlags = () => {
         this.setState({
-            inputValue: value
+            addErrMsg: ''
         });
     };
 
     renderTopNavOperation = () => {
+        const { getFieldDecorator } = this.props.form;
+        const name = Intl.get('crm.competing.products', '竞品');
+        const addErrMsg = this.state.addErrMsg;
         return (
             <div className='condition-operator'>
                 <div className='pull-left'>
-                    <Input
-                        placeholder={Intl.get('competing.product.add.placeholder', '添加竞品')}
-                        value={this.state.inputValue}
-                        onChange={this.handleInputChange}
-                        onPressEnter={this.handleSubmit}
-                        className='add-input'
-                    />
-                    <Button
-                        className='add-btn'
-                        onClick={this.handleSubmit}
-                        disabled={this.state.isAddloading === 0}
-                    >
-                        <Icon type="plus" />
-                        {
-                            this.state.isAddloading === 0 ?
-                                <Icon type="loading" style={{marginLeft: 12}}/> : null
-                        }
-                    </Button>
+                    <Form layout='horizontal' className='form' autoComplete='off'>
+                        <FormItem
+                            label=''
+                        >
+                            {getFieldDecorator('product', {
+                                rules: [{
+                                    required: true,
+                                    validator: this.getValidator(name),
+                                }, validatorNameRuleRegex(10, name)]
+                            })(
+                                <Input
+                                    placeholder={Intl.get('competing.product.add.placeholder', '添加竞品')}
+                                    onPressEnter={this.handleSubmit}
+                                    className={addErrMsg ? 'input-red-border' : ''}
+                                    onFocus={this.resetCompetingProductFlags}
+                                />
+                            )}
+                        </FormItem>
+                        <Button
+                            className='add-btn'
+                            onClick={this.handleSubmit}
+                            disabled={this.state.isAddloading === 0}
+                        >
+                            <Icon type="plus" />
+                            {
+                                this.state.isAddloading === 0 ?
+                                    <Icon type="loading" style={{marginLeft: 12}}/> : null
+                            }
+                        </Button>
+                    </Form>
                     {
-                        this.state.addErrMsg !== '' ? this.handleAddCompetingProductFail() : null
+                        addErrMsg ? (
+                            <div className="competing-product-check">{addErrMsg}</div>
+                        ) : null
                     }
                 </div>
             </div>
@@ -265,7 +283,7 @@ class competingProduct extends React.Component {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
         return (
-            <div className="competing-product-container" data-tracename="行业" style={{height: height}}>
+            <div className="competing-product-container" data-tracename="竞品" style={{height: height}}>
                 <div className="competing-product-content-wrap" style={{height: height}}>
                     <div className="competing-product-top-nav">
                         {this.renderTopNavOperation()}
@@ -282,4 +300,8 @@ class competingProduct extends React.Component {
     }
 }
 
-module.exports = competingProduct;
+CometingProduct.propTypes = {
+    form: PropTypes.form
+};
+
+module.exports = Form.create()(CometingProduct);
