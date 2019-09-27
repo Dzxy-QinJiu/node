@@ -67,7 +67,7 @@ var CrmAlertForm = createReactClass({
             topicValue: this.props.topicValue
         };
     },
-    //初始化值数据还原初值
+    //初始化值数据
     getInitialFormData: function(props) {
         let formData = _.cloneDeep(props.currentSchedule);
         let scheduleType = _.isEqual(_.get(props,'topicValue'), 'customer') ? 'calls' : 'lead';
@@ -81,7 +81,19 @@ var CrmAlertForm = createReactClass({
         formData.start_time = moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
         //联系的结束时间
         formData.end_time = moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
-        //提醒时间
+        //默认不提醒
+        formData.alert_time = '';
+        return formData;
+    },
+    //还原初值
+    initialFormData: function(props){
+        let formData = '';
+        let scheduleType = _.isEqual(_.get(props,'topicValue'), 'customer') ? 'calls' : 'lead';
+        formData.topic = '';
+        formData.scheduleType = scheduleType || 'calls';
+        formData.content = '';
+        formData.start_time = moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
+        formData.end_time = moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
         formData.alert_time = '';
         this.setState({
             formData,
@@ -89,13 +101,12 @@ var CrmAlertForm = createReactClass({
             selectedAlertTimeRange: 'not_remind',
             topicValue: props.topicValue,
         });
-        return formData;
-    },
+    }
 
     componentWillReceiveProps: function(nextProps) {
         //用户切换添加"线索"或"客户"类型代办时，更新formData里的scheduleType初始值数据还原初值
         if(_.has(nextProps, 'topicValue')) {
-            this.getInitialFormData(nextProps);
+            this.initialFormData(nextProps);
         }
     },
     //是否是今天
@@ -440,7 +451,7 @@ var CrmAlertForm = createReactClass({
         if(this.props.isAddToDoClicked) return;
         //如果是批量添加联系计划,关闭后应该清空数据
         if (_.isArray(this.props.selectedCustomer)) {
-            this.getInitialFormData(this.props);
+            this.initialFormData(this.props);
         } else {
             ScheduleAction.cancelEdit();
         }
@@ -588,9 +599,9 @@ var CrmAlertForm = createReactClass({
         }
     },
 
-    //根据传进来的不同topic渲染“客户”或“线索”
-    renderTopic: function(topic, formItemLayout){
-        if(_.isEqual(topic, 'clue')) {
+    //根据传进来的不同topicValue渲染“客户”或“线索”
+    renderTopic: function(topicValue, formItemLayout){
+        if(_.isEqual(topicValue, 'clue')) {
             return(<FormItem
                 {...formItemLayout}
                 required
