@@ -923,6 +923,7 @@ var zh_CN = {
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': '添加竞品',
+    'competing.add.check.tips': '该竞品名称已存在',
     // 后台管理-竞品end
 
     // 后台管理-销售流程start

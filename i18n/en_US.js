@@ -919,6 +919,7 @@ var en_US = {
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
+    'competing.add.check.tips': 'The name of competing product was existed', // 该竞品名称已存在
     // 后台管理-竞品end
 
     // 后台管理-销售流程start
