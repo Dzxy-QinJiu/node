@@ -252,7 +252,6 @@ class CometingProduct extends React.Component {
                                 <Input
                                     placeholder={Intl.get('competing.product.add.placeholder', '添加竞品')}
                                     onPressEnter={this.handleSubmit}
-                                    className={addErrMsg ? 'input-red-border' : ''}
                                     onFocus={this.resetCompetingProductFlags}
                                 />
                             )}
