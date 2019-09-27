@@ -90,7 +90,7 @@ var CrmAlertForm = createReactClass({
         let formData = '';
         let scheduleType = _.isEqual(_.get(props,'topicValue'), 'customer') ? 'calls' : 'lead';
         formData.topic = '';
-        formData.scheduleType = scheduleType || 'calls';
+        formData.scheduleType = scheduleType;
         formData.content = '';
         formData.start_time = moment().add(TIME_CALCULATE_CONSTS.ONE, 'h').valueOf();
         formData.end_time = moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
@@ -101,7 +101,7 @@ var CrmAlertForm = createReactClass({
             selectedAlertTimeRange: 'not_remind',
             topicValue: props.topicValue,
         });
-    }
+    },
 
     componentWillReceiveProps: function(nextProps) {
         //用户切换添加"线索"或"客户"类型代办时，更新formData里的scheduleType初始值数据还原初值
