@@ -71,7 +71,6 @@ var CrmAlertForm = createReactClass({
     getInitialFormData: function(props) {
         let formData = _.cloneDeep(props.currentSchedule);
         let scheduleType = _.isEqual(_.get(props,'topicValue'), 'customer') ? 'calls' : 'lead';
-        console.log(scheduleType);
         //从用户调用会传入用户名
         formData.topic = formData.customer_name || '';
         //代办类型的默认值
