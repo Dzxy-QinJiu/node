@@ -87,7 +87,7 @@ var CrmAlertForm = createReactClass({
     },
     //还原初值
     initialFormData: function(props){
-        formData = this.getInitialFormData();
+        let formData = this.getInitialFormData(props);
         this.setState({
             formData,
             selectedTimeRange: '1h',
