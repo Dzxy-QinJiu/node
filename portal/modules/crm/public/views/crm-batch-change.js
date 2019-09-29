@@ -97,11 +97,11 @@ var CrmBatchChange = createReactClass({
         BatchChangeActions.setSalesMan(sales_man);
     },
 
-    getSalesBatchParams: function() {
+    getSalesBatchParams: function(sales_man) {
         let salesId = '', teamId = '', salesName = '', teamName = '';
         //客户所属销售团队的修改
         //销售id和所属团队的id
-        let idArray = this.state.sales_man.split('&&');
+        let idArray = sales_man.split('&&');
         if (_.isArray(idArray) && idArray.length) {
             salesId = idArray[0];
             teamId = idArray[1];
@@ -109,7 +109,7 @@ var CrmBatchChange = createReactClass({
         //销售昵称和所属团队的团队名称
         let salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === salesId);
         if (salesman) {
-            salesName = salesman.user_info ? salesman.user_info.nick_name : '';
+            salesName = salesman.user_info ? (_.get(salesman.user_info, 'nick_name') || _.get(salesman.user_info,'user_name')) : '';
             if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
                 let salesTeam = _.find(salesman.user_groups, team => team.group_id === teamId);
                 if (salesTeam) {
@@ -138,7 +138,8 @@ var CrmBatchChange = createReactClass({
         }
         BatchChangeActions.setLoadingState(true);
         //如果是批量变更所属销售的，需要先看一下该销售已经拥有的客户数量再加上这些是否已经达到上限
-        var member_id = this.state.sales_man.split('&&')[0];
+        var sales_man = this.state.sales_man;
+        var member_id = sales_man.split('&&')[0];
         if (transferType === BATCH_OPERATE_TYPE.USER){
             //如果是选中全部的客户，要用全部客户的数量
             var selectedCustomerNum = this.props.selectedCustomer.length;
@@ -152,19 +153,19 @@ var CrmBatchChange = createReactClass({
                     message.warn(warningTip);
                     BatchChangeActions.setLoadingState(false);
                 }else{
-                    this.batchSubmitData(transferType, title, member_id);
+                    this.batchSubmitData(transferType, title, sales_man);
                 }
             });
         }else{
-            this.batchSubmitData(transferType, title, member_id);
+            this.batchSubmitData(transferType, title, sales_man);
         }
     },
 
-    batchSubmitData: function(transferType, title, member_id) {
+    batchSubmitData: function(transferType, title, sales_man) {
         let condition = {
             query_param: {},
             update_param: {
-                user_id: member_id
+                user_id: sales_man.split('&&')[0]
             }
         };
         //选中全部搜索结果时，将搜索条件传给后端
@@ -187,7 +188,7 @@ var CrmBatchChange = createReactClass({
                 //全部记录的个数
                 let totalSelectedSize = is_select_all ? crmStore.getCustomersLength() : this.props.selectedCustomer.length;
                 //构造批量操作参数
-                let batchParams = this.getSalesBatchParams();
+                let batchParams = this.getSalesBatchParams(sales_man);
                 //向任务列表id中添加taskId
                 batchOperate.addTaskIdToList(result.taskId);
                 //存储批量操作参数，后续更新时使用
