@@ -1,5 +1,12 @@
 /**
  * Created by hzl on 2019/9/27.
+ * 加载空状态的展示
+ * 用法：
+ * <NoData
+ *  textContent={*******}
+ * />
+ * 属性说明：
+ * textContent 空状态描述信息
  */
 
 import './index.less';

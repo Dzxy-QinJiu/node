@@ -9,7 +9,7 @@ import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
 import NoData from 'CMP_DIR/no-data';
 import LoadDataError from 'CMP_DIR/load-data-error';
-const PADDING_HEIGHT = 8;
+const PADDING_HEIGHT = 8; // 卡片容器的padding-top
 
 class CometingProduct extends React.Component {
     state = {
@@ -129,11 +129,6 @@ class CometingProduct extends React.Component {
 
     };
 
-    // 重新加载数据
-    retryLoadData = () => {
-        this.getProductList();
-    };
-
     renderNoDataOrLoadError = (contentHeight) => {
         let productList = this.state.productList;
         let length = _.get(productList, 'length');
@@ -153,7 +148,7 @@ class CometingProduct extends React.Component {
                 {
                     getErrMsg ? (
                         <LoadDataError
-                            retryLoadData={this.retryLoadData}
+                            retryLoadData={this.getProductList}
                         />
                     ) : null
                 }
@@ -288,7 +283,7 @@ class CometingProduct extends React.Component {
                     <GeminiScrollBar style={{height: contentHeight}}>
                         <div className="competing-product-content">
                             {
-                                length ? (this.renderCompetingProductList()) : this.renderNoDataOrLoadError(contentHeight)
+                                length ? this.renderCompetingProductList() : this.renderNoDataOrLoadError(contentHeight)
                             }
                         </div>
                     </GeminiScrollBar>

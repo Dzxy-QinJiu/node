@@ -12,7 +12,7 @@ import NoData from 'CMP_DIR/no-data';
 import LoadDataError from 'CMP_DIR/load-data-error';
 
 const PAGE_SIZE = 1000;
-const PADDING_HEIGHT = 8;
+const PADDING_HEIGHT = 8; // 卡片容器的padding-top
 
 class Industry extends React.Component {
     state = {
@@ -221,10 +221,6 @@ class Industry extends React.Component {
         );
     };
 
-    retryLoadData = () => {
-        this.getInitialData();
-    };
-
     renderNoDataOrLoadError = (contentHeight) => {
         let TagLists = this.state.TagLists;
         let length = _.get(TagLists, 'length', 0);
@@ -243,7 +239,7 @@ class Industry extends React.Component {
                 {
                     this.state.getErrMsg ? (
                         <LoadDataError
-                            retryLoadData={this.retryLoadData}
+                            retryLoadData={this.getInitialData}
                         />
                     ) : null
                 }
