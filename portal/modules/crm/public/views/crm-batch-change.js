@@ -109,7 +109,7 @@ var CrmBatchChange = createReactClass({
         //销售昵称和所属团队的团队名称
         let salesman = _.find(this.state.salesManList, item => item.user_info && item.user_info.user_id === salesId);
         if (salesman) {
-            salesName = salesman.user_info ? (salesman.user_info.nick_name || salesman.user_info.user_name) : '';
+            salesName = salesman.user_info ? (_.get(salesman.user_info, 'nick_name') || _.get(salesman.user_info,'user_name')) : '';
             if (_.isArray(salesman.user_groups) && salesman.user_groups.length) {
                 let salesTeam = _.find(salesman.user_groups, team => team.group_id === teamId);
                 if (salesTeam) {
