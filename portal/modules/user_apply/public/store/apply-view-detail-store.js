@@ -3,6 +3,7 @@ import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import AppUserUtil from '../util/app-user-util';
 class ApplyViewDetailStore {
     constructor() {
         this.resetState();
@@ -312,7 +313,7 @@ class ApplyViewDetailStore {
         } else {
             //正常情况
             sameHistoryApplyLists.result = '';
-            sameHistoryApplyLists.list = _.filter(_.get(resultObj,'data.list'), item => _.get(item,'replyLists[0]'));
+            sameHistoryApplyLists.list = AppUserUtil.handleHistoricalLists(_.get(resultObj,'data.list'));
             sameHistoryApplyLists.errorMsg = '';
         }
     }

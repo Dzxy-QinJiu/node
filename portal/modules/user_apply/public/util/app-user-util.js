@@ -53,3 +53,7 @@ exports.encryptPassword = function(text) {
     var ciphertext = CryptoJS.AES.encrypt(text , 'apply_change_password');
     return ciphertext.toString();
 };
+//处理历史申请记录的数据
+exports.handleHistoricalLists = function(lists) {
+    return _.filter(lists, item => _.get(item,'replyLists[0]'));
+};
