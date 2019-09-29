@@ -9,8 +9,8 @@ const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import SaveCancelBtnTimer from 'CMP_DIR/save-cancel-button-timer';
-const RESULT_TYPES = SaveCancelBtnTimer.RESULT_TYPES;
+import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+const RESULT_TYPES = SaveCancelButton.RESULT_TYPES;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 
@@ -100,9 +100,7 @@ class DealForm extends React.Component {
             let predictFinishTime = values.predict_finish_time ? moment(values.predict_finish_time).endOf('day').valueOf() : moment().valueOf();
             let customer_id = _.get(this.state, 'formData.customer.id');
             if (!customer_id) {
-                this.setState({saveResult: ''}, () => {
-                    this.setResultData(Intl.get('errorcode.74', '客户不存在'), RESULT_TYPES.ERROR);
-                });
+                this.setResultData(Intl.get('errorcode.74', '客户不存在'), RESULT_TYPES.ERROR);
                 return;
             }
             let submitData = {
@@ -335,11 +333,10 @@ class DealForm extends React.Component {
                         </FormItem>
                         <FormItem
                             wrapperCol={{span: 24}}>
-                            <SaveCancelBtnTimer
-                                isUseTimerTip
+                            <SaveCancelButton
                                 successShowTime={1500}
                                 loading={this.state.isSaving}
-                                saveMsg={this.state.saveErrorMsg}
+                                saveErrorMsg={this.state.saveErrorMsg}
                                 saveResult={this.state.saveResult}
                                 handleSubmit={this.handleSubmit}
                                 handleCancel={this.closeDealForm}
