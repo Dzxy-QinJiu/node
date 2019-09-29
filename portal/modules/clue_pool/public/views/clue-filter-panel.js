@@ -156,27 +156,11 @@ class ClueFilterPanel extends React.Component {
             return x;
         });
         const advancedData = [{
-            groupName: Intl.get('crm.6', '负责人'),
-            groupId: 'clue_pool_user_name',
-            singleSelect: true,
-            data: _.map(clueLeadingArray, x => ({
-                name: x,
-                value: x
-            }))
-        },
-        {
             groupName: Intl.get('crm.96', '地域'),
             groupId: 'clue_pool_province',
             data: clueProvinceList.map(x => ({
                 name: x,
                 value: x
-            }))
-        },{
-            groupName: Intl.get('crm.clue.client.source', '集客方式'),
-            groupId: 'source_classify',
-            data: sourceClassifyArray.map(x => ({
-                name: x.name,
-                value: x.value
             }))
         }];
         //非销售角色才有来源、渠道、分类筛选项
@@ -206,6 +190,22 @@ class ClueFilterPanel extends React.Component {
                 }
             );
         }
+        advancedData.unshift({
+            groupName: Intl.get('crm.6', '负责人'),
+            groupId: 'clue_pool_user_name',
+            singleSelect: true,
+            data: _.map(clueLeadingArray, x => ({
+                name: x,
+                value: x
+            }))
+        }, {
+            groupName: Intl.get('crm.clue.client.source', '集客方式'),
+            groupId: 'source_classify',
+            data: sourceClassifyArray.map(x => ({
+                name: x.name,
+                value: x.value
+            }))
+        });
         //非普通销售才有销团队
         if (!userData.getUserData().isCommonSales) {
             advancedData.unshift(
