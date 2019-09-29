@@ -1,14 +1,18 @@
 require('./index.less');
 const Spinner = require('CMP_DIR/spinner');
-import {Icon, Alert, Input, Button, Form} from 'antd';
+import {Icon, Alert, Input, Button, Form, message} from 'antd';
 const FormItem = Form.Item;
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import {ajustTagWidth} from 'PUB_DIR/sources/utils/common-method-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
-const PAGE_SIZE = 1000;
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
+import NoData from 'CMP_DIR/no-data';
+import LoadDataError from 'CMP_DIR/load-data-error';
+
+const PAGE_SIZE = 1000;
+const PADDING_HEIGHT = 8;
 
 class Industry extends React.Component {
     state = {
@@ -19,7 +23,6 @@ class Industry extends React.Component {
         isGetInforcorrect: -1, //能否正常获取数据 否 -1 是 0
         getErrMsg: '', //加载失败的提示信息
         addErrMsg: '', //添加失败的信息
-        deleteErrMsg: '', // 删除行业失败
     };
 
     //获取初始行业列表
@@ -72,15 +75,15 @@ class Industry extends React.Component {
                 } else {
                     this.setState({
                         DeletingItemId: -1,
-                        deleteErrMsg: Intl.get('crm.139','删除失败')
                     });
+                    message.error(Intl.get('crm.139','删除失败'));
                 }
             },
             error: (errorInfo) => {
                 this.setState({
                     DeletingItemId: -1,
-                    deleteErrMsg: errorInfo.responseJSON
                 });
+                message.error(errorInfo.responseJSON || Intl.get('crm.139','删除失败'));
             }
         });
 
@@ -138,25 +141,6 @@ class Industry extends React.Component {
                 <AlertTimer
                     time={4000}
                     message={this.state.addErrMsg}
-                    type="error"
-                    showIcon
-                    onHide={hide}
-                />
-            </div>
-        );
-    };
-
-    handleDeleteIndustryFail = () => {
-        var hide = () => {
-            this.setState({
-                deleteErrMsg: ''
-            });
-        };
-        return (
-            <div className="delete_ip_config_err_tips">
-                <AlertTimer
-                    time={4000}
-                    message={this.state.deleteErrMsg}
                     type="error"
                     showIcon
                     onHide={hide}
@@ -238,63 +222,74 @@ class Industry extends React.Component {
         );
     };
 
+    retryLoadData = () => {
+        this.getInitialData();
+    };
+
+    renderNoDataOrLoadError = (contentHeight) => {
+        let TagLists = this.state.TagLists;
+        let length = _.get(TagLists, 'length', 0);
+
+        const tipsZoneHeight = contentHeight - PADDING_HEIGHT;
+
+        return (
+            <div className="msg-tips" style={{height: tipsZoneHeight}}>
+                {
+                    length === 0 && !this.state.isLoading ? (
+                        <NoData
+                            textContent={Intl.get('industry.no.data.tips', '暂无行业，添加行业后，可以为您的客户设置不同行业')}
+                        />
+                    ) : null
+                }
+                {
+                    this.state.getErrMsg ? (
+                        <LoadDataError
+                            retryLoadData={this.retryLoadData}
+                        />
+                    ) : null
+                }
+            </div>
+        );
+    };
+
     renderIndustryConfig = () => {
         let TagLists = this.state.TagLists;
-        let length = _.get(TagLists, 'length');
         // 内容区宽度
         let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
             BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - 2 * BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
         let tagWidth = ajustTagWidth(contentWidth);
-        return (
-            <div className="industry-content-zone">
-                <div className="msg-tips">
-                    {
-                        this.state.deleteErrMsg !== '' ? this.handleDeleteIndustryFail() : null
-                    }
-                    {
-                        length === 0 && !this.state.isLoading ? (
-                            <Alert
-                                type="info"
-                                showIcon
-                                message={Intl.get('config.manage.no.industry', '暂无行业配置，请添加！')}
-                            />
-                        ) : null
-                    }
-                    {
-                        this.state.getErrMsg ? <Alert type="error" showIcon message={this.state.getErrMsg}/> : null
-                    }
-                </div>
-                <div className="content-zone">
-                    {
-                        this.state.isLoading ? <Spinner/> : null
-                    }
 
-                    <ul className="mb-taglist">
-                        {
-                            _.map(TagLists, (item, index) => {
-                                let content = _.get(item, 'industry');
-                                return (
-                                    <li className="mb-tag" key={index} style={{width: tagWidth}}>
-                                        <div className="mb-tag-content">
-                                            <span className="tag-content" title={content}>{content}</span>
-                                            <span
-                                                onClick={this.handleDeleteItem.bind(this, item)}
-                                                data-tracename="点击删除某个行业按钮"
-                                                className="ant-btn"
-                                            >
-                                                <i className="iconfont icon-delete handle-btn-item "></i>
-                                            </span>
-                                            { this.state.DeletingItemId === item.id ? (
-                                                <span ><Icon type="loading"/></span>
-                                            ) : null
-                                            }
-                                        </div>
-                                    </li>
-                                );
-                            }
-                            )}
-                    </ul>
-                </div>
+        return (
+            <div className="content-zone">
+                {
+                    this.state.isLoading ? <Spinner/> : null
+                }
+
+                <ul className="mb-taglist">
+                    {
+                        _.map(TagLists, (item, index) => {
+                            let content = _.get(item, 'industry');
+                            return (
+                                <li className="mb-tag" key={index} style={{width: tagWidth}}>
+                                    <div className="mb-tag-content">
+                                        <span className="tag-content" title={content}>{content}</span>
+                                        <span
+                                            onClick={this.handleDeleteItem.bind(this, item)}
+                                            data-tracename="点击删除某个行业按钮"
+                                            className="ant-btn"
+                                        >
+                                            <i className="iconfont icon-delete handle-btn-item "></i>
+                                        </span>
+                                        { this.state.DeletingItemId === item.id ? (
+                                            <span ><Icon type="loading"/></span>
+                                        ) : null
+                                        }
+                                    </div>
+                                </li>
+                            );
+                        }
+                        )}
+                </ul>
             </div>
         );
     };
@@ -302,6 +297,8 @@ class Industry extends React.Component {
     render = () => {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        let TagLists = this.state.TagLists;
+        let length = _.get(TagLists, 'length');
         return (
             <div className="industry-container" data-tracename="行业" style={{height: height}}>
                 <div className="industry-content-wrap" style={{height: height}}>
@@ -310,8 +307,11 @@ class Industry extends React.Component {
                     </div>
                     <GeminiScrollBar style={{height: contentHeight}}>
                         <div className="industry-content">
-                            {this.renderIndustryConfig()}
+                            {
+                                length ? (this.renderIndustryConfig()) : this.renderNoDataOrLoadError(contentHeight)
+                            }
                         </div>
+
                     </GeminiScrollBar>
                 </div>
             </div>

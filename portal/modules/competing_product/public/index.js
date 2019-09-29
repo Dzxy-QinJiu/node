@@ -1,14 +1,15 @@
 require('./index.less');
 const Spinner = require('CMP_DIR/spinner');
-const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
-import {Icon, Alert, Input, Button, Form} from 'antd';
+import {Icon, Input, Button, Form, message} from 'antd';
 const FormItem = Form.Item;
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import {ajustTagWidth} from 'PUB_DIR/sources/utils/common-method-util';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import { validatorNameRuleRegex } from 'PUB_DIR/sources/utils/validate-util';
-const ALERT_TIME = 4000;//错误提示的展示时间：4s
+import NoData from 'CMP_DIR/no-data';
+import LoadDataError from 'CMP_DIR/load-data-error';
+const PADDING_HEIGHT = 8;
 
 class CometingProduct extends React.Component {
     state = {
@@ -18,7 +19,6 @@ class CometingProduct extends React.Component {
         DeletingItem: '', //当前正在删除的竞品
         getErrMsg: '', //加载失败的提示信息
         addErrMsg: '', //添加失败的信息
-        deleteErrMsg: '', // 删除竞品失败
     };
 
     //获取竞品列表
@@ -67,17 +67,17 @@ class CometingProduct extends React.Component {
                     });
                 } else {
                     this.setState({
-                        DeletingItem: '',
-                        deleteErrMsg: Intl.get('crm.139','删除失败')
+                        DeletingItem: ''
                     });
+                    message.error(Intl.get('crm.139','删除失败'));
                 }
 
             },
             error: (errorInfo) => {
                 this.setState({
                     DeletingItem: '',
-                    deleteErrMsg: errorInfo.responseJSON
                 });
+                message.error(errorInfo.responseJSON || Intl.get('crm.139','删除失败'));
             }
         });
 
@@ -129,80 +129,76 @@ class CometingProduct extends React.Component {
 
     };
 
-    renderErrorAlert = (errorMsg, hide) => {
-        return (<AlertTimer time={ALERT_TIME} message={errorMsg} type="error" showIcon onHide={hide}/>);
+    // 重新加载数据
+    retryLoadData = () => {
+        this.getProductList();
     };
 
-    handleDeleteCompetingProductFail = () => {
-        let hide = () => {
-            this.setState({
-                deleteErrMsg: ''
-            });
-        };
-        return (
-            <div className="delete_ip_config_err_tips">
-                {this.renderErrorAlert(this.state.deleteErrMsg, hide)}
-            </div>
-        );
-    };
-
-    renderCompetingProductList = () => {
+    renderNoDataOrLoadError = (contentHeight) => {
         let productList = this.state.productList;
         let length = _.get(productList, 'length');
         let getErrMsg = this.state.getErrMsg;
         let isLoading = this.state.isLoading;
+        const tipsZoneHeight = contentHeight - PADDING_HEIGHT;
+
+        return (
+            <div className="msg-tips" style={{height: tipsZoneHeight}}>
+                {
+                    length === 0 && !isLoading ? (
+                        <NoData
+                            textContent={Intl.get('competing.no.data.tips', '暂无竞品，添加竞品后，可以在客户上设置竞品，帮助销售人员更好的完成销售过程')}
+                        />
+                    ) : null
+                }
+                {
+                    getErrMsg ? (
+                        <LoadDataError
+                            retryLoadData={this.retryLoadData}
+                        />
+                    ) : null
+                }
+            </div>
+        );
+    };
+
+
+    renderCompetingProductList = () => {
+        let productList = this.state.productList;
+        let isLoading = this.state.isLoading;
         let contentWidth = $(window).width() - BACKGROUG_LAYOUT_CONSTANTS.FRIST_NAV_WIDTH -
             BACKGROUG_LAYOUT_CONSTANTS.NAV_WIDTH - 2 * BACKGROUG_LAYOUT_CONSTANTS.PADDING_WIDTH;
         let tagWidth = ajustTagWidth(contentWidth);
-        return (
-            <div className="competing-product-content-zone">
-                <div className="msg-tips">
-                    {
-                        this.state.deleteErrMsg !== '' ? this.handleDeleteCompetingProductFail() : null
-                    }
-                    {
-                        length === 0 && !isLoading ? (
-                            <Alert
-                                type="info"
-                                showIcon
-                                message={Intl.get('config.manage.no.product', '暂无竞品配置，请添加！')}
-                            />
-                        ) : null
-                    }
-                    {
-                        getErrMsg ? <Alert type="error" showIcon message={getErrMsg}/> : null
-                    }
-                </div>
-                <div className="content-zone">
-                    {
-                        isLoading ? <Spinner/> : null
-                    }
 
-                    <ul className="mb-taglist">
-                        {
-                            _.map(productList, (item, index) => {
-                                return (
-                                    <li className="mb-tag" key={index} style={{width: tagWidth}}>
-                                        <div className="mb-tag-content">
-                                            <span className="tag-content" title={item}>{item}</span>
-                                            <span
-                                                onClick={this.handleDeleteItem.bind(this, item)}
-                                                data-tracename="点击删除某个竞品按钮"
-                                                className="ant-btn"
-                                            >
-                                                <i className="iconfont icon-delete handle-btn-item"></i>
-                                            </span>
-                                            { this.state.DeletingItemId === item ? (
-                                                <span ><Icon type="loading"/></span>
-                                            ) : null
-                                            }
-                                        </div>
-                                    </li>
-                                );
-                            }
-                            )}
-                    </ul>
-                </div>
+        return (
+            <div className="content-zone">
+                {
+                    isLoading ? <Spinner/> : null
+                }
+
+                <ul className="mb-taglist">
+                    {
+                        _.map(productList, (item, index) => {
+                            return (
+                                <li className="mb-tag" key={index} style={{width: tagWidth}}>
+                                    <div className="mb-tag-content">
+                                        <span className="tag-content" title={item}>{item}</span>
+                                        <span
+                                            onClick={this.handleDeleteItem.bind(this, item)}
+                                            data-tracename="点击删除某个竞品按钮"
+                                            className="ant-btn"
+                                        >
+                                            <i className="iconfont icon-delete handle-btn-item"></i>
+                                        </span>
+                                        { this.state.DeletingItemId === item ? (
+                                            <span ><Icon type="loading"/></span>
+                                        ) : null
+                                        }
+                                    </div>
+                                </li>
+                            );
+                        }
+                        )}
+                </ul>
             </div>
         );
     };
@@ -281,6 +277,8 @@ class CometingProduct extends React.Component {
     render() {
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let contentHeight = height - BACKGROUG_LAYOUT_CONSTANTS.TOP_ZONE_HEIGHT;
+        let productList = this.state.productList;
+        let length = _.get(productList, 'length');
         return (
             <div className="competing-product-container" data-tracename="竞品" style={{height: height}}>
                 <div className="competing-product-content-wrap" style={{height: height}}>
@@ -289,7 +287,9 @@ class CometingProduct extends React.Component {
                     </div>
                     <GeminiScrollBar style={{height: contentHeight}}>
                         <div className="competing-product-content">
-                            {this.renderCompetingProductList()}
+                            {
+                                length ? (this.renderCompetingProductList()) : this.renderNoDataOrLoadError(contentHeight)
+                            }
                         </div>
                     </GeminiScrollBar>
 
