@@ -3,13 +3,14 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2018/11/2.
  */
-import {Form, Input, DatePicker, Select} from 'antd';
+import {Form, Input, DatePicker, Select, message} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import Trace from 'LIB_DIR/trace';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
-import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
+import SaveCancelBtnTimer from 'CMP_DIR/save-cancel-button-timer';
+const RESULT_TYPES = SaveCancelBtnTimer.RESULT_TYPES;
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 
@@ -42,6 +43,7 @@ class DealForm extends React.Component {
             },
             isSaving: false,
             saveErrorMsg: '',
+            saveResult: '',
             isShowAddCustomer: false,
         };
     }
@@ -78,15 +80,14 @@ class DealForm extends React.Component {
     };
     //去掉保存后提示信息
     hideSaveTooltip = () => {
-        this.setState({
-            saveErrorMsg: '',
-        });
+        this.closeDealForm();
     };
     //保存结果的处理
-    setResultData(saveErrorMsg) {
+    setResultData(saveErrorMsg, saveResult) {
         this.setState({
             isSaving: false,
             saveErrorMsg: saveErrorMsg,
+            saveResult
         });
     }
 
@@ -99,7 +100,9 @@ class DealForm extends React.Component {
             let predictFinishTime = values.predict_finish_time ? moment(values.predict_finish_time).endOf('day').valueOf() : moment().valueOf();
             let customer_id = _.get(this.state, 'formData.customer.id');
             if (!customer_id) {
-                this.setState({saveErrorMsg: Intl.get('errorcode.74', '客户不存在')});
+                this.setState({saveResult: ''}, () => {
+                    this.setResultData(Intl.get('errorcode.74', '客户不存在'), RESULT_TYPES.ERROR);
+                });
                 return;
             }
             let submitData = {
@@ -112,31 +115,27 @@ class DealForm extends React.Component {
                 remarks: values.remarks
             };
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-save'), '保存添加的订单');
-            this.setState({
-                isSaving: true,
-                saveErrorMsg: ''
-            });
+            this.setState({ isSaving: true, saveErrorMsg: '', saveResult: '' });
             $.ajax({
                 url: '/rest/deal',
                 dataType: 'json',
                 type: 'post',
                 data: submitData,
                 success: (data) => {
-                    this.setState({
-                        isSaving: false,
-                        saveErrorMsg: '',
-                    });
-                    this.closeDealForm();
                     if (_.isObject(data.result)) {
+                        //添加成功
+                        this.setResultData(Intl.get('user.user.add.success', '添加成功'), RESULT_TYPES.SUCCESS);
                         if(this.props.isBoardView){
                             dealBoardAction.afterAddDeal({...data.result, customer_name: _.get(this.state,'formData.customer.name')});
                         }else{
                             dealAction.addOneDeal({...data.result, customer_name: _.get(this.state,'formData.customer.name')});
                         }
+                    }else {
+                        this.setResultData(Intl.get('crm.154', '添加失败'), RESULT_TYPES.ERROR);
                     }
                 },
                 error: (xhr) => {
-                    this.setResultData(xhr.responseJSON || Intl.get('crm.154', '添加失败'), 'error');
+                    this.setResultData(xhr.responseJSON || Intl.get('crm.154', '添加失败'), RESULT_TYPES.ERROR);
                 }
             });
         });
@@ -171,7 +170,8 @@ class DealForm extends React.Component {
         formData.customer.name = selectedCustomer.name;
         this.setState({
             formData: formData,
-            saveErrorMsg: ''
+            saveErrorMsg: '',
+            saveResult: ''
         }, () => {
             this.props.form.validateFields(['customer'], {force: true});
         });
@@ -335,10 +335,15 @@ class DealForm extends React.Component {
                         </FormItem>
                         <FormItem
                             wrapperCol={{span: 24}}>
-                            <SaveCancelButton loading={this.state.isSaving}
-                                saveErrorMsg={this.state.saveErrorMsg}
+                            <SaveCancelBtnTimer
+                                isUseTimerTip
+                                successShowTime={1500}
+                                loading={this.state.isSaving}
+                                saveMsg={this.state.saveErrorMsg}
+                                saveResult={this.state.saveResult}
                                 handleSubmit={this.handleSubmit}
                                 handleCancel={this.closeDealForm}
+                                hideSaveTooltip={this.hideSaveTooltip}
                             />
                         </FormItem>
                     </Form>
