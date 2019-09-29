@@ -54,6 +54,7 @@ exports.encryptPassword = function(text) {
     return ciphertext.toString();
 };
 //处理历史申请记录的数据
-exports.handleHistoricalLists = function(lists) {
+exports.handleHistoricalLists = function(resultObj) {
+    var lists = _.get(resultObj,'data.list');
     return _.filter(lists, item => _.get(item,'replyLists[0]'));
 };

@@ -313,7 +313,7 @@ class ApplyViewDetailStore {
         } else {
             //正常情况
             sameHistoryApplyLists.result = '';
-            sameHistoryApplyLists.list = AppUserUtil.handleHistoricalLists(_.get(resultObj,'data.list'));
+            sameHistoryApplyLists.list = AppUserUtil.handleHistoricalLists(resultObj);
             sameHistoryApplyLists.errorMsg = '';
         }
     }

@@ -314,7 +314,7 @@ class ApplyViewDetailStore {
             //正常情况
             sameHistoryApplyLists.result = '';
             //过滤掉没有回复的申请历史
-            sameHistoryApplyLists.list = AppUserUtil.handleHistoricalLists(_.get(resultObj,'data.list'));
+            sameHistoryApplyLists.list = AppUserUtil.handleHistoricalLists(resultObj);
             sameHistoryApplyLists.errorMsg = '';
         }
     }
