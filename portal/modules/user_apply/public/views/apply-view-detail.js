@@ -1501,10 +1501,17 @@ const ApplyViewDetail = createReactClass({
     //渲染销售申请修改密码
     renderDetailChangePassword: function(detailInfo) {
         let selectedDetailItem = this.state.selectedDetailItem;
+        var userCount = _.get(detailInfo,'user_names.length');
         return (
             <div className="user-info-block apply-info-block">
                 <div className="apply-info-content">
                     {this.renderApplyUserNames(detailInfo)}
+                    {userCount ? <div className="apply-info-label">
+                        <span className="user-info-label">{this.renderApplyUserCount()}:</span>
+                        <span className="user-info-text">
+                            {userCount}
+                        </span>
+                    </div> : null}
                     {
                         selectedDetailItem.isConsumed === 'true' || !this.showPassWordPrivilege() ? null : (
                             <Form layout='horizontal'>
