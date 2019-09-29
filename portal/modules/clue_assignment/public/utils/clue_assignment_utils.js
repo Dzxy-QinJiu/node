@@ -1,28 +1,31 @@
 import {getClueSalesList, getLocalSalesClickCount} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
-let salesmanList = [];
-//获取待分配人员列表
-exports.getSalesDataList = (salesManList) => {
+//获取格式化后的销售人员列表
+function getFormattedSalesDataList(salesmanList) {
     let clueSalesIdList = getClueSalesList();
     //销售领导、域管理员,展示其所有（子）团队的成员列表
-    let dataList = _.map(formatSalesmanList(salesManList), salesman => {
+    let dataList = _.map(formatSalesmanList(salesmanList), salesman => {
         let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'value'));
         return {
             ...salesman,
             clickCount
         };
     });
+    return dataList;
+}
+//获取待分配人员列表
+exports.getSalesDataList = (salesManList) => {
+    let salesDataList = getFormattedSalesDataList(salesManList);
     //按点击的次数进行排序
-    dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
-    //将获取到的值存起来
-    salesmanList = dataList;
-    return (_.map(dataList, (source, idx) => {
+    salesDataList = _.sortBy(salesDataList,(item) => {return -item.clickCount;});
+    return (_.map(salesDataList, (source, idx) => {
         return (<Option key={idx} value={source.value}>{source.name}</Option>);
     }));
 };
 
 //将获取到的销售人员格式化输出
-exports.getFormattedSalesMan = (salesMan) => {
+exports.getFormattedSalesMan = (salesMan, salesmanList) => {
+    let salesDataList = getFormattedSalesDataList(salesmanList);
     let user_name = '', member_id = '', sales_team = '', sales_team_id = '';
     //销售id和所属团队的id中间是用&&连接的，格式为“销售id&&所属团队的id”
     let idArray = _.split(salesMan, '&&');
@@ -32,7 +35,7 @@ exports.getFormattedSalesMan = (salesMan) => {
     }
     //通过value获取销售的名字和团队的名字
     //销售的名字和团队的名字格式是“销售名称 - 团队名称”
-    let selectedSalesman = _.find(salesmanList, salesman => _.isEqual(salesman.value, salesMan));
+    let selectedSalesman = _.find(salesDataList, salesman => _.isEqual(salesman.value, salesMan));
     let selectedSalesName = _.get(selectedSalesman, 'name');
     let nameArray = _.split(selectedSalesName, '-');
     if (_.isArray(nameArray) && nameArray.length) {
