@@ -249,6 +249,7 @@ class CustomerPoolFilter extends React.Component {
                         hasSettedDefaultCommonSelect={true}
                         onFilterChange={this.handleFilterChange.bind(this)}
                         showAdvancedPanel={true}
+                        toggleList={this.props.toggleList}
                     />
                 </div>
             </div>
@@ -258,7 +259,8 @@ class CustomerPoolFilter extends React.Component {
 CustomerPoolFilter.propTypes = {
     showSelectTip: PropTypes.bool,
     style: PropTypes.object,
-    search: PropTypes.func
+    search: PropTypes.func,
+    toggleList: PropTypes.func,
 };
 module.exports = CustomerPoolFilter;
 
