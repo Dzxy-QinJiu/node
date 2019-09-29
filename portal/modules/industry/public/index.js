@@ -195,7 +195,6 @@ class Industry extends React.Component {
                                 <Input
                                     placeholder={Intl.get('crm.basic.add.industry', '添加行业')}
                                     onPressEnter={this.handleSubmit}
-                                    className={addErrMsg ? 'input-red-border' : ''}
                                     onFocus={this.resetIndustryFlags}
                                 />
                             )}
