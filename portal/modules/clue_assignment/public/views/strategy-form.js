@@ -79,7 +79,7 @@ class StrategyForm extends React.Component {
 
     //select组件销售人员切换时
     onSalesManChange = (salesValue) => {
-        let savedSalesMan = getFormattedSalesMan(salesValue);
+        let savedSalesMan = getFormattedSalesMan(salesValue, _.get(this.state, 'salesManList', []));
         let formData = _.cloneDeep(this.state.formData);
         formData.user_name = savedSalesMan.user_name;
         formData.member_id = savedSalesMan.member_id;
