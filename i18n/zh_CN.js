@@ -292,6 +292,7 @@ var zh_CN = {
     'common.maximum.personal.contribution': '个人贡献最大值',
     'common.the.maximum.gross.profit.rate': '回款毛利率最大值',
     'common.maximum.gross.margin.of.newly.signed.payment': '新签回款毛利最大值',
+    'common.load.data.error': '加载失败，请{refresh}',
 
     //公共部分--end
     'login.login': '登录',
@@ -919,11 +920,13 @@ var zh_CN = {
 
     // 后台管理-行业start
     'industry.add.check.tips': '该行业名称已存在',
+    'industry.no.data.tips': '暂无行业，添加行业后，可以为您的客户设置不同行业',
     // 后台管理-行业end
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': '添加竞品',
     'competing.add.check.tips': '该竞品名称已存在',
+    'competing.no.data.tips': '暂无竞品，添加竞品后，可以在客户上设置竞品，帮助销售人员更好的完成销售过程',
     // 后台管理-竞品end
 
     // 后台管理-销售流程start
