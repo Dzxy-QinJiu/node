@@ -638,14 +638,16 @@ exports.formatSalesmanList = function(salesManList) {
             teamArray.forEach(team => {
                 let teamName = _.get(team, 'group_name') ? ` - ${team.group_name}` : '';
                 let teamId = _.get(team, 'group_id') ? `&&${team.group_id}` : '';
+                let nickName = _.get(salesman, 'user_info.nick_name', '') || _.get(salesman,'user_info.user_name', '');
                 dataList.push({
-                    name: _.get(salesman, 'user_info.nick_name', '') + teamName,
+                    name: nickName + teamName,
                     value: _.get(salesman, 'user_info.user_id', '') + teamId
                 });
             });
         } else {
+            let nickName = _.get(salesman, 'user_info.nick_name', '') || _.get(salesman,'user_info.user_name', '');
             dataList.push({
-                name: `${_.get(salesman, 'user_info.nick_name', '')}`,
+                name: nickName,
                 value: `${_.get(salesman, 'user_info.user_id', '')}`
             });
         }
@@ -663,7 +665,7 @@ exports.formatUsersmanList = function(usersManList) {
     //展示其所在团队的成员列表
     _.each(usersManList, usersman => {
         dataList.push({
-            name: `${_.get(usersman, 'nickName', '')}`,
+            name: _.get(usersman, 'nickName', '') || _.get(usersman, 'userName', ''),
             value: `${_.get(usersman, 'userId', '')}`
         });
     });
