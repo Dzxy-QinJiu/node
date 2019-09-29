@@ -23,7 +23,9 @@ class ApplyDetailRemarks extends React.Component {
     getInitialApplyId = (Props) => {
         var openReplyListApplyIds = [];
         if (_.get(Props, 'sameHistoryApplyLists.list[0].id')) {
-            openReplyListApplyIds.push(_.get(Props, 'sameHistoryApplyLists.list[0].id'));
+            _.forEach(_.get(Props, 'sameHistoryApplyLists.list'), item => {
+                openReplyListApplyIds.push(item.id);
+            });
         }
         return openReplyListApplyIds;
     }
@@ -74,9 +76,6 @@ class ApplyDetailRemarks extends React.Component {
             </span>
         );
     }
-    handleOpenApplyDetail(applyItem){
-
-    }
     //渲染历史申请列表
     renderHistoricalList() {
         let sameHistoryApplyLists = this.state.sameHistoryApplyLists;
@@ -109,8 +108,8 @@ class ApplyDetailRemarks extends React.Component {
                         });
                         return (
                             <li key={index} className="apply-info-label">
-                                <p className="apply-item-title" onClick={this.props.handleOpenApplyDetail.bind(this,replyItem)}>
-                                    <span className="apply-item-topic user-info-label">
+                                <p className="apply-item-title">
+                                    <span className="apply-item-topic user-info-label" onClick={this.props.handleOpenApplyDetail.bind(this,replyItem)}>
                                         {replyItem.topic}
                                         <span className="apply-item-status">
                                             <span className={btnClass}>[{commonMethodUtil.getUserApplyStateText(replyItem)}]</span>&gt;

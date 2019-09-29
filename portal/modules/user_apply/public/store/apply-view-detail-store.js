@@ -312,8 +312,7 @@ class ApplyViewDetailStore {
         } else {
             //正常情况
             sameHistoryApplyLists.result = '';
-            sameHistoryApplyLists.list = _.get(resultObj,'data.list');
-
+            sameHistoryApplyLists.list = _.filter(_.get(resultObj,'data.list'), item => _.get(item,'replyLists[0]'));
             sameHistoryApplyLists.errorMsg = '';
         }
     }
