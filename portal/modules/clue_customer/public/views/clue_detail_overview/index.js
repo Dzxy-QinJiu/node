@@ -1364,8 +1364,12 @@ class ClueDetailOverview extends React.Component {
                 {_.map(similarLists,(listItem) => {
                     var sameContact = this.getSamePhoneContact(_.get(listItem,'contacts',[]));
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
+                    let isFromCluepool = _.isEqual(_.get(this.state, 'curClue.clue_type'), 'clue_pool');
+                    let similarTitleCls = className('similar-title', {
+                        'title-from-clue-pool': isFromCluepool
+                    });
                     return <div className="similar-block">
-                        <div className="similar-title">
+                        <div className={similarTitleCls}>
                             {isSimilarClue ? renderClueStatus(listItem) : null}
                             {this.renderClueSimilarLists(listItem, isSimilarClue)}
                         </div>
