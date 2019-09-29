@@ -42,7 +42,7 @@ class DealForm extends React.Component {
                 customer: {id: '', name: ''},
             },
             isSaving: false,
-            saveErrorMsg: '',
+            saveMsg: '',
             saveResult: '',
             isShowAddCustomer: false,
         };
@@ -83,10 +83,10 @@ class DealForm extends React.Component {
         this.closeDealForm();
     };
     //保存结果的处理
-    setResultData(saveErrorMsg, saveResult) {
+    setResultData(saveMsg, saveResult) {
         this.setState({
             isSaving: false,
-            saveErrorMsg: saveErrorMsg,
+            saveMsg: saveMsg,
             saveResult
         });
     }
@@ -113,7 +113,7 @@ class DealForm extends React.Component {
                 remarks: values.remarks
             };
             Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.button-save'), '保存添加的订单');
-            this.setState({ isSaving: true, saveErrorMsg: '', saveResult: '' });
+            this.setState({ isSaving: true, saveMsg: '', saveResult: '' });
             $.ajax({
                 url: '/rest/deal',
                 dataType: 'json',
@@ -168,7 +168,7 @@ class DealForm extends React.Component {
         formData.customer.name = selectedCustomer.name;
         this.setState({
             formData: formData,
-            saveErrorMsg: '',
+            saveMsg: '',
             saveResult: ''
         }, () => {
             this.props.form.validateFields(['customer'], {force: true});
@@ -336,7 +336,8 @@ class DealForm extends React.Component {
                             <SaveCancelButton
                                 successShowTime={1500}
                                 loading={this.state.isSaving}
-                                saveErrorMsg={this.state.saveErrorMsg}
+                                saveErrorMsg={this.state.saveMsg}
+                                saveSuccessMsg={this.state.saveMsg}
                                 saveResult={this.state.saveResult}
                                 handleSubmit={this.handleSubmit}
                                 handleCancel={this.closeDealForm}
