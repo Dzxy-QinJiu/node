@@ -98,7 +98,7 @@ class StrategyInfo extends React.Component {
     saveEditBasicInfo = (savedObj, successFunc, errorFunc) => {
         //如果保存的为被分配人
         if(_.has(savedObj, SAVE_CONTENT.ASSIGNEE)) {
-            let salesMan = getFormattedSalesMan(savedObj.assignee);
+            let salesMan = getFormattedSalesMan(savedObj.assignee, _.get(this.state, 'salesManList', []));
             delete savedObj.assignee;
             savedObj.user_name = salesMan.user_name;
             savedObj.member_id = salesMan.member_id;

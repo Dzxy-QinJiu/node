@@ -36,13 +36,6 @@ class ClueStrategyCard extends React.Component {
         return (
             <div className="card-layout-container strategy-card" style={{width: this.props.cardWidth}}>
                 <div className="card-box" onClick={this.showCardInfo}>
-                    {card.id ? null : (
-                        <div className="card-stop-layer">
-                            <div className="building-icon">
-                                <ReactIntl.FormattedMessage id="member.is.building" defaultMessage="创建中"/>
-                            </div>
-                        </div>
-                    )}
                     <div className={singleCard}>
                         <div className="card-content">
                             <div className={cardTitle} title={card.name}>{card.name}</div>

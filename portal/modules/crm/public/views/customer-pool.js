@@ -701,6 +701,7 @@ class CustomerPool extends React.Component {
                             search={this.search.bind(this, true)}
                             showSelectTip={selectCustomerLength}
                             style={{width: 300, height: tableWrapHeight}}
+                            toggleList={this.toggleList.bind(this)}
                         />
                     </div>
                     <div

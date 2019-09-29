@@ -134,19 +134,18 @@ class ClueAssignmentStore {
         //更新前处理当前的地域列表
         //将之前选择的地域加回可选择的地域列表
         let updateStrategy = _.find(this.strategyList, strategy => newStrategy.id === strategy.id);
-        if(!_.isEmpty(updateStrategy)) {
-            let oldRegions = updateStrategy.condition.province;
-            this.addRegion(oldRegions);
-            //将更新后的地域从可选择的地域列表中删除
-            let newRegions = newStrategy.condition.province;
-            this.deleteRegion(newRegions);
-            //更新线索分配策略
-            _.forEach(this.strategyList, strategy => {
-                if(newStrategy.id === strategy.id){
-                    _.extend(strategy,newStrategy);
-                }
-            });
-        }
+        let oldRegions = _.get(updateStrategy, 'condition.province', []);
+        this.addRegion(oldRegions);
+        //将更新后的地域从可选择的地域列表中删除
+        let newRegions = _.get(newStrategy, 'condition.province', []);
+        this.deleteRegion(newRegions);
+        //更新线索分配策略
+        _.forEach(this.strategyList, strategy => {
+            if(newStrategy.id === strategy.id){
+                _.extend(strategy,newStrategy);
+                return false;
+            }
+        });
     }
     //初始select里的地域
     initialRegion() {
