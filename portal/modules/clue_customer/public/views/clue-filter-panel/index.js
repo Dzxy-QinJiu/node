@@ -252,13 +252,6 @@ class ClueFilterPanel extends React.Component {
                 name: x,
                 value: x
             }))
-        }, {
-            groupName: Intl.get('crm.clue.client.source', '集客方式'),
-            groupId: 'source_classify',
-            data: sourceClassifyArray.map(x => ({
-                name: x.name,
-                value: x.value
-            }))
         }];
         //非销售角色才有来源、渠道、分类筛选项
         if(!isSalesRole()) {
@@ -287,6 +280,14 @@ class ClueFilterPanel extends React.Component {
                 }
             );
         }
+        advancedData.unshift({
+            groupName: Intl.get('crm.clue.client.source', '集客方式'),
+            groupId: 'source_classify',
+            data: sourceClassifyArray.map(x => ({
+                name: x.name,
+                value: x.value
+            }))
+        });
         //非普通销售才有销团队和负责人
         if (!userData.getUserData().isCommonSales) {
             let ownerList = _.uniqBy(this.state.teamMemberList, 'nickname');
