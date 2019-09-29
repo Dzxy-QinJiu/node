@@ -44,6 +44,7 @@ const ApplyUserForm = createReactClass({
         cancelApply: PropTypes.func,
         appList: PropTypes.array,
         userType: PropTypes.string,
+        customerId: PropTypes.string,
     },
     getDefaultProps() {
         return {
@@ -113,14 +114,16 @@ const ApplyUserForm = createReactClass({
     },
 
     componentWillReceiveProps: function(nextProps) {
-        let formData = this.buildFormData(nextProps, this.getInitialApps(nextProps));
-        let oldAppIds = _.map(this.state.apps, 'client_id');
-        let newAppIds = _.map(nextProps.apps, 'client_id');
-        //获取newAppIds中，不存在于oldAppIds中的应用id
-        let diffAppIds = _.difference(newAppIds, oldAppIds);
-        //获取新增的应用的默认配置
-        this.getAppsDefaultConfig(diffAppIds);
-        this.setState({apps: this.getInitialApps(nextProps, true), maxHeight: nextProps.maxHeight, formData});
+        if (_.get(nextProps, 'customerId') !== this.props.customerId) {
+            let formData = this.buildFormData(nextProps, this.getInitialApps(nextProps));
+            let oldAppIds = _.map(this.state.apps, 'client_id');
+            let newAppIds = _.map(nextProps.apps, 'client_id');
+            //获取newAppIds中，不存在于oldAppIds中的应用id
+            let diffAppIds = _.difference(newAppIds, oldAppIds);
+            //获取新增的应用的默认配置
+            this.getAppsDefaultConfig(diffAppIds);
+            this.setState({apps: this.getInitialApps(nextProps, true), maxHeight: nextProps.maxHeight, formData});
+        }
     },
 
     buildFormData: function(props, apps) {
