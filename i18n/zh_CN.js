@@ -3662,6 +3662,8 @@ var zh_CN = {
     'clue.assignment.needs.region.required.tip': '地域不能为空',
     'clue.assignment.needs.region.no.data': '暂无此地域',
     'clue.assignment.needs.region.add.data': '添加地域',
+    'clue.assignment.needs.regions.all.regions': '全部地域',
+    'clue.assignment.all.regions.tips': '策略中已包含全部地域，请修改后再添加',
     'clue.assignment.needs.source': '来源',
     'clue.assignment.needs.source.tip': '请选择或输入线索来源',
     'clue.assignment.needs.source.required.tip': '线索来源不能为空',

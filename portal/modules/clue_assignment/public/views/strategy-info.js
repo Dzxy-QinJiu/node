@@ -37,11 +37,13 @@ class StrategyInfo extends React.Component {
         this.state = {
             strategyInfo: this.props.strategyInfo, //线索分配策略
             startStopVisible: false, //启停状态popconfirm的展示与否
-            availableRegions: '', //可选择的地域
+            availableRegions: [], //可选择的地域
             startStopErrorMsg: '', //启停项的错误提示
             isStartStopSaving: false,//启停项操作时加载的icon展示与否
             regions: this.props.regions,//地域列表
             salesManList: this.props.salesManList,//销售列表
+            isFirstOneEdit: this.props.isFirstOneEdit,//修改的是否为全部分配策略里的唯一一个
+            prevSelect: _.get(this.props, 'strategyInfo.condition.province'),//上次选择的地域
             ...StrategyInfoStore.getState()
         };
     }
@@ -51,8 +53,9 @@ class StrategyInfo extends React.Component {
             status: nextProps.strategyInfo.status,
             regions: nextProps.regions,//地域列表
             salesManList: nextProps.salesManList,//销售列表
+            isFirstOneEdit: nextProps.isFirstOneEdit,
             startStopVisible: false,
-            availableRegions: '',
+            availableRegions: [],
             startStopErrorMsg: '',
             isStartStopSaving: false,
         }, () => {
@@ -83,11 +86,33 @@ class StrategyInfo extends React.Component {
     handleRegions = () => {
         let regions = _.cloneDeep(this.state.regions);
         let selectedRegions = _.get(this.state, 'strategyInfo.condition.province', []);
+        let result = _.concat(selectedRegions, regions);
+        //如果是在全部数据中的唯一一个修改策略，添加“全部地域”选项
+        if(this.state.isFirstOneEdit) {
+            result.unshift('all');
+        }
         this.setState({
-            availableRegions: _.concat(regions, selectedRegions)
+            availableRegions: _.uniq(result)
         });
     }
 
+    //当下拉选项修改时
+    onSelectChange = (value) => {
+        //如果选中了全部地域，将已经选择的地域清空,"全部地域"与其它选项是互斥的
+        if(_.includes(value, 'all') && !_.includes(this.state.prevSelect, 'all')) {
+            value = 'all';
+        } else if(_.includes(value, 'all') && _.includes(this.state.prevSelect, 'all')) {
+            value = _.drop(value);
+        }
+        setTimeout(() => {
+            this.provinceSelectField.state.formData.select = _.concat([], value);
+            //强制组件刷新
+            this.provinceSelectField.forceUpdate();
+        });
+        this.setState({
+            prevSelect: value,
+        });
+    }
     //关闭线索分配详情面板
     handleCancel = (e) => {
         e && e.preventDefault();
@@ -159,8 +184,12 @@ class StrategyInfo extends React.Component {
 
     //获取地域列表
     getRegionOptions = () => {
-        return(_.map(this.state.availableRegions, (item, index) => {
-            return (<Option key={index} value={item}>{item}</Option>);
+        return (_.map(this.state.availableRegions, (item, index) => {
+            if(_.isEqual(item, 'all')) {
+                return (<Option key={index} value='all'>{Intl.get('clue.assignment.needs.regions.all.regions', '全部地域')}</Option>);
+            } else {
+                return (<Option key={index} value={item}>{item}</Option>);
+            }
         }));
     }
 
@@ -305,21 +334,23 @@ class StrategyInfo extends React.Component {
         //展示的地域取值
         let displayRegions = '';
         if(_.get(strategyInfo, 'condition.province.length') === 1) {
-            displayRegions = strategyInfo.condition.province;
+            displayRegions = _.isEqual(_.get(strategyInfo, 'condition.province[0]'), 'all') ? Intl.get('clue.assignment.needs.regions.all.regions', '全部地域') : _.get(strategyInfo, 'condition.province');
         } else {
-            displayRegions = strategyInfo.condition.province.join('、');
+            displayRegions = _.get(strategyInfo, 'condition.province', []).join('、');
         }
         return (<div className="strategy-needs-details">
             <div className="needs-content">
                 <div id="condition-province">
                     <span className="needs-label">{Intl.get('clue.assignment.needs.region','地域')}:</span>
                     <BasicEditSelectField
+                        ref={selectFiled => this.provinceSelectField = selectFiled}
                         width={LAYOUT.EDIT_FIELD_WIDTH}
                         id={strategyInfo.id}
                         field={SAVE_CONTENT.REGION}
                         multiple={true}
                         displayText={displayRegions}
                         value={strategyInfo.condition.province}
+                        onSelectChange={this.onSelectChange}
                         placeholder={Intl.get('clue.assignment.needs.region.tip', '请选择或输入地域')}
                         hasEditPrivilege={true}
                         selectOptions={this.getRegionOptions()}
@@ -333,6 +364,8 @@ class StrategyInfo extends React.Component {
                     />
                 </div>
             </div>
+            {/*2019/09/29日 孙庆峰加*/}
+            {/*原因： 暂时先实现地域的线索分配策略*/}
             {/*<div className="needs-content">*/}
             {/*    <span className="needs-label">{Intl.get('clue.assignment.needs.source','来源')}:</span>*/}
             {/*    <BasicEditSelectField*/}
@@ -452,14 +485,16 @@ class StrategyInfo extends React.Component {
 StrategyInfo.defaultProps = {
     strategyInfo: null,
     regions: [],//地域列表
-    salesManList: []//销售人员列表
+    salesManList: [],//销售人员列表
+    isFirstOneEdit: false,//是否修改的为全线分配策略里唯一的一个
 };
 
 StrategyInfo.propTypes = {
     strategyInfo: PropTypes.object,
     closeRightPanel: PropTypes.func,
     regions: PropTypes.array,
-    salesManList: PropTypes.array
+    salesManList: PropTypes.array,
+    isFirstOneEdit: PropTypes.bool,
 };
 
 module.exports = StrategyInfo;
