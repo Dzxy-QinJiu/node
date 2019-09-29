@@ -3620,6 +3620,8 @@ var en_US = {
     'clue.assignment.needs.region.required.tip': 'Region should not be empty',//地域不能为空
     'clue.assignment.needs.region.no.data': 'No this region',//暂无此地域
     'clue.assignment.needs.region.add.data': 'Add Region',//添加地域
+    'clue.assignment.needs.regions.all.regions': 'All Regions',//全部地域
+    'clue.assignment.all.regions.tips': 'All regions has been included, place change before you add a new strategy',//策略中已包含全部地域，请修改后再添加
     'clue.assignment.needs.source': 'Source',//来源
     'clue.assignment.needs.source.tip': 'Please select or input clue source',//请选择或输入线索来源
     'clue.assignment.needs.source.required.tip': 'Clue source should not be empty',//线索来源不能为空
