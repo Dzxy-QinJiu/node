@@ -257,6 +257,21 @@ exports.deleteCustomerBak = function(req, res) {
 
 exports.addCustomer = function(req, res) {
     var newCus = req.body;
+    //不是数组，转换为数组
+    if (newCus.contacts0_phone && !_.isArray(newCus.contacts0_phone)) {
+        newCus.contacts0_phone = [newCus.contacts0_phone];
+    }
+    //不是改版后的contacts数据格式，是以前的contract0_phone这种数据格式，需要兼容下以前的
+    if(!_.has(newCus, 'contacts') && newCus.contacts0_phone) {
+        newCus.contacts = [{}];
+        for (var p in newCus) {
+            if (p.indexOf('contacts0') > -1) {
+                var arr = p.split('_');
+                newCus.contacts[0][arr[1]] = newCus[p];
+                delete newCus[p];
+            }
+        }
+    }
     newCus.contacts[0].def_contancts = 'true';
     crmService.addCustomer(req, res, newCus)
         .on('success', function(data) {
