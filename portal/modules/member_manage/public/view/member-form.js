@@ -610,7 +610,6 @@ class MemberForm extends React.Component {
                                                         searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
                                                         notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
                                                         onSelect={this.handlePositionSelect}
-                                                        className={this.state.isMatchPositionListFlag ? '' : 'input-red-border'}
                                                         onBlur={(e) => {
                                                             this.handleBlurPositionSelect(e);
                                                         }}
