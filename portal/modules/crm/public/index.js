@@ -31,9 +31,11 @@ class CrmIndex extends React.Component {
     }
     historyJumpCrm = (Props) => {
         if (_.get(Props,'history.action') === 'PUSH' ){
+            //跳转到客户池
             if (_.get(Props,'location.state.showCustomerPool')){
                 this.showCustomerPool(_.get(Props,'location.state.condition'));
             }
+            //跳转到客户回收站
             if (_.get(Props,'location.state.showCustomerRecycle')){
                 this.showCustomerRecycleBin(_.get(Props,'location.state.condition'));
             }

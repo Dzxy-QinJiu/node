@@ -281,40 +281,41 @@ class CrmRightPanel extends React.Component {
                 value: _.get(this, 'props.currentName')
             }
         });
-    }
+    };
     render() {
 
-        if (this.state.getCusomerResultdMsg) {//未获取到详情及获取出错时的提示
-            return (<div className="crm-detail-no-data-tip">
-                <div className="iconfont icon-phone-call-out-tip"></div>
-                {this.state.getCusomerResultdMsg}</div>);
-        }else if (this.state.getCustomerNoDataMsg){
-            return (<div className="crm-detail-no-data-tip">
-                <div className="iconfont icon-phone-call-out-tip"></div>
-                {isSalesRole() ? <ReactIntl.FormattedMessage
-                    id="crm.search.customer.detail.customer.pool"
-                    defaultMessage={'客户已被删除或已被释放到{customerpool}'}
-                    values={{
-                        'customerpool': <a
-                            style={{textDecoration: 'underline'}}
-                            onClick={this.handleClickCustomerPool.bind(this)}>
-                            {Intl.get('crm.customer.pool', '客户池')}</a>
-                    }}
-                /> : <ReactIntl.FormattedMessage
-                    id="crm.search.customer.no.customer.pool.dash"
-                    defaultMessage={'客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看'}
-                    values={{
-                        'recycle': <a
-                            style={{textDecoration: 'underline'}}
-                            onClick={this.handleClickCustomerRecycle.bind(this)}>
-                            {Intl.get('crm.customer.recycle.bin', '回收站')}</a>,
-                        'customerpool': <a
-                            style={{textDecoration: 'underline'}}
-                            onClick={this.handleClickCustomerPool.bind(this)}>
-                            {Intl.get('crm.customer.pool', '客户池')}</a>
-                    }}
-                />}
-            </div>);
+        if (this.state.getCusomerResultdMsg || this.state.getCustomerNoDataMsg){
+            return (
+                <div className="crm-detail-no-data-tip">
+                    <div className="iconfont icon-phone-call-out-tip"></div>
+                    {this.state.getCusomerResultdMsg || ''}
+                    {this.state.getCustomerNoDataMsg ?
+                        isSalesRole() ? <ReactIntl.FormattedMessage
+                            id="crm.search.customer.detail.customer.pool"
+                            defaultMessage={'客户已被删除或已被释放到{customerpool}'}
+                            values={{
+                                'customerpool': <a
+                                    style={{textDecoration: 'underline'}}
+                                    onClick={this.handleClickCustomerPool.bind(this)}>
+                                    {Intl.get('crm.customer.pool', '客户池')}</a>
+                            }}
+                        /> : <ReactIntl.FormattedMessage
+                            id="crm.search.customer.no.customer.pool.dash"
+                            defaultMessage={'客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看'}
+                            values={{
+                                'recycle': <a
+                                    style={{textDecoration: 'underline'}}
+                                    onClick={this.handleClickCustomerRecycle.bind(this)}>
+                                    {Intl.get('crm.customer.recycle.bin', '回收站')}</a>,
+                                'customerpool': <a
+                                    style={{textDecoration: 'underline'}}
+                                    onClick={this.handleClickCustomerPool.bind(this)}>
+                                    {Intl.get('crm.customer.pool', '客户池')}</a>
+                            }}
+                        />
+                        : null}
+                </div>
+            );
         }
         //客户详情中打开用户详情时
         if(this.state.showDetailUserId) {
