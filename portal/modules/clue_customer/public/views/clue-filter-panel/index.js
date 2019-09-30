@@ -88,14 +88,16 @@ class ClueFilterPanel extends React.Component {
             url: '/rest/condition/v1/condition/range/user/1000/operate_time/descend',
             type: 'post',
             data: {
-                tag: 'clue_customer'
+                query: {
+                    tag: 'clue_customer'
+                }
             }
         })
             .done(result => {
-                const existingCustomers = _.get(result, 'similarity_list');
+                const customCommonFilter = _.get(result, 'list');
 
 
-                this.setState({});
+                this.setState({customCommonFilter});
             });
     }
 
