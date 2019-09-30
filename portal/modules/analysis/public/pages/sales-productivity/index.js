@@ -2,7 +2,7 @@
  * 销售生产力分析
  */
 
-import { getContextContent, isAdminOrOpStaff } from '../../utils';
+import { getContextContent, isCommonSales } from '../../utils';
 import {SALES_PRODUCTIVITY_MENUS} from '../../consts';
 
 //引入同目录下以.js结尾的并且不包含index的文件
@@ -20,8 +20,8 @@ module.exports = {
         'CUSTOMER_ANALYSIS_MANAGER',
     ],
     isShowCallback: () => {
-        //只对管理员或运营人员显示该菜单
-        return isAdminOrOpStaff();
+        //普通销售不能看到该菜单
+        return !isCommonSales();
     },
     pages,
 };
