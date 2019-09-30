@@ -134,7 +134,8 @@ function applyApproveUnhandledListener(data) {
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, data);
                 break;
-            case SELF_SETTING_FLOW.VISITAPPLY:
+            case SELF_SETTING_FLOW.VISITAPPLYTOPIC:
+                //这里应该用的是拜访申请手动输入的名字
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_VISIT, data);
                 break;
