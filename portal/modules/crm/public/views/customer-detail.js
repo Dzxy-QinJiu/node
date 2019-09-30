@@ -20,9 +20,9 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import contactUtil from '../utils/contact-util';
 const RightPanel = rightPanelUtil.RightPanel;
-import {isOpenCash, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOpenCash, isCurtao, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
-
+let history = require('../../../../public/sources/history');
 class CrmRightPanel extends React.Component {
     state = {
         activeKey: this.props.activeKey || TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
@@ -30,7 +30,8 @@ class CrmRightPanel extends React.Component {
         curOrder: {},
         curCustomer: _.cloneDeep(this.props.curCustomer),
         tabsContainerHeight: 'auto',
-        getCusomerResultdMsg: '',//获取客户详情后的失败或无数据的提示
+        getCusomerResultdMsg: '',//获取客户详情后的失败的提示
+        getCustomerNoDataMsg: false,//获取客户详情没数据后的提示
         showDetailUserId: ''//展示用户详情的userId
     };
 
@@ -78,11 +79,12 @@ class CrmRightPanel extends React.Component {
             if (resData && _.isArray(resData.result) && resData.result.length) {
                 this.setState({
                     getCusomerResultdMsg: '',
+                    getCustomerNoDataMsg: false,
                     curCustomer: resData.result[0],
                 });
             } else {
                 this.setState({
-                    getCusomerResultdMsg: Intl.get('crm.detail.no.data', '该客户已被删除或转走'),
+                    getCustomerNoDataMsg: true,
                 });
             }
         }, () => {
@@ -267,9 +269,52 @@ class CrmRightPanel extends React.Component {
             </div>
         );
     }
+    handleClickCustomerPool = () => {
+        //跳转到客户界面的客户池
+        history.push('/crm', {showCustomerPool: true, condition: {name: _.get(this, 'props.currentName')}});
+    }
+    handleClickCustomerRecycle = () => {
+        //跳转到客户界面的回收站
+        history.push('/crm', {
+            showCustomerRecycle: true, condition: {
+                field: 'name',
+                value: _.get(this, 'props.currentName')
+            }
+        });
+    }
     render() {
+
         if (this.state.getCusomerResultdMsg) {//未获取到详情及获取出错时的提示
-            return (<div className="no-data-tip">{this.state.getCusomerResultdMsg}</div>);
+            return (<div className="crm-detail-no-data-tip">
+                <div className="iconfont icon-phone-call-out-tip"></div>
+                {this.state.getCusomerResultdMsg}</div>);
+        }else if (this.state.getCustomerNoDataMsg){
+            return (<div className="crm-detail-no-data-tip">
+                <div className="iconfont icon-phone-call-out-tip"></div>
+                {isSalesRole() ? <ReactIntl.FormattedMessage
+                    id="crm.search.customer.detail.customer.pool"
+                    defaultMessage={'客户已被删除或已被释放到{customerpool}'}
+                    values={{
+                        'customerpool': <a
+                            style={{textDecoration: 'underline'}}
+                            onClick={this.handleClickCustomerPool.bind(this)}>
+                            {Intl.get('crm.customer.pool', '客户池')}</a>
+                    }}
+                /> : <ReactIntl.FormattedMessage
+                    id="crm.search.customer.no.customer.pool.dash"
+                    defaultMessage={'客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看'}
+                    values={{
+                        'recycle': <a
+                            style={{textDecoration: 'underline'}}
+                            onClick={this.handleClickCustomerRecycle.bind(this)}>
+                            {Intl.get('crm.customer.recycle.bin', '回收站')}</a>,
+                        'customerpool': <a
+                            style={{textDecoration: 'underline'}}
+                            onClick={this.handleClickCustomerPool.bind(this)}>
+                            {Intl.get('crm.customer.pool', '客户池')}</a>
+                    }}
+                />}
+            </div>);
         }
         //客户详情中打开用户详情时
         if(this.state.showDetailUserId) {

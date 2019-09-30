@@ -393,6 +393,7 @@ class CustomerSuggest extends React.Component {
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
+                currentName: this.state.displayText,
                 currentId: customerId,
                 ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                 hideRightPanel: this.closeRightPanel
@@ -463,7 +464,7 @@ class CustomerSuggest extends React.Component {
                 textBlock = (
                     <span className="inline-block basic-info-text no-data-descr">
                         {this.props.hasEditPrivilege ? (
-                            <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮" className="handle-btn-item">{this.props.addDataTip}</a>) :<span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
+                            <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮" className="handle-btn-item">{this.props.addDataTip}</a>) : <span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
 
                     </span>
                 );

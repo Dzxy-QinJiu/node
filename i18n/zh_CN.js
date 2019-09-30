@@ -1643,7 +1643,6 @@ var zh_CN = {
     'crm.sales.update': '修改为',
     'crm.sales.redistribution': '重新分配',
     'crm.sales.transfer.confirm': '确认转出',
-    'crm.detail.no.data': '该客户已被删除或转走',
     'crm.detail.get.error': '获取客户详情失败',
     'crm.schedule.set.compelete': '标为已完成',
     'crm.schedule.set.unfinished': '标为未完成',
@@ -1844,6 +1843,8 @@ var zh_CN = {
     'crm.contract.add.label': '添加签约类型',
     'crm.contract.no.label': '暂无签约类型',
     'crm.batch.change.customer.pending': '上次批量操作未完成，请稍后再试',
+    'crm.search.customer.detail.customer.pool': '客户已被删除或已被释放到{customerpool}',
+    'crm.search.customer.no.customer.pool.dash': '客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看',
     // 客户管理end
 
     // 客户分析start
@@ -3681,6 +3682,6 @@ var zh_CN = {
     'clue.assignment.active.state': '启停状态',
     'clue.assignment.strategy.tip': '本策略对新加线索生效',
     'clue.assignment.strategy.switch.tip': '确定要{action}该线索分配策略？',
-    'clue.assignment.strategy.delete': '确定要删除该线索分配策略？'
+    'clue.assignment.strategy.delete': '确定要删除该线索分配策略？',
 };
 export default zh_CN;
