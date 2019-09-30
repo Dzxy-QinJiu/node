@@ -452,6 +452,13 @@ class MemberForm extends React.Component {
 
     state = this.initData();
 
+    handleUserName = (event) => {
+        let value = event.target.value;
+        this.props.form.setFieldsValue({
+            name: value,
+        });
+    };
+
     renderFormContent() {
         let values = this.props.form.getFieldsValue();
         const {getFieldDecorator} = this.props.form;
@@ -513,6 +520,7 @@ class MemberForm extends React.Component {
                                         id="userName"
                                         type="text"
                                         placeholder={Intl.get('login.write.username', '请输入用户名')}
+                                        onChange={this.handleUserName}
                                     />
                                 )}
                             </FormItem>
