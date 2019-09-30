@@ -1622,7 +1622,6 @@ var en_US = {
     'crm.sales.update': 'Modify it to',//修改为
     'crm.sales.redistribution': 'Redistribution',//重新分配
     'crm.sales.transfer.confirm': 'Transfer confirm',//确认转出
-    'crm.detail.no.data': 'The customer has been deleted or turned away',//该客户已被删除或转走
     'crm.detail.get.error': 'Failed to get customer details',//获取客户详情失败
     'crm.schedule.set.compelete': 'Set to complete',//标为已完成
     'crm.schedule.set.unfinished': 'Set to unfinished',//标为未完成
@@ -1820,6 +1819,8 @@ var en_US = {
     'crm.contract.add.label': 'Add signing type',//添加签约类型
     'crm.contract.no.label': 'No signing type',//暂无签约类型
     'crm.batch.change.customer.pending': 'The batch operation was not completed last time, please try again later',//上次批量操作未完成，请稍后再试
+    'crm.search.customer.detail.customer.pool': 'Customer has been deleted or has been released to {customerpool}',//客户已被删除或已被释放到{customerpool}
+    'crm.search.customer.no.customer.pool.dash': 'The customer has been deleted or has been released to the customer pool, please go to {recycle} or {customerpool}',//客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看
     // 客户管理end
 
     //客户分析 start

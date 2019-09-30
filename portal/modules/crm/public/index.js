@@ -19,11 +19,27 @@ class CrmIndex extends React.Component {
     };
 
     componentDidMount() {
+        this.historyJumpCrm(this.props);
         $('body').css('overflow', 'hidden');
     }
 
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
+    }
+    componentWillReceiveProps(nextProps) {
+        this.historyJumpCrm(nextProps);
+    }
+    historyJumpCrm = (Props) => {
+        if (_.get(Props,'history.action') === 'PUSH' ){
+            //跳转到客户池
+            if (_.get(Props,'location.state.showCustomerPool')){
+                this.showCustomerPool(_.get(Props,'location.state.condition'));
+            }
+            //跳转到客户回收站
+            if (_.get(Props,'location.state.showCustomerRecycle')){
+                this.showCustomerRecycleBin(_.get(Props,'location.state.condition'));
+            }
+        }
     }
 
     //展示重复客户界面的设置
@@ -34,10 +50,11 @@ class CrmIndex extends React.Component {
         });
     };
     //展示客户回收站
-    showCustomerRecycleBin = () => {
+    showCustomerRecycleBin = (searchCondition) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.filter-block .customer-recycle-btn'), '点击客户回收站');
         this.setState({
-            customerViewType: VIEW_TYPE.RECYCLE_BIN_CUSTOMER
+            customerViewType: VIEW_TYPE.RECYCLE_BIN_CUSTOMER,
+            crmSearchCondition: searchCondition
         });
     };
     //展示客户池
@@ -79,7 +96,7 @@ class CrmIndex extends React.Component {
             case VIEW_TYPE.RECYCLE_BIN_CUSTOMER:
                 currView = (
                     <div data-tracename="客户回收站">
-                        <CustomerRecycleBin closeRecycleBin={this.returnCustomerView}/>
+                        <CustomerRecycleBin crmSearchCondition={this.state.crmSearchCondition} closeRecycleBin={this.returnCustomerView}/>
                     </div>);
                 break;
             case VIEW_TYPE.CUSTOMER_POOL:

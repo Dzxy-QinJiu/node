@@ -423,7 +423,8 @@ class PhonePanel extends React.Component {
 
     renderCustomerDetail(customer) {
         return (
-            <CustomerDetail currentId={customer.id}
+            <CustomerDetail
+                currentId={customer.id}
                 curCustomer={customer}
                 editCustomerBasic={this.editCustomerBasic.bind(this, customer)}
                 hideRightPanel={this.hideRightPanel.bind(this)}

@@ -47,13 +47,17 @@ class CustomerRecycleBin extends React.Component {
                 field: 'time',
                 order: 'descend'
             },
-            searchObj: {
+            searchObj: _.isEmpty(this.props.crmSearchCondition) ? {
                 field: '',
                 value: ''
-            }
+            } : this.props.crmSearchCondition
         };
     }
     componentDidMount() {
+        // 如果是从没有符合条件的客户点击跳转过来的,将搜索框中的关键字置为搜索的客户名称
+        if(!_.isEmpty(this.props.crmSearchCondition)) {
+            this.refs.recycleSearchInput.state.keyword = _.get(this.props.crmSearchCondition, 'value', '');
+        }
         this.getRecycleBinCustomers();
         let _this = this;
         //点击客户列表某一行时打开对应的详情
@@ -490,6 +494,7 @@ class CustomerRecycleBin extends React.Component {
                     </div>
                     <div className="customer-search-block">
                         <SearchInput
+                            ref="recycleSearchInput"
                             type="select"
                             searchFields={searchFields}
                             searchEvent={this.searchEvent}
@@ -507,6 +512,7 @@ class CustomerRecycleBin extends React.Component {
 
 CustomerRecycleBin.propTypes = {
     closeRecycleBin: PropTypes.func,
+    crmSearchCondition: PropTypes.object
 };
 
 export default CustomerRecycleBin;
