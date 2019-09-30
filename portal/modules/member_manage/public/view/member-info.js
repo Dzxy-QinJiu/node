@@ -20,7 +20,7 @@ import MemberInfoAction from '../action/member-info-action';
 import Trace from 'LIB_DIR/trace';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from './radio-card';
-import {checkPhone, nameLengthRule, checkQQ} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, checkQQ, nameLengthRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -779,9 +779,26 @@ class MemberInfo extends React.Component {
         );
     }
 
+    // 昵称校验
+    getNickNameValidator = (name) => {
+        return (rule, value, callback) => {
+            let nickname = _.trim(value); // 文本框中的值
+            if (nickname) {
+                if (nameLengthRuleRegex.test(nickname)) {
+                    callback();
+                } else {
+                    callback(Intl.get('common.name.rule', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间', {name: name}));
+                }
+            } else {
+                callback(Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name}));
+            }
+        };
+    };
+
     renderTitle() {
         let memberInfo = this.state.memberInfo;
         const TITLE_INPUT_WIDTH = 270;
+        const name = Intl.get('common.nickname', '昵称');
         return (
             <div className="member-detail-title">
                 <Popconfirm title={Intl.get('member.save.logo.tip', '是否保存上传的头像？')}
@@ -805,8 +822,11 @@ class MemberInfo extends React.Component {
                             value={memberInfo.name}
                             field="nick_name"
                             type="text"
-                            validators={[nameLengthRule]}
-                            placeholder={Intl.get('crm.90', '请输入姓名')}
+                            validators={[{
+                                required: true,
+                                validator: this.getNickNameValidator(name),
+                            }]}
+                            placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}
                             hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
                             saveEditInput={this.saveEditMemberInfo.bind(this, 'nick_name')}
                             noDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}

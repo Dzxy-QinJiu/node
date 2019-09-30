@@ -133,6 +133,10 @@ class MemberForm extends React.Component {
                     //修改邮箱后，邮箱的激活状态改为未激活
                     user.emailEnable = false;
                 }
+                let name = user.name; // 昵称
+                if (!name) { // 若昵称为空时，使用用户名作物昵称
+                    user.name = user.userName;
+                }
                 //设置正在保存中
                 MemberFormAction.setSaveFlag(true);
                 if (this.props.formType === 'add') {
