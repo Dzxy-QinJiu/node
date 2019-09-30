@@ -6,6 +6,8 @@ import { listPanelEmitter, detailPanelEmitter } from 'PUB_DIR/sources/utils/emit
 import ajax from 'ant-ajax';
 import { num as antUtilNum } from 'ant-utils';
 import { AntcTable } from 'antc';
+import { dataType } from '../../consts';
+const userData = require('PUB_DIR/sources/user-data');
 
 let conditionCache = {};
 
@@ -21,6 +23,12 @@ export function getCustomerManagerPerformanceRankingChart() {
             value: 1000,
         }],
         argCallback: arg => {
+            //当前用户所在团队
+            const userTeamId = userData.getUserData().team_id;
+            //如果当前用户有所属团队，且未选择要查询的团队，默认查询其所属团队的数据
+            if (userTeamId && !arg.query.team_ids) {
+                arg.query.team_ids = userTeamId;
+            }
             conditionCache = arg.query;
         },
         dataField: 'list',
@@ -97,7 +105,7 @@ function onRankingRowClick(record) {
     ];
 
     ajax.send({
-        url: '/rest/analysis/contract/contract/v2/all/performance/order/account_manager/detail',
+        url: `/rest/analysis/contract/contract/v2/${dataType}/performance/order/account_manager/detail`,
         query: conditionCache
     }).then(result => {
         const paramObj = {
@@ -216,7 +224,7 @@ function showMetricsDetail(metricsKey, metricsTitle) {
     query.type = metricsKey;
 
     ajax.send({
-        url: '/rest/analysis/contract/contract/v2/all/performance/metrics/account_manager/detail',
+        url: `/rest/analysis/contract/contract/v2/${dataType}/performance/metrics/account_manager/detail`,
         query
     }).then(result => {
         //去掉指标标题中的单位，该标题显示在指标详情中时不需要单位
