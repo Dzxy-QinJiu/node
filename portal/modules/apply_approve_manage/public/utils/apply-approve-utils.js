@@ -230,7 +230,8 @@ const INNER_SETTING_FLOW = {
 
 };
 const SELF_SETTING_FLOW = {
-    VISITAPPLY: 'visitapply'//拜访申请
+    VISITAPPLY: 'visitapply',//拜访申请
+    VISITAPPLYTOPIC: Intl.get('apply.my.self.setting.work.flow', '拜访申请')
 };
 exports.SELF_SETTING_FLOW = SELF_SETTING_FLOW;
 exports.INNER_SETTING_FLOW = INNER_SETTING_FLOW;
