@@ -68,6 +68,7 @@ import ClueToCustomerPanel from './views/clue-to-customer-panel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import ajax from 'ant-ajax';
+import commonAjax from 'MOD_DIR/common/ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
 var batchOperate = require('PUB_DIR/sources/push/batch');
@@ -2623,6 +2624,25 @@ class ClueCustomer extends React.Component {
             isShowRefreshPrompt: false
         });
     }
+
+    //添加常用筛选项
+    handleAddCommonFilter(params) {
+        const data = {
+            query_condition: this.getClueSearchCondition(),
+            user_id: userData.getUserData().user_id,
+            name: params.filterName,
+            type: params.range,
+            tag: 'clue_customer'
+        };
+
+        return commonAjax({
+            url: '/rest/condition/v1/condition',
+            type: 'post',
+            data,
+            usePromise: true
+        });
+    }
+
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2649,6 +2669,7 @@ class ClueCustomer extends React.Component {
                                         showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
                                         toggleList={this.toggleList.bind(this)}
                                         filterType={Intl.get('crm.sales.clue', '线索')}
+                                        onSubmit={this.handleAddCommonFilter.bind(this)}
                                     />
                                 </div>
                                 {hasSelectedClue ? (

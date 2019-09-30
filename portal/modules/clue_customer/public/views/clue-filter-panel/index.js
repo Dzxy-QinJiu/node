@@ -38,6 +38,8 @@ class ClueFilterPanel extends React.Component {
             clueSourceArray: this.props.clueSourceArray,
             accessChannelArray: this.props.accessChannelArray,
             clueClassifyArray: this.props.clueClassifyArray,
+            //自定义常用筛选
+            customCommonFilter: [],
             ...clueFilterStore.getState(),
         };
     }
@@ -77,6 +79,10 @@ class ClueFilterPanel extends React.Component {
         };
         ClueAnalysisAction.getClueStatics(pathParams, rangeParams);
     };
+
+    //获取自定义常用筛选
+    getCustomCommonFilter() {
+    }
 
     handleFilterChange = (data) => {
         clueCustomerAction.setClueInitialData();
