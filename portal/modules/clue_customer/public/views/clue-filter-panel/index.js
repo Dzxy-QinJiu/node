@@ -5,6 +5,7 @@ var React = require('react');
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/27.
  */
+import ajax from 'ant-ajax';
 var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
@@ -50,6 +51,7 @@ class ClueFilterPanel extends React.Component {
     componentDidMount = () => {
         clueFilterStore.listen(this.onStoreChange);
         this.getClueProvinceList();
+        this.getCustomCommonFilter();
         //获取所有销售列表
         FilterAction.getTeamMemberList();
         //获取团队列表
@@ -82,6 +84,19 @@ class ClueFilterPanel extends React.Component {
 
     //获取自定义常用筛选
     getCustomCommonFilter() {
+        ajax.send({
+            url: '/rest/condition/v1/condition/range/user/1000/operate_time/descend',
+            type: 'post',
+            data: {
+                tag: 'clue_customer'
+            }
+        })
+            .done(result => {
+                const existingCustomers = _.get(result, 'similarity_list');
+
+
+                this.setState({});
+            });
     }
 
     handleFilterChange = (data) => {
