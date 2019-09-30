@@ -103,6 +103,7 @@ class MemberManageStore {
                 curMember.disableDate = _.get(result, 'disableDate'); // 停用时间
                 curMember.qq = _.get(result, 'qq'); // qq
                 curMember.email = _.get(result, 'email'); // email
+                curMember.image = _.get(result, 'image'); // 头像
             }
             this.currentMember = result;
         }
