@@ -267,10 +267,10 @@ var en_US = {
     'common.before': 'Before', // 前
     'common.download.template.filename': 'Download {type} Template', // 下载{type}模板
     'common.import.template': 'Template',//模板
-    'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间
+    'common.name.rule': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 50', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间
     'common.create': 'Create', // 创建
     'common.stage.describe': 'the description of stage', // 阶段描述
-    'common.name.rule.regex': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and {length}', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间
+    'common.name.rule.regex': 'The name of {name} can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and {length}', // {name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到{length}（包括{length}）之间
     'common.the.performance.of.subsidiary': 'the performance of subsidiary',//业绩明细
     'common.personal.collection': 'personal collection',//个人回款
     'common.personal.collection.gross.profit': 'personal collection gross profit',//个人回款毛利
