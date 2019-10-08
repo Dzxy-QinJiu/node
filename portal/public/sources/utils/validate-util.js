@@ -72,7 +72,8 @@ exports.checkWechat = (rule,value,callback) => {
     if(value) {
         if((commonPhoneRegex.test(value)) || 
         (wechatRegex.test(value)) || 
-        (qqRegex.test(value))){
+        (qqRegex.test(value)) ||
+        (emailRegex.test(value))){
             callback();
         }else{
             callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
