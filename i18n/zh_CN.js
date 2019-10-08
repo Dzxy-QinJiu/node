@@ -1783,8 +1783,8 @@ var zh_CN = {
     'crm.customer.release.push.tip': '客户 {customerName} 被 {operatorName} 释放到了客户池',
     'crm.customer.batch.release.push.tip': '{customerName} 等{count}个客户被 {operatorName} 释放到了客户池',
 
-    'crm.pool.single.extract.tip': '您确定要提取此客吗？',
-    'crm.pool.batch.extract.tip': '您确定要提取选中的客吗？',
+    'crm.pool.single.extract.tip': '您确定要提取此客户吗？',
+    'crm.pool.batch.extract.tip': '您确定要提取选中的客户吗？',
     'crm.pool.extract.distribute': '提取并分配负责人',
     'crm.pool.select.customer.tip': '请点击列表中的{icon}选择客户',
     'crm.customer.rule.name': '规则设置',
