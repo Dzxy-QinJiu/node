@@ -1782,8 +1782,8 @@ var en_US = {
     'crm.get.customer.pool.rule.faild': 'Failed to get customer pool configuration!!!',//获取客户池配置失败！！！
     'crm.customer.pool.rule.get.stage.lists': 'Getting the customer phase list',//正在获取客户阶段列表
     'crm.customer.pool.rule.sure.delete.tip': 'Are you sure you want to delete this rule?',//确认要删除此项规则吗？
-    'crm.pool.single.extract.tip': 'Are you sure you want to extract this customer?',//您确定要提取此客吗？
-    'crm.pool.batch.extract.tip': 'Are you sure you want to extract the selected customers?',//您确定要提取选中的客吗？
+    'crm.pool.single.extract.tip': 'Are you sure you want to extract this customer?',//您确定要提取此客户吗？
+    'crm.pool.batch.extract.tip': 'Are you sure you want to extract the selected customers?',//您确定要提取选中的客户吗？
     'crm.pool.extract.distribute': 'To extract and assign the person in charge',//提取并分配负责人
     'crm.pool.select.customer.tip': 'Click {icon} in the list to select customers',//请点击列表中的{icon}选择客户
     'crm.pool.max.selected.num': 'Extract {num} at most each time',//每次最多提取{num}个
