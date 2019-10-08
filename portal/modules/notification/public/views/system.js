@@ -317,6 +317,7 @@ class SystemNotification extends React.Component {
                 processData.push(processObj);
             }
         } );
+        // 按时间逆序排序
         processData = _.sortBy(processData, item => -item.create_time);
 
         return processData;
