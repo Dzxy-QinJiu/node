@@ -2933,6 +2933,7 @@ var zh_CN = {
     'common.this.month.back': '本月回流',
     'common.this.month.new': '本月新增',
     'common.this.month': '本月',
+    //线索模块 start
     'clue.search.by.name': '按线索名搜索',
     'clue.add.trace.content': '添加跟进内容',
     'clue.add.trace.follow': '跟进',
@@ -3017,6 +3018,8 @@ var zh_CN = {
     'clue.extract.success': '提取成功',
     'clue.list.clue.availibility': '无效线索',
     'clue.list.total.num': '共{num}个线索',
+    'clue.search.no.found': '没有符合条件的线索，您可以去{cluepool}查看是否有该线索',
+    //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',

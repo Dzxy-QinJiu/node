@@ -155,10 +155,25 @@ class ClueExtract extends React.Component {
                 cluePoolAction.getSalesManList();
             }
         }
-        this.getCluePoolList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
+        // 如果是从没有符合条件的线索点击跳转过来的,将搜索框中的关键字置为搜索的线索名称
+        if (!_.isEmpty(this.props.clueSearchCondition)){
+            this.getConditionSearch(this.props);
+        }else{
+            this.getCluePoolList();
+        }
     }
+    componentWillReceiveProps(nextProps) {
+        if (!_.isEmpty(nextProps.clueSearchCondition) && !_.isEqual(nextProps.clueSearchCondition, this.props.clueSearchCondition)){
+            this.getConditionSearch(nextProps);
+        }
 
+    }
+    getConditionSearch = (Props) => {
+        var keyword = _.get(Props.clueSearchCondition, 'name', '');
+        this.refs.searchInput.state.keyword = keyword;
+        this.searchFullTextEvent(keyword);
+    }
     componentWillUnmount() {
         cluePoolStore.unlisten(this.onStoreChange);
         //清空页面上的筛选条件
@@ -1129,6 +1144,7 @@ class ClueExtract extends React.Component {
                                 {this.renderSelectClueTips()}
                             </div>
                         ) : <SearchInput
+                            ref="searchInput"
                             searchEvent={this.searchFullTextEvent}
                             searchPlaceHolder={Intl.get('clue.search.full.text', '全文搜索')}
                         />}
@@ -1190,6 +1206,7 @@ class ClueExtract extends React.Component {
 
 ClueExtract.propTypes = {
     closeExtractCluePanel: PropTypes.func,
+    clueSearchCondition: PropTypes.object,
 };
 
 export default ClueExtract;
