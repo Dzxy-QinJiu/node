@@ -100,6 +100,7 @@
 
       }
       .content-container {
+        position: relative;
         padding-left: @filter-width + 27px;
         &.content-full {
           padding-left: 24px;
@@ -107,12 +108,15 @@
             padding-left: 20px;
           }
         }
+        &.clue-status-no-check{
+          padding-top: 22px;
+        }
         .clue-status-wrap{
           position: absolute;
           font-size: 14px;
           color:#999;
           left: 70px;
-          top: 78px;
+          top: 14px;
           z-index: 10;
           &.firefox-padding{
             left: 120px;
@@ -122,6 +126,9 @@
           }
           &.status-type-hide{
             visibility: hidden;
+          }
+          &.clue-status-no-check{
+            top:12px;
           }
           .clue-status-tab{
             display: inline-block;

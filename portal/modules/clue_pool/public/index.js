@@ -791,7 +791,9 @@ class ClueExtract extends React.Component {
         }
         return columns;
     };
-
+    clueSelectPrivilege = () => {
+        return hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF');
+    };
     renderClueCustomerLists = () => {
         let customerList = this.state.cluePoolList;
         const dropLoadConfig = {
@@ -801,8 +803,7 @@ class ClueExtract extends React.Component {
             noMoreDataText: Intl.get('common.no.more.clue', '没有更多线索了'),
             loading: this.state.isLoading,
         };
-        let rowSelection = hasPrivilege('LEAD_EXTRACT_ALL') ||
-        hasPrivilege('LEAD_EXTRACT_SELF') ? this.getRowSelection() : null;
+        let rowSelection = this.clueSelectPrivilege() ? this.getRowSelection() : null;
 
         function rowKey(record, index) {
             return record.id;
@@ -1087,7 +1088,8 @@ class ClueExtract extends React.Component {
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
             'firefox-padding': this.isFireFoxBrowser(),
-            'status-type-hide': isFirstLoading
+            'status-type-hide': isFirstLoading,
+            'clue-status-no-check': !this.clueSelectPrivilege()
         });
         return <span className={clueStatusCls}>
             <span className={willTrace}
@@ -1107,7 +1109,8 @@ class ClueExtract extends React.Component {
 
     render = () => {
         const contentClassName = classNames('content-container', {
-            'content-full': !this.state.showFilterList
+            'content-full': !this.state.showFilterList,
+            'clue-status-no-check': !this.clueSelectPrivilege()
         });
         const hasSelectedClue = this.hasSelectedClues();
         return (
