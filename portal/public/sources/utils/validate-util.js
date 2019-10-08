@@ -203,7 +203,7 @@ export const nameRule = (name) => {
     return {
         required: true,
         pattern: nameLengthRuleRegex,
-        message: Intl.get('common.name.rule', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间', {name: name}),
+        message: Intl.get('common.name.rule', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间', {name: name}),
     };
 };
 
@@ -211,6 +211,6 @@ export const nameRule = (name) => {
 export const validatorNameRuleRegex = (length, name) => {
     return {
         pattern: regex.getNameRegex(length),
-        message: Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间', {name: name, length: length}),
+        message: Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到{length}（包括{length}）之间', {name: name, length: length}),
     };
 };
