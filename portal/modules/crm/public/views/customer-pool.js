@@ -591,6 +591,7 @@ class CustomerPool extends React.Component {
         } else {//销售、管理员
             const batchExtractBtn = (
                 <Button className="btn-item extract-btn" disabled={!selectCustomerLength}>
+                    <i className="iconfont icon-extract"></i>
                     {Intl.get('clue.extract', '提取')}
                 </Button>);
             //选择客户后可以进行批量提取
@@ -682,7 +683,7 @@ class CustomerPool extends React.Component {
                     {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
                         <Button
                             className="btn-item extract-btn"
-                            onClick={this.showRuleRightPanel}>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>
+                            onClick={this.showRuleRightPanel}><i className="iconfont icon-peizhi"></i>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>
                     ) : null}
                     {this.renderBatchExtractBtn(selectCustomerLength)}
                     {selectCustomerLength ? (

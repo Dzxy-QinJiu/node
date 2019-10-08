@@ -6,6 +6,9 @@
 //x颜色
 @x_color: #cdcdcd;
 .clue_customer_content {
+  .topNav {
+    padding-left: 15px;
+  }
   //线索顶部筛选区域
   .date-picker-wrap {
     padding-top: @filter_area_margin_top;
@@ -20,13 +23,16 @@
     }
     .search-container {
       float: left;
+      .search-input-inner {
+        display: inline-block;
+      }
       .search-input-wrapper {
         float: left;
         .hide-filter-input {
           width: 0;
         }
         .search-wrapper {
-          margin-right: 12px;
+          margin-right: 15px;
           .btn-item {
             margin-right: 0 !important;
           }
@@ -78,7 +84,7 @@
       }
     }
     .add-anlysis-handle-btns {
-      margin-right: 12px;
+      display: inline-block;
       button {
         margin-right: 12px;
         font-size: 16px;
@@ -91,6 +97,9 @@
       }
       .manual-add-btn {
         height: 32px;
+        .add-btn {
+          font-weight: bold;
+        }
       }
       button.ant-btn-primary {
         background-color: @BORDER-BLUE;
@@ -101,6 +110,22 @@
           background-color: @BUTTON-HOVER;
           border-color: @BUTTON-HOVER;
         }
+      }
+      .iconfont {
+        margin-right: 0.5em;
+      }
+      .more-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        margin-right: @filter_area_margin_top;
+        color: #8da8c5;
+        .iconfont {
+          margin-right: 0;
+        }
+      }
+      .recomend-clue-customer-container {
+        display: inline-block;
       }
     }
   }
@@ -601,5 +626,20 @@
   li {
     font-size: 14px;
     text-align: center;
+  }
+}
+//线索列表顶端的popover
+.clue-customer-top-bar-dropDown {
+  width: 7em;
+  ul {
+    font-size: 14px;
+    border: 1px @BORDER-BLUE solid;
+    li {
+      padding: 10px;
+      text-align: center;
+      &:hover {
+        color: @BORDER-BLUE
+      }
+    }
   }
 }

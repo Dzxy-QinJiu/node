@@ -49,9 +49,24 @@
             top: @filter_area_margin_top;
             .btn-item {
                 float: left;
+                .iconfont {
+                    margin-right: 0.5em;
+                }
+                .ant-btn {
+                    vertical-align: baseline;
+                }
+                .ant-dropdown-trigger {
+                    .add-btn {
+                        font-weight: bold;
+                    }
+                }
             }
-            .customer-pool-btn{
-                margin-top: 1px;
+            .more-btn {
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                margin-right: @filter_area_margin_top;
+                color: #8da8c5
             }
             .crm-merge-btn{
                 line-height: 1;
@@ -100,10 +115,9 @@
     }
     .search-input-select-block {
         float: left;
-        height: 30px;
+        height: 32px;
         line-height: 30px;
         margin-top: @filter_area_margin_top;
-        width: 280px;
         .search-input-container {
             display: inline-block;
             .ant-select-selection{
@@ -171,7 +185,7 @@
     }
     .search-input-wrapper {
         margin-top: @filter_area_margin_top;
-        margin-left: @container_padding;
+        margin-left: @filter_area_margin_top;
         display: inline-block;
         vertical-align: top;
         .search-wrapper {
@@ -443,5 +457,20 @@
     li{
         font-size: 14px;
         text-align: center;
+    }
+}
+//客户列表顶端的popover
+.crm-top-bar-dropDown {
+    width: 7em;
+    ul {
+        font-size: 14px;
+        border: 1px @BORDER-BLUE solid;
+        li {
+            padding: 10px;
+            text-align: center;
+            &:hover {
+                color: @BORDER-BLUE
+            }
+        }
     }
 }
