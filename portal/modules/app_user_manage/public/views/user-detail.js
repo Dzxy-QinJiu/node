@@ -37,7 +37,7 @@ import UserStatusSwitch from './user-status-switch';
 import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
+
 
 class UserDetail extends React.Component {
     static defaultProps = {
@@ -60,6 +60,7 @@ class UserDetail extends React.Component {
     };
     componentWillReceiveProps(nextProps) {
         if (nextProps.userId !== this.props.userId) {
+            AppUserDetailAction.getUserDetail(this.props.userId);
             $(this.refs.wrap).removeClass('move_left');
             $(this.refs.topWrap).removeClass('move-left-wrapper');
             // 若当前tab页是异常登录，切换用户时，若此用户没有异常登录项，则返回到基本资料
@@ -68,6 +69,7 @@ class UserDetail extends React.Component {
                     activeKey: '1'
                 });
             }
+
         }
     }
     
@@ -120,9 +122,9 @@ class UserDetail extends React.Component {
         $(window).on('resize', this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
         this.getIntegrateConfig();
+        AppUserDetailAction.getUserDetail(this.props.userId);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
-        userBasicInfoEmitter.on(userBasicInfoEmitter.GET_USER_BASIC_INFO, this.getBasicInfo);
         let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
         if (scrollWrapElem) {
             scrollWrapElem.addEventListener('mousewheel', this.handleWheel, false);
@@ -134,7 +136,6 @@ class UserDetail extends React.Component {
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
-        userBasicInfoEmitter.removeListener(userBasicInfoEmitter.GET_USER_BASIC_INFO, this.getBasicInfo);
         let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
         if (scrollWrapElem) {
             scrollWrapElem.removeEventListener('mousewheel', this.handleWheel, false);
@@ -178,12 +179,6 @@ class UserDetail extends React.Component {
             activeKey: key
         }, () => {
             document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
-        });
-    };
-
-    getBasicInfo = (userInfo) => {
-        this.setState({
-            userInfo
         });
     };
 
@@ -332,7 +327,6 @@ class UserDetail extends React.Component {
                         userId={this.props.userId}
                         selectApp={selectApp}
                         ref={ref => this.userDetailRef = ref}
-                        getBasicInfo={this.getBasicInfo}
                         userConditions={userConditions}
                     />
                 </div> : null}

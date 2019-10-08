@@ -49,7 +49,7 @@ class UserDetailBasic extends React.Component {
     componentDidMount() {
         AppUserDetailStore.listen(this.onStateChange);
         if (!this.props.userId) return;
-        AppUserDetailAction.getUserDetail(this.props.userId);
+        // AppUserDetailAction.getUserDetail(this.props.userId);
         if (this.props.getBasicInfo) {
             const userInfo = {
                 data: null,
@@ -136,7 +136,7 @@ class UserDetailBasic extends React.Component {
         if (prevProps.userId !== newUserId && newUserId) {
             setTimeout(function() {
                 AppUserDetailAction.dismiss();
-                AppUserDetailAction.getUserDetail(newUserId);
+                // AppUserDetailAction.getUserDetail(newUserId);
             }, 0);
         }
         const statusChanged = prevState.isLoading !== this.state.isLoading;
