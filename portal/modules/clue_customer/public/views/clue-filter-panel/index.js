@@ -246,7 +246,7 @@ class ClueFilterPanel extends React.Component {
         if (!getClueUnhandledPrivilege()) {
             otherFilterArray = _.filter(otherFilterArray, item => item.value !== SELECT_TYPE.WAIT_ME_HANDLE);
         }
-        const commonData = otherFilterArray.map(x => {
+        let commonData = otherFilterArray.map(x => {
             x.readOnly = true;
             x.groupId = COMMON_OTHER_ITEM;
             x.groupName = Intl.get('crm.186', '其他');
@@ -268,6 +268,16 @@ class ClueFilterPanel extends React.Component {
             }];
             return x;
         });
+
+        //将自定义常用筛选加到常用筛选数据中
+        _.each(this.state.customCommonFilter, item => {
+            commonData.push({
+                name: item.name,
+                value: item.name,
+                id: item.id
+            });
+        });
+
         const advancedData = [{
             groupName: Intl.get('crm.96', '地域'),
             groupId: 'clue_province',
