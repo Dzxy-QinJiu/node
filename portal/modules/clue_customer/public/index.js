@@ -1482,7 +1482,7 @@ class ClueCustomer extends React.Component {
                         <React.Fragment>
                             {showRelease ? <div className="release-clue-btn">
                                 <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
-                                    title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确认释放吗？')}>
+                                    title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
                                     <a className='release-customer'
                                         title={Intl.get('crm.customer.release', '释放')}>
                                         <i className="iconfont icon-release handle-btn-item"/>
@@ -1491,7 +1491,7 @@ class ClueCustomer extends React.Component {
                             </div> : null}
                             {showDelete && editCluePrivilege(salesClueItem) ?
                                 <Popconfirm placement="topRight" onConfirm={this.deleteClue.bind(this, salesClueItem)}
-                                    title={Intl.get('crm.15', '是否删除“{cusName}”？', { cusName: salesClueItem.name })}>
+                                    title={Intl.get('clue.customer.delete', '删除后无法恢复，您确定要删除吗？')}>
                                     <a className="order-btn-class delete-btn handle-btn-item"
                                         title={Intl.get('common.delete', '删除')} >
                                         <i className="iconfont icon-delete"></i>
@@ -2502,7 +2502,7 @@ class ClueCustomer extends React.Component {
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
-                                title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确认释放吗？')}>
+                                title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
                                 <Button data-tracename="点击批量释放线索按钮"
                                     className='btn-item handle-btn-item'
                                     title={Intl.get('clue.customer.release.pool', '释放到线索池')}>

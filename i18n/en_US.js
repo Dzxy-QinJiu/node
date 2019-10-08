@@ -2980,9 +2980,10 @@ var en_US = {
     'clue.customer.refresh.page': 'refresh page',//刷新页面
     'clue.pool': 'Clue Pool', // 线索池
     'clue.pool.explain': 'Store release clues',//存放释放的线索
+    'clue.customer.delete': 'Can\'t be restored after deletion. Are you sure you want to delete it?',//删除后无法恢复，您确定要删除吗？
     'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
-    'clue.customer.release.confirm.tip': 'After release to the clue pool, other people can view and extract. Do you confirm the release?',//释放到线索池后，其他人也可以查看、提取，您确认释放吗？
+    'clue.customer.release.confirm.tip': 'When released into the clue pool, other people can also view and extract it. Are you sure you want to release it?',//释放到线索池后，其他人也可以查看、提取，您确定要释放吗？
     'clue.customer.fail.to.release.tip': 'Fail to release to clue pool',//释放线索失败
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
     'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
