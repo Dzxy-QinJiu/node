@@ -596,7 +596,7 @@ class ClueCustomer extends React.Component {
         }
     };
     //获取查询线索的参数
-    getClueSearchCondition = (isGetAllClue) => {
+    getClueSearchCondition = (isExport,isGetAllClue) => {
         var filterStoreData = clueFilterStore.getState();
         var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
@@ -675,6 +675,11 @@ class ClueCustomer extends React.Component {
                 bodyField.unexist_fields = unExistFileds;
             }
         }
+        if (isExport){
+            bodyField.export = true;
+        }else{
+            delete bodyField.export;
+        }
         var queryRangeParam = _.cloneDeep(rangeParams);
         if (filterStoreData.notConnectedClues){
             queryRangeParam = [{name: 'no_answer_times', from: 1}];
@@ -746,7 +751,7 @@ class ClueCustomer extends React.Component {
             type = 'manager';
         }
         var isGetAll = this.state.exportRange === 'all';
-        const reqData = isGetAll ? this.getClueSearchCondition(true) : this.getClueSearchCondition(false);
+        const reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
         const params = {
             page_size: 10000,
             sort_field: sorter.field,
