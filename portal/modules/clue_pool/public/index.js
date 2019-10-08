@@ -169,8 +169,9 @@ class ClueExtract extends React.Component {
         }
 
     }
-    getConditionSearch = (Props) => {
-        var keyword = _.get(Props.clueSearchCondition, 'name', '');
+    //点击跳转到线索池并且有搜索条件时
+    getConditionSearch = (props) => {
+        var keyword = _.get(props.clueSearchCondition, 'name', '');
         this.refs.searchInput.state.keyword = keyword;
         this.searchFullTextEvent(keyword);
     }

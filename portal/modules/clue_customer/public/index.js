@@ -1990,10 +1990,9 @@ class ClueCustomer extends React.Component {
         }
     };
     renderNotFoundClue = () => {
-        //搜索线索名称时，未查到线索，以及没有选中线索的情况下，才显示是否去线索池中查询
-        const isShowCluepoolTip = _.get(this.state, 'keyword', '')
-            && !_.get(this.state, 'allClueCount', 0)
-            && !_.get(this.state, 'selectedCustomer.length', 0);
+        const isShowCluepoolTip = _.get(this.state, 'keyword', '')//搜索线索名称时
+            && !_.get(this.state, 'allClueCount', 0)//未查到线索
+            && !_.get(this.state, 'selectedCustomer.length', 0);//以及没有选中线索的情况下，才显示是否去线索池中查询
         if (isShowCluepoolTip) {
             return (
                 <div>
