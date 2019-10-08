@@ -9,8 +9,16 @@ module.exports = {
     routes: [{
         //导出线索
         'method': 'post',
-        'path': '/rest/customer/v2/customer/range/clue/export/:page_size/:page_num/:sort_field/:order/:type',
-        'handler': 'exportData',
+        'path': '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type',
+        'handler': 'exportClueFulltext',
+        'passport': {
+            'needLogin': true
+        }
+    },{
+        //导出线索
+        'method': 'post',
+        'path': '/rest/customer/v2/customer/range/selfHandle/clue/export/:page_size/:sort_field/:order/:type',
+        'handler': 'exportClueFulltextSelfHandle',
         'passport': {
             'needLogin': true
         }

@@ -293,91 +293,99 @@ function getClueListColumns(backendIntl) {
 }
 
 //导出数据
-exports.exportData = function(req, res) {
-    clueCustomerService.getClueFulltext(req, res).on('success', result => {
+exports.exportClueFulltext = function(req, res) {
+    clueCustomerService.exportClueFulltext(req, res).on('success', result => {
         let backendIntl = new BackendIntl(req);
-        doExport(result, backendIntl);
+        doExport(result, backendIntl,res);
     }).on('error', codeMessage => {
         res.status(500).json(codeMessage);
     });
-    //执行导出
-    function doExport(data, backendIntl) {
-        const CLUE_LIST_COLUMNS = getClueListColumns(backendIntl);
-        const columnTitles = _.map(CLUE_LIST_COLUMNS, 'title');
-        const list = _.isArray(data.result) ? data.result : [];
-        const rows = list.map(item => {
-            const values = CLUE_LIST_COLUMNS.map(column => {
-                let value = item[column.dataIndex];
-                if (!value && isNaN(value)) value = '';
-                if (column.dataIndex === 'province') {
-                    if (item['city']) {
-                        value += item['city'];
-                    }
-                }
-                if (column.dataIndex === 'status'){
-                    const CLUE_DIFF_TYPE = getClueDiffType(backendIntl);
-                    var targetObj = _.find(CLUE_DIFF_TYPE,(item) => {
-                        return value === item.value;
-                    });
-                    value = _.get(targetObj,'name') || value;
-                }
-
-                if (column.dataIndex === 'source_time' && value){
-                    value = moment(value).format(DATE_FORMAT);
-                }
-                if (column.dataIndex === 'source_classify' && value){
-                    const sourceClassifyArray = getClueSourceClassify(backendIntl);
-                    var targetObj = _.find(sourceClassifyArray,(item) => {
-                        return value === item.value;
-                    });
-                    value = _.get(targetObj,'name') || value;
-                }
-                if (column.dataIndex === 'contacts' && _.isArray(value)){
-                    var contactDes = '';
-                    _.forEach(value, (contactItem) => {
-                        contactDes = contactDes + ' ' + _.get(contactItem,'name','');
-                        _.forEach(contactWays, (way) => {
-                            if (_.isArray(contactItem[way])){
-                                _.forEach(contactItem[way], (wayItem) => {
-                                    contactDes = contactDes + ' ' + wayItem;
-                                });
-                            }
-                        });
-                    });
-                    value = contactDes;
-                }
-                if (column.dataIndex === 'customer_traces' && _.isArray(value)){
-                    var traceAddTime = _.get(value, '[0].call_date');//跟进时间
-
-                    traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
-                    var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
-                    value = _.get(value,'[0].remark','') + '(' + backendIntl.get('clue.export.trace.msg', '{traceman}于{tracetime}添加',{'traceman': tracePersonName, 'tracetime': traceAddTime}) + ')';
-                }
-                if (column.dataIndex === 'user_name' && item.sales_team){
-                    value += `—${item.sales_team}`;
-                }
-                if (column.dataIndex === 'availability'){
-                    value = value === '1' ? backendIntl.get('user.yes', '是') : backendIntl.get('user.no', '否');
-                }
-                //处理特殊字符
-                value = _.isString(value) ? value.replace(/,/g, '，') : '';
-                value = value.replace(/\n/g, ' ');
-                return value;
-            });
-            return values.join();
-        });
-        const head = columnTitles.join();
-        let csvArr = [];
-        csvArr.push(head);
-        csvArr = csvArr.concat(rows);
-        let csv = csvArr.join('\n');
-        //防止中文乱码
-        csv = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(csv)]);
-        res.setHeader('Content-disposition', `attachement; filename=${encodeURI(backendIntl.get('crm.sales.clue', '线索'))}.csv`);
-        res.setHeader('Content-Type', 'application/csv');
-        res.send(csv);
-    }
 };
+exports.exportClueFulltextSelfHandle = function(req, res) {
+    clueCustomerService.exportClueFulltextSelfHandle(req, res).on('success', result => {
+        let backendIntl = new BackendIntl(req);
+        doExport(result, backendIntl,res);
+    }).on('error', codeMessage => {
+        res.status(500).json(codeMessage);
+    });
+};
+//执行导出
+function doExport(data, backendIntl, res) {
+    const CLUE_LIST_COLUMNS = getClueListColumns(backendIntl);
+    const columnTitles = _.map(CLUE_LIST_COLUMNS, 'title');
+    const list = _.isArray(data.result) ? data.result : [];
+    const rows = list.map(item => {
+        const values = CLUE_LIST_COLUMNS.map(column => {
+            let value = item[column.dataIndex];
+            if (!value && isNaN(value)) value = '';
+            if (column.dataIndex === 'province') {
+                if (item['city']) {
+                    value += item['city'];
+                }
+            }
+            if (column.dataIndex === 'status'){
+                const CLUE_DIFF_TYPE = getClueDiffType(backendIntl);
+                var targetObj = _.find(CLUE_DIFF_TYPE,(item) => {
+                    return value === item.value;
+                });
+                value = _.get(targetObj,'name') || value;
+            }
+
+            if (column.dataIndex === 'source_time' && value){
+                value = moment(value).format(DATE_FORMAT);
+            }
+            if (column.dataIndex === 'source_classify' && value){
+                const sourceClassifyArray = getClueSourceClassify(backendIntl);
+                var targetObj = _.find(sourceClassifyArray,(item) => {
+                    return value === item.value;
+                });
+                value = _.get(targetObj,'name') || value;
+            }
+            if (column.dataIndex === 'contacts' && _.isArray(value)){
+                var contactDes = '';
+                _.forEach(value, (contactItem) => {
+                    contactDes = contactDes + ' ' + _.get(contactItem,'name','');
+                    _.forEach(contactWays, (way) => {
+                        if (_.isArray(contactItem[way])){
+                            _.forEach(contactItem[way], (wayItem) => {
+                                contactDes = contactDes + ' ' + wayItem;
+                            });
+                        }
+                    });
+                });
+                value = contactDes;
+            }
+            if (column.dataIndex === 'customer_traces' && _.isArray(value)){
+                var traceAddTime = _.get(value, '[0].call_date');//跟进时间
+
+                traceAddTime = traceAddTime ? moment(traceAddTime).format(oplateConsts.DATE_FORMAT) : '';
+                var tracePersonName = _.get(value, '[0].nick_name', '');//跟进人的名字
+                value = _.get(value,'[0].remark','') + '(' + backendIntl.get('clue.export.trace.msg', '{traceman}于{tracetime}添加',{'traceman': tracePersonName, 'tracetime': traceAddTime}) + ')';
+            }
+            if (column.dataIndex === 'user_name' && item.sales_team){
+                value += `—${item.sales_team}`;
+            }
+            if (column.dataIndex === 'availability'){
+                value = value === '1' ? backendIntl.get('user.yes', '是') : backendIntl.get('user.no', '否');
+            }
+            //处理特殊字符
+            value = _.isString(value) ? value.replace(/,/g, '，') : '';
+            value = value.replace(/\n/g, ' ');
+            return value;
+        });
+        return values.join();
+    });
+    const head = columnTitles.join();
+    let csvArr = [];
+    csvArr.push(head);
+    csvArr = csvArr.concat(rows);
+    let csv = csvArr.join('\n');
+    //防止中文乱码
+    csv = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(csv)]);
+    res.setHeader('Content-disposition', `attachement; filename=${encodeURI(backendIntl.get('crm.sales.clue', '线索'))}.csv`);
+    res.setHeader('Content-Type', 'application/csv');
+    res.send(csv);
+}
 //批量修改线索的所属销售
 exports.changeClueSalesBatch = function(req, res) {
     clueCustomerService.changeClueSalesBatch(req, res)

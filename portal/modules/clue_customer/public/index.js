@@ -596,7 +596,7 @@ class ClueCustomer extends React.Component {
         }
     };
     //获取查询线索的参数
-    getClueSearchCondition = (isGetAllClue) => {
+    getClueSearchCondition = (isExport,isGetAllClue) => {
         var filterStoreData = clueFilterStore.getState();
         var rangeParams = isGetAllClue ? [{
             from: clueStartTime,
@@ -609,9 +609,11 @@ class ClueCustomer extends React.Component {
             rangeParams[0].to = moment().endOf('day').valueOf();
         }
         var typeFilter = isGetAllClue ? {status: ''} : this.getFilterStatus();//线索类型
-        typeFilter.availability = filterStoreData.filterClueAvailability;
+        if (!isGetAllClue){
+            typeFilter.availability = filterStoreData.filterClueAvailability;
+        }
         //如果筛选的是无效的，不传status参数
-        if (typeFilter.availability === AVALIBILITYSTATUS.INAVALIBILITY){
+        if (typeFilter.availability === AVALIBILITYSTATUS.INAVALIBILITY ){
             delete typeFilter.status;
         }
         //按销售进行筛选
@@ -673,6 +675,11 @@ class ClueCustomer extends React.Component {
                 bodyField.unexist_fields = unExistFileds;
             }
         }
+        if (isExport){
+            bodyField.export = true;
+        }else{
+            delete bodyField.export;
+        }
         var queryRangeParam = _.cloneDeep(rangeParams);
         if (filterStoreData.notConnectedClues){
             queryRangeParam = [{name: 'no_answer_times', from: 1}];
@@ -697,6 +704,11 @@ class ClueCustomer extends React.Component {
             firstLogin: this.state.firstLogin
         };
     };
+    //是否选中待我处理
+    isSelfHandleFilter = () => {
+        var filterStoreData = clueFilterStore.getState();
+        return filterStoreData.filterAllotNoTraced;//待我处理的线索
+    };
     //获取线索列表
     getClueList = () => {
         //如果有刷新提示，点击刷新提示获取线索列表的，将刷新提示清除
@@ -705,11 +717,9 @@ class ClueCustomer extends React.Component {
                 isShowRefreshPrompt: false
             });
         }
-        var filterStoreData = clueFilterStore.getState();
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
-        var filterAllotNoTraced = filterStoreData.filterAllotNoTraced;//待我处理的线索
-        if (filterAllotNoTraced){
+        if (this.isSelfHandleFilter()){
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
             });
@@ -741,15 +751,17 @@ class ClueCustomer extends React.Component {
             type = 'manager';
         }
         var isGetAll = this.state.exportRange === 'all';
-        const reqData = isGetAll ? this.getClueSearchCondition(true) : this.getClueSearchCondition(false);
+        const reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
         const params = {
-            page_size: isGetAll ? 10000 : reqData.pageSize,
+            page_size: 10000,
             sort_field: sorter.field,
             order: sorter.order,
             type: type,
-            page_num: reqData.pageNum
         };
-        const route = '/rest/customer/v2/customer/range/clue/export/:page_size/:page_num/:sort_field/:order/:type';
+        var route = '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type';
+        if(this.isSelfHandleFilter()){
+            route = '/rest/customer/v2/customer/range/selfHandle/clue/export/:page_size/:sort_field/:order/:type';
+        }
         const url = route.replace(pathParamRegex, function($0, $1) {
             return params[$1];
         });
