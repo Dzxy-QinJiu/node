@@ -154,9 +154,11 @@ class CrmFilterPanel extends React.Component {
                 sort_field: 'operate_time',
                 page_size: 1000
             },
-            //post请求不传body参数会报415
-            data: { emptyFix: '' }
-
+            data: {
+                query: {
+                    tag: 'crm'
+                }
+            }
         };
         FilterAction.getCommonFilterList(paramsObj);
     }
