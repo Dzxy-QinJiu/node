@@ -141,12 +141,7 @@ class ClueFilterPanel extends React.Component {
                 value: value,
                 name: value
             };
-            //处理value（实际的筛选项值）
-            nameObj.value = value;
-            if (_.get(value, 'sale_stages')) {
-                nameObj.value = value.sale_stages;
-                nameObj.name = value.sale_stages;
-            }
+
             //处理name（展示的筛选项文字）
             switch (key) {
                 case 'sales_team_id':
@@ -154,129 +149,6 @@ class ClueFilterPanel extends React.Component {
                     if (item) {
                         nameObj.name = item.group_name;
                     }
-                    break;
-                case 'contain_sales_opportunity'://订单阶段value由name表示
-                    item = stageArray.find(x => x.name === value);
-                    if (item) {
-                        nameObj.name = item.show_name;
-                    }
-                    if (value === 'false') {
-                        nameObj.name = UNKNOWN;
-                        nameObj.value = UNKNOWN;
-                    }
-                    nameObj.groupId = 'sales_opportunities';
-                    break;
-                case 'sales_opportunities':
-                    item = stageArray.find(x => x.name === value);
-                    if (item) {
-                        nameObj.name = item.show_name;
-                    }
-                    break;
-                case 'administrative_level':
-                    item = filterLevelArray.find(x => x.id === value);
-                    if (item) {
-                        nameObj.name = item.level;
-                    }
-                    break;
-                case 'immutable_labels' :
-                    item = this.systemTagList.find(x => x.name === value);
-                    if (item) {
-                        nameObj.name = item.show_name;
-                    }
-                    break;
-                case 'labels':
-                    item = this.tagList.find(x => x.name === value);
-                    if (item) {
-                        nameObj.name = item.show_name;
-                    }
-                    if (nameObj.name === Intl.get('crm.tag.unknown', '未打标签的客户')) {
-                        nameObj.selectOnly = true;
-                    }
-                    break;
-                case 'competing_products':
-                    item = this.competitorList.find(x => x.name === value);
-                    if (item) {
-                        nameObj.name = item.show_name;
-                    }
-                    break;
-                case 'qualify_label':
-                    item = qualifiedTagList.find(x => x.value === value);
-                    if (item) {
-                        nameObj.name = item.name;
-                    }
-                    break;
-                case 'contain_contact':
-                    nameObj.name = Intl.get('crm.no.contact.way', '无联系方式客户');
-                    nameObj.value = 'no_contact_way';
-                    nameObj.groupId = COMMON_OTHER_ITEM;
-                    nameObj.groupName = Intl.get('crm.186', '其他');
-                    break;
-                case 'call_and_remark':
-                    nameObj.name = Intl.get('crm.call.no.remark', '最后联系但未写跟进记录');
-                    nameObj.value = 'last_call_no_record';
-                    nameObj.groupId = COMMON_OTHER_ITEM;
-                    nameObj.groupName = Intl.get('crm.186', '其他');
-                    break;
-                case 'last_trace':
-                    nameObj.name = Intl.get('crm.call.no.remark.over30', '超30天未写跟进记录');
-                    nameObj.value = 'last_trace';
-                    nameObj.groupId = COMMON_OTHER_ITEM;
-                    nameObj.groupName = Intl.get('crm.186', '其他');
-                    break;
-                case 'interest_member_ids':
-                    nameObj.name = Intl.get('crm.my.concerned.customer', '我关注的客户');
-                    nameObj.value = 'my_interest';
-                    nameObj.groupId = COMMON_OTHER_ITEM;
-                    nameObj.groupName = Intl.get('crm.186', '其他');
-                    break;
-                case 'unexist_fields':
-                    switch (value) {
-                        case 'industry':
-                            nameObj.name = UNKNOWN;
-                            nameObj.value = UNKNOWN;
-                            nameObj.groupId = 'industry';
-                            break;
-                        case 'province':
-                            nameObj.groupId = 'province';
-                            nameObj.name = UNKNOWN;
-                            nameObj.value = UNKNOWN;
-                            break;
-                        case 'qualify_label':
-                            nameObj.groupId = 'qualify_label';
-                            nameObj.name = CUSTOMER_TAGS.NEVER_QUALIFIED;
-                            nameObj.value = '3';
-                            break;
-                        case 'labels':
-                            nameObj.groupId = 'labels';
-                            nameObj.name = Intl.get('crm.tag.unknown', '未打标签的客户');
-                            nameObj.value = SPECIAL_LABEL.NON_TAGGED_CUSTOMER;
-                            break;
-                        case 'member_id':
-                            nameObj.groupId = 'member_id';
-                            nameObj.name = Intl.get('crm.213', '未分配客户');
-                            nameObj.value = OTHER_FILTER_ITEMS.UNDISTRIBUTED;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case 'exist_fields':
-                    switch (value) {
-                        case 'interest_member_ids':
-                            nameObj.name = Intl.get('crm.concerned.customer', '被关注的客户');
-                            nameObj.value = 'interest_member_ids';
-                            nameObj.groupId = COMMON_OTHER_ITEM;
-                            nameObj.groupName = Intl.get('crm.186', '其他');
-                            break;
-    
-                        default:
-                            break;
-                    }
-                    break;
-                case 'availability':
-                    nameObj.groupId = COMMON_OTHER_ITEM;
-                    nameObj.name = Intl.get('crm.available.customer', '有效客户');
-                    nameObj.value = 'availability';
                     break;
             }
             handleAddItem(nameObj);
@@ -318,50 +190,6 @@ class ClueFilterPanel extends React.Component {
                         value: '',
                         name: rangeItem.name
                     };
-                    switch (rangeItem.name) {
-                        case 'last_contact_time':
-                            switch (rangeItem.interval) {
-                                case 30:
-                                    nameObj.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 30 });
-                                    nameObj.value = OTHER_FILTER_ITEMS.THIRTY_UNCONTACT;
-                                    //超30天未联系的客户
-                                    break;
-                                case 15:
-                                    nameObj.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 15 });
-                                    nameObj.value = OTHER_FILTER_ITEMS.FIFTEEN_UNCONTACT;
-                                    //超15天未联系的客户
-                                    break;
-                                case 7:
-                                    nameObj.name = Intl.get('crm.over.day.without.contact', '超{day}天未联系', { day: 7 });
-                                    nameObj.value = OTHER_FILTER_ITEMS.SEVEN_UNCONTACT;
-                                    //超7天未联系的客户
-                                    break;
-                            }
-                            break;
-                        case 'last_login_time':
-                            switch (rangeItem.interval) {
-                                case 30:
-                                    nameObj.name = Intl.get('crm.recent.month.active', '近一个月的活跃客户');
-                                    nameObj.value = 'month_login';
-                                    //超30天未联系的客户
-                                    break;
-                                case 7:
-                                    nameObj.name = Intl.get('crm.recent.week.active', '近一周的活跃客户');
-                                    nameObj.value = 'seven_login';
-                                    //超7天未联系的客户
-                                    break;
-                            }
-                            break;
-                        case 'sales_opportunity_count':
-                            nameObj.name = Intl.get('crm.order.more.customer', '多个订单的客户');
-                            nameObj.value = OTHER_FILTER_ITEMS.MULTI_ORDER;
-                            break;
-                        //开始时间跳过处理
-                        case 'start_time':
-                            return false;
-                        default:
-                            break;
-                    }
                     handleAddItem(nameObj);
                 });
             }
@@ -374,7 +202,7 @@ class ClueFilterPanel extends React.Component {
             plainFilterList: plainFilters,
             id: item.id
         };
-    };
+    }
 
     //删除自定义常用筛选
     deleteCustomCommonFilter(item) {
@@ -554,7 +382,7 @@ class ClueFilterPanel extends React.Component {
         });
 
         //将自定义常用筛选加到常用筛选数据中
-        commonData = commonData.concat(this.state.customCommonFilter)
+        commonData = commonData.concat(this.state.customCommonFilter);
 
         const advancedData = [{
             groupName: Intl.get('crm.96', '地域'),
