@@ -2909,6 +2909,7 @@ var en_US = {
     'common.this.month.back': 'this month back',//本月回流
     'common.this.month.new': 'this month new',//本月新增
     'common.this.month': 'this month',//本月
+    //线索模块 start
     'clue.search.by.name': 'search by clue name',//按线索名搜索
     'clue.add.trace.content': 'Add follow-up content',//添加跟进内容
     'clue.add.trace.follow': 'follow up',//跟进
@@ -2994,6 +2995,8 @@ var en_US = {
     'clue.extract.success': 'Success', // 提取成功
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
+    'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any clue',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
+    //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',

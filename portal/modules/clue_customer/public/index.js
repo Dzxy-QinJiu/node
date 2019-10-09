@@ -129,6 +129,7 @@ class ClueCustomer extends React.Component {
         isReleasingClue: false,//是否正在释放线索
         selectedClue: [],//选中的线索
         isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
+        cluePoolCondition: {},//线索池的搜索条件
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -2000,7 +2001,38 @@ class ClueCustomer extends React.Component {
             return null;
         }
     };
-
+    renderNotFoundClue = () => {
+        const isShowCluepoolTip = _.get(this.state, 'keyword', '')//搜索线索名称时
+            && !_.get(this.state, 'allClueCount', 0)//未查到线索
+            && !_.get(this.state, 'selectedCustomer.length', 0);//以及没有选中线索的情况下，才显示是否去线索池中查询
+        if (isShowCluepoolTip) {
+            return (
+                <div>
+                    <ReactIntl.FormattedMessage
+                        id="clue.search.no.found"
+                        defaultMessage={'没有符合条件的线索，您可以去{cluepool}查看是否有该线索'}
+                        values={{
+                            'cluepool': <a
+                                style={{textDecoration: 'underline'}}
+                                onClick={this.handleClickCluePool.bind(this)}>
+                                {Intl.get('clue.pool', '线索池')}</a>
+                        }}
+                    />
+                </div>
+            );
+        }else {
+            return Intl.get('clue.no.data.during.range.and.status', '没有符合条件的线索');
+        }
+    };
+    handleClickCluePool = () => {
+        var cluePoolCondition = this.state.cluePoolCondition;
+        cluePoolCondition.name = this.state.keyword;
+        this.setState({
+            cluePoolCondition
+        },() => {
+            this.showExtractCluePanel();
+        });
+    };
 
     //渲染loading和出错的情况
     renderLoadingAndErrAndNodataContent = () => {
@@ -2030,7 +2062,7 @@ class ClueCustomer extends React.Component {
                     renderAddDataContent={this.renderAddDataContent}
                     renderImportDataContent={this.renderImportDataContent}
                     showAddBtn={showAddBtn}
-                    noDataTip={this.hasNoFilterCondition() ? Intl.get('clue.no.data', '暂无线索信息') : Intl.get('clue.no.data.during.range.and.status', '没有符合条件的线索') }
+                    noDataTip={this.hasNoFilterCondition() ? Intl.get('clue.no.data', '暂无线索信息') : this.renderNotFoundClue()}
                 />
             );
         }
@@ -2731,6 +2763,7 @@ class ClueCustomer extends React.Component {
                                 showFlag={this.state.isShowExtractCluePanel}
                             >
                                 <ClueExtract
+                                    clueSearchCondition = {this.state.cluePoolCondition}
                                     closeExtractCluePanel={this.closeExtractCluePanel}
                                 />
                             </RightPanel>
