@@ -520,7 +520,7 @@ class ClueDetailPanel extends React.Component {
         let customerOfCurUser = this.state.customerOfCurUser;
         var item = this.getCurClueObj();
         var showMarkClueInvalid = item ? item.availability === AVALIBILITYSTATUS.AVALIBILITY : true;
-        var curClue = _.get(this.state, 'clueInfoArr[0]',{}) || _.get(this.state, 'paramObj.clue_params.curClue',{});
+        var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(this.state, 'paramObj.clue_params.curClue',{});
         return (
             <div data-tracename="电话弹屏" id="clue-phone-status-content">
                 <div className={AddMoreInfoCls}>
