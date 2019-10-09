@@ -88,6 +88,7 @@ class UserDetailChangeRecord extends React.Component {
             var userId = nextProps.userId;
             setTimeout(() => {
                 UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
+                    console.log('componentWillReceivePropsqueryObj:',queryObj);
                     this.showSelectedApp(nextProps, queryObj);
                 });
             });

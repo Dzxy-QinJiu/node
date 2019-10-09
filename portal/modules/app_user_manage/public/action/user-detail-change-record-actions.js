@@ -4,7 +4,6 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 const userDetailChangeRecordAjax = require('../ajax/user-detail-change-record-ajax');
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 function UserDetailChangeRecordAction() {
     this.generateActions(
@@ -30,13 +29,6 @@ function UserDetailChangeRecordAction() {
         };
         this.dispatch({loading: true,error: false});
         userDetailChangeRecordAjax.getSingleUserAppList(userId).then((result) => {
-            // 触发用户的基本信息
-            const userInfo = {
-                data: _.get(result, 'user'),
-                loading: false,
-                errorMsg: ''
-            };
-            userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
 
             if (_.isArray(result.apps) && result.apps.length >= 1) {
                 dataObj.app_name = result.apps[0].app_name;

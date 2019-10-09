@@ -226,10 +226,6 @@ const positionEmitter = new EventEmitter();
 positionEmitter.CLICK_POSITION = 'click_position';
 export { positionEmitter };
 
-// 用户详情基本信息事件
-const userBasicInfoEmitter = new EventEmitter();
-userBasicInfoEmitter.GET_USER_BASIC_INFO = 'get_user_basic_info';
-export { userBasicInfoEmitter };
 //线索相关事件
 const clueEmitter = new EventEmitter();
 clueEmitter.REMOVE_CLUE_ITEM = 'remove_clue_item';
