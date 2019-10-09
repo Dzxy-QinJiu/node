@@ -1031,7 +1031,7 @@ var zh_CN = {
     'user.info.login.browser': '浏览器',
     'user.info.active.email.btn': '发送激活邮件',
     'user.info.active.email.tip': '激活邮件已发送至{email}，请根据邮件内步骤激活邮箱',
-    'user.info.active.email.msg': '已发送({sendTime}s)',
+    'user.info.active.email.msg': '(已发送激活邮件，{sendTime}s)',
     'user.info.active.email': '激活邮件已发送至{email}，请前往激活',
     'user.info.retry': '请重试',
     'user.info.no.active': '未激活，请{active}',

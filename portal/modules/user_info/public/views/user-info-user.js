@@ -224,14 +224,14 @@ class UserInfo extends React.Component{
             return;
         }
         UserInfoAction.activeUserEmail((resultObj) => {
-            if (resultObj.error) {
-                message.error(resultObj.errorMsg);
-            } else {
+            // if (resultObj.error) {
+            //     message.error(resultObj.errorMsg);
+            // } else {
                 this.setState({sendMail: true});
                 //暂存时间戳
                 session.set('send_mail_start_time',new Date().getTime());
                 this.sendMailTime();
-            }
+            // }
         });
     }
 
@@ -351,7 +351,7 @@ class UserInfo extends React.Component{
                 <a onClick={this.activeUserEmail.bind(this)}>{Intl.get('user.info.active.email.btn', '发送激活邮件',)}</a>
             </span>)) : null;
         //发送邮件后显示的计时器
-        let afterSend = <span className ="hasSendMail" >{Intl.get('user.info.active.email.msg', '已发送({sendTime}s)',{sendTime: this.state.sendTime})}</span>;
+        let afterSend = <span className ="hasSendMail" >{Intl.get('user.info.active.email.msg', '(已发送激活邮件{sendTime}s)',{sendTime: this.state.sendTime})}</span>;
         // 根据是否拥有qq改变渲染input默认文字
         let qqInputInfo = formData.qq ? formData.qq : ' ';
 
