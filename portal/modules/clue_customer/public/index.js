@@ -2627,8 +2627,15 @@ class ClueCustomer extends React.Component {
 
     //添加常用筛选项
     handleAddCommonFilter(params) {
+        const condition = this.getClueSearchCondition();
+
+        const queryCondition = {
+            query: _.get(condition, 'bodyParam.query', {}),
+            rang_params: _.get(condition, 'bodyParam.rang_params', []),
+        };
+
         const data = {
-            query_condition: this.getClueSearchCondition(),
+            query_condition: queryCondition,
             user_id: userData.getUserData().user_id,
             name: params.filterName,
             type: params.range,
