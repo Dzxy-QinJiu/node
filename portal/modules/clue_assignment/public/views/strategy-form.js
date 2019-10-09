@@ -85,6 +85,11 @@ class StrategyForm extends React.Component {
             this.setState({
                 regions: _.uniq(regions)
             });
+        } else {
+            let regions = _.filter(this.state.regions, region => !_.isEqual(region, 'all'));
+            this.setState({
+                regions: _.uniq(regions)
+            });
         }
     }
 
