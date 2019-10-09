@@ -37,7 +37,6 @@ class StrategyInfo extends React.Component {
         this.state = {
             strategyInfo: this.props.strategyInfo, //线索分配策略
             startStopVisible: false, //启停状态popconfirm的展示与否
-            availableRegions: [], //可选择的地域
             startStopErrorMsg: '', //启停项的错误提示
             isStartStopSaving: false,//启停项操作时加载的icon展示与否
             regions: this.props.regions,//地域列表
@@ -55,18 +54,17 @@ class StrategyInfo extends React.Component {
             salesManList: nextProps.salesManList,//销售列表
             isFirstOneEdit: nextProps.isFirstOneEdit,
             startStopVisible: false,
-            availableRegions: [],
             startStopErrorMsg: '',
             isStartStopSaving: false,
         }, () => {
-            this.handleRegions();
+            // this.handleRegions();
         });
     }
 
     componentDidMount = () => {
         StrategyInfoStore.listen(this.onStoreChange);
         // 在编辑面板地域下拉选择要展示自己已选择的地域
-        this.handleRegions();
+        // this.handleRegions();
     }
 
     componentWillUnmount = () => {
@@ -79,20 +77,6 @@ class StrategyInfo extends React.Component {
     onStoreChange = () => {
         this.setState({
             ...StrategyInfoStore.getState()
-        });
-    }
-
-    //处理地域列表
-    handleRegions = () => {
-        let regions = _.cloneDeep(this.state.regions);
-        let selectedRegions = _.get(this.state, 'strategyInfo.condition.province', []);
-        let result = _.concat(selectedRegions, regions);
-        //如果是在全部数据中的唯一一个修改策略，添加“全部地域”选项
-        if(this.state.isFirstOneEdit) {
-            result.unshift('all');
-        }
-        this.setState({
-            availableRegions: _.uniq(result)
         });
     }
 
@@ -184,7 +168,14 @@ class StrategyInfo extends React.Component {
 
     //获取地域列表
     getRegionOptions = () => {
-        return (_.map(this.state.availableRegions, (item, index) => {
+        let regions = _.cloneDeep(this.state.regions);
+        let selectedRegions = _.get(this.state, 'strategyInfo.condition.province', []);
+        let result = _.concat(selectedRegions, regions);
+        //如果只有一个策略时，添加“全部地域”选项
+        if(this.state.isFirstOneEdit && _.isEqual(_.indexOf(result, 'all'), -1)) {
+            result.unshift('all');
+        }
+        return (_.map(result, (item, index) => {
             if(_.isEqual(item, 'all')) {
                 return (<Option key={index} value='all'>{Intl.get('clue.assignment.needs.regions.all.regions', '全部地域')}</Option>);
             } else {
@@ -486,7 +477,7 @@ StrategyInfo.defaultProps = {
     strategyInfo: null,
     regions: [],//地域列表
     salesManList: [],//销售人员列表
-    isFirstOneEdit: false,//是否修改的为全线分配策略里唯一的一个
+    isFirstOneEdit: false,//是否是只有一个线索分配策略的编辑
 };
 
 StrategyInfo.propTypes = {
