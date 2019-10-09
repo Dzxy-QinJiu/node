@@ -242,6 +242,7 @@ class AddBusinessApply extends React.Component {
         return (
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
+                afterAddCustomer={() => {}}
             />
         );
     };

@@ -153,15 +153,14 @@ class DealForm extends React.Component {
                 formData={{
                     name: customerName
                 }}
-                addOne={this.addCustomer}
+                afterAddCustomer={this.afterAddCustomer}
             />
         );
     };
     //添加客户成功回调
-    addCustomer = (result) => {
+    afterAddCustomer = (result) => {
         let customerName = _.get(result,'[0].name','');
         this.customerSuggestRef && this.customerSuggestRef.suggestChange(customerName);
-        this.hideAddForm();
     };
     //关闭添加面板
     hideAddForm = () => {

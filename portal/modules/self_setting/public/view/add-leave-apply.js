@@ -131,7 +131,7 @@ class AddLeaveApply extends React.Component {
         return (
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
-                addOne = {this.addOne}
+                afterAddCustomer={() => {}}
             />
         );
     };

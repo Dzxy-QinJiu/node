@@ -212,6 +212,11 @@ class CRMAddForm extends React.Component {
                 if (_.isFunction(_this.props.updateCustomer)) {
                     _this.props.updateCustomer(result.result);
                 }
+                //新增添加成功后的方法,自动关闭添加客户界面，无需外部处理
+                if(_.isFunction(_this.props.afterAddCustomer)) {
+                    _this.props.afterAddCustomer(result.result);
+                    _this.props.hideAddForm();
+                }
                 _this.setState(_this.getInitialState());
             } else {
                 _this.setState({isLoading: false, submitErrorMsg: result});
@@ -632,6 +637,8 @@ CRMAddForm.defaultProps = {
 CRMAddForm.propTypes = {
     showRightPanel: PropTypes.func,
     hideAddForm: PropTypes.func,
+    //添加成功后处理函数，不用外部处理关闭事件
+    afterAddCustomer: PropTypes.func,
     phoneNum: PropTypes.string,
     isAssociateClue: PropTypes.bool,
     formData: PropTypes.object,
