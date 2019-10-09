@@ -56,15 +56,11 @@ class StrategyInfo extends React.Component {
             startStopVisible: false,
             startStopErrorMsg: '',
             isStartStopSaving: false,
-        }, () => {
-            // this.handleRegions();
         });
     }
 
     componentDidMount = () => {
         StrategyInfoStore.listen(this.onStoreChange);
-        // 在编辑面板地域下拉选择要展示自己已选择的地域
-        // this.handleRegions();
     }
 
     componentWillUnmount = () => {
