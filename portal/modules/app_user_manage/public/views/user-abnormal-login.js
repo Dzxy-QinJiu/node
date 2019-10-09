@@ -351,6 +351,6 @@ UserAbnormalLogin.propTypes = {
     userId: PropTypes.string,
     selectedAppId: PropTypes.string,
     height: PropTypes.number,
-    appLists: PropType.array
+    appLists: PropTypes.array
 };
 module.exports = UserAbnormalLogin;

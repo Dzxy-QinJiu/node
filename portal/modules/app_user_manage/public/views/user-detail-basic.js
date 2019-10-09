@@ -50,7 +50,6 @@ class UserDetailBasic extends React.Component {
     componentDidMount() {
         AppUserDetailStore.listen(this.onStateChange);
         if (!this.props.userId) return;
-        // AppUserDetailAction.getUserDetail(this.props.userId);
         if(this.getRolesListPrivilege()){
             this.getBatchRoleInfo();
         }
@@ -129,7 +128,6 @@ class UserDetailBasic extends React.Component {
         if (prevProps.userId !== newUserId && newUserId) {
             setTimeout(function() {
                 AppUserDetailAction.dismiss();
-                // AppUserDetailAction.getUserDetail(newUserId);
             }, 0);
         }
         const statusChanged = prevState.isLoading !== this.state.isLoading;
