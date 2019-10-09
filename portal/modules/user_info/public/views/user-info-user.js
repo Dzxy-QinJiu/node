@@ -15,6 +15,7 @@ import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
+const session = storageUtil.session;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -51,12 +52,15 @@ class UserInfo extends React.Component{
             qqEditType: 'text', // text或edit
             //微信扫描绑定失败后，跳到个人资料界面带着失败的标识
             weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : '',//微信账号绑定的错误提示
-            iconSaveError: ''//头像修改失败错误提示
+            iconSaveError: '',//头像修改失败错误提示
+            sendMail: false,//是否已发送邮件
+            sendTime: 60,//计时器显示时间
         };
     }
 
     componentDidMount() {
         this.getWechatIsBind();
+        this.getSendTime();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -223,9 +227,10 @@ class UserInfo extends React.Component{
             if (resultObj.error) {
                 message.error(resultObj.errorMsg);
             } else {
-                message.success(
-                    Intl.get('user.info.active.email', '激活邮件已发送至{email},请前往激活',{'email': _.get(this.props.userInfo, 'email')})
-                );
+                this.setState({sendMail: true});
+                //暂存时间戳
+                session.set('send_mail_start_time',new Date().getTime());
+                this.sendMailTime();
             }
         });
     }
@@ -289,7 +294,51 @@ class UserInfo extends React.Component{
             qqEditType: type
         });
     }
-
+    //一分钟内不能重复发送邮件
+    sendMailTime = () => {
+        let close = () => {
+            clearInterval(clock);
+        };
+        let clock = setInterval(() => {
+            if(this.state.sendTime > 0){
+                this.setState({
+                    sendTime: this.state.sendTime - 1
+                });
+            }else{
+                this.setState({
+                    sendMail: false,
+                    sendTime: 60,
+                });
+                close();
+            }
+        },1000);
+    }
+    //页面刷新检查是否已发送邮件
+    getSendTime = () => {
+        if(session.get('send_mail_start_time')){
+            let thisTime = new Date().getTime();
+            if(thisTime - session.get('send_mail_start_time') > 60000){
+                return null;
+            }else{
+                let surplusTime = 60 - Math.floor((thisTime - session.get('send_mail_start_time')) / 1000) || 0;
+                this.setState({
+                    sendMail: true,
+                    sendTime: surplusTime,
+                });
+                this.sendMailTime();
+            }
+        }
+    }
+    //发送邮件后的提示
+    sendMailMasg = () => {
+        return(
+            <div className="user-info-item">
+                <div className="hsaSendMailMsg">
+                    {Intl.get('user.info.active.email.tip', '激活邮件已发送至{email},请根据邮件内步骤激活邮箱',{'email': _.get(this.props.userInfo, 'email')})}
+                </div>
+            </div>
+        );
+    }
     renderUserInfo() {
         let formData = this.props.userInfo;
         //根据是否拥有邮箱改变渲染input默认文字
@@ -298,15 +347,11 @@ class UserInfo extends React.Component{
         let isEditable = formData.email ? true : false;
         //根据邮箱状态是否激活改变渲染afterTextTip文字
         let displayInfo = !_.isEmpty(formData.email) ? (formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
-            (<span className="active-info">(<ReactIntl.FormattedMessage
-                id="user.info.no.active"
-                defaultMessage={'未激活，请{active}'}
-                values={{
-                    'active': <a onClick={this.activeUserEmail.bind(this)} data-tracename="激活">
-                        <ReactIntl.FormattedMessage id="user.info.active" defaultMessage="激活"/>
-                    </a>
-                }}/>)</span>)) : null;
-
+            (<span className="active-info">
+                <a onClick={this.activeUserEmail.bind(this)}>{Intl.get('user.info.active.email.btn', '发送激活邮件',)}</a>
+            </span>)) : null;
+        //发送邮件后显示的计时器
+        let afterSend = <span className ="hasSendMail" >{Intl.get('user.info.active.email.msg', '已发送({sendTime}s)',{sendTime: this.state.sendTime})}</span>;
         // 根据是否拥有qq改变渲染input默认文字
         let qqInputInfo = formData.qq ? formData.qq : ' ';
 
@@ -355,18 +400,19 @@ class UserInfo extends React.Component{
                                 displayType={this.state.emailEditType}
                                 field="email"
                                 value={emailInputInfo}
-                                hasEditPrivilege={isEditable}
+                                hasEditPrivilege={!this.state.sendMail ? isEditable : false}
                                 hoverShowEdit={false}
                                 validators={[{
                                     pattern: emailRegex,
                                     message: Intl.get('common.correct.email', '请输入正确的邮箱')
                                 }]}
-                                afterTextTip={displayInfo}
+                                afterTextTip={!this.state.sendMail ? displayInfo : afterSend}
                                 saveEditInput={this.saveEditUserInfo.bind(this, 'email')}
                                 onDisplayTypeChange={this.onEmailDisplayTypeChange}
                             />}
                         </span>
                     </div>
+                    {this.state.sendMail && this.state.sendTime > 56 ? this.sendMailMasg() : null}
                     <div className="user-info-item">
                         <span>
                             {Intl.get('user.phone', '手机号')}

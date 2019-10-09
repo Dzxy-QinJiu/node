@@ -1026,6 +1026,9 @@ var en_US = {
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
     'user.info.login.browser': 'Browser',//浏览器
+    'user.info.active.email.btn': 'Send Activated Mail',//发送激活邮件
+    'user.info.active.email.tip': 'Activated mail has been sent to {email}, please activate the mailbox according to the steps in the mail',//激活邮件已发送至{email}，请根据邮件内步骤激活邮箱
+    'user.info.active.email.msg': 'Sended ({sendTime} s)',//已发送({sendTime}s)
     'user.info.active.email': 'Activation email has been sent to {email}, please go to active',//激活邮件已发送至{email},请前往激活
     'user.info.retry': 'Please try again',//请重试
     'user.info.no.active': 'Please {active}',//未激活，请{active}
