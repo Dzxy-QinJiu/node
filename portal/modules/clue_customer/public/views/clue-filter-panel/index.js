@@ -6,6 +6,7 @@ var React = require('react');
  * Created by zhangshujuan on 2018/8/27.
  */
 import ajax from 'ant-ajax';
+import commonAjax from 'MOD_DIR/common/ajax';
 var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
@@ -99,6 +100,15 @@ class ClueFilterPanel extends React.Component {
 
                 this.setState({customCommonFilter});
             });
+    }
+
+    //删除自定义常用筛选
+    deleteCustomCommonFilter(item) {
+        return commonAjax({
+            url: '/rest/condition/v1/condition/' + item.id,
+            type: 'delete',
+            usePromise: true
+        });
     }
 
     handleFilterChange = (data) => {
@@ -362,6 +372,7 @@ class ClueFilterPanel extends React.Component {
                         showSelectTip={this.props.showSelectTip}
                         showAdvancedPanel={true}
                         toggleList={this.props.toggleList}
+                        onDelete={this.deleteCustomCommonFilter.bind(this)}
                     />
                 </div>
             </div>

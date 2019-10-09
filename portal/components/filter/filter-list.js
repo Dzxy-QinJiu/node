@@ -226,7 +226,9 @@ class FilterList extends React.Component {
         this.handleShowPop('click', false);
         if (item.id) {
             if (this.props.onDelete) {
-                this.props.onDelete(item).then(({data}) => {
+                this.props.onDelete(item).then((result) => {
+                    const data = _.get(result, 'data', result);
+
                     if (!data || data.errorMsg) {
                         message.error(Intl.get('crm.139', '删除失败'));
                     } else {
@@ -584,9 +586,9 @@ class FilterList extends React.Component {
         return (
             <div>
                 <div className="close-filter-panel" onClick={this.closeFilterPanel}>
-                        <span className="filter-panel-arrow">
+                    <span className="filter-panel-arrow">
                             &lt;
-                        </span>
+                    </span>
                     {Intl.get('clue.customer.close.filter.panel', '收起筛选')}
                 </div>
                 <GeminiScrollbar style={this.props.style} className={this.props.className}>
@@ -637,7 +639,7 @@ class FilterList extends React.Component {
                                                     return (
                                                         //todo plainFilterList 根据接口数据统一结构
                                                         <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
-                                                                 onVisibleChange={this.handleShowPop.bind(this, 'hover')}
+                                                            onVisibleChange={this.handleShowPop.bind(this, 'hover')}
                                                             // visible={this.state.showHoverPop && !this.state.showClickPop}
                                                         >
                                                             <li
@@ -722,7 +724,7 @@ class FilterList extends React.Component {
                                                                                         onClick={this.clearSelect.bind(this, groupItem.groupName)}
                                                                                     >
                                                                                     清空
-                                                                                </span> : null
+                                                                                    </span> : null
                                                                             }
                                                                         </h4>
                                                                         {_.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) : (
