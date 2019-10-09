@@ -6,8 +6,12 @@
 //x颜色
 @x_color: #cdcdcd;
 .clue_customer_content {
+  overflow: hidden;
   .topNav {
+    height: 64px;
+    position: inherit;
     padding-left: 15px;
+    border-bottom: 1px solid #DEDFE3;
   }
   //线索顶部筛选区域
   .date-picker-wrap {
@@ -131,7 +135,6 @@
   }
   //线索列表
   .clue-content-container {
-    position: absolute;
     top: 63px;
     right: 0;
     left: 70px;
@@ -196,7 +199,6 @@
       float: left;
       border-right: 1px solid #ccc;
       min-width: @filter-width - 60;
-      height: 100%;
       position: absolute;
       transition: all 0.5s;
       background: #fff;
@@ -248,8 +250,9 @@
         font-size: 14px;
         color: #999;
         left: 70px;
-        top: 20px;
+        top: 85px;
         z-index: 10;
+        margin-left: 70px;
         &.firefox-padding {
           left: 120px;
         }
