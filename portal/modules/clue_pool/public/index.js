@@ -173,7 +173,8 @@ class ClueExtract extends React.Component {
     getConditionSearch = (props) => {
         var keyword = _.get(props.clueSearchCondition, 'name', '');
         this.refs.searchInput.state.keyword = keyword;
-        this.searchFullTextEvent(keyword);
+        //根据关键词查询符合条件的线索
+        this.getClueByKeywords(keyword);
     }
     componentWillUnmount() {
         cluePoolStore.unlisten(this.onStoreChange);
@@ -414,8 +415,8 @@ class ClueExtract extends React.Component {
             this.getCluePoolList();
         });
     };
-
-    searchFullTextEvent = (keyword) => {
+    //根据关键词获取线索
+    getClueByKeywords = (keyword) => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.search-container'), '根据关键字搜索');
         //如果keyword存在，就用全文搜索的接口
         cluePoolAction.setKeyWord(keyword);
@@ -1146,7 +1147,7 @@ class ClueExtract extends React.Component {
                             </div>
                         ) : <SearchInput
                             ref="searchInput"
-                            searchEvent={this.searchFullTextEvent}
+                            searchEvent={this.getClueByKeywords}
                             searchPlaceHolder={Intl.get('clue.search.full.text', '全文搜索')}
                         />}
                         {
