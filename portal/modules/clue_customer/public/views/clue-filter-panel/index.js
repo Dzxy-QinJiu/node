@@ -386,7 +386,7 @@ class ClueFilterPanel extends React.Component {
 
         const advancedData = [{
             groupName: Intl.get('crm.96', '地域'),
-            groupId: 'clue_province',
+            groupId: 'province',
             data: clueProvinceList.map(x => ({
                 name: x,
                 value: x
@@ -404,7 +404,7 @@ class ClueFilterPanel extends React.Component {
                     }))
                 },{
                     groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
-                    groupId: 'clue_access',
+                    groupId: 'access_channel',
                     data: accessChannelArray.map(x => ({
                         name: x,
                         value: x
