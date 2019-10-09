@@ -158,19 +158,19 @@ class ClueExtract extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
         // 如果是从没有符合条件的线索点击跳转过来的,将搜索框中的关键字置为搜索的线索名称
         if (!_.isEmpty(this.props.clueSearchCondition)){
-            this.getConditionSearch(this.props);
+            this.jumpIntoCluePoolWithCondition(this.props);
         }else{
             this.getCluePoolList();
         }
     }
     componentWillReceiveProps(nextProps) {
         if (!_.isEmpty(nextProps.clueSearchCondition) && !_.isEqual(nextProps.clueSearchCondition, this.props.clueSearchCondition)){
-            this.getConditionSearch(nextProps);
+            this.jumpIntoCluePoolWithCondition(nextProps);
         }
 
     }
-    //点击跳转到线索池并且有搜索条件时
-    getConditionSearch = (props) => {
+    //在其他地方点击'线索池'三个字，跳转到线索池并且有带有搜索条件时
+    jumpIntoCluePoolWithCondition = (props) => {
         var keyword = _.get(props.clueSearchCondition, 'name', '');
         this.refs.searchInput.state.keyword = keyword;
         //根据关键词查询符合条件的线索
