@@ -4,7 +4,6 @@
  * Created by zhangshujuan on 2017/8/8.
  */
 var userAbnormalLoginAjax = require('../ajax/user-abnormal-login-ajax');
-var userDetailChangeRecordAjax = require('../ajax/user-detail-change-record-ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 
 function UserAbnormalLoginAction() {
@@ -22,17 +21,6 @@ function UserAbnormalLoginAction() {
             this.dispatch({loading: false, error: true, errorMsg: errorMsg});
         });
     };
-    // 根据用户的ID获取应用列表appId和应用的名称
-    this.getUserApp = function(userId,callback) {
-        this.dispatch({loading: true,error: false});
-        userDetailChangeRecordAjax.getSingleUserAppList(userId).then((result) => {
-            this.dispatch({loading: false,error: false, dataObj: result.apps});
-            callback && callback();
-        }, (errorMsg) => {
-            this.dispatch({loading: false,error: true, errorMsg: errorMsg});
-        });
-    };
-
 }
 module.exports = alt.createActions(UserAbnormalLoginAction);
 
