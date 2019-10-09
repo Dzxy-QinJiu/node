@@ -1664,8 +1664,6 @@ class ClueCustomer extends React.Component {
         }
         //在列表中隐藏当前操作的线索
         this.afterTransferClueSuccess();
-        //隐藏添加客户面板
-        this.hideAddCustomerPanel();
         //隐藏线索转客户面板
         this.hideClueToCustomerPanel();
         this.afterMergeUpdateClueProperty(customerId,customerName);
@@ -2799,7 +2797,7 @@ class ClueCustomer extends React.Component {
                     {this.state.isShowAddCustomerPanel ? (
                         <CRMAddForm
                             hideAddForm={this.hideAddCustomerPanel}
-                            addOne={this.onConvertClueToNewCustomerDone}
+                            afterAddCustomer={this.onConvertClueToNewCustomerDone}
                             formData={this.state.curClue}
                             isAssociateClue={true}
                             isConvert={true}

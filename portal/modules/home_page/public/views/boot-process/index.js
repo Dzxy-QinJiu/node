@@ -592,7 +592,8 @@ class BootProcess extends React.Component {
                         isConvert={false}
                         hideAddForm={this.closeGuidDetailPanel}
                         title={title}
-                        addOne={this.addCustomerFinished}
+                        isClosedPanelAfterAdd={false}
+                        afterAddCustomer={this.addCustomerFinished}
                     />
                 );
             case CUSTOMER_ADD_TYPES.IMPORT:
