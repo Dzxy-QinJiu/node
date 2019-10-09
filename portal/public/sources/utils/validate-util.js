@@ -76,7 +76,7 @@ exports.checkWechat = (rule,value,callback) => {
         (emailRegex.test(value))){
             callback();
         }else{
-            callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
+            callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号/手机号/QQ号/邮箱')));
         }
     }else{
         if (rule.required) {
