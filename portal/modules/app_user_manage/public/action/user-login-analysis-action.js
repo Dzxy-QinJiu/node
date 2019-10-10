@@ -19,20 +19,21 @@ function UserLoginAnalysisAction() {
     this.getSingleUserAppList = function(searchObj, selectedAppId, appLists){
         let userOwnAppArray = _.cloneDeep(appLists);
         // 存储应用id的变量
-        let userOwnAppArrayAppIdList = [];
-        if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1) {
-            userOwnAppArrayAppIdList = _.map(userOwnAppArray, 'app_id');
-        }
-        // 上一个用户选择应用id
-        let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
-        let index = _.indexOf(userOwnAppArrayAppIdList,lastSelectAppId);
+        let userOwnAppArrayAppIdList = _.map(userOwnAppArray, 'app_id');
+
         // 获取UI界面上的app
+        // share_online_app_id 在线用户和单个用户审计日志记录下的appId
         let selectApp = selectedAppId || AppUserStore.getState().selectedAppId || ShareObj.share_online_app_id ||
             UserAuditLogStore.getState().selectAppId;
+
+        // 上一个用户选择应用id
+        let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
+        let selectedAppIdIndex = _.indexOf(userOwnAppArrayAppIdList,lastSelectAppId);
+
         let selectedLogAppId = '';
         // selectAPP === ''是针对全部应用
         if (selectApp === '') {
-            if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1 && index === -1) {
+            if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1 && selectedAppIdIndex === -1) {
                 selectedLogAppId = userOwnAppArray[0].app_id;
             }else {
                 selectedLogAppId = lastSelectAppId;

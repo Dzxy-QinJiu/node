@@ -65,7 +65,7 @@ class UserDetailChangeRecord extends React.Component {
                 UserDetailChangeRecordAction.setApp(appName);
             }
         } else {
-            if (_.get(queryObj, 'length')) {
+            if (!_.isEmpty(queryObj)) {
                 appId = queryObj[0].app_id;
                 UserDetailChangeRecordAction.setApp(queryObj[0].app_name);
             }
