@@ -205,12 +205,13 @@ class CRMAddForm extends React.Component {
         commonMethodUtil.removeEmptyItem(formData, true);
         function afterAddCustomer(result, _this) {
             if (result.code === 0) {
-                if (_.isFunction(_this.props.addOne)) {
-                    _this.props.addOne(result.result);
+                //新增添加成功后的方法
+                if(_.isFunction(_this.props.afterAddCustomer)) {
+                    _this.props.afterAddCustomer(result.result);
                 }
-                //拨打电话时，若客户列表中没有此号码，需添加客户
-                if (_.isFunction(_this.props.updateCustomer)) {
-                    _this.props.updateCustomer(result.result);
+                //是否关闭添加面板
+                if(_this.props.isClosedPanelAfterAdd) {
+                    _this.props.hideAddForm();
                 }
                 _this.setState(_this.getInitialState());
             } else {
@@ -625,6 +626,8 @@ CRMAddForm.defaultProps = {
     isAssociateClue: false,
     formData: {},
     isShowMadal: true,
+    //添加完成后是否关闭面板
+    isClosedPanelAfterAdd: true,
     //是否是在线索转客户的过程中添加客户
     isConvert: true,
     // 头部标题区域
@@ -633,6 +636,9 @@ CRMAddForm.defaultProps = {
 CRMAddForm.propTypes = {
     showRightPanel: PropTypes.func,
     hideAddForm: PropTypes.func,
+    isClosedPanelAfterAdd: PropTypes.bool,
+    //添加成功后处理函数
+    afterAddCustomer: PropTypes.func,
     phoneNum: PropTypes.string,
     isAssociateClue: PropTypes.bool,
     formData: PropTypes.object,

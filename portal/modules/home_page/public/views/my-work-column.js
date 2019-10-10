@@ -287,8 +287,6 @@ class MyWorkColumn extends React.Component {
             });
         }
 
-        //隐藏添加客户面板
-        this.hideAddCustomerPanel();
         //隐藏转为客户面板
         this.hideClueToCustomerPanel();
     };
@@ -1206,7 +1204,7 @@ class MyWorkColumn extends React.Component {
                 {this.state.isShowAddCustomerPanel ? (
                     <CRMAddForm
                         hideAddForm={this.hideAddCustomerPanel}
-                        addOne={this.onConvertClueToNewCustomerDone}
+                        afterAddCustomer={this.onConvertClueToNewCustomerDone}
                         formData={_.get(this.state, 'handlingWork.lead', {})}
                         isAssociateClue={true}
                         isConvert={true}
