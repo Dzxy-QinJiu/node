@@ -9,7 +9,7 @@ if (language.lan() === 'es' || language.lan() === 'en') {
 var Select = require('antd').Select;
 var Icon = require('antd').Icon;
 import {Link} from 'react-router-dom';
-import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import { separatorFilter } from 'LIB_DIR/utils/selectUtil';
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('../../../../../public/sources/user-data');
 var classNames = require('classnames');
@@ -151,7 +151,7 @@ class CustomerSuggest extends React.Component {
             this.props.hideCustomerError();
         }
         this.suggestTimer = setTimeout(function() {
-            let condition = {name: value};
+            let condition = {name: _.trim(value)};
             let sorter = {
                 field: 'start_time',
                 order: 'descend'
@@ -357,7 +357,7 @@ class CustomerSuggest extends React.Component {
                     <Select
                         combobox
                         searchPlaceholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
-                        filterOption={(input, option) => ignoreCase(input, option)}
+                        filterOption={(input, option) => separatorFilter(input, option)}
                         onSearch={this.suggestChange}
                         onChange={this.customerChoosen}
                         value={this.state.keyword}
