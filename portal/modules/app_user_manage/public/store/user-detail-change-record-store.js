@@ -16,9 +16,6 @@ UserDetailChangeRecordStore.prototype.resetState = function() {
     this.changeRecordErrMsg = '';//加载错误后的提示信息
     this.page_size = 200;//加载记录每页的条数
     this.app = '';//默认显示的app名称
-    this.getAppErrorMsg = '';//加载app列表出错
-    this.getAppLoading = true;//正在加载app列表
-    this.appLists = [];//app列表
 };
 UserDetailChangeRecordStore.prototype.getUserDetailChangeRecord = function(result) {
     if (result.loading){
@@ -33,19 +30,7 @@ UserDetailChangeRecordStore.prototype.getUserDetailChangeRecord = function(resul
         this.changeRecord = result.data || [];
     }
 };
-UserDetailChangeRecordStore.prototype.getUserApp = function(result) {
-    if (result.loading){
-        this.getAppLoading = true;
-    }else if (result.error){
-        this.getAppErrorMsg = result.errorMsg;
-        this.getAppLoading = false;
-    } else {
-        this.getAppLoading = false;
-        this.getAppErrorMsg = '';
-        this.appLists = result.dataObj.data;
-        this.app = result.dataObj.app_name;
-    }
-};
+
 UserDetailChangeRecordStore.prototype.setApp = function(app) {
     this.app = app;
 };

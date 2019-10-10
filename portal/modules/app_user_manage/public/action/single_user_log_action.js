@@ -4,7 +4,6 @@
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 const LogAnalysisUtil = require('./log-analysis-util');
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 
 function handleLogParams(_this, getLogParam, userOwnAppList) {
     getLogParam.appid = LogAnalysisUtil.handleSelectAppId(userOwnAppList);
@@ -51,20 +50,11 @@ function SingleUserLogAction() {
 
             if (selectedAppId) { // 已选中应用
                 getLogParam.appid = selectedAppId;
-                this.actions.getUserBasicInfo(searchObj);
             } else { // 全部应用条件下查看
                 if (appLists.length) {
                     handleLogParams(this, getLogParam, appLists);
-                    this.actions.getUserBasicInfo(searchObj);
                 } else {
                     userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
-                        // 触发用户的基本信息
-                        const userInfo = {
-                            data: _.get(result, 'user'),
-                            loading: false,
-                            errorMsg: ''
-                        };
-                        userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
                         if (_.isObject(result) && result.apps) {
                             handleLogParams(this, getLogParam, result.apps);
                             // 日志列表信息
@@ -84,25 +74,7 @@ function SingleUserLogAction() {
             this.dispatch({ error: true, errorMsg: Intl.get('user.log.param.error', '请求参数错误!') });
         }
     };
-
-    this.getUserBasicInfo = function(searchObj) {
-        // 触发用户的基本信息
-        userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
-            const userInfo = {
-                data: _.get(result, 'user'),
-                loading: false,
-                errorMsg: ''
-            };
-            userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
-        }, (errorMsg) => {
-            const userInfo = {
-                data: null,
-                loading: false,
-                errorMsg: errorMsg || Intl.get('user.info.get.user.info.failed', '获取用户信息失败')
-            };
-            userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
-        } );
-    };
+    
 
     // 获取单个用户的审计日志信息
     this.getSingleAuditLogList = function(searchObj) {

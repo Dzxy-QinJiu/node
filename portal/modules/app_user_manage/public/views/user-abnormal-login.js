@@ -50,19 +50,18 @@ class UserAbnormalLogin extends React.Component {
 
     componentDidMount() {
         UserAbnormalLoginStore.listen(this.onStateChange);
-        var searchObj = {
+        let appId = this.props.selectedAppId;
+        if (appId === '') {
+            appId = _.get(this.props.appLists, '[0].app_id');
+        }
+        UserAbnormalLoginAction.setApp(appId);
+        let searchObj = {
             user_id: this.props.userId,
             page_size: this.state.page_size,
         };
-        let app_id = this.props.selectedAppId;
-        if (app_id) {
-            searchObj.app_id = app_id;
-            UserAbnormalLoginAction.setApp(app_id);
-        }
-        var userId = this.props.userId;
-        UserAbnormalLoginAction.getUserApp(userId, () => {
-            this.getAbnormalLoginLists(searchObj);
-        });
+        searchObj.app_id = appId;
+        this.getAbnormalLoginLists(searchObj);
+
     }
 
     getAbnormalLoginLists = (searchObj) => {
@@ -70,22 +69,21 @@ class UserAbnormalLogin extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.userId !== this.props.userId) {
-            var userId = nextProps.userId;
+        let userId = nextProps.userId;
+        if (userId && userId !== this.props.userId) {
             setTimeout(() => {
                 UserAbnormalLoginAction.resetState();
-                UserAbnormalLoginAction.getUserApp(userId, () => {
-                    var searchObj = {
-                        user_id: userId,
-                        page_size: this.state.page_size,
-                    };
-                    let app_id = this.props.selectedAppId;
-                    if (app_id) {
-                        searchObj.app_id = app_id;
-                        UserAbnormalLoginAction.setApp(app_id);
-                    }
-                    this.getAbnormalLoginLists(searchObj);
-                });
+                let appId = this.props.selectedAppId;
+                if (appId === '') {
+                    appId = _.get(this.props.appLists, '[0].app_id');
+                }
+                UserAbnormalLoginAction.setApp(appId);
+                let searchObj = {
+                    user_id: userId,
+                    page_size: this.state.page_size,
+                };
+                searchObj.app_id = appId;
+                this.getAbnormalLoginLists(searchObj);
             });
         }
     }
@@ -97,39 +95,9 @@ class UserAbnormalLogin extends React.Component {
         UserAbnormalLoginStore.unlisten(this.onStateChange);
     }
 
-    retryGetAbnormalLogin = () => {
-        var searchObj = {
-            user_id: this.props.userId,
-            page_size: this.state.page_size,
-        };
-        var userId = this.props.userId;
-        UserAbnormalLoginAction.getUserApp(userId, () => {
-            this.getAbnormalLoginLists(searchObj);
-        });
-    };
 
     renderAbnormalLogin = (height) => {
-        if (this.state.getAppLoading) {
-            return (<StatusWrapper loading={true} height={height} />);
-        } else if (this.state.getAppErrorMsg) {
-            //加载完成，出错的情况
-            var errMsg = <span>{this.state.getAppErrorMsg}
-                <a onClick={this.retryGetAbnormalLogin} style={{ marginLeft: '20px', marginTop: '20px' }}>
-                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试" />
-                </a>
-            </span>;
-            return (
-                <div className="intial-alert-wrap">
-                    <Alert
-                        message={errMsg}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        } else {
-            return this.renderAbnormalLoginList(height);
-        }
+        return this.renderAbnormalLoginList(height);
     };
 
     //监听下拉加载
@@ -215,7 +183,7 @@ class UserAbnormalLogin extends React.Component {
     renderTimeLineItem = (item) => {
         var des = '';
         let title = '';
-        var appObj = _.find(this.state.appLists, (app) => { return app.app_id === item.client_id; });
+        var appObj = _.find(this.props.appLists, (app) => { return app.app_id === item.client_id; });
         var appName = appObj ? appObj.app_name : '';
         if (item.type) {
             switch (item.type) {
@@ -276,7 +244,7 @@ class UserAbnormalLogin extends React.Component {
 
     renderAbnormalLoginList = (height) => {
         //应用的下拉框
-        let list = _.map(this.state.appLists, item =>
+        let list = _.map(this.props.appLists, item =>
             <Option value={item['app_id']} key={item['app_id']} >{item['app_name']}</Option>);
         list.unshift(<Option value="" key="all" title={Intl.get('user.product.all','全部产品')}><ReactIntl.FormattedMessage id="'user.product.all" defaultMessage="全部产品" /></Option>);
         if (this.state.abnormalLoginLoading && !this.state.abnormalLoginList.length) {
@@ -383,5 +351,6 @@ UserAbnormalLogin.propTypes = {
     userId: PropTypes.string,
     selectedAppId: PropTypes.string,
     height: PropTypes.number,
+    appLists: PropTypes.array
 };
 module.exports = UserAbnormalLogin;

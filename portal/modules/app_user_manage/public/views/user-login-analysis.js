@@ -43,8 +43,8 @@ class UserLoginAnalysis extends React.Component {
         return UserLoginAnalysisStore.getState();
     };
 
-    getUserAnalysisInfo = (userId, selectedAppId) => {
-        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId, timeType: 'six_month' }, selectedAppId);
+    getUserAnalysisInfo = (userId, selectedAppId, appLists) => {
+        UserLoginAnalysisAction.getSingleUserAppList({ user_id: userId, timeType: 'six_month' }, selectedAppId, appLists);
         if (selectedAppId) {
             UserLoginAnalysisAction.setSelectedAppId(selectedAppId);
         }
@@ -54,7 +54,8 @@ class UserLoginAnalysis extends React.Component {
         UserLoginAnalysisStore.listen(this.onStateChange);
         UserLoginAnalysisAction.resetState();
         let userId = this.props.userId;
-        this.getUserAnalysisInfo(userId, this.props.selectedAppId);
+        let appLists = this.props.appLists;
+        this.getUserAnalysisInfo(userId, this.props.selectedAppId, appLists);
 
         //获取配置过的用户评分规则
         this.getUserScoreConfig();
@@ -81,7 +82,7 @@ class UserLoginAnalysis extends React.Component {
         if (this.props.userId !== newUserId) {
             setTimeout(() => {
                 UserLoginAnalysisAction.resetState();
-                this.getUserAnalysisInfo(newUserId, nextProps.selectedAppId);
+                this.getUserAnalysisInfo(newUserId, nextProps.selectedAppId, nextProps.appLists);
             }, 0);
         }
     }
@@ -92,7 +93,7 @@ class UserLoginAnalysis extends React.Component {
 
     getQueryParams = (queryParams) => {
         let app_id = queryParams && queryParams.appid || this.state.selectedLogAppId;
-        const appsArray = this.state.userOwnAppArray;
+        const appsArray = this.props.appLists;
         const matchAppInfo = _.find(appsArray, appItem => appItem.app_id === app_id);
         let create_time = matchAppInfo && matchAppInfo.create_time || '';
         return {
@@ -682,7 +683,7 @@ class UserLoginAnalysis extends React.Component {
         const userLoginBlock = (
             <ul>
                 {
-                    _.map(this.state.userOwnAppArray, (app, index) => {
+                    _.map(this.props.appLists, (app, index) => {
                         const userInfo = this.state.appUserDataMap[app.app_id] || {};
                         const loading = userInfo.loading;
                         const isLoading = userInfo.isLoading;
@@ -742,12 +743,10 @@ class UserLoginAnalysis extends React.Component {
             </ul>
         );
         return (
-            <StatusWrapper
-                loading={this.state.appListLoading}
-            >
+            <StatusWrapper>
                 <div className="user-analysis-panel" style={{ height: this.props.height }}>
                     <GeminiScrollbar>
-                        {_.get(this.state.userOwnAppArray, 'length') > 0 ? userLoginBlock :
+                        {_.get(this.props.appLists, 'length') > 0 ? userLoginBlock :
                             <div className="alert-container">
                                 <Alert
                                     message={Intl.get('common.no.data', '暂无数据')}
@@ -762,5 +761,9 @@ class UserLoginAnalysis extends React.Component {
         );
     }
 }
+
+UserLoginAnalysis.propTypes = {
+    appLists: PropTypes.array
+};
 
 module.exports = UserLoginAnalysis;
