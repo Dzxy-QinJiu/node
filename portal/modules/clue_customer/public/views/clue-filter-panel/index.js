@@ -150,6 +150,12 @@ class ClueFilterPanel extends React.Component {
                         nameObj.name = item.group_name;
                     }
                     break;
+                case 'source_classify':
+                    item = sourceClassifyArray.find(x => x.value === value);
+                    if (item) {
+                        nameObj.name = item.name;
+                    }
+                    break;
             }
             handleAddItem(nameObj);
         };
