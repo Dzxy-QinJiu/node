@@ -30,6 +30,8 @@ import Spinner from 'CMP_DIR/spinner';
 import { StatusWrapper } from 'antc';
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import MemberRecord from './member-record';
+import { storageUtil } from 'ant-utils';
+import ajax from 'ant-ajax';
 
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
@@ -39,7 +41,10 @@ const TAB_KEYS = {
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 const EDIT_PASSWORD_WIDTH = 340;
 
+const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+
 class MemberInfo extends React.Component {
+
     state = {
         isGetMemberDetailLoading: this.props.isGetMemberDetailLoading,
         getMemberDetailErrMsg: this.props.getMemberDetailErrMsg,
@@ -53,6 +58,8 @@ class MemberInfo extends React.Component {
         resultType: this.props.resultType,
         errorMsg: this.props.errorMsg,
         salesRoleList: [], // 职务列表
+        //是否显示拨打电话的提示
+        isShowCallTip: !websiteConfig.no_show_call_tips,
         ...MemberInfoStore.getState(),
     };
 
@@ -838,6 +845,26 @@ class MemberInfo extends React.Component {
         return logListHeight;
     }
 
+
+    //不再提示可以打电话的提示
+    handleClickNoCallTip = () => {
+        ajax.send({
+            url: '/rest/base/v1/user/website/config/personnel',
+            type: 'post',
+            data: {
+                no_show_call_tips: true
+            }
+        })
+            .done(result => {
+                this.setState({
+                    isShowCallTip: false
+                });
+            })
+            .fail(err => {
+                message.error(err);
+            });
+    }
+
     // 添加成员成功后的提示信息
     renderAddMemberSuccessTips = () => {
         return (
@@ -845,6 +872,13 @@ class MemberInfo extends React.Component {
                 <i className="iconfont icon-add-success"></i>
                 <span>
                     {Intl.get('member.add.member.success.tips', '该成员登录后可以拨打电话了')}
+                </span>
+                <span 
+                    className="no-longer-tips" 
+                    onClick={this.handleClickNoCallTip}
+                    title={Intl.get('sale.homepage.no.tip.more', '不再提示')}
+                >
+                    <i className="iconfont icon-close-tips"></i>
                 </span>
             </div>
         );
@@ -926,7 +960,7 @@ class MemberInfo extends React.Component {
                     <GeminiScrollbar>
                         <div className="member-detail-basic-content">
                             {
-                                this.props.isContinueAddButtonShow ? (
+                                this.state.isShowCallTip ? (
                                     <DetailCard
                                         content={this.renderAddMemberSuccessTips()}
                                         className='member-info-success-tips-card-container'
