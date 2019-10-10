@@ -2629,8 +2629,12 @@ class ClueCustomer extends React.Component {
     handleAddCommonFilter(params) {
         const condition = this.getClueSearchCondition();
 
+        let query = _.get(condition, 'bodyParam.query', {});
+        delete query.availability;
+        delete query.status;
+
         const queryCondition = {
-            query: _.get(condition, 'bodyParam.query', {}),
+            query,
             rang_params: _.get(condition, 'bodyParam.rang_params', []),
         };
 
