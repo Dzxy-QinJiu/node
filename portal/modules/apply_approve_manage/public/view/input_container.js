@@ -27,6 +27,13 @@ class InputContent extends React.Component {
     //        inputValue: e.target.value
     //    });
     // };
+    validatorInput = (rule, value, callback) => {
+        if (_.isFunction(_.get(this.props, 'validator'))){
+            this.props.validator(rule, value, callback);
+        }else{
+            callback();
+        }
+    }
     render = () => {
         var formItemLayout = {
             labelCol: {
@@ -66,7 +73,7 @@ class InputContent extends React.Component {
                         rules: [{
                             required: _.get(formItem, 'is_required'),
                             message: _.get(formItem, 'is_required_errmsg')
-                        }],
+                        }, {validator: this.validatorInput}]
                     })(
                         <Input {...this.props}/>
                     )}
@@ -90,5 +97,6 @@ InputContent.propTypes = {
     component_type: PropTypes.string,
     labelKey: PropTypes.string,
     form: PropTypes.object,
+    validator: PropTypes.func
 };
 export default InputContent;

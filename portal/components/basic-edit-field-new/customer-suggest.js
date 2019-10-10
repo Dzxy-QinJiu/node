@@ -1,7 +1,7 @@
 var React = require('react');
 require('./css/customer-suggest.less');
 import {Link} from 'react-router-dom';
-import {Select, Tag} from 'antd';
+import {Select, Tag, Form} from 'antd';
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('PUB_DIR/sources/user-data');
 var classNames = require('classnames');

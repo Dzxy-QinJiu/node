@@ -49,6 +49,7 @@ import ajax from 'ant-ajax';
 import {CLUE_TO_CUSTOMER_VIEW_TYPE} from 'MOD_DIR/clue_customer/public/consts';
 import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -130,6 +131,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_LEAVE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_DOMAIN, this.updateRefreshMyWork);
         //监听待处理线索的消息
         notificationEmitter.on(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.on(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
@@ -148,6 +150,7 @@ class MyWorkColumn extends React.Component {
         notificationEmitter.removeListener(notificationEmitter.UPDATED_MY_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.UPDATED_HANDLE_CLUE, this.updateRefreshMyWork);
         notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.updateRefreshMyWork);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_DOMAIN, this.updateRefreshMyWork);
     }
 
     // 获取销售人员
@@ -1271,7 +1274,7 @@ class MyWorkColumn extends React.Component {
                 topic: this.getApplyType(_.get(work, 'apply.apply_type', ''))
             };
             switch (_.get(work, 'apply.apply_type')) {
-                case APPLY_APPROVE_TYPES.VISIT_APPLY: //拜访申请
+                case SELF_SETTING_FLOW.VISITAPPLY: //拜访申请
                     detailContent = (
                         <VisitApplyDetail
                             isHomeMyWork={true}

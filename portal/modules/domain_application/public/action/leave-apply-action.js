@@ -35,7 +35,7 @@ function LeaveApplyActions() {
             getApplyListApprovedByMe.bind(this,queryObj)();
         }else if (queryObj.status === APPLY_TYPE_STATUS_CONST.ONGOING || !queryObj.status){
             //如果是全部申请，要先取一下待我审批的列表
-            getWorklistApplyList({type: SELF_SETTING_FLOW.VISITAPPLY}).then((workList) => {
+            getWorklistApplyList({type: SELF_SETTING_FLOW.DOMAINAPPLY}).then((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
                 if (queryObj.status && queryObj.status === 'ongoing'){
                     //需要对全部列表都加一个可以审批的属性

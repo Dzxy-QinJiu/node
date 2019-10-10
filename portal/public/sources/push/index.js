@@ -139,6 +139,11 @@ function applyApproveUnhandledListener(data) {
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_VISIT, data);
                 break;
+            case SELF_SETTING_FLOW.DOMAINAPPLYTOPIC:
+                //这里应该用的是域名申请手动输入的名字
+                updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY, true);
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOMAIN, data);
+                break;
         }
     }
 
@@ -793,7 +798,7 @@ function getMessageCount(callback) {
         _.forEach(applyTypeList, routeItem => {
             switch (routeItem.id) {
                 case 'sales_bussiness_apply_management':
-                    getUnapproveSalesOpportunityApply();//获取销售机会待我审批数量;
+                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.BUSINESSOPPORTUNITIES,APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES);//获取销售机会待我审批数量;
                     break;
                 case 'app_user_manage_apply':
                     if(hasPrivilege('APP_USER_APPLY_LIST')){
@@ -804,18 +809,20 @@ function getMessageCount(callback) {
                     getUnapproveBussinessTripApply(callback);//获取出差申请待我审批数量
                     break;
                 case 'leave_apply_management':
-                    getUnapproveLeaveApply();//获取请假申请待我审批数量
+                    getUnapproveApplyLists(APPLY_APPROVE_TYPES.LEAVE, APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE);//获取请假申请待我审批数量
                     break;
                 case 'reportsend_apply_management':
-                    getUnapproveReportSendApply();//获取舆情报送待我审批数量
+                    getUnapproveReportDocumentSendApply(APPLY_APPROVE_TYPES.OPINIONREPORT,APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND);//获取舆情报送待我审批数量
                     break;
                 case 'documentwriting_apply_management':
-                    getUnapproveDocumentWritingApply();//获取文件撰写的待我审批数
+                    getUnapproveReportDocumentSendApply(APPLY_APPROVE_TYPES.DOCUMENTWRITING,APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE);//获取文件撰写的待我审批数
                     break;
                 case 'my_leave_apply_management'://路由配置中路由的id
-                    getUnapproveVisitApply();//获取拜访申请的待我审批数
+                    getUnapproveApplyLists(SELF_SETTING_FLOW.VISITAPPLY,APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY);//获取拜访申请的待我审批数
                     break;
-
+                case 'my_domain_apply_management'://路由配置中路由的id
+                    getUnapproveApplyLists(SELF_SETTING_FLOW.DOMAINAPPLY,APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY);//获取拜访申请的待我审批数
+                    break;
             }
         });
     }
@@ -990,8 +997,7 @@ function getClueUnreadNum(data, callback){
     });
 }
 function setMessageValue(applyType,data) {
-    var messages = {
-    };
+    var messages = {};
     messages[applyType] = 0;
     var value = _.get(data, 'total');
     if (typeof value === 'number' && value > 0) {
@@ -1039,40 +1045,24 @@ function getUnapproveSalesOpportunityApply() {
         }
     });
 }
-//获取待我审批的拜访申请
-function getUnapproveVisitApply() {
-    var queryObj = {type: SELF_SETTING_FLOW.VISITAPPLY};
+//获取待我审批的申请
+function getUnapproveApplyLists(queryType,updateType) {
+    var queryObj = {type: queryType};
     $.ajax({
         url: '/rest/get/worklist/apply_approve/list',
         dataType: 'json',
         type: 'get',
         data: queryObj,
         success: function(data) {
-            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,data);
+            setMessageValue(updateType,data);
         },
         error: function(errorMsg) {
-        }
-    });
-}
-//获取待我审批的请假申请
-function getUnapproveLeaveApply() {
-    var queryObj = {type: APPLY_APPROVE_TYPES.LEAVE};
-    $.ajax({
-        url: '/rest/get/worklist/apply_approve/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,data);
-        },
-        error: function(errorMsg) {
-
         }
     });
 }
 //获取待我审批的舆情报告和文件撰写申请
-function getUnapproveReportSendApply() {
-    var queryObj = {type: APPLY_APPROVE_TYPES.OPINIONREPORT};
+function getUnapproveReportDocumentSendApply(queryType,updateType) {
+    var queryObj = {type: queryType};
     $.ajax({
         url: '/rest/get/worklist/apply_approve/list',
         dataType: 'json',
@@ -1084,25 +1074,7 @@ function getUnapproveReportSendApply() {
             if (_.isArray(data.list) && data.list.length){
                 reportData.total = data.list.length;
             }
-            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,reportData);
-        },
-        error: function(errorMsg) {
-        }
-    });
-}
-function getUnapproveDocumentWritingApply() {
-    var queryObj = {type: APPLY_APPROVE_TYPES.DOCUMENTWRITING};
-    $.ajax({
-        url: '/rest/get/worklist/apply_approve/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            var documentData = {total: 0};
-            if (_.isArray(data.list) && data.list.length){
-                documentData.total = data.list.length;
-            }
-            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,documentData);
+            setMessageValue(updateType,reportData);
         },
         error: function(errorMsg) {
         }
@@ -1201,22 +1173,5 @@ function updateGlobalUnreadStorage(unreadObj) {
             notificationEmitter.emit(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT);
         }, timeout);
     }
-}
-
-//获取待我审批的成员申请
-function getUnapproveMemberApply() {
-    var queryObj = {type: APPLY_APPROVE_TYPES.MEMBER_INVITE};
-    $.ajax({
-        url: '/rest/get/worklist/apply_approve/list',
-        dataType: 'json',
-        type: 'get',
-        data: queryObj,
-        success: function(data) {
-            setMessageValue(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,data);
-        },
-        error: function(errorMsg) {
-
-        }
-    });
 }
 module.exports.startSocketIo = startSocketIo;
