@@ -322,11 +322,15 @@ class ClueFilterPanel extends React.Component {
         return current > moment().endOf('day');
     };
     renderTimeRangeSelect = () => {
+        const startTime = this.state.rangeParams[0].from;
+        const endTime = this.state.rangeParams[0].to;
+
         return(
             <div className="time-range-wrap">
                 <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
                 <RangePicker
                     disabledDate={this.disabledDate}
+                    value={[moment(startTime), moment(endTime)]}
                     onChange={this.changeRangePicker}/>
             </div>
         );
