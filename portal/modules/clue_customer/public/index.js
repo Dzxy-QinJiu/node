@@ -94,7 +94,8 @@ import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
 import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
-
+import { parabola } from './utils/parabola';
+const FLOW_FLY_TIME = 2000;
 class ClueCustomer extends React.Component {
     state = {
         clueAddFormShow: false,//
@@ -885,13 +886,18 @@ class ClueCustomer extends React.Component {
             this.setState({
                 submitTraceLoading: true,
             });
+            //需要把当前那一条数据暂时隐藏
+            const index = _.findIndex(this.state.curClueLists, curItem => curItem.id === item.id);
+            $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').animate({height: '0px'},800);
             clueCustomerAction.addCluecustomerTrace(submitObj, (result) => {
                 if (result && result.error) {
+                    $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').animate({height: 'auto'},FLOW_FLY_TIME);
                     this.setState({
                         submitTraceLoading: false,
                         submitTraceErrMsg: Intl.get('common.save.failed', '保存失败')
                     });
                 } else {
+                    this.onAnimate(item);
                     var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                     var userId = userData.getUserData().user_id || '';
                     var userName = userData.getUserData().nick_name;
@@ -917,7 +923,9 @@ class ClueCustomer extends React.Component {
                         isEdittingItem: {},
                     });
                     //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
-                    clueCustomerAction.afterAddClueTrace(item);
+                    // setTimeout(() => {
+                    //     clueCustomerAction.afterAddClueTrace(item);
+                    // },FLOW_FLY_TIME);
                 }
             });
         }
@@ -1313,9 +1321,11 @@ class ClueCustomer extends React.Component {
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_TRACE)}>{Intl.get('sales.home.will.trace', '待跟进')}
                 <span className="clue-status-num">{_.get(statics, 'willTrace', 0)}</span>
             </span>
-            <span className={hasTrace}
-                onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}
-                title={getCertainTabsTitle(SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
+            <span ref={dom => {
+                this.$target = dom;
+            }} className={hasTrace}
+            onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}
+            title={getCertainTabsTitle(SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
                 <span className="clue-status-num">{_.get(statics, 'hasTrace', 0)}</span>
             </span>
             {filterAllotNoTraced || isSalesRole() ? null : <span className={hasTransfer}
@@ -1357,11 +1367,13 @@ class ClueCustomer extends React.Component {
                     // 已转化客户和无效客户，不可以展示“有相似客户”标签
                     let ifShowTags = !isInvalidClients && !isConvertedClients;
                     return (
-                        <div className="clue-top-title" >
+                        <div className="clue-top-title">
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
-                                <span className="clue-name-item">
+                                <span className="clue-name-item" ref={dom => {
+                                    this[`$origin_${salesClueItem.id}`] = dom;
+                                }}>
                                     {/*如果是今天分配的，就展示新的图标*/}
                                     {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
                                     {salesClueItem.name}</span>
@@ -1462,6 +1474,7 @@ class ClueCustomer extends React.Component {
                             }
                         </div>
                     );
+
                 }
             }];
         columns.push({
@@ -2666,6 +2679,35 @@ class ClueCustomer extends React.Component {
             isShowRefreshPrompt: false
         });
     }
+    onAnimate = (item) => {
+        return new Promise(resolve => {
+            const config = {
+                ballWrapper: this.$wrapper,
+                origin: this[`$origin_${item.id}`],
+                target: this.$target,
+                time: FLOW_FLY_TIME,
+                a: 0.00001,
+                callback: this.updateLocation,
+                finish: animationDone.bind(this),
+                offset: 8
+            };
+            parabola(config);
+
+            function animationDone() {
+                this.setState({
+                    isVisible: false
+                });
+                resolve();
+            }
+        });
+    };
+    updateLocation = (x, y) => {
+        this.setState({
+            x,
+            y,
+            isVisible: true
+        });
+    };
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2678,7 +2720,10 @@ class ClueCustomer extends React.Component {
         var filterCls = classNames('filter-container',{
             'filter-close': !this.state.showFilterList || isFirstLoading
         });
-
+        const animateStyle = {
+            transform: `translate(${this.state.x}px, ${this.state.y}px)`,
+            opacity: this.state.isVisible ? 1 : 0
+        };
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -2707,7 +2752,9 @@ class ClueCustomer extends React.Component {
                             {hasSelectedClue ? this.renderBatchChangeClues() : this.renderNotSelectClueBtns()}
                         </div>
                     </TopNav>
-                    <div className="clue-content-container">
+                    <div className="clue-content-container" ref={dom => {
+                        this.$wrapper = dom;
+                    }}>
                         <div
                             className={filterCls}>
                             <ClueFilterPanel
@@ -2727,6 +2774,7 @@ class ClueCustomer extends React.Component {
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
+                        <div className="ball" style={animateStyle} />
                     </div>
                     {this.state.clueAddFormShow ?
                         <div className={cls}>
