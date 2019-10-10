@@ -461,7 +461,9 @@ exports.getApplyTopicText = function(obj) {
     } else if (obj.topic === APPLY_APPROVE_TYPES.MEMBER_INVITE) {
         return Intl.get('member.application', '成员申请');
     }else if (obj.workflow_type === SELF_SETTING_FLOW.VISITAPPLY){
-        return Intl.get('apply.my.self.setting.work.flow', '拜访申请');
+        return SELF_SETTING_FLOW.VISITAPPLYTOPIC;
+    }else if (obj.workflow_type === SELF_SETTING_FLOW.DOMAINAPPLY){
+        return SELF_SETTING_FLOW.DOMAINAPPLYTOPIC;
     }
 };
 function getDocumentReportTypeText(AllTypeList, specificType) {

@@ -99,7 +99,7 @@ class AddAndShowApplyList extends React.Component {
             description: this.state.newApplyTitle,
             customiz_form: {},
             //todo 用uuid生成一个唯一的type，不知道只取前20个会不会有重复的id
-            type: 'visitapply' || randomType.slice(0, 20)
+            type: 'domainName' || randomType.slice(0, 20)
         };
         applyApproveManageAction.addSelfSettingWorkFlow(submitObj, (data) => {
             var applyList = this.state.showApplyList;

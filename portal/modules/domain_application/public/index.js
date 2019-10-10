@@ -42,14 +42,14 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.listen(this.onStoreChange);
         if(_.get(this.props,'location.state.clickUnhandleNum')){
             this.menuClick({key: 'ongoing'});
-        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY]){
+        }else if(Oplate && Oplate.unread && !Oplate.unread[APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY]){
             this.menuClick({key: 'all'});
         }else{
             //不区分角色，都获取全部的申请列表
             this.getAllLeaveApplyList();
         }
         LeaveApplyUtils.emitter.on('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
+        notificationEmitter.on(notificationEmitter.APPLY_UPDATED_DOMAIN, this.pushDataListener);
         this.getUnreadReplyList();
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
@@ -86,7 +86,7 @@ class LeaveApplyManagement extends React.Component {
             order: this.state.order,
             page_size: this.state.page_size,
             id: this.state.lastApplyId, //用于下拉加载的id
-            type: SELF_SETTING_FLOW.VISITAPPLY,
+            type: SELF_SETTING_FLOW.DOMAINAPPLY,
             comment_unread: this.state.isCheckUnreadApplyList,
         };
         //如果是选择的全部类型，不需要传status这个参数
@@ -119,7 +119,7 @@ class LeaveApplyManagement extends React.Component {
             //如果是待审批的请求，获取到申请列表后，更新下待审批的数量
             if (this.state.applyListType === 'ongoing') {
                 //触发更新待审批数
-                commonMethodUtil.updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
+                commonMethodUtil.updateUnapprovedCount(APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,'SHOW_UNHANDLE_APPLY_APPROVE_COUNT',count);
             }
         });
     };
@@ -138,7 +138,7 @@ class LeaveApplyManagement extends React.Component {
         LeaveApplyStore.unlisten(this.onStoreChange);
         LeaveApplyAction.setInitState();
         LeaveApplyUtils.emitter.removeListener('updateSelectedItem', this.updateSelectedItem);
-        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_VISIT, this.pushDataListener);
+        notificationEmitter.removeListener(notificationEmitter.APPLY_UPDATED_DOMAIN, this.pushDataListener);
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshUnreadReplyList);
     }
 

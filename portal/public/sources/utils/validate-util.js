@@ -188,7 +188,8 @@ export const clueAssignmentStrategy = {
 };
 // 用户名校验规则（字母、数字、横线或下划线组成的字符）
 export const userNameRule = /^[a-zA-Z0-9_-]{1,50}$/;
-
+//域名的校验规则 (由字母、数字、中划线组成的1~32位字符且不能以中划线开头或结尾)
+export const domainNameRule = /^(?!-)(?!.*-$)[a-zA-Z0-9-]{1,32}$/;
 // 用户名的校验规则
 export const userNameValidationRules = {
     required: true,

@@ -3,7 +3,6 @@
  */
 
 import {regex} from 'ant-utils';
-
 //用户类型的下拉选项
 export const userTypeList = [
     {name: Intl.get('user.online.all.type', '全部类型'), value: ''},
@@ -63,7 +62,6 @@ export const SYSTEM_NOTICE_TYPES = {
 };
 export const APPLY_APPROVE_TYPES = {
     //获取数据时，接口返回数据中用于展示的申请类型标识
-    VISIT_APPLY: 'visitapply',//拜访申请
     CUSTOMER_VISIT: 'customer_visit',//出差申请，后端传到前端的出差申请的类型
     BUSINESS_OPPORTUNITIES: 'business_opportunities',//销售机会申请，获取全部销售机会申请前端传给后端的类型，后端传到前端的销售机会的类型
     PERSONAL_LEAVE: 'personal_leave',//请假申请，获取全部请假申请前端传给后端的类型，后端传到前端请假的类型
@@ -85,6 +83,7 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEDOCUMENTWRITE: 'unhandleDocumentWrite',//未处理的请假申请数量
     UNHANDLEMEMBERINIVTE: 'unhandleMemberInivte', // 未处理的成员申请数量
     UNHANDLEMEVISISTAPPLY: 'unhandleVisitApply', // 未处理的拜访申请数量
+    UNHANDLEMEDOMAINAPPLY: 'unhandleDomainApply', // 未处理的域名申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
 };
 

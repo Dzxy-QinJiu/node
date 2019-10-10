@@ -170,7 +170,8 @@ class ApplyFormAndRules extends React.Component {
             {hasFormItem ? this.renderFormComponents() : this.renderNodataContent()}
         </div>);
     };
-    handleSubmitApproveForm = () => {
+    handleSubmitApproveForm = (e) => {
+        e.preventDefault();
         var submitObj = _.cloneDeep(this.state.applyTypeData);
         if (this.validateBeforeSubmit(submitObj)) {
             //不需要把所有的东西都传过去，只传表单相关内容即可，可以把规则先去掉

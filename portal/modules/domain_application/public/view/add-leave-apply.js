@@ -14,15 +14,11 @@ const FORMLAYOUT = {
     PADDINGTOTAL: 70,
 };
 var user = require('PUB_DIR/sources/user-data').getUserData();
-import {applyComponentsType, ADDAPPLYFORMCOMPONENTS} from '../../../apply_approve_manage/public/utils/apply-approve-utils';
-import {getStartEndTimeOfDiffRange} from 'PUB_DIR/sources/utils/common-method-util';
-import {calculateTotalTimeRange,calculateRangeType} from 'PUB_DIR/sources/utils/common-data-util';
-import { LEAVE_TYPE } from 'PUB_DIR/sources/utils/consts';
+import { ADDAPPLYFORMCOMPONENTS} from '../../../apply_approve_manage/public/utils/apply-approve-utils';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
-import {ALL_COMPONENTS, SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-import {DELAY_TIME_RANGE, LEAVE_TIME_RANGE,AM_AND_PM} from 'PUB_DIR/sources/utils/consts';
-import classNames from 'classnames';
+import {ALL_COMPONENTS, SELF_SETTING_FLOW,checkDomainName} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
 import leaveStore from '../store/leave-apply-store';
 import LeaveApplyAction from '../action/leave-apply-action';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
@@ -65,17 +61,7 @@ class AddLeaveApply extends React.Component {
             if (!_.get(values, 'customers[0].id')){
                 return;
             }
-            for (var key in values){
-                if (_.get(values[key],'begin_time')){
-                    values[key]['begin_time'] = moment(_.get(values[key],'begin_time')).format(oplateConsts.DATE_FORMAT) + `_${_.get(values[key],'begin_type')}`;
-                }
-                if (_.get(values[key],'end_time')){
-                    values[key]['end_time'] = moment(_.get(values[key],'end_time')).format(oplateConsts.DATE_FORMAT) + `_${_.get(values[key],'end_type')}`;
-                }
-                delete values[key]['begin_type'];
-                delete values[key]['end_type'];
-            }
-            LeaveApplyAction.addSelfSettingApply({'detail': values,'type': SELF_SETTING_FLOW.VISITAPPLY},(result) => {
+            LeaveApplyAction.addSelfSettingApply({'detail': values,'type': SELF_SETTING_FLOW.DOMAINAPPLY},(result) => {
                 if (!_.isString(result)){
                     //添加成功
                     this.setResultData(Intl.get('user.user.add.success', '添加成功'), 'success');
@@ -174,13 +160,13 @@ class AddLeaveApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
-        var workConfig = _.find(_.get(user, 'workFlowConfigs'),item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
+        var workConfig = _.find(_.get(user, 'workFlowConfigs',[]),item => item.type === SELF_SETTING_FLOW.DOMAINAPPLY);
         var customizForm = workConfig.customiz_form;
         return (
-            <RightPanel showFlag={true} data-tracename="添加拜访申请" className="add-leave-container">
+            <RightPanel showFlag={true} data-tracename="添加域名申请" className="add-leave-container">
                 <span className="iconfont icon-close add-leave-apply-close-btn"
                     onClick={this.hideLeaveApplyAddForm}
-                    data-tracename="关闭添加拜访申请面板"></span>
+                    data-tracename="关闭添加域名申请面板"></span>
 
                 <div className="add-leave-apply-wrap">
                     <BasicData
@@ -229,11 +215,13 @@ class AddLeaveApply extends React.Component {
                                                 );
 
                                             }else{
-                                                if(target.component_type === ALL_COMPONENTS.TIMEPERIOD){
-                                                    return <ApplyComponent {...propertyObj} form={this.props.form} isBeforeTodayAble={false}/>;
+                                                //todo 只能暂时这样加校验规则
+                                                if(target.component_type === ALL_COMPONENTS.INPUT && propertyObj.is_required){
+                                                    return <ApplyComponent {...propertyObj} form={this.props.form} validator={checkDomainName}/>;
                                                 }else{
                                                     return <ApplyComponent {...propertyObj} form={this.props.form}/>;
                                                 }
+
                                             }
 
                                         }
@@ -242,12 +230,12 @@ class AddLeaveApply extends React.Component {
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}
                                             disabled={this.state.saveApply.loading} data-tracename="点击保存添加
-                                            拜访申请">
+                                            域名申请">
                                             {Intl.get('common.save', '保存')}
                                             {this.state.saveApply.loading ? <Icon type="loading"/> : null}
                                         </Button>
                                         <Button className="cancel-btn" onClick={this.hideLeaveApplyAddForm}
-                                            data-tracename="点击取消添加拜访申请按钮">
+                                            data-tracename="点击取消添加域名申请按钮">
                                             {Intl.get('common.cancel', '取消')}
                                         </Button>
                                         <div className="indicator">
