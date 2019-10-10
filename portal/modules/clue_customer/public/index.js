@@ -2708,6 +2708,7 @@ class ClueCustomer extends React.Component {
                                 updateClueSource={this.updateClueSource}
                                 updateClueChannel={this.updateClueChannel}
                                 updateClueClassify={this.updateClueClassify}
+                                showRightPanel={this.showClueDetailOut}
                             />
                         </div> : null}
                     <ClueImportRightDetail

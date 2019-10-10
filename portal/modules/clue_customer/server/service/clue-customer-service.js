@@ -82,7 +82,9 @@ const restApis = {
     //释放线索
     releaseClue: clueBaseUrl + '/lead_pool/release/:type',
     //批量释放线索
-    batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type'
+    batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type',
+    //线索名、电话唯一性验证
+    checkOnlyClueNamePhone: clueBaseUrl + '/repeat/search'
 };
 
 //获取线索来源
@@ -593,4 +595,16 @@ exports.batchReleaseClue = function(req,res) {
         req: req,
         res: res
     } , reqBody);
+};
+//线索名、电话唯一性验证
+exports.checkOnlyClueNamePhone = function(req, res) {
+    let queryBody = req.query;
+    let isTerm = queryBody.isTerm;
+    delete queryBody.isTerm;
+    return restUtil.authRest.get(
+        {
+            url: restApis.checkOnlyClueNamePhone + `?is_term=${isTerm}`,
+            req: req,
+            res: res
+        }, queryBody);
 };

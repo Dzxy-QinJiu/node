@@ -504,3 +504,13 @@ exports.batchReleaseClue = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
+
+//线索名、电话唯一性验证
+exports.checkOnlyClueNamePhone = function(req, res) {
+    clueCustomerService.checkOnlyClueNamePhone(req, res)
+        .on('success', function(data) {
+            res.status(200).json(data);
+        }).on('error', function(err) {
+            res.status(500).json(err.message);
+        });
+};
