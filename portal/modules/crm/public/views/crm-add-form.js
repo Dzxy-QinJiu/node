@@ -577,6 +577,7 @@ class CRMAddForm extends React.Component {
                                             hasSaveAndCancelBtn={false}
                                             isRequiredContactName={false}
                                             isUseGeminiScrollbar={false}
+                                            isValidatePhoneOnDidMount={true}
                                             isValidateOnExternal
                                         />
                                         {index === 0 && this.state.formData.contacts.length === 1 ? null : <i className="iconfont icon-delete handle-btn-item" title={Intl.get('common.delete','删除')} onClick={this.handleDelContact.bind(this, index)}/>}
