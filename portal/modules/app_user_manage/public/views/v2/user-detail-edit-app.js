@@ -76,7 +76,6 @@ const UserDetailEditApp = createReactClass({
     },
 
     getChangeAppInfo(appData) {
-        console.log('appData:',appData);
         let changeAppInfo = {
             app_name: this.props.appInfo.app_name,
             app_id: this.props.appInfo.app_id,
