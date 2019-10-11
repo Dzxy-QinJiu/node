@@ -194,13 +194,15 @@ class ClueFilterPanel extends React.Component {
 
             if (_.get(item.query_condition, 'rang_params.length')) {
                 item.query_condition.rang_params.forEach(rangeItem => {
-                    const nameObj = {
-                        name: Intl.get('common.login.time', '时间') + '：' + moment(rangeItem.from).format(oplateConsts.DATE_FORMAT) + ' - ' + moment(rangeItem.to).format(oplateConsts.DATE_FORMAT),
-                        groupId: 'time',
-                        from: rangeItem.from,
-                        to: rangeItem.to,
-                    };
-                    handleAddItem(nameObj);
+                    if (rangeItem.name === 'source_time') {
+                        const nameObj = {
+                            name: Intl.get('common.login.time', '时间') + '：' + moment(rangeItem.from).format(oplateConsts.DATE_FORMAT) + ' - ' + moment(rangeItem.to).format(oplateConsts.DATE_FORMAT),
+                            groupId: 'time',
+                            from: rangeItem.from,
+                            to: rangeItem.to,
+                        };
+                        handleAddItem(nameObj);
+                    }
                 });
             }
         }
