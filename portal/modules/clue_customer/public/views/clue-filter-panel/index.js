@@ -203,6 +203,14 @@ class ClueFilterPanel extends React.Component {
                         };
                         handleAddItem(nameObj);
                     }
+                    if (rangeItem.name === 'no_answer_times') {
+                        const nameObj = {
+                            name: Intl.get('clue.customer.not.connect.phone', '未打通电话的线索'),
+                            groupId: COMMON_OTHER_ITEM,
+                            groupName: Intl.get('crm.186', '其他'),
+                        };
+                        handleAddItem(nameObj);
+                    }
                 });
             }
         }
