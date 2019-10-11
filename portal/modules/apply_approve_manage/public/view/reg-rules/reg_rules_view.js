@@ -131,6 +131,7 @@ class RegRulesView extends React.Component {
             type: 'bpmn:SequenceFlow'
         });
     };
+    //在最后一个流程节点设置相关属性
     lastNodePropertySetting = (elem) => {
         if (isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))){
             elem.distributeSales = true;
