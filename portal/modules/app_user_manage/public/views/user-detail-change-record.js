@@ -176,9 +176,11 @@ class UserDetailChangeRecord extends React.Component {
                     }
                     if (overDraft) { // 修改了过期停用
                         if (overDraft === '0') {
-                            operatePerson += Intl.get('user.cancel.overdraft', '取消了到期停用。');
-                        } else {
-                            operatePerson += Intl.get('user.setting.overdraft', '设置了到期停用。');
+                            operatePerson += Intl.get('user.change.expired.status', '将该用户的到期状态改为{statue}。', {status: Intl.get('user.status.immutability', '不变')});
+                        } else if( overDraft === '1'){
+                            operatePerson += Intl.get('user.change.expired.status', '将该用户的到期状态改为{statue}。', {status: Intl.get('user.status.stop', '停用')});
+                        } else if( overDraft === '2'){
+                            operatePerson += Intl.get('user.change.expired.status', '将该用户的到期状态改为{statue}。', {status: Intl.get('user.status.degrade', '降级')});
                         }
                     }
                     if (isTwoFactor) { // 修改了二步认证

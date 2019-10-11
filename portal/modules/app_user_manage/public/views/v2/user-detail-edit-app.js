@@ -75,36 +75,32 @@ const UserDetailEditApp = createReactClass({
         this.appsSetting = appsSetting;
     },
 
-    getChangeAppInfo(submitData) {
-        let changeAppInfo = _.clone(submitData);
-        changeAppInfo.app_id = changeAppInfo.client_id;
-        changeAppInfo.app_name = this.props.appInfo.app_name;
-        if (changeAppInfo.begin_date) {
-            changeAppInfo.start_time = changeAppInfo.begin_date;
-            delete changeAppInfo.begin_date;
-        }
-        if (changeAppInfo.end_date) {
-            changeAppInfo.end_time = changeAppInfo.end_date;
-            delete changeAppInfo.end_date;
-        }
-        if (changeAppInfo.status) {
-            changeAppInfo.is_disabled = changeAppInfo.status === '1' ? 'false' : 'true';
-            delete changeAppInfo.status;
-        }
+    getChangeAppInfo(appData) {
+        console.log('appData:',appData);
+        let changeAppInfo = {
+            app_name: this.props.appInfo.app_name,
+            app_id: this.props.appInfo.app_id,
+            create_time: this.props.appInfo.create_time
+        };
+        //开通状态
+        changeAppInfo.status = appData.status.value;
+        //到期停用
+        changeAppInfo.over_draft = appData.over_draft.value;
+        //开始时间
+        changeAppInfo.start_time = appData.time.start_time;
+        //结束时间
+        changeAppInfo.end_time = appData.time.end_time;
+        //两步验证
+        changeAppInfo.is_two_factor = +appData.is_two_factor.value;
+        //正式、试用
+        changeAppInfo.user_type = appData.user_type.value;
+        //多次登录(平台部的单词拼错了)
+        changeAppInfo.mutilogin = +appData.multilogin.value;
+        //角色
+        changeAppInfo.roles = appData.roles;
+        //权限
+        changeAppInfo.permissions = appData.permissions;
 
-        if (changeAppInfo.mutilogin) {
-            changeAppInfo.multilogin = +changeAppInfo.mutilogin;
-            delete changeAppInfo.mutilogin;
-        }
-
-        if (changeAppInfo.is_two_factor) {
-            changeAppInfo.is_two_factor = +changeAppInfo.is_two_factor;
-            delete changeAppInfo.is_two_factor;
-        }
-
-        changeAppInfo.create_time = this.props.appInfo.create_time;
-        delete changeAppInfo.client_id;
-        delete changeAppInfo.user_id;
 
         return changeAppInfo;
     },
@@ -156,25 +152,51 @@ const UserDetailEditApp = createReactClass({
             submitData.is_two_factor = savedAppSetting.is_two_factor.value;
         }
 
-        // 判断是否修改了用户的裂隙
+        // 判断是否修改了用户的类型
         if (_.get(savedAppSetting, 'user_type.setted')) {
-            submitData.user_type = savedAppSetting.user_type.value;
+            submitData.tags = [savedAppSetting.user_type.value];
         }
 
         // 判断是否修改了多次登录(平台部的单词拼错了)
         if (_.get(savedAppSetting, 'multilogin.setted')) {
             submitData.mutilogin = savedAppSetting.multilogin.value; //多次登录(平台部的单词拼错了)
         }
+        // 未修改之前的应用角色
+        let originalAppRoles = this.props.appInfo.roles;
+        // 修改之后的应用角色
+        let changedAppRoles = savedAppSetting.roles;
+        if (originalAppRoles.length !== changedAppRoles.length) {
+            //角色
+            submitData.roles = changedAppRoles;
+        } else {
+            for(let i = 0; i < originalAppRoles.length; i++) {
+                if (originalAppRoles[i] !== changedAppRoles[i]) {
+                    submitData.roles = changedAppRoles;
+                    break;
+                }
+            }
+        }
 
-        //角色
-        submitData.roles = savedAppSetting.roles;
-        //权限
-        submitData.permissions = savedAppSetting.permissions;
-
+        // 未修改之前的应用权限
+        let originalAppPermissions = this.props.appInfo.permissions;
+        // 修改之后的应用权限
+        let changedAppPermissions = savedAppSetting.permissions;
+        if (originalAppPermissions.length !== changedAppPermissions.length) {
+            //权限
+            submitData.permissions = changedAppPermissions;
+        } else {
+            for(let i = 0; i < originalAppRoles.length; i++) {
+                if (originalAppPermissions[i] !== changedAppPermissions[i]) {
+                    submitData.permissions = changedAppPermissions;
+                    break;
+                }
+            }
+        }
+        
         //设置user_id
         submitData.user_id = this.props.initialUser.user.user_id;
 
-        let changeAppInfo = this.getChangeAppInfo(submitData);
+        let changeAppInfo = this.getChangeAppInfo(savedAppSetting);
         //修改用户
         UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (flag) => {
             //发出更新用户列表事件

@@ -649,6 +649,7 @@ var en_US = {
     'user.change.phone.to': 'change this user\'s phone to {phone}',//修改了该用户的电话，改为{phone}。
     'user.change.desc.to': 'change this user\'s remark to {description}',
     //修改了该用户的备注，改为{description}。
+    'user.change.expired.status': 'The user\'s expiration state is changed to {status}', // 将该用户的到期状态改为{status}
     'fail.to.get.record': 'Failed to get change records',//获取用户变更记录失败
     'user.log.login.fail': 'Failed to get the user of login information!', // 获取登录信息失败！
     'user.log.get.log.fail': 'Failed to get the user of log information!', // 获取操作日志信息失败！
