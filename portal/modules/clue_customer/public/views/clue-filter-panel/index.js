@@ -187,14 +187,11 @@ class ClueFilterPanel extends React.Component {
                     }
                 });
             }
-            //日期范围通过interval判断
+
             if (_.get(item.query_condition, 'rang_params.length')) {
                 item.query_condition.rang_params.forEach(rangeItem => {
                     const nameObj = {
-                        groupId: COMMON_OTHER_ITEM,
-                        groupName: Intl.get('crm.186', '其他'),
-                        value: '',
-                        name: rangeItem.name
+                        name: Intl.get('common.login.time', '时间') + '：' + moment(rangeItem.from).format(oplateConsts.DATE_FORMAT) + ' - ' + moment(rangeItem.to).format(oplateConsts.DATE_FORMAT)
                     };
                     handleAddItem(nameObj);
                 });
