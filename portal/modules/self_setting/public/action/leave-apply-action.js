@@ -10,6 +10,7 @@ import {getAllApplyList,getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-
 var applyApproveManageAjax = require('../ajax/leave-apply-ajax');
 import {APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -34,9 +35,7 @@ function LeaveApplyActions() {
             getApplyListApprovedByMe.bind(this,queryObj)();
         }else if (queryObj.status === APPLY_TYPE_STATUS_CONST.ONGOING || !queryObj.status){
             //如果是全部申请，要先取一下待我审批的列表
-            //todo type就是自定义流程上的type
-            var workFlowConfigs = userData.getUserData().workFlowConfigs;
-            getWorklistApplyList({type: _.get(workFlowConfigs,'[0].type')}).then((workList) => {
+            getWorklistApplyList({type: SELF_SETTING_FLOW.VISITAPPLY}).then((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
                 if (queryObj.status && queryObj.status === 'ongoing'){
                     //需要对全部列表都加一个可以审批的属性
