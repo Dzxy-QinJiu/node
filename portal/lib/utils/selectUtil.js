@@ -5,26 +5,9 @@
  */
 function ignoreCase(input, option){
     let optionToLower = _.toLower(option.props.children);
-    let inputToLower = _.toLower(input);
+    let inputToLower = _.toLower(_.trim(input));
 
     return optionToLower.indexOf(inputToLower) >= 0;
 }
 
-/***
- * 分词过滤，(使用：customerSuggest组件中的filterOption)
- * @param input
- * @param option
- * @param separator  分词符，默认空格
- * @returns {boolean}
- */
-function separatorFilter(input, option, separator = ' ') {
-    let inputArr = _.trim(input).split(separator);
-    let filterRes = [];
-    _.each(inputArr, value => {
-        if(value && ignoreCase(value, option)) {
-            filterRes.push(true);
-        }
-    });
-    return filterRes.length > 0;
-}
-export { ignoreCase, separatorFilter };
+export { ignoreCase };
