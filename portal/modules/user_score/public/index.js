@@ -36,7 +36,8 @@ class userScore extends React.Component {
             showUserEngagementPanel: false,//是否展示添加用户参与度面板
             getUserIntegrationConfigLoading: false,//是否正在获取用户接入
             getUserIntegrationConfigErrMsg: '',//获取用户接入失败的信息
-            isEditUserEngagementRule: false,
+            isEditUserEngagementRule: false,//是否正在编辑参与度规则
+            activeTabKey: 0,//正在选中的那个tab的key值
             ...userScoreStore.getState()
         };
     }
@@ -436,16 +437,18 @@ class userScore extends React.Component {
             isEditUserEngagementRule: true
         });
     };
-    handleSelectedAppChange = () => {
+    handleSelectedAppChange = (key) => {
         this.handleCancelEngagement();
+        this.setState({
+            activeTabKey: key
+        });
     }
     renderEngagementTabs = () => {
         const {appList, userEngagementFormData, isEditUserEngagementRule} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements');
-
         return (
             <div>
-                <Tabs defaultActiveKey="1" tabPosition='left' style={{height: 220}}
+                <Tabs defaultActiveKey={this.state.activeTabKey} tabPosition='left' style={{height: 220}}
                     onChange={this.handleSelectedAppChange}>
                     {_.map(appList, (appItem, idx) => {
                         var engageItem = _.find(userEngagements, item => item.app_id === appItem.app_id);
@@ -560,6 +563,10 @@ class userScore extends React.Component {
             isEditUserEngagementRule: true
         });
     };
+    //获取激活tab对应的app
+    getActiveApp = () => {
+        return _.get(this.state, `appList[${this.state.activeTabKey}]`,{});
+    };
 
     renderParticateScoreRules = () => {
         const {userEngagementFormData, userEngagementObj, isEditUserEngagementRule, isLoadingApp} = this.state;
@@ -580,6 +587,11 @@ class userScore extends React.Component {
             );
         } else {
             var engageRuleOpen = _.get(userEngagementFormData, 'status') === 'enable';
+            //如果这个应用没有配置过规则，头部先不加编辑按钮了，可以直接点击开始配置的时候配置
+            var activeApp = this.getActiveApp();
+            var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
+            var targetApp = _.find(userEngagements, item => item.app_id === activeApp.app_id);
+            var engageDetail = _.get(targetApp,'detail');
             return (<div className="user-engagement-panel">
                 <p className="user-engage-title">
                     {Intl.get('user.score.particate.in.score', '参与度评分')}
@@ -596,7 +608,7 @@ class userScore extends React.Component {
                             status={engageRuleOpen}
                         />
                     </StatusWrapper>
-                    {isEditUserEngagementRule || !engageRuleOpen ? null :
+                    {isEditUserEngagementRule || !engageRuleOpen || !_.get(engageDetail,'length') ? null :
                         <i className="iconfont icon-update" onClick={this.handleClickUserEngagementRule}></i>}
                 </p>
                 <div className="user-engagement-item-wrap">
@@ -611,32 +623,6 @@ class userScore extends React.Component {
             </div>);
         }
     }
-    handleAddEngagementItem = () => {
-        const {userEngagementFormData} = this.state;
-        var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
-        userEngagements.push({
-            app_id: '',
-            app_name: '',
-            randomId: uuid(),
-            detail: [{
-                operate: '',
-                randomId: uuid(),
-                interval: '',
-                score: 1
-            }]
-        });
-        this.setState({
-            userEngagementFormData
-        });
-    };
-    handleMinusEngagementItem = (engageId) => {
-        const {userEngagementFormData} = this.state;
-        var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
-        userEngagementFormData['user_engagements'] = _.filter(userEngagements, item => item.app_id !== engageId && item.randomId !== engageId);
-        this.setState({
-            userEngagementFormData
-        });
-    };
     handleMinusEngageDetail = (engageId, detailId) => {
         const {userEngagementFormData} = this.state;
         var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
@@ -686,11 +672,6 @@ class userScore extends React.Component {
         }
         this.setState({
             userEngagementFormData
-        });
-    };
-    handleShowUserEngagementPanel = () => {
-        this.setState({
-            showUserEngagementPanel: true
         });
     };
 
