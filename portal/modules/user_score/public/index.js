@@ -565,7 +565,7 @@ class userScore extends React.Component {
     };
     //获取激活tab对应的app
     getActiveApp = () => {
-        return _.get(this.state, `appList[${this.state.activeTabKey}]`,{});
+        return _.get(this.state, ['appList', this.state.activeTabKey],{});
     };
 
     renderParticateScoreRules = () => {
@@ -587,11 +587,12 @@ class userScore extends React.Component {
             );
         } else {
             var engageRuleOpen = _.get(userEngagementFormData, 'status') === 'enable';
-            //如果这个应用没有配置过规则，头部先不加编辑按钮了，可以直接点击开始配置的时候配置
             var activeApp = this.getActiveApp();
             var userEngagements = _.get(userEngagementFormData, 'user_engagements', []);
             var targetApp = _.find(userEngagements, item => item.app_id === activeApp.app_id);
             var engageDetail = _.get(targetApp,'detail');
+            //如果这个应用没有配置过规则，头部先不加编辑按钮了，可以直接点击开始配置的时候配置
+            var noSettingRules = _.isEmpty(_.get(engageDetail,'length',''));
             return (<div className="user-engagement-panel">
                 <p className="user-engage-title">
                     {Intl.get('user.score.particate.in.score', '参与度评分')}
@@ -608,7 +609,7 @@ class userScore extends React.Component {
                             status={engageRuleOpen}
                         />
                     </StatusWrapper>
-                    {isEditUserEngagementRule || !engageRuleOpen || !_.get(engageDetail,'length') ? null :
+                    {isEditUserEngagementRule || !engageRuleOpen || noSettingRules ? null :
                         <i className="iconfont icon-update" onClick={this.handleClickUserEngagementRule}></i>}
                 </p>
                 <div className="user-engagement-item-wrap">
