@@ -54,6 +54,7 @@ class UserInfo extends React.Component{
             weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : '',//微信账号绑定的错误提示
             iconSaveError: '',//头像修改失败错误提示
             sendMail: false,//是否已发送邮件
+            closeMsg: false,//是否提前关闭提示
             sendTime: 60,//计时器显示时间
         };
     }
@@ -227,7 +228,10 @@ class UserInfo extends React.Component{
             // if (resultObj.error) {
             //     message.error(resultObj.errorMsg);
             // } else {
-                this.setState({sendMail: true});
+                this.setState({
+                    sendMail: true,
+                    closeMsg: false,
+                    });
                 //暂存时间戳
                 session.set('send_mail_start_time',new Date().getTime());
                 this.sendMailTime();
@@ -307,6 +311,7 @@ class UserInfo extends React.Component{
             }else{
                 this.setState({
                     sendMail: false,
+                    closeMsg: false,
                     sendTime: 60,
                 });
                 close();
@@ -329,12 +334,20 @@ class UserInfo extends React.Component{
             }
         }
     }
+    //关闭邮件提示信息
+    closeMailMsg = () => {
+        this.setState({closeMsg: true});
+    }
     //发送邮件后的提示
-    sendMailMasg = () => {
+    sendMailMsg = () => {
         return(
-            <div className="user-info-item">
+            <div>
                 <div className="hsaSendMailMsg">
-                    {Intl.get('user.info.active.email.tip', '激活邮件已发送至{email},请根据邮件内步骤激活邮箱',{'email': _.get(this.props.userInfo, 'email')})}
+                    <i className="iconfont icon-phone-call-out-tip"></i>
+                    <span className="mailMsgContent">
+                        {Intl.get('user.info.active.email.tip', '请根据邮件内步骤激活邮箱',{'email': _.get(this.props.userInfo, 'email')})}
+                    </span>
+                    <i className="iconfont icon-close-wide handle-btn-item" onClick={this.closeMailMsg}></i>
                 </div>
             </div>
         );
@@ -374,16 +387,16 @@ class UserInfo extends React.Component{
             return (
                 <div className="user-info-div">
                     <div className="user-info-item">
-                        <span>
-                            <ReactIntl.FormattedMessage id="common.username" defaultMessage="用户名"/>
+                        <span className="user-info-item-title">
+                            <ReactIntl.FormattedMessage id="common.account.number" defaultMessage="账号"/>
                             ：</span>
-                        <span>{formData.userName}</span>
+                        <span className="user-info-item-content">{formData.userName}</span>
                     </div>
                     <div className="user-info-item">
-                        <span>
+                        <span className="user-info-item-title">
                             {Intl.get('common.email', '邮箱')}
                             ：</span>
-                        <span className="user-email-item">
+                        <span className="user-email-item user-info-item-content">
                             {_.isEmpty(formData.email) && !_.isEqual(this.state.emailEditType, 'edit') ? (<span>
                                 <ReactIntl.FormattedMessage
                                     id="user.info.no.email"
@@ -412,16 +425,18 @@ class UserInfo extends React.Component{
                             />}
                         </span>
                     </div>
-                    {this.state.sendMail && this.state.sendTime > 56 ? this.sendMailMasg() : null}
+                    {this.state.sendMail && !this.state.closeMsg ? this.sendMailMsg() : null}
                     <div className="user-info-item">
-                        <span>
-                            {Intl.get('user.phone', '手机号')}
+                        <span className="user-info-item-title">
+                            {Intl.get('user.phone.short', '手机')}
                             ：</span>
-                        <PhoneShowEditField id={formData.id} phone={formData.phone}/>
+                        <span className="user-info-item-content">
+                            <PhoneShowEditField id={formData.id} phone={formData.phone}/>
+                        </span>
                     </div>
                     <div className="user-info-item">
-                        <span>QQ：</span>
-                        <span className="user-qq-item">
+                        <span className="user-info-item-title">QQ：</span>
+                        <span className="user-qq-item user-info-item-content">
                             <BasicEditInputField
                                 id={formData.id}
                                 displayType={this.state.qqEditType}
@@ -439,8 +454,8 @@ class UserInfo extends React.Component{
                         </span>
                     </div>
                     <div className="user-info-item">
-                        <span>{Intl.get('crm.58', '微信')}：</span>
-                        <span>
+                        <span className="user-info-item-title">{Intl.get('crm.58', '微信')}：</span>
+                        <span className="user-info-item-content">
                             {this.state.isLoadingWechatBind ? (<Icon type="loading"/>) :
                                 this.state.weChatBindErrorMsg ? (
                                     <span className="error-msg-tip">{this.state.weChatBindErrorMsg}</span>) :
@@ -458,21 +473,22 @@ class UserInfo extends React.Component{
                         </span>
                     </div>
                     <div className="user-info-item">
-                        <span>
+                        <span className="user-info-item-title">
                             <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>
                             ：</span>
-                        <span>{formData.rolesName}</span>
+                        <span className="user-info-item-content">{formData.rolesName}</span>
                     </div>
                     {hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
                         <div className="user-info-item">
-                            <span>
-                                <ReactIntl.FormattedMessage id="common.company" defaultMessage="公司"/>：{this.props.managedRealm}
+                            <span className="user-info-item-title">
+                                <ReactIntl.FormattedMessage className="user-info-item-content" id="common.company" defaultMessage="公司"/>：
                             </span>
+                            <span className="user-info-item-content">{this.props.managedRealm}</span>
                         </div>
                     ) : null}
                     { !Oplate.hideSomeItem && <div className="user-info-item">
-                        <span>{Intl.get('common.user.lang', '语言')}：</span>
-                        <span className="user-lang-value">
+                        <span className="user-info-item-title">{Intl.get('common.user.lang', '语言')}：</span>
+                        <span className="user-lang-value user-info-item-content">
                             <BasicEditSelectField
                                 id={formData.id}
                                 displayText={this.getLangDisplayText()}

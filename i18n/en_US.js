@@ -86,6 +86,7 @@ var en_US = {
     'common.no.match': 'No match',//暂无匹配项
     'common.get.team.list.failed': 'Failed to get team list',//获取团队列表失败
     'common.username': 'Username',//用户名
+    'common.account.number': 'Account number',//账号
     'common.my.app': 'My Applications',//我的应用
     'common.filter': 'Filter',//筛选
     'common.add': 'Add ',//添加
@@ -452,6 +453,7 @@ var en_US = {
     'user.app.add.success': 'Add the application successfully',//添加应用成功
     'user.app.edit.success': 'Edit the application successfully',//修改应用成功
     'user.phone': 'Phone',//手机号
+    'user.phone.short': 'Phone',//手机
     'user.phone.write.tip': 'Please enter the phone number',//请填写手机号
     'user.email.write.tip': 'Please enter the email',//请填写邮箱
     'user.email.set.tip': 'Please edit the email',//修改邮箱
@@ -1027,7 +1029,7 @@ var en_US = {
     'user.info.login.address': 'Address',//地点
     'user.info.login.browser': 'Browser',//浏览器
     'user.info.active.email.btn': 'Send Activated Mail',//发送激活邮件
-    'user.info.active.email.tip': 'Activated mail has been sent to {email}, please activate the mailbox according to the steps in the mail',//激活邮件已发送至{email}，请根据邮件内步骤激活邮箱
+    'user.info.active.email.tip': 'please activate the mailbox according to the steps in the mail',//请根据邮件内步骤激活邮箱
     'user.info.active.email.msg': '(Activated mail sent，{sendTime} s)',//(已发送激活邮件{sendTime}s)
     'user.info.active.email': 'Activation email has been sent to {email}, please go to active',//激活邮件已发送至{email},请前往激活
     'user.info.retry': 'Please try again',//请重试
