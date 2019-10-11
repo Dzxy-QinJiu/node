@@ -156,6 +156,10 @@ class ClueFilterPanel extends React.Component {
                         nameObj.name = item.name;
                     }
                     break;
+                case 'labels':
+                    nameObj.groupId = COMMON_OTHER_ITEM;
+                    nameObj.groupName = Intl.get('crm.186', '其他');
+                    break;
             }
             handleAddItem(nameObj);
         };
