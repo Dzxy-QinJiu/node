@@ -455,7 +455,6 @@ var zh_CN = {
     'user.app.add.success': '添加应用成功',
     'user.app.edit.success': '修改应用成功',
     'user.phone': '手机号',
-    'user.phone.short': '手机',
     'user.phone.write.tip': '请填写手机号',
     'user.email.write.tip': '请填写邮箱',
     'user.email.set.tip': '修改邮箱',

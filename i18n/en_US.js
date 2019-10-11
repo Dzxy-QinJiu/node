@@ -453,7 +453,6 @@ var en_US = {
     'user.app.add.success': 'Add the application successfully',//添加应用成功
     'user.app.edit.success': 'Edit the application successfully',//修改应用成功
     'user.phone': 'Phone',//手机号
-    'user.phone.short': 'Phone',//手机
     'user.phone.write.tip': 'Please enter the phone number',//请填写手机号
     'user.email.write.tip': 'Please enter the email',//请填写邮箱
     'user.email.set.tip': 'Please edit the email',//修改邮箱

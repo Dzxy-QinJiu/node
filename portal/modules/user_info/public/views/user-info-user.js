@@ -231,7 +231,7 @@ class UserInfo extends React.Component{
                 this.setState({
                     sendMail: true,
                     closeMsg: false,
-                    });
+                });
                 //暂存时间戳
                 session.set('send_mail_start_time',new Date().getTime());
                 this.sendMailTime();
@@ -428,7 +428,7 @@ class UserInfo extends React.Component{
                     {this.state.sendMail && !this.state.closeMsg ? this.sendMailMsg() : null}
                     <div className="user-info-item">
                         <span className="user-info-item-title">
-                            {Intl.get('user.phone.short', '手机')}
+                            {Intl.get('member.phone', '手机')}
                             ：</span>
                         <span className="user-info-item-content">
                             <PhoneShowEditField id={formData.id} phone={formData.phone}/>
