@@ -227,7 +227,7 @@ class FilterList extends React.Component {
         if (item.id) {
             if (this.props.onDelete) {
                 this.props.onDelete(item).then((result) => {
-                    //若返回结果中有data属性，则取data属性的值作为数据源，否则将返回值作为数据源
+                    //若返回结果中有data属性，则取data属性的值作为数据源，否则将返回结果作为数据源
                     const data = _.get(result, 'data', result);
 
                     if (!data || data.errorMsg) {
