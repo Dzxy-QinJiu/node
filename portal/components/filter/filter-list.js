@@ -11,6 +11,7 @@ import { FILTER_COMMON_RATE_KEY } from './consts';
 import { storageUtil } from 'ant-utils';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const local = storageUtil.local;
+const CLOSE_COMMENT_HEIGHT = 32;//收起筛选tab的高度
 class FilterList extends React.Component {
     constructor(props) {
         super();
@@ -566,8 +567,9 @@ class FilterList extends React.Component {
         var noCommonStatus = !this.state.commonData || this.state.commonData.length === 0;
         var commonStatusCls = noCommonStatus ? ' no-content' : '';
         let styleList = this.props.style;
+        //减掉‘收起筛选’的高度
         if(_.get(styleList,'height')){
-            styleList.height = styleList.height - 32;
+            styleList.height = styleList.height - CLOSE_COMMENT_HEIGHT;
         }
         return (
             <div>
