@@ -13,7 +13,6 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import CustomerLabel from 'CMP_DIR/customer_label';
 
 class CustomerSuggest extends React.Component {
@@ -116,6 +115,7 @@ class CustomerSuggest extends React.Component {
     };
 
     suggestChange = (value) => {
+        value = _.trim(value);
         if (value){
             //隐藏客户是必填项的提示
             _.isFunction(this.props.hideCustomerRequiredTip) && this.props.hideCustomerRequiredTip(true);
@@ -479,7 +479,7 @@ class CustomerSuggest extends React.Component {
                     combobox
                     autoFocus = {true}
                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
-                    filterOption={(input, option) => ignoreCase(input, option)}
+                    filterOption={() => _.get(this.state.list, 'length', 0)}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}
                     onBlur={this.onCheckIfCustomerChoose.bind(this)}
