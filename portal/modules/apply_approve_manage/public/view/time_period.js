@@ -343,4 +343,4 @@ TimePeriod.propTypes = {
     form: PropTypes.object,
     isBeforeTodayAble: PropTypes.bool,//是否可用选中今天之前的时间
 };
-export default TimePeriod;
+export default Form.create(TimePeriod);
