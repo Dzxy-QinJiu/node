@@ -510,6 +510,10 @@ class BasicOverview extends React.Component {
         return null;
     };
 
+    renderSecondLevelDomain = (subDomain) => {
+        return <span className="second-level-domain-name">{`${subDomain}.eagok.com`}</span>;
+    };
+
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
@@ -518,6 +522,7 @@ class BasicOverview extends React.Component {
             tagArray = basicData.immutable_labels.concat(tagArray);
         }
         var noRecordData = !this.state.customerRecord.length && !this.state.customerRecordLoading;
+        var subDomain = _.get(basicData, 'sub_domains', '');
 
         return (
             <RightPanelScrollBar isMerge={this.props.isMerge}>
@@ -545,6 +550,15 @@ class BasicOverview extends React.Component {
                         salesTeamId={basicData.sales_team_id}
                         modifySuccess={this.editBasicSuccess}
                     />
+                    {
+                        subDomain ? (
+                            <DetailCard
+                                title={`${Intl.get('crm.basic.second.level.domain', '二级域名')}:`}
+                                titleBottomBorderNone
+                                titleDescr={this.renderSecondLevelDomain(subDomain)}
+                            />
+                        ) : null
+                    }
                     {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             showUserDetail={this.props.showUserDetail}
