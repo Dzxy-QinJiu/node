@@ -144,18 +144,21 @@ class ClueFilterPanel extends React.Component {
 
             //处理name（展示的筛选项文字）
             switch (key) {
+                //如果当前条件是“销售团队”，需要根据团队id找到其对应的团队名作为显示名称
                 case 'sales_team_id':
                     item = this.state.teamList.find(x => x.group_id === value);
                     if (item) {
                         nameObj.name = item.group_name;
                     }
                     break;
+                //如果当前条件是“集客方式”，需要找到其对应的中文名作为显示名称
                 case 'source_classify':
                     item = sourceClassifyArray.find(x => x.value === value);
                     if (item) {
                         nameObj.name = item.name;
                     }
                     break;
+                //如果当前条件是“有相似线索”或“有相似客户”等标签，需要将其对应到常用筛选组
                 case 'labels':
                     nameObj.groupId = COMMON_OTHER_ITEM;
                     nameObj.groupName = Intl.get('crm.186', '其他');
@@ -194,6 +197,7 @@ class ClueFilterPanel extends React.Component {
 
             if (_.get(item.query_condition, 'rang_params.length')) {
                 item.query_condition.rang_params.forEach(rangeItem => {
+                    //如果当前条件是“时间”
                     if (rangeItem.name === 'source_time') {
                         const nameObj = {
                             name: Intl.get('common.login.time', '时间') + '：' + moment(rangeItem.from).format(oplateConsts.DATE_FORMAT) + ' - ' + moment(rangeItem.to).format(oplateConsts.DATE_FORMAT),
@@ -203,6 +207,8 @@ class ClueFilterPanel extends React.Component {
                         };
                         handleAddItem(nameObj);
                     }
+
+                    //如果当前条件是“未打通电话的线索”
                     if (rangeItem.name === 'no_answer_times') {
                         const nameObj = {
                             name: Intl.get('clue.customer.not.connect.phone', '未打通电话的线索'),
@@ -236,7 +242,9 @@ class ClueFilterPanel extends React.Component {
     handleFilterChange = (data) => {
         const timeCondition = _.find(data, item => item.groupId === 'time');
 
+        //若当前选中的筛选项中包含时间条件
         if (timeCondition) {
+            //则将该时间条件设置到state中，以在显示和查询时使用
             FilterAction.setTimeRange({start_time: timeCondition.from, end_time: timeCondition.to, range: ''});
         }
 
