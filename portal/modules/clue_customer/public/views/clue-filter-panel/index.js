@@ -191,7 +191,10 @@ class ClueFilterPanel extends React.Component {
             if (_.get(item.query_condition, 'rang_params.length')) {
                 item.query_condition.rang_params.forEach(rangeItem => {
                     const nameObj = {
-                        name: Intl.get('common.login.time', '时间') + '：' + moment(rangeItem.from).format(oplateConsts.DATE_FORMAT) + ' - ' + moment(rangeItem.to).format(oplateConsts.DATE_FORMAT)
+                        name: Intl.get('common.login.time', '时间') + '：' + moment(rangeItem.from).format(oplateConsts.DATE_FORMAT) + ' - ' + moment(rangeItem.to).format(oplateConsts.DATE_FORMAT),
+                        groupId: 'time',
+                        from: rangeItem.from,
+                        to: rangeItem.to,
                     };
                     handleAddItem(nameObj);
                 });
@@ -217,6 +220,12 @@ class ClueFilterPanel extends React.Component {
     }
 
     handleFilterChange = (data) => {
+        const timeCondition = _.find(data, item => item.groupId === 'time');
+
+        if (timeCondition) {
+            FilterAction.setTimeRange({start_time: timeCondition.from, end_time: timeCondition.to, range: ''});
+        }
+
         clueCustomerAction.setClueInitialData();
         if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
             FilterAction.setExistedFiled();
