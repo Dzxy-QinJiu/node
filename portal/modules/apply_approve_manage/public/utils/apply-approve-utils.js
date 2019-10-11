@@ -11,6 +11,7 @@ import SelectOption from '../view/select_option';
 import TimePeriod from '../view/time_period';
 import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
+import ApplyAction from '../../../domain_application/public/action/leave-apply-action';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
@@ -336,7 +337,21 @@ export const checkDomainName = function(rule, value, callback) {
     value = _.trim(value);
     if (value) {
         if (domainNameRule.test(value)) {
-            callback();
+            //发请求校验是否该域名重复
+            ApplyAction.checkDomainExist({sub_domains: value},(result) => {
+                if (_.isString(result) ){
+                    callback(new Error(Intl.get('apply.domain.name.check.err', '二级域名校验失败！')));
+                }else{
+                    if (result){
+                        callback(new Error(Intl.get('apply.domain.sub.name.exist', '该域名已存在')));
+                    }else{
+                        callback();
+                    }
+
+
+                }
+            });
+
         } else {
             callback(new Error(Intl.get('apply.domain.descriptipn.reg', '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间')));
         }

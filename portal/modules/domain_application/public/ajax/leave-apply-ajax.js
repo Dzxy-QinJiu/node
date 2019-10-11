@@ -39,3 +39,20 @@ exports.addSelfSettingApply = function(data) {
     });
     return Deferred.promise();
 };
+//校验二级域名是否存在
+exports.checkDomainExist = function(data) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/check/domain/name',
+        dataType: 'json',
+        type: 'get',
+        data: data,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

@@ -72,7 +72,14 @@ function LeaveApplyActions() {
 
         });
     };
+    this.checkDomainExist = function(submitObj,callback) {
+        applyApproveManageAjax.checkDomainExist(submitObj).then((result) => {
+            _.isFunction(callback) && callback(result);
+        }, (errorMsg) => {
+            _.isFunction(callback) && callback(errorMsg);
 
+        });
+    };
 }
 //获取我审批过的列表
 function getApplyListApprovedByMe(queryObj) {

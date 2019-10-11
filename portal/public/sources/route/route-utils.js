@@ -213,7 +213,7 @@ function dealWorkFlowConfigRoute(userRoutes, workFlowConfigList) {
     }];
     _.forEach(REPORTANDDOUCMENTMAP, item => {
         if (!workFlowConfigList || _.indexOf(_.map(workFlowConfigList, 'type'), item.configType) < 0
-            || (item.configType === SELF_SETTING_FLOW.DOMAINAPPLY && !isOrganizationEefung()) //只有蚁坊组织才能展示域名申请的tab
+        // || (item.configType === SELF_SETTING_FLOW.DOMAINAPPLY && !isOrganizationEefung()) //只有蚁坊组织才能展示域名申请的tab
         ) {
             filterCertainRoutes(userRoutes, item);
         }
