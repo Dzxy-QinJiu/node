@@ -4,6 +4,7 @@
  * Created by zhangshujuan on 2018/2/7.
  */
 
+import { num as antUtilNum } from 'ant-utils';
 import WeeklyReportDetailAction from '../action/weekly-report-detail-actions';
 import WeeklyReportDetailStore from '../store/weekly-report-detail-store';
 import Spinner from 'CMP_DIR/spinner';
@@ -294,7 +295,9 @@ class WeeklyReportDetail extends React.Component {
             title: Intl.get('weekly.report.overlay.radio', '覆盖比例'),
             dataIndex: 'city_dredge_scale',
             align: 'right',
-            fixNum: 4
+            render: value => {
+                return <span>{antUtilNum.decimalToPercent(value)}</span>;
+            }
         }, {
             title: Intl.get('weekly.report.login.count', '登录数'),
             dataIndex: 'city_login_count',
@@ -329,7 +332,9 @@ class WeeklyReportDetail extends React.Component {
             title: Intl.get('weekly.report.overlay.radio', '覆盖比例'),
             dataIndex: 'district_dredge_scale',
             align: 'right',
-            fixNum: 4
+            render: value => {
+                return <span>{antUtilNum.decimalToPercent(value)}</span>;
+            }
         }, {
             title: Intl.get('weekly.report.login.count', '登录数'),
             dataIndex: 'district_login_count',
