@@ -2630,7 +2630,11 @@ class ClueCustomer extends React.Component {
         const condition = this.getClueSearchCondition();
 
         let query = _.get(condition, 'bodyParam.query', {});
+
+        //删掉“有效性”条件，该条件是其他条件的组成部分，自己没有在界面上的对应项，所以不需要在界面是显示出来
         delete query.availability;
+
+        //删掉“状态”条件，该条件是其他条件的组成部分，自己没有在界面上的对应项，所以不需要在界面是显示出来
         delete query.status;
 
         const queryCondition = {
