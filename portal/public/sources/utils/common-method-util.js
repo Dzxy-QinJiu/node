@@ -1082,3 +1082,60 @@ exports.renderCustomerNameMsg = ( existCustomerList, checkNameError, curCustomer
         return '';
     }
 };
+
+//线索唯一性验证的提示信息
+/**
+ * @param existClueList 已存在的线索列表
+ * @param checkNameError 客户名检验接口报错的提示
+ * @param curClueName 当前输入的线索名
+ * @param showRightPanel 点击线索名打开线索详情的方法
+ * */
+exports.renderClueNameMsg = ( existClueList, checkNameError, curClueName, showRightPanel) => {
+    if (existClueList.length) {
+        let list = _.cloneDeep(existClueList);
+        const sameCustomer = _.find(list, item => item.name === curClueName);
+        const curUserId = userData.getUserData().user_id;
+        let renderCustomerName = (clue) => {
+            if (clue) {
+                //如果是销售角色并且不是我的线索，只能看名字，不能看线索详情
+                if (userData.hasRole(userData.ROLE_CONSTANS.SALES) && _.get(clue, 'user_id') !== curUserId) {
+                    return (<span>{_.get(clue, 'name', '')} ({_.get(clue, 'user_name')})</span>);
+                } else {//如果是管理员、运营或是我的客户，可以查看线索详情
+                    return (
+                        <a href="javascript:void(0)" onClick={showRightPanel.bind(this, clue)} className="handle-btn-item">
+                            {_.get(clue, 'name', '')}
+                        </a>);
+                }
+            } else {
+                return null;
+            }
+        };
+        if(sameCustomer){
+            list = _.filter(list, cur => cur.id !== sameCustomer.id);
+        }
+        return (
+            <div className="tip-customer-exist">
+                <span className="tip-customer-error">{Intl.get('crm.sales.clue', '线索')}{sameCustomer ? Intl.get('crm.66', '已存在') : Intl.get('crm.67', '可能重复了')}，</span>
+                {/*同名线索或相似线索的第一个*/}
+                {renderCustomerName(sameCustomer || list.shift())}
+                {_.get(list, 'length') ? (
+                    <div>
+                        {Intl.get('clue.customer.similar.clue.contains', '相似的线索还有')}:
+                        {_.map(list, customer => {
+                            return (
+                                <div key={_.get(customer, 'id')}>
+                                    {renderCustomerName(customer)}
+                                </div>
+                            );
+                        })}
+                    </div>) : null}
+            </div>
+        );
+    } else if (checkNameError) {
+        return (
+            <div className="check-only-error"><ReactIntl.FormattedMessage id="clue.customer.check.only.fail" defaultMessage="线索名称唯一性校验出错"/>！
+            </div>);
+    } else {
+        return '';
+    }
+};

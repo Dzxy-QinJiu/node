@@ -2831,7 +2831,10 @@ var en_US = {
     'sales.clue.is.enable': 'Invalid',//无效
     'failed.sales.remark.clue.valid': 'Failed to mark the validity of the clue',//标记该线索有效性失败
     'clue.customer.check.only.exist': 'Failed to verify the only clue names',//线索名称唯一性校验失败
+    'clue.customer.check.only.fail': 'Clue name is already taken',//线索名称唯一性校验出错
     'clue.customer.check.repeat': 'The clue name is already existed',//该线索名称已存在
+    'clue.customer.similar.clue.contains': 'Similar clues',//相似的线索还有
+    'clue.customer.repeat.phone.user': 'The phone has been used by clue {userName}',//该电话已被线索{userName}使用
     'clue.customer.clue.time': 'Consult on {relative}',//咨询于{relative}
     'failed.to.get.clue.classify': 'Failed to get clue classify',//获取线索分类出错了
     'clue.customer.classify': 'clue  classification',//线索分类

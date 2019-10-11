@@ -262,6 +262,13 @@ module.exports = {
         passport: {
             needLogin: true
         }
+    },{//线索名称唯一性验证
+        method: 'get',
+        path: '/rest/crm/clue_only/check',
+        handler: 'checkOnlyClueNamePhone',
+        passport: {
+            needLogin: true
+        }
     },{
         method: 'get',
         path: '/rest/recommend/clue/count',
