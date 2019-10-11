@@ -52,7 +52,7 @@ const unhandleApplyNumObj = [
         style: 'unhandleVisitNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,
-        cls: 'application_domain_application_ico',
+        cls: 'application_domain_name_ico',
         style: 'unhandleDomainNumSyle'
     }];
 

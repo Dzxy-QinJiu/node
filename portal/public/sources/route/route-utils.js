@@ -212,7 +212,9 @@ function dealWorkFlowConfigRoute(userRoutes, workFlowConfigList) {
         configType: SELF_SETTING_FLOW.DOMAINAPPLY//获取后端返回的申请流程配置中流程的类型
     }];
     _.forEach(REPORTANDDOUCMENTMAP, item => {
-        if (!workFlowConfigList || _.indexOf(_.map(workFlowConfigList, 'type'), item.configType) < 0 ) {
+        if (!workFlowConfigList || _.indexOf(_.map(workFlowConfigList, 'type'), item.configType) < 0
+            || (item.configType === SELF_SETTING_FLOW.DOMAINAPPLY && !isOrganizationEefung()) //只有蚁坊组织才能展示域名申请的tab
+        ) {
             filterCertainRoutes(userRoutes, item);
         }
     });

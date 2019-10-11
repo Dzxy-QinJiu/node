@@ -24,7 +24,7 @@ var applyApproveManageAction = require('../../action/apply_approve_manage_action
 const FORMLAYOUT = {
     PADDINGTOTAL: 260,
 };
-import {FLOW_TYPES, ADDTIONPROPERTIES, ASSIGEN_APPROVER, isSalesOpportunityFlow, isVisitApplyFlow} from '../../utils/apply-approve-utils';
+import {FLOW_TYPES, ADDTIONPROPERTIES, ASSIGEN_APPROVER, isSalesOpportunityFlow, isVisitApplyFlow, isDomainApplyFlow} from '../../utils/apply-approve-utils';
 import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
 class RegRulesView extends React.Component {
@@ -131,6 +131,24 @@ class RegRulesView extends React.Component {
             type: 'bpmn:SequenceFlow'
         });
     };
+    lastNodePropertySetting = (elem) => {
+        if (isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))){
+            elem.distributeSales = true;
+        }else{
+            elem.distributeSales = false;
+        }
+        if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))){
+            elem.distributeSalesToVisit = true;
+        }else{
+            elem.distributeSalesToVisit = false;
+        }
+        if (isDomainApplyFlow(_.get(this, 'props.applyTypeData.type'))){
+            elem.customerSLDUpdate = true;
+        }else{
+            elem.customerSLDUpdate = false;
+        }
+
+    };
     //把表单中的点画到图表中，一些单独设置的条件，也放到bpmn文件中
     renderFormData(callback) {
         var formData = _.get(this, 'state.applyRulesAndSetting.applyApproveRules'),
@@ -144,16 +162,7 @@ class RegRulesView extends React.Component {
                     _.forEach(elementsArr, (elem, elemIndex) => {
                         //如果该节点是流程的倒数第二个节点（最后一个节点是endtask），并且是销售机会申请，那么在最后一个节点要加上可以分配销售的
                         if (elemIndex + 2 === elementsArr.length && key === FLOW_TYPES.DEFAULTFLOW){
-                            if (isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))){
-                                elem.distributeSales = true;
-                            }else{
-                                elem.distributeSales = false;
-                            }
-                            if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))){
-                                elem.distributeSalesToVisit = true;
-                            }else{
-                                elem.distributeSalesToVisit = false;
-                            }
+                            this.lastNodePropertySetting(elem);
                         }
 
                         var previousNode = null;
@@ -179,14 +188,7 @@ class RegRulesView extends React.Component {
                         modeling.appendShape(previousNode, curNode);
                         //如果此节点是条件流程中的最后一个节点，需要再单独把这个节点和结束节点连接起来
                         if (key !== FLOW_TYPES.DEFAULTFLOW && _.isString(elem.next) && elem.next.indexOf('EndTask') > -1) {
-                            //如果是销售机会，最后一个节点才加这个分配销售的字段
-                            if(isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))){
-                                elem.distributeSales = true;
-                            }
-                            if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))){
-                                elem.distributeSalesToVisit = true;
-                            }
-
+                            this.lastNodePropertySetting(elem);
                             var nextNode = elementRegistry.get(elem.next);
                             this.connectDiffNode(curNode, nextNode);
                         }

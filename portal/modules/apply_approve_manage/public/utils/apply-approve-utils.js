@@ -319,6 +319,10 @@ exports.isSalesOpportunityFlow = function(itemType) {
 exports.isVisitApplyFlow = function(itemType) {
     return itemType === SELF_SETTING_FLOW.VISITAPPLY;
 };
+//是域名申请流程
+exports.isDomainApplyFlow = function(itemType) {
+    return itemType === SELF_SETTING_FLOW.DOMAINAPPLY;
+};
 //是出差申请流程
 exports.isBussinessTripFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.BUSSINESSTRIP;
@@ -327,7 +331,7 @@ exports.isBussinessTripFlow = function(itemType) {
 exports.isLeaveFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.LEAVE;
 };
-exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit'];
+exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit','customerSLDUpdate'];
 export const checkDomainName = function(rule, value, callback) {
     value = _.trim(value);
     if (value) {
