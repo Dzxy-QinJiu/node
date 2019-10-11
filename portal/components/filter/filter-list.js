@@ -11,6 +11,7 @@ import { FILTER_COMMON_RATE_KEY } from './consts';
 import { storageUtil } from 'ant-utils';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const local = storageUtil.local;
+const CLOSE_COMMENT_HEIGHT = 32;//收起筛选tab的高度
 class FilterList extends React.Component {
     constructor(props) {
         super();
@@ -565,6 +566,11 @@ class FilterList extends React.Component {
         };
         var noCommonStatus = !this.state.commonData || this.state.commonData.length === 0;
         var commonStatusCls = noCommonStatus ? ' no-content' : '';
+        let styleList = this.props.style;
+        //减掉‘收起筛选’的高度
+        if(_.get(styleList,'height')){
+            styleList.height = styleList.height - CLOSE_COMMENT_HEIGHT;
+        }
         return (
             <div>
                 <div className="close-filter-panel" onClick={this.closeFilterPanel}>
@@ -573,9 +579,8 @@ class FilterList extends React.Component {
                         </span>
                     {Intl.get('clue.customer.close.filter.panel', '收起筛选')}
                 </div>
-                <GeminiScrollbar style={this.props.style} className={this.props.className}>
+                <GeminiScrollbar style={styleList} className={this.props.className}>
                     <div className="filter-wrapper filter-list-wrapper">
-
                         {_.isFunction(this.props.renderOtherDataContent) ? this.props.renderOtherDataContent() : null}
                         <StatusWrapper
                             loading={commonLoading}
