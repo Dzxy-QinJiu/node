@@ -77,7 +77,7 @@ class StrategyForm extends React.Component {
         //如果是在无数据的时候第一次添加线索分配策略，在选项框里有"全部地域"这个选项
         let regions = _.cloneDeep(this.state.regions);
         //如果只有一个策略时，添加“全部地域”选项
-        if(this.state.isFirstTimeAdd && _.isEqual(_.indexOf(regions, 'all'), -1)) {
+        if(this.state.isFirstTimeAdd && !_.includes(regions, 'all')) {
             regions.unshift('all');
         }
         return (_.map(regions, (item, index) => {

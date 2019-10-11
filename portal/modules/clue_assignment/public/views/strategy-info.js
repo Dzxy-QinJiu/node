@@ -168,7 +168,7 @@ class StrategyInfo extends React.Component {
         let selectedRegions = _.get(this.state, 'strategyInfo.condition.province', []);
         let result = _.concat(selectedRegions, regions);
         //如果只有一个策略时，添加“全部地域”选项
-        if(this.state.isFirstOneEdit && _.isEqual(_.indexOf(result, 'all'), -1)) {
+        if(this.state.isFirstOneEdit && !_.includes(result, 'all')) {
             result.unshift('all');
         }
         return (_.map(result, (item, index) => {
