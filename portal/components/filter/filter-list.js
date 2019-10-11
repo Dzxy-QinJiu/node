@@ -565,6 +565,10 @@ class FilterList extends React.Component {
         };
         var noCommonStatus = !this.state.commonData || this.state.commonData.length === 0;
         var commonStatusCls = noCommonStatus ? ' no-content' : '';
+        let styleList = this.props.style;
+        if(_.get(styleList,'height')){
+            styleList.height = styleList.height - 32;
+        }
         return (
             <div>
                 <div className="close-filter-panel" onClick={this.closeFilterPanel}>
@@ -573,9 +577,9 @@ class FilterList extends React.Component {
                         </span>
                     {Intl.get('clue.customer.close.filter.panel', '收起筛选')}
                 </div>
-                <GeminiScrollbar style={this.props.style} className={this.props.className}>
+                <GeminiScrollbar style={styleList} className={this.props.className}>
                     <div className="filter-wrapper filter-list-wrapper">
-
+                        {console.log(this.props.style)}
                         {_.isFunction(this.props.renderOtherDataContent) ? this.props.renderOtherDataContent() : null}
                         <StatusWrapper
                             loading={commonLoading}
