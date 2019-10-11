@@ -225,9 +225,9 @@ class UserInfo extends React.Component{
             return;
         }
         UserInfoAction.activeUserEmail((resultObj) => {
-            // if (resultObj.error) {
-            //     message.error(resultObj.errorMsg);
-            // } else {
+            if (resultObj.error) {
+                message.error(resultObj.errorMsg);
+            } else {
                 this.setState({
                     sendMail: true,
                     closeMsg: false,
@@ -235,7 +235,7 @@ class UserInfo extends React.Component{
                 //暂存时间戳
                 session.set('send_mail_start_time',new Date().getTime());
                 this.sendMailTime();
-            // }
+            }
         });
     }
 
