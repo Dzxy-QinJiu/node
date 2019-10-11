@@ -579,7 +579,6 @@ class FilterList extends React.Component {
                 </div>
                 <GeminiScrollbar style={styleList} className={this.props.className}>
                     <div className="filter-wrapper filter-list-wrapper">
-                        {console.log(this.props.style)}
                         {_.isFunction(this.props.renderOtherDataContent) ? this.props.renderOtherDataContent() : null}
                         <StatusWrapper
                             loading={commonLoading}
