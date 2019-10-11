@@ -511,7 +511,7 @@ class BasicOverview extends React.Component {
     };
 
     renderSecondLevelDomain = (subDomain) => {
-        return <span className="second-level-domain-name">{subDomain}</span>;
+        return <span className="second-level-domain-name">{`${subDomain}.eagok.com`}</span>;
     };
 
     render() {
