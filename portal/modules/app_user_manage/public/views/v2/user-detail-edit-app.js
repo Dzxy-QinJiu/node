@@ -12,6 +12,7 @@ import AlertTimer from '../../../../../components/alert-timer';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
 import PropTypes from 'prop-types';
+import {isEqualArray} from 'LIB_DIR/func';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 //记录上下留白布局
@@ -75,22 +76,31 @@ const UserDetailEditApp = createReactClass({
         this.appsSetting = appsSetting;
     },
 
-    getChangeAppInfo(submitData) {
-        let changeAppInfo = _.clone(submitData);
-        changeAppInfo.app_id = changeAppInfo.client_id;
-        changeAppInfo.app_name = this.props.appInfo.app_name;
-        changeAppInfo.start_time = changeAppInfo.begin_date;
-        changeAppInfo.end_time = changeAppInfo.end_date;
-        changeAppInfo.is_disabled = changeAppInfo.status === '1' ? 'false' : 'true';
-        changeAppInfo.create_time = this.props.appInfo.create_time;
-        changeAppInfo.multilogin = +changeAppInfo.mutilogin;
-        changeAppInfo.is_two_factor = +changeAppInfo.is_two_factor;
-        delete changeAppInfo.client_id;
-        delete changeAppInfo.user_id;
-        delete changeAppInfo.begin_date;
-        delete changeAppInfo.end_date;
-        delete changeAppInfo.status;
-        delete changeAppInfo.mutilogin;
+    getChangeAppInfo(appData) {
+        let changeAppInfo = {
+            app_name: this.props.appInfo.app_name,
+            app_id: this.props.appInfo.app_id,
+            create_time: this.props.appInfo.create_time
+        };
+        //开通状态
+        changeAppInfo.status = appData.status.value;
+        //到期停用
+        changeAppInfo.over_draft = appData.over_draft.value;
+        //开始时间
+        changeAppInfo.start_time = appData.time.start_time;
+        //结束时间
+        changeAppInfo.end_time = appData.time.end_time;
+        //两步验证
+        changeAppInfo.is_two_factor = +appData.is_two_factor.value;
+        //正式、试用
+        changeAppInfo.user_type = appData.user_type.value;
+        //多次登录(平台部的单词拼错了)
+        changeAppInfo.mutilogin = +appData.multilogin.value;
+        //角色
+        changeAppInfo.roles = appData.roles;
+        //权限
+        changeAppInfo.permissions = appData.permissions;
+
 
         return changeAppInfo;
     },
@@ -120,28 +130,58 @@ const UserDetailEditApp = createReactClass({
         const submitData = {};
         //应用id
         submitData.client_id = this.props.appInfo.app_id;
-        //角色
-        submitData.roles = savedAppSetting.roles;
-        //权限
-        submitData.permissions = savedAppSetting.permissions;
-        //开通状态
-        submitData.status = savedAppSetting.status.value === 'false' ? '1' : '0';
-        //到期停用
-        submitData.over_draft = savedAppSetting.over_draft.value;
-        //开始时间
-        submitData.begin_date = savedAppSetting.time.start_time;
-        //结束时间
-        submitData.end_date = savedAppSetting.time.end_time;
-        //两步验证
-        submitData.is_two_factor = savedAppSetting.is_two_factor.value;
-        //正式、试用
-        submitData.user_type = savedAppSetting.user_type.value;
+
+        // 判断是否修改了开通状态
+        if (_.get(savedAppSetting, 'status.setted')) {
+            submitData.status = savedAppSetting.status.value === 'false' ? '1' : '0';
+        }
+
+        // 判断是否修改了到期停用
+        if (_.get(savedAppSetting, 'over_draft.setted')) {
+            submitData.over_draft = savedAppSetting.over_draft.value;
+        }
+
+        // 判断是否修改了开通时间
+        if (_.get(savedAppSetting, 'time.setted')) {
+            submitData.begin_date = savedAppSetting.time.start_time; //开始时间
+            submitData.end_date = savedAppSetting.time.end_time; //结束时间
+        }
+
+        // 判断是否修改了两步验证
+        if (_.get(savedAppSetting, 'is_two_factor.setted')) {
+            submitData.is_two_factor = savedAppSetting.is_two_factor.value;
+        }
+
+        // 判断是否修改了用户的类型
+        if (_.get(savedAppSetting, 'user_type.setted')) {
+            submitData.tags = [savedAppSetting.user_type.value];
+        }
+
+        // 判断是否修改了多次登录(平台部的单词拼错了)
+        if (_.get(savedAppSetting, 'multilogin.setted')) {
+            submitData.mutilogin = savedAppSetting.multilogin.value; //多次登录(平台部的单词拼错了)
+        }
+        // 未修改之前的应用角色
+        let originalAppRoles = this.props.appInfo.roles;
+        // 修改之后的应用角色
+        let changedAppRoles = savedAppSetting.roles;
+        if (!isEqualArray(originalAppRoles, changedAppRoles)) {
+            //角色
+            submitData.roles = changedAppRoles;
+        }
+
+        // 未修改之前的应用权限
+        let originalAppPermissions = this.props.appInfo.permissions;
+        // 修改之后的应用权限
+        let changedAppPermissions = savedAppSetting.permissions;
+        if (!isEqualArray(originalAppPermissions, changedAppPermissions)) {
+            //权限
+            submitData.permissions = changedAppPermissions;
+        }
         //设置user_id
         submitData.user_id = this.props.initialUser.user.user_id;
-        //多次登录(平台部的单词拼错了)
-        submitData.mutilogin = savedAppSetting.multilogin.value;
 
-        let changeAppInfo = this.getChangeAppInfo(submitData);
+        let changeAppInfo = this.getChangeAppInfo(savedAppSetting);
         //修改用户
         UserDetailEditAppActions.editUserApps(submitData, changeAppInfo, (flag) => {
             //发出更新用户列表事件
