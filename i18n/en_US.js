@@ -86,6 +86,7 @@ var en_US = {
     'common.no.match': 'No match',//暂无匹配项
     'common.get.team.list.failed': 'Failed to get team list',//获取团队列表失败
     'common.username': 'Username',//用户名
+    'common.account.number': 'Account number',//账号
     'common.my.app': 'My Applications',//我的应用
     'common.filter': 'Filter',//筛选
     'common.add': 'Add ',//添加
@@ -1029,6 +1030,9 @@ var en_US = {
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
     'user.info.login.browser': 'Browser',//浏览器
+    'user.info.active.email.btn': 'Send Activated Mail',//发送激活邮件
+    'user.info.active.email.tip': 'please activate the mailbox according to the steps in the mail',//请根据邮件内步骤激活邮箱
+    'user.info.active.email.msg': '(Activated mail sent，{sendTime} s)',//(已发送激活邮件{sendTime}s)
     'user.info.active.email': 'Activation email has been sent to {email}, please go to active',//激活邮件已发送至{email},请前往激活
     'user.info.retry': 'Please try again',//请重试
     'user.info.no.active': 'Please {active}',//未激活，请{active}
