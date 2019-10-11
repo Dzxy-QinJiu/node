@@ -651,6 +651,7 @@ var zh_CN = {
     'user.change.email.to': '修改了该用户的邮箱，改为{email}。',
     'user.change.phone.to': '修改了该用户的电话，改为{phone}。',
     'user.change.desc.to': '修改了该用户的备注，改为{description}。',
+    'user.change.expired.status': '将该用户的到期状态改为{status}',
     'fail.to.get.record': '获取用户变更记录失败',
     'user.log.login.fail': '获取登录信息失败！',
     'user.log.get.log.fail': '获取操作日志信息失败！',
