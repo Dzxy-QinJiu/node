@@ -1789,6 +1789,7 @@ var en_US = {
     'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
     'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
     'crm.filter.extract.from.customer.pool': 'Customers extracted from the customer pool',//从客户池中提取的客户
+    'crm.basic.second.level.domain': 'Second-level domain',//二级域名
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
