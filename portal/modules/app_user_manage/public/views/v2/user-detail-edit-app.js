@@ -12,6 +12,7 @@ import AlertTimer from '../../../../../components/alert-timer';
 import OperationStepsFooter from '../../../../../components/user_manage_components/operation-steps-footer';
 import AppUserUtil from '../../util/app-user-util';
 import PropTypes from 'prop-types';
+import {isEqualArray} from 'LIB_DIR/func';
 var LAYOUT_CONSTANTS = AppUserUtil.LAYOUT_CONSTANTS;//右侧面板常量
 
 //记录上下留白布局
@@ -164,34 +165,19 @@ const UserDetailEditApp = createReactClass({
         let originalAppRoles = this.props.appInfo.roles;
         // 修改之后的应用角色
         let changedAppRoles = savedAppSetting.roles;
-        if (originalAppRoles.length !== changedAppRoles.length) {
+        if (!isEqualArray(originalAppRoles, changedAppRoles)) {
             //角色
             submitData.roles = changedAppRoles;
-        } else {
-            for(let i = 0; i < originalAppRoles.length; i++) {
-                if (originalAppRoles[i] !== changedAppRoles[i]) {
-                    submitData.roles = changedAppRoles;
-                    break;
-                }
-            }
         }
 
         // 未修改之前的应用权限
         let originalAppPermissions = this.props.appInfo.permissions;
         // 修改之后的应用权限
         let changedAppPermissions = savedAppSetting.permissions;
-        if (originalAppPermissions.length !== changedAppPermissions.length) {
+        if (!isEqualArray(originalAppPermissions, changedAppPermissions)) {
             //权限
             submitData.permissions = changedAppPermissions;
-        } else {
-            for(let i = 0; i < originalAppRoles.length; i++) {
-                if (originalAppPermissions[i] !== changedAppPermissions[i]) {
-                    submitData.permissions = changedAppPermissions;
-                    break;
-                }
-            }
         }
-        
         //设置user_id
         submitData.user_id = this.props.initialUser.user.user_id;
 
