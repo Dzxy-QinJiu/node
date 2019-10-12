@@ -398,7 +398,14 @@ class AddCustomerForm extends React.Component {
         });
         //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
         var initialValue = this.props.phoneNum || '';
-        var fixedHeight = $(window).height() - this.props.scrollLayOut;
+        var fixedHeight = 0;
+        var addCustomerFormEL = $('#add-customer-form-container');
+        if(this.props.scrollLayOut) {
+            fixedHeight = $(window).height() - this.props.scrollLayOut;
+        }else if(_.get(addCustomerFormEL, 'length')){
+            let offset = addCustomerFormEL.offset();
+            fixedHeight = $(window).height() - _.get(offset, 'top', 0) - 60;
+        }
         let customerName = getFieldValue('name');
         return (
             <div id="add-customer-form-container" style={{height: fixedHeight}} data-tracename="增加客户页面">
