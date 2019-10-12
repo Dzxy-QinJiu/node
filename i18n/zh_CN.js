@@ -3422,6 +3422,8 @@ var zh_CN = {
     'apply.my.self.setting.work.flow': '拜访申请',
     'apply.domain.application.work.flow': '域名申请',
     'apply.domain.descriptipn.reg': '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间',
+    'apply.domain.name.check.err': '二级域名校验失败！',
+    'apply.domain.sub.name.exist': '该域名已存在',
     'apply.approve.set.approver': '指定审批人',
     'apply.select.approver.type': '请选择审批人类型',
     /*自定义流程 end*/

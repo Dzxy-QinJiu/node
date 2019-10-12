@@ -3395,6 +3395,8 @@ var en_US = {
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
     'apply.domain.application.work.flow': 'Domain name application',//域名申请
     'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
+    'apply.domain.name.check.err': 'Second-level domain name verification failed!',//二级域名校验失败！
+    'apply.domain.sub.name.exist': 'The domain already exists',//该域名已存在
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     /*自定义审批 end*/

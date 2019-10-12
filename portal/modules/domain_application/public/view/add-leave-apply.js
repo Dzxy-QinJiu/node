@@ -46,9 +46,6 @@ class AddLeaveApply extends React.Component {
     componentWillUnmount() {
         leaveStore.unlisten(this.onStoreChange);
     }
-
-
-
     handleSubmit = (e) => {
 
         e.preventDefault();
