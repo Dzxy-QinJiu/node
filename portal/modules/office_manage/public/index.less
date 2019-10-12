@@ -133,22 +133,35 @@
 }
 
 // 编辑职务、删除职务、设为默认的样式
-.ant-popover-inner-content {
-  .office-operation-zone {
-    cursor: pointer;
-    color: #8DA8C5;
-    font-size: 14px;
-    .iconfont {
-      padding-right: 5px;
-    }
-    .operation-item-zone {
-      height: 32px;
-      .setting-default {
-        padding-left:20px;
-      }
-      &:hover {
-        color: #2196F3;
-        background-color: #F1F8FE;
+.edit-office-popover {
+  .ant-popover-content > .ant-popover-arrow{
+    display: none;
+  }
+  .ant-popover-content {
+    position: relative;
+    top: -20px;
+    right: -35px;
+    .ant-popover-inner-content {
+      padding: 0;
+      .office-operation-zone {
+        padding: 4px 0;
+        cursor: pointer;
+        color: #8DA8C5;
+        font-size: 14px;
+        .iconfont {
+          padding-right: 5px;
+        }
+        .operation-item-zone {
+          height: 32px;
+          padding: 4px 16px 0 16px;
+          .setting-default {
+            padding-left:20px;
+          }
+          &:hover {
+            color: #2196F3;
+            background-color: #F1F8FE;
+          }
+        }
       }
     }
   }
