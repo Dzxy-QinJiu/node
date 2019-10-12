@@ -192,7 +192,7 @@ class PhonePanel extends React.Component {
             });
         }
     }
-
+    
     setInitialData(phonemsgObj) {
         var phoneNum = '';
         if (phonemsgObj.call_type === 'IN') {
@@ -564,7 +564,6 @@ class PhonePanel extends React.Component {
                         hideAddForm={this.hideAddForm}
                         updateCustomer={this.updateCustomer}
                         showRightPanel={this.showRightPanel}
-                        scrollLayOut={Add_CUSTOMER_LAYOUT_CONSTANTS.BOTTOM_DELTA + Add_CUSTOMER_LAYOUT_CONSTANTS.TOP_DELTA}
                     />
                 </div>
 
