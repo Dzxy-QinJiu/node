@@ -1,3 +1,5 @@
+import { AntcTable } from 'antc';
+
 var React = require('react');
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
@@ -24,6 +26,8 @@ import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
+import {getApplyList} from 'MOD_DIR/user_apply/public/ajax/app-user-ajax';
+import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 
 const PAGE_SIZE = 20;
 const APPLY_TYPES = {
@@ -50,6 +54,21 @@ const USER_TYPE_MAP = {
     'training': Intl.get('user.type.train', '培训'),
     'internal': Intl.get('user.type.employee', '员工')
 };
+//常量定义
+var APPLY_CONSTANTS = {
+    //申请正式用户
+    APPLY_USER_OFFICIAL: 'apply_user_official',
+    //申请试用用户
+    APPLY_USER_TRIAL: 'apply_user_trial',
+    //已有用户开通试用
+    EXIST_APPLY_TRIAL: 'apply_app_trial',
+    //已有用户开通正式
+    EXIST_APPLY_FORMAL: 'apply_app_official',
+    //uem用户申请
+    APPLY_USER: 'apply_user',
+    // 待审批的状态
+    APPLY_STATUS: 0,
+};
 class CustomerUsers extends React.Component {
     constructor(props) {
         super(props);
@@ -65,6 +84,8 @@ class CustomerUsers extends React.Component {
             appList: [],
             applyState: {},
             popoverErrorVisible: false,
+            userApplyList: [],//客户待审批的用户列表
+            isOplateUser: isOplateUser(),
             ... this.getLayoutHeight() //用户列表、申请用户面板的高度
         };
     }
@@ -78,8 +99,8 @@ class CustomerUsers extends React.Component {
     }
 
     componentDidMount() {
-        //获取客户开通的用户列表
-        this.getCrmUserList();
+        //获取客户待审批和已开通的用户列表
+        this.getCrmUserApplyAndPassList();
         //获取应用列表
         this.getAppList();
     }
@@ -89,9 +110,40 @@ class CustomerUsers extends React.Component {
         if (nextProps.curCustomer && nextProps.curCustomer.id !== oldCustomerId) {
             this.setState({curCustomer: nextProps.curCustomer, lastUserId: '', ...this.getLayoutHeight()});
             setTimeout(() => {
-                this.getCrmUserList();
+                this.getCrmUserApplyAndPassList();
             });
         }
+    }
+
+    //获取客户待审批和已开通的用户列表
+    getCrmUserApplyAndPassList() {
+        this.setState({ isLoading: true });
+        let promiseList = [
+            getApplyList({
+                customer_id: this.state.curCustomer.id,
+                approval_state: 'false',
+                page_size: 100
+            }),
+            crmAjax.getCrmUserList({
+                customer_id: this.state.curCustomer.id,
+                id: '',
+                page_size: PAGE_SIZE
+            })
+        ];
+        Promise.all(promiseList).then((result) => {
+            let userApplyList = _.get(result, '[0].list', []);
+            let userList = _.get(result, '[1]', []);
+            this.setState({
+                userApplyList
+            });
+            this.setCrmUserData(userList);
+        }).catch((errorMsg) => {
+            this.setState({
+                isLoading: false,
+                errorMsg: errorMsg,
+                listenScrollBottom: false
+            });
+        });
     }
 
     //获取客户开通的用户列表
@@ -242,6 +294,7 @@ class CustomerUsers extends React.Component {
                     : (<span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>)
                 }
                 <span className="user-app-name">{appName || ''}</span>
+                {/* TODO uem?app.tag:USER_TYPE_MAP[app.user_type]||''*/}
                 <span className="user-app-type">{app.user_type ? USER_TYPE_MAP[app.user_type] : ''}</span>
                 <span className="user-last-login">{lastLoginTime}</span>
                 <span className={overDraftCls}>{this.renderOverDraft(app)}</span>
@@ -509,6 +562,7 @@ class CustomerUsers extends React.Component {
                 cancelApply={this.closeRightPanel.bind(this)}
                 emailData={emailData}
                 maxHeight={this.state.applyFormMaxHeight}
+                afterAddApplySuccess={this.afterAddApplySuccess}
             />
         );
     }
@@ -567,19 +621,170 @@ class CustomerUsers extends React.Component {
     showUserDetail(userId){
         this.props.showUserDetail(userId);
     }
+
+    //申请用户成功，变为待审批状态
+    afterAddApplySuccess =(result) => {
+        let userApplyList = this.state.userApplyList;
+        userApplyList.unshift({
+            message: result
+        });
+        this.setState({userApplyList});
+    };
+
+    //是否是已有用户开通试用
+    //或是否是已有用户开通正式
+    isExistUserApply(userApplyInfo) {
+        userApplyInfo = userApplyInfo || {};
+        if (
+            userApplyInfo.type === APPLY_CONSTANTS.EXIST_APPLY_TRIAL ||
+            userApplyInfo.type === APPLY_CONSTANTS.EXIST_APPLY_FORMAL
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    renderApplyTime(app, isDelay) {
+        let displayStartTime = '', displayEndTime = '', displayText = '';
+        const UNKNOWN = Intl.get('common.unknown', '未知');
+        const FOREVER = Intl.get('common.time.forever', '永久');
+        const CONNECTOR = Intl.get('common.time.connector', '至');
+        //如果没有特殊配置
+        const start_time = moment(new Date(+app.begin_date)).format(oplateConsts.DATE_FORMAT);
+        const end_time = moment(new Date(+app.end_date)).format(oplateConsts.DATE_FORMAT);
+
+        if (app.start_time === '0') {
+            displayStartTime = '-';
+        } else if (start_time === 'Invalid date') {
+            displayStartTime = UNKNOWN;
+        } else {
+            displayStartTime = start_time;
+        }
+        if (app.end_time === '0') {
+            displayEndTime = '-';
+        } else if (end_time === 'Invalid date') {
+            displayEndTime = UNKNOWN;
+        } else {
+            displayEndTime = end_time;
+        }
+        if (displayStartTime === '-' && displayEndTime === '-') {
+            displayText = FOREVER;
+        } else if (displayStartTime === UNKNOWN && displayEndTime === UNKNOWN) {
+            displayText = UNKNOWN;
+        } else {
+            displayText = displayStartTime + CONNECTOR + displayEndTime;
+        }
+        if (isDelay) {
+            displayText = displayEndTime + ' ' + Intl.get('apply.delay.endTime', '到期');
+        }
+        return displayText;
+    }
+
+    renderApplyTitle(app) {
+        const isExistUserApply = this.isExistUserApply(app);
+        const isOplateUser = this.state.isOplateUser;
+        return (
+            <span>
+                <span className="user-app-name">{Intl.get('common.product','产品')}</span>
+                <span className="user-app-type">{Intl.get('common.type', '类型')}</span>
+                {!isExistUserApply && isOplateUser ? <span className="user-app-number">{Intl.get('common.app.count', '数量')}</span> : null}
+            </span>
+        );
+    }
+
+    getUserApplyOptions(apps) {
+        if (_.isArray(apps) && apps.length) {
+            return apps.map((app, index) => {
+                return (<label key={index}>{this.renderUserApplyItem(app)}</label>);
+            });
+        }
+        return [];
+    }
+
+    renderUserApplyItem(app) {
+        const isExistUserApply = this.isExistUserApply(app);
+        let isOplateUser = this.state.isOplateUser;
+        let appName = app && app.client_name || '';
+        return (
+            <span>
+                <span className="crm-user-app-logo-font">{appName.substr(0, 1)}</span>
+                <span className="user-app-name">{appName || ''}</span>
+                <span className="user-app-type">{isOplateUser ? USER_TYPE_MAP[app.tag] : app.tag}</span>
+                {!isExistUserApply && isOplateUser ? <span className="user-app-number">{app.number}</span> : null}
+            </span>);
+    }
+
+    renderUserApplyList(userApplyList) {
+        return userApplyList.map((userObj, index) => {
+            let user = _.isObject(userObj) ? userObj.message : {};
+            let userNameText = `${_.get(user, 'email_user_names', '')}(${_.get(user, 'nick_name', '')})`;
+            let apps = _.get(user, 'products', '');
+            //如果是已有用户申请试用和正式时，不显示
+            if(_.get(user,'type') === APPLY_CONSTANTS.EXIST_APPLY_FORMAL
+                || _.get(user,'type') === APPLY_CONSTANTS.EXIST_APPLY_TRIAL) {
+                return null;
+            }
+            //处理产品应用信息
+            if(apps) {
+                try {
+                    apps = JSON.parse(apps);
+                    let appsName = _.get(user,'email_app_names', '').split('、');
+                    _.each(appsName, (name, index) => {
+                        if(apps[index]) {
+                            apps[index].client_name = name;
+                            apps[index].tag = _.get(user, 'tag', '');
+                            apps[index].type = _.get(user, 'type', '');
+                        }
+                    });
+                }catch (e) {
+                    apps = [];
+                }
+            }else {
+                apps = [];
+            }
+            return (
+                <div className="crm-user-item crm-user-apply-item" key={index}>
+                    <div className="crm-user-name user-apply-name">
+                        <span
+                            className="user-name-text"
+                            title={userNameText}
+                        >
+                            {userNameText}
+                        </span>
+                        <span className="user-apply-state">
+                            <span className="apply-left-bracket">[</span>{Intl.get('user.apply.false', '待审批')}<span className="apply-right-bracket">]</span>
+                        </span>
+                    </div>
+                    <div className="crm-user-apps-container no-checkbox-apps-container user-apply-apps-container">
+                        <div className="crm-user-apps">
+                            <div className="apps-top-title">
+                                <label>{this.renderApplyTitle(apps[0])}</label>
+                            </div>
+                            {this.getUserApplyOptions(apps)}
+                        </div>
+                    </div>
+                </div>
+            );
+        });
+    }
+
     renderCrmUserList(isApplyButtonShow) {
         if (this.state.isLoading) {
             return <Spinner />;
         }
         if (this.state.errorMsg) {
             return <ErrorDataTip errorMsg={this.state.errorMsg} isRetry={true}
-                retryFunc={this.getCrmUserList.bind(this)}/>;
+                // retryFunc={this.getCrmUserList.bind(this)}/>;
+                retryFunc={this.getCrmUserApplyAndPassList.bind(this)}/>;
         }
         let isShowCheckbox = isApplyButtonShow && !this.props.isMerge;
         let crmUserList = this.state.crmUserList;
-        if (_.isArray(crmUserList) && crmUserList.length) {
+        let userApplyList = this.state.userApplyList;
+        if (_.isArray(crmUserList) && crmUserList.length ||
+            _.isArray(userApplyList) && userApplyList.length) {
             return (
                 <ul className="crm-user-list">
+                    {this.renderUserApplyList(userApplyList)}
                     {crmUserList.map((userObj, index) => {
                         let user = _.isObject(userObj) ? userObj.user : {};
                         let userNameText = `${_.get(user, 'user_name', '')}(${_.get(user, 'nick_name', '')})`;
@@ -639,30 +844,54 @@ class CustomerUsers extends React.Component {
         this.getCrmUserList();
     }
 
-    render() {
+    renderTotalBlock = () => {
         const userNum = this.state.total || 0;
+        const userApplyListNum = this.state.userApplyList.length || 0;
+        //合并客户、用户列表下、用户不存在时，总数不可以点击
+        let userNumClass = classNames('user-total-tip', {
+            'user-total-active': !this.props.isMerge && userNum && !this.props.userViewShowCustomerUserListPanel
+        });
+        if(userNum) {
+            return (
+                <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
+                    <ReactIntl.FormattedMessage
+                        id="user.apply.has.been.opened"
+                        defaultMessage={'已开通{count}个'}
+                        values={{'count': userNum || '0'}}
+                    />
+                </span>
+            );
+        }else if(!userApplyListNum) {
+            return (
+                <span className="crm-detail-total-tip">
+                    {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
+                </span>
+            );
+        }
+    };
+
+    render() {
         let isApplyButtonShow = false;
         if ((userData.hasRole(userData.ROLE_CONSTANS.SALES) || userData.hasRole(userData.ROLE_CONSTANS.SALES_LEADER))) {
             isApplyButtonShow = true;
         }
-        //合并客户、用户列表下、用户不存在时，总数不可以点击
-        let userNumClass = classNames('user-total-tip', {'user-total-active': !this.props.isMerge && userNum && !this.props.userViewShowCustomerUserListPanel});
         return (<div className="crm-user-list-container" data-tracename="用户页面">
             <div className="user-number">
-                {this.state.isLoading ? null : userNum ? (
-                    <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
+                {this.state.isLoading ? null : this.renderTotalBlock()}
+                {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
+                    : null}
+            </div>
+            {/*userNum ? (
+            <span className={userNumClass} onClick={this.triggerUserList.bind(this, userNum)}>
                         <ReactIntl.FormattedMessage
                             id="sales.home.total.count"
                             defaultMessage={'共{count}个'}
                             values={{'count': userNum || '0'}}
                         />
                     </span>) : (
-                    <span className="crm-detail-total-tip">
+            <span className="crm-detail-total-tip">
                         {Intl.get('crm.overview.apply.user.tip', '该客户还没有用户')}
-                    </span>)}
-                {isApplyButtonShow && !this.props.isMerge ? this.renderApplyBtns()
-                    : null}
-            </div>
+                    </span>)*/}
             {this.state.applyType ?
                 this.state.applyType === APPLY_TYPES.OPEN_APP || this.state.applyType === APPLY_TYPES.NEW_USERS ?
                     this.renderUserApplyForm() : (

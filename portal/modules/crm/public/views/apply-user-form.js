@@ -42,6 +42,7 @@ const ApplyUserForm = createReactClass({
         customerName: PropTypes.string,
         emailData: PropTypes.obj,
         cancelApply: PropTypes.func,
+        afterAddApplySuccess: PropTypes.func,
         appList: PropTypes.array,
         userType: PropTypes.string,
         customerId: PropTypes.string,
@@ -58,6 +59,7 @@ const ApplyUserForm = createReactClass({
             },
             appList: [],
             userType: '',
+            afterAddApplySuccess: function() {}
         };
     },
     getInitialState: function() {
@@ -450,6 +452,7 @@ const ApplyUserForm = createReactClass({
                     isLoading: false,
                     applyErrorMsg: ''
                 });
+                this.props.afterAddApplySuccess(submitData);
                 this.handleCancel();
             } else {
                 this.setState({

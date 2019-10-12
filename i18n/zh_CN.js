@@ -1356,6 +1356,7 @@ var zh_CN = {
     'user.apply.no.new.refresh.tip': '无新申请',
     'user.apply.last.follow.date': '最新跟进日期',
     'user.apply.approve.no.comment': '暂无申请历史！',
+    'user.apply.has.been.opened': '已开通{count}个',
     // 用户审批end
 
     // 在线用户start
