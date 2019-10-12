@@ -302,6 +302,7 @@ class LeftTree extends React.Component {
                                     ) : (
                                         isShowMoreBtn ? (
                                             <Popover
+                                                overlayClassName="sales-organization-department-popover"
                                                 content={this.renderOperateRootDepartment(item)}
                                                 placement="bottomRight"
                                                 onVisibleChange={this.handlePopOverVisible}
@@ -351,6 +352,7 @@ class LeftTree extends React.Component {
                                         ) : (
                                             isShowMoreBtn && !isAddGroup && !isEditGroup && !isDeleteGroup ? (
                                                 <Popover
+                                                    overlayClassName="sales-organization-department-popover"
                                                     content={this.renderOperateChildTeam(item, type)}
                                                     placement="bottomRight"
                                                     onVisibleChange={this.handlePopOverVisible}

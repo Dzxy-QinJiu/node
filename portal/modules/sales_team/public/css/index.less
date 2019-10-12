@@ -449,6 +449,7 @@
           //没有上级团队的编辑界面高度去掉上级团队选项的高度
           .group-form-no-superior.group-form-div, .group-form-no-superior.group-form-edit-group {
             min-height: @edit-teamName-form-height;
+            padding-left: 8px;
             .edit-sales-team-form {
               min-height: @edit-teamName-form-height;
             }
@@ -677,19 +678,32 @@
 }
 
 // 添加子团队、编辑子团队、删除子团队的样式
-.ant-popover-inner-content {
-  .tree-operation-div {
-    cursor: pointer;
-    color: #8DA8C5;
-    font-size: 14px;
-    .iconfont {
-      padding-right: 5px;
-    }
-    .tree-operation-item-zone {
-      height: 32px;
-      &:hover {
-        color: #2196F3;
-        background-color: #F1F8FE;
+.sales-organization-department-popover {
+  .ant-popover-content > .ant-popover-arrow{
+    display: none;
+  }
+  .ant-popover-content {
+    position: relative;
+    top: -20px;
+    right: -30px;
+    .ant-popover-inner-content {
+      padding: 0;
+      .tree-operation-div {
+        padding: 4px 0;
+        cursor: pointer;
+        color: #8DA8C5;
+        font-size: 14px;
+        .iconfont {
+          padding-right: 5px;
+        }
+        .tree-operation-item-zone {
+          height: 32px;
+          padding: 4px 16px 0 16px;
+          &:hover {
+            color: #2196F3;
+            background-color: #F1F8FE;
+          }
+        }
       }
     }
   }
