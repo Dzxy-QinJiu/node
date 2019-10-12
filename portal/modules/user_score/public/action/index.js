@@ -47,7 +47,7 @@ class UserScoreActions {
             }
 
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
         });
     }
 
@@ -58,10 +58,11 @@ class UserScoreActions {
                 _.isFunction(callback) && callback();
                 this.dispatch({loading: false, error: false});
             }else{
-                this.dispatch({resData: result});
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('common.save.failed', '保存失败')});
             }
         }, (errorMsg) => {
-            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg || Intl.get('common.save.failed', '保存失败')});
         });
     }
 
@@ -74,6 +75,21 @@ class UserScoreActions {
             this.dispatch({loading: false, error: true, errorMsg: error.responseText});
         }
         );
+    }
+    updateEngagementStatus(queryObj,callback) {
+        this.dispatch({loading: true, error: false});
+        userScoreAjax.updateEngagementStatus(queryObj).then((result) => {
+            _.isFunction(callback) && callback(result);
+            if (result) {
+                this.dispatch({loading: false, error: false});
+            } else {
+                this.dispatch({loading: false, error: true, errorMsg: Intl.get('common.save.failed', '保存失败')});
+            }
+
+        }, (errorMsg) => {
+            _.isFunction(callback) && callback(false);
+            this.dispatch({loading: false, error: true, errorMsg: errorMsg});
+        });
     }
 
 
