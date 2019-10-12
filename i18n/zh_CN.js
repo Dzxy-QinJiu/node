@@ -1819,7 +1819,7 @@ var zh_CN = {
     'crm.customer.pool.rule.release.setting': '释放设置',
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
     'crm.filter.extract.from.customer.pool': '从客户池中提取的客户',
-    'crm.basic.second.level.domain': '二级域名',
+    'crm.basic.second.level.domain': '舆情平台域名',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
