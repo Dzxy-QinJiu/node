@@ -3,6 +3,7 @@
  */
 
 require('./style.less');
+import Truncate from 'react-truncated-component';
 import {storageUtil} from 'ant-utils';
 import Store from './store';
 import ajax from 'ant-ajax';
@@ -270,7 +271,11 @@ class CurtaoAnalysis extends React.Component {
 
                                 return (
                                     <div key={pageIndex} className={className}
-                                        onClick={this.handleMenuClick.bind(this, menuIndex, groupIndex, pageIndex)}>{page.title}</div>
+                                        onClick={this.handleMenuClick.bind(this, menuIndex, groupIndex, pageIndex)}>
+                                        <Truncate numberOfLines={1} lineHeight={25}>
+                                            <p title={page.title}>{page.title}</p>
+                                        </Truncate>
+                                    </div>
                                 );
                             })}
                         </Panel>
