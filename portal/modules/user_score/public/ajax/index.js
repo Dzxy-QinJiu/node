@@ -35,3 +35,19 @@ exports.saveUserScoreLists = (queryObj) => {
     });
     return Deferred.promise();
 };
+exports.updateEngagementStatus = (queryObj) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/update/user/score/status',
+        dataType: 'json',
+        type: 'put',
+        data: queryObj,
+        success: (list) => {
+            Deferred.resolve(list);
+        },
+        error: (errorMsg) => {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
