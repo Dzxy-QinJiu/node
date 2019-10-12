@@ -407,6 +407,7 @@ class OfficeManage extends React.Component {
                                                                     {
                                                                         isShowMoreBtn ? (
                                                                             <Popover
+                                                                                overlayClassName="edit-office-popover"
                                                                                 content={this.renderModifyOffice(item)}
                                                                                 placement="bottomRight"
                                                                                 onVisibleChange={this.handleHoverChange}
