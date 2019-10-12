@@ -112,24 +112,6 @@ class CallRecordAnalyis extends React.Component {
         callDeviceTypeEmitter.emit(callDeviceTypeEmitter.CHANGE_CALL_DEVICE_TYPE, value);
     };
 
-    // 渲染通话数量和通话时长的趋势图
-    renderCallTrendChart = () => {
-        const charts = [callChart.getCallNumberTimeTrendChart({Store: this.state})];
-
-        return (
-            <div className="call-trend-container">
-                <div className="call-trend-chart">
-                    <AntcAnalysis
-                        charts={charts}
-                        conditions={this.getConditions()}
-                        emitterConfigList={this.getEmitters()}
-                        isGetDataOnMount={true}
-                    />
-                </div>
-            </div>
-        );
-    };
-
     getConditions() {
         return [
             {
@@ -200,6 +182,8 @@ class CallRecordAnalyis extends React.Component {
 
     getCharts() {
         return [
+            //近一个月的通话趋势
+            callChart.getCallNumberTimeTrendChart({Store: this.state}),
             //通话记录统计
             callChart.getCallRecordChart({
                 Store: this.state
@@ -398,14 +382,7 @@ class CallRecordAnalyis extends React.Component {
                         </div>
                     </TopNav>
                     <div className="call-data-analysis">
-
                         <div className="call-table-container" ref="phoneList">
-                            {/**
-                             *  通话数量和通话时长的趋势图
-                             * */}
-                            <div className="duration-count-chart col-xs-12">
-                                {this.state.teamList.list.length ? this.renderCallTrendChart() : null}
-                            </div>
                             <div style={{height: tableHeight}} className="table-list-containers">
                                 <GeminiScrollBar>
                                     <div className="analysis-wrapper">
