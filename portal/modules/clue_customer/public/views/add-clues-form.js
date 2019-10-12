@@ -19,6 +19,7 @@ import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
 const DIFCONTACTWAY = {
@@ -227,6 +228,54 @@ class ClueAddForm extends React.Component {
             contactErrMsg: ''
         });
     };
+
+    getPhonesArray = () => {
+        let contacts = this.props.form.getFieldValue('contacts');
+        let phoneArray = [];
+        _.each(_.map(contacts,'phone'), phone => {
+            phoneArray = phoneArray.concat(_.map(phone,item => _.trim(item.replace('-', ''))));
+        });
+        return phoneArray;
+    };
+
+    //获取联系人电话验证规则
+    getPhoneInputValidateRules() {
+        return [{
+            validator: (rule, value, callback) => {
+                value = _.trim(value);
+                if (value) {
+                    let phone = value.replace('-', '');
+                    //所有联系人的电话
+                    let phoneArray = this.getPhonesArray();
+                    let phoneCount = _.filter(phoneArray, (curPhone) => curPhone === phone);
+
+                    //该电话列表已存在该电话
+                    if (phoneCount.length > 1) {
+                        //该电话列表已存在该电话，再添加时（重复添加）
+                        callback(Intl.get('crm.83', '该电话已存在'));
+                    } else {//所有联系人的电话列表中不存在该电话
+                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
+                        CrmAction.checkOnlyContactPhone(phone, data => {
+                            if (_.isString(data)) {
+                                //唯一性验证出错了
+                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                            } else {
+                                if (_.isObject(data) && data.result === 'true') {
+                                    callback();
+                                } else {
+                                    //已存在
+                                    callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    callback();
+                }
+            }
+        }];
+    }
+
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
         const formItemLayout = {
@@ -308,6 +357,7 @@ class ClueAddForm extends React.Component {
                                 <DynamicAddDelContact
                                     hideContactRequired={this.hideContactRequired}
                                     validateContactName={contactNameRule()}
+                                    phoneOnlyOneRules={this.getPhoneInputValidateRules()}
                                     form={this.props.form} />
                             </FormItem>
                             {this.renderCheckContactMsg()}
