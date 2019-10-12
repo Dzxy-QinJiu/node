@@ -168,8 +168,9 @@ class ClueAddForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            //是否有联系方式的验证、线索名是否已存在、线索名唯一性验证出错时不能保存
-            if (this.validateContactIsEmpty(values.contacts) || this.state.clueNameExist || this.state.checkNameError) {
+            //是否有联系方式的验证
+            // || this.state.clueNameExist || this.state.checkNameError
+            if (this.validateContactIsEmpty(values.contacts)) {
                 return;
             }
             let submitObj = this.getSubmitObj(values);
@@ -259,22 +260,23 @@ class ClueAddForm extends React.Component {
                     if (phoneCount.length > 1) {
                         //该电话列表已存在该电话，再添加时（重复添加）
                         callback(Intl.get('crm.83', '该电话已存在'));
-                    } else {//所有联系人的电话列表中不存在该电话
-                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                        CrmAction.checkOnlyContactPhone(phone, data => {
-                            if (_.isString(data)) {
-                                //唯一性验证出错了
-                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-                            } else {
-                                if (_.isObject(data) && data.result === 'true') {
-                                    callback();
-                                } else {
-                                    //已存在
-                                    callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
-                                }
-                            }
-                        });
                     }
+                    // } else {//所有联系人的电话列表中不存在该电话
+                    //     //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
+                    //     CrmAction.checkOnlyContactPhone(phone, data => {
+                    //         if (_.isString(data)) {
+                    //             //唯一性验证出错了
+                    //             callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                    //         } else {
+                    //             if (_.isObject(data) && data.result === 'true') {
+                    //                 callback();
+                    //             } else {
+                    //                 //已存在
+                    //                 callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
+                    //             }
+                    //         }
+                    //     });
+                    // }
                 } else {
                     callback();
                 }
@@ -388,9 +390,9 @@ class ClueAddForm extends React.Component {
                                     <Input
                                         name="name"
                                         id="name"
-                                        onBlur={(e) => {
-                                            this.checkOnlyClueName(e);
-                                        }}
+                                        // onBlur={(e) => {
+                                        //     this.checkOnlyClueName(e);
+                                        // }}
                                         placeholder={Intl.get('clue.suggest.input.customer.name', '建议输入客户名称')}
                                     />
                                 )}
