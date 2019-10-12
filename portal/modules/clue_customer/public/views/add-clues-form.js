@@ -281,6 +281,43 @@ class ClueAddForm extends React.Component {
             }
         }];
     }
+    //线索名唯一性验证
+    checkOnlyClueName = (e) => {
+        let clueName = _.trim(this.props.form.getFieldValue('name'));
+        //满足验证条件后再进行唯一性验证
+        if (clueName && nameRegex.test(clueName)) {
+            Trace.traceEvent(e, '添加线索名称');
+            //queryBody: 线索名称, is_term: 是否做完全匹配，值为true/false， callback回调函数
+            let queryBody = {name: clueName};
+            clueCustomerAction.checkOnlyClueNamePhone(queryBody, false, (data) => {
+                let list = _.get(data, 'list');
+                //客户名是否重复
+                let repeatClue = _.some(list, {'name': clueName});
+                if (_.isString(data)) {
+                    //唯一性验证出错了
+                    this.setState({clueNameExist: false, checkNameError: true, existClueList: []});
+                } else if (_.isObject(data)) {
+                    if (!repeatClue) {
+                        //不存在
+                        this.setState({
+                            clueNameExist: false,
+                            checkNameError: false,
+                            existClueList: _.get(data, 'list', [])
+                        });
+                    } else {
+                        //已存在
+                        this.setState({
+                            clueNameExist: true,
+                            checkNameError: false,
+                            existClueList: _.get(data, 'list', [])
+                        });
+                    }
+                }
+            });
+        } else {
+            this.setState({clueNameExist: false, checkNameError: false, existClueList: []});
+        }
+    };
 
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
