@@ -79,11 +79,20 @@ class ContactForm extends React.Component {
         };
     }
 
+    //组件装载后验证完毕
+    isValidatedPhoneOnDidMount = false;
+
     componentDidMount() {
         //如果需要在组件装载后立即校验电话输入框中的内容是否符合规则
         if (this.props.isValidatePhoneOnDidMount) {
-            this.props.form.validateFields();
+            this.props.form.validateFields(() => {
+                this.isValidatedPhoneOnDidMount = true;
+            });
         }
+    }
+
+    componentWillUnmount() {
+        this.isValidatedPhoneOnDidMount = false;
     }
 
     handleSubmit = (e) => {
@@ -292,8 +301,8 @@ class ContactForm extends React.Component {
         let values = this.props.form.getFieldsValue();
         let phoneArray = [];
         _.each(values, (val, key) => {
-            if (key.indexOf(CONTACT_WAY_KEYS_MAP.PHONE) !== -1) {
-                phoneArray.push(_.trim(val));
+            if (val && key.indexOf(CONTACT_WAY_KEYS_MAP.PHONE) !== -1) {
+                phoneArray.push(_.trim(val.replace('-', '')));
             }
         });
         return phoneArray;
@@ -309,19 +318,27 @@ class ContactForm extends React.Component {
                         this.setState({showNeedPhone: false});
                     }
                     let phone = value.replace('-', '');
-                    let contact = this.props.contact.contact;
-                    let phoneArray = contact && _.isArray(contact.phone) ? contact.phone : [];
+                    let phoneArray = [];
+                    //是动态增删联系人时，需要获取其他联系人的电话
+                    if(this.props.isDynamicAddAdnDelContact) {
+                        //获取动态添加的其他联系人里的电话
+                        if(_.isFunction(this.props.getDynamicAddPhones)) {
+                            phoneArray = this.props.getDynamicAddPhones();
+                        }
+                    }else {
+                        let contact = this.props.contact.contact;
+                        phoneArray = contact && _.isArray(contact.phone) ? contact.phone : [];
+                    }
                     //获取当前已添加的电话列表
                     let curPhoneArray = this.getCurPhoneArray();
                     let phoneCount = _.filter(curPhoneArray, (curPhone) => curPhone === phone);
-                    let customerId = this.props.customer_id;
                     //如果需要在组件装载后立即校验电话输入框中的内容是否符合规则
-                    if (this.props.isValidatePhoneOnDidMount) {
+                    if (this.props.isValidatePhoneOnDidMount && !this.isValidatedPhoneOnDidMount) {
                         //用于绕过下面的判断逻辑，直接抵达发请求验证电话是否已存在的地方
                         phoneArray = phoneCount = [];
                     }
 
-                    //该联系人原电话列表中不存在该电话
+                    //（动态增删联系人时，是其他联系人的电话列表）该联系人原电话列表中不存在该电话
                     if (phoneArray.indexOf(phone) === -1) {
                         // TODO 判断当前添加的电话列表中是否已存在该电话
                         if (phoneCount.length > 1) {
@@ -341,15 +358,27 @@ class ContactForm extends React.Component {
                                         callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
                                     }
                                 }
-                            },customerId);
+                            });
                         }
-                    } else {//该联系人员电话列表中已存在该电话
-                        if (phoneCount.length > 1) {
-                            //该联系人中的电话列表已存在该电话，再添加时（重复添加）
-                            callback(Intl.get('crm.83', '该电话已存在'));
-                        } else {
-                            // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
-                            callback();
+                    } else {
+                        //（动态增删联系人时，是其他联系人的电话列表）
+                        if(this.props.isDynamicAddAdnDelContact) {
+                            phoneCount = _.filter(phoneArray, (curPhone) => curPhone === phone);
+                            //其他联系人中的电话列表已存在该电话，再添加时（重复添加）
+                            if(phoneCount.length > 0) {
+                                callback(Intl.get('crm.83', '该电话已存在'));
+                            }else {//不存在时
+                                callback();
+                            }
+                        }else {
+                            //该联系人员电话列表中已存在该电话
+                            if (phoneCount.length > 1) {
+                                //该联系人中的电话列表已存在该电话，再添加时（重复添加）
+                                callback(Intl.get('crm.83', '该电话已存在'));
+                            } else {
+                                // 该联系人原本的电话未做修改时（删除原本的，再添加上时）
+                                callback();
+                            }
                         }
                     }
                 } else {
@@ -734,6 +763,8 @@ ContactForm.defaultProps = {
     isContactWayExpanded: true,
     //是否使用滚动条（默认使用）
     isUseGeminiScrollbar: true,
+    //是否动态增删联系人，需与getDynamicAddPhones方法配合使用，具体看crm-add-form组件使用
+    isDynamicAddAdnDelContact: false,
 };
 ContactForm.propTypes = {
     form: PropTypes.object,
@@ -748,6 +779,7 @@ ContactForm.propTypes = {
     contactListLength: PropTypes.number,
     updateMergeCustomerContact: PropTypes.func,
     updateCustomerDefContact: PropTypes.func,
+    getDynamicAddPhones: PropTypes.func,
     isValidateOnExternal: PropTypes.bool,
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     hasSaveAndCancelBtn: PropTypes.bool,
@@ -755,6 +787,7 @@ ContactForm.propTypes = {
     isRequiredContactName: PropTypes.bool,
     isContactWayExpanded: PropTypes.bool,
     isUseGeminiScrollbar: PropTypes.bool,
+    isDynamicAddAdnDelContact: PropTypes.bool,
 };
 
 let ContactFormWrapper = Form.create()(ContactForm);

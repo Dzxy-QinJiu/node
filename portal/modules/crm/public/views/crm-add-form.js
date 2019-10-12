@@ -386,7 +386,9 @@ class CRMAddForm extends React.Component {
 
     handleDelContact = (index) => {
         let formData = _.cloneDeep(this.state.formData);
+        let contact = formData.contacts[index];
         formData.contacts.splice(index, 1);
+        delete this[`form${contact.uid}Ref`];
         this.setState({formData});
     };
 
@@ -575,6 +577,17 @@ class CRMAddForm extends React.Component {
                                             wrappedComponentRef={ref => this[`form${contact.uid}Ref`] = ref}
                                             contact={{contact}}
                                             height='auto'
+                                            isDynamicAddAdnDelContact
+                                            getDynamicAddPhones={() => {
+                                                let phoneArray = [];
+                                                _.each(contacts, item => {
+                                                    if(item.uid !== contact.uid && this[`form${item.uid}Ref`]) {
+                                                        let curPhoneArray = this[`form${item.uid}Ref`].getCurPhoneArray();
+                                                        phoneArray = phoneArray.concat(curPhoneArray);
+                                                    }
+                                                });
+                                                return phoneArray;
+                                            }}
                                             hasSaveAndCancelBtn={false}
                                             isRequiredContactName={false}
                                             isUseGeminiScrollbar={false}

@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
 import Trace from 'LIB_DIR/trace';
@@ -234,43 +235,52 @@ class ClueAddForm extends React.Component {
         });
     };
 
-    //线索名唯一性验证
-    checkOnlyClueName = (e) => {
-        let clueName = _.trim(this.props.form.getFieldValue('name'));
-        //满足验证条件后再进行唯一性验证
-        if (clueName && nameRegex.test(clueName)) {
-            Trace.traceEvent(e, '添加线索名称');
-            //queryBody: 线索名称, is_term: 是否做完全匹配，值为true/false， callback回调函数
-            let queryBody = {name: clueName};
-            clueCustomerAction.checkOnlyClueNamePhone(queryBody, false, (data) => {
-                let list = _.get(data, 'list');
-                //客户名是否重复
-                let repeatClue = _.some(list, {'name': clueName});
-                if (_.isString(data)) {
-                    //唯一性验证出错了
-                    this.setState({clueNameExist: false, checkNameError: true, existClueList: []});
-                } else if (_.isObject(data)) {
-                    if (!repeatClue) {
-                        //不存在
-                        this.setState({
-                            clueNameExist: false,
-                            checkNameError: false,
-                            existClueList: _.get(data, 'list', [])
-                        });
-                    } else {
-                        //已存在
-                        this.setState({
-                            clueNameExist: true,
-                            checkNameError: false,
-                            existClueList: _.get(data, 'list', [])
+    getPhonesArray = () => {
+        let contacts = this.props.form.getFieldValue('contacts');
+        let phoneArray = [];
+        _.each(_.map(contacts,'phone'), phone => {
+            phoneArray = phoneArray.concat(_.map(phone,item => _.trim(item.replace('-', ''))));
+        });
+        return phoneArray;
+    };
+
+    //获取联系人电话验证规则
+    getPhoneInputValidateRules() {
+        return [{
+            validator: (rule, value, callback) => {
+                value = _.trim(value);
+                if (value) {
+                    let phone = value.replace('-', '');
+                    //所有联系人的电话
+                    let phoneArray = this.getPhonesArray();
+                    let phoneCount = _.filter(phoneArray, (curPhone) => curPhone === phone);
+
+                    //该电话列表已存在该电话
+                    if (phoneCount.length > 1) {
+                        //该电话列表已存在该电话，再添加时（重复添加）
+                        callback(Intl.get('crm.83', '该电话已存在'));
+                    } else {//所有联系人的电话列表中不存在该电话
+                        //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
+                        CrmAction.checkOnlyContactPhone(phone, data => {
+                            if (_.isString(data)) {
+                                //唯一性验证出错了
+                                callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                            } else {
+                                if (_.isObject(data) && data.result === 'true') {
+                                    callback();
+                                } else {
+                                    //已存在
+                                    callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
+                                }
+                            }
                         });
                     }
+                } else {
+                    callback();
                 }
-            });
-        } else {
-            this.setState({clueNameExist: false, checkNameError: false, existClueList: []});
-        }
-    };
+            }
+        }];
+    }
 
     render() {
         const {getFieldDecorator, getFieldValue} = this.props.form;
@@ -357,7 +367,7 @@ class ClueAddForm extends React.Component {
                                 <DynamicAddDelContact
                                     hideContactRequired={this.hideContactRequired}
                                     validateContactName={contactNameRule()}
-                                    phoneOnlyOneRules={getPhoneInputValidateRules()}
+                                    phoneOnlyOneRules={this.getPhoneInputValidateRules()}
                                     form={this.props.form} />
                             </FormItem>
                             {this.renderCheckContactMsg()}

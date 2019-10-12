@@ -30,7 +30,7 @@ var crmRestApis = {
     delRepeatCustomer: '/rest/customer/v2/customer/delete',
     getCustomerById: '/rest/customer/v2/customer/query/1/name/descend',
     mergeRepeatCustomer: '/rest/customer/v3/customer/merge/customer',
-    checkCustomerRepeat: '/rest/customer/v2/customer/repeat/search',
+    checkCustomerRepeat: '/rest/customer/v3/customer/repeat/search',
     getFilterIndustries: '/rest/customer/v3/customer/term/:type/field/industry',
     //获取筛选面板负责人列表
     getOwnerList: '/rest/customer/v2/customer/nickname/:type/500/1',

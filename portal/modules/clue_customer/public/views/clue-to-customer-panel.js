@@ -834,7 +834,7 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     //渲染联系人表单
-    renderContactForm(contact) {
+    renderContactForm(contacts, contact) {
         const contactId = contact.id;
 
         //将联系人对象转换成联系人表单组件需要的形式
@@ -856,6 +856,17 @@ class ClueToCustomerPanel extends React.Component {
                     type="edit"
                     height='auto'
                     contact={contact}
+                    isDynamicAddAdnDelContact
+                    getDynamicAddPhones={() => {
+                        let phoneArray = [];
+                        _.each(contacts, item => {
+                            if(item.id !== contactId && this[`form${item.id}Ref`]) {
+                                let curPhoneArray = this[`form${item.id}Ref`].getCurPhoneArray();
+                                phoneArray = phoneArray.concat(curPhoneArray);
+                            }
+                        });
+                        return phoneArray;
+                    }}
                     notShowFormItems={NOT_SHOW_FORM_ITEMS}
                     isValidateOnExternal
                     isValidatePhoneOnDidMount={true}
@@ -958,7 +969,7 @@ class ClueToCustomerPanel extends React.Component {
                         <GeminiScrollbar>
                             {_.map(this.state.customerContacts, (contact, contactIndex) => {
                                 if (contact.isNew) {
-                                    return this.renderContactForm(contact);
+                                    return this.renderContactForm(this.state.customerContacts, contact);
                                 } else {
                                     return this.renderContact(contact, contactIndex);
                                 }
