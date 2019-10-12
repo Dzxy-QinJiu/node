@@ -1427,7 +1427,7 @@ var en_US = {
     'crm.68': 'Similar customers', // 相似的客户还有
     'crm.69': 'The customer is already taken', // 客户名唯一性校验出错
     'crm.81': 'please enter customer name', // 请填写客户名称
-    'crm.82': 'The phone is already taken', // 电话唯一性验证出错了
+    'crm.82': 'Phone number verification error', // 电话号码验证出错
     'crm.83': 'The phone was existed', // 该电话已存在
     'crm.86': 'Please enter the number of phone', // 请填写电话
     'crm.88': 'Getting a list of industry', // 正在获取行业列表
