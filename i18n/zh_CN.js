@@ -1278,6 +1278,7 @@ var zh_CN = {
     'call.analysis.map.return': '返回上一级',
     'call.analysis.call.title': '通话信息',
     'call.analysis.filter.114': '过滤掉114',
+    'call.analysis.114.proportion.tip': '拨打的114电话占所有电话的比例',
     //通话分析-end
 
     // 用户审批start

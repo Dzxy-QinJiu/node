@@ -1269,6 +1269,7 @@ var en_US = {
     'call.analysis.map.return': 'Back to previous', // 返回上一级
     'call.analysis.call.title': 'Call information', // 通话信息
     'call.analysis.filter.114': 'Do not contain 114',//过滤掉114
+    'call.analysis.114.proportion.tip': '114 calls accounted for a percentage of all calls',//拨打的114电话占所有电话的比例
     //通话分析-end
     // 用户审批start
     'user.apply.all': 'All applications',//全部申请
