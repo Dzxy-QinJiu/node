@@ -182,7 +182,7 @@ class CallRecordAnalyis extends React.Component {
 
     getCharts() {
         return [
-            //近一个月的通话趋势
+            //通话趋势统计
             callChart.getCallNumberTimeTrendChart({Store: this.state}),
             //通话记录统计
             callChart.getCallRecordChart({
