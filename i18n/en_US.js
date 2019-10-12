@@ -1352,6 +1352,7 @@ var en_US = {
     'user.apply.no.new.refresh.tip': 'No new application',//无新申请
     'user.apply.last.follow.date': 'Latest follow up date',//最新跟进日期
     'user.apply.approve.no.comment': 'There is no historical application!',//暂无申请历史！
+    'user.apply.has.been.opened': '{count} has been opened',//已开通{count}个
     // 用户审批end
 
     // 在线用户start

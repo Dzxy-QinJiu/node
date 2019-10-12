@@ -1,6 +1,7 @@
 @import "../../../../public/css/common-variables";
 //客户开通用户的列表
 @click-active-color: #2196f3;
+@pending-font-color: #eda247; //用户待审字体颜色
 .crm-user-list-container {
   float: left;
   width: 100%;
@@ -222,6 +223,52 @@
             }
           }
         }
+      }
+    }
+    //待审批
+    .crm-user-apply-item{
+      .user-apply-name{
+        padding-bottom: 5px;
+        .user-name-text{
+          width: 88%;
+        }
+        .user-apply-state{
+          color: @pending-font-color;
+          font-size: 13px;
+          .apply-left-bracket{
+            padding-right: 2px;
+          }
+          .apply-right-bracket{
+            padding-left: 2px;
+          }
+        }
+      }
+      label{
+        .user-app-type{
+          display: inline-block;
+          width: 80px!important;
+        }
+      }
+      .user-apply-apps-container{
+        .user-app-number{
+          font-weight: normal;
+        }
+        .user-app-name{
+          width: 150px!important;
+        }
+        .apps-top-title{
+          .user-app-name{
+            width: 180px!important;
+          }
+        }
+      }
+    }
+    .ant-table{
+      .user-app-name, .desp_time{
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-wrap: normal;
       }
     }
   }
