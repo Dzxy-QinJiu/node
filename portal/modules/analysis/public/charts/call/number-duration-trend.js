@@ -27,9 +27,6 @@ export function getCallNumberTimeTrendChart(paramObj = {}) {
         argCallback: arg => {
             let query = arg.query;
 
-            //开始时间改为从结束时间往前推一个月
-            query.start_time = moment(query.end_time).subtract(1, 'month').valueOf();
-
             const teamList = _.get(Store, 'teamList.list');
 
             if (
