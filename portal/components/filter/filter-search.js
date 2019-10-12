@@ -170,7 +170,7 @@ class FilterSearch extends React.Component {
                                 <span className={this.state.showList ? 'icon-wrapper active' : 'icon-wrapper'}>
                                     <Icon type="filter" onClick={this.handleToggle.bind(this)} />
                                 </span>
-                                <ul className={this.state.showAddZone ? '' : 'collapse'}>
+                                <ul className={this.state.showAddZone ? 'conserve' : 'collapse'}>
                                     {
                                         this.state.plainFilterList.map((x, idx) => (
                                             <li className="active" key={idx}>
@@ -180,8 +180,7 @@ class FilterSearch extends React.Component {
                                     }
                                 </ul>
                                 <div className="btn-bar">
-                                    <Icon type="bars" title="保存为常用筛选" onClick={this.showAddZone.bind(this, true)} />
-                                    {/* <i className="icon-common-filter" ></i> */}
+                                    <span className="handle-btn-item save-screen" onClick={this.showAddZone.bind(this, true)} >{Intl.get('common.save', '保存')}</span>
                                 </div>
                                 <Popover
                                     overlayClassName="filter-search-confirm-clear-pop"

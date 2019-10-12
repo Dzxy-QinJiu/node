@@ -18,7 +18,7 @@ import {
 } from 'PUB_DIR/sources/utils/consts';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 //行政级别筛选项
-let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
+let filterLevelArray = administrativeLevels;
 
 
 let otherFilterArray = [

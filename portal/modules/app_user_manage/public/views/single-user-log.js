@@ -16,6 +16,7 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 import { AntcTimeLine } from 'antc';
 const TOP_PADDING = 40;//top padding for inputs（时间选择框和搜索框高度）
 const APP_SELECT_HEIGHT = 40; // 应用选择框的高度
+const BOTTOM_TOTAL_HEIGHT = 50; // 记录总条数的高度
 
 class SingleUserLog extends React.Component {
     static defaultProps = {
@@ -332,6 +333,11 @@ class SingleUserLog extends React.Component {
         if (this.props.selectedAppId === '') { // 全部应用下，需要显示应用选择框
             scrollBarHeight -= APP_SELECT_HEIGHT; // 应用选择框的高度
         }
+        let length = _.get(this.state.auditLogList, 'length', 0);
+        if (length) {
+            scrollBarHeight -= BOTTOM_TOTAL_HEIGHT;
+        }
+
         return (
             <div style={{ height: scrollBarHeight }} className="log-info">
                 {/**搜索框 */}

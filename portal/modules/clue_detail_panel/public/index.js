@@ -87,7 +87,11 @@ class ClueDetailPanel extends React.Component {
         phoneAlertStore.listen(this.onStoreChange);
         let phonemsgObj = this.getPhonemsgObj(this.props.paramObj);
         //通话状态下的处理
-        if (phonemsgObj) {
+        if (!_.isEmpty(phonemsgObj)) {
+            //phonemsgObj不为空,说明是有电话面板，比如直接在导航左侧的面板上拨打电话，不会走到willReceive中，此时如果不设置hasPhonePanel为true会影响线索详情高度的计算
+            this.setState({
+                hasPhonePanel: true
+            });
             //如果是从线索详情中打的电话，则不需要再获取线索详情
             if (!this.isClueDetailCall(this.props.paramObj)) {
                 //根据线索的id获取线索的详情
@@ -516,6 +520,7 @@ class ClueDetailPanel extends React.Component {
         let customerOfCurUser = this.state.customerOfCurUser;
         var item = this.getCurClueObj();
         var showMarkClueInvalid = item ? item.availability === AVALIBILITYSTATUS.AVALIBILITY : true;
+        var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(this.state, 'paramObj.clue_params.curClue',{});
         return (
             <div data-tracename="电话弹屏" id="clue-phone-status-content">
                 <div className={AddMoreInfoCls}>
@@ -533,7 +538,7 @@ class ClueDetailPanel extends React.Component {
                         isAddingPlanInfo={this.state.isAddingPlanInfo}
                         commonPhoneDesArray={cluePhoneDesArray}
                         showMarkClueInvalid={showMarkClueInvalid}
-                        curClue={_.get(this,'state.paramObj.clue_params.curClue',{})}
+                        curClue={curClue}
                     />
                     {this.renderMainContent()}
                     {!this.isClueDetailCall(this.state.paramObj) ? //不是从线索详情中拨打的电话时

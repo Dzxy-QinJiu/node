@@ -407,7 +407,7 @@ class CustomerPool extends React.Component {
                     return userData.getUserData().isCommonSales ? (
                         <Popconfirm
                             placement="left"
-                            title={Intl.get('crm.pool.single.extract.tip', '您确定要提取此客吗？')}
+                            title={Intl.get('crm.pool.single.extract.tip', '您确定要提取此客户吗？')}
                             onConfirm={this.singleExtractCustomer.bind(this, record)}
                         >
                             {extractIcon}
@@ -598,7 +598,7 @@ class CustomerPool extends React.Component {
                 //普通销售可以直接将客户提取到自己身上
                 if (userData.getUserData().isCommonSales) {
                     return (<Popconfirm
-                        title={Intl.get('crm.pool.batch.extract.tip', '您确定要提取选中的客吗？')}
+                        title={Intl.get('crm.pool.batch.extract.tip', '您确定要提取选中的客户吗？')}
                         onConfirm={this.batchExtractCustomer}
                     >
                         {batchExtractBtn}

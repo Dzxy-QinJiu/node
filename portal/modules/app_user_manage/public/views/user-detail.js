@@ -13,8 +13,8 @@ var TabPane = Tabs.TabPane;
 var AppUserAction = require('../action/app-user-actions');
 var AppUserDetailAction = require('../action/app-user-detail-actions');
 var UserDetailBasic = require('./user-detail-basic');
-var SingleUserLog = require('./single-user-log');
 import UserLoginAnalysis from './user-login-analysis';
+var SingleUserLog = require('./single-user-log');
 var UserDetailChangeRecord = require('./user-detail-change-record');
 var UserAbnormalLogin = require('./user-abnormal-login');
 var AppUserPanelSwitchStore = require('../store/app-user-panelswitch-store');
@@ -37,7 +37,7 @@ import UserStatusSwitch from './user-status-switch';
 import { getPassStrenth, passwordRegex } from 'CMP_DIR/password-strength-bar';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
+
 
 class UserDetail extends React.Component {
     static defaultProps = {
@@ -48,18 +48,14 @@ class UserDetail extends React.Component {
 
     state = {
         activeKey: '1',//tab激活页的key
-        //用户基本信息
-        userInfo: {
-            data: null,
-            loading: false,
-            erorMsg: ''
-        },
         showBasicDetail: true,//是否展示顶部用户信息
         showEditPw: false,
-        ...AppUserPanelSwitchStore.getState()
+        ...AppUserPanelSwitchStore.getState(),
+        ...AppUserDetailStore.getState()
     };
     componentWillReceiveProps(nextProps) {
         if (nextProps.userId !== this.props.userId) {
+            AppUserDetailAction.getUserDetail(nextProps.userId);
             $(this.refs.wrap).removeClass('move_left');
             $(this.refs.topWrap).removeClass('move-left-wrapper');
             // 若当前tab页是异常登录，切换用户时，若此用户没有异常登录项，则返回到基本资料
@@ -68,6 +64,7 @@ class UserDetail extends React.Component {
                     activeKey: '1'
                 });
             }
+
         }
     }
     
@@ -77,6 +74,11 @@ class UserDetail extends React.Component {
 
     onStoreChange = () => {
         var stateData = AppUserPanelSwitchStore.getState();
+        this.setState(stateData);
+    };
+
+    onDetailStoreChange = () => {
+        var stateData = AppUserDetailStore.getState();
         this.setState(stateData);
     };
 
@@ -119,10 +121,11 @@ class UserDetail extends React.Component {
     componentDidMount() {
         $(window).on('resize', this.reLayout);
         AppUserPanelSwitchStore.listen(this.onStoreChange);
+        AppUserDetailStore.listen(this.onDetailStoreChange);
         this.getIntegrateConfig();
+        AppUserDetailAction.getUserDetail(this.props.userId);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
-        userBasicInfoEmitter.on(userBasicInfoEmitter.GET_USER_BASIC_INFO, this.getBasicInfo);
         let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
         if (scrollWrapElem) {
             scrollWrapElem.addEventListener('mousewheel', this.handleWheel, false);
@@ -132,9 +135,9 @@ class UserDetail extends React.Component {
     componentWillUnmount() {
         $(window).off('resize', this.reLayout);
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
+        AppUserDetailStore.unlisten(this.onDetailStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_RIGHT, this.panelSwitchRight);
-        userBasicInfoEmitter.removeListener(userBasicInfoEmitter.GET_USER_BASIC_INFO, this.getBasicInfo);
         let scrollWrapElem = document.querySelector('.user_manage_user_detail .gm-scroll-view');
         if (scrollWrapElem) {
             scrollWrapElem.removeEventListener('mousewheel', this.handleWheel, false);
@@ -178,12 +181,6 @@ class UserDetail extends React.Component {
             activeKey: key
         }, () => {
             document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
-        });
-    };
-
-    getBasicInfo = (userInfo) => {
-        this.setState({
-            userInfo
         });
     };
 
@@ -268,9 +265,10 @@ class UserDetail extends React.Component {
     };
 
     render() {
-        let { userInfo } = this.state;
-        let loading = this.state.userInfo.loading;
-        let errorMsg = this.state.userInfo.errorMsg;
+        let userInfo = {data: _.get(this.state.initialUser, 'user')};
+        let appLists = _.get(this.state.initialUser, 'apps', []);
+        let loading = this.state.isLoading;
+        let errorMsg = this.state.getDetailErrorMsg;
         //内容区高度        
         let contentHeight = $(window).height() - LAYOUT_CONSTANTS.TOP_DELTA - LAYOUT_CONSTANTS.BOTTOM_DELTA - LAYOUT_CONSTANTS.BASIC_TOP - LAYOUT_CONSTANTS.USER_DETAIL;
         //用户详细信息高度
@@ -294,11 +292,11 @@ class UserDetail extends React.Component {
             let { thirdApp } = this.state;
             switch (this.state.panel_switch_currentView) {
                 case 'app':
-                    var initialUser = AppUserDetailStore.getState().initialUser;
+                    var initialUser = this.state.initialUser;
                     moveView = (<UserDetailAddApp height={contentHeight} initialUser={initialUser} />);
                     break;
                 case 'editapp':
-                    var initialUser = AppUserDetailStore.getState().initialUser;
+                    var initialUser = this.state.initialUser;
                     var appInfo = this.state.panel_switch_appToEdit;
                     moveView = (
                         <UserDetailEditApp
@@ -332,7 +330,6 @@ class UserDetail extends React.Component {
                         userId={this.props.userId}
                         selectApp={selectApp}
                         ref={ref => this.userDetailRef = ref}
-                        getBasicInfo={this.getBasicInfo}
                         userConditions={userConditions}
                     />
                 </div> : null}
@@ -348,6 +345,7 @@ class UserDetail extends React.Component {
                                     height={contentHeight}
                                     userId={this.props.userId}
                                     selectedAppId={this.props.selectedAppId}
+                                    appLists={appLists}
                                 />
                             </div> : null
                     }
@@ -360,7 +358,7 @@ class UserDetail extends React.Component {
                             height={contentHeight}
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
-                            appLists={this.props.appLists}
+                            appLists={appLists}
                             operatorRecordDateSelectTime={this.props.operatorRecordDateSelectTime}
                         />
                     </div> : null}
@@ -375,6 +373,7 @@ class UserDetail extends React.Component {
                             height={contentHeight}
                             userId={this.props.userId}
                             selectedAppId={this.props.selectedAppId}
+                            appLists={appLists}
                         />
                     </div> : null}
                 </TabPane>
@@ -391,6 +390,7 @@ class UserDetail extends React.Component {
                                     height={contentHeight}
                                     userId={this.props.userId}
                                     selectedAppId={this.props.selectedAppId}
+                                    appLists={appLists}
                                 />
                             </div> : null
                     }

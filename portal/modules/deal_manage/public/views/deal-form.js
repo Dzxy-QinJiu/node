@@ -153,8 +153,14 @@ class DealForm extends React.Component {
                 formData={{
                     name: customerName
                 }}
+                afterAddCustomer={this.afterAddCustomer}
             />
         );
+    };
+    //添加客户成功回调
+    afterAddCustomer = (result) => {
+        let customerName = _.get(result,'[0].name','');
+        this.customerSuggestRef && this.customerSuggestRef.suggestChange(customerName);
     };
     //关闭添加面板
     hideAddForm = () => {
@@ -217,6 +223,7 @@ class DealForm extends React.Component {
                                 initialValue: ''
                             })(
                                 <CustomerSuggest
+                                    ref={ref => this.customerSuggestRef = ref}
                                     field='customer'
                                     hasEditPrivilege={true}
                                     displayText={''}

@@ -4,10 +4,10 @@
  * Created by sunqingfeng on 2019/8/2.
  */
 function ignoreCase(input, option){
-     let optionToLower = _.toLower(option.props.children);
-     let inputToLower = _.toLower(input);
+    let optionToLower = _.toLower(option.props.children);
+    let inputToLower = _.toLower(_.trim(input));
 
-     return optionToLower.indexOf(inputToLower) >= 0;
+    return optionToLower.indexOf(inputToLower) >= 0;
 }
 
 export { ignoreCase };

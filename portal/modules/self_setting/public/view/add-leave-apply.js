@@ -131,7 +131,6 @@ class AddLeaveApply extends React.Component {
         return (
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
-                addOne = {this.addOne}
             />
         );
     };
@@ -174,7 +173,7 @@ class AddLeaveApply extends React.Component {
             },
         };
         let saveResult = this.state.saveResult;
-        var workConfig = user.workFlowConfigs[0];
+        var workConfig = _.find(_.get(user, 'workFlowConfigs'),item => item.type === SELF_SETTING_FLOW.VISITAPPLY);
         var customizForm = workConfig.customiz_form;
         return (
             <RightPanel showFlag={true} data-tracename="添加拜访申请" className="add-leave-container">

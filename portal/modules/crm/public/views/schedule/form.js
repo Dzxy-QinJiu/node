@@ -52,7 +52,7 @@ var CrmAlertForm = createReactClass({
     },
     getInitialState: function() {
         var formData = this.getInitialFormData(this.props);
-        var selectedAlertTimeRange = 'not_remind';
+        var selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
         return {
             formData: formData,
             isLoading: false,
@@ -82,7 +82,7 @@ var CrmAlertForm = createReactClass({
         //联系的结束时间
         formData.end_time = moment().add(TIME_CALCULATE_CONSTS.ONE_POINT_FIVE, 'h').valueOf();
         //默认不提醒
-        formData.alert_time = '';
+        formData.alert_time = TIME_TYPE_CONSTS.AHEAD_5_MIN;
         return formData;
     },
     //还原初值
@@ -91,7 +91,7 @@ var CrmAlertForm = createReactClass({
         this.setState({
             formData,
             selectedTimeRange: '1h',
-            selectedAlertTimeRange: 'not_remind',
+            selectedAlertTimeRange: TIME_TYPE_CONSTS.AHEAD_5_MIN,
             topicValue: props.topicValue,
         });
     },

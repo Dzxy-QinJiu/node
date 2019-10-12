@@ -15,7 +15,6 @@ var CrmStore = require('./store/crm-store');
 var FilterStore = require('./store/filter-store');
 var FilterAction = require('./action/filter-actions');
 var CrmAction = require('./action/crm-actions');
-// var CRMAddForm = require('./views/crm-add-form');
 var CRMAddForm = require('./views/crm-add-form');
 var CrmFilter = require('./views/crm-filter');
 var CrmFilterPanel = require('./views/crm-filter-panel');
@@ -547,9 +546,8 @@ class Crm extends React.Component {
         $('.ant-table-row').removeClass('current-row');
     };
 
-    addOne = (customer) => {
+    afterAddCustomer = (customer) => {
         this.upDateGuideMark();
-        this.state.isAddFlag = false;
         this.state.isScrollTop = true;
         this.setState(this.state);
     };
@@ -1940,7 +1938,7 @@ class Crm extends React.Component {
                                         </Button> : 
                                         <Popconfirm placement="topRight" 
                                             onConfirm={this.confirmDelete.bind(this,record.id)}
-                                            title={Intl.get('crm.customer.delete', '删除后，您可以从回收站中找回客户')}>
+                                            title={Intl.get('crm.customer.delete', '删除后，可以在回收站中找回该客户，您确定要删除吗？')}>
                                             <a className='release-customer'
                                                 title={Intl.get('common.delete', '删除')}>
                                                 <i className="iconfont icon-delete order-btn-class handle-btn-item"></i>
@@ -1950,7 +1948,7 @@ class Crm extends React.Component {
                             </span>
                             {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
                                 <Popconfirm placement="topRight" onConfirm={this.releaseCustomer.bind(this, record.id)}
-                                    title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确认释放吗？')}>
+                                    title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？')}>
                                     <a className='release-customer'
                                         title={Intl.get('crm.customer.release', '释放')}>
                                         <i className="iconfont icon-release handle-btn-item"/>
@@ -2031,7 +2029,7 @@ class Crm extends React.Component {
                 {this.state.isAddFlag ? (
                     <CRMAddForm
                         hideAddForm={this.hideAddForm}
-                        addOne={this.addOne}
+                        afterAddCustomer={this.afterAddCustomer}
                         showRightPanel={this.showRightPanel}
                     />
                 ) : null}

@@ -72,10 +72,11 @@ exports.checkWechat = (rule,value,callback) => {
     if(value) {
         if((commonPhoneRegex.test(value)) || 
         (wechatRegex.test(value)) || 
-        (qqRegex.test(value))){
+        (qqRegex.test(value)) ||
+        (emailRegex.test(value))){
             callback();
         }else{
-            callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号')));
+            callback(new Error(Intl.get('common.correct.wechat','请输入正确的微信号/手机号/QQ号/邮箱')));
         }
     }else{
         if (rule.required) {
@@ -187,7 +188,8 @@ export const clueAssignmentStrategy = {
 };
 // 用户名校验规则（字母、数字、横线或下划线组成的字符）
 export const userNameRule = /^[a-zA-Z0-9_-]{1,50}$/;
-
+//域名的校验规则 (由字母、数字、中划线组成的1~32位字符且不能以中划线开头或结尾)
+export const domainNameRule = /^(?!-)(?!.*-$)[a-zA-Z0-9-]{1,32}$/;
 // 用户名的校验规则
 export const userNameValidationRules = {
     required: true,
@@ -203,7 +205,7 @@ export const nameRule = (name) => {
     return {
         required: true,
         pattern: nameLengthRuleRegex,
-        message: Intl.get('common.name.rule', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间', {name: name}),
+        message: Intl.get('common.name.rule', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间', {name: name}),
     };
 };
 
@@ -211,6 +213,6 @@ export const nameRule = (name) => {
 export const validatorNameRuleRegex = (length, name) => {
     return {
         pattern: regex.getNameRegex(length),
-        message: Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到{length}（包括{length}）之间', {name: name, length: length}),
+        message: Intl.get('common.name.rule.regex', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到{length}（包括{length}）之间', {name: name, length: length}),
     };
 };

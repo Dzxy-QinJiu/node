@@ -440,7 +440,7 @@ class CustomerStageDetailPanel extends React.Component {
                     callback();
                 }
             } else {
-                callback(Intl.get('common.name.rule', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到50（包括50）之间', {name: Intl.get('weekly.report.customer.stage', '客户阶段')}));
+                callback(Intl.get('common.name.rule', '{name}名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号，且长度在1到50（包括50）之间', {name: Intl.get('weekly.report.customer.stage', '客户阶段')}));
             }
         };
     };

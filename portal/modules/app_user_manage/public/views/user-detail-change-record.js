@@ -22,7 +22,7 @@ import StatusWrapper from 'CMP_DIR/status-wrapper';
 import ShearContent from '../../../../components/shear-content';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 var Option = Select.Option;
-
+import {CHANGE_RECORD_TYPE} from 'PUB_DIR/sources/utils/consts';
 //高度常量
 var LAYOUT_CONSTANTS = {
     RIGHT_PANEL_PADDING_TOP: 20,//右侧面板顶部padding
@@ -48,10 +48,8 @@ class UserDetailChangeRecord extends React.Component {
 
     componentDidMount() {
         UserDetailChangeRecordStore.listen(this.onStateChange);
-        let userId = this.props.userId;
-        UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
-            this.showSelectedApp(this.props, queryObj);
-        });
+        let appLists = this.props.appLists;
+        this.showSelectedApp(this.props, appLists);
     }
 
     //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
@@ -59,7 +57,7 @@ class UserDetailChangeRecord extends React.Component {
         var appId = props.selectedAppId;
         //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
         if (appId) {
-            var selectedApp = _.find(this.state.appLists, (item) => {
+            var selectedApp = _.find(this.props.appLists, (item) => {
                 return item.app_id === appId;
             });
             var appName = selectedApp && selectedApp.app_name ? selectedApp.app_name : '';
@@ -67,8 +65,10 @@ class UserDetailChangeRecord extends React.Component {
                 UserDetailChangeRecordAction.setApp(appName);
             }
         } else {
-            appId = queryObj.app_id;
-            UserDetailChangeRecordAction.setApp(this.state.app);
+            if (!_.isEmpty(queryObj)) {
+                appId = queryObj[0].app_id;
+                UserDetailChangeRecordAction.setApp(queryObj[0].app_name);
+            }
         }
         this.getUserDetailChangeRecord({
             app_id: appId + ',everyapp',
@@ -83,13 +83,11 @@ class UserDetailChangeRecord extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.userId !== this.props.userId) {
+        const userId = nextProps.userId;
+        if (userId !== this.props.userId) {
             //dispatch过程中不能再dispatch，加延时，两个dispatch发送错开时间
-            var userId = nextProps.userId;
             setTimeout(() => {
-                UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
-                    this.showSelectedApp(nextProps, queryObj);
-                });
+                this.showSelectedApp(nextProps, nextProps.appLists);
             });
         }
     }
@@ -99,11 +97,16 @@ class UserDetailChangeRecord extends React.Component {
     }
 
     renderTimeLineItem = (item) => {
-        var desc = item.operator_aka;
-        //角色 类型 状态 昵称 密码 邮箱 电话 备注
-        var role = '', tags = '', tagName = '', status = '', nickname = '', password = '', email = '', phone = '', description = '', timerange = '', begin = ' ', end = ' ', overdraft = '', istwofactor = '', mutilogin = '';
-        if (item.detail.tags) {
-            switch (item.detail.tags) {
+
+        let operatePerson = _.get(item, 'operator_aka'); // 谁做了变更
+        let operateType = _.get(item, 'operate'); // 变更类型
+        let operateDetail = _.get(item, 'detail'); // 具体变更了什么
+        let operateTime = _.get(item, 'record_time'); // 具体变的时间
+
+        let userType = _.get(operateDetail, 'tags');
+        let tagName = '';
+        if (userType) {
+            switch (userType) {
                 case 'internal':
                     tagName = '员工';
                     break;
@@ -119,77 +122,119 @@ class UserDetailChangeRecord extends React.Component {
                 case '试用用户':
                     tagName = '试用';
                     break;
-                default:
-                    tagName = '';
+            }
+        }
+
+        let role = _.get(operateDetail, 'roles'); // 修改用户角色
+        let status = _.get(operateDetail, 'status'); // 修改用户状态
+        let beginTime = _.get(operateDetail, 'begin'); // 修改授权的开始时间
+        let endTime = _.get(operateDetail, 'end'); // 修改授权的结束时间
+        let overDraft = _.get(operateDetail, 'overDraft'); // 修改了过期停用
+        let isTwoFactor = _.get(operateDetail, 'isTwoFactor'); // 修改了二步认证
+        let mutilogin = _.get(operateDetail, 'mutilogin'); // 修改了多人登录
+
+        let nickName = _.get(operateDetail, 'nick_name'); // 修改用户昵称
+        let password = _.get(operateDetail, 'password'); // 修改了密码
+        let email = _.get(operateDetail, 'email'); // 修改了邮箱
+        let phone = _.get(operateDetail, 'phone'); // 修改了手机号
+        let description = _.get(operateDetail, 'description'); // 修改了备注
+
+
+        if (operateDetail) {
+            switch (operateType) {
+                case CHANGE_RECORD_TYPE.grantCreate: //授权的创建
+                {
+                    operatePerson += Intl.get('user.create.this.user', '创建了该用户');
+                    if (role) {
+                        operatePerson += Intl.get('user.role.is', '角色为{role}。', { 'role': role });
+                    }
+                    if (userType) {
+                        operatePerson += Intl.get('user.tag.is', '类型为{tag}。', { 'tag': tagName });
+                    }
+                    break;
+                }
+                case CHANGE_RECORD_TYPE.grantUpdate: //授权的更新
+                {
+                    if (status) { // 修改了用户的状态
+                        if (status === '0') {
+                            operatePerson += Intl.get('user.disabled.this.user.on.app', '停用了该用户在此应用的授权');
+                        } else {
+                            operatePerson += Intl.get('user.enabled.this.user.on.app', '启用了该用户在此应用的授权');
+                        }
+                    }
+                    if (role) { // 修改了用户的角色
+                        operatePerson += Intl.get('user.change.role.to', '修改了该用户的角色，改为{role}。', { 'role': role });
+                    }
+                    if (userType) { // 修改了用户的类型
+                        operatePerson += Intl.get('user.change.tag.to', '修改了该用户的类型，改为{tag}。', { 'tag': tagName });
+                    }
+                    if (beginTime || endTime) { // 授权时间
+                        operatePerson += Intl.get('user.change.grant.time', '将该用户的授权时间改为从{begin}到{end}。',
+                            {'begin': moment(parseFloat(beginTime)).format(oplateConsts.DATE_FORMAT), 'end': moment(parseFloat(endTime)).format(oplateConsts.DATE_FORMAT)});
+                    }
+                    if (overDraft) { // 修改了过期停用
+                        if (overDraft === '0') {
+                            operatePerson += Intl.get('user.change.expired.status', '将该用户的到期状态改为{statue}。', {status: Intl.get('user.status.immutability', '不变')});
+                        } else if( overDraft === '1'){
+                            operatePerson += Intl.get('user.change.expired.status', '将该用户的到期状态改为{statue}。', {status: Intl.get('user.status.stop', '停用')});
+                        } else if( overDraft === '2'){
+                            operatePerson += Intl.get('user.change.expired.status', '将该用户的到期状态改为{statue}。', {status: Intl.get('user.status.degrade', '降级')});
+                        }
+                    }
+                    if (isTwoFactor) { // 修改了二步认证
+                        if (isTwoFactor === '0') {
+                            operatePerson += Intl.get('user.close.twofactor', '关闭了二步认证。');
+                        } else {
+                            operatePerson += Intl.get('user.open.twofactor', '开启了二步认证。');
+                        }
+                    }
+                    if (mutilogin) { // 修改了多人登录
+                        if (mutilogin === '0') {
+                            operatePerson += Intl.get('user.close.multilogin', '关闭了多人登录。');
+                        } else {
+                            operatePerson += Intl.get('user.open.multilogin', '开启了多人登录。');
+                        }
+                    }
+                    break;
+                }
+                case CHANGE_RECORD_TYPE.userInfoUpdate: // 修改用户的基本信息
+                    if (status) { // 修改了用户的状态
+                        if (status === '0') {
+                            operatePerson += Intl.get('user.disabled.this.user.on.app', '停用了该用户在此应用的授权');
+                        } else {
+                            operatePerson += Intl.get('user.enabled.this.user.on.app', '启用了该用户在此应用的授权');
+                        }
+                    } else if (nickName) { //修改了昵称
+                        operatePerson += Intl.get('user.change.nick_name.to', '修改了该用户的昵称，改为{nick_name}。', { 'nick_name': nickName });
+                    } else if (password) { //修改了密码
+                        operatePerson += Intl.get('user.change.user.password', '修改了该用户的密码。');
+                    } else if (email) { //修改了邮箱
+                        operatePerson += Intl.get('user.change.email.to', '修改了该用户的邮箱，改为{email}。', { 'email': email });
+                    } else if (phone) { //修改了手机号
+                        operatePerson += Intl.get('user.change.phone.to', '修改了该用户的电话，改为{phone}。', { 'phone': phone });
+                    } else if (description) { //修改了备注
+                        operatePerson += Intl.get('user.change.desc.to', '修改了该用户的备注，改为{description}。', { 'description': description });
+                    }
                     break;
             }
         }
-        if (item.operate === 'GrantCreate' && item.detail) {
-            //授权的创建
-            desc += Intl.get('user.create.this.user', '创建了该用户');
-            //角色描述
-            item.detail.roles && (role += Intl.get('user.role.is', '角色为{role}。', { 'role': item.detail.roles }));
-            //类型描述
-            item.detail.tags && (tags += Intl.get('user.tag.is', '类型为{tag}。', { 'tag': tagName }));
-            desc = desc + role + tags;
-        } else if (item.operate === 'GrantUpdate' && item.detail) {
-            //授权的更新
-            //修改了用户的状态
-            item.detail.status && (item.detail.status === '0' ? (status += Intl.get('user.disabled.this.user.on.app', '停用了该用户在此应用的授权')) : (status += Intl.get('user.enabled.this.user.on.app', '启用了该用户在此应用的授权')));
-            //修改了用户的角色
-            item.detail.roles && (role += Intl.get('user.change.role.to', '修改了该用户的角色，改为{role}。', { 'role': item.detail.roles }));
-            //修改了用户的类型
-            item.detail.tags && (tags += Intl.get('user.change.tag.to', '修改了该用户的类型，改为{tag}。', { 'tag': tagName }));
-            //授权时间
-            if (item.detail.begin) {
-                begin = moment(parseFloat(item.detail.begin)).format(oplateConsts.DATE_FORMAT);
-            }
-            if (item.detail.end) {
-                end = moment(parseFloat(item.detail.end)).format(oplateConsts.DATE_FORMAT);
-            }
-            (item.detail.begin || item.detail.end) && (timerange += Intl.get('user.change.grant.time', '将该用户的授权时间改为从{begin}到{end}。', { 'begin': begin, 'end': end }));
-            //是否过期停用
-            item.detail.overDraft && (item.detail.overDraft === '0' ? (overdraft += Intl.get('user.cancel.overdraft', '取消了到期停用。')) : (overdraft += Intl.get('user.setting.overdraft', '设置了到期停用。')));
-            //是否二步认证
-            item.detail.isTwoFactor && (item.detail.isTwoFactor === '0' ? (istwofactor += Intl.get('user.close.twofactor', '关闭了二步认证。')) : (istwofactor += Intl.get('user.open.twofactor', '开启了二步认证。')));
-            //是否多人登录
-            item.detail.mutilogin && (item.detail.mutilogin === '0' ? (mutilogin += Intl.get('user.close.multilogin', '关闭了多人登录。')) : (mutilogin += Intl.get('user.open.multilogin', '开启了多人登录。')));
 
-            desc = desc + status + role + tags + timerange + overdraft + istwofactor + mutilogin;
-        } else if (item.operate === 'UserInfoUpdate' && item.detail) {
-            //基本信息的修改
-            //修改了用户的状态
-            item.detail.status && (item.detail.status === '0' ? (status += Intl.get('user.disabled.this.user', '关闭了在该应用下的授权。')) : (status += Intl.get('user.enabled.this.user', '启用了在该应用下的授权。')));
-            //修改了昵称
-            item.detail.nick_name && (nickname += Intl.get('user.change.nick_name.to', '修改了该用户的昵称，改为{nick_name}。', { 'nick_name': item.detail.nick_name }));
-            // 修改了密码
-            item.detail.password && (password += Intl.get('user.change.user.password', '修改了该用户的密码。'));
-            // 修改了邮箱
-            item.detail.email && (email += Intl.get('user.change.email.to', '修改了该用户的邮箱，改为{email}。', { 'email': item.detail.email }));
-            // 修改了备注
-            item.detail.phone && (phone += Intl.get('user.change.phone.to', '修改了该用户的电话，改为{phone}。', { 'phone': item.detail.phone }));
-            // 修改了备注
-            item.detail.description && (description += Intl.get('user.change.desc.to', '修改了该用户的备注，改为{description}。', { 'description': item.detail.description }));
-            //
-
-            desc = desc + status + nickname + password + email + phone + description;
-        }
         return (
             <dl>
                 <dd>
                     <p>
                         <ShearContent>
-                            {desc}
+                            {operatePerson}
                         </ShearContent>
                     </p>
                 </dd>
-                <dt>{moment(item.record_time).format(oplateConsts.TIME_FORMAT)}</dt>
+                <dt>{moment(operateTime).format(oplateConsts.TIME_FORMAT)}</dt>
             </dl>
         );
     };
 
     handleChange = (value) => {
-        const app = _.find(this.state.appLists, item => item.app_id === value);
+        const app = _.find(this.props.appLists, item => item.app_id === value);
         const appName = app ? app.app_name : '';
         let queryObj = {
             user_id: this.props.userId,
@@ -208,48 +253,15 @@ class UserDetailChangeRecord extends React.Component {
     };
 
     getSelectOptions = () => {
-        var appLists = this.state.appLists;
+        var appLists = this.props.appLists;
         var list = appLists.map((item) => {
             return (<Option value={item['app_id']} key={item['app_id']}>{item['app_name']}</Option>);
         });
         return list;
     };
 
-    retryRenderTraceRecord = () => {
-        var userId = this.props.userId;
-        UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
-            UserDetailChangeRecordAction.setApp(this.state.app);
-            this.getUserDetailChangeRecord({
-                app_id: queryObj.app_id + ',everyapp',
-                user_id: this.props.userId,
-                page_size: this.state.page_size,
-            });
-        });
-
-    };
-
     renderTraceRecord = (height) => {
-        if (this.state.getAppLoading) {
-            return (<StatusWrapper loading={true} height={height} />);
-        } else if (this.state.getAppErrorMsg) {
-            //加载完成，出错的情况
-            var errMsg = <span>{this.state.getAppErrorMsg}
-                <a onClick={this.retryRenderTraceRecord} style={{ marginLeft: '20px', marginTop: '20px' }}>
-                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试" />
-                </a>
-            </span>;
-            return (
-                <div className="intial-alert-wrap">
-                    <Alert
-                        message={errMsg}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        } else {
-            return this.renderRecordBlock(height);
-        }
+        return this.renderRecordBlock(height);
     };
 
     renderRecordBlock = (height) => {
@@ -344,7 +356,9 @@ class UserDetailChangeRecord extends React.Component {
 }
 UserDetailChangeRecord.propTypes = {
     height: PropTypes.number,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    appLists: PropTypes.array
 };
+
 module.exports = UserDetailChangeRecord;
 

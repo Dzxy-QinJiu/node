@@ -426,9 +426,6 @@ class SalesClueItem extends React.Component {
 
         //在列表中隐藏当前操作的线索
         this.hideCurClue();
-
-        //隐藏添加客户面板
-        this.hideAddCustomerPanel();
     };
     //在列表中隐藏当前操作的线索
     hideCurClue = () => {
@@ -652,7 +649,7 @@ class SalesClueItem extends React.Component {
                 {this.state.isShowAddCustomerPanel ? (
                     <CRMAddForm
                         hideAddForm={this.hideAddCustomerPanel}
-                        addOne={this.onConvertClueToNewCustomerDone}
+                        afterAddCustomer={this.onConvertClueToNewCustomerDone}
                         formData={this.state.salesClueItemDetail}
                         isAssociateClue={true}
                         phoneNum={_.get(this.state, 'salesClueItemDetail.phones[0]', '')}

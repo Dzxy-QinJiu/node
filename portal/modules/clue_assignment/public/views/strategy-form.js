@@ -39,15 +39,11 @@ class StrategyForm extends React.Component {
             salesManList: nextProps.salesManList,
             regions: nextProps.regions,
             isFirstTimeAdd: nextProps.isFirstTimeAdd
-        }, () => {
-            this.handleRegions();
         });
     }
 
     componentDidMount = () => {
         StrategyFormStore.listen(this.onStoreChange);
-        //在无数据第一次添加的时候有"全部地域"这个选项
-        this.handleRegions();
         setTimeout(() => {
             StrategyFormAction.initialForm();
         });
@@ -76,21 +72,15 @@ class StrategyForm extends React.Component {
         };
     };
 
-    //处理地域
-    handleRegions = () => {
-        //如果是在无数据的时候第一次添加线索分配策略，在选项框里有"全部地域"这个选项
-        if(_.get(this.state, 'isFirstTimeAdd')) {
-            let regions = this.state.regions;
-            regions.unshift('all');
-            this.setState({
-                regions: _.uniq(regions)
-            });
-        }
-    }
-
     //渲染地域下拉选项
     renderRegionsOption = () => {
-        return (_.map(this.state.regions, (item, index) => {
+        //如果是在无数据的时候第一次添加线索分配策略，在选项框里有"全部地域"这个选项
+        let regions = _.cloneDeep(this.state.regions);
+        //如果只有一个策略时，添加“全部地域”选项
+        if(this.state.isFirstTimeAdd && !_.includes(regions, 'all')) {
+            regions.unshift('all');
+        }
+        return (_.map(regions, (item, index) => {
             if(_.isEqual(item, 'all')) {
                 return (<Option key={index} value='all'>{Intl.get('clue.assignment.needs.regions.all.regions', '全部地域')}</Option>);
             } else {

@@ -483,3 +483,19 @@ exports.batchReleaseClue = function(condition) {
     });
     return Deferred.promise();
 };
+exports.checkOnlyClueNamePhone = function(queryObj) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/crm/clue_only/check',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
