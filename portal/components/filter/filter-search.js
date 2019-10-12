@@ -119,7 +119,10 @@ class FilterSearch extends React.Component {
                 filterName: this.state.filterName,
                 range: this.state.selectedRange,
                 filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
-            }).then(({data}) => {
+            }).then((result) => {
+                //若返回结果中有data属性，则取data属性的值作为数据源，否则将返回结果作为数据源
+                const data = _.get(result, 'data', result);
+
                 if (!data && data.errorMsg) {                    
                     message.error(data.errorMsg || Intl.get('common.save.failed', '保存失败'));
                 }

@@ -68,6 +68,7 @@ import ClueToCustomerPanel from './views/clue-to-customer-panel';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
 var crmUtil = require('MOD_DIR/crm/public/utils/crm-util');
 import ajax from 'ant-ajax';
+import commonAjax from 'MOD_DIR/common/ajax';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {pathParamRegex} from 'PUB_DIR/sources/utils/validate-util';
 var batchOperate = require('PUB_DIR/sources/push/batch');
@@ -2664,6 +2665,40 @@ class ClueCustomer extends React.Component {
             isShowRefreshPrompt: false
         });
     }
+
+    //添加常用筛选项
+    handleAddCommonFilter(params) {
+        const condition = this.getClueSearchCondition();
+
+        let query = _.get(condition, 'bodyParam.query', {});
+
+        //删掉“有效性”条件，该条件是其他条件的组成部分，自己没有在界面上的对应项，所以不需要在界面是显示出来
+        delete query.availability;
+
+        //删掉“状态”条件，该条件是其他条件的组成部分，自己没有在界面上的对应项，所以不需要在界面是显示出来
+        delete query.status;
+
+        const queryCondition = {
+            query,
+            rang_params: _.get(condition, 'bodyParam.rang_params', []),
+        };
+
+        const data = {
+            query_condition: queryCondition,
+            user_id: userData.getUserData().user_id,
+            name: params.filterName,
+            type: params.range,
+            tag: 'clue_customer'
+        };
+
+        return commonAjax({
+            url: '/rest/condition/v1/condition',
+            type: 'post',
+            data,
+            usePromise: true
+        });
+    }
+
     render() {
         var isFirstLoading = this.isFirstLoading();
         var cls = classNames('right-panel-modal',
@@ -2690,6 +2725,7 @@ class ClueCustomer extends React.Component {
                                         showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
                                         toggleList={this.toggleList.bind(this)}
                                         filterType={Intl.get('crm.sales.clue', '线索')}
+                                        onSubmit={this.handleAddCommonFilter.bind(this)}
                                     />
                                 </div>
                                 {hasSelectedClue ? (

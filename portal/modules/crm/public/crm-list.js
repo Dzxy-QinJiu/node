@@ -388,7 +388,8 @@ class Crm extends React.Component {
             },
             user_id: userInfo.user_id,
             name: params.filterName,
-            type: params.range
+            type: params.range,
+            tag: 'crm'
         };
         if (query.sales_team_id) {
             data.sales_team_id = query.sales_team_id;

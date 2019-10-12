@@ -211,7 +211,10 @@ class FilterList extends React.Component {
         this.handleShowPop('click', false);
         if (item.id) {
             if (this.props.onDelete) {
-                this.props.onDelete(item).then(({data}) => {
+                this.props.onDelete(item).then((result) => {
+                    //若返回结果中有data属性，则取data属性的值作为数据源，否则将返回结果作为数据源
+                    const data = _.get(result, 'data', result);
+
                     if (!data || data.errorMsg) {
                         message.error(Intl.get('crm.139', '删除失败'));
                     } else {
@@ -574,9 +577,9 @@ class FilterList extends React.Component {
         return (
             <div>
                 <div className="close-filter-panel" onClick={this.closeFilterPanel}>
-                        <span className="filter-panel-arrow">
+                    <span className="filter-panel-arrow">
                             &lt;
-                        </span>
+                    </span>
                     {Intl.get('clue.customer.close.filter.panel', '收起筛选')}
                 </div>
                 <GeminiScrollbar style={styleList} className={this.props.className}>
@@ -626,7 +629,7 @@ class FilterList extends React.Component {
                                                     return (
                                                         //todo plainFilterList 根据接口数据统一结构
                                                         <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
-                                                                 onVisibleChange={this.handleShowPop.bind(this, 'hover')}
+                                                            onVisibleChange={this.handleShowPop.bind(this, 'hover')}
                                                             // visible={this.state.showHoverPop && !this.state.showClickPop}
                                                         >
                                                             <li
