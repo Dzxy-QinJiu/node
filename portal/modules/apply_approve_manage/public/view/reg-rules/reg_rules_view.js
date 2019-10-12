@@ -18,6 +18,7 @@ import assign from 'lodash/assign';
 import CamundaModdleDescriptor from '../../../../../camunda.json';
 import AddApplyNodePanel from './add_apply_node_panel';
 import AddApplyConditionPanel from './add_apply_condition_panel';
+import AddApplyCCNodePanel from './add_apply_cc_node_panel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 var applyApproveManageAction = require('../../action/apply_approve_manage_action');
@@ -34,6 +35,7 @@ class RegRulesView extends React.Component {
         this.state = {
             applyRulesAndSetting: applyRulesAndSetting,
             addNodePanelFlow: '',
+            addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
             ...ApplyApproveManageStore.getState()
         };
@@ -271,6 +273,11 @@ class RegRulesView extends React.Component {
             addNodePanelFlow: applyFlow
         });
     };
+    addApplyCC = (applyFlow) => {
+        this.setState({
+            addCCNodePanelFlow: applyFlow
+        });
+    };
     handleDeleteNode = (flowType, deleteItem) => {
         var applyRulesAndSetting = this.state.applyRulesAndSetting;
         var applyApproveRules = applyRulesAndSetting.applyApproveRules;
@@ -281,6 +288,31 @@ class RegRulesView extends React.Component {
             applyRulesAndSetting: applyRulesAndSetting
         });
 
+    };
+    //抄送节点
+    renderApplyCCNode = (candidateRules, flowType) => {
+        return (
+            <div className="rule-content cc-node-lists">
+                {_.map(candidateRules, (item, index) => {
+                    var showDeleteIcon = index === _.get(candidateRules, 'length') - 1;
+                    return (
+                        <div className="item-node">
+                            <div className="icon-container">
+                                <i className="iconfont icon-active-user-ico"></i>
+                            </div>
+                            <span className="show-name"> {item.showName}</span>
+                            {showDeleteIcon ? <i className="iconfont icon-close-btn"
+                                onClick={this.handleDeleteNode.bind(this, flowType, item)}></i> : null}
+                        </div>
+                    );
+                })}
+                <div className="item-node">
+                    <div className="icon-container add-node" onClick={this.addApplyCC.bind(this, flowType)}>
+                        <i className="iconfont icon-add handle-btn-item"></i>
+                    </div>
+                </div>
+            </div>
+        );
     };
     renderApplyWorkFlowNode = (candidateRules, flowType) => {
         return (
@@ -675,7 +707,7 @@ class RegRulesView extends React.Component {
         var cls = classNames('', {
             'err-tip': hasErrTip
         });
-        var addPanelWrap = classNames({'show-add-node-modal': this.state.addNodePanelFlow || this.state.showAddConditionPanel});
+        var addPanelWrap = classNames({'show-add-node-modal': this.state.addCCNodePanelFlow || this.state.addNodePanelFlow || this.state.showAddConditionPanel});
         var divHeight = $(window).height() - FORMLAYOUT.PADDINGTOTAL + 110;
         var defaultRules = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         //把默认流程的中待审批人所在的节点过滤出来
@@ -690,15 +722,14 @@ class RegRulesView extends React.Component {
                             </span>
                             {this.renderApplyWorkFlowNode(candidateRules, FLOW_TYPES.DEFAULTFLOW)}
                         </div>
-                        {/*<div className="default-cc-person rule-item">*/}
-                        {/*<span className="item-label">*/}
-                        {/*{Intl.get('apply.default.cc.email', '默认抄送人')}:*/}
-                        {/*</span>*/}
-                        {/*<div className="rule-content">*/}
-
-                        {/*</div>*/}
-
-                        {/*</div>*/}
+                        <div className="default-cc-person rule-item">
+                            <span className="item-label">
+                                {Intl.get('apply.default.cc.email', '默认抄送人')}:
+                            </span>
+                            <div className="rule-content">
+                                {this.renderApplyCCNode(candidateRules, FLOW_TYPES.DEFAULTFLOW)}
+                            </div>
+                        </div>
                         <div className="condition-apply-workflow rule-item">
                             <span className="item-label">
                                 {Intl.get('apply.condition.work.flow', '条件审批流程')}:
@@ -764,10 +795,20 @@ class RegRulesView extends React.Component {
                         <AddApplyNodePanel
                             saveAddApproveNode={this.saveAddApproveNode}
                             hideRightPanel={this.hideRightAddPanel}
-                            getAllApplyList={this.getAllBusinessApplyList}
                             applyTypeData={this.props.applyTypeData}
                             applyRulesAndSetting={this.state.applyRulesAndSetting}
                             addNodePanelFlow={this.state.addNodePanelFlow}
+                        />
+                    </div>
+                    : null}
+                {this.state.addCCNodePanelFlow ?
+                    <div className={addPanelWrap}>
+                        <AddApplyCCNodePanel
+                            saveAddApproveNode={this.saveAddApproveNode}
+                            hideRightPanel={this.hideRightAddPanel}
+                            applyTypeData={this.props.applyTypeData}
+                            applyRulesAndSetting={this.state.applyRulesAndSetting}
+                            addNodePanelFlow={this.state.addCCNodePanelFlow}
                         />
                     </div>
                     : null}
