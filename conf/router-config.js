@@ -231,6 +231,14 @@ let routers = [
             component: `${MODULE_PATH}self_setting/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+        }, {
+            //todo 待修改的！！！！！！
+            id: 'MY_DOMAIN_APPLY_MANAGEMENT',
+            name: 'apply.domain.application.work.flow',//申请
+            routePath: '/application/domain_name',
+            component: `${MODULE_PATH}domain_application/public`,
+            //有这个权限，才显示入口图标
+            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
         }
         ]
     },

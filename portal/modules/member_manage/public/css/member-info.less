@@ -77,6 +77,9 @@
         .basic-edit-field .basic-info-text {
           margin-left: 0;
           font-weight: bold;
+          .handle-btn-item {
+            font-weight: normal;
+          }
         }
         .edit-container.hover-show-edit {
           .icon-edit-btn {
@@ -204,10 +207,15 @@
 
   // 添加成员成功后的提示信息的样式
   .member-info-success-tips-card-container {
+    height: 40px;
+    border: 1px solid #cccccc;
     border-radius: 4px;
     background-color: #fff;
     background-clip: padding-box;
-    box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1), 0 0 6px rgba(0, 0, 0, 0.1) inset;
+    .detail-card-content {
+      line-height: 16px;
+    }
     .add-member-success-tips {
       .icon-add-success {
         color: #28af6a;
@@ -216,6 +224,13 @@
         font-size: 14px;
         color: #333;
         margin-left: 8px;
+      }
+      .no-longer-tips {
+        float: right;
+        cursor: pointer;
+        .icon-close-tips {
+          color: #CCCCCC;
+        }
       }
     }
   }

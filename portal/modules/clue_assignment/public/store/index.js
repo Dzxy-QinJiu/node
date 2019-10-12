@@ -116,8 +116,11 @@ class ClueAssignmentStore {
         this.strategyList.unshift(strategy);
         this.strategyTotal++;
         //添加完后处理当前的地域列表
-        let selectedRegions = strategy.condition.province;
-        this.deleteRegion(selectedRegions);
+        //如果添加的是“全部地域”不做处理
+        if(!_.includes(_.get(strategy, 'condition.province'), 'all')) {
+            let selectedRegions = _.get(strategy, 'condition.province');
+            this.deleteRegion(selectedRegions);
+        }
     }
     //删除线索分配策略
     deleteStrategyById(id) {
@@ -126,16 +129,22 @@ class ClueAssignmentStore {
         this.strategyList = _.filter(strategyList, list => !_.isEqual(list.id , id));
         this.strategyTotal--;
         //添加完后处理当前的地域列表
-        let selectedRegions = deletedStrategy.condition.province;
-        this.addRegion(selectedRegions);
+        //如果删除的地域分配策略为带有"全部地域"，不做处理
+        if(!_.includes(_.get(deletedStrategy, 'condition.province'), 'all')) {
+            let selectedRegions = _.get(deletedStrategy, 'condition.province');
+            this.addRegion(selectedRegions);
+        }
     }
     //更新线索分配策略列表
     updateStrategy(newStrategy) {
         //更新前处理当前的地域列表
         //将之前选择的地域加回可选择的地域列表
         let updateStrategy = _.find(this.strategyList, strategy => newStrategy.id === strategy.id);
-        let oldRegions = _.get(updateStrategy, 'condition.province', []);
-        this.addRegion(oldRegions);
+        //如果修改的是"全部地域",不进行地域添加操作
+        if(!_.includes(_.get(updateStrategy, 'condition.province'), 'all')) {
+            let oldRegions = _.get(updateStrategy, 'condition.province', []);
+            this.addRegion(oldRegions);
+        }
         //将更新后的地域从可选择的地域列表中删除
         let newRegions = _.get(newStrategy, 'condition.province', []);
         this.deleteRegion(newRegions);

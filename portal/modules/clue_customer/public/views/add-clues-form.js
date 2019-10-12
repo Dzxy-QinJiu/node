@@ -4,6 +4,7 @@ var React = require('react');
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/7/26.
  */
+import '../css/add-clues-form.less';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import BasicData from './right_panel_top';
@@ -13,7 +14,8 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions, getPhoneInputValidateRules} from '../utils/clue-customer-utils';
+import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
@@ -22,6 +24,8 @@ import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
+import Trace from 'LIB_DIR/trace';
+import {renderClueNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
 const DIFCONTACTWAY = {
     PHONE: 'phone',
     EMAIL: 'email',
@@ -55,6 +59,8 @@ class ClueAddForm extends React.Component {
             saveMsg: '',
             saveResult: '',
             newAddClue: {},//新增加的线索
+            existClueList: [],//相似的线索列表
+            checkNameError: false//线索名称
         };
     }
 
@@ -162,8 +168,8 @@ class ClueAddForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (err) return;
-            //是否有联系方式的验证
-            if (this.validateContactIsEmpty(values.contacts)) {
+            //是否有联系方式的验证、线索名是否已存在、线索名唯一性验证出错时不能保存
+            if (this.validateContactIsEmpty(values.contacts) || this.state.clueNameExist || this.state.checkNameError) {
                 return;
             }
             let submitObj = this.getSubmitObj(values);
@@ -345,10 +351,14 @@ class ClueAddForm extends React.Component {
                                     <Input
                                         name="name"
                                         id="name"
+                                        onBlur={(e) => {
+                                            this.checkOnlyClueName(e);
+                                        }}
                                         placeholder={Intl.get('clue.suggest.input.customer.name', '建议输入客户名称')}
                                     />
                                 )}
                             </FormItem>
+                            {renderClueNameMsg(this.state.existClueList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
                             <FormItem
                                 className={clsContainer}
                                 label={Intl.get('crm.5', '联系方式')}
@@ -530,8 +540,10 @@ ClueAddForm.defaultProps = {
 
     },
     appUserId: '',
-    appUserName: ''
+    appUserName: '',
+    showRightPanel: function() {
 
+    }
 };
 ClueAddForm.propTypes = {
     defaultClueData: PropTypes.object,
@@ -545,6 +557,7 @@ ClueAddForm.propTypes = {
     form: PropTypes.object,
     hideAddForm: PropTypes.func,
     appUserId: PropTypes.string,
-    appUserName: PropTypes.string
+    appUserName: PropTypes.string,
+    showRightPanel: PropTypes.func
 };
 export default Form.create()(ClueAddForm);

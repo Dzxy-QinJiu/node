@@ -8,7 +8,7 @@ import './style/index.less';
 import ClueAssignmentStore from './store';
 import ClueAssignmentAction from './action';
 
-import {Button, Icon} from 'antd';
+import {Button, Icon, Popover} from 'antd';
 import NoStrategy from './views/no_assign_strategy';
 import StrategyForm from './views/strategy-form';
 import StrategyInfo from './views/strategy-info';
@@ -98,6 +98,7 @@ class ClueAssignment extends React.Component {
         let strategyList = _.isArray(this.state.strategyList) ? this.state.strategyList : [];
         return strategyList.map(strategy => {
             let provinceTips = _.join(strategy.condition.province, '、');
+            provinceTips = _.isEqual(provinceTips, 'all') ? Intl.get('clue.assignment.needs.regions.all.regions', '全部地域') : provinceTips;
             let needsContent = `${Intl.get('clue.assignment.needs.region','地域')} (${provinceTips})`;
             return {
                 id: strategy.id,
@@ -186,17 +187,32 @@ class ClueAssignment extends React.Component {
 
     //添加分配策略按钮
     renderAddStrategyBtn = () => {
+        let isDisableButton = _.includes(_.get(this.state, 'strategyList[0].condition.province'), 'all');
+        let tips = Intl.get('clue.assignment.all.regions.tips', '策略中已包含全部地域，请修改后再添加');
         return(
-            <Button
-                className="add-btn-item"
-                onClick={this.addAssignmentStrategy.bind(this, EDIT_TYPE.ADD)}
-                data-tracename="添加分配策略"
-            >
-                <Icon type="plus" />
-                <div className="add-btn-char">
-                    {Intl.get('clue.assignment.strategy.add','添加分配策略')}
-                </div>
-            </Button>);
+            isDisableButton ?
+                (<Popover content={tips}>
+                    <Button
+                        className="add-btn-item"
+                        disabled={true}
+                    >
+                        <Icon type="plus" />
+                        <div className="add-btn-char">
+                            {Intl.get('clue.assignment.strategy.add','添加分配策略')}
+                        </div>
+                    </Button>
+                </Popover>) :
+                (<Button
+                    className="add-btn-item"
+                    onClick={this.addAssignmentStrategy.bind(this, EDIT_TYPE.ADD)}
+                    data-tracename="添加分配策略"
+                >
+                    <Icon type="plus" />
+                    <div className="add-btn-char">
+                        {Intl.get('clue.assignment.strategy.add','添加分配策略')}
+                    </div>
+                </Button>)
+        );
     }
 
     //当前无分配策略时的展示
@@ -230,6 +246,7 @@ class ClueAssignment extends React.Component {
                                                 closeRightPanel={this.closeFormRightPanel}
                                                 regions={this.state.regions}
                                                 salesManList={this.state.salesManList}
+                                                isFirstTimeAdd={_.isEmpty(_.get(this.state, 'strategyList[0]'))}
                                             /> : null
                                     }
                                     {
@@ -239,6 +256,7 @@ class ClueAssignment extends React.Component {
                                                 strategyInfo={this.state.currentStrategy}
                                                 regions={this.state.regions}
                                                 salesManList={this.state.salesManList}
+                                                isFirstOneEdit={_.isEqual(_.get(this.state, 'strategyList.length'), 1)}
                                             /> : null
                                     }
                                 </div>

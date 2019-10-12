@@ -553,7 +553,7 @@ class BasicOverview extends React.Component {
                     {
                         subDomain ? (
                             <DetailCard
-                                title={`${Intl.get('crm.basic.second.level.domain', '二级域名')}:`}
+                                title={`${Intl.get('crm.basic.second.level.domain', '舆情平台域名')}:`}
                                 titleBottomBorderNone
                                 titleDescr={this.renderSecondLevelDomain(subDomain)}
                             />

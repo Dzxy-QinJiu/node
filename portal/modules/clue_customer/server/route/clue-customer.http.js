@@ -9,8 +9,16 @@ module.exports = {
     routes: [{
         //导出线索
         'method': 'post',
-        'path': '/rest/customer/v2/customer/range/clue/export/:page_size/:page_num/:sort_field/:order/:type',
-        'handler': 'exportData',
+        'path': '/rest/customer/v2/customer/range/clue/export/:page_size/:sort_field/:order/:type',
+        'handler': 'exportClueFulltext',
+        'passport': {
+            'needLogin': true
+        }
+    },{
+        //导出线索
+        'method': 'post',
+        'path': '/rest/customer/v2/customer/range/selfHandle/clue/export/:page_size/:sort_field/:order/:type',
+        'handler': 'exportClueFulltextSelfHandle',
         'passport': {
             'needLogin': true
         }
@@ -251,6 +259,13 @@ module.exports = {
         method: 'post',
         path: '/rest/clue/batch/release/:type',
         handler: 'batchReleaseClue',
+        passport: {
+            needLogin: true
+        }
+    },{//线索名称唯一性验证
+        method: 'get',
+        path: '/rest/crm/clue_only/check',
+        handler: 'checkOnlyClueNamePhone',
         passport: {
             needLogin: true
         }

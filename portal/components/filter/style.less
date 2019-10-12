@@ -163,18 +163,20 @@
                     span.common-item-content {
                         display: block;
                         padding-right: 30px;
+                        margin-left: 5px;
+                        color: #9a9a9a;
                     }
                 }
             }
             .title {
-                color: @font-yellow;
+                color: #333;
             }
             .collapse-btn {
                 color: @font-blue;
             }
         }
         .advanced-container {
-            margin-top: 18px;
+            margin-top: 2px;
             padding-left: @pd-l;
             &>.title {
                 &:hover {
@@ -283,7 +285,8 @@
     display:inline-block;
     background: white;
     .filter-contianer {
-        min-width: 320px;
+        min-width: 296px;
+        // height: 32px;
         position: absolute;
         z-index: 9;
         background: white;
@@ -301,6 +304,7 @@
         border-radius: 3px;
         .show-zone {
             position: relative;
+            padding-top: 1px;
             span.icon-wrapper {
                 &.active {
                     .anticon-filter {
@@ -318,17 +322,16 @@
                 color: @btn-grey;
             }
             .anticon-close-circle {
-                margin: 7px 0px 0 0;
+                position: relative;
+                top: 8px;
                 font-size: 14px;
                 color: @font-grey;
                 float: right;
             }
             ul {
-                padding: 2px 0;
                 display: inline-block;
                 max-width: calc(~"100% - 70px");
                 &.collapse:hover {
-                    padding: 1px 0 2px 0;
                     overflow: initial;
                     text-overflow: initial;
                     -webkit-line-clamp: initial;
@@ -343,7 +346,8 @@
                     }
                 }
                 &.collapse {
-                    padding: 5px 0;
+                    padding-top: 5px;
+                    width: 205px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     -webkit-line-clamp: 1;
@@ -354,6 +358,9 @@
                     li {
                         display: inline;
                     }
+                }
+                &.conserve {
+                    width: 205px;
                 }
                 li {
                     display: inline-block;
@@ -369,21 +376,13 @@
             .btn-bar {
                 margin-left: 6px;
                 float: right;
-                width: 28px;
-                &:before {
-                    display: inline-block;
-                    content: "";
-                    position: absolute;
-                    border-left: 1px solid @font-lightblue;
-                    top: 0;
-                    height: 100%;
-                }
-                i {
-                    margin-left: 5px;
-                    margin-top: 5px;
-                    cursor: pointer;
-                    font-size: 19px;
-                    color: @btn-yellow;
+                width: 42px;
+                position: relative;
+                top: 1px;
+                .save-screen{
+                    border-left: 1px solid #ccc;
+                    font-size: 14px;
+                    padding-left: 7px;
                 }
             }
         }

@@ -24,11 +24,12 @@ class StrategyForm extends React.Component {
         super(props);
         this.state = {
             formData: this.initForm(),
-            locationList: [],//地域列表
             selectedSalesMan: '',//选择的销售人员
             savedStrategy: {},//保存后的策略
             regions: this.props.regions,//地域列表
             salesManList: this.props.salesManList,//销售列表
+            isFirstTimeAdd: this.props.isFirstTimeAdd,//是否是在无数据时第一次添加线索分配策略
+            prevSelect: '', //记录上一个选择的值
             ...StrategyFormStore.getState(),
         };
     }
@@ -36,7 +37,8 @@ class StrategyForm extends React.Component {
     componentWillReceiveProps = (nextProps) => {
         this.setState({
             salesManList: nextProps.salesManList,
-            regions: nextProps.regions
+            regions: nextProps.regions,
+            isFirstTimeAdd: nextProps.isFirstTimeAdd
         });
     }
 
@@ -69,6 +71,43 @@ class StrategyForm extends React.Component {
             status: 'enable'
         };
     };
+
+    //渲染地域下拉选项
+    renderRegionsOption = () => {
+        //如果是在无数据的时候第一次添加线索分配策略，在选项框里有"全部地域"这个选项
+        let regions = _.cloneDeep(this.state.regions);
+        //如果只有一个策略时，添加“全部地域”选项
+        if(this.state.isFirstTimeAdd && !_.includes(regions, 'all')) {
+            regions.unshift('all');
+        }
+        return (_.map(regions, (item, index) => {
+            if(_.isEqual(item, 'all')) {
+                return (<Option key={index} value='all'>{Intl.get('clue.assignment.needs.regions.all.regions', '全部地域')}</Option>);
+            } else {
+                return (<Option key={index} value={item}>{item}</Option>);
+            }
+        }));
+    }
+
+    //当地域下拉列表改变后
+    onSelectChange = (value) => {
+        //如果选中了全部地域，将已经选择的地域清空,"全部地域"与其它选项是互斥的
+        //由于FormItem内部源码原因，事件需要延迟调用
+        //不可使用normalize
+        setTimeout(() => {
+            if(_.includes(value, 'all') && !_.includes(this.state.prevSelect, 'all')) {
+                value = 'all';
+            } else if(_.includes(value, 'all') && _.includes(this.state.prevSelect, 'all')) {
+                value = _.drop(value);
+            }
+            this.props.form.setFieldsValue({
+                province: value
+            });
+            this.setState({
+                prevSelect: value
+            });
+        });
+    }
 
     //关闭面板前清空验证的处理
     resetValidateFlags = () => {
@@ -196,15 +235,16 @@ class StrategyForm extends React.Component {
                                                     searchPlaceholder={Intl.get('clue.assignment.needs.region.tip', '请选择或输入地域')}
                                                     getPopupContainer={() => document.getElementById('condition-province')}
                                                     filterOption={(input, option) => ignoreCase(input, option)}
+                                                    onChange={this.onSelectChange}
                                                 >
-                                                    {_.map(this.state.regions, (item, index) => {
-                                                        return (<Option key={index} value={item}>{item}</Option>);
-                                                    })}
+                                                    {this.renderRegionsOption()}
                                                 </Select>
                                             )
                                         }
                                     </FormItem>
                                 </div>
+                                {/*2019/09/29日 孙庆峰加*/}
+                                {/*原因： 暂时实现地域的线索分配策略*/}
                                 {/*<FormItem*/}
                                 {/*    label={Intl.get('clue.assignment.needs.source', '来源',)}*/}
                                 {/*    {...needsFormItemLayout}*/}
@@ -386,14 +426,16 @@ class StrategyForm extends React.Component {
 StrategyForm.defaultProps = {
     closeRightPanel: noop(),
     regions: [],//地域列表
-    salesManList: []//销售人员列表
+    salesManList: [],//销售人员列表
+    isFirstTimeAdd: false//是否是在无数据的情况下第一次添加策略
 };
 
 StrategyForm.propTypes = {
     form: PropTypes.form,
     closeRightPanel: PropTypes.func,
     regions: PropTypes.array,
-    salesManList: PropTypes.array
+    salesManList: PropTypes.array,
+    isFirstTimeAdd: PropTypes.bool,
 };
 
 module.exports = Form.create()(StrategyForm);

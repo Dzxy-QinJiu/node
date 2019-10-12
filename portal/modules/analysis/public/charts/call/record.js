@@ -15,6 +15,7 @@ export function getCallRecordChart(paramObj = {}) {
             '/rest/analysis/callrecord/v1/callrecord/statistics/call_record/view',
             '/rest/base/v1/group/team/available/statistic'
         ],
+        ajaxInstanceFlag: 'getCallRecordStatistics',
         conditions: [{
             name: 'filter_phone',
             value: false 

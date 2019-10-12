@@ -6,9 +6,44 @@ var React = require('react');
  */
 require('./index.less');
 import {Button, Icon} from 'antd';
+const RESULT_TYPES = {
+    SUCCESS: 'success',
+    ERROR: 'error',
+};
 class SaveCancelButton extends React.Component {
     constructor(props) {
         super(props);
+    }
+
+    isSetTimered = false;
+
+    successTimer = null;
+
+    componentWillUnmount() {
+        this.isSetTimered = false;
+        clearTimeout(this.successTimer);
+    }
+
+    setTimer = () => {
+        clearTimeout(this.successTimer);
+        this.isSetTimered = true;
+        this.successTimer = setTimeout(() => {
+            this.isSetTimered = false;
+            this.props.hideSaveTooltip();
+        }, this.props.successShowTime);
+    };
+
+    renderMsgBlock() {
+        if(this.props.saveResult === RESULT_TYPES.SUCCESS) {//显示成功提示信息
+            if(!this.isSetTimered) {//设置成功后延时关闭的回调
+                this.setTimer();
+            }
+            return (<span className="save-success">{this.props.saveSuccessMsg}</span>);
+        }else {
+            if(this.props.saveErrorMsg) {//显示失败信息
+                return (<span className="save-error">{this.props.saveErrorMsg}</span>);
+            }else { return null; }
+        }
     }
 
     render() {
@@ -23,10 +58,7 @@ class SaveCancelButton extends React.Component {
                 >
                     {this.props.okBtnText || Intl.get('common.save', '保存')}
                 </Button>
-                {this.props.loading ? (
-                    <Icon type="loading" className="save-loading"/>) : this.props.saveErrorMsg ? (
-                    <span className="save-error">{this.props.saveErrorMsg}</span>
-                ) : null}
+                {this.props.loading ? (<Icon type="loading" className="save-loading"/>) : this.renderMsgBlock()}
             </div>
         );
     }
@@ -40,15 +72,26 @@ SaveCancelButton.defaultProps = {
     },//保存的处理
     handleCancel: function() {
     },//取消的处理
-    hideCancelBtns: false
+    hideSaveTooltip: function() {
+    },//去掉保存后提示信息
+    hideCancelBtns: false,
+    saveResult: '',//保存后的结果（success, error）
+    successShowTime: 600,//成功后，提示信息显示的时间
+    saveSuccessMsg: '',//成功的提示信息(跟saveResult一起使用)
 };
 SaveCancelButton.propTypes = {
     handleSubmit: PropTypes.func,
     loading: PropTypes.bool,
     okBtnText: PropTypes.string,
     handleCancel: PropTypes.func,
+    hideSaveTooltip: PropTypes.func,
     cancelBtnText: PropTypes.string,
     saveErrorMsg: PropTypes.string,
     hideCancelBtns: PropTypes.bool,
+    saveResult: PropTypes.string,
+    successShowTime: PropTypes.number,
+    saveSuccessMsg: PropTypes.string,
 };
+//保存后的结果类型
+SaveCancelButton.RESULT_TYPES = RESULT_TYPES;
 export default SaveCancelButton;

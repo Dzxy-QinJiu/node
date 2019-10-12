@@ -145,11 +145,21 @@ class AddSalesOpportunityApply extends React.Component {
             isShowAddCustomer: false
         });
     };
+    //添加客户成功回调
+    afterAddCustomer = (result) => {
+        let customerName = _.get(result,'[0].name','');
+        this.customerSuggestRef && this.customerSuggestRef.suggestChange(customerName);
+    };
     //渲染添加客户内容
     renderAddCustomer = () => {
+        let customerName = _.get(this.state.formData,'customer.name');
         return (
             <CRMAddForm
                 hideAddForm={this.hideAddForm}
+                formData={{
+                    name: customerName
+                }}
+                afterAddCustomer={this.afterAddCustomer}
             />
         );
     };
@@ -223,6 +233,7 @@ class AddSalesOpportunityApply extends React.Component {
                                             validateTrigger: 'onBlur'
                                         })(
                                             <CustomerSuggest
+                                                ref={ref => this.customerSuggestRef = ref}
                                                 field='customer'
                                                 hasEditPrivilege={true}
                                                 displayText={''}

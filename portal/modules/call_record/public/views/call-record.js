@@ -451,10 +451,7 @@ class CallRecord extends React.Component {
         });
     };
 
-    addOne = (customer) => {
-        this.setState({
-            isAddFlag: false
-        });
+    afterAddCustomer = (customer) => {
         let callRecord = this.state.callRecord;
         let list = callRecord.data_list;
         let phone = _.get(customer,'[0].phones[0]');
@@ -1019,7 +1016,7 @@ class CallRecord extends React.Component {
                     <div className="add-customer">
                         <CRMAddForm
                             phoneNum={this.state.phoneNumber}
-                            addOne={this.addOne}
+                            afterAddCustomer={this.afterAddCustomer}
                             hideAddForm={this.hideAddCustomerForm}
                             showRightPanel={this.showRightPanel}
                         />

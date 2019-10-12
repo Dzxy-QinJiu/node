@@ -76,7 +76,7 @@ var zh_CN = {
     'common.password.unequal': '两次输入密码不一致！',
     'common.correct.email': '请输入正确的邮箱',
     'common.correct.qq': '请输入正确的QQ号',
-    'common.correct.wechat': '请输入正确的微信号',
+    'common.correct.wechat': '请输入正确的微信号/手机号/QQ号/邮箱',
     'common.correct.no.wechat': '请输入微信号',
     'common.password.length': '密码长度应大于6位小于18位',
     'common.password.compose.rule': '6-18位数字、字母、符号的组合',
@@ -87,6 +87,7 @@ var zh_CN = {
     'common.no.match': '暂无匹配项',
     'common.get.team.list.failed': '获取团队列表失败',
     'common.username': '用户名',
+    'common.account.number': '账号',
     'common.my.app': '我的应用',
     'common.filter': '筛选',
     'common.add': '添加',
@@ -292,6 +293,7 @@ var zh_CN = {
     'common.maximum.personal.contribution': '个人贡献最大值',
     'common.the.maximum.gross.profit.rate': '回款毛利率最大值',
     'common.maximum.gross.margin.of.newly.signed.payment': '新签回款毛利最大值',
+    'common.load.data.error': '加载失败，请{refresh}',
 
     //公共部分--end
     'login.login': '登录',
@@ -920,11 +922,13 @@ var zh_CN = {
 
     // 后台管理-行业start
     'industry.add.check.tips': '该行业名称已存在',
+    'industry.no.data.tips': '暂无行业，添加行业后，可以为您的客户设置不同行业',
     // 后台管理-行业end
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': '添加竞品',
     'competing.add.check.tips': '该竞品名称已存在',
+    'competing.no.data.tips': '暂无竞品，添加竞品后，可以在客户上设置竞品，帮助销售人员更好的完成销售过程',
     // 后台管理-竞品end
 
     // 后台管理-销售流程start
@@ -1030,6 +1034,9 @@ var zh_CN = {
     'user.info.log.record.tip': '以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}',
     'user.info.login.address': '地点',
     'user.info.login.browser': '浏览器',
+    'user.info.active.email.btn': '发送激活邮件',
+    'user.info.active.email.tip': '请根据邮件内步骤激活邮箱',
+    'user.info.active.email.msg': '(已发送激活邮件，{sendTime}s)',
     'user.info.active.email': '激活邮件已发送至{email}，请前往激活',
     'user.info.retry': '请重试',
     'user.info.no.active': '未激活，请{active}',
@@ -1248,7 +1255,7 @@ var zh_CN = {
     'call.record.save.content.success': '保存跟进内容成功！',
     'call.record.save.content.error': '保存跟进内容失败！',
     'call.record.is.save.content.title': '是否保存跟进内容？',
-    'call.record.trend.charts': '近一个月的通话趋势',
+    'call.record.trend.charts': '通话趋势统计',
     'call.record.recommend.list': '获取推荐列表失败！',
     'call.record.servicecall.get.err': '获取客服电话统计失败',
     'call.record.servicecall': '客服电话统计',
@@ -1271,6 +1278,7 @@ var zh_CN = {
     'call.analysis.map.return': '返回上一级',
     'call.analysis.call.title': '通话信息',
     'call.analysis.filter.114': '过滤掉114',
+    'call.analysis.114.proportion.tip': '拨打的114电话占所有电话的比例',
     //通话分析-end
 
     // 用户审批start
@@ -1641,7 +1649,6 @@ var zh_CN = {
     'crm.sales.update': '修改为',
     'crm.sales.redistribution': '重新分配',
     'crm.sales.transfer.confirm': '确认转出',
-    'crm.detail.no.data': '该客户已被删除或转走',
     'crm.detail.get.error': '获取客户详情失败',
     'crm.schedule.set.compelete': '标为已完成',
     'crm.schedule.set.unfinished': '标为未完成',
@@ -1768,10 +1775,10 @@ var zh_CN = {
     'crm.import.phone.repeat': '导入数据中存在相同的电话',
     'crm.system.phone.repeat': '电话已被其他{type}使用',
     'crm.import.phone.verify': '电话只能是11位手机号或11-12位带区号的座机号',
-    'crm.customer.delete': '删除后，您可以从回收站中找回客户',
+    'crm.customer.delete': '删除后，可以在回收站中找回该客户，您确定要删除吗？',
     'crm.customer.release': '释放',
     'crm.customer.release.pool': '释放到客户池',
-    'crm.customer.release.confirm.tip': '释放到客户池后，其他人也可以查看、提取，您确认释放吗？',
+    'crm.customer.release.confirm.tip': '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？',
     'crm.customer.release.failed': '释放客户失败',
     'crm.customer.pool.failed': '获取客户池客户失败',
     'crm.customer.extract.failed': '提取客户失败',
@@ -1813,7 +1820,7 @@ var zh_CN = {
     'crm.customer.pool.rule.release.setting': '释放设置',
     'crm.customer.pool.rule.own.visible': '自己释放的自己不可见',
     'crm.filter.extract.from.customer.pool': '从客户池中提取的客户',
-    'crm.basic.second.level.domain': '二级域名',
+    'crm.basic.second.level.domain': '舆情平台域名',
 
     // 客户详情中，合同项
     'crm.contract.validity.time': '有效期',
@@ -1843,6 +1850,8 @@ var zh_CN = {
     'crm.contract.add.label': '添加签约类型',
     'crm.contract.no.label': '暂无签约类型',
     'crm.batch.change.customer.pending': '上次批量操作未完成，请稍后再试',
+    'crm.search.customer.detail.customer.pool': '客户已被删除或已被释放到{customerpool}',
+    'crm.search.customer.no.customer.pool.dash': '客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看',
     // 客户管理end
 
     // 客户分析start
@@ -2852,7 +2861,10 @@ var zh_CN = {
     'sales.clue.is.enable': '无效',
     'failed.sales.remark.clue.valid': '标记该线索有效性失败',
     'clue.customer.check.only.exist': '线索名称唯一性校验失败',
+    'clue.customer.check.only.fail': '线索名称唯一性校验出错',
     'clue.customer.check.repeat': '该线索名称已存在',
+    'clue.customer.similar.clue.contains': '相似的线索还有',
+    'clue.customer.repeat.phone.user': '该电话已被线索{userName}使用',
     'clue.customer.clue.time': '咨询于{relative}',
     'failed.to.get.clue.classify': '获取线索分类出错了',
     'clue.customer.classify': '线索分类',
@@ -2931,6 +2943,7 @@ var zh_CN = {
     'common.this.month.back': '本月回流',
     'common.this.month.new': '本月新增',
     'common.this.month': '本月',
+    //线索模块 start
     'clue.search.by.name': '按线索名搜索',
     'clue.add.trace.content': '添加跟进内容',
     'clue.add.trace.follow': '跟进',
@@ -3002,8 +3015,9 @@ var zh_CN = {
     'clue.release': '释放线索',
     'clue.customer.refresh.tip': '有新线索，{refreshPage}查看',
     'clue.customer.refresh.page': '刷新页面',
+    'clue.customer.delete': '删除后无法恢复，您确定要删除吗？',
     'clue.customer.release.pool': '释放到线索池',
-    'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确认释放吗？',
+    'clue.customer.release.confirm.tip': '释放到线索池后，其他人也可以查看、提取，您确定要释放吗？',
     'clue.customer.batch.release': '批量释放',
     'clue.customer.fail.to.release.tip': '释放线索失败',
     'clue.pool.batch.extract.clue': '批量提取',
@@ -3015,6 +3029,8 @@ var zh_CN = {
     'clue.extract.success': '提取成功',
     'clue.list.clue.availibility': '无效线索',
     'clue.list.total.num': '共{num}个线索',
+    'clue.search.no.found': '没有符合条件的线索，您可以去{cluepool}查看是否有该线索',
+    //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': '最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
@@ -3404,6 +3420,8 @@ var zh_CN = {
     'apply.time.distinct.am': '区分上下午',
     'apply.form.has.edit.components': '您有组件还是编辑状态',
     'apply.my.self.setting.work.flow': '拜访申请',
+    'apply.domain.application.work.flow': '域名申请',
+    'apply.domain.descriptipn.reg': '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间',
     'apply.approve.set.approver': '指定审批人',
     'apply.select.approver.type': '请选择审批人类型',
     /*自定义流程 end*/
@@ -3661,6 +3679,8 @@ var zh_CN = {
     'clue.assignment.needs.region.required.tip': '地域不能为空',
     'clue.assignment.needs.region.no.data': '暂无此地域',
     'clue.assignment.needs.region.add.data': '添加地域',
+    'clue.assignment.needs.regions.all.regions': '全部地域',
+    'clue.assignment.all.regions.tips': '策略中已包含全部地域，请修改后再添加',
     'clue.assignment.needs.source': '来源',
     'clue.assignment.needs.source.tip': '请选择或输入线索来源',
     'clue.assignment.needs.source.required.tip': '线索来源不能为空',
@@ -3678,6 +3698,6 @@ var zh_CN = {
     'clue.assignment.active.state': '启停状态',
     'clue.assignment.strategy.tip': '本策略对新加线索生效',
     'clue.assignment.strategy.switch.tip': '确定要{action}该线索分配策略？',
-    'clue.assignment.strategy.delete': '确定要删除该线索分配策略？'
+    'clue.assignment.strategy.delete': '确定要删除该线索分配策略？',
 };
 export default zh_CN;

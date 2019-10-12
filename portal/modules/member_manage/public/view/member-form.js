@@ -133,6 +133,10 @@ class MemberForm extends React.Component {
                     //修改邮箱后，邮箱的激活状态改为未激活
                     user.emailEnable = false;
                 }
+
+                if (user.name === '') { // 若昵称为空时，使用用户名作为昵称
+                    user.name = user.userName;
+                }
                 //设置正在保存中
                 MemberFormAction.setSaveFlag(true);
                 if (this.props.formType === 'add') {
@@ -452,6 +456,13 @@ class MemberForm extends React.Component {
 
     state = this.initData();
 
+    handleUserNameChange = (event) => {
+        let value = event.target.value;
+        this.props.form.setFieldsValue({
+            name: value,
+        });
+    };
+
     renderFormContent() {
         let values = this.props.form.getFieldsValue();
         const {getFieldDecorator} = this.props.form;
@@ -513,6 +524,7 @@ class MemberForm extends React.Component {
                                         id="userName"
                                         type="text"
                                         placeholder={Intl.get('login.write.username', '请输入用户名')}
+                                        onChange={this.handleUserNameChange}
                                     />
                                 )}
                             </FormItem>

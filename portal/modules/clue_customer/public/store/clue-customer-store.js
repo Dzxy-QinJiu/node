@@ -101,6 +101,7 @@ ClueCustomerStore.prototype.setClueInitialData = function() {
     this.customersSize = 0;
     this.isLoading = true;
     this.pageNum = 1;
+    this.allClueCount = 0;
 };
 ClueCustomerStore.prototype.setSortField = function(updateSortField) {
     this.sorter.field = updateSortField;
@@ -120,7 +121,7 @@ ClueCustomerStore.prototype.updateCurrentClueRemark = function(submitObj) {
     let clue = _.find(this.curClueLists, (clue) => {
         return clue.id === submitObj.lead_id;
     });
-    if (clue && _.isArray(clue.clue_traces) && clue.customer_traces.length) {
+    if (clue && _.isArray(clue.customer_traces) && clue.customer_traces.length) {
         clue.customer_traces[0].remark = submitObj.remark;
     }
 },

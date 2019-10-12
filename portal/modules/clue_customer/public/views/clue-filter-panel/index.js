@@ -5,6 +5,8 @@ var React = require('react');
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/8/27.
  */
+import ajax from 'ant-ajax';
+import commonAjax from 'MOD_DIR/common/ajax';
 var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
@@ -38,6 +40,8 @@ class ClueFilterPanel extends React.Component {
             clueSourceArray: this.props.clueSourceArray,
             accessChannelArray: this.props.accessChannelArray,
             clueClassifyArray: this.props.clueClassifyArray,
+            //自定义常用筛选
+            customCommonFilter: [],
             ...clueFilterStore.getState(),
         };
     }
@@ -48,6 +52,7 @@ class ClueFilterPanel extends React.Component {
     componentDidMount = () => {
         clueFilterStore.listen(this.onStoreChange);
         this.getClueProvinceList();
+        this.getCustomCommonFilter();
         //获取所有销售列表
         FilterAction.getTeamMemberList();
         //获取团队列表
@@ -78,7 +83,171 @@ class ClueFilterPanel extends React.Component {
         ClueAnalysisAction.getClueStatics(pathParams, rangeParams);
     };
 
+    //获取自定义常用筛选
+    getCustomCommonFilter() {
+        ajax.send({
+            url: '/rest/condition/v1/condition/range/user/1000/operate_time/descend',
+            type: 'post',
+            data: {
+                query: {
+                    tag: 'clue_customer'
+                }
+            }
+        })
+            .done(result => {
+                const conditionList = _.get(result, 'list');
+
+                const customCommonFilter = _.map(conditionList, condition => this.getFilterItemFromConditionItem(condition));
+
+                this.setState({customCommonFilter});
+            });
+    }
+    
+    //将自定义常用筛选查询条件转换为前端展示用的格式
+    getFilterItemFromConditionItem(item) {
+        let filters = [];
+        let plainFilters = [];
+    
+        //将处理好的筛选项组装成FilterList所需的格式
+        const handleAddItem = nameObj => {
+            let filterItem = null;
+            plainFilters.push(nameObj);
+            filterItem = {
+                ...nameObj,
+                data: [{
+                    ...nameObj,
+                    selected: true
+                }]
+            };
+            const sameGroupItem = filters.find(x => x.groupId === filterItem.groupId);
+            //将已存在的高级筛选合并成commonData的结构
+            if (sameGroupItem) {
+                sameGroupItem.data.push({
+                    ...nameObj,
+                    selected: true
+                });
+            }
+            else {
+                filters.push(filterItem);
+            }
+        };
+    
+        //处理筛选项的value，处理成前端的格式
+        const handleValue = (value, key) => {
+            let item = null;
+            const nameObj = {
+                groupId: key,
+                groupName: key,
+                value: value,
+                name: value
+            };
+
+            //处理name（展示的筛选项文字）
+            switch (key) {
+                //如果当前条件是“销售团队”，需要根据团队id找到其对应的团队名作为显示名称
+                case 'sales_team_id':
+                    item = this.state.teamList.find(x => x.group_id === value);
+                    if (item) {
+                        nameObj.name = item.group_name;
+                    }
+                    break;
+                //如果当前条件是“集客方式”，需要找到其对应的中文名作为显示名称
+                case 'source_classify':
+                    item = sourceClassifyArray.find(x => x.value === value);
+                    if (item) {
+                        nameObj.name = item.name;
+                    }
+                    break;
+                //如果当前条件是“有相似线索”或“有相似客户”等标签，需要将其对应到常用筛选组
+                case 'labels':
+                    nameObj.groupId = COMMON_OTHER_ITEM;
+                    nameObj.groupName = Intl.get('crm.186', '其他');
+                    break;
+            }
+            handleAddItem(nameObj);
+        };
+    
+        if (_.get(item, 'query_condition')) {
+            if (_.get(item.query_condition, 'query')) {
+                _.each(item.query_condition.query, (value, key) => {
+                    if (value) {
+                        let valueList = [];
+                        if (value.length) {
+                            valueList = value;
+                        }
+                        if (typeof value === 'string') {
+                            //拼接字符串（数组value）
+                            if (value.includes(',')) {
+                                valueList = value.split(',');
+                            }
+                            //单个字符串
+                            else {
+                                handleValue(value, key);
+                            }
+                        }
+                        //数组value
+                        if (Array.isArray(valueList) && valueList.length > 0) {
+                            valueList.forEach(x => {
+                                handleValue(x, key);
+                            });
+                        }
+                    }
+                });
+            }
+
+            if (_.get(item.query_condition, 'rang_params.length')) {
+                item.query_condition.rang_params.forEach(rangeItem => {
+                    //如果当前条件是“时间”
+                    if (rangeItem.name === 'source_time') {
+                        const nameObj = {
+                            name: Intl.get('common.login.time', '时间') + '：' + moment(rangeItem.from).format(oplateConsts.DATE_FORMAT) + ' - ' + moment(rangeItem.to).format(oplateConsts.DATE_FORMAT),
+                            groupId: 'time',
+                            from: rangeItem.from,
+                            to: rangeItem.to,
+                        };
+                        handleAddItem(nameObj);
+                    }
+
+                    //如果当前条件是“未打通电话的线索”
+                    if (rangeItem.name === 'no_answer_times') {
+                        const nameObj = {
+                            name: Intl.get('clue.customer.not.connect.phone', '未打通电话的线索'),
+                            groupId: COMMON_OTHER_ITEM,
+                            groupName: Intl.get('crm.186', '其他'),
+                        };
+                        handleAddItem(nameObj);
+                    }
+                });
+            }
+        }
+    
+        return {
+            name: item.name,
+            value: item.name,
+            data: filters,
+            plainFilterList: plainFilters,
+            id: item.id
+        };
+    }
+
+    //删除自定义常用筛选
+    deleteCustomCommonFilter(item) {
+        return commonAjax({
+            url: '/rest/condition/v1/condition/' + item.id,
+            type: 'delete',
+            usePromise: true
+        });
+    }
+
     handleFilterChange = (data) => {
+        const timeCondition = _.find(data, item => item.groupId === 'time');
+
+        //若当前选中的筛选项中包含时间条件
+        if (timeCondition) {
+            //则将该时间条件设置到state中，以在显示和查询时使用
+            FilterAction.setTimeRange({start_time: timeCondition.from, end_time: timeCondition.to, range: ''});
+        }
+
         clueCustomerAction.setClueInitialData();
         if (!data.find(group => group.groupId === COMMON_OTHER_ITEM)) {
             FilterAction.setExistedFiled();
@@ -181,11 +350,15 @@ class ClueFilterPanel extends React.Component {
         return current > moment().endOf('day');
     };
     renderTimeRangeSelect = () => {
+        const startTime = this.state.rangeParams[0].from;
+        const endTime = this.state.rangeParams[0].to;
+
         return(
             <div className="time-range-wrap">
                 <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
                 <RangePicker
                     disabledDate={this.disabledDate}
+                    value={[moment(startTime), moment(endTime)]}
                     onChange={this.changeRangePicker}/>
             </div>
         );
@@ -223,7 +396,7 @@ class ClueFilterPanel extends React.Component {
         if (!getClueUnhandledPrivilege()) {
             otherFilterArray = _.filter(otherFilterArray, item => item.value !== SELECT_TYPE.WAIT_ME_HANDLE);
         }
-        const commonData = otherFilterArray.map(x => {
+        let commonData = otherFilterArray.map(x => {
             x.readOnly = true;
             x.groupId = COMMON_OTHER_ITEM;
             x.groupName = Intl.get('crm.186', '其他');
@@ -245,9 +418,13 @@ class ClueFilterPanel extends React.Component {
             }];
             return x;
         });
+
+        //将自定义常用筛选加到常用筛选数据中
+        commonData = commonData.concat(this.state.customCommonFilter);
+
         const advancedData = [{
             groupName: Intl.get('crm.96', '地域'),
-            groupId: 'clue_province',
+            groupId: 'province',
             data: clueProvinceList.map(x => ({
                 name: x,
                 value: x
@@ -265,7 +442,7 @@ class ClueFilterPanel extends React.Component {
                     }))
                 },{
                     groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
-                    groupId: 'clue_access',
+                    groupId: 'access_channel',
                     data: accessChannelArray.map(x => ({
                         name: x,
                         value: x
@@ -327,8 +504,8 @@ class ClueFilterPanel extends React.Component {
                         hasSettedDefaultCommonSelect={true}
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
-                        showAdvancedPanel={true}
                         toggleList={this.props.toggleList}
+                        onDelete={this.deleteCustomCommonFilter.bind(this)}
                     />
                 </div>
             </div>

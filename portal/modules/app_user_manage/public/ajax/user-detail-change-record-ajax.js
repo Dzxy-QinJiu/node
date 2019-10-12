@@ -25,23 +25,3 @@ exports.getUserDetailChangeRecord = function(searchObj){
     });
     return Deferred.promise();
 };
-// 根据单个用户user_id获取用户应用列表
-var singleUserLogAppAjax = null;
-exports.getSingleUserAppList = function(userId){
-    let Deferred = $.Deferred();
-    singleUserLogAppAjax && singleUserLogAppAjax.abort();
-    singleUserLogAppAjax = $.ajax({
-        url: '/rest/appuser/detail/' + userId,
-        type: 'get',
-        dateType: 'json',
-        success: function(data){
-            Deferred.resolve(data);
-        },
-        error: function(xhr,status) {
-            if(status !== 'abort') {
-                Deferred.reject(xhr.responseJSON);
-            }
-        }
-    });
-    return Deferred.promise();
-};

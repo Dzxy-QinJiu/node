@@ -37,19 +37,23 @@ const unhandleApplyNumObj = [
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,
         cls: 'application_sales_opportunity_ico',
-        style: 'unhandleSalesOpperNumSyle'
+        style: 'unhandleSalesOpperNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,
         cls: 'application_report_send_ico',
-        style: 'unhandleReportSendNumSyle'
+        style: 'unhandleReportSendNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,
         cls: 'application_document_write_ico',
-        style: 'unhandleDocumentWriteNumSyle'
+        style: 'unhandleDocumentWriteNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,
         cls: 'application_self_setting_ico',
-        style: 'unhandleVisitNumSyle'
+        style: 'unhandleVisitNumStyle'
+    }, {
+        name: APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,
+        cls: 'application_domain_name_ico',
+        style: 'unhandleDomainNumSyle'
     }];
 
 //顶部导航外层div
@@ -206,6 +210,15 @@ class TopNav extends React.Component {
             //点击到数字上，进行跳转
             history.push('/application/self_setting', {clickUnhandleNum: true});
         });
+        $('.topNav').on('click', '.application_domain_name_ico', function(e) {
+            //如果点击到a标签上，不做处理
+            if ($(e.target).is('a')) {
+                return;
+            }
+            //点击到数字上，进行跳转
+            history.push('/application/domain_application', {clickUnhandleNum: true});
+        });
+
 
     }
 

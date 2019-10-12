@@ -1,7 +1,7 @@
 var React = require('react');
 require('./css/customer-suggest.less');
 import {Link} from 'react-router-dom';
-import {Select, Tag} from 'antd';
+import {Select, Tag, Form} from 'antd';
 var crmCustomerAjax = require('MOD_DIR/crm/public/ajax/index');
 var userData = require('PUB_DIR/sources/user-data');
 var classNames = require('classnames');
@@ -13,7 +13,6 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import CustomerLabel from 'CMP_DIR/customer_label';
 
 class CustomerSuggest extends React.Component {
@@ -116,6 +115,7 @@ class CustomerSuggest extends React.Component {
     };
 
     suggestChange = (value) => {
+        value = _.trim(value);
         if (value){
             //隐藏客户是必填项的提示
             _.isFunction(this.props.hideCustomerRequiredTip) && this.props.hideCustomerRequiredTip(true);
@@ -393,6 +393,7 @@ class CustomerSuggest extends React.Component {
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
+                currentName: this.state.displayText,
                 currentId: customerId,
                 ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                 hideRightPanel: this.closeRightPanel
@@ -463,7 +464,7 @@ class CustomerSuggest extends React.Component {
                 textBlock = (
                     <span className="inline-block basic-info-text no-data-descr">
                         {this.props.hasEditPrivilege ? (
-                            <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮" className="handle-btn-item">{this.props.addDataTip}</a>) :<span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
+                            <a onClick={this.setEditable.bind(this)} data-tracaname="点击编辑客户按钮" className="handle-btn-item">{this.props.addDataTip}</a>) : <span className="no-data-descr-nodata">{this.props.noDataTip}</span>}
 
                     </span>
                 );
@@ -478,7 +479,7 @@ class CustomerSuggest extends React.Component {
                     combobox
                     autoFocus = {true}
                     placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
-                    filterOption={(input, option) => ignoreCase(input, option)}
+                    filterOption={() => _.get(this.state.list, 'length', 0)}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}
                     onBlur={this.onCheckIfCustomerChoose.bind(this)}
