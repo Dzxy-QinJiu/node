@@ -960,7 +960,7 @@ class MemberInfo extends React.Component {
                     <GeminiScrollbar>
                         <div className="member-detail-basic-content">
                             {
-                                this.state.isShowCallTip ? (
+                                this.props.isContinueAddButtonShow && this.state.isShowCallTip ? (
                                     <DetailCard
                                         content={this.renderAddMemberSuccessTips()}
                                         className='member-info-success-tips-card-container'
