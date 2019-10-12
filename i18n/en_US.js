@@ -75,7 +75,7 @@ var en_US = {
     'common.password.unequal': 'Passwords do not match',//两次输入密码不一致！
     'common.correct.email': 'Please enter the correct email account',//请输入正确的邮箱Please input the correct email
     'common.correct.qq': 'Please enter the correct QQ account',//请输入正确的QQ号
-    'common.correct.wechat': 'please enter the correct WeChat account',//请输入正确的微信号
+    'common.correct.wechat': 'please enter the correct WeChat account/Mobile number/QQ number/mailbox',//请输入正确的微信号/手机号/QQ号/邮箱
     'common.correct.no.wechat': 'please enter the WeChat account',//请输入微信号
     'common.password.length': 'The password must be around 6 to 18 characters.',//密码长度应为6-18位
     'common.password.compose.rule': '6 ~ 18 characters (numbers, letters or symbols)',//6-18位字符(由数字，字母，符号组成)
@@ -86,6 +86,7 @@ var en_US = {
     'common.no.match': 'No match',//暂无匹配项
     'common.get.team.list.failed': 'Failed to get team list',//获取团队列表失败
     'common.username': 'Username',//用户名
+    'common.account.number': 'Account number',//账号
     'common.my.app': 'My Applications',//我的应用
     'common.filter': 'Filter',//筛选
     'common.add': 'Add ',//添加
@@ -286,6 +287,7 @@ var en_US = {
     'common.maximum.personal.contribution': 'maximum personal contribution',//个人贡献最大值
     'common.the.maximum.gross.profit.rate': 'the maximum gross profit rate',//回款毛利率最大值
     'common.maximum.gross.margin.of.newly.signed.payment': 'maximum gross margin of newly signed payment',//新签回款毛利最大值
+    'common.load.data.error': 'Loading failed, please refresh', // 加载失败，请{refresh}
 
     //公共部分--end
     'login.login': 'Login',//登录
@@ -916,11 +918,13 @@ var en_US = {
 
     // 后台管理-行业start
     'industry.add.check.tips': 'The name of industry was existed', // 该行业名称已存在
+    'industry.no.data.tips': 'There is no industry, after adding industry, you can set different industries for your customers.', // 暂无行业，添加行业后，可以为您的客户设置不同行业
     // 后台管理-行业end
 
     // 后台管理-竞品start
     'competing.product.add.placeholder': 'Add competing product', // 添加竞品
     'competing.add.check.tips': 'The name of competing product was existed', // 该竞品名称已存在
+    'competing.no.data.tips': 'There is no competing product. After adding competing products, you can set up competing products on the customer to help the sales staff to complete the sales process better.', // 暂无竞品，添加竞品后，可以在客户上设置竞品，帮助销售人员更好的完成销售过程
     // 后台管理-竞品end
 
     // 后台管理-销售流程start
@@ -1027,6 +1031,9 @@ var en_US = {
     'user.info.log.record.tip': 'The following is your operation records recently.{editpassword} if there are       unrecognized logins.',//以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}
     'user.info.login.address': 'Address',//地点
     'user.info.login.browser': 'Browser',//浏览器
+    'user.info.active.email.btn': 'Send Activated Mail',//发送激活邮件
+    'user.info.active.email.tip': 'please activate the mailbox according to the steps in the mail',//请根据邮件内步骤激活邮箱
+    'user.info.active.email.msg': '(Activated mail sent，{sendTime} s)',//(已发送激活邮件{sendTime}s)
     'user.info.active.email': 'Activation email has been sent to {email}, please go to active',//激活邮件已发送至{email},请前往激活
     'user.info.retry': 'Please try again',//请重试
     'user.info.no.active': 'Please {active}',//未激活，请{active}
@@ -1240,7 +1247,7 @@ var en_US = {
     'call.record.save.content.success': 'Save follow-up content successfully.', // 保存跟进内容成功！
     'call.record.save.content.error': 'Failed to save follow-up content.', // 保存跟进内容失败！
     'call.record.is.save.content.title': 'Are you  sure to save follow-up content?', // 是否保存跟进内容？
-    'call.record.trend.charts': 'Call Trend(the latest month)', // 近一个月的通话趋势
+    'call.record.trend.charts': 'Call Trend', // 通话趋势统计
     'call.record.recommend.list': 'Failed to get recommend list.', // 获取推荐列表失败！
     'call.record.servicecall.get.err': 'Failed to get the statistic about customer services phones',//获取客服电话统计失败
     'call.record.servicecall': 'statistic about customer services phones',//客服电话统计
@@ -1262,6 +1269,7 @@ var en_US = {
     'call.analysis.map.return': 'Back to previous', // 返回上一级
     'call.analysis.call.title': 'Call information', // 通话信息
     'call.analysis.filter.114': 'Do not contain 114',//过滤掉114
+    'call.analysis.114.proportion.tip': '114 calls accounted for a percentage of all calls',//拨打的114电话占所有电话的比例
     //通话分析-end
     // 用户审批start
     'user.apply.all': 'All applications',//全部申请
@@ -1419,7 +1427,7 @@ var en_US = {
     'crm.68': 'Similar customers', // 相似的客户还有
     'crm.69': 'The customer is already taken', // 客户名唯一性校验出错
     'crm.81': 'please enter customer name', // 请填写客户名称
-    'crm.82': 'The phone is already taken', // 电话唯一性验证出错了
+    'crm.82': 'Phone number verification error', // 电话号码验证出错
     'crm.83': 'The phone was existed', // 该电话已存在
     'crm.86': 'Please enter the number of phone', // 请填写电话
     'crm.88': 'Getting a list of industry', // 正在获取行业列表
@@ -1620,7 +1628,6 @@ var en_US = {
     'crm.sales.update': 'Modify it to',//修改为
     'crm.sales.redistribution': 'Redistribution',//重新分配
     'crm.sales.transfer.confirm': 'Transfer confirm',//确认转出
-    'crm.detail.no.data': 'The customer has been deleted or turned away',//该客户已被删除或转走
     'crm.detail.get.error': 'Failed to get customer details',//获取客户详情失败
     'crm.schedule.set.compelete': 'Set to complete',//标为已完成
     'crm.schedule.set.unfinished': 'Set to unfinished',//标为未完成
@@ -1746,8 +1753,8 @@ var en_US = {
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
     'crm.customer.release': 'Release',//释放
     'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
-    'crm.customer.delete': 'After deletion, you can retrieve customers from the recycle bin',//删除后，您可以从回收站中找回客户
-    'crm.customer.release.confirm.tip': 'After release to the customer pool, other people can view and extract. Do you confirm the release?',//释放到客户池后，其他人也可以查看、提取，您确认释放吗？
+    'crm.customer.delete': 'After deletion, the customer can be found in the recycle bin. Are you sure you want to delete it?',//删除后，可以在回收站中找回该客户，您确定要删除吗？
+    'crm.customer.release.confirm.tip': 'After release to the customer pool, other people can also view and extract. Are you sure you want to release it?',//释放到客户池后，其他人也可以查看、提取，您确定要释放吗？
     'crm.customer.release.failed': 'Customer Release Failed',//释放客户失败
     'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
     'crm.customer.extract.failed': 'Failure to extract customer',//提取客户失败
@@ -1789,7 +1796,7 @@ var en_US = {
     'crm.customer.pool.rule.release.setting': 'Release the set',//释放设置
     'crm.customer.pool.rule.own.visible': 'The self released is invisible',//自己释放的自己不可见
     'crm.filter.extract.from.customer.pool': 'Customers extracted from the customer pool',//从客户池中提取的客户
-    'crm.basic.second.level.domain': 'Second-level domain',//二级域名
+    'crm.basic.second.level.domain': 'Public opinion platform domain name',//舆情平台域名
 
     // 客户详情中，合同项
     'crm.contract.validity.time': 'Validity period', // 有效期
@@ -1819,6 +1826,8 @@ var en_US = {
     'crm.contract.add.label': 'Add signing type',//添加签约类型
     'crm.contract.no.label': 'No signing type',//暂无签约类型
     'crm.batch.change.customer.pending': 'The batch operation was not completed last time, please try again later',//上次批量操作未完成，请稍后再试
+    'crm.search.customer.detail.customer.pool': 'Customer has been deleted or has been released to {customerpool}',//客户已被删除或已被释放到{customerpool}
+    'crm.search.customer.no.customer.pool.dash': 'The customer has been deleted or has been released to the customer pool, please go to {recycle} or {customerpool}',//客户已被删除或已被释放到客户池，请到{recycle}或{customerpool}查看
     // 客户管理end
 
     //客户分析 start
@@ -2828,7 +2837,10 @@ var en_US = {
     'sales.clue.is.enable': 'Invalid',//无效
     'failed.sales.remark.clue.valid': 'Failed to mark the validity of the clue',//标记该线索有效性失败
     'clue.customer.check.only.exist': 'Failed to verify the only clue names',//线索名称唯一性校验失败
+    'clue.customer.check.only.fail': 'Clue name is already taken',//线索名称唯一性校验出错
     'clue.customer.check.repeat': 'The clue name is already existed',//该线索名称已存在
+    'clue.customer.similar.clue.contains': 'Similar clues',//相似的线索还有
+    'clue.customer.repeat.phone.user': 'The phone has been used by clue {userName}',//该电话已被线索{userName}使用
     'clue.customer.clue.time': 'Consult on {relative}',//咨询于{relative}
     'failed.to.get.clue.classify': 'Failed to get clue classify',//获取线索分类出错了
     'clue.customer.classify': 'clue  classification',//线索分类
@@ -2907,6 +2919,7 @@ var en_US = {
     'common.this.month.back': 'this month back',//本月回流
     'common.this.month.new': 'this month new',//本月新增
     'common.this.month': 'this month',//本月
+    //线索模块 start
     'clue.search.by.name': 'search by clue name',//按线索名搜索
     'clue.add.trace.content': 'Add follow-up content',//添加跟进内容
     'clue.add.trace.follow': 'follow up',//跟进
@@ -2978,9 +2991,10 @@ var en_US = {
     'clue.customer.refresh.page': 'refresh page',//刷新页面
     'clue.pool': 'Clue Pool', // 线索池
     'clue.pool.explain': 'Store release clues',//存放释放的线索
+    'clue.customer.delete': 'Can\'t be restored after deletion. Are you sure you want to delete it?',//删除后无法恢复，您确定要删除吗？
     'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
-    'clue.customer.release.confirm.tip': 'After release to the clue pool, other people can view and extract. Do you confirm the release?',//释放到线索池后，其他人也可以查看、提取，您确认释放吗？
+    'clue.customer.release.confirm.tip': 'When released into the clue pool, other people can also view and extract it. Are you sure you want to release it?',//释放到线索池后，其他人也可以查看、提取，您确定要释放吗？
     'clue.customer.fail.to.release.tip': 'Fail to release to clue pool',//释放线索失败
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
     'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败
@@ -2991,6 +3005,8 @@ var en_US = {
     'clue.extract.success': 'Success', // 提取成功
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
+    'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any clue',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
+    //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
     'user.detail.analysis.tip.deep': 'Online minutes in recent 30 days, this takes 30% in total score', //'最近30天的在线分钟数/(30*24*60)。该分项在总分中占比30%',
@@ -3377,6 +3393,10 @@ var en_US = {
     'apply.time.distinct.am': 'Distinguish between afternoon and afternoon',//区分上下午
     'apply.form.has.edit.components': 'Do you have a component or edit state?',//您有组件还是编辑状态
     'apply.my.self.setting.work.flow': 'Visit apply',//拜访申请
+    'apply.domain.application.work.flow': 'Domain name application',//域名申请
+    'apply.domain.descriptipn.reg': 'The domain name description can only contain letters, numbers, underscores (cannot begin or end with a dash), and is between 1 and 32 in length.',//域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间
+    'apply.domain.name.check.err': 'Second-level domain name verification failed!',//二级域名校验失败！
+    'apply.domain.sub.name.exist': 'The domain already exists',//该域名已存在
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
     /*自定义审批 end*/
@@ -3622,6 +3642,8 @@ var en_US = {
     'clue.assignment.needs.region.required.tip': 'Region should not be empty',//地域不能为空
     'clue.assignment.needs.region.no.data': 'No this region',//暂无此地域
     'clue.assignment.needs.region.add.data': 'Add Region',//添加地域
+    'clue.assignment.needs.regions.all.regions': 'All Regions',//全部地域
+    'clue.assignment.all.regions.tips': 'All regions has been included, place change before you add a new strategy',//策略中已包含全部地域，请修改后再添加
     'clue.assignment.needs.source': 'Source',//来源
     'clue.assignment.needs.source.tip': 'Please select or input clue source',//请选择或输入线索来源
     'clue.assignment.needs.source.required.tip': 'Clue source should not be empty',//线索来源不能为空

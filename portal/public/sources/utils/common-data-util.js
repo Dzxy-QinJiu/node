@@ -223,7 +223,7 @@ exports.getAllSalesUserList = function(cb) {
                     salesManList.push({
                         user_info: {
                             user_id: _.get(user, 'userId', ''),
-                            nick_name: _.get(user, 'nickName', ''),
+                            nick_name: _.get(user, 'nickName', '') || _.get(user,'userName', ''),
                         },
                         user_groups: [{
                             group_name: '',
@@ -562,7 +562,7 @@ exports.getTeamTreeMemberLists = function(callback) {
             _.isFunction(callback) && callback(_.map(list, item => {
                 return {
                     user_id: _.get(item, 'userId', ''),
-                    nickname: _.get(item, 'nickName', '')
+                    nickname: _.get(item, 'nickName', '') || _.get(item, 'userName', '')
                 };
             }));
 
@@ -574,7 +574,7 @@ exports.getTeamTreeMemberLists = function(callback) {
             _.isFunction(callback) && callback(_.map(list, item => {
                 return {
                     user_id: _.get(item, 'user_id'),
-                    nickname: _.get(item, 'nick_name')
+                    nickname: _.get(item, 'nick_name', '') || _.get(item, 'user_name', '')
                 };
             }));
         }, function(errorMsg) {

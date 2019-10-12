@@ -559,7 +559,6 @@ const ApplyViewDetail = createReactClass({
     renderSameCustomerHistoricalApply(){
         return (
             <ApplyHistory
-                detailInfo={this.state.detailInfoObj.info}
                 sameHistoryApplyLists={this.state.sameHistoryApplyLists}
                 handleOpenApplyDetail={this.props.handleOpenApplyDetail}
             />

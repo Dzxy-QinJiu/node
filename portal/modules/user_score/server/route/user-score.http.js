@@ -38,6 +38,13 @@ module.exports = {
             passport: {
                 needLogin: true
             }
+        }, { // 修改参与度的状态
+            method: 'put',
+            path: '/rest/update/user/score/status',
+            handler: 'updateEngagementStatus',
+            passport: {
+                needLogin: true
+            }
         }
     ]
 };

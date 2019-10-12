@@ -248,7 +248,6 @@ class CustomerPoolFilter extends React.Component {
                         advancedData={advancedData}
                         hasSettedDefaultCommonSelect={true}
                         onFilterChange={this.handleFilterChange.bind(this)}
-                        showAdvancedPanel={true}
                         toggleList={this.props.toggleList}
                     />
                 </div>

@@ -18,7 +18,7 @@ import {
 } from 'PUB_DIR/sources/utils/consts';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 //行政级别筛选项
-let filterLevelArray = [{ id: '', level: Intl.get('common.all', '全部') }].concat(administrativeLevels);
+let filterLevelArray = administrativeLevels;
 
 
 let otherFilterArray = [
@@ -154,9 +154,11 @@ class CrmFilterPanel extends React.Component {
                 sort_field: 'operate_time',
                 page_size: 1000
             },
-            //post请求不传body参数会报415
-            data: { emptyFix: '' }
-
+            data: {
+                query: {
+                    tag: 'crm'
+                }
+            }
         };
         FilterAction.getCommonFilterList(paramsObj);
     }

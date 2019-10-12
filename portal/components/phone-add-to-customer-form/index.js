@@ -189,7 +189,7 @@ class PhoneAddToCustomerForm extends React.Component {
                         },
                         error: function(errorMsg) {
                             //唯一性验证出错了
-                            callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                            callback(Intl.get('crm.82', '电话号码验证出错'));
                         }
                     });
                 } else {

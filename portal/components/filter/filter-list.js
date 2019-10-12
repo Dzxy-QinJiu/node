@@ -11,13 +11,10 @@ import { FILTER_COMMON_RATE_KEY } from './consts';
 import { storageUtil } from 'ant-utils';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 const local = storageUtil.local;
+const CLOSE_COMMENT_HEIGHT = 32;//收起筛选tab的高度
 class FilterList extends React.Component {
     constructor(props) {
         super();
-        let collapsedAdvanced = true;
-        if (!props.commonData.length || props.showAdvancedPanel) {
-            collapsedAdvanced = false;
-        }
 
         this.state = {
             rawCommonData: props.commonData,
@@ -26,7 +23,6 @@ class FilterList extends React.Component {
             rawAdvancedData: props.advancedData || [],
             advancedData: $.extend(true, [], props.advancedData) || [],
             collapsedCommon: true,
-            collapsedAdvanced,
             selectedAdvancedMap: {},
             selectedCommonIndex: '',
             showClickPop: false,//用于在点击pop时隐藏hover的popover
@@ -99,12 +95,6 @@ class FilterList extends React.Component {
                 });
             }
         }
-        //没有常用筛选或者打开筛选面板就展开高级筛选（showAdvancedPanel）为true时，自动展开高级筛选
-        if ((!newProps.commonData.length && !this.props.commonData.length) || newProps.showAdvancedPanel) {
-            this.setState({
-                collapsedAdvanced: false
-            });
-        }
         //hasSettedDefaultCommonSelect 是否设置了展示默认搜索项待我处理
         if (newProps.hasSettedDefaultCommonSelect !== this.props.hasSettedDefaultCommonSelect){
             this.setDefaultFilterSetting();
@@ -121,11 +111,6 @@ class FilterList extends React.Component {
             case 'common':
                 this.setState({
                     collapsedCommon: !this.state.collapsedCommon
-                });
-                break;
-            case 'advanced':
-                this.setState({
-                    collapsedAdvanced: !this.state.collapsedAdvanced
                 });
                 break;
         }
@@ -226,7 +211,10 @@ class FilterList extends React.Component {
         this.handleShowPop('click', false);
         if (item.id) {
             if (this.props.onDelete) {
-                this.props.onDelete(item).then(({data}) => {
+                this.props.onDelete(item).then((result) => {
+                    //若返回结果中有data属性，则取data属性的值作为数据源，否则将返回结果作为数据源
+                    const data = _.get(result, 'data', result);
+
                     if (!data || data.errorMsg) {
                         message.error(Intl.get('crm.139', '删除失败'));
                     } else {
@@ -581,17 +569,21 @@ class FilterList extends React.Component {
         };
         var noCommonStatus = !this.state.commonData || this.state.commonData.length === 0;
         var commonStatusCls = noCommonStatus ? ' no-content' : '';
+        let styleList = this.props.style;
+        //减掉‘收起筛选’的高度
+        if(_.get(styleList,'height')){
+            styleList.height = styleList.height - CLOSE_COMMENT_HEIGHT;
+        }
         return (
             <div>
                 <div className="close-filter-panel" onClick={this.closeFilterPanel}>
-                        <span className="filter-panel-arrow">
+                    <span className="filter-panel-arrow">
                             &lt;
-                        </span>
+                    </span>
                     {Intl.get('clue.customer.close.filter.panel', '收起筛选')}
                 </div>
-                <GeminiScrollbar style={this.props.style} className={this.props.className}>
+                <GeminiScrollbar style={styleList} className={this.props.className}>
                     <div className="filter-wrapper filter-list-wrapper">
-
                         {_.isFunction(this.props.renderOtherDataContent) ? this.props.renderOtherDataContent() : null}
                         <StatusWrapper
                             loading={commonLoading}
@@ -637,7 +629,7 @@ class FilterList extends React.Component {
                                                     return (
                                                         //todo plainFilterList 根据接口数据统一结构
                                                         <Popover key={index} placement="bottom" content={getHoverContent(x.plainFilterList)} trigger="hover"
-                                                                 onVisibleChange={this.handleShowPop.bind(this, 'hover')}
+                                                            onVisibleChange={this.handleShowPop.bind(this, 'hover')}
                                                             // visible={this.state.showHoverPop && !this.state.showClickPop}
                                                         >
                                                             <li
@@ -695,58 +687,49 @@ class FilterList extends React.Component {
                                     size="small"
                                 >
                                     <div className="advanced-container">
-                                        {this.props.hideAdvancedTitle ? null : <h4 className="title" onClick={this.toggleCollapse.bind(this, 'advanced')}>
-                                            {/* todo icon-advanced-filter */}
-                                            <p className="">高级筛选</p>
-                                            <Icon
-                                                type={this.state.collapsedAdvanced ? 'down' : 'up'}
-                                            />
-                                        </h4>}
-
                                         {
-                                            !this.state.collapsedAdvanced ?
-                                                <div className="advanced-items-wrapper" data-tracename="高级筛选">
-                                                    {
-                                                        this.state.advancedData.map((groupItem, index) => {
-                                                            if (!groupItem.data || groupItem.data.length === 0) {
-                                                                return null;
-                                                            } else {
-                                                                return (
-                                                                    <div key={index} className="group-container">
-                                                                        <h4 className="title">
-                                                                            {groupItem.groupName}
-                                                                            {
-                                                                                isGroupSelected(groupItem) ?
-                                                                                    <span
-                                                                                        className="clear-btn"
-                                                                                        onClick={this.clearSelect.bind(this, groupItem.groupName)}
-                                                                                    >
-                                                                                    清空
+                                            <div className="advanced-items-wrapper" data-tracename="高级筛选">
+                                                {
+                                                    this.state.advancedData.map((groupItem, index) => {
+                                                        if (!groupItem.data || groupItem.data.length === 0) {
+                                                            return null;
+                                                        } else {
+                                                            return (
+                                                                <div key={index} className="group-container">
+                                                                    <h4 className="title">
+                                                                        {groupItem.groupName}
+                                                                        {
+                                                                            isGroupSelected(groupItem) ?
+                                                                                <span
+                                                                                    className="clear-btn"
+                                                                                    onClick={this.clearSelect.bind(this, groupItem.groupName)}
+                                                                                >
+                                                                                清空
                                                                                 </span> : null
-                                                                            }
-                                                                        </h4>
-                                                                        {_.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) : (
-                                                                            <ul className="item-container">
-                                                                                {_.map(groupItem.data, (x, idx) => {
-                                                                                    return (
-                                                                                        <li
-                                                                                            className={x.selected ? 'active titlecut' : 'titlecut'}
-                                                                                            key={idx}
-                                                                                            title={x.name}
-                                                                                            onClick={this.handleAdvanedItemClick.bind(this, groupItem, x)}
-                                                                                        >
-                                                                                            {x.name}
-                                                                                        </li>);
-                                                                                })
-                                                                                }
-                                                                            </ul>)
                                                                         }
-                                                                    </div>
-                                                                );
-                                                            }
-                                                        })
-                                                    }
-                                                </div> : null
+                                                                    </h4>
+                                                                    {_.get(groupItem, 'data.length') > 8 ? this.renderGroupItemSelect(groupItem) : (
+                                                                        <ul className="item-container">
+                                                                            {_.map(groupItem.data, (x, idx) => {
+                                                                                return (
+                                                                                    <li
+                                                                                        className={x.selected ? 'active titlecut' : 'titlecut'}
+                                                                                        key={idx}
+                                                                                        title={x.name}
+                                                                                        onClick={this.handleAdvanedItemClick.bind(this, groupItem, x)}
+                                                                                    >
+                                                                                        {x.name}
+                                                                                    </li>);
+                                                                            })
+                                                                            }
+                                                                        </ul>)
+                                                                    }
+                                                                </div>
+                                                            );
+                                                        }
+                                                    })
+                                                }
+                                            </div>
                                         }
                                     </div>
                                 </StatusWrapper> : null
@@ -774,7 +757,6 @@ FilterList.defaultProps = {
 
     },
     hasSettedDefaultCommonSelect: false,
-    showAdvancedPanel: false,
     toggleList: function() { },
 };
 /**
@@ -827,7 +809,6 @@ FilterList.propTypes = {
     hideAdvancedTitle: PropTypes.bool,
     setDefaultSelectCommonFilter: PropTypes.func,
     hasSettedDefaultCommonSelect: PropTypes.bool,
-    showAdvancedPanel: PropTypes.bool,
     toggleList: PropTypes.func,
 
 };

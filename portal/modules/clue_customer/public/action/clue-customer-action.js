@@ -200,5 +200,18 @@ function ClueCustomerActions() {
             _.isFunction(errorFunc) && errorFunc(errorMsg);
         });
     };
+    //线索名或电话唯一性的验证
+    this.checkOnlyClueNamePhone = function(queryObj, isTerm, callback) {
+        queryObj.isTerm = isTerm;
+        clueCustomerAjax.checkOnlyClueNamePhone(queryObj).then(function(data) {
+            if (callback) {
+                callback(data);
+            }
+        }, function(errorMsg) {
+            if (callback) {
+                callback(errorMsg || Intl.get('clue.customer.check.only.exist', '线索名称唯一性校验失败'));
+            }
+        });
+    };
 }
 module.exports = alt.createActions(ClueCustomerActions);

@@ -32,6 +32,7 @@ import {checkPhone} from 'PUB_DIR/sources/utils/validate-util';
 const FORMAT = oplateConsts.DATE_FORMAT;
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
 import ShareObj from'../util/app-id-share-util';
+
 class UserDetailBasic extends React.Component {
     static defaultProps = {
         userId: '1'
@@ -49,15 +50,6 @@ class UserDetailBasic extends React.Component {
     componentDidMount() {
         AppUserDetailStore.listen(this.onStateChange);
         if (!this.props.userId) return;
-        AppUserDetailAction.getUserDetail(this.props.userId);
-        if (this.props.getBasicInfo) {
-            const userInfo = {
-                data: null,
-                loading: true,
-                errorMsg: ''
-            };
-            this.props.getBasicInfo(userInfo);
-        }
         if(this.getRolesListPrivilege()){
             this.getBatchRoleInfo();
         }
@@ -136,17 +128,10 @@ class UserDetailBasic extends React.Component {
         if (prevProps.userId !== newUserId && newUserId) {
             setTimeout(function() {
                 AppUserDetailAction.dismiss();
-                AppUserDetailAction.getUserDetail(newUserId);
             }, 0);
         }
         const statusChanged = prevState.isLoading !== this.state.isLoading;
-        if (this.props.getBasicInfo && statusChanged) {
-            const userInfo = {
-                data: this.state.initialUser.user,
-                loading: this.state.isLoading,
-                errorMsg: this.state.getDetailErrorMsg
-            };
-            this.props.getBasicInfo(userInfo);
+        if (statusChanged) {
             if(this.getRolesListPrivilege()){
                 this.getBatchRoleInfo();
             }
@@ -165,9 +150,6 @@ class UserDetailBasic extends React.Component {
     componentWillUnmount() {
         AppUserDetailStore.unlisten(this.onStateChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.UPDATE_APP_INFO, this.getBatchRoleInfo);
-        setTimeout(() => {
-            AppUserDetailAction.dismiss();
-        });
     }
 
     showDisableAllAppsModal = (e) => {

@@ -49,6 +49,10 @@ const restApis = {
     getClueFulltext: clueBaseUrl + '/query/lead/range/fulltext/:type/:page_size/:page_num/:sort_field/:order',
     //有待我处理筛选项时的全文搜索
     getClueFullTextWithSelfHandle: clueBaseUrl + '/query/self_no_traced/range/fulltext/:type/:page_size/:page_num/:sort_field/:order',
+    //导出线索的全文搜索
+    exportClueFulltext: clueBaseUrl + '/query/lead/range/fulltext/:type/:page_size/:sort_field/:order',
+    //导出有待我处理筛选项时的全文搜索
+    exportClueFullTextWithSelfHandle: clueBaseUrl + '/query/self_no_traced/range/fulltext/:type/:page_size/:sort_field/:order',
     //获取线索的动态
     getClueDynamic: clueBaseUrl + '/dynamic/:clue_id/:page_size',
     //根据线索的id查询线索的详情
@@ -78,7 +82,9 @@ const restApis = {
     //释放线索
     releaseClue: clueBaseUrl + '/lead_pool/release/:type',
     //批量释放线索
-    batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type'
+    batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type',
+    //线索名、电话唯一性验证
+    checkOnlyClueNamePhone: clueBaseUrl + '/repeat/search'
 };
 
 //获取线索来源
@@ -458,6 +464,17 @@ exports.getClueFulltextSelfHandle = function(req, res) {
     //待我处理的，不要查已转化的线索
     return getExistTypeClueLists(req, res, obj, true);
 };
+//线索全文搜索
+exports.exportClueFulltext = function(req, res) {
+    var obj = handleClueParams(req, restApis.exportClueFulltext);
+    return getExistTypeClueLists(req, res, obj);
+};
+//线索有待我处理筛选项时的全文搜索
+exports.exportClueFulltextSelfHandle = function(req, res) {
+    var obj = handleClueParams(req, restApis.exportClueFullTextWithSelfHandle);
+    //待我处理的，不要查已转化的线索
+    return getExistTypeClueLists(req, res, obj, true);
+};
 //获取动态列表
 exports.getDynamicList = function(req, res) {
     var url = restApis.getClueDynamic.replace(':clue_id',req.params.clue_id).replace(':page_size',req.params.page_size);
@@ -578,4 +595,16 @@ exports.batchReleaseClue = function(req,res) {
         req: req,
         res: res
     } , reqBody);
+};
+//线索名、电话唯一性验证
+exports.checkOnlyClueNamePhone = function(req, res) {
+    let queryBody = req.query;
+    let isTerm = queryBody.isTerm;
+    delete queryBody.isTerm;
+    return restUtil.authRest.get(
+        {
+            url: restApis.checkOnlyClueNamePhone + `?is_term=${isTerm}`,
+            req: req,
+            res: res
+        }, queryBody);
 };

@@ -59,6 +59,7 @@ exports.notificationEmitter.APPLY_UPDATED_MEMBER_INVITE = 'applyUpdatedMemberInv
 exports.notificationEmitter.APPLY_UPDATED_REPORT_SEND = 'applyUpdatedReportSend';
 exports.notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE = 'applyUpdatedDocumentWrite';
 exports.notificationEmitter.APPLY_UPDATED_VISIT = 'applyUpdatedVisit';
+exports.notificationEmitter.APPLY_UPDATED_DOMAIN = 'applyUpdatedDomain';
 //未处理的线索数量
 exports.notificationEmitter.SHOW_UNHANDLE_CLUE_COUNT = 'showUnhandledClueCount';
 //更新待我处理的数据
@@ -226,10 +227,6 @@ const positionEmitter = new EventEmitter();
 positionEmitter.CLICK_POSITION = 'click_position';
 export { positionEmitter };
 
-// 用户详情基本信息事件
-const userBasicInfoEmitter = new EventEmitter();
-userBasicInfoEmitter.GET_USER_BASIC_INFO = 'get_user_basic_info';
-export { userBasicInfoEmitter };
 //线索相关事件
 const clueEmitter = new EventEmitter();
 clueEmitter.REMOVE_CLUE_ITEM = 'remove_clue_item';

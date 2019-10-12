@@ -12,6 +12,8 @@ const restApis = {
     getUserEngagementRule: '/rest/rule/sales_auto/config/user_engagement/rule',
     //获取用户评分
     getUserScoreLists: '/rest/rule/sales_auto/config/user_score/rule',
+    //修改参与度评分的状态
+    updateEngagementStatus: '/rest/rule/sales_auto/config/user_engagement/rule/status'
 };
 //获取用戶评分的规则
 exports.getUserScoreIndicator = (req, res) => {
@@ -54,6 +56,14 @@ exports.saveUserScoreLists = (req, res) => {
     return restUtil.authRest.post(
         {
             url: restApis.getUserScoreLists,
+            req: req,
+            res: res
+        }, req.body);
+};
+exports.updateEngagementStatus = (req, res) => {
+    return restUtil.authRest.put(
+        {
+            url: restApis.updateEngagementStatus,
             req: req,
             res: res
         }, req.body);

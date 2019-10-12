@@ -6,7 +6,6 @@ var UserAuditLogStore = require('../store/user_audit_log_store');
 var userAuditLogAjax = require('../ajax/user_audit_log_ajax');
 var ShareObj = require('../util/app-id-share-util');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import { userBasicInfoEmitter } from 'PUB_DIR/sources/utils/emitters';
 import UserScoreCommonAjax from '../../../common/public/ajax/user-score';
 function UserLoginAnalysisAction() {
     this.generateActions(
@@ -17,85 +16,66 @@ function UserLoginAnalysisAction() {
         'getUserLoginChartInfo', // 用户登录统计图中登录时长、登录频次
     );
     // 获取单个用户的应用列表
-    this.getSingleUserAppList = function(searchObj, selectedAppId){
-        this.dispatch({loading: true, appList: []});
-        userAuditLogAjax.getSingleUserAppList(searchObj).then( (result) => {
-            const userInfo = {
-                data: result.user,
-                loading: false,
-                errorMsg: ''
+    this.getSingleUserAppList = function(searchObj, selectedAppId, appLists){
+        let userOwnAppArray = _.cloneDeep(appLists);
+        // 存储应用id的变量
+        let userOwnAppArrayAppIdList = _.map(userOwnAppArray, 'app_id');
+
+        // 获取UI界面上的app
+        // share_online_app_id 在线用户和单个用户审计日志记录下的appId
+        let selectApp = selectedAppId || AppUserStore.getState().selectedAppId || ShareObj.share_online_app_id ||
+            UserAuditLogStore.getState().selectAppId;
+
+        // 上一个用户选择应用id
+        let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
+        let selectedAppIdIndex = _.indexOf(userOwnAppArrayAppIdList,lastSelectAppId);
+
+        let selectedLogAppId = '';
+        // selectAPP === ''是针对全部应用
+        if (selectApp === '') {
+            if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1 && selectedAppIdIndex === -1) {
+                selectedLogAppId = userOwnAppArray[0].app_id;
+            }else {
+                selectedLogAppId = lastSelectAppId;
+            }
+        } else {
+            selectedLogAppId = selectApp;
+        }
+        if (selectedLogAppId) {
+            const matchAppInfo = _.find(userOwnAppArray, appItem => appItem.app_id === selectedLogAppId);
+            let create_time = matchAppInfo && matchAppInfo.create_time || '';
+            let loginParam = {
+                appid: selectedLogAppId,
+                user_id: searchObj.user_id,
+                starttime: +create_time,
+                endtime: new Date().getTime()
             };
-            userBasicInfoEmitter.emit(userBasicInfoEmitter.GET_USER_BASIC_INFO, userInfo);
-            let userOwnAppArray = result.apps;
-            // 存储应用id的变量
-            let userOwnAppArrayAppIdList = [];
-            if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1) {
-                userOwnAppArrayAppIdList = _.map(userOwnAppArray, 'app_id');
+            // 用户登录分数
+            let reqData = {
+                app_id: selectedLogAppId,
+                account_id: searchObj.user_id
+            };
+            let type = 'self';
+            if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+                type = 'all';
             }
-            // 上一个用户选择应用id
-            let lastSelectAppId = ShareObj.share_differ_user_keep_app_id;
-            let index = _.indexOf(userOwnAppArrayAppIdList,lastSelectAppId);
-            // 获取UI界面上的app
-            let selectApp = selectedAppId || AppUserStore.getState().selectedAppId || ShareObj.share_online_app_id ||
-                UserAuditLogStore.getState().selectAppId;
-            let selectedLogAppId = '';
-            // selectAPP === ''是针对全部应用
-            if (selectApp === '') {
-                if (_.isArray(userOwnAppArray) && userOwnAppArray.length >= 1 && index === -1) {
-                    selectedLogAppId = userOwnAppArray[0].app_id;
-                }else {
-                    selectedLogAppId = lastSelectAppId;
-                }
-            } else {
-                selectedLogAppId = selectApp;
-            }
-            if (selectedLogAppId) {
-                const matchAppInfo = _.find(userOwnAppArray, appItem => appItem.app_id === selectedLogAppId);
-                let create_time = matchAppInfo && matchAppInfo.create_time || '';
-                let loginParam = {
-                    appid: selectedLogAppId,
-                    user_id: searchObj.user_id,
-                    starttime: +create_time,
-                    endtime: new Date().getTime()
-                };
-                // 用户登录分数
-                let reqData = {
-                    app_id: selectedLogAppId,
-                    account_id: searchObj.user_id
-                };
-                let type = 'self';
-                if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
-                    type = 'all';
-                }
-                this.actions.getLoginUserScore(reqData, type);
+            this.actions.getLoginUserScore(reqData, type);
 
-                // 用户登录信息（时长、次数、首次和最后一次登录时间）
-                this.actions.getUserLoginInfo(loginParam);
-                let lastLoginParam = {...loginParam, timeType: _.get(searchObj, 'timeType'), starttime: _.get(searchObj, 'starttime') || moment().subtract(6, 'month').valueOf()};
-                // 用户登录统计图中登录时长、登录频次
-                this.actions.getUserLoginChartInfo(lastLoginParam);
-
-                // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
-                this.actions.getLoginUserActiveStatistics(lastLoginParam, type);
-            }
-            this.dispatch(
-                {
-                    appId: selectedLogAppId,
-                    appList: userOwnAppArray,
-                    loading: false
-                }
-            );
-        }, () => {
+            // 用户登录信息（时长、次数、首次和最后一次登录时间）
+            this.actions.getUserLoginInfo(loginParam);
+            let lastLoginParam = {...loginParam, timeType: _.get(searchObj, 'timeType'), starttime: _.get(searchObj, 'starttime') || moment().subtract(6, 'month').valueOf()};
             // 用户登录统计图中登录时长、登录频次
-            this.actions.getUserLoginChartInfo();
-            this.dispatch(
-                {
-                    appId: '',
-                    appList: [],
-                    loading: false
-                }
-            );
-        });
+            this.actions.getUserLoginChartInfo(lastLoginParam);
+
+            // 获取登录用户活跃统计信息（登录时长，登录次数，活跃天数）
+            this.actions.getLoginUserActiveStatistics(lastLoginParam, type);
+        }
+        this.dispatch(
+            {
+                appId: selectedLogAppId,
+                appList: userOwnAppArray,
+            }
+        );
     };
 
     // 获取用户的分数

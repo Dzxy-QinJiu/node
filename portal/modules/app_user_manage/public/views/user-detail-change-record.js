@@ -48,10 +48,8 @@ class UserDetailChangeRecord extends React.Component {
 
     componentDidMount() {
         UserDetailChangeRecordStore.listen(this.onStateChange);
-        let userId = this.props.userId;
-        UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
-            this.showSelectedApp(this.props, queryObj);
-        });
+        let appLists = this.props.appLists;
+        this.showSelectedApp(this.props, appLists);
     }
 
     //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
@@ -59,7 +57,7 @@ class UserDetailChangeRecord extends React.Component {
         var appId = props.selectedAppId;
         //如果外层有选中的app时，默认为外层选中的app，如果没有，就用app列表中的第一个
         if (appId) {
-            var selectedApp = _.find(this.state.appLists, (item) => {
+            var selectedApp = _.find(this.props.appLists, (item) => {
                 return item.app_id === appId;
             });
             var appName = selectedApp && selectedApp.app_name ? selectedApp.app_name : '';
@@ -67,8 +65,10 @@ class UserDetailChangeRecord extends React.Component {
                 UserDetailChangeRecordAction.setApp(appName);
             }
         } else {
-            appId = queryObj.app_id;
-            UserDetailChangeRecordAction.setApp(this.state.app);
+            if (!_.isEmpty(queryObj)) {
+                appId = queryObj[0].app_id;
+                UserDetailChangeRecordAction.setApp(queryObj[0].app_name);
+            }
         }
         this.getUserDetailChangeRecord({
             app_id: appId + ',everyapp',
@@ -83,13 +83,11 @@ class UserDetailChangeRecord extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.userId !== this.props.userId) {
+        const userId = nextProps.userId;
+        if (userId !== this.props.userId) {
             //dispatch过程中不能再dispatch，加延时，两个dispatch发送错开时间
-            var userId = nextProps.userId;
             setTimeout(() => {
-                UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
-                    this.showSelectedApp(nextProps, queryObj);
-                });
+                this.showSelectedApp(nextProps, nextProps.appLists);
             });
         }
     }
@@ -236,7 +234,7 @@ class UserDetailChangeRecord extends React.Component {
     };
 
     handleChange = (value) => {
-        const app = _.find(this.state.appLists, item => item.app_id === value);
+        const app = _.find(this.props.appLists, item => item.app_id === value);
         const appName = app ? app.app_name : '';
         let queryObj = {
             user_id: this.props.userId,
@@ -255,48 +253,15 @@ class UserDetailChangeRecord extends React.Component {
     };
 
     getSelectOptions = () => {
-        var appLists = this.state.appLists;
+        var appLists = this.props.appLists;
         var list = appLists.map((item) => {
             return (<Option value={item['app_id']} key={item['app_id']}>{item['app_name']}</Option>);
         });
         return list;
     };
 
-    retryRenderTraceRecord = () => {
-        var userId = this.props.userId;
-        UserDetailChangeRecordAction.getUserApp(userId, (queryObj) => {
-            UserDetailChangeRecordAction.setApp(this.state.app);
-            this.getUserDetailChangeRecord({
-                app_id: queryObj.app_id + ',everyapp',
-                user_id: this.props.userId,
-                page_size: this.state.page_size,
-            });
-        });
-
-    };
-
     renderTraceRecord = (height) => {
-        if (this.state.getAppLoading) {
-            return (<StatusWrapper loading={true} height={height} />);
-        } else if (this.state.getAppErrorMsg) {
-            //加载完成，出错的情况
-            var errMsg = <span>{this.state.getAppErrorMsg}
-                <a onClick={this.retryRenderTraceRecord} style={{ marginLeft: '20px', marginTop: '20px' }}>
-                    <ReactIntl.FormattedMessage id="user.info.retry" defaultMessage="请重试" />
-                </a>
-            </span>;
-            return (
-                <div className="intial-alert-wrap">
-                    <Alert
-                        message={errMsg}
-                        type="error"
-                        showIcon={true}
-                    />
-                </div>
-            );
-        } else {
-            return this.renderRecordBlock(height);
-        }
+        return this.renderRecordBlock(height);
     };
 
     renderRecordBlock = (height) => {
@@ -391,7 +356,9 @@ class UserDetailChangeRecord extends React.Component {
 }
 UserDetailChangeRecord.propTypes = {
     height: PropTypes.number,
-    userId: PropTypes.string
+    userId: PropTypes.string,
+    appLists: PropTypes.array
 };
+
 module.exports = UserDetailChangeRecord;
 

@@ -11,7 +11,7 @@ import CrmAction from '../../action/crm-actions';
 import {validateRequiredOne, disabledAfterToday} from 'PUB_DIR/sources/utils/common-method-util';
 
 import DetailCard from 'CMP_DIR/detail-card';
-import { clueNameContactRule, emailRegex, qqRegex, wechatRegex } from 'PUB_DIR/sources/utils/validate-util';
+import { clueNameContactRule, emailRegex, qqRegex, checkWechat } from 'PUB_DIR/sources/utils/validate-util';
 var uuid = require('uuid/v4');
 //滚动条
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -349,7 +349,7 @@ class ContactForm extends React.Component {
                             CrmAction.checkOnlyContactPhone(phone, data => {
                                 if (_.isString(data)) {
                                     //唯一性验证出错了
-                                    callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                                    callback(Intl.get('crm.82', '电话号码验证出错'));
                                 } else {
                                     if (_.isObject(data) && data.result === 'true') {
                                         callback();
@@ -509,10 +509,7 @@ class ContactForm extends React.Component {
             case CONTACT_WAY_KEYS_MAP.WE_CHAT:
                 wayOptions.label = Intl.get('crm.58', '微信');
                 wayOptions.placeholder = Intl.get('member.input.wechat', '请输入微信号');
-                wayOptions.rules = [{
-                    message: Intl.get('common.correct.wechat','请输入正确的微信号'),
-                    pattern: wechatRegex,
-                }];
+                wayOptions.rules = [{validator: checkWechat}];
                 break;
             case CONTACT_WAY_KEYS_MAP.EMAIL:
                 wayOptions.label = Intl.get('common.email', '邮箱');

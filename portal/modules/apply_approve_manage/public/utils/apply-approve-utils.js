@@ -3,13 +3,15 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/4/4.
  */
+import {domainNameRule} from 'PUB_DIR/sources/utils/validate-util';
 import {Input, InputNumber, Radio, DatePicker, Select} from 'antd';
 const RadioGroup = Radio.Group;
 import RangeInput from '../view/range_input';
 import SelectOption from '../view/select_option';
 import TimePeriod from '../view/time_period';
-import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
+import CustomerSuggest from '../view/customer_suggest';
 import InputContent from '../view/input_container';
+import ApplyAction from '../../../domain_application/public/action/leave-apply-action';
 const APPLYAPPROVE_LAYOUT = {
     TOPANDBOTTOM: 64,
     PADDINGHEIGHT: 24,
@@ -231,7 +233,9 @@ const INNER_SETTING_FLOW = {
 };
 const SELF_SETTING_FLOW = {
     VISITAPPLY: 'visitapply',//拜访申请
-    VISITAPPLYTOPIC: Intl.get('apply.my.self.setting.work.flow', '拜访申请')
+    VISITAPPLYTOPIC: Intl.get('apply.my.self.setting.work.flow', '拜访申请'),
+    DOMAINAPPLY: 'domainName',//域名申请
+    DOMAINAPPLYTOPIC: Intl.get('apply.domain.application.work.flow', '域名申请'),
 };
 exports.SELF_SETTING_FLOW = SELF_SETTING_FLOW;
 exports.INNER_SETTING_FLOW = INNER_SETTING_FLOW;
@@ -316,6 +320,10 @@ exports.isSalesOpportunityFlow = function(itemType) {
 exports.isVisitApplyFlow = function(itemType) {
     return itemType === SELF_SETTING_FLOW.VISITAPPLY;
 };
+//是域名申请流程
+exports.isDomainApplyFlow = function(itemType) {
+    return itemType === SELF_SETTING_FLOW.DOMAINAPPLY;
+};
 //是出差申请流程
 exports.isBussinessTripFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.BUSSINESSTRIP;
@@ -324,4 +332,28 @@ exports.isBussinessTripFlow = function(itemType) {
 exports.isLeaveFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.LEAVE;
 };
-exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit'];
+exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit','customerSLDUpdate'];
+export const checkDomainName = function(rule, value, callback) {
+    value = _.trim(value);
+    if (value) {
+        if (domainNameRule.test(value)) {
+            //发请求校验是否该域名重复
+            ApplyAction.checkDomainExist({sub_domains: value},(result) => {
+                if (_.isString(result) ){
+                    callback(new Error(result || Intl.get('apply.domain.name.check.err', '二级域名校验失败！')));
+                }else{
+                    if (result){
+                        callback(new Error(Intl.get('apply.domain.sub.name.exist', '该域名已存在')));
+                    }else{
+                        callback();
+                    }
+                }
+            });
+        } else {
+            callback(new Error(Intl.get('apply.domain.descriptipn.reg', '域名描述只能包含字母、数字、中划线（不能以中划线开头或结尾），且长度在1到32之间')));
+        }
+    }
+    else{
+        callback();
+    }
+};

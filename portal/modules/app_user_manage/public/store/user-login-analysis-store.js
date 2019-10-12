@@ -14,8 +14,6 @@ function UserLoginAnalysisStore(){
 
 // 用户登录相关的初始信息
 UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
-    //应用列表加载状态
-    this.appListLoading = false;
     // 用户登录信息（时长、次数、首次和最后一次登录时间）
     this.loginInfo = {
         duration: '' , // 时长
@@ -45,6 +43,7 @@ UserLoginAnalysisStore.prototype.loginInfoInitialState = function() {
     
     //存放不同应用下数据
     this.appUserDataMap = {};
+    this.userOwnAppArray = [];
 
 };
 //恢复默认状态
@@ -53,10 +52,9 @@ UserLoginAnalysisStore.prototype.resetState = function() {
 };
 
 //获取用户应用列表
-UserLoginAnalysisStore.prototype.getSingleUserAppList = function({appId,appList,loading}) {
+UserLoginAnalysisStore.prototype.getSingleUserAppList = function({appId,appList}) {
     this.selectedLogAppId = appId;
     this.userOwnAppArray = appList;
-    this.appListLoading = loading;
     if (_.get(appList, 'length') > 0) {
         //默认展示已选择的应用的分析数据
         if (this.selectedLogAppId) {

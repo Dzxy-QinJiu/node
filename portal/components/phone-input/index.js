@@ -54,7 +54,6 @@ class PhoneInput extends React.Component {
         let rules = [{validator: this.getValidator()}];
 
         rules = rules.concat(this.props.validateRules);
-
         return rules;
     }
 
@@ -72,7 +71,7 @@ class PhoneInput extends React.Component {
                 {getFieldDecorator(this.props.id, {
                     initialValue: addHyphenToPhoneNumber(this.props.initialValue),
                     rules: this.getRules(),
-                    validateTrigger: 'onChange',
+                    validateTrigger: 'onBlur',
                     validateFirst: true,
                 })(
                     <Input

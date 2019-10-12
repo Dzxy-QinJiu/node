@@ -566,10 +566,7 @@ class ClueDetailOverview extends React.Component {
     };
 
     //添加完客户后
-    addOneCustomer = (newCustomerArr) => {
-        this.setState({
-            isShowAddCustomer: false
-        });
+    afterAddCustomer = (newCustomerArr) => {
         if (_.isArray(newCustomerArr) && newCustomerArr[0]) {
             var newCustomer = newCustomerArr[0];
             var curClue = this.state.curClue;
@@ -593,7 +590,7 @@ class ClueDetailOverview extends React.Component {
                 formData={this.state.curClue}
                 isAssociateClue={true}
                 phoneNum={phoneNum}
-                addOne={this.addOneCustomer}
+                afterAddCustomer={this.afterAddCustomer}
                 isShowMadal={false}
             />
         );

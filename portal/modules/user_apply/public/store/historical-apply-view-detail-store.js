@@ -3,6 +3,7 @@ import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
 import {checkIfLeader} from 'PUB_DIR/sources/utils/common-method-util';
+import AppUserUtil from '../util/app-user-util';
 class ApplyViewDetailStore {
     constructor() {
         this.resetState();
@@ -312,8 +313,8 @@ class ApplyViewDetailStore {
         } else {
             //正常情况
             sameHistoryApplyLists.result = '';
-            sameHistoryApplyLists.list = _.get(resultObj,'data.list');
-
+            //过滤掉没有回复的申请历史
+            sameHistoryApplyLists.list = AppUserUtil.handleHistoricalLists(resultObj);
             sameHistoryApplyLists.errorMsg = '';
         }
     }

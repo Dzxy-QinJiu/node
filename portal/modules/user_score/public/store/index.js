@@ -109,10 +109,6 @@ class UserScoreStore {
         }
     }
 
-
-
-
-
 }
 
 export default alt.createStore(UserScoreStore, 'UserScoreStore');

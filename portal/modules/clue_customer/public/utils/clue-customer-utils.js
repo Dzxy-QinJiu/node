@@ -1,7 +1,7 @@
 //客户名格式验证
 import {nameRegex, ipRegex} from 'PUB_DIR/sources/utils/validate-util';
 const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
-import ClueAction from '../action/clue-customer-action';
+import clueCustomerAction from '../action/clue-customer-action';
 var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
@@ -19,6 +19,31 @@ export const checkClueName = function(rule, value, callback) {
     else{
         callback();
     }
+};
+export const checkOnlyContactPhone = function(rule, value, callback) {
+    let queryObj = {phone: value};
+    //queryObj: 查重的电话， isTerm: 是否完全匹配，参数false/true， callback：回调函数
+    clueCustomerAction.checkOnlyClueNamePhone(queryObj, true, data => {
+        if (_.isString(data)) {
+            //唯一性验证出错了
+            callback(Intl.get('crm.82', '电话号码验证出错'));
+        } else {
+            if (_.isObject(data) && data.result === 'true') {
+                callback();
+            } else {
+                //已存在
+                callback(Intl.get('clue.customer.repeat.phone.user', '该电话已被线索{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
+            }
+        }
+    });
+};
+//获取线索联系电话唯一性的验证规则
+export const getPhoneInputValidateRules = () => {
+    return [{
+        validator: (rule, value, callback) => {
+            checkOnlyContactPhone(rule, value, callback);
+        }
+    }];
 };
 export const checkClueSourceIP = function(rule, value, callback) {
     value = _.trim(value);

@@ -119,7 +119,10 @@ class FilterSearch extends React.Component {
                 filterName: this.state.filterName,
                 range: this.state.selectedRange,
                 filterList: this.state.selectedFilterList//原始数组，每项包含groupId、groupName、data[filterList]
-            }).then(({data}) => {
+            }).then((result) => {
+                //若返回结果中有data属性，则取data属性的值作为数据源，否则将返回结果作为数据源
+                const data = _.get(result, 'data', result);
+
                 if (!data && data.errorMsg) {                    
                     message.error(data.errorMsg || Intl.get('common.save.failed', '保存失败'));
                 }
@@ -167,7 +170,7 @@ class FilterSearch extends React.Component {
                                 <span className={this.state.showList ? 'icon-wrapper active' : 'icon-wrapper'}>
                                     <Icon type="filter" onClick={this.handleToggle.bind(this)} />
                                 </span>
-                                <ul className={this.state.showAddZone ? '' : 'collapse'}>
+                                <ul className={this.state.showAddZone ? 'conserve' : 'collapse'}>
                                     {
                                         this.state.plainFilterList.map((x, idx) => (
                                             <li className="active" key={idx}>
@@ -177,8 +180,7 @@ class FilterSearch extends React.Component {
                                     }
                                 </ul>
                                 <div className="btn-bar">
-                                    <Icon type="bars" title="保存为常用筛选" onClick={this.showAddZone.bind(this, true)} />
-                                    {/* <i className="icon-common-filter" ></i> */}
+                                    <span className="handle-btn-item save-screen" onClick={this.showAddZone.bind(this, true)} >{Intl.get('common.save', '保存')}</span>
                                 </div>
                                 <Popover
                                     overlayClassName="filter-search-confirm-clear-pop"

@@ -20,7 +20,7 @@ import MemberInfoAction from '../action/member-info-action';
 import Trace from 'LIB_DIR/trace';
 const UserData = require('PUB_DIR/sources/user-data');
 import RadioCard from './radio-card';
-import {checkPhone, nameLengthRule, checkQQ} from 'PUB_DIR/sources/utils/validate-util';
+import {checkPhone, checkQQ, validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -30,6 +30,8 @@ import Spinner from 'CMP_DIR/spinner';
 import { StatusWrapper } from 'antc';
 import MemberStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import MemberRecord from './member-record';
+import { storageUtil } from 'ant-utils';
+import ajax from 'ant-ajax';
 
 const TAB_KEYS = {
     BASIC_INFO_TAB: '1',//基本信息
@@ -39,7 +41,10 @@ const TAB_KEYS = {
 const EDIT_FEILD_WIDTH = 380, EDIT_FEILD_LESS_WIDTH = 352;
 const EDIT_PASSWORD_WIDTH = 340;
 
+const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+
 class MemberInfo extends React.Component {
+
     state = {
         isGetMemberDetailLoading: this.props.isGetMemberDetailLoading,
         getMemberDetailErrMsg: this.props.getMemberDetailErrMsg,
@@ -53,6 +58,8 @@ class MemberInfo extends React.Component {
         resultType: this.props.resultType,
         errorMsg: this.props.errorMsg,
         salesRoleList: [], // 职务列表
+        //是否显示拨打电话的提示
+        isShowCallTip: !websiteConfig.no_show_call_tips,
         ...MemberInfoStore.getState(),
     };
 
@@ -782,6 +789,7 @@ class MemberInfo extends React.Component {
     renderTitle() {
         let memberInfo = this.state.memberInfo;
         const TITLE_INPUT_WIDTH = 270;
+        const name = Intl.get('common.nickname', '昵称');
         return (
             <div className="member-detail-title">
                 <Popconfirm title={Intl.get('member.save.logo.tip', '是否保存上传的头像？')}
@@ -805,8 +813,11 @@ class MemberInfo extends React.Component {
                             value={memberInfo.name}
                             field="nick_name"
                             type="text"
-                            validators={[nameLengthRule]}
-                            placeholder={Intl.get('crm.90', '请输入姓名')}
+                            validators={[{
+                                required: true,
+                                message: Intl.get('organization.tree.name.placeholder', '请输入{name}名称', {name: name}),
+                            }, validatorNameRuleRegex(50, name)]}
+                            placeholder={Intl.get('user.info.input.nickname', '请输入昵称')}
                             hasEditPrivilege={hasPrivilege('UPDATE_MEMBER_BASE_INFO')}
                             saveEditInput={this.saveEditMemberInfo.bind(this, 'nick_name')}
                             noDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
@@ -834,6 +845,26 @@ class MemberInfo extends React.Component {
         return logListHeight;
     }
 
+
+    //不再提示可以打电话的提示
+    handleClickNoCallTip = () => {
+        ajax.send({
+            url: '/rest/base/v1/user/website/config/personnel',
+            type: 'post',
+            data: {
+                no_show_call_tips: true
+            }
+        })
+            .done(result => {
+                this.setState({
+                    isShowCallTip: false
+                });
+            })
+            .fail(err => {
+                message.error(err);
+            });
+    }
+
     // 添加成员成功后的提示信息
     renderAddMemberSuccessTips = () => {
         return (
@@ -841,6 +872,13 @@ class MemberInfo extends React.Component {
                 <i className="iconfont icon-add-success"></i>
                 <span>
                     {Intl.get('member.add.member.success.tips', '该成员登录后可以拨打电话了')}
+                </span>
+                <span 
+                    className="no-longer-tips" 
+                    onClick={this.handleClickNoCallTip}
+                    title={Intl.get('sale.homepage.no.tip.more', '不再提示')}
+                >
+                    <i className="iconfont icon-close-tips"></i>
                 </span>
             </div>
         );
@@ -922,7 +960,7 @@ class MemberInfo extends React.Component {
                     <GeminiScrollbar>
                         <div className="member-detail-basic-content">
                             {
-                                this.props.isContinueAddButtonShow ? (
+                                this.props.isContinueAddButtonShow && this.state.isShowCallTip ? (
                                     <DetailCard
                                         content={this.renderAddMemberSuccessTips()}
                                         className='member-info-success-tips-card-container'

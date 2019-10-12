@@ -260,7 +260,7 @@ class ContactItem extends React.Component {
                             CrmAction.checkOnlyContactPhone(phone, data => {
                                 if (_.isString(data)) {
                                     //唯一性验证出错了
-                                    callback(Intl.get('crm.82', '电话唯一性验证出错了'));
+                                    callback(Intl.get('crm.82', '电话号码验证出错'));
                                 } else {
                                     if (_.isObject(data) && data.result === 'true') {
                                         callback();

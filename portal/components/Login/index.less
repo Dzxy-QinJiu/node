@@ -1,5 +1,6 @@
 /*登录界面的样式文件*/
 @wihte-color: #ffffff;
+@import '../../public/sources/page-frame/index-zh_CN.less';
 .login-wrap {
     position: absolute;
     top: 0;
@@ -190,6 +191,28 @@
         right: 0;
         margin: 0 auto;
     }
+    .input-pwd{
+        padding-right: 26px;
+    }
+    .input-item{
+        position: relative;
+        .iconfont{
+            position: absolute;
+            bottom:4px;
+            right:0px;
+            cursor: pointer;
+            .handle-btn-item;
+        }
+        .iconfont.icon-password-visible{
+            right: 2px;
+            font-size: 19px;
+        }
+        .iconfont.icon-password-invisible{
+            font-size: 15px;
+            bottom:6px;
+        }
+    }
+
     .login-error-tip {
         background: no-repeat url("./image/error.png") 0 2px;
         line-height: 22px;

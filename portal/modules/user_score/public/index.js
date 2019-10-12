@@ -27,6 +27,7 @@ let history = require('PUB_DIR/sources/history');
 import Trace from 'LIB_DIR/trace';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
+const ACTIVE_DEFAULT_NUM = '1';
 class userScore extends React.Component {
     constructor(props) {
         super(props);
@@ -37,7 +38,7 @@ class userScore extends React.Component {
             getUserIntegrationConfigLoading: false,//是否正在获取用户接入
             getUserIntegrationConfigErrMsg: '',//获取用户接入失败的信息
             isEditUserEngagementRule: false,//是否正在编辑参与度规则
-            activeTabKey: 0,//正在选中的那个tab的key值
+            activeTabKey: ACTIVE_DEFAULT_NUM,//正在选中的那个tab的key值
             ...userScoreStore.getState()
         };
     }
@@ -233,7 +234,7 @@ class userScore extends React.Component {
         });
     };
     handleUserEngagementRuleStatus = (e) => {
-        var {userEngagementFormData} = this.state;
+        var userEngagementFormData = _.cloneDeep(this.state.userEngagementFormData);
         let modalStr = Intl.get('member.start.this', '启用此');
         if (userEngagementFormData.status === 'enable') {
             modalStr = Intl.get('member.stop.this', '禁用此');
@@ -245,11 +246,20 @@ class userScore extends React.Component {
             status = 'disable';
         }
         userEngagementFormData.status = status;
-        this.setState({
-            userEngagementFormData
-        }, () => {
-            this.handleSaveEngagements();
+        userScoreAction.updateEngagementStatus({status: status}, (result) => {
+            if (result){
+                message.success(Intl.get('common.save.success', '保存成功'));
+                //如果保存成功，会有回调
+                userScoreAction.updateUserEngagement(this.state.userEngagementFormData);
+                this.setState({
+                    userEngagementFormData
+                });
+            }else{
+                message.error(Intl.get('common.save.failed', '保存失败'));
+            }
+
         });
+
     };
     isRateItem = (item) => {
         return item.indicator === 'online_time_rate' || item.indicator === 'active_days_rate';
@@ -448,7 +458,7 @@ class userScore extends React.Component {
         var userEngagements = _.get(userEngagementFormData, 'user_engagements');
         return (
             <div>
-                <Tabs defaultActiveKey={this.state.activeTabKey} tabPosition='left' style={{height: 220}}
+                <Tabs defaultActiveKey={ACTIVE_DEFAULT_NUM} tabPosition='left' style={{height: 220}}
                     onChange={this.handleSelectedAppChange}>
                     {_.map(appList, (appItem, idx) => {
                         var engageItem = _.find(userEngagements, item => item.app_id === appItem.app_id);
@@ -456,7 +466,7 @@ class userScore extends React.Component {
                             <TabPane tab={appItem.app_name} key={idx}>
                                 <div style={{ height: 220 }}>
                                     <GeminiScrollbar>
-                                        {_.get(engageItem, 'detail[0]') ?
+                                        {_.get(engageItem, 'detail[0]') || (!_.get(engageItem, 'detail[0]') && isEditUserEngagementRule) ?
                                             _.map(_.get(engageItem, 'detail', []), (operateItem, idx) => {
                                                 var engageId = engageItem.app_id || engageItem.randomId;
                                                 var detailId = operateItem.id || operateItem.randomId;
@@ -502,7 +512,7 @@ class userScore extends React.Component {
                                                                     {idx + 1 === _.get(engageItem, 'detail.length') && idx !== 19 ?
                                                                         <span
                                                                             onClick={this.handeAddEngageDetail.bind(this, engageId)}>+</span> : null}
-                                                                    {_.get(engageItem, 'detail.length') > 1 ?
+                                                                    {_.get(engageItem, 'detail.length') ?
                                                                         <span
                                                                             onClick={this.handleMinusEngageDetail.bind(this, engageId, detailId)}>-</span> : null}
                                                                 </span>
@@ -592,7 +602,7 @@ class userScore extends React.Component {
             var targetApp = _.find(userEngagements, item => item.app_id === activeApp.app_id);
             var engageDetail = _.get(targetApp,'detail');
             //如果这个应用没有配置过规则，头部先不加编辑按钮了，可以直接点击开始配置的时候配置
-            var noSettingRules = _.isEmpty(_.get(engageDetail,'length',''));
+            var noSettingRules = !_.get(engageDetail,'length','');
             return (<div className="user-engagement-panel">
                 <p className="user-engage-title">
                     {Intl.get('user.score.particate.in.score', '参与度评分')}
@@ -643,7 +653,7 @@ class userScore extends React.Component {
             if (_.isArray(target.detail) && detailId) {
                 var subTarget = _.find(target.detail, item => item.id === detailId || item.randomId === detailId);
                 if (subTarget) {
-                    subTarget[property] = _.isString(value) ? value : value.target.value;
+                    subTarget[property] = _.isString(value) || _.isNumber(value) ? value : value.target.value;
                 }
             } else {
                 target[property] = value;
@@ -696,6 +706,7 @@ class userScore extends React.Component {
         });
 
     };
+
     handleSaveEngagements = (appItem) => {
         var userEngagementFormData = _.cloneDeep(this.state.userEngagementFormData);
         var userEngagements = _.get(userEngagementFormData, 'user_engagements');
@@ -703,12 +714,13 @@ class userScore extends React.Component {
             delete engageItem.randomId;
             if (_.isArray(engageItem.detail)) {
                 _.forEach(engageItem.detail, (operatorItem) => {
+                    operatorItem.id = operatorItem.randomId;
                     delete operatorItem.randomId;
                 });
             }
         });
         if (appItem){
-            userEngagementFormData['user_engagements'] = _.filter(_.get(this, 'state.userEngagementFormData.user_engagements'), item => item.app_id === appItem.app_id);
+            userEngagementFormData['user_engagements'] = _.filter(_.get(userEngagementFormData, 'user_engagements'), item => item.app_id === appItem.app_id);
         }
         userScoreAction.saveUserEngagementRule(userEngagementFormData, () => {
             message.success(Intl.get('common.save.success', '保存成功'));
