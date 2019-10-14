@@ -1139,3 +1139,12 @@ exports.renderClueNameMsg = ( existClueList, checkNameError, curClueName, showRi
         return '';
     }
 };
+
+/***
+ * 是否是正式用户
+ * @returns {boolean}
+ */
+exports.isFormalUser = () => {
+    let organization = getOrganization();
+    return _.isEqual(_.get(organization, 'version.type', ''), '正式');
+};
