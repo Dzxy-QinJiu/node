@@ -260,6 +260,8 @@ class ClueAddForm extends React.Component {
                     if (phoneCount.length > 1) {
                         //该电话列表已存在该电话，再添加时（重复添加）
                         callback(Intl.get('crm.83', '该电话已存在'));
+                    } else {
+                        callback();
                     }
                     // } else {//所有联系人的电话列表中不存在该电话
                     //     //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
