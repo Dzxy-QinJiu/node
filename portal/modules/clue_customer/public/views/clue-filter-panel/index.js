@@ -269,7 +269,7 @@ class ClueFilterPanel extends React.Component {
                 }else if (item.groupId === 'clue_source' && _.get(item,'data')){
                     //线索来源
                     FilterAction.setFilterClueSoure( _.get(item,'data'));
-                }else if (item.groupId === 'clue_access'){
+                }else if (item.groupId === 'access_channel'){
                     //线索接入渠道
                     FilterAction.setFilterClueAccess( _.get(item,'data'));
                 }else if (item.groupId === 'sales_team_id'){

@@ -632,6 +632,7 @@ class ClueCustomer extends React.Component {
         }else{
             sorter.field = 'source_time';
         }
+        var bodyField = {};
         if (!isGetAllClue){
             //选中的线索来源
             var filterClueSource = filterStoreData.filterClueSource;
@@ -668,7 +669,7 @@ class ClueCustomer extends React.Component {
             if(_.isArray(filterLabels) && filterLabels.length){
                 typeFilter.labels = filterLabels;
             }
-            var bodyField = {};
+
             if(_.isArray(existFilelds) && existFilelds.length){
                 bodyField.exist_fields = existFilelds;
             }
