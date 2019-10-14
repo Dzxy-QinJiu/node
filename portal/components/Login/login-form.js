@@ -10,7 +10,7 @@ var crypto = require('crypto');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 import {ssoLogin, callBackUrl, buildRefreshCaptchaUrl} from '../../lib/websso';
-import {Icon} from 'antd';
+import { Alert, Icon } from 'antd';
 import classNames from 'classnames';
 //常量定义
 const CAPTCHA = '/captcha';
@@ -36,13 +36,19 @@ class LoginForm extends React.Component {
         logining: false,
         //是否是绑定微信界面
         isBindWechat: this.props.isBindWechat,
+        //错误提示信息
+        errorMsg: this.props.loginErrorMsg,
+    };
+
+    setErrorMsg = (errorMsg) => {
+        this.setState({errorMsg});
     };
 
     beforeSubmit = (event) => {
         var userName = _.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
-            this.props.setErrorMsg(Intl.get('login.write.username', '请输入用户名'));
+            this.setErrorMsg(Intl.get('login.write.username', '请输入用户名'));
             event.preventDefault();
             return false;
         }
@@ -54,14 +60,14 @@ class LoginForm extends React.Component {
         var value = this.refs.password_input.value;
         if (!value) {
             //密码不能为空
-            this.props.setErrorMsg(Intl.get('common.input.password', '请输入密码'));
+            this.setErrorMsg(Intl.get('common.input.password', '请输入密码'));
             event.preventDefault();
             return false;
         }
         //需要输入验证码，但未输入验证码时
         if (this.state.captchaCode && !this.refs.captcha_input.value) {
             //验证码不能为空
-            this.props.setErrorMsg(Intl.get('login.write.code', '请输入验证码'));
+            this.setErrorMsg(Intl.get('login.write.code', '请输入验证码'));
             //阻止缺省行为
             event.preventDefault();
             return false;
@@ -82,6 +88,42 @@ class LoginForm extends React.Component {
         }
         //修改要提交的密码
         this.refs.password.value = newValue;
+        //阻止缺省行为,必须先写这个，不然会走form表单提交方式
+        event.preventDefault();
+        //TODO 现在改用ajax提交方式
+        let submitObj = {
+            username: userName,
+            password: newValue
+        };
+        if(this.state.captchaCode && this.refs.captcha_input.value) {
+            submitObj.retcode = this.refs.captcha_input.value;
+        }
+        if(this.state.isBindWechat) {//web用已有账号绑定微信并登录
+            this.loginFunc('/bind/login/wechat',submitObj);
+            return false;
+        }else {//账号登录
+            this.loginFunc('/login', submitObj);
+            return false;
+        }
+    };
+
+    //登录函数
+    loginFunc = (url, submitObj) => {
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'post',
+            data: submitObj,
+            success: () => {
+                window.location.href = '/';
+            },
+            error: (errorInfo) => {
+                //在失败后，得获取下验证码
+                this.getLoginCaptcha();
+                this.setState({logining: false});
+                this.setErrorMsg(errorInfo.responseJSON);
+            }
+        });
     };
 
     //sso登录
@@ -95,7 +137,7 @@ class LoginForm extends React.Component {
             window.location.href = callBackUrl + '?t=' + ticket + '&lang=' + lang;
         }).catch((data) => {
             sendMessage && sendMessage(userName + ' sso登录失败,error:' + data && data.error);
-            this.props.setErrorMsg(data && data.error);
+            this.setErrorMsg(data && data.error);
             this.setState({
                 logining: false,
                 captchaCode: data && data.captcha
@@ -129,13 +171,13 @@ class LoginForm extends React.Component {
     userNameChange = (evt) => {
         this.setState({
             username: evt.target.value
-        }, () => this.props.setErrorMsg(''));
+        }, () => this.setErrorMsg(''));
     };
 
     passwordChange = (evt) => {
         this.setState({
             password: evt.target.value
-        }, () => this.props.setErrorMsg(''));
+        }, () => this.setErrorMsg(''));
     };
 
     showPassword = () => {
@@ -212,7 +254,7 @@ class LoginForm extends React.Component {
                 });
             },
             error: () => {
-                this.props.setErrorMsg(ERROR_MSGS.NO_SERVICE);
+                this.setErrorMsg(ERROR_MSGS.NO_SERVICE);
             },
         });
     };
@@ -294,6 +336,11 @@ class LoginForm extends React.Component {
                         {hasWindow ? this.state.isBindWechat ? Intl.get('register.wechat.bind.btn', '立即绑定') : Intl.get('login.login', '登录') : null}
                         {this.state.logining ? <Icon type="loading"/> : null}
                     </button>
+
+                    {this.state.errorMsg ? (
+                        <Alert message={this.state.errorMsg} type="error" showIcon/>
+                    ) : null}
+
                     <p className="line"><span>{Intl.get('common.or','或')}</span></p>
                     {this.state.isBindWechat ? (
                         <div className='login-button wechat-login' onClick={this.returnLoginPage}
@@ -325,6 +372,7 @@ LoginForm.propTypes = {
     captcha: PropTypes.string,
     setErrorMsg: PropTypes.func,
     hasWindow: PropTypes.bool,
-    isBindWechat: PropTypes.bool
+    isBindWechat: PropTypes.bool,
+    loginErrorMsg: PropTypes.string,
 };
 module.exports = LoginForm;

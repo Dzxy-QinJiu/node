@@ -238,14 +238,14 @@ class LoginMain extends React.Component {
                             <LoginForm
                                 captcha={this.state.captcha}
                                 hasWindow={hasWindow}
-                                setErrorMsg={this.setErrorMsg}
+                                // setErrorMsg={this.setErrorMsg}
                                 isBindWechat={true}
                                 {...this.props}
                             />
                         ) : null}
-                        {this.state.errorMsg ? (
+                        {/*{this.state.errorMsg ? (
                             <Alert message={this.state.errorMsg} type="error" showIcon/>
-                        ) : null}
+                        ) : null}*/}
 
                     </div>
                 </TabPane>
@@ -309,13 +309,13 @@ class LoginMain extends React.Component {
                                         <LoginForm
                                             captcha={this.state.captcha}
                                             hasWindow={hasWindow}
-                                            setErrorMsg={this.setErrorMsg}
+                                            // setErrorMsg={this.setErrorMsg}
                                             {...this.props}
                                         />
                                     ) : null}
-                                    {this.state.errorMsg ? (
+                                    {/*{this.state.errorMsg ? (
                                         <Alert message={this.state.errorMsg} type="error" showIcon/>
-                                    ) : null}
+                                    ) : null}*/}
 
                                 </div>
                             </TabPane>
