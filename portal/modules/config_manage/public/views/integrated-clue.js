@@ -3,13 +3,14 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2018/10/29.
  */
-require('../css/index.less');
+require('../css/integrate-clue.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
 import Trace from 'LIB_DIR/trace';
 import {Icon, Alert} from 'antd';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 import CopyToClipboard from 'react-copy-to-clipboard';
+import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 
 class IntegratedClueManage extends React.Component {
     constructor(props) {
@@ -114,21 +115,35 @@ class IntegratedClueManage extends React.Component {
     };
 
     render() {
+        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         return (
-            <div className="box integrate-clue-list-container" data-tracename="线索同步">
-                <div className="box-title">
-                    {Intl.get('config.integrated.clue.manage', '线索同步')}&nbsp;&nbsp;
-                    <span
-                        onClick={this.getIntegratedClueList.bind(this)}
-                        className="refresh"
-                        data-tracename="点击获取线索集成的刷新按钮"
-                    >
-                        <Icon type="reload" title={Intl.get('config.customer.stage.reload', '重新获取线索集成列表')}/>
-                    </span>
+            <div 
+                className="box integrate-clue-list-container" 
+                data-tracename="线索同步" 
+                style={{height: height}}
+            >
+                <div 
+                    className="integrate-clue-list-content-wrap" 
+                    style={{height: height}}
+                >
+                    <div className="box-title">
+                        {Intl.get('config.integrated.clue.manage', '线索同步')}&nbsp;&nbsp;
+                        <span
+                            onClick={this.getIntegratedClueList.bind(this)}
+                            className="refresh"
+                            data-tracename="点击获取线索集成的刷新按钮"
+                        >
+                            <Icon 
+                                type="reload" 
+                                title={Intl.get('config.customer.stage.reload', '重新获取线索集成列表')}
+                            />
+                        </span>
+                    </div>
+                    <div className="box-body">
+                        {this.renderIntegratedClueList()}
+                    </div>
                 </div>
-                <div className="box-body">
-                    {this.renderIntegratedClueList()}
-                </div>
+               
             </div>
         );
     }
