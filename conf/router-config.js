@@ -331,7 +331,7 @@ let routers = [
                 showPrivileges: ['CRM_GET_SALES_PROCESS']
             },
             {
-                id: 'CLUE_INTEGRATED', // 唯一标识
+                id: 'CLUE_INTEGRATION', // 唯一标识
                 name: 'menu.clue.integration',// 线索集成
                 routePath: '/background_management/clue_integration',
                 component: `${MODULE_PATH}config_manage/public/views/integrated-clue`,
