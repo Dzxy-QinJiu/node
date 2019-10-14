@@ -78,6 +78,8 @@ const LAYOUT_CONSTANTS = {
 
 let tableHeight = 0;
 
+const PAGE_SIZE = 20;
+
 class TeamDataColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -479,6 +481,9 @@ class TeamDataColumn extends React.Component {
             // 设置table最大宽度
             chart.option.scroll = {x: TABLE_CONSTS.TABLE_MIN_WIDTH, y: tableHeight};
 
+            // 设置每页显示条数
+            chart.option.pagination = { pageSize: PAGE_SIZE };
+
             //负责人列索引
             const endTimeColumnIndex = _.findIndex(columns, column => column.dataIndex === 'end_time');
 
@@ -547,10 +552,9 @@ class TeamDataColumn extends React.Component {
                 noExportCsv: true,
                 processData: (data, chart) => {
                     const total = _.get(data, 'total', 0);
-                    chart.option.pagination = total > 10;//默认每页显示10条，但小于10条时，不显示分页
-                    if(chart.option.pagination) {
+                    if(total > PAGE_SIZE) {//默认每页显示20条，但小于20条时，不显示分页
                         chart.option.scroll.y = tableHeight - LAYOUT_CONSTANTS.PAGINATION_DISTANCE;
-                    }
+                    }else { chart.option.pagination = false; }
                     chart.title = Intl.get('home.page.expire.contract.at.time', '{time}即将到期合同统计', {
                         time: Intl.get('clue.customer.last.three.month', '近三个月')
                     }) + `(${Intl.get('sales.home.total.count', '共{count}个', {count: total})})`;
