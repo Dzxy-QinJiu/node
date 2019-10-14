@@ -29,6 +29,7 @@ var en_US = {
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
     'menu.sales.process': 'Customer Stage', // 客户阶段
+    'menu.clue.integration': 'Clue integration', // 线索集成
     'menu.clue.allocation': 'Clue allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理

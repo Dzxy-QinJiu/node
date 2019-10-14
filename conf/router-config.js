@@ -329,6 +329,13 @@ let routers = [
                 routePath: '/background_management/customer_stage',
                 component: `${MODULE_PATH}sales_process/public`,
                 showPrivileges: ['CRM_GET_SALES_PROCESS']
+            },
+            {
+                id: 'CLUE_INTEGRATED', // 唯一标识
+                name: 'menu.clue.integration',// 线索集成
+                routePath: '/background_management/clue_integration',
+                component: `${MODULE_PATH}config_manage/public/views/integrated-clue`,
+                showPrivileges: ['DATA_INTEGRATION_MANAGE']
             }]
     },
     {
