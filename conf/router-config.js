@@ -334,7 +334,7 @@ let routers = [
                 id: 'CLUE_INTEGRATION', // 唯一标识
                 name: 'menu.clue.integration',// 线索集成
                 routePath: '/background_management/clue_integration',
-                component: `${MODULE_PATH}config_manage/public/views/integrated-clue`,
+                component: `${MODULE_PATH}clue_integration/public`,
                 showPrivileges: ['DATA_INTEGRATION_MANAGE']
             }]
     },

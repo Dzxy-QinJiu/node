@@ -1,0 +1,39 @@
+/**
+* 线索集成样式
+**/
+.integrate-clue-container {
+  padding: 12px;
+  .integrate-clue-content-wrap {
+    background: #fff;
+    padding: 24px;
+    .integrate-clue-content {
+      // 暂无数据的提示
+      .msg-tips {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .integrate-list-wrap {
+        .integrate-list-container{
+          font-size: 16px;
+          .integrate-content {
+            .url-content, .secret-content {
+              .integrate-label, .content {
+                margin-right: 6px;
+              }
+            }
+          }
+          .anticon-copy{
+            visibility: hidden;
+          }
+          .integrate-content p:hover{
+            .anticon-copy{
+              visibility: visible;
+            }
+          }
+
+        }
+      }
+    }
+  }
+}

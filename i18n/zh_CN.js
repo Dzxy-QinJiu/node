@@ -988,6 +988,13 @@ var zh_CN = {
     'customer.stage.click.add.stage': '添加阶段',
     // 后台管理-客户阶段end
 
+    // 后台管理-线索集成start
+    'clue.integration.create.secret': '生成密钥',
+    'clue.integration.regenerate.create': '重新生成',
+    'clue.integration.failed.regenerate.create': '重新生成密钥失败',
+    'clue.integration.failed.create': '生成密钥失败',
+    // 后台管理-线索集成end
+
     //应用管理start
     'app.title': '应用管理',
     'app.search.placeholder': '应用名/描述',
