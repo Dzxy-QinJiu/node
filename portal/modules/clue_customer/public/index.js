@@ -132,6 +132,7 @@ class ClueCustomer extends React.Component {
         selectedClue: [],//选中的线索
         isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
         cluePoolCondition: {},//线索池的搜索条件
+        flyChildNode: null, //要飞走的元素
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -669,7 +670,7 @@ class ClueCustomer extends React.Component {
             if(_.isArray(filterLabels) && filterLabels.length){
                 typeFilter.labels = filterLabels;
             }
-            var bodyField = {};
+
             if(_.isArray(existFilelds) && existFilelds.length){
                 bodyField.exist_fields = existFilelds;
             }
@@ -888,16 +889,19 @@ class ClueCustomer extends React.Component {
                 submitTraceLoading: true,
             });
             //需要把当前那一条数据暂时隐藏
-            const index = _.findIndex(this.state.curClueLists, curItem => curItem.id === item.id);
-            $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').animate({height: '0px'},800);
+            // const index = _.findIndex(this.state.curClueLists, curItem => curItem.id === item.id);
+            // $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').animate({height: '0px'},800);
             clueCustomerAction.addCluecustomerTrace(submitObj, (result) => {
                 if (result && result.error) {
-                    $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').animate({height: 'auto'},FLOW_FLY_TIME);
+                    // $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ')').animate({height: 'auto'},FLOW_FLY_TIME);
                     this.setState({
                         submitTraceLoading: false,
                         submitTraceErrMsg: Intl.get('common.save.failed', '保存失败')
                     });
                 } else {
+                    //把当前选中的这个元素放在移动的目标元素中
+                    //把当前正在做的这个元素放在要飞走的元素中
+
                     this.onAnimate(item);
                     var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                     var userId = userData.getUserData().user_id || '';
@@ -921,7 +925,7 @@ class ClueCustomer extends React.Component {
                     this.setState({
                         submitTraceLoading: false,
                         submitTraceErrMsg: '',
-                        isEdittingItem: {},
+
                     });
                     //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
                     // setTimeout(() => {
@@ -1372,7 +1376,7 @@ class ClueCustomer extends React.Component {
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
-                                <span className="clue-name-item" ref={dom => {
+                                <span className="clue-name-item" id={`$origin_${salesClueItem.id}`} ref={dom => {
                                     this[`$origin_${salesClueItem.id}`] = dom;
                                 }}>
                                     {/*如果是今天分配的，就展示新的图标*/}
@@ -2678,33 +2682,43 @@ class ClueCustomer extends React.Component {
             isShowRefreshPrompt: false
         });
     }
-         onAnimate = (item) => {
-             return new Promise(resolve => {
-                 const config = {
-                     ballWrapper: this.$wrapper,
-                     origin: this[`$origin_${item.id}`],
-                     target: this.$target,
-                     time: FLOW_FLY_TIME,
-                     a: 0.00001,
-                     callback: this.updateLocation,
-                     finish: animationDone.bind(this),
-                     offset: 8
-                 };
-                 parabola(config);
+    onAnimate = (item) => {
+        return new Promise(resolve => {
+            const config = {
+                ballWrapper: this.$wrapper,
+                origin: this[`$origin_${item.id}`],
+                target: this.$target,
+                time: FLOW_FLY_TIME,
+                a: 0.00001,
+                callback: this.updateLocation.bind(this),
+                finish: animationDone.bind(this),
+                offset: 8
+            };
+            parabola(config);
 
-                 function animationDone() {
-                     this.setState({
-                         isVisible: false
-                     });
-                     resolve();
-                 }
-             });
-         };
+            function animationDone() {
+                this.setState({
+                    isVisible: false,
+                    flyChildNode: null,
+                    isEdittingItem: {},
+                });
+                resolve();
+            }
+        });
+    };
     updateLocation = (x, y) => {
+
         this.setState({
             x,
             y,
             isVisible: true
+        },() => {
+            var flyDiv = document.getElementById('ball');
+            var isEditItemId = _.get(this,'state.isEdittingItem.id','');
+            var aimDiv = document.getElementById(`$origin_${isEditItemId}`);
+
+            flyDiv.appendChild(aimDiv);
+
         });
     };
 
@@ -2757,6 +2771,7 @@ class ClueCustomer extends React.Component {
             transform: `translate(${this.state.x}px, ${this.state.y}px)`,
             opacity: this.state.isVisible ? 1 : 0
         };
+        var isEditItemId = _.get(this,'state.isEdittingItem.id','');
         return (
             <RightContent>
                 <div className="clue_customer_content" data-tracename="线索列表">
@@ -2808,7 +2823,9 @@ class ClueCustomer extends React.Component {
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
-                        <div className="ball" style={animateStyle} />
+                        <div className="ball" id="ball" style={animateStyle} ref={dom => {
+                            this.$ball = dom;
+                        }} ></div>
                     </div>
                     {this.state.clueAddFormShow ?
                         <div className={cls}>
