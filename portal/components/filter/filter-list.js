@@ -671,7 +671,8 @@ class FilterList extends React.Component {
                                                 <li className="collapse-btn" onClick={this.toggleCollapse.bind(this, 'common')}>
                                                     {
                                                         this.state.collapsedCommon ?
-                                                            '更多' : '收起'
+                                                            <span>{Intl.get('crm.basic.more', '更多')}<i className="iconfont icon-tree-down-arrow"/></span> : 
+                                                            <span>{Intl.get('crm.contact.way.hide', '收起')}<i className="iconfont icon-tree-up-arrow"/></span>
                                                     }
                                                 </li> : null
                                         }
