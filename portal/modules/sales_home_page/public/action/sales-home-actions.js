@@ -189,8 +189,8 @@ function SalesHomeActions() {
         });
     };
     //邮箱激活
-    this.activeUserEmail = function(callback) {
-        salesHomeAjax.activeUserEmail().then(function(data) {
+    this.activeUserEmail = function(bodyObj, callback) {
+        salesHomeAjax.activeUserEmail(bodyObj).then(function(data) {
             if (callback) {
                 if (data) {
                     callback({error: false, data: data});

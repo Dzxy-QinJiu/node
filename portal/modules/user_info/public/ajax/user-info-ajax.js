@@ -34,12 +34,13 @@ exports.getLogList = function(params) {
     return Deferred.promise();
 };
 
-exports.activeUserEmail = function() {
+exports.activeUserEmail = function(bodyObj) {
     var Deferred = $.Deferred();
     $.ajax({
         url: '/rest/user_email/active',
         dataType: 'json',
         type: 'post',
+        data: bodyObj,
         success: function(data) {
             Deferred.resolve(data);
         },
