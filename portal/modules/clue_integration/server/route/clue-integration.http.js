@@ -2,8 +2,6 @@
  * Created by hzl on 2019/10/14.
  */
 
-require('../action/clue-integration-controller');
-
 module.exports = {
     module: 'clue_integration/server/action/clue-integration-controller',
     routes: [

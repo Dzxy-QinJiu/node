@@ -7,6 +7,9 @@
  * />
  * 属性说明：
  * textContent 空状态描述信息
+ * isOperateClick 是否需要有点击事件，默认false
+ * operateClickText 点击的文本描述
+ * operateClickEvent 点击事件
  */
 
 import './index.less';
@@ -23,11 +26,11 @@ class NoData extends React.Component {
                 <p className="no-data-tip">
                     {this.props.textContent}
                     {
-                        this.props.isOperate ? (
+                        this.props.isOperateClick ? (
                             <span>
                                 ，
-                                <a onClick={this.props.operateFun}>
-                                    {this.props.operateText}
+                                <a onClick={this.props.operateClickEvent}>
+                                    {this.props.operateClickText}
                                 </a>
                             </span>
 
@@ -43,16 +46,16 @@ const noop = function() {
 };
 
 NoData.defaultProps = {
-    textContent: '',
-    isOperate: false,
-    operateText: '',
-    operateFun: noop
+    textContent: '', // 空状态描述信息
+    isOperateClick: false, // 是否需要有点击事件
+    operateClickText: '', // 点击的文本描述
+    operateClickEvent: noop // 点击事件
 };
 
 NoData.propTypes = {
     textContent: PropTypes.string,
-    isOperate: PropTypes.boolean,
-    operateText: PropTypes.string,
-    operateFun: PropTypes.func
+    isOperateClick: PropTypes.boolean,
+    operateClickText: PropTypes.string,
+    operateClickEvent: PropTypes.func
 };
 export default NoData;

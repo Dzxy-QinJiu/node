@@ -5,10 +5,8 @@ require('./index.less');
 const Spinner = require('CMP_DIR/spinner');
 import {Icon, message} from 'antd';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import NoData from 'CMP_DIR/no-data';
 import LoadDataError from 'CMP_DIR/load-data-error';
-const PADDINF_HEIGHT = 48; // 内容区padding高度
 
 class ClueIntegration extends React.Component {
     constructor(props) {
@@ -146,10 +144,10 @@ class ClueIntegration extends React.Component {
         });
     };
 
-    renderNoDataOrLoadError = (contentHeight) => {
+    renderNoDataOrLoadError = () => {
         let getErrMsg = this.state.getErrMsg;
         return (
-            <div className="msg-tips" style={{height: contentHeight - PADDINF_HEIGHT}}>
+            <div className="msg-tips">
                 {
                     getErrMsg ? (
                         <LoadDataError
@@ -159,9 +157,9 @@ class ClueIntegration extends React.Component {
                         <div className="no-data-tips-operate">
                             <NoData
                                 textContent={Intl.get('config.integrated.clue.no.list', '暂无线索集成')}
-                                isOperate='true'
-                                operateText={Intl.get('clue.integration.create.secret', '生成密钥')}
-                                operateFun={this.handleCreateClueIntegration}
+                                isOperateClick={true}
+                                operateClickText={Intl.get('clue.integration.create.secret', '生成密钥')}
+                                operateClickEvent={this.handleCreateClueIntegration}
                             />
                         </div>
                     )
@@ -170,34 +168,29 @@ class ClueIntegration extends React.Component {
         );
     };
 
-    renderClueIntegrationContent = (height) => {
+    renderClueIntegrationContent = () => {
         let integratedClueList = this.state.integratedClueList;
         let length = _.get(integratedClueList, 'length');
         if (length) {
             return this.renderIntegratedClueList();
         } else {
-            return this.renderNoDataOrLoadError(height);
+            return this.renderNoDataOrLoadError();
         }
     };
 
     render() {
-        let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
         let isLoading = this.state.isLoading;
 
         return (
             <div
                 className="integrate-clue-container"
                 data-tracename="线索集成"
-                style={{height: height}}
             >
-                <div
-                    className="integrate-clue-content-wrap"
-                    style={{height: height}}
-                >
+                <div className="integrate-clue-content-wrap">
                     {
                         isLoading ? ( <Spinner/>) : (
                             <div className="integrate-clue-content">
-                                {this.renderClueIntegrationContent(height)}
+                                {this.renderClueIntegrationContent()}
                             </div>
                         )
                     }
