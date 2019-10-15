@@ -62,35 +62,35 @@ class AddAndShowApplyList extends React.Component {
             var id = $tr.find('.record-id').text();
             if (id) {
                 _this.getSelfSettingWorkFlow(id);
-                _this.showApplyDetailPanel(id);
             }
         });
     };
-    //请求审批流程
+    //请求并展示审批流程
     getSelfSettingWorkFlow = (recordId) => {
         let submitObj = {page_size: 15, id: recordId};
         let showApplyList = this.state.showApplyList;
+        let newUserData = userData.getUserData().workFlowConfigs;
         applyApproveManageAction.getSelfSettingWorkFlow(submitObj,(data) => {
-            _.forEach(showApplyList,(value) => {
-                if(_.get(value,'id') === recordId && data[0]){
-                    value = data[0];
-                }
-            });
-            this.setState({
-                showApplyList: data,
-            });
+            this.changeNewFlow(showApplyList,recordId,data);
+            this.changeNewFlow(newUserData,recordId,data);
+            if(data[0]){
+                this.setState({
+                    showApplyDetailForm: true,
+                    showApplyList: showApplyList,
+                    applyTypeData: data[0],
+                });
+            }
         });
     }
-    showApplyDetailPanel = (applyId) => {
-        var target = this.getTargetApply(applyId);
-        if (target) {
-            this.setState({
-                showApplyDetailForm: true,
-                applyTypeData: target
-            });
-        }
-
-    };
+    //将请求到的内容更新
+    changeNewFlow = (list,id,data) => {
+        _.forEach(list,(value) => {
+            if(_.get(value,'id') === id && data[0]){
+                _.extend(value, data[0]);
+                return false;
+            }
+        });
+    }
     onStoreChange = () => {
         this.setState(applyApproveManageStore.getState());
     };
@@ -233,6 +233,7 @@ class AddAndShowApplyList extends React.Component {
         );
     };
     renderApplyDetail = () => {
+        console.log(this.state.applyTypeData);
         return (
             <ApplyFormAndRules
                 applyTypeData={this.state.applyTypeData}
