@@ -233,7 +233,6 @@ class AddAndShowApplyList extends React.Component {
         );
     };
     renderApplyDetail = () => {
-        console.log(this.state.applyTypeData);
         return (
             <ApplyFormAndRules
                 applyTypeData={this.state.applyTypeData}
