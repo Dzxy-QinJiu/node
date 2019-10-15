@@ -1002,6 +1002,12 @@ exports.isCiviwRealm = () => {
     var realmId = _.get(userDetail, 'auth.realm_id');
     return realmId === REALM_REMARK.CIVIW;
 };
+
+//获取邮件中激活邮箱的url（需要用浏览器中当前的url基础路径来拼，好区分那个环境中发的邮件（如：https://ketao.antfact.com、https://csm.curtao.com）
+exports.getEmailActiveUrl = () => {
+    return _.get(window, 'location.origin', '') + '/email/active?code=';
+};
+
 //获取某种indicator的tooltip
 exports.getCertainTypeTooltip = (indicator) => {
     var target = _.find(INDICATOR_TOOLTIP, item => item.key === indicator);

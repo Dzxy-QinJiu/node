@@ -80,7 +80,7 @@ exports.activeUserEmail = function(req, res) {
             url: userInfoRestApis.activeUserEmail,
             req: req,
             res: res
-        }, null);
+        }, req.body);
 };
 exports.editUserInfo = function(req, res, userInfo) {
     return restUtil.authRest.put(

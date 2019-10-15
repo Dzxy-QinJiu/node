@@ -21,7 +21,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {getRelativeTime} from 'PUB_DIR/sources/utils/common-method-util';
+import {getRelativeTime, getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import Spinner from 'CMP_DIR/spinner';
 import SalesClueItem from './view/sales-clue-item';
@@ -1034,7 +1034,9 @@ class SalesHomePage extends React.Component {
         if (!this.state.emailShowObj.email) {
             return;
         }
-        SalesHomeAction.activeUserEmail((resultObj) => {
+        //将邮箱中激活链接的url传过去，以便区分https://ketao.antfact.com还是https://csm.curtao.com
+        let bodyObj = {activate_url: getEmailActiveUrl()};
+        SalesHomeAction.activeUserEmail(bodyObj, (resultObj) => {
             if (resultObj.error) {
                 message.error(resultObj.errorMsg);
             } else {
