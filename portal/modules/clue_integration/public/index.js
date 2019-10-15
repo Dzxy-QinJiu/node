@@ -143,9 +143,21 @@ class ClueIntegration extends React.Component {
             }
         });
     };
+    
+    handleNoDataTextContent = () => {
+        return(
+            <span>
+                {Intl.get('config.integrated.clue.no.list', '暂无线索集成')}，
+                <a onClick={this.handleCreateClueIntegration}>
+                    {Intl.get('clue.integration.create.secret', '生成密钥')}
+                </a>
+            </span>
+        ); 
+    };
 
     renderNoDataOrLoadError = () => {
         let getErrMsg = this.state.getErrMsg;
+
         return (
             <div className="msg-tips">
                 {
@@ -156,10 +168,7 @@ class ClueIntegration extends React.Component {
                     ) : (
                         <div className="no-data-tips-operate">
                             <NoData
-                                textContent={Intl.get('config.integrated.clue.no.list', '暂无线索集成')}
-                                isOperateClick={true}
-                                operateClickText={Intl.get('clue.integration.create.secret', '生成密钥')}
-                                operateClickEvent={this.handleCreateClueIntegration}
+                                textContent={this.handleNoDataTextContent()}
                             />
                         </div>
                     )
