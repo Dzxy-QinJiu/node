@@ -52,8 +52,8 @@ function UserInfoActions() {
         });
     };
     //邮箱激活
-    this.activeUserEmail = function(callback) {
-        userInfoAjax.activeUserEmail().then(function(data) {
+    this.activeUserEmail = function(bodyObj, callback) {
+        userInfoAjax.activeUserEmail(bodyObj).then(function(data) {
             if (callback) {
                 if (data) {
                     callback({error: false, data: data});

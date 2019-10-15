@@ -15,6 +15,7 @@ import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
+import {getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
 const session = storageUtil.session;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
@@ -125,43 +126,43 @@ class UserInfo extends React.Component{
 
     //订阅前提醒先激活邮箱
     subscribeTips = () => {
-        let content="";
-        if(!_.isEmpty(this.props.userInfo.email)&&this.props.userInfo.emailEnable){
+        let content = '';
+        if(!_.isEmpty(this.props.userInfo.email) && this.props.userInfo.emailEnable){
             //已激活可以订阅
-            content =  <a onClick={this.handleSubscribe}>
-                            <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
-                        </a>
+            content = <a onClick={this.handleSubscribe}>
+                <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
+            </a>;
         }else{
             //没有邮箱
-            let bind = Intl.get('apply.error.bind', '您还没有绑定邮箱，请先{bindEmail}',{bindEmail:Intl.get('apply.bind.email.tips','绑定邮箱')});
+            let bind = Intl.get('apply.error.bind', '您还没有绑定邮箱，请先{bindEmail}',{bindEmail: Intl.get('apply.bind.email.tips','绑定邮箱')});
             //未激活邮箱
-            let active =Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}',{activeEmail:Intl.get('apply.active.email.tips', '激活邮箱')});
+            let active = Intl.get('apply.error.active', '您还没有激活邮箱，请先{activeEmail}',{activeEmail: Intl.get('apply.active.email.tips', '激活邮箱')});
             content = <Popover
-                        overlayClassName="apply-invalid-popover"
-                        placement="topRight"
-                        trigger="click"
-                        content={
-                            <span className="apply-error-tip">
-                                <span className="iconfont icon-warn-icon"></span>
-                                <span className="apply-error-text">
-                                    { _.isEmpty(this.props.userInfo.email) ? bind : active}
-                                </span>
-                            </span>
-                            }
-                    >
-                        <a>{Intl.get("user.info.receive.subscribe","重新订阅")}</a>
-                    </Popover>
+                overlayClassName="apply-invalid-popover"
+                placement="topRight"
+                trigger="click"
+                content={
+                    <span className="apply-error-tip">
+                        <span className="iconfont icon-warn-icon"></span>
+                        <span className="apply-error-text">
+                            { _.isEmpty(this.props.userInfo.email) ? bind : active}
+                        </span>
+                    </span>
+                }
+            >
+                <a>{Intl.get('user.info.receive.subscribe','重新订阅')}</a>
+            </Popover>;
         }
-    return(
-        <ReactIntl.FormattedMessage
-            id="user.info.receive.email"
-            defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
-            values={{
-                'receive': content
-            }}
-        />
-    );
-}
+        return(
+            <ReactIntl.FormattedMessage
+                id="user.info.receive.email"
+                defaultMessage={'如果您想接受审批通知邮件提醒，可以{receive}'}
+                values={{
+                    'receive': content
+                }}
+            />
+        );
+    }
 
     retryUserInfo() {
         UserInfoAction.getUserInfo();
@@ -224,7 +225,9 @@ class UserInfo extends React.Component{
         if (this.state.emailEnable) {
             return;
         }
-        UserInfoAction.activeUserEmail((resultObj) => {
+        //将邮箱中激活链接的url传过去，以便区分https://ketao.antfact.com还是https://csm.curtao.com
+        let bodyObj = {activate_url: getEmailActiveUrl()};
+        UserInfoAction.activeUserEmail(bodyObj, (resultObj) => {
             if (resultObj.error) {
                 message.error(resultObj.errorMsg);
             } else {
