@@ -3,7 +3,9 @@ import filterEmitter from './emitter';
 import { Icon, Input, Button, Radio, Popover, Alert, message } from 'antd';
 import PropTypes from 'prop-types';
 import Trace from 'LIB_DIR/trace';
+import classNames from 'classnames';
 import{FILTER_RANGE_OPTIONS as RANGE_OPTIONS, FILTER_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 
 class FilterSearch extends React.Component {
     constructor(props) {
@@ -161,8 +163,12 @@ class FilterSearch extends React.Component {
                 </div>
             </div>
         );
+        let {isWebMin} = isResponsiveDisplay();
+        let minFilterButtonCls = classNames('collapsed search-wrapper', {
+            'min-search-icon': isWebMin
+        });
         return (
-            <div className={showInput ? 'search-wrapper' : 'collapsed search-wrapper'} style={this.props.style}>
+            <div className={showInput ? 'search-wrapper' : minFilterButtonCls} style={this.props.style}>
                 {
                     showInput ?
                         <div className={this.state.showAddZone ? 'add-zone-wrapper filter-contianer clearfix' : 'filter-contianer clearfix'}>
@@ -248,7 +254,8 @@ class FilterSearch extends React.Component {
                                 trigger="click"
                                 visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
                             >
-                                <Button type={this.state.showList ? 'primary' : ''} className="btn-item">{Intl.get('common.filter', '筛选')}</Button>
+                                {isWebMin ? <Button type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i></Button>
+                                    : <Button type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i>{Intl.get('common.filter', '筛选')}</Button>}
                             </Popover>
                         </div>
 

@@ -42,6 +42,7 @@
     .top-nav-border-fix {
         height: @top_nav_height;
         border-bottom: 1px solid @bd-grey;
+		padding: 0 15px;
         .search-input-wrapper{
             .show-zone{
                 .btn-bar{
@@ -52,13 +53,44 @@
         .top-btn-wrapper {
             position: absolute;
             display: inline-block;
-            right: 0;
+            right: 15px;
             top: @filter_area_margin_top;
             .btn-item {
-                float: left;
+                margin-right: 0 !important;
             }
-            .customer-pool-btn{
-                margin-top: 1px;
+            .ant-btn {
+                vertical-align: baseline;
+                margin-left: 0.5em !important;
+                margin-right: 0 !important;
+                .anticon-plus {
+                    font-weight: bold;
+                }
+            }
+            .iconfont {
+                margin-right: 0.5em;
+            }
+            .btn-item .more-btn{
+                float: left;
+                .iconfont {
+                    margin-right: 0.5em;
+                }
+                .ant-btn {
+                    vertical-align: baseline;
+                }
+                .ant-dropdown-trigger {
+                    .add-btn {
+                        font-weight: bold;
+                    }
+                }
+            }
+            .more-btn {
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                color: #8da8c5;
+                .icon-more {
+                    margin-right: 0;
+                }
                 position: relative;
                 top: 1px;
             }
@@ -75,6 +107,21 @@
                         margin-left: 5px;
                         padding: 0 10px;
                     }
+                }
+            }
+            &.hide-batch-change {
+                width: 32px;
+                .ant-btn {
+                    margin-left: 0 !important;
+                }
+                .batch-btn-wrapper {
+                    position: absolute;
+                    width: 32px;
+                }
+            }
+            &.hide-change-schedule {
+                .schedule-more-btn {
+                    position: absolute;
                 }
             }
         }
@@ -109,10 +156,9 @@
     }
     .search-input-select-block {
         float: left;
-        height: 30px;
+        height: 32px;
         line-height: 30px;
         margin-top: @filter_area_margin_top;
-        width: 280px;
         .search-input-container {
             display: inline-block;
             .ant-select-selection{
@@ -129,7 +175,7 @@
         height: 63px;
         .block {
             display: inline-block;
-            vertical-align: middle;
+            vertical-align: baseline;
         } //已选xx项的提示
         .crm-list-selected-tip {
             float: left;
@@ -180,11 +226,10 @@
     }
     .search-input-wrapper {
         margin-top: @filter_area_margin_top;
-        margin-left: @container_padding;
         display: inline-block;
         vertical-align: top;
         .search-wrapper {
-            margin-right: @btn-margin;
+            margin-right: 8px;
             .btn-item {
                 margin-right: 0!important;
             }

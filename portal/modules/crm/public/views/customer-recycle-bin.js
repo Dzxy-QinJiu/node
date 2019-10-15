@@ -25,7 +25,9 @@ const PRIVILEGES = {
 var LAYOUT_CONSTANTS = {
     TOP_NAV_HEIGHT: 64,//头部导航区高度
     TOTAL_HEIGHT: 40,//总数的高度
-    TH_HEIGHT: 50//表头的高度
+    TH_HEIGHT: 50,//表头的高度
+    MIN_WIDTH_NEED_CAL: 446,//需要计算输入框时的断点
+    WIDTH_WITHOUT_INPUT: 145//topnav中除了输入框以外的宽度
 };
 const PAGE_SIZE = 20;
 class CustomerRecycleBin extends React.Component {
@@ -50,7 +52,8 @@ class CustomerRecycleBin extends React.Component {
             searchObj: _.isEmpty(this.props.crmSearchCondition) ? {
                 field: '',
                 value: ''
-            } : this.props.crmSearchCondition
+            } : this.props.crmSearchCondition,
+            filterInputWidth: 300,//输入框的默认宽度
         };
     }
     componentDidMount() {
@@ -67,9 +70,35 @@ class CustomerRecycleBin extends React.Component {
             var id = $tr.find('.record-id').text();
             _this.showRightPanel(id);
         });
+        this.setFilterInputWidth();
+        //响应式布局时动态计算filterinput的宽度
+        $(window).on('resize', this.resizeHandler);
     }
+
+    resizeHandler = () => {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(() => {
+            this.setFilterInputWidth();
+        }, 100);
+    };
+
+    setFilterInputWidth = () => {
+        let needCalWidth = $(window).width() <= LAYOUT_CONSTANTS.MIN_WIDTH_NEED_CAL;
+        if(needCalWidth) {
+            let filterInputWidth = $(window).width() - LAYOUT_CONSTANTS.WIDTH_WITHOUT_INPUT;
+            this.setState({
+                filterInputWidth
+            });
+        } else {
+            this.setState({
+                filterInputWidth: 300
+            });
+        }
+    }
+
     componentWillUnmount() {
         this.setState(this.getInitStateData());
+        $(window).off('resize', this.resizeHandler);
     }
     showRightPanel = (id) => {
         this.setState({
@@ -492,7 +521,7 @@ class CustomerRecycleBin extends React.Component {
                         <BackMainPage className="customer-back-btn" 
                             handleBackClick={this.returnCustomerList}></BackMainPage>
                     </div>
-                    <div className="customer-search-block">
+                    <div className="customer-search-block" style={{width: this.state.filterInputWidth}}>
                         <SearchInput
                             ref="recycleSearchInput"
                             type="select"
