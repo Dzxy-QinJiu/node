@@ -29,6 +29,7 @@ var en_US = {
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
     'menu.sales.process': 'Customer Stage', // 客户阶段
+    'menu.clue.integration': 'Clue integration', // 线索集成
     'menu.clue.allocation': 'Clue allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
@@ -983,6 +984,13 @@ var en_US = {
     'customer.stage.add.stage.title': 'Customer Stage {num}', // 客户阶段{num}
     'customer.stage.click.add.stage': 'Add stage', // 添加阶段
     // 后台管理-客户阶段end
+
+    // 后台管理-线索集成start
+    'clue.integration.create.secret': 'Generate key', // 生成密钥
+    'clue.integration.regenerate.create': 'Regenerate', // 重新生成
+    'clue.integration.failed.regenerate.create': 'Failed to Regenerate', // 重新生成密钥失败
+    'clue.integration.failed.create': 'Failed to generate key', // 生成密钥失败
+    // 后台管理-线索集成end
 
     //应用管理start
     'app.title': 'application management', // 应用管理
