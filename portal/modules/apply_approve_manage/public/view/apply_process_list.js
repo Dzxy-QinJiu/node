@@ -265,7 +265,7 @@ class AddAndShowApplyList extends React.Component {
                             },
                         };
                     } else {
-                        var cls = classNames('apply-type', {'status': !record.approveCheck});
+                        var cls = classNames('apply-type', {'approve-status': !record.approveCheck});
                         //todo 现在数据不全，后期要补全，改成description
                         return (
                             <span className={cls}>
