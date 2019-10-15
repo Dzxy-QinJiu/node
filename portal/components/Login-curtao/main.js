@@ -278,23 +278,28 @@ class LoginMain extends React.Component {
                     {/*{this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.login', '登录') : Intl.get('login.register', '注册')}*/}
                     {/*</Button>*/}
                     {hasWindow ? (
-                        <div className="form-wrap" style={{height: this.getFormHeight()}}>
-                            <div className="form-title">
-                                {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.register', '注册') : Intl.get('login.login', '登录')}
+                        <div className="csm-form-wrap">
+                            {/*<div className="form-wrap" style={{height: this.getFormHeight()}}>*/}
+                            <div className="form-wrap">
+                                <div className="form-title">
+                                    {this.state.currentView === VIEWS.RIGISTER ? Intl.get('login.register', '注册') : Intl.get('login.login', '登录')}
+                                </div>
+                                {this.state.currentView === VIEWS.RIGISTER ?
+                                    <RegisterForm
+                                        REGISTER_STEPS={REGISTER_STEPS}
+                                        changeToLoginView={this.changeView.bind(this)}
+                                        onRegisterStepChange={this.onRegisterStepChange.bind(this)}/> :
+                                    <LoginForm
+                                        captcha={this.state.captcha}
+                                        hasWindow={hasWindow}
+                                        setErrorMsg={this.setErrorMsg}
+                                        {...this.props}
+                                    />}
+                                {this.state.errorMsg ?
+                                    <div className="login-error-tip"><span className="iconfont icon-warn-icon"></span>{this.state.errorMsg}</div> : null}
                             </div>
-                            {this.state.currentView === VIEWS.RIGISTER ?
-                                <RegisterForm REGISTER_STEPS={REGISTER_STEPS}
-                                    changeToLoginView={this.changeView.bind(this)}
-                                    onRegisterStepChange={this.onRegisterStepChange.bind(this)}/> :
-                                <LoginForm
-                                    captcha={this.state.captcha}
-                                    hasWindow={hasWindow}
-                                    setErrorMsg={this.setErrorMsg}
-                                    {...this.props}
-                                />}
-                            {this.state.errorMsg ?
-                                <div className="login-error-tip"><span className="iconfont icon-warn-icon"></span>{this.state.errorMsg}</div> : null}
                         </div>
+
                     ) : null
                     }
                     <SideBar showChat={Oplate.isCurtao}></SideBar>
