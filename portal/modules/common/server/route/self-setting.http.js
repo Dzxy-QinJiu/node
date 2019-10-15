@@ -48,6 +48,13 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+        }, {
+            method: 'post',
+            path: '/rest/get/self_setting/work_flow',
+            handler: 'getSelfSettingWorkFlow',
+            passport: {
+                needLogin: true
+            },
         }
     ]
 };

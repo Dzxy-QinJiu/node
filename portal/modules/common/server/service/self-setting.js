@@ -18,7 +18,9 @@ var restApis = {
     //自定义流程的启动
     saveSelfSettingApply: '/rest/base/v1/workflow/customiz/apply',
     //自定义流程的审批
-    approveSelfSettingApply: '/rest/base/v1/workflow/customiz/approve'
+    approveSelfSettingApply: '/rest/base/v1/workflow/customiz/approve',
+    //获取自定义审批流程
+    getSettingWorkFlow: '/rest/base/v1/workflow/configs',
 
 
 };
@@ -84,6 +86,14 @@ exports.approveSelfSettingApply = function(req, res) {
     return restUtil.authRest.post(
         {
             url: restApis.approveSelfSettingApply,
+            req: req,
+            res: res
+        }, req.body);
+};
+exports.getSelfSettingWorkFlow = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getSettingWorkFlow,
             req: req,
             res: res
         }, req.body);

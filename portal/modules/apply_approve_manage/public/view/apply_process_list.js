@@ -61,10 +61,26 @@ class AddAndShowApplyList extends React.Component {
             var $tr = $(this).closest('tr');
             var id = $tr.find('.record-id').text();
             if (id) {
+                _this.getSelfSettingWorkFlow(id);
                 _this.showApplyDetailPanel(id);
             }
         });
     };
+    //请求审批流程
+    getSelfSettingWorkFlow = (recordId) => {
+        let submitObj = {page_size: 15, id: recordId};
+        let showApplyList = this.state.showApplyList;
+        applyApproveManageAction.getSelfSettingWorkFlow(submitObj,(data) => {
+            _.forEach(showApplyList,(value) => {
+                if(_.get(value,'id') === recordId && data[0]){
+                    value = data[0];
+                }
+            });
+            this.setState({
+                showApplyList: data,
+            });
+        });
+    }
     showApplyDetailPanel = (applyId) => {
         var target = this.getTargetApply(applyId);
         if (target) {
@@ -249,7 +265,7 @@ class AddAndShowApplyList extends React.Component {
                             },
                         };
                     } else {
-                        var cls = classNames('apply-type', {'approve-status': !record.approveCheck});
+                        var cls = classNames('apply-type', {'status': !record.approveCheck});
                         //todo 现在数据不全，后期要补全，改成description
                         return (
                             <span className={cls}>
