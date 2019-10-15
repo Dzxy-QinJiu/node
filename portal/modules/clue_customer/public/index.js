@@ -132,7 +132,6 @@ class ClueCustomer extends React.Component {
         selectedClue: [],//选中的线索
         isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
         cluePoolCondition: {},//线索池的搜索条件
-        flyChildNode: null, //要飞走的元素
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -634,6 +633,7 @@ class ClueCustomer extends React.Component {
         }else{
             sorter.field = 'source_time';
         }
+        var bodyField = {};
         if (!isGetAllClue){
             //选中的线索来源
             var filterClueSource = filterStoreData.filterClueSource;
@@ -901,7 +901,6 @@ class ClueCustomer extends React.Component {
                 } else {
                     //把当前选中的这个元素放在移动的目标元素中
                     //把当前正在做的这个元素放在要飞走的元素中
-
                     this.onAnimate(item);
                     var clueItem = _.find(this.state.curClueLists, clueItem => clueItem.id === item.id);
                     var userId = userData.getUserData().user_id || '';
@@ -925,12 +924,12 @@ class ClueCustomer extends React.Component {
                     this.setState({
                         submitTraceLoading: false,
                         submitTraceErrMsg: '',
-
+                        // isEdittingItem: {},
                     });
                     //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
-                    // setTimeout(() => {
-                    //     clueCustomerAction.afterAddClueTrace(item);
-                    // },FLOW_FLY_TIME);
+                    setTimeout(() => {
+                        clueCustomerAction.afterAddClueTrace(item);
+                    },FLOW_FLY_TIME);
                 }
             });
         }
@@ -1372,13 +1371,13 @@ class ClueCustomer extends React.Component {
                     // 已转化客户和无效客户，不可以展示“有相似客户”标签
                     let ifShowTags = !isInvalidClients && !isConvertedClients;
                     return (
-                        <div className="clue-top-title">
+                        <div className="clue-top-title" id={salesClueItem.id} ref={dom => {
+                            this[`$origin_${salesClueItem.id}`] = dom;
+                        }}>
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
-                                <span className="clue-name-item" id={`$origin_${salesClueItem.id}`} ref={dom => {
-                                    this[`$origin_${salesClueItem.id}`] = dom;
-                                }}>
+                                <span className="clue-name-item" >
                                     {/*如果是今天分配的，就展示新的图标*/}
                                     {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
                                     {salesClueItem.name}</span>
@@ -2692,16 +2691,16 @@ class ClueCustomer extends React.Component {
                 a: 0.00001,
                 callback: this.updateLocation.bind(this),
                 finish: animationDone.bind(this),
-                offset: 8
             };
             parabola(config);
 
             function animationDone() {
                 this.setState({
                     isVisible: false,
-                    flyChildNode: null,
-                    isEdittingItem: {},
                 });
+                // var flyDiv = document.getElementById('customer-item-ball');
+                // //先要把元素内的内容置空
+                // flyDiv.innerHTML = '';
                 resolve();
             }
         });
@@ -2713,11 +2712,14 @@ class ClueCustomer extends React.Component {
             y,
             isVisible: true
         },() => {
-            var flyDiv = document.getElementById('ball');
-            var isEditItemId = _.get(this,'state.isEdittingItem.id','');
-            var aimDiv = document.getElementById(`$origin_${isEditItemId}`);
-
-            flyDiv.appendChild(aimDiv);
+            // var flyDiv = document.getElementById('customer-item-ball');
+            // //先要把元素内的内容置空
+            // // flyDiv.innerHTML = '';
+            // var isEditItemId = _.get(this,'state.isEdittingItem.id','');
+            // var aimDiv = $(`#${isEditItemId}`).closest('tr')[0];
+            // if(aimDiv){
+            //     flyDiv.appendChild(aimDiv);
+            // }
 
         });
     };
@@ -2823,9 +2825,7 @@ class ClueCustomer extends React.Component {
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
-                        <div className="ball" id="ball" style={animateStyle} ref={dom => {
-                            this.$ball = dom;
-                        }} ></div>
+                        <div className="customer-item-ball" id="customer-item-ball" style={animateStyle} ></div>
                     </div>
                     {this.state.clueAddFormShow ?
                         <div className={cls}>
