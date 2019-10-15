@@ -10,7 +10,6 @@
 @white_color: #fff;
 // 提取线索
 .extract-clue-panel.right-pannel-default {
-  position: absolute;
   width: auto;
   left: 75px;
   transform: translateX(100%);
@@ -109,9 +108,9 @@
       }
       .content-container {
         position: relative;
-        padding-left: @filter-width + 27px;
+        margin-left: @filter-width + 27px;
         &.content-full {
-          padding-left: 24px;
+          margin-left: 24px;
           .bottom-total-count {
             padding-left: 20px;
           }
@@ -123,7 +122,7 @@
           position: absolute;
           font-size: 14px;
           color:#999;
-          left: 70px;
+          left: 0;
           top: 14px;
           z-index: 10;
           &.firefox-padding{
