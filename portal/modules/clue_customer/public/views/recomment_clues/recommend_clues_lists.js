@@ -3,7 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/7/25.
  */
-import { BOOT_PROCESS_KEYS } from 'PUB_DIR/sources/utils/consts';
+import { BOOT_PROCESS_KEYS, RESPONSIVE_LAYOUT } from 'PUB_DIR/sources/utils/consts';
 
 require('../../css/recommend_clues_lists.less');
 import {Button,message,Popover} from 'antd';
@@ -14,7 +14,11 @@ import RecommendCluesForm from '../recomment_clues/recommend_clues_form';
 import {AntcTable} from 'antc';
 import TopNav from 'CMP_DIR/top-nav';
 import Spinner from 'CMP_DIR/spinner';
-import { formatSalesmanList, getTableContainerHeight } from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    formatSalesmanList,
+    getTableContainerHeight,
+    isResponsiveDisplay
+} from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 const LAYOUT_CONSTANTS = {
     TH_MORE_HEIGHT: 10
@@ -546,6 +550,7 @@ class RecommendCustomerRightPanel extends React.Component {
         var checkRecord = this.state.batchPopoverVisible;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
         var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract});
+        let {isWebMin} = isResponsiveDisplay();
         if (this.isCommonSales()) { // 普通销售批量提取线索
             return (
                 <Popover
@@ -565,7 +570,11 @@ class RecommendCustomerRightPanel extends React.Component {
                         className='btn-item common-sale-batch-extract'
                         onClick={this.handleSubmitAssignSalesBatch}
                     >
-                        {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                        {isWebMin ? <span className="iconfont icon-extract"></span> :
+                            <React.Fragment>
+                                <span className="iconfont icon-extract"></span>
+                                {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                            </React.Fragment> }
                     </Button>
                 </Popover>
             );
@@ -579,7 +588,11 @@ class RecommendCustomerRightPanel extends React.Component {
                             data-tracename="点击批量提取线索按钮"
                             className='btn-item'
                         >
-                            {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                            {isWebMin ? <span className="iconfont icon-extract"></span> :
+                                <React.Fragment>
+                                    <span className="iconfont icon-extract"></span>
+                                    {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                                </React.Fragment> }
                         </Button>
                     }
                     overlayTitle={Intl.get('user.salesman', '销售人员')}
@@ -606,18 +619,39 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     render() {
         var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
+        let {isWebMin} = isResponsiveDisplay();
+        let recommendCls = classNames('recommend-customer-top-nav-wrap', {
+            'responsive-mini-btn': isWebMin
+        });
         return (
             <div className="recommend-clues-lists-container">
                 <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
                     <div className="recommend-clue-panel">
                         <TopNav>
-                            <div className='recommend-customer-top-nav-wrap'>
+                            <div className={recommendCls}>
                                 <BackMainPage className="clue-back-btn" 
                                     handleBackClick={this.closeRecommendCluePanel}></BackMainPage>
-                                <Button className="btn-item" data-tracename="点击换一批按钮"
-                                    onClick={this.handleClickRefreshBtn}>{Intl.get('clue.customer.refresh.list', '换一批')}</Button>
-                                <Button className="btn-item" data-tracename="点击修改推荐条件"
-                                    onClick={this.handleClickEditCondition}>{Intl.get('clue.customer.condition.change', '修改条件')}</Button>
+                                {hasSelectedClue ? null :
+                                    <React.Fragment>
+                                        <Button className="btn-item" data-tracename="点击修改推荐条件"
+                                            onClick={this.handleClickEditCondition}>
+                                            {isWebMin ? <span className="iconfont icon-xiugaitiaojian"></span> :
+                                                <React.Fragment>
+                                                    <span className="iconfont icon-xiugaitiaojian"></span>
+                                                    {Intl.get('clue.customer.condition.change', '修改条件')}
+                                                </React.Fragment>}
+                                        </Button>
+                                        <Button className="btn-item" data-tracename="点击换一批按钮"
+                                            onClick={this.handleClickRefreshBtn}>
+                                            {isWebMin ? <span className="iconfont icon-huanyihuan"></span> :
+                                                <React.Fragment>
+                                                    <span className="iconfont icon-huanyihuan"></span>
+                                                    {Intl.get('clue.customer.refresh.list', '换一批')}
+                                                </React.Fragment>
+                                            }
+                                        </Button>
+                                    </React.Fragment>
+                                }
                                 {
                                     hasSelectedClue ? this.renderBatchChangeClues() : null
                                 }

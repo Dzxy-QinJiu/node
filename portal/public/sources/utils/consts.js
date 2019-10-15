@@ -683,3 +683,8 @@ export const PRIVILEGE_MAP = {
     APP_USER_LIST: 'APP_USER_LIST'//获取用户列表的权限
 
 };
+//响应式布局
+export const RESPONSIVE_LAYOUT = {
+    MIDDLE_WIDTH: 990,//响应式布局的pad端断点
+    MIN_WIDTH: 720,//响应式布局的手机端断点
+};

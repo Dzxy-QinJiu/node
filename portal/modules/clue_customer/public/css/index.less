@@ -10,7 +10,7 @@
   .topNav {
     height: 64px;
     position: inherit;
-    padding-left: 15px;
+    padding: 0 15px;
     border-bottom: 1px solid #DEDFE3;
   }
   //线索顶部筛选区域
@@ -36,7 +36,7 @@
           width: 0;
         }
         .search-wrapper {
-          margin-right: 15px;
+          margin-right: 8px;
           .btn-item {
             margin-right: 0 !important;
           }
@@ -90,7 +90,8 @@
     .add-anlysis-handle-btns {
       display: inline-block;
       button {
-        margin-right: 12px;
+        margin-left: 0.5em !important;
+        margin-right: 0 !important;
         font-size: 16px;
         color: @FILTER-BUTTON;
         border-color: @SEARCH-INPUT-BORDER;
@@ -130,6 +131,13 @@
       }
       .recomend-clue-customer-container {
         display: inline-block;
+      }
+    }
+    .pull-right {
+      .btn-item {
+        .iconfont {
+          margin-right: 0.5em;
+        }
       }
     }
   }
@@ -239,7 +247,7 @@
       padding-left: @filter-width + 27px;
       padding-top: 10px;
       &.content-full {
-        padding-left: 24px;
+        padding-left: 20px;
       }
       .ant-table tbody .current-row:hover,
       .ant-table tbody .current-row {
@@ -629,20 +637,5 @@
   li {
     font-size: 14px;
     text-align: center;
-  }
-}
-//线索列表顶端的popover
-.clue-customer-top-bar-dropDown {
-  width: 7em;
-  ul {
-    font-size: 14px;
-    border: 1px @BORDER-BLUE solid;
-    li {
-      padding: 10px;
-      text-align: center;
-      &:hover {
-        color: @BORDER-BLUE
-      }
-    }
   }
 }

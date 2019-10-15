@@ -23,12 +23,13 @@ import {
     APPLY_FINISH_STATUS,
     APPLY_USER_STATUS,
     REG_FILES_SIZE_RULES,
-    ORGANIZATION_TYPE,LEAVE_TIME_RANGE, AM_AND_PM,
+    ORGANIZATION_TYPE, LEAVE_TIME_RANGE, AM_AND_PM,
     FINAL_TASK,
     ORGANIZATION_APP_TYPES,
     REALM_REMARK,
     INDICATOR_TOOLTIP,
-    DIFF_STATUS_TAB
+    DIFF_STATUS_TAB,
+    RESPONSIVE_LAYOUT
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1077,4 +1078,12 @@ exports.renderCustomerNameMsg = ( existCustomerList, checkNameError, curCustomer
     } else {
         return '';
     }
+};
+
+//判断当前页面是否处于手机端或pad端的断点，用于响应式布局的展示
+exports.isResponsiveDisplay = () => {
+    let responsive = {};
+    responsive.isWebMiddle = $(window).width() < RESPONSIVE_LAYOUT.MIDDLE_WIDTH;//浏览器是否处于pad端断点位置
+    responsive.isWebMin = $(window).width() < RESPONSIVE_LAYOUT.MIN_WIDTH;//浏览器是否处于手机端断点位置
+    return responsive;
 };

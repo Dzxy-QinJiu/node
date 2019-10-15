@@ -10,7 +10,7 @@ var Spinner = require('../../../components/spinner');
 import ImportCrmTemplate from 'CMP_DIR/import_step';
 var BootstrapButton = require('react-bootstrap').Button;
 var BootstrapModal = require('react-bootstrap').Modal;
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import commonMethodUtil, {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 var CrmStore = require('./store/crm-store');
 var FilterStore = require('./store/filter-store');
 var FilterAction = require('./action/filter-actions');
@@ -35,6 +35,7 @@ import rightPanelUtil from 'CMP_DIR/rightPanel';
 const RightPanel = rightPanelUtil.RightPanel;
 const extend = require('extend');
 import { FilterInput } from 'CMP_DIR/filter';
+import MoreButton from 'CMP_DIR/more-btn';
 var classNames = require('classnames');
 import queryString from 'query-string';
 import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
@@ -68,8 +69,6 @@ var LAYOUT_CONSTANTS = {
     BOTTOM_DISTANCE: 30 + 10 * 2,//分页器的高度 + 分页器上下外边距
     SCREEN_WIDTH: 1130,//屏幕宽度小于1130时，右侧操作按钮变成图标
     UPLOAD_MODAL_HEIGHT: 260,
-    MIDDLE_WIDTH: 990,//响应式布局的pad端断点
-    MIN_WIDTH: 720,//响应式布局的手机端断点
     MIN_WIDTH_NEED_CAL: 475,//需要计算输入框时的断点
     WIDTH_WITHOUT_INPUT: 193//topnav中除了输入框以外的宽度
 };
@@ -1204,20 +1203,82 @@ class Crm extends React.Component {
                 </Menu.Item> : null}
         </Menu>);
     }
+    //批量操作topbar的下拉按钮选择时的操作
+    handleBatchMenuSelectClick = (e) => {
+        if(e.key === 'changeTag'
+        || e.key === 'changeIndustry'
+        || e.key === 'changeTerritory'
+        || e.key === 'changeSales'
+        || e.key === 'changeAdministrativeLevel'){
+            this.refs.batchChange.handleMenuClick(e);
+            //手动移除“更多”下拉button的dom节点
+            let batchDom = $('.batch-btn-wrapper');
+            batchDom.empty();
+        } else if(e.key === 'merge') {
+            this.showMergePanel();
+        } else if(e.key === 'release') {
+            this.batchReleaseCustomer();
+        }
+    }
+    //渲染响应式布局下的批量操作的选项
+    batchTopBarDropList = (isMinWeb) => {
+        return (<Menu onClick={this.handleBatchMenuSelectClick.bind(this)}>
+            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+                <Menu.Item key="changeTag">
+                    {Intl.get('common.tag', '标签')}
+                </Menu.Item> : null
+            }
+            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+                <Menu.Item key="changeIndustry">
+                    {Intl.get('common.industry', '行业')}
+                </Menu.Item> : null
+            }
+            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+                <Menu.Item key="changeTerritory">
+                    {Intl.get('crm.96', '地域')}
+                </Menu.Item> : null
+            }
+            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+                <Menu.Item key="changeSales">
+                    {Intl.get('crm.6', '负责人')}
+                </Menu.Item> : null
+            }
+            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+                <Menu.Item key="changeAdministrativeLevel">
+                    {Intl.get('crm.administrative.level', '行政级别')}
+                </Menu.Item> : null
+            }
+            {hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+                <Menu.Item key="add">
+                    {Intl.get('crm.214', '添加联系计划')}
+                </Menu.Item> : null}
+            {hasPrivilege('CUSTOMER_MERGE_CUSTOMER') ?
+                <Menu.Item key="merge">
+                    {Intl.get('crm.0', '合并客户')}
+                </Menu.Item> : null}
+            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null :
+                <Menu.Item key="release">
+                    {Intl.get('crm.customer.release', '释放')}
+                </Menu.Item>
+            }
+        </Menu>);
+    }
 
     //渲染操作按钮
     renderHandleBtn = () => {
-        let isWebMiddle = $(window).width() < LAYOUT_CONSTANTS.MIDDLE_WIDTH;//浏览器是否处于pad端断点位置
-        let isWebMin = $(window).width() < LAYOUT_CONSTANTS.MIN_WIDTH;//浏览器是否处于手机端断点位置
+        let {isWebMin, isWebMiddle} = isResponsiveDisplay();
         let btnClass = 'block btn-item';
-        let moreBtnCls = classNames('more-btn', {
-            'min-more-btn': isWebMin
+        let batchChangeCls = classNames('top-btn-wrapper', {
+            'hide-batch-change': isWebMin
         });
         if (this.state.selectedCustomer.length) {
             //选择客户后，展示合并和批量变更、释放的按钮
-            return (<div className="top-btn-wrapper">
-                <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className="batch-btn-wrapper">
-                    <CrmBatchChange isWebMini={false}
+            return (<div className={batchChangeCls}>
+                {/*不渲染CrmBatchChange无法用ref获取到里面的方法，在这里用css处理隐藏批量操作*/}
+                <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className='batch-btn-wrapper'>
+                    <CrmBatchChange ref="batchChange"
+                        isWebMini={isWebMin}
+                        isWebMiddle={isWebMiddle}
                         currentId={this.state.currentId}
                         hideBatchChange={this.hideBatchChange}
                         refreshCustomerList={this.refreshCustomerList}
@@ -1227,22 +1288,34 @@ class Crm extends React.Component {
                         condition={this.state.condition}
                     />
                 </PrivilegeChecker>
-                <PrivilegeChecker
-                    check="CUSTOMER_MERGE_CUSTOMER"
-                    className='crm-merge-btn btn-item'
-                    onClick={this.showMergePanel}
-                >
-                    <Button>{Intl.get('crm.0', '合并客户')}</Button>
-                </PrivilegeChecker>
-                {//除了运营不能释放客户，管理员、销售都可以释放
-                    userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
-                        <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}
-                            title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>
-                            <Button className='btn-item handle-btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
-                                {Intl.get('crm.customer.release', '释放')}
+                {!(isWebMiddle || isWebMin) ?
+                    <React.Fragment>
+                        <PrivilegeChecker
+                            check="CUSTOMER_MERGE_CUSTOMER"
+                            className='crm-merge-btn btn-item'
+                            onClick={this.showMergePanel}
+                        >
+                            <Button>
+                                <span className="iconfont icon-hebingkehu"></span>
+                                {Intl.get('crm.0', '合并客户')}
                             </Button>
-                        </Popconfirm>
-                    )}
+                        </PrivilegeChecker>
+                        {/*除了运营不能释放客户，管理员、销售都可以释放*/}
+                        {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                            <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}
+                                title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>
+                                <Button className='btn-item handle-btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
+                                    <span className="iconfont icon-shifangkehu"></span>
+                                    {Intl.get('crm.customer.release', '释放')}
+                                </Button>
+                            </Popconfirm>
+                        )}
+                    </React.Fragment>
+                    : (
+                        <MoreButton
+                            topBarDropList={this.batchTopBarDropList.bind(this, isWebMin)}
+                        />)
+                }
             </div>);
         } else {
             return (<div className="top-btn-wrapper">
@@ -1302,12 +1375,10 @@ class Crm extends React.Component {
                         }
                     </React.Fragment>
                 ) : (
-                    <Dropdown overlay={this.topBarDropList(isWebMin)} placement="bottomRight"
-                        overlayClassName='crm-top-bar-dropDown' >
-                        <Button className={moreBtnCls}>
-                            <i className="iconfont icon-more"></i>
-                        </Button>
-                    </Dropdown>)}
+                    <MoreButton
+                        topBarDropList={this.topBarDropList.bind(this, isWebMin)}
+                    />)
+                }
             </div>);
         }
     };

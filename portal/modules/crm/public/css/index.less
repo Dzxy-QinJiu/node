@@ -42,12 +42,27 @@
     .top-nav-border-fix {
         height: @top_nav_height;
         border-bottom: 1px solid @bd-grey;
+        padding: 0 15px;
         .top-btn-wrapper {
             position: absolute;
             display: inline-block;
-            right: 0;
+            right: 15px;
             top: @filter_area_margin_top;
             .btn-item {
+                margin-right: 0 !important;
+            }
+            .ant-btn {
+                vertical-align: baseline;
+                margin-left: 0.5em !important;
+                margin-right: 0 !important;
+                .anticon-plus {
+                    font-weight: bold;
+                }
+            }
+            .iconfont {
+                margin-right: 0.5em;
+            }
+            .btn-item .more-btn{
                 float: left;
                 .iconfont {
                     margin-right: 0.5em;
@@ -65,8 +80,10 @@
                 width: 32px;
                 height: 32px;
                 padding: 0;
-                margin-right: @filter_area_margin_top;
-                color: #8da8c5
+                color: #8da8c5;
+                .icon-more {
+                    margin-right: 0;
+                }
             }
             .crm-merge-btn{
                 line-height: 1;
@@ -81,6 +98,12 @@
                         margin-left: 5px;
                         padding: 0 10px;
                     }
+                }
+            }
+            &.hide-batch-change {
+                width: 32px;
+                .ant-btn {
+                    margin-left: 0 !important;
                 }
             }
         }
@@ -134,7 +157,7 @@
         height: 63px;
         .block {
             display: inline-block;
-            vertical-align: middle;
+            vertical-align: baseline;
         } //已选xx项的提示
         .crm-list-selected-tip {
             float: left;
@@ -185,11 +208,10 @@
     }
     .search-input-wrapper {
         margin-top: @filter_area_margin_top;
-        margin-left: @filter_area_margin_top;
         display: inline-block;
         vertical-align: top;
         .search-wrapper {
-            margin-right: @btn-margin;
+            margin-right: 8px;
             .btn-item {
                 margin-right: 0!important;
             }
@@ -457,20 +479,5 @@
     li{
         font-size: 14px;
         text-align: center;
-    }
-}
-//客户列表顶端的popover
-.crm-top-bar-dropDown {
-    width: 7em;
-    ul {
-        font-size: 14px;
-        border: 1px @BORDER-BLUE solid;
-        li {
-            padding: 10px;
-            text-align: center;
-            &:hover {
-                color: @BORDER-BLUE
-            }
-        }
     }
 }

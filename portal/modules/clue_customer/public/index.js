@@ -85,16 +85,15 @@ const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
-import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import MoreButton from 'CMP_DIR/more-btn';
+import {subtracteGlobalClue, formatSalesmanList,isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
     TH_MORE_HEIGHT: 20,//带选择框的TH60比不带选择框的TH40多出来的高度
-    MIDDLE_WIDTH: 990,//响应式布局的pad端断点
-    MIN_WIDTH: 720,//响应式布局的手机端断点
-    MIN_WIDTH_NEED_CAL: 365,//需要计算输入框时的断点
-    WIDTH_WITHOUT_INPUT: 198//topnav中除了输入框以外的宽度
+    MIN_WIDTH_NEED_CAL: 405,//需要计算输入框时的断点
+    WIDTH_WITHOUT_INPUT: 185//topnav中除了输入框以外的宽度
 };
 import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
 import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
@@ -319,6 +318,7 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.removeListener(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
+        $(window).off('resize', this.resizeHandler);
     }
 
     //有新线索时线索面板添加刷新提示
@@ -2524,15 +2524,25 @@ class ClueCustomer extends React.Component {
         let filterStore = clueFilterStore.getState();
         //只有待跟进和已跟进和无效tab才有批量操作
         let batchRule = _.isEqual(curStatus.status, SELECT_TYPE.WILL_TRACE) || _.isEqual(curStatus.status, SELECT_TYPE.HAS_TRACE) || _.isEqual(filterStore.filterClueAvailability, AVALIBILITYSTATUS.INAVALIBILITY);
+        let {isWebMin} = isResponsiveDisplay();
+        let assignCls = classNames('pull-right', {
+            'responsive-mini-btn': isWebMin
+        });
         return (
             <div className="pull-right">
-                <div className="pull-right">
+                <div className={assignCls}>
                     {showBatchChange ?
                         <AntcDropdown
                             ref='changesales'
                             content={<Button type="primary"
                                 data-tracename="点击分配线索客户按钮"
-                                className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
+                                className='btn-item'>
+                                { isWebMin ? <span className="iconfont icon-fenpei"></span> :
+                                    <React.Fragment>
+                                        <span className="iconfont icon-fenpei"></span>
+                                        {Intl.get('clue.batch.assign.sales', '批量分配')}
+                                    </React.Fragment>}
+                            </Button>}
                             overlayTitle={Intl.get('user.salesman', '销售人员')}
                             okTitle={Intl.get('common.confirm', '确认')}
                             cancelTitle={Intl.get('common.cancel', '取消')}
@@ -2550,7 +2560,12 @@ class ClueCustomer extends React.Component {
                                 <Button data-tracename="点击批量释放线索按钮"
                                     className='btn-item handle-btn-item'
                                     title={Intl.get('clue.customer.release.pool', '释放到线索池')}>
-                                    {Intl.get('clue.customer.batch.release', '批量释放')}
+                                    { isWebMin ? <span className="iconfont icon-release"></span> :
+                                        <React.Fragment>
+                                            <span className="iconfont icon-release"></span>
+                                            {Intl.get('clue.customer.batch.release', '批量释放')}
+                                        </React.Fragment>
+                                    }
                                 </Button>
                             </Popconfirm>
                         ) : null}
@@ -2584,14 +2599,14 @@ class ClueCustomer extends React.Component {
             this.showClueRecommendTemplate();
         }
     }
-    topBarDropList = (isMinWeb) => {
+    topBarDropList = (isWebMin) => {
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
-            {isMinWeb && hasPrivilege('CUSTOMER_ADD_CLUE') ?
+            {isWebMin && hasPrivilege('CUSTOMER_ADD_CLUE') ?
                 <Menu.Item key="add" >
                     {Intl.get('crm.sales.manual_add.clue','手动添加')}
                 </Menu.Item>
                 : null}
-            {isMinWeb && hasPrivilege('CUSTOMER_ADD_CLUE') ?
+            {isWebMin && hasPrivilege('CUSTOMER_ADD_CLUE') ?
                 <Menu.Item key="import" >
                     {Intl.get('crm.sales.manual.import.clue','导入线索')}
                 </Menu.Item>
@@ -2610,11 +2625,7 @@ class ClueCustomer extends React.Component {
         </Menu>);
     };
     renderNotSelectClueBtns = () => {
-        let isWebMiddle = $(window).width() < LAYOUT_CONSTANTS.MIDDLE_WIDTH;//浏览器是否处于pad端断点位置
-        let isWebMin = $(window).width() < LAYOUT_CONSTANTS.MIN_WIDTH;//浏览器是否处于手机端断点位置
-        let moreBtnCls = classNames('more-btn', {
-            'min-more-btn': isWebMin
-        });
+        let {isWebMiddle, isWebMin} = isResponsiveDisplay();
         return (
             <div className="pull-right add-anlysis-handle-btns">
                 {!(isWebMiddle || isWebMin) ? this.renderClueRecommend() : null}
@@ -2635,12 +2646,9 @@ class ClueCustomer extends React.Component {
                 {!(isWebMiddle || isWebMin) ? this.renderExportClue() : null}
                 {!isWebMin ? this.renderAddBtn() : null}
                 {isWebMiddle || isWebMin ?
-                    <Dropdown overlay={this.topBarDropList(isWebMin)} placement="bottomRight"
-                        overlayClassName='clue-customer-top-bar-dropDown' >
-                        <Button className={moreBtnCls}>
-                            <i className="iconfont icon-more"></i>
-                        </Button>
-                    </Dropdown> : null}
+                    <MoreButton
+                        topBarDropList={this.topBarDropList.bind(this, isWebMin)}
+                    /> : null}
             </div>
         );
     };

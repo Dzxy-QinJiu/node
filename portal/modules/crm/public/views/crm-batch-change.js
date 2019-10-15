@@ -54,6 +54,8 @@ var CrmBatchChange = createReactClass({
         selectAllMatched: PropTypes.bool,
         matchedNum: PropTypes.number,
         condition: PropTypes.object,
+        isWebMini: PropTypes.bool,
+        isWebMiddle: PropTypes.bool
     },
     getInitialState: function() {
         return {
@@ -709,7 +711,10 @@ var CrmBatchChange = createReactClass({
     renderBatchChange() {
         return (
             <Dropdown overlay={this.getBatchChangeMenus()}>
-                <Button type='primary' className='btn-item'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>
+                <Button type='primary' className='btn-item'>
+                    <span className="iconfont icon-xiugaitiaojian"></span>
+                    {Intl.get('crm.32', '变更')}
+                </Button>
             </Dropdown>
         );
     },
@@ -721,15 +726,21 @@ var CrmBatchChange = createReactClass({
     },
     render: function() {
         const changeBtns = {
-            btn: (<Button type='primary' className='btn-item'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>),
+            btn: (<Button type='primary' className='btn-item'>
+                <span className="iconfont icon-xiugaitiaojian"></span>
+                {Intl.get('crm.32', '变更')}<Icon type="down" />
+            </Button>),
             schedule: (<Button className='btn-item'
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>{Intl.get('crm.214', '添加联系计划')}</Button>)
+                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>
+                <span className="iconfont icon-shaixuan2"></span>
+                {Intl.get('crm.214', '添加联系计划')}
+            </Button>)
         };
         let isShowDropDownContent = !this.state.isShowBatchMenu;
         return (
             <div className="crm-batch-change-container" >
                 {
-                    this.state.isShowBatchMenu ? this.renderBatchChange() : null
+                    !this.props.isWebMini && this.state.isShowBatchMenu ? this.renderBatchChange() : null
                 }
                 {
                     (this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_TAG ||
@@ -817,18 +828,20 @@ var CrmBatchChange = createReactClass({
                         />
                     ) : null
                 }
-                <AntcDropdown
-                    ref="addSchedule"
-                    stopContentHide={this.state.stopContentHide}
-                    content={changeBtns.schedule}
-                    overlayTitle={Intl.get('crm.214', '添加联系计划')}
-                    isSaving={this.state.isLoading}
-                    overlayContent={this.renderScheduleLists()}
-                    handleSubmit={this.handleSubmit}
-                    okTitle={Intl.get('common.add', '添加')}
-                    cancelTitle={Intl.get('common.cancel', '取消')}
-                    clearSelectData={this.cancelAddSchedule}
-                />
+                {!(this.props.isWebMiddle || this.props.isWebMini) ?
+                    <AntcDropdown
+                        ref="addSchedule"
+                        stopContentHide={this.state.stopContentHide}
+                        content={changeBtns.schedule}
+                        overlayTitle={Intl.get('crm.214', '添加联系计划')}
+                        isSaving={this.state.isLoading}
+                        overlayContent={this.renderScheduleLists()}
+                        handleSubmit={this.handleSubmit}
+                        okTitle={Intl.get('common.add', '添加')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        clearSelectData={this.cancelAddSchedule}
+                    /> : null
+                }
             </div>
         );
     },

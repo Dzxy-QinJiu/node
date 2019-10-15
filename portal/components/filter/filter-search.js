@@ -5,11 +5,8 @@ import PropTypes from 'prop-types';
 import Trace from 'LIB_DIR/trace';
 import classNames from 'classnames';
 import{FILTER_RANGE_OPTIONS as RANGE_OPTIONS, FILTER_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 
-//响应式布局的常量
-const RESPONSIVE_LAYOUT = {
-    MIN_WIDTH: 720
-};
 class FilterSearch extends React.Component {
     constructor(props) {
         super();
@@ -163,9 +160,9 @@ class FilterSearch extends React.Component {
                 </div>
             </div>
         );
-        let isMinFilterButton = $(window).width() < RESPONSIVE_LAYOUT.MIN_WIDTH;
+        let {isWebMin} = isResponsiveDisplay();
         let minFilterButtonCls = classNames('collapsed search-wrapper', {
-            'min-search-icon': isMinFilterButton
+            'min-search-icon': isWebMin
         });
         return (
             <div className={showInput ? 'search-wrapper' : minFilterButtonCls} style={this.props.style}>
@@ -255,7 +252,7 @@ class FilterSearch extends React.Component {
                                 trigger="click"
                                 visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
                             >
-                                {isMinFilterButton ? <Button type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-shaixuan1'></i></Button>
+                                {isWebMin ? <Button type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-shaixuan1'></i></Button>
                                     : <Button type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-shaixuan1'></i>{Intl.get('common.filter', '筛选')}</Button>}
                             </Popover>
                         </div>
