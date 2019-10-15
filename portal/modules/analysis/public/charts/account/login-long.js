@@ -8,7 +8,7 @@ export function getLoginLongChart(type = 'total') {
     let url = `/rest/analysis/user/v1/${type}/login_long`;
 
     if (type === 'total') {
-        url = `/rest/analysis/user/v1/all/${type}/login_long`;
+        url = `/rest/analysis/user/v1/:data_type/${type}/login_long`;
     }
 
     return {
