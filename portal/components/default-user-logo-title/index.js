@@ -32,15 +32,26 @@ class DefaultUserLogoTitle extends React.Component {
 
         return (
             this.state.userLogo ?
-                ( <img className={this.props.defaultImgClass}
-                    src={this.state.userLogo}
-                    onError={this.setDefaultImg}
-                    style={this.props.style}
-                    alt={this.props.name}/>) :
-                (<div
-                    className={headIconDefIconClass}
-                    style={this.props.style}
-                ><i className="iconfont icon-user-ico"></i></div>)
+                (
+                    <img className={this.props.defaultImgClass}
+                        src={this.state.userLogo}
+                        onError={this.setDefaultImg}
+                        style={this.props.style}
+                        alt={this.props.name}
+                    />
+                ) :
+                (
+                    <div
+                        className={headIconDefIconClass}
+                        style={this.props.style}
+                    >
+                        {
+                            this.props.defaultUserImage ? (
+                                <i className="iconfont icon-user-ico"></i>
+                            ) : (nickName.substr(0, 1))
+                        }
+                    </div>
+                )
         );
     }
 }
@@ -53,6 +64,7 @@ DefaultUserLogoTitle.propTypes = {
     defaultImgClass: PropTypes.string,
     style: PropTypes.string,
     userLogo: PropTypes.string,
+    defaultUserImage: PropTypes.bool, // 是否用默认的头像
 };
 
 module.exports = DefaultUserLogoTitle;

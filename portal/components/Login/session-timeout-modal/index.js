@@ -204,10 +204,12 @@ class SessionTimeoutModal extends React.Component {
                             className="avatar"
                             size="60px"
                             fontSize='30px'
+                            lineHeight="52px"
                             src={userInfo.user_logo}
                             userName={userInfo.user_name}
                             nickName={userInfo.nick_name}
                             round="true"
+                            defaultUserImage={true}
                         />
                     </div>
                     <div className="user-info-name text-align-center">{userInfo.user_name}</div>

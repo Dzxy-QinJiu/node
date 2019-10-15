@@ -795,11 +795,13 @@ class MemberInfo extends React.Component {
                 <Popconfirm title={Intl.get('member.save.logo.tip', '是否保存上传的头像？')}
                     visible={this.state.showSaveIconTip}
                     onConfirm={this.saveUserIcon} onCancel={this.cancelEditIcon}>
-                    <HeadIcon headIcon={memberInfo.image}
+                    <HeadIcon 
+                        headIcon={memberInfo.image}
                         isEdit={true}
                         onChange={this.uploadImg}
                         userName={memberInfo.userName || ''}
                         isUserHeadIcon={true}
+                        defaultUserImage={true}
                     />
                 </Popconfirm>
                 <div className="member-name-container">

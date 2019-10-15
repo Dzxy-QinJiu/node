@@ -27,6 +27,7 @@ class Avatar extends React.Component {
                         name={this.props.name}
                         isActiveFlag={this.props.isActiveFlag}
                         lineHeight={this.props.lineHeight}
+                        defaultUserImage={this.props.defaultUserImage}
                     />) :
                     (<a style={aStyle}><Img {...this.props}/>
                         {this.props.showName ? <Name name={this.props.name}/> : ''}</a>)
@@ -50,6 +51,7 @@ class Aimg extends React.Component {
                     size={this.props.size}
                     isActiveFlag={this.props.isActiveFlag}
                     lineHeight={this.props.lineHeight}
+                    defaultUserImage={this.props.defaultUserImage}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
             </NavLink>
@@ -76,8 +78,9 @@ class Img extends React.Component {
                 nickName={this.props.nickName}
                 userLogo={this.props.src}
                 alt={this.props.name}
-                style={ imgStyle }>
-            </DefaultUserLogoTitle>
+                style={ imgStyle }
+                defaultUserImage={this.props.defaultUserImage}
+            />
         );
     }
 }
@@ -107,6 +110,7 @@ Aimg.propTypes = {
     showName: PropTypes.string,
     name: PropTypes.string,
     lineHeight: PropTypes.string,
+    defaultUserImage: PropTypes.bool,
 };
 
 Img.propTypes = {
@@ -119,6 +123,7 @@ Img.propTypes = {
     name: PropTypes.string,
     fontSize: PropTypes.string,
     lineHeight: PropTypes.string,
+    defaultUserImage: PropTypes.bool,
 };
 
 Name.propTypes = {
@@ -139,6 +144,7 @@ Avatar.propTypes = {
     name: PropTypes.string,
     fontSize: PropTypes.string,
     lineHeight: PropTypes.string,
+    defaultUserImage: PropTypes.bool,
 };
 
 module.exports = Avatar;
