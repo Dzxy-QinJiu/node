@@ -240,7 +240,7 @@ class AddAndShowApplyList extends React.Component {
                 <div className="load-content">
                     <Spinner />
                 </div>);
-        }else if(this.state.getSelfSettingWorkFlowLoading){
+        }else if(this.state.getSelfSettingWorkFlowErrMsg){
             return(
                 <div className="errmsg-wrap">
                     <i className="iconfont icon-data-error"></i>
