@@ -35,6 +35,7 @@ class ShearContent extends React.Component {
         this.$contentDOM.on('click', '.expand-btn', this.showDetail.bind(this, true));
         //收起按钮使用Jq事件代理是为了拦截react的事件，防止在表格中点击收起触发点击单元格事件
         this.$contentDOM.on('click', '.collapse-btn', this.showDetail.bind(this, false));
+        this.$contentDOM.on('click', '.icon-edit-btn-plus', this.handleEditBtnChange.bind(this));
     }
     handleShear($dom) {
         this.truncated = new Truncate($dom, {
@@ -59,6 +60,9 @@ class ShearContent extends React.Component {
         });
         e.stopPropagation();
     }
+    handleEditBtnChange = () => {
+        this.props.editBtnChange();
+    }
     render() {
         const hideCls = classNames('cut-content', {
             'hide': this.state.showDetail
@@ -70,9 +74,15 @@ class ShearContent extends React.Component {
             <span className="shear-content-container">
                 <div className={hideCls}>
                     {this.props.children}
+                    {this.props.hasEditBtn ? <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn" 
+                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}
+                    /> : null}
                 </div>
                 <div className={showCls}>
                     {this.props.children}<span className="append-icon collapse-btn handle-btn-item">{Intl.get('crm.contact.way.hide', '收起')}</span>
+                    {this.props.hasEditBtn ? <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"
+                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')} 
+                    /> : null}
                 </div>
             </span>
         );
@@ -82,11 +92,15 @@ class ShearContent extends React.Component {
 ShearContent.defaultProps = {
     rowsNum: 3,
     children: null,
-    jsx: null
+    jsx: null,
+    hasEditBtn: false,
+    editBtnChange: '',
 };
 ShearContent.propTypes = {
     rowsNum: PropTypes.number,
     children: PropTypes.object,
-    jsx: PropTypes.element
+    jsx: PropTypes.element,
+    hasEditBtn: PropTypes.bool,
+    editBtnChange: PropTypes.object,
 };
 export default ShearContent;
