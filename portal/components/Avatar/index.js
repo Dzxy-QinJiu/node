@@ -27,7 +27,7 @@ class Avatar extends React.Component {
                         name={this.props.name}
                         isActiveFlag={this.props.isActiveFlag}
                         lineHeight={this.props.lineHeight}
-                        defaultUserImage={this.props.defaultUserImage}
+                        isUsedefaultUserImage={this.props.isUsedefaultUserImage}
                     />) :
                     (<a style={aStyle}><Img {...this.props}/>
                         {this.props.showName ? <Name name={this.props.name}/> : ''}</a>)
@@ -51,7 +51,7 @@ class Aimg extends React.Component {
                     size={this.props.size}
                     isActiveFlag={this.props.isActiveFlag}
                     lineHeight={this.props.lineHeight}
-                    defaultUserImage={this.props.defaultUserImage}
+                    isUsedefaultUserImage={this.props.isUsedefaultUserImage}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
             </NavLink>
@@ -79,7 +79,7 @@ class Img extends React.Component {
                 userLogo={this.props.src}
                 alt={this.props.name}
                 style={ imgStyle }
-                defaultUserImage={this.props.defaultUserImage}
+                isUsedefaultUserImage={this.props.isUsedefaultUserImage}
             />
         );
     }
@@ -110,7 +110,7 @@ Aimg.propTypes = {
     showName: PropTypes.string,
     name: PropTypes.string,
     lineHeight: PropTypes.string,
-    defaultUserImage: PropTypes.bool,
+    isUsedefaultUserImage: PropTypes.bool,
 };
 
 Img.propTypes = {
@@ -123,12 +123,14 @@ Img.propTypes = {
     name: PropTypes.string,
     fontSize: PropTypes.string,
     lineHeight: PropTypes.string,
-    defaultUserImage: PropTypes.bool,
+    isUsedefaultUserImage: PropTypes.bool,
 };
 
 Name.propTypes = {
     name: PropTypes.string
 };
+
+
 
 Avatar.propTypes = {
     isActiveFlag: PropTypes.bool,
@@ -144,7 +146,7 @@ Avatar.propTypes = {
     name: PropTypes.string,
     fontSize: PropTypes.string,
     lineHeight: PropTypes.string,
-    defaultUserImage: PropTypes.bool,
+    isUsedefaultUserImage: PropTypes.bool // 是否使用默认的头像
 };
 
 module.exports = Avatar;

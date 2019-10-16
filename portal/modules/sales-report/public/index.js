@@ -298,7 +298,7 @@ class SalesReport extends React.Component {
                                     round={false}
                                     link={true}
                                     url="/user_info_manage"
-                                    defaultUserImage={true}
+                                    isUsedefaultUserImage={true}
                                 />
                             </td>
                             <td className="field-name">

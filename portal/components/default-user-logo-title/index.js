@@ -1,5 +1,11 @@
 /**
  * Created by xiaojinfeng on 2016/04/28.
+ * 用法：
+ * <DefaultUserLogoTitle
+ *  isUsedefaultUserImage={true}
+ * >
+ * 属性：isUsedefaultUserImage 是否使用默认的头像
+ * 传true则用，使用默认的头像，不传，使用昵称或是名称的第一个字
  */
 require('./default-img-title.less');
 const classNames = require('classnames');
@@ -46,7 +52,7 @@ class DefaultUserLogoTitle extends React.Component {
                         style={this.props.style}
                     >
                         {
-                            this.props.defaultUserImage ? (
+                            this.props.isUsedefaultUserImage ? (
                                 <i className="iconfont icon-user-ico"></i>
                             ) : (nickName.substr(0, 1))
                         }
@@ -56,6 +62,10 @@ class DefaultUserLogoTitle extends React.Component {
     }
 }
 
+DefaultUserLogoTitle.defaultProps = {
+    isUsedefaultUserImage: false // 是否用默认的头像,默认不用
+};
+
 DefaultUserLogoTitle.propTypes = {
     className: PropTypes.string,
     userName: PropTypes.string,
@@ -64,7 +74,7 @@ DefaultUserLogoTitle.propTypes = {
     defaultImgClass: PropTypes.string,
     style: PropTypes.string,
     userLogo: PropTypes.string,
-    defaultUserImage: PropTypes.bool, // 是否用默认的头像
+    isUsedefaultUserImage: PropTypes.bool
 };
 
 module.exports = DefaultUserLogoTitle;

@@ -484,7 +484,7 @@ var NavSidebar = createReactClass({
                             nickName={this.state.userInfo.nick_name}
                             round="true" link="true" url="/user_info_manage"
                             isActiveFlag={this.props.isShowNotificationPanel}
-                            defaultUserImage={true}
+                            isUsedefaultUserImage={true}
                         />
                     </div>
                 </Popover>

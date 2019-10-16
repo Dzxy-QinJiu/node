@@ -499,7 +499,7 @@ class MemberForm extends React.Component {
                                 onChange={this.uploadImg}
                                 userName={values.userName}
                                 isUserHeadIcon={true}
-                                defaultUserImage={true}
+                                isUsedefaultUserImage={true}
                             />
                             <Input type="hidden" name="image" id="image"/>
                         </div>

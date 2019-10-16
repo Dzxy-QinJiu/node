@@ -77,7 +77,7 @@ class HeadIcon extends React.Component {
                     userName={this.props.userName}
                     nickName={this.props.iconDescr}
                     userLogo={headIcon}
-                    defaultUserImage={this.props.defaultUserImage}
+                    isUsedefaultUserImage={this.props.isUsedefaultUserImage}
                 >
                 </DefaultUserLogoTitle>
             );
@@ -146,7 +146,7 @@ HeadIcon.propTypes = {
     iconDescr: PropTypes.string,
     isNotShowUserName: PropTypes.bool,
     headIcon: PropTypes.string,
-    defaultUserImage: PropTypes.bool
+    isUsedefaultUserImage: PropTypes.bool
 };
 
 module.exports = HeadIcon;
