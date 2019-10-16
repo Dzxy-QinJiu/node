@@ -74,15 +74,6 @@ class SalesOpportunityApplyManagement extends React.Component {
             SalesOpportunityApplyAction.setShowUpdateTip(true);
         }
     };
-    componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps,'history.action') === 'PUSH'){
-            if (_.get(nextProps,'location.state.clickUnhandleNum')){
-                delete nextProps.location.state.clickUnhandleNum;
-                //取待审批的审批数
-                this.menuClick({key: 'ongoing'});
-            }
-        }
-    }
 
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
