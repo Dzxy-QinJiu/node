@@ -59,6 +59,7 @@ const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
 import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {sourceClassifyArray, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -79,7 +80,8 @@ class ClueDetailOverview extends React.Component {
         submitReason: '',//要提交的无效原因
         submitInvalidateClueMsg: '',//提交标记无效出错的信息
         submitInvalidateLoading: false,//正在提交无效记录
-        isShowInvalidateInputPanel: false //正在展示无效信息输入框
+        isShowInvalidateInputPanel: false, //正在展示无效信息输入框
+        myTeamTree: [],//销售领导获取我所在团队及下级团队树
     };
 
     componentDidMount() {
@@ -91,6 +93,10 @@ class ClueDetailOverview extends React.Component {
         if (!this.isHasTransferClue()){
             this.getSimilarCustomerLists();
         }
+        //销售领导获取我所在团队及下级团队树
+        getMyTeamTreeList(result => {
+            this.setState({myTeamTree: _.get(result, 'teamTreeList', [])});
+        });
     }
     //线索的状态是已转化的线索
     isHasTransferClue = () => {
@@ -1301,7 +1307,37 @@ class ClueDetailOverview extends React.Component {
             </div>
         );
     };
+    //是否是我团队或下级团队的人
+    isMyTeamOrChildUser(teamId) {
+        let userObj = userData.getUserData();
+        let flag = false;
+        if (teamId) {
+            //我团队的人
+            if (teamId === userObj.team_id) {
+                flag = true;
+            } else {//下级团队的人
+                flag = this.travelMyTeamUserFlag(this.state.myTeamTree, teamId);
+            }
+        }
+        return flag;
+    }
 
+    //递归变量团队树判断是否是我下级团队
+    travelMyTeamUserFlag(treeList, teamId) {
+        let flag = false;
+        _.each(treeList, team => {
+            if (team.group_id === teamId) {
+                flag = true;
+                return false;
+            } else if (!_.isEmpty(team.child_groups)) {
+                flag = this.travelMyTeamUserFlag(team.child_groups, teamId);
+                if (flag) {
+                    return false;
+                }
+            }
+        });
+        return flag;
+    }
     renderClueSimilarLists = (listItem, isSimilarClue) => {
         let warningContent = (
             <span className="client-error-tip">
@@ -1313,9 +1349,14 @@ class ClueDetailOverview extends React.Component {
         let curClue = this.state.curClue;
         //查看当前客户或线索是否属于此销售，如果不属于，用popover提示
         let user_id = userData.getUserData().user_id;
-        let isMyClientsOrClues = _.isEqual(_.get(listItem, 'user_id'), user_id);
-        //展示相似客户，相似线索的时候判断当前客户或线索是否属于此销售，管理员也有权限查看
-        let hasPrivilege = (userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || isMyClientsOrClues);
+        //后端会返回user_id或者member_id，哪个返回用哪个
+        let isMyClientsOrClues = _.isEqual(_.get(listItem, 'user_id'), user_id) || _.isEqual(_.get(listItem, 'member_id'), user_id);
+        //展示相似客户，相似线索的时候判断
+        //如果是普通销售，判断当前客户或线索是否属于此销售，如果是销售领导，判断查看是否是他团队或下级团队下的
+        //管理员和运营人员可以看
+        let hasPrivilege = (!userData.getUserData().isCommonSales && isMyClientsOrClues)
+                            || this.isMyTeamOrChildUser(_.get(listItem, 'sales_team_id'))
+                            || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
         //如果在线索池中，相似客户相似线索都不能点击查看，只能展示
         if(_.isEqual(curClue.clue_type,'clue_pool')){
             return (<span>{listItem.name}</span>);
@@ -1361,6 +1402,7 @@ class ClueDetailOverview extends React.Component {
                 {_.map(similarLists,(listItem) => {
                     var sameContact = this.getSamePhoneContact(_.get(listItem,'contacts',[]));
                     var traceAddTime = _.get(listItem, 'customer_traces[0].call_date') || _.get(listItem, 'customer_traces[0].add_time');//跟进时间
+                    let hasTraceContent = _.has(listItem, 'customer_traces[0].remark');
                     let isFromCluepool = _.isEqual(_.get(this.state, 'curClue.clue_type'), 'clue_pool');
                     let similarTitleCls = className('similar-title', {
                         'title-from-clue-pool': isFromCluepool
@@ -1373,16 +1415,27 @@ class ClueDetailOverview extends React.Component {
                         {_.isArray(sameContact) ? _.map(sameContact,(contactsItem) => {
                             return (
                                 <div className="similar-name-phone">
-                                    <span className="contact-name" title={contactsItem.name}>
-                                        {contactsItem.name }
-                                    </span>
-                                    {contactsItem.name && !_.isEmpty(contactsItem.phone) ? '：' : ''}
+                                    {isSimilarClue ?
+                                        <span className="contact-name" title={contactsItem.name}>
+                                            {Intl.get('call.record.contacts', '联系人') + '：' + contactsItem.name}
+                                        </span> :
+                                        <span className="contact-name" title={contactsItem.name}>
+                                            {contactsItem.name }
+                                        </span>
+                                    }
+                                    {contactsItem.name && !_.isEmpty(contactsItem.phone) && !isSimilarClue ? '：' : ''}
+                                    {contactsItem.name && !_.isEmpty(contactsItem.phone) && isSimilarClue ? ' (' : ''}
                                     {_.isArray(contactsItem.phone) ? contactsItem.phone.join(',') : null}
-
+                                    {contactsItem.name && !_.isEmpty(contactsItem.phone) && isSimilarClue ? ')' : ''}
                                 </div>
                             );
                         }) : null}
-                        {traceAddTime && isSimilarClue ? <span className="trace-time">{Intl.get('clue.detail.last.contact.time', '最后跟进时间') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
+                        {traceAddTime && isSimilarClue && !hasTraceContent ? <span className="trace-time">{Intl.get('crm.last.trace', '最后跟进') + '：' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT)}</span> : null}
+                        {traceAddTime && isSimilarClue && hasTraceContent ?
+                            <div className="trace-container">
+                                <span className="trace-time">{Intl.get('crm.last.trace', '最后跟进') + '：'}</span>
+                                <span className="trace-content">{_.get(listItem,'customer_traces[0].remark') + ' (' + _.get(listItem,'customer_traces[0].nick_name') + ' ' + moment(traceAddTime).format(oplateConsts.DATE_MONTH_DAY_HOUR_MIN_FORMAT) + ')'}</span>
+                            </div> : null}
                     </div>;
                 })}
                 {listMoreThanThree ? <div className="show-hide-tip" onClick={isSimilarClue ? this.handleToggleClueTip : this.handleToggleCustomerTip}>

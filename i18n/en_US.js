@@ -1576,6 +1576,7 @@ var en_US = {
     'crm.contact.list.failed': 'Failed to get contact list',//获取联系人列表失败
     'crm.contact.name.length': 'Please enter not more than 50 characters',//请输入最多50个字符
     'crm.last.trace.content': 'Last Trace content',//最后跟进内容
+    'crm.last.trace': 'Last Trace',//最后跟进
     'crm.competing.products': 'Competing products',//竞品
     'crm.no.contact.way': 'No contact customers',//无联系方式客户
     'crm.concerned.customer': 'Concerned customers',//被关注的客户
