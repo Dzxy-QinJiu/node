@@ -66,15 +66,7 @@ class DocumentWriteApplyManagement extends React.Component {
             DocumentWriteApplyAction.setShowUpdateTip(true);
         }
     };
-    componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps,'history.action') === 'PUSH'){
-            if (_.get(nextProps,'location.state.clickUnhandleNum')){
-                delete nextProps.location.state.clickUnhandleNum;
-                //取待审批的审批数
-                this.menuClick({key: 'ongoing'});
-            }
-        }
-    }
+
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
             //通过或者驳回申请后改变申请的状态
