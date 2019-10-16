@@ -27,6 +27,7 @@ class Avatar extends React.Component {
                         name={this.props.name}
                         isActiveFlag={this.props.isActiveFlag}
                         lineHeight={this.props.lineHeight}
+                        isUseDefaultUserImage={this.props.isUseDefaultUserImage}
                     />) :
                     (<a style={aStyle}><Img {...this.props}/>
                         {this.props.showName ? <Name name={this.props.name}/> : ''}</a>)
@@ -50,6 +51,7 @@ class Aimg extends React.Component {
                     size={this.props.size}
                     isActiveFlag={this.props.isActiveFlag}
                     lineHeight={this.props.lineHeight}
+                    isUseDefaultUserImage={this.props.isUseDefaultUserImage}
                 />
                 {this.props.showName ? <Name name={this.props.name}/> : ''}
             </NavLink>
@@ -76,8 +78,9 @@ class Img extends React.Component {
                 nickName={this.props.nickName}
                 userLogo={this.props.src}
                 alt={this.props.name}
-                style={ imgStyle }>
-            </DefaultUserLogoTitle>
+                style={ imgStyle }
+                isUseDefaultUserImage={this.props.isUseDefaultUserImage}
+            />
         );
     }
 }
@@ -107,6 +110,7 @@ Aimg.propTypes = {
     showName: PropTypes.string,
     name: PropTypes.string,
     lineHeight: PropTypes.string,
+    isUseDefaultUserImage: PropTypes.bool,
 };
 
 Img.propTypes = {
@@ -119,11 +123,14 @@ Img.propTypes = {
     name: PropTypes.string,
     fontSize: PropTypes.string,
     lineHeight: PropTypes.string,
+    isUseDefaultUserImage: PropTypes.bool,
 };
 
 Name.propTypes = {
     name: PropTypes.string
 };
+
+
 
 Avatar.propTypes = {
     isActiveFlag: PropTypes.bool,
@@ -139,6 +146,7 @@ Avatar.propTypes = {
     name: PropTypes.string,
     fontSize: PropTypes.string,
     lineHeight: PropTypes.string,
+    isUseDefaultUserImage: PropTypes.bool // 是否使用默认的头像
 };
 
 module.exports = Avatar;
