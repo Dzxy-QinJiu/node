@@ -423,3 +423,4 @@ export const sourceClassifyArray = [
 export const sourceClassifyOptions = sourceClassifyWithoutOtherArray.map((source, index) => {
     return (<Option value={source.value} key={index}>{source.title}</Option>);
 });
+export const FLOW_FLY_TIME = 1500;

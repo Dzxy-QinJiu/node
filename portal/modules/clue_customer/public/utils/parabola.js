@@ -18,7 +18,8 @@ export function parabola(config) {
         a = 0.004,
         callback,
         finish,
-        offset = 0
+        offset = 0,
+        // speedx = 0.05
     } =
     config || {};
     const ballWrapperDimension = ballWrapper.getBoundingClientRect();
@@ -30,6 +31,7 @@ export function parabola(config) {
     const y2 = targetDimension.top + 0.5 * targetDimension.height;
     const diffx = x2 - x1;
     const diffy = y2 - y1;
+    // const time =  diffx / speedx;
     const speedx = diffx / time;
     const b = (diffy - a * diffx * diffx) / diffx;
 
@@ -43,7 +45,6 @@ export function parabola(config) {
             clearInterval(timer);
             return;
         }
-
         const x = speedx * (Date.now() - start);
         const y = a * x * x + b * x;
         callback && callback(refPoint_x + x, refPoint_y + y);

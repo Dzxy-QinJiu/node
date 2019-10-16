@@ -297,7 +297,7 @@ class ClueRightPanel extends React.Component {
         });
     };
 
-    updateClueProperty = (updateProperty) => {
+    updateClueProperty = (updateProperty,flag) => {
         var curClue = this.state.curClue;
         for (var key in updateProperty){
             curClue[key] = updateProperty[key];
@@ -305,11 +305,14 @@ class ClueRightPanel extends React.Component {
         this.setState({
             curClue: curClue
         });
-        clueCustomerAction.afterEditCustomerDetail(updateProperty);
+        if (!flag){
+            clueCustomerAction.afterEditCustomerDetail(updateProperty);
+        }
+
     };
     updateCustomerLastContact = (saveObj) => {
-        this.updateClueProperty({status: SELECT_TYPE.HAS_TRACE});
         this.props.updateCustomerLastContact(saveObj);
+        this.updateClueProperty({status: SELECT_TYPE.HAS_TRACE},true);
     };
 
     getCluePanelHeight = () => {
