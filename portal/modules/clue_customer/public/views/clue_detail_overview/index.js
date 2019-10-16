@@ -1354,7 +1354,7 @@ class ClueDetailOverview extends React.Component {
         //展示相似客户，相似线索的时候判断
         //如果是普通销售，判断当前客户或线索是否属于此销售，如果是销售领导，判断查看是否是他团队或下级团队下的
         //管理员和运营人员可以看
-        let hasPrivilege = (!userData.getUserData().isCommonSales && isMyClientsOrClues)
+        let hasPrivilege = (userData.getUserData().isCommonSales && isMyClientsOrClues)
                             || this.isMyTeamOrChildUser(_.get(listItem, 'sales_team_id'))
                             || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
         //如果在线索池中，相似客户相似线索都不能点击查看，只能展示
