@@ -28,7 +28,8 @@ import {
     ORGANIZATION_APP_TYPES,
     REALM_REMARK,
     INDICATOR_TOOLTIP,
-    DIFF_STATUS_TAB
+    DIFF_STATUS_TAB,
+    RESPONSIVE_LAYOUT
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1153,4 +1154,13 @@ exports.renderClueNameMsg = ( existClueList, checkNameError, curClueName, showRi
 exports.isFormalUser = () => {
     let organization = getOrganization();
     return _.isEqual(_.get(organization, 'version.type', ''), '正式');
+};
+
+//判断当前页面是否处于手机端或pad端的断点，用于响应式布局的展示
+exports.isResponsiveDisplay = () => {
+    let responsive = {};
+    responsive.isWebMiddle = $(window).width() < RESPONSIVE_LAYOUT.MIDDLE_WIDTH;//浏览器是否处于pad端断点位置
+    responsive.isWebMin = $(window).width() < RESPONSIVE_LAYOUT.MIN_WIDTH;//浏览器是否处于手机端断点位置
+    return responsive;
+
 };

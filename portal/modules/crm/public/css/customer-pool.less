@@ -3,10 +3,13 @@
 @filter-width: 288px;
 .customer-pool {
   .topNav {
+    position: inherit;
+    border-bottom: 1px solid #DEDFE3;
+    padding: 0 15px;
     .search-input-wrapper {
       float: left;
       margin-top: 15px;
-      margin-right: 20px;
+      margin-right: 8px;
       .btn-item {
         margin-right: 0 !important;
       }
@@ -15,7 +18,7 @@
       }
     }
     .customer-back-btn{
-      margin-right: 10px;
+      margin-right: 0.5em;
       position: relative;
       float: left;
       top: 15px;
@@ -28,7 +31,25 @@
     .extract-btn {
       float: right;
       margin-top: 15px;
-      margin-right: 20px !important;
+      margin-left: 0.5em !important;
+      margin-right: 0 !important;
+      .ant-btn{
+        vertical-align: baseline;
+      }
+      .iconfont {
+        margin-right: 8px;
+      }
+      &.responsive-mini-btn {
+        padding: 0;
+        min-width: 2em;
+        .iconfont {
+          margin-right: 0;
+        }
+        .ant-btn {
+          min-width: 2em;
+          padding: 0;
+        }
+      }
     }
     .icon-close {
       width: 25px;
@@ -99,7 +120,7 @@
 }
 
 .customer-table-container {
-  margin-top: 64px;
+  margin-top: 0;
   padding:0 20px 0 0;
   .ant-table tbody .current-row:hover,
   .ant-table tbody .current-row {

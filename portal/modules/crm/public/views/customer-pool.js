@@ -16,7 +16,7 @@ import crmAjax from '../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import {formatSalesmanList, removeEmptyItem} from 'PUB_DIR/sources/utils/common-method-util';
+import {formatSalesmanList, isResponsiveDisplay, removeEmptyItem} from 'PUB_DIR/sources/utils/common-method-util';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import {RightPanelClose} from 'CMP_DIR/rightPanel/index';
@@ -33,6 +33,11 @@ import BackMainPage from 'CMP_DIR/btn-back';
 var LAYOUT_CONSTANTS = {
     TOP_DISTANCE: 66 + 46,//表格容器上外边距 + 表头的高度
     BOTTOM_DISTANCE: 30 + 10 * 2,//分页器的高度 + 分页器上下外边距
+    MIN_WIDTH_NEED_CAL: 580,//手机端需要计算输入框时的断点
+    WIDTH_WITHOUT_INPUT: 266,//topnav中除了输入框以外的宽度
+    EXTRA_WIDTH_CAL_MIN: 720,//在需要额计算输入框宽度时，输入框宽度下限
+    EXTRA_WIDTH_CAL_MAX: 850,//在需要额计算输入框宽度时，输入框宽度上限
+    EXTRA_WIDTH_WITHOUT_INPUT: 548//在需要额计算输入框宽度时，除了输入框意外的宽度
 };
 const PAGE_SIZE = 20;
 class CustomerPool extends React.Component {
@@ -66,6 +71,7 @@ class CustomerPool extends React.Component {
             showFilterList: false,
             showCustomerRulePanel: false, //显示规则设置面板
             isExtractSuccess: false,//是否提取成功
+            filterInputWidth: 300,//输入框的默认宽度
         };
     }
 
@@ -86,10 +92,41 @@ class CustomerPool extends React.Component {
         });
         // 一进来就要显示筛选
         _.isFunction(this.refs.filterinput.handleToggle) && this.refs.filterinput.handleToggle();
+        this.setFilterInputWidth();
+        //响应式布局时动态计算filterinput的宽度
+        $(window).on('resize', this.resizeHandler);
+    }
+
+    resizeHandler = () => {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(() => {
+            this.setFilterInputWidth();
+        }, 100);
+    };
+
+    setFilterInputWidth = () => {
+        let needCalWidth = $(window).width() <= LAYOUT_CONSTANTS.MIN_WIDTH_NEED_CAL;
+        let needExtraCal = $(window).width() <= LAYOUT_CONSTANTS.EXTRA_WIDTH_CAL_MAX && $(window).width() >= LAYOUT_CONSTANTS.EXTRA_WIDTH_CAL_MIN;
+        if(needExtraCal){
+            let filterInputWidth = $(window).width() - LAYOUT_CONSTANTS.EXTRA_WIDTH_WITHOUT_INPUT;
+            this.setState({
+                filterInputWidth
+            });
+        } else if(needCalWidth) {
+            let filterInputWidth = $(window).width() - LAYOUT_CONSTANTS.WIDTH_WITHOUT_INPUT;
+            this.setState({
+                filterInputWidth
+            });
+        } else {
+            this.setState({
+                filterInputWidth: 300
+            });
+        }
     }
 
     componentWillUnmount() {
         this.setState(this.getInitStateData());
+        $(window).off('resize', this.resizeHandler);
     }
 
     // 获取销售人员
@@ -585,13 +622,22 @@ class CustomerPool extends React.Component {
 
     //渲染批量提取的按钮
     renderBatchExtractBtn(selectCustomerLength) {
+        let {isWebMin} = isResponsiveDisplay();
+        let extractCls = classNames('btn-item extract-btn', {
+            'responsive-mini-btn': isWebMin
+        });
         //运营人员不提取
         if (userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
             return null;
         } else {//销售、管理员
             const batchExtractBtn = (
-                <Button className="btn-item extract-btn" disabled={!selectCustomerLength}>
-                    {Intl.get('clue.extract', '提取')}
+                <Button className={extractCls} disabled={!selectCustomerLength}>
+                    {isWebMin ? <i className="iconfont icon-extract"></i> :
+                        <React.Fragment>
+                            <i className="iconfont icon-extract"></i>
+                            {Intl.get('clue.extract', '提取')}
+                        </React.Fragment>
+                    }
                 </Button>);
             //选择客户后可以进行批量提取
             if (selectCustomerLength) {
@@ -648,6 +694,10 @@ class CustomerPool extends React.Component {
                 field: 'phone'
             },
         ];
+        let {isWebMin} = isResponsiveDisplay();
+        let regulateCls = classNames('btn-item extract-btn',{
+            'responsive-mini-btn': isWebMin
+        });
         return (
             <div className="customer-pool" data-tracename="客户池列表">
                 <TopNav>
@@ -661,7 +711,7 @@ class CustomerPool extends React.Component {
                             filterType={Intl.get('call.record.customer', '客户')}
                         />
                     </div>
-                    <div className="customer-search-block" style={{display: selectCustomerLength ? 'none' : 'block'}}>
+                    <div className="customer-search-block" style={{display: selectCustomerLength ? 'none' : 'block', width: this.state.filterInputWidth}}>
                         <SearchInput
                             ref="searchInput"
                             className="btn-item"
@@ -681,8 +731,15 @@ class CustomerPool extends React.Component {
                     ) : null}
                     {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
                         <Button
-                            className="btn-item extract-btn"
-                            onClick={this.showRuleRightPanel}>{Intl.get('crm.customer.rule.name', '规则设置')}</Button>
+                            className={regulateCls}
+                            onClick={this.showRuleRightPanel}>
+                            {isWebMin ? <i className="iconfont icon-configuration"></i> :
+                                <React.Fragment>
+                                    <i className="iconfont icon-configuration"></i>
+                                    {Intl.get('crm.customer.rule.name', '规则设置')}
+                                </React.Fragment>
+                            }
+                        </Button>
                     ) : null}
                     {this.renderBatchExtractBtn(selectCustomerLength)}
                     {selectCustomerLength ? (
