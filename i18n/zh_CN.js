@@ -1611,6 +1611,7 @@ var zh_CN = {
     'crm.contact.list.failed': '获取联系人列表失败',
     'crm.contact.name.length': '请输入最多50个字符',
     'crm.last.trace.content': '最后跟进内容',
+    'crm.last.trace': '最后跟进',
     'crm.competing.products': '竞品',
     'crm.no.contact.way': '无联系方式客户',
     'crm.concerned.customer': '被关注的客户',
