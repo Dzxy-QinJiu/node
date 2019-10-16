@@ -72,7 +72,6 @@ class UserInfo extends React.Component{
                 userInfoFormShow: nextProps.userInfoFormShow
             });
         }
-        console.log($.extend(true, {}, nextProps.userInfo));
         if(nextProps.userInfo.emailEnable){
             this.setState({sendMail: false});
         }
