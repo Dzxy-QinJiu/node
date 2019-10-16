@@ -209,7 +209,7 @@ class SessionTimeoutModal extends React.Component {
                             userName={userInfo.user_name}
                             nickName={userInfo.nick_name}
                             round="true"
-                            isUsedefaultUserImage={true}
+                            isUseDefaultUserImage={true}
                         />
                     </div>
                     <div className="user-info-name text-align-center">{userInfo.user_name}</div>

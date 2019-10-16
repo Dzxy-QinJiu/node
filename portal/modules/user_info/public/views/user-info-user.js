@@ -584,7 +584,7 @@ class UserInfo extends React.Component{
                             userName={formData.userName}
                             nickName={formData.nickName}
                             isUserHeadIcon={true}
-                            isUsedefaultUserImage={true}
+                            isUseDefaultUserImage={true}
                         />
                         <div className="user-info-nickname">
                             {_.get(this.state, 'iconSaveError') ? <span className="icon-save-error">{_.get(this.state, 'iconSaveError')}</span> : null}

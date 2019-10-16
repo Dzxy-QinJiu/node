@@ -801,7 +801,7 @@ class MemberInfo extends React.Component {
                         onChange={this.uploadImg}
                         userName={memberInfo.userName || ''}
                         isUserHeadIcon={true}
-                        isUsedefaultUserImage={true}
+                        isUseDefaultUserImage={true}
                     />
                 </Popconfirm>
                 <div className="member-name-container">
