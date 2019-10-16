@@ -16,6 +16,7 @@ import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 const session = storageUtil.session;
+const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -54,7 +55,7 @@ class UserInfo extends React.Component{
             weChatBindErrorMsg: props.bind_error ? Intl.get('login.wechat.bind.error', '微信绑定失败') : '',//微信账号绑定的错误提示
             iconSaveError: '',//头像修改失败错误提示
             sendMail: false,//是否已发送邮件
-            closeMsg: false,//是否提前关闭提示
+            closeMsg: true,//关闭提示
             sendTime: 60,//计时器显示时间
         };
     }
@@ -70,6 +71,10 @@ class UserInfo extends React.Component{
                 formData: $.extend(true, {}, nextProps.userInfo),
                 userInfoFormShow: nextProps.userInfoFormShow
             });
+        }
+        console.log($.extend(true, {}, nextProps.userInfo));
+        if(nextProps.userInfo.emailEnable){
+            this.setState({sendMail: false});
         }
     }
 
@@ -225,9 +230,9 @@ class UserInfo extends React.Component{
             return;
         }
         UserInfoAction.activeUserEmail((resultObj) => {
-            if (resultObj.error) {
-                message.error(resultObj.errorMsg);
-            } else {
+            // if (resultObj.error) {
+            //     message.error(resultObj.errorMsg);
+            // } else {
                 this.setState({
                     sendMail: true,
                     closeMsg: false,
@@ -235,7 +240,7 @@ class UserInfo extends React.Component{
                 //暂存时间戳
                 session.set('send_mail_start_time',new Date().getTime());
                 this.sendMailTime();
-            }
+            // }
         });
     }
 
@@ -359,7 +364,7 @@ class UserInfo extends React.Component{
         //根据是否拥有邮箱改变编辑状态
         let isEditable = formData.email ? true : false;
         //根据邮箱状态是否激活改变渲染afterTextTip文字
-        let displayInfo = !_.isEmpty(formData.email) ? (formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
+        let displayInfo = !_.isEmpty(formData.email) ? (this.state.formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
             (<span className="active-info">
                 <a onClick={this.activeUserEmail.bind(this)}>{Intl.get('user.info.active.email.btn', '发送激活邮件',)}</a>
             </span>)) : null;
@@ -425,7 +430,7 @@ class UserInfo extends React.Component{
                             />}
                         </span>
                     </div>
-                    {this.state.sendMail && !this.state.closeMsg ? this.sendMailMsg() : null}
+                    {this.state.sendMail && !this.state.closeMsg && this.state.sendTime > CLOSE_TIP_TIME ? this.sendMailMsg() : null}
                     <div className="user-info-item">
                         <span className="user-info-item-title">
                             {Intl.get('member.phone', '手机')}
