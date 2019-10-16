@@ -49,7 +49,7 @@ module.exports = {
                 needLogin: true
             },
         }, {
-            method: 'post',
+            method: 'get',
             path: '/rest/get/self_setting/work_flow',
             handler: 'getSelfSettingWorkFlow',
             passport: {

@@ -77,7 +77,7 @@ exports.getSelfSettingWorkFlow = function(submitObj) {
     $.ajax({
         url: '/rest/get/self_setting/work_flow/',
         dataType: 'json',
-        type: 'post',
+        type: 'get',
         data: submitObj,
         success: function(list) {
             Deferred.resolve(list);

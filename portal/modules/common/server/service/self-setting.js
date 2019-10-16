@@ -96,5 +96,5 @@ exports.getSelfSettingWorkFlow = function(req, res) {
             url: restApis.getSettingWorkFlow,
             req: req,
             res: res
-        }, req.body);
+        }, req.query);
 };

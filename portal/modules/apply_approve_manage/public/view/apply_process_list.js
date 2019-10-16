@@ -14,6 +14,8 @@ var applyApproveManageStore = require('../store/apply_approve_manage_store');
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 var uuid = require('uuid/v4');
 let userData = require('PUB_DIR/sources/user-data');
+import Spinner from 'CMP_DIR/spinner';
+
 class AddAndShowApplyList extends React.Component {
     constructor(props) {
         super(props);
@@ -67,7 +69,7 @@ class AddAndShowApplyList extends React.Component {
     };
     //请求并展示审批流程
     getSelfSettingWorkFlow = (recordId) => {
-        let submitObj = {page_size: 15, id: recordId};
+        let submitObj = {page_size: 1, id: recordId};
         let showApplyList = this.state.showApplyList;
         let newUserData = userData.getUserData().workFlowConfigs;
         applyApproveManageAction.getSelfSettingWorkFlow(submitObj,(data) => {
@@ -233,12 +235,27 @@ class AddAndShowApplyList extends React.Component {
         );
     };
     renderApplyDetail = () => {
-        return (
-            <ApplyFormAndRules
-                applyTypeData={this.state.applyTypeData}
-                closeAddPanel={this.closeAddApplyPanel}
-            />
-        );
+        if(this.state.getSelfSettingWorkFlowLoading){
+            return(
+                <div className="load-content">
+                    <Spinner />
+                </div>);
+        }else if(this.state.getSelfSettingWorkFlowLoading){
+            return(
+                <div className="errmsg-wrap">
+                    <i className="iconfont icon-data-error"></i>
+                    <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
+                </div>);
+        }else{
+            return(
+                <div>
+                    <ApplyFormAndRules
+                        applyTypeData={this.state.applyTypeData}
+                        closeAddPanel={this.closeAddApplyPanel}
+                    />
+                </div>);
+        }
+    
     };
     closeAddApplyPanel = () => {
         this.setState({
