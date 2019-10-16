@@ -118,8 +118,8 @@ class UserDetailAddAppStore {
         }
     }
     //显示选中的应用错误
-    showSelectedAppsError() {
-        this.isSelectedAppsError = true;
+    showSelectedAppsError(flag) {
+        this.isSelectedAppsError = flag;
     }
     //为用户添加应用
     addUserApps(result) {

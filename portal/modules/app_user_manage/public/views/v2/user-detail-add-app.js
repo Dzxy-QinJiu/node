@@ -333,6 +333,7 @@ const UserDetailAddApp = createReactClass({
         this.setState({
             selectedAppIds: appIds
         });
+        UserDetailAddAppActions.showSelectedAppsError(false);
     },
 
     //渲染“选择应用”步骤
@@ -383,7 +384,9 @@ const UserDetailAddApp = createReactClass({
                 {
                     isSubmitError ? (
                         <div className="has-error">
-                            <div className="ant-form-explain"><ReactIntl.FormattedMessage id="user.product.select.tip" defaultMessage="至少选择一个产品" /></div>
+                            <div className="ant-form-explain">
+                                <ReactIntl.FormattedMessage id="user.product.select.tip" defaultMessage="至少选择一个产品" />
+                            </div>
                         </div>
                     ) : null
                 }
@@ -406,6 +409,7 @@ const UserDetailAddApp = createReactClass({
             showAppSelector: isShow,
             selectedAppIds: []
         });
+        UserDetailAddAppActions.showSelectedAppsError(false);
     },
 
     //根据选中app的ids，设置已选中app
@@ -431,7 +435,9 @@ const UserDetailAddApp = createReactClass({
 
     handleFinishSelectApp() {
         this.handleSetSelectedApps(this.state.selectedAppIds);
-        this.showAppSelector(false);
+        this.setState({
+            showAppSelector: false
+        });
     },
 
     renderAppSelector() {
@@ -478,7 +484,9 @@ const UserDetailAddApp = createReactClass({
                                                     />
                                                 </span>
                                                 <p title={app.app_name}>{app.app_name}</p>
-                                                <span className="icon-bar"> <Icon onClick={this.handleRemoveApp.bind(this, app)} type="close" /></span>
+                                                <span className="icon-bar">
+                                                    <Icon onClick={this.handleRemoveApp.bind(this, app)} type="close" />
+                                                </span>
                                             </div>
                                         </li>
                                     ))
@@ -633,7 +641,7 @@ const UserDetailAddApp = createReactClass({
             if (step === 0) {
                 //第一部“选择应用”检查选中应用个数
                 if (!this.state.selectedApps.length) {
-                    UserDetailAddAppActions.showSelectedAppsError();
+                    UserDetailAddAppActions.showSelectedAppsError(true);
                     return;
                 } else {
                     UserDetailAddAppActions.turnStep(direction);
