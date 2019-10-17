@@ -13,18 +13,19 @@ var isStarted = false;
 
 //从auth2退出
 function logout(sessionID, session) {
-    var req = {sessionID, session, headers: {}};
+    var req = {
+        sessionID,
+        session,
+        headers: {
+            'user-agent': session.clientInfo.UserAgent || {},
+            'user_ip': session.clientInfo.ip || '',
+        }
+    };
     var res = {};
-    logoutService.logout(req, res).on('success', function() {
+    logoutService.sessionOutLogout(req, res).on('success', function() {
         authLogger.debug('session过期后自动触发从auth2登出, 登出成功');
     }).on('error', function(data) {
         authLogger.error('session过期后自动触发从auth2登出, 登出失败');
-        //重试一次
-        logoutService.logout(req, res).on('success', function() {
-            authLogger.debug('session过期后自动触发从auth2登出, 重试成功');
-        }).on('error', function(data) {
-            authLogger.error('session过期后自动触发从auth2登出, 重试失败');
-        });
     });
 }
 
