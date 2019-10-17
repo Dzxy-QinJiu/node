@@ -71,7 +71,8 @@ class Production extends React.Component {
             isJsCardShow: !_.isEmpty(_.get(this.props.info,'integration_type')),//是否展示Js采集用户信息card
             addUemProductErrorMsg: '',//改为集成错误信息
             isAddingUemProduct: false,//正在添加为集成产品
-            saveLogoErrorMsg: ''//保存产品Logo错误信息
+            saveLogoErrorMsg: '',//保存产品Logo错误信息
+            isShowAddIp: false
         };
     };
 
@@ -434,6 +435,31 @@ class Production extends React.Component {
         );
     }
 
+    handleShowAddIp = () => {
+
+    };
+
+    renderDetailTitle = () => {
+        return (
+            <div className="ip-filter-title">
+                <span className="content">该产品统计分析时过滤以下IP：</span>
+                {
+                    hasPrivilege('CREATE_CONFIG_IP') ? (
+                        this.state.isShowAddIp ? null : (
+                            <span className="operate-btn" onClick={this.handleShowAddIp}>
+                                <i className="iconfont icon-plus"></i>
+                            </span>
+                        )
+                    ) : null
+                }
+            </div>
+        );
+    };
+
+    renderDetailIpList = () => {
+
+    };
+
     //渲染编辑面板内容
     renderProductDetails = () => {
         //产品单价
@@ -591,6 +617,11 @@ class Production extends React.Component {
                     <DetailCard content={accessAddress}/>
                     <DetailCard content={productDescription}/>
                     <DetailCard content={foundTime}/>
+                    <DetailCard
+                        title={this.renderDetailTitle()}
+                        content={this.renderDetailIpList()}
+                        className='ip-filter-card-container'
+                    />
                     {_.isEqual(_.get(this.state, 'integrateType'), INTEGRATE_TYPES.UEM) ?
                         <div className="product-card-with-switch">
                             <DetailCard
