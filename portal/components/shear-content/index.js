@@ -38,18 +38,11 @@ class ShearContent extends React.Component {
         this.$contentDOM.on('click', '.icon-edit-btn-plus', this.handleEditBtnChange.bind(this));
     }
     handleShear($dom) {
-        if(this.props.hasEditBtn){
-            this.truncated = new Truncate($dom, {
-                lines: this.props.rowsNum,
-                showMore: `<i class="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"></i><span class="append-icon expand-btn">${Intl.get('shear.expand', '展开')}</span>`,
-            });
-        }else{
-            this.truncated = new Truncate($dom, {
-                lines: this.props.rowsNum,
-                showMore: `<span class="append-icon expand-btn">${Intl.get('shear.expand', '展开')}</span>`,
-            });
-        }
-
+        let ico = this.props.hasEditBtn ? '<i class="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"></i>' : '';
+        this.truncated = new Truncate($dom, {
+            lines: this.props.rowsNum,
+            showMore: `${ico}<span class="append-icon expand-btn">${Intl.get('shear.expand', '展开')}</span>`,
+        });
         this.truncated.collapse();
     }
     showDetail(isShow, e) {
