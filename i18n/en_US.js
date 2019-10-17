@@ -800,6 +800,11 @@ var en_US = {
     'role.del.role.failed': 'Failed to delete roles',//删除角色失败
     'authority.auth.api': 'Service address',//服务地址
 
+    // sso-start
+    'sso.title': 'Other Applications', // 其他应用
+    'sso.application.revenue': 'Revenue Center', // 营收中心
+    // sso-end
+
     //后台管理-成员start
     'member.member': 'Member',//成员
     'member.search.placeholder': 'account/nickname/phone',// 账号/昵称/手机
@@ -2500,6 +2505,7 @@ var en_US = {
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
     'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
     'errorcode.clue.batch.change.pending': 'Last batch operation has not completed, please try again later',//上次批量操作未完成，请稍后再试
+    'errorcode.login.failed': 'Login failed',//登录失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索

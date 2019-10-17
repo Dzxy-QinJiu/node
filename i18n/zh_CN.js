@@ -804,6 +804,11 @@ var zh_CN = {
     'role.del.role.failed': '删除角色失败',
     'authority.auth.api': '服务地址',
 
+    // sso-start
+    'sso.title': '其他应用',
+    'sso.application.revenue': '营收中心',
+    // sso-end
+
     //后台管理-成员start
     'member.member': '成员',
     'member.search.placeholder': '用户名/昵称/手机',
@@ -2540,6 +2545,8 @@ var zh_CN = {
     'errorcode.164': '获取即将到期的客户统计数据失败',
     'errorcode.organization.expire': '您的账号已到期',
     'errorcode.clue.batch.change.pending': '上次批量操作未完成，请稍后再试',
+    'errorcode.login.failed': '登录失败',
+
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
