@@ -26,6 +26,7 @@ class AddAndShowApplyList extends React.Component {
             showApplyList: applyList,//自定义流程的列表
             showAddWorkFlowName: this.props.showAddWorkFlowName,//是否展示添加自定义流程名称
             showApplyDetailForm: false,//是否展示审批的详情
+            showApplyDetailId: '',
             tableHeight: 610,
             ...applyApproveManageStore.getState()
         };
@@ -63,10 +64,17 @@ class AddAndShowApplyList extends React.Component {
             var $tr = $(this).closest('tr');
             var id = $tr.find('.record-id').text();
             if (id) {
-                _this.getSelfSettingWorkFlow(id);
+                // _this.getSelfSettingWorkFlow(id);
+                _this.getSelfSettingWorkFlowId(id);
             }
         });
     };
+    getSelfSettingWorkFlowId = (recordId) => {
+        this.setState({
+            showApplyDetailForm: true,
+            showApplyDetailId: recordId,
+        });
+    }
     //请求并展示审批流程
     getSelfSettingWorkFlow = (recordId) => {
         let submitObj = {page_size: 1, id: recordId};
@@ -235,26 +243,27 @@ class AddAndShowApplyList extends React.Component {
         );
     };
     renderApplyDetail = () => {
-        if(this.state.getSelfSettingWorkFlowLoading){
-            return(
-                <div className="load-content">
-                    <Spinner />
-                </div>);
-        }else if(this.state.getSelfSettingWorkFlowErrMsg){
-            return(
-                <div className="errmsg-wrap">
-                    <i className="iconfont icon-data-error"></i>
-                    <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
-                </div>);
-        }else{
+        // if(this.state.getSelfSettingWorkFlowLoading){
+        //     return(
+        //         <div className="load-content">
+        //             <Spinner />
+        //         </div>);
+        // }else if(this.state.getSelfSettingWorkFlowErrMsg){
+        //     return(
+        //         <div className="errmsg-wrap">
+        //             <i className="iconfont icon-data-error"></i>
+        //             <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
+        //         </div>);
+        // }else{
             return(
                 <div>
                     <ApplyFormAndRules
-                        applyTypeData={this.state.applyTypeData}
+                        // applyTypeData={this.state.applyTypeData}
+                        applyTypeId={this.state.showApplyDetailId}
                         closeAddPanel={this.closeAddApplyPanel}
                     />
                 </div>);
-        }
+        // }
     
     };
     closeAddApplyPanel = () => {
