@@ -66,7 +66,13 @@ function CrmActions() {
     };
     //通过线索添加客户
     this.addCustomerByClue = function(newCus, isConvert, cb) {
-        newCus.contacts[0].def_contancts = 'true';
+        if (_.get(newCus,'contacts[0]')){
+            newCus.contacts[0].def_contancts = 'true';
+        }else{
+            newCus.contacts = [{
+                'def_contancts': 'true'
+            }];
+        }
         crmAjax.addCustomerByClue(newCus, isConvert).then((data) => {
             cb(data);
         }, (errorMsg) => {

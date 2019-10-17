@@ -102,7 +102,7 @@ class ClueDetailOverview extends React.Component {
     }
     onClueCustomerStoreChange = () => {
         let curClue = _.cloneDeep(this.state.curClue);
-        curClue.contacts = clueCustomerStore.getState().curClue.contacts;
+        curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts');
         this.setState({curClue});
     };
     getSimilarClueLists = () => {

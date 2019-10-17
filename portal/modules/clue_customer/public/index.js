@@ -53,7 +53,9 @@ import {
     editCluePrivilege,
     handlePrivilegeType,
     sourceClassifyArray,
-    FLOW_FLY_TIME
+    FLOW_FLY_TIME,
+    HIDE_CLUE_ITEM,
+    ADD_SELECT_TYPE
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -97,6 +99,11 @@ import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { parabola } from './utils/parabola';
+const DIFFREF = {
+    ASSIGN: 'assign',//分配
+    TRACE: 'trace', //跟进
+    TRASFERINVALID: 'trasferInvalid',//转化和标为无效
+};
 class ClueCustomer extends React.Component {
     state = {
         clueAddFormShow: false,//
@@ -154,7 +161,6 @@ class ClueCustomer extends React.Component {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.on(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
-
         clueEmitter.on(clueEmitter.FLY_CLUE_WILLDISTRIBUTE, this.flyClueWilldistribute);
         clueEmitter.on(clueEmitter.FLY_CLUE_WILLTRACE, this.flyClueWilltrace);
         clueEmitter.on(clueEmitter.FLY_CLUE_HASTRACE, this.flyClueHastrace);
@@ -302,24 +308,52 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
     }
-    flyClueWilldistribute = (item) => {
-        this.onAnimate(item, this.$willDistribute);
+    //动画收起某个元素后再有飞出效果
+    animateHideItem = (updateItem,callback) => {
+        const index = _.findIndex(this.state.curClueLists, item => item.id === updateItem.id);
+        var jqueryDom = $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ') td');
+        jqueryDom.animate({height: '1px !important',padding: '0 !important'},HIDE_CLUE_ITEM,'linear',() => {
+            // _.isFunction(callback) && callback();
+        });
+    };
+    changeAddNumTab = (addNumTab) => {
+        this.setState({
+            addNumTab: addNumTab
+        },() => {
+            var addNumber = $('.clue-content-container .clue-status-wrap .clue-status-tab .clue-add-num.show-add-num');
+            addNumber.animate({top: '-20px'},FLOW_FLY_TIME,'linear',() => {
+                this.setState({
+                    addNumTab: ''
+                },() => {
+                    $('.clue-content-container .clue-status-wrap .clue-status-tab .clue-add-num').css({top: 0});
+                });
+            });
+        });
+    };
+    flyClueWilldistribute = (item,startType) => {
+        //飞入待分配的，在待分配的数字上加一
+        this.changeAddNumTab(ADD_SELECT_TYPE.WILL_DISTRIBUTE);
+        // this.onAnimate(item, this.$willDistribute,startType);
     }
     //动画移动到待跟进中
-    flyClueWilltrace = (item) => {
-        this.onAnimate(item, this.$willTrace);
+    flyClueWilltrace = (item,startType) => {
+        this.changeAddNumTab(ADD_SELECT_TYPE.WILL_TRACE);
+        // this.onAnimate(item, this.$willTrace,startType);
     };
     //动画移动到已跟进中
-    flyClueHastrace = (item) => {
-        this.onAnimate(item,this.$hasTrace);
+    flyClueHastrace = (item,startType) => {
+        this.changeAddNumTab(ADD_SELECT_TYPE.HAS_TRACE);
+        // this.onAnimate(item,this.$hasTrace,startType);
     };
     //动画移动到已转化中
-    flyClueHastransfer = (item) => {
-        this.onAnimate(item, this.$hasTransfer);
+    flyClueHastransfer = (item,startType) => {
+        this.changeAddNumTab(ADD_SELECT_TYPE.HAS_TRANSFER);
+        // this.onAnimate(item, this.$hasTransfer,startType);
     };
     //动画移动到无效中
-    flyClueInvalid = (item) => {
-        this.onAnimate(item, this.$invalidClue);
+    flyClueInvalid = (item,startType) => {
+        this.changeAddNumTab(ADD_SELECT_TYPE.INVALID_CLUE);
+        // this.onAnimate(item, this.$invalidClue,startType);
     };
 
     //有新线索时线索面板添加刷新提示
@@ -931,7 +965,7 @@ class ClueCustomer extends React.Component {
                     var userName = userData.getUserData().nick_name;
                     var addTime = moment().valueOf();
                     if (!_.get(clueItem,'customer_traces[0]')) {
-                        this.flyClueHastrace(item);
+                        this.flyClueHastrace(item, DIFFREF.TRACE);
                         clueItem.customer_traces = [
                             {
                                 remark: textareVal,
@@ -1099,16 +1133,16 @@ class ClueCustomer extends React.Component {
                 //改为有效，增加到不同的状态上
                 switch (item.status){
                     case SELECT_TYPE.WILL_DISTRIBUTE:
-                        this.flyClueWilldistribute(item);
+                        this.flyClueWilldistribute(item, DIFFREF.TRASFERINVALID);
                         break;
                     case SELECT_TYPE.WILL_TRACE:
-                        this.flyClueWilltrace(item);
+                        this.flyClueWilltrace(item, DIFFREF.TRASFERINVALID);
                         break;
                     case SELECT_TYPE.HAS_TRACE:
-                        this.flyClueHastrace(item);
+                        this.flyClueHastrace(item, DIFFREF.TRASFERINVALID);
                         break;
                     case SELECT_TYPE.HAS_TRANSFER:
-                        this.flyClueHastransfer(item);
+                        this.flyClueHastransfer(item, DIFFREF.TRASFERINVALID);
                         break;
                 }
                 setTimeout(() => {
@@ -1211,7 +1245,7 @@ class ClueCustomer extends React.Component {
                         submitInvalidateClueMsg: result
                     });
                 } else {
-                    this.flyClueInvalid(item);
+                    this.flyClueInvalid(item,DIFFREF.TRASFERINVALID);
                     this.setState({
                         submitInvalidateLoading: false,
                         isInvalidClue: ''
@@ -1352,6 +1386,13 @@ class ClueCustomer extends React.Component {
         var hasTransfer = classNames('clue-status-tab', {'active-tab': SELECT_TYPE.HAS_TRANSFER === typeFilter.status});
         var filterStore = clueFilterStore.getState();
         var invalidClue = classNames('clue-status-tab', {'active-tab': filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY});
+        var addNumTab = this.state.addNumTab;
+        //加1效果
+        var willDistAddCls = classNames('clue-add-num', {'show-add-num': ADD_SELECT_TYPE.WILL_DISTRIBUTE === addNumTab});
+        var willTraceAddCls = classNames('clue-add-num', {'show-add-num': ADD_SELECT_TYPE.WILL_TRACE === addNumTab});
+        var hasTraceAddCls = classNames('clue-add-num', {'show-add-num': ADD_SELECT_TYPE.HAS_TRACE === addNumTab});
+        var hasTransferAddCls = classNames('clue-add-num', {'show-add-num': ADD_SELECT_TYPE.HAS_TRANSFER === addNumTab});
+        var invalidClueAddCls = classNames('clue-add-num', {'show-add-num': ADD_SELECT_TYPE.INVALID_CLUE === addNumTab});
         var statics = this.state.agg_list;
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
@@ -1366,26 +1407,31 @@ class ClueCustomer extends React.Component {
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span ref={dom => {this.$willDistribute = dom;}} className="clue-status-num">{_.get(statics, 'willDistribute', 0)}</span>
+                <span className={willDistAddCls}> +1 </span>
             </span>}
-            <span ref={dom => {this.$willTrace = dom;}} className={willTrace}
+            <span className={willTrace}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_TRACE)}
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_TRACE)}>{Intl.get('sales.home.will.trace', '待跟进')}
-                <span className="clue-status-num">{_.get(statics, 'willTrace', 0)}</span>
+                <span className="clue-status-num" ref={dom => {this.$willTrace = dom;}}>{_.get(statics, 'willTrace', 0)}</span>
+                <span className={willTraceAddCls}> +1 </span>
             </span>
             <span className={hasTrace}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRACE)}
                 title={getCertainTabsTitle(SELECT_TYPE.HAS_TRACE)}>{Intl.get('clue.customer.has.follow', '已跟进')}
                 <span className="clue-status-num" ref={dom => {this.$hasTrace = dom;}}>{_.get(statics, 'hasTrace', 0)}</span>
+                <span className={hasTraceAddCls}> +1 </span>
             </span>
             {filterAllotNoTraced || isSalesRole() ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}
                 title={getCertainTabsTitle(SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num" ref={dom => {this.$hasTransfer = dom;}} >{_.get(statics, 'hasTransfer', 0)}</span>
+                <span className={hasTransferAddCls}> +1 </span>
             </span>}
             {filterAllotNoTraced ? null : <span className={invalidClue}
                 onClick={this.handleChangeSelectedType.bind(this, 'avaibility')}
                 title={getCertainTabsTitle('invalidClue')}>{Intl.get('sales.clue.is.enable', '无效')}
                 <span className="clue-status-num" ref={dom => {this.$invalidClue = dom;}} >{_.get(statics, 'invalidClue', 0)}</span>
+                <span className={invalidClueAddCls}> +1 </span>
             </span>}
         </span>;
     };
@@ -1420,9 +1466,7 @@ class ClueCustomer extends React.Component {
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
-                                <span className="clue-name-item" ref={dom => {
-                                    this[`$origin_${salesClueItem.id}`] = dom;
-                                }}>
+                                <span className="clue-name-item">
                                     {/*如果是今天分配的，就展示新的图标*/}
                                     {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
                                     {salesClueItem.name}</span>
@@ -1489,7 +1533,7 @@ class ClueCustomer extends React.Component {
                     var assigenCls = classNames('assign-btn',{'can-edit': !handlePersonName});
                     var containerCls = classNames('handle-and-trace',{'assign-privilege handle-btn-item': hasAssignedPrivilege});
                     return (
-                        <div className={containerCls} ref='trace-person'>
+                        <div className={containerCls} ref={dom => {this[`$origin_${DIFFREF.ASSIGN}_${salesClueItem.id}`] = dom;}}>
                             {/*有分配权限*/}
                             {hasAssignedPrivilege ?
                                 <AntcDropdown
@@ -1517,7 +1561,7 @@ class ClueCustomer extends React.Component {
                 width: '150px',
                 render: (text, salesClueItem, index) => {
                     return(
-                        <div className="clue-foot" id="clue-foot">
+                        <div className="clue-foot" id="clue-foot" ref={dom => {this[`$origin_${DIFFREF.TRACE}_${salesClueItem.id}`] = dom;}}>
                             {_.get(this,'state.isEdittingItem.id') === salesClueItem.id ? this.renderEditTraceContent(salesClueItem) :
                                 this.renderShowTraceContent(salesClueItem)
                             }
@@ -1532,7 +1576,7 @@ class ClueCustomer extends React.Component {
             width: '170px',
             render: (text, salesClueItem, index) => {
                 return (
-                    <div className="avalibity-or-invalid-container">
+                    <div className="avalibity-or-invalid-container" ref={dom => {this[`$origin_${DIFFREF.TRASFERINVALID}_${salesClueItem.id}`] = dom;}}>
                         {salesClueItem.customer_name ? this.renderAssociatedCustomer(salesClueItem) : this.renderHandleAssociateInvalidBtn(salesClueItem)}
                     </div>
                 );
@@ -1713,14 +1757,12 @@ class ClueCustomer extends React.Component {
     };
     afterTransferClueSuccess = () => {
         //增加一个动态效果，隐藏该线索
-        this.flyClueHastransfer(this.state.curClue);
-        setTimeout(() => {
-            this.hideCurClue();
-            this.changeClueNum();
-        }, FLOW_FLY_TIME);
+        this.flyClueHastransfer(this.state.curClue,DIFFREF.TRASFERINVALID);
+        // setTimeout(() => {
+        this.hideCurClue();
+        this.changeClueNum();
+        // }, FLOW_FLY_TIME);
     };
-
-
     //线索转为新客户完成后的回调事件
     onConvertClueToNewCustomerDone = (customers) => {
         const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
@@ -1935,7 +1977,7 @@ class ClueCustomer extends React.Component {
                 }
                 if(isWillDistribute){
                     //增加动态效果
-                    this.flyClueWilltrace(item);
+                    this.flyClueWilltrace(item,DIFFREF.ASSIGN);
                     setTimeout(() => {
                         clueCustomerAction.afterAssignSales(clue_id);
                     }, FLOW_FLY_TIME);
@@ -2647,7 +2689,7 @@ class ClueCustomer extends React.Component {
     updateCustomerLastContact = (traceObj) => {
         //如果是待分配或者待跟进状态写了跟进记录，要加个动态效果把线索移到已跟进中去
         if(this.isWillDistributeStatusTabActive() || this.isWillTraceStatusTabActive()){
-            this.flyClueHastrace(this.state.curClue);
+            this.flyClueHastrace(this.state.curClue,DIFFREF.TRACE);
             setTimeout(() => {
                 clueCustomerAction.afterAddClueTrace(this.state.curClue);
                 clueCustomerAction.updateCustomerLastContact(traceObj);
@@ -2757,20 +2799,23 @@ class ClueCustomer extends React.Component {
         this.setState({
             isShowRefreshPrompt: false
         });
-    }
-    onAnimate = (item, $target) => {
+    };
+    //在对应的tab数字上加一
+    addOneOnTab = ($target) => {
+
+    };
+    onAnimate = (item, $target,startType) => {
         return new Promise(resolve => {
             const config = {
                 ballWrapper: this.$wrapper,
-                origin: this[`$origin_${item.id}`],
+                origin: this[`$origin_${startType}_${item.id}`],
                 target: $target,
                 time: FLOW_FLY_TIME,
-                a: 0.00001,
+                a: 0.0001,
                 callback: this.updateLocation,
                 finish: animationDone.bind(this),
             };
             parabola(config);
-
             function animationDone() {
                 this.setState({
                     isVisible: false,
@@ -2887,7 +2932,7 @@ class ClueCustomer extends React.Component {
                             {this.state.allClueCount ? this.getClueTypeTab() : null}
                             {this.renderLoadingAndErrAndNodataContent()}
                         </div>
-                        <div className="customer-item-ball" id="customer-item-ball" style={animateStyle} ></div>
+                        <div className="customer-item-ball" style={animateStyle} ></div>
                     </div>
                     {this.state.clueAddFormShow ?
                         <div className={cls}>
