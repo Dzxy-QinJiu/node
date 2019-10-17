@@ -24,6 +24,7 @@ import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import ProductDropDown from './views/product-dropdown';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import IpFilter from './views/ip-filter';
 
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
 let productList = [];
@@ -32,7 +33,8 @@ class ProductionManage extends React.Component {
         ...ProductionStore.getState(),
         integrateType: '', //集成类型uem、oplate、matomo
         productList: productList, //集成的oplate\matomo产品列表
-        addErrorMsg: ''//导入产品失败的提示
+        addErrorMsg: '',//导入产品失败的提示
+        isShowIpFilterPanel: false, // 是否显示ip过滤面板，默认false
     };
 
     onChange = () => {
@@ -106,8 +108,10 @@ class ProductionManage extends React.Component {
     };
 
     events_showDetail = (production) => {
+        console.log('events_showDetail production:',production);
         Trace.traceEvent('产品管理', '点击查看产品详情');
         ProductionAction.setCurProduction(production.id);
+        // ProductionAction.getProductById(production.id);
         if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
             $('.right-panel-content').removeClass('right-panel-content-slide');
             if (openTimeout) {
@@ -117,7 +121,7 @@ class ProductionManage extends React.Component {
                 ProductionAction.showInfoPanel();
             }, 200);
         } else {
-            ProductionAction.showInfoPanel();
+            ProductionAction.showInfoPanel(); f;
         }
     };
 
@@ -218,6 +222,14 @@ class ProductionManage extends React.Component {
     deleteItem = (itemId) => {
         ProductionAction.deleteItemById(itemId);
     };
+
+    // 显示ip过滤面板
+    showIpFilterPanel = () => {
+        this.setState({
+            isShowIpFilterPanel: true,
+        });
+    };
+
     //渲染操作按钮区
     renderTopNavOperation = () => {
         return (
@@ -228,14 +240,12 @@ class ProductionManage extends React.Component {
                         className="btn-item"
                     >
                         <Button
-                            data-tracename="添加成员"
+                            data-tracename="添加产品"
                             onClick={this.events_showAddForm.bind(this, util.CONST.ADD)}
                         >
                             <Icon type="plus" />{Intl.get('config.product.add', '添加产品')}
                         </Button>
                     </PrivilegeChecker>
-                </div>
-                <div className='pull-right'>
                     {
                         this.isOplateOrMatomoType(this.state.integrateType) && _.get(this.state, 'productList[0]') ? (
                             <ProductDropDown
@@ -246,8 +256,30 @@ class ProductionManage extends React.Component {
                         ) : null
                     }
                 </div>
+                <div className='pull-right'>
+                    <PrivilegeChecker
+                        check="GET_CONFIG_IP"
+                        className="btn-item"
+                    >
+                        <Button
+                            className="filter-ip-btn"
+                            data-tracename="过滤ip"
+                            onClick={this.showIpFilterPanel}
+                        >
+                            <i className="iconfont icon-filter-ip"></i>
+                            <span>过滤IP</span>
+                        </Button>
+                    </PrivilegeChecker>
+                </div>
             </div>
         );
+    };
+
+    // 关闭ip过滤面板
+    closeIpFilterPanel = () => {
+        this.setState({
+            isShowIpFilterPanel: false
+        });
     };
 
     render() {
@@ -295,6 +327,13 @@ class ProductionManage extends React.Component {
                                 afterOperation={this.events_afterOperation}
                             /> : null}
                         {this.state.deleteError ? (<message></message>) : null}
+                        {
+                            this.state.isShowIpFilterPanel ? (
+                                <IpFilter
+                                    closeIpFilterPanel={this.closeIpFilterPanel}
+                                />
+                            ) : null
+                        }
                     </RightCardsContainer>
                 </div>
             </div>
