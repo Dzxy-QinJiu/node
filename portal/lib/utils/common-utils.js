@@ -35,6 +35,10 @@ var IPUtil = {
      * @returns {string} ip地址
      */
     getClientIp: function(req) {
+        //如果有手动传入的，优先用手动传入的user_ip
+        if (req && req.headers && req.headers.user_ip) {
+            return req.headers.user_ip;
+        }
         if (!req || !req.headers || !req.connection || !req.socket) {
             return '0.0.0.0';
         }
