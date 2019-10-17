@@ -243,27 +243,15 @@ class AddAndShowApplyList extends React.Component {
         );
     };
     renderApplyDetail = () => {
-        // if(this.state.getSelfSettingWorkFlowLoading){
-        //     return(
-        //         <div className="load-content">
-        //             <Spinner />
-        //         </div>);
-        // }else if(this.state.getSelfSettingWorkFlowErrMsg){
-        //     return(
-        //         <div className="errmsg-wrap">
-        //             <i className="iconfont icon-data-error"></i>
-        //             <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
-        //         </div>);
-        // }else{
-            return(
-                <div>
-                    <ApplyFormAndRules
-                        // applyTypeData={this.state.applyTypeData}
-                        applyTypeId={this.state.showApplyDetailId}
-                        closeAddPanel={this.closeAddApplyPanel}
-                    />
-                </div>);
-        // }
+        return(
+            <div>
+                <ApplyFormAndRules
+                    // applyTypeData={this.state.applyTypeData}
+                    applyTypeId={this.state.showApplyDetailId}
+                    closeAddPanel={this.closeAddApplyPanel}
+                />
+            </div>);
+
     
     };
     closeAddApplyPanel = () => {
