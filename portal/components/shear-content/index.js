@@ -38,10 +38,18 @@ class ShearContent extends React.Component {
         this.$contentDOM.on('click', '.icon-edit-btn-plus', this.handleEditBtnChange.bind(this));
     }
     handleShear($dom) {
-        this.truncated = new Truncate($dom, {
-            lines: this.props.rowsNum,
-            showMore: `<span class="append-icon expand-btn"> ${Intl.get('shear.expand', '展开')}</span>`,
-        });
+        if(this.props.hasEditBtn){
+            this.truncated = new Truncate($dom, {
+                lines: this.props.rowsNum,
+                showMore: `<i class="iconfont icon-edit-btn-plus handle-btn-item has-data-btn"></i><span class="append-icon expand-btn">${Intl.get('shear.expand', '展开')}</span>`,
+            });
+        }else{
+            this.truncated = new Truncate($dom, {
+                lines: this.props.rowsNum,
+                showMore: `<span class="append-icon expand-btn">${Intl.get('shear.expand', '展开')}</span>`,
+            });
+        }
+
         this.truncated.collapse();
     }
     showDetail(isShow, e) {
@@ -100,7 +108,7 @@ ShearContent.propTypes = {
     rowsNum: PropTypes.number,
     children: PropTypes.object,
     jsx: PropTypes.element,
-    hasEditBtn: PropTypes.bool,
-    editBtnChange: PropTypes.object,
+    hasEditBtn: PropTypes.bool,//是否显示修改按钮
+    editBtnChange: PropTypes.object,//修改按钮的回调
 };
 export default ShearContent;
