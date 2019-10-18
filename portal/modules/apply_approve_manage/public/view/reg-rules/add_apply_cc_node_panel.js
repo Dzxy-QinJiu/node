@@ -16,9 +16,11 @@ const FORMLAYOUT = {
 };
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import {
-    APPROVER_TYPE,
     getTeamHigerLevel,
     ROLES_SETTING,
+    CC_SETTINGT_TYPE,
+    SECRETRYOPTIONS,
+    USEROPTIONS
 } from '../../utils/apply-approve-utils';
 require('../../style/add-apply-node.less');
 class AddApplyNodePanel extends React.Component {
@@ -31,19 +33,19 @@ class AddApplyNodePanel extends React.Component {
             higher_ups: {
                 candidateUsers: 'team_0_true',//上级审批人
                 showCandidateUsers: Intl.get('apply.approve.first.higher.level', '直属上级'),//显示的名称
-                higherLevelApproveChecked: true,//空缺时由组织中的更上一级审批
-                adminApproveChecked: false,//没有审批人的时候由管理员审批
             },
-            setting_roles: {
-                selectRole: '',//选中的角色
-                showSelectRole: '',
+            team_secretry: {
+                selectSecretry: '',//选中的舆情秘书
+                showSelectSecretry: ''
             },
             setting_users: {
                 selectUser: '',//选中的成员
                 showSelectUser: ''
             },
-            submitFiles: false,//可以上传文件
-            assignNextNodeApprover: false,//指定下一审批人
+            setting_roles: {
+                selectRole: '',//选中的角色
+                showSelectRole: '',
+            },
             roleList: [],//角色列表
             userList: [],//用户列表
             submitErrorMsg: '',//提交时的错误提示
@@ -72,14 +74,12 @@ class AddApplyNodePanel extends React.Component {
                     }
                 });
                 this.setState({
-                    userList: _.get(userListObj, 'data'),
                     roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
                 });
             },
             error: (xhr, textStatus) => {
                 this.setState({
-                    roleList: [],
-                    userList: []
+                    roleList: []
                 });
             }
         });
@@ -88,7 +88,7 @@ class AddApplyNodePanel extends React.Component {
         //把其他类型的下面的选项都置为空
         var radioValue = event.target.value;
         var allRadioSelect = [];
-        _.forEach(APPROVER_TYPE, (item) => {
+        _.forEach(CC_SETTINGT_TYPE, (item) => {
             if (item.value && item.value !== radioValue) {
                 allRadioSelect.push(item.value);
             }
@@ -109,22 +109,6 @@ class AddApplyNodePanel extends React.Component {
         });
     };
 
-    onChangeAdminApproveCheck = (e) => {
-        var higher_ups = this.state.higher_ups;
-        higher_ups.adminApproveChecked = e.target.checked;
-        higher_ups.higherLevelApproveChecked = false;
-        this.setState({
-            higher_ups: higher_ups
-        });
-    };
-    onChangeHigherLevelCheck = (e) => {
-        var higher_ups = this.state.higher_ups;
-        higher_ups.higherLevelApproveChecked = e.target.checked;
-        higher_ups.adminApproveChecked = false;
-        this.setState({
-            higher_ups: higher_ups
-        });
-    };
     handleHigherUpChange = (value) => {
         var higher_ups = this.state.higher_ups;
         var userArr = value.split('-');
@@ -153,6 +137,9 @@ class AddApplyNodePanel extends React.Component {
         }
 
     };
+    handleChangeSelectSecretry = (value) => {
+
+    };
     handleChangeSelectUser = (value) => {
         var setting_users = this.state.setting_users;
         var userArr = value.split('-');
@@ -168,60 +155,70 @@ class AddApplyNodePanel extends React.Component {
     };
     renderAdditonContent = (typeItem, index) => {
         var checkedRadioValue = this.state.checkedRadioValue;
-        var TEAM_HIGHER_LEVEL = getTeamHigerLevel();
+        var TEAM_HIGHER_LEVEL = _.cloneDeep(getTeamHigerLevel());
+        //todo 加上所有上级选项
+        TEAM_HIGHER_LEVEL.unshift({
+            name: Intl.get('apply.condition.node.all.higher.level', '所有上级'),
+            value: 'alll'
+        });
+
         if (this.state.checkedRadioValue === typeItem.value) {
             switch (typeItem.value) {
                 case 'higher_ups':
-                    var higher_ups = this.state.higher_ups;
                     return (
                         <div className="add-higher-up addition-condition">
                             <div className="higher-level-item addition-condition-item">
                                 <Select showSearch
+                                    mode="multiple"
                                     onChange={this.handleHigherUpChange}
                                     filterOption={(input, option) => ignoreCase(input, option)}
-                                    defaultValue={Intl.get('apply.approve.first.higher.level', '直属上级') + '-0'}
+                                    defaultValue={TEAM_HIGHER_LEVEL[1].name + '-1'}
                                 >
                                     {_.map(TEAM_HIGHER_LEVEL, (item,index) => {
                                         return <Option value={item.name + '-' + index} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
                             </div>
-                            <div className="higher-level-item addition-condition-item">
-                                <Checkbox checked={higher_ups.higherLevelApproveChecked}
-                                    onChange={this.onChangeHigherLevelCheck}>{Intl.get('apply.empty.approve.higher.level', '空缺时，由组织中的更上一级代审批')}</Checkbox>
-                            </div>
-                            {/*<div className="higher-level-item addition-condition-item">*/}
-                            {/*<Checkbox checked={higher_ups.adminApproveChecked}*/}
-                            {/*onChange={this.onChangeAdminApproveCheck}>{Intl.get('apply.empty.admin.approve', '没有审批人时，由管理员审批')}</Checkbox>*/}
-                            {/*</div>*/}
                         </div>
                     );
-                case 'setting_roles' :
-                    var setting_roles = this.state.setting_roles;
+                case 'team_secretry' :
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
                                 <Select showSearch
-                                    onChange={this.handleChangeSelectRole}
+                                    onChange={this.handleChangeSelectSecretry}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
-                                    {_.map(this.state.roleList, (item,index) => {
-                                        return <Option value={item.role_name + '-' + index} key={index}>{item.role_name}(
-                                            {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
+                                    {_.map(SECRETRYOPTIONS, (item,index) => {
+                                        return <Option value={item.value} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
                             </div>
                         </div>
                     );
                 case 'setting_users' :
-                    var setting_users = this.state.setting_users;
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
                                 <Select showSearch
                                     onChange={this.handleChangeSelectUser}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
-                                    {_.map(this.state.userList, (item,index) => {
-                                        return <Option value={item.nickName + '-' + index} key={index}>{item.nickName}</Option>;
+                                    {_.map(USEROPTIONS, (item,index) => {
+                                        return <Option value={item.value} key={index}>{item.name}</Option>;
+                                    })}
+                                </Select>
+                            </div>
+                        </div>
+                    );
+                case 'setting_roles' :
+                    return (
+                        <div className="addition-condition">
+                            <div className="addition-condition-item">
+                                <Select showSearch mode="multiple"
+                                    onChange={this.handleChangeSelectRole}
+                                    filterOption={(input, option) => ignoreCase(input, option)}>
+                                    {_.map(this.state.roleList, (item,index) => {
+                                        return <Option value={item.role_name + '-' + index} key={index}>{item.role_name}(
+                                            {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
                                     })}
                                 </Select>
                             </div>
@@ -249,14 +246,6 @@ class AddApplyNodePanel extends React.Component {
                             }
                             submitObj.candidateApprover = approveArr.join('_');
                         }
-                        if (_.isBoolean(higher_ups.adminApproveChecked)) {
-                            submitObj.adminApproveChecked = higher_ups.adminApproveChecked;
-                            if (submitObj.adminApproveChecked){
-                                var approveArr = submitObj.candidateApprover.split('_');
-                                approveArr[_.get(approveArr,'length') - 1] = 'managers';
-                                submitObj.candidateApprover = approveArr.join('_');
-                            }
-                        }
                         errTip = false;
                     }
                     break;
@@ -279,7 +268,7 @@ class AddApplyNodePanel extends React.Component {
                     break;
                 default:
                     submitObj.candidateApprover = radioValue;
-                    var target = _.find(APPROVER_TYPE, item => item.value === radioValue);
+                    var target = _.find(CC_SETTINGT_TYPE, item => item.value === radioValue);
                     submitObj.showName = target.name;
                     errTip = false;
             }
@@ -321,7 +310,7 @@ class AddApplyNodePanel extends React.Component {
                                 </label>
                                 <div className="add-node-content ant-form-item-control-wrapper">
                                     <RadioGroup onChange={this.onRadioChange} value={this.state.checkedRadioValue}>
-                                        {_.map(APPROVER_TYPE.slice(0,2), (typeItem, index) => {
+                                        {_.map(CC_SETTINGT_TYPE, (typeItem, index) => {
                                             return (
                                                 <div>
                                                     <Radio value={typeItem.value}>{typeItem.name}</Radio>
