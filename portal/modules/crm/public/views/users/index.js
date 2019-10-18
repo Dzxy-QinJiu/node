@@ -24,7 +24,6 @@ import classNames from 'classnames';
 import ErrorDataTip from '../components/error-data-tip';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
-import {APPLY_TYPE} from 'PUB_DIR/sources/utils/consts';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
 import {getApplyList} from 'MOD_DIR/user_apply/public/ajax/app-user-ajax';
 import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
@@ -91,7 +90,7 @@ class CustomerUsers extends React.Component {
     }
 
     componentWillMount = () => {
-        getApplyState(APPLY_TYPE.USER_APPLY).then(applyState => {
+        getApplyState().then(applyState => {
             this.setState({
                 applyState
             });
