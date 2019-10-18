@@ -180,9 +180,16 @@ function clueUnhandledListener(data) {
         } else {//系统弹出通知
             clueTotalCount++;
             var clueHtml = '',titleHtml = '';
-            titleHtml += '<p class=\'clue-title\'>' + '<span class=\'title-tip\'>' + title + '</span>';
+            titleHtml += '<p class="clue-title">' + '<span class="title-tip">' + title + '</span>';
             _.each(clueArr, (clueItem) => {
-                clueHtml += '<p class=\'clue-item\' title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' + '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' + '<span class=\'clue-detail\'>' + Intl.get('call.record.show.customer.detail', '查看详情') + '<i class=\'great-than\'>&gt;</i>' + '</span>' + '</p>';
+                clueHtml += 
+                '<p class="clue-item" title=\'' + Intl.get('clue.click.show.clue.detail','点击查看线索详情') + '\' onclick=\'handleClickClueName(event, ' + JSON.stringify(_.get(clueItem,'id','')) + ')\'>' + 
+                    '<span class=\'clue-item-name\'>' + _.get(clueItem,'name','') + '</span>' + 
+                    '<span class=\'clue-detail\'>' + 
+                        Intl.get('call.record.show.customer.detail', '查看详情') + 
+                        '<i class=\'great-than\'>&gt;</i>' + 
+                    '</span>' + 
+                '</p>';
             });
             tipContent = `<div>${clueHtml}</div>`;
             var largerText = 0;
@@ -527,7 +534,7 @@ window.handleClickPhone = function(phoneObj) {
     });
 };
 //点击展开线索详情
-window.handleClickClueName = function(event,clueId) {
+window.handleClickClueName = (event,clueId) => {
     Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.noty-container .noty-content .clue-item .clue-name'), '打开线索详情');
     phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
         clue_params: {
