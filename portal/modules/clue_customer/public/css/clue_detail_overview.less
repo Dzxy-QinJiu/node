@@ -188,15 +188,26 @@
             display: inline-block;
             max-width: 200px;
             overflow: hidden;
-            white-space: nowrap;
             text-overflow: ellipsis;
             position: relative;
-            top:3px;
+            top:4px;
           }
         }
         .trace-time{
           font-size: 12px;
           color:#999;
+        }
+        .trace-container {
+          display: inline-block;
+          width: 100%;
+          .trace-content {
+            float: right;
+            width: 85%;
+            white-space: normal;
+            font-size: 12px;
+            color: @FONT_COLOR;
+            margin-top: 2px;
+          }
         }
       }
       .show-hide-tip{

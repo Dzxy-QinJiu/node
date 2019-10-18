@@ -29,6 +29,7 @@ var en_US = {
     'menu.industry': 'Industry', // 行业
     'menu.competing.product': 'Competing products', // 竞品
     'menu.sales.process': 'Customer Stage', // 客户阶段
+    'menu.clue.integration': 'Clue integration', // 线索集成
     'menu.clue.allocation': 'Clue allocation', // 线索分配
     'menu.my.company': 'My Company', // 我的企业
     'menu.user': 'Members',//成员管理
@@ -398,6 +399,12 @@ var en_US = {
     'home.page.try.new': 'Try new',//试用新版
     'home.page.contacts.clues.week': 'Total leads contacted this week',//本周已联系线索总数
     'home.page.expire.contract.at.time': '{time} expiring contract statistics',//{time}即将到期合同统计
+    'home.page.extract.clues.statistical': 'Statistics of the quantity of clues extracted',//提取线索量统计
+    'home.page.extract.clues.get.counts': 'The organization has extracted {count} clues',//本组织已提取{count}条线索
+    'home.page.extract.clues.on.months': 'This month has been extracted {extractedCount} clues, can also extract {canCount} clues',//本月已提取{extractedCount}条线索，还可提取{canCount}条线索
+    'home.page.extract.clues.on.today': '{extractedCount} clues have been extracted today, can also extract {canCount} clues',//今天已提取{extractedCount}条线索，还可提取{canCount}条线索
+    'home.page.extracted.clues.on.months': 'The {count} clue has been extracted this month',//本月已提取{count}条线索
+    'home.page.extracted.clues.on.today': 'The {count} clues have been extracted today',//今天已提取{count}条线索
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -983,6 +990,13 @@ var en_US = {
     'customer.stage.add.stage.title': 'Customer Stage {num}', // 客户阶段{num}
     'customer.stage.click.add.stage': 'Add stage', // 添加阶段
     // 后台管理-客户阶段end
+
+    // 后台管理-线索集成start
+    'clue.integration.create.secret': 'Generate key', // 生成密钥
+    'clue.integration.regenerate.create': 'Regenerate', // 重新生成
+    'clue.integration.failed.regenerate.create': 'Failed to Regenerate', // 重新生成密钥失败
+    'clue.integration.failed.create': 'Failed to generate key', // 生成密钥失败
+    // 后台管理-线索集成end
 
     //应用管理start
     'app.title': 'application management', // 应用管理
@@ -1576,6 +1590,7 @@ var en_US = {
     'crm.contact.list.failed': 'Failed to get contact list',//获取联系人列表失败
     'crm.contact.name.length': 'Please enter not more than 50 characters',//请输入最多50个字符
     'crm.last.trace.content': 'Last Trace content',//最后跟进内容
+    'crm.last.trace': 'Last Trace',//最后跟进
     'crm.competing.products': 'Competing products',//竞品
     'crm.no.contact.way': 'No contact customers',//无联系方式客户
     'crm.concerned.customer': 'Concerned customers',//被关注的客户

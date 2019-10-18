@@ -623,16 +623,6 @@ export const ASSIGN_TYPE = {
     COMMON_SALES: 'commonSales'
 };
 
-// 用户申请类型
-export const APPLY_TYPE = {
-    USER_APPLY: 'userapply',//用户审批
-    BUSINESS_OPPORTUNITIES: 'businessopportunities', //机会申请
-    BUSINESS_TRIP: 'businesstrip', //出差申请
-    LEAVE: 'leave', //请假申请
-    DOCUMENT_WRITING: 'documentwriting', //文件撰写
-    OPINION_REPORT: 'opinionreport', //舆情报告
-};
-
 //申请抄送类型
 export const CC_INFO = {
     APPLY: 'apply', //提交申请时抄送
@@ -681,4 +671,9 @@ export const PRIVILEGE_MAP = {
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
     APP_USER_LIST: 'APP_USER_LIST'//获取用户列表的权限
 
+};
+//响应式布局
+export const RESPONSIVE_LAYOUT = {
+    MIDDLE_WIDTH: 990,//响应式布局的pad端断点
+    MIN_WIDTH: 720,//响应式布局的手机端断点
 };

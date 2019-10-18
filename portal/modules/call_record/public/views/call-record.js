@@ -557,6 +557,10 @@ class CallRecord extends React.Component {
         item.showTextEdit = !item.showTextEdit;
         this.setState(this.state);
     };
+    handleEditBtnClick = (item) => {
+        item.showTextEdit = !item.showTextEdit;
+        this.setState(this.state);
+    }
 
     onClickAddCustomerMenu = (record, params) => {
         if (params.key === ADD_CUSTOMER_MENUS.ADD_CUSTOMER) {
@@ -592,10 +596,7 @@ class CallRecord extends React.Component {
         if(record.remark){
             return(
                 <span className="text-show line-clamp " >
-                    <ShearContent lines={2}>{record.remark}</ShearContent>
-                    <i className="iconfont icon-edit-btn-plus handle-btn-item has-data-btn" 
-                        onClick={this.handleClickTextArea.bind(this, record)}
-                        title={Intl.get('crm.record.edit.record.tip','点击修改跟进记录')}/>
+                    <ShearContent lines={2} hasEditBtn={true} editBtnChange={this.handleEditBtnClick.bind(this,record)}>{record.remark}</ShearContent>
                 </span>
             );
         }else{

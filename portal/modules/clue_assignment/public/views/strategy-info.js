@@ -293,7 +293,7 @@ class StrategyInfo extends React.Component {
                                 title={deleteConfirmText}
                                 onConfirm={this.handleDeleteConfirm}
                             >
-                                <i className="iconfont icon-huishouzhan1"></i>
+                                <i className="iconfont icon-recycle-bin-1"></i>
                             </Popconfirm>
                         </div>
                     </div>

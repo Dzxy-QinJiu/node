@@ -14,7 +14,6 @@ import {
     APPLY_APPROVE_TYPES,
     REPORT_TYPE,
     APPLY_TYPE_STATUS_CONST,
-    APPLY_TYPE
 } from 'PUB_DIR/sources/utils/consts';
 import Trace from 'LIB_DIR/trace';
 var classNames = require('classnames');
@@ -74,15 +73,7 @@ class ReportSendApplyManagement extends React.Component {
             ReportSendApplyAction.setShowUpdateTip(true);
         }
     };
-    componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps,'history.action') === 'PUSH'){
-            if (_.get(nextProps,'location.state.clickUnhandleNum')){
-                delete nextProps.location.state.clickUnhandleNum;
-                //取待审批的审批数
-                this.menuClick({key: 'ongoing'});
-            }
-        }
-    }
+
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
             //通过或者驳回申请后改变申请的状态
@@ -309,7 +300,6 @@ class ReportSendApplyManagement extends React.Component {
                 <div className="report-send-apply-list-detail-wrap">
                     <div className="col-md-4 report-send-apply-list" data-tracename="舆情报送申请列表">
                         <ApplyDropdownAndAddBtn
-                            applyType={APPLY_TYPE.OPINION_REPORT}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='MEMBER_REPORT_APPLY'

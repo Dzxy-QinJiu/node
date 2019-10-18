@@ -6,7 +6,9 @@ var urls = {
     //登出
     logout: '/auth2/authc/logout',
     //SSO登出
-    ssoLogout: '/auth2/authc/sso/logout'
+    ssoLogout: '/auth2/authc/sso/logout',
+    //监听到session超时后，调用业务端的接口退出（此接口处理了node端启多个pod时，调用多次auth2退出接口生成多条退出日志的问题）
+    sessionOutLogout: '/rest/open/resource/member/logout',
 };
 //用户Token的前缀
 var userTokenPrefix = 'oauth2 ';
@@ -51,4 +53,18 @@ exports.sessionTimeout = function(sessionID, accessToken) {
             req: {sessionID, 'headers': {}},
             res: {}
         }, null);
+};
+
+/**
+ * 调用业务端接口退出（此接口处理了node端启多个pod时，调用多次auth2退出接口生成多条退出日志的问题）
+ * @param req
+ * @param res
+ */
+exports.sessionOutLogout = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: urls.sessionOutLogout,
+            req: req,
+            res: res,
+        }, {session_id: req.sessionID});
 };

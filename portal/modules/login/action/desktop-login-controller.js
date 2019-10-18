@@ -172,6 +172,7 @@ function loginSuccess(req, res) {
                     name: _.get(data, 'name', ''),
                     functions: _.get(data, 'functions', []),
                     type: _.get(data, 'type', ''),
+                    version: _.get(data, 'version', {})
                 };
                 req.session.save(() => {
                     if (req.xhr) {
@@ -204,10 +205,13 @@ function loginError(req, res) {
         let lang = req.session && req.session.lang || 'zh_CN';
         req.session.stopcheck = 'true';
         let backendIntl = new BackendIntl(req);
-        if (data && data.message) {
-            req.session.loginErrorMsg = data.message;
-        } else {
-            req.session.loginErrorMsg = backendIntl.get('login.username.password.error', '用户名或密码错误');
+        //ajax方式请求的时候，不需要缓存错误信息
+        if(!req.xhr) {
+            if (data && data.message) {
+                req.session.loginErrorMsg = data.message;
+            } else {
+                req.session.loginErrorMsg = backendIntl.get('login.username.password.error', '用户名或密码错误');
+            }
         }
         req.session.save(function() {
             if (req.xhr) {
@@ -752,10 +756,13 @@ function wechatBindRegisterLoginError(req, res) {
         let backendIntl = new BackendIntl(req);
         let defaultErrorMsg = isRegister ? backendIntl.get('login.wechat.register.login.error', '微信号注册登录失败') :
             backendIntl.get('login.wechat.bind.error', '微信绑定失败');
-        if (data && data.message) {
-            req.session.loginErrorMsg = data.message;
-        } else {
-            req.session.loginErrorMsg = defaultErrorMsg;
+        //ajax方式请求的时候，不需要缓存错误信息
+        if (!req.xhr) {
+            if (data && data.message) {
+                req.session.loginErrorMsg = data.message;
+            } else {
+                req.session.loginErrorMsg = defaultErrorMsg;
+            }
         }
         req.session.save(function() {
             if (req.xhr) {

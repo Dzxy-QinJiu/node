@@ -87,12 +87,15 @@ const DELAY_TIME = 3000;
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 import ClueExtract from 'MOD_DIR/clue_pool/public';
-import {subtracteGlobalClue, formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import MoreButton from 'CMP_DIR/more-btn';
+import {subtracteGlobalClue, formatSalesmanList,isResponsiveDisplay} from 'PUB_DIR/sources/utils/common-method-util';
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
     FILTER_WIDTH: 300,
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
-    TH_MORE_HEIGHT: 20//带选择框的TH60比不带选择框的TH40多出来的高度
+    TH_MORE_HEIGHT: 20,//带选择框的TH60比不带选择框的TH40多出来的高度
+    MIN_WIDTH_NEED_CAL: 405,//需要计算输入框时的断点
+    WIDTH_WITHOUT_INPUT: 185//topnav中除了输入框以外的宽度
 };
 import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
 import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
@@ -139,6 +142,7 @@ class ClueCustomer extends React.Component {
         selectedClue: [],//选中的线索
         isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
         cluePoolCondition: {},//线索池的搜索条件
+        filterInputWidth: 210,//筛选输入框的宽度
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -171,6 +175,30 @@ class ClueCustomer extends React.Component {
         //如果从url跳转到该页面，并且有add=true，则打开右侧面板
         if (query.add === 'true') {
             this.showAddForm();
+        }
+        this.setFilterInputWidth();
+        //响应式布局时动态计算filterinput的宽度
+        $(window).on('resize', this.resizeHandler);
+    }
+
+    resizeHandler = () => {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(() => {
+            this.setFilterInputWidth();
+        }, 100);
+    };
+
+    setFilterInputWidth = () => {
+        let needCalWidth = $(window).width() <= LAYOUT_CONSTANTS.MIN_WIDTH_NEED_CAL;
+        if(needCalWidth) {
+            let filterInputWidth = $(window).width() - LAYOUT_CONSTANTS.WIDTH_WITHOUT_INPUT;
+            this.setState({
+                filterInputWidth
+            });
+        } else {
+            this.setState({
+                filterInputWidth: 210
+            });
         }
     }
 
@@ -307,6 +335,7 @@ class ClueCustomer extends React.Component {
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_HASTRANSFER, this.flyClueHastransfer);
         clueEmitter.removeListener(clueEmitter.FLY_CLUE_INVALID, this.flyClueInvalid);
         notificationEmitter.removeListener(notificationEmitter.UPDATE_CLUE, this.showRefreshPrompt);
+        $(window).off('resize', this.resizeHandler);
     }
     //动画收起某个元素后再有飞出效果
     animateHideItem = (updateItem,callback) => {
@@ -507,16 +536,16 @@ class ClueCustomer extends React.Component {
             </Menu.Item>
         </Menu>);
         return (
-            <div className="recomend-clue-customer-container pull-right">
+            <div className="recomend-clue-customer-container">
                 {
                     hasPrivilege('CUSTOMER_ADD_CLUE') ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
                             <Button className="ant-btn ant-btn-primary manual-add-btn">
+                                <Icon type="plus" className="add-btn"/>
                                 {(this.state.addType === 'start') ? (Intl.get('crm.sales.add.clue', '添加线索')) : (
                                     (this.state.addType === 'add') ? Intl.get('crm.sales.manual_add.clue', '手动添加') :
                                         Intl.get('crm.sales.manual.import.clue', '导入线索')
                                 )}
-                                <Icon type="down" />
                             </Button>
                         </Dropdown> : null
                 }
@@ -539,6 +568,7 @@ class ClueCustomer extends React.Component {
             <div className="recomend-clue-customer-container pull-right">
                 {hasPrivilege('COMPANYS_GET') ?
                     <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
+                        <i className="iconfont icon-clue-recommend"></i>
                         <span className="clue-container">
                             {Intl.get('clue.customer.clue.recommend', '线索推荐')}
                         </span>
@@ -571,6 +601,7 @@ class ClueCustomer extends React.Component {
                     content={Intl.get('clue.pool.explain', '存放释放的线索')}
                     overlayClassName="explain-pop">
                     <Button onClick={this.showExtractCluePanel} className="btn-item">
+                        <i className="iconfont icon-clue-pool"></i>
                         <span className="clue-container">
                             {Intl.get('clue.pool','线索池')}
                         </span>
@@ -584,6 +615,7 @@ class ClueCustomer extends React.Component {
         return (
             <div className="export-clue-customer-container pull-right">
                 <Button onClick={this.showExportClueModal} className="btn-item">
+                    <i className="iconfont icon-export-clue"></i>
                     <span className="clue-container">
                         {Intl.get('clue.export.clue.list','导出线索')}
                     </span>
@@ -1397,6 +1429,7 @@ class ClueCustomer extends React.Component {
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
             'firefox-padding': this.isFireFoxBrowser(),
+            'firefox-show-filter-padding': this.state.showFilterList && this.isFireFoxBrowser(),
             'status-type-hide': isFirstLoading,
             'has-refresh-tip': _.get(this.state, 'isShowRefreshPrompt')
         });
@@ -2653,15 +2686,26 @@ class ClueCustomer extends React.Component {
         let filterStore = clueFilterStore.getState();
         //只有待跟进和已跟进和无效tab才有批量操作
         let batchRule = _.isEqual(curStatus.status, SELECT_TYPE.WILL_TRACE) || _.isEqual(curStatus.status, SELECT_TYPE.HAS_TRACE) || _.isEqual(filterStore.filterClueAvailability, AVALIBILITYSTATUS.INAVALIBILITY);
+        let {isWebMin} = isResponsiveDisplay();
+        let assignCls = classNames('pull-right', {
+            'responsive-mini-btn': isWebMin
+        });
         return (
             <div className="pull-right">
-                <div className="pull-right">
+                <div className={assignCls}>
                     {showBatchChange ?
                         <AntcDropdown
                             ref='changesales'
                             content={<Button type="primary"
+                                title={Intl.get('clue.batch.assign.sales', '批量分配')}
                                 data-tracename="点击分配线索客户按钮"
-                                className='btn-item'>{Intl.get('clue.batch.assign.sales', '批量分配')}</Button>}
+                                className='btn-item'>
+                                { isWebMin ? <span className="iconfont icon-assign"></span> :
+                                    <React.Fragment>
+                                        <span className="iconfont icon-assign"></span>
+                                        {Intl.get('clue.batch.assign.sales', '批量分配')}
+                                    </React.Fragment>}
+                            </Button>}
                             overlayTitle={Intl.get('user.salesman', '销售人员')}
                             okTitle={Intl.get('common.confirm', '确认')}
                             cancelTitle={Intl.get('common.cancel', '取消')}
@@ -2679,7 +2723,12 @@ class ClueCustomer extends React.Component {
                                 <Button data-tracename="点击批量释放线索按钮"
                                     className='btn-item handle-btn-item'
                                     title={Intl.get('clue.customer.release.pool', '释放到线索池')}>
-                                    {Intl.get('clue.customer.batch.release', '批量释放')}
+                                    { isWebMin ? <span className="iconfont icon-release"></span> :
+                                        <React.Fragment>
+                                            <span className="iconfont icon-release"></span>
+                                            {Intl.get('clue.customer.batch.release', '批量释放')}
+                                        </React.Fragment>
+                                    }
                                 </Button>
                             </Popconfirm>
                         ) : null}
@@ -2704,10 +2753,55 @@ class ClueCustomer extends React.Component {
         }
 
     };
+    handleMenuSelectClick = (e) => {
+        if(e.key === 'add') {
+            this.setState({
+                addType: e.key,//手动添加
+                clueAddFormShow: true
+            });
+        }else if(e.key === 'import') {
+            this.setState({
+                addType: e.key,
+                clueImportTemplateFormShow: true
+            });
+        } else if(e.key === 'export') {
+            this.showExportClueModal();
+        } else if(e.key === 'clue_pool') {
+            this.showExtractCluePanel();
+        } else if(e.key === 'recommend') {
+            this.showClueRecommendTemplate();
+        }
+    }
+    topBarDropList = (isWebMin) => {
+        return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
+            {isWebMin && hasPrivilege('CUSTOMER_ADD_CLUE') ?
+                <Menu.Item key="add" >
+                    {Intl.get('crm.sales.manual_add.clue','手动添加')}
+                </Menu.Item>
+                : null}
+            {isWebMin && hasPrivilege('CUSTOMER_ADD_CLUE') ?
+                <Menu.Item key="import" >
+                    {Intl.get('crm.sales.manual.import.clue','导入线索')}
+                </Menu.Item>
+                : null}
+            <Menu.Item key="export" >
+                {Intl.get('clue.export.clue.list','导出线索')}
+            </Menu.Item>
+            {hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF') ?
+                <Menu.Item key="clue_pool">
+                    {Intl.get('clue.pool', '线索池')}
+                </Menu.Item> : null}
+            {hasPrivilege('COMPANYS_GET') ?
+                <Menu.Item key="recommend">
+                    {Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                </Menu.Item> : null}
+        </Menu>);
+    };
     renderNotSelectClueBtns = () => {
+        let {isWebMiddle, isWebMin} = isResponsiveDisplay();
         return (
             <div className="pull-right add-anlysis-handle-btns">
-                {this.renderClueRecommend()}
+                {!(isWebMiddle || isWebMin) ? this.renderClueRecommend() : null}
                 {/*是否有查看线索分析的权限
                  CRM_CLUE_STATISTICAL 查看线索概览的权限
                  CRM_CLUE_TREND_STATISTIC_ALL CRM_CLUE_TREND_STATISTIC_SELF 查看线索趋势分析的权限
@@ -2719,11 +2813,15 @@ class ClueCustomer extends React.Component {
                 {/*this.renderClueAnalysisBtn() : null*/}
                 {/*}*/}
                 {
-                    hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF') ?
+                    !(isWebMiddle || isWebMin) && (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) ?
                         this.renderExtractClue() : null
                 }
-                {this.renderExportClue()}
-                {this.renderAddBtn()}
+                {!(isWebMiddle || isWebMin) ? this.renderExportClue() : null}
+                {!isWebMin ? this.renderAddBtn() : null}
+                {isWebMiddle || isWebMin ?
+                    <MoreButton
+                        topBarDropList={this.topBarDropList.bind(this, isWebMin)}
+                    /> : null}
             </div>
         );
     };
@@ -2907,10 +3005,12 @@ class ClueCustomer extends React.Component {
                                         <span className="iconfont icon-sys-notice" />
                                         {this.renderSelectClueTips()}
                                     </div>
-                                ) : <SearchInput
-                                    searchEvent={this.searchFullTextEvent}
-                                    searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}
-                                />}
+                                ) : <div className="search-input-inner" style={{width: this.state.filterInputWidth}}>
+                                    <SearchInput
+                                        searchEvent={this.searchFullTextEvent}
+                                        searchPlaceHolder ={Intl.get('clue.search.full.text','全文搜索')}
+                                    />
+                                </div>}
                             </div>
                             {hasSelectedClue ? this.renderBatchChangeClues() : this.renderNotSelectClueBtns()}
                         </div>

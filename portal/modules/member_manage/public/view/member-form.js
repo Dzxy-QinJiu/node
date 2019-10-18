@@ -17,6 +17,7 @@ import AddEditGroupForm from 'MOD_DIR/home_page/public/views/boot-process/compon
 import classNames from 'classnames';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import {COLOR_LIST} from 'PUB_DIR/sources/utils/consts';
+import {getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
 
 function noop() {
 }
@@ -140,6 +141,8 @@ class MemberForm extends React.Component {
                 //设置正在保存中
                 MemberFormAction.setSaveFlag(true);
                 if (this.props.formType === 'add') {
+                    //将邮箱中激活链接的url传过去，以便区分https://ketao.antfact.com还是https://csm.curtao.com
+                    user.activate_url = getEmailActiveUrl();
                     MemberFormAction.addUser(user);
                 }
             }
@@ -499,6 +502,7 @@ class MemberForm extends React.Component {
                                 onChange={this.uploadImg}
                                 userName={values.userName}
                                 isUserHeadIcon={true}
+                                isUseDefaultUserImage={true}
                             />
                             <Input type="hidden" name="image" id="image"/>
                         </div>

@@ -56,8 +56,9 @@ class CRMAddForm extends React.Component {
             role: Intl.get('crm.115', '经办人'), //联系人角色
             //拨打电话弹屏后，再点击添加客户，自动将电话号码放入到添加客户的右侧面板内
             phone: [this.props.phoneNum], //联系人联系方式
-            qq: [],//联系人qq
-            weChat: [],//联系人微信
+            qq: _.get(propsFormData, 'contacts[0].qq', []),//联系人qq
+            weChat: _.get(propsFormData, 'contacts[0].weChat', []),//联系人微信
+            email: _.get(propsFormData, 'contacts[0].email', []),//联系人邮箱
         }];
         const formData = {
             name: (propsFormData && propsFormData.name) ? propsFormData.name : '',//客户名称

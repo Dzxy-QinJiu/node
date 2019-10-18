@@ -28,7 +28,8 @@ import {
     ORGANIZATION_APP_TYPES,
     REALM_REMARK,
     INDICATOR_TOOLTIP,
-    DIFF_STATUS_TAB
+    DIFF_STATUS_TAB,
+    RESPONSIVE_LAYOUT
 } from './consts';
 var DateSelectorUtils = require('CMP_DIR/datepicker/utils');
 var timeoutFunc;//定时方法
@@ -1002,6 +1003,12 @@ exports.isCiviwRealm = () => {
     var realmId = _.get(userDetail, 'auth.realm_id');
     return realmId === REALM_REMARK.CIVIW;
 };
+
+//获取邮件中激活邮箱的url（需要用浏览器中当前的url基础路径来拼，好区分那个环境中发的邮件（如：https://ketao.antfact.com、https://csm.curtao.com）
+exports.getEmailActiveUrl = () => {
+    return _.get(window, 'location.origin', '') + '/email/active?code=';
+};
+
 //获取某种indicator的tooltip
 exports.getCertainTypeTooltip = (indicator) => {
     var target = _.find(INDICATOR_TOOLTIP, item => item.key === indicator);
@@ -1138,4 +1145,22 @@ exports.renderClueNameMsg = ( existClueList, checkNameError, curClueName, showRi
     } else {
         return '';
     }
+};
+
+/***
+ * 是否是正式用户
+ * @returns {boolean}
+ */
+exports.isFormalUser = () => {
+    let organization = getOrganization();
+    return _.isEqual(_.get(organization, 'version.type', ''), '正式');
+};
+
+//判断当前页面是否处于手机端或pad端的断点，用于响应式布局的展示
+exports.isResponsiveDisplay = () => {
+    let responsive = {};
+    responsive.isWebMiddle = $(window).width() < RESPONSIVE_LAYOUT.MIDDLE_WIDTH;//浏览器是否处于pad端断点位置
+    responsive.isWebMin = $(window).width() < RESPONSIVE_LAYOUT.MIN_WIDTH;//浏览器是否处于手机端断点位置
+    return responsive;
+
 };

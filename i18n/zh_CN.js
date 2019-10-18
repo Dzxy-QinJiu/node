@@ -28,6 +28,7 @@ var zh_CN = {
     'menu.industry': '行业',
     'menu.competing.product': '竞品',
     'menu.sales.process': '客户阶段',
+    'menu.clue.integration': '线索集成',
     'menu.clue.allocation': '线索分配',
     'menu.my.company': '我的企业',
     'menu.user': '成员管理',
@@ -407,6 +408,12 @@ var zh_CN = {
     'home.page.try.new': '试用新版',
     'home.page.contacts.clues.week': '本周已联系线索总数',
     'home.page.expire.contract.at.time': '{time}即将到期合同统计',
+    'home.page.extract.clues.statistical': '提取线索量统计',
+    'home.page.extract.clues.get.counts': '本组织已提取{count}条线索',
+    'home.page.extract.clues.on.months': '本月已提取{extractedCount}条线索，还可提取{canCount}条线索',
+    'home.page.extract.clues.on.today': '今天已提取{extractedCount}条线索，还可提取{canCount}条线索',
+    'home.page.extracted.clues.on.months': '本月已提取{count}条线索',
+    'home.page.extracted.clues.on.today': '今天已提取{count}条线索',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -986,6 +993,13 @@ var zh_CN = {
     'customer.stage.add.stage.title': '客户阶段{num}',
     'customer.stage.click.add.stage': '添加阶段',
     // 后台管理-客户阶段end
+
+    // 后台管理-线索集成start
+    'clue.integration.create.secret': '生成密钥',
+    'clue.integration.regenerate.create': '重新生成',
+    'clue.integration.failed.regenerate.create': '重新生成密钥失败',
+    'clue.integration.failed.create': '生成密钥失败',
+    // 后台管理-线索集成end
 
     //应用管理start
     'app.title': '应用管理',
@@ -1597,6 +1611,7 @@ var zh_CN = {
     'crm.contact.list.failed': '获取联系人列表失败',
     'crm.contact.name.length': '请输入最多50个字符',
     'crm.last.trace.content': '最后跟进内容',
+    'crm.last.trace': '最后跟进',
     'crm.competing.products': '竞品',
     'crm.no.contact.way': '无联系方式客户',
     'crm.concerned.customer': '被关注的客户',

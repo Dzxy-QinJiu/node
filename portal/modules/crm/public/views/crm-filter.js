@@ -67,7 +67,7 @@ class CrmFilter extends React.Component {
         ];
 
         return (
-            <div className="block search-input-select-block">
+            <div className="block search-input-select-block" style={{width: this.props.filterInputWidth}}>
                 <SearchInput
                     ref="searchInput"
                     type="select"
@@ -85,7 +85,8 @@ class CrmFilter extends React.Component {
 CrmFilter.propTypes = {
     crmFilterValue: PropTypes.string,
     changeTableHeight: PropTypes.func,
-    search: PropTypes.func
+    search: PropTypes.func,
+    filterInputWidth: PropTypes.number
 };
 module.exports = CrmFilter;
 

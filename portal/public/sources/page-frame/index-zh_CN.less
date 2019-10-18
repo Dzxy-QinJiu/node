@@ -276,7 +276,12 @@ body.macintosh pre {
         color: darken(@basiccolor, 20%)!important;
     }
 }
-
+// 隐藏火狐浏览器ant-table-header的原生滚动条
+@-moz-document url-prefix() {
+    .ant-table-header {
+        overflow: hidden !important;
+    }
+}
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }

@@ -28,7 +28,15 @@ class NoData extends React.Component {
     }
 }
 
+
+NoData.defaultProps = {
+    textContent: '', // 空状态描述信息
+};
+
 NoData.propTypes = {
-    textContent: PropTypes.string,
+    textContent: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.node,
+    ])
 };
 export default NoData;
