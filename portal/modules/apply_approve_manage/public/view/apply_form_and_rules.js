@@ -478,12 +478,12 @@ ApplyFormAndRules.defaultProps = {
     closeAddPanel: function() {
 
     },
-    applyTypeId: null,
+    applyTypeId: '',
 };
 
 ApplyFormAndRules.propTypes = {
     closeAddPanel: PropTypes.func,
-    applyTypeId: PropTypes.number,
+    applyTypeId: PropTypes.string,
     form: PropTypes.object,
 };
 export default Form.create()(ApplyFormAndRules);

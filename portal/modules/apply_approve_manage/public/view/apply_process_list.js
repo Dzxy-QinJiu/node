@@ -14,7 +14,6 @@ var applyApproveManageStore = require('../store/apply_approve_manage_store');
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 var uuid = require('uuid/v4');
 let userData = require('PUB_DIR/sources/user-data');
-import Spinner from 'CMP_DIR/spinner';
 
 class AddAndShowApplyList extends React.Component {
     constructor(props) {
