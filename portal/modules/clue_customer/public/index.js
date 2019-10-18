@@ -54,7 +54,7 @@ import {
     handlePrivilegeType,
     sourceClassifyArray,
     FLOW_FLY_TIME,
-    HIDE_CLUE_ITEM,
+    HIDE_CLUE_TIME,
     ADD_SELECT_TYPE
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
@@ -98,7 +98,7 @@ import RecommendCluesForm from './views/recomment_clues/recommend_clues_form';
 import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { parabola } from './utils/parabola';
+import { parabola } from 'PUB_DIR/sources/utils/parabola';
 const DIFFREF = {
     ASSIGN: 'assign',//分配
     TRACE: 'trace', //跟进
@@ -312,7 +312,7 @@ class ClueCustomer extends React.Component {
     animateHideItem = (updateItem,callback) => {
         const index = _.findIndex(this.state.curClueLists, item => item.id === updateItem.id);
         var jqueryDom = $('.clue-customer-list .ant-table-body tr:nth-child(' + (index + 1) + ') td');
-        jqueryDom.animate({height: '1px !important',padding: '0 !important'},HIDE_CLUE_ITEM,'linear',() => {
+        jqueryDom.animate({height: '1px !important',padding: '0 !important'},HIDE_CLUE_TIME,'linear',() => {
             // _.isFunction(callback) && callback();
         });
     };
@@ -1755,13 +1755,15 @@ class ClueCustomer extends React.Component {
     changeClueNum = () => {
         clueCustomerAction.afterTranferClueSuccess(this.state.curClue);
     };
-    afterTransferClueSuccess = () => {
+    afterTransferClueSuccess = (callback) => {
         //增加一个动态效果，隐藏该线索
         this.flyClueHastransfer(this.state.curClue,DIFFREF.TRASFERINVALID);
-        // setTimeout(() => {
-        this.hideCurClue();
-        this.changeClueNum();
-        // }, FLOW_FLY_TIME);
+        setTimeout(() => {
+          this.hideCurClue();
+          this.changeClueNum();
+        }, FLOW_FLY_TIME,() => {
+            _.isFunction(callback) && callback()
+        });
     };
     //线索转为新客户完成后的回调事件
     onConvertClueToNewCustomerDone = (customers) => {
@@ -1784,10 +1786,13 @@ class ClueCustomer extends React.Component {
             });
         }
         //在列表中隐藏当前操作的线索
-        this.afterTransferClueSuccess();
+        this.afterTransferClueSuccess(() => {
+            //这里会更改线索的状态为已转化，我们需要把线索tab上的数字更改之后才能修改，否则就不知道原来线索的类型
+            this.afterMergeUpdateClueProperty(customerId,customerName);
+        });
         //隐藏线索转客户面板
         this.hideClueToCustomerPanel();
-        this.afterMergeUpdateClueProperty(customerId,customerName);
+
     };
     afterMergeUpdateClueProperty = (customerId,customerName) => {
         //如果是打开右侧详情，需要改一下详情的状态和关联的客户

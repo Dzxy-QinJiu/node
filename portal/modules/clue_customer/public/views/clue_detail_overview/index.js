@@ -589,6 +589,7 @@ class ClueDetailOverview extends React.Component {
                         clueEmitter.emit(clueEmitter.FLY_CLUE_HASTRANSFER,item);
                         break;
                 }
+                //延时删除是把数字更新完再在界面删除数据
                 setTimeout(() => {
                     _.isFunction(callback) && callback(updateValue);
                     clueCustomerAction.deleteClueById(item);

@@ -93,7 +93,7 @@ export const SELECT_TYPE = {
     HAS_TRANSFER: '3',
     WAIT_ME_HANDLE: 'waitMeHandle'
 };
-//要加数字的tab类型
+//要加数字的线索类型
 export const ADD_SELECT_TYPE = {
     WILL_DISTRIBUTE: '0',
     WILL_TRACE: '1',
@@ -432,5 +432,5 @@ export const sourceClassifyArray = [
 export const sourceClassifyOptions = sourceClassifyWithoutOtherArray.map((source, index) => {
     return (<Option value={source.value} key={index}>{source.title}</Option>);
 });
-export const FLOW_FLY_TIME = 800;
-export const HIDE_CLUE_ITEM = 2000;
+export const FLOW_FLY_TIME = 800;//增加一个数字的动画时长
+export const HIDE_CLUE_TIME = 2000;
