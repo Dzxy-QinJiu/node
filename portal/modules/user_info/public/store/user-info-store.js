@@ -72,6 +72,7 @@ UserInfoStore.prototype.getLogList = function(logListObj) {
                     lastId: log.sortValuse || ''
                 };
             });
+            UserInfoActions.translate(processedLogList);
             this.logList = this.logList.concat(processedLogList);
             var length = this.logList.length;
             this.sortId = length > 0 ? this.logList[length - 1].lastId : ''; // 获取最后一条提成的id

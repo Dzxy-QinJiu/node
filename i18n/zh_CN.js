@@ -688,6 +688,15 @@ var zh_CN = {
     'user.test.error.tip': '测试失败',
     'user.list.check.refresh': '刷新查看用户列表',
 
+    //账号相关start
+    'user.login.browser.chrom': '谷歌',
+    'user.login.browser.Firefox': '火狐',
+    'user.login.browser.MicrosoftEdge': 'Edge',
+    'user.login.browser.Rest': 'Rest接口',
+    'user.login.browser.InternetExplorer': 'IE',
+    'user.login.equipment.pc': '电脑',
+    'user.login.equipment.Tablet': '平板电脑',
+    //账号相关end
     // 用户分析
     'user.login.total.score': '总评分',
     'user.login.latest.activity.score': '最新活跃度',
