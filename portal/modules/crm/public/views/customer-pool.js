@@ -631,7 +631,7 @@ class CustomerPool extends React.Component {
             return null;
         } else {//销售、管理员
             const batchExtractBtn = (
-                <Button className={extractCls} disabled={!selectCustomerLength}>
+                <Button title={Intl.get('clue.extract', '提取')} className={extractCls} disabled={!selectCustomerLength}>
                     {isWebMin ? <i className="iconfont icon-extract"></i> :
                         <React.Fragment>
                             <i className="iconfont icon-extract"></i>
@@ -732,6 +732,7 @@ class CustomerPool extends React.Component {
                     {userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) ? (
                         <Button
                             className={regulateCls}
+                            title={Intl.get('crm.customer.rule.name', '规则设置')}
                             onClick={this.showRuleRightPanel}>
                             {isWebMin ? <i className="iconfont icon-configuration"></i> :
                                 <React.Fragment>

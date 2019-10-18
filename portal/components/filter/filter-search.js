@@ -254,8 +254,8 @@ class FilterSearch extends React.Component {
                                 trigger="click"
                                 visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
                             >
-                                {isWebMin ? <Button type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i></Button>
-                                    : <Button type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i>{Intl.get('common.filter', '筛选')}</Button>}
+                                {isWebMin ? <Button type={this.state.showList ? 'primary' : ''} title={Intl.get('common.filter', '筛选')} className="btn-item"><i className='iconfont icon-filter1'></i></Button>
+                                    : <Button title={Intl.get('common.filter', '筛选')} type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i>{Intl.get('common.filter', '筛选')}</Button>}
                             </Popover>
                         </div>
 
