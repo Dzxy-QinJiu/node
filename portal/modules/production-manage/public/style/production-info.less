@@ -243,6 +243,10 @@
               padding: 4px 0;
               font-size: 14px;
               color: @content-font-color;
+              .describe-info {
+                font-size: 12px;
+                color: @label-content-color;
+              }
               .ip-delete-operator-zone {
                 float: right;
                 visibility: hidden;
@@ -311,6 +315,35 @@
       line-height: 24px;
       float: right;
       margin-right: 45px;
+    }
+  }
+}
+
+.global-filter-ip-popover {
+  .ant-popover-content > .ant-popover-arrow{
+    display: none;
+  }
+  .ant-popover-content {
+    position: relative;
+    top: -10px;
+    right: -30px;
+    .ant-popover-inner-content {
+      padding: 0;
+      .global-filter-ip {
+        font-size: 14px;
+        padding: 9px;
+        .icon-tips {
+          margin-right: 6px;
+          color: @hover-btn-color;
+        }
+        .content {
+          cursor: pointer;
+          color: @content-font-color;
+          .click-content {
+            color: @hover-btn-color;
+          }
+        }
+      }
     }
   }
 }

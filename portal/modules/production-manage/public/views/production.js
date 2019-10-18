@@ -5,7 +5,7 @@
  */
 
 import '../style/production-info.less';
-import {Form, Icon, Input, Switch,message} from 'antd';
+import {Form, Icon, Input, Switch,message, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {productNameRule, getNumberValidateRule, productNameRuleForValidator} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
@@ -27,6 +27,7 @@ import classNames from 'classnames';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import AddIpForm from './add-ip-form';
 import productionAjax from '../ajax/production-ajax';
+import IpFilter from './ip-filter';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -78,6 +79,7 @@ class Production extends React.Component {
             isAppFilterIpLoading: false, // 添加过滤ip loading
             isDeletingLoading: false, // 删除过滤ip loading
             deleteIpId: '', // 删除过滤ip的ID
+            isShowGlobalFilterIp: false, // 是否显示全局过滤IP
         };
     };
 
@@ -555,15 +557,44 @@ class Production extends React.Component {
         });
     };
 
+    handleShowGlobalFilterIP = () => {
+        this.setState({
+            isShowGlobalFilterIp: true
+        });
+    };
+
+    closeIpFilterPanel = () => {
+        this.setState({
+            isShowGlobalFilterIp: false
+        });
+        this.props.closeRightPanel();
+    };
+
+    // 处理全局过滤IP
+    handleGlobalFilterIp = () => {
+        return (
+            <div className="global-filter-ip">
+                <i className="iconfont icon-tips"></i>
+                <span className="content">
+                    请到全部产品
+                    <span 
+                        onClick={this.handleShowGlobalFilterIP}
+                        className="click-content"
+                    >
+                        过滤IP</span>页面删除
+                </span>
+            </div>
+        );
+    };
+
     renderDetailIpList = () => {
-        console.log('productionfilterIp:', this.props.productionfilterIp);
         let filterIps = _.get(this.props.productionfilterIp, 'filter_ips');
         let productionFilterIpList = [];
         _.each(filterIps, (item, index) => {
             productionFilterIpList.push({ip: item, id: index, flag: 'singleFilter'});
         });
 
-        let allProductionFilterIpList = productionFilterIpList || this.props.allProductionFilterIpList;
+        let allFilterIpList = _.concat(productionFilterIpList, this.props.allProductionFilterIpList);
         return (
             <div className="ip-filter-content">
                 {
@@ -574,16 +605,22 @@ class Production extends React.Component {
                     ) : null
                 }
                 <ul className="ip-content">
-                    {_.map(allProductionFilterIpList, ipItem => {
+                    {_.map(allFilterIpList, ipItem => {
                         return (
                             <li
                                 className="ip-item"
                                 key={ipItem.id}
                             >
                                 <span>{ipItem.ip}</span>
+                                {
+                                    ipItem.flag ? null : (
+                                        <span className="describe-info">（全部产品过滤)</span>
+                                    )
+                                }
                                 <span className="ip-delete-operator-zone">
                                     {
-                                        ipItem.id === this.state.deleteIpId ? (
+
+                                        ipItem.flag && ipItem.id === this.state.deleteIpId ? (
                                             <span className="item-delete-buttons">
                                                 <span
                                                     className="item-delete-confirm"
@@ -603,13 +640,23 @@ class Production extends React.Component {
                                                 </span>
                                             </span>
                                         ) : (
-                                            <span
-                                                onClick={this.handleDeleteIP.bind(this, ipItem)}
-                                                className="operate-btn"
-                                                data-tracename={'点击删除' + ipItem.ip}
-                                            >
-                                                <i className="iconfont icon-delete handle-btn-item"></i>
-                                            </span>
+                                            ipItem.flag ? (
+                                                <span
+                                                    onClick={this.handleDeleteIP.bind(this, ipItem)}
+                                                    className="operate-btn"
+                                                    data-tracename={'点击删除' + ipItem.ip}
+                                                >
+                                                    <i className="iconfont icon-delete handle-btn-item"></i>
+                                                </span>
+                                            ) : (
+                                                <Popover
+                                                    overlayClassName="global-filter-ip-popover"
+                                                    content={this.handleGlobalFilterIp()}
+                                                    placement="bottomRight"
+                                                >
+                                                    <i className="iconfont icon-delete handle-btn-item"></i>
+                                                </Popover>
+                                            )
                                         )
                                     }
                                 </span>
@@ -783,6 +830,14 @@ class Production extends React.Component {
                         content={this.renderDetailIpList()}
                         className='ip-filter-card-container'
                     />
+                    {
+                        this.state.isShowGlobalFilterIp ? (
+                            <IpFilter
+                                closeIpFilterPanel={this.closeIpFilterPanel}
+                                allProductionFilterIpList={this.props.allProductionFilterIpList}
+                            />
+                        ) : null
+                    }
                     {_.isEqual(_.get(this.state, 'integrateType'), INTEGRATE_TYPES.UEM) ?
                         <div className="product-card-with-switch">
                             <DetailCard
