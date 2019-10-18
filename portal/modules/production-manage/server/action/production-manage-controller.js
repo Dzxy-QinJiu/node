@@ -91,3 +91,30 @@ exports.integrationConfig = function(req,res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 获取产品配置中的ip
+exports.productionGetFilterIP = (req,res) => {
+    productService.productionGetFilterIP(req, res).on('success', (data) => {
+        res.status(200).json(data || {});
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 产品添加过滤IP
+exports.productionAddFilterIP = (req,res) => {
+    productService.productionAddFilterIP(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 产品删除过滤IP
+exports.productionDeleteFilterIP = (req,res) => {
+    productService.productionDeleteFilterIP(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

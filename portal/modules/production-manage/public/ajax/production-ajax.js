@@ -1,3 +1,54 @@
+// // 获取产品过滤IP
+exports.productionGetFilterIP = (productionId) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/product/get/filter/ip/${productionId}`,
+        type: 'get',
+        dataType: 'json',
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+// 产品配置中增加过滤ip
+exports.productionAddFilterIP = (filterIp) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/product/add/filter/ip',
+        type: 'post',
+        dataType: 'json',
+        data: filterIp,
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+// 产品配置中删除过滤ip
+exports.productionDeleteFilterIP = (deleteIpObj) => {
+    let productId = deleteIpObj.productId;
+    let ip = deleteIpObj.ip;
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: `/rest/product/delete/filter/ip/${productId}/${ip}`,
+        type: 'delete',
+        dataType: 'json',
+        success: (result) => {
+            Deferred.resolve(result);
+        }, error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
 //获取当前页的用户列表
 exports.getProductions = function(query) {
     var Deferred = $.Deferred();
