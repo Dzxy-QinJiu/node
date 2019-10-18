@@ -927,6 +927,11 @@ var zh_CN = {
     'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
     'product.filter.ip.add.ip.placeholder': '请输入要排除的IP',
     'product.filter.ip': '过滤IP',
+    'product.global.filter.ip': '请到全部产品{clickContent}页面删除',
+    'product.no.data.filter.ip': '暂无数据，请添加',
+    'product.global.filter.ip.title': '全部产品统计分析时过滤以下IP：',
+    'product.filter.ip.title': '该产品统计分析时过滤以下IP：',
+    'product.global.ip.tips': '（全部产品过滤)',
     // 后台管理-产品end
 
     // 后台管理-行业start

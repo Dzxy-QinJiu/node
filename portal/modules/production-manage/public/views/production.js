@@ -453,7 +453,9 @@ class Production extends React.Component {
     renderDetailTitle = () => {
         return (
             <div className="ip-filter-title">
-                <span className="content">该产品统计分析时过滤以下IP：</span>
+                <span className="content">
+                    {Intl.get('product.filter.ip.title', '该产品统计分析时过滤以下IP：')}
+                </span>
                 {
                     hasPrivilege('CREATE_CONFIG_IP') ? (
                         this.state.isShowAddIp ? null : (
@@ -583,12 +585,18 @@ class Production extends React.Component {
             <div className="global-filter-ip">
                 <i className="iconfont icon-tips"></i>
                 <span className="content">
-                    请到全部产品
-                    <span 
-                        onClick={this.handleShowGlobalFilterIP}
-                        className="click-content"
-                    >
-                        过滤IP</span>页面删除
+                    <ReactIntl.FormattedMessage
+                        id="product.global.filter.ip"
+                        defaultMessage={'请到全部产品{clickContent}页面删除'}
+                        values={{
+                            'clickContent': <span
+                                onClick={this.handleShowGlobalFilterIP}
+                                className="click-content"
+                            >
+                                {Intl.get('product.filter.ip', '过滤IP')}
+                            </span>
+                        }}
+                    />
                 </span>
             </div>
         );
@@ -622,7 +630,9 @@ class Production extends React.Component {
                                 <span>{ipItem.ip}</span>
                                 {
                                     ipItem.flag ? null : (
-                                        <span className="describe-info">（全部产品过滤)</span>
+                                        <span className="describe-info">
+                                            {Intl.get('product.global.ip.tips', '（全部产品过滤)')}
+                                        </span>
                                     )
                                 }
                                 <span className="ip-delete-operator-zone">
