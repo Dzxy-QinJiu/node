@@ -29,15 +29,16 @@ var applyApproveManageAction = require('../action/apply_approve_manage_action');
 let userData = require('PUB_DIR/sources/user-data');
 var uuid = require('uuid/v4');
 import ApplyApproveManageStore from '../store/apply_approve_manage_store';
+import Spinner from 'CMP_DIR/spinner';
+
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
-        var applyTypeData = _.cloneDeep(this.props.applyTypeData);
         this.state = {
-            activeKey: _.get(applyTypeData,'customiz') ? TAB_KEYS.FORM_CONTENT : TAB_KEYS.APPLY_RULE,//当前选中的TAB
+            activeKey: '',
             isEdittingApplyName: false,//正在修改申请审批的标题
             updateApplyName: '',//修改后标题的名称
-            applyTypeData: applyTypeData,//编辑某个审批的相关数据
+            applyTypeData: {},//编辑某个审批的相关数据
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -45,12 +46,37 @@ class ApplyFormAndRules extends React.Component {
     onStoreChange = () => {
         this.setState(ApplyApproveManageStore.getState());
     };
-    componentDiDMount = () => {
+    componentDidMount = () => {
         //如果还没有配置过，就只有一个默认的规则
         ApplyApproveManageStore.listen(this.onStoreChange);
+        //请求展示内容
+        this.getSelfSettingWorkFlow(this.props.applyTypeId);
     };
     componentWillUnmount(){
         ApplyApproveManageStore.unlisten(this.onStoreChange);
+    }
+        //请求并展示审批流程
+        getSelfSettingWorkFlow = (recordId) => {
+            let submitObj = {page_size: 1, id: recordId};
+            let newUserData = userData.getUserData().workFlowConfigs;
+            applyApproveManageAction.getSelfSettingWorkFlow(submitObj,(data) => {
+                this.changeNewFlow(newUserData,recordId,data);
+                if(data[0]){
+                    this.setState({
+                        applyTypeData: data[0],
+                        activeKey: _.get(data[0],'customiz') ? TAB_KEYS.FORM_CONTENT : TAB_KEYS.APPLY_RULE
+                    });
+                }
+            });
+        }
+        //将请求到的内容更新
+    changeNewFlow = (list,id,data) => {
+        _.forEach(list,(value) => {
+            if(_.get(value,'id') === id && data[0]){
+                _.extend(value, data[0]);
+                return false;
+            }
+        });
     }
     handleTabChange = (key) => {
         let keyName = key === TAB_KEYS.FORM_CONTENT ? Intl.get('apply.add.form.content', '表单内容') : Intl.get('apply.add.form.regex', '审批规则');
@@ -282,7 +308,7 @@ class ApplyFormAndRules extends React.Component {
         );
     };
     renderFormContent = () => {
-        var applyTypeData = this.props.applyTypeData;
+        var applyTypeData = this.state.applyTypeData;
         var hasFormItem = _.get(applyTypeData, 'customiz_form.length');
         return (
             <div className="apply-form-content-wrap"
@@ -403,34 +429,47 @@ class ApplyFormAndRules extends React.Component {
     render = () => {
         var applyTypeData = this.state.applyTypeData;
         var initialApplyTitle = _.get(applyTypeData, 'description') || _.get(applyTypeData, 'type');
-        return (
-            <div className="add-apply-form-container">
-                <div className="add-apply-form-title">
-                    <div className="show-and-edit-approve-type">
-                        {this.state.isEdittingApplyName ? <span className="edit-name-container">
-                            <Input defaultValue={initialApplyTitle} onChange={this.handleApplyTitleChange}/>
-                            <SaveCancelButton
-                                loading={this.state.editApplyTitleLoading}
-                                handleSubmit={this.handleSaveApproveTitle.bind(this, initialApplyTitle)}
-                                handleCancel={this.handleCancelSaveTitle}
-                                saveErrorMsg={this.state.editApplyTitleErrMsg}
-                            />
+        if(this.state.getSelfSettingWorkFlowLoading){
+            return(
+                <div className="load-content">
+                    <Spinner />
+                </div>);
+        }else if(this.state.getSelfSettingWorkFlowErrMsg){
+            return(
+                <div className="errmsg-wrap">
+                    <i className="iconfont icon-data-error"></i>
+                    <p className="abnornal-status-tip">{this.state.callRecord.errorMsg}</p>
+                </div>);
+        }else{
+            return (
+                <div className="add-apply-form-container">
+                    <div className="add-apply-form-title">
+                        <div className="show-and-edit-approve-type">
+                            {this.state.isEdittingApplyName ? <span className="edit-name-container">
+                                <Input defaultValue={initialApplyTitle} onChange={this.handleApplyTitleChange}/>
+                                <SaveCancelButton
+                                    loading={this.state.editApplyTitleLoading}
+                                    handleSubmit={this.handleSaveApproveTitle.bind(this, initialApplyTitle)}
+                                    handleCancel={this.handleCancelSaveTitle}
+                                    saveErrorMsg={this.state.editApplyTitleErrMsg}
+                                />
 
-                        </span> : <span className="show-name-container">
-                            {initialApplyTitle}
-                            {/*如果是内置的流程，不让修改流程的名称*/}
-                            {_.get(this, 'state.applyTypeData.customiz') ? <i className="pull-right iconfont icon-update"
-                                onClick={this.handleEditApplyTitle.bind(this, initialApplyTitle)}></i> : null}
+                            </span> : <span className="show-name-container">
+                                {initialApplyTitle}
+                                {/*如果是内置的流程，不让修改流程的名称*/}
+                                {_.get(this, 'state.applyTypeData.customiz') ? <i className="pull-right iconfont icon-update"
+                                    onClick={this.handleEditApplyTitle.bind(this, initialApplyTitle)}></i> : null}
 
-                        </span>}
+                            </span>}
 
+                        </div>
+                        <Button className="add-apply-form-back-btn" onClick={this.handleClickCloseAddPanel}>
+                            {Intl.get('common.cancel', '取消')}</Button>
                     </div>
-                    <Button className="add-apply-form-back-btn" onClick={this.handleClickCloseAddPanel}>
-                        {Intl.get('common.cancel', '取消')}</Button>
+                    {this.renderAddApplyContent()}
                 </div>
-                {this.renderAddApplyContent()}
-            </div>
-        );
+            );
+        }
     }
 }
 
@@ -438,12 +477,12 @@ ApplyFormAndRules.defaultProps = {
     closeAddPanel: function() {
 
     },
-    applyTypeData: {}
+    applyTypeId: '',
 };
 
 ApplyFormAndRules.propTypes = {
     closeAddPanel: PropTypes.func,
-    applyTypeData: PropTypes.object,
+    applyTypeId: PropTypes.string,
     form: PropTypes.object,
 };
 export default Form.create()(ApplyFormAndRules);

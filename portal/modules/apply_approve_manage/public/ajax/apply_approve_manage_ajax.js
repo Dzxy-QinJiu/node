@@ -72,5 +72,20 @@ exports.saveSelfSettingWorkFlowRules = function(applyId,data) {
     return Deferred.promise();
 };
 
-
+exports.getSelfSettingWorkFlow = function(submitObj) {
+    var Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/self_setting/work_flow/',
+        dataType: 'json',
+        type: 'get',
+        data: submitObj,
+        success: function(list) {
+            Deferred.resolve(list);
+        },
+        error: function(xhr) {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
 

@@ -14,6 +14,7 @@ var applyApproveManageStore = require('../store/apply_approve_manage_store');
 var applyApproveManageAction = require('../action/apply_approve_manage_action');
 var uuid = require('uuid/v4');
 let userData = require('PUB_DIR/sources/user-data');
+
 class AddAndShowApplyList extends React.Component {
     constructor(props) {
         super(props);
@@ -24,6 +25,7 @@ class AddAndShowApplyList extends React.Component {
             showApplyList: applyList,//自定义流程的列表
             showAddWorkFlowName: this.props.showAddWorkFlowName,//是否展示添加自定义流程名称
             showApplyDetailForm: false,//是否展示审批的详情
+            showApplyDetailId: '',
             tableHeight: 610,
             ...applyApproveManageStore.getState()
         };
@@ -61,20 +63,16 @@ class AddAndShowApplyList extends React.Component {
             var $tr = $(this).closest('tr');
             var id = $tr.find('.record-id').text();
             if (id) {
-                _this.showApplyDetailPanel(id);
+                _this.getSelfSettingWorkFlowId(id);
             }
         });
     };
-    showApplyDetailPanel = (applyId) => {
-        var target = this.getTargetApply(applyId);
-        if (target) {
-            this.setState({
-                showApplyDetailForm: true,
-                applyTypeData: target
-            });
-        }
-
-    };
+    getSelfSettingWorkFlowId = (recordId) => {
+        this.setState({
+            showApplyDetailForm: true,
+            showApplyDetailId: recordId,
+        });
+    }
     onStoreChange = () => {
         this.setState(applyApproveManageStore.getState());
     };
@@ -217,12 +215,15 @@ class AddAndShowApplyList extends React.Component {
         );
     };
     renderApplyDetail = () => {
-        return (
-            <ApplyFormAndRules
-                applyTypeData={this.state.applyTypeData}
-                closeAddPanel={this.closeAddApplyPanel}
-            />
-        );
+        return(
+            <div>
+                <ApplyFormAndRules
+                    applyTypeId={this.state.showApplyDetailId}
+                    closeAddPanel={this.closeAddApplyPanel}
+                />
+            </div>);
+
+    
     };
     closeAddApplyPanel = () => {
         this.setState({
