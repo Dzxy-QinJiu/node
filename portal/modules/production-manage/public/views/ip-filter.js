@@ -63,7 +63,7 @@ class IpFilter extends React.Component {
                     ) : (
                         <div className="no-data-tips-operate">
                             <NoData
-                                textContent='暂无数据，请添加'
+                                textContent={Intl.get('product.no.data.filter.ip', '暂无数据，请添加')}
                             />
                         </div>
                     )
@@ -81,7 +81,9 @@ class IpFilter extends React.Component {
     renderDetailTitle = () => {
         return (
             <div className="ip-filter-title">
-                <span className="content">全部产品统计分析时过滤以下IP：</span>
+                <span className="content">
+                    {Intl.get('product.global.filter.ip.title', '全部产品统计分析时过滤以下IP：')}
+                </span>
                 {
                     hasPrivilege('CREATE_CONFIG_IP') ? (
                         this.state.isShowAddIp ? null : (
@@ -255,7 +257,7 @@ class IpFilter extends React.Component {
     renderDetailIpList = () => {
         let ipList = this.state.ipList;
         let length = _.get(ipList, 'length');
-        if (length) {
+        if (length || this.state.isShowAddIp) {
             return this.renderIpContent();
         } else {
             return this.renderNoDataOrLoadError();

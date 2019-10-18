@@ -59,7 +59,7 @@ class MemberInfo extends React.Component {
         errorMsg: this.props.errorMsg,
         salesRoleList: [], // 职务列表
         //是否显示拨打电话的提示
-        isShowCallTip: !websiteConfig.no_show_call_tips,
+        isShowCallTip: !_.get(websiteConfig, 'no_show_call_tips'),
         ...MemberInfoStore.getState(),
     };
 
