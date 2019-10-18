@@ -21,7 +21,7 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {hasCalloutPrivilege, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
-import {phoneEmitter, notificationEmitter, userInfoEmitter,phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 
@@ -193,8 +193,8 @@ var NavSidebar = createReactClass({
         //其他类型的未读回复列表变化后触发
         notificationEmitter.on(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
         //正在拨打容联的电话
-        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_CLUE_PANEL,this.callingRonglianBtn);
-        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL,this.callingRonglianBtn);
+        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_CLUE_PANEL, this.callingRonglianBtn);
+        phoneMsgEmitter.on(phoneMsgEmitter.OPEN_PHONE_PANEL, this.callingRonglianBtn);
         //获取用户审批的未读回复列表
         this.getHasUnreadReply();
         //获取其他类型的用户审批的未读回复列表
@@ -335,9 +335,9 @@ var NavSidebar = createReactClass({
     callingRonglianBtn: function(data) {
         var phonemsgObj = this.getPhonemsgObj(data);
         //监听推送来的消息，如果是容联的电话系统,在打通状态需要把左边导航的图标改掉
-        if (isRongLianPhoneSystem() && _.get(phonemsgObj,'type')){
+        if (isRongLianPhoneSystem() && _.get(phonemsgObj, 'type')) {
             //电话接通推过来状态
-            if([CALL_TYPES.ALERT].indexOf(phonemsgObj.type) !== -1){
+            if ([CALL_TYPES.ALERT].indexOf(phonemsgObj.type) !== -1) {
                 var phoneNum = '';
                 if (phonemsgObj.call_type === 'IN') {
                     phoneNum += phonemsgObj.extId;
@@ -347,7 +347,7 @@ var NavSidebar = createReactClass({
                 this.setState({
                     ronglianNum: phoneNum
                 });
-            }else if([CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back].indexOf(phonemsgObj.type) !== -1){
+            } else if ([CALL_TYPES.phone, CALL_TYPES.curtao_phone, CALL_TYPES.call_back].indexOf(phonemsgObj.type) !== -1) {
                 this.setState({
                     ronglianNum: ''
                 });
@@ -360,8 +360,8 @@ var NavSidebar = createReactClass({
         notificationEmitter.removeListener(notificationEmitter.DIFF_APPLY_UNREAD_REPLY, this.refreshDiffApplyHasUnreadReply);
         phoneEmitter.removeListener(phoneEmitter.CALL_CLIENT_INITED, this.triggerDialUpKeyboardShow);
         //正在拨打容联的电话
-        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL,this.callingRonglianBtn);
-        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL,this.callingRonglianBtn);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.callingRonglianBtn);
+        phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_PHONE_PANEL, this.callingRonglianBtn);
     },
 
 
@@ -375,7 +375,7 @@ var NavSidebar = createReactClass({
         if (!notification) {
             return null;
         }
-        let noticeCls = classNames('iconfont icon-tongzhi','sidebar-bottom-icon', {
+        let noticeCls = classNames('iconfont icon-tongzhi', 'sidebar-bottom-icon', {
             'acitve': this.props.isShowNotificationPanel,
             // 'nav-small-icon': this.isShowSmallIcon()
         });
@@ -431,12 +431,12 @@ var NavSidebar = createReactClass({
         if (!backendConfigMenu || !backendConfigMenu.routes) {
             return null;
         }
-        let wrapperCls = classNames('sidebar-menu-li',{
+        let wrapperCls = classNames('sidebar-menu-li', {
             'sidebar-backend-config': true,
             // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
             // 'reduce-nav-margin-li': this.state.isReduceNavMargin
         });
-        let backendConfigCls = classNames('iconfont icon-role-auth-config','sidebar-bottom-icon', {
+        let backendConfigCls = classNames('iconfont icon-role-auth-config', 'sidebar-bottom-icon', {
             'deactivation': this.props.isShowNotificationPanel,
             // 'nav-small-icon': this.isShowSmallIcon()
         });
@@ -484,6 +484,7 @@ var NavSidebar = createReactClass({
                             nickName={this.state.userInfo.nick_name}
                             round="true" link="true" url="/user_info_manage"
                             isActiveFlag={this.props.isShowNotificationPanel}
+                            isUseDefaultUserImage={true}
                         />
                     </div>
                 </Popover>
@@ -539,7 +540,7 @@ var NavSidebar = createReactClass({
         var allUnhandleApplyTotal = 0;
         if (_.has(Oplate, 'unread')) {
             _.forEach(Oplate.unread, (value) => {
-                if (value && _.isNumber(value)){
+                if (value && _.isNumber(value)) {
                     allUnhandleApplyTotal += value;
                 }
             });
@@ -599,7 +600,7 @@ var NavSidebar = createReactClass({
     },
 
     render: function() {
-        const iconCls = classNames('iconfont ',{
+        const iconCls = classNames('iconfont ', {
             'icon-dial-up-keybord': !this.state.ronglianNum,
             'icon-active-call_record-ico': this.state.ronglianNum,
         });

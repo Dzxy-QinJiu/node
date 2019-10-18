@@ -578,12 +578,17 @@ class UserInfo extends React.Component{
             <div className="user-info-container-div col-md-4">
                 <div className="user-logo-div">
                     <div className="user-info-logo">
-                        <HeadIcon headIcon={formData.userLogo} iconDescr={formData.nickName} isEdit={true}
+                        <HeadIcon
+                            headIcon={formData.userLogo}
+                            iconDescr={formData.nickName}
+                            isEdit={true}
                             onChange={this.uploadImg.bind(this)}
                             isNotShowUserName={true}
                             userName={formData.userName}
                             nickName={formData.nickName}
-                            isUserHeadIcon={true}/>
+                            isUserHeadIcon={true}
+                            isUseDefaultUserImage={true}
+                        />
                         <div className="user-info-nickname">
                             {_.get(this.state, 'iconSaveError') ? <span className="icon-save-error">{_.get(this.state, 'iconSaveError')}</span> : null}
                             <BasicEditInputField

@@ -39,6 +39,10 @@ class LoginForm extends React.Component {
     };
 
     beforeSubmit = (event) => {
+        if(this.state.logining) {
+            event.preventDefault();
+            return false;
+        }
         var userName = _.trim(this.refs.username.value);
         if (!userName) {
             //用户名不能为空
@@ -82,6 +86,40 @@ class LoginForm extends React.Component {
         }
         //修改要提交的密码
         this.refs.password.value = newValue;
+        //TODO 现在改用ajax提交方式,不用ajax方式时，请去掉下面的代码
+        //阻止缺省行为,必须先写这个，不然会走form表单提交方式
+        event.preventDefault();
+        let submitObj = {
+            username: userName,
+            password: newValue
+        };
+        if(this.state.captchaCode && this.refs.captcha_input.value) {
+            submitObj.retcode = this.refs.captcha_input.value;
+        }
+        this.loginFunc('/login', submitObj);
+        return false;
+    };
+
+    //登录函数
+    loginFunc = (url, submitObj) => {
+        if(this.state.logining) {
+            return false;
+        }
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'post',
+            data: submitObj,
+            success: () => {
+                window.location.href = '/';
+            },
+            error: (errorInfo) => {
+                //在失败后，得获取下验证码
+                this.getLoginCaptcha();
+                this.setState({logining: false});
+                this.props.setErrorMsg(errorInfo.responseJSON);
+            }
+        });
     };
 
     //sso登录

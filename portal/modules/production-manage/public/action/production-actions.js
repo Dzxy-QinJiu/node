@@ -44,6 +44,14 @@ function ProductionActions() {
             this.dispatch(errorMsg);
         });
     };
+
+    this.productionGetFilterIP = function(id){
+        productionAjax.productionGetFilterIP(id).then((result) => {
+            this.dispatch(result);
+        }, (errorMsg) => {
+            this.dispatch(errorMsg);
+        });
+    };
 }
 
 module.exports = alt.createActions(ProductionActions);

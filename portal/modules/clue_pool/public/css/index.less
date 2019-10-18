@@ -22,13 +22,11 @@
         font-size: 16px;
       }
       .search-container {
-        float: none;
-        padding-left: 24px;
+        padding-left: 15px;
         .clue-back-btn{
           float: left;
-          margin-right: 15px;
+          margin-right: 0.5em;
           position: relative;
-          top: -1px;
         }
         .common-sale-batch-extract {
           float: right;
@@ -39,6 +37,13 @@
           }
           .btn-bar{
             top: 3px;
+          }
+        }
+      }
+      .pull-right {
+        .btn-item {
+          .iconfont {
+            margin-right: 0.5em;
           }
         }
       }
@@ -121,15 +126,19 @@
         .clue-status-wrap{
           position: absolute;
           font-size: 14px;
-          color:#999;
-          left: 0;
-          top: 14px;
+          color: #999;
+          left: 70px;
+          top: 15px;
           z-index: 10;
+          margin-left: -18px;
           &.firefox-padding{
             left: 120px;
           }
           &.show-clue-filter{
-            left: 370px;
+            left: 58px;
+          }
+          &.firefox-show-filter-padding {
+            left: 98px;
           }
           &.status-type-hide{
             visibility: hidden;

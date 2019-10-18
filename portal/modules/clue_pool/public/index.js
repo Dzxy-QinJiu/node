@@ -8,7 +8,11 @@ import { SearchInput, AntcTable } from 'antc';
 import userData from 'PUB_DIR/sources/user-data';
 import ClueFilterPanel from './views/clue-filter-panel';
 import { clueSourceArray, accessChannelArray, clueClassifyArray } from 'PUB_DIR/sources/utils/consts';
-import {removeSpacesAndEnter, getTableContainerHeight } from 'PUB_DIR/sources/utils/common-method-util';
+import {
+    removeSpacesAndEnter,
+    getTableContainerHeight,
+    isResponsiveDisplay
+} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import { getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount } from './utils/clue-pool-utils';
 import ShearContent from 'CMP_DIR/shear-content';
@@ -43,7 +47,9 @@ const LAYOUT_CONSTANTS = {
     TABLE_TITLE_HEIGHT: 60,//带选择框的TH高度
     TH_MORE_HEIGHT: 20,//带选择框的TH60比不带选择框的TH40多出来的高度
     NO_DATA_INFO_HEIGHT: 184,//错误信息提示框
-    LOADING_TOP: 280//加载中paddding-top
+    LOADING_TOP: 280,//加载中paddding-top
+    MIN_WIDTH_NEED_CAL: 405,//需要计算输入框时的断点
+    WIDTH_WITHOUT_INPUT: 185//topnav中除了输入框以外的宽度
 };
 //线索池字段的宽度
 const TABLE_WIDTH = {
@@ -67,6 +73,7 @@ class ClueExtract extends React.Component {
             singleExtractLoading: false, // 单个提取的loading
             isShowClueDetailPanel: false, // 是否显示显示详情， 默认false
             selectedNumber: 0,//当用户只选了二十条数据时，记录此时的数据总量
+            filterInputWidth: 210,//输入框的默认宽度
             ...cluePoolStore.getState()
         };
     }
@@ -156,12 +163,16 @@ class ClueExtract extends React.Component {
             }
         }
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
+
         // 如果是从没有符合条件的线索点击跳转过来的,将搜索框中的关键字置为搜索的线索名称
         if (!_.isEmpty(this.props.clueSearchCondition)){
             this.jumpIntoCluePoolWithCondition(this.props);
         }else{
             this.getCluePoolList();
         }
+        this.setFilterInputWidth();
+        //响应式布局时动态计算filterinput的宽度
+        $(window).on('resize', this.resizeHandler);
     }
     componentWillReceiveProps(nextProps) {
         if (!_.isEmpty(nextProps.clueSearchCondition) && !_.isEqual(nextProps.clueSearchCondition, this.props.clueSearchCondition)){
@@ -176,12 +187,34 @@ class ClueExtract extends React.Component {
         //根据关键词查询符合条件的线索
         this.getClueByKeywords(keyword);
     }
+    resizeHandler = () => {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(() => {
+            this.setFilterInputWidth();
+        }, 100);
+    };
+
+    setFilterInputWidth = () => {
+        let needCalWidth = $(window).width() <= LAYOUT_CONSTANTS.MIN_WIDTH_NEED_CAL;
+        if(needCalWidth) {
+            let filterInputWidth = $(window).width() - LAYOUT_CONSTANTS.WIDTH_WITHOUT_INPUT;
+            this.setState({
+                filterInputWidth
+            });
+        } else {
+            this.setState({
+                filterInputWidth: 210
+            });
+        }
+    }
+
     componentWillUnmount() {
         cluePoolStore.unlisten(this.onStoreChange);
         //清空页面上的筛选条件
         clueFilterAction.setInitialData();
         cluePoolAction.resetState();
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_LEAD_EXTRACT, this.batchChangeTraceMan);
+        $(window).off('resize', this.resizeHandler);
     }
 
     // 获取线索池的负责人
@@ -971,43 +1004,59 @@ class ClueExtract extends React.Component {
     };
 
     renderBatchChangeClues = () => {
+        let {isWebMin} = isResponsiveDisplay();
+        let extractCls = classNames('pull-right',{
+            'responsive-mini-btn': isWebMin
+        });
         if (this.isCommonSales()) { // 普通销售批量提取线索
             return (
-                <Button
-                    type="primary"
-                    data-tracename="点击批量提取线索按钮"
-                    className='btn-item common-sale-batch-extract'
-                    onClick={this.handleSubmitAssignSalesBatch}
-                >
-                    {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
-                </Button>
+                <div className={extractCls}>
+                    <Button
+                        type="primary"
+                        data-tracename="点击批量提取线索按钮"
+                        className='btn-item common-sale-batch-extract'
+                        onClick={this.handleSubmitAssignSalesBatch}
+                        title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                    >
+                        {isWebMin ? <span className="iconfont icon-extract"></span> :
+                            <React.Fragment>
+                                <span className="iconfont icon-extract"></span>
+                                {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                            </React.Fragment>
+                        }
+                    </Button>
+                </div>
             );
         } else { // 管理员或是销售领导批量提取线索
             return (
-                <div className="pull-right">
-                    <div className="pull-right">
-                        <AntcDropdown
-                            ref='changesales'
-                            content={
-                                <Button
-                                    type="primary"
-                                    data-tracename="点击批量提取线索按钮"
-                                    className='btn-item'
-                                >
-                                    {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
-                                </Button>
-                            }
-                            overlayTitle={Intl.get('user.salesman', '销售人员')}
-                            okTitle={Intl.get('common.confirm', '确认')}
-                            cancelTitle={Intl.get('common.cancel', '取消')}
-                            isSaving={this.state.batchExtractLoading}
-                            overlayContent={this.renderSalesBlock()}
-                            handleSubmit={this.handleSubmitAssignSalesBatch}
-                            unSelectDataTip={this.state.unSelectDataTip}
-                            clearSelectData={this.clearSelectSales}
-                            btnAtTop={false}
-                        />
-                    </div>
+                <div className={extractCls}>
+                    <AntcDropdown
+                        ref='changesales'
+                        content={
+                            <Button
+                                type="primary"
+                                data-tracename="点击批量提取线索按钮"
+                                className='btn-item'
+                                title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                            >
+                                {isWebMin ? <span className="iconfont icon-extract"></span> :
+                                    <React.Fragment>
+                                        <span className="iconfont icon-extract"></span>
+                                        {Intl.get('clue.pool.batch.extract.clue', '批量提取')}
+                                    </React.Fragment>
+                                }
+                            </Button>
+                        }
+                        overlayTitle={Intl.get('user.salesman', '销售人员')}
+                        okTitle={Intl.get('common.confirm', '确认')}
+                        cancelTitle={Intl.get('common.cancel', '取消')}
+                        isSaving={this.state.batchExtractLoading}
+                        overlayContent={this.renderSalesBlock()}
+                        handleSubmit={this.handleSubmitAssignSalesBatch}
+                        unSelectDataTip={this.state.unSelectDataTip}
+                        clearSelectData={this.clearSelectSales}
+                        btnAtTop={false}
+                    />
                 </div>
             );
         }
@@ -1106,6 +1155,7 @@ class ClueExtract extends React.Component {
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
             'firefox-padding': this.isFireFoxBrowser(),
+            'firefox-show-filter-padding': this.state.showFilterList && this.isFireFoxBrowser(),
             'status-type-hide': isFirstLoading,
             'clue-status-no-check': !this.hasClueSelectPrivilege()
         });
@@ -1149,15 +1199,18 @@ class ClueExtract extends React.Component {
                                 <span className="iconfont icon-sys-notice"/>
                                 {this.renderSelectClueTips()}
                             </div>
-                        ) : <SearchInput
-                            ref="searchInput"
-                            searchEvent={this.getClueByKeywords}
-                            searchPlaceHolder={Intl.get('clue.search.full.text', '全文搜索')}
-                        />}
-                        {
-                            hasSelectedClue ? this.renderBatchChangeClues() : null
-                        }
+                        ) :
+                            <div className="search-input-inner" style={{width: this.state.filterInputWidth}}>
+                                <SearchInput
+                                    ref="searchInput"
+                                    searchEvent={this.searchFullTextEvent}
+                                    searchPlaceHolder={Intl.get('clue.search.full.text', '全文搜索')}
+                                />
+                            </div>}
                     </div>
+                    {
+                        hasSelectedClue ? this.renderBatchChangeClues() : null
+                    }
                 </div>
                 <div className='extract-clue-content-container'>
                     <div className={this.state.showFilterList ? 'filter-container' : 'filter-container filter-close'}>

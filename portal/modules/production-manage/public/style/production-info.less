@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 // 错误提示的字体以及边框颜色
 @success-tip-color: #06ae06;
 @error-tip-color: #f5222d;
@@ -217,6 +218,67 @@
         }
       }
     }
+    // 详情中过滤IP样式
+    .ip-filter-card-container {
+      .detail-card-title {
+        height: 20px;
+        padding-bottom: 0;
+        margin-bottom: 0;
+        border-bottom: none;
+        .ip-filter-title {
+          .operate-btn {
+            float: right;
+            .icon-plus {
+              color: @operate-btn-color;
+            }
+          }
+        }
+      }
+      .detail-card-content {
+        .ip-filter-content {
+          .ip-content {
+            .ip-item {
+              cursor: pointer;
+              padding: 4px 0;
+              font-size: 14px;
+              color: @content-font-color;
+              .describe-info {
+                font-size: 12px;
+                color: @label-content-color;
+              }
+              .ip-delete-operator-zone {
+                float: right;
+                visibility: hidden;
+                margin-right: 8px;
+                .item-delete-buttons {
+                  font-size: 14px;
+                  .item-delete-confirm {
+                    color: @confirm-delete-background;
+                    margin-right: 12px;
+                  }
+                  .item-delete-cancel {
+                    color:@label-content-color;
+                  }
+                }
+              }
+              &:hover {
+                background-color: @mouse-enter-zone-background;
+                .ip-delete-operator-zone {
+                  visibility: visible;
+                }
+              }
+            }
+          }
+          .add-ip-content {
+            .add-ip-form {
+              .ant-form-item {
+                padding-right: 0;
+              }
+            }
+          }
+        }
+      }
+    }
   }
   form {
     .head-image-container {
@@ -252,6 +314,35 @@
       line-height: 24px;
       float: right;
       margin-right: 45px;
+    }
+  }
+}
+
+.global-filter-ip-popover {
+  .ant-popover-content > .ant-popover-arrow{
+    display: none;
+  }
+  .ant-popover-content {
+    position: relative;
+    top: -10px;
+    right: -30px;
+    .ant-popover-inner-content {
+      padding: 0;
+      .global-filter-ip {
+        font-size: 14px;
+        padding: 9px;
+        .icon-tips {
+          margin-right: 6px;
+          color: @hover-btn-color;
+        }
+        .content {
+          cursor: pointer;
+          color: @content-font-color;
+          .click-content {
+            color: @hover-btn-color;
+          }
+        }
+      }
     }
   }
 }

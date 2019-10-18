@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 .apply-approve-manage {
   padding: 12px;
   .apply-approve-wrap {
@@ -43,6 +44,25 @@
     }
     .show-apply-list.apply-approve-container{
       background: #fff;
+    }
+    .apply-approve-container{
+      .load-content, .errmsg-wrap {
+        margin: 260px auto;
+        text-align: center;
+        .iconfont{
+          font-size: 96px;
+          color:@LOADING_ERR_ICON;
+        }
+        .load8 {
+          transform: scale(1, 1);
+          position: initial;
+        }
+        .abnornal-status-tip {
+          margin-top: 10px;
+          font-size: 20px;
+          color:@LOADING_ERR_TIP;
+        }
+      }
     }
   }
 }

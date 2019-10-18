@@ -104,13 +104,13 @@ class ProductDropdown extends React.Component {
     render() {
         let integrateType = this.state.integrateType.toUpperCase();
         let importBtn = (
-            <Button className='btn-item btn-m-r-2'>
+            <Button className='btn-item'>
                 <i className='iconfont icon-oplate'></i>
                 {Intl.get('config.product.list.import', '导入产品')}
                 <Icon type="down"/>
             </Button>);
         return (
-            <div className="product-dropdown-container float-r btn-item-container">
+            <div className="product-dropdown-container btn-item">
                 <AntcDropdown
                     ref={productDropdown => this.productDropdownRef = productDropdown}
                     content={importBtn}

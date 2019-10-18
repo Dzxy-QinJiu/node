@@ -230,6 +230,12 @@ export { positionEmitter };
 //线索相关事件
 const clueEmitter = new EventEmitter();
 clueEmitter.REMOVE_CLUE_ITEM = 'remove_clue_item';
+clueEmitter.FLY_CLUE_WILLDISTRIBUTE = 'fly_clue_willdistribute';//线索动态移动到待分配
+clueEmitter.FLY_CLUE_WILLTRACE = 'fly_clue_willtrace';//线索动态移动到待跟进
+clueEmitter.FLY_CLUE_HASTRACE = 'fly_clue_hastrace';//线索动态移动到已跟进
+clueEmitter.FLY_CLUE_HASTRANSFER = 'fly_clue_hastransfer';//线索动态移动到已转化
+clueEmitter.FLY_CLUE_INVALID = 'fly_clue_invalid';//线索动态移动到无效中
+//移动到
 export { clueEmitter };
 
 //订单相关事件

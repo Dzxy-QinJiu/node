@@ -250,6 +250,7 @@ function filterCurtaoRoutes(routes) {
         'orderstage',//订单阶段
         'sales_auto',//销售自动化（用户、客户评分）
         'sales_process',//客户阶段的配置
+        'clue_integration', // 线索集成
     ];
     if(isCurtao()){
         //过滤掉不显示的一级菜单

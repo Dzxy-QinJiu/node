@@ -24,7 +24,6 @@ import {
     APPLY_LIST_LAYOUT_CONSTANTS,
     APPLY_APPROVE_TYPES,
     APPLY_TYPE_STATUS_CONST,
-    APPLY_TYPE
 } from 'PUB_DIR/sources/utils/consts';
 let userData = require('../../../public/sources/user-data');
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
@@ -73,15 +72,7 @@ class BusinessApplyManagement extends React.Component {
             BusinessApplyAction.setShowUpdateTip(true);
         }
     };
-    componentWillReceiveProps(nextProps) {
-        if (_.get(nextProps,'history.action') === 'PUSH'){
-            if (_.get(nextProps,'location.state.clickUnhandleNum')){
-                delete nextProps.location.state.clickUnhandleNum;
-                //取待审批的审批数
-                this.menuClick({key: 'ongoing'});
-            }
-        }
-    }
+
     updateSelectedItem = (message) => {
         if(message && message.status === 'success'){
             //通过或者驳回申请后改变申请的状态
@@ -303,7 +294,6 @@ class BusinessApplyManagement extends React.Component {
                 <div className="leave-apply-list-detail-wrap">
                     <div className="col-md-4 leave-apply-list" data-tracename="出差申请列表">
                         <ApplyDropdownAndAddBtn
-                            applyType={APPLY_TYPE.BUSINESS_TRIP}
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
                             addPrivilege='BUSINESS_TRIP_APPLY'

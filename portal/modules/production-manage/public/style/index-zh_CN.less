@@ -43,16 +43,24 @@
     background: #fff;
     .production-top-nav {
       height: 80px;
-      border-bottom: 1px solid #E5E5E5;
+      border-bottom: 1px solid @border-color;
       .condition-operator {
+        height: 100%;
+        padding: 24px;
         .pull-left {
-          padding: 24px 24px 0;
-        }
-        .pull-right {
-          padding-top: 10px;
-          padding-right: 16px;
           .icon-oplate {
             padding-right: 5px;
+          }
+        }
+        .pull-right {
+          .filter-ip-btn {
+            padding: 0 24px;
+            .btn-item {
+              margin-right: 0 !important;
+            }
+            .icon-filter-ip {
+              margin-right: 8px;
+            }
           }
         }
       }

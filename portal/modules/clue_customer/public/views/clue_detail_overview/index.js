@@ -36,7 +36,8 @@ import {
     getClueStatusValue,
     editCluePrivilege,
     assignSalesPrivilege,
-    handlePrivilegeType
+    handlePrivilegeType,
+    FLOW_FLY_TIME
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -107,7 +108,7 @@ class ClueDetailOverview extends React.Component {
     }
     onClueCustomerStoreChange = () => {
         let curClue = _.cloneDeep(this.state.curClue);
-        curClue.contacts = clueCustomerStore.getState().curClue.contacts;
+        curClue.contacts = _.get(clueCustomerStore.getState(), 'curClue.contacts');
         this.setState({curClue});
     };
     getSimilarClueLists = () => {
@@ -405,50 +406,6 @@ class ClueDetailOverview extends React.Component {
         });
     };
 
-    //保存跟进记录内容
-    saveTraceContentInfo = (saveObj, successFunc, errorFunc) => {
-        if (!_.get(saveObj,'remark')){
-            return;
-        }
-        var curClue = this.state.curClue;
-        subtracteGlobalClue(curClue);
-        saveObj.lead_id = saveObj.id;
-        saveObj.type = 'other';
-        delete saveObj.id;
-        clueCustomerAction.addCluecustomerTrace(saveObj, (result) => {
-            if (result && result.error) {
-                if (_.isFunction(errorFunc)) errorFunc(result.errorMsg);
-            } else {
-                var userId = userData.getUserData().user_id || '';
-                var userName = userData.getUserData().nick_name;
-                var addTime = moment().valueOf();
-                if (!curClue.customer_traces) {
-                    curClue.customer_traces = [
-                        {
-                            remark: saveObj.remark,
-                            user_id: userId,
-                            nick_name: userName,
-                            add_time: addTime
-                        }];
-                } else {
-                    //原来有customer_traces这个属性时，数组中除了remark还有别的属性
-                    curClue.customer_traces[0].remark = saveObj.remark;
-                    curClue.customer_traces[0].user_id = userId;
-                    curClue.customer_traces[0].nick_name = userName;
-                    curClue.customer_traces[0].add_time = addTime;
-                }
-                this.setState({
-                    curClue: curClue
-                });
-
-                //如果是待分配或者待跟进状态,需要在列表中删除并且把数字减一
-                clueCustomerAction.afterAddClueTrace(curClue);
-                this.props.updateCustomerLastContact(saveObj);
-                if (_.isFunction(successFunc)) successFunc();
-            }
-        });
-    };
-
     //分配线索给某个销售 && 这个销售不是当前账号
     handleChangeAssignedSales = (submitObj, successFunc, errorFunc) => {
         var user_id = _.get(this.state.curClue,'user_id');
@@ -496,10 +453,14 @@ class ClueDetailOverview extends React.Component {
                     };
                     this.props.updateClueProperty(updateObj);
                     if (isWillDistribute) {
-                        clueCustomerAction.afterAssignSales(curClue.id);
-                        this.props.updateClueProperty({
-                            'status': SELECT_TYPE.WILL_TRACE
-                        });
+                        clueEmitter.emit(clueEmitter.FLY_CLUE_WILLTRACE,curClue);
+                        setTimeout(() => {
+                            clueCustomerAction.afterAssignSales(curClue.id);
+                            this.props.updateClueProperty({
+                                'status': SELECT_TYPE.WILL_TRACE
+                            });
+                        }, FLOW_FLY_TIME);
+
                     }
                     //分配完线索后，需要将首页对应的工作设为已完成
                     if (window.location.pathname === '/home') {
@@ -619,9 +580,30 @@ class ClueDetailOverview extends React.Component {
                     editInvalidClueId: ''
                 });
             } else {
-                _.isFunction(callback) && callback(updateValue);
-                clueCustomerAction.deleteClueById(item);
-                clueCustomerAction.updateClueTabNum(item.status);
+                //改为有效，增加到不同的状态上
+                switch (item.status){
+                    case SELECT_TYPE.WILL_DISTRIBUTE:
+                        clueEmitter.emit(clueEmitter.FLY_CLUE_WILLDISTRIBUTE,item);
+                        break;
+                    case SELECT_TYPE.WILL_TRACE:
+                        clueEmitter.emit(clueEmitter.FLY_CLUE_WILLTRACE,item);
+                        break;
+                    case SELECT_TYPE.HAS_TRACE:
+                        clueEmitter.emit(clueEmitter.FLY_CLUE_HASTRACE,item);
+                        break;
+                    case SELECT_TYPE.HAS_TRANSFER:
+                        clueEmitter.emit(clueEmitter.FLY_CLUE_HASTRANSFER,item);
+                        break;
+                }
+                //延时删除是把数字更新完再在界面删除数据
+                setTimeout(() => {
+                    _.isFunction(callback) && callback(updateValue);
+                    clueCustomerAction.deleteClueById(item);
+                    clueCustomerAction.updateClueTabNum(item.status);
+                    this.props.updateClueProperty({
+                        availability: updateValue
+                    });
+                },FLOW_FLY_TIME);
                 this.setState({
                     isInvaliding: false,
                     editInvalidClueId: ''
@@ -796,21 +778,27 @@ class ClueDetailOverview extends React.Component {
                         submitInvalidateClueMsg: result
                     });
                 } else {
-                    _.isFunction(callback) && callback(updateAvailability);
-                    clueCustomerAction.deleteClueById(item);
-                    clueCustomerAction.updateClueTabNum('invalidClue');
-                    //前端更新跟进记录
-                    let newTrace = {
-                        remark: invalidReason,
-                        user_id: userData.getUserData().user_id || '',
-                        nick_name: userData.getUserData().nick_name,
-                        add_time: moment().valueOf(),
-                        time: moment().valueOf(),
-                        type: 'other',
-                        showAdd: false
-                    };
-                    subtracteGlobalClue(item);
-                    ClueTraceAction.addClueTraceWithoutAjax(newTrace);
+                    clueEmitter.emit(clueEmitter.FLY_CLUE_INVALID,item);
+                    setTimeout(() => {
+                        _.isFunction(callback) && callback(updateAvailability);
+                        clueCustomerAction.deleteClueById(item);
+                        clueCustomerAction.updateClueTabNum('invalidClue');
+                        //前端更新跟进记录
+                        let newTrace = {
+                            remark: invalidReason,
+                            user_id: userData.getUserData().user_id || '',
+                            nick_name: userData.getUserData().nick_name,
+                            add_time: moment().valueOf(),
+                            time: moment().valueOf(),
+                            type: 'other',
+                            showAdd: false
+                        };
+                        subtracteGlobalClue(item);
+                        ClueTraceAction.addClueTraceWithoutAjax(newTrace);
+                        this.props.updateClueProperty({
+                            availability: updateAvailability
+                        });
+                    },FLOW_FLY_TIME);
                     this.setState({
                         submitInvalidateLoading: false,
                         editInvalidClueId: '',

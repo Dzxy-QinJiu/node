@@ -24,7 +24,7 @@ import {
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
 import {contractChart} from 'ant-chart-collection';
-import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOpenCash, isFormalUser, getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis } from 'antc';
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
 const performance = {
@@ -78,6 +78,8 @@ const LAYOUT_CONSTANTS = {
 
 let tableHeight = 0;
 
+const PAGE_SIZE = 20;
+
 class TeamDataColumn extends React.Component {
     constructor(props) {
         super(props);
@@ -98,6 +100,11 @@ class TeamDataColumn extends React.Component {
             curExpireContractDateType: DATE_TYPE_KEYS.NEARLY_THREE_MONTH,
             expireContracts: {},
             isShowExpireContractPanel: false,
+            //本组织提取线索总量
+            extractCluesTotal: 0,
+            //提取线索条数（正式用户（显示本月提取数），测试用户（显示今天提取数））
+            extractCluesCount: 0,
+            organization: getOrganization()
         };
     }
 
@@ -109,6 +116,7 @@ class TeamDataColumn extends React.Component {
         this.getCallTimeData();
         this.getContactCustomerCount();
         this.getContactClueCount();
+        this.getExtractCluesCount();
         this.getExpireContractData();
         this.changeTableHeight();
         $(window).on('resize', e => this.changeTableHeight());
@@ -194,6 +202,35 @@ class TeamDataColumn extends React.Component {
         });
     }
 
+    getExtractCluesCount() {
+        let promiseList = [
+            // 获取本组织已提取线索数
+            this.getExtractCluesData({
+                startTime: _.get(this.state.organization, 'version.create_time', ''), //组织创建时间
+                endTime: moment().endOf('day').valueOf()
+            }),
+        ];
+        let queryObj = {
+            startTime: '',
+            endTime: ''
+        };
+        //判断是正式还是试用用户
+        if(isFormalUser()) {//正式, 获取本月提取数
+            queryObj.startTime = getThisMonthTimeStamp.start_time;
+            queryObj.endTime = getThisMonthTimeStamp.end_time;
+        }else {//试用，获取今天提取数
+            queryObj.startTime = moment().startOf('day').valueOf();
+            queryObj.endTime = moment().endOf('day').valueOf();
+        }
+        promiseList.push(this.getExtractCluesData(queryObj));
+        Promise.all(promiseList).then((result) => {
+            this.setState({
+                extractCluesTotal: result[0],
+                extractCluesCount: result[1]
+            });
+        });
+    }
+
     getDefaultCallTimeType() {
         let type = DATE_TYPE_KEYS.TODAY;
         //销售
@@ -211,6 +248,28 @@ class TeamDataColumn extends React.Component {
         }
         return type;
     }
+
+    //获取提取线索数量
+    getExtractCluesData = (queryObj) => {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: '/rest/recommend/clue/count',
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    timeStart: queryObj.startTime,
+                    timeEnd: queryObj.endTime,
+                },
+                success: (data) => {
+                    var count = _.get(data,'total', 0);
+                    resolve(count);
+                },
+                error: (errorInfo) => {
+                    reject(errorInfo);
+                }
+            });
+        });
+    };
 
     getCallTimeObj() {
         let curDateObj = _.find(DATE_TYPE_MAP, date => date.value === this.state.currentDateType);
@@ -479,6 +538,9 @@ class TeamDataColumn extends React.Component {
             // 设置table最大宽度
             chart.option.scroll = {x: TABLE_CONSTS.TABLE_MIN_WIDTH, y: tableHeight};
 
+            // 设置每页显示条数
+            chart.option.pagination = { pageSize: PAGE_SIZE };
+
             //负责人列索引
             const endTimeColumnIndex = _.findIndex(columns, column => column.dataIndex === 'end_time');
 
@@ -547,10 +609,9 @@ class TeamDataColumn extends React.Component {
                 noExportCsv: true,
                 processData: (data, chart) => {
                     const total = _.get(data, 'total', 0);
-                    chart.option.pagination = total > 10;//默认每页显示10条，但小于10条时，不显示分页
-                    if(chart.option.pagination) {
+                    if(total > PAGE_SIZE) {//默认每页显示20条，但小于20条时，不显示分页
                         chart.option.scroll.y = tableHeight - LAYOUT_CONSTANTS.PAGINATION_DISTANCE;
-                    }
+                    }else { chart.option.pagination = false; }
                     chart.title = Intl.get('home.page.expire.contract.at.time', '{time}即将到期合同统计', {
                         time: Intl.get('clue.customer.last.three.month', '近三个月')
                     }) + `(${Intl.get('sales.home.total.count', '共{count}个', {count: total})})`;
@@ -623,6 +684,33 @@ class TeamDataColumn extends React.Component {
         }
     }
 
+    //组织提取线索量统计
+    renderExtractCluesPanel() {
+        //TODO 后台管理配置客套版本暂未上线，无法获取组织可提取线索的总量，所以先显示已提取的条数，还可提取的暂定
+        // let residueExtractCluesCount = _.get(this.state.organization, 'version.max_lead_number', 0) - this.state.extractCluesCount;
+        // residueExtractCluesCount = residueExtractCluesCount > 0 ? residueExtractCluesCount : 0;
+        const extractClueContent = (
+            <div>
+                <div className='my-data-title'>{Intl.get('home.page.extract.clues.statistical', '提取线索量统计')}</div>
+                <div className="extract-clue-wrap">
+                    <div className='extract-clue-data'>
+                        {Intl.get('home.page.extract.clues.get.counts', '本组织已提取{count}条线索', {count: this.state.extractCluesTotal})}
+                    </div>
+                    <div className='extract-clue-data'>
+                        {isFormalUser() ?
+                            Intl.get('home.page.extracted.clues.on.months', '本月已提取{count}条线索',{count: this.state.extractCluesCount})
+                            : Intl.get('home.page.extracted.clues.on.today', '今天已提取{count}条线索',{count: this.state.extractCluesCount})}
+                    </div>
+                </div>
+            </div>);
+        return (
+            <DetailCard
+                content={extractClueContent}
+                className='my-data-extract-clues-card'
+            />
+        );
+    }
+
     renderTeamDataContent() {
         return (
             <div className='my-data-content' style={{height: getColumnHeight()}} data-tracename="我的数据">
@@ -631,6 +719,7 @@ class TeamDataColumn extends React.Component {
                     {this.renderCallTime()}
                     {this.renderContactCustomers()}
                     {this.renderContactClues()}
+                    {this.renderExtractCluesPanel()}
                     {isOpenCash() ? this.renderExpireContracts() : null}
                 </GeminiScrollbar>
                 {

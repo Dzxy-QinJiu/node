@@ -181,6 +181,10 @@
             }
             .collapse-btn {
                 color: @font-blue;
+                padding-left: 10px;
+                i.iconfont{
+                    margin-left: 5px;
+                }
             }
         }
         .advanced-container {
@@ -228,7 +232,7 @@
             }
             ul.item-container {
                 margin-top: 2px;
-                margin-left: -10px;
+                margin-left: -5px;
                 margin-right: -10px;
                 margin-bottom: 11px;
                 font-size: 0;
@@ -282,6 +286,10 @@
         cursor: pointer;
         &.active {
             color: @font-lightblue;
+        }
+        .icon-filter1 {
+            margin-right: 8px;
+            transform: translateY(1px);
         }
     }
     &.collapsed {
@@ -438,6 +446,16 @@
                     margin-right: 9px;
                 }
             }
+        }
+    }
+    &.min-search-icon {
+        .btn-item {
+            min-width: 2em;
+            padding: 0;
+        }
+        .icon-filter1 {
+            margin-right: 0;
+            transform: translateY(1px);
         }
     }
 }

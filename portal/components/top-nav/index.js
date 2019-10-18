@@ -160,7 +160,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/user_apply', {clickUnhandleNum: true});
+            history.push('/application/user_apply');
         });
         $('.topNav').on('click', '.application_business_apply_ico', function(e) {
             //如果点击到a标签上，不做处理
@@ -168,7 +168,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/business_apply', {clickUnhandleNum: true});
+            history.push('/application/business_apply');
         });
         $('.topNav').on('click', '.application_sales_opportunity_ico', function(e) {
             //如果点击到a标签上，不做处理
@@ -176,7 +176,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/sales_opportunity', {clickUnhandleNum: true});
+            history.push('/application/sales_opportunity');
         });
         $('.topNav').on('click', '.application_leave_apply_ico', function(e) {
             //如果点击到a标签上，不做处理
@@ -184,7 +184,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/leave_apply', {clickUnhandleNum: true});
+            history.push('/application/leave_apply');
         });
         $('.topNav').on('click', '.application_report_send_ico', function(e) {
             //如果点击到a标签上，不做处理
@@ -192,7 +192,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/report_send', {clickUnhandleNum: true});
+            history.push('/application/report_send');
         });
         $('.topNav').on('click', '.application_document_write_ico', function(e) {
             //如果点击到a标签上，不做处理
@@ -200,7 +200,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/document_write', {clickUnhandleNum: true});
+            history.push('/application/document_write');
         });
         $('.topNav').on('click', '.application_self_setting_ico', function(e) {
             //如果点击到a标签上，不做处理
@@ -208,7 +208,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/self_setting', {clickUnhandleNum: true});
+            history.push('/application/self_setting');
         });
         $('.topNav').on('click', '.application_domain_name_ico', function(e) {
             //如果点击到a标签上，不做处理
@@ -216,7 +216,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/domain_application', {clickUnhandleNum: true});
+            history.push('/application/domain_name');
         });
 
 

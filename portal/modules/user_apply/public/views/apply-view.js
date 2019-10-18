@@ -87,12 +87,6 @@ class ApplyTabContent extends React.Component {
                     this.retryFetchApplyList();
                 }
             });
-        }else if (_.get(nextProps,'history.action') === 'PUSH'){
-            if (_.get(nextProps,'location.state.clickUnhandleNum')){
-                delete nextProps.location.state.clickUnhandleNum;
-                //取待审批的审批数
-                this.menuClick({key: 'false'});
-            }
         }
     }
 

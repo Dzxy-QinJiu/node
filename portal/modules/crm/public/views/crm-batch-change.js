@@ -21,6 +21,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import crmUtil from '../utils/crm-util';
 import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import classNames from 'classnames';
 var CrmAction = require('../action/crm-actions');
 const BATCH_OPERATE_TYPE = {
     CHANGE_SALES: 'changeSales',//变更销售人员
@@ -54,6 +55,8 @@ var CrmBatchChange = createReactClass({
         selectAllMatched: PropTypes.bool,
         matchedNum: PropTypes.number,
         condition: PropTypes.object,
+        isWebMini: PropTypes.bool,
+        isWebMiddle: PropTypes.bool
     },
     getInitialState: function() {
         return {
@@ -239,6 +242,7 @@ var CrmBatchChange = createReactClass({
             BatchChangeActions.setUnSelectDataTip(Intl.get('crm.212', '请选择标签'));
             return;
         }
+        let savedTags = this.state.tags;
         BatchChangeActions.setLoadingState(true);
         let condition = {
             query_param: {},
@@ -267,7 +271,7 @@ var CrmBatchChange = createReactClass({
                 var totalSelectedSize = is_select_all ? crmStore.getCustomersLength() : this.props.selectedCustomer.length;
                 //构造批量操作参数
                 var batchParams = {
-                    tags: this.state.tags
+                    tags: savedTags
                 };
                 //向任务列表id中添加taskId
                 batchOperate.addTaskIdToList(result.taskId);
@@ -351,7 +355,7 @@ var CrmBatchChange = createReactClass({
 
     //批量修改地域
     doChangeTerritory: function() {
-        let territoryObj = this.state.territoryObj;
+        let territoryObj = _.cloneDeep(this.state.territoryObj);
         if (!territoryObj.city && !territoryObj.county && !territoryObj.province) {
             BatchChangeActions.setUnSelectDataTip(Intl.get('common.edit.address.placeholder', '请选择地址'));
             return;
@@ -380,7 +384,7 @@ var CrmBatchChange = createReactClass({
                 //全部记录的个数
                 var totalSelectedSize = is_select_all ? crmStore.getCustomersLength() : this.props.selectedCustomer.length;
                 //构造批量操作参数
-                var batchParams = this.state.territoryObj;
+                var batchParams = territoryObj;
                 //向任务列表id中添加taskId
                 batchOperate.addTaskIdToList(result.taskId);
                 //存储批量操作参数，后续更新时使用
@@ -710,7 +714,10 @@ var CrmBatchChange = createReactClass({
     renderBatchChange() {
         return (
             <Dropdown overlay={this.getBatchChangeMenus()}>
-                <Button type='primary' className='btn-item'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>
+                <Button type='primary' className='btn-item'>
+                    <span className="iconfont icon-modify-condition"></span>
+                    {Intl.get('crm.32', '变更')}
+                </Button>
             </Dropdown>
         );
     },
@@ -721,16 +728,38 @@ var CrmBatchChange = createReactClass({
         });
     },
     render: function() {
-        const changeBtns = {
-            btn: (<Button type='primary' className='btn-item'>{Intl.get('crm.32', '变更')}<Icon type="down" /></Button>),
-            schedule: (<Button className='btn-item'
-                onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>{Intl.get('crm.214', '添加联系计划')}</Button>)
+        //在页面处于手机屏尺寸时，dropdown按钮模拟为“更多”按钮
+        let showBatchBtn = !this.props.isWebMini ?
+            (<Button type='primary' className='btn-item'>
+                <span className="iconfont icon-modify-condition"></span>
+                {Intl.get('crm.32', '变更')}
+            </Button>) : (
+                <Button className='more-btn'>
+                    <i className="iconfont icon-more"></i>
+                </Button>);
+        //在页面处于手机屏尺寸与pad尺寸时，添加联系计划按钮模拟为“更多”按钮
+        let showScheduleBtn = !(this.props.isWebMiddle || this.props.isWebMini) ? (
+            <Button className='btn-item' onClick={this.setCurrentTab.bind(this, BATCH_OPERATE_TYPE.ADD_SCHEDULE_LISTS)}>
+                <span className="iconfont icon-filter"></span>
+                {Intl.get('crm.214', '添加联系计划')}
+            </Button>) : (
+            <Button className='more-btn schedule-more-btn'>
+                <i className="iconfont icon-more"></i>
+            </Button>);
+        let changeBtns = {
+            btn: showBatchBtn,
+            schedule: showScheduleBtn
         };
         let isShowDropDownContent = !this.state.isShowBatchMenu;
+        //中屏和小屏的时候不展示添加联系计划按钮
+        let showAddingSchedule = !(this.props.isWebMini || this.props.isWebMiddle) ? 'inline-block' : 'none';
+        let miniWebBatch = classNames('crm-batch-change-container', {
+            'mini-crm-batch': this.props.isWebMini
+        });
         return (
-            <div className="crm-batch-change-container" >
+            <div className={miniWebBatch}>
                 {
-                    this.state.isShowBatchMenu ? this.renderBatchChange() : null
+                    !this.props.isWebMini && this.state.isShowBatchMenu ? this.renderBatchChange() : null
                 }
                 {
                     (this.state.currentTab === BATCH_OPERATE_TYPE.CHANGE_TAG ||
@@ -820,6 +849,7 @@ var CrmBatchChange = createReactClass({
                 }
                 <AntcDropdown
                     ref="addSchedule"
+                    placement="bottomRight"
                     stopContentHide={this.state.stopContentHide}
                     content={changeBtns.schedule}
                     overlayTitle={Intl.get('crm.214', '添加联系计划')}
