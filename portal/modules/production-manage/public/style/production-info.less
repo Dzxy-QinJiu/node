@@ -1,3 +1,4 @@
+@import "../../../../public/css/common-variables";
 // 错误提示的字体以及边框颜色
 @success-tip-color: #06ae06;
 @error-tip-color: #f5222d;
@@ -213,6 +214,64 @@
           }
           textarea {
             margin-left: 0;
+          }
+        }
+      }
+    }
+    // 详情中过滤IP样式
+    .ip-filter-card-container {
+      margin-top: 0;
+      .detail-card-title {
+        height: 20px;
+        padding-bottom: 0;
+        margin-bottom: 0;
+        border-bottom: none;
+        .ip-filter-title {
+          .operate-btn {
+            float: right;
+            .icon-plus {
+              color: @operate-btn-color;
+            }
+          }
+        }
+      }
+      .detail-card-content {
+        .ip-filter-content {
+          .ip-content {
+            .ip-item {
+              cursor: pointer;
+              padding: 4px 0;
+              font-size: 14px;
+              color: @content-font-color;
+              .ip-delete-operator-zone {
+                float: right;
+                visibility: hidden;
+                margin-right: 8px;
+                .item-delete-buttons {
+                  font-size: 14px;
+                  .item-delete-confirm {
+                    color: @confirm-delete-background;
+                    margin-right: 12px;
+                  }
+                  .item-delete-cancel {
+                    color:@label-content-color;
+                  }
+                }
+              }
+              &:hover {
+                background-color: @mouse-enter-zone-background;
+                .ip-delete-operator-zone {
+                  visibility: visible;
+                }
+              }
+            }
+          }
+          .add-ip-content {
+            .add-ip-form {
+              .ant-form-item {
+                padding-right: 0;
+              }
+            }
           }
         }
       }
