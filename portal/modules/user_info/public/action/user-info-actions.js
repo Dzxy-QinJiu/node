@@ -98,7 +98,7 @@ function UserInfoActions() {
             _this.dispatch({error: true, errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')});
         });
     };
-    //
+    //账号日志汉化
     this.translate = (list) => {
         let browserList = {
             'Chrome': Intl.get('user.login.browser.chrom', '谷歌'),
