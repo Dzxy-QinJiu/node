@@ -2567,6 +2567,7 @@ class ClueCustomer extends React.Component {
                         <AntcDropdown
                             ref='changesales'
                             content={<Button type="primary"
+                                title={Intl.get('clue.batch.assign.sales', '批量分配')}
                                 data-tracename="点击分配线索客户按钮"
                                 className='btn-item'>
                                 { isWebMin ? <span className="iconfont icon-assign"></span> :

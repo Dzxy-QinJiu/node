@@ -565,6 +565,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     onVisibleChange={this.handleBatchVisibleChange}
                 >
                     <Button
+                        title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                         type="primary"
                         data-tracename="点击批量提取线索按钮"
                         className='btn-item common-sale-batch-extract'
@@ -584,6 +585,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     ref='changesales'
                     content={
                         <Button
+                            title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                             type="primary"
                             data-tracename="点击批量提取线索按钮"
                             className='btn-item'
@@ -634,6 +636,7 @@ class RecommendCustomerRightPanel extends React.Component {
                                 {hasSelectedClue ? null :
                                     <React.Fragment>
                                         <Button className="btn-item" data-tracename="点击修改推荐条件"
+                                            title={Intl.get('clue.customer.condition.change', '修改条件')}
                                             onClick={this.handleClickEditCondition}>
                                             {isWebMin ? <span className="iconfont icon-modify-condition"></span> :
                                                 <React.Fragment>
@@ -642,6 +645,7 @@ class RecommendCustomerRightPanel extends React.Component {
                                                 </React.Fragment>}
                                         </Button>
                                         <Button className="btn-item" data-tracename="点击换一批按钮"
+                                            title={Intl.get('clue.customer.refresh.list', '换一批')}
                                             onClick={this.handleClickRefreshBtn}>
                                             {isWebMin ? <span className="iconfont icon-change-new"></span> :
                                                 <React.Fragment>
