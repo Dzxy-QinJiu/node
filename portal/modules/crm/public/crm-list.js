@@ -1613,8 +1613,18 @@ class Crm extends React.Component {
                 width: column_width,
                 dataIndex: 'contact_email',
                 render: (text, record, index) => {
+                    let email_verify_list = _.get(record,'errors.email_verify',[]);
                     return _.map(record.contact_email, (item, index) => {
-                        return (<div key={index}>{item}</div>);
+                        //邮箱规则不匹配的邮箱列表
+                        let email_verify_list = _.get(record, 'errors.email_verify');
+                        let cls = '';
+                        let title = '';
+                        //邮箱规则不匹配
+                        if (this.isIncludesItem(email_verify_list, item)) {
+                            cls = classNames({'repeat-item-name': true});
+                            title = Intl.get('crm.import.email.verify', '邮箱格式不对');
+                        }
+                        return (<div className={cls} title={title} key={index}>{item}</div>);
                     });
                 }
             }, {

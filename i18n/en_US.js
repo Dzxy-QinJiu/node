@@ -1753,6 +1753,7 @@ var en_US = {
     'crm.import.phone.repeat': 'The same phone exists in the imported data',//导入数据中存在相同的电话
     'crm.system.phone.repeat': 'The telephone has been used by other {type}',//电话已被其他{type}使用
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
+    'crm.import.email.verify': 'Incorrect email format',//邮箱格式不对
     'crm.customer.release': 'Release',//释放
     'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
     'crm.customer.delete': 'After deletion, the customer can be found in the recycle bin. Are you sure you want to delete it?',//删除后，可以在回收站中找回该客户，您确定要删除吗？
