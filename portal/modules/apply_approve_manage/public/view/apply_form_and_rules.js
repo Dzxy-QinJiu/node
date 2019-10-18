@@ -34,12 +34,11 @@ import Spinner from 'CMP_DIR/spinner';
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
-        var applyTypeData = {};
         this.state = {
-            activeKey: _.get(applyTypeData,'customiz') ? TAB_KEYS.FORM_CONTENT : TAB_KEYS.APPLY_RULE,//当前选中的TAB
+            activeKey: '',
             isEdittingApplyName: false,//正在修改申请审批的标题
             updateApplyName: '',//修改后标题的名称
-            applyTypeData: applyTypeData,//编辑某个审批的相关数据
+            applyTypeData: {},//编辑某个审批的相关数据
             ...ApplyApproveManageStore.getState()
         };
     }
