@@ -1798,6 +1798,7 @@ var zh_CN = {
     'crm.import.phone.repeat': '导入数据中存在相同的电话',
     'crm.system.phone.repeat': '电话已被其他{type}使用',
     'crm.import.phone.verify': '电话只能是11位手机号或11-12位带区号的座机号',
+    'crm.import.email.verify': '邮箱格式不对',
     'crm.customer.delete': '删除后，可以在回收站中找回该客户，您确定要删除吗？',
     'crm.customer.release': '释放',
     'crm.customer.release.pool': '释放到客户池',
