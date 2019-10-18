@@ -74,32 +74,6 @@ class AddAndShowApplyList extends React.Component {
             showApplyDetailId: recordId,
         });
     }
-    //请求并展示审批流程
-    getSelfSettingWorkFlow = (recordId) => {
-        let submitObj = {page_size: 1, id: recordId};
-        let showApplyList = this.state.showApplyList;
-        let newUserData = userData.getUserData().workFlowConfigs;
-        applyApproveManageAction.getSelfSettingWorkFlow(submitObj,(data) => {
-            this.changeNewFlow(showApplyList,recordId,data);
-            this.changeNewFlow(newUserData,recordId,data);
-            if(data[0]){
-                this.setState({
-                    showApplyDetailForm: true,
-                    showApplyList: showApplyList,
-                    applyTypeData: data[0],
-                });
-            }
-        });
-    }
-    //将请求到的内容更新
-    changeNewFlow = (list,id,data) => {
-        _.forEach(list,(value) => {
-            if(_.get(value,'id') === id && data[0]){
-                _.extend(value, data[0]);
-                return false;
-            }
-        });
-    }
     onStoreChange = () => {
         this.setState(applyApproveManageStore.getState());
     };
