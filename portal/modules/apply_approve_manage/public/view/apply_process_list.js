@@ -64,7 +64,6 @@ class AddAndShowApplyList extends React.Component {
             var $tr = $(this).closest('tr');
             var id = $tr.find('.record-id').text();
             if (id) {
-                // _this.getSelfSettingWorkFlow(id);
                 _this.getSelfSettingWorkFlowId(id);
             }
         });
@@ -246,7 +245,6 @@ class AddAndShowApplyList extends React.Component {
         return(
             <div>
                 <ApplyFormAndRules
-                    // applyTypeData={this.state.applyTypeData}
                     applyTypeId={this.state.showApplyDetailId}
                     closeAddPanel={this.closeAddApplyPanel}
                 />

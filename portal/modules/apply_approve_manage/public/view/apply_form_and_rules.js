@@ -34,7 +34,6 @@ import Spinner from 'CMP_DIR/spinner';
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
-        // var applyTypeData = _.cloneDeep(this.props.applyTypeData);
         var applyTypeData = {};
         this.state = {
             activeKey: _.get(applyTypeData,'customiz') ? TAB_KEYS.FORM_CONTENT : TAB_KEYS.APPLY_RULE,//当前选中的TAB
@@ -431,7 +430,6 @@ class ApplyFormAndRules extends React.Component {
     render = () => {
         var applyTypeData = this.state.applyTypeData;
         var initialApplyTitle = _.get(applyTypeData, 'description') || _.get(applyTypeData, 'type');
-        console.log(this.state);
         if(this.state.getSelfSettingWorkFlowLoading){
             return(
                 <div className="load-content">
@@ -480,13 +478,11 @@ ApplyFormAndRules.defaultProps = {
     closeAddPanel: function() {
 
     },
-    // applyTypeData: {}
     applyTypeId: null,
 };
 
 ApplyFormAndRules.propTypes = {
     closeAddPanel: PropTypes.func,
-    // applyTypeData: PropTypes.object,
     applyTypeId: PropTypes.number,
     form: PropTypes.object,
 };
