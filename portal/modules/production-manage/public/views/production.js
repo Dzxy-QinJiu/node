@@ -5,13 +5,12 @@
  */
 
 import '../style/production-info.less';
-import {Form, Icon, Input, Switch} from 'antd';
+import {Form, Icon, Input, Switch,message, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {productNameRule, getNumberValidateRule, productNameRuleForValidator} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
-
 let HeadIcon = require('../../../../components/headIcon');
 let FormItem = Form.Item;
 let GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
@@ -25,6 +24,10 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import CustomVariable from 'CMP_DIR/custom-variable/custom_variable';
 import DetailCard from 'CMP_DIR/detail-card';
 import classNames from 'classnames';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import AddIpForm from './add-ip-form';
+import productionAjax from '../ajax/production-ajax';
+import IpFilter from './ip-filter';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -57,6 +60,7 @@ class Production extends React.Component {
         }
     };
     initData = (props) => {
+        console.log('props:',props);
         let uemSiteId = _.get(props, 'info.integration_type') === INTEGRATE_TYPES.UEM ? _.get(props, 'info.integration_id', '') : '';
         return {
             create_time: props.info.create_time ? moment(props.info.create_time).format(oplateConsts.DATE_FORMAT) : '',
@@ -71,7 +75,13 @@ class Production extends React.Component {
             isJsCardShow: !_.isEmpty(_.get(this.props.info,'integration_type')),//是否展示Js采集用户信息card
             addUemProductErrorMsg: '',//改为集成错误信息
             isAddingUemProduct: false,//正在添加为集成产品
-            saveLogoErrorMsg: ''//保存产品Logo错误信息
+            saveLogoErrorMsg: '',//保存产品Logo错误信息
+            productionFilterIp: _.get(props, 'productionFilterIp.filter_ips', []),
+            isShowAddIp: false, // 是否显示添加IP
+            isAppFilterIpLoading: false, // 添加过滤ip loading
+            isDeletingLoading: false, // 删除过滤ip loading
+            deleteIpId: '', // 删除过滤ip的ID
+            isShowGlobalFilterIp: false, // 是否显示全局过滤IP
         };
     };
 
@@ -434,6 +444,238 @@ class Production extends React.Component {
         );
     }
 
+    handleShowAddIp = () => {
+        this.setState({
+            isShowAddIp: true
+        });
+    };
+
+    renderDetailTitle = () => {
+        return (
+            <div className="ip-filter-title">
+                <span className="content">该产品统计分析时过滤以下IP：</span>
+                {
+                    hasPrivilege('CREATE_CONFIG_IP') ? (
+                        this.state.isShowAddIp ? null : (
+                            <span className="operate-btn" onClick={this.handleShowAddIp}>
+                                <i className="iconfont icon-plus"></i>
+                            </span>
+                        )
+                    ) : null
+                }
+            </div>
+        );
+    };
+
+    // 添加IP
+    handleSubmitAddIp = (ipObj) => {
+        let submitObj = {
+            product_id: this.props.info.id,
+            filter_ips: [ipObj.ip]
+        };
+        this.setState({
+            isAppFilterIpLoading: true
+        });
+        productionAjax.productionAddFilterIP(submitObj).then((result) => {
+            this.setState({
+                isAppFilterIpLoading: false,
+                isShowAddIp: false
+            });
+            let productionFilterIp = this.state.productionFilterIp;
+
+            if (result) {
+                productionFilterIp.unshift(ipObj.ip);
+                this.setState({
+                    productionFilterIp: productionFilterIp
+                });
+            } else {
+                message.error(Intl.get('crm.154', '添加失败！'));
+            }
+        }, (errMsg) => {
+            this.setState({
+                isAppFilterIpLoading: false,
+                isShowAddIp: false
+            });
+            message.error(errMsg || Intl.get('crm.154', '添加失败！'));
+        });
+    };
+
+    // 取消保存添加的ip
+    handleCancelAddIP = () => {
+        this.setState({
+            isShowAddIp: false
+        });
+    };
+
+    // 渲染产品添加过滤IP
+    renderProductionAddFilterIp = () => {
+        return (
+            <AddIpForm
+                handleCancelAddIP={this.handleCancelAddIP}
+                handleSubmitAddIp={this.handleSubmitAddIp}
+                loading={this.state.isAppFilterIpLoading}
+            />
+        );
+    };
+
+    // 点击删除IP
+    handleDeleteIP = (ipItem) => {
+        this.setState({
+            deleteIpId: ipItem.id
+        });
+    };
+
+    // 确认删除IP
+    handleConfirmDeleteIp = (item, event) => {
+        event && event.stopPropagation();
+        this.setState({
+            isDeletingLoading: true
+        });
+        const deleteIpObj = {
+            productId: this.props.info.id,
+            ip: item.ip
+        };
+        productionAjax.productionDeleteFilterIP(deleteIpObj).then((result) => {
+            this.setState({
+                isDeletingLoading: false,
+                deleteIpId: ''
+            });
+            if (result === true) { // 删除成功
+                let productionFilterIp = _.filter(this.state.productionFilterIp, ip => ip !== item.ip);
+                this.setState({
+                    productionFilterIp: productionFilterIp
+                });
+            } else {
+                message.error(Intl.get('crm.139', '删除失败！'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.139', '删除失败！'));
+            this.setState({
+                isDeletingLoading: false,
+                deleteIpId: ''
+            });
+        });
+    };
+
+    // 取消删除IP
+    cancelDeleteIp = () => {
+        this.setState({
+            deleteIpId: ''
+        });
+    };
+
+    handleShowGlobalFilterIP = () => {
+        this.setState({
+            isShowGlobalFilterIp: true
+        });
+    };
+
+    closeIpFilterPanel = () => {
+        this.setState({
+            isShowGlobalFilterIp: false
+        });
+        this.props.closeRightPanel();
+    };
+
+    // 处理全局过滤IP
+    handleGlobalFilterIp = () => {
+        return (
+            <div className="global-filter-ip">
+                <i className="iconfont icon-tips"></i>
+                <span className="content">
+                    请到全部产品
+                    <span 
+                        onClick={this.handleShowGlobalFilterIP}
+                        className="click-content"
+                    >
+                        过滤IP</span>页面删除
+                </span>
+            </div>
+        );
+    };
+
+    renderDetailIpList = () => {
+        let filterIps = this.state.productionFilterIp;
+        let productionFilterIpList = [];
+        // 产品过滤ip数据处理，和全局过滤IP一致，方便处理
+        _.each(filterIps, (item, index) => {
+            productionFilterIpList.push({ip: item, id: index, flag: 'singleFilter'});
+        });
+
+        let allFilterIpList = _.concat(productionFilterIpList, this.props.allProductionFilterIpList);
+        return (
+            <div className="ip-filter-content">
+                {
+                    this.state.isShowAddIp ? (
+                        <div className="add-ip-content">
+                            {this.renderProductionAddFilterIp()}
+                        </div>
+                    ) : null
+                }
+                <ul className="ip-content">
+                    {_.map(allFilterIpList, ipItem => {
+                        return (
+                            <li
+                                className="ip-item"
+                                key={ipItem.id}
+                            >
+                                <span>{ipItem.ip}</span>
+                                {
+                                    ipItem.flag ? null : (
+                                        <span className="describe-info">（全部产品过滤)</span>
+                                    )
+                                }
+                                <span className="ip-delete-operator-zone">
+                                    {
+
+                                        ipItem.flag && ipItem.id === this.state.deleteIpId ? (
+                                            <span className="item-delete-buttons">
+                                                <span
+                                                    className="item-delete-confirm"
+                                                    disabled={this.state.isDeletingLoading}
+                                                    onClick={this.handleConfirmDeleteIp.bind(this, ipItem)}
+                                                >
+                                                    {
+                                                        this.state.isDeletingLoading ? <Icon type="loading"/> : null
+                                                    }
+                                                    {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                                </span>
+                                                <span
+                                                    className="item-delete-cancel"
+                                                    onClick={this.cancelDeleteIp.bind(this, ipItem)}
+                                                >
+                                                    {Intl.get('common.cancel', '取消')}
+                                                </span>
+                                            </span>
+                                        ) : (
+                                            ipItem.flag ? (
+                                                <span
+                                                    onClick={this.handleDeleteIP.bind(this, ipItem)}
+                                                    className="operate-btn"
+                                                    data-tracename={'点击删除' + ipItem.ip}
+                                                >
+                                                    <i className="iconfont icon-delete handle-btn-item"></i>
+                                                </span>
+                                            ) : (
+                                                <Popover
+                                                    overlayClassName="global-filter-ip-popover"
+                                                    content={this.handleGlobalFilterIp()}
+                                                    placement="bottomRight"
+                                                >
+                                                    <i className="iconfont icon-delete handle-btn-item"></i>
+                                                </Popover>
+                                            )
+                                        )
+                                    }
+                                </span>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+        );
+    };
+
     //渲染编辑面板内容
     renderProductDetails = () => {
         //产品单价
@@ -591,6 +833,18 @@ class Production extends React.Component {
                     <DetailCard content={accessAddress}/>
                     <DetailCard content={productDescription}/>
                     <DetailCard content={foundTime}/>
+                    <DetailCard
+                        title={this.renderDetailTitle()}
+                        content={this.renderDetailIpList()}
+                        className='ip-filter-card-container'
+                    />
+                    {
+                        this.state.isShowGlobalFilterIp ? (
+                            <IpFilter
+                                closeIpFilterPanel={this.closeIpFilterPanel}
+                            />
+                        ) : null
+                    }
                     {_.isEqual(_.get(this.state, 'integrateType'), INTEGRATE_TYPES.UEM) ?
                         <div className="product-card-with-switch">
                             <DetailCard
@@ -633,6 +887,8 @@ Production.propTypes = {
     closeRightPanel: PropTypes.func,
     form: PropTypes.object,
     afterOperation: PropTypes.func,
-    openRightPanel: PropTypes.func
+    openRightPanel: PropTypes.func,
+    allProductionFilterIpList: PropTypes.array,
+    productionFilterIp: PropTypes.object,
 };
 module.exports = Form.create()(Production);

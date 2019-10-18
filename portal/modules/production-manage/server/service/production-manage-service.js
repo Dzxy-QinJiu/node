@@ -8,6 +8,8 @@ var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
 var EventEmitter = require('events').EventEmitter;
+// 产品配置中过滤ip公共的url
+const filterIpCommonUrl = '/rest/base/v1/products/config/';
 const productRestApis = {
     product: '/rest/base/v1/products',
     oplateProductList: '/rest/base/v1/application/oplate',
@@ -15,9 +17,41 @@ const productRestApis = {
     //uem产品转普通产品，普通产品转uem产品,type=uem\normal
     changeProductType: '/rest/base/v1/products/uem/interconversion/:product_id/:type',
     //集成配置（oplate\matomo）
-    integrationConfig: '/rest/base/v1/products/integration/config'
+    integrationConfig: '/rest/base/v1/products/integration/config',
+    productionGetFilterIP: filterIpCommonUrl + ':product_id', // 获取产品配置中的ip（后端描述：获取产品的配置，加注释：方便在yapi上查找接口）
+    productionAddFilterIP: filterIpCommonUrl + 'filterIP', // 产品配置中增加过滤ip
+    productionDeleteFilterIP: filterIpCommonUrl + 'filterIP/:product_id/:ips', // 产品配置中删除过滤ip
 };
 
+// 获取产品配置中的ip
+exports.productionGetFilterIP = (req, res) => {
+    return restUtil.authRest.get({
+        url: productRestApis.productionGetFilterIP.replace(':product_id',req.params.product_id),
+        req: req,
+        res: res
+    }, null);
+};
+
+// 产品配置中增加过滤ip
+exports.productionAddFilterIP = (req, res) => {
+    return restUtil.authRest.post({
+        url: productRestApis.productionAddFilterIP ,
+        req: req,
+        res: res
+    }, req.body);
+};
+
+// 产品配置中删除过滤ip
+exports.productionDeleteFilterIP = (req, res) => {
+    let product_id = req.params.product_id;
+    let ips = req.params.ips;
+    return restUtil.authRest.del({
+        url: productRestApis.productionDeleteFilterIP.replace(':product_id',product_id)
+            .replace(':ips', ips) ,
+        req: req,
+        res: res
+    }, null);
+};
 //获取产品列表
 exports.getProduct = function(req, res) {
     let query = req.query || {page_size: 1000};

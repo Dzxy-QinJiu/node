@@ -921,6 +921,8 @@ var en_US = {
     // 后台管理- 产品start
     'product.name.input': 'Please enter the name of product', // 请填写产品名称
     'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'product.filter.ip.add.ip.placeholder': 'Please enter the filter IP', // 请输入要排除的IP
+    'product.filter.ip': 'Filter IP', // 过滤IP
     // 后台管理- 产品end
 
     // 后台管理-行业start

@@ -96,5 +96,26 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    }, {// 获取产品过滤IP
+        'method': 'get',
+        'path': '/rest/product/get/filter/ip/:product_id',
+        'handler': 'productionGetFilterIP',
+        'passport': {
+            'needLogin': true
+        }
+    }, { // 产品添加过滤IP
+        'method': 'post',
+        'path': '/rest/product/add/filter/ip',
+        'handler': 'productionAddFilterIP',
+        'passport': {
+            'needLogin': true
+        }
+    }, { // 产品删除过滤IP
+        'method': 'delete',
+        'path': '/rest/product/delete/filter/ip/:product_id/:ips',
+        'handler': 'productionDeleteFilterIP',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };
