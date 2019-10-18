@@ -24,7 +24,9 @@ import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import ProductDropDown from './views/product-dropdown';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
+import IpFilterAjax from './ajax/ip-filter-ajax';
 import IpFilter from './views/ip-filter';
+
 
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
 let productList = [];
@@ -34,6 +36,9 @@ class ProductionManage extends React.Component {
         integrateType: '', //集成类型uem、oplate、matomo
         productList: productList, //集成的oplate\matomo产品列表
         addErrorMsg: '',//导入产品失败的提示
+        isLoading: false, // 获取ip；列表loading
+        ipList: [], // ip列表
+        errMsg: '',
         isShowIpFilterPanel: false, // 是否显示ip过滤面板，默认false
     };
 
@@ -46,7 +51,26 @@ class ProductionManage extends React.Component {
         ProductionStore.listen(this.onChange);
         //获取集成类型
         this.getIntegrationConfig();
+        // 获取全部产品过滤的IP
+        this.getAllProductionFilterIpList();
     }
+
+    getAllProductionFilterIpList = () => {
+        this.setState({
+            isLoading: true
+        });
+        IpFilterAjax.getIpList({page_size: 1000}).then( (result) => {
+            this.setState({
+                isLoading: false,
+                ipList: _.isArray(result) && result || []
+            });
+        }, (errMsg) => {
+            this.setState({
+                isLoading: false,
+                errMsg: errMsg
+            });
+        } );
+    };
 
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
@@ -108,10 +132,9 @@ class ProductionManage extends React.Component {
     };
 
     events_showDetail = (production) => {
-        console.log('events_showDetail production:',production);
         Trace.traceEvent('产品管理', '点击查看产品详情');
+        ProductionAction.productionGetFilterIP(production.id);
         ProductionAction.setCurProduction(production.id);
-        // ProductionAction.getProductById(production.id);
         if ($('.right-panel-content').hasClass('right-panel-content-slide')) {
             $('.right-panel-content').removeClass('right-panel-content-slide');
             if (openTimeout) {
@@ -121,7 +144,7 @@ class ProductionManage extends React.Component {
                 ProductionAction.showInfoPanel();
             }, 200);
         } else {
-            ProductionAction.showInfoPanel(); f;
+            ProductionAction.showInfoPanel();
         }
     };
 
@@ -325,12 +348,15 @@ class ProductionManage extends React.Component {
                                 closeRightPanel={this.events_closeRightPanel}
                                 openRightPanel={this.events_showDetail.bind(this, this.state.currentProduction)}
                                 afterOperation={this.events_afterOperation}
+                                allProductionFilterIpList={this.state.ipList}
+                                productionfilterIp={this.state.productionfilterIp}
                             /> : null}
                         {this.state.deleteError ? (<message></message>) : null}
                         {
                             this.state.isShowIpFilterPanel ? (
                                 <IpFilter
                                     closeIpFilterPanel={this.closeIpFilterPanel}
+                                    allProductionFilterIpList={this.state.ipList}
                                 />
                             ) : null
                         }

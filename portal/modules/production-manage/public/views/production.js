@@ -5,13 +5,12 @@
  */
 
 import '../style/production-info.less';
-import {Form, Icon, Input, Switch} from 'antd';
+import {Form, Icon, Input, Switch,message} from 'antd';
 import Trace from 'LIB_DIR/trace';
 import {productNameRule, getNumberValidateRule, productNameRuleForValidator} from 'PUB_DIR/sources/utils/validate-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
-
 let HeadIcon = require('../../../../components/headIcon');
 let FormItem = Form.Item;
 let GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
@@ -25,6 +24,9 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import CustomVariable from 'CMP_DIR/custom-variable/custom_variable';
 import DetailCard from 'CMP_DIR/detail-card';
 import classNames from 'classnames';
+import { hasPrivilege } from 'CMP_DIR/privilege/checker';
+import AddIpForm from './add-ip-form';
+import productionAjax from '../ajax/production-ajax';
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -72,7 +74,10 @@ class Production extends React.Component {
             addUemProductErrorMsg: '',//改为集成错误信息
             isAddingUemProduct: false,//正在添加为集成产品
             saveLogoErrorMsg: '',//保存产品Logo错误信息
-            isShowAddIp: false
+            isShowAddIp: false, // 是否显示添加IP
+            isAppFilterIpLoading: false, // 添加过滤ip loading
+            isDeletingLoading: false, // 删除过滤ip loading
+            deleteIpId: '', // 删除过滤ip的ID
         };
     };
 
@@ -436,7 +441,9 @@ class Production extends React.Component {
     }
 
     handleShowAddIp = () => {
-
+        this.setState({
+            isShowAddIp: true
+        });
     };
 
     renderDetailTitle = () => {
@@ -456,8 +463,162 @@ class Production extends React.Component {
         );
     };
 
-    renderDetailIpList = () => {
+    // 添加IP
+    handleSubmitAddIp = (ipObj) => {
+        let submitObj = {
+            product_id: this.props.info.id,
+            filter_ips: [ipObj.ip]
+        };
+        this.setState({
+            isAppFilterIpLoading: true
+        });
+        productionAjax.productionAddFilterIP(submitObj).then((result) => {
+            this.setState({
+                isAppFilterIpLoading: false,
+                isShowAddIp: false
+            });
+            if (result) {
+                console.log('result:',result);
+            } else {
+                message.error(Intl.get('crm.154', '添加失败！'));
+            }
+        }, (errMsg) => {
+            this.setState({
+                isAppFilterIpLoading: false,
+                isShowAddIp: false
+            });
+            message.error(errMsg || Intl.get('crm.154', '添加失败！'));
+        });
+    };
 
+    // 取消保存添加的ip
+    handleCancelAddIP = () => {
+        this.setState({
+            isShowAddIp: false
+        });
+    };
+
+    // 渲染产品添加过滤IP
+    renderProductionAddFilterIp = () => {
+        return (
+            <AddIpForm
+                handleCancelAddIP={this.handleCancelAddIP}
+                handleSubmitAddIp={this.handleSubmitAddIp}
+                loading={this.state.isAppFilterIpLoading}
+            />
+        );
+    };
+
+    // 点击删除IP
+    handleDeleteIP = (ipItem) => {
+        this.setState({
+            deleteIpId: ipItem.id
+        });
+    };
+
+    // 确认删除IP
+    handleConfirmDeleteIp = (item, event) => {
+        event && event.stopPropagation();
+        this.setState({
+            isDeletingLoading: true
+        });
+        const deleteIpObj = {
+            productId: this.props.info.id,
+            ip: item.ip
+        };
+        productionAjax.productionDeleteFilterIP(deleteIpObj).then((result) => {
+            this.setState({
+                isDeletingLoading: false,
+                deleteIpId: ''
+            });
+            if (result === true) { // 删除成功
+                let ipList = _.filter(this.state.ipList, item => item.id !== id);
+                this.setState({
+                    ipList: ipList
+                });
+            } else {
+                message.error(Intl.get('crm.139', '删除失败！'));
+            }
+        }, (errMsg) => {
+            message.error(errMsg || Intl.get('crm.139', '删除失败！'));
+            this.setState({
+                isDeletingLoading: false,
+                deleteIpId: ''
+            });
+        });
+    };
+
+    // 取消删除IP
+    cancelDeleteIp = () => {
+        this.setState({
+            deleteIpId: ''
+        });
+    };
+
+    renderDetailIpList = () => {
+        console.log('productionfilterIp:', this.props.productionfilterIp);
+        let filterIps = _.get(this.props.productionfilterIp, 'filter_ips');
+        let productionFilterIpList = [];
+        _.each(filterIps, (item, index) => {
+            productionFilterIpList.push({ip: item, id: index, flag: 'singleFilter'});
+        });
+
+        let allProductionFilterIpList = productionFilterIpList || this.props.allProductionFilterIpList;
+        return (
+            <div className="ip-filter-content">
+                {
+                    this.state.isShowAddIp ? (
+                        <div className="add-ip-content">
+                            {this.renderProductionAddFilterIp()}
+                        </div>
+                    ) : null
+                }
+                <ul className="ip-content">
+                    {_.map(allProductionFilterIpList, ipItem => {
+                        return (
+                            <li
+                                className="ip-item"
+                                key={ipItem.id}
+                            >
+                                <span>{ipItem.ip}</span>
+                                <span className="ip-delete-operator-zone">
+                                    {
+                                        ipItem.id === this.state.deleteIpId ? (
+                                            <span className="item-delete-buttons">
+                                                <span
+                                                    className="item-delete-confirm"
+                                                    disabled={this.state.isDeletingLoading}
+                                                    onClick={this.handleConfirmDeleteIp.bind(this, ipItem)}
+                                                >
+                                                    {
+                                                        this.state.isDeletingLoading ? <Icon type="loading"/> : null
+                                                    }
+                                                    {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                                </span>
+                                                <span
+                                                    className="item-delete-cancel"
+                                                    onClick={this.cancelDeleteIp.bind(this, ipItem)}
+                                                >
+                                                    {Intl.get('common.cancel', '取消')}
+                                                </span>
+                                            </span>
+                                        ) : (
+                                            <span
+                                                onClick={this.handleDeleteIP.bind(this, ipItem)}
+                                                className="operate-btn"
+                                                data-tracename={'点击删除' + ipItem.ip}
+                                            >
+                                                <i className="iconfont icon-delete handle-btn-item"></i>
+                                            </span>
+                                        )
+                                    }
+                                </span>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+        );
     };
 
     //渲染编辑面板内容
@@ -664,6 +825,8 @@ Production.propTypes = {
     closeRightPanel: PropTypes.func,
     form: PropTypes.object,
     afterOperation: PropTypes.func,
-    openRightPanel: PropTypes.func
+    openRightPanel: PropTypes.func,
+    allProductionFilterIpList: PropTypes.array,
+    productionfilterIp: PropTypes.object,
 };
 module.exports = Form.create()(Production);
