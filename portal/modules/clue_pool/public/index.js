@@ -1153,6 +1153,7 @@ class ClueExtract extends React.Component {
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
             'firefox-padding': this.isFireFoxBrowser(),
+            'firefox-show-filter-padding': this.state.showFilterList && this.isFireFoxBrowser(),
             'status-type-hide': isFirstLoading,
             'clue-status-no-check': !this.hasClueSelectPrivilege()
         });
