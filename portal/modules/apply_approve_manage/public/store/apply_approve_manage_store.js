@@ -62,6 +62,18 @@ ApplyApproveManageStore.prototype.saveSelfSettingWorkFlowRules = function (resul
         this.saveRulesWorkFlowErrMsg = '';
     }
 };
+ApplyApproveManageStore.prototype.getSelfSettingWorkFlow = function (result) {
+    if (result.loading) {
+        this.getSelfSettingWorkFlowLoading = true;
+        this.getSelfSettingWorkFlowErrMsg = '';
+    } else if (result.error) {
+        this.getSelfSettingWorkFlowLoading = false;
+        this.getSelfSettingWorkFlowErrMsg = result.errorMsg;
+    } else {
+        this.getSelfSettingWorkFlowLoading = false;
+        this.getSelfSettingWorkFlowErrMsg = '';
+    }
+};
 
 
 module.exports = alt.createStore(ApplyApproveManageStore, 'ApplyApproveManageStore');
