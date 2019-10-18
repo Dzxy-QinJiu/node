@@ -131,7 +131,7 @@ class IpFilter extends React.Component {
     };
 
     // 渲染添加IP内容
-    renderAppIpContent = () => {
+    renderAddIpContent = () => {
         return (
             <AddIpForm
                 handleCancelAddIP={this.handleCancelAddIP}
@@ -190,7 +190,7 @@ class IpFilter extends React.Component {
                 {
                     this.state.isShowAddIp ? (
                         <div className="add-ip-content">
-                            {this.renderAppIpContent()}
+                            {this.renderAddIpContent()}
                         </div>
                     ) : null
                 }
