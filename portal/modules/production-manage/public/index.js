@@ -286,11 +286,11 @@ class ProductionManage extends React.Component {
                     >
                         <Button
                             className="filter-ip-btn"
-                            data-tracename="过滤ip"
+                            data-tracename="过滤IP"
                             onClick={this.showIpFilterPanel}
                         >
                             <i className="iconfont icon-filter-ip"></i>
-                            <span>过滤IP</span>
+                            <span>{Intl.get('product.filter.ip', '过滤IP')}</span>
                         </Button>
                     </PrivilegeChecker>
                 </div>
@@ -349,14 +349,13 @@ class ProductionManage extends React.Component {
                                 openRightPanel={this.events_showDetail.bind(this, this.state.currentProduction)}
                                 afterOperation={this.events_afterOperation}
                                 allProductionFilterIpList={this.state.ipList}
-                                productionfilterIp={this.state.productionfilterIp}
+                                productionFilterIp={this.state.productionFilterIp}
                             /> : null}
                         {this.state.deleteError ? (<message></message>) : null}
                         {
                             this.state.isShowIpFilterPanel ? (
                                 <IpFilter
                                     closeIpFilterPanel={this.closeIpFilterPanel}
-                                    allProductionFilterIpList={this.state.ipList}
                                 />
                             ) : null
                         }

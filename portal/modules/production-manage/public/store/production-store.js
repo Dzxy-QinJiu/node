@@ -42,7 +42,7 @@ function ProductionStore() {
     //获取成员列表时，错误/暂无（符合条件的）数据的提示
     this.listTipMsg = '';
     this.getFilterIpErr = '';
-    this.productionfilterIp = {};
+    this.productionFilterIp = {};
 
     this.bindActions(ProductionActions);
 }
@@ -125,7 +125,7 @@ ProductionStore.prototype.productionGetFilterIP = function(result) {
     if (_.isString(result)) {
         this.getFilterIpErr = result;
     } else {
-        this.productionfilterIp = result;
+        this.productionFilterIp = result;
     }
 };
 

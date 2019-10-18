@@ -60,6 +60,7 @@ class Production extends React.Component {
         }
     };
     initData = (props) => {
+        console.log('props:',props);
         let uemSiteId = _.get(props, 'info.integration_type') === INTEGRATE_TYPES.UEM ? _.get(props, 'info.integration_id', '') : '';
         return {
             create_time: props.info.create_time ? moment(props.info.create_time).format(oplateConsts.DATE_FORMAT) : '',
@@ -75,6 +76,7 @@ class Production extends React.Component {
             addUemProductErrorMsg: '',//改为集成错误信息
             isAddingUemProduct: false,//正在添加为集成产品
             saveLogoErrorMsg: '',//保存产品Logo错误信息
+            productionFilterIp: _.get(props, 'productionFilterIp.filter_ips', []),
             isShowAddIp: false, // 是否显示添加IP
             isAppFilterIpLoading: false, // 添加过滤ip loading
             isDeletingLoading: false, // 删除过滤ip loading
@@ -479,8 +481,13 @@ class Production extends React.Component {
                 isAppFilterIpLoading: false,
                 isShowAddIp: false
             });
+            let productionFilterIp = this.state.productionFilterIp;
+
             if (result) {
-                console.log('result:',result);
+                productionFilterIp.unshift(ipObj.ip);
+                this.setState({
+                    productionFilterIp: productionFilterIp
+                });
             } else {
                 message.error(Intl.get('crm.154', '添加失败！'));
             }
@@ -534,9 +541,9 @@ class Production extends React.Component {
                 deleteIpId: ''
             });
             if (result === true) { // 删除成功
-                let ipList = _.filter(this.state.ipList, item => item.id !== id);
+                let productionFilterIp = _.filter(this.state.productionFilterIp, ip => ip !== item.ip);
                 this.setState({
-                    ipList: ipList
+                    productionFilterIp: productionFilterIp
                 });
             } else {
                 message.error(Intl.get('crm.139', '删除失败！'));
@@ -588,8 +595,9 @@ class Production extends React.Component {
     };
 
     renderDetailIpList = () => {
-        let filterIps = _.get(this.props.productionfilterIp, 'filter_ips');
+        let filterIps = this.state.productionFilterIp;
         let productionFilterIpList = [];
+        // 产品过滤ip数据处理，和全局过滤IP一致，方便处理
         _.each(filterIps, (item, index) => {
             productionFilterIpList.push({ip: item, id: index, flag: 'singleFilter'});
         });
@@ -834,7 +842,6 @@ class Production extends React.Component {
                         this.state.isShowGlobalFilterIp ? (
                             <IpFilter
                                 closeIpFilterPanel={this.closeIpFilterPanel}
-                                allProductionFilterIpList={this.props.allProductionFilterIpList}
                             />
                         ) : null
                     }
@@ -882,6 +889,6 @@ Production.propTypes = {
     afterOperation: PropTypes.func,
     openRightPanel: PropTypes.func,
     allProductionFilterIpList: PropTypes.array,
-    productionfilterIp: PropTypes.object,
+    productionFilterIp: PropTypes.object,
 };
 module.exports = Form.create()(Production);

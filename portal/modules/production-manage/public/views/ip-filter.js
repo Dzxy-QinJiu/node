@@ -282,7 +282,7 @@ class IpFilter extends React.Component {
                 className='ip-filter-panel'
                 isShowModal={false}
                 isShowCloseBtn={true}
-                title='过滤ip'
+                title={Intl.get('product.filter.ip', '过滤IP')}
                 onClosePanel={this.props.closeIpFilterPanel}
                 content={this.renderFilterIpContent()}
                 dataTracename='过滤IP'
