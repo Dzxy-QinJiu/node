@@ -242,6 +242,7 @@ var CrmBatchChange = createReactClass({
             BatchChangeActions.setUnSelectDataTip(Intl.get('crm.212', '请选择标签'));
             return;
         }
+        let savedTags = this.state.tags;
         BatchChangeActions.setLoadingState(true);
         let condition = {
             query_param: {},
@@ -270,7 +271,7 @@ var CrmBatchChange = createReactClass({
                 var totalSelectedSize = is_select_all ? crmStore.getCustomersLength() : this.props.selectedCustomer.length;
                 //构造批量操作参数
                 var batchParams = {
-                    tags: this.state.tags
+                    tags: savedTags
                 };
                 //向任务列表id中添加taskId
                 batchOperate.addTaskIdToList(result.taskId);
@@ -354,7 +355,7 @@ var CrmBatchChange = createReactClass({
 
     //批量修改地域
     doChangeTerritory: function() {
-        let territoryObj = this.state.territoryObj;
+        let territoryObj = _.cloneDeep(this.state.territoryObj);
         if (!territoryObj.city && !territoryObj.county && !territoryObj.province) {
             BatchChangeActions.setUnSelectDataTip(Intl.get('common.edit.address.placeholder', '请选择地址'));
             return;
@@ -383,7 +384,7 @@ var CrmBatchChange = createReactClass({
                 //全部记录的个数
                 var totalSelectedSize = is_select_all ? crmStore.getCustomersLength() : this.props.selectedCustomer.length;
                 //构造批量操作参数
-                var batchParams = this.state.territoryObj;
+                var batchParams = territoryObj;
                 //向任务列表id中添加taskId
                 batchOperate.addTaskIdToList(result.taskId);
                 //存储批量操作参数，后续更新时使用
