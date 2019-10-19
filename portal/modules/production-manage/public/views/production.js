@@ -85,7 +85,7 @@ class Production extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.info.id !== nextProps.info.id) {
+        if (this.props.info.id !== nextProps.info.id || this.props.info.id && !_.isEmpty(nextProps.productionFilterIp)) {
             this.setState(this.initData(nextProps));
         }
     }
