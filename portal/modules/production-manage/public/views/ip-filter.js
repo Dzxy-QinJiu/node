@@ -185,61 +185,71 @@ class IpFilter extends React.Component {
         });
     };
 
+    getContainerHeight() {
+        const PADDING = 80;
+        return $('body').height()
+            - $('.ip-filter-panel .right-panel-modal-title').outerHeight(true)
+            - PADDING;
+    }
+
+
     renderIpContent = () => {
         let ipList = this.state.ipList;
         return (
             <div className="ip-filter-content">
-                {
-                    this.state.isShowAddIp ? (
-                        <div className="add-ip-content">
-                            {this.renderAddIpContent()}
-                        </div>
-                    ) : null
-                }
-                <ul className="ip-content">
-                    {_.map(ipList, ipItem => {
-                        return (
-                            <li
-                                className="ip-item"
-                                key={ipItem.id}
-                            >
-                                <span>{ipItem.ip}</span>
-                                <span className="ip-delete-operator-zone">
-                                    {
-                                        ipItem.id === this.state.deleteIpId ? (
-                                            <span className="item-delete-buttons">
-                                                <span
-                                                    className="item-delete-confirm"
-                                                    disabled={this.state.isDeletingLoading}
-                                                    onClick={this.handleConfirmDeleteIp.bind(this, ipItem)}
-                                                >
-                                                    {
-                                                        this.state.isDeletingLoading ? <Icon type="loading"/> : null
-                                                    }
-                                                    {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                <GeminiScrollBar style={{height: this.getContainerHeight()}}>
+                    {
+                        this.state.isShowAddIp ? (
+                            <div className="add-ip-content">
+                                {this.renderAddIpContent()}
+                            </div>
+                        ) : null
+                    }
+                    <ul className="ip-content">
+                        {_.map(ipList, ipItem => {
+                            return (
+                                <li
+                                    className="ip-item"
+                                    key={ipItem.id}
+                                >
+                                    <span>{ipItem.ip}</span>
+                                    <span className="ip-delete-operator-zone">
+                                        {
+                                            ipItem.id === this.state.deleteIpId ? (
+                                                <span className="item-delete-buttons">
+                                                    <span
+                                                        className="item-delete-confirm"
+                                                        disabled={this.state.isDeletingLoading}
+                                                        onClick={this.handleConfirmDeleteIp.bind(this, ipItem)}
+                                                    >
+                                                        {
+                                                            this.state.isDeletingLoading ? <Icon type="loading"/> : null
+                                                        }
+                                                        {Intl.get('crm.contact.delete.confirm', '确认删除')}
+                                                    </span>
+                                                    <span
+                                                        className="item-delete-cancel"
+                                                        onClick={this.cancelDeleteIp.bind(this, ipItem)}
+                                                    >
+                                                        {Intl.get('common.cancel', '取消')}
+                                                    </span>
                                                 </span>
+                                            ) : (
                                                 <span
-                                                    className="item-delete-cancel"
-                                                    onClick={this.cancelDeleteIp.bind(this, ipItem)}
+                                                    onClick={this.handleDeleteIP.bind(this, ipItem)}
+                                                    className="operate-btn"
+                                                    data-tracename={'点击删除' + ipItem.ip}
                                                 >
-                                                    {Intl.get('common.cancel', '取消')}
+                                                    <i className="iconfont icon-delete handle-btn-item"></i>
                                                 </span>
-                                            </span>
-                                        ) : (
-                                            <span
-                                                onClick={this.handleDeleteIP.bind(this, ipItem)}
-                                                className="operate-btn"
-                                                data-tracename={'点击删除' + ipItem.ip}
-                                            >
-                                                <i className="iconfont icon-delete handle-btn-item"></i>
-                                            </span>
-                                        )
-                                    }
-                                </span>
-                            </li>
-                        );
-                    })}
-                </ul>
+                                            )
+                                        }
+                                    </span>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </GeminiScrollBar>
             </div>
         );
     };

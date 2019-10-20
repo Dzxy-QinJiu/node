@@ -60,7 +60,6 @@ class Production extends React.Component {
         }
     };
     initData = (props) => {
-        console.log('props:',props);
         let uemSiteId = _.get(props, 'info.integration_type') === INTEGRATE_TYPES.UEM ? _.get(props, 'info.integration_id', '') : '';
         return {
             create_time: props.info.create_time ? moment(props.info.create_time).format(oplateConsts.DATE_FORMAT) : '',
@@ -86,7 +85,7 @@ class Production extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.info.id !== nextProps.info.id) {
+        if (this.props.info.id !== nextProps.info.id || this.props.info.id && !_.isEmpty(nextProps.productionFilterIp)) {
             this.setState(this.initData(nextProps));
         }
     }
