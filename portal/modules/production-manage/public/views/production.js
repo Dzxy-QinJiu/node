@@ -85,6 +85,7 @@ class Production extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
+        // 查看产品详情，获取到产品的ID，更新产品相关数据
         if (_.get(nextProps, 'info.id')) {
             this.setState(this.initData(nextProps));
         }
