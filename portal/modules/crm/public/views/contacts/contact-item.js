@@ -225,13 +225,9 @@ class ContactItem extends React.Component {
     getCurPhoneArray(that) {
         let formData = that.props.form.getFieldsValue();
         let phoneArray = [];
-        // 有多个电话输入框时，是phone0,phone1...,所以得循环获取
-        _.each(formData, (val, key) => {
-            if (key.indexOf('phone') !== -1) {
-                phoneArray = _.map(val, item => {
-                    return _.trim(item);
-                });
-            }
+        // 有多个电话输入框时，是phone[0],phone[1]...,所以得循环获取
+        _.each(_.get(formData,'phone',[]), (val) => {
+            if(val) phoneArray.push(_.trim(val.replace('-', '')));
         });
         return phoneArray;
     }
