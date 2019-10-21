@@ -76,6 +76,8 @@ export const APPLY_APPROVE_TYPES = {
     MEMBER_INVITE: 'member_invite', // 向后端传参数成员申请类型
     REPORT: 'report',//向后端传获取全部申请舆情报送的类型及后端返回的类型
     DOCUMENT: 'document',//文件撰写的类型
+    VISITAPPLY: 'visitapply',//拜访申请
+    DOMAINAPPLY: 'domainName',//安全域申请
     UNHANDLECUSTOMERVISIT: 'unhandleCustomerVisit',//未处理的出差申请数量
     UNHANDLEBUSINESSOPPORTUNITIES: 'unhandleBusinessOpportunities',//未处理的销售机会申请数量
     UNHANDLEPERSONALLEAVE: 'unhandlePersonalLeave',//未处理的请假申请数量

@@ -254,7 +254,7 @@ class LeaveApplyManagement extends React.Component {
 
     //刷新未读回复的列表
     refreshUnreadReplyList = (unreadReplyList) => {
-        var unreadList = _.filter(unreadReplyList, item => item.type === APPLY_APPROVE_TYPES.PERSONAL_LEAVE);
+        var unreadList = _.filter(unreadReplyList, item => item.type === APPLY_APPROVE_TYPES.VISITAPPLY);
         LeaveApplyAction.refreshUnreadReplyList(unreadList);
     };
     //当前展示的详情是否是有未读回复的详情

@@ -37,7 +37,7 @@ class ProductionManage extends React.Component {
         productList: productList, //集成的oplate\matomo产品列表
         addErrorMsg: '',//导入产品失败的提示
         isLoading: false, // 获取ip；列表loading
-        ipList: [], // ip列表
+        globalFilterIpList: [], // 全局过滤的IP
         errMsg: '',
         isShowIpFilterPanel: false, // 是否显示ip过滤面板，默认false
     };
@@ -62,7 +62,7 @@ class ProductionManage extends React.Component {
         IpFilterAjax.getIpList({page_size: 1000}).then( (result) => {
             this.setState({
                 isLoading: false,
-                ipList: _.isArray(result) && result || []
+                globalFilterIpList: _.isArray(result) && result || []
             });
         }, (errMsg) => {
             this.setState({
@@ -249,7 +249,7 @@ class ProductionManage extends React.Component {
     // 显示ip过滤面板
     showIpFilterPanel = () => {
         this.setState({
-            isShowIpFilterPanel: true,
+            isShowIpFilterPanel: true
         });
     };
 
@@ -305,6 +305,12 @@ class ProductionManage extends React.Component {
         });
     };
 
+    handleUpdateFilterIp = (globalFilterIpList) => {
+        this.setState({
+            globalFilterIpList: globalFilterIpList
+        });
+    };
+
     render() {
         let firstLoading = this.state.isLoading;
         let height = $(window).height() - BACKGROUG_LAYOUT_CONSTANTS.PADDING_HEIGHT;
@@ -348,14 +354,17 @@ class ProductionManage extends React.Component {
                                 closeRightPanel={this.events_closeRightPanel}
                                 openRightPanel={this.events_showDetail.bind(this, this.state.currentProduction)}
                                 afterOperation={this.events_afterOperation}
-                                allProductionFilterIpList={this.state.ipList}
+                                globalFilterIpList={this.state.globalFilterIpList}
                                 productionFilterIp={this.state.productionFilterIp}
+                                showIpFilterPanel={this.showIpFilterPanel}
                             /> : null}
                         {this.state.deleteError ? (<message></message>) : null}
                         {
                             this.state.isShowIpFilterPanel ? (
                                 <IpFilter
                                     closeIpFilterPanel={this.closeIpFilterPanel}
+                                    globalFilterIpList={this.state.globalFilterIpList}
+                                    updateFilterIpList={this.handleUpdateFilterIp}
                                 />
                             ) : null
                         }

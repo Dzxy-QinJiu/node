@@ -27,7 +27,7 @@ import classNames from 'classnames';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import AddIpForm from './add-ip-form';
 import productionAjax from '../ajax/production-ajax';
-import IpFilter from './ip-filter';
+
 
 const LAYOUT_CONST = {
     HEADICON_H: 107,//头像的高度
@@ -80,12 +80,12 @@ class Production extends React.Component {
             isAppFilterIpLoading: false, // 添加过滤ip loading
             isDeletingLoading: false, // 删除过滤ip loading
             deleteIpId: '', // 删除过滤ip的ID
-            isShowGlobalFilterIp: false, // 是否显示全局过滤IP
         };
     };
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.info.id !== nextProps.info.id || this.props.info.id && !_.isEmpty(nextProps.productionFilterIp)) {
+        // 查看产品详情，只有更换产品或是产品IP变化时，更新产品详情中相关数据
+        if (this.props.info.id !== nextProps.info.id || !_.isEqual(this.props.productionFilterIp, nextProps.productionFilterIp)) {
             this.setState(this.initData(nextProps));
         }
     }
@@ -565,19 +565,6 @@ class Production extends React.Component {
         });
     };
 
-    handleShowGlobalFilterIP = () => {
-        this.setState({
-            isShowGlobalFilterIp: true
-        });
-    };
-
-    closeIpFilterPanel = () => {
-        this.setState({
-            isShowGlobalFilterIp: false
-        });
-        this.props.closeRightPanel();
-    };
-
     // 处理全局过滤IP
     handleGlobalFilterIp = () => {
         return (
@@ -589,7 +576,7 @@ class Production extends React.Component {
                         defaultMessage={'请到全部产品{clickContent}页面删除'}
                         values={{
                             'clickContent': <span
-                                onClick={this.handleShowGlobalFilterIP}
+                                onClick={this.props.showIpFilterPanel}
                                 className="click-content"
                             >
                                 {Intl.get('product.filter.ip', '过滤IP')}
@@ -609,7 +596,7 @@ class Production extends React.Component {
             productionFilterIpList.push({ip: item, id: index, flag: 'singleFilter'});
         });
 
-        let allFilterIpList = _.concat(productionFilterIpList, this.props.allProductionFilterIpList);
+        let allFilterIpList = _.concat(productionFilterIpList, this.props.globalFilterIpList);
         return (
             <div className="ip-filter-content">
                 {
@@ -847,13 +834,6 @@ class Production extends React.Component {
                         content={this.renderDetailIpList()}
                         className='ip-filter-card-container'
                     />
-                    {
-                        this.state.isShowGlobalFilterIp ? (
-                            <IpFilter
-                                closeIpFilterPanel={this.closeIpFilterPanel}
-                            />
-                        ) : null
-                    }
                     {_.isEqual(_.get(this.state, 'integrateType'), INTEGRATE_TYPES.UEM) ?
                         <div className="product-card-with-switch">
                             <DetailCard
@@ -897,7 +877,8 @@ Production.propTypes = {
     form: PropTypes.object,
     afterOperation: PropTypes.func,
     openRightPanel: PropTypes.func,
-    allProductionFilterIpList: PropTypes.array,
+    globalFilterIpList: PropTypes.array,
     productionFilterIp: PropTypes.object,
+    showIpFilterPanel: PropTypes.func,
 };
 module.exports = Form.create()(Production);
