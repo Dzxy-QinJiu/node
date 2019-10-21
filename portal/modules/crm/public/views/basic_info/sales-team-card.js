@@ -112,9 +112,11 @@ class SalesTeamCard extends React.Component {
         if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
             this.setState(this.getInitStateData(nextProps));
-            // 验证是否能修改负责人和联合跟进人
-            this.checkCanEditSales(nextProps.customerId);
-            this.checkCanEditSecondSales(nextProps.customerId);
+            if(!this.isCommonSales()) {
+                // 验证是否能修改负责人和联合跟进人
+                this.checkCanEditSales(nextProps.customerId);
+                this.checkCanEditSecondSales(nextProps.customerId);
+            }
             //获取销售及联合跟进人
             this.getSalesByCustomerId(nextProps.customerId);
         }
