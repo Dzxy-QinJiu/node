@@ -1219,6 +1219,11 @@ class Crm extends React.Component {
             this.batchReleaseCustomer();
         }
     }
+    //是否是普通销售
+    isCommonSales() {
+        let userObj = userData.getUserData();
+        return _.get(userObj, 'isCommonSales');
+    }
     //渲染响应式布局下的批量操作的选项
     batchTopBarDropList = (isMinWeb) => {
         return (<Menu onClick={this.handleBatchMenuSelectClick.bind(this)}>
@@ -1237,7 +1242,7 @@ class Crm extends React.Component {
                     {Intl.get('crm.21', '变更地域')}
                 </Menu.Item> : null
             }
-            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') && !this.isCommonSales() ?
                 <Menu.Item key="changeSales">
                     {Intl.get('crm.103', '变更负责人')}
                 </Menu.Item> : null
