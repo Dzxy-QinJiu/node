@@ -17,8 +17,8 @@ class IpFilter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            globalFilterIpList: _.get(props, 'globalFilterIpList'),
             isLoading: false, // 获取ip；列表loading
-            ipList: [], // ip列表
             errMsg: '',
             isShowAddIp: false, // 是否显示添加ip
             deleteIpId: '', // 删除ip的Id
@@ -26,30 +26,7 @@ class IpFilter extends React.Component {
             isAddLoading: false, // 添加loading
         };
     }
-
-    componentDidMount() {
-        this.getIpList();
-    }
-
-    // 获取ip列表
-    getIpList = () => {
-        this.setState({
-            isLoading: true
-        });
-        IpFilterAjax.getIpList({page_size: 1000}).then( (result) => {
-            this.setState({
-                isLoading: false,
-                ipList: _.isArray(result) && result || []
-            });
-        }, (errMsg) => {
-            this.setState({
-                isLoading: false,
-                errMsg: errMsg
-            });
-        } );
-    };
-
-
+    
     renderNoDataOrLoadError = () => {
         let getErrMsg = this.state.getErrMsg;
 
@@ -97,6 +74,10 @@ class IpFilter extends React.Component {
         );
     };
 
+    upDateFilterIpList = (updatedIpList) => {
+        this.props.upDateFilterIpList && this.props.upDateFilterIpList(updatedIpList);
+    };
+
     // 添加IP
     handleSubmitAddIp = (submitObj) => {
         this.setState({
@@ -108,10 +89,11 @@ class IpFilter extends React.Component {
                 isShowAddIp: false
             });
             if (_.isObject(result) && result.id) {
-                let ipList = this.state.ipList;
-                ipList.unshift(result);
+                let globalFilterIpList = this.state.globalFilterIpList;
+                globalFilterIpList.unshift(result);
+                this.upDateFilterIpList(globalFilterIpList);
                 this.setState({
-                    ipList: ipList
+                    globalFilterIpList: globalFilterIpList
                 });
             } else {
                 message.error(Intl.get('crm.154', '添加失败！'));
@@ -162,9 +144,10 @@ class IpFilter extends React.Component {
                 deleteIpId: ''
             });
             if (result === true) { // 删除成功
-                let ipList = _.filter(this.state.ipList, item => item.id !== id);
+                let globalFilterIpList = _.filter(this.state.globalFilterIpList, item => item.id !== id);
+                this.upDateFilterIpList(globalFilterIpList);
                 this.setState({
-                    ipList: ipList
+                    globalFilterIpList: globalFilterIpList
                 });
             } else {
                 message.error(Intl.get('crm.139', '删除失败！'));
@@ -194,7 +177,7 @@ class IpFilter extends React.Component {
 
 
     renderIpContent = () => {
-        let ipList = this.state.ipList;
+        let globalFilterIpList = this.state.globalFilterIpList;
         return (
             <div className="ip-filter-content">
                 <GeminiScrollBar style={{height: this.getContainerHeight()}}>
@@ -206,7 +189,7 @@ class IpFilter extends React.Component {
                         ) : null
                     }
                     <ul className="ip-content">
-                        {_.map(ipList, ipItem => {
+                        {_.map(globalFilterIpList, ipItem => {
                             return (
                                 <li
                                     className="ip-item"
@@ -265,8 +248,8 @@ class IpFilter extends React.Component {
     };
 
     renderDetailIpList = () => {
-        let ipList = this.state.ipList;
-        let length = _.get(ipList, 'length');
+        let globalFilterIpList = this.state.globalFilterIpList;
+        let length = _.get(globalFilterIpList, 'length');
         if (length || this.state.isShowAddIp) {
             return this.renderIpContent();
         } else {
@@ -305,6 +288,7 @@ class IpFilter extends React.Component {
 
 IpFilter.propTypes = {
     closeIpFilterPanel: PropTypes.func,
+    upDateFilterIpList: PropTypes.func, // 更新全局过滤的IP
 };
 
 export default IpFilter;
