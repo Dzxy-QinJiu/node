@@ -4,7 +4,7 @@
 require('../style/ip-filter.less');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 const Spinner = require('CMP_DIR/spinner');
-import {Icon, message} from 'antd';
+import {Icon, message, Checkbox } from 'antd';
 import NoData from 'CMP_DIR/no-data';
 import LoadDataError from 'CMP_DIR/load-data-error';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -24,9 +24,34 @@ class IpFilter extends React.Component {
             deleteIpId: '', // 删除ip的Id
             isDeletingLoading: false, // 删除loading
             isAddLoading: false, // 添加loading
+            filterPrivateIpStatus: '', // 过滤内网网段状态
+            filterPrivateIpErrMsg: '', // 获取过滤内网网段的错误信息
         };
     }
-    
+
+    componentDidMount() {
+        this.getFilterPrivateIp();
+    }
+
+    // 获取过滤内网网段
+    getFilterPrivateIp = () => {
+        this.setState({
+            isLoading: true
+        });
+        IpFilterAjax.getFilterPrivateIp().then( (result) => {
+            this.setState({
+                filterPrivateIpStatus: result,
+                isLoading: false
+            });
+        }, (errMsg) => {
+            this.setState({
+                filterPrivateIpErrMsg: errMsg,
+                isLoading: false
+            });
+        } );
+    };
+
+
     renderNoDataOrLoadError = () => {
         let getErrMsg = this.state.getErrMsg;
 
@@ -253,14 +278,60 @@ class IpFilter extends React.Component {
         }
     };
 
+    handleSetFilterPrivateIp = (event) => {
+        const checked = event.target.checked;
+        IpFilterAjax.setFilterPrivateIp({filter_lan: checked}).then( (result) => {
+            if (result) {
+                this.setState({
+                    filterPrivateIpStatus: checked
+                });
+                message.success(Intl.get('config.filter.ip.succss','过滤内网配置成功！'));
+            } else {
+                message.error(Intl.get('config.filter.ip.err','过滤内网配置失败！'));
+            }
+        }, (errMsg) => {
+            message.error(errorMsg || Intl.get('config.filter.ip.err','过滤内网配置失败！'));
+        } );
+
+    };
+
+    renderDetailPrivateFilterIP = () => {
+        return (
+            <div className="filter-private-ip">
+                <Checkbox
+                    checked={this.state.filterPrivateIpStatus}
+                    onChange={this.handleSetFilterPrivateIp}
+                    data-tracename="选中/取消过滤内网IP"
+                />
+                <span>
+                    <ReactIntl.FormattedMessage id="config.filter.inner.ip" defaultMessage="过滤内网ip"/>
+                </span>
+            </div>
+        );
+    };
+
+    renderFilterPrivateIpContent = () => {
+        return (
+            <DetailCard
+                content={this.renderDetailPrivateFilterIP()}
+                className='filter-private-ip-card-container'
+            />
+        );
+    };
+
     renderFilterIpContent() {
         let isLoading = this.state.isLoading;
         return (
             <div className="ip-filter-container">
                 {
                     isLoading ? ( <Spinner/>) : (
-                        <div className="ip-filter-wrap">
-                            {this.renderIpList()}
+                        <div className="ip-filter-content-wrap">
+                            <div className="private-filter-ip">
+                                {this.renderFilterPrivateIpContent()}
+                            </div>
+                            <div className="ip-filter-wrap">
+                                {this.renderIpList()}
+                            </div>
                         </div>
                     )
                 }
