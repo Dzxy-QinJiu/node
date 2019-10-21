@@ -623,16 +623,6 @@ export const ASSIGN_TYPE = {
     COMMON_SALES: 'commonSales'
 };
 
-// 用户申请类型
-export const APPLY_TYPE = {
-    USER_APPLY: 'userapply',//用户审批
-    BUSINESS_OPPORTUNITIES: 'businessopportunities', //机会申请
-    BUSINESS_TRIP: 'businesstrip', //出差申请
-    LEAVE: 'leave', //请假申请
-    DOCUMENT_WRITING: 'documentwriting', //文件撰写
-    OPINION_REPORT: 'opinionreport', //舆情报告
-};
-
 //申请抄送类型
 export const CC_INFO = {
     APPLY: 'apply', //提交申请时抄送

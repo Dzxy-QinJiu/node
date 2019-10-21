@@ -921,6 +921,13 @@ var en_US = {
     // 后台管理- 产品start
     'product.name.input': 'Please enter the name of product', // 请填写产品名称
     'product.name.rule': 'The name of product can only contain characters such as Chinese characters, letters, numbers, horizontal lines, underlines, points, Chinese and English brackets, and a length between 1 and 10', // 产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间
+    'product.filter.ip.add.ip.placeholder': 'Please enter the filter IP', // 请输入要排除的IP
+    'product.filter.ip': 'Filter IP', // 过滤IP
+    'product.global.filter.ip': 'Please go to the global IP {clickContent} page to delete', // 请到全部产品{clickContent}页面删除
+    'product.no.data.filter.ip': 'No data, please add', // 暂无数据，请添加
+    'product.global.filter.ip.title': 'All product statistical analysis when filtering the following IP', // 全部产品统计分析时过滤以下IP：
+    'product.filter.ip.title': 'The product statistical analysis when filtering the following IP', // 该产品统计分析时过滤以下IP：
+    'product.global.ip.tips': '(all products)', // （全部产品过滤)
     // 后台管理- 产品end
 
     // 后台管理-行业start
@@ -1767,6 +1774,7 @@ var en_US = {
     'crm.import.phone.repeat': 'The same phone exists in the imported data',//导入数据中存在相同的电话
     'crm.system.phone.repeat': 'The telephone has been used by other {type}',//电话已被其他{type}使用
     'crm.import.phone.verify': 'Telephones can only be 11-bit cell phone numbers or 11-12-bit seat numbers with area codes',//电话只能是11位手机号或11-12位带区号的座机号
+    'crm.import.email.verify': 'Incorrect email format',//邮箱格式不对
     'crm.customer.release': 'Release',//释放
     'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
     'crm.customer.delete': 'After deletion, the customer can be found in the recycle bin. Are you sure you want to delete it?',//删除后，可以在回收站中找回该客户，您确定要删除吗？

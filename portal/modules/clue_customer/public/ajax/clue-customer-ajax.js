@@ -268,6 +268,9 @@ exports.getClueListByKeyword = function(queryObj) {
     }else if (hasPrivilege(QUERYCLUE.MANAGER)){
         type = 'manager';
     }
+    let query = {
+        query: queryObj
+    };
     let url = `/rest/clue/${type}/${pageSize}/${sorter.field}/${sorter.order}`;
     let Deferred = $.Deferred();
     getClueListByKeywordAjax && getClueListByKeywordAjax.abort();
@@ -275,7 +278,7 @@ exports.getClueListByKeyword = function(queryObj) {
         url: url ,
         dataType: 'json',
         type: 'post',
-        data: queryObj,
+        data: query,
         success: function(list) {
             Deferred.resolve(list);
         },

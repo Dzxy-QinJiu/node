@@ -1016,6 +1016,7 @@ class ClueExtract extends React.Component {
                         data-tracename="点击批量提取线索按钮"
                         className='btn-item common-sale-batch-extract'
                         onClick={this.handleSubmitAssignSalesBatch}
+                        title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                     >
                         {isWebMin ? <span className="iconfont icon-extract"></span> :
                             <React.Fragment>
@@ -1036,6 +1037,7 @@ class ClueExtract extends React.Component {
                                 type="primary"
                                 data-tracename="点击批量提取线索按钮"
                                 className='btn-item'
+                                title={Intl.get('clue.pool.batch.extract.clue', '批量提取')}
                             >
                                 {isWebMin ? <span className="iconfont icon-extract"></span> :
                                     <React.Fragment>
@@ -1153,6 +1155,7 @@ class ClueExtract extends React.Component {
         const clueStatusCls = classNames('clue-status-wrap',{
             'show-clue-filter': this.state.showFilterList,
             'firefox-padding': this.isFireFoxBrowser(),
+            'firefox-show-filter-padding': this.state.showFilterList && this.isFireFoxBrowser(),
             'status-type-hide': isFirstLoading,
             'clue-status-no-check': !this.hasClueSelectPrivilege()
         });

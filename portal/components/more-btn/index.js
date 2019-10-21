@@ -11,6 +11,7 @@ class MoreButton extends React.Component {
     render() {
         return (
             <Dropdown overlay={this.props.topBarDropList()} placement="bottomRight"
+                title={Intl.get('crm.basic.more', '更多')}
                 overlayClassName='responsive-top-bar-dropDown' >
                 <Button className='more-btn'>
                     <i className="iconfont icon-more"></i>

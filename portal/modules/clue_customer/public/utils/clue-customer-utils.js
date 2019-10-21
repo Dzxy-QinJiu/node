@@ -93,6 +93,15 @@ export const SELECT_TYPE = {
     HAS_TRANSFER: '3',
     WAIT_ME_HANDLE: 'waitMeHandle'
 };
+//要加数字的线索类型
+export const ADD_SELECT_TYPE = {
+    WILL_DISTRIBUTE: '0',
+    WILL_TRACE: '1',
+    HAS_TRACE: '2',
+    HAS_TRANSFER: '3',
+    INVALID_CLUE: 'invalid_clue'
+};
+//要展示增加数字效果的
 export const isNotHasTransferStatus = function(salesClueItem){
     // 线索类型的判断
     return salesClueItem.status !== SELECT_TYPE.HAS_TRANSFER && salesClueItem.clue_type !== 'clue_pool';
@@ -423,3 +432,5 @@ export const sourceClassifyArray = [
 export const sourceClassifyOptions = sourceClassifyWithoutOtherArray.map((source, index) => {
     return (<Option value={source.value} key={index}>{source.title}</Option>);
 });
+export const FLOW_FLY_TIME = 800;//增加一个数字的动画时长
+export const HIDE_CLUE_TIME = 2000;

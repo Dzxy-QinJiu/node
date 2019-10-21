@@ -12,9 +12,10 @@ class BackMainPage extends React.Component{
             {'min-btn': isWebMin});
         return(
             <Button className={btnCls}
+                title={Intl.get('crm.52', '返回')}
                 type="primary"
                 onClick={ this.props.handleBackClick }>
-                {isWebMin ? <span className="iconfont icon-return-btn"/> :
+                {isWebMin ? <i className="iconfont icon-return-btn"></i> :
                     <React.Fragment>
                         <span className="iconfont icon-return-btn"/>
                         <span className="return-btn-font">  {Intl.get('crm.52', '返回')}</span>

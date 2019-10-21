@@ -16,13 +16,12 @@ class ApplyDropdownAndAddBtn extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            applyType: this.props.applyType,
             applyState: {}
         };
     }
 
     componentWillMount = () => {
-        getApplyState(this.props.applyType).then(applyState => {
+        getApplyState().then(applyState => {
             this.setState({
                 applyState
             });
@@ -155,7 +154,6 @@ ApplyDropdownAndAddBtn.propTypes = {
     toggleUnreadApplyList: PropTypes.func,
     showUnreadTip: PropTypes.bool,
     isCheckUnreadApplyList: PropTypes.bool,
-    applyType: PropTypes.string
 };
 
 export default ApplyDropdownAndAddBtn;

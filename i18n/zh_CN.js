@@ -925,6 +925,13 @@ var zh_CN = {
     // 后台管理-产品start
     'product.name.input': '请填写产品名称',
     'product.name.rule': '产品名称只能包含汉字、字母、数字、横线、下划线、点、中英文括号等字符，且长度在1到10（包括10）之间',
+    'product.filter.ip.add.ip.placeholder': '请输入要排除的IP',
+    'product.filter.ip': '过滤IP',
+    'product.global.filter.ip': '请到全部产品{clickContent}页面删除',
+    'product.no.data.filter.ip': '暂无数据，请添加',
+    'product.global.filter.ip.title': '全部产品统计分析时过滤以下IP：',
+    'product.filter.ip.title': '该产品统计分析时过滤以下IP：',
+    'product.global.ip.tips': '（全部产品过滤)',
     // 后台管理-产品end
 
     // 后台管理-行业start
@@ -1791,6 +1798,7 @@ var zh_CN = {
     'crm.import.phone.repeat': '导入数据中存在相同的电话',
     'crm.system.phone.repeat': '电话已被其他{type}使用',
     'crm.import.phone.verify': '电话只能是11位手机号或11-12位带区号的座机号',
+    'crm.import.email.verify': '邮箱格式不对',
     'crm.customer.delete': '删除后，可以在回收站中找回该客户，您确定要删除吗？',
     'crm.customer.release': '释放',
     'crm.customer.release.pool': '释放到客户池',

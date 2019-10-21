@@ -5,6 +5,7 @@
  */
 let ProductionActions = require('../action/production-actions');
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
+
 let emptyProduction = {
     id: '',
     name: '',
@@ -40,6 +41,9 @@ function ProductionStore() {
     this.formType = 'add';
     //获取成员列表时，错误/暂无（符合条件的）数据的提示
     this.listTipMsg = '';
+    this.getFilterIpErr = '';
+    this.productionFilterIp = {};
+
     this.bindActions(ProductionActions);
 }
 
@@ -114,8 +118,16 @@ ProductionStore.prototype.setCurProduction = function(id) {
         }
     });
     this.currentProduction = curProduction || emptyProduction;
+
 };
 
+ProductionStore.prototype.productionGetFilterIP = function(result) {
+    if (_.isString(result)) {
+        this.getFilterIpErr = result;
+    } else {
+        this.productionFilterIp = result;
+    }
+};
 
 ProductionStore.prototype.showForm = function(type) {
     if (type === 'add') {
