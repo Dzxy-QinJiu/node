@@ -85,8 +85,8 @@ class Production extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        // 查看产品详情，获取到产品的ID，更新产品相关数据
-        if (_.get(nextProps, 'info.id')) {
+        // 查看产品详情，只有更换产品或是产品IP变化时，更新产品详情中相关数据
+        if (this.props.info.id !== nextProps.info.id || !_.isEqual(this.props.productionFilterIp, nextProps.productionFilterIp)) {
             this.setState(this.initData(nextProps));
         }
     }
