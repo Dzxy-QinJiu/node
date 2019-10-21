@@ -691,6 +691,15 @@ var en_US = {
     'user.jscode.copy.trace': 'copy the trace code',//复制跟踪代码
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
+    //账号相关start
+    'user.login.browser.chrom': 'Chrome',//谷歌
+    'user.login.browser.Firefox': 'Firefox',//火狐
+    'user.login.browser.MicrosoftEdge': 'Edge',//Edge
+    'user.login.browser.Rest': 'Rest',//Rest接口
+    'user.login.browser.InternetExplorer': 'IE',//IE
+    'user.login.equipment.pc': 'Computer',//电脑
+    'user.login.equipment.Tablet': 'Tablet',//平板电脑
+    //账号相关end
     // 用户分析
     'user.login.total.score': 'Total score', // 总评分
     'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
