@@ -100,7 +100,7 @@ class LoginMain extends React.Component {
     ssoCheck(callback) {
         var lang = window.Oplate && window.Oplate.lang || 'zh_CN';
         //2. 在登录界面显示前，检测当前 SSO 是否已经登录
-        ssoLogin.check().then((ticket) => {
+        ssoLogin.quickLogin().then((ticket) => {
             // SSO已成功登录成功的回调（因为这里拿到了 ticket, 所以这时候应该重定向到 callBackUrl 地址中）
             sendMessage && sendMessage('sso已登录,ticket=' + ticket);
             window.location.href = callBackUrl + '?t=' + ticket + '&lang=' + lang;

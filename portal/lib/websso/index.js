@@ -5,7 +5,8 @@
  */
 
 // 引入 sso-login.js
-import SSOClient from 'component-util/lib/sso-login';
+// import SSOClient from 'component-util/lib/sso-login';
+import SSOClient from './sso-login-es6';
 
 let lang = '', clientId, callBackUrl = '/ssologin';
 let hasWindow = !(typeof window === 'undefined');
@@ -17,7 +18,7 @@ if (hasWindow) {
 }
 const ssoLogin = new SSOClient({
     // SSO所在的服务器
-    ssoOrigin: 'https://oplate-sso.antfact.com',
+    ssoOrigin: 'https://sso.curtao.com',
     // 待接入应用的 client_id
     clientId: clientId,
     // 指定语言（用于登录失败时，返回的出错提示所使用的语言，如：zh-CN）
