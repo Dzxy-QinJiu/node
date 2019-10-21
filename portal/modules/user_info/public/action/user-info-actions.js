@@ -98,28 +98,6 @@ function UserInfoActions() {
             _this.dispatch({error: true, errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')});
         });
     };
-    //账号日志汉化
-    this.translate = (list) => {
-        let browserList = {
-            'Chrome': Intl.get('user.login.browser.chrom', '谷歌'),
-            'Firefox': Intl.get('user.login.browser.Firefox', '火狐'),
-            'Microsoft Edge': Intl.get('user.login.browser.MicrosoftEdge', 'Edge'),
-            'Rest': Intl.get('user.login.browser.Rest', 'Rest接口'),
-            'Internet Explorer': Intl.get('user.login.browser.InternetExplorer', 'IE'),
-        }; 
-        let equipmentList = {
-            Computer: Intl.get('user.login.equipment.pc', '电脑',),
-            Mobile: Intl.get('member.phone', '手机'),
-            Unknown: Intl.get('common.unknown', '未知'),
-            Tablet: Intl.get('user.login.equipment.Tablet', '平板电脑'),
-
-        };
-        _.forEach(list,(value) => {
-            let newLoginBrowser = _.get(browserList,value.loginBrowser);
-            value.loginBrowser = newLoginBrowser ? newLoginBrowser : value.loginBrowser;
-            value.loginEquipment = _.get(equipmentList,value.loginEquipment);
-        });
-    };
 }
 
 module.exports = alt.createActions(UserInfoActions);

@@ -46,6 +46,27 @@ function UserInfoStore() {
     
     this.bindActions(UserInfoActions);
 }
+//账号日志汉化
+var translate = (list) => {
+    let browserList = {
+        'Chrome': Intl.get('user.login.browser.chrom', '谷歌'),
+        'Firefox': Intl.get('user.login.browser.Firefox', '火狐'),
+        'Microsoft Edge': Intl.get('user.login.browser.MicrosoftEdge', 'Edge'),
+        'Rest': Intl.get('user.login.browser.Rest', 'Rest接口'),
+        'Internet Explorer': Intl.get('user.login.browser.InternetExplorer', 'IE'),
+    }; 
+    let equipmentList = {
+        Computer: Intl.get('user.login.equipment.pc', '电脑',),
+        Mobile: Intl.get('member.phone', '手机'),
+        Unknown: Intl.get('common.unknown', '未知'),
+        Tablet: Intl.get('user.login.equipment.Tablet', '平板电脑'),
+
+    };
+    _.forEach(list,(value) => {
+        value.loginBrowser = _.get(browserList,value.loginBrowser) || value.loginBrowser;
+        value.loginEquipment = _.get(equipmentList,value.loginEquipment) || value.loginEquipment;
+    });
+};
 
 UserInfoStore.prototype.getLogList = function(logListObj) {
     if (logListObj.isLoading){
@@ -72,7 +93,7 @@ UserInfoStore.prototype.getLogList = function(logListObj) {
                     lastId: log.sortValuse || ''
                 };
             });
-            UserInfoActions.translate(processedLogList);
+            translate(processedLogList);
             this.logList = this.logList.concat(processedLogList);
             var length = this.logList.length;
             this.sortId = length > 0 ? this.logList[length - 1].lastId : ''; // 获取最后一条提成的id
