@@ -74,10 +74,6 @@ class IpFilter extends React.Component {
         );
     };
 
-    upDateFilterIpList = (updatedIpList) => {
-        this.props.upDateFilterIpList && this.props.upDateFilterIpList(updatedIpList);
-    };
-
     // 添加IP
     handleSubmitAddIp = (submitObj) => {
         this.setState({
@@ -91,7 +87,7 @@ class IpFilter extends React.Component {
             if (_.isObject(result) && result.id) {
                 let globalFilterIpList = this.state.globalFilterIpList;
                 globalFilterIpList.unshift(result);
-                this.upDateFilterIpList(globalFilterIpList);
+                this.props.upDateFilterIpList(globalFilterIpList);
                 this.setState({
                     globalFilterIpList: globalFilterIpList
                 });
@@ -145,7 +141,7 @@ class IpFilter extends React.Component {
             });
             if (result === true) { // 删除成功
                 let globalFilterIpList = _.filter(this.state.globalFilterIpList, item => item.id !== id);
-                this.upDateFilterIpList(globalFilterIpList);
+                this.props.upDateFilterIpList(globalFilterIpList);
                 this.setState({
                     globalFilterIpList: globalFilterIpList
                 });
