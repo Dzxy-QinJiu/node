@@ -634,7 +634,7 @@ class RecentLoginUsers extends React.Component {
                         columns={columns}
                         pagination={false}
                         rowClassName={this.handleRowClassName}
-                        locale={{ emptyText: this.state.getUserListErrorMsg }}
+                        locale={{ emptyText: this.state.getUserListErrorMsg || Intl.get('user.active.no.data.tips', '暂无活跃用户')}}
                         scroll={{ x: 800, y: tableHeight }}
                     />
                 </div>
