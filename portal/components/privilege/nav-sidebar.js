@@ -540,7 +540,8 @@ var NavSidebar = createReactClass({
         var allUnhandleApplyTotal = 0;
         if (_.has(Oplate, 'unread')) {
             _.forEach(Oplate.unread, (value,key) => {
-                //todo 计算所有待审批的数量时，不要把待处理的线索的值也加进去！！！
+                //todo 这里的计算待优化
+                // 计算所有待审批的数量时，需要把待处理的线索的值去掉
                 if (value && _.isNumber(value) && key.indexOf('unhandleClue') === -1) {
                     allUnhandleApplyTotal += value;
                 }
