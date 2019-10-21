@@ -539,8 +539,10 @@ var NavSidebar = createReactClass({
         //所有申请的待审批总数
         var allUnhandleApplyTotal = 0;
         if (_.has(Oplate, 'unread')) {
-            _.forEach(Oplate.unread, (value) => {
-                if (value && _.isNumber(value)) {
+            _.forEach(Oplate.unread, (value,key) => {
+                //todo 这里的计算待优化
+                // 计算所有待审批的数量时，需要把待处理的线索的值去掉
+                if (value && _.isNumber(value) && key.indexOf('unhandleClue') === -1) {
                     allUnhandleApplyTotal += value;
                 }
             });
