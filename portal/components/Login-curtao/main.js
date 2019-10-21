@@ -99,7 +99,7 @@ class LoginMain extends React.Component {
     ssoCheck(callback) {
         var lang = window.Oplate && window.Oplate.lang || 'zh_CN';
         //2. 在登录界面显示前，检测当前 SSO 是否已经登录
-        ssoLogin.check().then((ticket) => {
+        ssoLogin.quickLogin().then((ticket) => {
             // SSO已成功登录成功的回调（因为这里拿到了 ticket, 所以这时候应该重定向到 callBackUrl 地址中）
             sendMessage && sendMessage('sso已登录,ticket=' + ticket);
             window.location.href = callBackUrl + '?t=' + ticket + '&lang=' + lang;
@@ -265,12 +265,9 @@ class LoginMain extends React.Component {
         };
         //如果是初次渲染不展示表单;
         //如果有错误信息，则不显示loading状态
-        const useSso = window.Oplate && window.Oplate.useSso;
         if (!this.state.showUi) {
             return (<div className="login-wrap" style={bgStyle}>
-                {this.state.errorMsg ? null : useSso ? <div className="sso-login-wrap">
-                    <Spinner className="isloading"/>
-                </div> : <Spinner className="isloading"/>}
+                {this.state.errorMsg ? null : <Spinner className="isloading"/>}
             </div>);
         } else {
             const hasWindow = !(typeof window === 'undefined');
