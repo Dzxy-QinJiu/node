@@ -1,0 +1,52 @@
+@import "../../../../public/css/common-variables";
+.add-apply-approver-container.right-pannel-default{
+  width: 480px!important;
+  background-color:transparent!important;
+  transform: translateX(480px);
+  overflow: visible;
+  .add-apply-node-wrap{
+    box-shadow: -4px 0 20px @box_shadow_color;
+    height: 100%;
+    width: 480px !important;
+    background-color: @NOTICE-BACKGROUND !important;
+    position: relative;
+    .add-apply-node-item{
+      padding: 17px 24px 0 36px;
+      .add-apply-form{
+        margin-bottom: 12px;
+        .ant-form-item-label{
+          font-size: 14px;
+          color:#999;
+          float: left;
+        }
+        .add-node-content{
+          float: left;
+          padding: 5px 0 0 0;
+          color: #333;
+          font-weight: 400;
+          font-size: 14px;
+          .addition-condition{
+            padding-left: 20px;
+            .addition-condition-item{
+              margin-top:6px;
+              &:last-child{
+                margin-bottom: 6px;
+              }
+            }
+            .radio-select-list{
+              width: 300px;
+              margin-top:20px;
+            }
+          }
+
+        }
+      }
+    }
+
+  }
+}
+.ant-radio-wrapper>span, .ant-checkbox-wrapper>span{
+  font-weight: 400;
+  font-size: 14px;
+  color: #333;
+}

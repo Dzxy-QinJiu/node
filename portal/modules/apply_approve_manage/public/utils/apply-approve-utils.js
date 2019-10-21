@@ -253,6 +253,36 @@ exports.APPROVER_TYPE = [{
     
 {name: Intl.get('apply.add.approver.applicant.self', '申请人自己'), value: 'application_self'}
 ];
+
+exports.CC_SETTINGT_TYPE = [{
+    name: Intl.get('apply.add.approver.higher.level', '上级'),
+    value: 'higher_ups',
+}, {
+    name: Intl.get('apply.set.team.secretry', '团队秘书'),
+    value: 'team_secretry',
+},{
+    name: Intl.get('apply.set.team.user', '团队成员'),
+    value: 'setting_users',
+},{
+    name: Intl.get('apply.add.approver.setting.role', '指定角色'),
+    value: 'setting_roles',
+}
+];
+exports.SECRETRYOPTIONS = [{
+    name: Intl.get('apply.set.cc.node.secretry', '所属团队秘书'),
+    value: 'team_secretry'
+},{
+    name: Intl.get('apply.set.cc.node.higher.secretry', '所有上级团队秘书'),
+    value: 'higher_secretry'
+},{
+    name: Intl.get('apply.set.cc.node.all.secretry', '所属团队及所有上级团队秘书'),
+    value: 'all_secretry'
+},];
+exports.USEROPTIONS = [{
+    name: Intl.get('apply.set.cc.node.all.team.user', '所有上级团队成员'),
+    value: 'higher_user'
+}];
+
 exports.getTeamHigerLevel = function() {
     var teamList = [{
         name: Intl.get('apply.approve.first.higher.level', '直属上级'),
