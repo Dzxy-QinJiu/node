@@ -1055,6 +1055,7 @@ var en_US = {
 
     //用户管理--- 活跃用户start
     'user.active.tips': 'The user who has logged within the selection time', // 选择时间内登录过的用户
+    'user.active.no.data.tips': 'There is no active user', // 暂无活跃用户
     //用户管理--- 活跃用户end
 
     //基本资料start

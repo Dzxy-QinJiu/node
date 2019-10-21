@@ -1058,6 +1058,7 @@ var zh_CN = {
 
     //用户管理--- 活跃用户start
     'user.active.tips': '选择时间内登录过的用户',
+    'user.active.no.data.tips': '暂无活跃用户',
     //用户管理--- 活跃用户end
 
     //基本资料start
