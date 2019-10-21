@@ -249,7 +249,7 @@ class ProductionManage extends React.Component {
     // 显示ip过滤面板
     showIpFilterPanel = () => {
         this.setState({
-            isShowIpFilterPanel: true,
+            isShowIpFilterPanel: true
         });
     };
 
@@ -356,6 +356,7 @@ class ProductionManage extends React.Component {
                                 afterOperation={this.events_afterOperation}
                                 globalFilterIpList={this.state.globalFilterIpList}
                                 productionFilterIp={this.state.productionFilterIp}
+                                showIpFilterPanel={this.showIpFilterPanel}
                             /> : null}
                         {this.state.deleteError ? (<message></message>) : null}
                         {
