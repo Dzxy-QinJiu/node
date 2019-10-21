@@ -704,6 +704,7 @@ var CrmBatchChange = createReactClass({
         return(
             <Menu onClick={this.handleMenuClick} defaultSelectedKeys={[BATCH_OPERATE_TYPE.CHANGE_TAG]}>
                 {_.map(BATCH_MENU_TYPE, item => {
+                    if (item.key === BATCH_OPERATE_TYPE.CHANGE_SALES && this.isCommonSales()) return null;
                     return (<Menu.Item key={item.key}>{item.value}</Menu.Item>);
                 })}
             </Menu>
@@ -726,6 +727,11 @@ var CrmBatchChange = createReactClass({
         this.setState({
             isShowBatchMenu: true
         });
+    },
+    //是否是普通销售
+    isCommonSales() {
+        let userObj = userData.getUserData();
+        return _.get(userObj, 'isCommonSales');
     },
     render: function() {
         //在页面处于手机屏尺寸时，dropdown按钮模拟为“更多”按钮
