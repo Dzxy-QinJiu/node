@@ -305,7 +305,7 @@ class ProductionManage extends React.Component {
         });
     };
 
-    handleUpDateFilterIp = (globalFilterIpList) => {
+    handleUpdateFilterIp = (globalFilterIpList) => {
         this.setState({
             globalFilterIpList: globalFilterIpList
         });
@@ -364,7 +364,7 @@ class ProductionManage extends React.Component {
                                 <IpFilter
                                     closeIpFilterPanel={this.closeIpFilterPanel}
                                     globalFilterIpList={this.state.globalFilterIpList}
-                                    upDateFilterIpList={this.handleUpDateFilterIp}
+                                    updateFilterIpList={this.handleUpdateFilterIp}
                                 />
                             ) : null
                         }

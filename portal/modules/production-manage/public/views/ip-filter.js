@@ -87,7 +87,7 @@ class IpFilter extends React.Component {
             if (_.isObject(result) && result.id) {
                 let globalFilterIpList = this.state.globalFilterIpList;
                 globalFilterIpList.unshift(result);
-                this.props.upDateFilterIpList(globalFilterIpList);
+                this.props.updateFilterIpList(globalFilterIpList);
                 this.setState({
                     globalFilterIpList: globalFilterIpList
                 });
@@ -141,7 +141,7 @@ class IpFilter extends React.Component {
             });
             if (result === true) { // 删除成功
                 let globalFilterIpList = _.filter(this.state.globalFilterIpList, item => item.id !== id);
-                this.props.upDateFilterIpList(globalFilterIpList);
+                this.props.updateFilterIpList(globalFilterIpList);
                 this.setState({
                     globalFilterIpList: globalFilterIpList
                 });
@@ -284,7 +284,7 @@ class IpFilter extends React.Component {
 
 IpFilter.propTypes = {
     closeIpFilterPanel: PropTypes.func,
-    upDateFilterIpList: PropTypes.func, // 更新全局过滤的IP
+    updateFilterIpList: PropTypes.func, // 更新全局过滤的IP
 };
 
 export default IpFilter;
