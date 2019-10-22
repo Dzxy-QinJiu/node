@@ -13,6 +13,7 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import CrmAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 import RecommendClues from './recommend_clues';
 import ImportCustomer from './import-customer';
+import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
 import classNames from 'classnames';
 import history from 'PUB_DIR/sources/history';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
@@ -552,27 +553,26 @@ class BootProcess extends React.Component {
         switch (curCustomerAddType) {
             case CUSTOMER_ADD_TYPES.FINISHED:
                 let title = this.addCustomerType === CUSTOMER_ADD_TYPES.ADD ? Intl.get('user.user.add.success', '添加成功') : Intl.get('guide.import.customer.success', '导入成功');
-                let FinishedBlock =  this.renderFinishedBlock({
-                    text: title,
-                    goText: Intl.get('guide.see.cutomer', '查看客户'),
-                    // 继续添加函数
-                    continueFn: (e) => {
-                        Trace.traceEvent(e, '继续添加客户');
-                        this.setState({
-                            curCustomerAddType: CUSTOMER_ADD_TYPES.ADD
-                        });
-                    },
-                    // 查看客户
-                    goFn: () => {
-                        history.push('/crm');
-                    }
-                });
                 return (
                     <RightPanelModal
                         isShowMadal
                         isShowCloseBtn
                         onClosePanel={this.closeGuidDetailPanel}
-                        content={FinishedBlock}
+                        content={(
+                            <OperateSuccessTip
+                                title={title}
+                                goText={Intl.get('guide.see.cutomer', '查看客户')}
+                                continueFn={(e) => {
+                                    Trace.traceEvent(e, '继续添加客户');
+                                    this.setState({
+                                        curCustomerAddType: CUSTOMER_ADD_TYPES.ADD
+                                    });
+                                }}
+                                goFn={() => {
+                                    history.push('/crm');
+                                }}
+                            />
+                        )}
                     />
                 );
             case CUSTOMER_ADD_TYPES.ADD:

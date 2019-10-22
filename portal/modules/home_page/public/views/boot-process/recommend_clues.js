@@ -6,6 +6,7 @@ import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-aj
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ExtractClues from './extract-clue';
+import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
 import { Button } from 'antd';
 import FinishedSrc from '../../images/guide-finished.svg';
 import { deleteEmptyProperty } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
@@ -200,20 +201,19 @@ class RecommendClues extends React.Component {
             }
         }else if(step === EXTRACT_CLUE_STEPS.FINISHED){ // 完成提取
             return (
-                <div className="guide-finished-wrapper">
-                    <img src={FinishedSrc} alt=""/>
-                    <p>{Intl.get('clue.extract.success', '提取成功')}</p>
-                    <div className="btn-wrapper">
-                        <Button type="primary" data-tracename="继续提取" onClick={() => {
-                            this.setState({
-                                step: EXTRACT_CLUE_STEPS.SET_RECOMMEND
-                            });
-                        }}>{Intl.get('guide.continue.extract', '继续提取')}</Button>
-                        <Button data-tracename="查看线索" onClick={() => {
-                            history.push('/clue_customer');
-                        }}>{Intl.get('guide.see.clue', '查看线索')}</Button>
-                    </div>
-                </div>
+                <OperateSuccessTip
+                    title={Intl.get('clue.extract.success', '提取成功')}
+                    continueText={Intl.get('guide.continue.extract', '继续提取')}
+                    goText={Intl.get('guide.see.clue', '查看线索')}
+                    continueFn={() => {
+                        this.setState({
+                            step: EXTRACT_CLUE_STEPS.SET_RECOMMEND
+                        });
+                    }}
+                    goFn={() => {
+                        history.push('/clue_customer');
+                    }}
+                />
             );
         }
     };
