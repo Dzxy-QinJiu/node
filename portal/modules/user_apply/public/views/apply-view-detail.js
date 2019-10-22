@@ -243,6 +243,11 @@ const ApplyViewDetail = createReactClass({
         });
     },
     componentDidMount() {
+        if (!_.isEmpty(this.props.ApplyViewDetailStore)){
+            AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+        }else{
+            AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
+        }
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         var ApplyViewDetailStore = this.getApplyViewDetailStore();
         ApplyViewDetailStore.listen(this.onStoreChange);
@@ -255,11 +260,7 @@ const ApplyViewDetail = createReactClass({
         }
         emitter.on('user_detail_close_right_panel', this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
-        if (this.state.isHomeMyWork){
-            AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
-        }else{
-            AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
-        }
+
         this.getIntegrateConfig();
         this.getAllUserList();
         this.getNotSalesRoleUserList();
@@ -269,7 +270,7 @@ const ApplyViewDetail = createReactClass({
         var ApplyViewDetailStore = this.getApplyViewDetailStore();
         ApplyViewDetailStore.unlisten(this.onStoreChange);
         emitter.removeListener('user_detail_close_right_panel', this.closeRightPanel);
-        if (this.state.isHomeMyWork){
+        if (!_.isEmpty(this.props.ApplyViewDetailStore)){
             AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
         }else{
             AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
