@@ -160,8 +160,13 @@ class CRMAddForm extends React.Component {
                     contacts.push(data);
                 }
             });
-            //验证不通过、电话验证不通过、客户名是否已存在、客户名唯一性验证出错时不能保存
-            if (error || _.get(contactErrors, '[0]') || this.state.customerNameExist || this.state.checkNameError) {
+            //验证不通过、电话验证不通过、客户名是否已存在、客户名唯一性验证出错时不能保存、联系人为空时
+            if (error ||
+                _.get(contactErrors, '[0]') ||
+                this.state.customerNameExist ||
+                this.state.checkNameError ||
+                _.isEmpty(_.get(contacts,'[0]'))
+            ) {
                 this.setState({isLoading: false});
                 return false;
             }else {
