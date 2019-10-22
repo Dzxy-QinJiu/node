@@ -25,9 +25,9 @@ import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
 import PhoneStatusTop from './view/phone-status-top';
 import PhoneAddToCustomerForm from 'CMP_DIR/phone-add-to-customer-form';
-var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 import {PHONERINGSTATUS} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26,//对应几个客户提示的高度
@@ -119,6 +119,15 @@ class PhonePanel extends React.Component {
             phoneRecordObj.callid = phonemsgObj.callid;
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
         }
+
+        //增加打开用户详情面板的事件监听
+        //打开用户详情面板时，当前面板的z-index减1
+        //以使当前面板显示在后面
+        userDetailEmitter.on(userDetailEmitter.OPEN_USER_DETAIL, this.adjustThisPanelZIndex.bind(this, -1));
+
+        //增加关闭用户详情面板的事件监听
+        //关闭用户详情面板时，恢复当前面板的原始z-index
+        userDetailEmitter.on(userDetailEmitter.COLSE_USER_DETAIL, this.adjustThisPanelZIndex);
 
         //增加打开线索详情面板的事件监听
         //打开线索详情面板时，当前面板的z-index减1
@@ -220,6 +229,12 @@ class PhonePanel extends React.Component {
         phoneRecordObj.received_time = '';//通话时间
         phoneAlertAction.setInitialState();
         phoneAlertStore.unlisten(this.onStoreChange);
+
+        //移除打开用户详情面板的事件监听
+        userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.adjustThisPanelZIndex);
+
+        //移除关闭用户详情面板的事件监听
+        userDetailEmitter.removeListener(userDetailEmitter.COLSE_USER_DETAIL, this.adjustThisPanelZIndex);
 
         //移除打开线索详情面板的事件监听
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.adjustThisPanelZIndex);

@@ -14,12 +14,14 @@ import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
+import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import{
     myWorkEmitter,
     notificationEmitter,
     resizeEmitter,
     phoneMsgEmitter,
-    audioMsgEmitter
+    audioMsgEmitter,
+    userDetailEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 
@@ -38,6 +40,8 @@ class PageFrame extends React.Component {
         isShowNotificationPanel: false, // 是否展示系统通知面板
         rightContentHeight: 0,
         clueDetailPanelShow: false,
+        isShowUserDetailPanel: false, // 是否显示用户详情界面
+        userId: '', // 用户id
         clueParamObj: $.extend(true, {}, emptyParamObj),
     };
 
@@ -57,6 +61,11 @@ class PageFrame extends React.Component {
         audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         // 点击系统通知框的的触发
         notificationEmitter.on(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
+
+        // 打开用户详情面板
+        userDetailEmitter.on(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
+        // 关闭用户详情面板
+        userDetailEmitter.on(userDetailEmitter.COLSE_USER_DETAIL, this.closeUserDetailPanel);
 
         $(window).on('resize', this.resizeHandler);
     }
@@ -105,6 +114,11 @@ class PageFrame extends React.Component {
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
+        // 打开用户详情面板
+        userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
+        // 关闭用户详情面板
+        userDetailEmitter.removeListener(userDetailEmitter.COLSE_USER_DETAIL, this.closeUserDetailPanel);
+
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
@@ -161,6 +175,22 @@ class PageFrame extends React.Component {
         this.setState({clueDetailPanelShow: false, clueParamObj: $.extend(true, {}, emptyParamObj)});
     };
 
+    // 打开用户详情面板
+    openUserDetailPanel = (paramObj) => {
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '查看用户详情');
+        this.setState({
+            isShowUserDetailPanel: true,
+            userId: _.get(paramObj, 'userId')
+        });
+    };
+
+    // 关闭用户详情面板
+    closeUserDetailPanel = () => {
+        this.setState({
+            isShowUserDetailPanel: false,
+            userId: ''
+        });
+    };
 
     closePhonePanel = () => {
         //首页我的工作中，打通电话或写了跟进，关闭弹屏前，需要将首页的相关工作去掉
@@ -229,6 +259,14 @@ class PageFrame extends React.Component {
                         {
                             this.state.isShowNotificationPanel ? (
                                 <Notification closeNotificationPanel={this.closeNotificationPanel}/>
+                            ) : null
+                        }
+                        {
+                            this.state.isShowUserDetailPanel ? (
+                                <UserDetail
+                                    userId={this.state.userId}
+                                    closeRightPanel={this.closeUserDetailPanel}
+                                />
                             ) : null
                         }
                     </div>

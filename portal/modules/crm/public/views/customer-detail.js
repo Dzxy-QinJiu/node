@@ -23,6 +23,8 @@ const RightPanel = rightPanelUtil.RightPanel;
 import {isOpenCash, isCurtao, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 let history = require('../../../../public/sources/history');
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
+
 class CrmRightPanel extends React.Component {
     state = {
         activeKey: this.props.activeKey || TAB_KEYS.OVERVIEW_TAB,//tab激活页的key
@@ -115,14 +117,12 @@ class CrmRightPanel extends React.Component {
         });
     };
     closeUserDetail = () => {
-        this.setState({
-            showDetailUserId: ''
-        });
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.COLSE_USER_DETAIL);
     };
     showUserDetail = (userId) => {
-        this.setState({
-            showDetailUserId: userId
-        });
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: userId});
     };
 
     renderCustomerDetail(){
