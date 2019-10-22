@@ -578,9 +578,9 @@ function scheduleAlertListener(scheduleAlertMsg) {
         let type = scheduleAlertMsg.type;
         //注：客户和线索的电联采用不同的标签
         switch(type){
-            case 'calls':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;
+            case 'calls':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;//客户电联
                 break;
-            case 'lead':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;
+            case 'lead':title = '【' + Intl.get('schedule.phone.connect', '电联') + '】 ' + scheduleAlertMsg.topic;//线索电联
                 break;
             case 'visit':title = '【' + Intl.get('common.visit', '拜访') + '】 ' + scheduleAlertMsg.topic;
                 break;
