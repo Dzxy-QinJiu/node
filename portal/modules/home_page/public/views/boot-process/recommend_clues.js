@@ -8,7 +8,6 @@ import NoDataIntro from 'CMP_DIR/no-data-intro';
 import ExtractClues from './extract-clue';
 import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
 import { Button } from 'antd';
-import FinishedSrc from '../../images/guide-finished.svg';
 import { deleteEmptyProperty } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { getAllSalesUserList } from 'PUB_DIR/sources/utils/common-data-util';
 import userData from 'PUB_DIR/sources/user-data';

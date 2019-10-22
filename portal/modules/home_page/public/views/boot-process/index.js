@@ -4,7 +4,6 @@
  */
 import '../../css/boot-process.less';
 import DialSrc from '../../images/call-system.svg';
-import FinishedSrc from '../../images/guide-finished.svg';
 import { Button, message, Popconfirm } from 'antd';
 import {Link} from 'react-router-dom';
 import GuideAjax from 'MOD_DIR/common/public/ajax/guide';
@@ -479,20 +478,6 @@ class BootProcess extends React.Component {
             return guideList;
         }
     }
-
-    // 完成界面
-    renderFinishedBlock = (finishedObj) => {
-        return (
-          <div className="guide-finished-wrapper">
-              <img src={FinishedSrc} alt=""/>
-              <p>{finishedObj.text}</p>
-              <div className="btn-wrapper">
-                  <Button type="primary" onClick={finishedObj.continueFn}>{finishedObj.continueText || Intl.get('guide.continue.add', '继续添加')}</Button>
-                  <Button onClick={finishedObj.goFn}>{finishedObj.goText || Intl.get('user.apply.check', '查看')}</Button>
-              </div>
-          </div>
-        );
-    };
 
     // 添加成员
     renderAddMember() {

@@ -5,7 +5,6 @@
  */
 // 操作成功后的界面
 import './style.less';
-import FinishedSrc from './finished.svg';
 import {Button} from 'antd';
 
 function loop() {}
@@ -18,13 +17,15 @@ class OperateSuccessTip extends React.Component {
     render() {
         return (
             <div className="operate-finished-wrapper" data-tracename="完成提示框">
-                <img src={FinishedSrc}/>
+                <i className="iconfont icon-add-success"/>
                 <div className="operate-finished-title">{this.props.title}</div>
                 <div className="operate-finished-tip">{this.props.tip}</div>
-                <div className="btn-wrapper">
-                    <Button type="primary" onClick={this.props.continueFn} data-tracename="点击继续操作按钮">{this.props.continueText}</Button>
-                    <Button onClick={this.props.goFn} data-tracename="点击其他操作按钮">{this.props.goText}</Button>
-                </div>
+                {this.props.isShowBtn ? (
+                    <div className="btn-wrapper">
+                        <Button type="primary" onClick={this.props.continueFn} data-tracename="点击继续操作按钮">{this.props.continueText}</Button>
+                        <Button onClick={this.props.goFn} data-tracename="点击其他操作按钮">{this.props.goText}</Button>
+                    </div>
+                ) : null}
             </div>
         );
     }
@@ -36,6 +37,7 @@ OperateSuccessTip.defaultProps = {
     goText: Intl.get('user.apply.check', '查看'),//其他操作按钮提示文本
     continueFn: loop,//继续操作事件
     goFn: loop,//其他操作事件
+    isShowBtn: true,//是否显示按钮
 };
 OperateSuccessTip.propTypes = {
     title: PropTypes.oneOfType[PropTypes.string, PropTypes.element],
@@ -44,6 +46,7 @@ OperateSuccessTip.propTypes = {
     goText: PropTypes.string,
     continueFn: PropTypes.func,
     goFn: PropTypes.func,
+    isShowBtn: PropTypes.bool,
 };
 
 module.exports = OperateSuccessTip;
