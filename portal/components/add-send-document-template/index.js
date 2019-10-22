@@ -170,8 +170,14 @@ class AddReportSendApply extends React.Component {
     };
     //添加客户成功事件
     afterAddCustomer = (result) => {
-        let customerName = _.get(result,'[0].name','');
-        this.customerSuggestRef && this.customerSuggestRef.suggestChange(customerName);
+        let customerSuggestRef = this.customerSuggestRef;
+        if(customerSuggestRef) {
+            _.each(result, item => {
+                item.customer_name = item.name;
+                item.customer_id = item.id;
+            });
+            customerSuggestRef.setCustomer(result, _.get(result,'[0].id',''));
+        }
     };
     //渲染添加客户内容
     renderAddCustomer = () => {
