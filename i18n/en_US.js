@@ -2540,7 +2540,7 @@ var en_US = {
 
     //补充
     'customer.fail.get.customer.trace': 'Failed to get {type} trace lists',//获取{type}跟进记录列表失败
-    'customer.fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
+    'customer.fail.add.customer.trace': 'Failed to add follow-up record',//添加跟进记录失败
     'user.user.lists': 'user lists',//用户列表
     'user.user.applies': 'user applies',//用户申请
     'user.account.type': 'Account type',//开户类型
@@ -2566,7 +2566,7 @@ var en_US = {
     'user.setting.roles': 'Set the role',//设置角色
     //补充
     'fail.get.customer.trace': 'Failed to get customer trace list',//获取客户跟踪记录列表失败
-    'fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
+    'fail.add.customer.trace': 'Failed to update follow-up record',//更新跟进记录失败
     'contact.phone': 'Contact number',//联系电话
     'customer.visit': 'visit',//拜访
     'common.phone.system': 'phone system',//电话系统

@@ -2580,7 +2580,7 @@ var zh_CN = {
     'user.open.multilogin': '开启了多人登录。',
     //增加
     'customer.fail.get.customer.trace': '获取{type}跟进记录列表失败',
-    'customer.fail.add.customer.trace': '增加客户跟踪记录列表失败',
+    'customer.fail.add.customer.trace': '添加跟进记录失败',
     'customer.trace.content': '跟进记录内容不能为空',
     'customer.input.customer.trace.content': '请填写跟进内容',
     'customer.add.customer.trace.detail': '请补充跟进记录详情',
@@ -2613,7 +2613,7 @@ var zh_CN = {
     'data.selector.none': '无',
     //跟踪记录
     'fail.get.customer.trace': '获取客户跟踪记录列表失败',
-    'fail.add.customer.trace': '增加客户跟踪记录列表失败',
+    'fail.add.customer.trace': '更新跟进记录失败',
     'add.customer.trace.detail': '请补充跟进记录详情',
     'click.to.add.trace.detail': '请点击此处补充跟进内容',
     'contact.phone': '联系电话',
