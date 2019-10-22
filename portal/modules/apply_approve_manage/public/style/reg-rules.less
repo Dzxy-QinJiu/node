@@ -11,18 +11,49 @@
       //抄送人相关信息
       &.inform-cc{
         .rule-content.info-container{
-           .ant-checkbox-wrapper{
-             display: block;
-             &:not(:first-child){
-               margin-left: 110px;
-             }
-           }
+          float: left;
+          .cc-info-type{
+            margin:0 0 10px 0;
+            .apply-cc-node{
+              overflow: hidden;
+              .cc-person-label{
+                position: relative;
+                top: 30px;
+              }
+            }
+            .info-ways-checks{
+              display: inline-block;
+            }
+            .rule-content.cc-node-lists{
+              display: block;
+              margin:10px 0;
+            }
+            &:not(:first-child){
+              .rule-content.cc-node-lists{
+                margin-left: 0;
+              }
+              .ant-checkbox-wrapper{
+                margin-left: 0px;
+
+              }
+            }
+            .ant-checkbox-wrapper{
+                margin-left: 0px;
+            }
+          }
+
         }
       }
       .item-label {
         font-size: 14px;
         color: #333;
         width: 110px;
+        float: left;
+      }
+      .sub-item-label{
+        width: 80px;
+        font-size: 14px;
+        color: #333;
         float: left;
       }
       .rule-content.info-container {
@@ -169,12 +200,7 @@
         }
       }
     }
-    .rule-content.cc-node-lists{
-      display: block;
-      margin-top:10px;
-      float: none;
-      margin-left: 110px;
-    }
+
 
     }
   //添加申请审批人节点面板

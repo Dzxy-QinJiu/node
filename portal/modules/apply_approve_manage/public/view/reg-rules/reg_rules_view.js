@@ -25,8 +25,15 @@ var applyApproveManageAction = require('../../action/apply_approve_manage_action
 const FORMLAYOUT = {
     PADDINGTOTAL: 260,
 };
-import {FLOW_TYPES, ADDTIONPROPERTIES, ASSIGEN_APPROVER, isSalesOpportunityFlow, isVisitApplyFlow, isDomainApplyFlow} from '../../utils/apply-approve-utils';
-import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
+import {
+    FLOW_TYPES,
+    ADDTIONPROPERTIES,
+    ASSIGEN_APPROVER,
+    isSalesOpportunityFlow,
+    isVisitApplyFlow,
+    isDomainApplyFlow
+} from '../../utils/apply-approve-utils';
+import {CC_INFO,NOTIFY_PERSON_TYPE} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
 class RegRulesView extends React.Component {
     constructor(props) {
@@ -66,9 +73,11 @@ class RegRulesView extends React.Component {
         this.createBpmnTool(bpmnModeler);
         ApplyApproveManageStore.listen(this.onStoreChange);
     }
-    componentWillUnmount(){
+
+    componentWillUnmount() {
         ApplyApproveManageStore.unlisten(this.onStoreChange);
     }
+
     createBpmnTool = (bpmnModeler) => {
         //在这个对象上加上相应的操作方法
         this.setState({
@@ -135,19 +144,19 @@ class RegRulesView extends React.Component {
     };
     //在最后一个流程节点设置相关属性
     lastNodePropertySetting = (elem) => {
-        if (isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))){
+        if (isSalesOpportunityFlow(_.get(this, 'props.applyTypeData.type'))) {
             elem.distributeSales = true;
-        }else{
+        } else {
             elem.distributeSales = false;
         }
-        if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))){
+        if (isVisitApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
             elem.distributeSalesToVisit = true;
-        }else{
+        } else {
             elem.distributeSalesToVisit = false;
         }
-        if (isDomainApplyFlow(_.get(this, 'props.applyTypeData.type'))){
+        if (isDomainApplyFlow(_.get(this, 'props.applyTypeData.type'))) {
             elem.customerSLDUpdate = true;
-        }else{
+        } else {
             elem.customerSLDUpdate = false;
         }
 
@@ -164,7 +173,7 @@ class RegRulesView extends React.Component {
                 if (_.isArray(elementsArr)) {
                     _.forEach(elementsArr, (elem, elemIndex) => {
                         //如果该节点是流程的倒数第二个节点（最后一个节点是endtask），并且是销售机会申请，那么在最后一个节点要加上可以分配销售的
-                        if (elemIndex + 2 === elementsArr.length && key === FLOW_TYPES.DEFAULTFLOW){
+                        if (elemIndex + 2 === elementsArr.length && key === FLOW_TYPES.DEFAULTFLOW) {
                             this.lastNodePropertySetting(elem);
                         }
 
@@ -181,7 +190,7 @@ class RegRulesView extends React.Component {
                         //增加节点的审批人，如果是指定的审批人，先不需要加candidateUsers这个属性，加上会报错
                         if (elem.candidateApprover && elem.candidateApprover !== ASSIGEN_APPROVER) {
                             var candidateText = '${' + elem.candidateApprover + '}';
-                            if (elem.hideBrack){
+                            if (elem.hideBrack) {
                                 candidateText = elem.candidateApprover;
                             }
                             modeling.updateProperties(curNode, {
@@ -214,7 +223,7 @@ class RegRulesView extends React.Component {
                             //网关的条件
                             if (elem.conditionTotalRule) {
                                 let bpmnFactory = this.state.bpmnFactory;
-                                incomingBo.set('conditionExpression', bpmnFactory.create('bpmn:FormalExpression', {body: elem.conditionTotalRule }));
+                                incomingBo.set('conditionExpression', bpmnFactory.create('bpmn:FormalExpression', {body: elem.conditionTotalRule}));
                                 modeling.updateProperties(curNode.incoming[0], {
                                     name: elem.conditionTotalRuleDsc
                                 });
@@ -323,10 +332,13 @@ class RegRulesView extends React.Component {
                             {showDeleteIcon ? <i className="iconfont icon-close-btn"
                                 onClick={this.handleDeleteNode.bind(this, flowType, item)}></i> : null}
                             {item.submitFiles + '' === 'true' ?
-                                <span className="addition-text">{Intl.get('apply.add.approver.submit.files', '可提交文件')}</span> : null}
+                                <span
+                                    className="addition-text">{Intl.get('apply.add.approver.submit.files', '可提交文件')}</span> : null}
                             {item.assignNextNodeApprover + '' === 'true' ?
-                                <span className="addition-text">{Intl.get('apply.add.approver.distribute', '指定下一审批人')}</span> : null}
-                            {item.distributeSales + '' === 'true' || item.distributeSalesToVisit + '' === 'true' ? <span className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
+                                <span
+                                    className="addition-text">{Intl.get('apply.add.approver.distribute', '指定下一审批人')}</span> : null}
+                            {item.distributeSales + '' === 'true' || item.distributeSalesToVisit + '' === 'true' ? <span
+                                className="addition-text">{Intl.get('leave.apply.general.apply', '分配销售')}</span> : null}
                             <span className="connet-bar"></span>
                         </div>
                     );
@@ -366,7 +378,7 @@ class RegRulesView extends React.Component {
             applyRulesAndSetting.bpmnJson = xml;
             var applyId = _.get(this, 'props.applyTypeData.id');
             //表单的内容不需要提交
-            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId,applyRulesAndSetting,() => {
+            applyApproveManageAction.saveSelfSettingWorkFlowRules(applyId, applyRulesAndSetting, () => {
                 message.success('保存成功');
                 this.props.updateRegRulesView(applyRulesAndSetting);
             });
@@ -455,12 +467,12 @@ class RegRulesView extends React.Component {
             previousNode = _.find(defaultBpmnNode, item => item.type === 'ExclusiveGateway');
 
         }
-        if (_.get(previousNode,'type') === 'EndEvent') {
+        if (_.get(previousNode, 'type') === 'EndEvent') {
             //删除最后一个节点
             bpmnNodeFlow.pop();
             previousNode = _.last(bpmnNodeFlow);
         }
-        if (_.get(previousNode,'type') === 'ExclusiveGateway') {
+        if (_.get(previousNode, 'type') === 'ExclusiveGateway') {
             var nodeIndexArr = applyFlow.split('_');
             var newIndex = _.last(nodeIndexArr) + '_' + '1';
             var newNodeObj = {
@@ -487,7 +499,7 @@ class RegRulesView extends React.Component {
             }
         } else {
             //如果是第一个节点
-            if (previousNode){
+            if (previousNode) {
                 var previousNodeIndex = _.get(previousNode, 'flowIndex');
                 var nodeIndexArr = _.split(previousNodeIndex, '_');
                 nodeIndexArr.splice(nodeIndexArr.length - 1, 1, parseInt(_.last(nodeIndexArr)) + 1);
@@ -500,7 +512,7 @@ class RegRulesView extends React.Component {
                     previous: `UserTask_${previousNodeIndex}`,
                     flowIndex: `${newIndex}`
                 };
-            }else{
+            } else {
                 var newIndex = '1_2';
                 var newNodeObj = {
                     name: `UserTask_${newIndex}`,
@@ -559,7 +571,7 @@ class RegRulesView extends React.Component {
             initialValue++;
         }
         //还需要把节点上的条件改一下
-        if (data.updateConditionFlowKey){
+        if (data.updateConditionFlowKey) {
             var flowKey = data.updateConditionFlowKey;
             delete data.updateConditionFlowKey;
             applyApproveRules[flowKey]['conditionRuleLists'] = data;
@@ -576,7 +588,7 @@ class RegRulesView extends React.Component {
             });
 
 
-        }else{
+        } else {
             applyApproveRules[`condition_${initialValue}`] = {
                 bpmnNode: [],
                 conditionRuleLists: data,
@@ -625,7 +637,7 @@ class RegRulesView extends React.Component {
         var applyApproveRules = _.get(this, 'state.applyRulesAndSetting.applyApproveRules');
         this.setState({
             showAddConditionPanel: true,
-            updateConditionObj: _.get(applyApproveRules[key],'conditionRuleLists'),
+            updateConditionObj: _.get(applyApproveRules[key], 'conditionRuleLists'),
             updateConditionFlowKey: key
         });
     };
@@ -702,11 +714,11 @@ class RegRulesView extends React.Component {
         var applyRulesAndSetting = this.state.applyRulesAndSetting;
         var ccInfoclone = _.cloneDeep(applyRulesAndSetting.notify_config);
         applyRulesAndSetting.notify_config = [];
-        _.forEach(cctype,item => {
-            var target = _.find(ccInfoclone,infoItem => infoItem.ccType === item);
-            if (target){
+        _.forEach(cctype, item => {
+            var target = _.find(ccInfoclone, infoItem => infoItem.ccType === item);
+            if (target) {
                 applyRulesAndSetting.notify_config.push(target);
-            }else {
+            } else {
                 applyRulesAndSetting.notify_config.push({
                     notify_type: item,
                 });
@@ -728,10 +740,34 @@ class RegRulesView extends React.Component {
         var defaultRules = this.getDiffTypeFlow(FLOW_TYPES.DEFAULTFLOW);
         //把默认流程的中待审批人所在的节点过滤出来
         var candidateRules = _.filter(defaultRules, (item) => item.candidateApprover);
-        var ccInformationArr = _.get(this, 'state.applyRulesAndSetting.notify_config');
-        var ccInformationType = _.map(ccInformationArr,'notify_type');
-        var ccRolesApply = _.find(ccInformationArr, item => item.notify_type === CC_INFO.APPLY);
-        var ccRolesApprove = _.find(ccInformationArr, item => item.notify_type === CC_INFO.APPROVE);
+        //提交申请时通知
+        var ccApplyInforType = [],ccApproveInforType = [],ccInformationType = [], ccRolesApply = {},ccRolesApprove = {};
+        var applyNoty = _.get(this, 'state.applyRulesAndSetting.apply_notify_config',{});
+        var cloneApplyNoty = _.cloneDeep(applyNoty);
+        delete cloneApplyNoty['email_notice'];
+        delete cloneApplyNoty['socket_notice'];
+
+        var approveNoty = _.get(this, 'state.applyRulesAndSetting.approve_notify_config',{});
+        var cloneApproveNoty = _.cloneDeep(approveNoty);
+        delete cloneApproveNoty['email_notice'];
+        delete cloneApproveNoty['socket_notice'];
+        if (!_.isEmpty(applyNoty)){
+            ccInformationType.push(CC_INFO.APPLY_NOTIFY_CONFIG);
+        }
+        if (!_.isEmpty(approveNoty)){
+            ccInformationType.push(CC_INFO.APPROVE_NOTIFY_CONFIG);
+        }
+        _.forEach(applyNoty,(value,key) => {
+            if ((key === 'email_notice' || key === 'socket_notice') && value){
+                ccApplyInforType.push(key);
+            }
+        });
+        _.forEach(approveNoty,(value,key) => {
+            if ((key === 'email_notice' || key === 'socket_notice') && value){
+                ccApproveInforType.push(key);
+            }
+        });
+
         return (
             <div className="reg-rule-container" style={{'height': divHeight}}>
                 <GeminiScrollbar>
@@ -742,14 +778,6 @@ class RegRulesView extends React.Component {
                             </span>
                             {this.renderApplyWorkFlowNode(candidateRules, FLOW_TYPES.DEFAULTFLOW)}
                         </div>
-                        {/*<div className="default-cc-person rule-item">*/}
-                        {/*<span className="item-label">*/}
-                        {/*{Intl.get('apply.default.cc.email', '默认抄送人')}:*/}
-                        {/*</span>*/}
-                        {/*<div className="rule-content">*/}
-                        {/*{this.renderApplyCCNode(candidateRules, FLOW_TYPES.DEFAULTFLOW)}*/}
-                        {/*</div>*/}
-                        {/*</div>*/}
                         <div className="condition-apply-workflow rule-item">
                             <span className="item-label">
                                 {Intl.get('apply.condition.work.flow', '条件审批流程')}:
@@ -762,45 +790,68 @@ class RegRulesView extends React.Component {
                         </div>
                         <div className="inform-cc rule-item">
                             <span className="item-label">
-                                {Intl.get('apply.info.cc.email', '抄送通知')}：
+                                {Intl.get('menu.notification', '通知')}：
                             </span>
                             <div className="rule-content info-container">
                                 <Checkbox.Group onChange={this.changeCCInformate} defaultValue={ccInformationType}>
-                                    <Checkbox value={CC_INFO.APPLY}>
-                                        {Intl.get('apply.cc.when,submit', '提交申请时抄送审批人')}
-                                    </Checkbox>
-                                    <div className='apply-cc-node'>
-                                        {/*选中该选项才会有下面添加抄送人*/}
-                                        {ccInformationType.includes(CC_INFO.APPLY) ? this.renderApplyCCNode(_.get(ccRolesApply,'notify_roles'), CC_INFO.APPLY) : null}
+                                    <div className="cc-info-type">
+                                        <Checkbox value={CC_INFO.APPLY_NOTIFY_CONFIG}>
+                                            {Intl.get('apply.cc.when,submit', '提交申请时通知审批人')}
+                                        </Checkbox>
+                                        <div className='apply-cc-node'>
+                                            <span className="cc-person-label sub-item-label">{Intl.get('apply.condition.item.add.cc', '抄送人')}</span>
+                                            {/*选中该选项才会有下面添加抄送人*/}
+                                            {ccInformationType.includes(CC_INFO.APPLY_NOTIFY_CONFIG) ? this.renderApplyCCNode(cloneApplyNoty, CC_INFO.APPLY_NOTIFY_CONFIG) : null}
+                                        </div>
+                                        <div className="cancel-privilege">
+                                            <span className="sub-item-label">
+                                                {Intl.get('apply.cc.node.infor.type', '通知方式')}
+                                            </span>
+                                            <div className="info-ways-checks">
+                                                <Checkbox.Group onChange={this.changeCCInformateType}
+                                                    defaultValue={ccApplyInforType}>
+                                                    <Checkbox value="email_notice">
+                                                        {Intl.get('apply.cc.node.email', '邮件')}
+                                                    </Checkbox>
+                                                    <Checkbox value='socket_notice'>
+                                                        {Intl.get('apply.cc.node.socket.noty', '系统弹窗')}
+                                                    </Checkbox>
+                                                </Checkbox.Group>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <Checkbox value={CC_INFO.APPROVE} >
-                                        {Intl.get('apply.cc.when.approve.apply', '审批通过后抄送申请人')}
-                                    </Checkbox>
-                                    <div className='approve-cc-node'>
-                                        {/*选中该选项才会有下面添加抄送人*/}
-                                        {ccInformationType.includes(CC_INFO.APPROVE) ? this.renderApplyCCNode(_.get(ccRolesApprove,'notify_roles'), CC_INFO.APPROVE) : null}
+                                    <div className="cc-info-type">
+                                        <Checkbox value={CC_INFO.APPROVE_NOTIFY_CONFIG}>
+                                            {Intl.get('apply.cc.when.approve.apply', '审批通过后通知申请人')}
+                                        </Checkbox>
+                                        <div className='apply-cc-node'>
+                                            <span className="cc-person-label sub-item-label">{Intl.get('apply.condition.item.add.cc', '抄送人')}</span>
+                                            {/*选中该选项才会有下面添加抄送人*/}
+                                            {ccInformationType.includes(CC_INFO.APPROVE_NOTIFY_CONFIG) ? this.renderApplyCCNode(cloneApproveNoty, CC_INFO.APPROVE_NOTIFY_CONFIG) : null}
+                                        </div>
+                                        <div className="cancel-privilege">
+                                            <span className="sub-item-label">
+                                                {Intl.get('apply.cc.node.infor.type', '通知方式')}
+                                            </span>
+                                            <div className="info-ways-checks">
+                                                <Checkbox.Group onChange={this.changeCCInformateType}
+                                                    defaultValue={ccApproveInforType}>
+                                                    <Checkbox value="email_notice">
+                                                        {Intl.get('apply.cc.node.email', '邮件')}
+                                                    </Checkbox>
+                                                    <Checkbox value='socket_notice'>
+                                                        {Intl.get('apply.cc.node.socket.noty', '系统弹窗')}
+                                                    </Checkbox>
+                                                </Checkbox.Group>
+                                            </div>
+                                        </div>
                                     </div>
-
                                 </Checkbox.Group>
 
                             </div>
 
                         </div>
-                        <div className="cancel-privilege rule-item">
-                            <span className="item-label">
-                                {Intl.get('apply.cc.node.infor.type', '通知方式')}
-                            </span>
-                            <div className="rule-content">
-                                <Checkbox.Group onChange={this.changeCCInformateType} defaultValue={ccInformationType}>
-                                    <Checkbox value="email">
-                                        {Intl.get('apply.cc.node.email', '邮件')}
-                                    </Checkbox>
-                                    <Checkbox value='socket'>
-                                        {Intl.get('apply.cc.node.socket.noty', '系统弹窗')}
-                                    </Checkbox>
-                                </Checkbox.Group>
-                            </div>
-                        </div>
+
                         {/*<div className="cancel-privilege rule-item">*/}
                         {/*<span className="item-label">*/}
                         {/*{Intl.get('apply.info.cancel.privilege', '撤销权限')}*/}

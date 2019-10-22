@@ -27,28 +27,28 @@ class AddApplyNodePanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            adminApproveHigherLevel: 'higherLevelApproveChecked',
             checkedRadioValue: '',
-            //todo 可否可以多选
-            higher_ups: {
-                candidateUsers: 'team_0_true',//上级审批人
-                showCandidateUsers: Intl.get('apply.approve.first.higher.level', '直属上级'),//显示的名称
+            //可以多选
+            teamowner_range: {
+                candidateUsers: [],//上级审批人
+                showCandidateUsers: [],//显示的名称
             },
-            team_secretry: {
+            teammanager_range: {
                 selectSecretry: '',//选中的舆情秘书
                 showSelectSecretry: ''
             },
-            setting_users: {
+            teammember_range: {
                 selectUser: '',//选中的成员
                 showSelectUser: ''
             },
-            setting_roles: {
-                selectRole: '',//选中的角色
-                showSelectRole: '',
+            //可以多选
+            system_roles: {
+                selectRole: [],//选中的角色
+                showSelectRole: [],
             },
             roleList: [],//角色列表
-            userList: [],//用户列表
             submitErrorMsg: '',//提交时的错误提示
+            higherUpLists: this.getHigherLevelLists()
 
         };
     }
@@ -99,72 +99,107 @@ class AddApplyNodePanel extends React.Component {
                 if (_.isBoolean(radioType[key])) {
                     radioType[key] = false;
                 } else {
-                    radioType[key] = '';
+                    if (item === 'teamowner_range' || item === 'system_roles'){
+                        radioType[key] = [];
+                    }else{
+                        radioType[key] = '';
+                    }
+
                 }
             }
         });
-        var checkedRadioValue = this.state.checkedRadioValue;
         this.setState({
             checkedRadioValue: radioValue
         });
     };
 
-    handleHigherUpChange = (value) => {
-        var higher_ups = this.state.higher_ups;
-        var userArr = value.split('-');
-        var index = _.get(userArr,'[1]');
-        var TEAM_HIGHER_LEVEL = getTeamHigerLevel();
-        var target = _.get(TEAM_HIGHER_LEVEL, `[${index}]`);
-        if (target){
-            higher_ups.candidateUsers = target.value;
-            higher_ups.showCandidateUsers = target.name;
+    handleHigherUpChange = (higherUpArr) => {
+        var teamowner_range = this.state.teamowner_range;
+        //如果选择了所有上级，其他级别就不能筛选了
+        var higherUpLists = _.cloneDeep(this.getHigherLevelLists());
+        if (_.get(higherUpArr,'[0]') === 'all_senior_teams'){
             this.setState({
-                higher_ups: higher_ups
+                higherUpLists: higherUpLists.slice(0,1)
+            });
+        }else if(_.get(higherUpArr,'[0]')){
+            this.setState({
+                higherUpLists: higherUpLists.slice(0,1)
+            });
+        }else {
+            this.setState({
+                higherUpLists: this.getHigherLevelLists()
             });
         }
-    };
-    handleChangeSelectRole = (value) => {
-        var setting_roles = this.state.setting_roles;
-        var userArr = value.split('-');
-        var index = _.get(userArr,'[1]');
-        var target = _.get(this, `state.roleList[${index}]`);
-        if (target){
-            setting_roles.selectRole = target.save_role_value;
-            setting_roles.showSelectRole = target.role_name;
-            this.setState({
-                setting_roles: setting_roles
-            });
-        }
+        _.forEach(higherUpArr, value => {
+            var userArr = value.split('-');
+            var index = _.get(userArr,'[1]');
 
-    };
-    handleChangeSelectSecretry = (value) => {
-
-    };
-    handleChangeSelectUser = (value) => {
-        var setting_users = this.state.setting_users;
-        var userArr = value.split('-');
-        var index = _.get(userArr,'[1]');
-        var target = _.get(this,`state.userList[${index}]`);
-        if (target){
-            setting_users.selectUser = target.userId;
-            setting_users.showSelectUser = target.nickName;
-            this.setState({
-                setting_users: setting_users
-            });
-        }
-    };
-    renderAdditonContent = (typeItem, index) => {
-        var checkedRadioValue = this.state.checkedRadioValue;
-        var TEAM_HIGHER_LEVEL = _.cloneDeep(getTeamHigerLevel());
-        //todo 加上所有上级选项
-        TEAM_HIGHER_LEVEL.unshift({
-            name: Intl.get('apply.condition.node.all.higher.level', '所有上级'),
-            value: 'alll'
+            var target = _.get(TEAM_HIGHER_LEVEL, `[${index}]`);
+            if (target){
+                teamowner_range.candidateUsers = target.value;
+                teamowner_range.showCandidateUsers = target.name;
+                this.setState({
+                    teamowner_range: teamowner_range
+                });
+            }
         });
 
+
+
+    };
+    //筛选角色
+    handleChangeSelectRole = (rolesArr) => {
+        var system_roles = this.state.system_roles;
+        _.forEach(rolesArr, value => {
+            var userArr = value.split('-');
+            var index = _.get(userArr,'[1]');
+            var target = _.get(this, `state.roleList[${index}]`);
+            if (target){
+                system_roles.selectRole.push(target.save_role_value);
+                system_roles.showSelectRole.push(target.role_name);
+                system_roles.selectRole = _.uniq(system_roles.selectRole);
+                system_roles.showSelectRole = _.uniq(system_roles.showSelectRole);
+                this.setState({
+                    system_roles: system_roles
+                });
+            }
+        });
+    };
+    handleChangeSelectSecretry = (value) => {
+        var teammanager_range = this.state.teammanager_range;
+        var target = _.find(SECRETRYOPTIONS, item => item.value === value);
+        if (value && target){
+            teammanager_range.selectSecretry = value;
+            teammanager_range.showSelectSecretry = target.name;
+            this.setState({
+                teammanager_range: teammanager_range
+            });
+        }
+    };
+    handleChangeSelectUser = (value) => {
+        var teammember_range = this.state.teammember_range;
+        var target = _.find(USEROPTIONS, item => item.value === value);
+        if (value && target){
+            teammember_range.selectUser = value;
+            teammember_range.showSelectUser = target.name;
+            this.setState({
+                teammember_range: teammember_range
+            });
+        }
+    };
+    getHigherLevelLists = () => {
+        var TEAM_HIGHER_LEVEL = _.cloneDeep(getTeamHigerLevel());
+        TEAM_HIGHER_LEVEL.unshift({
+            name: Intl.get('apply.condition.node.all.higher.level', '所有上级'),
+            value: 'all_senior_teams'
+        });
+        return TEAM_HIGHER_LEVEL;
+    };
+    renderAdditonContent = (typeItem, index) => {
+        var higherUpLists = this.state.higherUpLists;
         if (this.state.checkedRadioValue === typeItem.value) {
             switch (typeItem.value) {
-                case 'higher_ups':
+                case 'teamowner_range':
                     return (
                         <div className="add-higher-up addition-condition">
                             <div className="higher-level-item addition-condition-item">
@@ -172,16 +207,15 @@ class AddApplyNodePanel extends React.Component {
                                     mode="multiple"
                                     onChange={this.handleHigherUpChange}
                                     filterOption={(input, option) => ignoreCase(input, option)}
-                                    defaultValue={TEAM_HIGHER_LEVEL[1].name + '-1'}
                                 >
-                                    {_.map(TEAM_HIGHER_LEVEL, (item,index) => {
+                                    {_.map(higherUpLists, (item,index) => {
                                         return <Option value={item.name + '-' + index} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
                             </div>
                         </div>
                     );
-                case 'team_secretry' :
+                case 'teammanager_range' :
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
@@ -195,7 +229,7 @@ class AddApplyNodePanel extends React.Component {
                             </div>
                         </div>
                     );
-                case 'setting_users' :
+                case 'teammember_range' :
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
@@ -209,7 +243,7 @@ class AddApplyNodePanel extends React.Component {
                             </div>
                         </div>
                     );
-                case 'setting_roles' :
+                case 'system_roles' :
                     return (
                         <div className="addition-condition">
                             <div className="addition-condition-item">
@@ -231,46 +265,58 @@ class AddApplyNodePanel extends React.Component {
         var radioValue = this.state.checkedRadioValue, submitObj = {}, errTip = true;
         if (radioValue) {
             switch (radioValue) {
-                case 'higher_ups':
-                    var higher_ups = this.state.higher_ups;
-                    if (higher_ups.candidateUsers) {
-                        submitObj.candidateApprover = higher_ups.candidateUsers;
-                        submitObj.showName = higher_ups.showCandidateUsers;
-                        if (_.isBoolean(higher_ups.higherLevelApproveChecked)) {
-                            submitObj.higherLevelApproveChecked = higher_ups.higherLevelApproveChecked;
-                            var approveArr = submitObj.candidateApprover.split('_');
-                            if(submitObj.higherLevelApproveChecked){
-                                approveArr[_.get(approveArr,'length') - 1] = 'true';
+                case 'teamowner_range':
+                    var teamowner_range = this.state.teamowner_range;
+                    if (teamowner_range.candidateUsers) {
+                        submitObj[radioValue] = {
+                            showName: teamowner_range.showCandidateUsers
+                        };
+
+                        submitObj.candidateApprover = teamowner_range.candidateUsers;
+                        errTip = false;
+                    }
+                    break;
+                case 'teammanager_range':
+                    var teammanager_range = this.state.teammanager_range;
+                    if (teammanager_range.selectSecretry) {
+                        submitObj[radioValue] = {
+                            showName: teammanager_range.showSelectSecretry,
+                        };
+                        _.forEach(teammanager_range.selectSecretry, item => {
+                            if (item === 'team_levels_all_senior_teams'){
+                                submitObj[radioValue]['team_levels'] = [0];
+                                submitObj[radioValue]['all_senior_teams'] = true;
+                            }else if (item === 'all_senior_teams'){
+                                submitObj[radioValue]['all_senior_teams'] = true;
                             }else{
-                                approveArr[_.get(approveArr,'length') - 1] = 'false';
+                                submitObj[radioValue]['team_levels'] = [0];
                             }
-                            submitObj.candidateApprover = approveArr.join('_');
-                        }
+                        });
                         errTip = false;
                     }
                     break;
-                case 'setting_roles':
-                    var setting_roles = this.state.setting_roles;
-                    if (setting_roles.selectRole) {
-                        submitObj.candidateApprover = setting_roles.selectRole;
-                        submitObj.showName = setting_roles.showSelectRole;
+                case 'teammember_range':
+                    var teammember_range = this.state.teammember_range;
+                    if (teammember_range.selectUser) {
+                        submitObj[radioValue] = {
+                            showName: teammember_range.showSelectUser,
+                            all_senior_teams: true
+                        };
                         errTip = false;
                     }
                     break;
-                case 'setting_users':
-                    var setting_users = this.state.setting_users;
-                    if (setting_users.selectUser) {
-                        submitObj.candidateApprover = setting_users.selectUser;
-                        submitObj.showName = setting_users.showSelectUser;
-                        submitObj.hideBrack = true;//如果是指定成员的话，不需要加$符号
+                case 'system_roles':
+                    var system_roles = this.state.system_roles;
+                    if (_.get(system_roles,'selectRole[0]','')) {
+                        submitObj[radioValue] = {
+                            showName: system_roles.showSelectRole
+                        };
+                        _.forEach(system_roles.selectRole, item => {
+                            submitObj[radioValue][item] = true;
+                        });
                         errTip = false;
                     }
                     break;
-                default:
-                    submitObj.candidateApprover = radioValue;
-                    var target = _.find(CC_SETTINGT_TYPE, item => item.value === radioValue);
-                    submitObj.showName = target.name;
-                    errTip = false;
             }
 
 
@@ -279,10 +325,10 @@ class AddApplyNodePanel extends React.Component {
 
         }
         if (!errTip) {
-            submitObj.radioType = radioValue;
-
-            this.props.saveAddApproveNode(submitObj);
-            this.props.hideRightPanel();
+            submitObj.type = radioValue;
+            console.log(submitObj);
+            // this.props.saveAddApproveNode(submitObj);
+            // this.props.hideRightPanel();
         }else{
             this.setState({
                 submitErrorMsg: Intl.get('apply.select.approver.type', '请选择审批人类型')

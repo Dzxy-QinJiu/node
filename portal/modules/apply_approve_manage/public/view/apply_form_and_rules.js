@@ -29,7 +29,6 @@ var applyApproveManageAction = require('../action/apply_approve_manage_action');
 let userData = require('PUB_DIR/sources/user-data');
 var uuid = require('uuid/v4');
 import ApplyApproveManageStore from '../store/apply_approve_manage_store';
-import {CC_INFO} from 'PUB_DIR/sources/utils/consts';
 import Spinner from 'CMP_DIR/spinner';
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
@@ -344,17 +343,14 @@ class ApplyFormAndRules extends React.Component {
             if (_.isString(applyRulesAndSetting.applyApproveRules)){
                 applyRulesAndSetting.applyApproveRules = JSON.parse(applyRulesAndSetting.applyApproveRules);
                 //todo 待修改的
-                applyRulesAndSetting.notify_config = [
-                    {
-                        notify_type: CC_INFO.APPLY,
-                        email: true,
-                        socket: true
-                    }, {
-                        notify_type: CC_INFO.APPROVE,
-                        email: true,
-                        socket: true
-                    }
-                ];
+                applyRulesAndSetting.apply_notify_config = {
+                    email_notice: true,
+                    socket_notice: true
+                };//提交申请时
+                applyRulesAndSetting.approve_notify_config = {
+                    email_notice: true,
+                    socket_notice: true
+                };
             }
         } else {
             //如果之前没有加过流程，这是默认的流程，默认流程是部门经理审批的
@@ -374,14 +370,15 @@ class ApplyFormAndRules extends React.Component {
                         ccPerson: [],//默认抄送人
                     }
                 },//审批规则
-                //抄送人
-                // notify_config: [
-                //     {
-                //         notify_type: CC_INFO.APPLY,
-                //     }, {
-                //         notify_type: CC_INFO.APPROVE,
-                //     }
-                // ],//抄送通知的类型
+                //抄送人的类型
+                apply_notify_config: {
+                    email_notice: true,
+                    socket_notice: true
+                },//提交申请时
+                approve_notify_config: {
+                    email_notice: true,
+                    socket_notice: true
+                },//提交申请时
                 //提交申请时抄送
                 //审批通过后抄送
 

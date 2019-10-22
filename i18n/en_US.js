@@ -3380,12 +3380,11 @@ var en_US = {
     'apply.default.apply.workflow': 'Default approval process',//默认审批流程
     'apply.default.cc.email': 'Default CC',//默认抄送人
     'apply.condition.work.flow': 'Conditional approval process',//条件审批流程
-    'apply.info.cc.email': 'CC notification',//抄送通知
     'apply.info.cancel.privilege': 'Revoke permission',//撤销权限
     'apply.workflow.merge.same.approver': 'Merging the same approver (after passing, automatically passed later)',//合并相同审批人（通过后，后面自动通过）
     'apply.workflow.cancel.approve': 'Cancellation after passing (after approval, the application can be revoked with the consent of the approver)',//通过后允许撤销（审批通过后，经审批人同意，可撤销申请）
-    'apply.cc.when,submit': 'Copy the approver when submitting the application',//提交申请时抄送审批人
-    'apply.cc.when.approve.apply': 'Copy and approve the applicant after approval',//审批通过后抄送申请人
+    'apply.cc.when,submit': 'Copy the approver when submitting the application',//提交申请时通知审批人
+    'apply.cc.when.approve.apply': 'Copy and approve the applicant after approval',//审批通过后通知申请人
     'apply.cc.when.submit.and.approve': 'Copy the copy approver at the time of submitting the application and copy the applicant after approval',//提交申请时抄送审批人和审批通过后抄送申请人
     'apply.add.condition.workflow': 'Add condition approval process',//添加条件审批流程
     'apply.add.apply.approver': 'Add approver',//添加审批人

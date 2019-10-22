@@ -256,27 +256,27 @@ exports.APPROVER_TYPE = [{
 
 exports.CC_SETTINGT_TYPE = [{
     name: Intl.get('apply.add.approver.higher.level', '上级'),
-    value: 'higher_ups',
+    value: 'teamowner_range',
 }, {
     name: Intl.get('apply.set.team.secretry', '团队秘书'),
-    value: 'team_secretry',
+    value: 'teammanager_range',
 },{
     name: Intl.get('apply.set.team.user', '团队成员'),
-    value: 'setting_users',
+    value: 'teammember_range',
 },{
     name: Intl.get('apply.add.approver.setting.role', '指定角色'),
-    value: 'setting_roles',
+    value: 'system_roles',
 }
 ];
 exports.SECRETRYOPTIONS = [{
     name: Intl.get('apply.set.cc.node.secretry', '所属团队秘书'),
-    value: 'team_secretry'
+    value: 'team_levels'
 },{
     name: Intl.get('apply.set.cc.node.higher.secretry', '所有上级团队秘书'),
-    value: 'higher_secretry'
+    value: 'all_senior_teams'
 },{
     name: Intl.get('apply.set.cc.node.all.secretry', '所属团队及所有上级团队秘书'),
-    value: 'all_secretry'
+    value: 'team_levels_all_senior_teams'
 },];
 exports.USEROPTIONS = [{
     name: Intl.get('apply.set.cc.node.all.team.user', '所有上级团队成员'),
