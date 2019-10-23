@@ -126,7 +126,7 @@ var CrmAlertForm = createReactClass({
             formData.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
             //并未选中全天这种状态
             if (!this.state.isSelectFullday) {
-                selectedAlertTimeRange = 'not_remind';
+                selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
             }
         } else {
             //是否选中全天的状态
@@ -164,6 +164,18 @@ var CrmAlertForm = createReactClass({
         if (newTime < moment().valueOf()) {
             message.warn(Intl.get('crm.alert.select.future.time', '请选择大于当前时间的时间'));
             return;
+        }
+        //如果选择时间比当前时间多五分钟以上，默认提醒时间设置为提前五分钟提醒
+        let now_time = moment().valueOf();
+        let timeInterval = Math.floor((newTime - now_time) / (1000 * 60));
+        if(timeInterval > 5) {
+            this.setState({
+                selectedAlertTimeRange: TIME_TYPE_CONSTS.AHEAD_5_MIN
+            });
+        } else {
+            this.setState({
+                selectedAlertTimeRange: 'not_remind'
+            });
         }
         let formData = this.state.formData;
         formData.start_time = newTime;
@@ -465,16 +477,20 @@ var CrmAlertForm = createReactClass({
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-radio-button'), '修改联系时间为' + value);
         var formData = this.state.formData;
         let isSelectFullday = this.state.isSelectFullday;
+        //除自定义时间以外，默认提醒都为五分钟前
+        let selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
         if (value === 'custom') {
             //选择自定义时，要把开始和结束时间改为当前时间
             formData.start_time = moment().valueOf();
             formData.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
             //默认选中全天
             isSelectFullday = true;
+            //如果自定义时间，默认提醒为不提醒
+            selectedAlertTimeRange = 'not_remind';
         }
         this.setState({
             selectedTimeRange: value,
-            selectedAlertTimeRange: 'not_remind',//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
+            selectedAlertTimeRange: selectedAlertTimeRange,
             formData: formData,
             isSelectFullday: isSelectFullday
         });
@@ -483,7 +499,7 @@ var CrmAlertForm = createReactClass({
     renderSelectFulldayOptions: function() {
         if (this.state.selectedTimeRange === '1d') {
             //如果选中的是一天，要把后面几个选项去掉
-            let SELECT_FULL_OPTIONS_SPLICE = _.clone(SELECT_FULL_OPTIONS).splice(0, 2);
+            let SELECT_FULL_OPTIONS_SPLICE = _.clone(SELECT_FULL_OPTIONS).splice(0, 3);
             return (
                 _.map(SELECT_FULL_OPTIONS_SPLICE, (key) => {
                     return (<Option value={key.value}>{key.name}</Option>);
