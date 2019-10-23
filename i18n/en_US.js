@@ -1094,6 +1094,9 @@ var en_US = {
     'user.info.receive.subscribe': 're-subscribe',//重新订阅
     'user.info.setting.failed': 'Failed to set, please try again!',//设置失败，请重新设置！
     'user.info.setting.succeess': 'Set successfully!',//设置成功！
+    'user.info.version': 'Version', // 版本
+    'user.info.version.expire': 'expiration{time}', // {time}到期
+    'user.info.version.upgrade': 'Upgrade to the official version', // 升级为正式版
     //基本资料end
     //密码管理start
     'user.password.input.again': 'The original password was incorrect',//原密码不正确，请重新输入。

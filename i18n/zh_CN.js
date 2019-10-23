@@ -1097,6 +1097,9 @@ var zh_CN = {
     'user.info.receive.subscribe': '重新订阅',
     'user.info.setting.failed': '设置失败，请重新设置！',
     'user.info.setting.succeess': '设置成功！',
+    'user.info.version': '版本',
+    'user.info.version.expire': '{time}到期',
+    'user.info.version.upgrade': '升级为正式版',
     //基本资料end
     //密码管理start
     'user.password.input.again': '原密码不正确，请重新输入。',
