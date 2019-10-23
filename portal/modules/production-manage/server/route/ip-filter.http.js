@@ -30,6 +30,22 @@ module.exports = {
             'passport': {
                 'needLogin': true
             }
+        }, {
+            // 获取安全域过滤内网网段
+            'method': 'get',
+            'path': '/rest/get/private/ip',
+            'handler': 'getFilterPrivateIp',
+            'passport': {
+                'needLogin': true
+            }
+        }, {
+            // 设置全域过滤内网网段
+            'method': 'post',
+            'path': '/rest/set/private/ip',
+            'handler': 'setFilterPrivateIp',
+            'passport': {
+                'needLogin': true
+            }
         }
     ]
 };

@@ -4,7 +4,7 @@
 require('../style/ip-filter.less');
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 const Spinner = require('CMP_DIR/spinner');
-import {Icon, message} from 'antd';
+import {Icon, message, Checkbox } from 'antd';
 import NoData from 'CMP_DIR/no-data';
 import LoadDataError from 'CMP_DIR/load-data-error';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -12,6 +12,7 @@ import IpFilterAjax from '../ajax/ip-filter-ajax';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import AddIpForm from './add-ip-form';
+import SavedTips from 'CMP_DIR/saved-tips';
 
 class IpFilter extends React.Component {
     constructor(props) {
@@ -24,9 +25,34 @@ class IpFilter extends React.Component {
             deleteIpId: '', // 删除ip的Id
             isDeletingLoading: false, // 删除loading
             isAddLoading: false, // 添加loading
+            filterPrivateIpStatus: '', // 过滤内网网段状态
+            setFilterPrivateIpMsg: '', // 设置过滤内网网段的错误信息
+            setFilterPrivateResult: '', // 设置过滤内网网段的结果，默认为空，成功：success, 失败：error
         };
     }
-    
+
+    componentDidMount() {
+        this.getFilterPrivateIp();
+    }
+
+    // 获取过滤内网网段
+    getFilterPrivateIp = () => {
+        this.setState({
+            isLoading: true
+        });
+        IpFilterAjax.getFilterPrivateIp().then( (result) => {
+            this.setState({
+                filterPrivateIpStatus: result,
+                isLoading: false
+            });
+        }, (errMsg) => {
+            this.setState({
+                isLoading: false
+            });
+        } );
+    };
+
+
     renderNoDataOrLoadError = () => {
         let getErrMsg = this.state.getErrMsg;
 
@@ -168,6 +194,7 @@ class IpFilter extends React.Component {
         const PADDING = 80;
         return $('body').height()
             - $('.ip-filter-panel .right-panel-modal-title').outerHeight(true)
+            - $('.ip-filter-panel .filter-private-ip-card-container').outerHeight(true)
             - PADDING;
     }
 
@@ -253,14 +280,90 @@ class IpFilter extends React.Component {
         }
     };
 
+    handleSetFilterPrivateIp = (event) => {
+        const checked = event.target.checked;
+        IpFilterAjax.setFilterPrivateIp({filter_lan: checked}).then( (result) => {
+            if (result) {
+                this.setState({
+                    filterPrivateIpStatus: checked,
+                    setFilterPrivateIpMsg: Intl.get('user.operate.success','操作成功'),
+                    setFilterPrivateResult: 'success'
+                });
+            } else {
+                this.setState({
+                    setFilterPrivateIpMsg: Intl.get('member.apply.approve.tips','操作失败'),
+                    setFilterPrivateResult: 'error'
+                });
+            }
+        }, (errMsg) => {
+            this.setState({
+                setFilterPrivateIpMsg: errMsg || Intl.get('member.apply.approve.tips','操作失败'),
+                setFilterPrivateResult: 'error'
+            });
+        } );
+
+    };
+
+    renderSetFilterPrivateIpTips = () => {
+        let hide = () => {
+            this.setState({
+                setFilterPrivateIpMsg: '',
+                setFilterPrivateResult: ''
+            });
+        };
+        return (
+            <SavedTips
+                tipsContent={this.state.setFilterPrivateIpMsg}
+                savedResult={this.state.setFilterPrivateResult}
+                onHide={hide}
+            />
+        );
+    };
+
+    renderDetailPrivateFilterIP = () => {
+        return (
+            <div className="filter-private-ip">
+                <Checkbox
+                    checked={this.state.filterPrivateIpStatus}
+                    onChange={this.handleSetFilterPrivateIp}
+                    data-tracename="选中/取消过滤内网IP"
+                />
+                <span className="private-content">
+                    {Intl.get('product.private.ip','内网IP')}
+                </span>
+                {
+                    this.state.setFilterPrivateIpMsg ? (
+                        <div className="private-ip-tips">
+                            {this.renderSetFilterPrivateIpTips()}
+                        </div>
+                    ) : null
+                }
+            </div>
+        );
+    };
+
+    renderFilterPrivateIpContent = () => {
+        return (
+            <DetailCard
+                content={this.renderDetailPrivateFilterIP()}
+                className='filter-private-ip-card-container'
+            />
+        );
+    };
+
     renderFilterIpContent() {
         let isLoading = this.state.isLoading;
         return (
             <div className="ip-filter-container">
                 {
                     isLoading ? ( <Spinner/>) : (
-                        <div className="ip-filter-wrap">
-                            {this.renderIpList()}
+                        <div className="ip-filter-content-wrap">
+                            <div className="private-filter-ip">
+                                {this.renderFilterPrivateIpContent()}
+                            </div>
+                            <div className="ip-filter-wrap">
+                                {this.renderIpList()}
+                            </div>
                         </div>
                     )
                 }

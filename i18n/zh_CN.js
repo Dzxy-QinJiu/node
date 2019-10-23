@@ -946,6 +946,7 @@ var zh_CN = {
     'product.global.filter.ip.title': '全部产品统计分析时过滤以下IP：',
     'product.filter.ip.title': '该产品统计分析时过滤以下IP：',
     'product.global.ip.tips': '（全部产品过滤)',
+    'product.private.ip': '内网IP',
     // 后台管理-产品end
 
     // 后台管理-行业start
