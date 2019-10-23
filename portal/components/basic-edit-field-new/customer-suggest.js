@@ -450,14 +450,12 @@ class CustomerSuggest extends React.Component {
         }
     };
 
-    ignoreCase = (input, option) => {
-        let optionToLower = _.toLower(option.props.children);
+    ignorePrefix = (input, option) => {
+        let checkedOption = option.props.children;
         if(this.props.needRemovePrefix) {
             input = _.replace(input, /【.*】/, '');
         }
-        let inputToLower = _.toLower(input);
-
-        return optionToLower.indexOf(inputToLower) >= 0;
+        return checkedOption.indexOf(input) >= 0;
     };
 
     render() {
@@ -507,7 +505,7 @@ class CustomerSuggest extends React.Component {
                     combobox
                     autoFocus = {true}
                     placeholder={this.props.placeholder}
-                    filterOption={(input, option) => this.ignoreCase(input, option)}
+                    filterOption={(input, option) => this.ignorePrefix(input, option)}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}
                     onBlur={this.onCheckIfCustomerChoose.bind(this)}
