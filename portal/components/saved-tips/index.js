@@ -1,6 +1,7 @@
 /**
  * Created by hzl on 2019/10/23.
- * * 返回结果提示信息的展示
+ * 返回结果提示信息的展示
+ * 适用场景: 点击保存后，提示操作是成功还是失败的提示
  * 用法：
  * <SavedTips
  *   time={3000}
@@ -10,7 +11,7 @@
  *   />
  *
  * 属性说明：
- * time 提示信息显示时间，默认是i2s
+ * time 提示信息显示时间，默认是2s
  * tipsContent 提示信息内容
  * savedResult 返回结果，success或是error
  * onHide 信息不提示时，调用的函数
