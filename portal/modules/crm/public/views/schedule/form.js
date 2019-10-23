@@ -6,7 +6,7 @@ require('../../css/schedule.less');
 var ScheduleAction = require('../../action/schedule-action');
 var BatchChangeActions = require('../../action/batch-change-actions');
 var basicOverviewAction = require('../../action/basic-overview-actions');
-import {Form, Input, message, Select, Radio, Switch, TimePicker, Checkbox} from 'antd';
+import {Form, Input, message, Select, Radio, Switch, TimePicker} from 'antd';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;

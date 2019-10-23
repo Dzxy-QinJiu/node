@@ -2716,7 +2716,7 @@ var en_US = {
     'app.user.trans.clue.customer': 'Generate clues',//生成线索
     'clue.customer.register.self': 'Independent register',//自主注册
     'clue.customer.product.website': 'Production website',//产品网站
-    'clue.customer.clue.name': 'clue names',//线索名
+    'clue.customer.clue.name': 'clue names',//线索名称
     'clue.customer.clue.name.abbrev': 'clue name',//线索名
     'clue.customer.search.by.name': 'search by clue name',//根据线索名搜索
     'clue.customer.fillin.clue.name': 'Please fill in the clue names',//请填写线索名称
