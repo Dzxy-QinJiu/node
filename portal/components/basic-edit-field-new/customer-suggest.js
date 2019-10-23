@@ -13,7 +13,6 @@ import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import crmUtil from 'MOD_DIR/crm/public/utils/crm-util';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import CustomerLabel from 'CMP_DIR/customer_label';
 
 class CustomerSuggest extends React.Component {
@@ -121,6 +120,9 @@ class CustomerSuggest extends React.Component {
             _.isFunction(this.props.hideCustomerRequiredTip) && this.props.hideCustomerRequiredTip(true);
         }else{
             _.isFunction(this.props.hideCustomerRequiredTip) && this.props.hideCustomerRequiredTip(false);
+        }
+        if(this.props.needRemovePrefix) {
+            value = _.replace(value, /【.*】/, '');
         }
         clearTimeout(this.suggestTimer);
         var _this = this;
@@ -254,6 +256,27 @@ class CustomerSuggest extends React.Component {
         return $search_input.val();
     };
 
+    renderCustomerSuggestTip = () => {
+        //是否跳转到crm页面添加客户
+        let noJumpToAddCrmPanel = this.props.noJumpToCrm;
+        let suggestTip = null;
+        if(this.props.tryClue) {
+            suggestTip = this.getNoCustomerTip() ?
+                <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}，<a onClick={this.props.searchClue}>{Intl.get('clue.customer.search.by.name', '根据线索名搜索')}</a>{Intl.get('common.or', '或')}
+                    {noJumpToAddCrmPanel ?
+                        <a onClick={this.props.addAssignedCustomer} data-tracename="点击创建客户按钮">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
+                        <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
+                </span> : <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')},<a onClick={this.props.searchClue}>{Intl.get('clue.customer.search.by.name', '根据线索名搜索')}</a></span>;
+        } else {
+            suggestTip = this.getNoCustomerTip() ?
+                <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}，{Intl.get('common.yesno', '是否')}
+                    {noJumpToAddCrmPanel ?
+                        <a onClick={this.props.addAssignedCustomer} data-tracename="点击创建客户按钮">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
+                        <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
+                </span> : <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}</span>;
+        }
+        return suggestTip;
+    }
     getCustomerTipBlock = () => {
         var search_input_val = this.getSearchValue();
         if (this.props.show_error) {
@@ -284,16 +307,9 @@ class CustomerSuggest extends React.Component {
                     <div className="customer_select_error_tip">{this.state.no_select_error_msg}</div>
                 );
             }else{
-                //是否跳转到crm页面添加客户
-                var noJumpToAddCrmPanel = this.props.noJumpToCrm;
                 return (
                     <div className="customer_suggest_tip">
-                        {this.getNoCustomerTip() ?
-                            <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}，{Intl.get('common.yesno', '是否')}
-                                {noJumpToAddCrmPanel ?
-                                    <a onClick={this.props.addAssignedCustomer} data-tracename="点击创建客户按钮">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</a> :
-                                    <Link to="/crm?add=true">{Intl.get('user.customer.suggest.create.customer', '创建客户')}？</Link>}
-                            </span> : <span>{Intl.get('user.customer.suggest.not.found', '未找到该客户')}</span>}
+                        {this.renderCustomerSuggestTip()}
                     </div>
                 );
             }
@@ -433,6 +449,17 @@ class CustomerSuggest extends React.Component {
             });
         }
     };
+
+    ignoreCase = (input, option) => {
+        let optionToLower = _.toLower(option.props.children);
+        if(this.props.needRemovePrefix) {
+            input = _.replace(input, /【.*】/, '');
+        }
+        let inputToLower = _.toLower(input);
+
+        return optionToLower.indexOf(inputToLower) >= 0;
+    };
+
     render() {
         var displayCls = classNames({
             'customer_search_wrap': true,
@@ -474,12 +501,13 @@ class CustomerSuggest extends React.Component {
         var selectBlock = this.state.displayType === 'edit' ? (
             <div ref="customer_searchbox" className="associate-customer-wrap">
                 <Select
+                    ref="selectSearch"
                     className={this.getCustomerTipErrmsg() ? 'err-tip' : ''}
                     name={this.props.name}
                     combobox
                     autoFocus = {true}
-                    placeholder={Intl.get('customer.search.by.customer.name', '请输入客户名称搜索')}
-                    filterOption={(input, option) => ignoreCase(input, option)}
+                    placeholder={this.props.placeholder}
+                    filterOption={(input, option) => this.ignoreCase(input, option)}
                     onSearch={this.suggestChange}
                     onChange={this.customerChoosen}
                     onBlur={this.onCheckIfCustomerChoose.bind(this)}
@@ -572,12 +600,16 @@ CustomerSuggest.defaultProps = {
     customerLable: '',//客户标签
     customer_id: '',//客户id
     hideButtonBlock: false,
+    placeholder: Intl.get('customer.search.by.customer.name', '请输入客户名称搜索'),
+    tryClue: false,//按照线索名搜索
+    needRemovePrefix: false,//在添加日程中，因手动添加了【客户】的前缀，需要在搜索时去除前缀搜索
     hideCustomerRequiredTip: function() {
 
     },
     saveSameNoCustomerName: function() {
 
     },
+    searchClue: function() {},
 };
 CustomerSuggest.propTypes = {
     name: PropTypes.string,
@@ -608,6 +640,10 @@ CustomerSuggest.propTypes = {
     hideButtonBlock: PropTypes.bool,
     hideCustomerRequiredTip: PropTypes.func,
     saveSameNoCustomerName: PropTypes.func,
+    placeholder: PropTypes.string,
+    searchClue: PropTypes.func,
+    tryClue: PropTypes.bool,
+    needRemovePrefix: PropTypes.bool,
 };
 
 module.exports = CustomerSuggest;

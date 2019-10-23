@@ -1616,6 +1616,8 @@ var en_US = {
     'crm.order.remarks': 'Order Remarks',//订单备注
     'crm.schedule.begin.time': 'Begin time',//开始
     'crm.schedule.end.time': 'End time',//结束
+    'crm.schedule.clue.customer.name': 'Please input customer or clue name',//请输入客户名或线索名
+    'crm.schedule.clue.customer.name.error': 'Please select search by customer or clue name',//请选择根据客户名或线索名搜索
     'crm.basic.concerned': 'Concerned',//已关注
     'crm.basic.unconcerned': 'Unconcerned',//未关注
     'crm.basic.more': 'More',//更多
@@ -2657,7 +2659,9 @@ var en_US = {
     'crm.n.day.10.clock': 'Ahead {n} day at 10 clock',//{n}天前上午10点
     'phone.delay.save': 'Call records are synchronizing, please wait to save!',//通话记录正在同步，请稍等再保存！
     'crm.schedule.fill.content': 'Please fill in schedule content!',//请填写联系内容
+    'crm.schedule.input.content': 'Please input schedule content',//请输入联系内容
     'schedule.list.management': 'Schedule Management',//日程管理
+    'schedule.object': 'Object',//对象
     'schedule.expired.list.failed': 'Failed to get expired schedule management list',//获取超时日程管理列表失败
     'schedule.expired.list': 'Expired and incomplete schedule list',//超时未完成
     'schedule.list.remind': 'Reminder time',//提醒
@@ -2712,7 +2716,9 @@ var en_US = {
     'app.user.trans.clue.customer': 'Generate clues',//生成线索
     'clue.customer.register.self': 'Independent register',//自主注册
     'clue.customer.product.website': 'Production website',//产品网站
-    'clue.customer.clue.name': 'clue names',//线索名称
+    'clue.customer.clue.name': 'clue names',//线索名
+    'clue.customer.clue.name.abbrev': 'clue name',//线索名
+    'clue.customer.search.by.name': 'search by clue name',//根据线索名搜索
     'clue.customer.fillin.clue.name': 'Please fill in the clue names',//请填写线索名称
     'clue.customer.register.user': 'registered user',//注册用户
     'clue.customer,add,schedule,success': 'This schedule has been added',//联系计划已添加
@@ -2849,6 +2855,7 @@ var en_US = {
     'clue.customer.may.associate.customer': 'The customer may be associated with the clue',//该线索可能关联的客户
     'clue.customer.phone.same': 'The phone is the same',//电话一致
     'clue.customer.customer.name.similar': 'The customer is similar',//客户名相似
+    'clue.customer.search.by.client.name': 'search by customer name',//根据客户名搜索
     'clue.customer.close.customer.search': 'Please close the customer search box first',//请先关闭客户搜索框
     'clue.customer.selected.customer': 'Please search customers to associate',//请搜索客户进行关联
     'clue.customer.no.related.customer': 'None of the above customers are associated customers, search for customers',//上述客户都不是相关联的客户，搜索客户
