@@ -12,6 +12,7 @@ import IpFilterAjax from '../ajax/ip-filter-ajax';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
 import AddIpForm from './add-ip-form';
+import SavedTips from 'CMP_DIR/saved-tips';
 
 class IpFilter extends React.Component {
     constructor(props) {
@@ -25,7 +26,8 @@ class IpFilter extends React.Component {
             isDeletingLoading: false, // 删除loading
             isAddLoading: false, // 添加loading
             filterPrivateIpStatus: '', // 过滤内网网段状态
-            filterPrivateIpErrMsg: '', // 获取过滤内网网段的错误信息
+            setFilterPrivateIpMsg: '', // 设置过滤内网网段的错误信息
+            setFilterPrivateResult: '', // 设置过滤内网网段的结果，默认为空，成功：success, 失败：error
         };
     }
 
@@ -45,7 +47,6 @@ class IpFilter extends React.Component {
             });
         }, (errMsg) => {
             this.setState({
-                filterPrivateIpErrMsg: errMsg,
                 isLoading: false
             });
         } );
@@ -193,6 +194,7 @@ class IpFilter extends React.Component {
         const PADDING = 80;
         return $('body').height()
             - $('.ip-filter-panel .right-panel-modal-title').outerHeight(true)
+            - $('.ip-filter-panel .filter-private-ip-card-container').outerHeight(true)
             - PADDING;
     }
 
@@ -283,16 +285,39 @@ class IpFilter extends React.Component {
         IpFilterAjax.setFilterPrivateIp({filter_lan: checked}).then( (result) => {
             if (result) {
                 this.setState({
-                    filterPrivateIpStatus: checked
+                    filterPrivateIpStatus: checked,
+                    setFilterPrivateIpMsg: Intl.get('user.operate.success','操作成功'),
+                    setFilterPrivateResult: 'success'
                 });
-                message.success(Intl.get('config.filter.ip.succss','过滤内网配置成功！'));
             } else {
-                message.error(Intl.get('config.filter.ip.err','过滤内网配置失败！'));
+                this.setState({
+                    setFilterPrivateIpMsg: Intl.get('member.apply.approve.tips','操作失败'),
+                    setFilterPrivateResult: 'error'
+                });
             }
         }, (errMsg) => {
-            message.error(errorMsg || Intl.get('config.filter.ip.err','过滤内网配置失败！'));
+            this.setState({
+                setFilterPrivateIpMsg: errMsg || Intl.get('member.apply.approve.tips','操作失败'),
+                setFilterPrivateResult: 'error'
+            });
         } );
 
+    };
+
+    renderSetFilterPrivateIpTips = () => {
+        let hide = () => {
+            this.setState({
+                setFilterPrivateIpMsg: '',
+                setFilterPrivateResult: ''
+            });
+        };
+        return (
+            <SavedTips
+                tipsContent={this.state.setFilterPrivateIpMsg}
+                savedResult={this.state.setFilterPrivateResult}
+                onHide={hide}
+            />
+        );
     };
 
     renderDetailPrivateFilterIP = () => {
@@ -303,9 +328,16 @@ class IpFilter extends React.Component {
                     onChange={this.handleSetFilterPrivateIp}
                     data-tracename="选中/取消过滤内网IP"
                 />
-                <span>
-                    <ReactIntl.FormattedMessage id="config.filter.inner.ip" defaultMessage="过滤内网ip"/>
+                <span className="private-content">
+                    {Intl.get('product.private.ip','内网IP')}
                 </span>
+                {
+                    this.state.setFilterPrivateIpMsg ? (
+                        <div className="private-ip-tips">
+                            {this.renderSetFilterPrivateIpTips()}
+                        </div>
+                    ) : null
+                }
             </div>
         );
     };

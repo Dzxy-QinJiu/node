@@ -937,6 +937,7 @@ var en_US = {
     'product.global.filter.ip.title': 'All product statistical analysis when filtering the following IP', // 全部产品统计分析时过滤以下IP：
     'product.filter.ip.title': 'The product statistical analysis when filtering the following IP', // 该产品统计分析时过滤以下IP：
     'product.global.ip.tips': '(all products)', // （全部产品过滤)
+    'product.private.ip': 'Intranet IP', // 内网IP
     // 后台管理- 产品end
 
     // 后台管理-行业start
