@@ -65,7 +65,7 @@ class PageFrame extends React.Component {
         // 打开用户详情面板
         userDetailEmitter.on(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
         // 关闭用户详情面板
-        userDetailEmitter.on(userDetailEmitter.COLSE_USER_DETAIL, this.closeUserDetailPanel);
+        userDetailEmitter.on(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
 
         $(window).on('resize', this.resizeHandler);
     }
@@ -117,7 +117,7 @@ class PageFrame extends React.Component {
         // 打开用户详情面板
         userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
         // 关闭用户详情面板
-        userDetailEmitter.removeListener(userDetailEmitter.COLSE_USER_DETAIL, this.closeUserDetailPanel);
+        userDetailEmitter.removeListener(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
 
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {

@@ -127,7 +127,7 @@ class PhonePanel extends React.Component {
 
         //增加关闭用户详情面板的事件监听
         //关闭用户详情面板时，恢复当前面板的原始z-index
-        userDetailEmitter.on(userDetailEmitter.COLSE_USER_DETAIL, this.adjustThisPanelZIndex);
+        userDetailEmitter.on(userDetailEmitter.CLOSE_USER_DETAIL, this.adjustThisPanelZIndex);
 
         //增加打开线索详情面板的事件监听
         //打开线索详情面板时，当前面板的z-index减1
@@ -234,7 +234,7 @@ class PhonePanel extends React.Component {
         userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.adjustThisPanelZIndex);
 
         //移除关闭用户详情面板的事件监听
-        userDetailEmitter.removeListener(userDetailEmitter.COLSE_USER_DETAIL, this.adjustThisPanelZIndex);
+        userDetailEmitter.removeListener(userDetailEmitter.CLOSE_USER_DETAIL, this.adjustThisPanelZIndex);
 
         //移除打开线索详情面板的事件监听
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.adjustThisPanelZIndex);

@@ -118,7 +118,7 @@ class CrmRightPanel extends React.Component {
     };
     closeUserDetail = () => {
         //触发打开用户详情面板
-        userDetailEmitter.emit(userDetailEmitter.COLSE_USER_DETAIL);
+        userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
     };
     showUserDetail = (userId) => {
         //触发打开用户详情面板

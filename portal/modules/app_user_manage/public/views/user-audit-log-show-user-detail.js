@@ -21,7 +21,7 @@ class UserAuditLog extends React.Component {
             isShowRightPanel: false
         });
         //触发关闭用户详情面板
-        userDetailEmitter.emit(userDetailEmitter.COLSE_USER_DETAIL);
+        userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
     };
 
     state = {
