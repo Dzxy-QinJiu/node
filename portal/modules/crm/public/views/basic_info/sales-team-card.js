@@ -114,8 +114,10 @@ class SalesTeamCard extends React.Component {
             this.setState(this.getInitStateData(nextProps));
             if(!this.isCommonSales()) {
                 // 验证是否能修改负责人和联合跟进人
-                this.checkCanEditSales(nextProps.customerId);
-                this.checkCanEditSecondSales(nextProps.customerId);
+                if(nextProps.customerId) {
+                    this.checkCanEditSales(nextProps.customerId);
+                    this.checkCanEditSecondSales(nextProps.customerId);
+                }
             }
             //获取销售及联合跟进人
             this.getSalesByCustomerId(nextProps.customerId);
