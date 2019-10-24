@@ -1,4 +1,3 @@
-var React = require('react');
 import { AntcTable } from 'antc';
 import { Icon, Select, Alert, Button, message } from 'antd';
 // 加载时的动作显示
@@ -19,7 +18,6 @@ var AppUserUtil = require('../util/app-user-util');
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { userTypeList } from 'PUB_DIR/sources/utils/consts';
 import { SELECT_TIME_TIPS, THREE_MONTH_TIME_RANGE, THIRTY_DAY_TIME_RANGE, THIRTY_ONE_DAY_TIME_RANGE } from '../util/consts';
-import RefreshButton from 'CMP_DIR/refresh-button';
 var websiteConfig = require('../../../../lib/utils/websiteConfig');
 var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 var getLocalWebsiteConfig = websiteConfig.getLocalWebsiteConfig;
@@ -186,7 +184,7 @@ class LogView extends React.Component {
     };
     // 应用下拉框的选择
     getAppOptions = () => {
-        var list = this.state.userAppArray.map(function (item) {
+        var list = this.state.userAppArray.map(function(item) {
             return <Option
                 key={item.app_id}
                 value={item.app_id}
@@ -292,7 +290,7 @@ class LogView extends React.Component {
                 width: '150px',
                 key: 'timestamp',
                 align: 'left',
-                render: function (timestamp, rowData, idx) {
+                render: function(timestamp, rowData, idx) {
                     return (<span>
                         {moment(timestamp).format(oplateConsts.DATE_TIME_FORMAT)}
                     </span>);
@@ -304,7 +302,7 @@ class LogView extends React.Component {
                 className: 'has-filter click-show-user-detail',
                 width: '100px',
                 key: 'user_name',
-                render: function ($1, row) {
+                render: function($1, row) {
                     var userInputClass = classnames({
                         'user_id_hidden': true, // 点击查看详情的类
                         'userNoIdClass': row.user_id ? false : true // userId为空时的类
@@ -330,7 +328,7 @@ class LogView extends React.Component {
                 key: 'customer_name',
                 className: 'has-filter owner-customer-wrap',
                 width: '160px',
-                render: function ($1, rowData, idx) {
+                render: function($1, rowData, idx) {
                     var customer_name = _.get(rowData, 'customer_name', '');
                     var customer_id = _.get(rowData, 'customer_id', '');
                     return (
@@ -347,7 +345,7 @@ class LogView extends React.Component {
                 className: 'has-filter click-show-user-detail',
                 width: '90px',
                 key: 'tags',
-                render: function (userType, record, index) {
+                render: function(userType, record, index) {
                     let text = '';
                     if (_.isArray(userType) && userType.length) {
                         text = AppUserUtil.getUserTypeText(userType[0]);
@@ -365,7 +363,7 @@ class LogView extends React.Component {
                 className: 'has-filter click-show-user-detail',
                 width: '100px',
                 key: 'operation_name',
-                render: function (operate, rowData, idx) {
+                render: function(operate, rowData, idx) {
                     return (<span title={operate}>
                         {operate === 'null' ? '' : operate}
                     </span>);
@@ -377,7 +375,7 @@ class LogView extends React.Component {
                 className: 'has-filter operate-detail',
                 width: '200px',
                 key: 'operate_detail',
-                render: function (text, record, index) {
+                render: function(text, record, index) {
                     return (
                         <div>
                             <span title={text} className="operate-detail-style">
@@ -409,7 +407,7 @@ class LogView extends React.Component {
                 className: 'has-filter click-show-user-detail',
                 width: '110px',
                 key: 'location',
-                render: function (text, record, index) {
+                render: function(text, record, index) {
                     return (
                         <div>
                             {(record.country ? record.country : '') +
@@ -435,7 +433,7 @@ class LogView extends React.Component {
                 sorter: true,
                 width: '210px',
                 key: 'browser',
-                render: function (text, record, index) {
+                render: function(text, record, index) {
                     return (
                         <div>
                             {record.browser_version ? (text + ' ' + record.browser_version) : text}

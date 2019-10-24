@@ -41,8 +41,8 @@ class PageFrame extends React.Component {
         rightContentHeight: 0,
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
-        userId: '', // 用户id
         clueParamObj: $.extend(true, {}, emptyParamObj),
+        userDetailParamObj: $.extend(true, {}) // 用户详情组件相关的参数
     };
 
     componentDidMount() {
@@ -180,7 +180,7 @@ class PageFrame extends React.Component {
         Trace.traceEvent(ReactDOM.findDOMNode(this), '查看用户详情');
         this.setState({
             isShowUserDetailPanel: true,
-            userId: _.get(paramObj, 'userId')
+            userDetailParamObj: $.extend(this.state.userDetailParamObj, paramObj)
         });
     };
 
@@ -188,7 +188,7 @@ class PageFrame extends React.Component {
     closeUserDetailPanel = () => {
         this.setState({
             isShowUserDetailPanel: false,
-            userId: ''
+            userDetailParamObj: $.extend(this.state.userDetailParamObj, {})
         });
     };
 
@@ -271,7 +271,7 @@ class PageFrame extends React.Component {
                         {
                             this.state.isShowUserDetailPanel ? (
                                 <UserDetail
-                                    userId={this.state.userId}
+                                    {...this.state.userDetailParamObj}
                                     closeRightPanel={this.closeUserDetailPanel}
                                     isNotificationOpenUserDetail={this.state.isShowNotificationPanel}
                                 />

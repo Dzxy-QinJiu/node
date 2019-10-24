@@ -1,6 +1,3 @@
-var React = require('react');
-import UserDetail from './user-detail';
-import {RightPanel} from '../../../../components/rightPanel';
 import OperationRecord from './user_audit_log';
 var language = require('../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -12,23 +9,22 @@ var UserAuditLogStore = require('../store/user_audit_log_store');
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
 // 默认的今天时间
 const timeObj = datePickerUtils.getTodayTime();
+import {userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 class UserAuditLog extends React.Component {
-    selectedUserId = '';
     isShowRightPanel = false;
 
     closeRightPanel = () => {
         $(this.refs.wrap).find('.current_row').removeClass('current_row');
-        this.selectedUserId = '';
         this.isShowRightPanel = false;
         this.setState({
-            selectedUserId: '',
             isShowRightPanel: false
         });
+        //触发关闭用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.COLSE_USER_DETAIL);
     };
 
     state = {
-        selectedUserId: this.selectedUserId,
         isShowRightPanel: this.isShowRightPanel,
         operatorRecordDateSelectTime: {
             range: 'day',
@@ -42,8 +38,8 @@ class UserAuditLog extends React.Component {
     }
 
     componentDidMount() {
-        var $wrap = $(this.refs.wrap);
-        var _this = this;
+        let $wrap = $(this.refs.wrap);
+        let _this = this;
         $wrap.on('click' , 'td.click-show-user-detail' , function() {
             $(this).closest('tr').siblings().removeClass('current_row');
             var $tr = $(this).closest('tr');
@@ -52,10 +48,15 @@ class UserAuditLog extends React.Component {
             if($user_id_hidden[0]) {
                 if (user_id){
                     $tr.addClass('current_row');
-                    _this.selectedUserId = user_id;
+                    let paramObj = {
+                        selectedAppId: UserAuditLogStore.getState().selectAppId,
+                        operatorRecordDateSelectTime: _this.state.operatorRecordDateSelectTime,
+                        userId: user_id
+                    };
+                    //触发打开用户详情面板
+                    userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, paramObj);
                     _this.isShowRightPanel = true;
                     _this.setState({
-                        selectedUserId: user_id,
                         isShowRightPanel: _this.isShowRightPanel
                     });
                 }
@@ -64,7 +65,6 @@ class UserAuditLog extends React.Component {
     }
 
     componentWillUnmount() {
-        this.selectedUserId = '';
         this.isShowRightPanel = false;
         emitter.removeListener('user_detail_close_right_panel' , this.closeRightPanel);
     }
@@ -76,7 +76,6 @@ class UserAuditLog extends React.Component {
     };
 
     render() {
-        let selectedAppId = UserAuditLogStore.getState().selectAppId;
         return (
             <div>
                 <div className="user-audit-log-wrap" ref="wrap">
@@ -85,19 +84,6 @@ class UserAuditLog extends React.Component {
                         setOperatorRecordSelectTime={this.setOperatorRecordSelectTime}
                     />
                 </div>
-                <RightPanel 
-                    className="right-pannel-default app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
-                    showFlag={this.state.isShowRightPanel}>
-                    {
-                        this.state.selectedUserId ? (
-                            <UserDetail 
-                                userId={this.state.selectedUserId} 
-                                selectedAppId={selectedAppId}
-                                operatorRecordDateSelectTime={this.state.operatorRecordDateSelectTime}
-                            />
-                        ) : null
-                    }
-                </RightPanel>
             </div>
 
         );
