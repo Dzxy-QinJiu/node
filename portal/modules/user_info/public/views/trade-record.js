@@ -55,6 +55,18 @@ class TradeRecord extends React.Component {
         this.getUserTradeRecord(queryObj);
     }
 
+    componentWillUnmount() {
+        this.setState = {
+            pageSize: 20,
+            loading: false, // 获取交易记录的loading
+            tradeRecordList: [], // 交易记录列表
+            errorMsg: '', // 获取交易记录失败信息
+            sortId: '', // 交易记录最后一条的Id
+            total: 0, // 交易记录总数
+            listenScrollBottom: true, // 下拉加载
+        };
+    }
+
     isShowNoMoreDataTips = () => {
         return !this.state.loading &&
             this.state.tradeRecordList.length >= 10 && !this.state.listenScrollBottom;

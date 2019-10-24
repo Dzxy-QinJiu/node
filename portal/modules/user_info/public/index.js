@@ -34,6 +34,8 @@ const TAB_KEYS = {
     TRADE_TAB: '2',// 交易记录
 };
 
+const TAB_HEIGHT = 40; // 标签页占据的高度
+
 var UserInfoPage = createReactClass({
     displayName: 'UserInfoPage',
     mixins: [reactIntlMixin],
@@ -100,8 +102,9 @@ var UserInfoPage = createReactClass({
     },
 
     render: function() {
-        var height = this.state.userInfoContainerHeight;
+        var height = this.state.userInfoContainerHeight - TAB_HEIGHT;
         let managedRealm = _.get(commonMethodUtil.getOrganization(), 'name', '');
+        let containerHeight = height - logTitleHeight - logBottomHeight;
         return (
             <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
                 <div className="user-info-manage-container">
@@ -147,10 +150,9 @@ var UserInfoPage = createReactClass({
                                                 sortId={this.state.sortId}
                                                 loadSize={this.state.loadSize}
                                                 listenScrollBottom={this.state.listenScrollBottom}
-                                                height={height - logTitleHeight - logBottomHeight}
+                                                height={containerHeight}
                                                 handleScrollBottom={this.handleScrollBottom}
-                                            >
-                                            </UserInfoLog>
+                                            />
                                         </div>
                                         : null
                                 }
@@ -161,7 +163,9 @@ var UserInfoPage = createReactClass({
                             >
                                 {
                                     this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
-                                        <TradeRecord/>
+                                        <TradeRecord
+                                            height={containerHeight}
+                                        />
                                     ) : null
                                 }
                             </TabPane>
