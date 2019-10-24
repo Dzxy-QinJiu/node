@@ -29,7 +29,7 @@ class TradeRecord extends React.Component {
             // TODO 需要根据后端返回的字段修改 result.data
             let tradeRecordList = this.state.tradeRecordList;
             tradeRecordList = tradeRecordList.concat(result.data);
-            if (result.data.total) {
+            if (_.get(result, 'total')) {
                 this.listenScrollBottom = false;
             } else {
                 this.listenScrollBottom = true;
@@ -41,7 +41,8 @@ class TradeRecord extends React.Component {
         }, (errMsg) => {
             this.setState({
                 loading: false,
-                errorMsg: errMsg
+                errorMsg: errMsg,
+                listenScrollBottom: false
             });
         } );
     };
@@ -143,7 +144,7 @@ class TradeRecord extends React.Component {
             <div className="trade-record-wrap" style={{height: height}}>
                 <GeminiScrollbar>
                     {
-                        this.state.loading ?
+                        !this.state.sortId && this.state.loading ?
                             <Spinner/> : (
                                 <div className="trade-record-content">
                                     {this.renderUserTradeRecord()}

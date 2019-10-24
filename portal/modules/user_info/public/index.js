@@ -41,7 +41,8 @@ var UserInfoPage = createReactClass({
     getInitialState: function() {
         return {
             ...UserInfoStore.getState(),
-            userInfoContainerHeight: this.userInfoContainerHeightFnc()
+            userInfoContainerHeight: this.userInfoContainerHeightFnc(),
+            activeKey: TAB_KEYS.OPERATE_RECORD_TAB
         };
     },
 
