@@ -295,6 +295,8 @@ var zh_CN = {
     'common.the.maximum.gross.profit.rate': '回款毛利率最大值',
     'common.maximum.gross.margin.of.newly.signed.payment': '新签回款毛利最大值',
     'common.load.data.error': '加载失败，请{refresh}',
+    'common.no.more.data.tips': '没有更多{name}了',
+    'common.no.data.tips': '暂无{name}',
 
     //公共部分--end
     'login.login': '登录',
@@ -1100,6 +1102,14 @@ var zh_CN = {
     'user.info.version': '版本',
     'user.info.version.expire': '{time}到期',
     'user.info.version.upgrade': '升级为正式版',
+    'user.trade.record': '交易记录',
+    'user.trade.get.record': '获取交易记录失败',
+    'user.trade.record.order.number': '订单号',
+    'user.trade.record.time': '交易时间',
+    'user.trade.record.product.name': '商品名称',
+    'user.trade.record.price': '价格',
+    'user.trade.record.status': '交易状态',
+    'user.trade.record.total': '共有{total}条交易记录',
     //基本资料end
     //密码管理start
     'user.password.input.again': '原密码不正确，请重新输入。',

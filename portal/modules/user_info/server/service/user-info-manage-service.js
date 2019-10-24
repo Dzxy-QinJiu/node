@@ -21,7 +21,8 @@ var userInfoRestApis = {
     getManagedRealm: '/rest/base/v1/realm/managedrealm',//获取当前登录用户所在的组织
     setSubscribeEmail: '/rest/base/v1/user/email/rejection',//是否订阅通知邮件
     getUserInfoPhoneCode: '/rest/base/v1/user/bunding/phone',//获取短信验证码
-    bindUserInfoPhone: '/rest/base/v1/user/baseinfo'//绑定邮箱
+    bindUserInfoPhone: '/rest/base/v1/user/baseinfo',//绑定邮箱
+    getUserTradeRecord: '/rest/base/v1/user/trade', // 获取用户交易记录
 };
 
 exports.urls = userInfoRestApis;
@@ -163,4 +164,14 @@ exports.bindUserInfoPhone = function(req, res) {
             req: req,
             res: res,
         }, req.body);
+};
+
+// 获取用户交易记录
+exports.getUserTradeRecord = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: userInfoRestApis.getUserTradeRecord,
+            req: req,
+            res: res,
+        }, req.query);
 };

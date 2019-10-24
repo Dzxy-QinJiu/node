@@ -135,3 +135,20 @@ exports.setSubscribeEmail = function(configObj) {
     return Deferred.promise();
 };
 
+// 获取用户交易记录
+exports.getUserTradeRecord = (queryObj) => {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/user/trade/record',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON || Intl.get('user.trade.get.record','获取交易记录失败'));
+        }
+    });
+    return Deferred.promise();
+};
