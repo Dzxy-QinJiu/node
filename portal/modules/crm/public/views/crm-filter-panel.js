@@ -1,22 +1,19 @@
 var React = require('react');
 const PropTypes = require('prop-types');
-import { getSelected } from '../../../../lib/utils/filter-utils';
 var FilterStore = require('../store/filter-store');
 var FilterAction = require('../action/filter-actions');
-import Trace from 'LIB_DIR/trace';
 import { administrativeLevels, CUSTOMER_TAGS } from '../utils/crm-util';
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import userData from 'PUB_DIR/sources/user-data';
 import { FilterList } from 'CMP_DIR/filter';
 import {
     FILTER_RANGE,
     STAGE_OPTIONS,
-    DAY_TIME,
-    UNKNOWN,
     COMMON_OTHER_ITEM,
     OTHER_FILTER_ITEMS
 } from 'PUB_DIR/sources/utils/consts';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import { DatePicker } from 'antd';
+const { RangePicker } = DatePicker;
 //行政级别筛选项
 let filterLevelArray = administrativeLevels;
 
@@ -246,6 +243,75 @@ class CrmFilterPanel extends React.Component {
         }
         _.isFunction(callback) && callback(targetIndex);
     };
+
+    //修改创建时间
+    changeRangePicker = (date, dateString) => {
+        if (!_.get(date,'[0]')){
+            //如果选择了全部，将条件置空
+            let searchedObj = {};
+            FilterAction.setCreateTimeFilter(searchedObj);
+        }else{
+            let from = moment(_.get(date, '[0]')).startOf('day').valueOf();
+            let to = moment(_.get(date, '[1]')).endOf('day').valueOf();
+            let searchedObj = {
+                name: 'start_time',
+                type: 'time',
+                from,
+                to,
+            };
+            FilterAction.setCreateTimeFilter(searchedObj);
+        }
+        setTimeout(() => {
+            this.props.search();
+        });
+    };
+
+    //修改最后跟进时间
+    changeLastTraceRangePicker = (date, dateString) => {
+        if (!_.get(date,'[0]')){
+            //如果选择了全部，将条件置空
+            let searchedObj = {};
+            FilterAction.setLastContactTimeFilter(searchedObj);
+        }else{
+            let from = moment(_.get(date, '[0]')).startOf('day').valueOf();
+            let to = moment(_.get(date, '[1]')).endOf('day').valueOf();
+            let searchedObj = {
+                name: 'last_contact_time',
+                type: 'time',
+                from,
+                to,
+            };
+            FilterAction.setLastContactTimeFilter(searchedObj);
+        }
+        setTimeout(() => {
+            this.props.search();
+        });
+    };
+
+    //今天之后的日期不可以选
+    disabledDate = (current) => {
+        return current > moment().endOf('day');
+    };
+
+    renderTimeRangeSelect = () => {
+        return(
+            <div className='time-range-wrap-container'>
+                <div className="time-range-wrap">
+                    <span className="consult-time">{Intl.get('third.party.app.create.time', '创建时间')}</span>
+                    <RangePicker
+                        disabledDate={this.disabledDate}
+                        onChange={this.changeRangePicker}/>
+                </div>
+                <div className="time-range-wrap">
+                    <span className="consult-time">{Intl.get('crm.7', '最后联系时间')}</span>
+                    <RangePicker
+                        disabledDate={this.disabledDate}
+                        onChange={this.changeLastTraceRangePicker}/>
+                </div>
+            </div>
+        );
+    };
+
     render() {
         const teams = this.state.condition.sales_team_id.split(',');
         //用Store.getState()方法获取存在store里的state时，若state下的某个属性所在层次较深且其值为空时，该属性会被丢掉
@@ -485,6 +551,7 @@ class CrmFilterPanel extends React.Component {
                         commonLoading={this.state.commonFilterList.loading}
                         commonData={commonData.concat(this.state.commonFilterList.data)}
                         advancedData={advancedData}
+                        renderOtherDataContent={this.renderTimeRangeSelect}
                         setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
                         hasSettedDefaultCommonSelect={this.props.isExtractSuccess}
                         onDelete={this.onDelete.bind(this)}

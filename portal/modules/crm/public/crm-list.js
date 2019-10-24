@@ -897,6 +897,24 @@ class Crm extends React.Component {
         if (interval) {
             this.state.rangParams[0].interval = interval;
         }
+        //如果根据创建时间筛选的条件不为空
+        if(!_.isEmpty(FilterStore.getState().createTimeFilterCondition)) {
+            let condition = FilterStore.getState().createTimeFilterCondition;
+            let rangParams = _.cloneDeep(this.state.rangParams);
+            rangParams.push(condition);
+            this.setState({
+                rangParams
+            });
+        }
+        //如果根据最后联系时间筛选的条件不为空
+        if(!_.isEmpty(FilterStore.getState().lastContactTimeFilterCondition)) {
+            let condition = FilterStore.getState().lastContactTimeFilterCondition;
+            let rangParams = _.cloneDeep(this.state.rangParams);
+            rangParams.push(condition);
+            this.setState({
+                rangParams
+            });
+        }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;
         }
@@ -926,7 +944,11 @@ class Crm extends React.Component {
             queryObj: JSON.stringify(queryObjParams),
         };
         //时间范围
-        if (_.get(rangParams, '[0].from') || _.get(rangParams, '[0].to')) {
+        if (_.get(rangParams, '[0].from') || _.get(rangParams, '[0].to') || _.get(rangParams, 'length') > 1) {
+            //如果数组中第一个值的from和to字段都为空，表明此值为默认值，从数组去掉
+            if(!_.isNumber(_.get(rangParams, '[0].to')) && !_.isNumber(_.get(rangParams, '[0].from'))) {
+                rangParams.shift();
+            }
             params.rangParams = JSON.stringify(rangParams);
         }
         //处理sort_and_orders字段

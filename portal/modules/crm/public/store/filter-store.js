@@ -2,7 +2,7 @@ var FilterActions = require('../action/filter-actions');
 import { altAsyncUtil } from 'ant-utils';
 const { resultHandler } = altAsyncUtil;
 import {
-    OTHER_FILTER_ITEMS, DAY_TIME, STAGE_OPTIONS, UNKNOWN,
+    OTHER_FILTER_ITEMS, STAGE_OPTIONS, UNKNOWN,
     COMMON_OTHER_ITEM, SPECIAL_LABEL
 } from 'PUB_DIR/sources/utils/consts';
 import { administrativeLevels, CUSTOMER_TAGS } from '../utils/crm-util';
@@ -29,7 +29,8 @@ function FilterStore() {
     this.inputCondition = {};
     this.setInitialCondition();
     this.isPanelShow = false;
-
+    this.createTimeFilterCondition = {};//根据创建时间筛选
+    this.lastContactTimeFilterCondition = {};//根据最后跟进时间筛选
     this.bindActions(FilterActions);
 }
 FilterStore.prototype.setInitialCondition = function() {
@@ -138,6 +139,13 @@ FilterStore.prototype.hidePanel = function() {
 
 FilterStore.prototype.setCondition = function(conditionObj) {
     this.condition = $.extend({}, this.condition, conditionObj);
+};
+
+FilterStore.prototype.setCreateTimeFilter = function(conditionObj) {
+    this.createTimeFilterCondition = conditionObj;
+};
+FilterStore.prototype.setLastContactTimeFilter = function(conditionObj) {
+    this.lastContactTimeFilterCondition = conditionObj;
 };
 
 //将查询条件转换为前端展示用的格式
