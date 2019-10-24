@@ -114,10 +114,8 @@ class SalesTeamCard extends React.Component {
             this.setState(this.getInitStateData(nextProps));
             if(!this.isCommonSales()) {
                 // 验证是否能修改负责人和联合跟进人
-                if(nextProps.customerId) {
-                    this.checkCanEditSales(nextProps.customerId);
-                    this.checkCanEditSecondSales(nextProps.customerId);
-                }
+                this.checkCanEditSales(nextProps.customerId);
+                this.checkCanEditSecondSales(nextProps.customerId);
             }
             //获取销售及联合跟进人
             this.getSalesByCustomerId(nextProps.customerId);
@@ -439,6 +437,7 @@ class SalesTeamCard extends React.Component {
 
     // 验证是否可以处理负责人
     checkCanEditSales(customerId) {
+        if(!customerId) return;
         CrmBasicAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
             if(res) {
                 this.setState({isUnableEditSales: false});
@@ -448,6 +447,7 @@ class SalesTeamCard extends React.Component {
 
     // 验证是否可以处理联合跟进人
     checkCanEditSecondSales(customerId) {
+        if(!customerId) return;
         CrmBasicAjax.checkCrmJoinUserByCustomerId(customerId).then((res) => {
             if(res) {
                 this.setState({isUnableEditSecondSales: false});
