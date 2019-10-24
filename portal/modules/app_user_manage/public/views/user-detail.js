@@ -1,4 +1,3 @@
-var React = require('react');
 var language = require('../../../../public/language/getLanguage');
 require('../css/user-detail-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -39,6 +38,8 @@ import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
+import classNames from 'classnames';
+
 //当前面板z-index
 let thisPanelZIndex;
 
@@ -459,9 +460,12 @@ class UserDetail extends React.Component {
 
         const EDIT_FEILD_WIDTH = 395;
         let hasEditPrivilege = hasPrivilege('APP_USER_EDIT') && this.state.isOplateUser;
+        let rightPanelCls = classNames('apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel', {
+            'notification-system-user': this.props.isNotificationOpenUserDetail
+        });
         return (
             <RightPanel
-                className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
+                className={rightPanelCls}
                 showFlag='true'
             >
                 <div className="right-panel-wrapper">
@@ -588,5 +592,6 @@ UserDetail.propTypes = {
     isShownExceptionTab: PropTypes.bool,
     userConditions: PropTypes.array,
     operatorRecordDateSelectTime: PropTypes.object, // 操作记录界面，选择的时间
+    isNotificationOpenUserDetail: PropTypes.bool, // 是否是系统通知界面，打开用户详情
 };
 module.exports = UserDetail;

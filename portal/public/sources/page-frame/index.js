@@ -219,6 +219,10 @@ class PageFrame extends React.Component {
                 this.setState({
                     phonePanelShow: false
                 });
+            } else {
+                // 打开系统通知时，需要关闭以前打开的相应的用户详情、客户详情界面
+                this.closeUserDetailPanel();
+                this.closePhonePanel();
             }
         });
     };
@@ -227,6 +231,9 @@ class PageFrame extends React.Component {
         this.setState({
             isShowNotificationPanel: false,
         });
+        // 关闭系统通知后，需要关闭相应的用户详情、客户详情界面
+        this.closeUserDetailPanel();
+        this.closePhonePanel();
     };
 
     render() {
@@ -266,6 +273,7 @@ class PageFrame extends React.Component {
                                 <UserDetail
                                     userId={this.state.userId}
                                     closeRightPanel={this.closeUserDetailPanel}
+                                    isNotificationOpenUserDetail={this.state.isShowNotificationPanel}
                                 />
                             ) : null
                         }
