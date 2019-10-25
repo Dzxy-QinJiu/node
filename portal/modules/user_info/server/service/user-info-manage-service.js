@@ -22,7 +22,7 @@ var userInfoRestApis = {
     setSubscribeEmail: '/rest/base/v1/user/email/rejection',//是否订阅通知邮件
     getUserInfoPhoneCode: '/rest/base/v1/user/bunding/phone',//获取短信验证码
     bindUserInfoPhone: '/rest/base/v1/user/baseinfo',//绑定邮箱
-    getUserTradeRecord: '/rest/base/v1/user/trade', // 获取用户交易记录
+    getUserTradeRecord: '/pay/trade/orders', // 获取用户交易记录（后端描述：交易记录列表，加注释目的，方便查找接口）
 };
 
 exports.urls = userInfoRestApis;

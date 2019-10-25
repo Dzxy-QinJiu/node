@@ -26,9 +26,8 @@ class TradeRecord extends React.Component {
             loading: true
         });
         userInfoAjax.getUserTradeRecord(queryObj).then( (result) => {
-            // TODO 需要根据后端返回的字段修改 result.data
             let tradeRecordList = this.state.tradeRecordList;
-            tradeRecordList = tradeRecordList.concat(result.data);
+            tradeRecordList = tradeRecordList.concat(_.get(result, 'data'));
             if (_.get(result, 'total')) {
                 this.listenScrollBottom = false;
             } else {
@@ -36,7 +35,7 @@ class TradeRecord extends React.Component {
             }
             let length = tradeRecordList.length;
             this.sortId = length > 0 ? tradeRecordList[length - 1].sort_id : '';
-            this.total = result && result.data && result.data.total || 0;
+            this.total = _.get(result, 'total') || 0;
 
         }, (errMsg) => {
             this.setState({
@@ -75,19 +74,24 @@ class TradeRecord extends React.Component {
     getTradeRecordColumns = () => {
         return [{
             title: Intl.get('user.trade.record.order.number','订单号'),
-            dataIndex: 'orderNumber',
+            dataIndex: 'trade_no',
             width: '23%'
         }, {
             title: Intl.get('user.trade.record.time','交易时间'),
-            dataIndex: 'tradeTime',
-            width: '16%'
+            dataIndex: 'finish_time',
+            width: '16%',
+            render: (text) => {
+                return (
+                    <div>{moment(text).format(oplateConsts.DATE_TIME_FORMAT)}</div>
+                );
+            }
         }, {
             title: Intl.get('user.trade.record.product.name','商品名称'),
-            dataIndex: 'productionName',
+            dataIndex: 'goods_name',
             width: '21%'
         }, {
             title: Intl.get('user.trade.record.price','价格'),
-            dataIndex: 'price',
+            dataIndex: 'total_fee',
             width: '16%'
         }, {
             title: Intl.get('user.trade.record.status','交易状态'),
@@ -95,7 +99,7 @@ class TradeRecord extends React.Component {
             width: '16%'
         }, {
             title: Intl.get('user.operator','操作人'),
-            dataIndex: 'operator',
+            dataIndex: 'userName',
             width: '15%'
         }];
     };
