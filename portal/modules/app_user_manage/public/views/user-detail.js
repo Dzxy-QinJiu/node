@@ -220,7 +220,7 @@ class UserDetail extends React.Component {
         }
         AppUserDetailAction.dismiss();
         SingleUserLogAction.dismiss();
-        emitter.emit('user_detail_close_right_panel');
+        userDetailEmitter.emit(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL);
     };
 
     changeTab = (key) => {

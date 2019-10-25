@@ -34,7 +34,8 @@ class UserAuditLog extends React.Component {
     };
 
     componentWillMount() {
-        emitter.on('user_detail_close_right_panel' , this.closeRightPanel);
+        // 关闭用户详情面板
+        userDetailEmitter.on(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL, this.closeRightPanel);
     }
 
     componentDidMount() {
@@ -66,7 +67,8 @@ class UserAuditLog extends React.Component {
 
     componentWillUnmount() {
         this.isShowRightPanel = false;
-        emitter.removeListener('user_detail_close_right_panel' , this.closeRightPanel);
+        // 关闭用户详情面板
+        userDetailEmitter.removeListener(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL, this.closeRightPanel);
     }
 
     setOperatorRecordSelectTime = (selectTimeObj) => {

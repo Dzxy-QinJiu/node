@@ -251,7 +251,8 @@ const ApplyViewDetail = createReactClass({
                 ApplyViewDetailActions.setBottomDisplayType();
             });
         }
-        emitter.on('user_detail_close_right_panel', this.closeRightPanel);
+        // 关闭用户详情面板
+        userDetailEmitter.on(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL, this.closeRightPanel);
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.REPLY_LIST_SCROLL_TO_BOTTOM, this.replyListScrollToBottom);
         if (this.state.isHomeMyWork){
             AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
@@ -266,7 +267,8 @@ const ApplyViewDetail = createReactClass({
     componentWillUnmount() {
         var ApplyViewDetailStore = this.getApplyViewDetailStore();
         ApplyViewDetailStore.unlisten(this.onStoreChange);
-        emitter.removeListener('user_detail_close_right_panel', this.closeRightPanel);
+        // 关闭用户详情面板
+        userDetailEmitter.removeListener(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL, this.closeRightPanel);
         if (this.state.isHomeMyWork){
             AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.GET_HISTORICAL_APPLY_DETAIL_CUSTOMERID, this.getHistoryApplyListByCustomerId);
         }else{
