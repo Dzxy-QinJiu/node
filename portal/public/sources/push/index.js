@@ -94,13 +94,19 @@ function listenOnMessage(data) {
                 //批复类型
                 if (!userData.hasRole('realm_manager')) {
                     //批复类型的通知，不通知管理员
-                    notifyReplyInfo(data);
+                    notifyApplyInfo(data);
                 }
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
                 //将审批后的申请消息未读数加一（true）
                 // updateUnreadByPushMessage('apply', true);
                 //待审批数减一
                 updateUnreadByPushMessage('approve', false);
+                break;
+            case 'notice':
+                //有新的抄送的申请消息时,只展示，不用修改审批数量
+                //申请审批列表弹出，有新数据，是否刷新数据的提示
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+                notifyApplyInfo(data);
                 break;
         }
     }
@@ -112,37 +118,45 @@ function applyApproveUnhandledListener(data) {
         if (data.message_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1 ){
             updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND, true);
             notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_REPORT_SEND, data);
+            notifyApplyInfo(data);
         }
         if (data.message_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
             updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE, true);
             notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE, data);
+            notifyApplyInfo(data);
         }
         switch (data.message_type) {
             case APPLY_APPROVE_TYPES.CUSTOMER_VISIT:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT, data);
+                notifyApplyInfo(data);
                 break;
             case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, data);
+                notifyApplyInfo(data);
                 break;
             case APPLY_APPROVE_TYPES.PERSONAL_LEAVE:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_LEAVE, data);
+                notifyApplyInfo(data);
                 break;
             case APPLY_APPROVE_TYPES.MEMBER_INVITE:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, data);
+                notifyApplyInfo(data);
                 break;
             case SELF_SETTING_FLOW.VISITAPPLYTOPIC:
                 //这里应该用的是拜访申请手动输入的名字
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_VISIT, data);
+                notifyApplyInfo(data);
                 break;
             case SELF_SETTING_FLOW.DOMAINAPPLYTOPIC:
                 //这里应该用的是域名申请手动输入的名字
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOMAIN, data);
+                notifyApplyInfo(data);
                 break;
         }
     }
@@ -398,7 +412,7 @@ function getUserNames(replyMessage) {
     return userNames;
 }
 //获取审批消息提醒中的内容
-function getReplyTipContent(data) {
+function getApproveTipContent(data) {
     //审批的消息
     let tipContent = '';
     let approvalPerson = data.approval_person || '';//谁批复的
@@ -439,6 +453,15 @@ function getReplyTipContent(data) {
                     userType: userType,
                     userNames: userNames
                 });
+            break;
+        case 'false'://抄送申请
+            //xxx给客户 xxx 申请了 正式/试用 用户 xxx，xxx
+            tipContent = Intl.get('notification.apply.for.customer', '{producer_name}给客户{customer}申请了{userType}{userBlock}', {
+                producer_name: salesName,
+                customer: customerName,
+                userType: userType,
+                userBlock: userNames
+            });
             break;
     }
     return tipContent;
@@ -599,19 +622,19 @@ function scheduleAlertListener(scheduleAlertMsg) {
 }
 /*
  *审批的提示 */
-function notifyReplyInfo(data) {
+function notifyApplyInfo(data) {
     if (_.isObject(data.message)) {
         //记录推送的审批通知的数量
         approveTipCount++;
         //标签页不可见时，有桌面通知，且允许弹出桌面通知时
         if (canPopDesktop()) {//桌面通知的展示
-            showDesktopNotification(Intl.get('user.apply.approve', '用户申请审批'), getReplyTipContent(data));
+            showDesktopNotification(Intl.get('user.apply.approve', '用户申请审批'), getApproveTipContent(data));
         } else {//系统弹出通知
             let notify = NotificationType['exist'];
             //如果界面上没有提示框，就显示推送的具体内容
             if (!notify) {
                 //获取提醒提示框中的内容
-                let tipContent = getReplyTipContent(data);
+                let tipContent = getApproveTipContent(data);
                 notify = notificationUtil.showNotification({
                     title: Intl.get('user.apply.approve', '用户申请审批'),
                     content: tipContent,

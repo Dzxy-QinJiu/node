@@ -30,7 +30,6 @@ let userData = require('PUB_DIR/sources/user-data');
 var uuid = require('uuid/v4');
 import ApplyApproveManageStore from '../store/apply_approve_manage_store';
 import Spinner from 'CMP_DIR/spinner';
-
 class ApplyFormAndRules extends React.Component {
     constructor(props) {
         super(props);
@@ -344,8 +343,6 @@ class ApplyFormAndRules extends React.Component {
             if (_.isString(applyRulesAndSetting.applyApproveRules)){
                 applyRulesAndSetting.applyApproveRules = JSON.parse(applyRulesAndSetting.applyApproveRules);
             }
-
-
         } else {
             //如果之前没有加过流程，这是默认的流程，默认流程是部门经理审批的
             applyRulesAndSetting = {
@@ -364,8 +361,18 @@ class ApplyFormAndRules extends React.Component {
                         ccPerson: [],//默认抄送人
                     }
                 },//审批规则
-                //抄送人
-                ccInformation: 'apply',//抄送通知
+                //抄送人的类型
+                apply_notify_config: {
+                    email_notice: true,
+                    socket_notice: true
+                },//提交申请时
+                approve_notify_config: {
+                    email_notice: true,
+                    socket_notice: true
+                },//提交申请时
+                //提交申请时抄送
+                //审批通过后抄送
+
                 cancelAfterApprove: false,//撤销权限
                 mergeSameApprover: false//其他
             };

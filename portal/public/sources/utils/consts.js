@@ -628,9 +628,23 @@ export const ASSIGN_TYPE = {
 
 //申请抄送类型
 export const CC_INFO = {
-    APPLY: 'apply', //提交申请时抄送
-    APPLY_AND_APPROVE: 'apply_and_approve', //审批通过后抄送
-    APPROVE: 'approve' //提交申请和审批通过后都抄送
+    APPLY_NOTIFY_CONFIG: 'apply', //提交申请时抄送
+    APPROVE_NOTIFY_CONFIG: 'approve' //审批通过后抄送
+};
+//抄送方式
+export const CC_INFOTYPE = {
+    EMAIL_NOTICE: 'email_notice',
+    SOCKET_NOTICE: 'socket_notice'
+};
+export const CC_INFO_LISTS = [
+    CC_INFOTYPE.EMAIL_NOTICE,CC_INFOTYPE.SOCKET_NOTICE
+];
+//申请抄送人类型
+export const NOTIFY_PERSON_TYPE = {
+    TEAMOWER_RANGE: 'teamowner_range',
+    TEAMMANAGER_RANGE: 'teammanager_range',
+    TEAMMEMBER_RANGE: 'teammember_range',
+    SYSTEM_ROLE: 'system_role'
 };
 
 // 客户阶段中的每个阶段的颜色

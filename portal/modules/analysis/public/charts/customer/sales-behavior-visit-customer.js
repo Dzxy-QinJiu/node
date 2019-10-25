@@ -29,7 +29,7 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
         },
         option: {
             columns: [{
-                title: Intl.get('common.number.of.customers.visited': '拜访客户数'),
+                title: Intl.get('common.number.of.customers.visited', '拜访客户数'),
                 dataIndex: 'visit',
                 width: '25%',
                 render: value => {

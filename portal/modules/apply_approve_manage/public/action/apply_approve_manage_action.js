@@ -27,7 +27,9 @@ function ApplyApproveManageActions() {
             this.dispatch({error: false, loading: false});
             _.isFunction(callback) && callback(result);
         }, (errorMsg) => {
-            this.dispatch({error: true, loading: false, errorMsg: errorMsg});
+            var errMsg = errorMsg || Intl.get('common.save.failed', '保存失败');
+            _.isFunction(callback) && callback(errMsg);
+            this.dispatch({error: true, loading: false, errorMsg: errMsg});
 
         });
     };
