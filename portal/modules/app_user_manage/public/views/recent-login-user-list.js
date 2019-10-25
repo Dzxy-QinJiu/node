@@ -43,6 +43,8 @@ import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import { AntcTable } from 'antc';
 import { userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 
+const USER_DETAIL_CLOSE_RIGHT_PANEL = 'user_detail_close_right_panel';
+
 class RecentLoginUsers extends React.Component {
     constructor(props) {
         super(props);
@@ -72,7 +74,7 @@ class RecentLoginUsers extends React.Component {
         $('body').css('overflow', 'hidden');
         RecentUserStore.listen(this.onStoreChange);
         // 关闭用户详情面板
-        emitter.on('user_detail_close_right_panel' , this.closeRightPanel);
+        emitter.on(USER_DETAIL_CLOSE_RIGHT_PANEL , this.closeRightPanel);
         RecentUserAction.getSaleMemberList(commonMethodUtil.getParamByPrivilege());
         this.getRecentLoginUsers();
         $(this.refs.recentLoginUsersTable).on('click', 'tr', this.onRowClick.bind(this));
@@ -81,7 +83,7 @@ class RecentLoginUsers extends React.Component {
         $('body').css('overflow', 'auto');
         RecentUserStore.unlisten(this.onStoreChange);
         // 关闭用户详情面板
-        emitter.removeListener('user_detail_close_right_panel' , this.closeRightPanel);
+        emitter.removeListener(USER_DETAIL_CLOSE_RIGHT_PANEL , this.closeRightPanel);
     }
     onStoreChange = () => {
         var stateData = RecentUserStore.getState();

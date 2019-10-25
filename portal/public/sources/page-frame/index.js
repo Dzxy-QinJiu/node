@@ -61,10 +61,9 @@ class PageFrame extends React.Component {
         audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         // 点击系统通知框的的触发
         notificationEmitter.on(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
-
-        // 打开用户详情面板
+        // 打开用户详情面板的事件监听
         userDetailEmitter.on(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
-        // 关闭用户详情面板
+        // 关闭用户详情面板的事件监听
         userDetailEmitter.on(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
 
         $(window).on('resize', this.resizeHandler);
@@ -114,9 +113,9 @@ class PageFrame extends React.Component {
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
-        // 打开用户详情面板
+        // 打开用户详情面板的事件监听
         userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
-        // 关闭用户详情面板
+        // 关闭用户详情面板的事件监听
         userDetailEmitter.removeListener(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
 
         $(window).off('resize', this.resizeHandler);
