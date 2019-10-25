@@ -774,8 +774,8 @@ var CrmAlertForm = createReactClass({
         ];
         const formItemLayout = this.props.formItemLayout || {
             colon: false,
-            labelCol: {span: 4},
-            wrapperCol: {span: 20},
+            labelCol: {span: 6},
+            wrapperCol: {span: 18},
         };
         var formData = this.state.formData;
         //如果一个电话对应多个联系人的时候，要可以选择标题
