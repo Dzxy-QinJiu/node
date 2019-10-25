@@ -387,6 +387,7 @@ class CustomerRecord extends React.Component {
                         value={_.get(this.state, 'inputContent.value') || ''}
                         onChange={this.handleInputChange.bind(this)}
                         autosize={AUTO_SIZE_MAP}
+                        autoFocus={true}
                     />
                 </FormItem>
                 <SaveCancelButton loading={this.state.addCustomerLoading}
@@ -599,7 +600,7 @@ class CustomerRecord extends React.Component {
         let showEidtBtn = item.remark && !this.props.disableEdit && !this.state.isEdit && !this.state.addRecordPanelShow;
         return (
             <div className="record-content-show">
-                {item.remark ? (<ShearContent>{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
+                {item.remark ? (<ShearContent key={item.id} >{item.remark}</ShearContent>) : this.renderSupplementTip(item)}
                 {showEidtBtn ? <DetailEditBtn
                     title={Intl.get('common.edit', '编辑')}
                     onClick={this.editDetailContent.bind(this, item)}
