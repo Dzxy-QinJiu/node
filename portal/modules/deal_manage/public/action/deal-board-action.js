@@ -49,7 +49,10 @@ function dealBoardAction() {
         if(_.isEqual(type, 'update')) {
             params.page_size = 19;
         }
-        let bodyData = {query: {sales_opportunities: [{sale_stages: stage}]}};
+        let bodyData = {
+            query: {sales_opportunities: [{sale_stages: stage}]},
+            term_fields: ['sale_stages']
+        };
         if (searchObj.field) {
             bodyData.query[searchObj.field] = searchObj.value;
         }
