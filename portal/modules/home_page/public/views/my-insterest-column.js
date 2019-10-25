@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import {Alert, Icon, Button, Tag, Popover, message} from 'antd';
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import Spinner from 'CMP_DIR/spinner';
@@ -20,7 +20,6 @@ import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import myInterestAjax from '../ajax';
 import ColumnItem from './column-item';
 import {getColumnHeight} from './common-util';
@@ -143,16 +142,6 @@ class MyInsterestColumn extends React.Component {
                         /> : null
                     }
                 </RightPanel>
-                {
-                    this.state.curShowUserId ?
-                        <RightPanel
-                            className="app_user_manage_rightpanel white-space-nowrap right-pannel-default right-panel detail-v3-panel"
-                            showFlag={this.state.curShowUserId}>
-                            <UserDetail userId={this.state.curShowUserId}
-                                closeRightPanel={this.closeRightUserPanel}/>
-                        </RightPanel>
-                        : null
-                }
             </div>);
         } else if (this.state.loadSystemNoticesErrorMsg) {//错误提示
             return (
@@ -181,6 +170,8 @@ class MyInsterestColumn extends React.Component {
             curShowUserId: user_id,
             selectedLiIndex: idx
         });
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: user_id});
     };
     closeRightUserPanel = () => {
         this.setState({

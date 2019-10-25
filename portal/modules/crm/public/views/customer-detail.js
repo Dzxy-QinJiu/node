@@ -316,18 +316,7 @@ class CrmRightPanel extends React.Component {
                         : null}
                 </div>
             );
-        }
-        //客户详情中打开用户详情时
-        if(this.state.showDetailUserId) {
-            return (
-                <RightPanel
-                    className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
-                    showFlag={this.state.showDetailUserId}
-                >
-                    <UserDetail userId={this.state.showDetailUserId}
-                        closeRightPanel={this.closeUserDetail}/>
-                </RightPanel>);
-        } else {//客户详情
+        } else {
             return this.renderCustomerDetail();
         }
     }

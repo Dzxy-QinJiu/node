@@ -15,7 +15,6 @@ var AppUserAction = require('./action/app-user-actions');
 var AppUserUtil = require('./util/app-user-util');
 
 var UserView = require('./views/user-view');
-var UserDetail = require('./views/user-detail');
 import AddOrEditUser from './views/v2/add-or-edit-user';
 
 var UserAuditLog = require('./views/user-audit-log-show-user-detail');
@@ -895,16 +894,6 @@ class AppUserManage extends React.Component {
         var rightPanelView = null;
         if (this.state.isShowRightPanel) {
             switch (this.state.rightPanelType) {
-                case 'detail':
-                    rightPanelView = (
-                        <UserDetail userId={this.state.detailUser.user.user_id}
-                            appLists={this.state.detailUser.apps}
-                            isShownExceptionTab={this.state.detailUser.isShownExceptionTab}
-                            selectedAppId={this.state.selectedAppId}
-                            userConditions={this.state.userConditions}
-                        />
-                    );
-                    break;
                 case 'addOrEditUser':
                     rightPanelView = (
                         <AddOrEditUser operation_type={this.state.appUserFormType}/>

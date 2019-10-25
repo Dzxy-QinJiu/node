@@ -18,8 +18,7 @@ import crmUtil, {AUTHS, TAB_KEYS} from 'MOD_DIR/crm/public/utils/crm-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import AlertTimer from 'CMP_DIR/alert-timer';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
-import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {scrollBarEmitter, myWorkEmitter, notificationEmitter, phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import UserApplyDetail from 'MOD_DIR/user_apply/public/views/apply-view-detail';
 import OpportunityApplyDetail from 'MOD_DIR/sales_opportunity/public/view/apply-view-detail';
 import CustomerVisitApplyDetail from 'MOD_DIR/business-apply/public/view/apply-view-detail';
@@ -473,6 +472,8 @@ class MyWorkColumn extends React.Component {
             curShowUserId: user_id,
             selectedLiIndex: idx
         });
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: user_id});
     };
     closeRightUserPanel = () => {
         this.setState({
@@ -1222,16 +1223,6 @@ class MyWorkColumn extends React.Component {
                         )}
                     />
                 ) : null}
-                {
-                    this.state.curShowUserId ?
-                        <RightPanel
-                            className="app_user_manage_rightpanel white-space-nowrap right-pannel-default right-panel detail-v3-panel"
-                            showFlag={this.state.curShowUserId}>
-                            <UserDetail userId={this.state.curShowUserId}
-                                closeRightPanel={this.closeRightUserPanel}/>
-                        </RightPanel>
-                        : null
-                }
                 {this.state.curOpenDetailWork ? this.renderWorkDetail() : null}
                 {/*添加日程*/}
                 <AddSchedule 

@@ -22,7 +22,6 @@ import {
     getTimeList
 } from '../util/app-user-util';
 import userAjax from '../ajax/app-user-ajax';
-import UserDetail from './user-detail';
 const Option = Select.Option;
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
