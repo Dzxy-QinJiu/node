@@ -437,6 +437,7 @@ class SalesTeamCard extends React.Component {
 
     // 验证是否可以处理负责人
     checkCanEditSales(customerId) {
+        if(!customerId) return;
         CrmBasicAjax.checkCrmUpdateUserByCustomerId(customerId).then((res) => {
             if(res) {
                 this.setState({isUnableEditSales: false});
@@ -446,6 +447,7 @@ class SalesTeamCard extends React.Component {
 
     // 验证是否可以处理联合跟进人
     checkCanEditSecondSales(customerId) {
+        if(!customerId) return;
         CrmBasicAjax.checkCrmJoinUserByCustomerId(customerId).then((res) => {
             if(res) {
                 this.setState({isUnableEditSecondSales: false});
