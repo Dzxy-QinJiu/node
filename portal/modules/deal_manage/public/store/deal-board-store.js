@@ -28,7 +28,7 @@ dealBoardStore.prototype.setIsSavingDragData = function(flag) {
 dealBoardStore.prototype.getStageTotalBudget = function(totalBudgetList) {
     if (_.isArray(totalBudgetList)) {
         _.each(totalBudgetList, item => {
-            if (item.name) {
+            if (item.name && !_.isEmpty(this.stageDealMap[item.name])) {
                 this.stageDealMap[item.name].totalBudget = item.budget;
             }
         });
