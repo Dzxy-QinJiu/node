@@ -361,18 +361,6 @@ class ApplyFormAndRules extends React.Component {
                         ccPerson: [],//默认抄送人
                     }
                 },//审批规则
-                //抄送人的类型
-                apply_notify_config: {
-                    email_notice: true,
-                    socket_notice: true
-                },//提交申请时
-                approve_notify_config: {
-                    email_notice: true,
-                    socket_notice: true
-                },//提交申请时
-                //提交申请时抄送
-                //审批通过后抄送
-
                 cancelAfterApprove: false,//撤销权限
                 mergeSameApprover: false//其他
             };

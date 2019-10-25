@@ -63,13 +63,6 @@ exports.saveSelfSettingWorkFlowRules = function(req, res) {
                 file: [fs.createReadStream(filePath)],
             };
             formData.applyApproveRules = JSON.stringify(formData.applyApproveRules);
-            if (_.has(formData,'apply_notify_config')){
-                formData.applyNotifyConfig = JSON.stringify(formData.apply_notify_config);
-            }
-            if (_.has(formData,'apply_notify_config')){
-                formData.approveNotifyConfig = JSON.stringify(formData.approve_notify_config);
-            }
-
             ApplyApproveManageService.saveSelfSettingWorkFlowRules(req, res, formData).on('success', function(data) {
                 fs.unlinkSync(filePath);
                 res.status(200).json(data);

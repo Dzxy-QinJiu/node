@@ -8,7 +8,6 @@ var uploadTimeOut = 5 * 60 * 1000;
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var _ = require('lodash');
-var $ = require('jquery');
 var restApis = {
     //添加自定义流程
     selfSettingWorkFlow: '/rest/base/v1/workflow/config',
