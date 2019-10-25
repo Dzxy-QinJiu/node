@@ -3431,6 +3431,7 @@ var en_US = {
     'apply.domain.sub.name.exist': 'The domain already exists',//该域名已存在
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
+    'apply.select.cc.person.type': 'Please select the type of cc person',//请选择抄送人类型
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司

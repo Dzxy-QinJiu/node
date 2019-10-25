@@ -362,6 +362,21 @@ exports.isBussinessTripFlow = function(itemType) {
 exports.isLeaveFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.LEAVE;
 };
+//是否展示该节点
+exports.isShowCCNode = (item) => {
+    var showFlag = false;
+    if (_.isArray(item) && _.get(item,'[0]')){
+        showFlag = true;
+    }else if (_.isObject(item)){
+        if (_.get(item, 'all_senior_teams')){
+            showFlag = true;
+        }
+        if (_.get(item, 'team_levels[0]','') !== ''){
+            showFlag = true;
+        }
+    }
+    return showFlag;
+};
 exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit','customerSLDUpdate'];
 export const checkDomainName = function(rule, value, callback) {
     value = _.trim(value);

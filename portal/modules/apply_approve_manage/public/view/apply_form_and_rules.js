@@ -342,15 +342,6 @@ class ApplyFormAndRules extends React.Component {
             //如果之前保存过流程的相关配置，后端保存的applyApproveRules是字符串格式的，
             if (_.isString(applyRulesAndSetting.applyApproveRules)){
                 applyRulesAndSetting.applyApproveRules = JSON.parse(applyRulesAndSetting.applyApproveRules);
-                //todo 待修改的
-                applyRulesAndSetting.apply_notify_config = {
-                    email_notice: true,
-                    socket_notice: true
-                };//提交申请时
-                applyRulesAndSetting.approve_notify_config = {
-                    email_notice: true,
-                    socket_notice: true
-                };
             }
         } else {
             //如果之前没有加过流程，这是默认的流程，默认流程是部门经理审批的

@@ -3459,6 +3459,7 @@ var zh_CN = {
     'apply.domain.sub.name.exist': '该域名已存在',
     'apply.approve.set.approver': '指定审批人',
     'apply.select.approver.type': '请选择审批人类型',
+    'apply.select.cc.person.type': '请选择抄送人类型',
     'apply.condition.node.all.higher.level': '所有上级',
     'apply.set.team.secretry': '团队秘书',
     'apply.set.team.user': '团队成员',

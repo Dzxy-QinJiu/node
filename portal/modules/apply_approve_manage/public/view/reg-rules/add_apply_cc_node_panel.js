@@ -10,7 +10,7 @@ import {Form, Input, Select, DatePicker, Button, Icon, Radio, Checkbox} from 'an
 const RadioGroup = Radio.Group;
 var Option = Select.Option;
 import PropTypes from 'prop-types';
-import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 const FORMLAYOUT = {
     PADDINGTOTAL: 60
 };
@@ -35,11 +35,11 @@ class AddApplyNodePanel extends React.Component {
             },
             teammanager_range: {
                 selectSecretry: '',//选中的舆情秘书
-                showSelectSecretry: ''
+                showSelectSecretry: []//只能单选，但是后端存储show_name的时候只能是一种类型，就只能用数组
             },
             teammember_range: {
                 selectUser: '',//选中的成员
-                showSelectUser: ''
+                showSelectUser: []//只能单选，但是后端存储show_name的时候只能是一种类型，就只能用数组
             },
             //可以多选
             system_roles: {
@@ -69,7 +69,7 @@ class AddApplyNodePanel extends React.Component {
                 _.forEach(rolesList, item => {
                     var roleName = item.role_name;
                     var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
-                    if (target){
+                    if (target) {
                         item.save_role_value = target.value;
                     }
                 });
@@ -99,9 +99,9 @@ class AddApplyNodePanel extends React.Component {
                 if (_.isBoolean(radioType[key])) {
                     radioType[key] = false;
                 } else {
-                    if (item === 'teamowner_range' || item === 'system_roles'){
+                    if (item === 'teamowner_range' || item === 'system_roles') {
                         radioType[key] = [];
-                    }else{
+                    } else {
                         radioType[key] = '';
                     }
 
@@ -115,29 +115,32 @@ class AddApplyNodePanel extends React.Component {
 
     handleHigherUpChange = (higherUpArr) => {
         var teamowner_range = this.state.teamowner_range;
+        teamowner_range.candidateUsers = [];
+        teamowner_range.showCandidateUsers = [];
         //如果选择了所有上级，其他级别就不能筛选了
         var higherUpLists = _.cloneDeep(this.getHigherLevelLists());
-        if (_.get(higherUpArr,'[0]') === 'all_senior_teams'){
+        var selectHighUp = _.get(higherUpArr, '[0]',''),highUpLists = [];
+        if (selectHighUp.indexOf('all_senior_teams') > -1) {
+            highUpLists = higherUpLists.slice(0, 1);
             this.setState({
-                higherUpLists: higherUpLists.slice(0,1)
+                higherUpLists: highUpLists
             });
-        }else if(_.get(higherUpArr,'[0]')){
+        } else if (selectHighUp) {
+            highUpLists = higherUpLists.slice(1);
             this.setState({
-                higherUpLists: higherUpLists.slice(0,1)
+                higherUpLists: highUpLists
             });
-        }else {
+        } else {
+            highUpLists = this.getHigherLevelLists();
             this.setState({
-                higherUpLists: this.getHigherLevelLists()
+                higherUpLists: highUpLists
             });
         }
         _.forEach(higherUpArr, value => {
-            var userArr = value.split('-');
-            var index = _.get(userArr,'[1]');
-
-            var target = _.get(TEAM_HIGHER_LEVEL, `[${index}]`);
-            if (target){
-                teamowner_range.candidateUsers = target.value;
-                teamowner_range.showCandidateUsers = target.name;
+            var target = _.find(highUpLists, item => item.value === value);
+            if (target) {
+                teamowner_range.candidateUsers.push(target.value);
+                teamowner_range.showCandidateUsers.push(target.name);
                 this.setState({
                     teamowner_range: teamowner_range
                 });
@@ -145,20 +148,19 @@ class AddApplyNodePanel extends React.Component {
         });
 
 
-
     };
     //筛选角色
     handleChangeSelectRole = (rolesArr) => {
         var system_roles = this.state.system_roles;
+        system_roles.selectRole = [];
+        system_roles.showSelectRole = [];
         _.forEach(rolesArr, value => {
             var userArr = value.split('-');
-            var index = _.get(userArr,'[1]');
+            var index = _.get(userArr, '[1]');
             var target = _.get(this, `state.roleList[${index}]`);
-            if (target){
+            if (target) {
                 system_roles.selectRole.push(target.save_role_value);
                 system_roles.showSelectRole.push(target.role_name);
-                system_roles.selectRole = _.uniq(system_roles.selectRole);
-                system_roles.showSelectRole = _.uniq(system_roles.showSelectRole);
                 this.setState({
                     system_roles: system_roles
                 });
@@ -168,9 +170,9 @@ class AddApplyNodePanel extends React.Component {
     handleChangeSelectSecretry = (value) => {
         var teammanager_range = this.state.teammanager_range;
         var target = _.find(SECRETRYOPTIONS, item => item.value === value);
-        if (value && target){
+        if (value && target) {
             teammanager_range.selectSecretry = value;
-            teammanager_range.showSelectSecretry = target.name;
+            teammanager_range.showSelectSecretry.push(target.name);
             this.setState({
                 teammanager_range: teammanager_range
             });
@@ -179,9 +181,9 @@ class AddApplyNodePanel extends React.Component {
     handleChangeSelectUser = (value) => {
         var teammember_range = this.state.teammember_range;
         var target = _.find(USEROPTIONS, item => item.value === value);
-        if (value && target){
+        if (value && target) {
             teammember_range.selectUser = value;
-            teammember_range.showSelectUser = target.name;
+            teammember_range.showSelectUser.push(target.name);
             this.setState({
                 teammember_range: teammember_range
             });
@@ -208,8 +210,8 @@ class AddApplyNodePanel extends React.Component {
                                     onChange={this.handleHigherUpChange}
                                     filterOption={(input, option) => ignoreCase(input, option)}
                                 >
-                                    {_.map(higherUpLists, (item,index) => {
-                                        return <Option value={item.name + '-' + index} key={index}>{item.name}</Option>;
+                                    {_.map(higherUpLists, (item, index) => {
+                                        return <Option value={item.value} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
                             </div>
@@ -222,7 +224,7 @@ class AddApplyNodePanel extends React.Component {
                                 <Select showSearch
                                     onChange={this.handleChangeSelectSecretry}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
-                                    {_.map(SECRETRYOPTIONS, (item,index) => {
+                                    {_.map(SECRETRYOPTIONS, (item, index) => {
                                         return <Option value={item.value} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
@@ -236,7 +238,7 @@ class AddApplyNodePanel extends React.Component {
                                 <Select showSearch
                                     onChange={this.handleChangeSelectUser}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
-                                    {_.map(USEROPTIONS, (item,index) => {
+                                    {_.map(USEROPTIONS, (item, index) => {
                                         return <Option value={item.value} key={index}>{item.name}</Option>;
                                     })}
                                 </Select>
@@ -250,7 +252,7 @@ class AddApplyNodePanel extends React.Component {
                                 <Select showSearch mode="multiple"
                                     onChange={this.handleChangeSelectRole}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
-                                    {_.map(this.state.roleList, (item,index) => {
+                                    {_.map(this.state.roleList, (item, index) => {
                                         return <Option value={item.role_name + '-' + index} key={index}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
                                     })}
@@ -261,18 +263,38 @@ class AddApplyNodePanel extends React.Component {
             }
         }
     };
+    isShowaddCCType = (ccType) => {
+        var notify_configs = _.get(this, 'props.notify_configs');
+        var addCCNodePanelFlow = this.props.addCCNodePanelFlow;
+        var showFlag = true;
+        var targetObj = _.find(notify_configs, item => item.type === addCCNodePanelFlow);
+        if (_.get(targetObj,`${ccType}`,'')){
+            showFlag = false;
+        }
+        return showFlag;
+    };
     handleSubmitAddApproveNode = () => {
         var radioValue = this.state.checkedRadioValue, submitObj = {}, errTip = true;
         if (radioValue) {
             switch (radioValue) {
                 case 'teamowner_range':
                     var teamowner_range = this.state.teamowner_range;
-                    if (teamowner_range.candidateUsers) {
+                    if (_.get(teamowner_range,'candidateUsers[0]') ) {
                         submitObj[radioValue] = {
-                            showName: teamowner_range.showCandidateUsers
+                            show_name: teamowner_range.showCandidateUsers,
+                            team_levels: []
                         };
-
-                        submitObj.candidateApprover = teamowner_range.candidateUsers;
+                        _.forEach(teamowner_range.candidateUsers, item => {
+                            if(item.indexOf('all_senior_teams') > -1){
+                                submitObj[radioValue]['all_senior_teams'] = true;
+                            } else if (item.indexOf('team_') > -1){
+                                var teamArr = item.split('_');
+                                submitObj[radioValue]['team_levels'].push(_.get(teamArr,'[1]'));
+                            }
+                        });
+                        if (!_.get(submitObj[radioValue],'team_levels[0]')){
+                            delete submitObj[radioValue]['team_levels'];
+                        }
                         errTip = false;
                     }
                     break;
@@ -280,18 +302,16 @@ class AddApplyNodePanel extends React.Component {
                     var teammanager_range = this.state.teammanager_range;
                     if (teammanager_range.selectSecretry) {
                         submitObj[radioValue] = {
-                            showName: teammanager_range.showSelectSecretry,
+                            show_name: teammanager_range.showSelectSecretry,
                         };
-                        _.forEach(teammanager_range.selectSecretry, item => {
-                            if (item === 'team_levels_all_senior_teams'){
-                                submitObj[radioValue]['team_levels'] = [0];
-                                submitObj[radioValue]['all_senior_teams'] = true;
-                            }else if (item === 'all_senior_teams'){
-                                submitObj[radioValue]['all_senior_teams'] = true;
-                            }else{
-                                submitObj[radioValue]['team_levels'] = [0];
-                            }
-                        });
+                        if (teammanager_range.selectSecretry === 'team_levels_all_senior_teams') {
+                            submitObj[radioValue]['team_levels'] = [0];
+                            submitObj[radioValue]['all_senior_teams'] = true;
+                        } else if (teammanager_range.selectSecretry === 'all_senior_teams') {
+                            submitObj[radioValue]['all_senior_teams'] = true;
+                        } else {
+                            submitObj[radioValue]['team_levels'] = [0];
+                        }
                         errTip = false;
                     }
                     break;
@@ -299,7 +319,7 @@ class AddApplyNodePanel extends React.Component {
                     var teammember_range = this.state.teammember_range;
                     if (teammember_range.selectUser) {
                         submitObj[radioValue] = {
-                            showName: teammember_range.showSelectUser,
+                            show_name: teammember_range.showSelectUser,
                             all_senior_teams: true
                         };
                         errTip = false;
@@ -307,9 +327,9 @@ class AddApplyNodePanel extends React.Component {
                     break;
                 case 'system_roles':
                     var system_roles = this.state.system_roles;
-                    if (_.get(system_roles,'selectRole[0]','')) {
+                    if (_.get(system_roles, 'selectRole[0]', '')) {
                         submitObj[radioValue] = {
-                            showName: system_roles.showSelectRole
+                            show_name: system_roles.showSelectRole
                         };
                         _.forEach(system_roles.selectRole, item => {
                             submitObj[radioValue][item] = true;
@@ -325,16 +345,17 @@ class AddApplyNodePanel extends React.Component {
 
         }
         if (!errTip) {
-            submitObj.type = radioValue;
-            console.log(submitObj);
-            // this.props.saveAddApproveNode(submitObj);
-            // this.props.hideRightPanel();
-        }else{
             this.setState({
-                submitErrorMsg: Intl.get('apply.select.approver.type', '请选择审批人类型')
+                submitErrorMsg: ''
+            });
+
+            this.props.saveAddCCApproveNode(submitObj);
+            this.props.hideRightPanel();
+        } else {
+            this.setState({
+                submitErrorMsg: Intl.get('apply.select.cc.person.type', '请选择抄送人类型')
             });
         }
-
 
 
     };
@@ -357,13 +378,17 @@ class AddApplyNodePanel extends React.Component {
                                 <div className="add-node-content ant-form-item-control-wrapper">
                                     <RadioGroup onChange={this.onRadioChange} value={this.state.checkedRadioValue}>
                                         {_.map(CC_SETTINGT_TYPE, (typeItem, index) => {
-                                            return (
-                                                <div>
-                                                    <Radio value={typeItem.value}>{typeItem.name}</Radio>
-                                                    {this.renderAdditonContent(typeItem, index)}
-                                                </div>
-                                            );
-
+                                            //校验一下是否已经添加过了，如果已经添加了就不能再添加
+                                            if(this.isShowaddCCType(typeItem.value)){
+                                                return (
+                                                    <div>
+                                                        <Radio value={typeItem.value}>{typeItem.name}</Radio>
+                                                        {this.renderAdditonContent(typeItem, index)}
+                                                    </div>
+                                                );
+                                            }else{
+                                                return null;
+                                            }
                                         })}
                                     </RadioGroup>
                                 </div>
@@ -385,33 +410,18 @@ AddApplyNodePanel.defaultProps = {
     hideRightPanel: function() {
 
     },
-    saveAddApproveNode: function() {
+    saveAddCCApproveNode: function() {
 
     },
-
-    applyRulesAndSetting: {},
-    addNodePanelFlow: ''
+    notify_configs: [],
+    addCCNodePanelFlow: ''
 
 
 };
 AddApplyNodePanel.propTypes = {
     hideRightPanel: PropTypes.func,
-    saveAddApproveNode: PropTypes.func,
-    applyRulesAndSetting: PropTypes.object,
-    addNodePanelFlow: PropTypes.string,
-
-
-    defaultClueData: PropTypes.object,
-    clueSourceArray: PropTypes.object,
-    updateClueSource: PropTypes.func,
-    accessChannelArray: PropTypes.object,
-    updateClueChannel: PropTypes.func,
-    clueClassifyArray: PropTypes.object,
-    updateClueClassify: PropTypes.func,
-    afterAddSalesClue: PropTypes.func,
-    form: PropTypes.object,
-    hideAddForm: PropTypes.func,
-    appUserId: PropTypes.string,
-    appUserName: PropTypes.string
+    saveAddCCApproveNode: PropTypes.func,
+    notify_configs: PropTypes.array,
+    addCCNodePanelFlow: PropTypes.string,
 };
 export default Form.create()(AddApplyNodePanel);
