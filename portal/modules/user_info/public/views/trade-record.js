@@ -27,8 +27,8 @@ class TradeRecord extends React.Component {
         });
         userInfoAjax.getUserTradeRecord(queryObj).then( (result) => {
             let tradeRecordList = this.state.tradeRecordList;
-            tradeRecordList = tradeRecordList.concat(_.get(result, 'data'));
-            if (_.get(result, 'total')) {
+            tradeRecordList = tradeRecordList.concat(_.get(result, 'list'));
+            if (_.get(result, 'list')) {
                 this.listenScrollBottom = false;
             } else {
                 this.listenScrollBottom = true;
