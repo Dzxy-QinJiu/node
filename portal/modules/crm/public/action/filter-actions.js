@@ -73,7 +73,7 @@ function FilterAction() {
             });
             _this.dispatch(list);
         }, function(errorMsg) {
-            this.dispatch([]);
+            _this.dispatch([]);
         });
     };
     //获取阶段标签列表
