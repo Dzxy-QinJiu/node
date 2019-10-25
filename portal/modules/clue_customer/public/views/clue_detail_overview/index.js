@@ -23,7 +23,7 @@ import Trace from 'LIB_DIR/trace';
 var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
+
 import {
     SELECT_TYPE,
     AVALIBILITYSTATUS,
@@ -50,7 +50,7 @@ var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerStore = require('../../store/clue-customer-store');
 import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
 import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DetailCard from 'CMP_DIR/detail-card';
 import ClueTraceList from 'MOD_DIR/clue_customer/public/views/clue_trace_list';
@@ -956,15 +956,8 @@ class ClueDetailOverview extends React.Component {
     };
 
     handleShowAppUser = (appUserId) => {
-        this.setState({
-            curShowUserId: appUserId
-        });
-    };
-
-    closeRightUserPanel = () => {
-        this.setState({
-            curShowUserId: ''
-        });
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: appUserId});
     };
 
     //渲染跟进列表
@@ -1550,15 +1543,6 @@ class ClueDetailOverview extends React.Component {
                         {this.renderAssociatedClue(curClue,associatedCustomer)}
                     </div>
                     {this.renderAppUserDetail()}
-                    {
-                        this.state.curShowUserId ?
-                            <RightPanel className="app_user_manage_rightpanel right-pannel-default white-space-nowrap right-panel detail-v3-panel"
-                                showFlag={this.state.curShowUserId}>
-                                <UserDetail userId={this.state.curShowUserId}
-                                    closeRightPanel={this.closeRightUserPanel}/>
-                            </RightPanel>
-                            : null
-                    }
                     {this.state.isShowAddCustomer ? this.renderAddCustomer() : null}
                     {this.renderTraceContent()}
                 </GeminiScrollbar>

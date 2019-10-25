@@ -17,7 +17,7 @@ import ScheduleItem from './view/schedule-item';
 import CustomerNoticeMessage from './view/customer-notice-message';
 import WillExpireItem from './view/will-expire-item';
 import NewDistributeCustomer from './view/new-distribute-customer';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter,notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
@@ -34,7 +34,6 @@ var setWebsiteConfig = websiteConfig.setWebsiteConfig;
 import AlertTip from 'CMP_DIR/alert-tip';
 import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
-var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
 //即将到期合同合同统计
 const EXPIRING_CONTRACT_STATISTICS = 'expiring_contract_statistics';
 class SalesHomePage extends React.Component {
@@ -44,7 +43,6 @@ class SalesHomePage extends React.Component {
             showCustomerPanel: ALL_LISTS_TYPE.SCHEDULE_TODAY,//默认激活的面板
             isShowRepeatCustomer: false,//是否展示重复客户
             curShowCustomerId: '',//展示客户详情的客户id
-            curShowUserId: '',//展示用户详情的用户id
             isShowCustomerUserListPanel: false,//是否展示客户下的用户列表
             customerOfCurUser: {},//当前展示用户所属客户的详情
             isAnimateShow: false,//是否动态由上到下推出 激活邮箱提示框
@@ -166,10 +164,9 @@ class SalesHomePage extends React.Component {
 
     };
     openCustomerDetail = (customer_id) => {
-        if (this.state.curShowUserId) {
-            this.closeRightUserPanel();
-        }
         this.setState({curShowCustomerId: customer_id});
+        //触发关闭用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
         //触发打开带拨打电话状态的客户详情面板
         phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
             customer_params: {
@@ -185,11 +182,9 @@ class SalesHomePage extends React.Component {
         if (this.state.curShowCustomerId) {
             this.closeRightCustomerPanel();
         }
-        this.setState({curShowUserId: user_id});
-    };
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: user_id});
 
-    closeRightUserPanel = () => {
-        this.setState({curShowUserId: ''});
     };
 
     getSalesListData = () => {
@@ -1198,15 +1193,6 @@ class SalesHomePage extends React.Component {
                             /> : null
                         }
                     </RightPanel>
-                    {
-                        this.state.curShowUserId ?
-                            <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default right-panel detail-v3-panel"
-                                showFlag={this.state.curShowUserId}>
-                                <UserDetail userId={this.state.curShowUserId}
-                                    closeRightPanel={this.closeRightUserPanel}/>
-                            </RightPanel>
-                            : null
-                    }
                     <div onClick={this.tryNewPage} className='try-new-btn'>{Intl.get('home.page.try.new', '试用新版')}</div>
                 </div>
             </RightContent>

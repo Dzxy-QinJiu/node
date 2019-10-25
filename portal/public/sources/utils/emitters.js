@@ -242,3 +242,10 @@ export { clueEmitter };
 const orderEmitter = new EventEmitter();
 orderEmitter.REFRESH_ORDER_LIST = 'refresh_order_list';
 export { orderEmitter };
+
+// 用户详情相关事件
+const userDetailEmitter = new EventEmitter();
+userDetailEmitter.OPEN_USER_DETAIL = 'open_user_detail';
+userDetailEmitter.CLOSE_USER_DETAIL = 'close_user_detail';
+userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL = 'user_detail_close_right_panel';
+export { userDetailEmitter };

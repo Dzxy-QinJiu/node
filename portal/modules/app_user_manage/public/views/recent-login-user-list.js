@@ -22,7 +22,6 @@ import {
     getTimeList
 } from '../util/app-user-util';
 import userAjax from '../ajax/app-user-ajax';
-import UserDetail from './user-detail';
 const Option = Select.Option;
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
@@ -42,6 +41,7 @@ import {isEqualArray} from 'LIB_DIR/func';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import { AntcTable } from 'antc';
+import { userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 class RecentLoginUsers extends React.Component {
     constructor(props) {
@@ -61,9 +61,6 @@ class RecentLoginUsers extends React.Component {
             isLoadingUserList: false,//是否正在获取近期登录用户列表
             getUserListErrorMsg: '',//错误提示内容
             listenScrollBottom: true,//是否监听滚动
-            isShowUserDetail: false,//是否展示用户详情
-            userId: '',//要查看详情的用户id
-            curUserDetail: {},//当前要查看的用户详情
             isShownExceptionTab: false,//是否展示异常登录信息
             filter_type: '', // 是否过期，默认（全部）
             team_ids: '', //默认选中的团队(全部)
@@ -74,6 +71,8 @@ class RecentLoginUsers extends React.Component {
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         RecentUserStore.listen(this.onStoreChange);
+        // 关闭用户详情面板
+        userDetailEmitter.on(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL, this.closeRightPanel);
         RecentUserAction.getSaleMemberList(commonMethodUtil.getParamByPrivilege());
         this.getRecentLoginUsers();
         $(this.refs.recentLoginUsersTable).on('click', 'tr', this.onRowClick.bind(this));
@@ -81,6 +80,8 @@ class RecentLoginUsers extends React.Component {
     componentWillUnmount() {
         $('body').css('overflow', 'auto');
         RecentUserStore.unlisten(this.onStoreChange);
+        // 关闭用户详情面板
+        userDetailEmitter.removeListener(userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL, this.closeRightPanel);
     }
     onStoreChange = () => {
         var stateData = RecentUserStore.getState();
@@ -100,17 +101,20 @@ class RecentLoginUsers extends React.Component {
         userObj.isShownExceptionTab = _.find(userObj.apps, app => {
             return app.exception_mark_date;
         }) ? true : false;
-        this.setState({
-            isShowUserDetail: true,
-            userId: user_id,
-            curUserDetail: userObj
-        });
+
+        let paramObj = {
+            selectedAppId: this.state.selectedAppId,
+            isShownExceptionTab: _.get(userObj, 'isShownExceptionTab'),
+            appLists: _.get(userObj, 'apps'),
+            userId: user_id
+        };
+
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, paramObj);
     }
 
+
     closeRightPanel() {
-        this.setState({
-            isShowUserDetail: false
-        });
         $('.recent-login-users-table-wrap .current_row').removeClass('current_row');
     }
 
@@ -658,17 +662,6 @@ class RecentLoginUsers extends React.Component {
                 <div className="recent-login-users-table-wrap">
                     {this.renderTableContent()}
                 </div>
-                <RightPanel
-                    className="app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
-                    showFlag={this.state.isShowUserDetail}
-                >
-                    {this.state.isShowUserDetail ? (<UserDetail userId={this.state.userId}
-                        appLists={this.state.curUserDetail.apps}
-                        isShownExceptionTab={this.state.curUserDetail.isShownExceptionTab}
-                        selectedAppId={this.state.selectedAppId}
-                        closeRightPanel={this.closeRightPanel.bind(this)}
-                    />) : null}
-                </RightPanel>
             </div>
         );
     }
