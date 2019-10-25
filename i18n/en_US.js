@@ -2709,7 +2709,7 @@ var en_US = {
     'crm.schedule.fill.content': 'Please fill in schedule content!',//请填写联系内容
     'crm.schedule.input.content': 'Please input schedule content',//请输入联系内容
     'schedule.list.management': 'Schedule Management',//日程管理
-    'schedule.object': 'Object',//对象
+    'schedule.object': 'ClueOrCustomer',//对象
     'schedule.expired.list.failed': 'Failed to get expired schedule management list',//获取超时日程管理列表失败
     'schedule.expired.list': 'Expired and incomplete schedule list',//超时未完成
     'schedule.list.remind': 'Reminder time',//提醒

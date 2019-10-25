@@ -2751,7 +2751,7 @@ var zh_CN = {
     'crm.schedule.fill.content': '请填写联系内容',
     'crm.schedule.input.content': '请输入联系内容',
     'schedule.list.management': '日程管理',
-    'schedule.object': '对象',
+    'schedule.object': '线索或客户',
     'schedule.expired.list.failed': '获取超时日程管理列表失败',
     'schedule.expired.list': '超时未完成',
     'schedule.list.remind': '提醒',

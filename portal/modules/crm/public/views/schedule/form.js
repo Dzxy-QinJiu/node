@@ -655,7 +655,7 @@ var CrmAlertForm = createReactClass({
             return(<FormItem
                 {...formItemLayout}
                 required
-                label={Intl.get('schedule.object', '对象')}
+                label={Intl.get('schedule.object', '线索或客户')}
                 validateStatus={this.getValidateStatus('object')}
                 help={this.getHelpMessage('object')}
                 className='object-input'
@@ -681,7 +681,7 @@ var CrmAlertForm = createReactClass({
             return (<FormItem
                 {...formItemLayout}
                 required
-                label={Intl.get('schedule.object', '对象')}
+                label={Intl.get('schedule.object', '客户或线索')}
                 validateStatus={this.getValidateStatus('object')}
                 help={this.getHelpMessage('object')}
                 className='object-input'
@@ -774,8 +774,8 @@ var CrmAlertForm = createReactClass({
         ];
         const formItemLayout = this.props.formItemLayout || {
             colon: false,
-            labelCol: {span: 3},
-            wrapperCol: {span: 21},
+            labelCol: {span: 4},
+            wrapperCol: {span: 20},
         };
         var formData = this.state.formData;
         //如果一个电话对应多个联系人的时候，要可以选择标题
