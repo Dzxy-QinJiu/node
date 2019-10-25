@@ -897,6 +897,24 @@ class Crm extends React.Component {
         if (interval) {
             this.state.rangParams[0].interval = interval;
         }
+        //如果根据创建时间筛选的条件不为空
+        if(!_.isEmpty(FilterStore.getState().createTimeFilterCondition)) {
+            let condition = FilterStore.getState().createTimeFilterCondition;
+            let rangParams = _.cloneDeep(this.state.rangParams);
+            rangParams.push(condition);
+            this.setState({
+                rangParams
+            });
+        }
+        //如果根据最后联系时间筛选的条件不为空
+        if(!_.isEmpty(FilterStore.getState().lastContactTimeFilterCondition)) {
+            let condition = FilterStore.getState().lastContactTimeFilterCondition;
+            let rangParams = _.cloneDeep(this.state.rangParams);
+            rangParams.push(condition);
+            this.setState({
+                rangParams
+            });
+        }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;
         }
@@ -926,7 +944,11 @@ class Crm extends React.Component {
             queryObj: JSON.stringify(queryObjParams),
         };
         //时间范围
-        if (_.get(rangParams, '[0].from') || _.get(rangParams, '[0].to')) {
+        if (_.get(rangParams, '[0].from') || _.get(rangParams, '[0].to') || _.get(rangParams, 'length') > 1) {
+            //如果数组中第一个值的from和to字段都为空，表明此值为默认值，从数组去掉
+            if(!_.isNumber(_.get(rangParams, '[0].to')) && !_.isNumber(_.get(rangParams, '[0].from'))) {
+                rangParams.shift();
+            }
             params.rangParams = JSON.stringify(rangParams);
         }
         //处理sort_and_orders字段
@@ -1219,6 +1241,11 @@ class Crm extends React.Component {
             this.batchReleaseCustomer();
         }
     }
+    //是否是普通销售
+    isCommonSales() {
+        let userObj = userData.getUserData();
+        return _.get(userObj, 'isCommonSales');
+    }
     //渲染响应式布局下的批量操作的选项
     batchTopBarDropList = (isMinWeb) => {
         return (<Menu onClick={this.handleBatchMenuSelectClick.bind(this)}>
@@ -1237,7 +1264,7 @@ class Crm extends React.Component {
                     {Intl.get('crm.21', '变更地域')}
                 </Menu.Item> : null
             }
-            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') && !this.isCommonSales() ?
                 <Menu.Item key="changeSales">
                     {Intl.get('crm.103', '变更负责人')}
                 </Menu.Item> : null
@@ -2171,6 +2198,7 @@ class Crm extends React.Component {
                                     toggleList={this.toggleList.bind(this)}
                                     onSubmit={this.handleAddCommonFilter.bind(this)}
                                     filterType={Intl.get('call.record.customer', '客户')}
+                                    showList={this.state.showFilterList}
                                 />
                             </div>
                             <FilterBlock>

@@ -433,6 +433,15 @@ class CustomerSuggest extends React.Component {
             });
         }
     };
+
+    setCustomer = (list, customerId) => {
+        this.setState({
+            list
+        }, () => {
+            this.customerChoosen(customerId);
+        });
+    };
+
     render() {
         var displayCls = classNames({
             'customer_search_wrap': true,

@@ -46,6 +46,7 @@ var phoneRecordObj = {
     received_time: ''//通话时间
 };
 
+let newLabels = '';
 //当前面板z-index
 let thisPanelZIndex;
 
@@ -291,7 +292,6 @@ class PhonePanel extends React.Component {
             isAddFlag: false,
             addCustomer: false
         });
-        phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ''});
         phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
     };
     //根据客户的id获取客户详情
@@ -420,6 +420,7 @@ class PhonePanel extends React.Component {
                 }
             }
         } else if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//原来无客户，添加完客户时，展示添加的客户详情
+            newLabels ? customerInfoArr[0].labels = newLabels : null;
             return this.renderCustomerDetail(customerInfoArr[0]);
         } else if (!this.state.isAddToCustomerFlag && !this.state.isAddFlag) {
             //客户不存在时，展示添加到已有客户、添加客户的按钮(添加到已有客户/添加完客户后，此提示不再提示添加客户)
@@ -533,6 +534,10 @@ class PhonePanel extends React.Component {
         });
     };
 
+    handleSubmitBack = (data) => {
+        newLabels = data.labels;
+    }
+
     renderMainContent() {
         let defalutCustomerInfoArr = _.get(this.state, 'customerInfoArr[0]', {});
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
@@ -579,6 +584,7 @@ class PhonePanel extends React.Component {
                         hideAddForm={this.hideAddForm}
                         updateCustomer={this.updateCustomer}
                         showRightPanel={this.showRightPanel}
+                        handleSubmitBack={this.handleSubmitBack}
                     />
                 </div>
 

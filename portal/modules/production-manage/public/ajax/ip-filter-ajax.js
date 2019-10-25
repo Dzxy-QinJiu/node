@@ -59,3 +59,37 @@ exports.deleteIp = (id) => {
     });
     return Deferred.promise();
 };
+
+// 获取安全域过滤内网网段
+exports.getFilterPrivateIp = () => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/private/ip',
+        type: 'get',
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON || Intl.get('common.get.filter.ip.err', '获取过滤内网失败！'));
+        }
+    });
+    return Deferred.promise();
+};
+
+// 设置全域过滤内网网段
+exports.setFilterPrivateIp = (setStatus) => {
+    let Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/set/private/ip',
+        type: 'post',
+        dataType: 'json',
+        data: setStatus,
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON || Intl.get('config.filter.inner.ip.failed', '过滤内网ip失败！'));
+        }
+    });
+    return Deferred.promise();
+};

@@ -1397,8 +1397,8 @@ class ClueDetailOverview extends React.Component {
                             return (
                                 <div className="similar-name-phone">
                                     {isSimilarClue ?
-                                        <span className="contact-name" title={contactsItem.name}>
-                                            {Intl.get('call.record.contacts', '联系人') + '：' + contactsItem.name}
+                                        <span className="contact-name" title={_.get(contactsItem, 'name', '')}>
+                                            {Intl.get('call.record.contacts', '联系人') + '：' + _.get(contactsItem, 'name', '')}
                                         </span> :
                                         <span className="contact-name" title={contactsItem.name}>
                                             {contactsItem.name }

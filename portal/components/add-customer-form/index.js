@@ -221,6 +221,7 @@ class AddCustomerForm extends React.Component {
                     }
                 });
             }
+            this.props.handleSubmitBack(this.state.formData);
         });
     };
     //添加客户
@@ -634,6 +635,7 @@ AddCustomerForm.defaultProps = {
     updateCustomer: noop,
     showRightPanel: noop,
     scrollLayOut: '',
+    handleSubmitBack: {},
 };
 AddCustomerForm.propTypes = {
     phoneNum: PropTypes.string,
@@ -642,6 +644,7 @@ AddCustomerForm.propTypes = {
     addOne: PropTypes.func,
     updateCustomer: PropTypes.func,
     showRightPanel: PropTypes.func,
-    form: PropTypes.object
+    form: PropTypes.object,
+    handleSubmitBack: PropTypes.func,
 };
 export default Form.create()(AddCustomerForm);

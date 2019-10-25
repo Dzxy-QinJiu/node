@@ -17,7 +17,6 @@ class FilterSearch extends React.Component {
             selectedRange: FILTER_RANGE.USER.value,
             showConfirmPop: false,
             changeRequestData: null,
-            showList: false
         };
     }
     componentDidMount() {
@@ -102,9 +101,6 @@ class FilterSearch extends React.Component {
         }
     }
     handleToggle() {
-        this.setState({
-            showList: !this.state.showList
-        });
         this.props.toggleList();
     }
     handleSubmit(e) {
@@ -173,7 +169,7 @@ class FilterSearch extends React.Component {
                     showInput ?
                         <div className={this.state.showAddZone ? 'add-zone-wrapper filter-contianer clearfix' : 'filter-contianer clearfix'}>
                             <div className="show-zone">
-                                <span className={this.state.showList ? 'icon-wrapper active' : 'icon-wrapper'}>
+                                <span className={this.props.showList ? 'icon-wrapper active' : 'icon-wrapper'}>
                                     <Icon type="filter" onClick={this.handleToggle.bind(this)} />
                                 </span>
                                 <ul className={this.state.showAddZone ? 'conserve' : 'collapse'}>
@@ -244,7 +240,7 @@ class FilterSearch extends React.Component {
                         </div> :
                         <div
                             onClick={this.handleToggle.bind(this)}
-                            className={this.state.showList ? 'icon-container active' : 'icon-container'}
+                            className={this.props.showList ? 'icon-container active' : 'icon-container'}
                         >
                             
                             <Popover
@@ -254,8 +250,8 @@ class FilterSearch extends React.Component {
                                 trigger="click"
                                 visible={this.state.showConfirmPop && this.props.showSelectChangeTip}
                             >
-                                {isWebMin ? <Button type={this.state.showList ? 'primary' : ''} title={Intl.get('common.filter', '筛选')} className="btn-item"><i className='iconfont icon-filter1'></i></Button>
-                                    : <Button title={Intl.get('common.filter', '筛选')} type={this.state.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i>{Intl.get('common.filter', '筛选')}</Button>}
+                                {isWebMin ? <Button type={this.props.showList ? 'primary' : ''} title={Intl.get('common.filter', '筛选')} className="btn-item"><i className='iconfont icon-filter1'></i></Button>
+                                    : <Button title={Intl.get('common.filter', '筛选')} type={this.props.showList ? 'primary' : ''} className="btn-item"><i className='iconfont icon-filter1'></i>{Intl.get('common.filter', '筛选')}</Button>}
                             </Popover>
                         </div>
 
@@ -273,7 +269,8 @@ FilterSearch.defaultProps = {
     key: '',
     showSelectChangeTip: false,
     filterType: '',
-    isFirstLoading: false
+    isFirstLoading: false,
+    showList: false,
 };
 
 FilterSearch.propTypes = {
@@ -286,6 +283,7 @@ FilterSearch.propTypes = {
     showSelectChangeTip: PropTypes.bool,
     filterType: PropTypes.string,
     isFirstLoading: PropTypes.bool,
+    showList: PropTypes.bool,
 };
 
 export default FilterSearch;

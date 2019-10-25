@@ -33,3 +33,20 @@ exports.deleteIp = (req, res) => {
     });
 };
 
+// 获取安全域过滤内网网段
+exports.getFilterPrivateIp = (req, res) => {
+    IpFilterService.getFilterPrivateIp(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
+
+// 设置全域过滤内网网段
+exports.setFilterPrivateIp = (req, res) => {
+    IpFilterService.setFilterPrivateIp(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

@@ -809,6 +809,11 @@ var en_US = {
     'role.del.role.failed': 'Failed to delete roles',//删除角色失败
     'authority.auth.api': 'Service address',//服务地址
 
+    // sso-start
+    'sso.title': 'Other Applications', // 其他应用
+    'sso.application.revenue': 'Revenue Center', // 营收中心
+    // sso-end
+
     //后台管理-成员start
     'member.member': 'Member',//成员
     'member.search.placeholder': 'account/nickname/phone',// 账号/昵称/手机
@@ -937,6 +942,7 @@ var en_US = {
     'product.global.filter.ip.title': 'All product statistical analysis when filtering the following IP', // 全部产品统计分析时过滤以下IP：
     'product.filter.ip.title': 'The product statistical analysis when filtering the following IP', // 该产品统计分析时过滤以下IP：
     'product.global.ip.tips': '(all products)', // （全部产品过滤)
+    'product.private.ip': 'Intranet IP', // 内网IP
     // 后台管理- 产品end
 
     // 后台管理-行业start
@@ -2518,6 +2524,7 @@ var en_US = {
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
     'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
     'errorcode.clue.batch.change.pending': 'Last batch operation has not completed, please try again later',//上次批量操作未完成，请稍后再试
+    'errorcode.login.failed': 'Login failed',//登录失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2534,7 +2541,7 @@ var en_US = {
 
     //补充
     'customer.fail.get.customer.trace': 'Failed to get {type} trace lists',//获取{type}跟进记录列表失败
-    'customer.fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
+    'customer.fail.add.customer.trace': 'Failed to add follow-up record',//添加跟进记录失败
     'user.user.lists': 'user lists',//用户列表
     'user.user.applies': 'user applies',//用户申请
     'user.account.type': 'Account type',//开户类型
@@ -2560,7 +2567,7 @@ var en_US = {
     'user.setting.roles': 'Set the role',//设置角色
     //补充
     'fail.get.customer.trace': 'Failed to get customer trace list',//获取客户跟踪记录列表失败
-    'fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
+    'fail.add.customer.trace': 'Failed to update follow-up record',//更新跟进记录失败
     'contact.phone': 'Contact number',//联系电话
     'customer.visit': 'visit',//拜访
     'common.phone.system': 'phone system',//电话系统

@@ -813,6 +813,11 @@ var zh_CN = {
     'role.del.role.failed': '删除角色失败',
     'authority.auth.api': '服务地址',
 
+    // sso-start
+    'sso.title': '其他应用',
+    'sso.application.revenue': '营收中心',
+    // sso-end
+
     //后台管理-成员start
     'member.member': '成员',
     'member.search.placeholder': '用户名/昵称/手机',
@@ -941,6 +946,7 @@ var zh_CN = {
     'product.global.filter.ip.title': '全部产品统计分析时过滤以下IP：',
     'product.filter.ip.title': '该产品统计分析时过滤以下IP：',
     'product.global.ip.tips': '（全部产品过滤)',
+    'product.private.ip': '内网IP',
     // 后台管理-产品end
 
     // 后台管理-行业start
@@ -2558,6 +2564,8 @@ var zh_CN = {
     'errorcode.164': '获取即将到期的客户统计数据失败',
     'errorcode.organization.expire': '您的账号已到期',
     'errorcode.clue.batch.change.pending': '上次批量操作未完成，请稍后再试',
+    'errorcode.login.failed': '登录失败',
+
     //遗漏部分
     'user.input.phone': '请输入手机号',
     'customer.search.by.customer.name': '请输入客户名称搜索',
@@ -2573,7 +2581,7 @@ var zh_CN = {
     'user.open.multilogin': '开启了多人登录。',
     //增加
     'customer.fail.get.customer.trace': '获取{type}跟进记录列表失败',
-    'customer.fail.add.customer.trace': '增加客户跟踪记录列表失败',
+    'customer.fail.add.customer.trace': '添加跟进记录失败',
     'customer.trace.content': '跟进记录内容不能为空',
     'customer.input.customer.trace.content': '请填写跟进内容',
     'customer.add.customer.trace.detail': '请补充跟进记录详情',
@@ -2606,7 +2614,7 @@ var zh_CN = {
     'data.selector.none': '无',
     //跟踪记录
     'fail.get.customer.trace': '获取客户跟踪记录列表失败',
-    'fail.add.customer.trace': '增加客户跟踪记录列表失败',
+    'fail.add.customer.trace': '更新跟进记录失败',
     'add.customer.trace.detail': '请补充跟进记录详情',
     'click.to.add.trace.detail': '请点击此处补充跟进内容',
     'contact.phone': '联系电话',

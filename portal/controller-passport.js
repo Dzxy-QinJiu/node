@@ -41,12 +41,13 @@ var checkLogin = function(passport) {
             } else {
                 ///处理转页的情况
                 dealTurnPage(req);
-                if (global.config.useSso) {
+                res.redirect('/login');
+                /*if (global.config.useSso) {
                     //sso登录的情况下，超时需要加stopcheck参数，防止再次sso校验登录
                     res.redirect('/login?stopcheck=true');
                 } else {
                     res.redirect('/login');
-                }
+                }*/
             }
         }
     };

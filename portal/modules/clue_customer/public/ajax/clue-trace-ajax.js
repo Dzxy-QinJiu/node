@@ -44,7 +44,7 @@ exports.addClueTrace = function(queryObj) {
             Deferred.resolve(data);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('customer.fail.add.customer.trace', '增加客户跟踪记录列表失败'));
+            Deferred.reject(xhr.responseJSON || Intl.get('customer.fail.add.customer.trace', '添加跟进记录失败'));
         }
     });
     return Deferred.promise();
@@ -62,7 +62,7 @@ exports.updateClueTrace = function(queryObj) {
             Deferred.resolve(data);
         },
         error: function(xhr) {
-            Deferred.reject(xhr.responseJSON || Intl.get('fail.add.customer.trace', '更新客户跟踪记录列表失败'));
+            Deferred.reject(xhr.responseJSON || Intl.get('fail.add.customer.trace', '更新跟进记录失败'));
         }
     });
     return Deferred.promise();
