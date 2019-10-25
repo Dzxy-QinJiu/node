@@ -1,4 +1,3 @@
-var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -28,8 +27,7 @@ import classNames from 'classnames';
 import {hasPrivilege, PrivilegeChecker} from '../../../../components/privilege/checker';
 /*在审批界面显示用户的右侧面板开始*/
 require('../css/main.less');
-import UserDetail from '../../../app_user_manage/public/views/user-detail';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {RightPanel} from '../../../../components/rightPanel';
 import {getPassStrenth, PassStrengthBar, passwordRegex} from 'CMP_DIR/password-strength-bar';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
@@ -307,6 +305,8 @@ const ApplyViewDetail = createReactClass({
                 this.getApplyDetail(nextProps.detailItem);
                 //关闭右侧详情
                 phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_PHONE_PANEL);
+                //触发关闭用户详情面板
+                userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
             }
         }
         this.setState({
@@ -1701,6 +1701,8 @@ const ApplyViewDetail = createReactClass({
     showUserDetail: function(userId) {
         var ApplyViewDetailActions = this.getApplyViewDetailAction();
         ApplyViewDetailActions.showUserDetail(userId);
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: userId});
     },
 
     //延期时间数字修改
@@ -2728,15 +2730,10 @@ const ApplyViewDetail = createReactClass({
                 }
                 {this.renderApplyApproveStatus()}
                 {this.renderCancelApplyApprove()}
-                {this.state.showRightPanel && this.state.rightPanelUserId ?
+                {this.state.showRightPanel ?
                     <RightPanel
                         className="apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel"
                         showFlag={this.state.showRightPanel}>
-                        {
-                            this.state.rightPanelUserId ? <UserDetail
-                                userId={this.state.rightPanelUserId}
-                            /> : null
-                        }
                         {
                             this.state.rightPanelAppConfig ?
                                 <UserTypeConfigForm
