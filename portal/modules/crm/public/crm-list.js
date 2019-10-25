@@ -2176,6 +2176,7 @@ class Crm extends React.Component {
                                     toggleList={this.toggleList.bind(this)}
                                     onSubmit={this.handleAddCommonFilter.bind(this)}
                                     filterType={Intl.get('call.record.customer', '客户')}
+                                    showList={this.state.showFilterList}
                                 />
                             </div>
                             <FilterBlock>

@@ -2998,6 +2998,7 @@ class ClueCustomer extends React.Component {
                                         toggleList={this.toggleList.bind(this)}
                                         filterType={Intl.get('crm.sales.clue', '线索')}
                                         onSubmit={this.handleAddCommonFilter.bind(this)}
+                                        showList={this.state.showFilterList}
                                     />
                                 </div>
                                 {hasSelectedClue ? (
