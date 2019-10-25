@@ -118,45 +118,37 @@ function applyApproveUnhandledListener(data) {
         if (data.message_type.indexOf(APPLY_APPROVE_TYPES.REPORT) !== -1 ){
             updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND, true);
             notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_REPORT_SEND, data);
-            notifyApplyInfo(data);
         }
         if (data.message_type.indexOf(APPLY_APPROVE_TYPES.DOCUMENT) !== -1){
             updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE, true);
             notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOCUMENT_WRITE, data);
-            notifyApplyInfo(data);
         }
         switch (data.message_type) {
             case APPLY_APPROVE_TYPES.CUSTOMER_VISIT:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_CUSTOMER_VISIT, data);
-                notifyApplyInfo(data);
                 break;
             case APPLY_APPROVE_TYPES.BUSINESS_OPPORTUNITIES:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_SALES_OPPORTUNITY, data);
-                notifyApplyInfo(data);
                 break;
             case APPLY_APPROVE_TYPES.PERSONAL_LEAVE:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_LEAVE, data);
-                notifyApplyInfo(data);
                 break;
             case APPLY_APPROVE_TYPES.MEMBER_INVITE:
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEMBERINIVTE, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_MEMBER_INVITE, data);
-                notifyApplyInfo(data);
                 break;
             case SELF_SETTING_FLOW.VISITAPPLYTOPIC:
                 //这里应该用的是拜访申请手动输入的名字
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_VISIT, data);
-                notifyApplyInfo(data);
                 break;
             case SELF_SETTING_FLOW.DOMAINAPPLYTOPIC:
                 //这里应该用的是域名申请手动输入的名字
                 updateUnreadByPushMessage(APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY, true);
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED_DOMAIN, data);
-                notifyApplyInfo(data);
                 break;
         }
     }
