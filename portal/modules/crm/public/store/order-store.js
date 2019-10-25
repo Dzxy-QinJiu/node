@@ -148,7 +148,7 @@ OrderStore.prototype.afterAddOrder = function(order) {
 };
 
 OrderStore.prototype.getSysStageList = function(result) {
-    this.stageList = result.result || [];
+    this.stageList = _.get(result, 'result', []);
 };
 
 OrderStore.prototype.getAppList = function(result) {
