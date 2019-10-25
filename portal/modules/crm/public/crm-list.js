@@ -900,20 +900,12 @@ class Crm extends React.Component {
         //如果根据创建时间筛选的条件不为空
         if(!_.isEmpty(FilterStore.getState().createTimeFilterCondition)) {
             let condition = FilterStore.getState().createTimeFilterCondition;
-            let rangParams = _.cloneDeep(this.state.rangParams);
-            rangParams.push(condition);
-            this.setState({
-                rangParams
-            });
+            this.state.rangParams.push(condition);
         }
         //如果根据最后联系时间筛选的条件不为空
         if(!_.isEmpty(FilterStore.getState().lastContactTimeFilterCondition)) {
             let condition = FilterStore.getState().lastContactTimeFilterCondition;
-            let rangParams = _.cloneDeep(this.state.rangParams);
-            rangParams.push(condition);
-            this.setState({
-                rangParams
-            });
+            this.state.rangParams.push(condition);
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;
@@ -933,7 +925,6 @@ class Crm extends React.Component {
 
     search = (reset) => {
         const filterStoreCondition = JSON.parse(JSON.stringify(FilterStore.getState().condition));
-
         const condition = this.processCondition(filterStoreCondition, reset);
         const rangParams = (this.props.params && this.props.params.rangParams) || this.state.rangParams;
         const conditionParams = (this.props.params && this.props.params.condition) || condition;
