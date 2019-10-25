@@ -9,7 +9,9 @@ function FilterAction() {
         'showPanel',
         'hidePanel',
         'setCondition',
-        'setInitialCondition'
+        'setInitialCondition',
+        'setCreateTimeFilter',
+        'setLastContactTimeFilter',
     );
 
     this.getAppList = function() {

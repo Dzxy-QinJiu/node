@@ -691,6 +691,15 @@ var en_US = {
     'user.jscode.copy.trace': 'copy the trace code',//复制跟踪代码
     'user.test.error.tip': 'Test failed',//测试失败
     'user.list.check.refresh': 'Refresh to view the user list',//刷新查看用户列表
+    //账号相关start
+    'user.login.browser.chrom': 'Chrome',//谷歌
+    'user.login.browser.Firefox': 'Firefox',//火狐
+    'user.login.browser.MicrosoftEdge': 'Edge',//Edge
+    'user.login.browser.Rest': 'Rest',//Rest接口
+    'user.login.browser.InternetExplorer': 'IE',//IE
+    'user.login.equipment.pc': 'Computer',//电脑
+    'user.login.equipment.Tablet': 'Tablet',//平板电脑
+    //账号相关end
     // 用户分析
     'user.login.total.score': 'Total score', // 总评分
     'user.login.latest.activity.score': 'Latest activity score', // 最新活跃度分数
@@ -799,6 +808,11 @@ var en_US = {
     'role.normal.sales': 'Common salesman', //普通销售
     'role.del.role.failed': 'Failed to delete roles',//删除角色失败
     'authority.auth.api': 'Service address',//服务地址
+
+    // sso-start
+    'sso.title': 'Other Applications', // 其他应用
+    'sso.application.revenue': 'Revenue Center', // 营收中心
+    // sso-end
 
     //后台管理-成员start
     'member.member': 'Member',//成员
@@ -928,6 +942,7 @@ var en_US = {
     'product.global.filter.ip.title': 'All product statistical analysis when filtering the following IP', // 全部产品统计分析时过滤以下IP：
     'product.filter.ip.title': 'The product statistical analysis when filtering the following IP', // 该产品统计分析时过滤以下IP：
     'product.global.ip.tips': '(all products)', // （全部产品过滤)
+    'product.private.ip': 'Intranet IP', // 内网IP
     // 后台管理- 产品end
 
     // 后台管理-行业start
@@ -1646,6 +1661,8 @@ var en_US = {
     'crm.order.remarks': 'Order Remarks',//订单备注
     'crm.schedule.begin.time': 'Begin time',//开始
     'crm.schedule.end.time': 'End time',//结束
+    'crm.schedule.clue.customer.name': 'Please input customer or clue name',//请输入客户名或线索名
+    'crm.schedule.clue.customer.name.error': 'Please select search by customer or clue name',//请选择根据客户名或线索名搜索
     'crm.basic.concerned': 'Concerned',//已关注
     'crm.basic.unconcerned': 'Unconcerned',//未关注
     'crm.basic.more': 'More',//更多
@@ -2509,6 +2526,7 @@ var en_US = {
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
     'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
     'errorcode.clue.batch.change.pending': 'Last batch operation has not completed, please try again later',//上次批量操作未完成，请稍后再试
+    'errorcode.login.failed': 'Login failed',//登录失败
 
     'user.input.phone': 'Please enter your phone',//请输入手机号
     'customer.search.by.customer.name': 'Please search by customer name',//请输入客户名称搜索
@@ -2525,7 +2543,7 @@ var en_US = {
 
     //补充
     'customer.fail.get.customer.trace': 'Failed to get {type} trace lists',//获取{type}跟进记录列表失败
-    'customer.fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
+    'customer.fail.add.customer.trace': 'Failed to add follow-up record',//添加跟进记录失败
     'user.user.lists': 'user lists',//用户列表
     'user.user.applies': 'user applies',//用户申请
     'user.account.type': 'Account type',//开户类型
@@ -2551,7 +2569,7 @@ var en_US = {
     'user.setting.roles': 'Set the role',//设置角色
     //补充
     'fail.get.customer.trace': 'Failed to get customer trace list',//获取客户跟踪记录列表失败
-    'fail.add.customer.trace': 'Failed to add customer trace list',//增加客户跟踪记录列表失败
+    'fail.add.customer.trace': 'Failed to update follow-up record',//更新跟进记录失败
     'contact.phone': 'Contact number',//联系电话
     'customer.visit': 'visit',//拜访
     'common.phone.system': 'phone system',//电话系统
@@ -2689,7 +2707,9 @@ var en_US = {
     'crm.n.day.10.clock': 'Ahead {n} day at 10 clock',//{n}天前上午10点
     'phone.delay.save': 'Call records are synchronizing, please wait to save!',//通话记录正在同步，请稍等再保存！
     'crm.schedule.fill.content': 'Please fill in schedule content!',//请填写联系内容
+    'crm.schedule.input.content': 'Please input schedule content',//请输入联系内容
     'schedule.list.management': 'Schedule Management',//日程管理
+    'schedule.object': 'Object',//对象
     'schedule.expired.list.failed': 'Failed to get expired schedule management list',//获取超时日程管理列表失败
     'schedule.expired.list': 'Expired and incomplete schedule list',//超时未完成
     'schedule.list.remind': 'Reminder time',//提醒
@@ -2745,6 +2765,8 @@ var en_US = {
     'clue.customer.register.self': 'Independent register',//自主注册
     'clue.customer.product.website': 'Production website',//产品网站
     'clue.customer.clue.name': 'clue names',//线索名称
+    'clue.customer.clue.name.abbrev': 'clue name',//线索名
+    'clue.customer.search.by.name': 'search by clue name',//根据线索名搜索
     'clue.customer.fillin.clue.name': 'Please fill in the clue names',//请填写线索名称
     'clue.customer.register.user': 'registered user',//注册用户
     'clue.customer,add,schedule,success': 'This schedule has been added',//联系计划已添加
@@ -2881,6 +2903,7 @@ var en_US = {
     'clue.customer.may.associate.customer': 'The customer may be associated with the clue',//该线索可能关联的客户
     'clue.customer.phone.same': 'The phone is the same',//电话一致
     'clue.customer.customer.name.similar': 'The customer is similar',//客户名相似
+    'clue.customer.search.by.client.name': 'search by customer name',//根据客户名搜索
     'clue.customer.close.customer.search': 'Please close the customer search box first',//请先关闭客户搜索框
     'clue.customer.selected.customer': 'Please search customers to associate',//请搜索客户进行关联
     'clue.customer.no.related.customer': 'None of the above customers are associated customers, search for customers',//上述客户都不是相关联的客户，搜索客户

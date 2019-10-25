@@ -11,59 +11,96 @@
     .ip-filter-container {
       height: 100%;
       padding: 18px 24px 24px;
-      .ip-filter-wrap {
-        height: 100%;
-        .ip-filter-card-container {
-          margin-top: 0;
-          .detail-card-title {
-            height: 20px;
-            padding-bottom: 0;
-            margin-bottom: 0;
-            border-bottom: none;
-            .ip-filter-title {
-              .operate-btn {
-                float: right;
-                .icon-plus {
-                  color: @operate-btn-color;
+      .ip-filter-content-wrap {
+        .private-filter-ip {
+          .filter-private-ip-card-container {
+            margin-bottom: 10px;
+            border-radius: 8px;
+            height: 40px;
+            .detail-card-content {
+              line-height: 16px;
+              .ant-checkbox-wrapper {
+                margin-right: 0;
+                .ant-checkbox {
+                  .ant-checkbox-inner {
+                    width: 16px;
+                    height: 16px;
+                    .ant-checkbox-checked {
+                      border-color:@blue;
+                      background-color:@blue;
+                    }
+                  }
+                  .ant-checkbox-inner:after {
+                    width: 4px;
+                    height: 10px;
+                  }
                 }
+              }
+              .private-content {
+                color: @content-font-color;
+                font-size: 14px;
+              }
+              .private-ip-tips {
+                position: absolute;
+                left: 196px;
               }
             }
           }
-          .detail-card-content {
-            .ip-filter-content {
-              .ip-content {
-                .ip-item {
-                  cursor: pointer;
-                  padding: 4px 0;
-                  font-size: 14px;
-                  color: @content-font-color;
-                  .ip-delete-operator-zone {
-                    float: right;
-                    visibility: hidden;
-                    margin-right: 8px;
-                    .item-delete-buttons {
-                      font-size: 14px;
-                      .item-delete-confirm {
-                        color: @confirm-delete-background;
-                        margin-right: 12px;
-                      }
-                      .item-delete-cancel {
-                        color:@label-content-color;
-                      }
-                    }
-                  }
-                  &:hover {
-                    background-color: @mouse-enter-zone-background;
-                    .ip-delete-operator-zone {
-                      visibility: visible;
-                    }
+        }
+        .ip-filter-wrap {
+          height: 100%;
+          .ip-filter-card-container {
+            margin-top: 0;
+            .detail-card-title {
+              height: 20px;
+              padding-bottom: 0;
+              margin-bottom: 0;
+              border-bottom: none;
+              .ip-filter-title {
+                .operate-btn {
+                  float: right;
+                  .icon-plus {
+                    color: @operate-btn-color;
                   }
                 }
               }
-              .add-ip-content {
-                .add-ip-form {
-                  .ant-form-item {
-                    padding-right: 0;
+            }
+            .detail-card-content {
+              .ip-filter-content {
+                .ip-content {
+                  .ip-item {
+                    cursor: pointer;
+                    padding: 4px 0;
+                    font-size: 14px;
+                    color: @content-font-color;
+                    .ip-delete-operator-zone {
+                      float: right;
+                      visibility: hidden;
+                      margin-right: 8px;
+                      .item-delete-buttons {
+                        font-size: 14px;
+                        .item-delete-confirm {
+                          color: @confirm-delete-background;
+                          margin-right: 12px;
+                        }
+                        .item-delete-cancel {
+                          color:@label-content-color;
+                        }
+                      }
+                    }
+                    &:hover {
+                      background-color: @mouse-enter-zone-background;
+                      .ip-delete-operator-zone {
+                        visibility: visible;
+                      }
+                    }
+                  }
+                }
+                .add-ip-content {
+                  .add-ip-form {
+                    .ant-form-item {
+                      padding-right: 0;
+                    }
                   }
                 }
               }
@@ -71,6 +108,7 @@
           }
         }
       }
+
     }
   }
 }

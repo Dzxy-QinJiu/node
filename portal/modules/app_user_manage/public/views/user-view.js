@@ -18,7 +18,7 @@ var batchPushEmitter = require('../../../../public/sources/utils/emitters').batc
 var topNavEmitter = require('../../../../public/sources/utils/emitters').topNavEmitter;
 import UserDetailAddAppAction from '../action/v2/user-detail-add-app-actions';
 import UserDetailEditAppAction from '../action/v2/user-detail-edit-app-actions';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import language from 'PUB_DIR/language/getLanguage';
 import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form';
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
@@ -212,10 +212,22 @@ class UserTabContent extends React.Component {
             }
             //关闭已经打开的用户详情
             AppUserAction.closeRightPanel();
+            //触发关闭用户详情面板
+            userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
         } else {
             //如果点击除了所属客户列之外的列，要关闭已经打开的客户详情 打开对应的用户详情
             this.hideRightPanel();
             AppUserAction.showUserDetail(userObj);
+            let paramObj = {
+                selectedAppId: this.state.selectedAppId,
+                userConditions: this.state.userConditions,
+                userId: _.get(userObj, 'user.user_id'),
+                appLists: _.get(userObj, 'apps'),
+                isShownExceptionTab: _.get(userObj, 'isShownExceptionTab'),
+            };
+            //触发打开用户详情面板
+            userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, paramObj);
+
             Trace.traceEvent('已有用户','打开用户详情');
 
         }
@@ -1534,7 +1546,7 @@ class UserTabContent extends React.Component {
         const hasSelectAuth = hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) ||
             hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
         //只有oplate的用户才有批量操作
-        var rowSelection = hasSelectAuth && isOplateUser()&& this.isShowBatchOperate() ? this.getRowSelection() : null;
+        var rowSelection = hasSelectAuth && isOplateUser() && this.isShowBatchOperate() ? this.getRowSelection() : null;
         var divHeight = getTableContainerHeight() - (this.state.filterAreaExpanded ? $(this.refs.filter_adv).outerHeight() || 0 : 0);
         const dropLoadConfig = {
             listenScrollBottom: this.state.listenScrollBottom,

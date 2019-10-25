@@ -112,8 +112,6 @@ AppUserStore.prototype.keywordValueChange = function(keyword) {
 
 //FromAction-显示用户详情
 AppUserStore.prototype.showUserDetail = function(user) {
-    this.isShowRightPanel = true;
-    this.rightPanelType = 'detail';
     this.detailUser = user;
 };
 

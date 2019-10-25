@@ -1,4 +1,3 @@
-var React = require('react');
 require('../../../app_user_manage/public/css/main-zh_CN.less');
 import {Alert, Select, message, Icon, Button} from 'antd';
 import LAYOUT from '../utils/layout';
@@ -14,9 +13,8 @@ import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import SelectFullWidth from 'CMP_DIR/select-fullwidth';
 import TopNav from 'CMP_DIR/top-nav';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import userData from 'PUB_DIR/sources/user-data';
-import UserDetail from '../../../app_user_manage/public/views/user-detail';
 import {notificationEmitter} from 'PUB_DIR/sources/utils/emitters';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import AlertTimer from 'CMP_DIR/alert-timer';
@@ -245,16 +243,17 @@ class SystemNotification extends React.Component {
             curShowCustomerId: '',
             selectedLiIndex: null
         });
+        //触发关闭用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.CLOSE_USER_DETAIL);
+
     };
 
     openUserDetail = (user_id, index) => {
         if (this.state.curShowCustomerId) {
             this.closeRightCustomerPanel();
         }
-        this.setState({
-            curShowUserId: user_id,
-            selectedLiIndex: index
-        });
+        //触发打开用户详情面板
+        userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: user_id});
     };
 
     // 待处理数据整合,同一个用户登录同一个应用，计算登录次数以及获取最后一次登录时间
@@ -576,17 +575,6 @@ class SystemNotification extends React.Component {
                         /> : null
                     }
                 </RightPanel>
-                {
-                    this.state.curShowUserId ?
-                        <RightPanel className="app_user_manage_rightpanel white-space-nowrap right-pannel-default right-panel detail-v3-panel"
-                            showFlag={this.state.curShowUserId}>
-                            <UserDetail
-                                userId={this.state.curShowUserId}
-                                closeRightPanel={this.closeRightUserPanel}
-                            />
-                        </RightPanel>
-                        : null
-                }
             </div>
         );
     }

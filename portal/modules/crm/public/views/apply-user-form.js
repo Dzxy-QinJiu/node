@@ -886,7 +886,7 @@ const ApplyUserForm = createReactClass({
                 if (_.isArray(selectAppIds) && selectAppIds.length && selectAppIds.indexOf(appId) !== -1) {
                     className = 'app-options-selected';
                 }
-                return (<Option className={className} key={appId} value={appId}>
+                return (<Option className={className} key={appId} value={appId} title={app.client_name}>
                     <SquareLogoTag
                         name={app ? app.client_name : ''}
                         logo={app ? app.client_logo : ''}

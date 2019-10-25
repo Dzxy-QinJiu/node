@@ -118,7 +118,7 @@
     </div>
 </div>
 <% // 页脚         %>
-<% showFooterContent = hideLangQRcode ? false : true %>
+<% showFooterContent = hideLangQRcode || useSso ? false : true %>
 <script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
 <script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
 <script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>

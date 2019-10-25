@@ -1192,6 +1192,7 @@ class ClueExtract extends React.Component {
                                 ref="filterinput"
                                 toggleList={this.toggleList.bind(this)}
                                 showSelectChangeTip={_.get(this.state.selectedClues, 'length')}
+                                showList={this.state.showFilterList}
                             />
                         </div>
                         {hasSelectedClue ? (

@@ -12,7 +12,6 @@ import {Select} from 'antd';
 import classNames from 'classnames';
 
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 
 const DELAY_TIME = 300; //搜索时ajax调用的延迟时间
@@ -85,6 +84,9 @@ class ClueSuggest extends Component {
             _.isFunction(this.props.hideClueRequiredTip) && this.props.hideClueRequiredTip(true);
         }else{
             _.isFunction(this.props.hideClueRequiredTip) && this.props.hideClueRequiredTip(false);
+        }
+        if(this.props.needRemovePrefix) {
+            value = _.replace(value, /【.*】/, '');
         }
         let param = {
             pageSize: 10,
@@ -183,6 +185,24 @@ class ClueSuggest extends Component {
         return $search_input.val();
     };
 
+    //返回提示内容
+    renderClueSuggestTip() {
+        let suggestTip = null;
+        if(this.props.tryCustomer) {
+            suggestTip = this.getNoCustomerTip() ?
+                <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}，<a onClick={this.props.searchCustomer}>{Intl.get('clue.customer.search.by.client.name', '根据客户名搜索')}</a>
+                    {Intl.get('common.or', '或')}<Link to="/clue_customer?add=true">{Intl.get('crm.clue.suggest.create.clue','创建线索')}</Link>
+                </span> :
+                <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}, <a onClick={this.props.searchCustomer}>{Intl.get('clue.customer.search.by.client.name', '根据客户名搜索')}</a></span>;
+        } else {
+            suggestTip = this.getNoCustomerTip() ?
+                <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}，{Intl.get('common.yesno', '是否')}
+                    <Link to="/clue_customer?add=true">{Intl.get('crm.clue.suggest.create.clue','创建线索')}</Link>
+                </span> :
+                <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}</span>;
+        }
+        return suggestTip;
+    }
     //未找到线索时提示
     getClueTipBlock = () => {
         let search_input_val = this.getSearchValue();
@@ -217,10 +237,7 @@ class ClueSuggest extends Component {
             }else{
                 return (
                     <div className="clue_suggest_tip">
-                        {this.getNoCustomerTip() ?
-                            <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}，{Intl.get('common.yesno', '是否')}
-                                <Link to="/clue_customer?add=true">{Intl.get('crm.clue.suggest.create.clue','创建线索')}</Link>
-                            </span> : <span>{Intl.get('crm.suggest.clue.not.found','未找到该线索')}</span>}
+                        {this.renderClueSuggestTip()}
                     </div>
                 );
             }
@@ -246,6 +263,13 @@ class ClueSuggest extends Component {
             });
         }
     };
+    ignorePrefix = (input, option) => {
+        let checkedOption = option.props.children;
+        if(this.props.needRemovePrefix) {
+            input = _.replace(input, /【.*】/, '');
+        }
+        return checkedOption.indexOf(input) >= 0;
+    };
     render() {
         let displayCls = classNames({
             'clue-search-wrap': true,
@@ -256,11 +280,12 @@ class ClueSuggest extends Component {
             <div className={displayCls} data-tracename="搜索线索">
                 <div ref={clue_search_box => this.clue_search_box = clue_search_box} className="associate-clue-wrap">
                     <Select
+                        ref="selectSearch"
                         className={this.getClueTipErrmsg() ? 'err-tip' : ''}
                         combobox
                         autoFocus = {true}
-                        placeholder={Intl.get('crm.suggest.clue.search', '输入线索名称搜索')}
-                        filterOption={(input, option) => ignoreCase(input, option)}
+                        placeholder={this.props.placeholder}
+                        filterOption={(input, option) => this.ignorePrefix(input, option)}
                         onSearch={this.suggestChange}
                         onChange={this.clueChosen}
                         onBlur={this.onCheckIfClueChoose.bind(this)}
@@ -309,6 +334,13 @@ ClueSuggest.defaultProps = {
     noDataTip: '',
     //是否有修改权限
     hasEditPrivilege: false,
+    //是否尝试搜索客户
+    tryCustomer: false,
+    //搜索客户
+    searchCustomer: function(){},
+    //默认输入框提示
+    placeholder: Intl.get('crm.suggest.clue.search', '输入线索名称搜索'),
+    needRemovePrefix: false,//在添加日程中，因手动添加了【线索】的前缀，需要在搜索时去除前缀搜索
 };
 ClueSuggest.propTypes = {
     name: PropTypes.string,
@@ -325,6 +357,10 @@ ClueSuggest.propTypes = {
     handleCancel: PropTypes.func,
     hasEditPrivilege: PropTypes.bool,
     hideClueRequiredTip: PropTypes.func,
+    tryCustomer: PropTypes.bool,
+    searchCustomer: PropTypes.func,
+    placeholder: PropTypes.string,
+    needRemovePrefix: PropTypes.bool,
 };
 
 module.exports = ClueSuggest;

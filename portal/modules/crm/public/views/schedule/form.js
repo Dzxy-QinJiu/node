@@ -22,6 +22,7 @@ import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import CustomerSuggest from 'CMP_DIR/basic-edit-field-new/customer-suggest';
 import ClueSuggest from 'CMP_DIR/basic-edit-field-new/clue-suggest';
+import {SearchInput} from 'antc';
 //日程类型
 const CUSTOMER_SCHEDULE_TYPES = [
     {name: Intl.get('schedule.phone.connect', '电联'), value: 'calls', iconCls: 'icon-phone-call-out'},
@@ -33,7 +34,11 @@ const CLUE_SCHEDULE_TYPES = [
     {name: Intl.get('schedule.phone.connect', '电联'), value: 'lead', iconCls: 'icon-phone-call-out'},
     {name: Intl.get('common.others', '其他'), value: 'other', iconCls: 'icon-trace-other'}
 ];
-
+//对象类型
+const OBJECT_TYPE = {
+    CLUE: 'clue',
+    CUSTOMER: 'customer'
+};
 
 var CrmAlertForm = createReactClass({
     displayName: 'CrmAlertForm',
@@ -62,9 +67,11 @@ var CrmAlertForm = createReactClass({
             selectedTimeRange: '1h',//选中的联系时间
             selectedAlertTimeRange: selectedAlertTimeRange,//选中的提醒时间的类型
             isSelectFullday: true,//是否已经选择了全天
-            hideCustomerRequiredTip: false,
-            hideClueRequiredTip: false,
-            topicValue: this.props.topicValue
+            hideObjectRequiredTip: false,
+            topicValue: this.props.topicValue,
+            isFilterInputSelect: false, //filterInput是否已经做出"按客户名搜索"或"按线索名搜索"的选择,
+            curObjValue: '',//当前对象字段的值
+            isFromSubmit: false//代表是否触发了Submit的操作，供“对象”的验证使用
         };
     },
     //初始化值数据
@@ -96,12 +103,6 @@ var CrmAlertForm = createReactClass({
         });
     },
 
-    componentWillReceiveProps: function(nextProps) {
-        //用户切换添加"线索"或"客户"类型代办时，更新formData里的scheduleType初始值数据还原初值
-        if(_.has(nextProps, 'topicValue')) {
-            this.initialFormData(nextProps);
-        }
-    },
     //是否是今天
     isToday: function(date) {
         const newTime = moment(date).format(DATE_FORMAT);
@@ -126,7 +127,7 @@ var CrmAlertForm = createReactClass({
             formData.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
             //并未选中全天这种状态
             if (!this.state.isSelectFullday) {
-                selectedAlertTimeRange = 'not_remind';
+                selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
             }
         } else {
             //是否选中全天的状态
@@ -164,6 +165,18 @@ var CrmAlertForm = createReactClass({
         if (newTime < moment().valueOf()) {
             message.warn(Intl.get('crm.alert.select.future.time', '请选择大于当前时间的时间'));
             return;
+        }
+        //如果选择时间比当前时间多五分钟以上，默认提醒时间设置为提前五分钟提醒
+        let now_time = moment().valueOf();
+        let timeInterval = Math.floor((newTime - now_time) / (1000 * 60));
+        if(timeInterval > 5) {
+            this.setState({
+                selectedAlertTimeRange: TIME_TYPE_CONSTS.AHEAD_5_MIN
+            });
+        } else {
+            this.setState({
+                selectedAlertTimeRange: 'not_remind'
+            });
         }
         let formData = this.state.formData;
         formData.start_time = newTime;
@@ -256,8 +269,15 @@ var CrmAlertForm = createReactClass({
                 return;
             } else {
                 this.setState({isLoading: true});
+                let savedFormData = _.cloneDeep(submitObj);
+                //由于在处理的时候添加了前缀，保存到后端的时候需要去除这些前缀
+                savedFormData.topic = _.replace(savedFormData.topic, /【.*】/,'');
+                if(_.has(savedFormData, 'customer_name')) {
+                    savedFormData.customer_name = _.replace(savedFormData.customer_name, /【.*】/,'');
+                }
+                delete savedFormData.object;
                 if (this.props.currentSchedule.id) {
-                    ScheduleAction.editAlert(this.state.formData, (resData) => {
+                    ScheduleAction.editAlert(savedFormData, (resData) => {
                         if (resData.code === 0) {
                             this.showMessage(Intl.get('user.edit.success', '修改成功'));
                             _.isFunction(this.props.getScheduleList) && this.props.getScheduleList();
@@ -268,7 +288,7 @@ var CrmAlertForm = createReactClass({
                     });
                 } else {
                     //添加联系计划
-                    this.addSchedule(submitObj);
+                    this.addSchedule(savedFormData);
                 }
             }
         });
@@ -283,64 +303,79 @@ var CrmAlertForm = createReactClass({
         });
     },
 
-    // 选择线索
-    clueChosen: function(selectedClue) {
+    // 选择客户或线索
+    objectChosen: function(selectedObject) {
         let formData = this.state.formData;
-        formData.lead_id = selectedClue.id;
-        formData.topic = selectedClue.name;
+        if(_.isEqual(_.get(this.state, 'topicValue'), 'clue')) {
+            formData.lead_id = selectedObject.id;
+        } else {
+            formData.customer_id = selectedObject.id;
+            formData.customer_name = selectedObject.name;
+        }
+        formData.topic = selectedObject.name;
         this.setState({
-            formData
+            formData,
+            curObjValue: selectedObject.name
         }, () => {
-            this.refs.validation.forceValidate(['clue']);
+            let {name} = selectedObject;
+            let nameWithoutTitle = _.replace(name, /【.*】/, '');
+            //如果去除【客户】【线索】的前缀后字符串为空，说明此时线索或客户名已经删除为空
+            if(_.isEmpty(nameWithoutTitle)) {
+                //输入框切换到SearchInput的组件
+                this.setState({
+                    isFilterInputSelect: false
+                });
+            } else if(!_.isEmpty(name) && !_.includes(name, '【')){//如果去除前缀后不为空，判断输入的值，当值不包含【时，说明此时用户刚刚从下拉选项框中选择了线索，手动为其添加【线索】【客户】前缀
+                if(_.isEqual(_.get(this.state, 'topicValue'), 'clue')) {
+                    let nameWithTitle = `【${Intl.get('crm.sales.clue', '线索')}】${name}`;
+                    this.clueSuggest.refs.selectSearch.props.value = nameWithTitle;
+                    this.clueSuggest.state.curName = nameWithTitle;
+                    this.clueSuggest.refs.selectSearch.forceUpdate();
+                } else {
+                    let nameWithTitle = `【${Intl.get('sales.home.customer', '客户')}】${name}`;
+                    this.customerSuggest.refs.selectSearch.props.value = nameWithTitle;
+                    this.customerSuggest.state.customer.name = nameWithTitle;
+                    this.customerSuggest.refs.selectSearch.forceUpdate();
+                }
+            }
+            this.refs.validation.forceValidate(['object']);
         });
     },
 
-    // 选择客户
-    customerChoosen: function(selectedCustomer) {
-        let formData = this.state.formData;
-        formData.customer_id = selectedCustomer.id;
-        formData.customer_name = selectedCustomer.name;
-        formData.topic = selectedCustomer.name;
-        this.setState({
-            formData
-        }, () => {
-            this.refs.validation.forceValidate(['customer']);
-        });
-    },
-
-    // 选择客户验证事件
-    checkCustomerName: function(rule, value, callback){
-        value = _.trim(_.get(this.state, 'formData.customer_id'));
-        if (!value && !this.state.hideCustomerRequiredTip) {
-            callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
+    // 选择客户或线索验证事件
+    checkObjectName: function(rule, value, callback){
+        if(_.isEqual(_.get(this.state, 'topicValue'), 'clue')) {
+            value = _.trim(_.get(this.state, 'formData.lead_id'));
+        } else {
+            value = _.trim(_.get(this.state, 'formData.customer_id'));
+        }
+        if (!value && !this.state.hideObjectRequiredTip) {
+            //如果什么都没有选择，重新展示回SearchInput
+            this.setState({
+                isFilterInputSelect: false,
+                curObjValue: '',
+            });
+            callback();
         } else {
             callback();
         }
     },
 
-    // 选择线索验证事件
-    checkClueName: function(rule, value, callback) {
-        value = _.trim(_.get(this.state, 'formData.lead_id'));
-        if (!value && !this.state.hideClueRequiredTip) {
-            callback(new Error(Intl.get('crm.suggest.select.clue.first','请先选择线索')));
+    checkSearchObjectName: function(rule, value, callback) {
+        //只有是通过触发保存的操作才走验证
+        if(_.get(this.state, 'isFromSubmit', false)) {
+            //只要触发此验证，说明用户没有选择“根据线索名搜索”或者“根据客户名搜索”
+            callback(Intl.get('crm.schedule.clue.customer.name.error', '请选择根据客户名或线索名搜索'));
         } else {
             callback();
         }
     },
 
-    hideCustomerRequiredTip: function(flag) {
+    hideObjectRequiredTip: function(flag) {
         this.setState({
-            hideCustomerRequiredTip: flag
+            hideObjectRequiredTip: flag
         },() => {
-            this.refs.validation.forceValidate(['customer']);
-        });
-    },
-
-    hideClueRequiredTip: function(flag) {
-        this.setState({
-            hideClueRequiredTip: flag
-        },() => {
-            this.refs.validation.forceValidate(['clue']);
+            this.refs.validation.forceValidate(['object']);
         });
     },
 
@@ -397,10 +432,10 @@ var CrmAlertForm = createReactClass({
         if(this.props.isAddToDoClicked) {
             //若当前添加的是客户代办
             if (_.isEqual(this.state.topicValue, 'customer') && !submitObj.customer_id) {
-                this.refs.validation.forceValidate(['customer']);
+                this.refs.validation.forceValidate(['object']);
                 return;
             } else if (_.isEqual(this.state.topicValue, 'clue') && !submitObj.lead_id) { //若当前添加的是线索代办
-                this.refs.validation.forceValidate(['clue']);
+                this.refs.validation.forceValidate(['object']);
                 return;
             }
         }
@@ -408,6 +443,10 @@ var CrmAlertForm = createReactClass({
     },
 
     handleSave: function(e) {
+        //isFromSubmit代表触发了Submit的操作，供“对象”字段的验证使用
+        this.setState({
+            isFromSubmit: true
+        });
         var formData = this.state.formData;
         if (this.state.selectedTimeRange !== 'custom') {
             switch (this.state.selectedTimeRange) {
@@ -465,16 +504,20 @@ var CrmAlertForm = createReactClass({
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-radio-button'), '修改联系时间为' + value);
         var formData = this.state.formData;
         let isSelectFullday = this.state.isSelectFullday;
+        //除自定义时间以外，默认提醒都为五分钟前
+        let selectedAlertTimeRange = TIME_TYPE_CONSTS.AHEAD_5_MIN;
         if (value === 'custom') {
             //选择自定义时，要把开始和结束时间改为当前时间
             formData.start_time = moment().valueOf();
             formData.end_time = TimeStampUtil.getTodayTimeStamp().end_time;
             //默认选中全天
             isSelectFullday = true;
+            //如果自定义时间，默认提醒为不提醒
+            selectedAlertTimeRange = 'not_remind';
         }
         this.setState({
             selectedTimeRange: value,
-            selectedAlertTimeRange: 'not_remind',//为防止由整天的类型切换到几个小时后的类型时，下拉框中没有对应的类型的情况
+            selectedAlertTimeRange: selectedAlertTimeRange,
             formData: formData,
             isSelectFullday: isSelectFullday
         });
@@ -483,7 +526,7 @@ var CrmAlertForm = createReactClass({
     renderSelectFulldayOptions: function() {
         if (this.state.selectedTimeRange === '1d') {
             //如果选中的是一天，要把后面几个选项去掉
-            let SELECT_FULL_OPTIONS_SPLICE = _.clone(SELECT_FULL_OPTIONS).splice(0, 2);
+            let SELECT_FULL_OPTIONS_SPLICE = _.clone(SELECT_FULL_OPTIONS).splice(0, 3);
             return (
                 _.map(SELECT_FULL_OPTIONS_SPLICE, (key) => {
                     return (<Option value={key.value}>{key.name}</Option>);
@@ -592,40 +635,62 @@ var CrmAlertForm = createReactClass({
         }
     },
 
-    //根据传进来的不同topicValue渲染“客户”或“线索”
-    renderTopic: function(topicValue, formItemLayout){
-        if(_.isEqual(topicValue, 'clue')) {
+    //尝试按照线索名搜索或按照客户名搜索
+    searchToggle: function() {
+        let type = _.isEqual(_.get(this.state, 'topicValue'), 'customer') ? 'clue' : 'customer';
+        let value = this.state.curObjValue;
+        //先将之前的前缀清除，再替换新的前缀
+        value = _.replace(value, /【.*】/, '');
+        if(_.isEqual(_.get(this.state, 'topicValue'), 'customer')) {
+            value = `【${Intl.get('crm.sales.clue', '线索')}】${value}`;
+        } else {
+            value = `【${Intl.get('sales.home.customer', '客户')}】${value}`;
+        }
+        this.changeClueOrCustomerSelect(type,value);
+    },
+
+    //根据从FilterInput获得的不同selectType渲染“客户”或“线索”
+    renderTopic: function(selectType, formItemLayout){
+        if(_.isEqual(selectType, OBJECT_TYPE.CLUE)) {
             return(<FormItem
                 {...formItemLayout}
                 required
-                validateStatus={this.getValidateStatus('clue')}
-                help={this.getHelpMessage('clue')}
-                label={Intl.get('crm.sales.clue','线索')}
+                label={Intl.get('schedule.object', '对象')}
+                validateStatus={this.getValidateStatus('object')}
+                help={this.getHelpMessage('object')}
+                className='object-input'
             >
-                <Validator rules={[{validator: this.checkClueName}]}>
+                <Validator rules={[{validator: this.checkObjectName}]}>
                     <ClueSuggest
-                        name='clue'
-                        field='clue'
+                        ref={clueSuggest => this.clueSuggest = clueSuggest}
+                        name='object'
+                        field='object'
                         show_error={false}
                         noDataTip={Intl.get('clue.has.no.data', '暂无')}
                         required={true}
-                        clueChosen={this.clueChosen.bind(this)}
-                        hideClueRequiredTip={this.hideClueRequiredTip}
+                        clueChosen={this.objectChosen}
+                        hideClueRequiredTip={this.hideObjectRequiredTip}
+                        tryCustomer={true}
+                        searchCustomer={this.searchToggle}
+                        placeholder=''
+                        needRemovePrefix={true}
                     />
                 </Validator>
             </FormItem>);
-        }else {
+        } else {
             return (<FormItem
                 {...formItemLayout}
                 required
-                validateStatus={this.getValidateStatus('customer')}
-                help={this.getHelpMessage('customer')}
-                label={Intl.get('call.record.customer', '客户')}
+                label={Intl.get('schedule.object', '对象')}
+                validateStatus={this.getValidateStatus('object')}
+                help={this.getHelpMessage('object')}
+                className='object-input'
             >
-                <Validator rules={[{validator: this.checkCustomerName}]}>
+                <Validator rules={[{validator: this.checkObjectName}]}>
                     <CustomerSuggest
-                        name='customer'
-                        field='customer'
+                        ref={customerSuggest => this.customerSuggest = customerSuggest}
+                        name='object'
+                        field='object'
                         hasEditPrivilege={true}
                         displayText={''}
                         displayType={'edit'}
@@ -636,16 +701,77 @@ var CrmAlertForm = createReactClass({
                         customer_id={''}
                         noDataTip={Intl.get('clue.has.no.data', '暂无')}
                         hideButtonBlock={true}
-                        customerChoosen={this.customerChoosen.bind(this)}
+                        customerChoosen={this.objectChosen}
+                        placeholder=''
                         required={true}
-                        hideCustomerRequiredTip={this.hideCustomerRequiredTip}
+                        hideCustomerRequiredTip={this.hideObjectRequiredTip}
+                        tryClue={true}
+                        searchClue={this.searchToggle}
+                        needRemovePrefix={true}
                     />
                 </Validator>
             </FormItem>);
         }
     },
 
+    changeClueOrCustomerSelect: function(type, value) {
+        //根据所选择的搜索类型更新表单中的"类型"单选按钮
+        let formData = this.state.formData;
+        formData.scheduleType = _.isEqual(type, 'customer') ? 'calls' : 'lead';
+        this.setState({
+            isFilterInputSelect: true,
+            topicValue: type,
+            isFromSubmit: false,
+            curObjValue: value,
+            formData
+        }, () => {
+            //手动填充Input值
+            if(_.isEqual(type, OBJECT_TYPE.CLUE)) {
+                this.clueSuggest.refs.selectSearch.props.value = value;
+                this.clueSuggest.state.curName = value;
+                this.clueSuggest.refs.selectSearch.forceUpdate();
+                this.clueSuggest.suggestChange(value);
+                //模拟点击事件，展示下拉框
+                $('.object-input input').click();
+            } else {
+                this.customerSuggest.refs.selectSearch.props.value = value;
+                this.customerSuggest.state.customer.name = value;
+                this.customerSuggest.refs.selectSearch.forceUpdate();
+                this.customerSuggest.suggestChange(value);
+                //模拟点击事件，展示下拉框
+                $('.object-input input').click();
+            }
+        });
+    },
+
+    searchClueOrCustomer: function() {
+        let searchedObj = this.refs.searchInput.state.formData;
+        if(!_.isEmpty(searchedObj)) {
+            let key = _.keys(searchedObj)[0];
+            let value = _.values(searchedObj)[0];
+            if(_.isEqual(key, 'clue')) {
+                value = `【${Intl.get('crm.sales.clue', '线索')}】${value}`;
+            } else {
+                value = `【${Intl.get('sales.home.customer', '客户')}】${value}`;
+            }
+            this.changeClueOrCustomerSelect(key, value);
+            this.setState({
+                curObjValue: value,
+            });
+        }
+    },
+
     render: function() {
+        const searchFields = [
+            {
+                name: Intl.get('crm.41', '客户名'),
+                field: OBJECT_TYPE.CUSTOMER
+            },
+            {
+                name: Intl.get('clue.customer.clue.name.abbrev', '线索名'),
+                field: OBJECT_TYPE.CLUE
+            }
+        ];
         const formItemLayout = this.props.formItemLayout || {
             colon: false,
             labelCol: {span: 3},
@@ -663,7 +789,29 @@ var CrmAlertForm = createReactClass({
                 <Validation ref="validation" onValidate={this.handleValidate}>
                     {/*如果是点击待办项，显示客户选择框，否则如果是批量操作的时候，不需要展示标题*/
                         this.props.isAddToDoClicked ? (
-                            this.renderTopic(_.get(this.state, 'topicValue'), formItemLayout)
+                            this.state.isFilterInputSelect ?
+                                this.renderTopic(_.get(this.state, 'topicValue'), formItemLayout) :
+                                (<FormItem
+                                    {...formItemLayout}
+                                    required
+                                    label={Intl.get('schedule.object', '对象')}
+                                    validateStatus={this.getValidateStatus('object')}
+                                    help={this.getHelpMessage('object')}
+                                    className='object-search-input'
+                                >
+                                    <Validator rules={[{validator: this.checkSearchObjectName}]} trigger='onBlur'>
+                                        <SearchInput
+                                            ref="searchInput"
+                                            type="select"
+                                            searchFields={searchFields}
+                                            searchEvent={this.searchClueOrCustomer}
+                                            searchPlaceholder={Intl.get('crm.schedule.clue.customer.name', '请输入客户名或线索名')}
+                                            className="btn-item"
+                                            name='object'
+                                            field='object'
+                                        />
+                                    </Validator>
+                                </FormItem>)
                         ) : (this.props.selectedCustomer ? null : (
                             <FormItem
                                 {...formItemLayout}
@@ -687,40 +835,6 @@ var CrmAlertForm = createReactClass({
                     <FormItem
                         {...formItemLayout}
                         required
-                        label={Intl.get('common.type', '类型')}
-                    >
-                        <RadioGroup onChange={this.handleTypeChange} value={formData.scheduleType}>
-                            {_.map(scheduleType, item => {
-                                return (
-                                    <RadioButton value={item.value}>
-                                        <span className={`iconfont ${item.iconCls}`}/>{item.name}
-                                    </RadioButton>);
-                            })}
-                        </RadioGroup>
-                    </FormItem>
-                    <FormItem
-                        label={Intl.get('crm.177', '内容')}
-                        {...formItemLayout}
-                        required
-                        validateStatus={this.getValidateStatus('content')}
-                        help={this.getHelpMessage('content')}
-                    >
-                        <div className="content-wrap">
-                            <Validator
-                                rules={[{required: true, message: Intl.get('crm.schedule.fill.content', '请填写联系内容')}]}
-                            >
-                                <Input
-                                    name="content"
-                                    type="textarea"
-                                    rows={2}
-                                    value={formData.content}
-                                    onChange={this.setField.bind(this, 'content')}
-                                />
-                            </Validator>
-                        </div>
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
                         label={Intl.get('common.login.time', '时间')}
                     >
                         {<Select onChange={this.handleTimeRangeChange} value={this.state.selectedTimeRange} getPopupContainer={() => document.getElementById('schedule-form')}>
@@ -786,6 +900,42 @@ var CrmAlertForm = createReactClass({
                                 </FormItem>
                             }
                         </div> : null}
+                    <FormItem
+                        {...formItemLayout}
+                        required
+                        label={Intl.get('common.type', '类型')}
+                    >
+                        <RadioGroup onChange={this.handleTypeChange} value={formData.scheduleType}>
+                            {_.map(scheduleType, item => {
+                                return (
+                                    <RadioButton value={item.value}>
+                                        <span className={`iconfont ${item.iconCls}`}/>{item.name}
+                                    </RadioButton>);
+                            })}
+                        </RadioGroup>
+                    </FormItem>
+                    <FormItem
+                        label={Intl.get('crm.177', '内容')}
+                        {...formItemLayout}
+                        required
+                        validateStatus={this.getValidateStatus('content')}
+                        help={this.getHelpMessage('content')}
+                    >
+                        <div className="content-wrap">
+                            <Validator
+                                rules={[{required: true, message: Intl.get('crm.schedule.fill.content', '请填写联系内容')}]}
+                            >
+                                <Input
+                                    name="content"
+                                    type="textarea"
+                                    rows={2}
+                                    value={formData.content}
+                                    onChange={this.setField.bind(this, 'content')}
+                                    placeholder={Intl.get('crm.schedule.input.content', '请输入联系内容')}
+                                />
+                            </Validator>
+                        </div>
+                    </FormItem>
                     <FormItem
                         {...formItemLayout}
                         label={Intl.get('crm.40', '提醒')}

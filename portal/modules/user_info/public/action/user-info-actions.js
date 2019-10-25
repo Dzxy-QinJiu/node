@@ -98,7 +98,6 @@ function UserInfoActions() {
             _this.dispatch({error: true, errorMsg: errorMsg || Intl.get('common.edit.failed', '修改失败')});
         });
     };
-
 }
 
 module.exports = alt.createActions(UserInfoActions);

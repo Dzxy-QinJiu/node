@@ -244,6 +244,44 @@ form.schedule-form {
     padding-top: 3px;
     padding-bottom: 3px;
   }
+  //"对象"字段样式
+  .object-search-input {
+    .has-error {
+      .ant-select-selection {
+        border-color: #f04134;
+        &:hover {
+          border-color: #f04134 ;
+          box-shadow: 0 0 0 2px rgba(240, 65, 52, 0.2);
+        }
+      }
+    }
+    .ant-select-selection {
+      height: 30px !important;
+      .ant-select-selection__rendered {
+        line-height: 30px;
+        .ant-select-selection__placeholder {
+          font-size: 14px;
+        }
+        input {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+  .object-input {
+    .ant-select-selection {
+      height: 30px !important;
+      .ant-select-selection__rendered {
+        line-height: 30px;
+        .ant-select-selection__placeholder {
+          font-size: 14px;
+        }
+        input {
+          font-size: 14px;
+        }
+      }
+    }
+  }
 }
 .right-pannel-default,.add-todo{
   //添加面板的表单

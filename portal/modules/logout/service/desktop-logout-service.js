@@ -46,12 +46,19 @@ exports.ssoLogout = function(req, res) {
  * @param accessToken
  */
 exports.sessionTimeout = function(sessionID, accessToken) {
-    var url = urls.ssoLogout + '?only_exit_current=yes';
-    return restUtil.appAuthRest.get(
+    // TODO 超时后，由于只退出本应用，在超时界面刷新时，若其他应用未失效时，ssoCheck，会再次登录成功
+    // 暂时去掉参数，改为超时后退出所有应用（待思考解决办法）
+    // var url = urls.ssoLogout + '?only_exit_current=yes';
+    var url = urls.ssoLogout;
+    return restUtil.baseRest.get(
         {
             url: url,
             req: {sessionID, 'headers': {}},
-            res: {}
+            res: {},
+            headers: {
+                Authorization: userTokenPrefix + accessToken,
+                realm: global.config.loginParams.realm
+            }
         }, null);
 };
 

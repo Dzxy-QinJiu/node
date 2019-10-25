@@ -25,9 +25,9 @@ import classNames from 'classnames';
 import Trace from 'LIB_DIR/trace';
 import PhoneStatusTop from './view/phone-status-top';
 import PhoneAddToCustomerForm from 'CMP_DIR/phone-add-to-customer-form';
-var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsgEmitter;
 import {PHONERINGSTATUS} from './consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
+import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26,//对应几个客户提示的高度
@@ -46,6 +46,7 @@ var phoneRecordObj = {
     received_time: ''//通话时间
 };
 
+let newLabels = '';
 //当前面板z-index
 let thisPanelZIndex;
 
@@ -119,6 +120,15 @@ class PhonePanel extends React.Component {
             phoneRecordObj.callid = phonemsgObj.callid;
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
         }
+
+        //增加打开用户详情面板的事件监听
+        //打开用户详情面板时，当前面板的z-index减1
+        //以使当前面板显示在后面
+        userDetailEmitter.on(userDetailEmitter.OPEN_USER_DETAIL, this.adjustThisPanelZIndex.bind(this, -1));
+
+        //增加关闭用户详情面板的事件监听
+        //关闭用户详情面板时，恢复当前面板的原始z-index
+        userDetailEmitter.on(userDetailEmitter.CLOSE_USER_DETAIL, this.adjustThisPanelZIndex);
 
         //增加打开线索详情面板的事件监听
         //打开线索详情面板时，当前面板的z-index减1
@@ -221,6 +231,12 @@ class PhonePanel extends React.Component {
         phoneAlertAction.setInitialState();
         phoneAlertStore.unlisten(this.onStoreChange);
 
+        //移除打开用户详情面板的事件监听
+        userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.adjustThisPanelZIndex);
+
+        //移除关闭用户详情面板的事件监听
+        userDetailEmitter.removeListener(userDetailEmitter.CLOSE_USER_DETAIL, this.adjustThisPanelZIndex);
+
         //移除打开线索详情面板的事件监听
         phoneMsgEmitter.removeListener(phoneMsgEmitter.OPEN_CLUE_PANEL, this.adjustThisPanelZIndex);
 
@@ -276,7 +292,6 @@ class PhonePanel extends React.Component {
             isAddFlag: false,
             addCustomer: false
         });
-        phoneAlertAction.setEditStatus({isEdittingTrace: true, submittingTraceMsg: ''});
         phoneAlertAction.setAddCustomerInfo(addCustomerInfo);
     };
     //根据客户的id获取客户详情
@@ -405,6 +420,7 @@ class PhonePanel extends React.Component {
                 }
             }
         } else if (_.isArray(customerInfoArr) && customerInfoArr[0]) {//原来无客户，添加完客户时，展示添加的客户详情
+            newLabels ? customerInfoArr[0].labels = newLabels : null;
             return this.renderCustomerDetail(customerInfoArr[0]);
         } else if (!this.state.isAddToCustomerFlag && !this.state.isAddFlag) {
             //客户不存在时，展示添加到已有客户、添加客户的按钮(添加到已有客户/添加完客户后，此提示不再提示添加客户)
@@ -518,6 +534,10 @@ class PhonePanel extends React.Component {
         });
     };
 
+    handleSubmitBack = (data) => {
+        newLabels = data.labels;
+    }
+
     renderMainContent() {
         let defalutCustomerInfoArr = _.get(this.state, 'customerInfoArr[0]', {});
         var phonemsgObj = this.getPhonemsgObj(this.state.paramObj);
@@ -564,6 +584,7 @@ class PhonePanel extends React.Component {
                         hideAddForm={this.hideAddForm}
                         updateCustomer={this.updateCustomer}
                         showRightPanel={this.showRightPanel}
+                        handleSubmitBack={this.handleSubmitBack}
                     />
                 </div>
 

@@ -106,6 +106,7 @@ export const NO_SELECT_FULL_OPTIONS = [
     {value: 'ahead_1h', name: Intl.get('crm.ahead.n.hour', '提前{n}小时', {'n': 1})}];
 export const SELECT_FULL_OPTIONS = [
     {value: 'not_remind', name: Intl.get('crm.not.alert', '不提醒')},
+    {value: 'ahead_5min', name: Intl.get('crm.ahead.n.min', '提前{n}分钟', {'n': 5})},
     {value: 'thatday_10', name: Intl.get('crm.today.10.clock', '当天上午10点')},
     {value: 'ahead_1day_10', name: Intl.get('crm.n.day.10.clock', '{n}天前上午10点', {'n': 1})},
     {value: 'ahead_2day_10', name: Intl.get('crm.n.day.10.clock', '{n}天前上午10点', {'n': 2})},

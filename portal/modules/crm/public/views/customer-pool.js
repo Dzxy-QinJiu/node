@@ -711,6 +711,7 @@ class CustomerPool extends React.Component {
                             showSelectChangeTip={selectCustomerLength}
                             toggleList={this.toggleList.bind(this)}
                             filterType={Intl.get('call.record.customer', '客户')}
+                            showList={this.state.showFilterList}
                         />
                     </div>
                     <div className="customer-search-block" style={{display: selectCustomerLength ? 'none' : 'block', width: this.state.filterInputWidth}}>

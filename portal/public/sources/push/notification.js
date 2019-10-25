@@ -22,8 +22,10 @@ function updateText(notify , options) {
 
 //根据type匹配图标
 function switchIcon(type) {
+    //注：客户和线索的电联采用不同的标签
     let list = {
-        calls: 'icon-phone-call-out',//日程：电联
+        calls: 'icon-phone-call-out',//日程：客户电联
+        lead: 'icon-phone-call-out',//日程：线索电联
         visit: 'icon-visit-briefcase',//日程：拜访
         other: 'icon-trace-other',//日程：其他
         clue: 'icon-clue',//线索
