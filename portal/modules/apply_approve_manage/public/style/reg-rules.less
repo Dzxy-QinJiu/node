@@ -8,11 +8,52 @@
       margin-left: 24px;
       border-bottom: 1px solid #DEDFE3;
       overflow: hidden;
+      //抄送人相关信息
+      &.inform-cc{
+        .rule-content.info-container{
+          float: left;
+          .cc-info-type{
+            margin:0 0 10px 0;
+            .apply-cc-node{
+              overflow: hidden;
+              .cc-person-label{
+                position: relative;
+                top: 30px;
+              }
+            }
+            .info-ways-checks{
+              display: inline-block;
+            }
+            .rule-content.cc-node-lists{
+              display: block;
+              margin:10px 0;
+            }
+            &:not(:first-child){
+              .rule-content.cc-node-lists{
+                margin-left: 0;
+              }
+              .ant-checkbox-wrapper{
+                margin-left: 0px;
 
+              }
+            }
+            .ant-checkbox-wrapper{
+                margin-left: 0px;
+            }
+          }
+
+        }
+      }
       .item-label {
         font-size: 14px;
         color: #333;
         width: 110px;
+        float: left;
+      }
+      .sub-item-label{
+        width: 80px;
+        font-size: 14px;
+        color: #333;
         float: left;
       }
       .rule-content.info-container {
@@ -103,7 +144,7 @@
     };
 
     //添加节点的样式
-    .rule-content.apply-node-lists{
+    .rule-content.apply-node-lists, .rule-content.cc-node-lists{
       float: left;
       overflow: hidden;
       .item-node {
@@ -161,7 +202,7 @@
     }
 
 
-  }
+    }
   //添加申请审批人节点面板
   .show-add-node-modal{
     position: fixed;

@@ -253,6 +253,36 @@ exports.APPROVER_TYPE = [{
     
 {name: Intl.get('apply.add.approver.applicant.self', '申请人自己'), value: 'application_self'}
 ];
+
+exports.CC_SETTINGT_TYPE = [{
+    name: Intl.get('apply.add.approver.higher.level', '上级'),
+    value: 'teamowner_range',
+}, {
+    name: Intl.get('apply.set.team.secretry', '团队秘书'),
+    value: 'teammanager_range',
+},{
+    name: Intl.get('apply.set.team.user', '团队成员'),
+    value: 'teammember_range',
+},{
+    name: Intl.get('apply.add.approver.setting.role', '指定角色'),
+    value: 'system_roles',
+}
+];
+exports.SECRETRYOPTIONS = [{
+    name: Intl.get('apply.set.cc.node.secretry', '所属团队秘书'),
+    value: 'team_levels'
+},{
+    name: Intl.get('apply.set.cc.node.higher.secretry', '所有上级团队秘书'),
+    value: 'all_senior_teams'
+},{
+    name: Intl.get('apply.set.cc.node.all.secretry', '所属团队及所有上级团队秘书'),
+    value: 'team_levels_all_senior_teams'
+},];
+exports.USEROPTIONS = [{
+    name: Intl.get('apply.set.cc.node.all.team.user', '所有上级团队成员'),
+    value: 'higher_user'
+}];
+
 exports.getTeamHigerLevel = function() {
     var teamList = [{
         name: Intl.get('apply.approve.first.higher.level', '直属上级'),
@@ -331,6 +361,21 @@ exports.isBussinessTripFlow = function(itemType) {
 //是请假申请流程
 exports.isLeaveFlow = function(itemType) {
     return itemType === INNER_SETTING_FLOW.LEAVE;
+};
+//是否展示该节点
+exports.isShowCCNode = (item) => {
+    var showFlag = false;
+    if (_.isArray(item) && _.get(item,'[0]')){
+        showFlag = true;
+    }else if (_.isObject(item)){
+        if (_.get(item, 'all_senior_teams')){
+            showFlag = true;
+        }
+        if (_.get(item, 'team_levels[0]','') !== ''){
+            showFlag = true;
+        }
+    }
+    return showFlag;
 };
 exports.ADDTIONPROPERTIES = ['higherLevelApproveChecked','adminApproveChecked','submitFiles','assignNextNodeApprover','distributeSales','distributeSalesToVisit','customerSLDUpdate'];
 export const checkDomainName = function(rule, value, callback) {
