@@ -14,14 +14,13 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions, getPhoneInputValidateRules} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions} from '../utils/clue-customer-utils';
 import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
 var uuid = require('uuid/v4');
 import AlertTimer from 'CMP_DIR/alert-timer';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
-import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 require('../css/add-clues-info.less');
 import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
 import Trace from 'LIB_DIR/trace';
@@ -60,7 +59,8 @@ class ClueAddForm extends React.Component {
             saveResult: '',
             newAddClue: {},//新增加的线索
             existClueList: [],//相似的线索列表
-            checkNameError: false//线索名称
+            checkNameError: false,//线索名称
+            phoneDuplicateWarning: [],//联系人电话重复时的提示
         };
     }
 
@@ -245,45 +245,34 @@ class ClueAddForm extends React.Component {
         return phoneArray;
     };
 
+    isPhoneExisted = (value) => {
+        let phone = value.replace('-', '');
+        //所有联系人的电话
+        let phoneArray = this.getPhonesArray();
+        let phoneCount = _.filter(phoneArray, (curPhone) => curPhone === phone);
+
+        //该电话列表已存在该电话
+        if (phoneCount.length > 1) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     //获取联系人电话验证规则
     getPhoneInputValidateRules() {
         return [{
             validator: (rule, value, callback) => {
                 value = _.trim(value);
                 if (value) {
-                    let phone = value.replace('-', '');
-                    //所有联系人的电话
-                    let phoneArray = this.getPhonesArray();
-                    let phoneCount = _.filter(phoneArray, (curPhone) => curPhone === phone);
-
-                    //该电话列表已存在该电话
-                    if (phoneCount.length > 1) {
-                        //该电话列表已存在该电话，再添加时（重复添加）
+                    let existed = this.isPhoneExisted(value);
+                    if(existed) {
                         callback(Intl.get('crm.83', '该电话已存在'));
-                    } else {
-                        callback();
                     }
-                    // } else {//所有联系人的电话列表中不存在该电话
-                    //     //新加、修改后的该联系人电话列表中不存在的电话，进行唯一性验证
-                    //     CrmAction.checkOnlyContactPhone(phone, data => {
-                    //         if (_.isString(data)) {
-                    //             //唯一性验证出错了
-                    //             callback(Intl.get('crm.82', '电话唯一性验证出错了'));
-                    //         } else {
-                    //             if (_.isObject(data) && data.result === 'true') {
-                    //                 callback();
-                    //             } else {
-                    //                 //已存在
-                    //                 callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
-                    //             }
-                    //         }
-                    //     });
-                    // }
-                } else {
                     callback();
                 }
-            }
-        }];
+                callback();
+            }}];
     }
     //线索名唯一性验证
     checkOnlyClueName = (e) => {
@@ -321,6 +310,68 @@ class ClueAddForm extends React.Component {
         } else {
             this.setState({clueNameExist: false, checkNameError: false, existClueList: []});
         }
+    };
+
+    //电话修改时的回调
+    onPhoneChange = (phoneObj) => {
+        let {key, value} = phoneObj;
+        setTimeout(() => {
+            let queryObj = {phone: value};
+            clueCustomerAction.checkOnlyClueNamePhone(queryObj, true, data => {
+                if (_.isString(data)) {
+                    //唯一性验证出错了
+                } else {
+                    if (_.isObject(data) && data.result === 'true') {
+                        //电话没有被线索使用时
+                        this.handleDuplicatePhoneMsg(key, false, '');
+                    } else {
+                        let existed = this.isPhoneExisted(value);
+                        //如果有“电话已存在”的验证错误，先展示"电话已存在"
+                        if(!existed) {
+                            let message = Intl.get('clue.customer.repeat.phone.user', '该电话已被线索"{userName}"使用',{userName: _.get(data, 'list[0].name', [])});
+                            //已存在
+                            this.handleDuplicatePhoneMsg(key, true, message);
+                        }
+                    }
+                }
+            });
+        }, 500);
+    };
+
+    //电话重复时错误信息的处理
+    handleDuplicatePhoneMsg = (phoneKey, hasWarning, warningMsg) => {
+        let phoneDuplicateWarning = _.cloneDeep(this.state.phoneDuplicateWarning);
+        let phoneWarning = _.find(phoneDuplicateWarning, msg => _.isEqual(msg.id, phoneKey));
+        //如果没有找到id,并且有警告信息
+        if(_.isEmpty(phoneWarning) && hasWarning) {
+            phoneDuplicateWarning.push({
+                id: phoneKey,
+                warning: warningMsg,
+            });
+            this.setState({
+                phoneDuplicateWarning: phoneDuplicateWarning
+            });
+        } else if(!_.isEmpty(phoneWarning)) { //如果找到了此id，判断此时是否还有警告
+            //如果还有警告，更新此电话的警告信息
+            if(hasWarning){
+                phoneWarning.warning = warningMsg;
+            } else {//如果没有警告，说明已经修改为正确的电话
+                _.remove(phoneDuplicateWarning, msg => _.isEqual(msg.id, phoneKey));
+            }
+            this.setState({
+                phoneDuplicateWarning
+            });
+        }
+    };
+
+    //当移除电话输入框时的回调
+    onRemovePhoneInput = (phoneKey) => {
+        //当电话输入框清除时，清除对应的警告信息
+        let phoneDuplicateWarning = _.cloneDeep(this.state.phoneDuplicateWarning);
+        _.remove(phoneDuplicateWarning, msg => _.isEqual(msg.id, phoneKey));
+        this.setState({
+            phoneDuplicateWarning
+        });
     };
 
     render() {
@@ -392,14 +443,14 @@ class ClueAddForm extends React.Component {
                                     <Input
                                         name="name"
                                         id="name"
-                                        // onBlur={(e) => {
-                                        //     this.checkOnlyClueName(e);
-                                        // }}
+                                        onBlur={(e) => {
+                                            this.checkOnlyClueName(e);
+                                        }}
                                         placeholder={Intl.get('clue.suggest.input.customer.name', '建议输入客户名称')}
                                     />
                                 )}
                             </FormItem>
-                            {renderClueNameMsg(this.state.existClueList, this.state.checkNameError, _.get(formData, 'name', ''), this.props.showRightPanel)}
+                            {renderClueNameMsg(this.state.existClueList, this.state.checkNameError, _.trim(this.props.form.getFieldValue('name')), this.props.showRightPanel)}
                             <FormItem
                                 className={clsContainer}
                                 label={Intl.get('crm.5', '联系方式')}
@@ -409,6 +460,9 @@ class ClueAddForm extends React.Component {
                                     hideContactRequired={this.hideContactRequired}
                                     validateContactName={contactNameRule()}
                                     phoneOnlyOneRules={this.getPhoneInputValidateRules()}
+                                    onPhoneChange={this.onPhoneChange}
+                                    phoneDuplicateWarning={this.state.phoneDuplicateWarning}
+                                    onRemovePhoneInput={this.onRemovePhoneInput}
                                     form={this.props.form} />
                             </FormItem>
                             {this.renderCheckContactMsg()}
