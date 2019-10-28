@@ -55,6 +55,7 @@ class UserDetail extends React.Component {
         activeKey: '1',//tab激活页的key
         showBasicDetail: true,//是否展示顶部用户信息
         showEditPw: false,
+        isPanelSwitchLeft: false,
         ...AppUserPanelSwitchStore.getState(),
         ...AppUserDetailStore.getState()
     };
@@ -86,36 +87,19 @@ class UserDetail extends React.Component {
         var stateData = AppUserDetailStore.getState();
         this.setState(stateData);
     };
-
-    //滑动的延时
-    panelSwitchTimeout = null;
-
+    
     //面板向左滑
-    panelSwitchLeft = (timeout) => {
-        clearTimeout(this.panelSwitchTimeout);
-        if (!timeout) {
-            $(this.refs.wrap).addClass('move_left');
-            $(this.refs.topWrap).addClass('move-left-wrapper');
-        } else {
-            this.panelSwitchTimeout = setTimeout(() => {
-                $(this.refs.wrap).addClass('move_left');
-                $(this.refs.topWrap).addClass('move-left-wrapper');
-            }, timeout);
-        }
+    panelSwitchLeft = () => {
+        this.setState({
+            isPanelSwitchLeft: true
+        });
     };
 
     //面板向右滑
-    panelSwitchRight = (timeout) => {
-        clearTimeout(this.panelSwitchTimeout);
-        if (!timeout) {
-            $(this.refs.wrap).removeClass('move_left');
-            $(this.refs.topWrap).removeClass('move-left-wrapper');
-        } else {
-            this.panelSwitchTimeout = setTimeout(() => {
-                $(this.refs.wrap).removeClass('move_left');
-                $(this.refs.topWrap).removeClass('move-left-wrapper');
-            }, timeout);
-        }
+    panelSwitchRight = () => {
+        this.setState({
+            isPanelSwitchLeft: false
+        });
     };
     getIntegrateConfig(){
         getIntegrationConfig().then(resultObj => {
@@ -189,7 +173,7 @@ class UserDetail extends React.Component {
         if (this._isMounted) {
             $(ReactDOM.findDOMNode(this)).css('zIndex', zIndex);
         }
-    }
+    };
 
     wheelTimer = null;
 
@@ -463,6 +447,14 @@ class UserDetail extends React.Component {
         let rightPanelCls = classNames('apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel', {
             'notification-system-user': this.props.isNotificationOpenUserDetail
         });
+        let userDetailPanelCls = classNames('full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container user-detail-v3-content', {
+            'panel-switch-user-detail-v3': this.state.isPanelSwitchLeft,
+            'move-left-wrapper': this.state.isPanelSwitchLeft,
+        });
+        let detailTabsCls = classNames('full_size app_user_full_size_item wrap_padding user-detail-v3-content', {
+            'panel-switch-user-detail-v3': this.state.isPanelSwitchLeft,
+            'move_left': this.state.isPanelSwitchLeft,
+        });
         return (
             <RightPanel
                 className={rightPanelCls}
@@ -470,7 +462,7 @@ class UserDetail extends React.Component {
             >
                 <div className="right-panel-wrapper">
                     <span className="iconfont icon-close" onClick={this.closeRightPanel} />
-                    <div className="full_size app_user_full_size user_manage_user_detail_wrap right-panel-content full-size-container user-detail-v3-content" ref='topWrap'>
+                    <div className={userDetailPanelCls} ref='topWrap'>
                         <StatusWrapper>
                             {
                                 !errorMsg ? (
@@ -570,7 +562,7 @@ class UserDetail extends React.Component {
                                 ) : null
                             }
                         </StatusWrapper>
-                        <div className="full_size app_user_full_size_item wrap_padding user-detail-v3-content" ref="wrap">
+                        <div className={detailTabsCls} ref="wrap">
                             <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
                                 {tabPaneList}
                             </Tabs>
