@@ -463,6 +463,9 @@ class UserDetail extends React.Component {
         let rightPanelCls = classNames('apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel', {
             'notification-system-user': this.props.isNotificationOpenUserDetail
         });
+        let tabcls = classNames({
+            'single-log-tabs': this.state.activeKey === '3'
+        });
         return (
             <RightPanel
                 className={rightPanelCls}
@@ -571,7 +574,12 @@ class UserDetail extends React.Component {
                             }
                         </StatusWrapper>
                         <div className="full_size app_user_full_size_item wrap_padding user-detail-v3-content" ref="wrap">
-                            <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
+                            <Tabs
+                                defaultActiveKey="1"
+                                onChange={this.changeTab}
+                                activeKey={this.state.activeKey}
+                                className={tabcls}
+                            >
                                 {tabPaneList}
                             </Tabs>
                         </div>
