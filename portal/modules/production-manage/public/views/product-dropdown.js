@@ -104,7 +104,7 @@ class ProductDropdown extends React.Component {
     render() {
         let integrateType = this.state.integrateType.toUpperCase();
         let importBtn = (
-            <Button className='btn-item'>
+            <Button>
                 <i className='iconfont icon-oplate'></i>
                 {Intl.get('config.product.list.import', '导入产品')}
                 <Icon type="down"/>
