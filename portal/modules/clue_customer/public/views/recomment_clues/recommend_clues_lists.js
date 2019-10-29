@@ -140,7 +140,7 @@ class RecommendCustomerRightPanel extends React.Component {
             //如果当前客户是需要更新的客户，才更新
             clueCustomerAction.updateRecommendClueLists(arr[0]);
         });
-        if (!_.get(this.state, 'recommendClueLists.length')) {
+        if (_.isEmpty(_.get(this.state, 'recommendClueLists'))) {
             this.getRecommendClueLists();
         }
         this.setState({
@@ -488,9 +488,11 @@ class RecommendCustomerRightPanel extends React.Component {
             </div>);
         } else {
             var rowSelection = this.getRowSelection();
-            var conditionObj = this.getSearchCondition();//如果有筛选条件的时候，提醒修改条件再查看，没有筛选条件的时候，提示暂无数据
+            var conditionObj = this.getSearchCondition();
             delete conditionObj.load_size;
             delete conditionObj.userId;
+            //如果有筛选条件的时候，提醒修改条件再查看，没有筛选条件的时候，提示暂无数据
+            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : Intl.get('clue.edit.condition.search', '请修改条件再查看');
             return (
                 <AntcTable
                     rowSelection={rowSelection}
@@ -499,7 +501,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     pagination={false}
                     columns={this.getRecommendClueTableColunms()}
                     scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
-                    locale={{ emptyText: _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : Intl.get('clue.edit.condition.search', '请修改条件再查看') }}
+                    locale={{emptyText: emptyText}}
                 />);
         }
     };
