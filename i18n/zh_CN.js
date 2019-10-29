@@ -2912,7 +2912,7 @@ var zh_CN = {
     'clue.customer.check.only.fail': '线索名称唯一性校验出错',
     'clue.customer.check.repeat': '该线索名称已存在',
     'clue.customer.similar.clue.contains': '相似的线索还有',
-    'clue.customer.repeat.phone.user': '该电话已被线索{userName}使用',
+    'clue.customer.repeat.phone.user': '该电话已被线索"{userName}"使用',
     'clue.customer.clue.time': '咨询于{relative}',
     'failed.to.get.clue.classify': '获取线索分类出错了',
     'clue.customer.classify': '线索分类',

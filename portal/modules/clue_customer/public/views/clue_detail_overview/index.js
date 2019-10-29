@@ -83,6 +83,7 @@ class ClueDetailOverview extends React.Component {
         submitInvalidateLoading: false,//正在提交无效记录
         isShowInvalidateInputPanel: false, //正在展示无效信息输入框
         myTeamTree: [],//销售领导获取我所在团队及下级团队树
+        phoneDuplicateWarning: [], //联系人电话重复时的提示
     };
 
     componentDidMount() {
@@ -636,17 +637,99 @@ class ClueDetailOverview extends React.Component {
             }]);
         }
         return (
-            <PhoneInput
-                initialValue={initValue}
-                placeholder={Intl.get('clue.add.phone.num', '电话号码')}
-                validateRules={validateRules}
-                id={fieldKey}
-                labelCol={{span: 4}}
-                wrapperCol={{span: 20}}
-                colon={false}
-                form={that.props.form}
-                label={index === 0 ? Intl.get('common.phone', '电话') : ' '}
-            />);
+            <div className='phone-input-wrap'>
+                <PhoneInput
+                    initialValue={initValue}
+                    placeholder={Intl.get('clue.add.phone.num', '电话号码')}
+                    validateRules={validateRules}
+                    id={fieldKey}
+                    labelCol={{span: 4}}
+                    wrapperCol={{span: 20}}
+                    colon={false}
+                    form={that.props.form}
+                    handleInputChange={this.handleInputChange.bind(this, fieldKey)}
+                    label={index === 0 ? Intl.get('common.phone', '电话') : ' '}
+                />
+                {this.renderDuplicateWarning(fieldKey)}
+            </div>
+        );
+    };
+
+    //删除电话时的回调
+    handleDelItem = (index, item_keys) => {
+        let phoneKey = item_keys[index];
+        let phoneDuplicateWarning = _.cloneDeep(this.state.phoneDuplicateWarning);
+        _.remove(phoneDuplicateWarning, msg => _.isEqual(msg.id, `phone[${phoneKey}]`));
+        this.setState({
+            phoneDuplicateWarning
+        });
+    };
+
+    //渲染电话重复信息
+    renderDuplicateWarning = (phoneId) => {
+        let duplicateWarning = this.state.phoneDuplicateWarning;
+        let warningMsg = _.map(duplicateWarning, item => {
+            let {id, warning} = item;
+            if(_.isEqual(phoneId, id)) {
+                return (
+                    <div className='phone-validate-error'>
+                        {warning}
+                    </div>
+                );
+            }
+        });
+        return _.isEmpty(warningMsg) ? null : warningMsg;
+    };
+
+    //电话修改时的回调
+    handleInputChange = (phoneKey, event) => {
+        let change = {
+            key: phoneKey,
+            value: _.trim(_.get(event,'target.value',''))
+        };
+        setTimeout(() => {
+            let queryObj = {phone: change.value};
+            clueCustomerAction.checkOnlyClueNamePhone(queryObj, true, data => {
+                if (_.isString(data)) {
+                    //唯一性验证出错了
+                } else {
+                    if (_.isObject(data) && data.result === 'true') {
+                        //电话没有被线索使用时
+                        this.handleDuplicatePhoneMsg(change.key, false, '');
+                    } else {
+                        let message = Intl.get('clue.customer.repeat.phone.user', '该电话已被线索"{userName}"使用',{userName: _.get(data, 'list[0].name', [])});
+                        //已存在
+                        this.handleDuplicatePhoneMsg(change.key, true, message);
+                    }
+                }
+            });
+        }, 500);
+    };
+
+    //电话重复时错误信息的处理
+    handleDuplicatePhoneMsg = (phoneKey, hasWarning, warningMsg) => {
+        let phoneDuplicateWarning = _.cloneDeep(this.state.phoneDuplicateWarning);
+        let phoneWarning = _.find(phoneDuplicateWarning, msg => _.isEqual(msg.id, phoneKey));
+        //如果没有找到id,并且有警告信息
+        if(_.isEmpty(phoneWarning) && hasWarning) {
+            phoneDuplicateWarning.push({
+                id: phoneKey,
+                warning: warningMsg,
+            });
+            this.setState({
+                phoneDuplicateWarning: phoneDuplicateWarning
+            });
+        } else if(!_.isEmpty(phoneWarning)) { //如果找到了此id，判断此时是否还有警告
+            //如果还有警告，更新此电话的警告信息
+            if(hasWarning){
+                phoneWarning.warning = warningMsg;
+            } else {//如果没有警告，说明已经修改为正确的电话
+                _.remove(phoneDuplicateWarning, msg => _.isEqual(msg.id, phoneKey));
+            }
+            this.setState({
+                phoneDuplicateWarning
+            });
+        }
     };
 
     renderAssigendClueText = () => {
@@ -1217,7 +1300,7 @@ class ClueDetailOverview extends React.Component {
                                                 contactName={contactItem.name}
                                                 renderItemSelfSettingContent={this.renderItemSelfSettingContent.bind(this, curClue)}
                                                 renderItemSelfSettingForm={this.renderItemSelfSettingForm}
-
+                                                handleDelItem={this.handleDelItem}
                                             />
                                         </div>
                                         <div className="contact-item-content">

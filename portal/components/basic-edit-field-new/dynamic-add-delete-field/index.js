@@ -78,6 +78,7 @@ class DynamicAddDelField extends React.Component {
     handleDelItem = (key, index, size) => {
         if (index === 0 && size === 1) return;
         let item_keys = this.state.item_keys;
+        this.props.handleDelItem(index, item_keys);
         // 过滤调要删除元素的key
         item_keys = _.filter(item_keys, item => item !== key);
         this.setState({item_keys});
@@ -224,6 +225,7 @@ DynamicAddDelField.propTypes = {
     saveEditData: PropTypes.func,
     renderItemSelfSettingContent: PropTypes.func,
     renderItemSelfSettingForm: PropTypes.func,
+    handleDelItem: PropTypes.func,
     inputBoxType: PropTypes.string,
 
 };
@@ -274,6 +276,7 @@ DynamicAddDelField.defaultProps = {
     renderItemSelfSettingForm: function() {
 
     },
+    handleDelItem: function() {},//删除按钮的回调
     inputBoxType: 'text', // 输入框内容
 };
 export default Form.create()(DynamicAddDelField);
