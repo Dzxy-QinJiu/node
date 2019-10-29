@@ -694,3 +694,5 @@ export const RESPONSIVE_LAYOUT = {
     MIDDLE_WIDTH: 990,//响应式布局的pad端断点
     MIN_WIDTH: 720,//响应式布局的手机端断点
 };
+//域名固定结尾
+export const DOMAIN_END = '.eagok.com';

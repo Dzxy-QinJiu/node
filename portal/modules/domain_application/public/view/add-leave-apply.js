@@ -18,7 +18,7 @@ import { ADDAPPLYFORMCOMPONENTS} from '../../../apply_approve_manage/public/util
 import AlertTimer from 'CMP_DIR/alert-timer';
 import Trace from 'LIB_DIR/trace';
 import {ALL_COMPONENTS, SELF_SETTING_FLOW,checkDomainName} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
-import {DELAY_TIME_RANGE} from 'PUB_DIR/sources/utils/consts';
+import {DELAY_TIME_RANGE, DOMAIN_END} from 'PUB_DIR/sources/utils/consts';
 import leaveStore from '../store/leave-apply-store';
 import LeaveApplyAction from '../action/leave-apply-action';
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
@@ -214,7 +214,7 @@ class AddLeaveApply extends React.Component {
                                             }else{
                                                 //todo 只能暂时这样加校验规则
                                                 if(target.component_type === ALL_COMPONENTS.INPUT && propertyObj.is_required){
-                                                    return <ApplyComponent {...propertyObj} form={this.props.form} validator={checkDomainName}/>;
+                                                    return <ApplyComponent {...propertyObj} form={this.props.form} validator={checkDomainName} addonAfter={DOMAIN_END}/>;
                                                 }else{
                                                     return <ApplyComponent {...propertyObj} form={this.props.form}/>;
                                                 }
