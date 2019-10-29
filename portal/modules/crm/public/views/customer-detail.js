@@ -225,8 +225,8 @@ class CrmRightPanel extends React.Component {
                                         ) : null}
                                     </TabPane>
                                 )}
-                            {//用合同基础角色的权限，并且开通了营收中心时，才展示合同列表
-                                hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && isOpenCash() ? (
+                            {//开通了营收中心时，才展示合同列表
+                                isOpenCash() ? (
                                     <TabPane
                                         tab={Intl.get('contract.125', '合同')}
                                         key={TAB_KEYS.CONTRACT_TAB}
