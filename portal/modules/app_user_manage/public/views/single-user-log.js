@@ -17,6 +17,7 @@ import { AntcTimeLine } from 'antc';
 const TOP_PADDING = 40;//top padding for inputs（时间选择框和搜索框高度）
 const APP_SELECT_HEIGHT = 40; // 应用选择框的高度
 const BOTTOM_TOTAL_HEIGHT = 50; // 记录总条数的高度
+import {isEqualArray} from 'LIB_DIR/func';
 
 class SingleUserLog extends React.Component {
     static defaultProps = {
@@ -64,7 +65,8 @@ class SingleUserLog extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         var newUserId = nextProps.userId;
-        if (this.props.userId !== newUserId) {
+        // 在全部产品下，显示对应的产品列表
+        if (this.props.userId !== newUserId || this.props.selectedAppId === '' && !isEqualArray(nextProps.appLists, this.props.appLists)) {
             setTimeout(() => {
                 SingleUserLogAction.changUserIdKeepSearch();
                 this.getSingleUserLogInfoByApp(newUserId, nextProps.selectedAppId, nextProps.appLists);

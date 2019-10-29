@@ -23,6 +23,7 @@ const CALENDER_COLOR = {
     CONTENT: ['#90caf9', '#2196f3', '#006bc0']
 };
 import userData from 'PUB_DIR/sources/user-data';
+import {isEqualArray} from 'LIB_DIR/func';
 
 class UserLoginAnalysis extends React.Component {
     static defaultProps = {
@@ -79,7 +80,7 @@ class UserLoginAnalysis extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         var newUserId = nextProps.userId;
-        if (this.props.userId !== newUserId) {
+        if (this.props.userId !== newUserId || !isEqualArray(nextProps.appLists, this.props.appLists)) {
             setTimeout(() => {
                 UserLoginAnalysisAction.resetState();
                 this.getUserAnalysisInfo(newUserId, nextProps.selectedAppId, nextProps.appLists);
