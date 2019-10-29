@@ -108,18 +108,18 @@ class HeadIcon extends React.Component {
                                         className="upload-img-container"
                                         title={Intl.get('common.image.upload.size','请上传小于100KB的图片')}
                                     >
-                                        <input
-                                            className="upload-img-select"
-                                            type="file"
-                                            name="imgUpload"
-                                            data-tracename="上传头像"
-                                            onChange={this.uploadImg}
-                                            accept="image/*"
-                                        />
                                         <div className="change-img-container">
                                             <span>
                                                 {Intl.get('common.upload.img.change','更改')}
                                             </span>
+                                            <input
+                                                className="upload-img-select"
+                                                type="file"
+                                                name="imgUpload"
+                                                data-tracename="上传头像"
+                                                onChange={this.uploadImg}
+                                                accept="image/*"
+                                            />
                                         </div>
                                     </div>
                                 ) : this.renderHeadImg(headIcon)
