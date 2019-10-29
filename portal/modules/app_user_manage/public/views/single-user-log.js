@@ -17,6 +17,7 @@ import { AntcTimeLine } from 'antc';
 const TOP_PADDING = 40;//top padding for inputs（时间选择框和搜索框高度）
 const APP_SELECT_HEIGHT = 40; // 应用选择框的高度
 const BOTTOM_TOTAL_HEIGHT = 50; // 记录总条数的高度
+import { data as antUtilData } from 'ant-utils';
 
 class SingleUserLog extends React.Component {
     static defaultProps = {
@@ -55,19 +56,28 @@ class SingleUserLog extends React.Component {
         if (this.props.operatorRecordDateSelectTime) {
             SingleUserLogAction.changeSearchTime(this.props.operatorRecordDateSelectTime);
             setTimeout(() => {
-                this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
+                this.singleUserLogQuery(userId, this.props);
             });
         } else {
             this.getSingleUserLogInfoByApp(userId, this.props.selectedAppId, this.props.appLists);
         }
     }
 
+    singleUserLogQuery = (userId, props) => {
+        if (props.selectedAppId) {
+            this.getSingleUserLogInfoByApp(userId, props.selectedAppId);
+        } else {
+            this.getSingleUserLogInfoByApp(userId, props.selectedAppId, props.appLists);
+        }
+    };
+
     componentWillReceiveProps(nextProps) {
         var newUserId = nextProps.userId;
-        if (this.props.userId !== newUserId) {
+        // 切换用户或是this.props.selectedAppId是空时，表示全部产品下，查看操作记录，需要比较应用列表
+        if (this.props.userId !== newUserId || this.props.selectedAppId === '' && !antUtilData.isEqualArray(nextProps.appLists, this.props.appLists)) {
             setTimeout(() => {
                 SingleUserLogAction.changUserIdKeepSearch();
-                this.getSingleUserLogInfoByApp(newUserId, nextProps.selectedAppId, nextProps.appLists);
+                this.singleUserLogQuery(newUserId, nextProps);
             }, 0);
         }
     }
