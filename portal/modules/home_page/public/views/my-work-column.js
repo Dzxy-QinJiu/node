@@ -26,6 +26,7 @@ import LeaveApplyDetail from 'MOD_DIR/leave-apply/public/view/apply-view-detail'
 import DocumentApplyDetail from 'MOD_DIR/document_write/public/view/apply-view-detail';
 import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail';
 import VisitApplyDetail from 'MOD_DIR/self_setting/public/view/apply-view-detail';
+import DomainApplyDetail from 'MOD_DIR/domain_application/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
@@ -677,6 +678,7 @@ class MyWorkColumn extends React.Component {
             'personal_leave': Intl.get('leave.apply.leave.application', '请假申请'),
             'opinion_report': Intl.get('home.page.user.application.for', '{type}申请', {type: Intl.get('apply.approve.lyrical.report', '舆情报告')}),
             'document_writing': Intl.get('home.page.user.application.for', '{type}申请', {type: Intl.get('apply.approve.document.writing', '文件撰写')}),
+            'domainName': Intl.get('apply.domain.application.work.flow', '域名申请'),
             'apply_user_official': Intl.get('home.page.user.formal.apply', '签约用户申请'),
             'apply_user_trial': Intl.get('home.page.user.trial.apply', '试用用户申请'),
             'apply_app_official': Intl.get('home.page.user.formal.apply', '签约用户申请'),
@@ -1311,6 +1313,15 @@ class MyWorkColumn extends React.Component {
                 case APPLY_APPROVE_TYPES.DOCUMENT_WRITING://文件撰写申请
                     detailContent = (
                         <DocumentApplyDetail
+                            isHomeMyWork={true}
+                            detailItem={applyInfo}
+                            applyListType='false'//待审批状态
+                            afterApprovedFunc={this.afterFinishApplyWork}
+                        />);
+                    break;
+                case APPLY_APPROVE_TYPES.DOMAINAPPLY: //域名申请
+                    detailContent = (
+                        <DomainApplyDetail
                             isHomeMyWork={true}
                             detailItem={applyInfo}
                             applyListType='false'//待审批状态
