@@ -103,8 +103,9 @@ class DynamicAddDelContacts extends React.Component {
      * contactIndex:删除第几个联系人的联系方式
      * contactWay: 删除的哪种联系方式
      * contactWayKey: 删除该key的联系方式
+     * phoneKey: 电话的id值，专用于电话的删除操作
      */
-    removeContactWay = (contactIndex, contactWay, contactWayKey) => {
+    removeContactWay = (contactIndex, contactWay, contactWayKey, phoneKey) => {
         const {form} = this.props;
         // contact_keys：记录所有联系人所有联系方式的key数组对象
         // [{ key: 0,
@@ -119,7 +120,7 @@ class DynamicAddDelContacts extends React.Component {
         // 过滤调要删除的联系方式的key
         contact_keys[contactIndex][contactWay] = _.filter(contactWayArray, (item, index) => item.key !== contactWayKey);
         form.setFieldsValue({contact_keys});
-
+        if(phoneKey) this.props.onRemovePhoneInput(phoneKey);
     };
     /**
      * 添加联系方式
@@ -144,6 +145,21 @@ class DynamicAddDelContacts extends React.Component {
         let addContactWayKey = lastContactWayKey + 1;
         contactWayArray.push({key: addContactWayKey});
         form.setFieldsValue({contact_keys});
+    };
+
+    renderDuplicateWarning = (phoneId) => {
+        let duplicateWarning = this.props.phoneDuplicateWarning;
+        let warningMsg = _.map(duplicateWarning, item => {
+            let {id, warning} = item;
+            if(_.isEqual(phoneId, id)) {
+                return (
+                    <div className='phone-validate-error'>
+                        {warning}
+                    </div>
+                );
+            }
+        });
+        return _.isEmpty(warningMsg) ? null : warningMsg;
     };
 
     renderDiffContacts(item, index, contact_keys) {
@@ -194,9 +210,10 @@ class DynamicAddDelContacts extends React.Component {
                                     colon={false}
                                     form={this.props.form}
                                     label={phoneIndex === 0 ? Intl.get('common.phone', '电话') : ' '}
-                                    handleInputChange={this.setPhoneValue}
+                                    handleInputChange={this.setPhoneValue.bind(this, phoneKey)}
                                 />
-                                {this.renderContactWayBtns(index, phoneIndex, phoneArray.length, 'phone', phone.key)}
+                                {this.renderContactWayBtns(index, phoneIndex, phoneArray.length, 'phone', phone.key, phoneKey)}
+                                {this.renderDuplicateWarning(phoneKey)}
                             </div>);
                     })}
                     {_.map(qqArray, (qq, qqIndex) => {
@@ -218,10 +235,15 @@ class DynamicAddDelContacts extends React.Component {
             this.props.hideContactRequired();
         }
     };
-    setPhoneValue = (obj) => {
+    setPhoneValue = (phoneKey, obj) => {
         if (_.get(obj,'target.value','')){
             this.props.hideContactRequired();
         }
+        let change = {
+            key: phoneKey,
+            value: _.trim(_.get(obj,'target.value',''))
+        };
+        this.props.onPhoneChange(change);
     };
 
     /**
@@ -271,12 +293,13 @@ class DynamicAddDelContacts extends React.Component {
      * contactWaySize: 联系人某种联系方式的个数
      * contactWay: 联系方式
      * contactWayKey: 联系方式的key
+     * phoneKey: 电话的id, 专用于电话修改时的传参
      * */
-    renderContactWayBtns = (contactIndex, contactWayIndex, contactWaySize, contactWay, contactWayKey) => {
+    renderContactWayBtns = (contactIndex, contactWayIndex, contactWaySize, contactWay, contactWayKey, phoneKey) => {
         return (<div className="contact-way-buttons">
             {contactWayIndex === 0 && contactWaySize === 1 ? null : (
                 <div className="clue-minus-button"
-                    onClick={this.removeContactWay.bind(this, contactIndex, contactWay, contactWayKey)}>
+                    onClick={this.removeContactWay.bind(this, contactIndex, contactWay, contactWayKey, phoneKey)}>
                     <Icon type="minus"/>
                 </div>)}
             {contactWayIndex === contactWaySize - 1 ? (
@@ -351,17 +374,22 @@ class DynamicAddDelContacts extends React.Component {
 DynamicAddDelContacts.propTypes = {
     form: PropTypes.object,
     phoneOnlyOneRules: PropTypes.array,
+    phoneDuplicateWarning: PropTypes.array,
     contacts: PropTypes.array,//编辑时，传入的已有联系人列表
     validateContactName: PropTypes.array,
-    hideContactRequired: PropTypes.func
+    hideContactRequired: PropTypes.func,
+    onPhoneChange: PropTypes.func,
+    onRemovePhoneInput: PropTypes.func,
 };
 DynamicAddDelContacts.defaultProps = {
     form: {},
     phoneOnlyOneRules: [],//电话唯一性的验证
+    phoneDuplicateWarning: [], //电话与已有电话相同时提示，用于线索中电话的处理
     validateContactName: [],
     hideContactRequired: function() {
-
-    }
+    },
+    onPhoneChange: function() {},//当电话修改时的回调
+    onRemovePhoneInput: function() {},//当删除联系方式时的回调
 };
 export default DynamicAddDelContacts;
 
