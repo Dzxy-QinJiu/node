@@ -6,6 +6,10 @@ const otherFilterArray = [
     {
         name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 15}),
         value: 'fifteen_uncontact'
+    },
+    {
+        name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 30}),
+        value: 'thirty_uncontact'
     }
 ];
 //合格标签的筛选

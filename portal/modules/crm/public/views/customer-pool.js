@@ -156,6 +156,8 @@ class CustomerPool extends React.Component {
                         //超15天未联系
                         if (val === 'fifteen_uncontact') {
                             filterParams.contact_end = moment().valueOf() - DAY_TIME.FIFTEEN_DAY;
+                        } else if (val === 'thirty_uncontact') {
+                            filterParams.contact_end = moment().valueOf() - DAY_TIME.THIRTY_DAY;
                         }
                     } else {//高级筛选
                         filterParams[key] = val;

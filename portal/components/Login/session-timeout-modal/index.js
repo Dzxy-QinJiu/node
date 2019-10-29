@@ -13,7 +13,7 @@ const logoScr = require('../image/wihte-logo.png');
 const Logo = require('../../Logo/index');
 const FormItem = Form.Item;
 import userData from 'PUB_DIR/sources/user-data';
-
+import phoneUtil from 'PUB_DIR/sources/utils/phone-util';
 //错误信息提示
 const ERROR_MSGS = {
     NO_SERVICE: Intl.get('login.error.retry', '登录服务暂时不可用，请稍后重试'),
@@ -135,6 +135,8 @@ class SessionTimeoutModal extends React.Component {
         userData.getUserDataByAjax().done(() => {
             //重新建立socket连接
             !Oplate.hideSomeItem && require('PUB_DIR/sources/push').startSocketIo();
+            const user = userData.getUserData();
+            phoneUtil.initPhone(user);
             this.setState({isLogining: false, captchaCode: '', loginErrorMsg: ''});
             var $modal = $('body >#session-timeout-modal');
             if ($modal && $modal.length > 0) {
