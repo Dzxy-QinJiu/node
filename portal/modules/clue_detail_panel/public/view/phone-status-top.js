@@ -176,6 +176,8 @@ class phoneStatusTop extends React.Component {
         }
         phoneAlertAction.updateClueTrace(submitObj, () => {
             let updateData = {lead_id: clue_id, remark: this.state.inputContent};
+            var curClue = this.state.curClue;
+            ClueAction.afterAddClueTrace(curClue);
             ClueAction.updateCurrentClueRemark(updateData);
             this.setState({
                 selectedClueId: '',
