@@ -55,6 +55,7 @@ class UserDetail extends React.Component {
         activeKey: '1',//tab激活页的key
         showBasicDetail: true,//是否展示顶部用户信息
         showEditPw: false,
+        isChangingActiveKey: false, // 是否正在切换tab,默认false
         ...AppUserPanelSwitchStore.getState(),
         ...AppUserDetailStore.getState()
     };
@@ -225,9 +226,15 @@ class UserDetail extends React.Component {
 
     changeTab = (key) => {
         this.setState({
-            activeKey: key
+            activeKey: key,
+            isChangingActiveKey: true,
         }, () => {
             document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
+            setTimeout( () => {
+                this.setState({
+                    isChangingActiveKey: false
+                });
+            }, 500);
         });
     };
 
@@ -463,8 +470,9 @@ class UserDetail extends React.Component {
         let rightPanelCls = classNames('apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel', {
             'notification-system-user': this.props.isNotificationOpenUserDetail
         });
+        // 在操作记录界面，有时间选择组件，为了解决时间组件显示不全的问题，增加样式控制
         let tabcls = classNames({
-            'single-log-tabs': this.state.activeKey === '3'
+            'single-log-tabs': this.state.activeKey === '3' && !this.state.isChangingActiveKey
         });
         return (
             <RightPanel
