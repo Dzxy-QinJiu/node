@@ -96,14 +96,17 @@ class RecommendCustomerRightPanel extends React.Component {
         }
         return (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer;
     };
-
-    getRecommendClueLists = () => {
+    getSearchCondition = () => {
         var conditionObj = _.cloneDeep(_.get(this, 'state.settedCustomerRecommend.obj'));
         //去掉一些不用的属性
         delete conditionObj.id;
         delete conditionObj.user_id;
         delete conditionObj.organization;
         conditionObj.load_size = this.state.pageSize;
+        return conditionObj;
+    };
+    getRecommendClueLists = () => {
+        var conditionObj = this.getSearchCondition();
         //去掉为空的数据
         clueCustomerAction.getRecommendClueLists(conditionObj);
     }
@@ -137,6 +140,9 @@ class RecommendCustomerRightPanel extends React.Component {
             //如果当前客户是需要更新的客户，才更新
             clueCustomerAction.updateRecommendClueLists(arr[0]);
         });
+        if (_.isEmpty(this.state.recommendClueLists)) {
+            this.getRecommendClueLists();
+        }
         this.setState({
             selectedRecommendClues: []
         });
@@ -482,6 +488,11 @@ class RecommendCustomerRightPanel extends React.Component {
             </div>);
         } else {
             var rowSelection = this.getRowSelection();
+            var conditionObj = this.getSearchCondition();
+            delete conditionObj.load_size;
+            delete conditionObj.userId;
+            //如果有筛选条件的时候，提醒修改条件再查看，没有筛选条件的时候，提示暂无数据
+            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : Intl.get('clue.edit.condition.search', '请修改条件再查看');
             return (
                 <AntcTable
                     rowSelection={rowSelection}
@@ -490,6 +501,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     pagination={false}
                     columns={this.getRecommendClueTableColunms()}
                     scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                    locale={{emptyText: emptyText}}
                 />);
         }
     };
