@@ -59,7 +59,6 @@ class UserInfo extends React.Component{
             sendTime: 60,//计时器显示时间
             versionName: '', // 版本信息
             endTime: '', // 到期时间
-            isShowUpgradeVersionPanel: false, // 是否显示版本升级界面，默认不显示
         };
     }
 
@@ -370,9 +369,7 @@ class UserInfo extends React.Component{
 
     // 处理版本升级
     handleVersionUpgrade = () => {
-        this.setState({
-            isShowUpgradeVersionPanel: true
-        });
+
     };
 
     renderUserInfo() {
@@ -426,7 +423,9 @@ class UserInfo extends React.Component{
                         <Button 
                             className="user-version-upgrade"
                             onClick={this.handleVersionUpgrade}
-                        >{Intl.get('user.info.version.upgrade', '升级为正式版')}</Button>
+                        >
+                            {Intl.get('user.info.version.upgrade', '升级为正式版')}
+                        </Button>
 
                     </div>
                     <div className="user-info-item">
@@ -660,11 +659,6 @@ class UserInfo extends React.Component{
                         </div>
                     </PrivilegeChecker>
                 </div> : null}
-                { // TODO 点击版本升级后的界面
-                    this.state.isShowUpgradeVersionPanel ? (
-                        <div></div>
-                    ) : null
-                }
             </div>
         );
     }
