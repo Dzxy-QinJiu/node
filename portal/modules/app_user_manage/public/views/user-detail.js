@@ -55,6 +55,7 @@ class UserDetail extends React.Component {
         activeKey: '1',//tab激活页的key
         showBasicDetail: true,//是否展示顶部用户信息
         showEditPw: false,
+        isChangingActiveKey: false, // 是否正在切换tab,默认false
         ...AppUserPanelSwitchStore.getState(),
         ...AppUserDetailStore.getState()
     };
@@ -189,7 +190,7 @@ class UserDetail extends React.Component {
         if (this._isMounted) {
             $(ReactDOM.findDOMNode(this)).css('zIndex', zIndex);
         }
-    }
+    };
 
     wheelTimer = null;
 
@@ -225,9 +226,16 @@ class UserDetail extends React.Component {
 
     changeTab = (key) => {
         this.setState({
-            activeKey: key
+            activeKey: key,
+            isChangingActiveKey: true
         }, () => {
             document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
+            // 切换tab时，完全显示有一定的延迟，加setTimeout是为了，防止在切换到操作记录时，有滑动的问题
+            setTimeout( () => {
+                this.setState({
+                    isChangingActiveKey: false
+                });
+            }, 1000);
         });
     };
 
@@ -463,6 +471,10 @@ class UserDetail extends React.Component {
         let rightPanelCls = classNames('apply_detail_rightpanel app_user_manage_rightpanel white-space-nowrap right-panel detail-v3-panel', {
             'notification-system-user': this.props.isNotificationOpenUserDetail
         });
+        // 在操作记录界面，有时间选择组件，为了解决时间组件显示不全的问题，增加样式控制
+        let tabcls = classNames({
+            'single-log-tabs': this.state.activeKey === '3' && !this.state.isChangingActiveKey
+        });
         return (
             <RightPanel
                 className={rightPanelCls}
@@ -571,7 +583,12 @@ class UserDetail extends React.Component {
                             }
                         </StatusWrapper>
                         <div className="full_size app_user_full_size_item wrap_padding user-detail-v3-content" ref="wrap">
-                            <Tabs defaultActiveKey="1" onChange={this.changeTab} activeKey={this.state.activeKey}>
+                            <Tabs
+                                defaultActiveKey="1"
+                                onChange={this.changeTab}
+                                activeKey={this.state.activeKey}
+                                className={tabcls}
+                            >
                                 {tabPaneList}
                             </Tabs>
                         </div>
