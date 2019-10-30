@@ -3255,6 +3255,7 @@ var en_US = {
     'clue.and.crm.upload.size': 'The file size should not exceed 10M!',//文件大小不要超过10M!
     'contract.service.add': 'Add Service',//添加服务
     'apply.show.cancel.result': 'View revocation results',//查看撤销结果
+    'apply.view.see.apply.with.reply': 'Only see apply lists with replies',//只看有回复的申请
 
     // 成员申请
     'member.application': 'Member Application', // 成员申请

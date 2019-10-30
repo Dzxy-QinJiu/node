@@ -5,12 +5,10 @@
  */
 
 
-import {Input, Icon, Alert} from 'antd';
+import {Input, Icon, Alert, Checkbox } from 'antd';
 require('./index.less');
-import {getApplyResultDscr, getReportSendApplyStatusTimeLineDesc} from 'PUB_DIR/sources/utils/common-method-util';
-import {APPLY_FINISH_STATUS} from 'PUB_DIR/sources/utils/consts';
+import { getUserApplyStateText,handleHistoricalLists} from 'PUB_DIR/sources/utils/common-method-util';
 const UserData = require('PUB_DIR/sources/user-data');
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 var classNames = require('classnames');
 class ApplyDetailRemarks extends React.Component {
     constructor(props) {
@@ -18,6 +16,7 @@ class ApplyDetailRemarks extends React.Component {
         this.state = {
             openReplyListApplyIds: this.getInitialApplyId(this.props),
             sameHistoryApplyLists: this.props.sameHistoryApplyLists,
+            isOnlyShowListsWithReplyLists: true//是否只展示有回复列表的申请历史
         };
     }
     getInitialApplyId = (Props) => {
@@ -96,8 +95,10 @@ class ApplyDetailRemarks extends React.Component {
         }
         //历史申请列表中去掉点击通过或者驳回按钮增加的回复数据
         let replyList = _.cloneDeep(sameHistoryApplyLists.list);
+        if (this.state.isOnlyShowListsWithReplyLists){
+            replyList = handleHistoricalLists(replyList);
+        }
         if (_.isArray(replyList) && replyList.length) {
-
             return (
                 <ul>
                     {replyList.map((replyItem, index) => {
@@ -112,7 +113,7 @@ class ApplyDetailRemarks extends React.Component {
                                     <span className="apply-item-topic user-info-label" onClick={this.props.handleOpenApplyDetail.bind(this,replyItem)}>
                                         {replyItem.topic}
                                         <span className="apply-item-status">
-                                            <span className={btnClass}>[{commonMethodUtil.getUserApplyStateText(replyItem)}]</span>&gt;
+                                            <span className={btnClass}>[{getUserApplyStateText(replyItem)}]</span>&gt;
                                         </span>
                                     </span>
 
@@ -133,6 +134,11 @@ class ApplyDetailRemarks extends React.Component {
             return Intl.get('user.apply.approve.no.comment', '暂无申请历史！');
         }
     }
+    onCheckAllChange = (e) => {
+        this.setState({
+            isOnlyShowListsWithReplyLists: e.target.checked,
+        });
+    };
 
     render() {
         return (
@@ -142,7 +148,9 @@ class ApplyDetailRemarks extends React.Component {
                 </div>
                 <div className="reply-info-block apply-info-block">
                     <div className="reply-list-container apply-info-content">
-                        <div className="history-apply-title">{Intl.get('user.apply.history.apply.lists', '申请历史')}:</div>
+                        <div className="history-apply-title">{Intl.get('user.apply.history.apply.lists', '申请历史')}:
+                            <Checkbox onChange={this.onCheckAllChange} checked={this.state.isOnlyShowListsWithReplyLists}>{Intl.get('apply.view.see.apply.with.reply', '只看有回复的申请')}</Checkbox>
+                        </div>
                         {this.renderHistoricalList()}
                     </div>
                 </div>
