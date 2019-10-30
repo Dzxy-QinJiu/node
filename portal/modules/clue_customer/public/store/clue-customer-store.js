@@ -549,7 +549,9 @@ ClueCustomerStore.prototype.getAllSalesUserList = function(list) {
 ClueCustomerStore.prototype.updateClueItemAfterAssign = function(updateObj) {
     var item = _.get(updateObj,'item'),submitObj = _.get(updateObj,'submitObj'),isWillDistribute = _.get(updateObj,'isWillDistribute');
     let sale_id = _.get(submitObj,'sale_id',''), team_id = _.get(submitObj,'team_id',''), sale_name = _.get(submitObj,'sale_name',''), team_name = _.get(submitObj,'team_name','');
-    SetLocalSalesClickCount(sale_id);
+    let appendedTeamId = _.get(submitObj, 'team_id') ? `&&${submitObj.team_id}` : '';
+    let savedId = sale_id + appendedTeamId;
+    SetLocalSalesClickCount(savedId);
     //member_id是跟进销售的id
     subtracteGlobalClue(item, (flag) => {
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;//待我处理的线索

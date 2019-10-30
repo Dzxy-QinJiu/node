@@ -95,7 +95,9 @@ class ClueExtract extends React.Component {
     updateItem = (item, submitObj) => {
         let sale_id = _.get(submitObj, 'sale_id', ''), team_id = _.get(submitObj, 'team_id', ''),
             sale_name = _.get(submitObj, 'sale_name', ''), team_name = _.get(submitObj, 'team_name', '');
-        SetLocalSalesClickCount(sale_id);
+        let appendedTeamId = _.get(submitObj, 'team_id') ? `&&${submitObj.team_id}` : '';
+        let savedId = sale_id + appendedTeamId;
+        SetLocalSalesClickCount(savedId);
         //需要在列表中删除
         cluePoolAction.updateCluePoolList(item.id);
     };
@@ -611,11 +613,12 @@ class ClueExtract extends React.Component {
         if (!this.state.salesMan && flag) {
             cluePoolAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
         } else {
+            let salesMan = _.cloneDeep(this.state.salesMan);
             let id = record.id; // 提取线索某条的id
             let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
             if (flag) {
                 //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
-                let idArray = this.state.salesMan.split('&&');
+                let idArray = salesMan.split('&&');
                 if (_.isArray(idArray) && idArray.length) {
                     sale_id = idArray[0];// 提取给某个销售的id
                 }
@@ -633,6 +636,7 @@ class ClueExtract extends React.Component {
                 });
                 if (result.code === 0) { // 提取成功
                     cluePoolAction.updateCluePoolList(id);
+                    SetLocalSalesClickCount(salesMan);
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     if (isDetailExtract) { // 详情中，提取成功后，关闭右侧面板
                         this.hideRightPanel();

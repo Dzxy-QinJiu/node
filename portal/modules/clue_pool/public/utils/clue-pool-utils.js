@@ -1,6 +1,6 @@
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
-export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
+export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_pool_assign_selected_sales';
 
 //为了防止开始时间不传，后端默认时间是从1970年开始的问题,把开始时间设置从2010年开始
 export const clueStartTime = moment().year(2010).startOf('year').valueOf();
