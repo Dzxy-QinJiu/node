@@ -227,14 +227,15 @@ class UserDetail extends React.Component {
     changeTab = (key) => {
         this.setState({
             activeKey: key,
-            isChangingActiveKey: true,
+            isChangingActiveKey: true
         }, () => {
             document.querySelector('.gm-scroll-view').addEventListener('mousewheel', this.handleWheel, false);
+            // 切换tab时，完全显示有一定的延迟，加setTimeout是为了，防止在切换到操作记录时，有滑动的问题
             setTimeout( () => {
                 this.setState({
                     isChangingActiveKey: false
                 });
-            }, 500);
+            }, 1000);
         });
     };
 
