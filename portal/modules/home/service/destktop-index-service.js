@@ -6,7 +6,6 @@ var pageLogger = require('../../../lib/utils/logger').getLogger('page');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
 var EventEmitter = require('events');
 let BackendIntl = require('../../../lib/utils/backend_intl');
-
 //获取用户权限
 function getPrivileges(req) {
     var userInfo = auth.getUser(req);
@@ -73,7 +72,7 @@ exports.getUserInfo = function(req, res, userId) {
             //角色标识的数组['realm_manager', 'sales', ...]
             userData.roles = _.get(resultList, '[1].successData', []);
             //已经配置过的流程
-            userData.workFlowConfigs = _.get(resultList, '[2].successData', []);
+            userData.workFlowConfigs = handleWorkFlowData(_.get(resultList, '[2].successData', []));
             //引导流程
             userData.guideConfig = _.get(resultList,'[3].successData',[]);
             //是否是普通销售
@@ -125,6 +124,27 @@ function getIsCommonSalesByTeams(userId, teamTreeList) {
     }
     return isCommonSales;
 }
+
+
+function handleWorkFlowData(list) {
+    list = list || [];
+    let result = [];
+    list.forEach((item) => {
+        result.push({
+            applyRulesAndSetting: _.get(item, 'applyRulesAndSetting',{}),
+            customiz: _.get(item, 'customiz',true),
+            customiz_form: _.get(item, 'customiz_form',[]),
+            description: _.get(item, 'description',''),
+            id: _.get(item, 'id',''),
+            type: _.get(item, 'type',''),
+            notify_configs: _.get(item, 'notify_configs',[]),
+        });
+
+    });
+
+    return result;
+}
+
 
 //邮箱激活接口，用于发邮件时，点击激活连接的跳转
 exports.activeEmail = function(req, res, activeCode) {

@@ -70,7 +70,6 @@ class LeaveApplyManagement extends React.Component {
     };
 
     getQueryParams() {
-        var workFlowConfigs = userData.getUserData().workFlowConfigs;
         var params = {
             sort_field: this.state.sort_field,//排序字段
             order: this.state.order,
