@@ -158,7 +158,7 @@ var UserInfoPage = createReactClass({
                                 }
                             </TabPane>
                             <TabPane
-                                tab={Intl.get('user.trade.record', '交易记录')}
+                                tab={Intl.get('user.trade.record', '购买记录')}
                                 key={TAB_KEYS.TRADE_TAB}
                             >
                                 {

@@ -419,7 +419,7 @@ class UserInfo extends React.Component{
                         {
                             this.state.endTime ? (
                                 <span className="user-version-expire">
-                                    {`(${Intl.get('user.info.version.expire', '{time}到期', {time: this.state.endTime})})`}
+                                    {`(${Intl.get('user.info.version.expire', '{time}到期', {time: moment(this.state.endTime).format(oplateConsts.DATE_FORMAT)})})`}
                                 </span>
                             ) : null
                         }
