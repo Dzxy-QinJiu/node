@@ -140,7 +140,7 @@ class RecommendCustomerRightPanel extends React.Component {
             //如果当前客户是需要更新的客户，才更新
             clueCustomerAction.updateRecommendClueLists(arr[0]);
         });
-        if (_.isEmpty(_.get(this.state, 'recommendClueLists'))) {
+        if (_.isEmpty(this.state.recommendClueLists)) {
             this.getRecommendClueLists();
         }
         this.setState({
