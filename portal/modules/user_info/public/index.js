@@ -164,7 +164,7 @@ var UserInfoPage = createReactClass({
                                 {
                                     this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
                                         <TradeRecord
-                                            height={containerHeight}
+                                            height={containerHeight + logTitleHeight}
                                         />
                                     ) : null
                                 }

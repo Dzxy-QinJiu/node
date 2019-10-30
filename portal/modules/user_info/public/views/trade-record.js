@@ -1,12 +1,17 @@
 /**
  * Created by hzl on 2019/10/23.
  */
+
 require('../css/trade-record.less');
 import { AntcTable } from 'antc';
 import Spinner from 'CMP_DIR/spinner';
 import userInfoAjax from '../ajax/user-info-ajax';
 import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
+import NoData from 'CMP_DIR/no-data';
+import LoadDataError from 'CMP_DIR/load-data-error';
+
 const pageSize = 100;
+const tableHeadHeight = 40;
 class TradeRecord extends React.Component {
     constructor(props) {
         super(props);
@@ -28,7 +33,15 @@ class TradeRecord extends React.Component {
                 loading: true
             });
         }
-        userInfoAjax.getUserTradeRecord(queryObj).then( (result) => {
+        let submitObj = {
+            page_size: pageSize,
+            sort_id: ''
+        };
+        let sortId = _.get(queryObj, 'sort_id');
+        if (sortId) {
+            submitObj.sort_id = sortId;
+        }
+        userInfoAjax.getUserTradeRecord(submitObj).then( (result) => {
             let total = _.get(result, 'total') || 0;
             let tradeRecordList = this.state.tradeRecordList;
             tradeRecordList = tradeRecordList.concat(_.get(result, 'list'));
@@ -52,11 +65,7 @@ class TradeRecord extends React.Component {
     };
 
     componentWillMount() {
-        let queryObj = {
-            page_size: pageSize,
-            sort_id: ''
-        };
-        this.getUserTradeRecord(queryObj);
+        this.getUserTradeRecord();
     }
 
     componentWillUnmount() {
@@ -83,8 +92,15 @@ class TradeRecord extends React.Component {
             width: '25%'
         }, {
             title: Intl.get('deal.detail.panel.title','订单详情'),
-            dataIndex: 'goods_name',
-            width: '20%'
+            dataIndex: 'goods',
+            width: '20%',
+            render: (text) => {
+                return (
+                    <div className="order-detail">
+                        {_.get(text, 'name')}
+                    </div>
+                );
+            }
         }, {
             title: Intl.get('user.trade.record.time','订单时间'),
             dataIndex: 'finish_time',
@@ -128,15 +144,11 @@ class TradeRecord extends React.Component {
     };
 
     handleScrollBottom = () => {
-        let queryObj = {
-            page_size: pageSize,
-            sort_id: this.state.sortId
-        };
-        this.getUserTradeRecord(queryObj);
+        this.getUserTradeRecord({sort_id: this.state.sortId});
     };
 
     // 渲染用户的交易记录
-    renderUserTradeRecord = () => {
+    renderUserTradeRecordTable = () => {
         const columns = this.getTradeRecordColumns();
         const dataSource = this.state.tradeRecordList;
         const dropLoadConfig = {
@@ -147,7 +159,7 @@ class TradeRecord extends React.Component {
             noMoreDataText: Intl.get('common.no.more.data.tips', '没有更多{name}了',
                 {name: Intl.get('user.trade.record', '购买记录')})
         };
-        const tableHeight = this.props.height;
+        const tableHeight = this.props.height - tableHeadHeight;
         const total = this.state.total;
         let localeTips = {
             emptyText: this.state.errorMsg || Intl.get('common.no.data.tips', '暂无{name}',
@@ -172,31 +184,62 @@ class TradeRecord extends React.Component {
                             {Intl.get('user.trade.record.total','共有{total}条购买记录', {total: total})}
                         </div> : null
                 }
+            </div>
+        );
+    };
 
+    renderUserTradeRecord = () => {
+        if (!this.state.sortId && this.state.loading) {
+            return (
+                <div className="trade-record-loading">
+                    <Spinner/>
+                </div>
+            );
+        } else {
+            return this.renderUserTradeRecordContent();
+        }
+    };
+
+    renderUserTradeRecordContent = () => {
+        let tradeRecordList = this.state.tradeRecordList;
+        let length = _.get(tradeRecordList, 'length');
+        if (length) {
+            return this.renderUserTradeRecordTable();
+        } else {
+            return this.renderNoDataOrLoadError();
+        }
+    };
+
+    renderNoDataOrLoadError = () => {
+        let errorMsg = this.state.errorMsg;
+        return (
+            <div className="msg-tips" style={{ height: this.props.height }} >
+                {
+                    errorMsg ? (
+                        <LoadDataError
+                            retryLoadData={this.getUserTradeRecord}
+                        />
+                    ) : (
+                        <div className="no-data-tips-operate">
+                            <NoData
+                                textContent={Intl.get('user.trade.no.payment','您还没有购买记录')}
+                            />
+                        </div>
+                    )
+                }
             </div>
         );
     };
 
     render() {
-        const height = this.props.height;
         return (
-            <div className="trade-record-wrap" style={{height: height}}>
-                {
-                    !this.state.sortId && this.state.loading ?
-                        <Spinner/> : (
-                            <div className="trade-record-content">
-                                {this.renderUserTradeRecord()}
-                            </div>
-                        )
-                }
+            <div className="trade-record-wrap">
+                {this.renderUserTradeRecord()}
             </div>
         );
     }
 }
 
-
-TradeRecord.defaultProps = {
-};
 
 TradeRecord.propTypes = {
     height: PropTypes.number,

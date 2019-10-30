@@ -1113,6 +1113,7 @@ var zh_CN = {
     'user.trade.payment.mode': '支付方式',
     'user.trade.payment.name': '{name}支付',
     'user.trade.payment.alipay': '支付宝',
+    'user.trade.no.payment': '您还没有购买记录',
     //基本资料end
     //密码管理start
     'user.password.input.again': '原密码不正确，请重新输入。',

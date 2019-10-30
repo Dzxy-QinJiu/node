@@ -173,5 +173,20 @@ exports.getUserTradeRecord = (req, res) => {
             url: userInfoRestApis.getUserTradeRecord,
             req: req,
             res: res,
-        }, req.query);
+        }, req.query, {
+            success: (eventEmitter, data) => {
+                let list = _.get(data, 'list');
+                let frontData = {list: [], total: 0};
+                if(data.total && list) {
+                    // 前端只需要展示支付成功的购买记录
+                    let filterData = _.filter(list, item => item.status === 1);
+                    frontData.list = filterData;
+                    frontData.total = filterData.length;
+                }
+                eventEmitter.emit('success', frontData);
+            },
+            error: (eventEmitter, errorObj) => {
+                eventEmitter.emit('error', errorObj.message);
+            }
+        });
 };
