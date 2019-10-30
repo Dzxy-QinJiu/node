@@ -1,0 +1,125 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2019/10/24.
+*/
+@import "../../public/css/common-variables";
+@goods-name-bg-color: #FAFAFA;
+@goods-item-border-color: #2196F3;
+@goods-name-hover-bg-color: #F1F8FE;
+
+/*.official-personal-wrapper{
+  .right-panel-modal-content{
+    background-color: #fff;
+    .right-panel-modal-title{
+      border: none;
+      margin-bottom: 0;
+    }
+  }
+  .official-personal-title-wrapper{
+    color: @title-color;
+    .official-personal-title-btn{
+      color: @operate-btn-color;
+      cursor: pointer;
+      float: right;
+    }
+  }
+  .goods-container{
+    padding: 0 24px;
+  }
+
+  .order-submit-btn{
+    margin-top: 24px;
+    width: 100%;
+  }
+}*/
+//版本商品信息样式
+.official-goods-content{
+  .goods-item{
+    text-align: center;
+    border: 1px solid @sub-content-font-color;
+    height:140px;
+    border-radius:4px;
+    cursor: pointer;
+    position: relative;
+    margin-top: 6px;
+    .goods-name{
+      height: 48px;
+      line-height: 48px;
+      font-size: 16px;
+      color: @label-content-color;
+      background-color: @goods-name-bg-color;
+    }
+    .goods-info{
+      height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: @label-content-color;
+      .goods-price-wrapper{
+        .goods-price{
+          font-size: 24px;
+        }
+      }
+      .goods-average{
+        font-size: 14px;
+      }
+    }
+    .goods-most-favorable{
+      position: absolute;
+      top: -9px;
+      left: -10px;
+      display: inline-block;
+      padding: 0 4px;
+      color: #fff;
+      background-color: @confirm-delete-background;
+      border-radius:2px;
+    }
+    &:hover{
+      border-color: @goods-item-border-color;
+    }
+    &.goods-item-active{
+      border-color: @goods-item-border-color;
+      .goods-name{
+        background-color: @goods-name-hover-bg-color;
+        color: @goods-item-border-color;
+      }
+      .goods-price-wrapper{
+        color: @goods-item-border-color;
+      }
+      .goods-average{
+        color: @title-color;
+      }
+    }
+  }
+}
+
+
+/*
+.goods-desc{
+  height: 48px;
+  line-height: 48px;
+  background-color: @mouse-enter-zone-background;
+  border-radius:4px;
+  margin-bottom: 24px;
+  .icon-clue-recommend{
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    line-height: 48px;
+    font-size: 32px;
+    border-radius: 0!important;
+    color: #fff;
+    margin-right: 16px;
+    float: left;
+    background-color: @BORDER-BLUE;
+  }
+  .clue-extract-count-wrapper{
+    font-size: 16px;
+    color: @title-color;
+    .clue-extract-count{
+      color: @BORDER-BLUE;
+      font-size: 20px;
+    }
+  }
+}*/
