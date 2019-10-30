@@ -1164,3 +1164,7 @@ exports.isResponsiveDisplay = () => {
     return responsive;
 
 };
+//处理历史申请记录的数据
+exports.handleHistoricalList = function(lists) {
+    return _.filter(lists, item => _.get(item,'replyLists[0]'));
+};

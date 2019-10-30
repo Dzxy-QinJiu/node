@@ -3285,6 +3285,7 @@ var zh_CN = {
     'contract.service.add': '添加服务',
     'clue.and.crm.upload.size': '文件大小不要超过10M!',
     'apply.show.cancel.result': '查看撤销结果',
+    'apply.view.see.apply.with.reply': '只看有回复的申请',
 
     // 成员申请
     'member.application': '成员申请',
