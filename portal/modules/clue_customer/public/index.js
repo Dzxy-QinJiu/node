@@ -1494,14 +1494,16 @@ class ClueCustomer extends React.Component {
                     let isConvertedClients = _.isEqual(status, '3');
                     // 已转化客户和无效客户，不可以展示“有相似客户”标签
                     let ifShowTags = !isInvalidClients && !isConvertedClients;
+                    let userId = userData.getUserData().user_id;
+                    //是否展示“新”字图标 如果是今天分配的并且线索负责人就是当前登录人，就展示新的图标
+                    var isShowNewIcon = _.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() && _.get(salesClueItem,'user_id') === userId;
                     return (
                         <div className="clue-top-title" id={salesClueItem.id}>
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
                                 <span className="clue-name-item">
-                                    {/*如果是今天分配的，就展示新的图标*/}
-                                    {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
+                                    {isShowNewIcon ? <i className="icon-new-clue"></i> : null}
                                     {salesClueItem.name}</span>
 
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
@@ -1792,10 +1794,10 @@ class ClueCustomer extends React.Component {
         //增加一个动态效果，隐藏该线索
         this.flyClueHastransfer(this.state.curClue,DIFFREF.TRASFERINVALID);
         setTimeout(() => {
-          this.hideCurClue();
-          this.changeClueNum();
+            this.hideCurClue();
+            this.changeClueNum();
         }, FLOW_FLY_TIME,() => {
-            _.isFunction(callback) && callback()
+            _.isFunction(callback) && callback();
         });
     };
     //线索转为新客户完成后的回调事件
