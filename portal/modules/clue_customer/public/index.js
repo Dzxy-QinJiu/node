@@ -1496,7 +1496,8 @@ class ClueCustomer extends React.Component {
                     let ifShowTags = !isInvalidClients && !isConvertedClients;
                     let userId = userData.getUserData().user_id;
                     //是否展示“新”字图标 如果是今天分配的并且线索负责人就是当前登录人，就展示新的图标
-                    var isShowNewIcon = _.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() && _.get(salesClueItem,'user_id') === userId;
+                    var allotTime = _.get(salesClueItem,'allot_time');
+                    var isShowNewIcon = allotTime >= moment().startOf('day').valueOf() && allotTime <= moment().endOf('day').valueOf() && _.get(salesClueItem,'user_id') === userId;
                     return (
                         <div className="clue-top-title" id={salesClueItem.id}>
                             <span className="hidden record-id">{salesClueItem.id}</span>
