@@ -7,7 +7,7 @@
 
 import {Input, Icon, Alert, Checkbox } from 'antd';
 require('./index.less');
-import { getUserApplyStateText,handleHistoricalLists} from 'PUB_DIR/sources/utils/common-method-util';
+import { getUserApplyStateText,handleHistoricalList} from 'PUB_DIR/sources/utils/common-method-util';
 const UserData = require('PUB_DIR/sources/user-data');
 var classNames = require('classnames');
 class ApplyDetailRemarks extends React.Component {
@@ -16,7 +16,7 @@ class ApplyDetailRemarks extends React.Component {
         this.state = {
             openReplyListApplyIds: this.getInitialApplyId(this.props),
             sameHistoryApplyLists: this.props.sameHistoryApplyLists,
-            isOnlyShowListsWithReplyLists: true//是否只展示有回复列表的申请历史
+            isOnlyShowListsWithReplyList: true//是否只展示有回复列表的申请历史
         };
     }
     getInitialApplyId = (Props) => {
@@ -95,8 +95,8 @@ class ApplyDetailRemarks extends React.Component {
         }
         //历史申请列表中去掉点击通过或者驳回按钮增加的回复数据
         let replyList = _.cloneDeep(sameHistoryApplyLists.list);
-        if (this.state.isOnlyShowListsWithReplyLists){
-            replyList = handleHistoricalLists(replyList);
+        if (this.state.isOnlyShowListsWithReplyList){
+            replyList = handleHistoricalList(replyList);
         }
         if (_.isArray(replyList) && replyList.length) {
             return (
@@ -136,7 +136,7 @@ class ApplyDetailRemarks extends React.Component {
     }
     onCheckAllChange = (e) => {
         this.setState({
-            isOnlyShowListsWithReplyLists: e.target.checked,
+            isOnlyShowListsWithReplyList: e.target.checked,
         });
     };
 
@@ -149,7 +149,7 @@ class ApplyDetailRemarks extends React.Component {
                 <div className="reply-info-block apply-info-block">
                     <div className="reply-list-container apply-info-content">
                         <div className="history-apply-title">{Intl.get('user.apply.history.apply.lists', '申请历史')}:
-                            <Checkbox onChange={this.onCheckAllChange} checked={this.state.isOnlyShowListsWithReplyLists}>{Intl.get('apply.view.see.apply.with.reply', '只看有回复的申请')}</Checkbox>
+                            <Checkbox onChange={this.onCheckAllChange} checked={this.state.isOnlyShowListsWithReplyList}>{Intl.get('apply.view.see.apply.with.reply', '只看有回复的申请')}</Checkbox>
                         </div>
                         {this.renderHistoricalList()}
                     </div>
