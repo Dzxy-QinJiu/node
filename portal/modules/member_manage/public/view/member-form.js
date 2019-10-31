@@ -59,7 +59,7 @@ class MemberForm extends React.Component {
             newAddPosition: {}, // 新添加的职务
             isMatchPositionListFlag: true, // 是否是选中列表中的值，true,
             isAddPositionLoading: false, // 保存新添加的职务
-            isCancelSavePositionFlag: false, // 取消保存职务，默认false
+            isCancelSavePosition: false, // 取消保存职务，默认false
         };
     };
 
@@ -429,7 +429,7 @@ class MemberForm extends React.Component {
         };
         this.setState({
             isAddPositionLoading: true,
-            isCancelSavePositionFlag: false
+            isCancelSavePosition: false
         });
         MemberManageAjax.addPosition(submitObj).then( (result) => {
             this.setState({
@@ -456,7 +456,7 @@ class MemberForm extends React.Component {
         this.props.form.setFieldsValue({position: ''});
         this.setState({
             isMatchPositionListFlag: true,
-            isCancelSavePositionFlag: true
+            isCancelSavePosition: true
         });
     };
 
@@ -624,7 +624,7 @@ class MemberForm extends React.Component {
                                                         combobox
                                                         name="position"
                                                         id="position"
-                                                        dropdownClassName={this.state.isCancelSavePositionFlag ? 'cancel-save-position-select' : ''}
+                                                        dropdownClassName={this.state.isCancelSavePosition ? 'cancel-save-position-select' : ''}
                                                         optionFilterProp="children"
                                                         placeholder={Intl.get('member.select.position', '请选择职务')}
                                                         searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
@@ -651,7 +651,7 @@ class MemberForm extends React.Component {
                                                             })}
                                                         </div>
                                                         {
-                                                            _.isEmpty(positionSelectValue) ? null : (
+                                                            positionSelectValue ? (
                                                                 <div className="operator-buttons-zone">
                                                                     <Button
                                                                         className="add-btn"
@@ -670,7 +670,7 @@ class MemberForm extends React.Component {
                                                                         {Intl.get('common.cancel', '取消')}
                                                                     </Button>
                                                                 </div>
-                                                            )
+                                                            ) : null
                                                         }
                                                     </div>
                                                 )
