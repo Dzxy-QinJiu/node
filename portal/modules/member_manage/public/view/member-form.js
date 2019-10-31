@@ -59,6 +59,7 @@ class MemberForm extends React.Component {
             newAddPosition: {}, // 新添加的职务
             isMatchPositionListFlag: true, // 是否是选中列表中的值，true,
             isAddPositionLoading: false, // 保存新添加的职务
+            isCancelSavePosition: false, // 取消保存职务，默认false
         };
     };
 
@@ -427,7 +428,8 @@ class MemberForm extends React.Component {
             customer_num: 1000
         };
         this.setState({
-            isAddPositionLoading: true
+            isAddPositionLoading: true,
+            isCancelSavePosition: false
         });
         MemberManageAjax.addPosition(submitObj).then( (result) => {
             this.setState({
@@ -453,7 +455,8 @@ class MemberForm extends React.Component {
     handleCancelPosition = () => {
         this.props.form.setFieldsValue({position: ''});
         this.setState({
-            isMatchPositionListFlag: true
+            isMatchPositionListFlag: true,
+            isCancelSavePosition: true
         });
     };
 
@@ -621,6 +624,7 @@ class MemberForm extends React.Component {
                                                         combobox
                                                         name="position"
                                                         id="position"
+                                                        dropdownClassName={this.state.isCancelSavePosition ? 'cancel-save-position-select' : ''}
                                                         optionFilterProp="children"
                                                         placeholder={Intl.get('member.select.position', '请选择职务')}
                                                         searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
@@ -642,28 +646,32 @@ class MemberForm extends React.Component {
                                                 this.state.isMatchPositionListFlag ? null : (
                                                     <div className="no-position-tips">
                                                         <div className="content-tips">
-                                                            {Intl.get('member.add.member.no.position.tips', '系统中暂无职务{name}，是否添加?', {
+                                                            {Intl.get('member.add.member.no.position.tips', '系统中暂无 {name} 职务，是否添加?', {
                                                                 name: positionSelectValue
                                                             })}
                                                         </div>
-                                                        <div className="operator-buttons-zone">
-                                                            <Button
-                                                                className="add-btn"
-                                                                disabled={this.state.isAddPositionLoading}
-                                                                onClick={this.handleSavePosition}
-                                                            >
-                                                                {
-                                                                    this.state.isAddPositionLoading ? <Icon type="loading"/> : null
-                                                                }
-                                                                {Intl.get('common.add', '添加')}
-                                                            </Button>
-                                                            <Button
-                                                                className="cancel-btn"
-                                                                onClick={this.handleCancelPosition}
-                                                            >
-                                                                {Intl.get('common.cancel', '取消')}
-                                                            </Button>
-                                                        </div>
+                                                        {
+                                                            positionSelectValue ? (
+                                                                <div className="operator-buttons-zone">
+                                                                    <Button
+                                                                        className="add-btn"
+                                                                        disabled={this.state.isAddPositionLoading}
+                                                                        onClick={this.handleSavePosition}
+                                                                    >
+                                                                        {
+                                                                            this.state.isAddPositionLoading ? <Icon type="loading"/> : null
+                                                                        }
+                                                                        {Intl.get('common.add', '添加')}
+                                                                    </Button>
+                                                                    <Button
+                                                                        className="cancel-btn"
+                                                                        onClick={this.handleCancelPosition}
+                                                                    >
+                                                                        {Intl.get('common.cancel', '取消')}
+                                                                    </Button>
+                                                                </div>
+                                                            ) : null
+                                                        }
                                                     </div>
                                                 )
                                             }
