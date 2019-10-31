@@ -4,16 +4,35 @@
 
 'use strict';
 const cluePoolService = require('../service/clue-pool-service');
-
+const _ = require('lodash');
 // 获取线索池列表
 exports.getCluePoolList = (req, res) => {
     cluePoolService.getCluePoolList(req, res).on('success', (data) => {
+        if(_.get(data, 'result.length')){
+            //线索池中，去掉联系方式
+            data.result = _.map(data.result, item => {
+                return handleRemoveContactWay(item);
+            });
+        }
         res.status(200).json(data);
     }).on('error', (err) => {
         res.status(500).json(err && err.message);
     });
 };
-
+//移除线索联系方式的处理
+function handleRemoveContactWay(clueItem) {
+    delete clueItem.phones;
+    if(_.get(clueItem, 'contacts.length')){
+        clueItem.contacts = _.map(clueItem.contacts, contact => {
+            delete contact.phone;
+            delete contact.email;
+            delete contact.qq;
+            delete contact.weChat;
+            return contact;
+        });
+    }
+    return clueItem;
+}
 // 获取线索池负责人
 exports.getCluePoolLeading = (req, res) => {
     cluePoolService.getCluePoolLeading(req, res).on('success', (data) => {
@@ -80,8 +99,10 @@ exports.batchExtractClueAssignToSale = (req, res) => {
 // 根据线索的id获取线索的详情
 exports.getClueDetailById = (req, res) => {
     cluePoolService.getClueDetailById(req, res).on('success', (data) => {
-            res.status(200).json(data.result);
-        }).on('error', (err) => {
+        let clueDetail = _.get(data, 'result', {});
+        // clueDetail = handleRemoveContactWay(clueDetail);
+        res.status(200).json(clueDetail);
+    }).on('error', (err) => {
         res.status(500).json(err && err.message);
     });
 };

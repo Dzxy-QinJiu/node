@@ -153,8 +153,11 @@ class CustomerRecord extends React.Component {
         }
         let bodyData = {
             customer_id: this.state.customerId || '',
-            hideContactWay: this.props.hideContactWay,//客户池中的客户详情中不展示联系方式
         };
+        //客户池中的客户详情中不展示联系方式
+        if (this.props.hideContactWay) {
+            bodyData.hideContactWay = this.props.hideContactWay;
+        }
         //跟进类型的过滤
         if (this.state.filterType === CALL_RECORD_TYPE.PHONE) {
             //电话类型：eefung电话+容联电话+客套APP电话

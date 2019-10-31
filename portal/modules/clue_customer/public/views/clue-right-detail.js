@@ -341,6 +341,7 @@ class ClueRightPanel extends React.Component {
         if (this.props.className){
             cls += ` ${this.props.className}`;
         }
+        let hideContactWay = this.props.type === 'clue_pool';
         return (
             <div
                 className={cls}
@@ -400,6 +401,7 @@ class ClueRightPanel extends React.Component {
                                             updateCustomerLastContact={this.updateCustomerLastContact}
                                             extractClueOperator={this.props.extractClueOperator}
                                             changeActiveKey={this.changeActiveKey}
+                                            hideContactWay={hideContactWay}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -413,6 +415,7 @@ class ClueRightPanel extends React.Component {
                                             curClue={curClue}
                                             divHeight={divHeight}
                                             updateCustomerLastContact={this.updateCustomerLastContact}
+                                            hideContactWay={hideContactWay}
                                         />
                                     ) : null}
                                 </TabPane>
