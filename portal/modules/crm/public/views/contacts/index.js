@@ -41,7 +41,7 @@ class Contacts extends React.Component {
         ContactStore.listen(this.onStoreChange);
         if (this.props.curCustomer) {
             //isUseCustomerContacts是否要用客户里的联系人列表
-            ContactAction.getContactList(this.props.curCustomer, this.props.isUseCustomerContacts);
+            ContactAction.getContactList(this.props.curCustomer, this.props.isUseCustomerContacts, this.props.hideContactWay);
         }
         $(window).on('resize', this.onStoreChange);
     }
@@ -54,7 +54,7 @@ class Contacts extends React.Component {
             setTimeout(() => {
                 ContactAction.setInitData();
                 //isUseCustomerContacts是否要用客户里的联系人列表
-                ContactAction.getContactList(nextProps.curCustomer, this.props.isUseCustomerContacts);
+                ContactAction.getContactList(nextProps.curCustomer, this.props.isUseCustomerContacts, this.props.hideContactWay);
             });
         }
     }
@@ -140,6 +140,7 @@ class Contacts extends React.Component {
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         curCustomer={this.state.curCustomer}
                                         disableEdit={this.props.disableEdit}
+                                        hideContactWay={this.props.hideContactWay}
                                     />);
                             } else {
                                 return '';
@@ -160,6 +161,7 @@ Contacts.propTypes = {
     setMergeCustomerDefaultContact: PropTypes.func,
     delMergeCustomerContact: PropTypes.func,
     disableEdit: PropTypes.bool,
+    hideContactWay: PropTypes.bool,
     isUseCustomerContacts: PropTypes.bool,
 };
 module.exports = Contacts;

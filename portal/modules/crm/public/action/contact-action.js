@@ -42,7 +42,7 @@ function ContactAction() {
         'afterEditContact'
     );
     //获取联系人列表
-    this.getContactList = function(curCustomer, isUseCustomerContacts) {
+    this.getContactList = function(curCustomer, isUseCustomerContacts, hideContactWay) {
         if (isUseCustomerContacts) {
             let contactList = _.get(curCustomer, 'contacts', []);
             setTimeout(() => {
@@ -50,7 +50,7 @@ function ContactAction() {
             });
         } else {
             this.dispatch({isLoading: true});
-            contactAjax.getContactList(curCustomer.id).then((data) => {
+            contactAjax.getContactList(curCustomer.id, hideContactWay).then((data) => {
                 if (data && data.result) {
                     this.dispatch({list: data.result});
                 } else {

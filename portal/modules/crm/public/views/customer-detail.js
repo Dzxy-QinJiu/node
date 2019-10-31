@@ -156,6 +156,7 @@ class CrmRightPanel extends React.Component {
                                         editCustomerBasic={this.props.editCustomerBasic}
                                         changeActiveKey={this.changeActiveKey}
                                         disableEdit={this.props.disableEdit}
+                                        hideContactWay={this.props.hideContactWay}
                                         updateCustomerLastContact={this.props.updateCustomerLastContact}
                                         showUserDetail={this.showUserDetail}
                                     />
@@ -171,6 +172,7 @@ class CrmRightPanel extends React.Component {
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         curCustomer={this.state.curCustomer}
                                         disableEdit={this.props.disableEdit}
+                                        hideContactWay={this.props.hideContactWay}
                                         isUseCustomerContacts={this.props.isUseCustomerContacts}
                                     />
                                 ) : null}
@@ -184,6 +186,7 @@ class CrmRightPanel extends React.Component {
                                         curCustomer={this.state.curCustomer}
                                         refreshCustomerList={this.props.refreshCustomerList}
                                         disableEdit={this.props.disableEdit}
+                                        hideContactWay={this.props.hideContactWay}
                                         updateCustomerLastContact={this.props.updateCustomerLastContact}
                                     />
                                 ) : null}
@@ -333,6 +336,7 @@ CrmRightPanel.propTypes = {
     handleFocusCustomer: PropTypes.func,
     showRightPanel: PropTypes.func,
     disableEdit: PropTypes.bool,
+    hideContactWay: PropTypes.bool,
     updateCustomerDefContact: PropTypes.func,
     ShowCustomerUserListPanel: PropTypes.func,
     userViewShowCustomerUserListPanel: PropTypes.func,

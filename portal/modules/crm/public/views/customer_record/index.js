@@ -48,7 +48,6 @@ let extraTraceTypeList = [];
 class CustomerRecord extends React.Component {
     state = {
         playingItemAddr: '',//正在播放的那条记录的地址
-        phoneNumArray: [],//所有联系人的联系电话，通过电话和客户id获取跟进记录
         customerId: this.props.curCustomer.id,
         invalidPhoneLists: [],//无效电话列表
         getInvalidPhoneErrMsg: '',//获取无效电话失败后的信息
@@ -77,12 +76,10 @@ class CustomerRecord extends React.Component {
         var customer_id = this.props.curCustomer.customer_id || this.props.curCustomer.id;
         if (!customer_id) return;
         setTimeout(() => {//此处不加setTimeout，下面获取联系电话方法中调用action中setLoading方法时会报Dispatch错误
-            this.getContactPhoneNum(customer_id, () => {
-                //获取跟进记录的分类统计
-                this.getCustomerTraceStatistic();
-                //获取客户跟踪记录列表
-                this.getCustomerTraceList();
-            });
+            //获取跟进记录的分类统计
+            this.getCustomerTraceStatistic();
+            //获取客户跟踪记录列表
+            this.getCustomerTraceList();
         });
         //获取无效电话号码列表
         /*getInvalidPhone((data) => {
@@ -118,8 +115,7 @@ class CustomerRecord extends React.Component {
     //获取跟进记录的分类统计
     getCustomerTraceStatistic() {
         let queryParams = {
-            customer_id: this.state.customerId || '',
-            customer_phone: this.state.phoneNumArray.join(','),
+            customer_id: this.state.customerId || ''
         };
         if (this.state.start_time) {
             queryParams.start_time = this.state.start_time;
@@ -137,35 +133,8 @@ class CustomerRecord extends React.Component {
         });
     };
 
-    //获取所有联系人的联系电话
-    getContactPhoneNum = (customerId, callback) => {
-        //设置customerRecordLoading为true
-        CustomerRecordActions.setLoading();
-        ajax.getContactList(customerId).then((data) => {
-            let contactArray = data.result || [], phoneNumArray = [];
-            if (_.isArray(contactArray)) {
-                //把所有联系人的所有电话都查出来
-                contactArray.forEach((item) => {
-                    if (_.isArray(item.phone) && item.phone.length) {
-                        item.phone.forEach((phoneItem) => {
-                            phoneNumArray.push(phoneItem);
-                        });
-                    }
-                });
-            }
-            this.setState({phoneNumArray: phoneNumArray}, () => {
-                if (callback) callback();
-            });
-        }, (errorMsg) => {
-            this.setState({phoneNumArray: []}, () => {
-                if (callback) callback();
-            });
-        });
-    };
-
     //获取客户跟踪列表
     getCustomerTraceList = (lastId) => {
-        let phoneNum = this.state.phoneNumArray.join(',');
         let queryObj = {
             page_size: 10
         };
@@ -184,10 +153,8 @@ class CustomerRecord extends React.Component {
         }
         let bodyData = {
             customer_id: this.state.customerId || '',
+            hideContactWay: this.props.hideContactWay,//客户池中的客户详情中不展示联系方式
         };
-        if (phoneNum) {
-            bodyData.dst = phoneNum;
-        }
         //跟进类型的过滤
         if (this.state.filterType === CALL_RECORD_TYPE.PHONE) {
             //电话类型：eefung电话+容联电话+客套APP电话
@@ -226,13 +193,10 @@ class CustomerRecord extends React.Component {
             });
             setTimeout(() => {//此处不加setTimeout，下面调用action中dismiss方法时会报Dispatch错误
                 CustomerRecordActions.dismiss();
-                //获取所有联系人的联系电话，通过电话和客户id获取跟进记录
-                this.getContactPhoneNum(nextCustomerId, () => {
-                    //获取客户跟踪记录列表
-                    this.getCustomerTraceList();
-                    //获取分类统计
-                    this.getCustomerTraceStatistic();
-                });
+                //获取客户跟踪记录列表
+                this.getCustomerTraceList();
+                //获取分类统计
+                this.getCustomerTraceStatistic();
             });
         }
     }
@@ -1024,6 +988,7 @@ CustomerRecord.propTypes = {
     updateCustomerLastContact: PropTypes.func,
     changeActiveKey: PropTypes.func,
     disableEdit: PropTypes.bool,
+    hideContactWay: PropTypes.bool,
 };
 module.exports = CustomerRecord;
 

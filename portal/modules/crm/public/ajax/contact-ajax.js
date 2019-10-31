@@ -4,7 +4,7 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 //获取联系人列表
 let contactListAjax;
-exports.getContactList = function(customerId) {
+exports.getContactList = function(customerId, hideContactWay) {
     if (contactListAjax) {
         contactListAjax.abort();
     }
@@ -17,7 +17,7 @@ exports.getContactList = function(customerId) {
         url: `/rest/crm/contact_list/${type}`,
         dataType: 'json',
         type: 'post',
-        data: {query: {id: customerId}},
+        data: {query: {id: customerId}, hideContactWay},
         success: function(result) {
             Deferred.resolve(result);
         },
