@@ -1098,6 +1098,15 @@ var en_US = {
     'user.info.version': 'Version', // 版本
     'user.info.version.expire': 'expiration{time}', // {time}到期
     'user.info.version.upgrade': 'Upgrade to the official version', // 升级为正式版
+    'user.trade.record': 'Purchase record', // 购买记录
+    'user.trade.get.record': 'Failed to get purchase record', // 获取购买记录失败
+    'user.trade.record.order.number': 'Order number', // 订单号
+    'user.trade.record.time': 'Order time', // 订单时间
+    'user.trade.record.total': '{total} purchase records', // 共有{total}条购买记录
+    'user.trade.payment.mode': 'Payment method', // 支付方式
+    'user.trade.payment.name': '{name} payment', // {name}支付
+    'user.trade.payment.alipay': 'Alipay', // 支付宝
+    'user.trade.no.payment': 'You have no purchase record', // 您还没有购买记录
     //基本资料end
     //密码管理start
     'user.password.input.again': 'The original password was incorrect',//原密码不正确，请重新输入。

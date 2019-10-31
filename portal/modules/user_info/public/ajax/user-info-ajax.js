@@ -147,7 +147,7 @@ exports.getUserTradeRecord = (queryObj) => {
             Deferred.resolve(resData);
         },
         error: (errorInfo) => {
-            Deferred.reject(errorInfo.responseJSON || Intl.get('user.trade.get.record','获取交易记录失败'));
+            Deferred.reject(errorInfo.responseJSON || Intl.get('user.trade.get.record','获取购买记录失败'));
         }
     });
     return Deferred.promise();
