@@ -3,8 +3,20 @@ const _ = require('lodash');
 exports.getContactList = function(req, res) {
     contactService.getContactList(req, res)
         .on('success', function(data) {
+            let hideContactWay = req.body.hideContactWay;
+            let contactList = _.get(data, '[0]') ? data : [];
+            if (hideContactWay) {
+                contactList = _.map(contactList, item => {
+                    //隐藏联系方式的情况下需要把联系方式去掉（例如：客户池中不展示联系方式）
+                    delete item.phone;
+                    delete item.qq;
+                    delete item.email;
+                    delete item.weChat;
+                    return item;
+                });
+            }
             res.status(200).json({
-                result: _.get(data, '[0]') ? data : [],
+                result: contactList,
                 total: _.get(data, 'length', 0)
             });
         }).on('error', function(err) {
