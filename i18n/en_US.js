@@ -893,7 +893,7 @@ var en_US = {
     'member.record.get.record.failed': 'Failed to get the record of member.', // 获取成员变更失败
     'member.record.no.record': 'There is no the record of member.', // 暂无成员变更记录
     'member.number.toplimit': 'The number of members (number) has been reached.', // 成员数量已达{number}个上限
-    'member.add.member.no.position.tips': 'There is no office in system. whether to add', // 系统中暂无职务{name}，是否添加?
+    'member.add.member.no.position.tips': 'There is no {name} office in system. whether to add', // 系统中暂无职务 {name} ，是否添加?
     'member.add.member.success.tips': 'The member can call after logged.', // 该成员登录后可以拨打电话了
     //后台管理-成员end
 
