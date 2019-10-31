@@ -449,6 +449,7 @@ class BasicOverview extends React.Component {
             refreshSrollbar={this.refreshSrollbar}
             changeActiveKey={this.props.changeActiveKey}
             disableEdit={this.props.disableEdit || this.props.isMerge}
+            hideContactWay={this.props.hideContactWay}
             updateCustomerLastContact={this.props.updateCustomerLastContact}
         />;
     };
@@ -603,6 +604,7 @@ BasicOverview.propTypes = {
     changeActiveKey: PropTypes.func,
     refreshCustomerList: PropTypes.func,
     disableEdit: PropTypes.bool,
+    hideContactWay: PropTypes.bool,
     updateCustomerLastContact: PropTypes.func,
     showUserDetail: PropTypes.func,
 };

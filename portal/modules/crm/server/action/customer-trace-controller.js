@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var customerTraceService = require('../service/customer-trace-service');
-
+const _ = require('lodash');
 //获取某组织内跟进记录的类型（除去固定的电话、拜访、其他以外的类型）
 exports.getExtraTraceType = function(req, res) {
     customerTraceService.getExtraTraceType(req, res)
@@ -17,8 +17,17 @@ exports.getExtraTraceType = function(req, res) {
 /*
 * 获取客户跟踪记录列表 */
 exports.getCustomerTraceList = function(req, res) {
+    //界面用来判断是否隐藏联系方式的标识
+    let hideContactWay = req.body.hideContactWay;
     customerTraceService.getCustomerTraceList(req, res)
         .on('success', function(data) {
+            //隐藏联系方式的情况下需要去掉联系电话（例：客户池中不展示联系电话）
+            if (hideContactWay && _.get(data, 'result.length')) {
+                data.result = _.map(data.result, item => {
+                    delete item.dst;
+                    return item;
+                });
+            }
             res.status(200).json(data);
         }).on('error', function(err) {
             res.status(500).json(err.message);

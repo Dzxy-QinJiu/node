@@ -42,6 +42,7 @@ exports.getCustomerTraceList = function(req, res) {
             url += `&${key}=${value}`;
         }
     });
+    delete req.body.hideContactWay;
     return restUtil.authRest.post(
         {
             url: url,
