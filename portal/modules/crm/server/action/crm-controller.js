@@ -473,6 +473,13 @@ exports.releaseCustomer = function(req, res) {
 //获取客户池中的客户
 exports.getPoolCustomer = function(req, res) {
     crmService.getPoolCustomer(req, res).on('success', function(data) {
+        if (_.get(data, 'list.length')) {
+            //客户池中需要去掉联系方式
+            data.list = _.map(data.list, item => {
+                delete item.origin_contacts;
+                return item;
+            });
+        }
         res.status(200).json(data);
     }).on('error', function(codeMessage) {
         res.status(500).json(codeMessage && codeMessage.message);
