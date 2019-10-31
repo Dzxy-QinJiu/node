@@ -5,6 +5,8 @@
  */
 var customerRecordAjax = require('../ajax/customer-record-ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
+import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util'; //判断是否在蚁坊域
+import {getAllApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 function CustomerRecordAction() {
     this.generateActions(
         'setType',
@@ -34,7 +36,27 @@ function CustomerRecordAction() {
     //获取跟进记录的分类统计
     this.getCustomerTraceStatistic = function(queryParams) {
         customerRecordAjax.getCustomerTraceStatistic(queryParams).then((data) => {
-            this.dispatch({loading: false,error: false,data: data});
+            //如果是在蚁坊域，才将两个接口的数据整合到一起
+            if(isOrganizationEefung()) {
+                let queryObj = {
+                    sort_field: 'create_time',
+                    order: 'descend',
+                    page_size: 0, //只获取已通过的舆情报告的总数
+                    type: 'report',
+                    comment_unread: false,
+                    status: 'pass',
+                    customer_id: queryParams.customer_id
+                };
+                getAllApplyList(queryObj).then((reportResult) => {
+                    let totalReports = _.get(reportResult, 'total', 0);
+                    data.public_opinion_report = totalReports;
+                    this.dispatch({loading: false,error: false,data: data});
+                }, () => {
+                    this.dispatch({loading: false,error: false,data: data});
+                });
+            } else {
+                this.dispatch({loading: false,error: false,data: data});
+            }
         },(errorMsg) => {
             this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
@@ -58,6 +80,32 @@ function CustomerRecordAction() {
             _.isFunction(callback) && callback();
         },(errorMsg) => {
             this.dispatch({loading: false,error: true,errorMsg: errorMsg});
+        });
+    };
+    //获取舆情报告列表
+    this.getPublicOpinionReports = function(queryObj, callback) {
+        //获取已通过的舆情报告
+        let queryParam = {
+            sort_field: 'create_time',
+            order: 'descend',
+            page_size: 10,
+            type: 'report',
+            comment_unread: false,
+            status: 'pass',
+            customer_id: queryObj.customer_id
+        };
+        if(queryObj.id) {
+            queryParam.id = queryObj.id;
+        }
+        let result = {data: null, error: false};
+        getAllApplyList(queryParam).then((data) => {
+            result.data = data;
+            this.dispatch(result);
+            if (_.isFunction(callback)) callback();
+        }, (error) => {
+            result.data = error;
+            result.error = true;
+            this.dispatch(result);
         });
     };
 }

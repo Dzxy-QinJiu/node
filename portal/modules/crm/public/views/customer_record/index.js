@@ -31,6 +31,7 @@ import TimeLine from 'CMP_DIR/time-line-new';
 import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML, isOpenCaller} from 'PUB_DIR/sources/utils/common-method-util';
+import {REPORT_TYPE} from 'PUB_DIR/sources/utils/consts';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import ShearContent from '../../../../../components/shear-content';
 import PhoneCallout from 'CMP_DIR/phone-callout';
@@ -43,6 +44,7 @@ const PHONE_TYPES = [CALL_RECORD_TYPE.PHONE, CALL_RECORD_TYPE.CURTAO_PHONE, CALL
 import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
 import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util'; //判断是否在蚁坊域
 //除去固定的电话、拜访、其他以外的类型的缓存数据，获取后存起来，不用每次都取
 let extraTraceTypeList = [];
 class CustomerRecord extends React.Component {
@@ -189,15 +191,15 @@ class CustomerRecord extends React.Component {
             bodyData.dst = phoneNum;
         }
         //跟进类型的过滤
-        if (this.state.filterType === CALL_RECORD_TYPE.PHONE) {
+        if (this.state.filterType === CALL_RECORD_TYPE.PHONE){
             //电话类型：eefung电话+容联电话+客套APP电话
             bodyData.type = PHONE_TYPES.join(',');
-        } else if (this.state.filterType && this.state.filterType !== 'all') {
+        } else if (this.state.filterType && this.state.filterType !== 'all' && this.state.filterType !== 'public_opinion_report') {
             bodyData.type = this.state.filterType;
-        } else {//全部及概览页的跟进记录，都过滤掉舆情上报的跟进记录（可以通过筛选舆情上报的类型来查看此类的跟进）
+        } else {//全部及概览页的跟进记录，都过滤掉"舆情上报"和“舆情报告”的跟进记录（可以通过筛选“舆情上报”和“舆情报告”的类型来查看此类的跟进）
             let types = _.keys(CALL_TYPE_MAP);
-            // 过滤掉舆情上报的跟进记录
-            let typeArray = _.filter(types, type => type !== 'all' && type !== 'data_report');
+            // 过滤掉“舆情上报”和“舆情报告”的跟进记录
+            let typeArray = _.filter(types, type => type !== 'all' && type !== 'data_report' && type !== 'public_opinion_report');
             if (_.get(typeArray, '[0]')) {
                 bodyData.type = typeArray.join(',');
             }
@@ -206,13 +208,30 @@ class CustomerRecord extends React.Component {
         if (this.state.filterStatus && this.state.filterStatus !== 'ALL') {
             bodyData.disposition = this.state.filterStatus;
         }
-        CustomerRecordActions.getCustomerTraceList(queryObj, bodyData, () => {
-            if (_.isFunction(this.props.refreshSrollbar)) {
-                setTimeout(() => {
-                    this.props.refreshSrollbar();
-                });
+        //舆情报告的信息用另外的接口获取
+        if(_.isEqual(this.state.filterType, 'public_opinion_report')) {
+            let queryObj = {
+                customer_id: bodyData.customer_id
+            };
+            if(lastId) {
+                queryObj.id = lastId;
             }
-        });
+            CustomerRecordActions.getPublicOpinionReports(queryObj, () => {
+                if (_.isFunction(this.props.refreshSrollbar)) {
+                    setTimeout(() => {
+                        this.props.refreshSrollbar();
+                    });
+                }
+            });
+        } else {
+            CustomerRecordActions.getCustomerTraceList(queryObj, bodyData, () => {
+                if (_.isFunction(this.props.refreshSrollbar)) {
+                    setTimeout(() => {
+                        this.props.refreshSrollbar();
+                    });
+                }
+            });
+        }
     };
 
     componentWillReceiveProps(nextProps) {
@@ -608,6 +627,76 @@ class CustomerRecord extends React.Component {
             </div>);
     };
 
+    //渲染舆情报告内容
+    renderPublicOpinionReportContent = (item) => {
+        let reportType = _.find(REPORT_TYPE, type => type.value === item.topic).name;
+        return (
+            <div className='public-opinion-report-content'>
+                <div className='report-type-container'>
+                    <div className='report-label'>{Intl.get('common.type', '类型')}:</div>
+                    <div className='report-content'>{reportType}</div>
+                </div>
+                <div className='report-remark-container'>
+                    <div className='report-label'>{Intl.get('common.remark', '备注')}:</div>
+                    <div className='report-content'>{item.remark}</div>
+                </div>
+                <div className='report-time'>
+                    <div className='report-applicant'>{item.nick_name}</div>
+                    <div className='apply-time'>{moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}</div>
+                </div>
+            </div>
+        );
+    };
+
+    //渲染时间线的内容展示
+    renderTimeLineContentItem = (item) => {
+        let content = null;
+        if(_.isEqual(item.type, 'data_report')) {
+            content = this.renderReportContent(item);
+        } else if(_.isEqual(item.type, 'public_opinion_report')) {
+            content = this.renderPublicOpinionReportContent(item);
+        } else {
+            content = (<div className="trace-content">
+                <div className="item-detail-content" id={item.id}>
+                    {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
+                </div>
+                <div className="item-bottom-content">
+                    {item.billsec === 0 ? (/*未接听*/
+                        <span className="call-un-answer">
+                            {Intl.get('call.record.state.no.answer', '未接听')}
+                        </span>
+                    ) : /* 电话已接通并且有recording这个字段展示播放图标*/
+                        item.recording ? (
+                            <span className="audio-container"
+                                title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
+                                <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
+                                    data-tracename="点击播放录音按钮">
+                                    <span className="call-time-descr">
+                                        {TimeUtil.getFormatMinuteTime(item.billsec)}
+                                    </span>
+                                </span>
+                            </span>
+                        ) : null
+                    }
+                    {_.includes(PHONE_TYPES, item.type) && !this.props.disableEdit ?
+                        (<span className="phone-call-out-btn handle-btn-item" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
+                            <PhoneCallout
+                                phoneNumber={item.dst}
+                                hidePhoneNumber={true}
+                            />
+                        </span>) : null}
+                    <span className="item-bottom-right">
+                        <span className="sale-name">{item.nick_name}</span>
+                        <span className="trace-record-time">
+                            {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
+                        </span>
+                    </span>
+                </div>
+            </div>);
+        }
+        return content;
+    }
+
     renderTimeLineItem = (item, hasSplitLine) => {
         var traceObj = processForTrace(item);
         //渲染时间线
@@ -626,43 +715,7 @@ class CustomerRecord extends React.Component {
                     {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
                     {_.includes(PHONE_TYPES, item.type) ? (<span className="trace-title-phone">{item.dst}</span>) : null}
                 </p>
-                {item.type === 'data_report' ? this.renderReportContent(item) : (<div className="trace-content">
-                    <div className="item-detail-content" id={item.id}>
-                        {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
-                    </div>
-                    <div className="item-bottom-content">
-                        {item.billsec === 0 ? (/*未接听*/
-                            <span className="call-un-answer">
-                                {Intl.get('call.record.state.no.answer', '未接听')}
-                            </span>
-                        ) : /* 电话已接通并且有recording这个字段展示播放图标*/
-                            item.recording ? (
-                                <span className="audio-container"
-                                    title={is_record_upload ? Intl.get('call.record.play', '播放录音') : Intl.get('crm.record.unupload.phone', '未上传通话录音，无法播放')}>
-                                    <span className={cls} onClick={this.handleAudioPlay.bind(this, item)}
-                                        data-tracename="点击播放录音按钮">
-                                        <span className="call-time-descr">
-                                            {TimeUtil.getFormatMinuteTime(item.billsec)}
-                                        </span>
-                                    </span>
-                                </span>
-                            ) : null
-                        }
-                        {_.includes(PHONE_TYPES, item.type) && !this.props.disableEdit ?
-                            (<span className="phone-call-out-btn handle-btn-item" title={Intl.get('crm.click.call.phone', '点击拨打电话')}>
-                                <PhoneCallout
-                                    phoneNumber={item.dst}
-                                    hidePhoneNumber={true}
-                                />
-                            </span>) : null}
-                        <span className="item-bottom-right">
-                            <span className="sale-name">{item.nick_name}</span>
-                            <span className="trace-record-time">
-                                {moment(item.time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT)}
-                            </span>
-                        </span>
-                    </div>
-                </div>)}
+                {this.renderTimeLineContentItem(item)}
             </div>
         );
     };
@@ -862,9 +915,9 @@ class CustomerRecord extends React.Component {
     };
     //是否展示通话状态的过滤框
     isStatusFilterShow() {
-        //不是概览页，有跟进记录或有通话状态筛选条件（有数据时才展示状态筛选框，但通过状态筛选后无数据也需要展示），并且不是拜访、舆情报上和其他类型时，展示通话状态筛选框
+        //不是概览页，有跟进记录或有通话状态筛选条件（有数据时才展示状态筛选框，但通过状态筛选后无数据也需要展示），并且不是拜访、舆情报上、舆情报告和其他类型时，展示通话状态筛选框
         return !this.props.isOverViewPanel && (_.get(this.state, 'customerRecord[0]') || this.state.filterStatus) &&
-            _.indexOf(['visit', 'data_report', 'other'], this.state.filterType) === -1;
+            _.indexOf(['visit', 'data_report', 'public_opinion_report', 'other'], this.state.filterType) === -1;
     }
 
     //渲染添加跟进记录的按钮
@@ -895,6 +948,8 @@ class CustomerRecord extends React.Component {
             //     return Intl.get('common.callback', '回访');
             case CALL_RECORD_TYPE.DATA_REPORT:
                 return Intl.get('crm.trace.delivery.report', '舆情报送');
+            case CALL_RECORD_TYPE.PUBLIC_OPINION_REPORT:
+                return Intl.get('apply.approve.lyrical.report', '舆情报告');
             case CALL_RECORD_TYPE.OTHER:
                 return Intl.get('customer.other', '其他');
         }
@@ -936,11 +991,15 @@ class CustomerRecord extends React.Component {
         }
         //固定的跟进类型统计
         statisticData.visit = 0;//拜访
-
         //将从后端获取的额外的跟进类型，加入到跟进类型统计对象中
         _.each(this.state.extraTraceTypeList, type => {
             statisticData[type] = 0;
         });
+        //只有在蚁坊域才展示
+        if(isOrganizationEefung()) {
+            //舆情报告
+            statisticData.public_opinion_report = 0;
+        }
         //其他跟进
         statisticData.other = 0;
         //非电话类型的次数统计
