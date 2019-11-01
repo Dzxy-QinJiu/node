@@ -132,7 +132,7 @@ class ContractItem extends React.Component {
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
-                            !this.props.disableEdit && hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_OPERATOR_COMMON_BASE) && contract.stage === '待审' ? (
+                            this.hasContractEditPrivilege(contract) ? (
                                 <span className='iconfont icon-delete handle-btn-item' title={Intl.get('common.delete', '删除')}
                                     onClick={this.showDeleteContractConfirm}/>
                             ) : null
@@ -220,12 +220,17 @@ class ContractItem extends React.Component {
         this.setState({isShowProductEdit: flag});
     };
 
+    //是否有编辑合同的权限
+    hasContractEditPrivilege = (contract) => {
+        return !this.props.disableEdit && contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_OPERATOR_COMMON_BASE);
+    };
+
     renderContractContent = () => {
         const contract = this.state.formData;
         const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : '';
         const end_time = contract.end_time ? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : '';
         let itemClassName = classNames('contract-item-content', {
-            'item-edit-style': contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_OPERATOR_COMMON_BASE)
+            'item-edit-style': this.hasContractEditPrivilege(contract)
         });
         let categoryOptions = _.map(CategoryList, (category, index) => {
             return (<Option value={category.value} key={index}>{category.name}</Option>);
@@ -235,7 +240,7 @@ class ContractItem extends React.Component {
         });
         // 合同的签约类型
         const contractLabel = contract.label === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('contract.163', '续约');
-        let hasEditPrivilege = !this.props.disableEdit && contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_OPERATOR_COMMON_BASE) || false;
+        let hasEditPrivilege = this.hasContractEditPrivilege(contract);
         let validityTime = Intl.get('crm.contract.validity.one.year', '有效期一年');
         return (
             <div className='contract-item'>
