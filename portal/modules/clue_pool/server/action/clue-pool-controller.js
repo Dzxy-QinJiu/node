@@ -4,16 +4,30 @@
 
 'use strict';
 const cluePoolService = require('../service/clue-pool-service');
-
+const _ = require('lodash');
+const methodUtil = require('../../../../lib/utils/common-utils').method;
 // 获取线索池列表
 exports.getCluePoolList = (req, res) => {
     cluePoolService.getCluePoolList(req, res).on('success', (data) => {
+        if(_.get(data, 'result.length')){
+            //线索池中，去掉联系方式
+            data.result = _.map(data.result, item => {
+                return handleRemoveContactWay(item);
+            });
+        }
         res.status(200).json(data);
     }).on('error', (err) => {
         res.status(500).json(err && err.message);
     });
 };
-
+//移除线索联系方式的处理
+function handleRemoveContactWay(clueItem) {
+    delete clueItem.phones;
+    if(_.get(clueItem, 'contacts.length')){
+        clueItem.contacts = methodUtil.removeContactWay(clueItem.contacts);
+    }
+    return clueItem;
+}
 // 获取线索池负责人
 exports.getCluePoolLeading = (req, res) => {
     cluePoolService.getCluePoolLeading(req, res).on('success', (data) => {
@@ -80,8 +94,11 @@ exports.batchExtractClueAssignToSale = (req, res) => {
 // 根据线索的id获取线索的详情
 exports.getClueDetailById = (req, res) => {
     cluePoolService.getClueDetailById(req, res).on('success', (data) => {
-            res.status(200).json(data.result);
-        }).on('error', (err) => {
+        let clueDetail = _.get(data, 'result', {});
+        //线索池的线索详情中需要用联系电话去查相似线索、相似客户，所以此处暂时不能去掉联系方式，待后端查相似线索、客户的接口修改成不需要前端传是再放开此处注释
+        // clueDetail = handleRemoveContactWay(clueDetail);
+        res.status(200).json(clueDetail);
+    }).on('error', (err) => {
         res.status(500).json(err && err.message);
     });
 };

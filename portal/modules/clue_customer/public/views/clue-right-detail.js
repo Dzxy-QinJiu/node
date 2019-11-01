@@ -48,6 +48,8 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
 import userData from 'PUB_DIR/sources/user-data';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
+//用来判断是否是线索池中打开的线索详情的类型标识
+const ClUE_POOL = 'clue_pool';
 
 class ClueRightPanel extends React.Component {
     constructor(props) {
@@ -98,13 +100,16 @@ class ClueRightPanel extends React.Component {
         }
         this.setTabsContainerHeight();
     }
-
+    //是否是从线索池中打开的详情
+    isCluePool() {
+        return this.props.type === ClUE_POOL;
+    }
     getCurClue = (id) => {
         // 线索池中获取线索详情和线索中获取详情是两个路径
-        if (this.props.type === 'clue_pool') { // 线索池中获取线索详情的请求
+        if (this.isCluePool()) { // 线索池中获取线索详情的请求
             cluePoolAjax.getClueDetailById(id).then(resData => {
                 if (_.isObject(resData)) {
-                    resData.clue_type = 'clue_pool';
+                    resData.clue_type = ClUE_POOL;
                     this.setState({
                         curClue: resData
                     });
@@ -341,6 +346,8 @@ class ClueRightPanel extends React.Component {
         if (this.props.className){
             cls += ` ${this.props.className}`;
         }
+        //是否隐藏联系方式（线索池中不展示联系方式）
+        let hideContactWay = this.isCluePool();
         return (
             <div
                 className={cls}
@@ -350,7 +357,7 @@ class ClueRightPanel extends React.Component {
                         <div className="clue-basic-info-container">
                             <div className="clue-name-wrap">
                                 {
-                                    curClue.clue_type === 'clue_pool' ? null : renderClueStatus(curClue)
+                                    curClue.clue_type === ClUE_POOL ? null : renderClueStatus(curClue)
                                 }
                                 <div className="clue-name-title">
                                     <BasicEditInputField
@@ -400,6 +407,7 @@ class ClueRightPanel extends React.Component {
                                             updateCustomerLastContact={this.updateCustomerLastContact}
                                             extractClueOperator={this.props.extractClueOperator}
                                             changeActiveKey={this.changeActiveKey}
+                                            hideContactWay={hideContactWay}
                                         />
                                     ) : null}
                                 </TabPane>
@@ -413,6 +421,7 @@ class ClueRightPanel extends React.Component {
                                             curClue={curClue}
                                             divHeight={divHeight}
                                             updateCustomerLastContact={this.updateCustomerLastContact}
+                                            hideContactWay={hideContactWay}
                                         />
                                     ) : null}
                                 </TabPane>

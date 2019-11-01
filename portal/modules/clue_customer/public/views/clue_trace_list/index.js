@@ -108,8 +108,12 @@ class ClueTraceList extends React.Component {
         }
 
         let bodyData = {
-            lead_id: this.state.leadId || '',
+            lead_id: this.state.leadId || ''
         };
+        //线索池中的线索详情中不展示联系方式
+        if (this.props.hideContactWay) {
+            bodyData.hideContactWay = this.props.hideContactWay;
+        }
         // //跟进类型的过滤
         // if (this.state.filterType === CALL_RECORD_TYPE.PHONE) {
         //     //电话类型：eefung电话+容联电话+客套APP电话
@@ -721,7 +725,8 @@ ClueTraceList.defaultProps = {
     updateCustomerLastContact: noop,
     curClue: {},
     isOverViewPanel: false,
-    changeActiveKey: noop
+    changeActiveKey: noop,
+    hideContactWay: false,
 };
 ClueTraceList.propTypes = {
     disableEdit: PropTypes.bool,
@@ -730,7 +735,8 @@ ClueTraceList.propTypes = {
     updateCustomerLastContact: PropTypes.func,
     curClue: PropTypes.object,
     isOverViewPanel: PropTypes.bool,
-    changeActiveKey: PropTypes.func
+    changeActiveKey: PropTypes.func,
+    hideContactWay: PropTypes.bool,
 };
 module.exports = ClueTraceList;
 
