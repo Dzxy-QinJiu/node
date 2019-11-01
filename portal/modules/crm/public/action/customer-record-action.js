@@ -41,8 +41,8 @@ function CustomerRecordAction() {
                 let queryObj = {
                     sort_field: 'create_time',
                     order: 'descend',
-                    page_size: 0, //只获取已通过的舆情报告的总数
-                    type: 'report',
+                    page_size: 0, //只获取已通过的舆情报告的总数,不获取报告列表
+                    type: 'opinion_report',
                     comment_unread: false,
                     status: 'pass',
                     customer_id: queryParams.customer_id
@@ -89,7 +89,7 @@ function CustomerRecordAction() {
             sort_field: 'create_time',
             order: 'descend',
             page_size: 10,
-            type: 'report',
+            type: 'opinion_report',
             comment_unread: false,
             status: 'pass',
             customer_id: queryObj.customer_id
