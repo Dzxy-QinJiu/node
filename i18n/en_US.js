@@ -3713,6 +3713,37 @@ var en_US = {
     'clue.assignment.active.state': 'Start/Stop State',//启停状态
     'clue.assignment.strategy.tip': 'This strategy works for new-added strategy',//本策略对新加线索生效
     'clue.assignment.strategy.switch.tip': 'Are you sure to {action} this strategy?',//确定要{action}该线索分配策略？
-    'clue.assignment.strategy.delete': 'Are you sure to delete this strategy?'//确定要删除该线索分配策略?
+    'clue.assignment.strategy.delete': 'Are you sure to delete this strategy?',//确定要删除该线索分配策略?
+
+    /*支付流程 --- start*/
+    'personal.upgrade.to.official.version': 'Upgrade to the official version',//升级为正式版
+    'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
+    'clues.extract.count.at.month': 'Clue recommendation can be extracted every month {count}',//线索推荐每月可提取{count}条
+    'goods.price.most.favorable': 'The most favorable',//最优惠
+    'goods.immediate.payment': 'Immediate payment',//立即支付
+    'goods.increase.clues': 'Increase the amount of clues',//增加线索量
+    'clues.extract.count.at.part': 'Clue extraction amount per {count}',//线索提取量每份 {count} 条
+    'clues.no.goods.data': 'No goods',//暂无商品
+    'clues.get.goods.faild': 'Failure to acquire goods',//获取商品失败
+    'clues.leads.part': 'Part',//份
+    'clues.leads.strip': 'Strip',//条
+    'clues.leads.integer.range': 'The integer 1 ~ 100',//1~100整数
+    'payment.notification.tip': 'prompt',//提示
+    'payment.goods.no.payment.mod.tip': 'You are unable to purchase the goods for the time being',//您暂时不能购买该商品
+    'payment.goods.number': 'The order number：{orderNumber}',//订单号：{orderNumber}
+    'payment.goods.trade.name': 'Trading goods',//交易商品
+    'payment.goods.trade.amount': 'Transaction amount',//交易金额
+    'payment.goods.trade.time': 'Place the order of time',//下单时间
+    'payment.goods.create.success': 'Place an order successfully',//下单成功
+    'payment.goods.create.faild': 'Place the order failed',//下单失败
+    'payment.get.qrcode.faild': '获取失败，请{retry}',//获取失败，请{retry}
+    'payment.success': 'Pay for success',//支付成功
+    'payment.order.record': 'Order record',//订单记录
+    'payment.add.clue.extracted.number': 'You have successfully increased the number of clues extracted by {count}',//您已成功增加{count}条线索提取量
+    'payment.again.create.order': 'rebuild',//重新生成
+    'payment.order.timeout': 'Order timeout, {retry}',//订单超时，{retry}
+    'payment.again.create.order.faild': 'Failed to generate order, {retry}',//生成订单失败，{retry}
+    /*支付流程 --- end*/
+
 };
 export default en_US;

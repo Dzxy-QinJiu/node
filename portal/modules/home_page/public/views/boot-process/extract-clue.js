@@ -9,11 +9,12 @@ import GuideAjax from 'MOD_DIR/common/public/ajax/guide';
 import {Checkbox, Button} from 'antd';
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
 var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notificationEmitter;
+var paymentEmitter = require('PUB_DIR/sources/utils/emitters').paymentEmitter;
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import {formatSalesmanList} from 'PUB_DIR/sources/utils/common-method-util';
+import { formatSalesmanList, getOrganization } from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 
 const LAYOUT_CONSTANCE = {
@@ -268,6 +269,10 @@ class ExtractClues extends React.Component {
         });
     };
 
+    handleClickAddClues = () => {
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {});
+    };
+
     renderRecommendLists = () => {
         let {recommendClueLists} = this.state;
         return (
@@ -319,6 +324,14 @@ class ExtractClues extends React.Component {
                         placement="topRight"
                         btnAtTop={false}
                     />
+                    {
+                        _.isEqual(_.get(getOrganization(),'type'), '试用') ? null :
+                            <Button className="button-add-clue" data-tracename="点击增加线索量"
+                                title={Intl.get('goods.increase.clues', '增加线索量')}
+                                onClick={this.handleClickAddClues}>
+                                {Intl.get('goods.increase.clues', '增加线索量')}
+                            </Button>
+                    }
                 </div>
             );
         }else {

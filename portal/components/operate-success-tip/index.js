@@ -17,7 +17,7 @@ class OperateSuccessTip extends React.Component {
     render() {
         return (
             <div className="operate-finished-wrapper" data-tracename="完成提示框">
-                <i className="iconfont icon-add-success"/>
+                <i className="iconfont icon-add-success" style={{color: this.props.iconColor}}/>
                 <div className="operate-finished-title">{this.props.title}</div>
                 <div className="operate-finished-tip">{this.props.tip}</div>
                 {this.props.isShowBtn ? (
@@ -31,13 +31,14 @@ class OperateSuccessTip extends React.Component {
     }
 }
 OperateSuccessTip.defaultProps = {
-    title: '添加成功',
+    title: Intl.get('user.user.add.success', '添加成功'),
     tip: '',
     continueText: Intl.get('guide.continue.add', '继续添加'),//继续操作按钮提示文本
     goText: Intl.get('user.apply.check', '查看'),//其他操作按钮提示文本
     continueFn: loop,//继续操作事件
     goFn: loop,//其他操作事件
     isShowBtn: true,//是否显示按钮
+    iconColor: '#28AF6A',
 };
 OperateSuccessTip.propTypes = {
     title: PropTypes.oneOfType[PropTypes.string, PropTypes.element],
@@ -47,6 +48,7 @@ OperateSuccessTip.propTypes = {
     continueFn: PropTypes.func,
     goFn: PropTypes.func,
     isShowBtn: PropTypes.bool,
+    iconColor: PropTypes.string,
 };
 
 module.exports = OperateSuccessTip;
