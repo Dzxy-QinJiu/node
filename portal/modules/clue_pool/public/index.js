@@ -34,9 +34,7 @@ import {Button, message} from 'antd';
 const Spinner = require('CMP_DIR/spinner');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import { batchPushEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { RightPanel } from 'CMP_DIR/rightPanel';
-import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
+import {batchPushEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import filterEmitter from 'CMP_DIR/filter/emitter';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
@@ -71,7 +69,6 @@ class ClueExtract extends React.Component {
             showFilterList: false,//是否展示线索筛选区域
             selectedClues: [],//获取批量操作选中的线索
             singleExtractLoading: false, // 单个提取的loading
-            isShowClueDetailPanel: false, // 是否显示显示详情， 默认false
             selectedNumber: 0,//当用户只选了二十条数据时，记录此时的数据总量
             filterInputWidth: 210,//输入框的默认宽度
             ...cluePoolStore.getState()
@@ -658,18 +655,20 @@ class ClueExtract extends React.Component {
     };
 
     // 展示右侧详情面板
-    showClueDetailPanel = (item) => {
-        this.setState({
-            isShowClueDetailPanel: true
-        }, () => {
-            cluePoolAction.setCurrentClueId(item.id);
+    showClueDetailPanel = (salesClueItem) => {
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+            clue_params: {
+                currentId: salesClueItem.id,
+                type: 'clue_pool',
+                extractClueOperator: this.extractClueOperator
+            }
         });
-
     };
 
     hideRightPanel = () => {
-        this.setState({isShowClueDetailPanel: false});
         //关闭右侧面板后，将当前展示线索的id置为空
+        phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_CLUE_PANEL);
         cluePoolAction.setCurrentClueId('');
         $('.ant-table-row').removeClass('current-row');
     };
@@ -710,7 +709,7 @@ class ClueExtract extends React.Component {
 
     //处理选中行的样式
     handleRowClassName = (record, index) => {
-        if (record.id === this.state.currentId && this.state.isShowClueDetailPanel) {
+        if (record.id === this.state.currentId) {
             return 'current-row';
         } else {
             return '';
@@ -1237,28 +1236,6 @@ class ClueExtract extends React.Component {
                         {this.renderLoadingAndErrAndNodataContent()}
                     </div>
                 </div>
-                {
-                    this.state.isShowClueDetailPanel ? (
-                        <RightPanel
-                            className="clue-pool-clue-detail white-space-nowrap table-btn-fix"
-                            showFlag={this.state.isShowClueDetailPanel}
-                        >
-                            <span className="iconfont icon-close" onClick={(e) => {
-                                this.hideRightPanel();
-                            }}/>
-                            <div className="right-panel-content">
-                                <ClueDetail
-                                    ref={cluePanel => this.cluePanel = cluePanel}
-                                    currentId={this.state.currentId}
-                                    curClue={this.state.curClue}
-                                    hideRightPanel={this.hideRightPanel}
-                                    type='clue_pool'
-                                    extractClueOperator={this.extractClueOperator}
-                                />
-                            </div>
-                        </RightPanel>
-                    ) : null
-                }
             </div>
         );
     };
