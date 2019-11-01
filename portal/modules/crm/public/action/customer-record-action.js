@@ -7,6 +7,7 @@ var customerRecordAjax = require('../ajax/customer-record-ajax');
 var scrollBarEmitter = require('../../../../public/sources/utils/emitters').scrollBarEmitter;
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util'; //判断是否在蚁坊域
 import {getAllApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 function CustomerRecordAction() {
     this.generateActions(
         'setType',
@@ -42,14 +43,13 @@ function CustomerRecordAction() {
                     sort_field: 'create_time',
                     order: 'descend',
                     page_size: 0, //只获取已通过的舆情报告的总数,不获取报告列表
-                    type: 'opinion_report',
+                    type: APPLY_APPROVE_TYPES.OPINION_REPORT,
                     comment_unread: false,
                     status: 'pass',
                     customer_id: queryParams.customer_id
                 };
                 getAllApplyList(queryObj).then((reportResult) => {
-                    let totalReports = _.get(reportResult, 'total', 0);
-                    data.public_opinion_report = totalReports;
+                    data.public_opinion_report = _.get(reportResult, 'total', 0);
                     this.dispatch({loading: false,error: false,data: data});
                 }, () => {
                     this.dispatch({loading: false,error: false,data: data});
@@ -84,25 +84,14 @@ function CustomerRecordAction() {
     };
     //获取舆情报告列表
     this.getPublicOpinionReports = function(queryObj, callback) {
-        //获取已通过的舆情报告
-        let queryParam = {
-            sort_field: 'create_time',
-            order: 'descend',
-            page_size: 10,
-            type: 'opinion_report',
-            comment_unread: false,
-            status: 'pass',
-            customer_id: queryObj.customer_id
-        };
-        if(queryObj.id) {
-            queryParam.id = queryObj.id;
-        }
         let result = {data: null, error: false};
-        getAllApplyList(queryParam).then((data) => {
+        getAllApplyList(queryObj).then((data) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             result.data = data;
             this.dispatch(result);
             if (_.isFunction(callback)) callback();
         }, (error) => {
+            scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             result.data = error;
             result.error = true;
             this.dispatch(result);

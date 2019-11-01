@@ -45,6 +45,7 @@ import {CALL_STATUS_MAP, AUTO_SIZE_MAP, CALL_TYPE_MAP, TRACE_NULL_TIP} from 'PUB
 const OVERVIEW_SHOW_COUNT = 5;//概览页展示跟进记录的条数
 import {audioMsgEmitter, myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util'; //判断是否在蚁坊域
+import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
 //除去固定的电话、拜访、其他以外的类型的缓存数据，获取后存起来，不用每次都取
 let extraTraceTypeList = [];
 class CustomerRecord extends React.Component {
@@ -210,13 +211,20 @@ class CustomerRecord extends React.Component {
         }
         //舆情报告的信息用另外的接口获取
         if(_.isEqual(this.state.filterType, 'public_opinion_report')) {
-            let queryObj = {
+            //获取已通过的舆情报告
+            let queryParam = {
+                sort_field: 'create_time',
+                order: 'descend',
+                page_size: 10,
+                type: APPLY_APPROVE_TYPES.OPINION_REPORT,
+                comment_unread: false,
+                status: 'pass',
                 customer_id: bodyData.customer_id
             };
             if(lastId) {
-                queryObj.id = lastId;
+                queryParam.id = lastId;
             }
-            CustomerRecordActions.getPublicOpinionReports(queryObj, () => {
+            CustomerRecordActions.getPublicOpinionReports(queryParam, () => {
                 if (_.isFunction(this.props.refreshSrollbar)) {
                     setTimeout(() => {
                         this.props.refreshSrollbar();
