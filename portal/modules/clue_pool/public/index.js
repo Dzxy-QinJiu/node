@@ -74,6 +74,7 @@ class ClueExtract extends React.Component {
             isShowClueDetailPanel: false, // 是否显示显示详情， 默认false
             selectedNumber: 0,//当用户只选了二十条数据时，记录此时的数据总量
             filterInputWidth: 210,//输入框的默认宽度
+            batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             ...cluePoolStore.getState()
         };
     }
@@ -92,12 +93,7 @@ class ClueExtract extends React.Component {
         this.setState(cluePoolStore.getState());
     };
 
-    updateItem = (item, submitObj) => {
-        let sale_id = _.get(submitObj, 'sale_id', ''), team_id = _.get(submitObj, 'team_id', ''),
-            sale_name = _.get(submitObj, 'sale_name', ''), team_name = _.get(submitObj, 'team_name', '');
-        let appendedTeamId = _.get(submitObj, 'team_id') ? `&&${submitObj.team_id}` : '';
-        let savedId = sale_id + appendedTeamId;
-        SetLocalSalesClickCount(savedId);
+    updateItem = (item) => {
         //需要在列表中删除
         cluePoolAction.updateCluePoolList(item.id);
     };
@@ -125,10 +121,10 @@ class ClueExtract extends React.Component {
         let clueArr = _.map(tasks, 'taskDefine');
         // 遍历每一个线索
         _.each(clueArr, (clueId) => {
-            //如果当前客户是需要更新的客户，才更新
+            //如果当前线索是需要更新的线索，才更新
             let target = _.find(curClueLists, item => item.id === clueId);
             if (target) {
-                this.updateItem(target, taskParams);
+                this.updateItem(target);
             }
         });
         //当最后一个推送完成后
@@ -143,9 +139,11 @@ class ClueExtract extends React.Component {
                     this.getCluePoolList();
                 },1000);
             }
+            //一次批量操作只判定一次点击次数加一
+            SetLocalSalesClickCount(this.state.batchSelectedSales);
         }
         this.setState({
-            selectedClues: []
+            selectedClues: [],
         });
     };
 
@@ -973,6 +971,10 @@ class ClueExtract extends React.Component {
                 if (itemId) {
                     submitObj.customer_id = itemId;
                 }
+                //记录当前选择的销售销售团队id
+                this.setState({
+                    batchSelectedSales: _.cloneDeep(this.state.salesMan)
+                });
                 return submitObj;
             }
         }

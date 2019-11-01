@@ -143,6 +143,7 @@ class ClueCustomer extends React.Component {
         isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
         cluePoolCondition: {},//线索池的搜索条件
         filterInputWidth: 210,//筛选输入框的宽度
+        batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -307,6 +308,11 @@ class ClueCustomer extends React.Component {
                 });
             }
         });
+        //当最后一个推送完成后
+        if(_.isEqual(taskInfo.running, 0)) {
+            //一次批量操作只判定一次点击次数加一
+            SetLocalSalesClickCount(this.state.batchSelectedSales);
+        }
         this.setState({
             selectedClues: [],
         });
@@ -1792,10 +1798,10 @@ class ClueCustomer extends React.Component {
         //增加一个动态效果，隐藏该线索
         this.flyClueHastransfer(this.state.curClue,DIFFREF.TRASFERINVALID);
         setTimeout(() => {
-          this.hideCurClue();
-          this.changeClueNum();
+            this.hideCurClue();
+            this.changeClueNum();
         }, FLOW_FLY_TIME,() => {
-            _.isFunction(callback) && callback()
+            _.isFunction(callback) && callback();
         });
     };
     //线索转为新客户完成后的回调事件
@@ -2001,6 +2007,7 @@ class ClueCustomer extends React.Component {
     //单个及批量修改跟进人完成后的处理
     afterHandleAssignSalesBatch = (feedbackObj,submitObj,item) => {
         let clue_id = _.get(submitObj,'customer_id','');//线索的id，可能是一个，也可能是多个
+        let salesMan = _.cloneDeep(this.state.salesMan);
         if (feedbackObj && feedbackObj.errorMsg) {
             message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
         } else {
@@ -2020,6 +2027,7 @@ class ClueCustomer extends React.Component {
                         clueCustomerAction.afterAssignSales(clue_id);
                     }, FLOW_FLY_TIME);
                 }
+                SetLocalSalesClickCount(salesMan);
             }else{
                 //这个是批量修改联系人
                 if (this.refs.changesales) {
@@ -2053,7 +2061,6 @@ class ClueCustomer extends React.Component {
                     }
                 }
             }
-
             this.setState({
                 curClueLists: this.state.curClueLists
             });
@@ -2072,6 +2079,10 @@ class ClueCustomer extends React.Component {
         if (selectClueAll){
             submitObj.query_param = {...this.state.queryObj};
         }
+        let batchSelectedSales = _.cloneDeep(this.state.salesMan);
+        this.setState({
+            batchSelectedSales
+        });
         if (_.isEmpty(submitObj)){
             return;
         }else{
@@ -2574,9 +2585,9 @@ class ClueCustomer extends React.Component {
         }
         var curClueLists = this.state.curClueLists;
         var clueArr = _.map(tasks, 'taskDefine');
-        //遍历每一个客户
+        //遍历每一个线索
         _.each(clueArr, (clueId) => {
-            //如果当前客户是需要更新的客户，才更新
+            //如果当前线索是需要更新的线索，才更新
             var target = _.find(curClueLists, item => item.id === clueId);
             if (target) {
                 clueCustomerAction.updateClueItemAfterAssign({
@@ -2609,6 +2620,9 @@ class ClueCustomer extends React.Component {
         if(this.state.isReleasingClue) {
             return;
         }
+        this.setState({
+            batchSelectedSales: _.cloneDeep(this.state.salesMan)
+        });
         let condition = {
         };
         //选中全部搜索结果时，将搜索条件传给后端

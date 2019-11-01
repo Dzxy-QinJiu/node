@@ -30,11 +30,12 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 const maxLimitExtractNumber = 100;
+const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -46,6 +47,7 @@ class RecommendCustomerRightPanel extends React.Component {
             hasExtractCount: 0,//已经提取的推荐线索的数量
             tablePopoverVisible: '',//单个提取展示popover的那条推荐线索
             batchPopoverVisible: false,//批量操作展示popover
+            batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             ...clueCustomerStore.getState()
         };
     }
@@ -140,6 +142,13 @@ class RecommendCustomerRightPanel extends React.Component {
         this.setState({
             selectedRecommendClues: []
         });
+        //当最后一个推送完成后
+        if(_.isEqual(taskInfo.running, 0)) {
+            //一次批量操作只判定一次点击次数加一
+            let batchSelectedSales = this.state.batchSelectedSales;
+            SetLocalSalesClickCount(batchSelectedSales, CLUE_RECOMMEND_SELECTED_SALES);
+            this.clearSelectSales();
+        }
     }
 
     componentWillUnmount() {
@@ -173,6 +182,7 @@ class RecommendCustomerRightPanel extends React.Component {
         this.getRecommendClueLists();
     };
     handleExtractRecommendClues = (reqData) => {
+        let salesMan = _.cloneDeep(this.state.salesMan);
         $.ajax({
             url: '/rest/clue/extract/recommend/clue',
             dataType: 'json',
@@ -188,6 +198,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     //提取成功后，把该线索在列表中删除
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     this.clearSelectSales();
+                    SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
                     clueCustomerAction.updateRecommendClueLists(_.get(reqData,'companyIds[0]'));
                     //线索提取完后，会到待分配状态中
                 }else{
@@ -205,7 +216,7 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     // 获取待分配人员列表
     getSalesDataList = () => {
-        let clueSalesIdList = getClueSalesList();
+        let clueSalesIdList = getClueSalesList(CLUE_RECOMMEND_SELECTED_SALES);
         //销售领导、域管理员,展示其所有（子）团队的成员列表
         let dataList = _.map(formatSalesmanList(this.state.salesManList), salesman => {
             let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'value'));
@@ -402,7 +413,8 @@ class RecommendCustomerRightPanel extends React.Component {
                     });
                 }else{
                     this.setState({
-                        batchPopoverVisible: false
+                        batchPopoverVisible: false,
+                        batchSelectedSales: _.cloneDeep(this.state.salesMan)
                     });
                     this.handleBatchAssignClues(submitObj);
                 }
