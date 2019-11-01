@@ -20,7 +20,7 @@
     "start": "node app.js -p",
     "build": "npm run gen-route && npm run dll && npm run webpack && npm run server",
     "production": "npm run build && npm run start",
-    "precommit": "npm -v",
+    "precommit": "lint-staged",
     "eslint_fix": "eslint --fix  --ext .jsx,.js ./  -o eslint-fix.log"
   },
   "lint-staged": {

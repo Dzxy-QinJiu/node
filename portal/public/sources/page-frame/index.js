@@ -23,7 +23,7 @@ import{
     phoneMsgEmitter,
     audioMsgEmitter,
     userDetailEmitter,
-	paymentEmitter
+    paymentEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 
@@ -44,8 +44,8 @@ class PageFrame extends React.Component {
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
         clueParamObj: $.extend(true, {}, emptyParamObj),
-        userDetailParamObj: $.extend(true, {}) // 用户详情组件相关的参数
-		isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
+        userDetailParamObj: $.extend(true, {}), // 用户详情组件相关的参数
+        isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
         cluePaymentParamObj: {},
     };
 
@@ -69,7 +69,7 @@ class PageFrame extends React.Component {
         userDetailEmitter.on(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
         // 关闭用户详情面板的事件监听
         userDetailEmitter.on(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
-		//打开增加线索量的面板的事件监听
+        //打开增加线索量的面板的事件监听
         paymentEmitter.on(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
 
         $(window).on('resize', this.resizeHandler);
@@ -123,7 +123,7 @@ class PageFrame extends React.Component {
         userDetailEmitter.removeListener(userDetailEmitter.OPEN_USER_DETAIL, this.openUserDetailPanel);
         // 关闭用户详情面板的事件监听
         userDetailEmitter.removeListener(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
-		paymentEmitter.removeListener(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
+        paymentEmitter.removeListener(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
@@ -289,7 +289,7 @@ class PageFrame extends React.Component {
                                 />
                             ) : null
                         }
-						{
+                        {
                             this.state.isShowPurchaseLeadsPanel ? (
                                 <PurchaseLeads
                                     paramObj={this.state.cluePaymentParamObj}
