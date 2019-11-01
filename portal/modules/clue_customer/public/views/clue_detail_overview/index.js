@@ -88,12 +88,15 @@ class ClueDetailOverview extends React.Component {
 
     componentDidMount() {
         clueCustomerStore.listen(this.onClueCustomerStoreChange);
-        //获取相似线索列表
-        this.getSimilarClueLists();
-        //获取相似客户列表
-        //如果是已转化的客户，不需要展示相似客户
-        if (!this.isHasTransferClue()){
-            this.getSimilarCustomerLists();
+        //curClue为空的时候不调用接口发起请求
+        if(!_.isEmpty(this.state.curClue)) {
+            //获取相似线索列表
+            this.getSimilarClueLists();
+            //获取相似客户列表
+            //如果是已转化的客户，不需要展示相似客户
+            if (!this.isHasTransferClue()){
+                this.getSimilarCustomerLists();
+            }
         }
         //销售领导获取我所在团队及下级团队树
         getMyTeamTreeList(result => {
