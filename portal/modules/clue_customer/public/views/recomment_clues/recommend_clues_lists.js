@@ -25,6 +25,7 @@ const LAYOUT_CONSTANTS = {
 };
 var classNames = require('classnames');
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
+var paymentEmitter = require('PUB_DIR/sources/utils/emitters').paymentEmitter;
 import Trace from 'LIB_DIR/trace';
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
@@ -266,7 +267,7 @@ class RecommendCustomerRightPanel extends React.Component {
             });
             //提取线索前，先发请求获取还能提取的线索数量
             this.getRecommendClueCount((count) => {
-                if (_.get(getOrganization(),'type') === Intl.get( 'common.trial', '试用') && count >= maxLimitExtractNumber){
+                if (_.get(getOrganization(),'type') === '试用' && count >= maxLimitExtractNumber){
                     this.setState({
                         tablePopoverVisible: record.id,
                         singleExtractLoading: false
@@ -401,7 +402,7 @@ class RecommendCustomerRightPanel extends React.Component {
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
             this.getRecommendClueCount((count) => {
-                if (_.get(getOrganization(),'type') === Intl.get( 'common.trial', '试用') && count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
+                if (_.get(getOrganization(),'type') === '试用' && count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
                     this.setState({
                         batchPopoverVisible: true,
                         singleExtractLoading: false
@@ -631,6 +632,10 @@ class RecommendCustomerRightPanel extends React.Component {
             });
         }
     };
+    //增加线索量
+    handleClickAddClues = () => {
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
+    };
     render() {
         var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
         let {isWebMin} = isResponsiveDisplay();
@@ -670,6 +675,18 @@ class RecommendCustomerRightPanel extends React.Component {
                                 }
                                 {
                                     hasSelectedClue ? this.renderBatchChangeClues() : null
+                                }
+                                {
+                                    _.isEqual(_.get(getOrganization(),'type'), '试用') ? null :
+                                        <Button className="btn-item add-clues-btn" data-tracename="点击增加线索量"
+                                            title={Intl.get('goods.increase.clues', '增加线索量')}
+                                            onClick={this.handleClickAddClues}>
+                                            {isWebMin ? <span className="iconfont icon-plus"/> :
+                                                <React.Fragment>
+                                                    <span className="iconfont icon-plus"/>
+                                                    {Intl.get('goods.increase.clues', '增加线索量')}
+                                                </React.Fragment>}
+                                        </Button>
                                 }
                             </div>
                         </TopNav>

@@ -289,7 +289,8 @@ var en_US = {
     'common.the.maximum.gross.profit.rate': 'the maximum gross profit rate',//回款毛利率最大值
     'common.maximum.gross.margin.of.newly.signed.payment': 'maximum gross margin of newly signed payment',//新签回款毛利最大值
     'common.load.data.error': 'Loading failed, please refresh', // 加载失败，请{refresh}
-
+    'common.no.more.data.tips': 'There was no more {name}', // 没有更多{name}了
+    'common.no.data.tips': 'No {name}', // 暂无{name}
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
@@ -1094,6 +1095,18 @@ var en_US = {
     'user.info.receive.subscribe': 're-subscribe',//重新订阅
     'user.info.setting.failed': 'Failed to set, please try again!',//设置失败，请重新设置！
     'user.info.setting.succeess': 'Set successfully!',//设置成功！
+    'user.info.version': 'Version', // 版本
+    'user.info.version.expire': 'expiration{time}', // {time}到期
+    'user.info.version.upgrade': 'Upgrade to the official version', // 升级为正式版
+    'user.trade.record': 'Purchase record', // 购买记录
+    'user.trade.get.record': 'Failed to get purchase record', // 获取购买记录失败
+    'user.trade.record.order.number': 'Order number', // 订单号
+    'user.trade.record.time': 'Order time', // 订单时间
+    'user.trade.record.total': '{total} purchase records', // 共有{total}条购买记录
+    'user.trade.payment.mode': 'Payment method', // 支付方式
+    'user.trade.payment.name': '{name} payment', // {name}支付
+    'user.trade.payment.alipay': 'Alipay', // 支付宝
+    'user.trade.no.payment': 'You have no purchase record', // 您还没有购买记录
     //基本资料end
     //密码管理start
     'user.password.input.again': 'The original password was incorrect',//原密码不正确，请重新输入。
@@ -3713,6 +3726,37 @@ var en_US = {
     'clue.assignment.active.state': 'Start/Stop State',//启停状态
     'clue.assignment.strategy.tip': 'This strategy works for new-added strategy',//本策略对新加线索生效
     'clue.assignment.strategy.switch.tip': 'Are you sure to {action} this strategy?',//确定要{action}该线索分配策略？
-    'clue.assignment.strategy.delete': 'Are you sure to delete this strategy?'//确定要删除该线索分配策略?
+    'clue.assignment.strategy.delete': 'Are you sure to delete this strategy?',//确定要删除该线索分配策略?
+
+    /*支付流程 --- start*/
+    'personal.upgrade.to.official.version': 'Upgrade to the official version',//升级为正式版
+    'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
+    'clues.extract.count.at.month': 'Clue recommendation can be extracted every month {count}',//线索推荐每月可提取{count}条
+    'goods.price.most.favorable': 'The most favorable',//最优惠
+    'goods.immediate.payment': 'Immediate payment',//立即支付
+    'goods.increase.clues': 'Increase the amount of clues',//增加线索量
+    'clues.extract.count.at.part': 'Clue extraction amount per {count}',//线索提取量每份 {count} 条
+    'clues.no.goods.data': 'No goods',//暂无商品
+    'clues.get.goods.faild': 'Failure to acquire goods',//获取商品失败
+    'clues.leads.part': 'Part',//份
+    'clues.leads.strip': 'Strip',//条
+    'clues.leads.integer.range': 'The integer 1 ~ 100',//1~100整数
+    'payment.notification.tip': 'prompt',//提示
+    'payment.goods.no.payment.mod.tip': 'You are unable to purchase the goods for the time being',//您暂时不能购买该商品
+    'payment.goods.number': 'The order number：{orderNumber}',//订单号：{orderNumber}
+    'payment.goods.trade.name': 'Trading goods',//交易商品
+    'payment.goods.trade.amount': 'Transaction amount',//交易金额
+    'payment.goods.trade.time': 'Place the order of time',//下单时间
+    'payment.goods.create.success': 'Place an order successfully',//下单成功
+    'payment.goods.create.faild': 'Place the order failed',//下单失败
+    'payment.get.qrcode.faild': '获取失败，请{retry}',//获取失败，请{retry}
+    'payment.success': 'Pay for success',//支付成功
+    'payment.order.record': 'Order record',//订单记录
+    'payment.add.clue.extracted.number': 'You have successfully increased the number of clues extracted by {count}',//您已成功增加{count}条线索提取量
+    'payment.again.create.order': 'rebuild',//重新生成
+    'payment.order.timeout': 'Order timeout, {retry}',//订单超时，{retry}
+    'payment.again.create.order.faild': 'Failed to generate order, {retry}',//生成订单失败，{retry}
+    /*支付流程 --- end*/
+
 };
 export default en_US;

@@ -97,5 +97,13 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    }, {
+        // 获取用户交易记录
+        'method': 'get',
+        'path': '/rest/get/user/trade/record',
+        'handler': 'getUserTradeRecord',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

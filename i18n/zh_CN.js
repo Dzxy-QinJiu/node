@@ -295,6 +295,8 @@ var zh_CN = {
     'common.the.maximum.gross.profit.rate': '回款毛利率最大值',
     'common.maximum.gross.margin.of.newly.signed.payment': '新签回款毛利最大值',
     'common.load.data.error': '加载失败，请{refresh}',
+    'common.no.more.data.tips': '没有更多{name}了',
+    'common.no.data.tips': '暂无{name}',
 
     //公共部分--end
     'login.login': '登录',
@@ -1097,6 +1099,18 @@ var zh_CN = {
     'user.info.receive.subscribe': '重新订阅',
     'user.info.setting.failed': '设置失败，请重新设置！',
     'user.info.setting.succeess': '设置成功！',
+    'user.info.version': '版本',
+    'user.info.version.expire': '{time}到期',
+    'user.info.version.upgrade': '升级为正式版',
+    'user.trade.record': '购买记录',
+    'user.trade.get.record': '获取购买记录失败',
+    'user.trade.record.order.number': '订单号',
+    'user.trade.record.time': '订单时间',
+    'user.trade.record.total': '共有{total}条购买记录',
+    'user.trade.payment.mode': '支付方式',
+    'user.trade.payment.name': '{name}支付',
+    'user.trade.payment.alipay': '支付宝',
+    'user.trade.no.payment': '您还没有购买记录',
     //基本资料end
     //密码管理start
     'user.password.input.again': '原密码不正确，请重新输入。',
@@ -3765,5 +3779,35 @@ var zh_CN = {
     'clue.assignment.strategy.tip': '本策略对新加线索生效',
     'clue.assignment.strategy.switch.tip': '确定要{action}该线索分配策略？',
     'clue.assignment.strategy.delete': '确定要删除该线索分配策略？',
+
+    /*支付流程 --- start*/
+    'personal.upgrade.to.official.version': '升级为正式版',
+    'personal.upgrade.to.enterprise.edition': '升级为企业版',
+    'clues.extract.count.at.month': '线索推荐每月可提取 {count} 条',
+    'goods.price.most.favorable': '最优惠',
+    'goods.immediate.payment': '立即支付',
+    'goods.increase.clues': '增加线索量',
+    'clues.extract.count.at.part': '线索提取量每份 {count} 条',
+    'clues.no.goods.data': '暂无商品',
+    'clues.get.goods.faild': '获取商品失败',
+    'clues.leads.part': '份',
+    'clues.leads.strip': '条',
+    'clues.leads.integer.range': '1~100整数',
+    'payment.notification.tip': '提示',
+    'payment.goods.no.payment.mod.tip': '您暂时不能购买该商品',
+    'payment.goods.number': '订单号：{orderNumber}',
+    'payment.goods.trade.name': '交易商品',
+    'payment.goods.trade.amount': '交易金额',
+    'payment.goods.trade.time': '下单时间',
+    'payment.goods.create.success': '下单成功',
+    'payment.goods.create.faild': '下单失败',
+    'payment.get.qrcode.faild': '获取失败，请{retry}',
+    'payment.success': '支付成功',
+    'payment.order.record': '订单记录',
+    'payment.add.clue.extracted.number': '您已成功增加{count}条线索提取量',
+    'payment.again.create.order': '重新生成',
+    'payment.order.timeout': '订单超时，{retry}',
+    'payment.again.create.order.faild': '生成订单失败，{retry}',
+    /*支付流程 --- end*/
 };
 export default zh_CN;

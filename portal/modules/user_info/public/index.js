@@ -2,7 +2,6 @@
  * Created by xiaojinfeng on  2016/1/14 10:25 .
  */
 //顶部导航
-var React = require('react');
 var createReactClass = require('create-react-class');
 require('./css/user-info-zh_CN.less');
 var language = require('../../../public/language/getLanguage');
@@ -26,6 +25,17 @@ var minUserInfoHeight = 380;//如果并排展示时，登录日志展示区域�
 var PrivilegeChecker = require('../../../components/privilege/checker');
 import reactIntlMixin from '../../../components/react-intl-mixin';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import {Tabs} from 'antd';
+const TabPane = Tabs.TabPane;
+import TradeRecord from './views/trade-record';
+import history from 'PUB_DIR/sources/history';
+
+const TAB_KEYS = {
+    OPERATE_RECORD_TAB: '1',// 操作记录
+    TRADE_TAB: '2',// 交易记录
+};
+
+const TAB_HEIGHT = 40; // 标签页占据的高度
 
 var UserInfoPage = createReactClass({
     displayName: 'UserInfoPage',
@@ -34,7 +44,8 @@ var UserInfoPage = createReactClass({
     getInitialState: function() {
         return {
             ...UserInfoStore.getState(),
-            userInfoContainerHeight: this.userInfoContainerHeightFnc()
+            userInfoContainerHeight: this.userInfoContainerHeightFnc(),
+            activeKey: TAB_KEYS.OPERATE_RECORD_TAB
         };
     },
 
@@ -46,6 +57,10 @@ var UserInfoPage = createReactClass({
         var hasPrivilege = PrivilegeChecker.hasPrivilege;
         $(window).on('resize', this.resizeWindow);
         UserInfoStore.listen(this.onChange);
+        // 判断是不是跳转过来的，若是的话，显示购买记录界面
+        if(_.get(history.location, 'state.show_pay_record')) {
+            this.changeActiveKey(TAB_KEYS.TRADE_TAB);
+        }
         UserInfoAction.getUserInfo();
         UserInfoAction.getLogList({
             load_size: this.state.loadSize
@@ -85,9 +100,16 @@ var UserInfoPage = createReactClass({
         });
     },
 
+    changeActiveKey(key) {
+        this.setState({
+            activeKey: key
+        });
+    },
+
     render: function() {
-        var height = this.state.userInfoContainerHeight;
+        var height = this.state.userInfoContainerHeight - TAB_HEIGHT;
         let managedRealm = _.get(commonMethodUtil.getOrganization(), 'name', '');
+        let containerHeight = height - logTitleHeight - logBottomHeight;
         return (
             <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
                 <div className="user-info-manage-container">
@@ -98,39 +120,61 @@ var UserInfoPage = createReactClass({
                         userInfoLoading={this.state.userInfoLoading}
                     />
                     <div className="col-md-8 user-log-container-div">
-                        <div className="user-log-div" style={{height: height}}>
-                            <div className="log-div-title">
-                                <label className="log-title">
-                                    <ReactIntl.FormattedMessage id="common.operate.record" defaultMessage="操作记录"/>
-                                </label>
-                                <label className="log-title-tips">
-                                    <ReactIntl.FormattedMessage
-                                        id="user.info.log.record.tip"
-                                        defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
-                                        values={{
-                                            editpassword: <span className="update-pwd">
-                                                <NavLink to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
-                                                    <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
-                                                </NavLink>
-                                            </span>
-                                        }}
-                                    />
-
-                                </label>
-                            </div>
-                            <UserInfoLog
-                                logErrorMsg={this.state.logErrorMsg}
-                                logLoading={this.state.logLoading}
-                                logList={this.state.logList}
-                                logTotal={this.state.logTotal}
-                                sortId={this.state.sortId}
-                                loadSize={this.state.loadSize}
-                                listenScrollBottom={this.state.listenScrollBottom}
-                                height={height - logTitleHeight - logBottomHeight}
-                                handleScrollBottom={this.handleScrollBottom}
+                        <Tabs
+                            activeKey={this.state.activeKey}
+                            onChange={this.changeActiveKey}
+                        >
+                            <TabPane
+                                tab={Intl.get('common.operate.record', '操作记录')}
+                                key={TAB_KEYS.OPERATE_RECORD_TAB}
                             >
-                            </UserInfoLog>
-                        </div>
+                                {
+                                    this.state.activeKey === TAB_KEYS.OPERATE_RECORD_TAB ?
+                                        <div className="user-log-div" style={{height: height}}>
+                                            <div className="log-div-title">
+                                                <label className="log-title-tips">
+                                                    <ReactIntl.FormattedMessage
+                                                        id="user.info.log.record.tip"
+                                                        defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
+                                                        values={{
+                                                            editpassword: <span className="update-pwd">
+                                                                <NavLink to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
+                                                                    <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
+                                                                </NavLink>
+                                                            </span>
+                                                        }}
+                                                    />
+                                                </label>
+                                            </div>
+                                            <UserInfoLog
+                                                logErrorMsg={this.state.logErrorMsg}
+                                                logLoading={this.state.logLoading}
+                                                logList={this.state.logList}
+                                                logTotal={this.state.logTotal}
+                                                sortId={this.state.sortId}
+                                                loadSize={this.state.loadSize}
+                                                listenScrollBottom={this.state.listenScrollBottom}
+                                                height={containerHeight}
+                                                handleScrollBottom={this.handleScrollBottom}
+                                            />
+                                        </div>
+                                        : null
+                                }
+                            </TabPane>
+                            <TabPane
+                                tab={Intl.get('user.trade.record', '购买记录')}
+                                key={TAB_KEYS.TRADE_TAB}
+                            >
+                                {
+                                    this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
+                                        <TradeRecord
+                                            height={containerHeight + logTitleHeight}
+                                        />
+                                    ) : null
+                                }
+                            </TabPane>
+                        </Tabs>
+
 
                     </div>
                 </div>

@@ -1,0 +1,87 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2019/10/23.
+*/
+@import "../../public/css/common-variables";
+@qrcode-bg-color: #F8F9FB;
+
+.basic-payment-mode-container{
+  padding: 16px 24px;
+  //交易商品样式
+  .order-info-container{
+    background-color: #fff;
+    padding: 12px;
+    margin-bottom: 13px;
+    .order-info-content{
+      .order-info-item{
+        font-size: 14px;
+        line-height: 24px;
+        .order-info-title{
+          color: @LOADING_ERR_TIP;
+          vertical-align: middle;
+        }
+        .order-info-item--content{
+          color: @title-color;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+
+  //支付二维码样式
+  @basic-payment-qrcode: basic-payment-qrcode;
+  .@{basic-payment-qrcode}-container{
+    background-color: #fff;
+    padding: 15px;
+    &.second-payment-mode{
+      .ant-tabs-nav{
+        width: 100%;
+        text-align: center;
+        .ant-tabs-tab{
+          margin: 0 15%;
+        }
+      }
+    }
+    .@{basic-payment-qrcode}-content{
+      width: 128px;
+      min-height: 128px;
+      margin: 24px auto;
+      padding: 16px;
+      position: relative;
+      background-color: @qrcode-bg-color;
+      .@{basic-payment-qrcode}-box{
+        width: 96px;
+        height: 96px;
+        position: relative;
+      }
+      .qrcode-errmsg-tip{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: @qrcode-bg-color;
+        opacity: 0.95;
+        color: @title-color;
+        font-size: 12px;
+        font-weight: 600;
+        .qrcode-errmsg-tip-content{
+          text-align: center;
+          margin-top: 40px;
+        }
+        .icon-tips{
+          font-size: 16px;
+          color: @import_data_warn_color;
+        }
+      }
+    }
+    .qrcode-loading{
+      .load8 {
+        transform: scale(0.5, 0.5);
+        left: 25%;
+        top: 25%;
+      }
+    }
+  }
+}
