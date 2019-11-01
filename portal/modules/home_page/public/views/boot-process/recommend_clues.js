@@ -156,6 +156,7 @@ class RecommendClues extends React.Component {
             }
             return (
                 <RecommendCustomerCondition
+                    hideFocusCustomerPanel={this.props.onClosePanel}
                     hasSavedRecommendParams={this.state.settedCustomerRecommend}
                     saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
                 />

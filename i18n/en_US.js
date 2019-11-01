@@ -289,7 +289,8 @@ var en_US = {
     'common.the.maximum.gross.profit.rate': 'the maximum gross profit rate',//回款毛利率最大值
     'common.maximum.gross.margin.of.newly.signed.payment': 'maximum gross margin of newly signed payment',//新签回款毛利最大值
     'common.load.data.error': 'Loading failed, please refresh', // 加载失败，请{refresh}
-
+    'common.no.more.data.tips': 'There was no more {name}', // 没有更多{name}了
+    'common.no.data.tips': 'No {name}', // 暂无{name}
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
@@ -1094,6 +1095,18 @@ var en_US = {
     'user.info.receive.subscribe': 're-subscribe',//重新订阅
     'user.info.setting.failed': 'Failed to set, please try again!',//设置失败，请重新设置！
     'user.info.setting.succeess': 'Set successfully!',//设置成功！
+    'user.info.version': 'Version', // 版本
+    'user.info.version.expire': 'expiration{time}', // {time}到期
+    'user.info.version.upgrade': 'Upgrade to the official version', // 升级为正式版
+    'user.trade.record': 'Purchase record', // 购买记录
+    'user.trade.get.record': 'Failed to get purchase record', // 获取购买记录失败
+    'user.trade.record.order.number': 'Order number', // 订单号
+    'user.trade.record.time': 'Order time', // 订单时间
+    'user.trade.record.total': '{total} purchase records', // 共有{total}条购买记录
+    'user.trade.payment.mode': 'Payment method', // 支付方式
+    'user.trade.payment.name': '{name} payment', // {name}支付
+    'user.trade.payment.alipay': 'Alipay', // 支付宝
+    'user.trade.no.payment': 'You have no purchase record', // 您还没有购买记录
     //基本资料end
     //密码管理start
     'user.password.input.again': 'The original password was incorrect',//原密码不正确，请重新输入。
@@ -1140,6 +1153,8 @@ var en_US = {
     'notification.system.handled.error': 'Failed processed', // 处理失败
     'notification.system.login.count': '{count} counts, last time', // {count}次，最后一次
     'notification.system.tip.count': 'You have {systemTipCount} system messages.',//您有{systemTipCount}条系统消息
+    'notification.pop.up.notify': 'Pop-up notification', // 弹窗通知
+    'notification.pop.up.notify.title': '{status} pop-up notification', // {status}弹窗通知
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
@@ -2887,7 +2902,7 @@ var en_US = {
     'clue.customer.check.only.fail': 'Clue name is already taken',//线索名称唯一性校验出错
     'clue.customer.check.repeat': 'The clue name is already existed',//该线索名称已存在
     'clue.customer.similar.clue.contains': 'Similar clues',//相似的线索还有
-    'clue.customer.repeat.phone.user': 'The phone has been used by clue {userName}',//该电话已被线索{userName}使用
+    'clue.customer.repeat.phone.user': 'The phone has been used by clue "{userName}"',//该电话已被线索{userName}使用
     'clue.customer.clue.time': 'Consult on {relative}',//咨询于{relative}
     'failed.to.get.clue.classify': 'Failed to get clue classify',//获取线索分类出错了
     'clue.customer.classify': 'clue  classification',//线索分类
@@ -3054,6 +3069,7 @@ var en_US = {
     'clue.list.clue.availibility': 'Invalid clue',//无效线索
     'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
     'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any clue',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
+    'clue.edit.condition.search': 'Please change search condition',//请修改条件再查看
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3255,6 +3271,7 @@ var en_US = {
     'clue.and.crm.upload.size': 'The file size should not exceed 10M!',//文件大小不要超过10M!
     'contract.service.add': 'Add Service',//添加服务
     'apply.show.cancel.result': 'View revocation results',//查看撤销结果
+    'apply.view.see.apply.with.reply': 'Only see apply lists with replies',//只看有回复的申请
 
     // 成员申请
     'member.application': 'Member Application', // 成员申请
@@ -3395,12 +3412,11 @@ var en_US = {
     'apply.default.apply.workflow': 'Default approval process',//默认审批流程
     'apply.default.cc.email': 'Default CC',//默认抄送人
     'apply.condition.work.flow': 'Conditional approval process',//条件审批流程
-    'apply.info.cc.email': 'CC notification',//抄送通知
     'apply.info.cancel.privilege': 'Revoke permission',//撤销权限
     'apply.workflow.merge.same.approver': 'Merging the same approver (after passing, automatically passed later)',//合并相同审批人（通过后，后面自动通过）
     'apply.workflow.cancel.approve': 'Cancellation after passing (after approval, the application can be revoked with the consent of the approver)',//通过后允许撤销（审批通过后，经审批人同意，可撤销申请）
-    'apply.cc.when,submit': 'Copy the approver when submitting the application',//提交申请时抄送审批人
-    'apply.cc.when.approve.apply': 'Copy and approve the applicant after approval',//审批通过后抄送申请人
+    'apply.cc.when,submit': 'Copy the approver when submitting the application',//提交申请时通知审批人
+    'apply.cc.when.approve.apply': 'Copy and approve the applicant after approval',//审批通过后通知申请人
     'apply.cc.when.submit.and.approve': 'Copy the copy approver at the time of submitting the application and copy the applicant after approval',//提交申请时抄送审批人和审批通过后抄送申请人
     'apply.add.condition.workflow': 'Add condition approval process',//添加条件审批流程
     'apply.add.apply.approver': 'Add approver',//添加审批人
@@ -3447,6 +3463,7 @@ var en_US = {
     'apply.domain.sub.name.exist': 'The domain already exists',//该域名已存在
     'apply.approve.set.approver': 'Assgin approver',//指定审批人
     'apply.select.approver.type': 'Please select apply type',//请选择审批人类型
+    'apply.select.cc.person.type': 'Please select the type of cc person',//请选择抄送人类型
     /*自定义审批 end*/
     'app.user.manage.role.name': 'Role name',//角色名称
     'app.user.manage.organaization.name': 'Work unit or company',//所在单位或公司
@@ -3709,6 +3726,37 @@ var en_US = {
     'clue.assignment.active.state': 'Start/Stop State',//启停状态
     'clue.assignment.strategy.tip': 'This strategy works for new-added strategy',//本策略对新加线索生效
     'clue.assignment.strategy.switch.tip': 'Are you sure to {action} this strategy?',//确定要{action}该线索分配策略？
-    'clue.assignment.strategy.delete': 'Are you sure to delete this strategy?'//确定要删除该线索分配策略?
+    'clue.assignment.strategy.delete': 'Are you sure to delete this strategy?',//确定要删除该线索分配策略?
+
+    /*支付流程 --- start*/
+    'personal.upgrade.to.official.version': 'Upgrade to the official version',//升级为正式版
+    'personal.upgrade.to.enterprise.edition': 'Upgrade to enterprise edition',//升级为企业版
+    'clues.extract.count.at.month': 'Clue recommendation can be extracted every month {count}',//线索推荐每月可提取{count}条
+    'goods.price.most.favorable': 'The most favorable',//最优惠
+    'goods.immediate.payment': 'Immediate payment',//立即支付
+    'goods.increase.clues': 'Increase the amount of clues',//增加线索量
+    'clues.extract.count.at.part': 'Clue extraction amount per {count}',//线索提取量每份 {count} 条
+    'clues.no.goods.data': 'No goods',//暂无商品
+    'clues.get.goods.faild': 'Failure to acquire goods',//获取商品失败
+    'clues.leads.part': 'Part',//份
+    'clues.leads.strip': 'Strip',//条
+    'clues.leads.integer.range': 'The integer 1 ~ 100',//1~100整数
+    'payment.notification.tip': 'prompt',//提示
+    'payment.goods.no.payment.mod.tip': 'You are unable to purchase the goods for the time being',//您暂时不能购买该商品
+    'payment.goods.number': 'The order number：{orderNumber}',//订单号：{orderNumber}
+    'payment.goods.trade.name': 'Trading goods',//交易商品
+    'payment.goods.trade.amount': 'Transaction amount',//交易金额
+    'payment.goods.trade.time': 'Place the order of time',//下单时间
+    'payment.goods.create.success': 'Place an order successfully',//下单成功
+    'payment.goods.create.faild': 'Place the order failed',//下单失败
+    'payment.get.qrcode.faild': '获取失败，请{retry}',//获取失败，请{retry}
+    'payment.success': 'Pay for success',//支付成功
+    'payment.order.record': 'Order record',//订单记录
+    'payment.add.clue.extracted.number': 'You have successfully increased the number of clues extracted by {count}',//您已成功增加{count}条线索提取量
+    'payment.again.create.order': 'rebuild',//重新生成
+    'payment.order.timeout': 'Order timeout, {retry}',//订单超时，{retry}
+    'payment.again.create.order.faild': 'Failed to generate order, {retry}',//生成订单失败，{retry}
+    /*支付流程 --- end*/
+
 };
 export default en_US;

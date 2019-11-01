@@ -25,16 +25,18 @@ const LAYOUT_CONSTANTS = {
 };
 var classNames = require('classnames');
 var batchPushEmitter = require('PUB_DIR/sources/utils/emitters').batchPushEmitter;
+var paymentEmitter = require('PUB_DIR/sources/utils/emitters').paymentEmitter;
 import Trace from 'LIB_DIR/trace';
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 const maxLimitExtractNumber = 100;
+const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -46,6 +48,7 @@ class RecommendCustomerRightPanel extends React.Component {
             hasExtractCount: 0,//已经提取的推荐线索的数量
             tablePopoverVisible: '',//单个提取展示popover的那条推荐线索
             batchPopoverVisible: false,//批量操作展示popover
+            batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             ...clueCustomerStore.getState()
         };
     }
@@ -96,14 +99,17 @@ class RecommendCustomerRightPanel extends React.Component {
         }
         return (!settedCustomerRecommend.loading && !hasCondition) && !this.state.closeFocusCustomer;
     };
-
-    getRecommendClueLists = () => {
+    getSearchCondition = () => {
         var conditionObj = _.cloneDeep(_.get(this, 'state.settedCustomerRecommend.obj'));
         //去掉一些不用的属性
         delete conditionObj.id;
         delete conditionObj.user_id;
         delete conditionObj.organization;
         conditionObj.load_size = this.state.pageSize;
+        return conditionObj;
+    };
+    getRecommendClueLists = () => {
+        var conditionObj = this.getSearchCondition();
         //去掉为空的数据
         clueCustomerAction.getRecommendClueLists(conditionObj);
     }
@@ -137,6 +143,9 @@ class RecommendCustomerRightPanel extends React.Component {
             //如果当前客户是需要更新的客户，才更新
             clueCustomerAction.updateRecommendClueLists(arr[0]);
         });
+        if (_.isEmpty(this.state.recommendClueLists)) {
+            this.getRecommendClueLists();
+        }
         this.setState({
             selectedRecommendClues: []
         });
@@ -173,6 +182,8 @@ class RecommendCustomerRightPanel extends React.Component {
         this.getRecommendClueLists();
     };
     handleExtractRecommendClues = (reqData) => {
+        //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+        let salesMan = _.cloneDeep(this.state.salesMan);
         $.ajax({
             url: '/rest/clue/extract/recommend/clue',
             dataType: 'json',
@@ -188,6 +199,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     //提取成功后，把该线索在列表中删除
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     this.clearSelectSales();
+                    SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
                     clueCustomerAction.updateRecommendClueLists(_.get(reqData,'companyIds[0]'));
                     //线索提取完后，会到待分配状态中
                 }else{
@@ -205,7 +217,7 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     // 获取待分配人员列表
     getSalesDataList = () => {
-        let clueSalesIdList = getClueSalesList();
+        let clueSalesIdList = getClueSalesList(CLUE_RECOMMEND_SELECTED_SALES);
         //销售领导、域管理员,展示其所有（子）团队的成员列表
         let dataList = _.map(formatSalesmanList(this.state.salesManList), salesman => {
             let clickCount = getLocalSalesClickCount(clueSalesIdList, _.get(salesman,'value'));
@@ -260,7 +272,7 @@ class RecommendCustomerRightPanel extends React.Component {
             });
             //提取线索前，先发请求获取还能提取的线索数量
             this.getRecommendClueCount((count) => {
-                if (_.get(getOrganization(),'type') === Intl.get( 'common.trial', '试用') && count >= maxLimitExtractNumber){
+                if (_.get(getOrganization(),'type') === '试用' && count >= maxLimitExtractNumber){
                     this.setState({
                         tablePopoverVisible: record.id,
                         singleExtractLoading: false
@@ -395,14 +407,15 @@ class RecommendCustomerRightPanel extends React.Component {
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
             this.getRecommendClueCount((count) => {
-                if (_.get(getOrganization(),'type') === Intl.get( 'common.trial', '试用') && count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
+                if (_.get(getOrganization(),'type') === '试用' && count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
                     this.setState({
                         batchPopoverVisible: true,
                         singleExtractLoading: false
                     });
                 }else{
                     this.setState({
-                        batchPopoverVisible: false
+                        batchPopoverVisible: false,
+                        batchSelectedSales: _.cloneDeep(this.state.salesMan) //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
                     });
                     this.handleBatchAssignClues(submitObj);
                 }
@@ -482,6 +495,11 @@ class RecommendCustomerRightPanel extends React.Component {
             </div>);
         } else {
             var rowSelection = this.getRowSelection();
+            var conditionObj = this.getSearchCondition();
+            delete conditionObj.load_size;
+            delete conditionObj.userId;
+            //如果有筛选条件的时候，提醒修改条件再查看，没有筛选条件的时候，提示暂无数据
+            var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : Intl.get('clue.edit.condition.search', '请修改条件再查看');
             return (
                 <AntcTable
                     rowSelection={rowSelection}
@@ -490,6 +508,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     pagination={false}
                     columns={this.getRecommendClueTableColunms()}
                     scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
+                    locale={{emptyText: emptyText}}
                 />);
         }
     };
@@ -535,7 +554,8 @@ class RecommendCustomerRightPanel extends React.Component {
                         typeText: Intl.get('clue.extract.clue', '提取线索')
                     });
                     this.clearSelectSales();
-
+                    let batchSelectedSales = this.state.batchSelectedSales;
+                    SetLocalSalesClickCount(batchSelectedSales, CLUE_RECOMMEND_SELECTED_SALES);
                 }
             },
             error: (errorInfo) => {
@@ -619,6 +639,10 @@ class RecommendCustomerRightPanel extends React.Component {
             });
         }
     };
+    //增加线索量
+    handleClickAddClues = () => {
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
+    };
     render() {
         var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
         let {isWebMin} = isResponsiveDisplay();
@@ -658,6 +682,18 @@ class RecommendCustomerRightPanel extends React.Component {
                                 }
                                 {
                                     hasSelectedClue ? this.renderBatchChangeClues() : null
+                                }
+                                {
+                                    _.isEqual(_.get(getOrganization(),'type'), '试用') ? null :
+                                        <Button className="btn-item add-clues-btn" data-tracename="点击增加线索量"
+                                            title={Intl.get('goods.increase.clues', '增加线索量')}
+                                            onClick={this.handleClickAddClues}>
+                                            {isWebMin ? <span className="iconfont icon-plus"/> :
+                                                <React.Fragment>
+                                                    <span className="iconfont icon-plus"/>
+                                                    {Intl.get('goods.increase.clues', '增加线索量')}
+                                                </React.Fragment>}
+                                        </Button>
                                 }
                             </div>
                         </TopNav>

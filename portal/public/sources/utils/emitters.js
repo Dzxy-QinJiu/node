@@ -249,3 +249,8 @@ userDetailEmitter.OPEN_USER_DETAIL = 'open_user_detail';
 userDetailEmitter.CLOSE_USER_DETAIL = 'close_user_detail';
 userDetailEmitter.USER_DETAIL_CLOSE_RIGHT_PANEL = 'user_detail_close_right_panel';
 export { userDetailEmitter };
+
+//购买支付相关事件
+const paymentEmitter = new EventEmitter();
+paymentEmitter.OPEN_ADD_CLUES_PANEL = 'open_add_clues_panel';//打开购买线索量的面板
+export { paymentEmitter };

@@ -628,9 +628,23 @@ export const ASSIGN_TYPE = {
 
 //申请抄送类型
 export const CC_INFO = {
-    APPLY: 'apply', //提交申请时抄送
-    APPLY_AND_APPROVE: 'apply_and_approve', //审批通过后抄送
-    APPROVE: 'approve' //提交申请和审批通过后都抄送
+    APPLY_NOTIFY_CONFIG: 'apply', //提交申请时抄送
+    APPROVE_NOTIFY_CONFIG: 'approve' //审批通过后抄送
+};
+//抄送方式
+export const CC_INFOTYPE = {
+    EMAIL_NOTICE: 'email_notice',
+    SOCKET_NOTICE: 'socket_notice'
+};
+export const CC_INFO_LISTS = [
+    CC_INFOTYPE.EMAIL_NOTICE,CC_INFOTYPE.SOCKET_NOTICE
+];
+//申请抄送人类型
+export const NOTIFY_PERSON_TYPE = {
+    TEAMOWER_RANGE: 'teamowner_range',
+    TEAMMANAGER_RANGE: 'teammanager_range',
+    TEAMMEMBER_RANGE: 'teammember_range',
+    SYSTEM_ROLE: 'system_role'
 };
 
 // 客户阶段中的每个阶段的颜色
@@ -672,8 +686,9 @@ export const PRIVILEGE_MAP = {
     EDIT_TEAM_USER: 'CRM_USER_UPDATE_CUSTOMER_SALES_TEAM',//销售修改所属团队的权限
     EDIT_ASSERT_CUSTOMER_SALES: 'CRM_ASSERT_CUSTOMER_SALES',//修改客户联合跟进人的权限
     CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
-    APP_USER_LIST: 'APP_USER_LIST'//获取用户列表的权限
-
+    APP_USER_LIST: 'APP_USER_LIST',//获取用户列表的权限
+    CRM_CONTRACT_OPERATOR_COMMON_BASE: 'CRM_CONTRACT_OPERATOR_COMMON_BASE',//合同修改基础权限
+    CRM_CONTRACT_QUERY_COMMON_BASE: 'CRM_CONTRACT_QUERY_COMMON_BASE',//合同查询基础权限
 };
 //响应式布局
 export const RESPONSIVE_LAYOUT = {

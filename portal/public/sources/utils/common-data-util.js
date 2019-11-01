@@ -682,3 +682,20 @@ exports.updateGuideMark = function(key) {
         }, (errMsg) => {console.log(errMsg);});
     }
 };
+
+// 获取组织信息
+exports.getOrganizationInfo = () => {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/member/organization',
+        dataType: 'json',
+        type: 'get',
+        success: (resData) => {
+            Deferred.resolve(resData);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};

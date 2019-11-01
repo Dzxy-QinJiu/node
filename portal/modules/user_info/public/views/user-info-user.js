@@ -1,6 +1,4 @@
-var React = require('react');
-const PropTypes = require('prop-types');
-import {Form, Icon, message, Popconfirm, Popover} from 'antd';
+import {Form, Icon, message, Popconfirm, Popover,Button} from 'antd';
 var HeadIcon = require('../../../../components/headIcon');
 var UserInfoAction = require('../action/user-info-actions');
 var Alert = require('antd').Alert;
@@ -16,6 +14,7 @@ import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
 import {getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
+import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -58,12 +57,20 @@ class UserInfo extends React.Component{
             sendMail: false,//是否已发送邮件
             closeMsg: true,//关闭提示
             sendTime: 60,//计时器显示时间
+            versionName: '', // 版本信息
+            endTime: '', // 到期时间
         };
     }
 
     componentDidMount() {
         this.getWechatIsBind();
         this.getSendTime();
+        getOrganizationInfo().then( (result) => {
+            this.setState({
+                versionName: _.get(result, 'version.name'),
+                endTime: _.get(result, 'end_time')
+            });
+        } );
     }
 
     componentWillReceiveProps(nextProps) {
@@ -358,7 +365,13 @@ class UserInfo extends React.Component{
                 </div>
             </div>
         );
-    }
+    };
+
+    // 处理版本升级
+    handleVersionUpgrade = () => {
+
+    };
+
     renderUserInfo() {
         let formData = this.props.userInfo;
         //根据是否拥有邮箱改变渲染input默认文字
@@ -393,6 +406,30 @@ class UserInfo extends React.Component{
         } else {
             return (
                 <div className="user-info-div">
+                    {/**
+                     * TODO 由于正式版本没有实现，暂时隐藏版本（2019/11/01）
+                     * <div className="user-info-item user-version">
+                     <span className="user-info-item-title">
+                     {Intl.get('user.info.version','版本')}：
+                     </span>
+                     <span className="user-info-item-content">
+                     {this.state.versionName}
+                     </span>
+                     {
+                         this.state.endTime ? (
+                             <span className="user-version-expire">
+                                 {`(${Intl.get('user.info.version.expire', '{time}到期', {time: moment(this.state.endTime).format(oplateConsts.DATE_FORMAT)})})`}
+                             </span>
+                         ) : null
+                     }
+                     <Button
+                     className="user-version-upgrade"
+                     onClick={this.handleVersionUpgrade}
+                     >
+                     {Intl.get('user.info.version.upgrade', '升级为正式版')}
+                     </Button>
+                     </div>
+                     */}
                     <div className="user-info-item">
                         <span className="user-info-item-title">
                             <ReactIntl.FormattedMessage id="common.account.number" defaultMessage="账号"/>

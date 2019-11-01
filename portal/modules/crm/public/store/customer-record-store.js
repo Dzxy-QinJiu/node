@@ -4,6 +4,8 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 var CustomerRecordActions = require('../action/customer-record-action');
+//判断是否在蚁坊域的方法
+import {isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
 import {CALL_RECORD_TYPE} from './../utils/crm-util';
 
 function CustomerRecordStore() {
@@ -20,6 +22,7 @@ function CustomerRecordStore() {
         call_back: 0,//回访次数
         visit: 0,//拜访
         data_report: 0,//舆情上报次数
+        public_opinion_report: 0//舆情报告次数
         other: 0, //其他跟进
     } */
     this.customerTraceStatisticObj = {};
@@ -184,6 +187,35 @@ CustomerRecordStore.prototype.setDetailContent = function(content) {
     this.detailContent = content;
 
 };
+
+CustomerRecordStore.prototype.getPublicOpinionReports = function(result) {
+    this.customerRecordLoading = false;
+    if (result.error) {
+        this.customerRecordErrMsg = result.data;
+        this.customerRecord = [];
+    } else {
+        this.customerRecordErrMsg = '';
+        let reports = processReport(result.data);
+        this.customerRecord = this.customerRecord.concat(reports);
+        this.total = result.data.total;
+    }
+};
+function processReport(result) {
+    let list = _.get(result, 'list', []);
+    let reports = [];
+    _.forEach(list, item => {
+        let report = {
+            time: _.get(item, 'create_time', 0),
+            remark: _.get(item, 'remarks', ''),
+            nick_name: _.get(item, 'applicant.nick_name', ''),
+            topic: _.get(item, 'topic', ''),
+            type: 'public_opinion_report',
+            id: _.get(item, 'id')
+        };
+        reports.push(report);
+    });
+    return reports;
+}
 CustomerRecordStore.prototype.setUpdateId = function(id) {
     this.updateId = id;
 };

@@ -8,7 +8,8 @@ const CALL_RECORD_TYPE = {
     APP: 'app',//客套APP
     CALL_BACK: 'call_back',//回访
     VISIT: 'visit',//拜访
-    DATA_REPORT: 'data_report',//舆情报告
+    DATA_REPORT: 'data_report',//舆情报送
+    PUBLIC_OPINION_REPORT: 'public_opinion_report', //舆情报告
     OTHER: 'other'//其他
 };
 exports.CALL_RECORD_TYPE = CALL_RECORD_TYPE;
@@ -64,6 +65,11 @@ const processForTrace = function(item) {
                         traceObj.iconClass = 'icon-report-delivery';
                         traceObj.title = Intl.get('crm.trace.delivery.report', '舆情报送');
                         traceObj.traceDsc = Intl.get('crm.trace.delivery.report', '舆情报送');
+                        break;
+                    case CALL_RECORD_TYPE.PUBLIC_OPINION_REPORT:
+                        traceObj.iconClass = '';
+                        traceObj.title = '';
+                        traceObj.traceDsc = '';
                         break;
                     case CALL_RECORD_TYPE.OTHER:
                         traceObj.iconClass = 'icon-trace-other';

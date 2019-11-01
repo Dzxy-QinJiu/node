@@ -1,0 +1,86 @@
+/**
+ * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
+ * Created by tangmaoqin on 2019/10/25.
+*/
+@import "../../public/css/common-variables";
+@hoc-goods-buy: hoc-goods-buy;
+
+.@{hoc-goods-buy}-wrapper{
+  .right-panel-modal-content{
+    background-color: #fff;
+    .right-panel-modal-title{
+      border: none;
+      margin-bottom: 0;
+    }
+  }
+  .@{hoc-goods-buy}-title-wrapper{
+    color: @title-color;
+    .@{hoc-goods-buy}-title-btn{
+      color: @operate-btn-color;
+      cursor: pointer;
+      float: right;
+    }
+  }
+  .goods-container{
+    //padding: 0 24px;
+  }
+  .gm-scroll-view{
+    overflow-x: hidden;
+  }
+  .goods-content{
+    padding: 0 25px;
+  }
+  .goods-desc{
+    margin: 0 24px 24px;
+  }
+  .order-submit-btn{
+    //margin-top: 24px;
+    margin: 24px 24px 0;
+    .ant-btn{
+      width: 100%;
+    }
+  }
+  // 获取商品错误提示
+  .errmsg-container{
+    position: absolute;
+    top: 45%;
+    left: 30%;
+    .errmsg-tip{
+      color:@error_tips_color;
+      font-size: 14px;
+      a{
+        color: @BUTTON-HOVER;
+      }
+    }
+  }
+}
+
+
+.goods-desc{
+  height: 48px;
+  line-height: 48px;
+  background-color: @mouse-enter-zone-background;
+  border-radius:4px;
+  margin-bottom: 24px;
+  .iconfont{
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    line-height: 48px;
+    font-size: 32px;
+    border-radius: 0!important;
+    color: #fff;
+    margin-right: 16px;
+    float: left;
+    background-color: @BORDER-BLUE;
+  }
+  .clue-extract-count-wrapper{
+    font-size: 16px;
+    color: @title-color;
+    .clue-extract-count{
+      color: @BORDER-BLUE;
+      font-size: 20px;
+    }
+  }
+}

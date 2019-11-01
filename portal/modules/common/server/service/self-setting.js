@@ -68,10 +68,10 @@ exports.addSelfSettingApply = function(req, res) {
     var detail = req.body.detail;
     if (_.isArray(detail)){
         req.body.detail = {},
-            _.forEach(detail,(item,index) => {
-                req.body.detail['' + index] = item;
-            });
-    };
+        _.forEach(detail,(item,index) => {
+            req.body.detail['' + index] = item;
+        });
+    }
     if (_.isObject(req.body.condition)){
         req.body.condition['condition'] = parseInt(req.body.condition['condition']);
     }

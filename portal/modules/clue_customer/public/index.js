@@ -143,6 +143,7 @@ class ClueCustomer extends React.Component {
         isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
         cluePoolCondition: {},//线索池的搜索条件
         filterInputWidth: 210,//筛选输入框的宽度
+        batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
         //显示内容
         ...clueCustomerStore.getState()
     };
@@ -1494,14 +1495,17 @@ class ClueCustomer extends React.Component {
                     let isConvertedClients = _.isEqual(status, '3');
                     // 已转化客户和无效客户，不可以展示“有相似客户”标签
                     let ifShowTags = !isInvalidClients && !isConvertedClients;
+                    let userId = userData.getUserData().user_id;
+                    //是否展示“新”字图标 如果是今天分配的并且线索负责人就是当前登录人，就展示新的图标
+                    var allotTime = _.get(salesClueItem,'allot_time');
+                    var isShowNewIcon = allotTime >= moment().startOf('day').valueOf() && allotTime <= moment().endOf('day').valueOf() && _.get(salesClueItem,'user_id') === userId;
                     return (
                         <div className="clue-top-title" id={salesClueItem.id}>
                             <span className="hidden record-id">{salesClueItem.id}</span>
                             <div className="clue-name" data-tracename="查看线索详情"
                                 onClick={this.showClueDetailOut.bind(this, salesClueItem)}>
                                 <span className="clue-name-item">
-                                    {/*如果是今天分配的，就展示新的图标*/}
-                                    {_.get(salesClueItem,'allot_time') > moment().startOf('day').valueOf() && _.get(salesClueItem,'allot_time') < moment().endOf('day').valueOf() ? <i className="icon-new-clue"></i> : null}
+                                    {isShowNewIcon ? <i className="icon-new-clue"></i> : null}
                                     {salesClueItem.name}</span>
 
                                 {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
@@ -1792,10 +1796,10 @@ class ClueCustomer extends React.Component {
         //增加一个动态效果，隐藏该线索
         this.flyClueHastransfer(this.state.curClue,DIFFREF.TRASFERINVALID);
         setTimeout(() => {
-          this.hideCurClue();
-          this.changeClueNum();
+            this.hideCurClue();
+            this.changeClueNum();
         }, FLOW_FLY_TIME,() => {
-            _.isFunction(callback) && callback()
+            _.isFunction(callback) && callback();
         });
     };
     //线索转为新客户完成后的回调事件
@@ -2001,6 +2005,8 @@ class ClueCustomer extends React.Component {
     //单个及批量修改跟进人完成后的处理
     afterHandleAssignSalesBatch = (feedbackObj,submitObj,item) => {
         let clue_id = _.get(submitObj,'customer_id','');//线索的id，可能是一个，也可能是多个
+        //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+        let salesMan = _.cloneDeep(this.state.salesMan);
         if (feedbackObj && feedbackObj.errorMsg) {
             message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
         } else {
@@ -2020,6 +2026,7 @@ class ClueCustomer extends React.Component {
                         clueCustomerAction.afterAssignSales(clue_id);
                     }, FLOW_FLY_TIME);
                 }
+                SetLocalSalesClickCount(salesMan);
             }else{
                 //这个是批量修改联系人
                 if (this.refs.changesales) {
@@ -2052,8 +2059,8 @@ class ClueCustomer extends React.Component {
                         clueCustomerAction.afterAssignSales(clue_id);
                     }
                 }
+                SetLocalSalesClickCount(this.state.batchSelectedSales);
             }
-
             this.setState({
                 curClueLists: this.state.curClueLists
             });
@@ -2072,6 +2079,11 @@ class ClueCustomer extends React.Component {
         if (selectClueAll){
             submitObj.query_param = {...this.state.queryObj};
         }
+        //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+        let batchSelectedSales = _.cloneDeep(this.state.salesMan);
+        this.setState({
+            batchSelectedSales
+        });
         if (_.isEmpty(submitObj)){
             return;
         }else{
@@ -2574,9 +2586,9 @@ class ClueCustomer extends React.Component {
         }
         var curClueLists = this.state.curClueLists;
         var clueArr = _.map(tasks, 'taskDefine');
-        //遍历每一个客户
+        //遍历每一个线索
         _.each(clueArr, (clueId) => {
-            //如果当前客户是需要更新的客户，才更新
+            //如果当前线索是需要更新的线索，才更新
             var target = _.find(curClueLists, item => item.id === clueId);
             if (target) {
                 clueCustomerAction.updateClueItemAfterAssign({

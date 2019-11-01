@@ -34,9 +34,7 @@ import {Button, message} from 'antd';
 const Spinner = require('CMP_DIR/spinner');
 const hasPrivilege = require('CMP_DIR/privilege/checker').hasPrivilege;
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import { batchPushEmitter } from 'PUB_DIR/sources/utils/emitters';
-import { RightPanel } from 'CMP_DIR/rightPanel';
-import ClueDetail from 'MOD_DIR/clue_customer/public/views/clue-right-detail';
+import {batchPushEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import filterEmitter from 'CMP_DIR/filter/emitter';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
@@ -71,9 +69,9 @@ class ClueExtract extends React.Component {
             showFilterList: false,//是否展示线索筛选区域
             selectedClues: [],//获取批量操作选中的线索
             singleExtractLoading: false, // 单个提取的loading
-            isShowClueDetailPanel: false, // 是否显示显示详情， 默认false
             selectedNumber: 0,//当用户只选了二十条数据时，记录此时的数据总量
             filterInputWidth: 210,//输入框的默认宽度
+            batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             ...cluePoolStore.getState()
         };
     }
@@ -92,10 +90,7 @@ class ClueExtract extends React.Component {
         this.setState(cluePoolStore.getState());
     };
 
-    updateItem = (item, submitObj) => {
-        let sale_id = _.get(submitObj, 'sale_id', ''), team_id = _.get(submitObj, 'team_id', ''),
-            sale_name = _.get(submitObj, 'sale_name', ''), team_name = _.get(submitObj, 'team_name', '');
-        SetLocalSalesClickCount(sale_id);
+    updateItem = (item) => {
         //需要在列表中删除
         cluePoolAction.updateCluePoolList(item.id);
     };
@@ -123,10 +118,10 @@ class ClueExtract extends React.Component {
         let clueArr = _.map(tasks, 'taskDefine');
         // 遍历每一个线索
         _.each(clueArr, (clueId) => {
-            //如果当前客户是需要更新的客户，才更新
+            //如果当前线索是需要更新的线索，才更新
             let target = _.find(curClueLists, item => item.id === clueId);
             if (target) {
-                this.updateItem(target, taskParams);
+                this.updateItem(target);
             }
         });
         //当最后一个推送完成后
@@ -143,7 +138,7 @@ class ClueExtract extends React.Component {
             }
         }
         this.setState({
-            selectedClues: []
+            selectedClues: [],
         });
     };
 
@@ -611,11 +606,13 @@ class ClueExtract extends React.Component {
         if (!this.state.salesMan && flag) {
             cluePoolAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
         } else {
+            //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+            let salesMan = _.cloneDeep(this.state.salesMan);
             let id = record.id; // 提取线索某条的id
             let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
             if (flag) {
                 //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
-                let idArray = this.state.salesMan.split('&&');
+                let idArray = salesMan.split('&&');
                 if (_.isArray(idArray) && idArray.length) {
                     sale_id = idArray[0];// 提取给某个销售的id
                 }
@@ -633,6 +630,7 @@ class ClueExtract extends React.Component {
                 });
                 if (result.code === 0) { // 提取成功
                     cluePoolAction.updateCluePoolList(id);
+                    SetLocalSalesClickCount(salesMan);
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     if (isDetailExtract) { // 详情中，提取成功后，关闭右侧面板
                         this.hideRightPanel();
@@ -658,18 +656,22 @@ class ClueExtract extends React.Component {
     };
 
     // 展示右侧详情面板
-    showClueDetailPanel = (item) => {
-        this.setState({
-            isShowClueDetailPanel: true
-        }, () => {
-            cluePoolAction.setCurrentClueId(item.id);
+    showClueDetailPanel = (salesClueItem) => {
+        //触发打开带拨打电话状态的客户详情面板
+        phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_CLUE_PANEL, {
+            clue_params: {
+                currentId: salesClueItem.id,
+                type: 'clue_pool',
+                extractClueOperator: this.extractClueOperator,
+                hideRightPanel: this.hideRightPanel,
+            }
         });
-
+        cluePoolAction.setCurrentClueId(salesClueItem.id);
     };
 
     hideRightPanel = () => {
-        this.setState({isShowClueDetailPanel: false});
         //关闭右侧面板后，将当前展示线索的id置为空
+        phoneMsgEmitter.emit(phoneMsgEmitter.CLOSE_CLUE_PANEL);
         cluePoolAction.setCurrentClueId('');
         $('.ant-table-row').removeClass('current-row');
     };
@@ -710,7 +712,7 @@ class ClueExtract extends React.Component {
 
     //处理选中行的样式
     handleRowClassName = (record, index) => {
-        if (record.id === this.state.currentId && this.state.isShowClueDetailPanel) {
+        if (record.id === this.state.currentId) {
             return 'current-row';
         } else {
             return '';
@@ -928,8 +930,8 @@ class ClueExtract extends React.Component {
                     running: totalSelectedSize,
                     typeText: Intl.get('clue.extract.clue', '提取线索')
                 });
+                SetLocalSalesClickCount(this.state.batchSelectedSales);
             }
-
         }
     };
 
@@ -969,6 +971,10 @@ class ClueExtract extends React.Component {
                 if (itemId) {
                     submitObj.customer_id = itemId;
                 }
+                //记录当前选择的销售销售团队id
+                this.setState({
+                    batchSelectedSales: _.cloneDeep(this.state.salesMan) //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+                });
                 return submitObj;
             }
         }
@@ -1237,28 +1243,6 @@ class ClueExtract extends React.Component {
                         {this.renderLoadingAndErrAndNodataContent()}
                     </div>
                 </div>
-                {
-                    this.state.isShowClueDetailPanel ? (
-                        <RightPanel
-                            className="clue-pool-clue-detail white-space-nowrap table-btn-fix"
-                            showFlag={this.state.isShowClueDetailPanel}
-                        >
-                            <span className="iconfont icon-close" onClick={(e) => {
-                                this.hideRightPanel();
-                            }}/>
-                            <div className="right-panel-content">
-                                <ClueDetail
-                                    ref={cluePanel => this.cluePanel = cluePanel}
-                                    currentId={this.state.currentId}
-                                    curClue={this.state.curClue}
-                                    hideRightPanel={this.hideRightPanel}
-                                    type='clue_pool'
-                                    extractClueOperator={this.extractClueOperator}
-                                />
-                            </div>
-                        </RightPanel>
-                    ) : null
-                }
             </div>
         );
     };

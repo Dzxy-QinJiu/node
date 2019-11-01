@@ -129,4 +129,11 @@ exports.bindUserInfoPhone = function(req, res) {
     });
 };
 
-
+// 获取用户交易记录
+exports.getUserTradeRecord = (req, res) => {
+    userInfoManageServic.getUserTradeRecord(req, res).on('success', (data) => {
+        res.status(200).json(data);
+    }).on('error', (errorObj) => {
+        res.status(500).json(errorObj && errorObj.message);
+    });
+};

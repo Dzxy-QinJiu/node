@@ -20,31 +20,7 @@ export const checkClueName = function(rule, value, callback) {
         callback();
     }
 };
-export const checkOnlyContactPhone = function(rule, value, callback) {
-    let queryObj = {phone: value};
-    //queryObj: 查重的电话， isTerm: 是否完全匹配，参数false/true， callback：回调函数
-    clueCustomerAction.checkOnlyClueNamePhone(queryObj, true, data => {
-        if (_.isString(data)) {
-            //唯一性验证出错了
-            callback(Intl.get('crm.82', '电话号码验证出错'));
-        } else {
-            if (_.isObject(data) && data.result === 'true') {
-                callback();
-            } else {
-                //已存在
-                callback(Intl.get('clue.customer.repeat.phone.user', '该电话已被线索{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
-            }
-        }
-    });
-};
-//获取线索联系电话唯一性的验证规则
-export const getPhoneInputValidateRules = () => {
-    return [{
-        validator: (rule, value, callback) => {
-            checkOnlyContactPhone(rule, value, callback);
-        }
-    }];
-};
+
 export const checkClueSourceIP = function(rule, value, callback) {
     value = _.trim(value);
     if (value) {
@@ -156,8 +132,13 @@ export const getClueStatusValue = (filterClueStatus) => {
 };
 //为了防止开始时间不传，后端默认时间是从1970年开始的问题,把开始时间设置从2010年开始
 export const clueStartTime = moment('2010-01-01 00:00:00').valueOf();
-export const getClueSalesList = function() {
-    var clueSalesIdList = local.get(SESSION_STORAGE_CLUE_SALES_SELECTED);
+export const getClueSalesList = function(sessionKey) {
+    let clueSalesIdList = [];
+    if(_.isEmpty(sessionKey)) {
+        clueSalesIdList = local.get(SESSION_STORAGE_CLUE_SALES_SELECTED);
+    } else {
+        clueSalesIdList = local.get(sessionKey);
+    }
     if(!clueSalesIdList) {
         clueSalesIdList = [];
     } else {
@@ -183,8 +164,8 @@ export const getLocalSalesClickCount = function(clueSalesIdList, sale_id) {
     }
     return clickCount;
 };
-export const SetLocalSalesClickCount = function(sale_id) {
-    var clueSalesIdList = getClueSalesList();
+export const SetLocalSalesClickCount = function(sale_id, sessionKey) {
+    var clueSalesIdList = getClueSalesList(sessionKey);
     var targetObj = _.find(clueSalesIdList,(item) => {
         return item.saleId === sale_id;
     });
@@ -196,7 +177,11 @@ export const SetLocalSalesClickCount = function(sale_id) {
             clickCount: 1
         });
     }
-    local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
+    if(_.isEmpty(sessionKey)) {
+        local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
+    } else {
+        local.set(sessionKey,JSON.stringify(clueSalesIdList));
+    }
 };
 export const handleSubmitContactData = function(submitObj){
     var data = {},updateObj = {};

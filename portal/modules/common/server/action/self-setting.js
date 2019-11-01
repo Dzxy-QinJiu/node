@@ -63,10 +63,10 @@ exports.saveSelfSettingWorkFlowRules = function(req, res) {
                 file: [fs.createReadStream(filePath)],
             };
             formData.applyApproveRules = JSON.stringify(formData.applyApproveRules);
-            ApplyApproveManageService.saveSelfSettingWorkFlowRules(req, res, formData).on('success', function (data) {
+            ApplyApproveManageService.saveSelfSettingWorkFlowRules(req, res, formData).on('success', function(data) {
                 fs.unlinkSync(filePath);
                 res.status(200).json(data);
-            }).on('error', function (codeMessage) {
+            }).on('error', function(codeMessage) {
                 fs.unlinkSync(filePath);
                 res.status(500).json(codeMessage && codeMessage.message);
             });

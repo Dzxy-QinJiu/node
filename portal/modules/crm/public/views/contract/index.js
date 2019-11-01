@@ -1,3 +1,5 @@
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+
 var React = require('react');
 require('../../css/contract.less');
 import { Button } from 'antd';
@@ -10,6 +12,7 @@ import RightPanelScrollBar from '../components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import ContractForm from './contract-form';
 import Trace from 'LIB_DIR/trace';
+import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 
 class Contract extends React.Component {
     state = {
@@ -104,7 +107,7 @@ class Contract extends React.Component {
                             defaultMessage={'共{n}条'}
                             values={{'n': contractListLength + ''}}/> : Intl.get('crm.no.contract.tip', '该客户还没有签订过合同'))
                     }
-                    {this.props.disableEdit || this.props.isMerge || this.state.isAddFormShow ? null : (
+                    {this.props.disableEdit || this.props.isMerge || this.state.isAddFormShow || !hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_OPERATOR_COMMON_BASE) ? null : (
                         <Button className='crm-detail-add-btn'
                             onClick={this.showForm.bind(this, '')}>
                             {Intl.get('contract.98', '添加合同')}

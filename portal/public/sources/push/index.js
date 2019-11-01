@@ -24,6 +24,13 @@ import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
 import {getClueUnhandledPrivilege, getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 const session = storageUtil.session;
+
+// 获取弹窗通知的状态
+function getNotifyStatus() {
+    const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+    return _.get(websiteConfig, 'is_open_pop_up_notify', true);
+}
+
 var NotificationType = {};
 var approveTipCount = 0;
 let systemTipCount = 0;
@@ -94,13 +101,19 @@ function listenOnMessage(data) {
                 //批复类型
                 if (!userData.hasRole('realm_manager')) {
                     //批复类型的通知，不通知管理员
-                    notifyReplyInfo(data);
+                    notifyApplyInfo(data);
                 }
                 notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
                 //将审批后的申请消息未读数加一（true）
                 // updateUnreadByPushMessage('apply', true);
                 //待审批数减一
                 updateUnreadByPushMessage('approve', false);
+                break;
+            case 'notice':
+                //有新的抄送的申请消息时,只展示，不用修改审批数量
+                //申请审批列表弹出，有新数据，是否刷新数据的提示
+                notificationEmitter.emit(notificationEmitter.APPLY_UPDATED, data);
+                notifyApplyInfo(data);
                 break;
         }
     }
@@ -160,6 +173,7 @@ window.openAllClues = function(){
 };
 //处理线索的数据
 function clueUnhandledListener(data) {
+    let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data)) {
         if (getClueUnhandledPrivilege()){
             var clueList = _.get(data, 'clue_list',[]);
@@ -176,8 +190,11 @@ function clueUnhandledListener(data) {
                 tipContent += _.get(clueItem, 'name','') + '\n';
             });
             //桌面通知的展示
-            showDesktopNotification(title, tipContent, true);
+            showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
         } else {//系统弹出通知
+            if (!isOpenPopUpNotify) {
+                return;
+            }
             clueTotalCount++;
             var clueHtml = '',titleHtml = '';
             titleHtml += '<p class="clue-title">' + '<span class="title-tip">' + title + '</span>';
@@ -242,6 +259,7 @@ ${Intl.get('clue.close.all.noty', '关闭全部')}</a></p>`);
 
 //处理释放客户的数据
 function crmReleaseListener(data) {
+    let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data)) {
         var crmReleaseLength = _.get(data, 'customer_ids.length',0);
         var title = Intl.get( 'crm.customer.release.customer', '释放客户'),tipContent = Intl.get('crm.customer.release.push.tip', '客户{customerName}被{operatorName}释放到了客户池',{
@@ -257,8 +275,11 @@ function crmReleaseListener(data) {
         }
         if (canPopDesktop()) {
             //桌面通知的展示
-            showDesktopNotification(title, tipContent, true);
+            showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
         } else {//系统弹出通知
+            if (!isOpenPopUpNotify) {
+                return;
+            }
             var contentHtml = '';
             var titleHtml = '<p class=\'customer-title\'>' + '<span class=\'title-tip\'>' + title + '</span>';
             contentHtml = `<div class=\'customer-item\'>${tipContent}</div>`;
@@ -274,6 +295,7 @@ function crmReleaseListener(data) {
 
 //监听系统消息
 function listenSystemNotice(notice) {
+    let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(notice)) {
         systemTipCount++;//系统消息个数加一
         //申请消息列表弹出，有新数据，是否刷新数据的提示
@@ -309,8 +331,11 @@ function listenSystemNotice(notice) {
                 isClosedByClick = true;
             }
             //桌面通知的展示
-            showDesktopNotification(title, tipContent, isClosedByClick);
+            showDesktopNotification(title, tipContent, isClosedByClick, isOpenPopUpNotify);
         } else {//系统弹出通知
+            if (!isOpenPopUpNotify) {
+                return;
+            }
             let notify = NotificationType['system'];
             //如果界面上没有提示框，就显示推送的具体内容
             if (!notify) {
@@ -355,7 +380,11 @@ window.handleClickNoticeStystem = function(event) {
 };
 
 //桌面通知的展示
-function showDesktopNotification(title, tipContent, isClosedByClick) {
+function showDesktopNotification(title, tipContent, isClosedByClick, isOpenPopUpNotify) {
+    // 若弹窗通知关闭，则不显示通知
+    if (!isOpenPopUpNotify) {
+        return;
+    }
     let notification = new Notification(title, {
         body: tipContent,
         tag: title,
@@ -398,7 +427,7 @@ function getUserNames(replyMessage) {
     return userNames;
 }
 //获取审批消息提醒中的内容
-function getReplyTipContent(data) {
+function getApproveTipContent(data) {
     //审批的消息
     let tipContent = '';
     let approvalPerson = data.approval_person || '';//谁批复的
@@ -439,6 +468,15 @@ function getReplyTipContent(data) {
                     userType: userType,
                     userNames: userNames
                 });
+            break;
+        case 'false'://抄送申请
+            //xxx给客户 xxx 申请了 正式/试用 用户 xxx，xxx
+            tipContent = Intl.get('notification.apply.for.customer', '{producer_name}给客户{customer}申请了{userType}{userBlock}', {
+                producer_name: salesName,
+                customer: customerName,
+                userType: userType,
+                userBlock: userNames
+            });
             break;
     }
     return tipContent;
@@ -545,6 +583,7 @@ window.handleClickClueName = (event,clueId) => {
     $(event.target).closest('li').remove();
 };
 function scheduleAlertListener(scheduleAlertMsg) {
+    let isOpenPopUpNotify = getNotifyStatus();
     var phoneArr = [];
     if (_.isArray(scheduleAlertMsg.contacts)) {
         _.each(scheduleAlertMsg.contacts, (item) => {
@@ -563,8 +602,11 @@ function scheduleAlertListener(scheduleAlertMsg) {
             tipContent += phoneItem.customer_name + ' ' + phoneItem.phone;
         });
         //桌面通知的展示
-        showDesktopNotification(title, tipContent, true);
+        showDesktopNotification(title, tipContent, true, isOpenPopUpNotify);
     } else {//系统弹出通知
+        if (!isOpenPopUpNotify) {
+            return;
+        }
         var phoneHtml = '';
         _.each(phoneArr, (phoneItem) => {
             var phoneObj = {
@@ -599,19 +641,20 @@ function scheduleAlertListener(scheduleAlertMsg) {
 }
 /*
  *审批的提示 */
-function notifyReplyInfo(data) {
+function notifyApplyInfo(data) {
+    let isOpenPopUpNotify = getNotifyStatus();
     if (_.isObject(data.message)) {
         //记录推送的审批通知的数量
         approveTipCount++;
         //标签页不可见时，有桌面通知，且允许弹出桌面通知时
         if (canPopDesktop()) {//桌面通知的展示
-            showDesktopNotification(Intl.get('user.apply.approve', '用户申请审批'), getReplyTipContent(data));
+            showDesktopNotification(Intl.get('user.apply.approve', '用户申请审批'), getApproveTipContent(data), false, isOpenPopUpNotify);
         } else {//系统弹出通知
             let notify = NotificationType['exist'];
             //如果界面上没有提示框，就显示推送的具体内容
             if (!notify) {
                 //获取提醒提示框中的内容
-                let tipContent = getReplyTipContent(data);
+                let tipContent = getApproveTipContent(data);
                 notify = notificationUtil.showNotification({
                     title: Intl.get('user.apply.approve', '用户申请审批'),
                     content: tipContent,
