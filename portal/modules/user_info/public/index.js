@@ -28,6 +28,7 @@ import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 import TradeRecord from './views/trade-record';
+import history from 'PUB_DIR/sources/history';
 
 const TAB_KEYS = {
     OPERATE_RECORD_TAB: '1',// 操作记录
@@ -56,6 +57,12 @@ var UserInfoPage = createReactClass({
         var hasPrivilege = PrivilegeChecker.hasPrivilege;
         $(window).on('resize', this.resizeWindow);
         UserInfoStore.listen(this.onChange);
+        // 判断是不是跳转过来的，若是的话，显示购买记录界面
+        if(_.get(history.location, 'state.show_pay_record')) {
+            this.setState({
+                activeKey: TAB_KEYS.TRADE_TAB
+            });
+        }
         UserInfoAction.getUserInfo();
         UserInfoAction.getLogList({
             load_size: this.state.loadSize
@@ -116,7 +123,6 @@ var UserInfoPage = createReactClass({
                     />
                     <div className="col-md-8 user-log-container-div">
                         <Tabs
-                            defaultActiveKey={TAB_KEYS.OPERATE_RECORD_TAB}
                             activeKey={this.state.activeKey}
                             onChange={this.changeActiveKey}
                         >
