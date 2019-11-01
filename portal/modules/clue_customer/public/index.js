@@ -2618,9 +2618,6 @@ class ClueCustomer extends React.Component {
         if(this.state.isReleasingClue) {
             return;
         }
-        this.setState({
-            batchSelectedSales: _.cloneDeep(this.state.salesMan)
-        });
         let condition = {
         };
         //选中全部搜索结果时，将搜索条件传给后端
