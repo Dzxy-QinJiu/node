@@ -1,5 +1,5 @@
 require('../../../app_user_manage/public/css/main-zh_CN.less');
-import {Alert, Select, message, Icon, Button} from 'antd';
+import {Alert, Select, message, Icon, Button, Switch } from 'antd';
 import LAYOUT from '../utils/layout';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import Spinner from 'CMP_DIR/spinner';
@@ -24,6 +24,9 @@ const PAGE_SIZE = 20;
 import {STATUS} from 'PUB_DIR/sources/utils/consts';
 const classnames = require('classnames');
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
+import { storageUtil } from 'ant-utils';
+import ajax from 'ant-ajax';
+
 const STATUS_ARRAY = [{
     name: Intl.get('notification.system.untreated', '待处理'),
     value: STATUS.UNHANDLED
@@ -31,6 +34,8 @@ const STATUS_ARRAY = [{
     name: Intl.get('notification.system.handled', '已处理'),
     value: STATUS.HANDLED
 }];
+
+const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
 
 class SystemNotification extends React.Component {
     state = {
@@ -51,6 +56,7 @@ class SystemNotification extends React.Component {
         handleNoticeMessageSuccessFlag: false, // 处理通知成功的信息提示
         handleNoticeMessageErrorTips: '', // 处理通知失败的信息提示
         noticeId: '', // 点击处理通知的id
+        isOpenPopUpNotify: _.get(websiteConfig, 'is_open_pop_up_notify', true), // 是否开启弹窗通知,默认是开启的
     };
 
     componentDidMount() {
@@ -522,10 +528,34 @@ class SystemNotification extends React.Component {
             customerOfCurUser: {}
         });
     };
+    
+    
+    handlePopUpNotify = (checked) => {
+        ajax.send({
+            url: '/rest/base/v1/user/website/config/personnel',
+            type: 'post',
+            data: {
+                is_open_pop_up_notify: checked
+            }
+        })
+            .done(result => {
+                this.setState({
+                    isOpenPopUpNotify: checked
+                });
+                websiteConfig.is_open_pop_up_notify = checked;
+                storageUtil.local.set('websiteConfig', JSON.stringify(websiteConfig));
+            })
+            .fail(err => {
+                message.error(err);
+            });
+    };
 
     render() {
         let containerHeight = $(window).height() - LAYOUT.SUMMARY_H - LAYOUT.TOP;
         let customerOfCurUser = this.state.customerOfCurUser;
+        let notifyTitle = this.state.isOpenPopUpNotify ?
+            Intl.get('notification.pop.up.notify.title', '{status}弹窗通知', {status: Intl.get('common.app.status.close', '关闭')}) :
+            Intl.get('notification.pop.up.notify.title', '{status}弹窗通知', {status: Intl.get('common.app.status.open', '开启')});
         return (
             <div className="notification_system" data-tracename="系统消息列表">
                 <TopNav>
@@ -547,6 +577,19 @@ class SystemNotification extends React.Component {
                                 return (<Option value={status.value} key={status.value}>{status.name}</Option>);
                             })}
                         </Select>
+                    </div>
+                    <div className="notify-setting">
+                        <span className="notify-text">
+                            {Intl.get('notification.pop.up.notify', '弹窗通知')}
+                        </span>
+                        <span className="notify" title={notifyTitle}>
+                            <Switch
+                                size="small"
+                                checked={this.state.isOpenPopUpNotify}
+                                onChange={this.handlePopUpNotify}
+                            />
+                        </span>
+
                     </div>
                 </TopNav>
                 {this.renderUpdateTip()}
