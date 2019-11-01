@@ -308,11 +308,6 @@ class ClueCustomer extends React.Component {
                 });
             }
         });
-        //当最后一个推送完成后
-        if(_.isEqual(taskInfo.running, 0)) {
-            //一次批量操作只判定一次点击次数加一
-            SetLocalSalesClickCount(this.state.batchSelectedSales);
-        }
         this.setState({
             selectedClues: [],
         });
@@ -2007,6 +2002,7 @@ class ClueCustomer extends React.Component {
     //单个及批量修改跟进人完成后的处理
     afterHandleAssignSalesBatch = (feedbackObj,submitObj,item) => {
         let clue_id = _.get(submitObj,'customer_id','');//线索的id，可能是一个，也可能是多个
+        //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
         let salesMan = _.cloneDeep(this.state.salesMan);
         if (feedbackObj && feedbackObj.errorMsg) {
             message.error(feedbackObj.errorMsg || Intl.get('failed.to.distribute.cluecustomer', '分配线索客户失败'));
@@ -2060,6 +2056,7 @@ class ClueCustomer extends React.Component {
                         clueCustomerAction.afterAssignSales(clue_id);
                     }
                 }
+                SetLocalSalesClickCount(this.state.batchSelectedSales);
             }
             this.setState({
                 curClueLists: this.state.curClueLists
@@ -2079,6 +2076,7 @@ class ClueCustomer extends React.Component {
         if (selectClueAll){
             submitObj.query_param = {...this.state.queryObj};
         }
+        //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
         let batchSelectedSales = _.cloneDeep(this.state.salesMan);
         this.setState({
             batchSelectedSales

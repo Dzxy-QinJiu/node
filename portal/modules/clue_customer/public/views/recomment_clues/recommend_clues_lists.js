@@ -142,13 +142,6 @@ class RecommendCustomerRightPanel extends React.Component {
         this.setState({
             selectedRecommendClues: []
         });
-        //当最后一个推送完成后
-        if(_.isEqual(taskInfo.running, 0)) {
-            //一次批量操作只判定一次点击次数加一
-            let batchSelectedSales = this.state.batchSelectedSales;
-            SetLocalSalesClickCount(batchSelectedSales, CLUE_RECOMMEND_SELECTED_SALES);
-            this.clearSelectSales();
-        }
     }
 
     componentWillUnmount() {
@@ -182,6 +175,7 @@ class RecommendCustomerRightPanel extends React.Component {
         this.getRecommendClueLists();
     };
     handleExtractRecommendClues = (reqData) => {
+        //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
         let salesMan = _.cloneDeep(this.state.salesMan);
         $.ajax({
             url: '/rest/clue/extract/recommend/clue',
@@ -414,7 +408,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 }else{
                     this.setState({
                         batchPopoverVisible: false,
-                        batchSelectedSales: _.cloneDeep(this.state.salesMan)
+                        batchSelectedSales: _.cloneDeep(this.state.salesMan) //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
                     });
                     this.handleBatchAssignClues(submitObj);
                 }
@@ -547,7 +541,8 @@ class RecommendCustomerRightPanel extends React.Component {
                         typeText: Intl.get('clue.extract.clue', '提取线索')
                     });
                     this.clearSelectSales();
-
+                    let batchSelectedSales = this.state.batchSelectedSales;
+                    SetLocalSalesClickCount(batchSelectedSales, CLUE_RECOMMEND_SELECTED_SALES);
                 }
             },
             error: (errorInfo) => {
