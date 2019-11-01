@@ -21,7 +21,8 @@ var userInfoRestApis = {
     getManagedRealm: '/rest/base/v1/realm/managedrealm',//获取当前登录用户所在的组织
     setSubscribeEmail: '/rest/base/v1/user/email/rejection',//是否订阅通知邮件
     getUserInfoPhoneCode: '/rest/base/v1/user/bunding/phone',//获取短信验证码
-    bindUserInfoPhone: '/rest/base/v1/user/baseinfo'//绑定邮箱
+    bindUserInfoPhone: '/rest/base/v1/user/baseinfo',//绑定邮箱
+    getUserTradeRecord: '/pay/trade/curtao/orders', // 获取用户交易记录（后端描述：交易客套中的记录列表，加注释目的，方便查找接口）
 };
 
 exports.urls = userInfoRestApis;
@@ -163,4 +164,29 @@ exports.bindUserInfoPhone = function(req, res) {
             req: req,
             res: res,
         }, req.body);
+};
+
+// 获取用户交易记录
+exports.getUserTradeRecord = (req, res) => {
+    return restUtil.authRest.get(
+        {
+            url: userInfoRestApis.getUserTradeRecord,
+            req: req,
+            res: res,
+        }, req.query, {
+            success: (eventEmitter, data) => {
+                let list = _.get(data, 'list');
+                let frontData = {list: [], total: 0};
+                if(data.total && list) {
+                    // 前端只需要展示支付成功的购买记录
+                    let filterData = _.filter(list, item => item.status === 1);
+                    frontData.list = filterData;
+                    frontData.total = filterData.length;
+                }
+                eventEmitter.emit('success', frontData);
+            },
+            error: (eventEmitter, errorObj) => {
+                eventEmitter.emit('error', errorObj.message);
+            }
+        });
 };

@@ -295,6 +295,8 @@ var zh_CN = {
     'common.the.maximum.gross.profit.rate': '回款毛利率最大值',
     'common.maximum.gross.margin.of.newly.signed.payment': '新签回款毛利最大值',
     'common.load.data.error': '加载失败，请{refresh}',
+    'common.no.more.data.tips': '没有更多{name}了',
+    'common.no.data.tips': '暂无{name}',
 
     //公共部分--end
     'login.login': '登录',
@@ -1097,6 +1099,18 @@ var zh_CN = {
     'user.info.receive.subscribe': '重新订阅',
     'user.info.setting.failed': '设置失败，请重新设置！',
     'user.info.setting.succeess': '设置成功！',
+    'user.info.version': '版本',
+    'user.info.version.expire': '{time}到期',
+    'user.info.version.upgrade': '升级为正式版',
+    'user.trade.record': '购买记录',
+    'user.trade.get.record': '获取购买记录失败',
+    'user.trade.record.order.number': '订单号',
+    'user.trade.record.time': '订单时间',
+    'user.trade.record.total': '共有{total}条购买记录',
+    'user.trade.payment.mode': '支付方式',
+    'user.trade.payment.name': '{name}支付',
+    'user.trade.payment.alipay': '支付宝',
+    'user.trade.no.payment': '您还没有购买记录',
     //基本资料end
     //密码管理start
     'user.password.input.again': '原密码不正确，请重新输入。',

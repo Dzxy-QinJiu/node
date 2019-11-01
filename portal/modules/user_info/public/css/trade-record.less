@@ -1,0 +1,58 @@
+.trade-record-wrap {
+  height: 100%;
+  .trade-record-loading{
+    margin: 220px auto;
+    text-align: center;
+    .load8 {
+      transform: scale(1, 1);
+      position: initial;
+    }
+  }
+  .msg-tips {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// 2019-10-30 注释到#app，暂改为#app1和操作记录table表格一致，暂时线上一版
+// 表格样式
+#app1 {
+  .user-trade-record-table-wrap {
+    .antc-table {
+      td, th {
+        border: none !important;
+        line-height: 1;
+        font-size: 14px;
+      }
+      // 表头
+      .ant-table-header {
+        background-color: #F1F4F8;
+        th {
+          color: #999 !important;
+          font-weight: normal;
+          padding: 9px 4px !important;
+        }
+      }
+      // 表体
+      .ant-table-body {
+        .ant-table-tbody {
+          td {
+            color: #333 !important;
+            font-weight: normal;
+            line-height: 18px;
+            padding: 23px 4px !important;
+          }
+          tr:nth-child(2n) {
+            background:#F1F4F8;
+          }
+
+          tr:nth-child(2n+1) {
+            background:#fff;
+          }
+        }
+      }
+    }
+  }
+}

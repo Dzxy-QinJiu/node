@@ -289,7 +289,8 @@ var en_US = {
     'common.the.maximum.gross.profit.rate': 'the maximum gross profit rate',//回款毛利率最大值
     'common.maximum.gross.margin.of.newly.signed.payment': 'maximum gross margin of newly signed payment',//新签回款毛利最大值
     'common.load.data.error': 'Loading failed, please refresh', // 加载失败，请{refresh}
-
+    'common.no.more.data.tips': 'There was no more {name}', // 没有更多{name}了
+    'common.no.data.tips': 'No data', // 暂无{name}
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册
@@ -1094,6 +1095,18 @@ var en_US = {
     'user.info.receive.subscribe': 're-subscribe',//重新订阅
     'user.info.setting.failed': 'Failed to set, please try again!',//设置失败，请重新设置！
     'user.info.setting.succeess': 'Set successfully!',//设置成功！
+    'user.info.version': 'Version', // 版本
+    'user.info.version.expire': 'expiration{time}', // {time}到期
+    'user.info.version.upgrade': 'Upgrade to the official version', // 升级为正式版
+    'user.trade.record': 'Purchase record', // 购买记录
+    'user.trade.get.record': 'Failed to get purchase record', // 获取购买记录失败
+    'user.trade.record.order.number': 'Order number', // 订单号
+    'user.trade.record.time': 'Order time', // 订单时间
+    'user.trade.record.total': '{total} purchase records', // 共有{total}条购买记录
+    'user.trade.payment.mode': 'Payment method', // 支付方式
+    'user.trade.payment.name': '{name} payment', // {name}支付
+    'user.trade.payment.alipay': 'Alipay', // 支付宝
+    'user.trade.no.payment': 'You have no purchase record', // 您还没有购买记录
     //基本资料end
     //密码管理start
     'user.password.input.again': 'The original password was incorrect',//原密码不正确，请重新输入。
