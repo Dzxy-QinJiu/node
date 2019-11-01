@@ -125,6 +125,16 @@ var methodUtil = {
     //是否是curtao
     isCurtao: function(req) {
         return req.hostname === global.config.curtaoUrl;
+    },
+    //移除联系方式
+    removeContactWay: function(contactList) {
+        return _.map(contactList, contact => {
+            delete contact.phone;
+            delete contact.email;
+            delete contact.qq;
+            delete contact.weChat;
+            return contact;
+        });
     }
 };
 

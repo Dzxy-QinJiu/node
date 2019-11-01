@@ -5,6 +5,7 @@
 'use strict';
 const cluePoolService = require('../service/clue-pool-service');
 const _ = require('lodash');
+const methodUtil = require('../../../../lib/utils/common-utils').method;
 // 获取线索池列表
 exports.getCluePoolList = (req, res) => {
     cluePoolService.getCluePoolList(req, res).on('success', (data) => {
@@ -23,13 +24,7 @@ exports.getCluePoolList = (req, res) => {
 function handleRemoveContactWay(clueItem) {
     delete clueItem.phones;
     if(_.get(clueItem, 'contacts.length')){
-        clueItem.contacts = _.map(clueItem.contacts, contact => {
-            delete contact.phone;
-            delete contact.email;
-            delete contact.qq;
-            delete contact.weChat;
-            return contact;
-        });
+        clueItem.contacts = methodUtil.removeContactWay(clueItem.contacts);
     }
     return clueItem;
 }
@@ -100,6 +95,7 @@ exports.batchExtractClueAssignToSale = (req, res) => {
 exports.getClueDetailById = (req, res) => {
     cluePoolService.getClueDetailById(req, res).on('success', (data) => {
         let clueDetail = _.get(data, 'result', {});
+        //线索池的线索详情中需要用联系电话去查相似线索、相似客户，所以此处暂时不能去掉联系方式，待后端查相似线索、客户的接口修改成不需要前端传是再放开此处注释
         // clueDetail = handleRemoveContactWay(clueDetail);
         res.status(200).json(clueDetail);
     }).on('error', (err) => {

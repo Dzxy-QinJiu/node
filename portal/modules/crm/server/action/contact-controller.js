@@ -1,4 +1,5 @@
 var contactService = require('../service/contact-service');
+const methodUtil = require('../../../../lib/utils/common-utils').method;
 const _ = require('lodash');
 exports.getContactList = function(req, res) {
     contactService.getContactList(req, res)
@@ -6,14 +7,8 @@ exports.getContactList = function(req, res) {
             let hideContactWay = req.body.hideContactWay;
             let contactList = _.get(data, '[0]') ? data : [];
             if (hideContactWay) {
-                contactList = _.map(contactList, item => {
-                    //隐藏联系方式的情况下需要把联系方式去掉（例如：客户池中不展示联系方式）
-                    delete item.phone;
-                    delete item.qq;
-                    delete item.email;
-                    delete item.weChat;
-                    return item;
-                });
+                //隐藏联系方式的情况下需要把联系方式去掉（例如：客户池中不展示联系方式）
+                contactList = methodUtil.removeContactWay(contactList);
             }
             res.status(200).json({
                 result: contactList,
