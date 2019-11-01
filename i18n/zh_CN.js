@@ -1143,6 +1143,8 @@ var zh_CN = {
     'notification.system.handled.error': '处理失败',
     'notification.system.login.count': '{count}次，最后一次',
     'notification.system.tip.count': '您有{systemTipCount}条系统消息',
+    'notification.pop.up.notify': '弹窗通知',
+    'notification.pop.up.notify.title': '{status}弹窗通知',
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',

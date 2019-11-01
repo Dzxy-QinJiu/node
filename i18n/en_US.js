@@ -1140,6 +1140,8 @@ var en_US = {
     'notification.system.handled.error': 'Failed processed', // 处理失败
     'notification.system.login.count': '{count} counts, last time', // {count}次，最后一次
     'notification.system.tip.count': 'You have {systemTipCount} system messages.',//您有{systemTipCount}条系统消息
+    'notification.pop.up.notify': 'Pop-up notification', // 弹窗通知
+    'notification.pop.up.notify.title': '{status} pop-up notification', // {status}弹窗通知
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
