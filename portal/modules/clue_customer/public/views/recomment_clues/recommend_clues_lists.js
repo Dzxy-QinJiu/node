@@ -683,18 +683,18 @@ class RecommendCustomerRightPanel extends React.Component {
                                 {
                                     hasSelectedClue ? this.renderBatchChangeClues() : null
                                 }
-                                {
-                                    _.isEqual(_.get(getOrganization(),'type'), '试用') ? null :
-                                        <Button className="btn-item add-clues-btn" data-tracename="点击增加线索量"
-                                            title={Intl.get('goods.increase.clues', '增加线索量')}
-                                            onClick={this.handleClickAddClues}>
-                                            {isWebMin ? <span className="iconfont icon-plus"/> :
-                                                <React.Fragment>
-                                                    <span className="iconfont icon-plus"/>
-                                                    {Intl.get('goods.increase.clues', '增加线索量')}
-                                                </React.Fragment>}
-                                        </Button>
-                                }
+                                {/*{* 入口不应该在此处，暂时注释掉/}
+                                    {/*_.isEqual(_.get(getOrganization(),'type'), '试用') ? null :*/}
+                                {/*<Button className="btn-item add-clues-btn" data-tracename="点击增加线索量"*/}
+                                {/*title={Intl.get('goods.increase.clues', '增加线索量')}*/}
+                                {/*onClick={this.handleClickAddClues}>*/}
+                                {/*{isWebMin ? <span className="iconfont icon-plus"/> :*/}
+                                {/*<React.Fragment>*/}
+                                {/*<span className="iconfont icon-plus"/>*/}
+                                {/*{Intl.get('goods.increase.clues', '增加线索量')}*/}
+                                {/*</React.Fragment>}*/}
+                                {/*</Button>*/}
+                                {/*}*/}
                             </div>
                         </TopNav>
                         <div className="recommend-clue-content-container">
