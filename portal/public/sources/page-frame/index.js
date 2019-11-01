@@ -14,12 +14,14 @@ import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
+import PurchaseLeads from 'CMP_DIR/purchase-leads';
 import{
     myWorkEmitter,
     notificationEmitter,
     resizeEmitter,
     phoneMsgEmitter,
-    audioMsgEmitter
+    audioMsgEmitter,
+    paymentEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 
@@ -39,6 +41,8 @@ class PageFrame extends React.Component {
         rightContentHeight: 0,
         clueDetailPanelShow: false,
         clueParamObj: $.extend(true, {}, emptyParamObj),
+        isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
+        cluePaymentParamObj: {},
     };
 
     componentDidMount() {
@@ -57,6 +61,8 @@ class PageFrame extends React.Component {
         audioMsgEmitter.on(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         // 点击系统通知框的的触发
         notificationEmitter.on(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
+        //打开增加线索量的面板的事件监听
+        paymentEmitter.on(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
 
         $(window).on('resize', this.resizeHandler);
     }
@@ -105,6 +111,7 @@ class PageFrame extends React.Component {
         audioMsgEmitter.removeListener(audioMsgEmitter.OPEN_AUDIO_PANEL, this.openAudioPanel);
         audioMsgEmitter.removeListener(audioMsgEmitter.HIDE_REPORT_BTN, this.hideReportBtn);
         notificationEmitter.removeListener(notificationEmitter.CLICK_SYSTEM_NOTICE, this.showNotificationPanel);
+        paymentEmitter.removeListener(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
@@ -199,6 +206,13 @@ class PageFrame extends React.Component {
         });
     };
 
+    showPurchaseLeadsPanel = (paramObj) => {
+        this.setState({isShowPurchaseLeadsPanel: true, cluePaymentParamObj: $.extend(this.state.cluePaymentParamObj, paramObj)});
+    };
+    closePurchaseLeadsPanel = () => {
+        this.setState({isShowPurchaseLeadsPanel: false, cluePaymentParamObj: {}});
+    };
+
     render() {
         var audioParamObj = this.state.audioParamObj;
         return (
@@ -229,6 +243,14 @@ class PageFrame extends React.Component {
                         {
                             this.state.isShowNotificationPanel ? (
                                 <Notification closeNotificationPanel={this.closeNotificationPanel}/>
+                            ) : null
+                        }
+                        {
+                            this.state.isShowPurchaseLeadsPanel ? (
+                                <PurchaseLeads
+                                    paramObj={this.state.cluePaymentParamObj}
+                                    onClosePanel={this.closePurchaseLeadsPanel}
+                                />
                             ) : null
                         }
                     </div>

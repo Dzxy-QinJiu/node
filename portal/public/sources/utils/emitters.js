@@ -242,3 +242,8 @@ export { clueEmitter };
 const orderEmitter = new EventEmitter();
 orderEmitter.REFRESH_ORDER_LIST = 'refresh_order_list';
 export { orderEmitter };
+
+//购买支付相关事件
+const paymentEmitter = new EventEmitter();
+paymentEmitter.OPEN_ADD_CLUES_PANEL = 'open_add_clues_panel';//打开购买线索量的面板
+export { paymentEmitter };

@@ -27,11 +27,15 @@ exports.getCurtaoGoodsList = function(req,res) {
 
 //商品交易(下单)
 exports.goodsTrade = function(req,res) {
+    let body = req.body;
+    if(body.num) {
+        body.num = parseInt(body.num);
+    }
     return restUtil.authRest.post({
         url: urls.goodsTrade,
         req: req,
         res: res
-    }, req.body);
+    }, body);
 };
 
 //订单交易状态

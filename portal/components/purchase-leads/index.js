@@ -9,6 +9,7 @@ import { Col, Row, InputNumber } from 'antd';
 import classNames from 'classnames';
 import HocGoodsBuy from 'CMP_DIR/hoc-goods-buy';
 import PayAjax from 'MOD_DIR/common/public/ajax/pay';
+import history from 'PUB_DIR/sources/history';
 
 const CLUE_GOODS_LIST_MAP = [1,2,5];
 const AUTO_SETTING_KEY = 'autoSetting';
@@ -24,10 +25,10 @@ class PurchaseLeads extends React.Component{
         total: 0,
         listenScrollBottom: false,
         leftTitle: Intl.get('goods.increase.clues', '增加线索量'),
-        rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+        // rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
         i18nId: 'clues.extract.count.at.part',
         i18nMessage: '线索提取量每份 {count} 条',
-        count: 1000,
+        count: 0,
         curOrderInfo: {},
         listHeight: 120,
         activeClueGoods: {},
@@ -103,12 +104,13 @@ class PurchaseLeads extends React.Component{
             newState.list = _.map(CLUE_GOODS_LIST_MAP, item => {
                 return {
                     num: item,
-                    price: _.get(originalList,'goods_fee', 0) * item,
                     id: originalList.id,
-                    type: originalList.type
+                    type: originalList.type,
+                    clue_number: _.get(originalList,'clue_number', 0) * item,
                 };
             });
             newState.activeClueGoods = newState.list[0];
+            newState.count = _.get(originalList,'clue_number', 0);
         }
         this.setState(newState);
     }
@@ -144,12 +146,12 @@ class PurchaseLeads extends React.Component{
         if(_.has(activeGood,'key') && _.isEqual(activeGood.key, AUTO_SETTING_KEY)) {
             good = {
                 goods_id: activeGood.id,
-                num: this.state.inputNumber
+                num: parseInt(this.state.inputNumber)
             };
         }else {
             good = {
                 goods_id: activeGood.id,
-                num: activeGood.num
+                num: parseInt(activeGood.num)
             };
         }
         return good;
@@ -157,6 +159,7 @@ class PurchaseLeads extends React.Component{
 
     //支付成功回调
     onPaymentSuccess = (orderInfo) => {
+        let _this = this;
         let operateSuccessTipProps = {
             title: Intl.get('payment.success', '支付成功'),
             tip: (
@@ -164,16 +167,24 @@ class PurchaseLeads extends React.Component{
                     id="payment.add.clue.extracted.number"
                     defaultMessage={'您已成功增加{count}条线索提取量'}
                     values={{
-                        'count': <span className="operate-success-tip-tag">{_.get(orderInfo, 'goods_num', 1) * 1000}</span>
+                        'count': <span className="operate-success-tip-tag">{_.get(orderInfo, 'goods_num', 1) * this.state.count}</span>
                     }}
                 />
             ),
             continueText: Intl.get('clue.extract.clue', '提取线索'),
-            goText: Intl.get('payment.order.record', '订单记录'),
+            goText: Intl.get('user.trade.record', '购买记录'),
             continueFn: () => {
-                window.location.href = '/clue_customer';
+                if (_.isFunction(this.props.paramObj.continueFn)) {
+                    _this.props.paramObj.continueFn(orderInfo);
+                }
+                _this.onClosePanel();
             },
-            goFn: () => {}
+            goFn: () => {
+                history.push('/user_info_manage/user_info',{
+                    show_pay_record: true
+                });
+                _this.onClosePanel();
+            }
         };
         this.setState({
             showPaymentMode: false,
@@ -200,7 +211,7 @@ class PurchaseLeads extends React.Component{
                                         <span className="goods-count">{item.num}</span>
                                         <span className="goods-unit">{Intl.get('clues.leads.part', '份')}</span>
                                     </div>
-                                    <span className="goods-total">{item.num * 1000} {Intl.get('clues.leads.strip', '条')}</span>
+                                    <span className="goods-total">{item.clue_number} {Intl.get('clues.leads.strip', '条')}</span>
                                 </div>
                             </div>
                         </Col>
@@ -234,11 +245,11 @@ class PurchaseLeads extends React.Component{
 
 PurchaseLeads.defaultProps = {
     onClosePanel: function() {},
-    onPaymentSuccess: function() {},
+    paramObj: {}
 };
 PurchaseLeads.propTypes = {
     onClosePanel: PropTypes.func,
-    onPaymentSuccess: PropTypes.func,
+    paramObj: PropTypes.object,
 };
 
 module.exports = HocGoodsBuy(PurchaseLeads);
