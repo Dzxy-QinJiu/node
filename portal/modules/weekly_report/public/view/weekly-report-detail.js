@@ -91,8 +91,8 @@ class WeeklyReportDetail extends React.Component {
         //不加延时会报错
         setTimeout(() => {
             this.getCallInfoData();// 接通率
-            //有合同基本查询权限时
-            if (hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_QUERY_COMMON_BASE)) {
+            //开通营收中心时
+            if (isOpenCash()) {
                 this.getContractData();//获取合同信息
                 this.getRepaymentData();//获取回款信息
             }
@@ -637,15 +637,15 @@ class WeeklyReportDetail extends React.Component {
                                 {this.renderDiffTypeTable('regionOverlay')}
                             </AntcCardContainer>
                         </div>
-                        {/*有合同基本查询权限并且开通营收中心*/}
-                        {hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_QUERY_COMMON_BASE) && isOpenCash() ? (
+                        {/*开通营收中心*/}
+                        {isOpenCash() ? (
                             <div className="contract-info-wrap">
                                 <AntcCardContainer title={Intl.get('weekly.report.contract', '合同情况')}>
                                     {this.renderDiffTypeTable('contactInfo')}
                                 </AntcCardContainer>
                             </div>) : null}
-                        {/*有合同基本查询权限并且开通营收中心*/}
-                        {hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_QUERY_COMMON_BASE) && isOpenCash() ? (
+                        {/*开通营收中心*/}
+                        {isOpenCash() ? (
                             <div className="repayment-info-wrap">
                                 <AntcCardContainer title={Intl.get('weekly.report.repayment', '回款情况')}>
                                     {this.renderDiffTypeTable('repaymentInfo')}
