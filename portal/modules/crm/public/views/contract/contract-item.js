@@ -1,3 +1,5 @@
+import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
+
 var React = require('react');
 import DetailCard from 'CMP_DIR/detail-card';
 import { AntcTable, AntcValidity } from 'antc';
@@ -15,13 +17,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
-import {DetailEditBtn} from 'CMP_DIR/rightPanel';
-import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 const EDIT_WIDTH = 350;
-//权限常量
-const PRIVILEGE_MAP = {
-    CONTRACT_BASE_PRIVILEGE: 'CRM_CONTRACT_COMMON_BASE',//合同基础角色的权限，开通合同管理应用后会有此权限
-};
 
 class ContractItem extends React.Component {
     state = {
@@ -136,7 +132,7 @@ class ContractItem extends React.Component {
                                     {Intl.get('crm.contact.delete.confirm', '确认删除')}
                                 </Button>
                             </span>) : (
-                            !this.props.disableEdit && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) && contract.stage === '待审' ? (
+                            this.hasContractEditPrivilege(contract) ? (
                                 <span className='iconfont icon-delete handle-btn-item' title={Intl.get('common.delete', '删除')}
                                     onClick={this.showDeleteContractConfirm}/>
                             ) : null
@@ -224,12 +220,17 @@ class ContractItem extends React.Component {
         this.setState({isShowProductEdit: flag});
     };
 
+    //是否有编辑合同的权限
+    hasContractEditPrivilege = (contract) => {
+        return !this.props.disableEdit && contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_OPERATOR_COMMON_BASE);
+    };
+
     renderContractContent = () => {
         const contract = this.state.formData;
         const start_time = contract.start_time ? moment(contract.start_time).format(oplateConsts.DATE_FORMAT) : '';
         const end_time = contract.end_time ? moment(contract.end_time).format(oplateConsts.DATE_FORMAT) : '';
         let itemClassName = classNames('contract-item-content', {
-            'item-edit-style': contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE)
+            'item-edit-style': this.hasContractEditPrivilege(contract)
         });
         let categoryOptions = _.map(CategoryList, (category, index) => {
             return (<Option value={category.value} key={index}>{category.name}</Option>);
@@ -239,7 +240,7 @@ class ContractItem extends React.Component {
         });
         // 合同的签约类型
         const contractLabel = contract.label === 'new' ? Intl.get('crm.contract.new.sign', '新签') : Intl.get('contract.163', '续约');
-        let hasEditPrivilege = !this.props.disableEdit && contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CONTRACT_BASE_PRIVILEGE) || false;
+        let hasEditPrivilege = this.hasContractEditPrivilege(contract);
         let validityTime = Intl.get('crm.contract.validity.one.year', '有效期一年');
         return (
             <div className='contract-item'>
@@ -261,7 +262,7 @@ class ContractItem extends React.Component {
                     <span className='contract-label'>{Intl.get('crm.contract.validity.time', '有效期')}:</span>
                     <div className='contract-validity-edit-block'>
                         <AntcValidity
-                            mode={contract.stage === '待审' && !this.props.disableEdit ? 'infoEdit' : 'info'}
+                            mode={hasEditPrivilege ? 'infoEdit' : 'info'}
                             className='validity-time'
                             startTime={contract.start_time}
                             endTime={contract.end_time}
