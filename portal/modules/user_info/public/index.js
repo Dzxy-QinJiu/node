@@ -59,9 +59,7 @@ var UserInfoPage = createReactClass({
         UserInfoStore.listen(this.onChange);
         // 判断是不是跳转过来的，若是的话，显示购买记录界面
         if(_.get(history.location, 'state.show_pay_record')) {
-            this.setState({
-                activeKey: TAB_KEYS.TRADE_TAB
-            });
+            this.changeActiveKey(TAB_KEYS.TRADE_TAB);
         }
         UserInfoAction.getUserInfo();
         UserInfoAction.getLogList({
