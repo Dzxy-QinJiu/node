@@ -132,8 +132,13 @@ export const getClueStatusValue = (filterClueStatus) => {
 };
 //为了防止开始时间不传，后端默认时间是从1970年开始的问题,把开始时间设置从2010年开始
 export const clueStartTime = moment('2010-01-01 00:00:00').valueOf();
-export const getClueSalesList = function() {
-    var clueSalesIdList = local.get(SESSION_STORAGE_CLUE_SALES_SELECTED);
+export const getClueSalesList = function(sessionKey) {
+    let clueSalesIdList = [];
+    if(_.isEmpty(sessionKey)) {
+        clueSalesIdList = local.get(SESSION_STORAGE_CLUE_SALES_SELECTED);
+    } else {
+        clueSalesIdList = local.get(sessionKey);
+    }
     if(!clueSalesIdList) {
         clueSalesIdList = [];
     } else {
@@ -159,8 +164,8 @@ export const getLocalSalesClickCount = function(clueSalesIdList, sale_id) {
     }
     return clickCount;
 };
-export const SetLocalSalesClickCount = function(sale_id) {
-    var clueSalesIdList = getClueSalesList();
+export const SetLocalSalesClickCount = function(sale_id, sessionKey) {
+    var clueSalesIdList = getClueSalesList(sessionKey);
     var targetObj = _.find(clueSalesIdList,(item) => {
         return item.saleId === sale_id;
     });
@@ -172,7 +177,11 @@ export const SetLocalSalesClickCount = function(sale_id) {
             clickCount: 1
         });
     }
-    local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
+    if(_.isEmpty(sessionKey)) {
+        local.set(SESSION_STORAGE_CLUE_SALES_SELECTED,JSON.stringify(clueSalesIdList));
+    } else {
+        local.set(sessionKey,JSON.stringify(clueSalesIdList));
+    }
 };
 export const handleSubmitContactData = function(submitObj){
     var data = {},updateObj = {};

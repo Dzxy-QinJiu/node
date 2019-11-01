@@ -71,6 +71,7 @@ class ClueExtract extends React.Component {
             singleExtractLoading: false, // 单个提取的loading
             selectedNumber: 0,//当用户只选了二十条数据时，记录此时的数据总量
             filterInputWidth: 210,//输入框的默认宽度
+            batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
             ...cluePoolStore.getState()
         };
     }
@@ -89,10 +90,7 @@ class ClueExtract extends React.Component {
         this.setState(cluePoolStore.getState());
     };
 
-    updateItem = (item, submitObj) => {
-        let sale_id = _.get(submitObj, 'sale_id', ''), team_id = _.get(submitObj, 'team_id', ''),
-            sale_name = _.get(submitObj, 'sale_name', ''), team_name = _.get(submitObj, 'team_name', '');
-        SetLocalSalesClickCount(sale_id);
+    updateItem = (item) => {
         //需要在列表中删除
         cluePoolAction.updateCluePoolList(item.id);
     };
@@ -120,10 +118,10 @@ class ClueExtract extends React.Component {
         let clueArr = _.map(tasks, 'taskDefine');
         // 遍历每一个线索
         _.each(clueArr, (clueId) => {
-            //如果当前客户是需要更新的客户，才更新
+            //如果当前线索是需要更新的线索，才更新
             let target = _.find(curClueLists, item => item.id === clueId);
             if (target) {
-                this.updateItem(target, taskParams);
+                this.updateItem(target);
             }
         });
         //当最后一个推送完成后
@@ -140,7 +138,7 @@ class ClueExtract extends React.Component {
             }
         }
         this.setState({
-            selectedClues: []
+            selectedClues: [],
         });
     };
 
@@ -608,11 +606,13 @@ class ClueExtract extends React.Component {
         if (!this.state.salesMan && flag) {
             cluePoolAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
         } else {
+            //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+            let salesMan = _.cloneDeep(this.state.salesMan);
             let id = record.id; // 提取线索某条的id
             let sale_id = userData.getUserData().user_id; // 普通销售的id，提取给自己
             if (flag) {
                 //销售id和所属团队的id 中间是用&&连接的  格式为销售id&&所属团队的id
-                let idArray = this.state.salesMan.split('&&');
+                let idArray = salesMan.split('&&');
                 if (_.isArray(idArray) && idArray.length) {
                     sale_id = idArray[0];// 提取给某个销售的id
                 }
@@ -630,6 +630,7 @@ class ClueExtract extends React.Component {
                 });
                 if (result.code === 0) { // 提取成功
                     cluePoolAction.updateCluePoolList(id);
+                    SetLocalSalesClickCount(salesMan);
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     if (isDetailExtract) { // 详情中，提取成功后，关闭右侧面板
                         this.hideRightPanel();
@@ -929,8 +930,8 @@ class ClueExtract extends React.Component {
                     running: totalSelectedSize,
                     typeText: Intl.get('clue.extract.clue', '提取线索')
                 });
+                SetLocalSalesClickCount(this.state.batchSelectedSales);
             }
-
         }
     };
 
@@ -970,6 +971,10 @@ class ClueExtract extends React.Component {
                 if (itemId) {
                     submitObj.customer_id = itemId;
                 }
+                //记录当前选择的销售销售团队id
+                this.setState({
+                    batchSelectedSales: _.cloneDeep(this.state.salesMan) //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+                });
                 return submitObj;
             }
         }
