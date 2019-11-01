@@ -624,13 +624,18 @@ class CustomerRecord extends React.Component {
     };
 
     //渲染时间线的内容展示
-    renderTimeLineContentItem = (item) => {
+    renderTimeLineContentItem = (item, is_record_upload) => {
         let content = null;
         if(_.isEqual(item.type, 'data_report')) {
             content = this.renderReportContent(item);
         } else if(_.isEqual(item.type, 'public_opinion_report')) {
             content = this.renderPublicOpinionReportContent(item);
         } else {
+            //playSelected表示当前正在播放的那条录音，图标显示红色
+            var cls = classNames('iconfont', 'icon-play', {
+                'icon-selected': item.playSelected,
+                'icon-play-disable': !is_record_upload
+            });
             content = (<div className="trace-content">
                 <div className="item-detail-content" id={item.id}>
                     {item.showAdd ? this.renderAddDetail(item) : this.renderRecordShowContent(item)}
@@ -678,11 +683,6 @@ class CustomerRecord extends React.Component {
         var iconClass = traceObj.iconClass, title = traceObj.title, traceDsc = traceObj.traceDsc;
         //是否上传了录音文件
         let is_record_upload = item.is_record_upload === '1';
-        //playSelected表示当前正在播放的那条录音，图标显示红色
-        var cls = classNames('iconfont', 'icon-play', {
-            'icon-selected': item.playSelected,
-            'icon-play-disable': !is_record_upload
-        });
         return (
             <div className={classNames('trace-item-content', {'day-split-line': hasSplitLine})}>
                 <p className="item-detail-tip">
@@ -690,7 +690,7 @@ class CustomerRecord extends React.Component {
                     {traceDsc ? (<span className="trace-title-name" title={traceDsc}>{traceDsc}</span>) : null}
                     {_.includes(PHONE_TYPES, item.type) ? (<span className="trace-title-phone">{item.dst}</span>) : null}
                 </p>
-                {this.renderTimeLineContentItem(item)}
+                {this.renderTimeLineContentItem(item, is_record_upload)}
             </div>
         );
     };
