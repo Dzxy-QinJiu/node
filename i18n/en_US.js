@@ -290,7 +290,7 @@ var en_US = {
     'common.maximum.gross.margin.of.newly.signed.payment': 'maximum gross margin of newly signed payment',//新签回款毛利最大值
     'common.load.data.error': 'Loading failed, please refresh', // 加载失败，请{refresh}
     'common.no.more.data.tips': 'There was no more {name}', // 没有更多{name}了
-    'common.no.data.tips': 'No data', // 暂无{name}
+    'common.no.data.tips': 'No {name}', // 暂无{name}
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册

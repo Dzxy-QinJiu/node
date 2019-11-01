@@ -1,5 +1,6 @@
 /**
  * Created by hzl on 2019/10/23.
+ * 购买记录
  */
 
 require('../css/trade-record.less');
@@ -42,7 +43,7 @@ class TradeRecord extends React.Component {
             submitObj.sort_id = sortId;
         }
         userInfoAjax.getUserTradeRecord(submitObj).then( (result) => {
-            let total = _.get(result, 'total') || 0;
+            let total = _.get(result, 'total', 0);
             let tradeRecordList = this.state.tradeRecordList;
             tradeRecordList = tradeRecordList.concat(_.get(result, 'list'));
             let length = tradeRecordList.length;
@@ -68,7 +69,7 @@ class TradeRecord extends React.Component {
         this.getUserTradeRecord();
     }
 
-    componentWillUnmount() {
+    setInitialData = () => {
         this.setState = {
             pageSize: pageSize,
             loading: false, // 获取交易记录的loading
@@ -78,6 +79,11 @@ class TradeRecord extends React.Component {
             total: 0, // 交易记录总数
             listenScrollBottom: true, // 下拉加载
         };
+    }
+
+    componentWillUnmount() {
+        // 卸载组价后，数据初始化
+        this.setInitialData();
     }
 
     isShowNoMoreDataTips = () => {

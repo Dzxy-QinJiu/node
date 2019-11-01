@@ -406,28 +406,30 @@ class UserInfo extends React.Component{
         } else {
             return (
                 <div className="user-info-div">
-                    <div className="user-info-item user-version">
-                        <span className="user-info-item-title">
-                            {Intl.get('user.info.version','版本')}：
-                        </span>
-                        <span className="user-info-item-content">
-                            {this.state.versionName}
-                        </span>
-                        {
-                            this.state.endTime ? (
-                                <span className="user-version-expire">
-                                    {`(${Intl.get('user.info.version.expire', '{time}到期', {time: moment(this.state.endTime).format(oplateConsts.DATE_FORMAT)})})`}
-                                </span>
-                            ) : null
-                        }
-                        <Button 
-                            className="user-version-upgrade"
-                            onClick={this.handleVersionUpgrade}
-                        >
-                            {Intl.get('user.info.version.upgrade', '升级为正式版')}
-                        </Button>
-
-                    </div>
+                    {/**
+                     * TODO 由于正式版本没有实现，暂时隐藏版本（2019/11/01）
+                     * <div className="user-info-item user-version">
+                     <span className="user-info-item-title">
+                     {Intl.get('user.info.version','版本')}：
+                     </span>
+                     <span className="user-info-item-content">
+                     {this.state.versionName}
+                     </span>
+                     {
+                         this.state.endTime ? (
+                             <span className="user-version-expire">
+                                 {`(${Intl.get('user.info.version.expire', '{time}到期', {time: moment(this.state.endTime).format(oplateConsts.DATE_FORMAT)})})`}
+                             </span>
+                         ) : null
+                     }
+                     <Button
+                     className="user-version-upgrade"
+                     onClick={this.handleVersionUpgrade}
+                     >
+                     {Intl.get('user.info.version.upgrade', '升级为正式版')}
+                     </Button>
+                     </div>
+                     */}
                     <div className="user-info-item">
                         <span className="user-info-item-title">
                             <ReactIntl.FormattedMessage id="common.account.number" defaultMessage="账号"/>
