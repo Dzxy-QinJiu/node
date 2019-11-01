@@ -225,8 +225,8 @@ class CrmRightPanel extends React.Component {
                                         ) : null}
                                     </TabPane>
                                 )}
-                            {//开通了营收中心时，才展示合同列表
-                                isOpenCash() ? (
+                            {//有合同查询权限并且开通了营收中心时，才展示合同列表
+                                hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_QUERY_COMMON_BASE) && isOpenCash() ? (
                                     <TabPane
                                         tab={Intl.get('contract.125', '合同')}
                                         key={TAB_KEYS.CONTRACT_TAB}
