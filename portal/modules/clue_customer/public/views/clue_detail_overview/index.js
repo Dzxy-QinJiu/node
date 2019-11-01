@@ -1051,6 +1051,7 @@ class ClueDetailOverview extends React.Component {
             updateCustomerLastContact={this.props.updateCustomerLastContact}
             isOverViewPanel={true}
             changeActiveKey={this.props.changeActiveKey}
+            hideContactWay={this.props.hideContactWay}
         />);
     }
 
@@ -1285,75 +1286,90 @@ class ClueDetailOverview extends React.Component {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="contact-item-content">
-                                            <DynamicAddDelField
-                                                id={curClue.id}
-                                                field='phone'
-                                                value={contactItem.phone}
-                                                type='phone'
-                                                label={Intl.get('common.phone', '电话')}
-                                                hasEditPrivilege={hasPrivilegeEdit}
-                                                placeholder={Intl.get('crm.95', '请输入联系人电话')}
-                                                saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'phone',id: contactItem.id})}
-                                                noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
-                                                addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
-                                                contactName={contactItem.name}
-                                                renderItemSelfSettingContent={this.renderItemSelfSettingContent.bind(this, curClue)}
-                                                renderItemSelfSettingForm={this.renderItemSelfSettingForm}
-                                                handleDelItem={this.handleDelItem}
-                                            />
-                                        </div>
-                                        <div className="contact-item-content">
-                                            <DynamicAddDelField
-                                                id={curClue.id}
-                                                field='qq'
-                                                value={contactItem.qq}
-                                                type='input'
-                                                label={'QQ'}
-                                                hasEditPrivilege={hasPrivilegeEdit}
-                                                validateRules={[{
-                                                    message: Intl.get('common.correct.qq', '请输入正确的QQ号'),
-                                                    pattern: qqRegex,
-                                                }]}
-                                                placeholder={Intl.get('member.input.qq', '请输入QQ号')}
-                                                saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'qq',id: contactItem.id})}
-                                                noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
-                                                addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
-                                            />
-                                        </div>
-                                        <div className="contact-item-content">
-                                            <DynamicAddDelField
-                                                id={curClue.id}
-                                                field='weChat'
-                                                value={contactItem.weChat}
-                                                type='input'
-                                                label={Intl.get('crm.58', '微信')}
-                                                hasEditPrivilege={hasPrivilegeEdit}
-                                                validateRules={[{validator: checkWechat}]}
-                                                placeholder={Intl.get('member.input.wechat', '请输入微信号')}
-                                                saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'weChat',id: contactItem.id})}
-                                                noDataTip={Intl.get('crm.contact.wechat.none', '暂无微信')}
-                                                addDataTip={Intl.get('crm.contact.wechat.add', '添加微信')}
-                                            />
-                                        </div>
-                                        <div className="contact-item-content">
-                                            <DynamicAddDelField
-                                                id={curClue.id}
-                                                field='email'
-                                                value={contactItem.email}
-                                                type='input'
-                                                label={Intl.get('common.email', '邮箱')}
-                                                hasEditPrivilege={hasPrivilegeEdit}
-                                                validateRules={[{
-                                                    message: Intl.get('user.email.validate.tip','请输入正确格式的邮箱'),
-                                                    pattern: emailRegex
-                                                }]}
-                                                placeholder={Intl.get('member.input.email', '请输入邮箱')}
-                                                saveEditData={this.saveEditBasicInfo.bind(this, {editItem: 'email',id: contactItem.id})}
-                                                noDataTip={Intl.get('crm.contact.email.none', '暂无邮箱')}
-                                                addDataTip={Intl.get('crm.contact.email.add', '添加邮箱')}
-                                            />
-                                        </div>
+                                        {this.props.hideContactWay ? null : (
+                                            <React.Fragment>
+                                                <div className="contact-item-content">
+                                                    <DynamicAddDelField
+                                                        id={curClue.id}
+                                                        field='phone'
+                                                        value={contactItem.phone}
+                                                        type='phone'
+                                                        label={Intl.get('common.phone', '电话')}
+                                                        hasEditPrivilege={hasPrivilegeEdit}
+                                                        placeholder={Intl.get('crm.95', '请输入联系人电话')}
+                                                        saveEditData={this.saveEditBasicInfo.bind(this, {
+                                                            editItem: 'phone',
+                                                            id: contactItem.id
+                                                        })}
+                                                        noDataTip={Intl.get('crm.contact.phone.none', '暂无电话')}
+                                                        addDataTip={Intl.get('crm.contact.phone.add', '添加电话')}
+                                                        contactName={contactItem.name}
+                                                        renderItemSelfSettingContent={this.renderItemSelfSettingContent.bind(this, curClue)}
+                                                        renderItemSelfSettingForm={this.renderItemSelfSettingForm}
+                                                        handleDelItem={this.handleDelItem}
+                                                    />
+                                                </div>
+                                                <div className="contact-item-content">
+                                                    <DynamicAddDelField
+                                                        id={curClue.id}
+                                                        field='qq'
+                                                        value={contactItem.qq}
+                                                        type='input'
+                                                        label={'QQ'}
+                                                        hasEditPrivilege={hasPrivilegeEdit}
+                                                        validateRules={[{
+                                                            message: Intl.get('common.correct.qq', '请输入正确的QQ号'),
+                                                            pattern: qqRegex,
+                                                        }]}
+                                                        placeholder={Intl.get('member.input.qq', '请输入QQ号')}
+                                                        saveEditData={this.saveEditBasicInfo.bind(this, {
+                                                            editItem: 'qq',
+                                                            id: contactItem.id
+                                                        })}
+                                                        noDataTip={Intl.get('crm.contact.qq.none', '暂无QQ')}
+                                                        addDataTip={Intl.get('crm.contact.qq.add', '添加QQ')}
+                                                    />
+                                                </div>
+                                                <div className="contact-item-content">
+                                                    <DynamicAddDelField
+                                                        id={curClue.id}
+                                                        field='weChat'
+                                                        value={contactItem.weChat}
+                                                        type='input'
+                                                        label={Intl.get('crm.58', '微信')}
+                                                        hasEditPrivilege={hasPrivilegeEdit}
+                                                        validateRules={[{validator: checkWechat}]}
+                                                        placeholder={Intl.get('member.input.wechat', '请输入微信号')}
+                                                        saveEditData={this.saveEditBasicInfo.bind(this, {
+                                                            editItem: 'weChat',
+                                                            id: contactItem.id
+                                                        })}
+                                                        noDataTip={Intl.get('crm.contact.wechat.none', '暂无微信')}
+                                                        addDataTip={Intl.get('crm.contact.wechat.add', '添加微信')}
+                                                    />
+                                                </div>
+                                                <div className="contact-item-content">
+                                                    <DynamicAddDelField
+                                                        id={curClue.id}
+                                                        field='email'
+                                                        value={contactItem.email}
+                                                        type='input'
+                                                        label={Intl.get('common.email', '邮箱')}
+                                                        hasEditPrivilege={hasPrivilegeEdit}
+                                                        validateRules={[{
+                                                            message: Intl.get('user.email.validate.tip', '请输入正确格式的邮箱'),
+                                                            pattern: emailRegex
+                                                        }]}
+                                                        placeholder={Intl.get('member.input.email', '请输入邮箱')}
+                                                        saveEditData={this.saveEditBasicInfo.bind(this, {
+                                                            editItem: 'email',
+                                                            id: contactItem.id
+                                                        })}
+                                                        noDataTip={Intl.get('crm.contact.email.none', '暂无邮箱')}
+                                                        addDataTip={Intl.get('crm.contact.email.add', '添加邮箱')}
+                                                    />
+                                                </div>
+                                            </React.Fragment>)}
                                     </div>
                                 );
 
@@ -1639,6 +1655,7 @@ ClueDetailOverview.defaultProps = {
     clueSourceArray: [],
     accessChannelArray: [],
     clueClassifyArray: [],
+    hideContactWay: false,
     updateClueSource: function() {},
     updateClueChannel: function() {},
     updateClueClassify: function() {},
@@ -1685,7 +1702,8 @@ ClueDetailOverview.propTypes = {
     updateCustomerLastContact: PropTypes.func,
     extractClueOperator: PropTypes.func,
     showClueToCustomerPanel: PropTypes.func,
-    changeActiveKey: PropTypes.func
+    changeActiveKey: PropTypes.func,
+    hideContactWay: PropTypes.bool,
 };
 
 module.exports = ClueDetailOverview;
