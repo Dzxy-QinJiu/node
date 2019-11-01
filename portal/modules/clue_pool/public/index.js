@@ -661,9 +661,11 @@ class ClueExtract extends React.Component {
             clue_params: {
                 currentId: salesClueItem.id,
                 type: 'clue_pool',
-                extractClueOperator: this.extractClueOperator
+                extractClueOperator: this.extractClueOperator,
+                hideRightPanel: this.hideRightPanel,
             }
         });
+        cluePoolAction.setCurrentClueId(salesClueItem.id);
     };
 
     hideRightPanel = () => {
