@@ -107,9 +107,11 @@ var UserInfoPage = createReactClass({
     },
 
     render: function() {
-        var height = this.state.userInfoContainerHeight - TAB_HEIGHT;
+        var height = this.state.userInfoContainerHeight;
+
         let managedRealm = _.get(commonMethodUtil.getOrganization(), 'name', '');
-        let containerHeight = height - logTitleHeight - logBottomHeight;
+        let containerHeight = height - logTitleHeight - logBottomHeight - TAB_HEIGHT;
+
         return (
             <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
                 <div className="user-info-manage-container">
@@ -130,7 +132,7 @@ var UserInfoPage = createReactClass({
                             >
                                 {
                                     this.state.activeKey === TAB_KEYS.OPERATE_RECORD_TAB ?
-                                        <div className="user-log-div" style={{height: height}}>
+                                        <div className="user-log-div" style={{height: containerHeight - TAB_HEIGHT}}>
                                             <div className="log-div-title">
                                                 <label className="log-title-tips">
                                                     <ReactIntl.FormattedMessage

@@ -4,6 +4,7 @@
 @personal-data-title: #999;
 @personal-data-content: #333;
 .user-info-manage-container {
+  height: 100%;
   //展示区域样式
   padding: 20px @container_padding 30px @container_padding;
   //展示区域宽度低于1035时样式
@@ -517,16 +518,13 @@
 //展示区域宽度大于1035低于1235时样式
 @media (min-width: 1035px) and (max-width: 1235px) {
   .user-info-manage-container{
+    height: 100%;
     padding: 20px 0 30px 0;
     .user-info-container-div .user-info-bottom .user-info-div{
       .user-info-item{
         padding-left: 10px;
 
       }
-
-    }
-    .user-log-container-div{
-      padding: 20px 0 0 0;
     }
   }
 }
