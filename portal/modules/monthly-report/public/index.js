@@ -390,9 +390,9 @@ class MonthlyReport extends React.Component {
             dataField: 'list',
             processData: data => {
                 _.each(data, (item, index) => {
-                    item.this_month_total = item.this_month.total;
-                    item.highest_total = item.highest.total;
-                    item.this_month_add_highest_total = item.this_month_add_highest.total;
+                    item.this_month_total = _.get(item, 'this_month.total', 0);
+                    item.highest_total = _.get(item, 'highest.total', 0);
+                    item.this_month_add_highest_total = _.get(item, 'this_month_add_highest.total', 0);
                 });
 
                 return data;
