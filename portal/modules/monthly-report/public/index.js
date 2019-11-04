@@ -502,7 +502,7 @@ class MonthlyReport extends React.Component {
 
     render() {
         const selectedTeamId = _.get(this.state.selectedTeam, 'group_id');
-        const selectedTeamName = _.get(this.state.selectedTeam, 'group_name');
+        const selectedTeamName = _.get(this.state.selectedTeam, 'group_name', '');
 
         return (
             <div className="monthly-report" data-tracename='销售月报'>
@@ -515,26 +515,22 @@ class MonthlyReport extends React.Component {
                             <ReportLeftMenu/>
                         </Col>
                         <Col span={21}>
-                            {selectedTeamName ? (
-                                <div className="report-title">
-                                    <span className="team-name">
-                                        {selectedTeamName + Intl.get('contract.15', '月报')}
-                                    </span>
-                                    <span className="year-month">
-                                    （{this.state.selectedMonth.format(oplateConsts.DATE_YEAR_MONTH_FORMAT)}）
-                                    </span>
-                                </div>
-                            ) : null}
+                            <div className="report-title">
+                                <span className="team-name">
+                                    {selectedTeamName + Intl.get('contract.15', '月报')}
+                                </span>
+                                <span className="year-month">
+                                （{this.state.selectedMonth.format(oplateConsts.DATE_YEAR_MONTH_FORMAT)}）
+                                </span>
+                            </div>
 
-                            {selectedTeamId ? (
-                                <AntcAnalysis
-                                    charts={this.getCharts()}
-                                    conditions={this.getConditions(selectedTeamId)}
-                                    emitterConfigList={this.getEmitters()}
-                                    isGetDataOnMount={true}
-                                    isUseScrollBar={true}
-                                />
-                            ) : null}
+                            <AntcAnalysis
+                                charts={this.getCharts()}
+                                conditions={this.getConditions(selectedTeamId)}
+                                emitterConfigList={this.getEmitters()}
+                                isGetDataOnMount={true}
+                                isUseScrollBar={true}
+                            />
                         </Col>
                     </Row>
                 </div>
