@@ -324,14 +324,15 @@ class ExtractClues extends React.Component {
                         placement="topRight"
                         btnAtTop={false}
                     />
-                    {
+                    {/*暂时注释掉*/}
+                    {/*{
                         _.isEqual(_.get(getOrganization(),'type'), '试用') ? null :
                             <Button className="button-add-clue" data-tracename="点击增加线索量"
                                 title={Intl.get('goods.increase.clues', '增加线索量')}
                                 onClick={this.handleClickAddClues}>
                                 {Intl.get('goods.increase.clues', '增加线索量')}
                             </Button>
-                    }
+                    }*/}
                 </div>
             );
         }else {
