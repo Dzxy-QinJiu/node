@@ -81,8 +81,9 @@ class UserLoginAnalysis extends React.Component {
     componentWillReceiveProps(nextProps) {
         var newUserId = nextProps.userId;
         if (this.props.userId !== newUserId || !antUtilData.isEqualArray(nextProps.appLists, this.props.appLists)) {
+            UserLoginAnalysisAction.resetState();
+            //加延时是为了避免循环Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.
             setTimeout(() => {
-                UserLoginAnalysisAction.resetState();
                 this.getUserAnalysisInfo(newUserId, nextProps.selectedAppId, nextProps.appLists);
             }, 0);
         }
