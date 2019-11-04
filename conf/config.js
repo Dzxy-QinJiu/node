@@ -156,6 +156,7 @@ var config = {
     pushServerAddress: process.env.PUSH_SERVER_ADDRESS || 'http://10.20.1.184:9093',//推送的服务地址（测试： http://10.20.1.184:9093，正式:http://notify-ketao.antfact.com:80）
     lang: process.env.OPLATE_LANG, //语言环境(优先)
     useSso: process.env.USESSO,//是否使用sso
+    ssoUrl: process.env.SSO_URL || 'https://sso-dev.curtao.com',//正式：https://sso.curtao.com，测试：https://sso-dev.curtao.com
     storageKey: process.env.storageKey || 'ketao-storage',//在localstorage中存储的key
     curtaoUrl: process.env.CURTAO_URL || 'csm.curtao.com',//用来判断是否是curtao的环境,curtao的环境会展示新版登录注册界面
     timeStamp: new Date().valueOf()//时间戳（解决文件缓存的问题）
