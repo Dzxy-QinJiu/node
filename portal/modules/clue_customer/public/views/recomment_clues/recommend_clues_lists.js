@@ -35,7 +35,6 @@ import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLoca
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
-const maxLimitExtractNumber = 100;
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
@@ -46,6 +45,7 @@ class RecommendCustomerRightPanel extends React.Component {
             batchExtractLoading: false,
             closeFocusCustomer: false,
             hasExtractCount: 0,//已经提取的推荐线索的数量
+            maxLimitExtractNumber: 0,//该账号的最大提取线索数量（试用账号是今天的，正式账号是本月的）
             tablePopoverVisible: '',//单个提取展示popover的那条推荐线索
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
@@ -62,17 +62,47 @@ class RecommendCustomerRightPanel extends React.Component {
         clueCustomerStore.listen(this.onStoreChange);
         //获取推荐的线索
         this.getRecommendClueLists();
+        //获取最多提取线索的数量
+        this.getMaxLimitCount();
     }
-    //获取某个安全域已经提取多少推荐线索数量
+    getMaxLimitCount(){
+        $.ajax({
+            url: '/rest/get/maxlimit/count',
+            dataType: 'json',
+            type: 'get',
+            success: (count) => {
+                this.setState({
+                    maxLimitExtractNumber: _.isNumber(count) ? count : 0
+                });
+            },
+            error: (xhr) => {
+                this.setState({
+                    maxLimitExtractNumber: 0
+                });
+            }
+        });
+    }
+
+    //获取某个安全域已经提取多少推荐线索数量,
     getRecommendClueCount(callback){
+        //如果是试用的账号，要获取今天的提取量，
+        var submitObj = {
+            timeStart: moment().startOf('day').valueOf(),
+            timeEnd: moment().endOf('day').valueOf(),
+        };
+        //如果是正式账号，要获取本月的提取量
+        if(this.isOfficalCount()){
+            submitObj = {
+                timeStart: moment().startOf('month').valueOf(),
+                timeEnd: moment().endOf('month').valueOf(),
+            };
+        }
+
         $.ajax({
             url: '/rest/recommend/clue/count',
             dataType: 'json',
             type: 'get',
-            data: {
-                timeStart: moment().startOf('day').valueOf(),
-                timeEnd: moment().endOf('day').valueOf(),
-            },
+            data: submitObj,
             success: (data) => {
                 var count = _.get(data,'total', 0);
                 this.setState({
@@ -272,7 +302,7 @@ class RecommendCustomerRightPanel extends React.Component {
             });
             //提取线索前，先发请求获取还能提取的线索数量
             this.getRecommendClueCount((count) => {
-                if (_.get(getOrganization(),'type') === '试用' && count >= maxLimitExtractNumber){
+                if ((this.isTrialCount() || this.isOfficalCount()) && count >= this.state.maxLimitExtractNumber){
                     this.setState({
                         tablePopoverVisible: record.id,
                         singleExtractLoading: false
@@ -287,9 +317,12 @@ class RecommendCustomerRightPanel extends React.Component {
             });
         }
     }
+    getTimeRangeText = () => {
+        return this.isTrialCount() ? Intl.get('user.time.today', '今天') : Intl.get('common.this.month', '本月');
+    }
     extractClueOperator = (hasAssignedPrivilege, record, assigenCls, isDetailExtract) => {
         var checkRecord = this.state.tablePopoverVisible === record.id;
-        var maxLimitTip = Intl.get('clue.recommend.extract.num.limit', '您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取',{maxLimit: maxLimitExtractNumber});
+        var maxLimitTip = Intl.get('clue.recommend.extract.num.limit', '您所在组织{timerange}提取的线索数已达{maxLimit}条上限，请明天再来提取',{maxLimit: this.state.maxLimitExtractNumber, timerange: this.getTimeRangeText()});
         if (hasAssignedPrivilege) {
             return (
                 <AntcDropdown
@@ -398,6 +431,14 @@ class RecommendCustomerRightPanel extends React.Component {
     isCommonSales = () => {
         return userData.getUserData().isCommonSales;
     };
+    //是否是试用账号,
+    isTrialCount = () => {
+        return _.get(getOrganization(),'type') === '试用';
+    };
+    //是否是正式账号
+    isOfficalCount = () => {
+        return _.get(getOrganization(),'type') === '正式';
+    };
 
     handleSubmitAssignSalesBatch = () => {
         //如果是选了修改全部
@@ -407,7 +448,7 @@ class RecommendCustomerRightPanel extends React.Component {
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
             this.getRecommendClueCount((count) => {
-                if (_.get(getOrganization(),'type') === '试用' && count + _.get(this, 'state.selectedRecommendClues.length') > maxLimitExtractNumber){
+                if ((this.isTrialCount() || this.isOfficalCount()) && count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber){
                     this.setState({
                         batchPopoverVisible: true,
                         singleExtractLoading: false
@@ -420,9 +461,6 @@ class RecommendCustomerRightPanel extends React.Component {
                     this.handleBatchAssignClues(submitObj);
                 }
             });
-
-
-
         }
     };
     //批量提取,发请求前的参数处理
@@ -567,9 +605,10 @@ class RecommendCustomerRightPanel extends React.Component {
         });
     };
     renderBatchChangeClues = () => {
-        var checkRecord = this.state.batchPopoverVisible;
+        var checkRecord = this.state.batchPopoverVisible, maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
-        var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract});
+        //账号类型不一样提示也不一样
+        var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract,timerange: this.getTimeRangeText()});
         let {isWebMin} = isResponsiveDisplay();
         if (this.isCommonSales()) { // 普通销售批量提取线索
             return (
