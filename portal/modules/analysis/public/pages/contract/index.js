@@ -16,6 +16,9 @@ module.exports = {
     title: CONTRACT_MENUS.INDEX.name,
     key: CONTRACT_MENUS.INDEX.key,
     menuIndex: 1,
+    privileges: [
+        'OPLATE_CONTRACT_ANALYSIS',
+    ],
     isShowCallback: () => {
         //开通营收中心
         return isOpenCash();
