@@ -445,6 +445,10 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
             if (selfHandleFlag){
                 data.filterAllotNoTraced = 'yes';
             }
+            //如果获取的数据为0
+            if(_.get(data, 'total') === 0 && _.isEmpty(_.get(data,'agg_list'))){
+                data.agg_list = [{status: [], availability: []}];
+            }
             emitter.emit('success', data);
         }
     }, function(errorMsg) {
