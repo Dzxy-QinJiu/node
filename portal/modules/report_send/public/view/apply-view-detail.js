@@ -635,7 +635,7 @@ class ApplyViewDetail extends React.Component {
         // 驳回的时候也会有这个属性，所以再加上status的判断
         //如果是销售添加的申请，并且还没有确认审核之前是可以添加的
         var salesAddPrivilege = _.get(detailInfo,'applicant.user_id') === userData.getUserData().user_id && !detailInfo.approver_ids && detailInfo.status === 'ongoing';
-        var managerAddPrivilege = (hasApprovedReportAndDocumentApply(this) && detailInfo.status === 'ongoing') || this.state.clickConfirmBtn || _.get(detailInfo,'detail.file_upload_logs',[]).length;//管理员在确认通过审核后或者在点击了确认按钮也可以展示添加区域
+        var managerAddPrivilege = ((hasApprovedReportAndDocumentApply(this) && detailInfo.status === 'ongoing' && detailInfo.showApproveBtn) || this.state.clickConfirmBtn || _.get(detailInfo,'detail.file_upload_logs',[]).length) > 0;//管理员在确认通过审核后或者在点击了确认按钮也可以展示添加区域
         if (managerAddPrivilege || salesAddPrivilege){
             var showApplyInfo = [{
                 label: '',
