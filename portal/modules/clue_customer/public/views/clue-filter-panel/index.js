@@ -430,7 +430,7 @@ class ClueFilterPanel extends React.Component {
                 value: x
             }))
         }];
-        //非销售角色才有来源、渠道、分类筛选项
+        //非销售角色才有来源
         if(!isSalesRole()) {
             advancedData.unshift(
                 {
@@ -440,24 +440,24 @@ class ClueFilterPanel extends React.Component {
                         name: x,
                         value: x
                     }))
-                },{
-                    groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
-                    groupId: 'access_channel',
-                    data: accessChannelArray.map(x => ({
-                        name: x,
-                        value: x
-                    }))
-                },{
-                    groupName: Intl.get('clue.customer.classify', '线索分类'),
-                    groupId: 'clue_classify',
-                    data: clueClassifyArray.map(x => ({
-                        name: x,
-                        value: x
-                    }))
                 }
             );
         }
         advancedData.unshift({
+            groupName: Intl.get('crm.sales.clue.access.channel', '接入渠道'),
+            groupId: 'access_channel',
+            data: accessChannelArray.map(x => ({
+                name: x,
+                value: x
+            }))
+        },{
+            groupName: Intl.get('clue.customer.classify', '线索分类'),
+            groupId: 'clue_classify',
+            data: clueClassifyArray.map(x => ({
+                name: x,
+                value: x
+            }))
+        },{
             groupName: Intl.get('crm.clue.client.source', '集客方式'),
             groupId: 'source_classify',
             data: sourceClassifyArray.map(x => ({
