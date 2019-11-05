@@ -79,7 +79,6 @@ class RecommendCustomerRightPanel extends React.Component {
             },
             error: (xhr) => {
                 this.setState({
-                    maxLimitExtractNumber: 0,
                     getMaxLimitExtractNumberError: true
                 });
             }
@@ -472,8 +471,13 @@ class RecommendCustomerRightPanel extends React.Component {
                 this.batchAssignRecommendClues(submitObj);
             }else{
                 this.getRecommendClueCount((count) => {
-                    //获取已经提取的线索失败了就不校验了
-                    if (_.isNumber(count) && (this.isTrialAccount() || this.isOfficalAccount()) && count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber){
+                    if (
+                        //获取已经提取的线索失败了就不校验了 获取失败count返回的是字符串‘error’
+                        _.isNumber(count) &&
+                        //是试用账号或者正式账号
+                        (this.isTrialAccount() || this.isOfficalAccount()) &&
+                        //已经提取的数量和这次要提取数量之和大于最大限制的提取数
+                        count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber){
                         this.setState({
                             batchPopoverVisible: true,
                             singleExtractLoading: false
