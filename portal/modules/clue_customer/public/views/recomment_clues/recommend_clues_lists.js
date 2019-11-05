@@ -46,6 +46,7 @@ class RecommendCustomerRightPanel extends React.Component {
             closeFocusCustomer: false,
             hasExtractCount: 0,//已经提取的推荐线索的数量
             maxLimitExtractNumber: 0,//该账号的最大提取线索数量（试用账号是今天的，正式账号是本月的）
+            getMaxLimitExtractNumberError: false,//获取该账号的最大提取量出错
             tablePopoverVisible: '',//单个提取展示popover的那条推荐线索
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
@@ -72,12 +73,14 @@ class RecommendCustomerRightPanel extends React.Component {
             type: 'get',
             success: (count) => {
                 this.setState({
-                    maxLimitExtractNumber: _.isNumber(count) ? count : 0
+                    maxLimitExtractNumber: _.isNumber(count) ? count : 0,
+                    getMaxLimitExtractNumberError: false
                 });
             },
             error: (xhr) => {
                 this.setState({
-                    maxLimitExtractNumber: 0
+                    maxLimitExtractNumber: 0,
+                    getMaxLimitExtractNumberError: true
                 });
             }
         });
@@ -91,7 +94,7 @@ class RecommendCustomerRightPanel extends React.Component {
             timeEnd: moment().endOf('day').valueOf(),
         };
         //如果是正式账号，要获取本月的提取量
-        if(this.isOfficalCount()){
+        if(this.isOfficalAccount()){
             submitObj = {
                 timeStart: moment().startOf('month').valueOf(),
                 timeEnd: moment().endOf('month').valueOf(),
@@ -113,8 +116,9 @@ class RecommendCustomerRightPanel extends React.Component {
             },
             error: (errorInfo) => {
                 this.setState({
-                    hasExtractCount: 0
+                    hasExtractCount: 0,
                 });
+                _.isFunction(callback) && callback('error');
             }
         });
     }
@@ -292,6 +296,13 @@ class RecommendCustomerRightPanel extends React.Component {
             </div>
         );
     };
+    extractRecommendCluesSingele = (record) => {
+        this.setState({
+            tablePopoverVisible: ''
+        });
+        let submitObj = this.handleBeforeSumitChangeSales([record.id]);
+        this.handleExtractRecommendClues(submitObj);
+    };
     // 单个提取线索
     handleExtractClueAssignToSale(record, flag, isDetailExtract) {
         if (!this.state.salesMan && flag) {
@@ -301,24 +312,27 @@ class RecommendCustomerRightPanel extends React.Component {
                 singleExtractLoading: true
             });
             //提取线索前，先发请求获取还能提取的线索数量
-            this.getRecommendClueCount((count) => {
-                if ((this.isTrialCount() || this.isOfficalCount()) && count >= this.state.maxLimitExtractNumber){
-                    this.setState({
-                        tablePopoverVisible: record.id,
-                        singleExtractLoading: false
-                    });
-                }else{
-                    this.setState({
-                        tablePopoverVisible: ''
-                    });
-                    let submitObj = this.handleBeforeSumitChangeSales([record.id]);
-                    this.handleExtractRecommendClues(submitObj);
-                }
-            });
+            //如果获取能提取的总量出错了就不用发请求了获取已经提取的线索量，直接提取就可以，后端有校验
+            if(this.state.getMaxLimitExtractNumberError){
+                this.extractRecommendCluesSingele(record);
+            }else{
+                this.getRecommendClueCount((count) => {
+                    //如果获取出错了就不要校验数字了
+                    if (_.isNumber(count) && (this.isTrialAccount() || this.isOfficalAccount()) && count >= this.state.maxLimitExtractNumber){
+                        this.setState({
+                            tablePopoverVisible: record.id,
+                            singleExtractLoading: false
+                        });
+                    }else{
+                        this.extractRecommendCluesSingele(record);
+                    }
+                });
+            }
+
         }
     }
     getTimeRangeText = () => {
-        return this.isTrialCount() ? Intl.get('user.time.today', '今天') : Intl.get('common.this.month', '本月');
+        return this.isTrialAccount() ? Intl.get('user.time.today', '今天') : Intl.get('common.this.month', '本月');
     }
     extractClueOperator = (hasAssignedPrivilege, record, assigenCls, isDetailExtract) => {
         var checkRecord = this.state.tablePopoverVisible === record.id;
@@ -432,14 +446,20 @@ class RecommendCustomerRightPanel extends React.Component {
         return userData.getUserData().isCommonSales;
     };
     //是否是试用账号,
-    isTrialCount = () => {
+    isTrialAccount = () => {
         return _.get(getOrganization(),'type') === '试用';
     };
     //是否是正式账号
-    isOfficalCount = () => {
+    isOfficalAccount = () => {
         return _.get(getOrganization(),'type') === '正式';
     };
-
+    batchAssignRecommendClues = (submitObj) => {
+        this.setState({
+            batchPopoverVisible: false,
+            batchSelectedSales: _.cloneDeep(this.state.salesMan) //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
+        });
+        this.handleBatchAssignClues(submitObj);
+    };
     handleSubmitAssignSalesBatch = () => {
         //如果是选了修改全部
         let submitObj = this.handleBeforeSumitChangeSales(_.map(this.state.selectedRecommendClues,'id'));
@@ -447,22 +467,25 @@ class RecommendCustomerRightPanel extends React.Component {
             return;
         }else{
             //批量提取之前要验证一下可以再提取多少条的数量，如果提取的总量比今日上限多，就提示还能再提取几条
-            this.getRecommendClueCount((count) => {
-                if ((this.isTrialCount() || this.isOfficalCount()) && count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber){
-                    this.setState({
-                        batchPopoverVisible: true,
-                        singleExtractLoading: false
-                    });
-                }else{
-                    this.setState({
-                        batchPopoverVisible: false,
-                        batchSelectedSales: _.cloneDeep(this.state.salesMan) //在从AntcDropDown选择完销售人员时，salesMan会被清空，这里需要克隆储存
-                    });
-                    this.handleBatchAssignClues(submitObj);
-                }
-            });
+            //如果获取提取总量失败了,就不校验数字了
+            if(this.state.getMaxLimitExtractNumberError){
+                this.batchAssignRecommendClues(submitObj);
+            }else{
+                this.getRecommendClueCount((count) => {
+                    //获取已经提取的线索失败了就不校验了
+                    if (_.isNumber(count) && (this.isTrialAccount() || this.isOfficalAccount()) && count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber){
+                        this.setState({
+                            batchPopoverVisible: true,
+                            singleExtractLoading: false
+                        });
+                    }else{
+                        this.batchAssignRecommendClues(submitObj);
+                    }
+                });
+            }
         }
     };
+
     //批量提取,发请求前的参数处理
     handleBeforeSumitChangeSales = (itemId) => {
         if (this.isCommonSales()) { // 普通销售，批量提取参数处理
