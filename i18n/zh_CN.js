@@ -2728,6 +2728,7 @@ var zh_CN = {
     'ketao.frontpage.illeagl.login': '停用客户登录',
     'ketao.frontpage.focus.customer.login': '关注客户登录',
     'ketao.frontpage.interested.customer': '关注客户',
+    'clue.customer.export.trail.user.tip': '请升级正式版',
     'clue.customer.will.distribution': '待分配',
     'clue.customer.has.distribution': '已分配',
     'clue.customer.has.follow': '已跟进',
