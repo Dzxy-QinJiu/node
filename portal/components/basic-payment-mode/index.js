@@ -47,7 +47,7 @@ class BasicPaymentMode extends React.Component {
         }
     }
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         //需清除定时查询订单状态的定时器，以防出现问题
         this.queryStatusTimer && clearInterval(this.queryStatusTimer);
         this.queryStatusTimer = null;
@@ -197,7 +197,7 @@ class BasicPaymentMode extends React.Component {
     renderPayContent() {
         let payMode = this.state.payMode;
         if(_.includes(this.PAY_MODE, payMode)) {//是支付宝和微信支付方式
-            let url = this.state.curOrderInfo[`${payMode}_qrUrl`];
+            let url = this.state.curOrderInfo[`${payMode}_qrUrl`] || 'no_code_url';
             return <QrCode size={96} value={url}/>;
         }else {
             return null;
@@ -294,7 +294,7 @@ BasicPaymentMode.defaultProps = {
         }*/
     ],//支付渠道，【支付宝，微信，...】
     curOrderInfo: {},//当前订单信息
-    isShowCloseBtn: false,//是否显示关闭按钮
+    isShowCloseBtn: true,//是否显示关闭按钮
     onPaymentSuccess: function() {},
     dealSubmitGoodInfo: function() {},
     onClosePanel: function() {},

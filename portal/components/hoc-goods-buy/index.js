@@ -31,7 +31,7 @@
 
 
 import './style.less';
-import { Button, notification, message } from 'antd';
+import { Button, message } from 'antd';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -49,7 +49,7 @@ const LAYOUT_CONSTS = {
 
 const HOCGoodsBuy = WrappedComponent => {
     return class extends WrappedComponent {
-        static displayName = `HOC(${getDisplayName(WrappedComponent)})`
+        static displayName = `HOC(${getDisplayName(WrappedComponent)})`;
 
         //下拉加载
         handleScrollBarBottom = () => {
@@ -193,6 +193,7 @@ const HOCGoodsBuy = WrappedComponent => {
                     curOrderInfo={this.state.curOrderInfo}
                     dealSubmitGoodInfo={this.dealSubmitGoodInfo}
                     onPaymentSuccess={this.onPaymentSuccess}
+                    onClosePanel={this.onClosePanel}
                 />;
             }
         }
