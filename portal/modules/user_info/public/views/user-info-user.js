@@ -4,7 +4,7 @@ var UserInfoAction = require('../action/user-info-actions');
 var Alert = require('antd').Alert;
 var PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
 var Spinner = require('../../../../components/spinner');
-import BasicEditSelectField from 'CMP_DIR/basic-edit-field/select';
+import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import {nameLengthRule} from 'PUB_DIR/sources/utils/validate-util';
 import UserInfoAjax from '../ajax/user-info-ajax';
@@ -17,6 +17,7 @@ import {getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
 import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
+const EDIT_FEILD_WIDTH = 380;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -258,7 +259,7 @@ class UserInfo extends React.Component{
         let value = _.get(saveObj, type);
         let submitObj = {email: value};
         if (type === 'qq') {
-            submitObj = {qq: value};
+            submitObj = {qq: _.trim(value)};
         }
         UserInfoAction.editUserInfo(submitObj, (errorMsg) => {
             if(_.isEmpty(errorMsg)){
@@ -372,6 +373,20 @@ class UserInfo extends React.Component{
 
     };
 
+
+    saveEditLanguage = (saveObj, successFunc, errorFunc) => {
+        UserInfoAjax.setUserLanguage(saveObj).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                this.afterEditLangSuccess(saveObj);
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+    }
+
     renderUserInfo() {
         let formData = this.props.userInfo;
         //根据是否拥有邮箱改变渲染input默认文字
@@ -386,7 +401,7 @@ class UserInfo extends React.Component{
         //发送邮件后显示的计时器
         let afterSend = <span className ="hasSendMail" >{Intl.get('user.info.active.email.msg', '(已发送激活邮件{sendTime}s)',{sendTime: this.state.sendTime})}</span>;
         // 根据是否拥有qq改变渲染input默认文字
-        let qqInputInfo = formData.qq ? formData.qq : ' ';
+        let qqInputInfo = _.get(formData, 'qq', '');
 
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo.bind(this)}
@@ -539,11 +554,11 @@ class UserInfo extends React.Component{
                                 value={this.state.lang}
                                 field="language"
                                 selectOptions={this.getLangOptions()}
-                                disabled={hasPrivilege('MEMBER_LANGUAGE_SETTING') ? false : true}
+                                hasEditPrivilege={hasPrivilege('MEMBER_LANGUAGE_SETTING')}
                                 onSelectChange={this.onSelectLang.bind(this)}
                                 cancelEditField={this.cancelEditLang.bind(this)}
-                                saveEditSelect={UserInfoAjax.setUserLanguage}
-                                modifySuccess={this.afterEditLangSuccess.bind(this)}
+                                saveEditSelect={this.saveEditLanguage}
+                                width={EDIT_FEILD_WIDTH}
                             />
                         </span>
                     </div>}
