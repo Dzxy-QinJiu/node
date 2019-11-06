@@ -197,7 +197,8 @@ class BasicPaymentMode extends React.Component {
     renderPayContent() {
         let payMode = this.state.payMode;
         if(_.includes(this.PAY_MODE, payMode)) {//是支付宝和微信支付方式
-            let url = this.state.curOrderInfo[`${payMode}_qrUrl`] || 'no_code_url';
+            //在切换支付方式时，如果获取支付方式二维码失败，需要给一个占位符，url不能为空
+            let url = _.get(this.state.curOrderInfo, `${payMode}_qrUrl`, 'no_code_url');
             return <QrCode size={96} value={url}/>;
         }else {
             return null;
