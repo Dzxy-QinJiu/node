@@ -269,6 +269,15 @@
               }
             }
           }
+          .user-qq-item {
+            .basic-edit-field {
+              .no-data-descr {
+                .handle-btn-item {
+                  color: #108ee9;
+                }
+              }
+            }
+          }
           .user-info-item-title{
             color: @personal-data-title;
           }
@@ -286,36 +295,23 @@
           .user-lang-value{
             display: inline-block;
             vertical-align: top;
-            width: 80%;
-            .ant-select{
-              width:200px;
-            }
-            .icon-choose {
-              color: #4dbe50;
-              &:hover {
-                color: #2c792e;
+            .basic-edit-field {
+              .selectWrap {
+                padding-top: 10px;
               }
             }
-            .iconfont {
-              font-size: 14px;
-              width: 24px;
-              overflow: hidden;
-              cursor: pointer;
-              text-align: center;
+            //编辑按钮hover时才展示
+            .icon-edit-btn {
+              display: none;
             }
-            .icon-close,.icon-choose  {
-              padding: 5px 5px 2px 5px;
+            &:hover {
+              .icon-edit-btn {
+                display: block;
+                float: right;
+                font-size: 16px;
+                cursor: pointer;
+              }
             }
-            .inline-block {
-              display: inline-block;
-              vertical-align: middle;
-            }
-            .icon-close {
-             color: #f43631;
-             &:hover{
-               color: #f43631;
-             }
-           }
           }
         }
         .hsaSendMailMsg{
