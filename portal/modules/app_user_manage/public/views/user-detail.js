@@ -25,7 +25,6 @@ var AppUserUtil = require('../util/app-user-util');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import ThirdPartyAppConfig from './third_app/third-party-app-config';
 import ThirdAppDetail from './third_app/third-app-detail';
-var UserDetailEditField = require('CMP_DIR/basic-edit-field/input');
 import { StatusWrapper } from 'antc';
 import { Button } from 'antd';
 var AppUserAjax = require('../ajax/app-user-ajax');
@@ -39,7 +38,7 @@ import {getIntegrationConfig} from 'PUB_DIR/sources/utils/common-data-util';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import classNames from 'classnames';
-
+const EDIT_PASSWORD_WIDTH = 260;
 //当前面板z-index
 let thisPanelZIndex;
 
@@ -319,6 +318,19 @@ class UserDetail extends React.Component {
         }
     };
 
+    saveEditUserPassword = (saveObj, successFunc, errorFunc) => {
+        AppUserAjax.editAppUser(saveObj).then((result) => {
+            if (result) {
+                if (_.isFunction(successFunc)) successFunc();
+                this.onConfirmPasswordDisplayTypeChange();
+            } else {
+                if (_.isFunction(errorFunc)) errorFunc();
+            }
+        }, (errorMsg) => {
+            if (_.isFunction(errorFunc)) errorFunc(errorMsg);
+        });
+    };
+
     render() {
         let userInfo = {data: _.get(this.state.initialUser, 'user')};
         let appLists = _.get(this.state.initialUser, 'apps', []);
@@ -506,33 +518,34 @@ class UserDetail extends React.Component {
                                                     {
                                                         this.state.showEditPw ?
                                                             <div className="edit-pw-container">
-                                                                <UserDetailEditField
+                                                                <BasicEditInputField
                                                                     ref={ref => this.passwordRef = ref}
-                                                                    displayType="edit"
-                                                                    user_id={_.get(userInfo, 'data.user_id')}
+                                                                    id={_.get(userInfo, 'data.user_id')}
+                                                                    width={EDIT_PASSWORD_WIDTH}
                                                                     field="password"
                                                                     type="password"
+                                                                    displayType="edit"
+                                                                    hasEditPrivilege={hasEditPrivilege}
                                                                     hideButtonBlock={true}
                                                                     showPasswordStrength={true}
-                                                                    disabled={hasEditPrivilege ? false : true}
-                                                                    validators={[{ validator: this.checkPass }]}
+                                                                    validators={[{validator: this.checkPass}]}
                                                                     placeholder={Intl.get('login.please_enter_new_password', '请输入新密码')}
                                                                     title={Intl.get('user.batch.password.reset', '重置密码')}
                                                                     onDisplayTypeChange={this.onPasswordDisplayTypeChange}
                                                                     onValueChange={this.onPasswordValueChange}
                                                                 />
-                                                                <UserDetailEditField
+                                                                <BasicEditInputField
                                                                     hideButtonBlock={true}
                                                                     ref={ref => this.confirmPasswordRef = ref}
-                                                                    user_id={_.get(userInfo, 'data.user_id')}
+                                                                    width={EDIT_PASSWORD_WIDTH}
+                                                                    id={_.get(userInfo, 'data.user_id')}
                                                                     displayType="edit"
                                                                     field="password"
                                                                     type="password"
-                                                                    placeholder={Intl.get('member.type.password.again', '请再次输入密码')}
-                                                                    validators={[{ validator: this.checkRePass }]}
+                                                                    placeholder={Intl.get('common.input.confirm.password', '请输入确认密码')}
+                                                                    validators={[{validator: this.checkRePass}]}
                                                                     onDisplayTypeChange={this.onConfirmPasswordDisplayTypeChange}
-                                                                    modifySuccess={this.onConfirmPasswordDisplayTypeChange}
-                                                                    saveEditInput={AppUserAjax.editAppUser}
+                                                                    saveEditInput={this.saveEditUserPassword}
                                                                 />
                                                                 <div className="btn-bar">
                                                                     <Button type='primary' onClick={() => { if (this.confirmPasswordRef) this.confirmPasswordRef.handleSubmit(); }}>{Intl.get('common.confirm', '确认')}</Button>

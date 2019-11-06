@@ -385,7 +385,7 @@ class UserInfo extends React.Component{
         }, (errorMsg) => {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg);
         });
-    }
+    };
 
     renderUserInfo() {
         let formData = this.props.userInfo;
