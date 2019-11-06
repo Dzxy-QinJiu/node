@@ -2,6 +2,8 @@ import { Form, Input, InputNumber} from 'antd';
 const FormItem = Form.Item;
 import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import officeManageAjax from './ajax';
+import {validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
+const DEFAULT_CUSTOMER_NUM = 1000; // 默认客户数
 
 class OfficeForm extends React.Component{
     constructor(props) {
@@ -25,62 +27,57 @@ class OfficeForm extends React.Component{
             return {
                 ...itemOffice,
                 name: '',
-                customer_num: 1000
+                customer_num: DEFAULT_CUSTOMER_NUM
             };
         }
-    };
-    // 编辑职务名称
-    handlePositionName = (event) => {
-        let value = _.get(event, 'target.value');
-        let formData = this.state.formData;
-        formData.name = _.trim(value);
-        formData.isEditName = true;
-        this.setState({formData});
-    };
-
-    handleCustomerCount = (value) => {
-        let formData = this.state.formData;
-        formData.customer_num = _.trim(value);
-        formData.isEditNum = true;
-        this.setState({formData});
     };
 
     handleSubmit = (event) => {
         event.preventDefault();
-        let formData = this.state.formData;
-        let isEdit = _.get(formData, 'id');
-        this.setState({
-            loading: true
-        });
-        if (isEdit) {
-            officeManageAjax.editPosition(formData).then( (result) => {
-                this.setState({
-                    loading: false
-                });
-                if (result) {
-                    this.props.handleSubmit(formData, 'edit');
-                } else {
-                    this.setState({
-                        errMsg: Intl.get('member.add.failed', '添加失败！')
-                    });
+        this.props.form.validateFields((err, values) => {
+            if (err) return;
+            let nameValue = _.trim(values.position);
+            let countValue = _.trim(values.count);
+            let formData = this.state.formData;
+            let isEdit = _.get(formData, 'id');
+            this.setState({
+                loading: true
+            });
+            if (isEdit) {
+                let name = _.get(formData, 'name');
+                let count = _.get(formData, 'customer_num');
+                if (name !== nameValue) {
+                    formData.isEditName = true;
+                    formData.name = nameValue;
                 }
-            }, (errMsg) => {
-                this.setState({
-                    loading: false,
-                    errMsg: errMsg
-                });
-            } );
-        } else {
-            let nameValue = _.get(formData, 'name');
-            if (nameValue) {
-                // 判断添加的职务和已有的职务名称是否相同，唯一性检测
-                let targetItem = _.find(this.props.positionList, item => item.name === nameValue);
-                if (targetItem){
+                if (countValue !== count) {
+                    formData.isEditNum = true;
+                    formData.customer_num = countValue;
+                }
+
+                officeManageAjax.editPosition(formData).then( (result) => {
+                    this.setState({
+                        loading: false
+                    });
+                    if (result) {
+                        this.props.handleSubmit(formData, 'edit');
+                    } else {
+                        this.setState({
+                            errMsg: Intl.get('member.add.failed', '添加失败！')
+                        });
+                    }
+                }, (errMsg) => {
                     this.setState({
                         loading: false,
-                        errMsg: Intl.get('config.sales.role.has.repeat', '该职务名称已存在')
+                        errMsg: errMsg
                     });
-                    return;
+                } );
+            } else {
+                formData.name = nameValue;
+                if (countValue) {
+                    formData.customer_num = countValue;
+                } else {
+                    formData.customer_num = DEFAULT_CUSTOMER_NUM;
                 }
                 officeManageAjax.addPosition(formData).then( (result) => {
                     this.setState({
@@ -96,16 +93,11 @@ class OfficeForm extends React.Component{
                 }, (errMsg) => {
                     this.setState({
                         loading: false,
-                        errMsg: errMsg
+                        errMsg: errMsg || Intl.get('member.add.failed', '添加失败！')
                     });
                 } );
-            } else {
-                this.setState({
-                    loading: false,
-                    errMsg: Intl.get('member.position.name.placeholder', '请输入职务名称')
-                });
             }
-        }
+        });
     };
 
     handleCancel = (event) => {
@@ -118,6 +110,39 @@ class OfficeForm extends React.Component{
         this.props.handleCancelForm(formData);
     };
 
+    validatorPositionName = (positionValue, callback) => {
+        // 判断添加的职务和已有的职务名称是否相同，唯一性检测
+        let existPositionList = this.props.positionList; // 已存在的职务
+        let isExist = _.find(existPositionList, item => item.name === positionValue);
+        if (isExist) { // 和已存在的职务名称是相同
+            callback(Intl.get('config.sales.role.has.repeat', '该职务名称已存在'));
+        } else {
+            callback();
+        }
+    };
+
+    // 职务唯一性检测
+    getPositionValidator = () => {
+        return (rule, value, callback) => {
+            let positionValue = _.trim(value); // 文本框中的值
+            let formData = this.state.formData;
+            if (positionValue) {
+                if (_.get(formData, 'id')) { // 编辑职务
+                    if (_.get(formData, 'position') === positionValue) {
+                        callback();
+                    } else {
+                        this.validatorPositionName(positionValue, callback);
+                    }
+                } else { // 添加职务
+                    this.validatorPositionName(positionValue, callback);
+                }
+            } else {
+                callback(Intl.get('member.position.name.placeholder', '请输入职务名称'));
+            }
+
+        };
+    };
+
     render() {
         const formItemLayout = {
             colon: false,
@@ -127,6 +152,7 @@ class OfficeForm extends React.Component{
         let formData = this.state.formData;
         let nameValue = _.get(formData, 'name');
         let count = _.get(formData, 'customer_num');
+        const {getFieldDecorator} = this.props.form;
         return (
             <div className='office-form'>
                 <Form layout='horizontal' className='form' autoComplete='off'>
@@ -134,21 +160,32 @@ class OfficeForm extends React.Component{
                         label={Intl.get('member.position.name.label', '职务名称')}
                         {...formItemLayout}
                     >
-                        <Input
-                            placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}
-                            value={nameValue}
-                            onChange={this.handlePositionName}
-                        />
+                        {getFieldDecorator('position', {
+                            initialValue: nameValue,
+                            rules: [{
+                                validator: this.getPositionValidator()
+                            }, validatorNameRuleRegex(10, Intl.get('member.position.name.label', '职务名称'))]
+                        })(
+                            <Input
+                                name="position"
+                                id="position"
+                                placeholder={Intl.get('member.position.name.placeholder', '请输入职务名称')}
+                            />
+                        )}
+
                     </FormItem>
                     <FormItem
                         label={Intl.get('sales.role.config.customer.num', '最大客户数')}
                         {...formItemLayout}
                     >
-                        <InputNumber
-                            onChange={this.handleCustomerCount}
-                            value={count}
-                            min={1}
-                        />
+                        {getFieldDecorator('count', {
+                            initialValue: count
+                        })(
+                            <InputNumber
+                                min={1}
+                                max={10000}
+                            />
+                        )}
                     </FormItem>
                     <FormItem>
                         <SaveCancelButton
@@ -165,6 +202,7 @@ class OfficeForm extends React.Component{
 }
 
 OfficeForm.propTypes = {
+    form: PropTypes.object,
     itemOffice: PropTypes.object,
     positionList: PropTypes.array,
     handleSubmit: PropTypes.func,
