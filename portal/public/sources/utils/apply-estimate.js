@@ -10,41 +10,49 @@ function getApplyState() {
     return new Promise((resolve) => {
         let userInfo = userData.getUserData();
         //所有的申请都需要进行邮箱验证
-        let hasPrivilege = {};
         //如果邮箱为空
         if(_.isEmpty(_.get(userInfo, 'email'))) {
-            hasPrivilege.needBind = true;
-        } else if(!_.has(userInfo, 'emailEnable')) { //如果没有enableEmail字段，发送ajax请求
-            getUserInfo().then(data => {
-                userData.setUserData('emailEnable', data.emailEnable);
-                userData.setUserData('reject', data.reject);
-                if(!data.emailEnable) {
-                    hasPrivilege.needActive = true;
-                }
-                if(_.isEqual(data.reject, REJECT.UNSUBSCRIBED)) {
-                    hasPrivilege.needSubscribe = true;
-                }
-            });
-        } else if(!_.get(userInfo, 'emailEnable')) { //如果enableEnable为false
-            hasPrivilege.needActive = true;
-        } else if(_.isEqual(_.get(userInfo, 'reject'), REJECT.UNSUBSCRIBED)) { //如果没有订阅邮箱
-            hasPrivilege.needSubscribe = true;
-        }
-
-        //通过hasPrivilege向前端渲染返回信息
-        //如果都有
-        if(_.isEmpty(hasPrivilege)) {
-            resolve({
-                applyPrivileged: true,
-            });
-        } else {//如果未激活或未绑定
-            let applyMessage = getApplyMessage(hasPrivilege);
-            resolve({
-                applyPrivileged: false,
-                applyMessage: applyMessage,
-            });
+            resolveResult({needBind: true}, resolve);
+        } else {
+            if(!_.has(userInfo, 'emailEnable')) { //如果没有enableEmail字段，发送ajax请求
+                getUserInfo().then(data => {
+                    userData.setUserData('emailEnable', data.emailEnable);
+                    userData.setUserData('reject', data.reject);
+                    let userInfo = userData.getUserData();
+                    privilegeCheck(userInfo, resolve);
+                });
+            } else {
+                privilegeCheck(userInfo, resolve);
+            }
         }
     });
+}
+
+//检查是否需要激活邮箱或订阅邮箱
+function privilegeCheck(userInfo, resolve) {
+    let hasPrivilege = {};
+    if(!_.get(userInfo, 'emailEnable')) { //如果enableEnable为false,如果没有激活邮箱
+        hasPrivilege.needActive = true;
+    } else if(_.isEqual(_.get(userInfo, 'reject'), REJECT.UNSUBSCRIBED)) { //如果没有订阅邮箱
+        hasPrivilege.needSubscribe = true;
+    }
+    resolveResult(hasPrivilege, resolve);
+}
+
+function resolveResult(hasPrivilege, resolve) {
+    //通过hasPrivilege向前端渲染返回信息
+    //如果都有
+    if(_.isEmpty(hasPrivilege)) {
+        resolve({
+            applyPrivileged: true,
+        });
+    } else {//如果未激活或未绑定
+        let applyMessage = getApplyMessage(hasPrivilege);
+        resolve({
+            applyPrivileged: false,
+            applyMessage: applyMessage,
+        });
+    }
 }
 
 //获取用户信息
