@@ -446,11 +446,11 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     //是否是试用账号,
     isTrialAccount = () => {
-        return _.get(getOrganization(),'type') === '试用';
+        return _.get(getOrganization(),'version.type') === '试用';
     };
     //是否是正式账号
     isOfficalAccount = () => {
-        return _.get(getOrganization(),'type') === '正式';
+        return _.get(getOrganization(),'version.type') === '正式';
     };
     batchAssignRecommendClues = (submitObj) => {
         this.setState({
