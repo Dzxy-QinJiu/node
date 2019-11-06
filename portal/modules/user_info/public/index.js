@@ -84,7 +84,7 @@ var UserInfoPage = createReactClass({
     userInfoContainerHeightFnc: function() {
         var width = $('.user-info-manage-container').width();
         var height = $(window).height() - topHeight - paddingBotton;
-        if (width < minUserInfoContainerWidth) {
+        if (width && width < minUserInfoContainerWidth) {
             //如果宽度小于最小宽度时，登录日志高度默认为userLogHeight，界面有竖向滚动条，无横向滚动条
             height = userLogHeight;
             $('body').css('overflow-x', 'hidden');
@@ -132,7 +132,7 @@ var UserInfoPage = createReactClass({
                             >
                                 {
                                     this.state.activeKey === TAB_KEYS.OPERATE_RECORD_TAB ?
-                                        <div className="user-log-div" style={{height: containerHeight - TAB_HEIGHT}}>
+                                        <div className="user-log-div">
                                             <div className="log-div-title">
                                                 <label className="log-title-tips">
                                                     <ReactIntl.FormattedMessage
