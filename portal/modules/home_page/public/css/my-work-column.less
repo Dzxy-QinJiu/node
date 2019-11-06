@@ -24,6 +24,9 @@
       position: relative;
       padding: 0;
       border-radius: 4px;
+      .hide-my-work-item-hover {
+        display: none !important;
+      }
       .my-work-item-hover{
         position: absolute;
         display: none;
@@ -53,6 +56,13 @@
             padding: 0 21px;
             border: 1px solid #cccccc;
             border-radius: 4px;
+            &.visit-btn {
+              width: 88px;
+              height: 32px;
+              line-height: 30px;
+              font-size: 14px;
+              padding: inherit;
+            }
           }
           .approval-btn{
             line-height: 22px;
@@ -165,6 +175,93 @@
           font-size: 14px;
           .last-contact-time {
             margin-right: 8px;
+          }
+          .work-remark-content {
+            width: 85%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+        }
+        .visit-add-container {
+          .visit-add-textarea {
+            .ant-input {
+              font-size: 14px;
+            }
+            .ant-form-item {
+              margin-bottom: 8px;
+            }
+          }
+          .visit-add-options {
+            position: relative;
+            margin-top: 10px;
+            font-size: 14px;
+            height: 32px;
+            .recent-three-traces {
+              display: inline-block;
+              color: #8DA8C5;
+              line-height: 32px;
+              cursor: pointer;
+              height: 32px;
+              .traces-tip {
+                display: inline-block;
+                transform: translateY(-2px);
+              }
+              .iconfont {
+                display: inline-block;
+                font-size: 20px;
+                font-weight: bold;
+              }
+              &:hover {
+                color: #2095F4;
+              }
+            }
+            .visit-add-btns {
+              display: inline-block;
+              position: absolute;
+              right: 0;
+              .ant-btn {
+                height: 32px;
+                margin-left: 8px;
+                font-size: 14px;
+              }
+            }
+          }
+          .ant-radio-group {
+            width: 100%;
+            margin-top: 8px;
+            .ant-radio-wrapper {
+              overflow: hidden;
+              display: block;
+              border-radius:4px;
+              margin-bottom: 2px;
+              margin-right: 0;
+              padding: 8px 0;
+              font-size: 14px;
+              font-weight: normal;
+              white-space: normal;
+              color: #333;
+              background: #FAFAFA;
+              &:hover {
+                background: #E4F2FE;
+              }
+              &.ant-radio-wrapper-checked {
+                background: #E4F2FE;
+              }
+              .ant-radio {
+                float: left;
+                margin: 2px 0 0 8px;
+                .ant-radio-input {
+                  height: 10px;
+                }
+              }
+              > span {
+                float: left;
+                &:last-child {
+                  width: 95%;
+                }
+              }
+            }
           }
         }
         .alert-timer{

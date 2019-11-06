@@ -32,7 +32,7 @@ import ErrorDataTip from '../components/error-data-tip';
 import appAjaxTrans from 'MOD_DIR/common/public/ajax/app';
 import {decodeHTML, isOpenCaller} from 'PUB_DIR/sources/utils/common-method-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
-import ShearContent from '../../../../../components/shear-content';
+import ShearContent from 'CMP_DIR/shear-content-new';
 import PhoneCallout from 'CMP_DIR/phone-callout';
 var classNames = require('classnames');
 import {AntcDatePicker as DatePicker} from 'antc';
