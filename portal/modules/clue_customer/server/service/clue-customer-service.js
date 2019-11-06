@@ -84,7 +84,9 @@ const restApis = {
     //批量释放线索
     batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type',
     //线索名、电话唯一性验证
-    checkOnlyClueNamePhone: clueBaseUrl + '/repeat/search'
+    checkOnlyClueNamePhone: clueBaseUrl + '/repeat/search',
+    //获取线索最大提取量的数值（适用用户是今天的最大提取量，正式用户是本月的最大提取量）
+    getMaxLimitCount: 'rest/clue/v2/month/able/clues',
 };
 
 //获取线索来源
@@ -92,6 +94,15 @@ exports.getClueSource = function(req, res) {
     return restUtil.authRest.get(
         {
             url: restApis.getClueSource,
+            req: req,
+            res: res
+        }, null);
+};
+//获取线索最大提取量
+exports.getMaxLimitCount = function(req, res) {
+    return restUtil.authRest.get(
+        {
+            url: restApis.getMaxLimitCount,
             req: req,
             res: res
         }, null);
