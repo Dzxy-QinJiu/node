@@ -477,7 +477,8 @@ class RecommendCustomerRightPanel extends React.Component {
                         //是试用账号或者正式账号
                         (this.isTrialAccount() || this.isOfficalAccount()) &&
                         //已经提取的数量和这次要提取数量之和大于最大限制的提取数
-                        count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber){
+                        count + _.get(this, 'state.selectedRecommendClues.length') > this.state.maxLimitExtractNumber
+                    ){
                         this.setState({
                             batchPopoverVisible: true,
                             singleExtractLoading: false
