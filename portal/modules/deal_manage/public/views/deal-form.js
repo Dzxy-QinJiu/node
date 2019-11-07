@@ -19,11 +19,8 @@ import {getNumberValidateRule} from 'PUB_DIR/sources/utils/validate-util';
 import dealAction from '../action';
 import dealBoardAction from '../action/deal-board-action';
 
-import {num as antUtilsNum} from 'ant-utils';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
-const parseAmount = antUtilsNum.parseAmount;
-const removeCommaFromNum = antUtilsNum.removeCommaFromNum;
-
+import { removeCommaFromNum, parseAmount } from 'LIB_DIR/func';
 const ADD_TITLE_HEIGHT = 70;
 
 class DealForm extends React.Component {
