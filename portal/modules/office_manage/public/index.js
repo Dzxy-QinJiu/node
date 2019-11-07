@@ -365,6 +365,7 @@ class OfficeManage extends React.Component {
                                     'item-office-delete-container': isDelete,
                                     'item-selected': item.selected
                                 });
+                                let name = item.name;
                                 return (
                                     <li
                                         onMouseEnter={this.handleMouseEnter.bind(this, item)}
@@ -379,7 +380,15 @@ class OfficeManage extends React.Component {
                                                 ) : (
                                                     <div className="item-office-content">
                                                         <span className="iconfont icon-team-role sales-role-icon" style={{color: item.color}}/>
-                                                        <span className="item-text">{item.name}</span>
+                                                        <span className="item-text" title={name}>
+                                                            {
+                                                                name.length > 6 ? <span>
+                                                                    {name.substring(0, 6)}...
+                                                                </span> : <span>
+                                                                    {name}
+                                                                </span>
+                                                            }
+                                                        </span>
                                                         {
                                                             isDefaultFlag ?
                                                                 <span className={defaultCls}>
