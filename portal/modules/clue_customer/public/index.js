@@ -614,12 +614,11 @@ class ClueCustomer extends React.Component {
 
     //渲染导出线索的按钮
     renderExportClue = () => {
-        let trailUser = _.get(userData.getUserData(), 'organization.version.type', '');
-        let isDisableButton = _.isEqual(trailUser, '试用');
-        let tips = Intl.get('clue.customer.export.trail.user.tip', '请升级正式版');
+        let isTrialUser = _.isEqual(_.get(userData.getUserData(), 'organization.version.type', ''), '试用');
+        let tips = Intl.get('clue.customer.export.trial.user.tip', '请升级正式版');
         return(
             <div className="export-clue-customer-container pull-right">
-                {isDisableButton ?
+                {isTrialUser ?
                     (<Popover content={tips} overlayClassName="explain-pop">
                         <Button disabled={true} className="btn-item btn-disabled">
                             <i className="iconfont icon-export-clue"></i>

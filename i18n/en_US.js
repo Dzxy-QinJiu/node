@@ -2689,7 +2689,7 @@ var en_US = {
     'crm.sales.add.clue': 'Add clue',//添加线索
     'crm.sales.manual_add.clue': 'Manual addition',//手动添加
     'crm.sales.manual.import.clue': 'Import clue',//导入线索
-    'clue.customer.export.trail.user.tip': 'Please update your account to official version',//请升级正式版
+    'clue.customer.export.trial.user.tip': 'Please update your account to official version',//请升级正式版
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
