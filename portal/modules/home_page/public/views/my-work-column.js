@@ -861,10 +861,7 @@ class MyWorkColumn extends React.Component {
         this.setState({salesMan: '', salesManNames: ''});
     };
     renderSalesBlock = () => {
-        //主管分配线索时，负责人是自己的不能分配给自己
-        let userList = _.cloneDeep(this.state.userList);
-        userList = _.filter(userList, user => !_.isEqual(_.get(user, 'user_info.user_id'), userData.getUserData().user_id));
-        let dataList = formatSalesmanList(userList);
+        let dataList = formatSalesmanList(this.state.userList);
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
