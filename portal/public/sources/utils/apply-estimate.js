@@ -31,7 +31,7 @@ function getApplyState() {
 //检查是否需要激活邮箱或订阅邮箱
 function privilegeCheck(userInfo, resolve) {
     let hasPrivilege = {};
-    if(!_.get(userInfo, 'emailEnable')) { //如果enableEnable为false,如果没有激活邮箱
+    if(!_.get(userInfo, 'emailEnable')) { //如果emailEnable为false,则为没有激活邮箱
         hasPrivilege.needActive = true;
     } else if(_.isEqual(_.get(userInfo, 'reject'), REJECT.UNSUBSCRIBED)) { //如果没有订阅邮箱
         hasPrivilege.needSubscribe = true;
