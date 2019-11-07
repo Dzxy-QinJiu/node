@@ -9,7 +9,7 @@ export function getCustomerStageChart(paramObj = {}) {
     return {
         title: Intl.get('oplate_customer_analysis.customer_stage', '客户阶段统计'),
         url: '/rest/analysis/customer/stage/label/:auth_type/summary',
-        chartType: 'funnel',
+        chartType: 'bar',
         argCallback: (arg) => {
             //在个人报告里调用时会传member_id，需要改成member_ids
             argCallbackMemberIdToMemberIds(arg);
