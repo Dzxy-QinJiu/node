@@ -15,16 +15,25 @@ function getApplyState() {
             resolveResult({needBind: true}, resolve);
         } else {
             if(!_.has(userInfo, 'emailEnable')) { //如果没有enableEmail字段，发送ajax请求
-                getUserInfo().then(data => {
-                    userData.setUserData('emailEnable', data.emailEnable);
-                    userData.setUserData('reject', data.reject);
-                    let userInfo = userData.getUserData();
-                    privilegeCheck(userInfo, resolve);
-                });
-            } else {
+                updateCheckByAjax(resolve);
+            } else if(_.has(userInfo, 'emailEnable') && !userInfo.emailEnable){
+                //如果有enableEmail字段，但是enableEmail为false，及为未激活，
+                //需要再次发送ajax请求获取enableEmail值，防止用户激活邮箱后前端的enableEmail字段未更新
+                updateCheckByAjax(resolve);
+            } else {//如果emailEnable字段为true,无需发送ajax请求，进行常规判断
                 privilegeCheck(userInfo, resolve);
             }
         }
+    });
+}
+
+//通过ajax请求获取userData数据并且更新判断
+function updateCheckByAjax(resolve) {
+    getUserInfo().then(data => {
+        userData.setUserData('emailEnable', data.emailEnable);
+        userData.setUserData('reject', data.reject);
+        let userInfo = userData.getUserData();
+        privilegeCheck(userInfo, resolve);
     });
 }
 
