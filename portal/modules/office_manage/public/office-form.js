@@ -110,7 +110,7 @@ class OfficeForm extends React.Component{
         this.props.handleCancelForm(formData);
     };
 
-    validatorPositionName = (positionValue, callback) => {
+    validatePositionName = (positionValue, callback) => {
         // 判断添加的职务和已有的职务名称是否相同，唯一性检测
         let existPositionList = this.props.positionList; // 已存在的职务
         let isExist = _.find(existPositionList, item => item.name === positionValue);
@@ -131,10 +131,10 @@ class OfficeForm extends React.Component{
                     if (_.get(formData, 'position') === positionValue) {
                         callback();
                     } else {
-                        this.validatorPositionName(positionValue, callback);
+                        this.validatePositionName (positionValue, callback);
                     }
                 } else { // 添加职务
-                    this.validatorPositionName(positionValue, callback);
+                    this.validatePositionName (positionValue, callback);
                 }
             } else {
                 callback(Intl.get('member.position.name.placeholder', '请输入职务名称'));
