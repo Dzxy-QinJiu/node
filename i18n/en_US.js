@@ -2389,7 +2389,7 @@ var en_US = {
     'errorcode.11': 'Failed to login,please refresh page and login again',// 登录失败,请刷新后重试
     'errorcode.12': 'Your mailbox is not activated. Please activate the mailbox first',//您的邮箱未激活，请先激活邮箱
     'errorcode.13': 'Failed to warrant the user',//成员授权失败
-    'errorcode.14': 'Failed to verify password',//密码验证错误
+    'errorcode.14': 'The original password was entered incorrectly',//原始密码错误
     'errorcode.15': 'Failed to add user',//添加用户失败
     'errorcode.16': 'Failed to get user list',//获取用户失败
     'errorcode.17': 'Failed to edit user',//修改用户失败
