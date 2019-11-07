@@ -35,7 +35,7 @@ function getConfigJson(req) {
         '10120': {'httpCode': 500, 'message': backendIntl.get('errorcode.12', '您的邮箱未激活，请先激活邮箱')},
         '10121': {'httpCode': 500, 'message': backendIntl.get('register.code.has.send', '短信验证码已经发送，请勿重复发送')},
         '10122': {'httpCode': 500, 'message': backendIntl.get('errorcode.13', '成员授权失败')},
-        '10123': {'httpCode': 500, 'message': backendIntl.get('errorcode.14', '密码验证错误')},
+        '10123': {'httpCode': 500, 'message': backendIntl.get('errorcode.14', '原始密码错误')},
         '10124': {'httpCode': 500, 'message': backendIntl.get('errorcode.138', '座席号已存在！')},
         /**用户**/
         '10202': {'httpCode': 500, 'message': backendIntl.get('errorcode.15', '添加用户失败')},
