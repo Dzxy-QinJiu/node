@@ -205,6 +205,7 @@ var en_US = {
     'common.trial': 'Trial',//试用
     'common.qualified': 'Qualified',//合格
     'common.unqualified': 'Unqualified',//不合格
+    'common.chance': 'Chance',//机会
     'common.official.qualified': 'Signed and qualified ',//签约合格
     'common.trial.qualified': 'Trial and qualified',//试用合格
     'common.trial.unqualified': 'Trial and unqualified',// '试用不合格',
