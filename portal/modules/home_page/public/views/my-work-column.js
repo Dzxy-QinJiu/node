@@ -194,10 +194,11 @@ class MyWorkColumn extends React.Component {
     //关闭、切换详情前，已完成工作的处理
     handleFinishedWork = () => {
         let handlingWork = this.state.handlingWork;
-        if (handlingWork && handlingWork.isFinished) {
-            this.handleMyWork(this.state.handlingWork);
+        if (handlingWork) {
+            this.handleMyWork(this.state.handlingWork, true);
         }
     }
+
     //打通电话或写了跟进、分配线索后，将当前正在处理的工作改为已完成
     setWorkFinished = () => {
         let handlingWork = this.state.handlingWork;
@@ -1117,7 +1118,7 @@ class MyWorkColumn extends React.Component {
             this.setState({distributeLoading: true});
             clueAjax.distributeCluecustomerToSale(submitObj).then((result) => {
                 this.setState({distributeLoading: false});
-                this.handleMyWork(item);
+                this.handleMyWork(item, true);
             }, (errorMsg) => {
                 this.setState({distributeLoading: false});
                 message.error(errorMsg || Intl.get('failed.distribute.cluecustomer.to.sales', '把线索客户分配给对应的销售失败'));
@@ -1204,7 +1205,7 @@ class MyWorkColumn extends React.Component {
         this.setState({myWorkList});
     }
 
-    handleMyWork = (item, event) => {
+    handleMyWork = (item, omitAjax, event) => {
         if (event) {
             event.stopPropagation();
             Trace.traceEvent(event, '点击我已完成的按钮');
@@ -1218,42 +1219,51 @@ class MyWorkColumn extends React.Component {
             }
         });
         this.setState({myWorkList});
-        myWorkAjax.handleMyWorkStatus({id: item.id, status: 1}).then(result => {
-            if (result) {
-                //过滤掉已处理的工作
-                myWorkList = _.filter(myWorkList, work => work.id !== item.id);
-                //已处理的工作就是之前记录的正在处理的工作，将正在处理的工作置空
-                let handlingWork = this.state.handlingWork;
-                if (handlingWork && item.id === handlingWork.id) {
-                    handlingWork = null;
+        if(_.isBoolean(omitAjax) && omitAjax) {
+            this.filterMyWork(myWorkList, item);
+        } else {
+            myWorkAjax.handleMyWorkStatus({id: item.id, status: 1}).then(result => {
+                if (result) {
+                    this.filterMyWork(myWorkList, item);
+                } else {
+                    _.each(myWorkList, work => {
+                        if (work.id === item.id) {
+                            work.isEidtingWorkStatus = false;
+                            work.editWorkStatusErrorMsg = Intl.get('notification.system.handled.error', '处理失败');
+                            return false;
+                        }
+                    });
+                    this.setState({myWorkList});
                 }
-                this.setState({myWorkList, handlingWork});
-                let workListLength = _.get(myWorkList, 'length');
-                //如果当前展示的工作个数小于一页获取的数据，并且小于总工作数时需要继续加载一页数据，以防处理完工作后下面的工作没有及时补上来
-                if (workListLength < 20 && workListLength < this.state.totalCount) {
-                    this.getMyWorkList();
-                }
-            } else {
+            }, (errorMsg) => {
                 _.each(myWorkList, work => {
                     if (work.id === item.id) {
                         work.isEidtingWorkStatus = false;
-                        work.editWorkStatusErrorMsg = Intl.get('notification.system.handled.error', '处理失败');
+                        work.editWorkStatusErrorMsg = errorMsg || Intl.get('notification.system.handled.error', '处理失败');
                         return false;
                     }
                 });
                 this.setState({myWorkList});
-            }
-        }, (errorMsg) => {
-            _.each(myWorkList, work => {
-                if (work.id === item.id) {
-                    work.isEidtingWorkStatus = false;
-                    work.editWorkStatusErrorMsg = errorMsg || Intl.get('notification.system.handled.error', '处理失败');
-                    return false;
-                }
             });
-            this.setState({myWorkList});
-        });
+        }
     }
+
+    filterMyWork(myWorkList, item) {
+        //过滤掉已处理的工作
+        myWorkList = _.filter(myWorkList, work => work.id !== item.id);
+        //已处理的工作就是之前记录的正在处理的工作，将正在处理的工作置空
+        let handlingWork = this.state.handlingWork;
+        if (handlingWork && item.id === handlingWork.id) {
+            handlingWork = null;
+        }
+        this.setState({myWorkList, handlingWork});
+        let workListLength = _.get(myWorkList, 'length');
+        //如果当前展示的工作个数小于一页获取的数据，并且小于总工作数时需要继续加载一页数据，以防处理完工作后下面的工作没有及时补上来
+        if (workListLength < 20 && workListLength < this.state.totalCount) {
+            this.getMyWorkList();
+        }
+    }
+
 
     renderMyWorkList() {
         //等待效果的渲染
