@@ -611,16 +611,28 @@ class ClueCustomer extends React.Component {
             </div>
         );
     };
+
     //渲染导出线索的按钮
     renderExportClue = () => {
-        return (
+        let isTrialUser = _.isEqual(_.get(userData.getUserData(), 'organization.version.type', ''), '试用');
+        let tips = Intl.get('clue.customer.export.trial.user.tip', '请升级正式版');
+        return(
             <div className="export-clue-customer-container pull-right">
-                <Button onClick={this.showExportClueModal} className="btn-item">
-                    <i className="iconfont icon-export-clue"></i>
-                    <span className="clue-container">
-                        {Intl.get('clue.export.clue.list','导出线索')}
-                    </span>
-                </Button>
+                {isTrialUser ?
+                    (<Popover content={tips} overlayClassName="explain-pop">
+                        <Button disabled={true} className="btn-item btn-disabled">
+                            <i className="iconfont icon-export-clue"></i>
+                            <span className="clue-container">
+                                {Intl.get('clue.export.clue.list','导出线索')}
+                            </span>
+                        </Button>
+                    </Popover>) :
+                    (<Button onClick={this.showExportClueModal} className="btn-item">
+                        <i className="iconfont icon-export-clue"></i>
+                        <span className="clue-container">
+                            {Intl.get('clue.export.clue.list','导出线索')}
+                        </span>
+                    </Button>)}
             </div>
         );
     };
