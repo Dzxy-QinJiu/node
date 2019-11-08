@@ -132,6 +132,10 @@ class PageFrame extends React.Component {
         // 关闭用户详情面板的事件监听
         userDetailEmitter.removeListener(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
         paymentEmitter.removeListener(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
+        //取消监听线索转客户面板打开事件
+        clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.OPEN_PANEL, this.openClueToCustomerPanel);
+        //取消监听线索转客户面板关闭事件
+        clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
