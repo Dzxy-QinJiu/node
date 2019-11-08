@@ -25,16 +25,6 @@ class CustomerList extends React.Component {
         clue: PropTypes.object,
     }
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-        };
-    }
-
-    componentDidMount() {
-    }
-
     render() {
         return (
             <RightPanelModal
