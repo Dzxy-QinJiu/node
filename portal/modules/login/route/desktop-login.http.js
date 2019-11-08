@@ -74,6 +74,13 @@ module.exports = {
         'passport': {
             'needLogin': false
         }
+    }, {//chrome扩展插件用账号、密码登录的接口
+        'method': 'post',
+        'path': '/extensionLogin',
+        'handler': 'extensionLogin',
+        'passport': {
+            'needLogin': false
+        }
     }, {
         'method': 'get',
         'path': '/company/name/validate',
