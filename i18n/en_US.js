@@ -2965,6 +2965,7 @@ var en_US = {
     'clue.analysis.classify.chart': 'Classify statistics',//分类统计
     'clue.analysis.avalibility.chart': 'Validity statistics',//有效性统计
     'clue.analysis.assigned.chart': 'Contract statistics',//签约统计
+    'clue.analysis.all.source.classify': 'All Client Source',//全部集客方式
     'sales.home.sales.clue': 'Sales Clue to be handled',//待处理的线索
     'sales.home.will.trace': 'To be followed up',//待跟进
     'sales.home.i.trace': 'I',//我

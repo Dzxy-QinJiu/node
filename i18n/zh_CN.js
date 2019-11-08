@@ -2991,6 +2991,7 @@ var zh_CN = {
     'clue.analysis.classify.chart': '分类统计',
     'clue.analysis.avalibility.chart': '有效性统计',
     'clue.analysis.assigned.chart': '签约统计',
+    'clue.analysis.all.source.classify': '全部集客方式',
     'sales.home.sales.clue': '待处理的线索',
     'sales.home.will.trace': '待跟进',
     'sales.home.i.trace': '我',
