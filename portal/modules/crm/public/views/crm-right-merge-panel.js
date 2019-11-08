@@ -630,7 +630,7 @@ class CrmRightMergePanel extends React.Component {
                                         ) : null
                                     }
                                     <TabPane
-                                        tab={Intl.get('crm.39', '动态')}
+                                        tab={Intl.get('user.change.record', '变更记录')}
                                         key="7"
                                     >
                                         {this.state.activeKey === '7' ? (

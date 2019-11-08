@@ -244,7 +244,7 @@ class CrmRightPanel extends React.Component {
                                 ) : null
                             }
                             <TabPane
-                                tab={Intl.get('crm.39', '动态')}
+                                tab={Intl.get('user.change.record', '变更记录')}
                                 key={TAB_KEYS.DYNAMIC_TAB}
 
                             >
