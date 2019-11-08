@@ -279,6 +279,15 @@
       .date_text_wrap {
         padding: 8px 6px;
       }
+      // 解决日历组件显示不全的问题
+      .datepicker-inline {
+        // 因为被操作按钮遮住了，改变top值后，日历组件位置改变，可以解决遮住的问题
+        top: 1px;
+        .arrow {
+          // TODO 隐藏点击日历组件左上角的箭头，暂时这样处理，需要查找显示的原因
+          display: none;
+        }
+      }
     }
   }
 }

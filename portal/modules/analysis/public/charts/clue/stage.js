@@ -5,8 +5,18 @@
 import { getFunnelWithConvertRateProcessDataFunc, funnelWithConvertRateProcessCsvData } from '../../utils';
 
 import Store from '../../store';
-
 export function getStageChart() {
+    //集客方式的选项
+    let sourceClassifyOptionItems = [{
+        value: 'inbound',
+        name: Intl.get('crm.clue.client.source.inbound', '市场')
+    },{
+        value: 'outbound',
+        name: Intl.get('crm.clue.client.source.outbound', '自拓')
+    },{
+        value: 'other',
+        name: Intl.get('crm.clue.client.source.other', '未知')
+    }];
     return {
         title: Intl.get('clue.stage.statics', '线索阶段统计'),
         chartType: 'funnel',
@@ -14,6 +24,7 @@ export function getStageChart() {
             '/rest/analysis/customer/v2/clue/:data_type/realtime/stage',
             '/rest/analysis/customer/v2/clue/:data_type/statistical/field/access_channel',
             '/rest/analysis/customer/v2/clue/:data_type/statistical/field/clue_source',
+            '/rest/analysis/customer/v2/clue/:data_type/statistical/field/source_classify'
         ],
         conditions: [{
             name: 'access_channel',
@@ -21,8 +32,14 @@ export function getStageChart() {
         }, {
             name: 'clue_source',
             value: '',
+        },{
+            name: 'source_classify',
+            value: '',
         }],
         processData: (data, chart) => {
+            //设置集客方式筛选器
+            setSelector(data, 3, chart, Intl.get( 'clue.analysis.all.source.classify','全部集客方式'), 'source_classify', sourceClassifyOptionItems);
+
             //设置渠道筛选器
             setSelector(data, 1, chart, '全部渠道', 'access_channel');
 
@@ -67,7 +84,7 @@ export function getStageChart() {
         },
     };
 
-    function setSelector(data, dataIndex, chart, itemAllName, conditionName) {
+    function setSelector(data, dataIndex, chart, itemAllName, conditionName, optionItem) {
         if (!chart.cardContainer) chart.cardContainer = {selectors: []};
 
         const selector = _.find(chart.cardContainer.selectors, item => item.conditionName === conditionName);
@@ -83,20 +100,30 @@ export function getStageChart() {
             _.each(optionData, item => {
                 list = _.concat(list, _.keys(item));
             });
-        
+
             chart.cardContainer.selectors.push({
                 optionsCallback: () => {
                     let options = [{
                         name: itemAllName,
                         value: '',
                     }];
-        
-                    _.map(list, item => {
-                        options.push({
-                            name: item,
-                            value: item
+
+                    //如果是从外部传进来的下拉选项键值对，则使用外部传来的
+                    if(optionItem) {
+                        _.map(optionItem, item => {
+                            options.push({
+                                name: item.name,
+                                value: item.value
+                            });
                         });
-                    });
+                    } else {
+                        _.map(list, item => {
+                            options.push({
+                                name: item,
+                                value: item
+                            });
+                        });
+                    }
         
                     return options;
                 },

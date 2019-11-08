@@ -24,6 +24,8 @@ function getCharts(paramObj) {
     return [
         //新增趋势
         customerChart.getCustomerTrendChart(paramObj),
+        //客户阶段统计
+        customerChart.getCustomerNewAddStageChart(paramObj),
         //团队统计
         customerChart.getCustomerTeamChart(paramObj),
         //地域统计

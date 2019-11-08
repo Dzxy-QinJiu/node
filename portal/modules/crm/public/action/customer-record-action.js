@@ -29,7 +29,7 @@ function CustomerRecordAction() {
         customerRecordAjax.getCustomerTraceRecordList(queryObj, bodyData).then((data) => {
             scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
             this.dispatch({loading: false,error: false,data: data});
-            if(_.isFunction(callback)) callback();
+            if(_.isFunction(callback)) callback(data);
         },(errorMsg) => {
             this.dispatch({loading: false,error: true,errorMsg: errorMsg});
         });
@@ -63,23 +63,25 @@ function CustomerRecordAction() {
     };
 
     //增加客户跟踪记录
-    this.addCustomerTrace = function(queryObj, callback) {
+    this.addCustomerTrace = function(queryObj, callback, errCallback) {
         this.dispatch({loading: true,error: false});
         customerRecordAjax.addCustomerTrace(queryObj).then((data) => {
             this.dispatch({loading: false,error: false,data: data});
             _.isFunction(callback) && callback(data.customer_trace);
         },(errorMsg) => {
             this.dispatch({loading: false,error: true,errorMsg: errorMsg});
+            _.isFunction(errCallback) && errCallback(errorMsg);
         });
     };
     //更新客户跟踪记录
-    this.updateCustomerTrace = function(queryObj, callback) {
+    this.updateCustomerTrace = function(queryObj, callback, errCallback) {
         this.dispatch({loading: true,error: false});
         customerRecordAjax.updateCustomerTrace(queryObj).then((data) => {
             this.dispatch({loading: false,error: false,data: data});
             _.isFunction(callback) && callback();
         },(errorMsg) => {
             this.dispatch({loading: false,error: true,errorMsg: errorMsg});
+            _.isFunction(errCallback) && errCallback(errorMsg);
         });
     };
     //获取舆情报告列表

@@ -1,15 +1,20 @@
 /**
- * 客户阶段统计
+ * 线索阶段统计
  */
 
-import { processCustomerStageData } from 'PUB_DIR/sources/utils/analysis-util';
-import { argCallbackMemberIdToMemberIds, argCallbackUnderlineTimeToTime } from '../../utils';
-
-export function getCustomerStageChart(paramObj = {}) {
+import {
+    argCallbackMemberIdToMemberIds,
+    argCallbackUnderlineTimeToTime,
+    funnelWithConvertRateProcessCsvData,
+    getFunnelWithConvertRateProcessDataFunc
+} from '../../utils';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+export function getCustomerNewAddStageChart(paramObj = {}) {
+    let type = hasPrivilege('CUSTOMER_ANALYSIS_CUSTOMER_ACTIVE_RATE_ALL') ? 'all' : 'self';
     return {
         title: Intl.get('oplate_customer_analysis.customer_stage', '客户阶段统计'),
-        url: '/rest/analysis/customer/stage/label/:auth_type/summary',
-        chartType: 'bar',
+        url: `/rest/analysis/customer/v3/${type}/customer/realtime/stage`,
+        chartType: 'funnel',
         argCallback: (arg) => {
             //在个人报告里调用时会传member_id，需要改成member_ids
             argCallbackMemberIdToMemberIds(arg);
@@ -17,7 +22,7 @@ export function getCustomerStageChart(paramObj = {}) {
             //如果有页面级的统一处理，用统一处理
             if (_.isFunction(paramObj.argCallback)) {
                 paramObj.argCallback(arg);
-            //否则单独处理
+                //否则单独处理
             } else {
                 argCallbackUnderlineTimeToTime(arg);
             }
@@ -37,10 +42,33 @@ export function getCustomerStageChart(paramObj = {}) {
                 _.set(arg, 'query.statistics_type', 'user');
             }
         },
-        processData: processCustomerStageData,
+        processData: getFunnelWithConvertRateProcessDataFunc([
+            {
+                name: Intl.get('sales.stage.message', '信息'),
+                key: 'information',
+            },
+            {
+                name: Intl.get('sales.stage.intention', '意向'),
+                key: 'intention',
+            },
+            {
+                name: Intl.get('common.trial', '试用'),
+                key: 'trial',
+            },
+            {
+                name: Intl.get('common.chance', '机会'),
+                key: 'chance',
+            },
+            {
+                name: Intl.get('sales.stage.signed', '签约'),
+                key: 'sign',
+            },
+        ], '', 'STAGE_NAME'),
+        processCsvData: funnelWithConvertRateProcessCsvData,
         customOption: {
             valueField: 'showValue',
             minSize: '5%',
+            showConvertRate: true,
         },
         csvOption: {
             //导出的csv数据的取值从showValue字段中取而非从默认的value中取

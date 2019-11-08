@@ -147,8 +147,8 @@ var config = {
         clientSecret: process.env.LOGIN_CLIENT_SECRET || '477qpz3uC5fZcaz0w1YloKWA',
         grantType: process.env.LOGIN_GRANT_TYPE || 'client_credentials'//授权类型
     },
-    //服务网关,测试环境：http://10.20.1.180:9191,正式：'http://gateway-ketao.antfact.com', exp环境：http://10.20.2.57:9090
-    gateway: getGateway() || 'http://10.20.1.180:9191',
+    //服务网关,测试环境：https://gateway-dev.curtao.com,正式：'http://gateway-ketao.antfact.com', exp环境：http://10.20.2.57:9090
+    gateway: getGateway() || 'https://gateway-dev.curtao.com',
     metricAddress: process.env.METRIC_ADDRESS,//"http://172.19.104.253:8086/oplate_web",
     loggerTag: process.env.LOGGER_TAG || 'ketao-web',//日志标签,用来区分是oplate的还是ketao的
     errorMessagePath: path.join(__dirname, '../portal/lib/utils/errorCode.js'),//错误码处理文件路径，ant-auth-request中需要用

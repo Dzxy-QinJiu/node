@@ -5,7 +5,9 @@
  */
 import '../css/my-work-column.less';
 import classNames from 'classnames';
-import {Dropdown, Icon, Menu, Tag, Popover, Button, message} from 'antd';
+import {Dropdown, Icon, Menu, Tag, Popover, Button, message, Input, Radio, Form} from 'antd';
+const { TextArea } = Input;
+const FormItem = Form.Item;
 import ColumnItem from './column-item';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import {getColumnHeight} from './common-util';
@@ -28,7 +30,7 @@ import ReportApplyDetail from 'MOD_DIR/report_send/public/view/apply-view-detail
 import VisitApplyDetail from 'MOD_DIR/self_setting/public/view/apply-view-detail';
 import DomainApplyDetail from 'MOD_DIR/domain_application/public/view/apply-view-detail';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
-import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {APPLY_APPROVE_TYPES, AUTO_SIZE_MAP, TRACE_NULL_TIP} from 'PUB_DIR/sources/utils/consts';
 import DealDetailPanel from 'MOD_DIR/deal_manage/public/views/deal-detail-panel';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import BootProcess from './boot-process/';
@@ -50,6 +52,7 @@ import {CLUE_TO_CUSTOMER_VIEW_TYPE} from 'MOD_DIR/clue_customer/public/consts';
 import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-action';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -63,6 +66,7 @@ const WORK_DETAIL_TAGS = {
     APPLY: 'apply',//申请、审批
     LEAD: 'lead',//待处理线索
     DEAL: 'deal',//订单
+    CUSTOMER_VISIT: 'customer_visit', //拜访
     MAJOR_CYCLE: 'major_cycle',//大循环
     MEDIUM_CYCLE: 'medium_cycle',//中循环
     MINIONR_CYCLE: 'minor_cycle',//小循环
@@ -109,7 +113,12 @@ class MyWorkColumn extends React.Component {
             guideConfig: [], // 引导流程列表
             userList: [],//分配线索的成员列表
             isShowClueToCustomerPanel: false,//是否展示线索转客户面板
-            isShowAddCustomerPanel: false//是否展示添加客户面板
+            isShowAddCustomerPanel: false,//是否展示添加客户面板
+            isEditingItem: {},//正在编辑的拜访类型工作
+            recentThreeTraceContent: [],//最近三条拜访记录
+            showTraceRecord: false, //是否展示最近三条记录
+            currentRecord: {},//跟进内容对象: value: 跟进的值, validateStatus: 验证状态 'success'/'error', errorMsg: 验证错误信息
+            currentSelectRecordId: '',//当前从单选框中选择的跟进记录id
         };
     }
 
@@ -186,9 +195,10 @@ class MyWorkColumn extends React.Component {
     handleFinishedWork = () => {
         let handlingWork = this.state.handlingWork;
         if (handlingWork && handlingWork.isFinished) {
-            this.handleMyWork(this.state.handlingWork);
+            this.handleMyWork(this.state.handlingWork, true);
         }
     }
+
     //打通电话或写了跟进、分配线索后，将当前正在处理的工作改为已完成
     setWorkFinished = () => {
         let handlingWork = this.state.handlingWork;
@@ -575,7 +585,8 @@ class MyWorkColumn extends React.Component {
                 isUserApplyPass = true;
             }
         }
-        if (item.type === WORK_TYPES.CUSTOMER || isUserApplyPass) {
+        //拜访类型的时候不展示打电话的图标
+        if (item.type === WORK_TYPES.CUSTOMER && !_.includes(item.tags, WORK_DETAIL_TAGS.CUSTOMER_VISIT) || isUserApplyPass) {
             contacts = _.get(item, 'customer.contacts', []);
         } else if (item.type === WORK_TYPES.LEAD) {
             contacts = _.get(item, 'lead.contacts', []);
@@ -649,6 +660,176 @@ class MyWorkColumn extends React.Component {
     enableOpenWorkDetail(item) {
         //订单详情、已审批的申请详情能否打开的判断
         return _.includes(item.tags, WORK_TYPES.DEAL) || this.isApprovedApply(item);
+    }
+
+    //添加跟进记录
+    addVisitTrace(item) {
+        //获取客户跟踪列表
+        //只获取前三条
+        let queryObj = {
+            page_size: 3
+        };
+        let bodyData = {
+            customer_id: _.get(item, 'customer_visit.id', ''),
+            type: 'visit'
+        };
+        CustomerRecordActions.getCustomerTraceList(queryObj, bodyData, (result) => {
+            this.setState({
+                recentThreeTraceContent: result.result
+            });
+        });
+        this.setState({
+            isEditingItem: item,
+            showTraceRecord: false
+        });
+    }
+
+    //取消编辑跟进内容
+    hideTraceAddingContent() {
+        this.setState({
+            isEditingItem: {},
+            recentThreeTraceContent: [],
+            showTraceRecord: false,
+            currentRecord: {}
+        });
+    }
+
+    //展示最近三条跟进记录
+    toggleShowingRecentThreeTraceRecord() {
+        let showTraceRecord = this.state.showTraceRecord;
+        this.setState({
+            showTraceRecord: !showTraceRecord
+        });
+    }
+
+    //渲染最近三条跟进记录
+    renderRecentThreeRecord() {
+        let records = this.state.recentThreeTraceContent;
+        let radios = _.map(records, record => {
+            return(<Radio id={record.id} value={record.remark}>{record.remark}</Radio>);
+        });
+        return (
+            <Radio.Group onChange={this.onSelectRecord.bind(this)}>
+                {radios}
+            </Radio.Group>
+        );
+    }
+
+    onSelectRecord(e) {
+        let currentRecord = _.cloneDeep(this.state.currentRecord);
+        currentRecord.value = e.target.value;
+        this.setState({
+            currentRecord,
+            currentSelectRecordId: e.target.id
+        });
+    }
+
+    onRecordChange(e) {
+        let currentRecord = _.cloneDeep(this.state.currentRecord);
+        currentRecord.value = e.target.value;
+        this.setState({
+            currentRecord
+        });
+    }
+
+    deleteVisitWork(currentWork) {
+        let myWorkList = _.filter(_.get(this.state, 'myWorkList',[]), work => {
+            return !_.isEqual(work.id, currentWork.id);
+        });
+        this.setState({
+            myWorkList
+        });
+    }
+
+    //保存跟进内容
+    saveTraceContent() {
+        let trace = _.cloneDeep(this.state.currentRecord);
+        let curRecord = this.state.isEditingItem;
+        if(!_.isEmpty(trace.value)) {
+            //判断当前是从单选框中选择的跟进记录还是自己手动输入的跟进记录
+            //如果有当前选择的跟进记录的id，则识别为更新记录
+            if(!_.isEmpty(_.get(this.state, 'currentSelectRecordId', ''))) {
+                let queryObj = {
+                    id: _.get(this.state, 'currentSelectRecordId'),
+                    customer_id: _.get(curRecord, 'customer_visit.id', ''),
+                    type: 'visit',
+                    remark: trace.value,
+                    apply_id: curRecord.id
+                };
+                CustomerRecordActions.updateCustomerTrace(queryObj, () => {
+                    trace.validateStatus = 'success';
+                    trace.errorMsg = null;
+                    this.deleteVisitWork(curRecord);
+                }, (errorMsg) => {
+                    trace.validateStatus = 'error';
+                    trace.errorMsg = errorMsg;
+                });
+            } else { //添加跟进记录
+                let queryObj = {
+                    customer_id: _.get(curRecord, 'customer_visit.id', ''),
+                    type: 'visit',
+                    remark: trace.value,
+                    apply_id: curRecord.id
+                };
+                CustomerRecordActions.addCustomerTrace(queryObj, () => {
+                    trace.validateStatus = 'success';
+                    trace.errorMsg = null;
+                    this.deleteVisitWork(curRecord);
+                },(errorMsg) => {
+                    trace.validateStatus = 'error';
+                    trace.errorMsg = errorMsg;
+                });
+            }
+        } else {
+            trace.validateStatus = 'error';
+            trace.errorMsg = TRACE_NULL_TIP;
+        }
+        this.setState({
+            currentRecord: trace
+        });
+    }
+
+    //渲染添加跟进记录内容
+    renderTraceAddingContent() {
+        let arrowCls = classNames('iconfont', {
+            'icon-arrow-up': this.state.showTraceRecord,
+            'icon-arrow-down': !this.state.showTraceRecord
+        });
+        return(
+            <div className='visit-add-container'>
+                <div className='visit-add-textarea'>
+                    <Form className="add-customer-trace">
+                        <FormItem
+                            validateStatus={_.get(this.state, 'currentRecord.validateStatus', 'success')}
+                            help={_.get(this.state, 'currentRecord.errorMsg', '')}
+                        >
+                            <TextArea
+                                placeholder={Intl.get('home.page.my.work.add.visit.trace.content', '添加拜访内容')}
+                                value={_.get(this.state, 'currentRecord.value')}
+                                onChange={this.onRecordChange.bind(this)}
+                                autoFocus={true}
+                                autosize={AUTO_SIZE_MAP}
+                            />
+                        </FormItem>
+                    </Form>
+                </div>
+                <div className='visit-add-options'>
+                    {!_.isEmpty(_.get(this.state, 'recentThreeTraceContent', [])) ?
+                        <div className='recent-three-traces' onClick={this.toggleShowingRecentThreeTraceRecord.bind(this)}>
+                            <div className='traces-tip'>
+                                {Intl.get('home.page.my.work.select.from.trace,record', '从拜访跟进记录中选择')}
+                            </div>
+                            <div className={arrowCls}></div>
+                        </div> : null
+                    }
+                    <div className='visit-add-btns'>
+                        <Button type="primary" onClick={this.saveTraceContent.bind(this)}>{Intl.get('home.page.my.work.save.visit.trace.content', '保存拜访记录')}</Button>
+                        <Button onClick={this.hideTraceAddingContent.bind(this)}>{Intl.get('common.cancel', '取消')}</Button>
+                    </div>
+                </div>
+                {this.state.showTraceRecord ? this.renderRecentThreeRecord() : null}
+            </div>
+        );
     }
 
     getScheduleType(type) {
@@ -784,11 +965,18 @@ class MyWorkColumn extends React.Component {
                 //xxx时间已到期
                 remark = this.getExpireTip(item, tag);
                 break;
+            case WORK_DETAIL_TAGS.CUSTOMER_VISIT: //拜访
+                tagDescr = Intl.get('common.visit', '拜访');
+                remark = this.getVisitTip(item);
+                break;
         }
         return (
-            <div className='work-remark-content'>
-                【{tagDescr}】{remark}
-            </div>
+            // 对于拜访类型的工作，后端tags字段会返回['APPLY', 'customer_visit']
+            // 这里的'APPLY'是后端用来标识工作不做合并的操作，前端遇到这样的tags自己处理为空
+            _.isEmpty(tagDescr) && _.isEmpty(remark) ? null :
+                <div className='work-remark-content'>
+                    【{tagDescr}】{remark}
+                </div>
         );
     }
 
@@ -802,6 +990,17 @@ class MyWorkColumn extends React.Component {
             timeStr = getTimeStrFromNow(time);
         }
         return _.get(item, `[${tag}][0].user_name`, '') + ' ' + timeStr + ' ' + Intl.get('apply.delay.endTime', '到期');
+    }
+
+    getVisitTip(item) {
+        let customerVisit = item.customer_visit;
+        let startTime = customerVisit.visit_time.start.split('_');
+        let timePeriod = _.isEqual(startTime[1], 'AM') ? Intl.get('apply.approve.leave.am', '上午') : Intl.get('apply.approve.leave.pm', '下午');
+        let date = startTime[0].split('-');
+        let tip = Intl.get('home.page.my.work.visit.tips', '{month}月{day}日{time}拜访客户', {month: date[1], day: date[2],time: timePeriod});
+        let city = _.get(customerVisit, 'city') ? `/${customerVisit.city}` : '';
+        let county = _.get(customerVisit, 'county') ? `/${customerVisit.county}` : '';
+        return `${tip}, ${Intl.get('common.address', '地址')}: ${customerVisit.province}${city}${county} ${customerVisit.address}`;
     }
 
     renderWorkCard(item, index) {
@@ -821,17 +1020,20 @@ class MyWorkColumn extends React.Component {
                 clickTip = Intl.get('home.page.work.click.tip', '点击查看{type}详情', {type: Intl.get('home.page.apply.type', '申请')});
             }
         }
+        let hoverCls = classNames('my-work-item-hover', {'hide-my-work-item-hover': _.isEqual(_.get(this.state, 'isEditingItem.id'), _.get(item, 'id'))});
         return (
             <div className='my-work-card-container'>
                 <div className={contentCls} id={`home-page-work${item.id}`}>
                     <div onClick={openWorkDetailFunc.bind(this, item)}
                         title={clickTip}>
                         {this.renderWorkName(item, index)}
-                        <div className='work-remark'>
-                            {_.map(item.tags, (tag, index) => this.renderWorkRemarks(tag, item, index))}
-                        </div>
+                        {_.isEqual(_.get(this.state, 'isEditingItem.id'), _.get(item, 'id')) ? this.renderTraceAddingContent() :
+                            <div className='work-remark'>
+                                {_.map(item.tags, (tag, index) => this.renderWorkRemarks(tag, item, index))}
+                            </div>
+                        }
                     </div>
-                    <div className='my-work-item-hover'>
+                    <div className={hoverCls}>
                         {this.renderContactItem(item)}
                         {this.renderHandleWorkBtn(item)}
                     </div>
@@ -861,7 +1063,10 @@ class MyWorkColumn extends React.Component {
         this.setState({salesMan: '', salesManNames: ''});
     };
     renderSalesBlock = () => {
-        let dataList = formatSalesmanList(this.state.userList);
+        //主管分配线索时，负责人是自己的不能分配给自己
+        let userList = _.cloneDeep(this.state.userList);
+        userList = _.filter(userList, user => !_.isEqual(_.get(user, 'user_info.user_id'), userData.getUserData().user_id));
+        let dataList = formatSalesmanList(userList);
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
@@ -913,7 +1118,7 @@ class MyWorkColumn extends React.Component {
             this.setState({distributeLoading: true});
             clueAjax.distributeCluecustomerToSale(submitObj).then((result) => {
                 this.setState({distributeLoading: false});
-                this.handleMyWork(item);
+                this.handleMyWork(item, true);
             }, (errorMsg) => {
                 this.setState({distributeLoading: false});
                 message.error(errorMsg || Intl.get('failed.distribute.cluecustomer.to.sales', '把线索客户分配给对应的销售失败'));
@@ -970,6 +1175,10 @@ class MyWorkColumn extends React.Component {
                         handleFunc = this.handleMyWork;
                         btnDesc = Intl.get('guide.finished.know', '知道了');
                     }
+                } else if(item.type === WORK_TYPES.CUSTOMER && _.includes(item.tags, WORK_DETAIL_TAGS.CUSTOMER_VISIT)) { //出差提醒
+                    btnCls += ' ant-btn ant-btn-primary visit-btn';
+                    handleFunc = this.addVisitTrace;
+                    btnDesc = Intl.get('home.page.my.work.visit.finished', '我已拜访');
                 } else {//其他的展示对号已完成的按钮
                     handleFunc = this.handleMyWork;
                     btnTitle = Intl.get('home.page.my.work.finished', '点击设为已完成');
@@ -996,7 +1205,7 @@ class MyWorkColumn extends React.Component {
         this.setState({myWorkList});
     }
 
-    handleMyWork = (item, event) => {
+    handleMyWork = (item, omitAjax, event) => {
         if (event) {
             event.stopPropagation();
             Trace.traceEvent(event, '点击我已完成的按钮');
@@ -1010,42 +1219,51 @@ class MyWorkColumn extends React.Component {
             }
         });
         this.setState({myWorkList});
-        myWorkAjax.handleMyWorkStatus({id: item.id, status: 1}).then(result => {
-            if (result) {
-                //过滤掉已处理的工作
-                myWorkList = _.filter(myWorkList, work => work.id !== item.id);
-                //已处理的工作就是之前记录的正在处理的工作，将正在处理的工作置空
-                let handlingWork = this.state.handlingWork;
-                if (handlingWork && item.id === handlingWork.id) {
-                    handlingWork = null;
+        if(_.isBoolean(omitAjax) && omitAjax) {
+            this.filterMyWork(myWorkList, item);
+        } else {
+            myWorkAjax.handleMyWorkStatus({id: item.id, status: 1}).then(result => {
+                if (result) {
+                    this.filterMyWork(myWorkList, item);
+                } else {
+                    _.each(myWorkList, work => {
+                        if (work.id === item.id) {
+                            work.isEidtingWorkStatus = false;
+                            work.editWorkStatusErrorMsg = Intl.get('notification.system.handled.error', '处理失败');
+                            return false;
+                        }
+                    });
+                    this.setState({myWorkList});
                 }
-                this.setState({myWorkList, handlingWork});
-                let workListLength = _.get(myWorkList, 'length');
-                //如果当前展示的工作个数小于一页获取的数据，并且小于总工作数时需要继续加载一页数据，以防处理完工作后下面的工作没有及时补上来
-                if (workListLength < 20 && workListLength < this.state.totalCount) {
-                    this.getMyWorkList();
-                }
-            } else {
+            }, (errorMsg) => {
                 _.each(myWorkList, work => {
                     if (work.id === item.id) {
                         work.isEidtingWorkStatus = false;
-                        work.editWorkStatusErrorMsg = Intl.get('notification.system.handled.error', '处理失败');
+                        work.editWorkStatusErrorMsg = errorMsg || Intl.get('notification.system.handled.error', '处理失败');
                         return false;
                     }
                 });
                 this.setState({myWorkList});
-            }
-        }, (errorMsg) => {
-            _.each(myWorkList, work => {
-                if (work.id === item.id) {
-                    work.isEidtingWorkStatus = false;
-                    work.editWorkStatusErrorMsg = errorMsg || Intl.get('notification.system.handled.error', '处理失败');
-                    return false;
-                }
             });
-            this.setState({myWorkList});
-        });
+        }
     }
+
+    filterMyWork(myWorkList, item) {
+        //过滤掉已处理的工作
+        myWorkList = _.filter(myWorkList, work => work.id !== item.id);
+        //已处理的工作就是之前记录的正在处理的工作，将正在处理的工作置空
+        let handlingWork = this.state.handlingWork;
+        if (handlingWork && item.id === handlingWork.id) {
+            handlingWork = null;
+        }
+        this.setState({myWorkList, handlingWork});
+        let workListLength = _.get(myWorkList, 'length');
+        //如果当前展示的工作个数小于一页获取的数据，并且小于总工作数时需要继续加载一页数据，以防处理完工作后下面的工作没有及时补上来
+        if (workListLength < 20 && workListLength < this.state.totalCount) {
+            this.getMyWorkList();
+        }
+    }
+
 
     renderMyWorkList() {
         //等待效果的渲染

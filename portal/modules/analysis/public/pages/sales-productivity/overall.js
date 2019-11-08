@@ -20,6 +20,13 @@ module.exports = {
 
 function getCharts() {
     return [
+        //拜访客户统计
+        salesProductivityChart.getSalesBehaviorVisitCustomerChart({
+            chartProps: {
+                layout: { sm: 24 },
+                height: 'auto',
+            }
+        }),
         //客户经理业绩排名
         salesProductivityChart.getCustomerManagerPerformanceRankingChart(),
         //销售经理业绩排名

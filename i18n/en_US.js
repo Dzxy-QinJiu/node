@@ -205,6 +205,7 @@ var en_US = {
     'common.trial': 'Trial',//试用
     'common.qualified': 'Qualified',//合格
     'common.unqualified': 'Unqualified',//不合格
+    'common.chance': 'Chance',//机会
     'common.official.qualified': 'Signed and qualified ',//签约合格
     'common.trial.qualified': 'Trial and qualified',//试用合格
     'common.trial.unqualified': 'Trial and unqualified',// '试用不合格',
@@ -370,6 +371,11 @@ var en_US = {
     'home.page.new.work.tip': 'Work changes, click here {refreshTip}',//工作有变动，点此{refreshTip}
     'home.page.my.work.finished': 'Click Set to Completed',//点击设为已完成
     'home.page.my.interest.handled': 'Click Set to Processed',//点击设为已处理
+    'home.page.my.work.visit.finished': 'Visit Finished',//我已拜访
+    'home.page.my.work.add.visit.trace.content': 'Add trace content',//添加拜访内容
+    'home.page.my.work.save.visit.trace.content': 'Save trace record',//保存拜访记录
+    'home.page.my.work.select.from.trace,record': 'Choose from trace record',//从拜访跟进记录中选择
+    'home.page.my.work.visit.tips': 'Visit customer in {month}-{day} {}',//{month}月{day}日{time}拜访客户
     'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
     'home.page.callout.time': 'Total call time',//呼出总时长
     'home.page.performance.num': 'No. {n}',//第{n}名
@@ -2389,7 +2395,7 @@ var en_US = {
     'errorcode.11': 'Failed to login,please refresh page and login again',// 登录失败,请刷新后重试
     'errorcode.12': 'Your mailbox is not activated. Please activate the mailbox first',//您的邮箱未激活，请先激活邮箱
     'errorcode.13': 'Failed to warrant the user',//成员授权失败
-    'errorcode.14': 'Failed to verify password',//密码验证错误
+    'errorcode.14': 'The original password was entered incorrectly',//原始密码错误
     'errorcode.15': 'Failed to add user',//添加用户失败
     'errorcode.16': 'Failed to get user list',//获取用户失败
     'errorcode.17': 'Failed to edit user',//修改用户失败
@@ -2689,6 +2695,7 @@ var en_US = {
     'crm.sales.add.clue': 'Add clue',//添加线索
     'crm.sales.manual_add.clue': 'Manual addition',//手动添加
     'crm.sales.manual.import.clue': 'Import clue',//导入线索
+    'clue.customer.export.trial.user.tip': 'Please update your account to official version',//请升级正式版
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
@@ -2959,6 +2966,7 @@ var en_US = {
     'clue.analysis.classify.chart': 'Classify statistics',//分类统计
     'clue.analysis.avalibility.chart': 'Validity statistics',//有效性统计
     'clue.analysis.assigned.chart': 'Contract statistics',//签约统计
+    'clue.analysis.all.source.classify': 'All Client Source',//全部集客方式
     'sales.home.sales.clue': 'Sales Clue to be handled',//待处理的线索
     'sales.home.will.trace': 'To be followed up',//待跟进
     'sales.home.i.trace': 'I',//我
