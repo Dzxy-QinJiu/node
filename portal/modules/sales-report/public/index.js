@@ -13,6 +13,7 @@ import {Row, Col, Select} from 'antd';
 import reportCharts from './charts';
 import chanceCharts from 'MOD_DIR/analysis/public/charts/chance';
 import customerCharts from 'MOD_DIR/analysis/public/charts/customer';
+import salesProductivityCharts from 'MOD_DIR/analysis/public/charts/sales-productivity';
 import orderCharts from 'MOD_DIR/analysis/public/charts/order';
 import workflowChart from 'MOD_DIR/analysis/public/charts/workflow';
 import GeminiScrollBar from 'CMP_DIR/react-gemini-scrollbar';
@@ -499,7 +500,7 @@ class SalesReport extends React.Component {
 
     // 销售行为统计列处理函数
     getSalesBehaviorVisitCustomerChartHandler = () => {
-        let chart = customerCharts.getSalesBehaviorVisitCustomerChart({
+        let chart = salesProductivityCharts.getSalesBehaviorVisitCustomerChart({
             visitedCustomerNumClickHandler: this.visitedCustomerNumClickHandler
         });
         let columns = chart.option.columns;
