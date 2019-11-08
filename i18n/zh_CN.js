@@ -211,6 +211,7 @@ var zh_CN = {
     'common.trial': '试用',
     'common.qualified': '合格',
     'common.unqualified': '不合格',
+    'common.chance': '机会',
     'common.official.qualified': '签约合格',
     'common.trial.qualified': '试用合格',
     'common.trial.unqualified': '试用不合格',
