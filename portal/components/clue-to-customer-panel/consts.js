@@ -1,5 +1,7 @@
 //线索转客户面板视图类型
-export const CLUE_TO_CUSTOMER_VIEW_TYPE = {
+export const VIEW_TYPE = {
+    //添加客户视图
+    ADD_CUSTOMER: 'add_customer',
     //相似客户列表视图
     CUSTOMER_LIST: 'customer_list',
     //客户搜索视图
@@ -7,3 +9,6 @@ export const CLUE_TO_CUSTOMER_VIEW_TYPE = {
     //合并客户视图
     CUSTOMER_MERGE: 'customer_merge'
 };
+
+//空操作
+export const NOOP = function(){};

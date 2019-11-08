@@ -15,3 +15,4 @@ test-entry.js
 webpack.*
 portal/public/sources/piwik.js
 i18n/check.js
+portal

@@ -23,6 +23,7 @@ import Trace from 'LIB_DIR/trace';
 var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
+import { VIEW_TYPE as CLUE_TO_CUSTOMER_PANEL_VIEW_TYPE } from 'CMP_DIR/clue-to-customer-panel/consts';
 
 import {
     SELECT_TYPE,
@@ -58,7 +59,7 @@ import moment from 'moment';
 import ClueTraceAction from '../../action/clue-trace-action';
 const HAS_BTN_HEIGHT = 58;//为按钮预留空间
 const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
-import { clueEmitter } from 'PUB_DIR/sources/utils/emitters';
+import { clueEmitter, clueToCustomerPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {sourceClassifyArray, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 class ClueDetailOverview extends React.Component {
@@ -962,7 +963,7 @@ class ClueDetailOverview extends React.Component {
         if (avalibility){
             return <div>
                 {associatedPrivilege ? <Button type="primary"
-                    onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id, curClue.name, curClue.phones)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
+                    onClick={() => { clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {clue: curClue, afterConvert: this.props.afterTransferClueSuccess}); }}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
                 <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>
                     {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid','标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
@@ -1448,7 +1449,7 @@ class ClueDetailOverview extends React.Component {
                 return (
                     <div className="similar-title-name">
                         <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.props.showClueToCustomerPanel.bind(this, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={() => { clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {clue: curClue, targetCustomer: listItem, viewType: CLUE_TO_CUSTOMER_PANEL_VIEW_TYPE.CUSTOMER_MERGE, isLoading: false}); }}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
                     </div>);
             } else {
                 return (
