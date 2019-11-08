@@ -370,6 +370,11 @@ var en_US = {
     'home.page.new.work.tip': 'Work changes, click here {refreshTip}',//工作有变动，点此{refreshTip}
     'home.page.my.work.finished': 'Click Set to Completed',//点击设为已完成
     'home.page.my.interest.handled': 'Click Set to Processed',//点击设为已处理
+    'home.page.my.work.visit.finished': 'Visit Finished',//我已拜访
+    'home.page.my.work.add.visit.trace.content': 'Add trace content',//添加拜访内容
+    'home.page.my.work.save.visit.trace.content': 'Save trace record',//保存拜访记录
+    'home.page.my.work.select.from.trace,record': 'Choose from trace record',//从拜访跟进记录中选择
+    'home.page.my.work.visit.tips': 'Visit customer in {month}-{day} {}',//{month}月{day}日{time}拜访客户
     'home.page.contacts.customers.week': 'Total number of customers contacted this week',//本周已联系客户总数
     'home.page.callout.time': 'Total call time',//呼出总时长
     'home.page.performance.num': 'No. {n}',//第{n}名

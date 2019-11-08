@@ -152,9 +152,11 @@ CustomerRecordStore.prototype.updateCustomerTrace = function(result) {
         this.addCustomerSuccMsg = result.data.msg;
         this.isEdit = false;
         var customerRecord = this.customerRecord;
+        let remark = _.get(result, 'data.customer_trace.remark');
+        let id = _.get(result, 'data.customer_trace.id');
         customerRecord.forEach(item => {
-            if (item.id === this.updateId) {
-                item.remark = this.detailContent.value;
+            if (item.id === id) {
+                item.remark = remark;
                 item.showAdd = false;
             }
         });
