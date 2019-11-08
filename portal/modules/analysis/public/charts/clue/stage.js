@@ -38,7 +38,7 @@ export function getStageChart() {
         }],
         processData: (data, chart) => {
             //设置集客方式筛选器
-            setSelector(data, 3, chart, '全部集客方式', 'source_classify', sourceClassifyOptionItems);
+            setSelector(data, 3, chart, Intl.get( 'clue.analysis.all.source.classify','全部集客方式'), 'source_classify', sourceClassifyOptionItems);
 
             //设置渠道筛选器
             setSelector(data, 1, chart, '全部渠道', 'access_channel');
