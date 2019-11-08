@@ -377,6 +377,49 @@ exports.wechatLogin = function(req, res) {
             res.status(500).json(errorObj && errorObj.message);
         });
 };
+/*
+* chrome扩展插件登录*/
+exports.extensionLogin = function(req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    var captcha = req.body.retcode;
+    DesktopLoginService.login(req, res, username, password, captcha)
+        .on('success', extensionLoginSuccess(req, res))
+        .on('error', function(errorObj) {
+            res.status(500).json(errorObj && errorObj.message);
+        });
+};
+function extensionLoginSuccess(req, res){
+    req.session.stopcheck = '';
+    return function(data) {
+        //修改session数据
+        modifySessionData(req, data);
+        //设置sessionStore，如果是内存session时，需要从req中获取
+        global.config.sessionStore = global.config.sessionStore || req.sessionStore;
+        req.session.save(function() {
+            //登录成功后获取用户的组织信息，（主页的matomo数据参数设置中需要放入组织信息）
+            DesktopLoginService.getOrganization(req, res).on('success', data => {
+                // 组织信息中名称和id字段转为name和id字段，方便前端处理（若后端更改字段名时）
+                let userData = _.get(req, 'session.user', {});
+                userData.organization = {
+                    id: _.get(data,'id', ''),
+                    name: _.get(data, 'name', ''),
+                    functions: _.get(data, 'functions', []),
+                    type: _.get(data, 'type', ''),
+                    version: _.get(data, 'version', {})
+                };
+                req.session.save(() => {
+                    //session失效时，登录成功后的处理
+                    res.status(200).json(userData);
+                });
+            }).on('error', errorObj => {
+                // 获取组织失败后的处理
+                req.session.user = '';
+                res.status(500).json('error');
+            });
+        });
+    };
+}
 //根据公司名获取公司
 exports.getCompanyByName = function(req, res) {
     DesktopLoginService.getCompanyByName(req, res).on('success', function(data) {
