@@ -46,7 +46,7 @@ export const parseAmount = function(amount) {
     if (isNaN(amount)) amount = '';
 
     //每3位数字间用逗号分隔
-    amount = amount.toString().replace(/(?<=\d)(?<!\.\d*)(?=(\d{3})+(\.|$))/g, ',');
+    amount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     return amount;
 };
