@@ -76,3 +76,23 @@ exports.getPaymentMode = function(queryObj) {
     });
     return Deferred.promise();
 };
+
+//获取商品折扣信息
+let getGoodsDiscountListAjax = null;
+exports.getGoodsDiscountList = function(queryObj) {
+    var Deferred = $.Deferred();
+    getGoodsDiscountListAjax && getGoodsDiscountListAjax.abort();
+    getGoodsDiscountListAjax = $.ajax({
+        url: '/rest/goods/discount/list',
+        dataType: 'json',
+        type: 'get',
+        data: queryObj,
+        success: function(data) {
+            Deferred.resolve(data);
+        },
+        error: function(errorMsg) {
+            Deferred.reject(errorMsg.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
