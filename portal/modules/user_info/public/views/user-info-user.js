@@ -422,13 +422,19 @@ class UserInfo extends React.Component{
                 );
             }else if(currentVersionType.formal) {//个人正式
                 return (
-                    <Button
-                        className="user-version-upgrade"
-                        onClick={this.handleVersionUpgrade}
-                        data-tracename="点击续费按钮"
+                    <Popover
+                        placement="right"
+                        content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                        trigger='click'
                     >
-                        {Intl.get('payment.renewal', '续费')}
-                    </Button>
+                        <Button
+                            className="user-version-upgrade"
+                            // onClick={this.handleVersionUpgrade}
+                            data-tracename="点击个人续费按钮"
+                        >
+                            {Intl.get('payment.renewal', '续费')}
+                        </Button>
+                    </Popover>
                 );
             }
         }else if(currentVersion.company) {
@@ -437,6 +443,7 @@ class UserInfo extends React.Component{
                     <Popover
                         placement="right"
                         content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                        trigger='click'
                     >
                         <Button
                             className="user-version-upgrade"
@@ -451,10 +458,11 @@ class UserInfo extends React.Component{
                     <Popover
                         placement="right"
                         content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                        trigger='click'
                     >
                         <Button
                             className="user-version-upgrade"
-                            data-tracename="点击续费按钮"
+                            data-tracename="点击企业续费按钮"
                         >
                             {Intl.get('payment.renewal', '续费')}
                         </Button>
