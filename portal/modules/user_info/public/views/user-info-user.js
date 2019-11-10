@@ -422,19 +422,13 @@ class UserInfo extends React.Component{
                 );
             }else if(currentVersionType.formal) {//个人正式
                 return (
-                    <Popover
-                        placement="right"
-                        content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
-                        trigger='click'
+                    <Button
+                        className="user-version-upgrade"
+                        onClick={this.handleVersionUpgrade}
+                        data-tracename="点击个人续费按钮"
                     >
-                        <Button
-                            className="user-version-upgrade"
-                            // onClick={this.handleVersionUpgrade}
-                            data-tracename="点击个人续费按钮"
-                        >
-                            {Intl.get('payment.renewal', '续费')}
-                        </Button>
-                    </Popover>
+                        {Intl.get('payment.renewal', '续费')}
+                    </Button>
                 );
             }
         }else if(currentVersion.company) {
