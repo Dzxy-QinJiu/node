@@ -207,7 +207,7 @@ class OfficialPersonalEdition extends React.Component{
         let i18Id = 'payment.upgrade.version.success',i18Msg = '您已成功升级为正式版，{time} 到期';
         if(currentVersionType.formal) {//正式
             i18Id = 'payment.renewal.version.success';
-            i18Msg = '您已成功成功续费，{time} 到期';
+            i18Msg = '您已成功续费，{time} 到期';
         }
         //计算到期时间
         let endTime = _.get(this.organization, 'end_time', '');

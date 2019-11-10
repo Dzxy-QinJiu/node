@@ -3816,7 +3816,7 @@ var zh_CN = {
     'payment.upgrading': '正在升级...',
     'payment.countdown.default.msg': '倒计时中...',
     'payment.upgrade.version.success': '您已成功升级为正式版，{time} 到期',
-    'payment.renewal.version.success': '您已成功成功续费，{time} 到期',
+    'payment.renewal.version.success': '您已成功续费，{time} 到期',
     /*支付流程 --- end*/
 };
 export default zh_CN;
