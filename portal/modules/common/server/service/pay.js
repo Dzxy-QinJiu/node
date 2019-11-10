@@ -11,7 +11,9 @@ var urls = {
     //订单交易状态
     getOrderStatus: '/pay/trade/order/status',
     //获取支付渠道信息
-    getPaymentMode: '/pay/management/curtao/paychannels'
+    getPaymentMode: '/pay/management/curtao/paychannels',
+    //获取商品折扣信息
+    getGoodsDiscountList: '/pay/goods/curtao/discount/list',
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
@@ -22,7 +24,13 @@ exports.getCurtaoGoodsList = function(req,res) {
         url: urls.getCurtaoGoodsList,
         req: req,
         res: res
-    }, req.query);
+    }, req.query, {
+        success: function(emitter , data) {
+            //status: 商品状态（0：停用，1：启用）
+            data.list = _.filter(_.get(data,'list', []),list => list.status === 1);
+            emitter.emit('success' , data);
+        }
+    });
 };
 
 //商品交易(下单)
@@ -51,6 +59,15 @@ exports.getOrderStatus = function(req,res) {
 exports.getPaymentMode = function(req,res) {
     return restUtil.authRest.get({
         url: urls.getPaymentMode,
+        req: req,
+        res: res
+    }, req.query);
+};
+
+//获取商品折扣信息
+exports.getGoodsDiscountList = function(req,res) {
+    return restUtil.authRest.get({
+        url: urls.getGoodsDiscountList,
         req: req,
         res: res
     }, req.query);

@@ -13,8 +13,10 @@ import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
-import {getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
+import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util';
 import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
+import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
+import history from 'PUB_DIR/sources/history';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const EDIT_FEILD_WIDTH = 380;
@@ -68,10 +70,10 @@ class UserInfo extends React.Component{
         this.getSendTime();
         getOrganizationInfo().then( (result) => {
             this.setState({
-                versionName: _.get(result, 'version.name'),
+                versionName: _.get(result, 'version.type'),
                 endTime: _.get(result, 'end_time')
             });
-        } );
+        });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -370,7 +372,17 @@ class UserInfo extends React.Component{
 
     // 处理版本升级
     handleVersionUpgrade = () => {
-
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            continueFn: () => {
+                history.push('/clue_customer');
+            },
+            updateVersion: (result) => {
+                this.setState({
+                    versionName: _.get(result, 'version.type', this.state.versionName),
+                    endTime: _.get(result, 'end_time', this.state.endTime)
+                });
+            }
+        });
     };
 
 
@@ -385,6 +397,72 @@ class UserInfo extends React.Component{
         }, (errorMsg) => {
             if (_.isFunction(errorFunc)) errorFunc(errorMsg);
         });
+    };
+
+    //判断是否为管理员
+    isManager = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售
+    };
+
+    renderBtnBlock = () => {
+        let currentVersion = checkCurrentVersion();
+        let currentVersionType = checkCurrentVersionType();
+        //个人试用提示升级，正式提示续费
+        //企业试用提示升级，正式提示续费
+        if(currentVersion.personal) {
+            if(currentVersionType.trial) {//个人试用
+                return (
+                    <Button
+                        className="user-version-upgrade"
+                        onClick={this.handleVersionUpgrade}
+                        data-tracename="点击升级为个人正式版按钮"
+                    >
+                        {Intl.get('user.info.version.upgrade', '升级为正式版')}
+                    </Button>
+                );
+            }else if(currentVersionType.formal) {//个人正式
+                return (
+                    <Button
+                        className="user-version-upgrade"
+                        onClick={this.handleVersionUpgrade}
+                        data-tracename="点击续费按钮"
+                    >
+                        {Intl.get('payment.renewal', '续费')}
+                    </Button>
+                );
+            }
+        }else if(currentVersion.company) {
+            if(currentVersionType.trial) {//企业试用
+                return (
+                    <Popover
+                        placement="right"
+                        content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                    >
+                        <Button
+                            className="user-version-upgrade"
+                            data-tracename="点击升级为企业版按钮"
+                        >
+                            {Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版')}
+                        </Button>
+                    </Popover>
+                );
+            }else if(currentVersionType.formal && this.isManager()) {//企业正式并且是管理员
+                return (
+                    <Popover
+                        placement="right"
+                        content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                    >
+                        <Button
+                            className="user-version-upgrade"
+                            data-tracename="点击续费按钮"
+                        >
+                            {Intl.get('payment.renewal', '续费')}
+                        </Button>
+                    </Popover>
+                );
+            }
+        }
+        return null;
     };
 
     renderUserInfo() {
@@ -421,30 +499,23 @@ class UserInfo extends React.Component{
         } else {
             return (
                 <div className="user-info-div">
-                    {/**
-                     * TODO 由于正式版本没有实现，暂时隐藏版本（2019/11/01）
-                     * <div className="user-info-item user-version">
-                     <span className="user-info-item-title">
-                     {Intl.get('user.info.version','版本')}：
-                     </span>
-                     <span className="user-info-item-content">
-                     {this.state.versionName}
-                     </span>
-                     {
-                         this.state.endTime ? (
-                             <span className="user-version-expire">
-                                 {`(${Intl.get('user.info.version.expire', '{time}到期', {time: moment(this.state.endTime).format(oplateConsts.DATE_FORMAT)})})`}
-                             </span>
-                         ) : null
-                     }
-                     <Button
-                     className="user-version-upgrade"
-                     onClick={this.handleVersionUpgrade}
-                     >
-                     {Intl.get('user.info.version.upgrade', '升级为正式版')}
-                     </Button>
-                     </div>
-                     */}
+                    <div className="user-info-item user-version">
+                        <span className="user-info-item-title">
+                            {Intl.get('user.info.version','版本')}：
+                        </span>
+                        <span className="user-info-item-content">
+                            {this.state.versionName}
+                        </span>
+                        {
+                            this.state.endTime ? (
+                                <span className="user-version-expire">
+                                    {`(${Intl.get('user.info.version.expire', '{time}到期', {time: moment(this.state.endTime).format(oplateConsts.DATE_FORMAT)})})`}
+                                </span>
+                            ) : null
+                        }
+                        {this.renderBtnBlock()}
+                    </div>
+
                     <div className="user-info-item">
                         <span className="user-info-item-title">
                             <ReactIntl.FormattedMessage id="common.account.number" defaultMessage="账号"/>
