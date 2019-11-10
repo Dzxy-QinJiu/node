@@ -3719,6 +3719,9 @@ var zh_CN = {
     'clue.recommend.input.keyword': '请输入关键词',
     'clue.recommend.extract.num.limit': '您所在组织{timerange}提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
+    'clue.recommend.formal.extract.num.limit.tip': '本月{count}条已提取完毕，如需继续提取请{addClues}',
+    'clue.recommend.trial.extract.num.limit.tip': '明天可再提取{count}条，如需马上提取请{upgradedVersion}',
+    'clue.recommend.company.trial.extract.num.limit.tip': '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
     'common.personal.contribution.score': '个人贡献分数',
@@ -3816,6 +3819,12 @@ var zh_CN = {
     'payment.again.create.order': '重新生成',
     'payment.order.timeout': '订单超时，{retry}',
     'payment.again.create.order.faild': '生成订单失败，{retry}',
+    'payment.renewal': '续费',
+    'payment.please.contact.our.sale': '请联系我们的销售人员进行升级，联系方式：{contact}',
+    'payment.upgrading': '正在升级...',
+    'payment.countdown.default.msg': '倒计时中...',
+    'payment.upgrade.version.success': '您已成功升级为正式版，{time} 到期',
+    'payment.renewal.version.success': '您已成功续费，{time} 到期',
     /*支付流程 --- end*/
 };
 export default zh_CN;

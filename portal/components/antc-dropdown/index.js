@@ -161,7 +161,7 @@ AntcDropdown.propTypes = {
     overlayContent: PropTypes.string,
     okTitle: PropTypes.string,
     cancelTitle: PropTypes.string,
-    unSelectDataTip: PropTypes.string,
+    unSelectDataTip: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     isSaving: PropTypes.bool,
     handleSubmit: PropTypes.func,
     clearSelectData: PropTypes.func,

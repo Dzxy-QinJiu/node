@@ -13,25 +13,24 @@
 *  使用方法：
 *  HocGoodsBuy(OfficialPersonalEdition);
 *  在包裹组件里需要写上这些基本的state
-*  state = {
-        isGetGoodsLoading: false,
-        showPaymentMode: false,
-        errMsg: '',
-        list: [],
-        last_id: '',
-        total: 0,
-        listenScrollBottom: true,
-        leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
-        rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
-        i18nId: 'clues.extract.count.at.month',
-        i18nMessage: '线索推荐每月可提取 {count} 条',
-        count: 4000,
-*  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            ...this.getInitialState(),
+            leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
+            rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+            i18nId: 'clues.extract.count.at.month',
+            i18nMessage: '线索推荐每月可提取 {count} 条',
+            count: 4000,
+            dataTraceName: '购买线索量界面',
+            listHeight: 120,
+        }
+    }
 * */
 
 
 import './style.less';
-import { Button, message } from 'antd';
+import { Button, message, Popover } from 'antd';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -50,6 +49,25 @@ const LAYOUT_CONSTS = {
 const HOCGoodsBuy = WrappedComponent => {
     return class extends WrappedComponent {
         static displayName = `HOC(${getDisplayName(WrappedComponent)})`;
+
+        getInitialState() {
+            return {
+                isGetGoodsLoading: false,//获取商品加载中
+                showPaymentMode: false,//是否展示支付页面
+                errMsg: '',//错误提示信息
+                list: [],//商品列表
+                last_id: '',
+                total: 0,
+                listenScrollBottom: false,
+                count: 0,
+                dataTraceName: '购买商品界面',
+                curOrderInfo: {},//下单后的信息
+                listHeight: 0,//滚动区域的高度
+                activeGoods: {},//当前选中的商品
+                payModeList: [],//支付渠道,如支付宝，微信
+                isShowCloseBtn: true,//是否显示关闭按钮
+            };
+        }
 
         //下拉加载
         handleScrollBarBottom = () => {
@@ -90,6 +108,13 @@ const HOCGoodsBuy = WrappedComponent => {
                 this.setState({
                     isCreateOrdering: false
                 });
+            });
+        };
+
+        //点击切换商品
+        handleClickGoodsItem = (good) => {
+            this.setState({
+                activeGoods: good
             });
         };
 
@@ -155,20 +180,30 @@ const HOCGoodsBuy = WrappedComponent => {
                 let title = '';
                 if(this.state.isPaymentSuccess) {//支付成功
                     content = <OperateSuccessTip
+                        showCountDown={this.state.showCountDown}
                         {...this.state.operateSuccessTipProps}
                     />;
                 }else {
                     title = (
-                        <div className="hoc-goods-buy-title-wrapper">
+                        <div className="hoc-goods-buy-title-wrapper" id="hoc-goods-buy-title-wrapper">
                             <span>{this.state.leftTitle}</span>
                             {
                                 this.state.rightTitle ? (
-                                    <span
-                                        className="hoc-goods-buy-title-btn"
-                                        title={this.state.rightTitle}
-                                        data-tracename={`点击${this.state.rightTitle}按钮`}
-                                        onClick={this.handleUpgradeEnterprise}
-                                    >{this.state.rightTitle}</span>
+                                    <Popover
+                                        placement="left"
+                                        content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
+                                        trigger="hover"
+                                        getPopupContainer={() => {
+                                            return document.getElementById('hoc-goods-buy-title-wrapper');
+                                        }}
+                                    >
+                                        <span
+                                            className="hoc-goods-buy-title-btn"
+                                            title={this.state.rightTitle}
+                                            data-tracename={`点击${this.state.rightTitle}按钮`}
+                                            onClick={this.handleUpgradeEnterprise}
+                                        >{this.state.rightTitle}</span>
+                                    </Popover>
                                 ) : null
                             }
                         </div>
@@ -180,11 +215,11 @@ const HOCGoodsBuy = WrappedComponent => {
                     <RightPanelModal
                         className="hoc-goods-buy-wrapper"
                         isShowMadal={true}
-                        isShowCloseBtn={!this.state.isPaymentSuccess}
+                        isShowCloseBtn={this.state.isShowCloseBtn}
                         title={title}
                         onClosePanel={this.onClosePanel}
                         content={content}
-                        dataTracename="购买商品界面"
+                        dataTracename={this.state.dataTraceName}
                     />
                 );
             }else {
@@ -203,5 +238,7 @@ const HOCGoodsBuy = WrappedComponent => {
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
+
+HOCGoodsBuy.LAYOUT_CONSTS = LAYOUT_CONSTS;
 
 module.exports = HOCGoodsBuy;

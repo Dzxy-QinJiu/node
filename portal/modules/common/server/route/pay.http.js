@@ -41,5 +41,14 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    }, {
+        //获取商品折扣信息
+        'method': 'get',
+        'path': '/rest/goods/discount/list',
+        'handler': 'getGoodsDiscountList',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
     }]
 };
