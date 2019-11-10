@@ -54,7 +54,7 @@ const HOCGoodsBuy = WrappedComponent => {
             return {
                 isGetGoodsLoading: false,//获取商品加载中
                 showPaymentMode: false,//是否展示支付页面
-                errMsg: '',//
+                errMsg: '',//错误提示信息
                 list: [],//商品列表
                 last_id: '',
                 total: 0,
@@ -62,8 +62,8 @@ const HOCGoodsBuy = WrappedComponent => {
                 count: 0,
                 dataTraceName: '购买商品界面',
                 curOrderInfo: {},//下单后的信息
-                listHeight: 0,
-                activeGoods: {},//当前选中的上商品
+                listHeight: 0,//滚动区域的高度
+                activeGoods: {},//当前选中的商品
                 payModeList: [],//支付渠道,如支付宝，微信
                 isShowCloseBtn: true,//是否显示关闭按钮
             };
