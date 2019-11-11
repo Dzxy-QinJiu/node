@@ -1196,8 +1196,14 @@ exports.checkCurrentVersionType = checkCurrentVersionType;
 
 //返回版本信息及类型
 exports.checkVersionAndType = function() {
+    let version = checkCurrentVersion();
+    let type = checkCurrentVersionType();
     return {
-        ...checkCurrentVersion(),
-        ...checkCurrentVersionType()
+        ...version,
+        ...type,
+        isPersonalTrial: version.personal && type.trial,
+        isPersonalFormal: version.personal && type.formal,
+        isCompanyTrial: version.company && type.trial,
+        isCompanyFormal: version.company && type.formal,
     };
 };

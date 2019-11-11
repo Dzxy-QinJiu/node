@@ -510,7 +510,7 @@ var NavSidebar = createReactClass({
                     );
                     //判断是否是个人正式版，以及有通话路由
                     let versionAndType = checkVersionAndType();
-                    if(ROUTE_CONST.CALL_RECORD === category && versionAndType.personal && versionAndType.formal) {
+                    if(ROUTE_CONST.CALL_RECORD === category && versionAndType.isPersonalFormal) {
                         routeContent = (
                             <Popover
                                 placement='right'
@@ -619,7 +619,7 @@ var NavSidebar = createReactClass({
             );
             //判断是否是个人正式版，以及有通话路由
             let versionAndType = checkVersionAndType();
-            if(ROUTE_CONST.CALL_RECORD === category && versionAndType.personal && versionAndType.formal) {
+            if(ROUTE_CONST.CALL_RECORD === category && versionAndType.isPersonalFormal) {
                 routeContent = (
                     <Popover
                         placement='right'
@@ -649,7 +649,7 @@ var NavSidebar = createReactClass({
         const versionAndType = checkVersionAndType();
         let dialUpKeyBoardContent = null;
         //个人正式版，拨号功能不可用，需提示升级为企业版
-        if(this.state.isShowDialUpKeyboard && versionAndType.personal && versionAndType.formal) {
+        if(this.state.isShowDialUpKeyboard && versionAndType.isPersonalFormal) {
             dialUpKeyBoardContent = Intl.get('payment.please.upgrade.company.version', '请升级为企业版，联系方式：{contact}',{contact: '400-6978-520'});
         }
         return (

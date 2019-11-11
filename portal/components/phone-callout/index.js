@@ -41,7 +41,8 @@ class PhoneCallout extends React.Component {
         if (visible && hasCalloutPrivilege()){
             //如果是个人正式版，需要提示升级为企业版才能拨打号码
             let versionAndType = checkVersionAndType();
-            if(versionAndType.personal && versionAndType.formal) {
+            if(versionAndType.isPersonalFormal) {
+                this.setState({visible});
                 return;
             }
             if (!this.state.ableClickPhoneIcon){
