@@ -1961,6 +1961,9 @@ class ClueCustomer extends React.Component {
         var dataList = this.getSalesDataList();
         //按点击的次数进行排序
         dataList = _.sortBy(dataList,(item) => {return -item.clickCount;});
+        //主管分配线索时，负责人是自己的不能分配给自己
+        let userList = _.cloneDeep(dataList);
+        userList = _.filter(userList, user => !_.includes(_.get(user, 'value'), userData.getUserData().user_id));
         return (
             <div className="op-pane change-salesman">
                 <AlwaysShowSelect
@@ -1969,7 +1972,7 @@ class ClueCustomer extends React.Component {
                     onChange={this.onSalesmanChange}
                     getSelectContent={this.setSelectContent}
                     notFoundContent={dataList.length ? Intl.get('crm.29', '暂无销售') : Intl.get('crm.30', '无相关销售')}
-                    dataList={dataList}
+                    dataList={userList}
                 />
             </div>
         );
