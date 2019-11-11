@@ -2,7 +2,8 @@
  * 销售行为统计
  */
 
-import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
+import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
+import {listPanelEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import { argCallbackMemberIdToMemberIds } from '../../utils';
 let conditionCache = {};
 
@@ -56,6 +57,13 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
             }]
         },
     };
+
+    // 没有开通呼叫中心时，去掉接通数(phone_answer)，未接通数(phone_no_answer)这两列
+    if(!commonMethodUtil.isOpenCaller()) {
+        chart.option.columns = _.filter(columns, column => {
+            return !_.includes(['phone_answer','phone_no_answer'], column.dataIndex);
+        });
+    }
 
     if (paramObj.chartProps) {
         chart = {...chart, ...paramObj.chartProps};
