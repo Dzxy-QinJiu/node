@@ -277,7 +277,13 @@ class ClueFilterPanel extends React.Component {
                     FilterAction.setFilterTeamList( _.get(item,'data'));
                 }else if (item.groupId === 'clue_classify'){
                     //线索分类
-                    FilterAction.setFilterClueClassify( _.get(item,'data'));
+                    //未设置与其他选项是互斥选项
+                    if(_.isEqual(_.get(item, 'data[0].name'), Intl.get('clue.customer.filter.classify.not.setting', '未设置'))) {
+                        FilterAction.setUnexistedFiled('clue_classify');
+                        FilterAction.setFilterClueClassify();
+                    } else {
+                        FilterAction.setFilterClueClassify( _.get(item,'data'));
+                    }
                 }else if (item.groupId === 'clue_province'){
                     //线索地域
                     var provinceList = _.get(item,'data');
@@ -384,6 +390,23 @@ class ClueFilterPanel extends React.Component {
         }
         _.isFunction(callback) && callback(targetIndex);
     };
+    //线索分类列表
+    processClueClassifyArray = (clueClassifyArray) => {
+        let processedArray = [];
+        processedArray.push({
+            name: Intl.get('clue.customer.filter.classify.not.setting', '未设置'),
+            value: Intl.get('clue.customer.filter.classify.not.setting', '未设置'),
+            selectOnly: true
+        });
+        _.forEach(clueClassifyArray, x => {
+            processedArray.push({
+                name: x,
+                value: x
+            });
+        });
+        return processedArray;
+    };
+
     render(){
         //线索来源
         const clueSourceArray = this.state.clueSourceArray;
@@ -453,10 +476,7 @@ class ClueFilterPanel extends React.Component {
         },{
             groupName: Intl.get('clue.customer.classify', '线索分类'),
             groupId: 'clue_classify',
-            data: clueClassifyArray.map(x => ({
-                name: x,
-                value: x
-            }))
+            data: this.processClueClassifyArray(clueClassifyArray)
         },{
             groupName: Intl.get('crm.clue.client.source', '集客方式'),
             groupId: 'source_classify',

@@ -2699,6 +2699,8 @@ var en_US = {
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
+    'clue.customer.no.classify.tip': 'No Classification',//暂无分类
+    'clue.customer.filter.classify.not.setting': 'Not Setting',//未设置
     'cluecustomer.create.time': 'Created on {startTime}',//创建于{startTime}
     'cluecustomer.content.not.empty': 'Follow-up content can not be empty',//跟进内容不能为空
     'failed.submit.trace.content': 'Failed to add follow-up content',//添加跟进内容失败
