@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by yubin on 2019/11/11.
+*/
+
 //线索转客户面板视图类型
 export const VIEW_TYPE = {
     //添加客户视图

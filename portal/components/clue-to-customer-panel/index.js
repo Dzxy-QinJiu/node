@@ -1,4 +1,8 @@
 /**
+ * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
+ * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
+ * Created by yubin on 2019/11/11.
+ *
  * 线索转客户面板组件
  */
 
@@ -214,9 +218,9 @@ class ClueToCustomerPanel extends React.Component {
         }
 
         if (delayShowCustomerDetail) {
-            setTimeout(showCustomerDetail, 1000)
+            setTimeout(showCustomerDetail, 1000);
         } else {
-            showCustomerDetail()
+            showCustomerDetail();
         }
 
         subtracteGlobalClue(this.props.clue);
