@@ -358,6 +358,7 @@ var en_US = {
     'register.code.validate.expire': 'SMS verification code has expired',//短信验证码已过期
     'register.wechat.bind.user': 'Bind existing accounts',//绑定已有账号
     'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
+    'register.wechat.bind.btn': 'Bind immediately', // 立即绑定
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
 
     //首页
