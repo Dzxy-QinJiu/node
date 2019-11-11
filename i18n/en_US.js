@@ -885,6 +885,7 @@ var en_US = {
     'member.add.position': 'Add', // 添加职务
     'member.position.name.label': 'Name', // 职务名称
     'member.position.name.placeholder': 'Please enter the name of position', // 请输入职务名称
+    'member.position.has.repeat': 'The name of position already exists', // 该职务名称已存在
     'member.team.add.child.department': 'Add sub department', // 添加子部门
     'member.group.sales.goal': 'Department Sales Target', // 部门销售目标
     'member.selected.member.count': '{count} selected', // 已选{count}
