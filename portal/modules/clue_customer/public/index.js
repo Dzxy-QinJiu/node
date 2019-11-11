@@ -78,9 +78,9 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
-import {isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
+import {isSalesRole, checkCurrentVersion, checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
-import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
+import {phoneMsgEmitter, paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from 'CMP_DIR/shear-content-new';
 const AlertTimer = require('CMP_DIR/alert-timer');
 const DELAY_TIME = 3000;
@@ -612,13 +612,30 @@ class ClueCustomer extends React.Component {
         );
     };
 
+    //个人试用升级为正式版
+    handleUpgradePersonalVersion = () => {
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {});
+    };
+
+    getExportClueTips = () => {
+        let currentVersion = checkCurrentVersion();
+        let currentVersionType = checkCurrentVersionType();
+        let tips = '';
+        if(currentVersion.personal && currentVersionType.trial) {//个人试用
+            tips = <a onClick={this.handleUpgradePersonalVersion}>{Intl.get('clue.customer.export.trial.user.tip', '请升级正式版')}</a>;
+        }else if(currentVersion.company && currentVersionType.trial){//企业试用
+            tips = Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'});
+        }
+        return tips;
+    };
+
     //渲染导出线索的按钮
     renderExportClue = () => {
-        let isTrialUser = _.isEqual(_.get(userData.getUserData(), 'organization.version.type', ''), '试用');
-        let tips = Intl.get('clue.customer.export.trial.user.tip', '请升级正式版');
+        let currentVersionType = checkCurrentVersionType();
+        let tips = this.getExportClueTips();
         return(
             <div className="export-clue-customer-container pull-right">
-                {isTrialUser ?
+                {currentVersionType.trial ?
                     (<Popover content={tips} overlayClassName="explain-pop">
                         <Button disabled={true} className="btn-item btn-disabled">
                             <i className="iconfont icon-export-clue"></i>
