@@ -143,7 +143,7 @@ class OfficialPersonalEdition extends React.Component{
                 discount: 1
             });
             //根据折扣信息生成对应商品
-            newState.list = _.map(_.orderBy(discountList, ['number'], 'desc'), discount => {
+            newState.list = _.map(_.orderBy(discountList, ['number'], 'desc'), (discount, index) => {
                 //根据折扣信息计算单价
                 let price = _.get(originalList,'goods_fee',0) * (+_.get(discount,'discount','0'));
                 let number = _.get(discount, 'number', 0);
@@ -151,7 +151,8 @@ class OfficialPersonalEdition extends React.Component{
                     id: originalList.id,
                     number: number,
                     price,
-                    totalPrice: price * number
+                    totalPrice: Math.round(price * number),
+                    index
                 };
             });
 
@@ -290,10 +291,11 @@ class OfficialPersonalEdition extends React.Component{
                         'goods-item-active': item.number === this.state.activeGoods.number
                     });
                     const length = this.state.list.length;
+                    const isMostFavorable = _.minBy(this.state.list, 'price');
                     return (
                         <Col span={6} key={index}>
                             <div className={cls} onClick={this.handleClickGoodsItem.bind(this, item)}>
-                                {index === 0 && length > 1 ? <span className="goods-most-favorable">{Intl.get('goods.price.most.favorable', '最优惠')}</span> : null}
+                                {isMostFavorable.index === index && length > 1 ? <span className="goods-most-favorable">{Intl.get('goods.price.most.favorable', '最优惠')}</span> : null}
                                 <div className="goods-name">
                                     <span>{item.number}{Intl.get('user.apply.detail.delay.month.show', '个月')}</span>
                                 </div>
