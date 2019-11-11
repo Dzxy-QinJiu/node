@@ -1,6 +1,4 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-
-var React = require('react');
 require('../../css/contract.less');
 import { Button } from 'antd';
 import Spinner from 'CMP_DIR/spinner';
