@@ -26,11 +26,6 @@ class OfficialPersonalEdition extends React.Component{
         super(props);
         this.state = {
             ...this.getInitialState(),
-            leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
-            rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
-            i18nId: 'clues.extract.count.at.month',
-            i18nMessage: '线索推荐每月可提取 {count} 条',
-            dataTraceName: '升级个人正式版界面',
             listHeight: DEFAULT_HEIGHT,
             discountList: [],//商品折扣信息
             showCountDown: true,
@@ -114,11 +109,11 @@ class OfficialPersonalEdition extends React.Component{
             return PayAjax.getGoodsList(queryObj);
         }else {
             PayAjax.getGoodsList(queryObj).then((result) => {
-                this.dealGoodsList(result, this.state.discountList);
+                this.dealGoodsList(_.get(result, 'list', []), this.state.discountList);
             }, (errMsg) => {
                 this.setState({
                     isGetGoodsLoading: false,
-                    errMsg: errMsg || Intl.get('clues.get.goods.faild', '获取商品失败')
+                    errMsg: errMsg
                 });
             });
         }
@@ -161,7 +156,7 @@ class OfficialPersonalEdition extends React.Component{
             });
 
             //动态计算商品滚动区域高度
-            if(newState.list.length >= 4) {
+            if(newState.list.length > 4) {
                 let row = Math.ceil(newState.list.length / 4);
                 let height = row * DEFAULT_HEIGHT;
                 let maxScrollHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT - LAYOUT_CONSTS.BOTTOM_HEIGHT;
@@ -212,8 +207,11 @@ class OfficialPersonalEdition extends React.Component{
         //计算到期时间
         let endTime = _.get(this.organization, 'end_time', '');
         if(endTime) {
-            endTime = moment(endTime).add(_.get(curOrderInfo,'goods_num', 0), 'months').valueOf();
+            endTime = moment(endTime);
+        }else {//没有时，从当前时间开始算
+            endTime = moment();
         }
+        endTime = endTime.add(_.get(curOrderInfo,'goods_num', 0), 'months').valueOf();
         let operateSuccessTipProps = {
             title: Intl.get('payment.success', '支付成功'),
             tip: (
@@ -322,4 +320,10 @@ OfficialPersonalEdition.propTypes = {
     onClosePanel: PropTypes.func,
     paramObj: PropTypes.object,
 };
-module.exports = HocGoodsBuy(OfficialPersonalEdition);
+module.exports = HocGoodsBuy({
+    leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
+    rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+    i18nId: 'clues.extract.count.at.month',
+    i18nMessage: '线索推荐每月可提取 {count} 条',
+    dataTraceName: '升级个人正式版界面',
+})(OfficialPersonalEdition);

@@ -13,7 +13,7 @@ exports.getGoodsList = function(queryObj) {
             Deferred.resolve(data);
         },
         error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseJSON || Intl.get('clues.get.goods.faild', '获取商品失败'));
         }
     });
     return Deferred.promise();
@@ -71,7 +71,7 @@ exports.getPaymentMode = function(queryObj) {
             Deferred.resolve(data);
         },
         error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseJSON || Intl.get('payment.get.payment.mode.faild', '获取支付渠道失败'));
         }
     });
     return Deferred.promise();
@@ -91,7 +91,7 @@ exports.getGoodsDiscountList = function(queryObj) {
             Deferred.resolve(data);
         },
         error: function(errorMsg) {
-            Deferred.reject(errorMsg.responseJSON);
+            Deferred.reject(errorMsg.responseJSON || Intl.get('payment.get.discount.faild', '获取商品折扣信息失败'));
         }
     });
     return Deferred.promise();

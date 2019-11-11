@@ -3825,6 +3825,8 @@ var zh_CN = {
     'payment.countdown.default.msg': '倒计时中...',
     'payment.upgrade.version.success': '您已成功升级为正式版，{time} 到期',
     'payment.renewal.version.success': '您已成功续费，{time} 到期',
+    'payment.get.payment.mode.faild': '获取支付渠道失败',
+    'payment.get.discount.faild': '获取商品折扣信息失败',
     /*支付流程 --- end*/
 };
 export default zh_CN;
