@@ -115,7 +115,7 @@ class OfficeForm extends React.Component{
         let existPositionList = this.props.positionList; // 已存在的职务
         let isExist = _.find(existPositionList, item => item.name === positionValue);
         if (isExist) { // 和已存在的职务名称是相同
-            callback(Intl.get('config.sales.role.has.repeat', '该职务名称已存在'));
+            callback(Intl.get('member.position.has.repeat', '该职务名称已存在'));
         } else {
             callback();
         }
@@ -128,7 +128,7 @@ class OfficeForm extends React.Component{
             let formData = this.state.formData;
             if (positionValue) {
                 if (_.get(formData, 'id')) { // 编辑职务
-                    if (_.get(formData, 'position') === positionValue) {
+                    if (_.get(formData, 'name') === positionValue) {
                         callback();
                     } else {
                         this.validatePositionName (positionValue, callback);
