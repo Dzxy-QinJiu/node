@@ -1,9 +1,7 @@
-var React = require('react');
 /**
  * 产品展示、编辑组件
  */
 require('./style.less');
-import PropTypes from 'prop-types'; 
 import classNames from 'classnames';
 import {DetailEditBtn} from '../../rightPanel';
 import SaveCancelButton from '../../detail-card/save-cancel-button';
