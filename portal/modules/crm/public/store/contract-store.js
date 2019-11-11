@@ -10,6 +10,7 @@ class ContractStore {
         this.bindActions(ContractAction);
     }
     resetState(){
+        this.isAddFormShow = false;
         // 合同列表
         this.contractList = {
             loading: false, // loading
