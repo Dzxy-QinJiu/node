@@ -128,7 +128,7 @@ class OfficeForm extends React.Component{
             let formData = this.state.formData;
             if (positionValue) {
                 if (_.get(formData, 'id')) { // 编辑职务
-                    if (_.get(formData, 'position') === positionValue) {
+                    if (_.get(formData, 'name') === positionValue) {
                         callback();
                     } else {
                         this.validatePositionName (positionValue, callback);
