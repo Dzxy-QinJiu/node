@@ -3775,6 +3775,7 @@ var en_US = {
     'payment.renewal.version.success': 'You have successfully renewed the subscription. {time} expires',//您已成功续费，{time} 到期
     'payment.get.payment.mode.faild': 'Failed to obtain payment channel',//获取支付渠道失败
     'payment.get.discount.faild': 'Failed to get item discount information',//获取商品折扣信息失败
+    'payment.please.upgrade.company.version': 'Please upgrade to enterprise edition, contact: {contact}',//请升级为企业版，联系方式：{contact}
     /*支付流程 --- end*/
 
 };

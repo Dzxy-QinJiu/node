@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2019/2/28.
  */
 import {Popover} from 'antd';
-import {hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
@@ -39,6 +39,11 @@ class PhoneCallout extends React.Component {
     };
     handleVisibleChange = (phoneNumber, contactName,visible) => {
         if (visible && hasCalloutPrivilege()){
+            //如果是个人正式版，需要提示升级为企业版才能拨打号码
+            let versionAndType = checkVersionAndType();
+            if(versionAndType.personal && versionAndType.formal) {
+                return;
+            }
             if (!this.state.ableClickPhoneIcon){
                 return;
             }
@@ -61,6 +66,11 @@ class PhoneCallout extends React.Component {
             return null;
         }
         var contentTip = showDisabledCallTip();
+        //如果是个人正式版，需要提示升级为企业版才能拨打号码
+        let versionAndType = checkVersionAndType();
+        if(versionAndType.personal && versionAndType.formal && hasCalloutPrivilege()) {
+            contentTip = Intl.get('payment.please.upgrade.company.version', '请升级为企业版，联系方式：{contact}',{contact: '400-6978-520'});
+        }
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;
         var visible = this.state.visible;

@@ -3827,6 +3827,7 @@ var zh_CN = {
     'payment.renewal.version.success': '您已成功续费，{time} 到期',
     'payment.get.payment.mode.faild': '获取支付渠道失败',
     'payment.get.discount.faild': '获取商品折扣信息失败',
+    'payment.please.upgrade.company.version': '请升级为企业版，联系方式：{contact}',
     /*支付流程 --- end*/
 };
 export default zh_CN;
