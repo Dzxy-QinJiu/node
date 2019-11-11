@@ -13,9 +13,7 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
         url: '/rest/analysis/callrecord/v1/customertrace/:data_type/sale/trace/statistics',
         argCallback: arg => {
             argCallbackMemberIdToMemberIds(arg);
-            if (arg.query.member_ids) {
-                arg.query.result_type = 'user';
-            }
+            arg.query.result_type = 'user';
 
             conditionCache = arg.query;
         },
@@ -40,8 +38,8 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
                 title: Intl.get('common.number.of.customers.visited', '拜访客户数'),
                 dataIndex: 'visit',
                 width: '20%',
-                render: value => {
-                    return <span style={{cursor: 'pointer'}} onClick={visitedCustomerNumClickHandler}>{value}</span>;
+                render: (value, record) => {
+                    return <span style={{cursor: 'pointer'}} onClick={visitedCustomerNumClickHandler.bind(null, record.id)}>{value}</span>;
                 }
             }, {
                 title: Intl.get('common.number.of.customers.contacted', '联系客户数'),
@@ -64,13 +62,17 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
     }
 
     //销售行为统计拜访客户数点击处理函数
-    function visitedCustomerNumClickHandler(e) {
+    function visitedCustomerNumClickHandler(id, e) {
         Trace.traceEvent(e, '点击销售个人报告页面上的销售行为统计拜访客户数查看详细列表');
+
+        conditionCache.member_id = id;
+
+        const conditions = _.map(conditionCache, (value, key) => ({name: key, value}));
 
         const paramObj = {
             listType: 'customer',
             url: '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics',
-            conditions: _.map(conditionCache, (value, key) => ({name: key, value})),
+            conditions,
             columns: [
                 {
                     title: Intl.get('crm.41', '客户名'),
