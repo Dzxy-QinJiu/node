@@ -2,9 +2,8 @@
  * 客户阶段统计
  */
 
-import { processCustomerStageData } from 'PUB_DIR/sources/utils/analysis-util';
 import { argCallbackMemberIdToMemberIds, argCallbackUnderlineTimeToTime } from '../../utils';
-
+import {customerStages} from 'PUB_DIR/sources/utils/analysis-util';
 export function getCustomerStageChart(paramObj = {}) {
     return {
         title: Intl.get('oplate_customer_analysis.customer_stage', '客户阶段统计'),
@@ -37,7 +36,17 @@ export function getCustomerStageChart(paramObj = {}) {
                 _.set(arg, 'query.statistics_type', 'user');
             }
         },
-        processData: processCustomerStageData,
+        processData: (data) => {
+            let processedData = [];
+            _.forEach(customerStages ,stage => {
+                let stageValue = data[stage.tagValue];
+                processedData.push({
+                    name: stage.tagName,
+                    value: stageValue,
+                });
+            });
+            return processedData;
+        },
         customOption: {
             valueField: 'showValue',
             minSize: '5%',
