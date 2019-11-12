@@ -19,7 +19,6 @@ import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
-const EDIT_FEILD_WIDTH = 380;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
     {key: 'en_US', val: 'English'},
     {key: 'es_VE', val: 'Español'}];
@@ -474,12 +473,21 @@ class UserInfo extends React.Component{
         //根据是否拥有邮箱改变编辑状态
         let isEditable = formData.email ? true : false;
         //根据邮箱状态是否激活改变渲染afterTextTip文字
-        let displayInfo = !_.isEmpty(formData.email) ? (this.state.formData.emailEnable ? (<span className="active-info">({Intl.get('common.actived', '已激活')})</span>) :
-            (<span className="active-info">
-                <a onClick={this.activeUserEmail.bind(this)}>{Intl.get('user.info.active.email.btn', '发送激活邮件',)}</a>
-            </span>)) : null;
+        let displayInfo = !_.isEmpty(formData.email) ? (
+            this.state.formData.emailEnable ? (
+                <span className="active-info">
+                    {Intl.get('common.actived', '已激活')}
+                </span>) :
+                (<span className="active-info">
+                    <a onClick={this.activeUserEmail.bind(this)}>
+                        {Intl.get('user.info.active.email.btn', '发送激活邮件',)}
+                    </a>
+                </span>)
+        ) : null;
         //发送邮件后显示的计时器
-        let afterSend = <span className ="hasSendMail" >{Intl.get('user.info.active.email.msg', '(已发送激活邮件{sendTime}s)',{sendTime: this.state.sendTime})}</span>;
+        let afterSend = <span className ="hasSendMail" >
+            {Intl.get('user.info.active.email.msg', '(已发送激活邮件{sendTime}s)',{sendTime: this.state.sendTime})}
+        </span>;
         // 根据是否拥有qq改变渲染input默认文字
         let qqInputInfo = _.get(formData, 'qq', '');
 
@@ -631,7 +639,6 @@ class UserInfo extends React.Component{
                                 onSelectChange={this.onSelectLang.bind(this)}
                                 cancelEditField={this.cancelEditLang.bind(this)}
                                 saveEditSelect={this.saveEditLanguage}
-                                width={EDIT_FEILD_WIDTH}
                             />
                         </span>
                     </div>}

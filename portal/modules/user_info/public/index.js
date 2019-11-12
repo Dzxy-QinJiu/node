@@ -3,13 +3,7 @@
  */
 //顶部导航
 var createReactClass = require('create-react-class');
-require('./css/user-info-zh_CN.less');
-var language = require('../../../public/language/getLanguage');
-if (language.lan() === 'es' || language.lan() === 'en') {
-    require('./css/user-info-es_VE.less');
-} else if (language.lan() === 'zh') {
-    require('./css/user-info-zh_CN.less');
-}
+require('./css/index.less');
 var UserInfoStore = require('./store/user-info-store');
 var UserInfoAction = require('./action/user-info-actions');
 var UserInfo = require('./views/user-info-user');
@@ -113,70 +107,68 @@ var UserInfoPage = createReactClass({
         let containerHeight = height - logTitleHeight - logBottomHeight - TAB_HEIGHT;
 
         return (
-            <div className="userInfoManage_userInfo_content" data-tracename="个人资料">
-                <div className="user-info-manage-container">
-                    <UserInfo
-                        userInfo={this.state.userInfo}
-                        managedRealm={managedRealm}
-                        userInfoErrorMsg={this.state.userInfoErrorMsg}
-                        userInfoLoading={this.state.userInfoLoading}
-                    />
-                    <div className="col-md-8 user-log-container-div">
-                        <Tabs
-                            activeKey={this.state.activeKey}
-                            onChange={this.changeActiveKey}
+            <div className="user-info-manage-container" data-tracename="个人资料">
+                <UserInfo
+                    userInfo={this.state.userInfo}
+                    managedRealm={managedRealm}
+                    userInfoErrorMsg={this.state.userInfoErrorMsg}
+                    userInfoLoading={this.state.userInfoLoading}
+                />
+                <div className="col-md-8 user-record-container-wrap">
+                    <Tabs
+                        activeKey={this.state.activeKey}
+                        onChange={this.changeActiveKey}
+                    >
+                        <TabPane
+                            tab={Intl.get('common.operate.record', '操作记录')}
+                            key={TAB_KEYS.OPERATE_RECORD_TAB}
                         >
-                            <TabPane
-                                tab={Intl.get('common.operate.record', '操作记录')}
-                                key={TAB_KEYS.OPERATE_RECORD_TAB}
-                            >
-                                {
-                                    this.state.activeKey === TAB_KEYS.OPERATE_RECORD_TAB ?
-                                        <div className="user-log-div">
-                                            <div className="log-div-title">
-                                                <label className="log-title-tips">
-                                                    <ReactIntl.FormattedMessage
-                                                        id="user.info.log.record.tip"
-                                                        defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
-                                                        values={{
-                                                            editpassword: <span className="update-pwd">
-                                                                <NavLink to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
-                                                                    <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
-                                                                </NavLink>
-                                                            </span>
-                                                        }}
-                                                    />
-                                                </label>
-                                            </div>
-                                            <UserInfoLog
-                                                logErrorMsg={this.state.logErrorMsg}
-                                                logLoading={this.state.logLoading}
-                                                logList={this.state.logList}
-                                                logTotal={this.state.logTotal}
-                                                sortId={this.state.sortId}
-                                                loadSize={this.state.loadSize}
-                                                listenScrollBottom={this.state.listenScrollBottom}
-                                                height={containerHeight}
-                                                handleScrollBottom={this.handleScrollBottom}
-                                            />
+                            {
+                                this.state.activeKey === TAB_KEYS.OPERATE_RECORD_TAB ?
+                                    <div className="user-log-div">
+                                        <div className="log-div-title">
+                                            <label className="log-title-tips">
+                                                <ReactIntl.FormattedMessage
+                                                    id="user.info.log.record.tip"
+                                                    defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
+                                                    values={{
+                                                        editpassword: <span className="update-pwd">
+                                                            <NavLink to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
+                                                                <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
+                                                            </NavLink>
+                                                        </span>
+                                                    }}
+                                                />
+                                            </label>
                                         </div>
-                                        : null
-                                }
-                            </TabPane>
-                            <TabPane
-                                tab={Intl.get('user.trade.record', '购买记录')}
-                                key={TAB_KEYS.TRADE_TAB}
-                            >
-                                {
-                                    this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
-                                        <TradeRecord
-                                            height={containerHeight + logTitleHeight}
+                                        <UserInfoLog
+                                            logErrorMsg={this.state.logErrorMsg}
+                                            logLoading={this.state.logLoading}
+                                            logList={this.state.logList}
+                                            logTotal={this.state.logTotal}
+                                            sortId={this.state.sortId}
+                                            loadSize={this.state.loadSize}
+                                            listenScrollBottom={this.state.listenScrollBottom}
+                                            height={containerHeight}
+                                            handleScrollBottom={this.handleScrollBottom}
                                         />
-                                    ) : null
-                                }
-                            </TabPane>
-                        </Tabs>
-                    </div>
+                                    </div>
+                                    : null
+                            }
+                        </TabPane>
+                        <TabPane
+                            tab={Intl.get('user.trade.record', '购买记录')}
+                            key={TAB_KEYS.TRADE_TAB}
+                        >
+                            {
+                                this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
+                                    <TradeRecord
+                                        height={containerHeight + logTitleHeight}
+                                    />
+                                ) : null
+                            }
+                        </TabPane>
+                    </Tabs>
                 </div>
             </div>
         );
