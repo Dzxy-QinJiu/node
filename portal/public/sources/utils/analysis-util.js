@@ -3,31 +3,33 @@
  */
 
 import { num as NumUtils } from 'ant-utils';
-    
+
+//客户阶段
+export const customerStages = [
+    {
+        tagName: Intl.get('sales.stage.message', '信息'),
+        tagValue: 'message',
+    },
+    {
+        tagName: Intl.get('sales.stage.intention', '意向'),
+        tagValue: 'intention',
+    },
+    {
+        tagName: Intl.get('common.trial', '试用'),
+        tagValue: 'trial',
+    },
+    {
+        tagName: Intl.get('common.qualified', '合格'),
+        tagValue: 'qualified',
+    },
+    {
+        tagName: Intl.get('sales.stage.signed', '签约'),
+        tagValue: 'signed',
+    },
+];
+
 //处理客户阶段统计数据
 export function processCustomerStageData(data) {
-    const customerStages = [
-        {
-            tagName: Intl.get('sales.stage.message', '信息'),
-            tagValue: 'message',
-        },
-        {
-            tagName: Intl.get('sales.stage.intention', '意向'),
-            tagValue: 'intention',
-        },
-        {
-            tagName: Intl.get('common.trial', '试用'),
-            tagValue: 'trial',
-        },
-        {
-            tagName: Intl.get('common.qualified', '合格'),
-            tagValue: 'qualified',
-        },
-        {
-            tagName: Intl.get('sales.stage.signed', '签约'),
-            tagValue: 'signed',
-        },
-    ];
 
     let processedData = [];
     let prevStageValue;
