@@ -72,7 +72,13 @@ class ClueFilterPanel extends React.Component {
             }else if (groupId === 'clue_pool_access'){ // 线索接入渠道
                 FilterAction.setFilterClueAccess(data);
             }else if (groupId === 'clue_pool_classify'){ // 线索分类
-                FilterAction.setFilterClueClassify(data);
+                //未设置与其他选项是互斥选项
+                if(_.isEqual(_.get(item, 'data[0].name'), Intl.get('clue.customer.filter.classify.not.setting', '未设置'))) {
+                    FilterAction.setUnexistedFiled('clue_classify');
+                    FilterAction.setFilterClueClassify();
+                } else {
+                    FilterAction.setFilterClueClassify( _.get(item,'data'));
+                }
             }else if (groupId === 'clue_pool_province'){
                 //线索地域
                 FilterAction.setFilterClueProvince(data);
@@ -124,6 +130,24 @@ class ClueFilterPanel extends React.Component {
             </div>
         );
     };
+
+    //线索分类列表
+    processClueClassifyArray = (clueClassifyArray) => {
+        let processedArray = [];
+        processedArray.push({
+            name: Intl.get('clue.customer.filter.classify.not.setting', '未设置'),
+            value: Intl.get('clue.customer.filter.classify.not.setting', '未设置'),
+            selectOnly: true
+        });
+        _.forEach(clueClassifyArray, x => {
+            processedArray.push({
+                name: x,
+                value: x
+            });
+        });
+        return processedArray;
+    };
+
     render(){
         const clueLeadingArray = this.state.clueLeadingArray;
         //线索来源
@@ -185,11 +209,8 @@ class ClueFilterPanel extends React.Component {
             }))
         },{
             groupName: Intl.get('clue.customer.classify', '线索分类'),
-            groupId: 'clue_classify',
-            data: clueClassifyArray.map(x => ({
-                name: x,
-                value: x
-            }))
+            groupId: 'clue_pool_classify',
+            data: this.processClueClassifyArray(clueClassifyArray)
         },{
             groupName: Intl.get('crm.6', '负责人'),
             groupId: 'clue_pool_user_name',

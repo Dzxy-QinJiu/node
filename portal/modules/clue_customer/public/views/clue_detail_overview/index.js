@@ -1265,7 +1265,7 @@ class ClueDetailOverview extends React.Component {
                                 selectOptions={this.getClueClassifyOptions()}
                                 onSelectChange={this.onSelectClueClassify}
                                 placeholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
-                                noDataTip={Intl.get('common.unknown', '未知')}
+                                noDataTip={Intl.get( 'clue.customer.no.classify.tip', '暂无分类')}
                                 addDataTip={Intl.get('clue.add.clue.classfify', '添加线索分类')}
                             />
                         </div>

@@ -2739,6 +2739,8 @@ var zh_CN = {
     'clue.customer.will.distribution': '待分配',
     'clue.customer.has.distribution': '已分配',
     'clue.customer.has.follow': '已跟进',
+    'clue.customer.no.classify.tip': '暂无分类',
+    'clue.customer.filter.classify.not.setting': '未设置',
     'sales.homepage.hide.teamlist': '隐藏团队列表',
     'sales.homepage.show.teamlist': '展开团队列表',
     'crm.save.customertrace.first': '请先保存或取消正在编辑的跟进记录',
