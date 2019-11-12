@@ -400,7 +400,7 @@ class UserInfo extends React.Component{
 
     //判断是否为管理员
     isManager = () => {
-        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售或运营
     };
 
     renderBtnBlock = () => {
@@ -432,7 +432,7 @@ class UserInfo extends React.Component{
             }
         }else if(currentVersion.company) {
             if(currentVersionType.trial) {//企业试用
-                return (
+                /*return (
                     <Popover
                         placement="right"
                         content={Intl.get('payment.please.contact.our.sale', '请联系我们的销售人员进行升级，联系方式：{contact}', {contact: '400-6978-520'})}
@@ -445,7 +445,8 @@ class UserInfo extends React.Component{
                             {Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版')}
                         </Button>
                     </Popover>
-                );
+                );*/
+                return null;
             }else if(currentVersionType.formal && this.isManager()) {//企业正式并且是管理员
                 return (
                     <Popover

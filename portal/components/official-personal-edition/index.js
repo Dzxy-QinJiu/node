@@ -26,11 +26,6 @@ class OfficialPersonalEdition extends React.Component{
         super(props);
         this.state = {
             ...this.getInitialState(),
-            leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
-            rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
-            i18nId: 'clues.extract.count.at.month',
-            i18nMessage: '线索推荐每月可提取 {count} 条',
-            dataTraceName: '升级个人正式版界面',
             listHeight: DEFAULT_HEIGHT,
             discountList: [],//商品折扣信息
             showCountDown: true,
@@ -114,11 +109,11 @@ class OfficialPersonalEdition extends React.Component{
             return PayAjax.getGoodsList(queryObj);
         }else {
             PayAjax.getGoodsList(queryObj).then((result) => {
-                this.dealGoodsList(result, this.state.discountList);
+                this.dealGoodsList(_.get(result, 'list', []), this.state.discountList);
             }, (errMsg) => {
                 this.setState({
                     isGetGoodsLoading: false,
-                    errMsg: errMsg || Intl.get('clues.get.goods.faild', '获取商品失败')
+                    errMsg: errMsg
                 });
             });
         }
@@ -148,7 +143,7 @@ class OfficialPersonalEdition extends React.Component{
                 discount: 1
             });
             //根据折扣信息生成对应商品
-            newState.list = _.map(_.orderBy(discountList, ['number'], 'desc'), discount => {
+            newState.list = _.map(_.orderBy(discountList, ['number'], 'desc'), (discount, index) => {
                 //根据折扣信息计算单价
                 let price = _.get(originalList,'goods_fee',0) * (+_.get(discount,'discount','0'));
                 let number = _.get(discount, 'number', 0);
@@ -156,12 +151,13 @@ class OfficialPersonalEdition extends React.Component{
                     id: originalList.id,
                     number: number,
                     price,
-                    totalPrice: price * number
+                    totalPrice: Math.round(price * number),
+                    index
                 };
             });
 
             //动态计算商品滚动区域高度
-            if(newState.list.length >= 4) {
+            if(newState.list.length > 4) {
                 let row = Math.ceil(newState.list.length / 4);
                 let height = row * DEFAULT_HEIGHT;
                 let maxScrollHeight = $(window).height() - LAYOUT_CONSTS.TOP_HEIGHT - LAYOUT_CONSTS.DESC_HEIGHT - LAYOUT_CONSTS.BOTTOM_HEIGHT;
@@ -212,8 +208,11 @@ class OfficialPersonalEdition extends React.Component{
         //计算到期时间
         let endTime = _.get(this.organization, 'end_time', '');
         if(endTime) {
-            endTime = moment(endTime).add(_.get(curOrderInfo,'goods_num', 0), 'months').valueOf();
+            endTime = moment(endTime);
+        }else {//没有时，从当前时间开始算
+            endTime = moment();
         }
+        endTime = endTime.add(_.get(curOrderInfo,'goods_num', 0), 'months').valueOf();
         let operateSuccessTipProps = {
             title: Intl.get('payment.success', '支付成功'),
             tip: (
@@ -292,10 +291,11 @@ class OfficialPersonalEdition extends React.Component{
                         'goods-item-active': item.number === this.state.activeGoods.number
                     });
                     const length = this.state.list.length;
+                    const isMostFavorable = _.minBy(this.state.list, 'price');
                     return (
                         <Col span={6} key={index}>
                             <div className={cls} onClick={this.handleClickGoodsItem.bind(this, item)}>
-                                {index === 0 && length > 1 ? <span className="goods-most-favorable">{Intl.get('goods.price.most.favorable', '最优惠')}</span> : null}
+                                {isMostFavorable.index === index && length > 1 ? <span className="goods-most-favorable">{Intl.get('goods.price.most.favorable', '最优惠')}</span> : null}
                                 <div className="goods-name">
                                     <span>{item.number}{Intl.get('user.apply.detail.delay.month.show', '个月')}</span>
                                 </div>
@@ -322,4 +322,10 @@ OfficialPersonalEdition.propTypes = {
     onClosePanel: PropTypes.func,
     paramObj: PropTypes.object,
 };
-module.exports = HocGoodsBuy(OfficialPersonalEdition);
+module.exports = HocGoodsBuy({
+    leftTitle: Intl.get('personal.upgrade.to.official.version', '升级为正式版'),
+    rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+    i18nId: 'clues.extract.count.at.month',
+    i18nMessage: '线索推荐每月可提取 {count} 条',
+    dataTraceName: '升级个人正式版界面',
+})(OfficialPersonalEdition);

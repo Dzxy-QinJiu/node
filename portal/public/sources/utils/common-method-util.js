@@ -1169,7 +1169,7 @@ exports.handleHistoricalList = function(lists) {
     return _.filter(lists, item => _.get(item,'replyLists[0]'));
 };
 //判断当前版本，个人版/企业版
-exports.checkCurrentVersion = function() {
+function checkCurrentVersion() {
     let organization = getOrganization();
     let version = _.get(organization, 'version', {});
     let name = _.get(version, 'name', '');
@@ -1178,14 +1178,32 @@ exports.checkCurrentVersion = function() {
         personal: new RegExp('个人').test(name),
         company: new RegExp('企业').test(name),
     };
-};
+}
+exports.checkCurrentVersion = checkCurrentVersion;
+
 //判断当前版本类型，试用/正式
-exports.checkCurrentVersionType = function() {
+function checkCurrentVersionType() {
     let organization = getOrganization();
     let version = _.get(organization, 'version', {});
     let type = _.get(version, 'type', '');
     return {
         trial: _.isEqual(type, '试用'),
         formal: _.isEqual(type, '正式'),
+    };
+
+}
+exports.checkCurrentVersionType = checkCurrentVersionType;
+
+//返回版本信息及类型
+exports.checkVersionAndType = function() {
+    let version = checkCurrentVersion();
+    let type = checkCurrentVersionType();
+    return {
+        ...version,
+        ...type,
+        isPersonalTrial: version.personal && type.trial,
+        isPersonalFormal: version.personal && type.formal,
+        isCompanyTrial: version.company && type.trial,
+        isCompanyFormal: version.company && type.formal,
     };
 };

@@ -17,7 +17,7 @@ const ROUTE_CONST = {
 const isOpenCaller = require('../utils/common-method-util').isOpenCaller;
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 //是否是csm.curtao.com，是否在蚁坊域的判断方法
-import {isCurtao, isOrganizationEefung} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao, isOrganizationEefung, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 //如果访问/，跳转到左侧导航菜单的第一个路由
 class FirstIndexRoute extends React.Component {
@@ -91,7 +91,9 @@ const IndexRoute = (props) => {
     if (user.preUrl && user.preUrl !== '/') {
         return <TurnPageIndexRoute/>;
     } else {
-        if (hasPrivilege('USER_INFO_USER')) {// USER_INFO_USER 获取我的个人资料的权限
+        //个人版（试用，正式）,暂时没有首页
+        var home_page = menuUtil.getMenuById(ROUTE_CONST.HOME_PAGE);
+        if (hasPrivilege('USER_INFO_USER') && home_page) {// USER_INFO_USER 获取我的个人资料的权限
             //客套首页
             return <HomeIndexRoute/>;
         } else {
@@ -263,6 +265,16 @@ function filterCurtaoRoutes(routes) {
     }
     return routes;
 }
+//过滤掉个人版（试用，正式）不用显示的路由
+function filterPersonalRoutes(routes) {
+    let versionAndType = checkVersionAndType();
+    if(versionAndType.personal) {
+        let homePageIndex = _.findIndex(routes, item => item.id === ROUTE_CONST.HOME_PAGE);
+        if(homePageIndex !== -1) {
+            routes.splice(homePageIndex, 1);
+        }
+    }
+}
 /**
  * 过滤路由，返回界面上需要的路由
  * @param allRoutes
@@ -304,6 +316,8 @@ function filterRoute(allRoutes) {
             backgroundObj.routes = _.filter(backgroundObj.routes, item => item.id !== 'sales_auto');
         }
     }
+    //如果是个人版（试用，正式），不需要展示首页，即/home,需过滤掉
+    filterPersonalRoutes(user.routes);
     //过滤掉curtao域名下不显示的菜单
     user.routes = filterCurtaoRoutes(user.routes);
     //路由配置

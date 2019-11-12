@@ -20,11 +20,6 @@ class PurchaseLeads extends React.Component{
         super(props);
         this.state = {
             ...this.getInitialState(),
-            leftTitle: Intl.get('goods.increase.clues', '增加线索量'),
-            // rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
-            i18nId: 'clues.extract.count.at.part',
-            i18nMessage: '线索提取量每份 {count} 条',
-            dataTraceName: '购买线索量界面',
             listHeight: 120,
             inputNumber: 1,//输入的线索量份数
             showCountDown: true,
@@ -80,7 +75,7 @@ class PurchaseLeads extends React.Component{
             }, (errMsg) => {
                 this.setState({
                     isGetGoodsLoading: false,
-                    errMsg: errMsg || Intl.get('clues.get.goods.faild', '获取商品失败')
+                    errMsg: errMsg
                 });
             });
         }
@@ -256,4 +251,10 @@ PurchaseLeads.propTypes = {
     paramObj: PropTypes.object,
 };
 
-module.exports = HocGoodsBuy(PurchaseLeads);
+module.exports = HocGoodsBuy({
+    leftTitle: Intl.get('goods.increase.clues', '增加线索量'),
+    // rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+    i18nId: 'clues.extract.count.at.part',
+    i18nMessage: '线索提取量每份 {count} 条',
+    dataTraceName: '购买线索量界面',
+})(PurchaseLeads);

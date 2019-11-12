@@ -239,7 +239,7 @@ class ExtractClues extends React.Component {
     };
     //判断是否为管理员
     isManager = () => {
-        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售或运营
     };
 
     clearSelectSales = () => {

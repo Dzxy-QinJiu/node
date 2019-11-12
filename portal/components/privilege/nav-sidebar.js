@@ -20,7 +20,7 @@ import CONSTS from 'LIB_DIR/consts';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {storageUtil} from 'ant-utils';
 import {DIFF_APPLY_TYPE_UNREAD_REPLY, CALL_TYPES} from 'PUB_DIR/sources/utils/consts';
-import {hasCalloutPrivilege, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {hasCalloutPrivilege, isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import {phoneEmitter, notificationEmitter, userInfoEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DialUpKeyboard from 'CMP_DIR/dial-up-keyboard';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
@@ -44,6 +44,10 @@ const MENU = {
     'NOTE': 'notification',
     'BACK_CONFIG': 'background_management',
     'USER_INFO': 'user_info_manage'
+};
+
+const ROUTE_CONST = {
+    'CALL_RECORD': 'call_record',//通话记录id
 };
 
 //获取用户logo
@@ -494,15 +498,25 @@ var NavSidebar = createReactClass({
 
     //汉堡包弹窗列表
     getNavbarLists: function() {
+        let _this = this;
         //侧边导航高度减少后，出现汉堡包按钮，汉堡包按钮的弹出框
         return (
             <ul className="ul-unstyled">
                 {this.state.menus.map(function(obj) {
+                    let category = obj.routePath.replace(/\//, '');
+                    let routeContent = (
+                        <NavLink to={`${obj.routePath}`} activeClassName="active">
+                            {obj.name}
+                        </NavLink>
+                    );
+                    //判断是否是个人正式版，以及有通话路由
+                    let versionAndType = checkVersionAndType();
+                    if(ROUTE_CONST.CALL_RECORD === category && versionAndType.isPersonalFormal) {
+                        routeContent = _this.disableClickBlock('', obj.name);
+                    }
                     return (
                         <li key={obj.id}>
-                            <NavLink to={`${obj.routePath}`} activeClassName="active">
-                                {obj.name}
-                            </NavLink>
+                            {routeContent}
                         </li>
                     );
                 })
@@ -565,6 +579,17 @@ var NavSidebar = createReactClass({
         //缩放到显示小图标或（显示小图标并缩小图标间距）时
         return this.state.isReduceNavIcon || this.state.isReduceNavMargin;
     },
+    disableClickBlock(cls = '', text) {
+        return (
+            <Popover
+                placement='right'
+                content={Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'})}
+                trigger="hover"
+            >
+                <a className={`${cls} disable-link`}>{text}</a>
+            </Popover>
+        );
+    },
     //生成主菜单
     generateMenu: function() {
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
@@ -587,15 +612,23 @@ var NavSidebar = createReactClass({
                 // 'reduce-nav-icon-li': this.state.isReduceNavIcon,
                 // 'reduce-nav-margin-li': this.state.isReduceNavMargin
             });
+            let routeContent = (
+                <NavLink to={`${menu.routePath}`}
+                    activeClassName='active'
+                    className={extraClass}
+                >
+                    {this.renderUnreadReplyTip(category)}
+                    {/*{this.state.isReduceNavIcon ? (<span> {menu.shortName} </span>) : null}*/}
+                </NavLink>
+            );
+            //判断是否是个人正式版，以及有通话路由
+            let versionAndType = checkVersionAndType();
+            if(ROUTE_CONST.CALL_RECORD === category && versionAndType.isPersonalFormal) {
+                routeContent = this.disableClickBlock(extraClass);
+            }
             return (
                 <li key={i} title={menu.name} className={routeCls}>
-                    <NavLink to={`${menu.routePath}`}
-                        activeClassName='active'
-                        className={extraClass}
-                    >
-                        {this.renderUnreadReplyTip(category)}
-                        {/*{this.state.isReduceNavIcon ? (<span> {menu.shortName} </span>) : null}*/}
-                    </NavLink>
+                    {routeContent}
                 </li>
             );
         });
@@ -608,6 +641,13 @@ var NavSidebar = createReactClass({
         });
         const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
             (<i className={iconCls} style={{fontSize: 24}}/>);
+
+        const versionAndType = checkVersionAndType();
+        let dialUpKeyBoardContent = null;
+        //个人正式版，拨号功能不可用，需提示升级为企业版
+        if(this.state.isShowDialUpKeyboard && versionAndType.isPersonalFormal) {
+            dialUpKeyBoardContent = Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'});
+        }
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
@@ -644,6 +684,7 @@ var NavSidebar = createReactClass({
                             this.state.isShowDialUpKeyboard ? (
                                 <DialUpKeyboard
                                     placement="right"
+                                    content={dialUpKeyBoardContent}
                                     dialIcon={DialIcon}
                                     inputNumber={this.state.ronglianNum}
                                 />
