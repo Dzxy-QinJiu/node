@@ -10,24 +10,6 @@
     border-bottom: 4px solid @border-color;
     border-radius: 0;
   }
-  .my-data-call-time-card{
-    &.has-loading{
-      min-height: 182px;
-      position: relative;
-    }
-    .call-time-select-wrapper{
-      .ant-select-selection{
-        height: 24px;
-        margin-right: 5px;
-        .ant-select-selection__rendered{
-          line-height: 24px;
-        }
-      }
-      .call-time-select{
-        float: right;
-      }
-    }
-  }
 }
 
 .my-data-title {
@@ -127,6 +109,25 @@
   .progress-bar-wrap {
     float: right;
     width: 80%;
+  }
+}
+
+//时间筛选样式
+.my-data-call-time-card,.my-data-preformance-card{
+  &.has-loading{
+    min-height: 182px;
+    position: relative;
+  }
+  .select-wrapper{
+    .ant-select-selection{
+      height: 24px;
+      .ant-select-selection__rendered{
+        line-height: 24px;
+      }
+    }
+    .call-time-select,.performance-select{
+      float: right;
+    }
   }
 }
 

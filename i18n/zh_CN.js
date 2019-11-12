@@ -422,6 +422,7 @@ var zh_CN = {
     'home.page.extract.clues.on.today': '今天已提取{extractedCount}条线索，还可提取{canCount}条线索',
     'home.page.extracted.clues.on.months': '本月已提取{count}条线索',
     'home.page.extracted.clues.on.today': '今天已提取{count}条线索',
+    'home.page.performance.at.time': '{time}业绩',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/

@@ -36,6 +36,11 @@ exports.getThisQuarterTimeStamp = () => {
     return getTimeStamp(DatePickerUtils.getThisQuarterTime('true'));
 };
 
+// 获取本年的开始、结束时间的毫秒数
+exports.getThisYearTimeStamp = () => {
+    return getTimeStamp(DatePickerUtils.getThisYearTime('true'));
+};
+
 // 获取近一周的开始、结束时间的毫秒数
 exports.getNearlyWeekTimeStamp = () => {
     return getTimeStamp(DatePickerUtils.getNearlyWeekTime());

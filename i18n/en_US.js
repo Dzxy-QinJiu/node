@@ -413,6 +413,7 @@ var en_US = {
     'home.page.extract.clues.on.today': '{extractedCount} clues have been extracted today, can also extract {canCount} clues',//今天已提取{extractedCount}条线索，还可提取{canCount}条线索
     'home.page.extracted.clues.on.months': 'The {count} clue has been extracted this month',//本月已提取{count}条线索
     'home.page.extracted.clues.on.today': 'The {count} clues have been extracted today',//今天已提取{count}条线索
+    'home.page.performance.at.time': '{time} performance',//{time}业绩
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
