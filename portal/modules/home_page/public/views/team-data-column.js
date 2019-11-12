@@ -28,6 +28,7 @@ import {contractChart} from 'ant-chart-collection';
 import {isOpenCash, isFormalUser, getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis } from 'antc';
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
+import Trace from 'LIB_DIR/trace';
 const performance = {
     image_1: require('../images/performance_1.png'),
     image_2: require('../images/performance_2.png'),
@@ -375,6 +376,15 @@ class TeamDataColumn extends React.Component {
     }
 
     handlePerformanceDateChange = (value) => {
+        let time = '';
+        if(value === DATE_TYPE_KEYS.THIS_MONTH){
+            time = '本月';
+        }else if(value === DATE_TYPE_KEYS.THIS_QUARTER) {
+            time = '本季度';
+        }else {
+            time = '今年';
+        }
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'点击' + time + '业绩按钮');
         this.setState({currentPerforManceDateType: value}, () => {
             this.getPerformanceData();
         });
