@@ -40,3 +40,11 @@ exports.getPaymentMode = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+//获取支付渠道信息
+exports.getGoodsDiscountList = function(req, res) {
+    payService.getGoodsDiscountList(req, res).on('success' , function(data) {
+        res.status(200).json(data);
+    }).on('error' , function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

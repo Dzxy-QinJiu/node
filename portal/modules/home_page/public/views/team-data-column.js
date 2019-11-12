@@ -20,6 +20,7 @@ import {
     getLastWeekTimeStamp,
     getThisMonthTimeStamp,
     getThisQuarterTimeStamp,
+    getThisYearTimeStamp
 } from 'PUB_DIR/sources/utils/time-stamp-util';
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
@@ -27,6 +28,7 @@ import {contractChart} from 'ant-chart-collection';
 import {isOpenCash, isFormalUser, getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis } from 'antc';
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
+import Trace from 'LIB_DIR/trace';
 const performance = {
     image_1: require('../images/performance_1.png'),
     image_2: require('../images/performance_2.png'),
@@ -40,6 +42,7 @@ const DATE_TYPE_KEYS = {
     THIS_MONTH: 'this_month',
     THIS_QUARTER: 'this_quarter',
     NEARLY_THREE_MONTH: 'nearly_three_month',
+    THIS_YEAR: 'this_year'
 };
 const DATE_TYPE_MAP = [
     {
@@ -58,6 +61,22 @@ const DATE_TYPE_MAP = [
         name: Intl.get('user.time.prev.week', '上周'),
         value: DATE_TYPE_KEYS.LAST_WEEK
     },
+];
+
+//业绩时间筛选
+const PERFORMANCE_DATE_TYPE = [
+    {
+        name: Intl.get('common.this.month', '本月'),
+        value: DATE_TYPE_KEYS.THIS_MONTH
+    },
+    {
+        name: Intl.get('common.current.quarter', '本季度'),
+        value: DATE_TYPE_KEYS.THIS_QUARTER
+    },
+    {
+        name: Intl.get('clue.customer.this.year', '今年'),
+        value: DATE_TYPE_KEYS.THIS_YEAR
+    }
 ];
 
 const TABLE_CONSTS = {
@@ -104,7 +123,9 @@ class TeamDataColumn extends React.Component {
             extractCluesTotal: 0,
             //提取线索条数（正式用户（显示本月提取数），测试用户（显示今天提取数））
             extractCluesCount: 0,
-            organization: getOrganization()
+            //当前业绩选择的时间类型（默认本月）
+            currentPerforManceDateType: DATE_TYPE_KEYS.THIS_MONTH,
+            performanceLoading: false,
         };
     }
 
@@ -332,10 +353,20 @@ class TeamDataColumn extends React.Component {
     }
 
     getPerformanceData() {
-        myDataAjax.getContractPerformance().then((data) => {
-            this.setState({performanceData: data});
+        let queryParams = {};
+        let dateType = this.state.currentPerforManceDateType;
+        if(dateType === DATE_TYPE_KEYS.THIS_MONTH) {//本月
+            queryParams = getThisMonthTimeStamp();
+        }else if(dateType === DATE_TYPE_KEYS.THIS_QUARTER) {//本季度
+            queryParams = getThisQuarterTimeStamp();
+        }else if(dateType === DATE_TYPE_KEYS.THIS_YEAR) {//本年
+            queryParams = getThisYearTimeStamp();
+        }
+        this.setState({performanceLoading: true});
+        myDataAjax.getContractPerformance(queryParams).then((data) => {
+            this.setState({performanceData: data, performanceLoading: false});
         }, (errorMsg) => {
-
+            this.setState({performanceData: {}, performanceLoading: false});
         });
     }
 
@@ -343,6 +374,21 @@ class TeamDataColumn extends React.Component {
     isSalesRole() {
         return !userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     }
+
+    handlePerformanceDateChange = (value) => {
+        let time = '';
+        if(value === DATE_TYPE_KEYS.THIS_MONTH){
+            time = '本月';
+        }else if(value === DATE_TYPE_KEYS.THIS_QUARTER) {
+            time = '本季度';
+        }else {
+            time = '今年';
+        }
+        Trace.traceEvent(ReactDOM.findDOMNode(this),'点击' + time + '业绩按钮');
+        this.setState({currentPerforManceDateType: value}, () => {
+            this.getPerformanceData();
+        });
+    };
 
     renderPerformanceData() {
         const performanceData = this.state.performanceData;
@@ -368,24 +414,54 @@ class TeamDataColumn extends React.Component {
         //当前业绩占总数的百分比
         let curPerformance = _.get(performanceData, 'own.performance', 0);
         let percent = totalData ? (curPerformance / totalData) * 100 : 0;
+        const performanceOptions = _.map(PERFORMANCE_DATE_TYPE, date => (
+            <Option key={date.value} value={date.value}>{date.name}</Option>
+        ));
+        const cls = classNames('my-data-preformance-card', {
+            'has-loading': this.state.performanceLoading
+        });
+        let dateType = this.state.currentPerforManceDateType;
+        let time = '';
+        if(dateType === DATE_TYPE_KEYS.THIS_MONTH){
+            time = Intl.get('common.this.month', '本月');
+        }else if(dateType === DATE_TYPE_KEYS.THIS_QUARTER) {
+            time = Intl.get('common.current.quarter', '本季度');
+        }else {
+            time = Intl.get('clue.customer.this.year', '今年');
+        }
         const performanceContent = (
             <div>
-                <div className='my-data-title'>本月业绩</div>
-                <div className='my-contact-performance my-data-title-data'>
-                    <span
-                        className="performance-data-left"> {Intl.get('contract.159', '{num}元', {num: _.get(performanceData, 'own.performance')})}</span>
-                    {isSales ? (
-                        <span
-                            className="performance-data-right">{Intl.get('home.page.performance.num', '第{n}名', {n: _.get(performanceData, 'own.order')})}</span>) : null}
+                <div className='my-data-title'>
+                    <div className="select-wrapper">
+                        <span>{Intl.get('home.page.performance.at.time', '{time}业绩',{time: time})}</span>
+                        <Select
+                            value={this.state.currentPerforManceDateType}
+                            onChange={this.handlePerformanceDateChange}
+                            className="performance-select"
+                        >
+                            {performanceOptions}
+                        </Select>
+                    </div>
                 </div>
-                {isSales ? (
-                    <div className='my-data-performance-chart'>
-                        <span className='my-performance-percent' style={{width: percent + '%'}}/>
-                    </div>) : null}
-                {isSales ? (<div className="my-data-detail-list">{topPerformance}</div>) : null}
+                {this.state.performanceLoading ? <Spinner/> : (
+                    <div>
+                        <div className='my-contact-performance my-data-title-data'>
+                            <span
+                                className="performance-data-left"> {Intl.get('contract.159', '{num}元', {num: _.get(performanceData, 'own.performance')})}</span>
+                            {isSales ? (
+                                <span
+                                    className="performance-data-right">{Intl.get('home.page.performance.num', '第{n}名', {n: _.get(performanceData, 'own.order')})}</span>) : null}
+                        </div>
+                        {isSales ? (
+                            <div className='my-data-performance-chart'>
+                                <span className='my-performance-percent' style={{width: percent + '%'}}/>
+                            </div>) : null}
+                        {isSales ? (<div className="my-data-detail-list">{topPerformance}</div>) : null}
+                    </div>
+                )}
             </div>);
         return (<DetailCard content={performanceContent}
-            className='my-data-preformance-card'/>);
+            className={cls}/>);
     }
 
     renderCallTime() {
@@ -409,7 +485,7 @@ class TeamDataColumn extends React.Component {
         const callTimeContent = (
             <div>
                 <div className='my-data-title'>
-                    <div className="call-time-select-wrapper">
+                    <div className="select-wrapper">
                         <span>{Intl.get('home.page.callout.time', '呼出总时长')}</span>
                         <Select
                             value={this.state.currentDateType}
@@ -637,8 +713,8 @@ class TeamDataColumn extends React.Component {
                         const customerNum = customers.length;
 
                         _.each(customers, (customer, index) => {
-                            let customerName = customer.customer_name;
-                            let userName = customer.customer_sales_name || '';
+                            let customerName = _.get(customer,'customer_name','');
+                            let userName = _.get(customer,'customer_sales_name','');
 
                             if (index !== customerNum - 1) {
                                 const suffix = ', ';

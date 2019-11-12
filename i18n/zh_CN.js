@@ -422,6 +422,7 @@ var zh_CN = {
     'home.page.extract.clues.on.today': '今天已提取{extractedCount}条线索，还可提取{canCount}条线索',
     'home.page.extracted.clues.on.months': '本月已提取{count}条线索',
     'home.page.extracted.clues.on.today': '今天已提取{count}条线索',
+    'home.page.performance.at.time': '{time}业绩',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -2739,6 +2740,8 @@ var zh_CN = {
     'clue.customer.will.distribution': '待分配',
     'clue.customer.has.distribution': '已分配',
     'clue.customer.has.follow': '已跟进',
+    'clue.customer.no.classify.tip': '暂无分类',
+    'clue.customer.filter.classify.not.setting': '未设置',
     'sales.homepage.hide.teamlist': '隐藏团队列表',
     'sales.homepage.show.teamlist': '展开团队列表',
     'crm.save.customertrace.first': '请先保存或取消正在编辑的跟进记录',
@@ -3720,6 +3723,9 @@ var zh_CN = {
     'clue.recommend.input.keyword': '请输入关键词',
     'clue.recommend.extract.num.limit': '您所在组织{timerange}提取的线索数已达{maxLimit}条上限，请明天再来提取',
     'clue.recommend.has.extract': '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',
+    'clue.recommend.formal.extract.num.limit.tip': '本月{count}条已提取完毕，如需继续提取请{addClues}',
+    'clue.recommend.trial.extract.num.limit.tip': '明天可再提取{count}条，如需马上提取请{upgradedVersion}',
+    'clue.recommend.company.trial.extract.num.limit.tip': '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',
     'clue.customer.noty.all.list': '查看全部',
     'clue.merge.customer.contact.error.tip': '请填写正确的联系方式后，再进行合并',
     'common.personal.contribution.score': '个人贡献分数',
@@ -3817,6 +3823,15 @@ var zh_CN = {
     'payment.again.create.order': '重新生成',
     'payment.order.timeout': '订单超时，{retry}',
     'payment.again.create.order.faild': '生成订单失败，{retry}',
+    'payment.renewal': '续费',
+    'payment.please.contact.our.sale': '请联系我们的销售人员进行升级，联系方式：{contact}',
+    'payment.upgrading': '正在升级...',
+    'payment.countdown.default.msg': '倒计时中...',
+    'payment.upgrade.version.success': '您已成功升级为正式版，{time} 到期',
+    'payment.renewal.version.success': '您已成功续费，{time} 到期',
+    'payment.get.payment.mode.faild': '获取支付渠道失败',
+    'payment.get.discount.faild': '获取商品折扣信息失败',
+    'payment.please.upgrade.company.version': '请先升级为企业版。您可以联系我们的销售：{contact}',
     /*支付流程 --- end*/
 };
 export default zh_CN;

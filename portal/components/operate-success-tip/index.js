@@ -6,6 +6,7 @@
 // 操作成功后的界面
 import './style.less';
 import {Button} from 'antd';
+import CountDown from 'CMP_DIR/countdown';
 
 function loop() {}
 
@@ -14,18 +15,30 @@ class OperateSuccessTip extends React.Component {
         super(props);
     }
 
+    onComplete = () => {
+        this.props.onCountDownComplete();
+    };
+
     render() {
         return (
             <div className="operate-finished-wrapper" data-tracename="完成提示框">
                 <i className="iconfont icon-add-success" style={{color: this.props.iconColor}}/>
                 <div className="operate-finished-title">{this.props.title}</div>
-                <div className="operate-finished-tip">{this.props.tip}</div>
-                {this.props.isShowBtn ? (
-                    <div className="btn-wrapper">
-                        <Button type="primary" onClick={this.props.continueFn} data-tracename="点击继续操作按钮">{this.props.continueText}</Button>
-                        <Button onClick={this.props.goFn} data-tracename="点击其他操作按钮">{this.props.goText}</Button>
-                    </div>
-                ) : null}
+                {
+                    this.props.showCountDown ? (
+                        <CountDown seconds={this.props.countDownSeconds} msg={this.props.countDownMsg} onComplete={this.onComplete}/>
+                    ) : (
+                        <div>
+                            <div className="operate-finished-tip">{this.props.tip}</div>
+                            {this.props.isShowBtn ? (
+                                <div className="btn-wrapper">
+                                    <Button type="primary" onClick={this.props.continueFn} data-tracename="点击继续操作按钮">{this.props.continueText}</Button>
+                                    <Button onClick={this.props.goFn} data-tracename="点击其他操作按钮">{this.props.goText}</Button>
+                                </div>
+                            ) : null}
+                        </div>
+                    )
+                }
             </div>
         );
     }
@@ -39,6 +52,9 @@ OperateSuccessTip.defaultProps = {
     goFn: loop,//其他操作事件
     isShowBtn: true,//是否显示按钮
     iconColor: '#28AF6A',
+    showCountDown: false,//是否显示倒计时
+    countDownSeconds: 10,//倒计时时间
+    onCountDownComplete: loop,//倒计时完成回调函数
 };
 OperateSuccessTip.propTypes = {
     title: PropTypes.oneOfType[PropTypes.string, PropTypes.element],
@@ -49,6 +65,10 @@ OperateSuccessTip.propTypes = {
     goFn: PropTypes.func,
     isShowBtn: PropTypes.bool,
     iconColor: PropTypes.string,
+    showCountDown: PropTypes.bool,
+    countDownMsg: PropTypes.string,
+    countDownSeconds: PropTypes.number,
+    onCountDownComplete: PropTypes.func,
 };
 
 module.exports = OperateSuccessTip;

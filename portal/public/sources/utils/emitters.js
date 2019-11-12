@@ -253,4 +253,5 @@ export { userDetailEmitter };
 //购买支付相关事件
 const paymentEmitter = new EventEmitter();
 paymentEmitter.OPEN_ADD_CLUES_PANEL = 'open_add_clues_panel';//打开购买线索量的面板
+paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL = 'open_upgrade_personal_version_panel';//打开升级个人正式版的面板
 export { paymentEmitter };

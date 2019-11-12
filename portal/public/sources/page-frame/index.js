@@ -16,6 +16,7 @@ import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import PurchaseLeads from 'CMP_DIR/purchase-leads';
+import OfficialPersonalEdition from 'CMP_DIR/official-personal-edition';
 import{
     myWorkEmitter,
     notificationEmitter,
@@ -47,6 +48,8 @@ class PageFrame extends React.Component {
         userDetailParamObj: $.extend(true, {}), // 用户详情组件相关的参数
         isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
         cluePaymentParamObj: {},
+        isShowPersonalVersionPanel: false,//是否展示升级个人正式版面板
+        personalPaymentParamObj: {},
     };
 
     componentDidMount() {
@@ -71,6 +74,8 @@ class PageFrame extends React.Component {
         userDetailEmitter.on(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
         //打开增加线索量的面板的事件监听
         paymentEmitter.on(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
+        //打开升级个人正式版的面板的事件监听
+        paymentEmitter.on(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, this.showPersonalVersionPanel);
 
         $(window).on('resize', this.resizeHandler);
     }
@@ -124,6 +129,7 @@ class PageFrame extends React.Component {
         // 关闭用户详情面板的事件监听
         userDetailEmitter.removeListener(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
         paymentEmitter.removeListener(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
+        paymentEmitter.removeListener(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, this.showPersonalVersionPanel);
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
@@ -248,6 +254,13 @@ class PageFrame extends React.Component {
         this.setState({isShowPurchaseLeadsPanel: false, cluePaymentParamObj: {}});
     };
 
+    showPersonalVersionPanel = (paramObj) => {
+        this.setState({isShowPersonalVersionPanel: true, personalPaymentParamObj: $.extend(this.state.personalPaymentParamObj, paramObj)});
+    };
+    closePersonalVersionPanel = () => {
+        this.setState({isShowPersonalVersionPanel: false, personalPaymentParamObj: {}});
+    };
+
     render() {
         var audioParamObj = this.state.audioParamObj;
         return (
@@ -294,6 +307,14 @@ class PageFrame extends React.Component {
                                 <PurchaseLeads
                                     paramObj={this.state.cluePaymentParamObj}
                                     onClosePanel={this.closePurchaseLeadsPanel}
+                                />
+                            ) : null
+                        }
+                        {
+                            this.state.isShowPersonalVersionPanel ? (
+                                <OfficialPersonalEdition
+                                    paramObj={this.state.personalPaymentParamObj}
+                                    onClosePanel={this.closePersonalVersionPanel}
                                 />
                             ) : null
                         }

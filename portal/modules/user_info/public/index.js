@@ -156,18 +156,18 @@ var UserInfoPage = createReactClass({
                                     : null
                             }
                         </TabPane>
-                        {/*<TabPane*/}
-                        {/*tab={Intl.get('user.trade.record', '购买记录')}*/}
-                        {/*key={TAB_KEYS.TRADE_TAB}*/}
-                        {/*>*/}
-                        {/*{*/}
-                        {/*this.state.activeKey === TAB_KEYS.TRADE_TAB ? (*/}
-                        {/*<TradeRecord*/}
-                        {/*height={containerHeight + logTitleHeight}*/}
-                        {/*/>*/}
-                        {/*) : null*/}
-                        {/*}*/}
-                        {/*</TabPane>*/}
+                        <TabPane
+                            tab={Intl.get('user.trade.record', '购买记录')}
+                            key={TAB_KEYS.TRADE_TAB}
+                        >
+                            {
+                                this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
+                                    <TradeRecord
+                                        height={containerHeight + logTitleHeight}
+                                    />
+                                ) : null
+                            }
+                        </TabPane>
                     </Tabs>
                 </div>
             </div>

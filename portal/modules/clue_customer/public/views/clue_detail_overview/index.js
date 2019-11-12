@@ -273,7 +273,10 @@ class ClueDetailOverview extends React.Component {
         });
         //按点击的次数进行排序
         var dataList = _.sortBy(this.props.salesManList,(item) => {return -item.clickCount;});
-        return dataList.map((sales, idx) => {
+        //主管分配线索时，负责人是自己的不能分配给自己
+        let userList = _.cloneDeep(dataList);
+        userList = _.filter(userList, user => !_.isEqual(_.get(user, 'user_info.user_id'), userData.getUserData().user_id));
+        return userList.map((sales, idx) => {
             let teamName = _.get(sales, 'user_groups[0].group_name') ? ` - ${sales.user_groups[0].group_name}` : '';
             let name = _.get(sales, 'user_info.nick_name', '') + teamName;
             return (<Option key={idx}
@@ -1262,7 +1265,7 @@ class ClueDetailOverview extends React.Component {
                                 selectOptions={this.getClueClassifyOptions()}
                                 onSelectChange={this.onSelectClueClassify}
                                 placeholder={Intl.get('crm.clue.classify.placeholder', '请选择或输入线索分类')}
-                                noDataTip={Intl.get('common.unknown', '未知')}
+                                noDataTip={Intl.get( 'clue.customer.no.classify.tip', '暂无分类')}
                                 addDataTip={Intl.get('clue.add.clue.classfify', '添加线索分类')}
                             />
                         </div>

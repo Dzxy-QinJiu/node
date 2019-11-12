@@ -17,7 +17,8 @@ import Spinner from 'CMP_DIR/spinner';
 import {
     formatSalesmanList,
     getTableContainerHeight,
-    isResponsiveDisplay
+    isResponsiveDisplay,
+    checkCurrentVersion
 } from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 const LAYOUT_CONSTANTS = {
@@ -336,6 +337,7 @@ class RecommendCustomerRightPanel extends React.Component {
     extractClueOperator = (hasAssignedPrivilege, record, assigenCls, isDetailExtract) => {
         var checkRecord = this.state.tablePopoverVisible === record.id;
         var maxLimitTip = Intl.get('clue.recommend.extract.num.limit', '您所在组织{timerange}提取的线索数已达{maxLimit}条上限，请明天再来提取',{maxLimit: this.state.maxLimitExtractNumber, timerange: this.getTimeRangeText()});
+        maxLimitTip = this.hasNoExtractCountTip(maxLimitTip);
         if (hasAssignedPrivilege) {
             return (
                 <AntcDropdown
@@ -444,6 +446,10 @@ class RecommendCustomerRightPanel extends React.Component {
     isCommonSales = () => {
         return userData.getUserData().isCommonSales;
     };
+    //判断是否为管理员
+    isManager = () => {
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN); // 返回true，说明是管理员，否则是销售或运营
+    };
     //是否是试用账号,
     isTrialAccount = () => {
         return _.get(getOrganization(),'version.type') === '试用';
@@ -451,6 +457,70 @@ class RecommendCustomerRightPanel extends React.Component {
     //是否是正式账号
     isOfficalAccount = () => {
         return _.get(getOrganization(),'version.type') === '正式';
+    };
+    //个人试用升级为正式版
+    handleUpgradePersonalVersion = () => {
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
+            updateVersion: (result) => {
+                //需要更新最大线索量
+                let lead_limit = _.get(result, 'version.lead_limit', '');
+                let clue_number = _.get(lead_limit.split('_'),'[0]',0);
+                this.setState({
+                    maxLimitExtractNumber: +clue_number,
+                    getMaxLimitExtractNumberError: false,
+                    tablePopoverVisible: '',
+                    batchPopoverVisible: ''
+                });
+            }
+        });
+    };
+    //增加线索量
+    handleClickAddClues = () => {
+        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL, {
+            updateCluesCount: (result) => {
+                let count = _.get(result, 'count', 0);
+                let maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+                this.setState({
+                    maxLimitExtractNumber: count + maxLimitExtractNumber,
+                    getMaxLimitExtractNumberError: false,
+                    tablePopoverVisible: '',
+                    batchPopoverVisible: ''
+                });
+            }
+        });
+    };
+    //提取数为0时显示的提示信息
+    hasNoExtractCountTip = (maxLimitTip) => {
+        var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
+        var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
+        let currentVersion = checkCurrentVersion();
+        if(!ableExtract){
+            //个人版试用提示升级,正式提示增加线索量
+            //企业版试用提示升级,正式（管理员）提示增加线索量
+            if(currentVersion.personal && this.isTrialAccount()) {//个人试用
+                maxLimitTip = <ReactIntl.FormattedMessage
+                    id="clue.recommend.trial.extract.num.limit.tip"
+                    defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
+                    values={{
+                        count: maxLimitExtractNumber,
+                        upgradedVersion: <a onClick={this.handleUpgradePersonalVersion} data-tracename="点击个人升级为正式版按钮">{Intl.get('personal.upgrade.to.official.version', '升级为正式版')}</a>
+                    }}
+                />;
+            } else if(currentVersion.company && this.isTrialAccount()) {//企业试用
+                maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
+            } else if(currentVersion.personal && this.isOfficalAccount()//个人正式版
+                || currentVersion.company && this.isOfficalAccount() && this.isManager()) { //或企业正式版管理员
+                maxLimitTip = <ReactIntl.FormattedMessage
+                    id="clue.recommend.formal.extract.num.limit.tip"
+                    defaultMessage={'本月{count}条已提取完毕，如需继续提取请{addClues}'}
+                    values={{
+                        count: maxLimitExtractNumber,
+                        addClues: <a onClick={this.handleClickAddClues} data-tracename="点击增加线索量按钮">{Intl.get('goods.increase.clues', '增加线索量')}</a>
+                    }}
+                />;
+            }
+        }
+        return maxLimitTip;
     };
     batchAssignRecommendClues = (submitObj) => {
         this.setState({
@@ -638,6 +708,7 @@ class RecommendCustomerRightPanel extends React.Component {
         //账号类型不一样提示也不一样
         var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract,timerange: this.getTimeRangeText()});
         let {isWebMin} = isResponsiveDisplay();
+        maxLimitTip = this.hasNoExtractCountTip(maxLimitTip);
         if (this.isCommonSales()) { // 普通销售批量提取线索
             return (
                 <Popover
@@ -694,8 +765,6 @@ class RecommendCustomerRightPanel extends React.Component {
                     clearSelectData={this.clearSelectSales}
                     btnAtTop={false}
                 />
-
-
             );
         }
     };
@@ -705,10 +774,6 @@ class RecommendCustomerRightPanel extends React.Component {
                 batchPopoverVisible: false
             });
         }
-    };
-    //增加线索量
-    handleClickAddClues = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_ADD_CLUES_PANEL);
     };
     render() {
         var hasSelectedClue = _.get(this, 'state.selectedRecommendClues.length');
@@ -750,18 +815,6 @@ class RecommendCustomerRightPanel extends React.Component {
                                 {
                                     hasSelectedClue ? this.renderBatchChangeClues() : null
                                 }
-                                {/*{* 入口不应该在此处，暂时注释掉/}
-                                    {/*_.isEqual(_.get(getOrganization(),'type'), '试用') ? null :*/}
-                                {/*<Button className="btn-item add-clues-btn" data-tracename="点击增加线索量"*/}
-                                {/*title={Intl.get('goods.increase.clues', '增加线索量')}*/}
-                                {/*onClick={this.handleClickAddClues}>*/}
-                                {/*{isWebMin ? <span className="iconfont icon-plus"/> :*/}
-                                {/*<React.Fragment>*/}
-                                {/*<span className="iconfont icon-plus"/>*/}
-                                {/*{Intl.get('goods.increase.clues', '增加线索量')}*/}
-                                {/*</React.Fragment>}*/}
-                                {/*</Button>*/}
-                                {/*}*/}
                             </div>
                         </TopNav>
                         <div className="recommend-clue-content-container">

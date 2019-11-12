@@ -37,6 +37,9 @@ class DialUpKeyboard extends React.Component {
     }
 
     renderPhoneNumberBoard() {
+        if(this.props.content) {
+            return this.props.content;
+        }
         if(this.state.keyboardVisible){
             return (<PhoneNumberBoard phoneNumber={this.state.phoneNumber} inputNumber={this.state.inputNumber}/>);
         }
@@ -71,5 +74,7 @@ DialUpKeyboard.propTypes = {
     placement: PropTypes.string,
     //拨号图标(可以是字符串也可以是图标等元素)
     dialIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    //拨号键盘的显示内容
+    content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 export default DialUpKeyboard;

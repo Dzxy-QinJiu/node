@@ -16,30 +16,21 @@ const AUTO_SETTING_KEY = 'autoSetting';
 const CLUE_GOODS_TYPE = 'clue';
 
 class PurchaseLeads extends React.Component{
-    state = {
-        isGetGoodsLoading: false,//获取商品列表加载状态
-        showPaymentMode: false,//下单成功后显示支付二维码界面
-        errMsg: '',//获取商品列表错误信息提示
-        list: [],//商品列表
-        last_id: '',
-        total: 0,
-        listenScrollBottom: false,
-        leftTitle: Intl.get('goods.increase.clues', '增加线索量'),
-        // rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
-        i18nId: 'clues.extract.count.at.part',
-        i18nMessage: '线索提取量每份 {count} 条',
-        count: 0,
-        curOrderInfo: {},
-        listHeight: 120,
-        activeClueGoods: {},
-        payModeList: [],//支付渠道,如支付宝，微信
-        inputNumber: 1,//输入的线索量份数
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            ...this.getInitialState(),
+            listHeight: 120,
+            inputNumber: 1,//输入的线索量份数
+            showCountDown: true,
+        };
+    }
 
     componentDidMount() {
         this.getPayModeAndGoodsList();
     }
 
+    //获取支付渠道和商品列表
     getPayModeAndGoodsList() {
         this.setState({
             isGetGoodsLoading: true,
@@ -84,7 +75,7 @@ class PurchaseLeads extends React.Component{
             }, (errMsg) => {
                 this.setState({
                     isGetGoodsLoading: false,
-                    errMsg: errMsg || Intl.get('clues.get.goods.faild', '获取商品失败')
+                    errMsg: errMsg
                 });
             });
         }
@@ -96,8 +87,6 @@ class PurchaseLeads extends React.Component{
             errMsg: ''
         };
         let list = _.isArray(result.list) ? result.list : [];
-        //status: 商品状态（0：停用，1：启用）
-        list = _.filter(list, item => item.status);
         if(list.length) {
             //构建线索量的商品,1份，2份，5份。。。
             let originalList = list[0];
@@ -106,11 +95,11 @@ class PurchaseLeads extends React.Component{
                     num: item,
                     id: originalList.id,
                     type: originalList.type,
-                    clue_number: _.get(originalList,'clue_number', 0) * item,
+                    clue_number: _.get(originalList,'number', 0) * item,
                 };
             });
-            newState.activeClueGoods = newState.list[0];
-            newState.count = _.get(originalList,'clue_number', 0);
+            newState.activeGoods = newState.list[0];
+            newState.count = _.get(originalList,'number', 0);
         }
         this.setState(newState);
     }
@@ -132,15 +121,9 @@ class PurchaseLeads extends React.Component{
         });
     };
 
-    handleClickGoodsItem = (good) => {
-        this.setState({
-            activeClueGoods: good
-        });
-    };
-
     //处理提交的商品信息
     dealSubmitGoodInfo = () => {
-        let activeGood = this.state.activeClueGoods;
+        let activeGood = this.state.activeGoods;
         let good = {};
         //判断是否是自己手动输入的份数
         if(_.has(activeGood,'key') && _.isEqual(activeGood.key, AUTO_SETTING_KEY)) {
@@ -174,7 +157,7 @@ class PurchaseLeads extends React.Component{
             continueText: Intl.get('clue.extract.clue', '提取线索'),
             goText: Intl.get('user.trade.record', '购买记录'),
             continueFn: () => {
-                if (_.isFunction(this.props.paramObj.continueFn)) {
+                if (_.isFunction(_this.props.paramObj.continueFn)) {
                     _this.props.paramObj.continueFn(orderInfo);
                 }
                 _this.onClosePanel();
@@ -184,24 +167,39 @@ class PurchaseLeads extends React.Component{
                     show_pay_record: true
                 });
                 _this.onClosePanel();
+            },
+            countDownMsg: Intl.get('payment.upgrading', '正在升级...'),
+            countDownSeconds: 6,
+            onCountDownComplete: () => {
+                //更新线索量信息
+                if (_.isFunction(_this.props.paramObj.updateCluesCount)) {
+                    let activeGoods = _this.state.activeGoods;
+                    let clue_number = _.get(activeGoods, 'clue_number', 0);
+                    _this.props.paramObj.updateCluesCount({count: clue_number});
+                }
+                _this.setState({
+                    showCountDown: false,//关闭倒计时
+                    isShowCloseBtn: true,//显示关闭按钮
+                });
             }
         };
         this.setState({
             showPaymentMode: false,
             isPaymentSuccess: true,
+            isShowCloseBtn: false,
             operateSuccessTipProps
         });
     };
 
     render() {
         let autoSettingCls = classNames('goods-item',{
-            'goods-item-active': this.state.activeClueGoods.key === AUTO_SETTING_KEY
+            'goods-item-active': this.state.activeGoods.key === AUTO_SETTING_KEY
         });
         return (
             <Row gutter={4} className="leads-goods-content">
                 {this.state.list.map((item, index) => {
                     const cls = classNames('goods-item',{
-                        'goods-item-active': item.num === this.state.activeClueGoods.num
+                        'goods-item-active': item.num === this.state.activeGoods.num
                     });
                     return (
                         <Col span={6} key={index}>
@@ -220,10 +218,11 @@ class PurchaseLeads extends React.Component{
                 <Col span={6}>
                     <div className={autoSettingCls} onClick={this.handleClickGoodsItem.bind(this, {
                         key: 'autoSetting',
-                        id: this.state.list[0].id
+                        id: this.state.list[0].id,
+                        clue_number: _.get(this.state.list, '[0].number', 0) * this.state.inputNumber
                     })}>
                         <div className="goods-info">
-                            {this.state.inputNumber > 1 || this.state.activeClueGoods.key === AUTO_SETTING_KEY ? (
+                            {this.state.inputNumber > 1 || this.state.activeGoods.key === AUTO_SETTING_KEY ? (
                                 <InputNumber
                                     defaultValue={1}
                                     min={1}
@@ -252,4 +251,10 @@ PurchaseLeads.propTypes = {
     paramObj: PropTypes.object,
 };
 
-module.exports = HocGoodsBuy(PurchaseLeads);
+module.exports = HocGoodsBuy({
+    leftTitle: Intl.get('goods.increase.clues', '增加线索量'),
+    // rightTitle: Intl.get('personal.upgrade.to.enterprise.edition', '升级为企业版'),
+    i18nId: 'clues.extract.count.at.part',
+    i18nMessage: '线索提取量每份 {count} 条',
+    dataTraceName: '购买线索量界面',
+})(PurchaseLeads);

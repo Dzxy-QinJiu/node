@@ -100,10 +100,10 @@ class TradeRecord extends React.Component {
             title: Intl.get('deal.detail.panel.title','订单详情'),
             dataIndex: 'goods',
             width: '20%',
-            render: (text) => {
+            render: (text, record) => {
                 return (
                     <div className="order-detail">
-                        {_.get(text, 'name')}
+                        {_.get(text, 'name')} * {_.get(record, 'goods_num')}
                     </div>
                 );
             }

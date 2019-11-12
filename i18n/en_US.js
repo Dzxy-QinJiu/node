@@ -413,6 +413,7 @@ var en_US = {
     'home.page.extract.clues.on.today': '{extractedCount} clues have been extracted today, can also extract {canCount} clues',//今天已提取{extractedCount}条线索，还可提取{canCount}条线索
     'home.page.extracted.clues.on.months': 'The {count} clue has been extracted this month',//本月已提取{count}条线索
     'home.page.extracted.clues.on.today': 'The {count} clues have been extracted today',//今天已提取{count}条线索
+    'home.page.performance.at.time': '{time} performance',//{time}业绩
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -2701,6 +2702,8 @@ var en_US = {
     'clue.customer.will.distribution': 'To be assigned',//待分配
     'clue.customer.has.distribution': 'Assigned',//已分配
     'clue.customer.has.follow': 'Has followed up',//已跟进
+    'clue.customer.no.classify.tip': 'No Classification',//暂无分类
+    'clue.customer.filter.classify.not.setting': 'Not Setting',//未设置
     'cluecustomer.create.time': 'Created on {startTime}',//创建于{startTime}
     'cluecustomer.content.not.empty': 'Follow-up content can not be empty',//跟进内容不能为空
     'failed.submit.trace.content': 'Failed to add follow-up content',//添加跟进内容失败
@@ -3675,6 +3678,9 @@ var en_US = {
     'clue.recommend.input.keyword': 'Please input keyword',//请输入关键词
     'clue.recommend.extract.num.limit': 'The number of clues extracted by your organization {timerange} has reached the limit of {maxLimit}. Please come back tomorrow.',//您所在组织今天提取的线索数已达{maxLimit}条上限，请明天再来提取
     'clue.recommend.has.extract': 'Your organization has extracted {hasExtract} {timerange} and can extract up to {ableExtract} clues',//您所在的组织今天已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索
+    'clue.recommend.formal.extract.num.limit.tip': 'The {count} clause of this month has been extracted. If you need to continue to extract, please {addClues}.',//本月{count}条已提取完毕，如需继续提取请{addClues}
+    'clue.recommend.trial.extract.num.limit.tip': '{count} can be extracted again tomorrow. If necessary, {upgradedVersion} can be extracted immediately.',//明天可再提取{count}条，如需马上提取请{upgradedVersion}
+    'clue.recommend.company.trial.extract.num.limit.tip': 'You can extract {count} again tomorrow. If you need to extract it immediately, please contact our sales staff ({contact}) for upgrading',//明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级
     'clue.customer.noty.all.list': 'Click to see all',//查看所有线索？
     'clue.merge.customer.contact.error.tip': 'Please fill in the correct contact information before merging',//请填写正确的联系方式后，再进行合并
     'common.personal.contribution.score': 'Personal contribution score',//个人贡献分数
@@ -3766,6 +3772,15 @@ var en_US = {
     'payment.again.create.order': 'rebuild',//重新生成
     'payment.order.timeout': 'Order timeout, {retry}',//订单超时，{retry}
     'payment.again.create.order.faild': 'Failed to generate order, {retry}',//生成订单失败，{retry}
+    'payment.renewal': 'renewal',//续费
+    'payment.please.contact.our.sale': 'Please contact our sales staff for upgrade. Contact: {contact}',//请联系我们的销售人员进行升级，联系方式：{contact}
+    'payment.upgrading': 'Upgrading...',//正在升级...
+    'payment.countdown.default.msg': 'Countdown...',//倒计时中...
+    'payment.upgrade.version.success': 'You have successfully upgraded to the official version, {time} expires',//您已成功升级为正式版，{time} 到期
+    'payment.renewal.version.success': 'You have successfully renewed the subscription. {time} expires',//您已成功续费，{time} 到期
+    'payment.get.payment.mode.faild': 'Failed to obtain payment channel',//获取支付渠道失败
+    'payment.get.discount.faild': 'Failed to get item discount information',//获取商品折扣信息失败
+    'payment.please.upgrade.company.version': 'Please upgrade to enterprise first. You can contact our sales: {contact}',//请先升级为企业版。您可以联系我们的销售：{contact}
     /*支付流程 --- end*/
 
 };
