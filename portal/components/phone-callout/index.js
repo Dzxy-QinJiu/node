@@ -70,7 +70,7 @@ class PhoneCallout extends React.Component {
         //如果是个人正式版，需要提示升级为企业版才能拨打号码
         let versionAndType = checkVersionAndType();
         if(versionAndType.personal && versionAndType.formal && hasCalloutPrivilege()) {
-            contentTip = Intl.get('payment.please.upgrade.company.version', '请升级为企业版，联系方式：{contact}',{contact: '400-6978-520'});
+            contentTip = Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'});
         }
         var titleTip = Intl.get('crm.click.call.phone', '点击拨打电话');
         var contactName = this.props.contactName;

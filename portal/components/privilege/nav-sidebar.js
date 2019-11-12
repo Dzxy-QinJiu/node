@@ -514,7 +514,7 @@ var NavSidebar = createReactClass({
                         routeContent = (
                             <Popover
                                 placement='right'
-                                content={Intl.get('payment.please.upgrade.company.version', '请升级为企业版，联系方式：{contact}',{contact: '400-6978-520'})}
+                                content={Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'})}
                                 trigger="hover"
                             >
                                 <a style={{cursor: 'no-drop'}}>{obj.name}</a>
@@ -623,7 +623,7 @@ var NavSidebar = createReactClass({
                 routeContent = (
                     <Popover
                         placement='right'
-                        content={Intl.get('payment.please.upgrade.company.version', '请升级为企业版，联系方式：{contact}',{contact: '400-6978-520'})}
+                        content={Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'})}
                         trigger="hover"
                     >
                         <a className={extraClass} style={{cursor: 'no-drop'}}/>
@@ -650,7 +650,7 @@ var NavSidebar = createReactClass({
         let dialUpKeyBoardContent = null;
         //个人正式版，拨号功能不可用，需提示升级为企业版
         if(this.state.isShowDialUpKeyboard && versionAndType.isPersonalFormal) {
-            dialUpKeyBoardContent = Intl.get('payment.please.upgrade.company.version', '请升级为企业版，联系方式：{contact}',{contact: '400-6978-520'});
+            dialUpKeyBoardContent = Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'});
         }
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
