@@ -258,10 +258,11 @@ const TENTHOUSAND = 10000;
 export const staffSize = [
     {
         name: Intl.get('common.all', '全部'),
-        staffnumMin: '',
-        staffnumMax: ''
     },
-    {name: Intl.get('clue.customer.condition.staff.size', '{num}人以下', {num: 20}), staffnumMin: 0, staffnumMax: 20},
+    {
+        name: Intl.get('clue.customer.condition.staff.size', '{num}人以下', {num: 20}),
+        staffnumMax: 20
+    },
     {
         name: Intl.get('clue.customer.condition.staff.range', '{min}-{max}人', {min: 20, max: 99}),
         staffnumMin: 20,
@@ -282,18 +283,18 @@ export const staffSize = [
         staffnumMin: 1000,
         staffnumMax: 9999
     },
-    {name: Intl.get('clue.customer.staff.over.num', '{num}人以上', {num: TENTHOUSAND}), staffnumMin: TENTHOUSAND, staffnumMax: ''}
+    {
+        name: Intl.get('clue.customer.staff.over.num', '{num}人以上', {num: TENTHOUSAND}),
+        staffnumMin: TENTHOUSAND
+    }
 ];
 
 export const moneySize = [
     {
         name: Intl.get('common.all', '全部'),
-        capitalMin: '',
-        capitalMax: ''
     },
     {
         name: Intl.get('clue.customer.money.size.less.num', '{num}万以内', {num: 10}),
-        capitalMin: 0,
         capitalMax: 10 * TENTHOUSAND
     },
     {
@@ -314,7 +315,6 @@ export const moneySize = [
     {
         name: Intl.get('clue.customer.condition.over.num', '{num}万及以上', {num: 5000}),
         capitalMin: 5000 * TENTHOUSAND,
-        capitalMax: ''
     },
 ];
 export const companyProperty = [
