@@ -1,7 +1,5 @@
 require('./style.less');
 import TableListPanel from 'CMP_DIR/table-list-panel';
-import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
-import {listPanelEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ajax from 'ant-ajax';
 import userData from 'PUB_DIR/sources/user-data';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
@@ -443,76 +441,6 @@ class SalesReport extends React.Component {
         );
     };
 
-    //销售行为统计拜访客户数点击处理函数
-    visitedCustomerNumClickHandler = (e) => {
-        Trace.traceEvent(e, '点击销售个人报告页面上的销售行为统计拜访客户数查看详细列表');
-
-        const paramObj = {
-            listType: 'customer',
-            url: '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics',
-            conditions: [
-                {
-                    name: 'start_time',
-                    value: this.state.startTime
-                },
-                {
-                    name: 'end_time',
-                    value: this.state.endTime
-                },
-                {
-                    name: 'member_id',
-                    value: this.state.currentMember.user_id
-                }
-            ],
-            columns: [
-                {
-                    title: Intl.get('crm.41', '客户名'),
-                    dataIndex: 'name',
-                    width: '20%'
-                },
-                {
-                    title: Intl.get('common.visit.start.time', '拜访开始时间'),
-                    dataIndex: 'start_time',
-                    width: '15%'
-                },
-                {
-                    title: Intl.get('common.visit.end.time', '拜访结束时间'),
-                    dataIndex: 'end_time',
-                    width: '15%'
-                },
-                {
-                    title: Intl.get('common.customer.visit.record', '客户拜访记录'),
-                    dataIndex: 'remark',
-                    width: '50%'
-                }
-            ],
-            onRowClick: record => {
-                phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-                    customer_params: {
-                        currentId: record.id 
-                    }
-                });
-            }
-        };
-
-        listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
-    }
-
-    // 销售行为统计列处理函数
-    getSalesBehaviorVisitCustomerChartHandler = () => {
-        let chart = salesProductivityCharts.getSalesBehaviorVisitCustomerChart({
-            visitedCustomerNumClickHandler: this.visitedCustomerNumClickHandler
-        });
-        let columns = chart.option.columns;
-        // 没有开通营收中心时，去掉接通数(phone_answer)，未接通数(phone_no_answer)这两列
-        if(!commonMethodUtil.isOpenCaller()) {
-            chart.option.columns = _.filter(columns, column => {
-                return !_.includes(['phone_answer','phone_no_answer'], column.dataIndex);
-            });
-        }
-        return chart;
-    };
-
     //渲染销售行为
     renderSalesBehavior = () => {
         const roleName = this.state.currentMember.role_name;
@@ -549,7 +477,7 @@ class SalesReport extends React.Component {
                 //客户数统计
                 customerCharts.getCustomerNumChart(),
                 //销售行为统计
-                this.getSalesBehaviorVisitCustomerChartHandler(),
+                salesProductivityCharts.getSalesBehaviorVisitCustomerChart(),
                 //订单阶段
                 orderCharts.getOrderStageChart({
                     stageList: this.state.stageList
@@ -588,7 +516,7 @@ class SalesReport extends React.Component {
                 //客户数统计
                 customerCharts.getCustomerNumChart(),
                 //销售行为统计
-                this.getSalesBehaviorVisitCustomerChartHandler(),
+                salesProductivityCharts.getSalesBehaviorVisitCustomerChart(),
                 //订单阶段
                 orderCharts.getOrderStageChart({
                     stageList: this.state.stageList
