@@ -498,6 +498,7 @@ var NavSidebar = createReactClass({
 
     //汉堡包弹窗列表
     getNavbarLists: function() {
+        let _this = this;
         //侧边导航高度减少后，出现汉堡包按钮，汉堡包按钮的弹出框
         return (
             <ul className="ul-unstyled">
@@ -511,15 +512,7 @@ var NavSidebar = createReactClass({
                     //判断是否是个人正式版，以及有通话路由
                     let versionAndType = checkVersionAndType();
                     if(ROUTE_CONST.CALL_RECORD === category && versionAndType.isPersonalFormal) {
-                        routeContent = (
-                            <Popover
-                                placement='right'
-                                content={Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'})}
-                                trigger="hover"
-                            >
-                                <a style={{cursor: 'no-drop'}}>{obj.name}</a>
-                            </Popover>
-                        );
+                        routeContent = _this.disableClickBlock('', obj.name);
                     }
                     return (
                         <li key={obj.id}>
@@ -586,6 +579,17 @@ var NavSidebar = createReactClass({
         //缩放到显示小图标或（显示小图标并缩小图标间距）时
         return this.state.isReduceNavIcon || this.state.isReduceNavMargin;
     },
+    disableClickBlock(cls = '', text) {
+        return (
+            <Popover
+                placement='right'
+                content={Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'})}
+                trigger="hover"
+            >
+                <a className={`${cls} disable-link`}>{text}</a>
+            </Popover>
+        );
+    },
     //生成主菜单
     generateMenu: function() {
         const pathName = location.pathname.replace(/^\/|\/$/g, '');
@@ -620,15 +624,7 @@ var NavSidebar = createReactClass({
             //判断是否是个人正式版，以及有通话路由
             let versionAndType = checkVersionAndType();
             if(ROUTE_CONST.CALL_RECORD === category && versionAndType.isPersonalFormal) {
-                routeContent = (
-                    <Popover
-                        placement='right'
-                        content={Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'})}
-                        trigger="hover"
-                    >
-                        <a className={extraClass} style={{cursor: 'no-drop'}}/>
-                    </Popover>
-                );
+                routeContent = this.disableClickBlock(extraClass);
             }
             return (
                 <li key={i} title={menu.name} className={routeCls}>
