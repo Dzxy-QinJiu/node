@@ -674,3 +674,21 @@
     text-align: center;
   }
 }
+
+//线索推荐提示样式
+.clue-recommend-tips{
+  z-index: 110;
+  .ant-popover-content{
+    .ant-popover-arrow{
+      &:after{
+        border-bottom-color: @title-color;
+      }
+    }
+    .ant-popover-inner{
+      background: @title-color;
+      .ant-popover-inner-content{
+        color: #fff;
+      }
+    }
+  }
+}
