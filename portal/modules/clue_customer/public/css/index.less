@@ -406,20 +406,23 @@
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          &.has-more-icon {
-            min-width: 180px;
-          }
         }
         //联系人面板
         .contact-container {
+          width: 100%;
           position: relative;
           .contact-name {
             display: inline-block;
-            max-width: 82px;
+            max-width: 30%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             position: relative;
+            top: 6px;
+          }
+          .phone-callout-container {
+            position: absolute;
+            right: 5px;
             top: 6px;
           }
           .iconfont.icon-more {
