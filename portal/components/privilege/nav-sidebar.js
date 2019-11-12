@@ -517,7 +517,7 @@ var NavSidebar = createReactClass({
                                 content={Intl.get('payment.please.upgrade.company.version', '请升级为企业版，联系方式：{contact}',{contact: '400-6978-520'})}
                                 trigger="hover"
                             >
-                                <a>{obj.name}</a>
+                                <a style={{cursor: 'no-drop'}}>{obj.name}</a>
                             </Popover>
                         );
                     }
@@ -626,7 +626,7 @@ var NavSidebar = createReactClass({
                         content={Intl.get('payment.please.upgrade.company.version', '请升级为企业版，联系方式：{contact}',{contact: '400-6978-520'})}
                         trigger="hover"
                     >
-                        <a className={extraClass}/>
+                        <a className={extraClass} style={{cursor: 'no-drop'}}/>
                     </Popover>
                 );
             }
