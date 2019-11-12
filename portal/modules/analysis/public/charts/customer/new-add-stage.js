@@ -27,11 +27,6 @@ export function getCustomerNewAddStageChart(paramObj = {}) {
                 argCallbackUnderlineTimeToTime(arg);
             }
 
-            //这个统计是总体累计值，所以要把开始时间置为0
-            if (arg.query) {
-                arg.query.starttime = 0;
-            }
-
             //app_id为必填参数，若参数中没有，需要设个默认的
             if (!_.get(arg, 'query.app_id')) {
                 _.set(arg, 'query.app_id', 'all');
