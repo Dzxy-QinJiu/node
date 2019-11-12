@@ -1290,7 +1290,11 @@ class ClueCustomer extends React.Component {
                         submitInvalidateClueMsg: result
                     });
                 } else {
-                    this.flyClueInvalid(item,DIFFREF.TRASFERINVALID);
+                    //待我审批状态中没有无效的tab，不展示动画
+                    let filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
+                    if(!filterAllotNoTraced) {
+                        this.flyClueInvalid(item,DIFFREF.TRASFERINVALID);
+                    }
                     this.setState({
                         submitInvalidateLoading: false,
                         isInvalidClue: ''
