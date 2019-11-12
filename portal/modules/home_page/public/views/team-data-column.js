@@ -227,7 +227,7 @@ class TeamDataColumn extends React.Component {
         let promiseList = [
             // 获取本组织已提取线索数
             this.getExtractCluesData({
-                startTime: _.get(this.state.organization, 'version.create_time', ''), //组织创建时间
+                startTime: _.get(getOrganization(), 'version.create_time', ''), //组织创建时间
                 endTime: moment().endOf('day').valueOf()
             }),
         ];

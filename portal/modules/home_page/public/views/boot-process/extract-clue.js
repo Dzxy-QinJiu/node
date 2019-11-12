@@ -15,7 +15,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {SetLocalSalesClickCount} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
-import { formatSalesmanList, checkCurrentVersion, checkCurrentVersionType } from 'PUB_DIR/sources/utils/common-method-util';
+import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
@@ -320,13 +320,12 @@ class ExtractClues extends React.Component {
     hasNoExtractCountTip = () => {
         var maxLimitExtractNumber = this.state.maxLimitExtractNumber;
         var ableExtract = maxLimitExtractNumber > this.state.hasExtractCount ? maxLimitExtractNumber - this.state.hasExtractCount : 0;
-        let currentVersion = checkCurrentVersion();
-        let currentVersionType = checkCurrentVersionType();
+        let versionAndType = checkVersionAndType();
         let maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract, timerange: this.getTimeRangeText()});
         if(!ableExtract){
             //个人版试用提示升级,正式提示增加线索量
             //企业版试用提示升级,正式（管理员）提示增加线索量
-            if(currentVersion.personal && currentVersionType.trial) {//个人试用
+            if(versionAndType.isPersonalTrial) {//个人试用
                 maxLimitTip = <ReactIntl.FormattedMessage
                     id="clue.recommend.trial.extract.num.limit.tip"
                     defaultMessage={'明天可再提取{count}条，如需马上提取请{upgradedVersion}'}
@@ -334,17 +333,17 @@ class ExtractClues extends React.Component {
                         count: maxLimitExtractNumber,
                         upgradedVersion: (
                             <Button className="customer-btn" data-tracename="点击个人升级为正式版按钮"
-                                title={Intl.get('goods.increase.clues', '增加线索量')}
+                                title={Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
                                 onClick={this.handleUpgradePersonalVersion}>
                                 {Intl.get('personal.upgrade.to.official.version', '升级为正式版')}
                             </Button>
                         )
                     }}
                 />;
-            } else if(currentVersion.company && currentVersionType.trial) {//企业试用
+            } else if(versionAndType.isCompanyTrial) {//企业试用
                 maxLimitTip = Intl.get('clue.recommend.company.trial.extract.num.limit.tip', '明天可再提取{count}条，如需马上提取请联系我们销售人员（{contact}）进行升级',{count: maxLimitExtractNumber,contact: '400-6978-520'});
-            } else if(currentVersion.personal && currentVersionType.formal//个人正式版
-                || currentVersion.company && currentVersionType.formal && this.isManager()) { //或企业正式版管理员
+            } else if(versionAndType.isPersonalFormal//个人正式版
+                || versionAndType.isCompanyFormal && this.isManager()) { //或企业正式版管理员
                 maxLimitTip = <ReactIntl.FormattedMessage
                     id="clue.recommend.formal.extract.num.limit.tip"
                     defaultMessage={'本月{count}条已提取完毕，如需继续提取请{addClues}'}
