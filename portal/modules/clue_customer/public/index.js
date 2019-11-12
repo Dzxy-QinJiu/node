@@ -78,7 +78,7 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import {FilterInput} from 'CMP_DIR/filter';
 import NoDataAddAndImportIntro from 'CMP_DIR/no-data-add-and-import-intro';
 import ClueFilterPanel from './views/clue-filter-panel';
-import {isSalesRole, checkCurrentVersion, checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isSalesRole, checkCurrentVersion, checkCurrentVersionType, getRecommendClueCount} from 'PUB_DIR/sources/utils/common-method-util';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import {phoneMsgEmitter, paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import ShearContent from 'CMP_DIR/shear-content-new';
@@ -162,6 +162,8 @@ class ClueCustomer extends React.Component {
         this.getClueClassify();
         //获取是否配置过线索推荐条件
         this.getSettingCustomerRecomment();
+        //获取已提取线索量
+        this.getRecommendClueCount();
         this.getSalesmanList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
@@ -511,6 +513,18 @@ class ClueCustomer extends React.Component {
         clueCustomerAction.getSettingCustomerRecomment();
     };
 
+    getRecommendClueCount = () => {
+        let version = _.get(userData.getUserData(), 'organization.version', {});
+        getRecommendClueCount({
+            timeStart: _.get(version, 'create_time', ''), //组织创建时间
+            timeEnd: moment().endOf('day').valueOf()
+        },(result) => {
+            this.setState({
+                hasExtractCount: _.get(result, 'count', 0)
+            });
+        });
+    };
+
 
     //根据按钮选择导入或添加线索
     handleButtonClick = (e) => {
@@ -568,12 +582,19 @@ class ClueCustomer extends React.Component {
         return (
             <div className="recomend-clue-customer-container pull-right">
                 {hasPrivilege('COMPANYS_GET') ?
-                    <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
-                        <i className="iconfont icon-clue-recommend"></i>
-                        <span className="clue-container">
-                            {Intl.get('clue.customer.clue.recommend', '线索推荐')}
-                        </span>
-                    </Button>
+                    <Popover
+                        placement="bottom"
+                        content={Intl.get('clue.customer.has.clue.can.extract', '这里有线索待您提取')}
+                        visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount}
+                        overlayClassName="clue-recommend-tips"
+                    >
+                        <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
+                            <i className="iconfont icon-clue-recommend"></i>
+                            <span className="clue-container">
+                                {Intl.get('clue.customer.clue.recommend', '线索推荐')}
+                            </span>
+                        </Button>
+                    </Popover>
                     : null}
             </div>
         );

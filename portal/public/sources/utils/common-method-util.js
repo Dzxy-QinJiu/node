@@ -1207,3 +1207,36 @@ exports.checkVersionAndType = function() {
         isCompanyFormal: version.company && type.formal,
     };
 };
+
+//获取某个安全域已经提取多少推荐线索数量,
+exports.getRecommendClueCount = function(paramsObj = {},callback) {
+    //如果是试用的账号，要获取今天的提取量，
+    var submitObj = {
+        timeStart: moment().startOf('day').valueOf(),
+        timeEnd: moment().endOf('day').valueOf(),
+    };
+    const type = checkCurrentVersionType();
+    //如果是正式账号，要获取本月的提取量
+    if(type.formal){
+        submitObj = {
+            timeStart: moment().startOf('month').valueOf(),
+            timeEnd: moment().endOf('month').valueOf(),
+        };
+    }
+    submitObj = _.isEmpty(paramsObj) ? submitObj : paramsObj;
+
+    $.ajax({
+        url: '/rest/recommend/clue/count',
+        dataType: 'json',
+        type: 'get',
+        data: submitObj,
+        success: (data) => {
+            var count = _.get(data,'total', 0);
+            _.isFunction(callback) && callback({count: count, error: false});
+
+        },
+        error: (errorInfo) => {
+            _.isFunction(callback) && callback({count: 0, error: true});
+        }
+    });
+};
