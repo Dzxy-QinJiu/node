@@ -55,7 +55,7 @@ var en_US = {
     'menu.customer.notification': 'Customer Reminders',//客户提醒
     'menu.apply.notification': 'Application Messages',//申请消息
     'menu.system.notification': 'System Messages',//系统消息
-    'menu.appuser.apply': 'User Approvals',//用户审批
+    'menu.appuser.apply': 'User Apply',//用户申请
     'menu.download.app': 'Download APP',//下载APP
     'menu.leave.apply.list.management': 'Application for approval',//申请审批
     'menu.active.user.lists': 'Active users',//活跃用户
