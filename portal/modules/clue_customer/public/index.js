@@ -875,7 +875,6 @@ class ClueCustomer extends React.Component {
         }
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
-        console.log(queryObj);
         if (this.isSelfHandleFilter()){
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
