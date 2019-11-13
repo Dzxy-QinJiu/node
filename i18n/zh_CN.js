@@ -54,7 +54,7 @@ var zh_CN = {
     'menu.customer.notification': '客户提醒',
     'menu.apply.notification': '申请消息',
     'menu.system.notification': '系统消息',
-    'menu.appuser.apply': '用户审批',
+    'menu.appuser.apply': '用户申请',
     'menu.download.app': '客套APP',
     'menu.leave.apply.list.management': '申请审批',
     'menu.active.user.lists': '活跃用户',
