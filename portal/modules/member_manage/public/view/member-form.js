@@ -354,6 +354,10 @@ class MemberForm extends React.Component {
     };
 
     handlePositionSelect = () => {
+        this.setState({
+            isShowSaveCancelBtn: true
+        });
+
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择职务');
     };
 
@@ -458,10 +462,12 @@ class MemberForm extends React.Component {
         if (filterRoleObj) {
             roleId = filterRoleObj.roleId;
         }
-
+        let isSelectedPositionValue = true;
         let positionSelectValue = _.trim(this.props.form.getFieldValue('position'));
-        let isSelectedPositionValue = this.state.isShowSaveCancelBtn || _.find(this.state.positionList, item => item.name === positionSelectValue);
+        if (positionSelectValue) {
+            isSelectedPositionValue = _.find(this.state.positionList, item => item.name === positionSelectValue);
 
+        }
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
                 <FormItem id="image">
