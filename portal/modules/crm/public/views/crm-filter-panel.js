@@ -12,6 +12,7 @@ import {
     OTHER_FILTER_ITEMS
 } from 'PUB_DIR/sources/utils/consts';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import { sourceClassifyArray } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { DatePicker } from 'antd';
 const { RangePicker } = DatePicker;
 //行政级别筛选项
@@ -169,7 +170,7 @@ class CrmFilterPanel extends React.Component {
             if (item.groupId) {
                 if (item.groupId !== 'sales_opportunities') {
                     condition[item.groupId] = item.data.map(x => x.value);
-                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', COMMON_OTHER_ITEM].includes(item.groupId)) {
+                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', COMMON_OTHER_ITEM, 'source_classify'].includes(item.groupId)) {
                         condition[item.groupId] = condition[item.groupId].join(',');
                     } else if (item.singleSelect) {
                         condition[item.groupId] = condition[item.groupId][0] || '';
@@ -348,6 +349,8 @@ class CrmFilterPanel extends React.Component {
         let selectedLabels = _.get(this.state, 'condition.labels', []);
         //选中的竞品列表
         let selectedCompetings = _.get(this.state, 'condition.competing_products', []);
+        //选中的集客方式列表
+        let selectedSourceClassify = _.get(this.state, 'condition.source_classify', '').split(',');
         //选中的行政级别列表
         let selectedLevel = _.get(this.state, 'condition.administrative_level', '').split(',');
         const advancedData = [
@@ -416,6 +419,15 @@ class CrmFilterPanel extends React.Component {
                     name: x,
                     value: x,
                     selected: x === _.get(this.state, 'condition.industry', '')
+                }))
+            },
+            {
+                groupName: Intl.get('crm.clue.client.source', '集客方式'),
+                groupId: 'source_classify',
+                data: _.map(sourceClassifyArray, x => ({
+                    name: x.name,
+                    value: x.value,
+                    selected: x.value && _.indexOf(selectedSourceClassify, x.value) !== -1
                 }))
             },
             {

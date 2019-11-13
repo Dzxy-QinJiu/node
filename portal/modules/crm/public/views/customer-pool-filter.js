@@ -2,6 +2,7 @@ import {CUSTOMER_TAGS} from '../utils/crm-util';
 import {FilterList} from 'CMP_DIR/filter';
 import {COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
 import filterAJax from '../ajax/filter-ajax';
+import {sourceClassifyArray} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 const otherFilterArray = [
     {
         name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 15}),
@@ -41,6 +42,7 @@ class CustomerPoolFilter extends React.Component {
                 qualify_label: '',//合格标签（合格、曾经合格）
                 immutable_labels: '', //系统标签
                 labels: '',//标签的筛选
+                source_classify: '',//集客方式的筛选
                 industry: '',
                 province: '',
                 otherSelectedItem: '',//其他类型的筛选
@@ -131,7 +133,7 @@ class CustomerPoolFilter extends React.Component {
         data.forEach(item => {
             if (item.groupId) {
                 condition[item.groupId] = _.map(item.data, x => x.value);
-                if (['customer_label', 'immutable_labels', 'labels', COMMON_OTHER_ITEM].includes(item.groupId)) {
+                if (['customer_label', 'immutable_labels', 'labels', COMMON_OTHER_ITEM, 'source_classify'].includes(item.groupId)) {
                     condition[item.groupId] = condition[item.groupId].join(',');
                 } else if (item.singleSelect) {
                     condition[item.groupId] = condition[item.groupId][0] || '';
@@ -172,6 +174,8 @@ class CustomerPoolFilter extends React.Component {
         let selectedImmutLabels = _.get(this.state, 'condition.immutable_labels', '').split(',');
         //选中的标签列表
         let selectedLabels = _.get(this.state, 'condition.labels', '').split(',');
+        //选中的集客方式列表
+        let selectedSourceClassify = _.get(this.state, 'condition.source_classify', '').split(',');
         const advancedData = [
             {
                 groupName: Intl.get('weekly.report.customer.stage', '客户阶段'),
@@ -227,6 +231,15 @@ class CustomerPoolFilter extends React.Component {
                         selected: x === _.get(this.state, 'condition.industry', '')
                     };
                 })
+            },
+            {
+                groupName: Intl.get('crm.clue.client.source', '集客方式'),
+                groupId: 'source_classify',
+                data: _.map(sourceClassifyArray, x => ({
+                    name: x.name,
+                    value: x.value,
+                    selected: x.value && _.indexOf(selectedSourceClassify, x.value) !== -1
+                }))
             },
             {
                 groupName: Intl.get('crm.96', '地域'),

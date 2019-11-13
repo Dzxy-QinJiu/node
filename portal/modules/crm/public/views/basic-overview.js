@@ -13,6 +13,7 @@ var history = require('../../../../public/sources/history');
 var FilterAction = require('../action/filter-actions');
 let CrmAction = require('../action/crm-actions');
 let CrmRepeatAction = require('../action/customer-repeat-action');
+import {sourceClassifyArray} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmUtil from '../utils/crm-util';
 import crmAjax from '../ajax';
 import batchAjax from '../ajax/batch-change-ajax';
@@ -514,6 +515,16 @@ class BasicOverview extends React.Component {
         return <span className="second-level-domain-name">{`${subDomain}.eagok.com`}</span>;
     };
 
+    //获取集客方式
+    getSourceClassify = (sourceClassify) => {
+        let displayText = '';
+        let displayObj = _.find(sourceClassifyArray, item => item.value === sourceClassify);
+        if(!_.isEmpty(displayObj)){
+            displayText = displayObj.name;
+        }
+        return [displayText];
+    };
+
     render() {
         var basicData = this.state.basicData ? this.state.basicData : {};
         let tagArray = _.isArray(basicData.labels) ? basicData.labels : [];
@@ -564,15 +575,6 @@ class BasicOverview extends React.Component {
                             showUserDetail={this.props.showUserDetail}
                             customerUserSize={_.get(this.state.crmUserList, 'length', 0)}/>) : null
                     }
-                    <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
-                        placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
-                        tags={basicData.competing_products}
-                        recommendTags={this.state.competitorList}
-                        data={basicData}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.disableEdit}
-                        noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
-                        saveTags={this.saveEditCompetitors}
-                    />
                     <TagCard title={`${Intl.get('common.tag', '标签')}:`}
                         placeholder={Intl.get('crm.input.new.tag', '请输入新标签')}
                         data={basicData}
@@ -582,6 +584,24 @@ class BasicOverview extends React.Component {
                         noDataTip={tagArray.length ? '' : Intl.get('crm.detail.no.tag', '暂无标签')}
                         saveTags={this.saveEditTags}
                     />
+                    <TagCard title={`${Intl.get('crm.competing.products', '竞品')}:`}
+                        placeholder={Intl.get('crm.input.new.competing', '请输入新竞品')}
+                        tags={basicData.competing_products}
+                        recommendTags={this.state.competitorList}
+                        data={basicData}
+                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.disableEdit}
+                        noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
+                        saveTags={this.saveEditCompetitors}
+                    />
+                    {
+                        _.get(basicData, 'source_classify') ?
+                            <TagCard title={`${Intl.get('crm.clue.client.source', '集客方式')}:`}
+                                tags={this.getSourceClassify(basicData.source_classify)}
+                                data={basicData}
+                                enableEdit={false}
+                            /> : null
+                    }
+
                     {this.renderUnComplateScheduleList()}
                     <DetailCard
                         title={`${Intl.get('sales.frontpage.recent.record', '最新跟进')}:`}
