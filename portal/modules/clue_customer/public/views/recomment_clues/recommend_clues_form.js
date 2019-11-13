@@ -35,8 +35,8 @@ class RecommendCustomerRightPanel extends React.Component {
             'right-panel-modal show-modal recommend-list-wrap': this.props.showModal
         });
         return (
-            <div className={cls}>
-                <RightPanel showFlag={true} data-tracename="设置推荐线索条件表单" className="add-focus-customer">
+            <div className={cls} data-tracename="设置推荐线索条件表单" >
+                <RightPanel showFlag={true} className="add-focus-customer">
                     <span className="iconfont icon-close add-focus-customer-btn"
                         onClick={this.props.hideFocusCustomerPanel}
                         data-tracename="关闭设置推荐线索条件表单"></span>
