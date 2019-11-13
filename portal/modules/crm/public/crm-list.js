@@ -556,7 +556,7 @@ class Crm extends React.Component {
                 customer_params: {
                     currentId: this.state.currentId,
                     refreshCustomerList: this.refreshCustomerList,
-                    curCustomer: this.state.curCustomer,
+                    curCustomer: {...this.state.curCustomer, isCrmListPage: true},
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     updateCustomerDefContact: CrmAction.updateCustomerDefContact,
                     updateCustomerLastContact: CrmAction.updateCustomerLastContact,
