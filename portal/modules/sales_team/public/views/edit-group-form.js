@@ -123,7 +123,7 @@ var SalesTeamForm = createReactClass({
                     if (formData.isOrganizationFlag) { // 修改组织名称
                         editGroupData = {
                             id: formData.key,
-                            name: formData.title,
+                            official_name: formData.title,
                             isOrganizationFlag: true
                         };
                     }
