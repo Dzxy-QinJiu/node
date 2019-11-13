@@ -763,6 +763,10 @@ class ClueCustomer extends React.Component {
         if (!isGetAllClue){
             typeFilter.availability = filterStoreData.filterClueAvailability;
         }
+        //如果此时选择了待我处理，当前即便选择了无效的tab也变成有效状态
+        if(this.isSelfHandleFilter()) {
+            typeFilter.availability = AVALIBILITYSTATUS.AVALIBILITY;
+        }
         //如果筛选的是无效的，不传status参数
         if (typeFilter.availability === AVALIBILITYSTATUS.INAVALIBILITY ){
             delete typeFilter.status;
@@ -871,6 +875,7 @@ class ClueCustomer extends React.Component {
         }
         //跟据类型筛选
         const queryObj = this.getClueSearchCondition();
+        console.log(queryObj);
         if (this.isSelfHandleFilter()){
             clueCustomerAction.getClueFulltextSelfHandle(queryObj,(isSelfHandleFlag) => {
                 this.handleFirstLoginData(isSelfHandleFlag);
