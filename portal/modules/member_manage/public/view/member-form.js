@@ -354,10 +354,6 @@ class MemberForm extends React.Component {
     };
 
     handlePositionSelect = () => {
-        this.setState({
-            isShowSaveCancelBtn: true
-        });
-
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择职务');
     };
 
@@ -367,6 +363,22 @@ class MemberForm extends React.Component {
 
     handleTeamSelect = () => {
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择部门');
+    };
+
+    handleSelectPosition = (value) => {
+        let positionValue = _.trim(value);
+        if (positionValue) {
+            let isSelectedPosition = _.find(this.state.positionList, item => item.name === positionValue);
+            if (isSelectedPosition) { // 从已有的职务列表中选择
+                this.setState({
+                    isShowSaveCancelBtn: true
+                });
+            } else { // 手动输入
+                this.setState({
+                    isShowSaveCancelBtn: false
+                });
+            }
+        }
     };
 
     handleBlurPositionSelect = () => {
@@ -414,6 +426,7 @@ class MemberForm extends React.Component {
                 this.setState({
                     newAddPosition: result
                 });
+                MemberFormAction.updatePositionList(result);
             } else {
                 message.error(Intl.get('member.add.failed', '添加失败！'));
             }
@@ -462,11 +475,19 @@ class MemberForm extends React.Component {
         if (filterRoleObj) {
             roleId = filterRoleObj.roleId;
         }
-        let isSelectedPositionValue = true;
+        let hideAddPositionBtn = true;
         let positionSelectValue = _.trim(this.props.form.getFieldValue('position'));
         if (positionSelectValue) {
-            isSelectedPositionValue = _.find(this.state.positionList, item => item.name === positionSelectValue);
-
+            let isSelectedPosition = _.find(this.state.positionList, item => item.name === positionSelectValue);
+            if (isSelectedPosition) {
+                hideAddPositionBtn = true;
+            } else {
+                if (_.get(this.state.newAddPosition, 'name') === positionSelectValue) {
+                    hideAddPositionBtn = true;
+                } else {
+                    hideAddPositionBtn = false;
+                }
+            }
         }
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
@@ -606,6 +627,7 @@ class MemberForm extends React.Component {
                                                         searchPlaceholder={Intl.get('member.select.position', '请选择职务')}
                                                         notFoundContent={Intl.get('common.no.match', '暂无匹配项')}
                                                         onSelect={this.handlePositionSelect}
+                                                        onChange={this.handleSelectPosition}
                                                         onBlur={(e) => {
                                                             this.handleBlurPositionSelect(e);
                                                         }}
@@ -619,7 +641,7 @@ class MemberForm extends React.Component {
                                                 )
                                             }
                                             {
-                                                isSelectedPositionValue ? null : (
+                                                hideAddPositionBtn ? null : (
                                                     <div className="no-position-tips">
                                                         <div className="content-tips">
                                                             {Intl.get('member.add.member.no.position.tips', '系统中暂无 {name} 职务，是否添加?', {

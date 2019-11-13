@@ -41,7 +41,11 @@ class MemberFormStore {
     // 获取职务列表
     getSalesPosition(positionList) {
         this.isLoadingPosition = false;
-        this.positionList = _.isArray(positionList) ? positionList : [];
+        this.positionList = [];
+    }
+
+    updatePositionList(newAddPosition) {
+        this.positionList = this.positionList.unshift(newAddPosition);
     }
 
     //正在保存的属性设置
