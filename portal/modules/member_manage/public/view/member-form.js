@@ -55,11 +55,10 @@ class MemberForm extends React.Component {
                 team: ''
             },
             phoneEmailCheck: true, //电话邮箱必填一项的验证
-            positionList: [], // 职务列表
             newAddPosition: {}, // 新添加的职务
-            isMatchPositionListFlag: true, // 是否是选中列表中的值，true,
             isAddPositionLoading: false, // 保存新添加的职务
             isCancelSavePosition: false, // 取消保存职务，默认false
+            isShowSaveCancelBtn: true, // 是否显示保存取消按钮，默认true
         };
     };
 
@@ -71,21 +70,8 @@ class MemberForm extends React.Component {
         MemberFormStore.unlisten(this.onChange);
     }
 
-    getPositionList = () => {
-        MemberManageAjax.getSalesPosition().then( (data) => {
-            this.setState({
-                positionList: _.isArray(data) ? data : [],
-            });
-        }, () => {
-            this.setState({
-                positionList: [],
-            });
-        } );
-    };
-
     componentDidMount = () => {
         MemberFormStore.listen(this.onChange);
-        this.getPositionList();
     }
 
     //关闭面板前清空验证的处理
@@ -368,9 +354,6 @@ class MemberForm extends React.Component {
     };
 
     handlePositionSelect = () => {
-        this.setState({
-            isMatchPositionListFlag: true
-        });
         Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('form ul li'), '选择职务');
     };
 
@@ -383,32 +366,19 @@ class MemberForm extends React.Component {
     };
 
     handleBlurPositionSelect = () => {
-        let positionList = this.state.positionList;
         let positionSelectValue = _.trim(this.props.form.getFieldValue('position'));
-        if (positionSelectValue) {
-            let isMatchPositionListFlag = _.find(positionList, item => item.name === positionSelectValue);
-            if (isMatchPositionListFlag ) {
-                this.setState({
-                    isMatchPositionListFlag: true
-                });
-            } else {
-                this.setState({
-                    isMatchPositionListFlag: false,
-                });
-            }
+        // 没有选择或是输入内容，移出职位选择框时，需要显示保存按钮
+        if (positionSelectValue === '') {
+            this.setState({
+                isShowSaveCancelBtn: true
+            });
         }
     };
 
     handleFocusPositionSelect = () => {
-        if (this.state.positionList.length) {
-            this.setState({
-                isMatchPositionListFlag: true
-            });
-        } else {
-            this.setState({
-                isMatchPositionListFlag: false
-            });
-        }
+        this.setState({
+            isShowSaveCancelBtn: false
+        });
     };
 
     // 获取职务的颜色
@@ -429,12 +399,12 @@ class MemberForm extends React.Component {
         };
         this.setState({
             isAddPositionLoading: true,
-            isCancelSavePosition: false
+            isCancelSavePosition: false,
+            isShowSaveCancelBtn: true
         });
         MemberManageAjax.addPosition(submitObj).then( (result) => {
             this.setState({
                 isAddPositionLoading: false,
-                isMatchPositionListFlag: true
             });
             if (result && _.get(result, 'id')) {
                 this.setState({
@@ -446,7 +416,6 @@ class MemberForm extends React.Component {
         }, (errMsg) => {
             this.setState({
                 isAddPositionLoading: false,
-                isMatchPositionListFlag: true
             });
             message.error(errMsg || Intl.get('member.add.failed', '添加失败！'));
         } );
@@ -455,8 +424,8 @@ class MemberForm extends React.Component {
     handleCancelPosition = () => {
         this.props.form.setFieldsValue({position: ''});
         this.setState({
-            isMatchPositionListFlag: true,
-            isCancelSavePosition: true
+            isCancelSavePosition: true,
+            isShowSaveCancelBtn: true
         });
     };
 
@@ -491,6 +460,7 @@ class MemberForm extends React.Component {
         }
 
         let positionSelectValue = _.trim(this.props.form.getFieldValue('position'));
+        let isSelectedPositionValue = this.state.isShowSaveCancelBtn || _.find(this.state.positionList, item => item.name === positionSelectValue);
 
         return (
             <Form layout='horizontal' className="form" autoComplete="off">
@@ -643,35 +613,31 @@ class MemberForm extends React.Component {
                                                 )
                                             }
                                             {
-                                                this.state.isMatchPositionListFlag ? null : (
+                                                isSelectedPositionValue ? null : (
                                                     <div className="no-position-tips">
                                                         <div className="content-tips">
                                                             {Intl.get('member.add.member.no.position.tips', '系统中暂无 {name} 职务，是否添加?', {
                                                                 name: positionSelectValue
                                                             })}
                                                         </div>
-                                                        {
-                                                            positionSelectValue ? (
-                                                                <div className="operator-buttons-zone">
-                                                                    <Button
-                                                                        className="add-btn"
-                                                                        disabled={this.state.isAddPositionLoading}
-                                                                        onClick={this.handleSavePosition}
-                                                                    >
-                                                                        {
-                                                                            this.state.isAddPositionLoading ? <Icon type="loading"/> : null
-                                                                        }
-                                                                        {Intl.get('common.add', '添加')}
-                                                                    </Button>
-                                                                    <Button
-                                                                        className="cancel-btn"
-                                                                        onClick={this.handleCancelPosition}
-                                                                    >
-                                                                        {Intl.get('common.cancel', '取消')}
-                                                                    </Button>
-                                                                </div>
-                                                            ) : null
-                                                        }
+                                                        <div className="operator-buttons-zone">
+                                                            <Button
+                                                                className="add-btn"
+                                                                disabled={this.state.isAddPositionLoading}
+                                                                onClick={this.handleSavePosition.bind(this)}
+                                                            >
+                                                                {
+                                                                    this.state.isAddPositionLoading ? <Icon type="loading"/> : null
+                                                                }
+                                                                {Intl.get('common.add', '添加')}
+                                                            </Button>
+                                                            <Button
+                                                                className="cancel-btn"
+                                                                onClick={this.handleCancelPosition}
+                                                            >
+                                                                {Intl.get('common.cancel', '取消')}
+                                                            </Button>
+                                                        </div>
                                                     </div>
                                                 )
                                             }
@@ -767,7 +733,7 @@ class MemberForm extends React.Component {
                             ) : (
                                 <FormItem>
                                     {
-                                        this.state.isMatchPositionListFlag ? (
+                                        this.state.isShowSaveCancelBtn ? (
                                             <SaveCancelButton
                                                 loading={this.state.isSaving}
                                                 saveErrorMsg={saveResult === 'error' ? this.state.saveMsg : ''}
