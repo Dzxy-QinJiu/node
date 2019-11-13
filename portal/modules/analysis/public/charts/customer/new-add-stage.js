@@ -19,14 +19,6 @@ export function getCustomerNewAddStageChart(paramObj = {}) {
             //在个人报告里调用时会传member_id，需要改成member_ids
             argCallbackMemberIdToMemberIds(arg);
 
-            //如果有页面级的统一处理，用统一处理
-            if (_.isFunction(paramObj.argCallback)) {
-                paramObj.argCallback(arg);
-                //否则单独处理
-            } else {
-                argCallbackUnderlineTimeToTime(arg);
-            }
-
             //app_id为必填参数，若参数中没有，需要设个默认的
             if (!_.get(arg, 'query.app_id')) {
                 _.set(arg, 'query.app_id', 'all');
