@@ -782,8 +782,8 @@ class RecommendCustomerRightPanel extends React.Component {
             'responsive-mini-btn': isWebMin
         });
         return (
-            <div className="recommend-clues-lists-container">
-                <RightPanel showFlag={true} data-tracename="推荐线索列表" className="recommend-customer-list">
+            <div className="recommend-clues-lists-container" data-tracename="推荐线索列表">
+                <RightPanel showFlag={true} className="recommend-customer-list">
                     <div className="recommend-clue-panel">
                         <TopNav>
                             <div className={recommendCls}>
