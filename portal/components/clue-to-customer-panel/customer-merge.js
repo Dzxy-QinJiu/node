@@ -55,12 +55,19 @@ const NOT_SHOW_FORM_ITEMS = [
 
 class CustomerMerge extends React.Component {
     static defaultProps = {
+        //改变视图类型
         prevViewType: '',
+        //改变视图类型
         changeViewType: NOOP,
+        //关闭面板
         onClose: NOOP,
+        //合并后
         onMerged: NOOP,
+        //父组件
         parent: null,
+        //要合并到的客户
         customer: {},
+        //当前线索
         clue: {},
     }
 

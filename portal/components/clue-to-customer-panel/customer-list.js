@@ -14,10 +14,15 @@ import { VIEW_TYPE, NOOP } from './consts';
 
 class CustomerList extends React.Component {
     static defaultProps = {
+        //改变视图类型
         changeViewType: NOOP,
+        //关闭面板
         onClose: NOOP,
+        //父组件
         parent: null,
+        //相似客户
         customers: [],
+        //当前线索
         clue: {},
     }
 

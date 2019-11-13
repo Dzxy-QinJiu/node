@@ -16,9 +16,13 @@ let queryCustomerTimeout = null;
 
 class CustomerSearch extends React.Component {
     static defaultProps = {
+        //改变视图类型
         prevViewType: '',
+        //改变视图类型
         changeViewType: NOOP,
+        //关闭面板
         onClose: NOOP,
+        //父组件
         parent: null,
     }
 

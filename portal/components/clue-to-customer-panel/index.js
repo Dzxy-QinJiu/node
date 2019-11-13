@@ -23,10 +23,15 @@ const Spinner = require('CMP_DIR/spinner');
 
 class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
+        //是否正在加载
         isLoading: true,
+        //视图类型
         viewType: '',
+        //关闭面板
         onClose: NOOP,
+        //转换后
         afterConvert: NOOP,
+        //当前线索
         clue: {},
         //要合并到的客户
         targetCustomer: {},
