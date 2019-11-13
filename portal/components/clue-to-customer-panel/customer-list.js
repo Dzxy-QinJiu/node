@@ -12,6 +12,11 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import userData from 'PUB_DIR/sources/user-data';
 import { VIEW_TYPE, NOOP } from './consts';
 
+//客户列表标题区域高度
+const TITLE_BLOCK_HEIGHT = 135;
+//转为新客户按钮区域高度
+const CONVERT_TO_NEW_CUSTOMER_BTN_BLOCK_HEIGHT = 60;
+
 class CustomerList extends React.Component {
     static defaultProps = {
         //改变视图类型
@@ -60,13 +65,8 @@ class CustomerList extends React.Component {
     renderPanelContent() {
         //相似客户列表
         const existingCustomers = this.props.customers;
-
-        //客户列表标题区域高度
-        const titleBlockHeight = 135;
-        //转为新客户按钮区域高度
-        const convertToNewCustomerBtnBlockHeight = 60;
         //列表容器最大高度
-        const listWrapMaxHeight = $(window).height() - titleBlockHeight - convertToNewCustomerBtnBlockHeight;
+        const listWrapMaxHeight = $(window).height() - TITLE_BLOCK_HEIGHT - CONVERT_TO_NEW_CUSTOMER_BTN_BLOCK_HEIGHT;
 
         return (
             <div className="right-panel-content">
