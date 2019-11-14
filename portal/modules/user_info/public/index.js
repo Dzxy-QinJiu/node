@@ -18,11 +18,11 @@ var userLogHeight = 690;//如果界面宽度低于最小宽度时，登录日志
 var minUserInfoHeight = 380;//如果并排展示时，登录日志展示区域最小高度
 var PrivilegeChecker = require('../../../components/privilege/checker');
 import reactIntlMixin from '../../../components/react-intl-mixin';
-import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
 import TradeRecord from './views/trade-record';
 import history from 'PUB_DIR/sources/history';
+import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
 
 const TAB_KEYS = {
     OPERATE_RECORD_TAB: '1',// 操作记录
@@ -39,12 +39,19 @@ var UserInfoPage = createReactClass({
         return {
             ...UserInfoStore.getState(),
             userInfoContainerHeight: this.userInfoContainerHeightFnc(),
-            activeKey: TAB_KEYS.OPERATE_RECORD_TAB
+            activeKey: TAB_KEYS.OPERATE_RECORD_TAB,
+            organizationName: ''
         };
     },
 
     onChange: function() {
         this.setState(UserInfoStore.getState());
+    },
+
+    getOrganizationName(data) {
+        this.setState({
+            organizationName: _.get(data, 'name', '')
+        });
     },
 
     componentDidMount: function() {
@@ -55,6 +62,9 @@ var UserInfoPage = createReactClass({
         if(_.get(history.location, 'state.show_pay_record')) {
             this.changeActiveKey(TAB_KEYS.TRADE_TAB);
         }
+        getOrganizationInfo().then((result) => {
+            this.getOrganizationName(result);
+        });
         UserInfoAction.getUserInfo();
         UserInfoAction.getLogList({
             load_size: this.state.loadSize
@@ -101,16 +111,15 @@ var UserInfoPage = createReactClass({
     },
 
     render: function() {
-        var height = this.state.userInfoContainerHeight;
+        let height = this.state.userInfoContainerHeight;
 
-        let managedRealm = _.get(commonMethodUtil.getOrganization(), 'name', '');
         let containerHeight = height - logTitleHeight - logBottomHeight - TAB_HEIGHT;
 
         return (
             <div className="user-info-manage-container" data-tracename="个人资料">
                 <UserInfo
                     userInfo={this.state.userInfo}
-                    managedRealm={managedRealm}
+                    managedRealm={this.state.organizationName}
                     userInfoErrorMsg={this.state.userInfoErrorMsg}
                     userInfoLoading={this.state.userInfoLoading}
                 />
