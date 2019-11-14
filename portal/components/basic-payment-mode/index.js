@@ -12,6 +12,7 @@ import Spinner from 'CMP_DIR/spinner';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import PayAjax from 'MOD_DIR/common/public/ajax/pay';
 import QrCode from 'qrcode.react';
+import Trace from 'LIB_DIR/trace';
 
 const QUERY_STATUS_TIME = 3000;
 
@@ -81,9 +82,11 @@ class BasicPaymentMode extends React.Component {
                 // -1：超时关闭（后台关闭订单，需重新生成订单）
                 if(_.toString(status) === '1') {//付款成功
                     clearInterval(this.queryStatusTimer);
+                    Trace.traceEvent(ReactDOM.findDOMNode(this), this.state.payMode + '支付成功');
                     _.isFunction(this.props.onPaymentSuccess) && this.props.onPaymentSuccess(this.state.curOrderInfo);
                 }else if(_.toString(status) === '-1') {//超时关闭
                     clearInterval(this.queryStatusTimer);
+                    Trace.traceEvent(ReactDOM.findDOMNode(this), '订单超时');
                     this.setState({
                         payStatus: PAY_STATUS.TIMEOUT,
                         qrCodeErrMsg: (
@@ -104,6 +107,7 @@ class BasicPaymentMode extends React.Component {
     //选择支付方式
     handleChangePayMode = (key) => {
         if(key === this.state.payMode) return false;
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '切换为' + key + '支付方式');
         let curOrderInfo = this.state.curOrderInfo;
         clearInterval(this.queryStatusTimer);
         this.setState({
@@ -194,6 +198,11 @@ class BasicPaymentMode extends React.Component {
         });
     };
 
+    handleClickClose = (e) => {
+        Trace.traceEvent(e, '关闭订单支付界面');
+        this.props.onClosePanel();
+    };
+
     renderPayContent() {
         let payMode = this.state.payMode;
         if(_.includes(this.PAY_MODE, payMode)) {//是支付宝和微信支付方式
@@ -279,7 +288,7 @@ class BasicPaymentMode extends React.Component {
                 className="payment-mode-wrapper"
                 isShowMadal={true}
                 isShowCloseBtn={this.props.isShowCloseBtn}
-                onClosePanel={this.props.onClosePanel}
+                onClosePanel={this.handleClickClose}
                 title={title}
                 content={this.renderContent()}
                 dataTracename="订单支付"
