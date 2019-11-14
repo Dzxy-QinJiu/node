@@ -7,7 +7,7 @@
  */
 
 import ajax from 'ant-ajax';
-import { Select } from 'antd';
+import { Select, message } from 'antd';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { VIEW_TYPE, NOOP } from './consts';
@@ -105,6 +105,9 @@ class CustomerSearch extends React.Component {
             })
                 .done(result => {
                     this.setState({customerList: result.result});
+                })
+                .fail(errMsg => {
+                    message.error(errMsg);
                 });
         }, 500);
     }
