@@ -157,6 +157,7 @@ class ClueToCustomerPanel extends React.Component {
             return;
         }
 
+        //查询相似客户的接口要求线索名不能少于两个字
         if (name.length < 2) {
             message.error(Intl.get('common.clue.name.need.at.least.two.char.to.do.customer.convert', '线索名称必须在两个字或以上，才能进行转为客户的操作'));
             this.props.onClose();
