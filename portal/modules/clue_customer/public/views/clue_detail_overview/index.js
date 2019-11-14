@@ -982,7 +982,7 @@ class ClueDetailOverview extends React.Component {
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         if (avalibility){
-            //不是运营人员，且没有被s释放
+            //不是运营人员，且没有被释放
             var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && !this.state.isReleased;
             return <div>
                 {associatedPrivilege ? <Button type="primary"
