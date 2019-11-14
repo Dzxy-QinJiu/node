@@ -52,7 +52,17 @@ exports.getMemberOrganization = (req, res) => {
             url: memberRestApis.getMemberOrganization,
             req: req,
             res: res
-        }, null);
+        }, null, {
+            success: (eventEmitter, data) => {
+                let frontData = _.clone(data);
+                frontData.name = _.get(data, 'official_name', '');
+                delete frontData.official_name;
+                eventEmitter.emit('success', frontData);
+            },
+            error: (eventEmitter, errorDesc) => {
+                eventEmitter.emit('error', errorDesc.message);
+            }
+        });
 };
 
 function getUserLists(req, res, condition, isGetAllUser, teamrole_id) {
