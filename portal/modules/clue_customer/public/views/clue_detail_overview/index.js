@@ -963,7 +963,7 @@ class ClueDetailOverview extends React.Component {
         if (avalibility){
             return <div>
                 {associatedPrivilege ? <Button type="primary"
-                    onClick={() => { clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {clue: curClue, afterConvert: this.props.afterTransferClueSuccess}); }}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
+                    onClick={this.convertToCustomer.bind(this, curClue)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
                 <Button data-tracename="判定线索无效按钮" className='clue-inability-btn'
                     onClick={this.showConfirmInvalid.bind(this, curClue)}>
                     {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid','标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
@@ -1449,7 +1449,7 @@ class ClueDetailOverview extends React.Component {
                 return (
                     <div className="similar-title-name">
                         <span onClick={isSimilarClue ? this.showClueDetail.bind(this, listItem) : this.showCustomerDetail.bind(this, listItem)}>{listItem.name}</span>
-                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={() => { clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {clue: curClue, targetCustomer: listItem, viewType: CLUE_TO_CUSTOMER_PANEL_VIEW_TYPE.CUSTOMER_MERGE, isLoading: false}); }}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
+                        {!isSimilarClue && editCluePrivilege(this.state.curClue) ? <Button onClick={this.mergeToThisCustomer.bind(this, curClue, listItem)}>{Intl.get('common.merge.to.customer', '合并到此客户')}</Button> : null}
                     </div>);
             } else {
                 return (
@@ -1620,6 +1620,24 @@ class ClueDetailOverview extends React.Component {
             }
         }
     };
+
+    //转为客户
+    convertToCustomer = clue => {
+        clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {
+            clue,
+            afterConvert: this.props.afterTransferClueSuccess
+        });
+    }
+
+    //合并到此客户
+    mergeToThisCustomer = (clue, customer) => {
+        clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {
+            clue,
+            targetCustomer: customer,
+            viewType: CLUE_TO_CUSTOMER_PANEL_VIEW_TYPE.CUSTOMER_MERGE,
+            isLoading: false
+        });
+    }
 
     render() {
         var curClue = this.state.curClue;
