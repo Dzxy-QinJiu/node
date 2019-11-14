@@ -170,7 +170,7 @@ class CrmFilterPanel extends React.Component {
             if (item.groupId) {
                 if (item.groupId !== 'sales_opportunities') {
                     condition[item.groupId] = item.data.map(x => x.value);
-                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', COMMON_OTHER_ITEM, 'source_classify'].includes(item.groupId)) {
+                    if (['customer_label', 'province', 'industry', 'member_role', 'administrative_level', 'sales_team_id', 'source_classify',COMMON_OTHER_ITEM].includes(item.groupId)) {
                         condition[item.groupId] = condition[item.groupId].join(',');
                     } else if (item.singleSelect) {
                         condition[item.groupId] = condition[item.groupId][0] || '';
@@ -346,7 +346,9 @@ class CrmFilterPanel extends React.Component {
         //选中的客户阶段列表
         let selectedCustomerLabels = _.get(this.state, 'condition.customer_label', '').split(',');
         //选中的标签列表
-        let selectedLabels = _.get(this.state, 'condition.labels', []);
+        let selectedLabels = _.get(this.state, 'condition.labels', '');
+        //选中的系统标签列表
+        let selectedImmutableLabels = _.get(this.state, 'condition.immutable_labels', []);
         //选中的竞品列表
         let selectedCompetings = _.get(this.state, 'condition.competing_products', []);
         //选中的集客方式列表
@@ -382,7 +384,7 @@ class CrmFilterPanel extends React.Component {
                     const item = {
                         name: x.show_name,
                         value: x.name,
-                        selected: x.name && _.indexOf(selectedLabels, x.name) !== -1
+                        selected: x.name && _.indexOf(selectedImmutableLabels, x.name) !== -1
                     };
                     return item;
                 })
