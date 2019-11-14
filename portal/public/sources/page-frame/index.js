@@ -17,6 +17,7 @@ import Notification from 'MOD_DIR/notification/public/index';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import PurchaseLeads from 'CMP_DIR/purchase-leads';
 import OfficialPersonalEdition from 'CMP_DIR/official-personal-edition';
+import OrganizationExpiredTip from 'CMP_DIR/organization-expired-tip';
 import{
     myWorkEmitter,
     notificationEmitter,
@@ -274,6 +275,7 @@ class PageFrame extends React.Component {
                         />
                     </div>
                     <div className="col-xs-10">
+                        <OrganizationExpiredTip/>
                         {renderRoutes(this.props.route.routes)}
                         {this.state.phonePanelShow ? (
                             <PhonePanel

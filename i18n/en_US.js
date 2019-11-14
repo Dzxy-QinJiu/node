@@ -3784,5 +3784,11 @@ var en_US = {
     'payment.please.upgrade.company.version': 'Please upgrade to enterprise first. You can contact our sales: {contact}',//请先升级为企业版。您可以联系我们的销售：{contact}
     /*支付流程 --- end*/
 
+    /*组织到期提示 --- start*/
+    'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}
+    'organization.company.trial.expired.tip': 'The rest of your probationary period {time} days, please contact our sales staff: {contact}',//您的试用期剩余{time}天，请联系我们的销售人员: {contact}
+    'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
+    'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
+    /*组织到期提示 --- end*/
 };
 export default en_US;

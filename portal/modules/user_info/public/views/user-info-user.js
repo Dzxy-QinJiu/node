@@ -65,6 +65,7 @@ class UserInfo extends React.Component{
     }
 
     componentDidMount() {
+        paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         this.getWechatIsBind();
         this.getSendTime();
         getOrganizationInfo().then( (result) => {
@@ -85,6 +86,10 @@ class UserInfo extends React.Component{
         if(nextProps.userInfo.emailEnable){
             this.setState({sendMail: false});
         }
+    }
+
+    componentWillUnmount() {
+        paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
     }
 
     uploadImg(src) {
@@ -369,21 +374,20 @@ class UserInfo extends React.Component{
         );
     };
 
+    handleUpdatePersonalVersion = (result) => {
+        this.setState({
+            versionName: _.get(result, 'version.type', this.state.versionName),
+            endTime: _.get(result, 'end_time', this.state.endTime)
+        });
+    };
     // 处理版本升级
     handleVersionUpgrade = () => {
         paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
             continueFn: () => {
                 history.push('/clue_customer');
-            },
-            updateVersion: (result) => {
-                this.setState({
-                    versionName: _.get(result, 'version.type', this.state.versionName),
-                    endTime: _.get(result, 'end_time', this.state.endTime)
-                });
             }
         });
     };
-
 
     saveEditLanguage = (saveObj, successFunc, errorFunc) => {
         UserInfoAjax.setUserLanguage(saveObj).then((result) => {

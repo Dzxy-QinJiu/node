@@ -14,6 +14,7 @@ import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
 import {checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util';
 import { setUserData, getUserData } from 'PUB_DIR/sources/user-data';
 import history from 'PUB_DIR/sources/history';
+import { paymentEmitter } from 'OPLATE_EMITTER';
 
 const PERSONAL_VERSION_GOODS_TYPE = 'curtao_personal';
 
@@ -245,7 +246,9 @@ class OfficialPersonalEdition extends React.Component{
                 let originalList = _this.state.list[0];
                 let related_info = _.cloneDeep(_.get(originalList, 'related_info', {}));
                 //请求组织信息数据
-                getOrganizationInfo().then((result) => {
+                getOrganizationInfo({
+                    update: true
+                }).then((result) => {
                     complete(result,{
                         id: _.get(result, 'id', ''),
                         name: _.get(result, 'name', ''),
@@ -265,6 +268,7 @@ class OfficialPersonalEdition extends React.Component{
                     organization = _.extend(organization, newResult);
                     //更新组织信息
                     setUserData('organization', organization);
+                    paymentEmitter.emit(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, result);
                     if (_.isFunction(_this.props.paramObj.updateVersion)) {
                         _this.props.paramObj.updateVersion(result);
                     }
