@@ -650,6 +650,9 @@ function notifyApplyInfo(data) {
         if (canPopDesktop()) {//桌面通知的展示
             showDesktopNotification(Intl.get('user.apply.approve', '用户申请审批'), getApproveTipContent(data), false, isOpenPopUpNotify);
         } else {//系统弹出通知
+            if (!isOpenPopUpNotify) {
+                return;
+            }
             let notify = NotificationType['exist'];
             //如果界面上没有提示框，就显示推送的具体内容
             if (!notify) {
