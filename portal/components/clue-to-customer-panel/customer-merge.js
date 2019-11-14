@@ -521,6 +521,11 @@ class CustomerMerge extends React.Component {
     mergeToCustomer = (e) => {
         Trace.traceEvent(e, '点击合并客户面板中的"确认合并"按钮');
 
+        //禁用“确认合并”按钮
+        this.setState({
+            isConfirmMergeBtnDisabled: true
+        });
+
         const contacts = this.state.customerContacts;
         var clue = this.props.clue;
         const clueId = clue.id;
@@ -590,6 +595,12 @@ class CustomerMerge extends React.Component {
                 const content = _.isArray(err) ? err.join('; ') : err;
 
                 message.error(content);
+            })
+            .always(() => {
+                //取消禁用“确认合并”按钮
+                this.setState({
+                    isConfirmMergeBtnDisabled: false
+                });
             });
     }
 }
