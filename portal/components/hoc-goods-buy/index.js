@@ -39,6 +39,7 @@ import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import BasicPaymentMode from 'CMP_DIR/basic-payment-mode';
 import OperateSuccessTip from 'CMP_DIR/operate-success-tip';
 import PayAjax from 'MOD_DIR/common/public/ajax/pay';
+import Trace from 'LIB_DIR/trace';
 
 const LAYOUT_CONSTS = {
     TOP_HEIGHT: 70,
@@ -97,6 +98,7 @@ const HOCGoodsBuy = (options = {}) => {
                     type: _.get(this.state.payModeList,'[0].type','alipay'),
                     ...this.dealSubmitGoodInfo()
                 };
+                Trace.traceEvent(ReactDOM.findDOMNode(this),'点击立即支付');
                 this.setState({isCreateOrdering: true});
                 PayAjax.goodsTrade(saveObj).then((res) => {
                     this.setState({
@@ -114,9 +116,15 @@ const HOCGoodsBuy = (options = {}) => {
 
             //点击切换商品
             handleClickGoodsItem = (good) => {
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '切换商品');
                 this.setState({
                     activeGoods: good
                 });
+            };
+
+            handlClickClose = () => {
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '关闭商品界面');
+                this.onClosePanel();
             };
 
             renderContent = () => {
@@ -218,7 +226,7 @@ const HOCGoodsBuy = (options = {}) => {
                             isShowMadal={true}
                             isShowCloseBtn={this.state.isShowCloseBtn}
                             title={title}
-                            onClosePanel={this.onClosePanel}
+                            onClosePanel={this.handlClickClose}
                             content={content}
                             dataTracename={options.dataTraceName}
                         />
