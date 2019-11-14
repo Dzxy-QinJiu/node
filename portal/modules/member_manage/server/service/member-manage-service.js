@@ -52,19 +52,7 @@ exports.getMemberOrganization = (req, res) => {
             url: memberRestApis.getMemberOrganization,
             req: req,
             res: res
-        }, null, {
-            success: (eventEmitter, data) => {
-                let frontData = _.clone(data);
-                // 原接口返回组织名称字段是name，现在改为了official_name
-                // 前端多处调用组织信息的接口，node端修改字段名称后，这样前端就在不用多处处理了
-                frontData.name = _.get(data, 'official_name', '');
-                delete frontData.official_name;
-                eventEmitter.emit('success', frontData);
-            },
-            error: (eventEmitter, errorDesc) => {
-                eventEmitter.emit('error', errorDesc.message);
-            }
-        });
+        }, null);
 };
 
 function getUserLists(req, res, condition, isGetAllUser, teamrole_id) {

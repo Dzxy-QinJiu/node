@@ -7,6 +7,10 @@ const _ = require('lodash');
 // 获取成员的组织信息
 exports.getMemberOrganization = (req, res) => {
     memberManageService.getMemberOrganization(req, res, req.query).on('success', (data) => {
+        // 原接口返回组织名称字段是name，现在改为了official_name
+        // 前端多处调用组织信息的接口，node端修改字段名称后，这样前端就在不用多处处理了
+        data.name = _.get(data, 'official_name', '');
+        delete data.official_name;
         res.status(200).json(data);
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
