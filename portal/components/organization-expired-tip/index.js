@@ -6,7 +6,6 @@
 //组织到期提示组件
 import './style.less';
 import {Alert} from 'antd';
-import history from 'PUB_DIR/sources/history';
 import { getOrganizationInfo } from 'PUB_DIR/sources/utils/common-data-util';
 import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 import { paymentEmitter } from 'PUB_DIR/sources/utils/emitters';
