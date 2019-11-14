@@ -55,7 +55,8 @@ import {
     sourceClassifyArray,
     FLOW_FLY_TIME,
     HIDE_CLUE_TIME,
-    ADD_SELECT_TYPE
+    ADD_SELECT_TYPE,
+    NEED_MY_HANDLE
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -230,7 +231,7 @@ class ClueCustomer extends React.Component {
     getUnhandledClue = () => {
         //现在只有普通销售有未读数
         clueFilterAction.setTimeType('all');
-        clueFilterAction.setFilterClueAllotNoTrace('0');
+        clueFilterAction.setFilterClueAllotNoTrace(NEED_MY_HANDLE);
         this.filterPanel.filterList.setDefaultFilterSetting();
     };
 
@@ -238,7 +239,7 @@ class ClueCustomer extends React.Component {
         if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.clickUnhandleNum')) {
 
             var filterStoreData = clueFilterStore.getState();
-            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === '0';//待我处理
+            var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === NEED_MY_HANDLE;//待我处理
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
             var checkOtherData = _.get(this, 'filterPanel.filterList.props.advancedData', []);//线索状态
             if (filterStoreData.filterClueAvailability === '1') {
@@ -762,10 +763,6 @@ class ClueCustomer extends React.Component {
         var typeFilter = isGetAllClue ? {status: ''} : this.getFilterStatus();//线索类型
         if (!isGetAllClue){
             typeFilter.availability = filterStoreData.filterClueAvailability;
-        }
-        //如果此时选择了待我处理，当前即便选择了无效的tab也变成有效状态
-        if(this.isSelfHandleFilter()) {
-            typeFilter.availability = AVALIBILITYSTATUS.AVALIBILITY;
         }
         //如果筛选的是无效的，不传status参数
         if (typeFilter.availability === AVALIBILITYSTATUS.INAVALIBILITY ){
