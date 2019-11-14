@@ -170,8 +170,13 @@ class CustomerList extends React.Component {
         _.each(customerContacts, customerContact => {
             //遍历线索联系人列表
             _.some(clueContacts, clueContact => {
+                //将电话中的横线去掉，以免将数字相同只是有的带横线有的不带横线的电话识别为不同的电话
+                customerContact.phone = _.map(customerContact.phone, item => item.replace(/-/g, ''));
+                clueContact.phone = _.map(clueContact.phone, item => item.replace(/-/g, ''));
+
                 //客户联系人电话和线索联系人电话的合集
-                const allPhone = _.concat(customerContact.phone, clueContact.phone);
+                let allPhone = _.concat(customerContact.phone, clueContact.phone);
+
                 //去重后的电话合集
                 const uniqPhone = _.uniq(allPhone);
                 //电话是否重复

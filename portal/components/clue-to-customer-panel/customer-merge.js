@@ -489,7 +489,13 @@ class CustomerMerge extends React.Component {
         _.each(CONTACT_WAY_TYPE_FIELDS, field => {
 
             //客户联系人中该联系方式和线索联系人中该联系方式的合集
-            const all = _.concat(customerContact[field], clueContact[field]);
+            let all = _.concat(customerContact[field], clueContact[field]);
+
+            //如果是要比较电话，需要将电话中的横线去掉，以免将数字相同只是有的带横线有的不带横线的电话识别为不同的电话
+            if (field === 'phone') {
+                all = _.map(all, item => item.replace(/-/g, ''));
+            }
+
             //去重后的该联系方式合集
             let uniqSet = _.uniq(all);
             //该联系方式是否重复
