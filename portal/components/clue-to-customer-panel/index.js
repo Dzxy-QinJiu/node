@@ -236,7 +236,7 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     handleAfterAddCustomer = customer => {
-        const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
+        const msgInfo = Intl.get('common.convert.to.new.customer': '转为新客户') + Intl.get('contract.41', '成功');
         message.success(msgInfo);
 
         const customerId = _.get(customer, '[0].id');
