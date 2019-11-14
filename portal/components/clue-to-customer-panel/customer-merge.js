@@ -174,7 +174,7 @@ class CustomerMerge extends React.Component {
     
                     <div className="btn-block">
                         <Button
-                            onClick={this.handleCancelMerge}
+                            onClick={this.props.changeViewType.bind(this.props.parent, this.props.prevViewType)}
                         >
                             {Intl.get('common.cancel', '取消')}
                         </Button>
