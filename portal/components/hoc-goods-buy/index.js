@@ -122,6 +122,11 @@ const HOCGoodsBuy = (options = {}) => {
                 });
             };
 
+            handlClickClose = () => {
+                Trace.traceEvent(ReactDOM.findDOMNode(this), '关闭商品界面');
+                this.onClosePanel();
+            };
+
             renderContent = () => {
                 if(this.state.isGetGoodsLoading && !this.state.last_id) {
                     return <Spinner/>;
@@ -221,10 +226,7 @@ const HOCGoodsBuy = (options = {}) => {
                             isShowMadal={true}
                             isShowCloseBtn={this.state.isShowCloseBtn}
                             title={title}
-                            onClosePanel={() => {
-                                Trace.traceEvent(ReactDOM.findDOMNode(this), '关闭商品界面');
-                                this.onClosePanel();
-                            }}
+                            onClosePanel={this.handlClickClose}
                             content={content}
                             dataTracename={options.dataTraceName}
                         />

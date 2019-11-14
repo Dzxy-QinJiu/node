@@ -198,6 +198,11 @@ class BasicPaymentMode extends React.Component {
         });
     };
 
+    handleClickClose = (e) => {
+        Trace.traceEvent(e, '关闭订单支付界面');
+        this.props.onClosePanel();
+    };
+
     renderPayContent() {
         let payMode = this.state.payMode;
         if(_.includes(this.PAY_MODE, payMode)) {//是支付宝和微信支付方式
@@ -283,10 +288,7 @@ class BasicPaymentMode extends React.Component {
                 className="payment-mode-wrapper"
                 isShowMadal={true}
                 isShowCloseBtn={this.props.isShowCloseBtn}
-                onClosePanel={(e) => {
-                    Trace.traceEvent(e, '关闭订单支付界面');
-                    this.props.onClosePanel();
-                }}
+                onClosePanel={this.handleClickClose}
                 title={title}
                 content={this.renderContent()}
                 dataTracename="订单支付"
