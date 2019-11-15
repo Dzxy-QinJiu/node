@@ -101,48 +101,57 @@ import ClueRecommedLists from './views/recomment_clues/recommend_clues_lists';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { parabola } from 'PUB_DIR/sources/utils/parabola';
+import { storageUtil } from 'ant-utils';
+import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
 const DIFFREF = {
     ASSIGN: 'assign',//分配
     TRACE: 'trace', //跟进
     TRASFERINVALID: 'trasferInvalid',//转化和标为无效
 };
 class ClueCustomer extends React.Component {
-    state = {
-        clueAddFormShow: false,//
-        rightPanelIsShow: rightPanelShow,//是否展示右侧客户详情
-        accessChannelArray: accessChannelArray,//线索渠道
-        clueSourceArray: clueSourceArray,//线索来源
-        clueClassifyArray: clueClassifyArray,//线索分类
-        isRemarkingItem: '',//正在标记的那条线索
-        clueImportTemplateFormShow: false,//线索导入面板是否展示
-        previewList: [],//预览列表
-        clueAnalysisPanelShow: false,//线索分析面板是否展示
-        exportRange: 'filtered',
-        isExportModalShow: false,//是否展示导出线索的模态框
-        isEdittingItem: {},//正在编辑的那一条
-        isInvalidateItem: {},//标记无效的那一条
-        submitContent: '',//要提交的跟进记录的内容
-        submitReason: '',//要提交的无效原因
-        submitTraceErrMsg: '',//提交跟进记录出错的信息
-        submitInvalidateClueMsg: '',//提交标记无效出错的信息
-        submitTraceLoading: false,//正在提交跟进记录
-        submitInvalidateLoading: false,//正在提交无效记录
-        showCustomerId: '',//正在展示客户详情的客户id
-        isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
-        customerOfCurUser: {},//当前展示用户所属客户的详情
-        selectedClues: [],//获取批量操作选中的线索
-        isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
-        addType: 'start',//添加按钮的初始
-        showRecommendCustomerCondition: false,
-        isReleasingClue: false,//是否正在释放线索
-        selectedClue: [],//选中的线索
-        isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
-        cluePoolCondition: {},//线索池的搜索条件
-        filterInputWidth: 210,//筛选输入框的宽度
-        batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
-        //显示内容
-        ...clueCustomerStore.getState()
-    };
+    constructor(props) {
+        super(props);
+
+        const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+
+        this.state = {
+            clueAddFormShow: false,//
+            rightPanelIsShow: rightPanelShow,//是否展示右侧客户详情
+            accessChannelArray: accessChannelArray,//线索渠道
+            clueSourceArray: clueSourceArray,//线索来源
+            clueClassifyArray: clueClassifyArray,//线索分类
+            isRemarkingItem: '',//正在标记的那条线索
+            clueImportTemplateFormShow: false,//线索导入面板是否展示
+            previewList: [],//预览列表
+            clueAnalysisPanelShow: false,//线索分析面板是否展示
+            exportRange: 'filtered',
+            isExportModalShow: false,//是否展示导出线索的模态框
+            isEdittingItem: {},//正在编辑的那一条
+            isInvalidateItem: {},//标记无效的那一条
+            submitContent: '',//要提交的跟进记录的内容
+            submitReason: '',//要提交的无效原因
+            submitTraceErrMsg: '',//提交跟进记录出错的信息
+            submitInvalidateClueMsg: '',//提交标记无效出错的信息
+            submitTraceLoading: false,//正在提交跟进记录
+            submitInvalidateLoading: false,//正在提交无效记录
+            showCustomerId: '',//正在展示客户详情的客户id
+            isShowCustomerUserListPanel: false,//是否展示该客户下的用户列表
+            customerOfCurUser: {},//当前展示用户所属客户的详情
+            selectedClues: [],//获取批量操作选中的线索
+            isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
+            addType: 'start',//添加按钮的初始
+            showRecommendCustomerCondition: false,
+            isReleasingClue: false,//是否正在释放线索
+            selectedClue: [],//选中的线索
+            isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
+            cluePoolCondition: {},//线索池的搜索条件
+            filterInputWidth: 210,//筛选输入框的宽度
+            batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
+            showRecommendTips: !websiteConfig[oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS],
+            //显示内容
+            ...clueCustomerStore.getState()
+        };
+    }
     isCommonSales = () => {
         return userData.getUserData().isCommonSales;
     };
@@ -571,6 +580,17 @@ class ClueCustomer extends React.Component {
             isShowRecommendCluePanel: false
         });
     }
+    handleClickCloseClue = () => {
+        let personnelObj = {};
+        personnelObj[oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS] = true;
+        setWebsiteConfig(personnelObj, () => {
+            this.setState({
+                showRecommendTips: false
+            });
+        }, (err) => {
+            message.error(err);
+        });
+    };
     //渲染线索推荐按钮
     renderClueRecommend = () => {
         return (
@@ -578,9 +598,14 @@ class ClueCustomer extends React.Component {
                 {hasPrivilege('COMPANYS_GET') ?
                     <Popover
                         placement="bottom"
-                        content={Intl.get('clue.customer.has.clue.can.extract', '您可以从这里提取线索奥')}
-                        visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount}
-                        overlayClassName="clue-recommend-tips"
+                        content={(
+                            <span className="clue-recommend-tips-container">
+                                {Intl.get('clue.customer.has.clue.can.extract', '您可以从这里提取线索哦')}
+                                <i className="iconfont icon-close-wide" title={Intl.get('common.app.status.close', '关闭')} onClick={this.handleClickCloseClue}/>
+                            </span>
+                        )}
+                        visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount && this.state.showRecommendTips}
+                        overlayClassName="clue-recommend-tips explain-pop"
                     >
                         <Button onClick={this.showClueRecommendTemplate} className="btn-item" data-tracename="点击线索推荐按钮">
                             <i className="iconfont icon-clue-recommend"></i>

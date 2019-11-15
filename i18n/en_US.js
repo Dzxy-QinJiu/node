@@ -3083,7 +3083,7 @@ var en_US = {
     'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
     'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any clue',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
     'clue.edit.condition.search': 'Please change search condition',//请修改条件再查看
-    'clue.customer.has.clue.can.extract': 'You can extract clues from here',//您可以从这里提取线索奥
+    'clue.customer.has.clue.can.extract': 'You can extract clues from here',//您可以从这里提取线索哦
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',

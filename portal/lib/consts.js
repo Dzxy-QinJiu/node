@@ -48,6 +48,7 @@ module.exports = {
         RECENT_LOGIN_USER_SELECTED_APP_ID: 'recent-login-user-selected-app-id',
         CONCERN_CUSTOMER_TOP_FLAG: 'concern_customer_top_flag',//关注客户置顶的标识
         SETTING_CLIENT_NOTICE_IGNORE: 'setting_client_notice_ignore',//是否点击过不再提示配置坐席号的提示
+        NO_SHOW_RECOMMEND_CLUE_TIPS: 'no_show_recommend_clue_tips',//点击关闭没有线索时的提示信息
     },
     MAP_COLOR: ['rgba(56, 89, 147, 1)','rgba(56, 89, 147, 0.8)','rgba(56, 89, 147, 0.6)','rgba(56, 89, 147, 0.4)','rgba(56, 89, 147, 0.2)'],
     MAP_PROVINCE: {
