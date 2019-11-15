@@ -736,7 +736,10 @@ const ApplyUserForm = createReactClass({
         let selectAppIds = _.map(this.state.apps, 'client_id');
         var isOplateUser = this.state.isOplateUser;
         return (
-            <div style={{maxHeight: this.state.maxHeight, height: this.state.formHeight}}>
+            <div
+                className="apply-user-form-wrap"
+                style={{maxHeight: this.state.maxHeight, height: this.state.formHeight}}
+            >
                 <GeminiScrollbar className="srollbar-out-card-style">
                     <Form layout='horizontal' className="apply-user-form" id="crm-apply-user-form">
                         {isOplateUser ? null : this.renderCheckDefaultContact()}
