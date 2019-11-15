@@ -84,7 +84,7 @@ var crmRestApis = {
     //线索生成客户（在关联客户时）
     addCustomerByClue: '/rest/customer/v2/customer/clue_create_customer',
     //线索生成客户（在转客户时）
-    addCustomerByClueAtConvert: '/rest/customer/v3/customer/lead',
+    addCustomerByClueAtConvert: '/rest/clue/v2/lead_transfer/customer/create',
     //获取客户所属销售及联合跟进人
     getSalesByCustomerId: '/rest/customer/v3/customer/customer/users/:customer_id',
     //修改客户的联合跟进人
@@ -474,7 +474,7 @@ exports.addCustomerByClue = function(req, res) {
 
     //在线索转客户过程中生成客户时
     if (req.query.is_convert) {
-        url = crmRestApis.addCustomerByClueAtConvert + `?clue_id=${req.query.clueId}`;
+        url = crmRestApis.addCustomerByClueAtConvert + `?lead_id=${req.query.clueId}`;
     //在线索关联客户过程中生成客户时
     } else {
         url = crmRestApis.addCustomerByClue + `?clue_id=${req.query.clueId}`;

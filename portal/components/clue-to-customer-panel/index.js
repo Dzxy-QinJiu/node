@@ -93,6 +93,7 @@ class ClueToCustomerPanel extends React.Component {
                     afterAddCustomer={this.handleAfterAddCustomer}
                     formData={this.props.clue}
                     isAssociateClue={true}
+                    isContactWayExpanded={true}
                     isConvert={true}
                     phoneNum={_.get(this.props, 'clue.phones[0]', '')}
                     isShowMadal={false}
@@ -215,12 +216,14 @@ class ClueToCustomerPanel extends React.Component {
 
         //打开客户面板，显示合并后的客户信息
         function showCustomerDetail() {
-            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-                customer_params: {
-                    currentId: customerId,
-                    activeKey: TAB_KEYS.CONTACT_TAB
-                }
-            });
+            if (customerId) {
+                phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                    customer_params: {
+                        currentId: customerId,
+                        activeKey: TAB_KEYS.CONTACT_TAB
+                    }
+                })
+            }
         }
 
         if (delayShowCustomerDetail) {
@@ -239,11 +242,7 @@ class ClueToCustomerPanel extends React.Component {
         const msgInfo = Intl.get('common.convert.to.new.customer': '转为新客户') + Intl.get('contract.41', '成功');
         message.success(msgInfo);
 
-        const customerId = _.get(customer, '[0].id');
-
-        if (customerId) {
-            this.onAfterConvert(customerId, true);
-        }
+        this.onAfterConvert();
     }
 
     changeViewType = (viewType, customer) => {
