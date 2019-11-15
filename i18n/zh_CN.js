@@ -417,7 +417,7 @@ var zh_CN = {
     'home.page.contacts.clues.week': '本周已联系线索总数',
     'home.page.expire.contract.at.time': '{time}即将到期合同统计',
     'home.page.extract.clues.statistical': '提取线索量统计',
-    'home.page.extract.clues.get.counts': '本组织已提取{count}条线索',
+    'home.page.extract.clues.get.counts': '共提取{count}条线索',
     'home.page.extract.clues.on.months': '本月已提取{extractedCount}条线索，还可提取{canCount}条线索',
     'home.page.extract.clues.on.today': '今天已提取{extractedCount}条线索，还可提取{canCount}条线索',
     'home.page.extracted.clues.on.months': '本月已提取{count}条线索',

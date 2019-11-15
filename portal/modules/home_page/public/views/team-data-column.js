@@ -25,9 +25,10 @@ import {
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import classNames from 'classnames';
 import {contractChart} from 'ant-chart-collection';
-import {isOpenCash, isFormalUser, getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOpenCash, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import { AntcAnalysis } from 'antc';
 import { getColumnHeight } from 'MOD_DIR/home_page/public/views/common-util';
+import { getMaxLimitExtractClueCount } from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 const performance = {
     image_1: require('../images/performance_1.png'),
@@ -126,6 +127,7 @@ class TeamDataColumn extends React.Component {
             //当前业绩选择的时间类型（默认本月）
             currentPerforManceDateType: DATE_TYPE_KEYS.THIS_MONTH,
             performanceLoading: false,
+            maxLimitExtractNumber: 0,//能提取线索的最大数量
         };
     }
 
@@ -137,6 +139,7 @@ class TeamDataColumn extends React.Component {
         this.getCallTimeData();
         this.getContactCustomerCount();
         this.getContactClueCount();
+        this.getMaxLimitCount();
         this.getExtractCluesCount();
         this.getExpireContractData();
         this.changeTableHeight();
@@ -224,21 +227,19 @@ class TeamDataColumn extends React.Component {
     }
 
     getExtractCluesCount() {
-        let promiseList = [
-            // 获取本组织已提取线索数
-            this.getExtractCluesData({
-                startTime: _.get(getOrganization(), 'version.create_time', ''), //组织创建时间
-                endTime: moment().endOf('day').valueOf()
-            }),
-        ];
         let queryObj = {
             startTime: '',
             endTime: ''
         };
+        let promiseList = [
+            // 获取本组织已提取线索数，不传是获取全部的
+            this.getExtractCluesData(queryObj)
+        ];
         //判断是正式还是试用用户
-        if(isFormalUser()) {//正式, 获取本月提取数
-            queryObj.startTime = getThisMonthTimeStamp.start_time;
-            queryObj.endTime = getThisMonthTimeStamp.end_time;
+        const versionAndType = checkVersionAndType();
+        if(versionAndType.formal) {//正式, 获取本月提取数
+            queryObj.startTime = moment().startOf('month').valueOf();
+            queryObj.endTime = moment().endOf('month').valueOf();
         }else {//试用，获取今天提取数
             queryObj.startTime = moment().startOf('day').valueOf();
             queryObj.endTime = moment().endOf('day').valueOf();
@@ -247,7 +248,15 @@ class TeamDataColumn extends React.Component {
         Promise.all(promiseList).then((result) => {
             this.setState({
                 extractCluesTotal: result[0],
-                extractCluesCount: result[1]
+                extractCluesCount: result[1],
+            });
+        });
+    }
+
+    getMaxLimitCount() {
+        getMaxLimitExtractClueCount().then((count) => {
+            this.setState({
+                maxLimitExtractNumber: count
             });
         });
     }
@@ -762,20 +771,19 @@ class TeamDataColumn extends React.Component {
 
     //组织提取线索量统计
     renderExtractCluesPanel() {
-        //TODO 后台管理配置客套版本暂未上线，无法获取组织可提取线索的总量，所以先显示已提取的条数，还可提取的暂定
-        // let residueExtractCluesCount = _.get(this.state.organization, 'version.max_lead_number', 0) - this.state.extractCluesCount;
-        // residueExtractCluesCount = residueExtractCluesCount > 0 ? residueExtractCluesCount : 0;
+        let residueExtractCluesCount = this.state.maxLimitExtractNumber - this.state.extractCluesCount;
+        residueExtractCluesCount = residueExtractCluesCount > 0 ? residueExtractCluesCount : 0;
         const extractClueContent = (
             <div>
                 <div className='my-data-title'>{Intl.get('home.page.extract.clues.statistical', '提取线索量统计')}</div>
                 <div className="extract-clue-wrap">
                     <div className='extract-clue-data'>
-                        {Intl.get('home.page.extract.clues.get.counts', '本组织已提取{count}条线索', {count: this.state.extractCluesTotal})}
+                        {checkVersionAndType().formal ?
+                            Intl.get('home.page.extract.clues.on.months', '本月已提取{extractedCount}条线索，还可提取{canCount}条线索',{extractedCount: this.state.extractCluesCount, canCount: residueExtractCluesCount})
+                            : Intl.get('home.page.extract.clues.on.today', '今天已提取{extractedCount}条线索，还可提取{canCount}条线索',{extractedCount: this.state.extractCluesCount, canCount: residueExtractCluesCount})}
                     </div>
                     <div className='extract-clue-data'>
-                        {isFormalUser() ?
-                            Intl.get('home.page.extracted.clues.on.months', '本月已提取{count}条线索',{count: this.state.extractCluesCount})
-                            : Intl.get('home.page.extracted.clues.on.today', '今天已提取{count}条线索',{count: this.state.extractCluesCount})}
+                        {Intl.get('home.page.extract.clues.get.counts', '共提取{count}条线索', {count: this.state.extractCluesTotal})}
                     </div>
                 </div>
             </div>);
