@@ -3,8 +3,7 @@
  */
 //联系人的ajax
 const SalesTeamAjax = require('../ajax/sales-team-ajax');
-import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
-
+import {getMyTeamTreeAndFlattenList, getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 
 function SalesTeamAction() {
 
@@ -66,8 +65,8 @@ function SalesTeamAction() {
             } else {
                 let teamList = _.get(data, 'teamList');
                 // 获取组织信息
-                SalesTeamAjax.getMemberOrganization().then( (result) => {
-                    let organizationName = _.get(result, 'name');
+                getOrganizationInfo().then( (result) => {
+                    let organizationName = _.get(result, 'official_name' );
                     let organizationId = _.get(result, 'id');
                     // 部门树的数据是由组织和部门信息组成的
                     teamList.unshift({group_name: organizationName, group_id: organizationId});

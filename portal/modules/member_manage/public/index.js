@@ -15,8 +15,7 @@ import Trace from 'LIB_DIR/trace';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 import MemberTableList from 'MOD_DIR/member-table-list';
 import {BACKGROUG_LAYOUT_CONSTANTS, BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
-import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
-
+import {updateGuideMark, getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 
 let openTimeout = null;//打开面板时的时间延迟设置
 let focusTimeout = null;//focus事件的时间延迟设置
@@ -67,7 +66,7 @@ class MemberManage extends React.Component {
             }
         });
         // 获取成员的组织信息
-        MemberManageAjax.getMemberOrganization().then( (result) => {
+        getOrganizationInfo().then( (result) => {
             if (result) {
                 this.setState({
                     currentMemberNumber: _.get(result, 'membernumber', 0),
