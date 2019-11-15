@@ -8,7 +8,7 @@ import { emailRegex, qqRegex, checkWechat } from 'PUB_DIR/sources/utils/validate
 var React = require('react');
 require('../../css/clue_detail_overview.less');
 import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
-import {Button, Form, Icon, message, Input, Popover} from 'antd';
+import { Button, Form, Icon, message, Input, Popover, Popconfirm } from 'antd';
 const FormItem = Form.Item;
 const {TextArea} = Input;
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
@@ -200,7 +200,8 @@ class ClueDetailOverview extends React.Component {
         if (_.get(nextProps.curClue,'id')) {
             var diffClueId = _.get(nextProps,'curClue.id') !== _.get(this, 'props.curClue.id');
             this.setState({
-                curClue: $.extend(true, {}, nextProps.curClue)
+                curClue: $.extend(true, {}, nextProps.curClue),
+                isReleased: false
             },() => {
                 var curClue = nextProps.curClue;
                 if (diffClueId){
@@ -830,6 +831,24 @@ class ClueDetailOverview extends React.Component {
             submitReason: e.target.value
         });
     };
+    handleReleaseClue = () => {
+        let curClue = this.state.curClue;
+        if(_.isEmpty(curClue) && this.state.isReleasingClue) return;
+        this.setState({isReleasingClue: true});
+        Trace.traceEvent($(ReactDOM.findDOMNode(this)), '点击释放线索按钮');
+        clueCustomerAction.releaseClue(curClue.id, () => {
+            this.setState({isReleasingClue: false, isReleased: true});
+            //释放完线索后，需要将首页对应的工作设为已完成
+            if (window.location.pathname === '/home') {
+                myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+            }
+            clueCustomerAction.afterReleaseClue(curClue.id);
+            subtracteGlobalClue(curClue);
+        }, errorMsg => {
+            this.setState({isReleasingClue: false});
+            message.error(errorMsg);
+        });
+    };
     //确认无效处理
     handleInvalidateBtn = (item, callback) => {
         if (this.state.submitInvalidateLoading) {
@@ -963,6 +982,8 @@ class ClueDetailOverview extends React.Component {
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         if (avalibility){
+            //不是运营人员，且没有被释放
+            var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && !this.state.isReleased;
             return <div>
                 {associatedPrivilege ? <Button type="primary"
                     onClick={this.props.onConvertToCustomerBtnClick.bind(this, curClue.id, curClue.name, curClue.phones)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
@@ -971,6 +992,13 @@ class ClueDetailOverview extends React.Component {
                     {editCluePrivilege(curClue) ? <span className="can-edit">{Intl.get('clue.customer.set.invalid','标为无效')}</span> : <span className="can-edit"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
 
                 </Button>
+                {showRelease ? (
+                    <Popconfirm
+                        placement="topRight" onConfirm={this.handleReleaseClue}
+                        title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                        <Button disabled={this.state.isReleasingClue} loading={this.state.isReleasingClue}>{Intl.get('clue.release', '释放线索')}</Button>
+                    </Popconfirm>
+                ) : null}
             </div>;
         }else{
             return null;
