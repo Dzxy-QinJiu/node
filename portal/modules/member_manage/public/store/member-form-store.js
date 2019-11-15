@@ -44,6 +44,10 @@ class MemberFormStore {
         this.positionList = _.isArray(positionList) ? positionList : [];
     }
 
+    updatePositionList(newAddPosition) {
+        this.positionList = this.positionList.unshift(newAddPosition);
+    }
+
     //正在保存的属性设置
     setSaveFlag(flag) {
         this.isSaving = flag;

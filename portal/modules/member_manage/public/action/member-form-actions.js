@@ -12,6 +12,7 @@ class MemberFormActions {
             'setTeamListLoading', //是否正在获取销售团队列表的标志
             'setAddGroupForm', // 是否展示添加部门
             'cancelAddGroup',// 取消添加部门的展示
+            'updatePositionList', // 更新职务列表
         );
     }
 
