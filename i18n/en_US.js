@@ -292,6 +292,8 @@ var en_US = {
     'common.load.data.error': 'Loading failed, please refresh', // 加载失败，请{refresh}
     'common.no.more.data.tips': 'There was no more {name}', // 没有更多{name}了
     'common.no.data.tips': 'No {name}', // 暂无{name}
+    'common.call.owe.tips': 'Your telephone charge is overdue, please try it after topping up', // 您的电话号码已欠费，请充值后再试！
+    
     //公共部分--end
     'login.login': 'Login',//登录
     'login.register': 'Register',//注册

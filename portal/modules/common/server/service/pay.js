@@ -14,6 +14,8 @@ var urls = {
     getPaymentMode: '/pay/management/curtao/paychannels',
     //获取商品折扣信息
     getGoodsDiscountList: '/pay/goods/curtao/discount/list',
+    // 获取组织的通话费用
+    getOrganizationCallFee: '/charging/phone/charging/organization/fee',
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
@@ -68,6 +70,15 @@ exports.getPaymentMode = function(req,res) {
 exports.getGoodsDiscountList = function(req,res) {
     return restUtil.authRest.get({
         url: urls.getGoodsDiscountList,
+        req: req,
+        res: res
+    }, req.query);
+};
+
+// 获取组织的通话费用
+exports.getOrganizationCallFee = (req, res) =>{
+    return restUtil.authRest.get({
+        url: urls.getOrganizationCallFee,
         req: req,
         res: res
     }, req.query);
