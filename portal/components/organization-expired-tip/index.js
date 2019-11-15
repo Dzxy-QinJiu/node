@@ -35,17 +35,18 @@ class OrganizationExipreTip extends React.PureComponent {
         getOrganizationInfo().then((result) => {
             let endTime = _.get(result, 'end_time');
             if(endTime) {
-                //TODO 后台暂未提供接口，后期会给，暂时自己计算到期时间
                 //试用期提前三天提醒，正式的提前一周
                 let versionAndType = checkVersionAndType();
+                // 0: 今天到期， 负数表示已过期xx天
+                let expire_after_days = _.get(result, 'expire_after_days');
                 //今天的起始、结束时间(23:59:59+1)
-                let todayEndTime = moment().endOf('day').valueOf() + 1;
+                /*let todayEndTime = moment().endOf('day').valueOf() + 1;
                 let time = moment(endTime).endOf('day').valueOf() + 1;
-                let diffTime = moment(time).diff(moment(todayEndTime), 'days');
-                if((versionAndType.trial && diffTime <= REMIND_DAYS.TRIAL)
-                    || (versionAndType.formal && diffTime <= REMIND_DAYS.FORMAL)) {
+                let diffTime = moment(time).diff(moment(todayEndTime), 'days');*/
+                if((versionAndType.trial && expire_after_days <= REMIND_DAYS.TRIAL)
+                    || (versionAndType.formal && expire_after_days <= REMIND_DAYS.FORMAL)) {
                     this.setState({
-                        endTime: diffTime,
+                        endTime: expire_after_days,
                         visible: true
                     });
                 }
