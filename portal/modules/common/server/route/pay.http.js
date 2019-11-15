@@ -50,5 +50,13 @@ module.exports = {
             'needLogin': true
         },
         'privileges': []
+    }, {
+        // 获取组织的通话费用
+        'method': 'get',
+        'path': '/rest/get/organization/phone/fee',
+        'handler': 'getOrganizationCallFee',
+        'passport': {
+            'needLogin': true
+        }
     }]
 };

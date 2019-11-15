@@ -48,3 +48,12 @@ exports.getGoodsDiscountList = function(req, res) {
         res.status(500).json(codeMessage && codeMessage.message);
     });
 };
+
+// 获取组织的通话费用
+exports.getOrganizationCallFee = (req, res) => {
+    payService.getOrganizationCallFee(req, res).on('success' , (data) => {
+        res.status(200).json(data);
+    }).on('error' , (codeMessage) => {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};
