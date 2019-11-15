@@ -16,7 +16,9 @@ import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import PurchaseLeads from 'CMP_DIR/purchase-leads';
+import ClueToCustomerPanel from 'CMP_DIR/clue-to-customer-panel';
 import OfficialPersonalEdition from 'CMP_DIR/official-personal-edition';
+import OrganizationExpiredTip from 'CMP_DIR/organization-expired-tip';
 import{
     myWorkEmitter,
     notificationEmitter,
@@ -24,7 +26,8 @@ import{
     phoneMsgEmitter,
     audioMsgEmitter,
     userDetailEmitter,
-    paymentEmitter
+    paymentEmitter,
+    clueToCustomerPanelEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
 
@@ -44,6 +47,8 @@ class PageFrame extends React.Component {
         rightContentHeight: 0,
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
+        isShowClueToCustomerPanel: false, // 是否显示线索转客户面板
+        clueToCustomerPanelProps: {}, //线索转客户面板属性
         clueParamObj: $.extend(true, {}, emptyParamObj),
         userDetailParamObj: $.extend(true, {}), // 用户详情组件相关的参数
         isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
@@ -76,6 +81,10 @@ class PageFrame extends React.Component {
         paymentEmitter.on(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
         //打开升级个人正式版的面板的事件监听
         paymentEmitter.on(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, this.showPersonalVersionPanel);
+        //监听线索转客户面板打开事件
+        clueToCustomerPanelEmitter.on(clueToCustomerPanelEmitter.OPEN_PANEL, this.openClueToCustomerPanel);
+        //监听线索转客户面板关闭事件
+        clueToCustomerPanelEmitter.on(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
 
         $(window).on('resize', this.resizeHandler);
     }
@@ -130,6 +139,10 @@ class PageFrame extends React.Component {
         userDetailEmitter.removeListener(userDetailEmitter.CLOSE_USER_DETAIL, this.closeUserDetailPanel);
         paymentEmitter.removeListener(paymentEmitter.OPEN_ADD_CLUES_PANEL, this.showPurchaseLeadsPanel);
         paymentEmitter.removeListener(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, this.showPersonalVersionPanel);
+        //取消监听线索转客户面板打开事件
+        clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.OPEN_PANEL, this.openClueToCustomerPanel);
+        //取消监听线索转客户面板关闭事件
+        clueToCustomerPanelEmitter.removeListener(clueToCustomerPanelEmitter.CLOSE_PANEL, this.closeClueToCustomerPanel);
         $(window).off('resize', this.resizeHandler);
         phoneUtil.unload(() => {
             console.log('成功登出电话系统!');
@@ -200,6 +213,22 @@ class PageFrame extends React.Component {
         this.setState({
             isShowUserDetailPanel: false,
             userDetailParamObj: $.extend(this.state.userDetailParamObj, {})
+        });
+    };
+
+    // 打开线索转客户面板
+    openClueToCustomerPanel = props => {
+        this.setState({
+            isShowClueToCustomerPanel: true,
+            clueToCustomerPanelProps: props,
+        });
+    };
+
+    // 关闭线索转客户面板
+    closeClueToCustomerPanel = () => {
+        this.setState({
+            isShowClueToCustomerPanel: false,
+            clueToCustomerPanelProps: {},
         });
     };
 
@@ -274,6 +303,7 @@ class PageFrame extends React.Component {
                         />
                     </div>
                     <div className="col-xs-10">
+                        <OrganizationExpiredTip/>
                         {renderRoutes(this.props.route.routes)}
                         {this.state.phonePanelShow ? (
                             <PhonePanel
@@ -307,6 +337,14 @@ class PageFrame extends React.Component {
                                 <PurchaseLeads
                                     paramObj={this.state.cluePaymentParamObj}
                                     onClosePanel={this.closePurchaseLeadsPanel}
+                                />
+                            ) : null
+                        }
+                        {
+                            this.state.isShowClueToCustomerPanel ? (
+                                <ClueToCustomerPanel
+                                    onClose={this.closeClueToCustomerPanel}
+                                    {...this.state.clueToCustomerPanelProps}
                                 />
                             ) : null
                         }

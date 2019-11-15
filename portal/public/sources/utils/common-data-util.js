@@ -684,12 +684,13 @@ exports.updateGuideMark = function(key) {
 };
 
 // 获取组织信息
-exports.getOrganizationInfo = () => {
+exports.getOrganizationInfo = (queryParams = {}) => {
     const Deferred = $.Deferred();
     $.ajax({
         url: '/rest/get/member/organization',
         dataType: 'json',
         type: 'get',
+        data: queryParams,
         success: (resData) => {
             Deferred.resolve(resData);
         },

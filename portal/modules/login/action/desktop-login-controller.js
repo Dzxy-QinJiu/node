@@ -174,7 +174,9 @@ function loginSuccess(req, res) {
                     officialName: _.get(data, 'official_name', ''),
                     functions: _.get(data, 'functions', []),
                     type: _.get(data, 'type', ''),
-                    version: _.get(data, 'version', {})
+                    version: _.get(data, 'version', {}),
+                    endTime: _.get(data, 'end_time', ''),
+                    expireAfterDays: _.get(data, 'expire_after_days'),
                 };
                 req.session.save(() => {
                     if (req.xhr) {

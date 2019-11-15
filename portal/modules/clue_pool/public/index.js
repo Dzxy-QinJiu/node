@@ -25,9 +25,12 @@ import clueFilterStore from './store/filter-store';
 import cluePoolAjax from './ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {
-    AVALIBILITYSTATUS, clueStartTime,
+    AVALIBILITYSTATUS, 
+    clueStartTime,
     getClueStatusValue,
-    SELECT_TYPE
+    SELECT_TYPE,
+    SIMILAR_CLUE, 
+    SIMILAR_CUSTOMER
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {Button, message} from 'antd';
 
@@ -360,8 +363,12 @@ class ClueExtract extends React.Component {
         }
         //相似客户和线索
         let filterLabels = filterStoreData.filterLabels;
-        if(_.isArray(filterLabels) && filterLabels.length){
-            typeFilter.labels = filterLabels;
+        if(!_.isEmpty(filterLabels)){
+            if(_.isEqual(filterLabels, SIMILAR_CLUE)) {
+                typeFilter.lead_similarity = SIMILAR_CLUE;
+            }else if(_.isEqual(filterLabels, SIMILAR_CUSTOMER)) {
+                typeFilter.customer_similarity = SIMILAR_CUSTOMER;
+            }
         }
         let bodyField = {};
         if(_.isArray(existFilelds) && existFilelds.length){
@@ -731,7 +738,10 @@ class ClueExtract extends React.Component {
                 dataIndex: 'clue_name',
                 width: titleWidth,
                 render: (text, salesClueItem, index) => {
-                    let similarClue = _.get(salesClueItem, 'labels');
+                    //有相似线索
+                    let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
+                    //有相似客户
+                    let hasSimilarClient = _.get(salesClueItem, 'customer_similarity');
                     let availability = _.get(salesClueItem, 'availability');
                     let status = _.get(salesClueItem, 'status');
                     //判断是否为无效客户
@@ -748,11 +758,11 @@ class ClueExtract extends React.Component {
                                 onClick={this.showClueDetailPanel.bind(this, salesClueItem)}
                             >
                                 <div className="clue-name-item">{salesClueItem.name}</div>
-                                {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
+                                {!isInvalidClients && hasSimilarClue ?
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.clue', '有相似线索')}
                                     </span> : null}
-                                {ifShowTags && _.indexOf(similarClue, '有相似客户') !== -1 ?
+                                {ifShowTags && hasSimilarClient ?
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
                                     </span> : null}
