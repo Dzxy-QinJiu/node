@@ -272,10 +272,12 @@ class CustomerMerge extends React.Component {
 
     //渲染联系人
     renderContact(contact, contactIndex) {
+        const className = contact.isDup? '': 'hide'
         return (
             <DetailCard
                 title={this.renderContactTitle(contact, contactIndex)}
                 content={this.renderContactContent(contact)}
+                className={className}
             />
         );
     }
@@ -401,6 +403,9 @@ class CustomerMerge extends React.Component {
 
                     //将该线索联系人标记为重复联系人
                     clueContact.isDup = true;
+
+                    //将该客户联系人标记为重复联系人
+                    customerContact.isDup = true;
 
                     //中止遍历
                     return true;
@@ -549,6 +554,8 @@ class CustomerMerge extends React.Component {
         let contactErrors = [];
 
         _.each(contacts, (contact, index) => {
+            delete contact.isDup
+
             //如果是新联系人
             if (contact.isNew) {
                 let res = this[`form${contact.id}Ref`].handleSubmit();
