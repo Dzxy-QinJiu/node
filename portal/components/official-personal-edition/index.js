@@ -255,7 +255,7 @@ class OfficialPersonalEdition extends React.Component{
                         version: _.get(result, 'version', {}),
                         functions: _.get(result, 'functions', []),
                         endTime: _.get(result, 'end_time', ''),
-                        expire_after_days: _.get(result, 'expire_after_days'),
+                        expireAfterDays: _.get(result, 'expire_after_days'),
                     });
                 }, () => {
                     let id = _.get(related_info, 'realm_or_group_id', '');

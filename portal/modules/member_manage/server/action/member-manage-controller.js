@@ -11,12 +11,12 @@ exports.getMemberOrganization = (req, res) => {
         if(_.get(req.query, 'update')) {//更新session中用户的组织信息
             user.organization = {
                 id: _.get(data,'id', ''),
-                name: _.get(data, 'name', ''),
+                officialName: _.get(data, 'official_name', ''),
                 functions: _.get(data, 'functions', []),
                 type: _.get(data, 'type', ''),
                 version: _.get(data, 'version', {}),
                 endTime: _.get(data, 'end_time', ''),
-                expire_after_days: _.get(data, 'expire_after_days'),
+                expireAfterDays: _.get(data, 'expire_after_days'),
             };
             req.session.save(() => {
                 res.status(200).json(data);

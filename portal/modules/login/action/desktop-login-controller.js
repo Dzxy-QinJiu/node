@@ -174,7 +174,7 @@ function loginSuccess(req, res) {
                     type: _.get(data, 'type', ''),
                     version: _.get(data, 'version', {}),
                     endTime: _.get(data, 'end_time', ''),
-                    expire_after_days: _.get(data, 'expire_after_days'),
+                    expireAfterDays: _.get(data, 'expire_after_days'),
                 };
                 req.session.save(() => {
                     if (req.xhr) {
