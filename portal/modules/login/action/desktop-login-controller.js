@@ -169,7 +169,7 @@ function loginSuccess(req, res) {
                 let userData = _.get(req, 'session.user', {});
                 userData.organization = {
                     id: _.get(data,'id', ''),
-                    name: _.get(data, 'name', ''),
+                    name: _.get(data, 'official_name', ''),
                     functions: _.get(data, 'functions', []),
                     type: _.get(data, 'type', ''),
                     version: _.get(data, 'version', {}),

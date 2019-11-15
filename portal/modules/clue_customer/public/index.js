@@ -584,7 +584,7 @@ class ClueCustomer extends React.Component {
                 {hasPrivilege('COMPANYS_GET') ?
                     <Popover
                         placement="bottom"
-                        content={Intl.get('clue.customer.has.clue.can.extract', '这里有线索待您提取')}
+                        content={Intl.get('clue.customer.has.clue.can.extract', '您可以从这里提取线索奥')}
                         visible={!_.isNil(this.state.hasExtractCount) && !this.state.hasExtractCount}
                         overlayClassName="clue-recommend-tips"
                     >

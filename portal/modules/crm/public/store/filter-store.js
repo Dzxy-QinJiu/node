@@ -49,6 +49,7 @@ FilterStore.prototype.setInitialCondition = function() {
         sales_opportunities: [{
             sale_stages: ''
         }],
+        source_classify: '',//集客方式的筛选
         administrative_level: '',//行政级别
         otherSelectedItem: '',//其他类型的筛选
     };
