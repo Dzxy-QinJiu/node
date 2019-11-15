@@ -48,8 +48,6 @@ import Trace from 'LIB_DIR/trace';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import AddSchedule from 'CMP_DIR/add-schedule';
 import ajax from 'ant-ajax';
-import {CLUE_TO_CUSTOMER_VIEW_TYPE} from 'MOD_DIR/clue_customer/public/consts';
-import ClueToCustomerPanel from 'MOD_DIR/clue_customer/public/views/clue-to-customer-panel';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-action';
@@ -112,8 +110,6 @@ class MyWorkColumn extends React.Component {
             isShowRecormendClue: false,//是否展示推荐线索的面板
             guideConfig: [], // 引导流程列表
             userList: [],//分配线索的成员列表
-            isShowClueToCustomerPanel: false,//是否展示线索转客户面板
-            isShowAddCustomerPanel: false,//是否展示添加客户面板
             isEditingItem: {},//正在编辑的拜访类型工作
             recentThreeTraceContent: [],//最近三条拜访记录
             showTraceRecord: false, //是否展示最近三条记录
@@ -270,152 +266,6 @@ class MyWorkColumn extends React.Component {
                 onConvertToCustomerBtnClick: this.onConvertToCustomerBtnClick
             }
         });
-    }
-    //显示添加客户面板
-    showAddCustomerPanel = () => {
-        this.setState({isShowAddCustomerPanel: true}, () => {
-            this.adjustPanelOrder('showAdd');
-        });
-    };
-    //线索转为新客户完成后的回调事件
-    onConvertClueToNewCustomerDone = (customers) => {
-        const msgInfo = Intl.get('crm.3', '添加客户') + Intl.get('contract.41', '成功');
-        message.success(msgInfo);
-
-        const curCustomer = _.get(customers, '[0]');
-        const customerId = _.get(curCustomer, 'id');
-
-        if (curCustomer) {
-            //打开客户面板，显示合并后的客户信息
-            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
-                customer_params: {
-                    curCustomer,
-                    currentId: customerId,
-                    activeKey: TAB_KEYS.CONTACT_TAB,
-                    isUseCustomerContacts: true
-                }
-            });
-        }
-
-        //隐藏转为客户面板
-        this.hideClueToCustomerPanel();
-    };
-    //隐藏线索转客户面板
-    hideClueToCustomerPanel = () => {
-        this.setState({
-            isShowClueToCustomerPanel: false,
-            clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST
-        });
-    };
-    //合并到其他客户
-    mergeToExistingCustomer = () => {
-        this.setState({
-            //显示线索转客户面板
-            isShowClueToCustomerPanel: true,
-            //显示线索转客户面板上的搜索界面
-            clueToCustomerPanelViewType: CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_SEARCH,
-        }, () => {
-            this.adjustPanelOrder('showCtc');
-        });
-    }
-
-    //调整线索转客户面板和转为新客户面板z-index的顺序
-    adjustPanelOrder(type) {
-        if(_.isEqual(type, 'showCtc')) {
-            const ctcPanel = $('.clue-to-customer-panel');
-            if (ctcPanel.length) {
-                let ctcPanelZindex = parseInt(ctcPanel.css('z-index'));
-                ctcPanelZindex++;
-                ctcPanel.css('z-index', ctcPanelZindex);
-            }
-        } else {
-            const addPanel = $('.crm-add-container');
-            if (addPanel.length) {
-                let ctcPanelZindex = parseInt(addPanel.css('z-index'));
-                ctcPanelZindex++;
-                addPanel.css('z-index', ctcPanelZindex);
-            }
-        }
-    }
-
-    //调整线索面板面板z-index
-    onAdjustClueToCustomerPanel = () => {
-        const cluePanel = $('.right-pannel-default');
-        if (cluePanel.length) {
-            let cluePanelZindex = parseInt(cluePanel.css('z-index'));
-            //线索面板z-index减一后让转为客户面板展示出来
-            cluePanelZindex--;
-            cluePanel.css('z-index', cluePanelZindex);
-        }
-    }
-
-    //转为客户按钮点击事件
-    onConvertToCustomerBtnClick = (clueId, clueName, phones, e) => {
-        Trace.traceEvent(e, '点击客户列表中的转为客户按钮');
-
-        clueName = _.trim(clueName);
-
-        //线索名为空时不能执行转为客户的操作
-        //此时提示用户完善客户名
-        if (!clueName) {
-            message.error(Intl.get('clue.need.complete.clue.name', '请先完善线索名'));
-            return;
-        }
-
-        if (clueName.length < 2) {
-            message.error(Intl.get('common.clue.name.need.at.least.two.char.to.do.customer.convert', '线索名称必须在两个字或以上，才能进行转为客户的操作'));
-            return;
-        }
-
-        if (_.isArray(phones)) {
-            phones = phones.join(',');
-        } else {
-            phones = '';
-        }
-        //权限类型
-        const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
-
-        //根据线索名称查询相似客户
-        ajax.send({
-            url: `/rest/customer/v3/customer/query/${authType}/similarity/customer`,
-            query: {
-                name: clueName,
-                phones
-            }
-        })
-            .done(result => {
-                const existingCustomers = _.get(result, 'similarity_list');
-
-                let state = {
-                };
-
-                //若存在相似客户
-                if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
-                    state.isShowClueToCustomerPanel = true;
-                    state.isShowAddCustomerPanel = false;
-                    state.existingCustomers = existingCustomers;
-                    state.clueToCustomerPanelViewType = CLUE_TO_CUSTOMER_VIEW_TYPE.CUSTOMER_LIST;
-                } else {
-                    state.isShowClueToCustomerPanel = false;
-                    state.isShowAddCustomerPanel = true;
-                }
-                this.setState(state, () => {
-                    this.onAdjustClueToCustomerPanel();
-                });
-            })
-            .fail(err => {
-                const errMsg = Intl.get('member.apply.approve.tips', '操作失败') + Intl.get('user.info.retry', '请重试');
-                message.error(errMsg);
-            });
-    };
-
-    //隐藏添加客户面板
-    hideAddCustomerPanel = () => {
-        this.setState({isShowAddCustomerPanel: false});
-    };
-
-    hideClueRightPanel = () => {
-
     }
     //删除线索之后
     afterDeleteClue = () => {
@@ -1411,38 +1261,6 @@ class MyWorkColumn extends React.Component {
                         /> : null
                     }
                 </RightPanel>
-                {this.state.isShowClueToCustomerPanel ? (
-                    <ClueToCustomerPanel
-                        showFlag={this.state.isShowClueToCustomerPanel}
-                        viewType={this.state.clueToCustomerPanelViewType}
-                        clue={_.get(this.state, 'handlingWork.lead', {})}
-                        existingCustomers={this.state.existingCustomers}
-                        hidePanel={this.hideClueToCustomerPanel}
-                        showAddCustomerPanel={this.showAddCustomerPanel}
-                        onMerged={this.onClueMergedToCustomer}
-                    />
-                ) : null}
-                {this.state.isShowAddCustomerPanel ? (
-                    <CRMAddForm
-                        hideAddForm={this.hideAddCustomerPanel}
-                        afterAddCustomer={this.onConvertClueToNewCustomerDone}
-                        formData={_.get(this.state, 'handlingWork.lead', {})}
-                        isAssociateClue={true}
-                        isConvert={true}
-                        phoneNum={_.get(this.state, 'handlingWork.lead.phones[0]', '')}
-                        isShowMadal={false}
-                        title={(
-                            <div>
-                                <span className="panel-title">
-                                    {Intl.get('common.convert.to.new.customer', ' 转为新客户')}
-                                </span>
-                                <span className="op-btn" onClick={this.mergeToExistingCustomer}>
-                                    {Intl.get('common.merge.to.other.customer', '合并到其他客户')}
-                                </span>
-                            </div>
-                        )}
-                    />
-                ) : null}
                 {this.state.curOpenDetailWork ? this.renderWorkDetail() : null}
                 {/*添加日程*/}
                 <AddSchedule 

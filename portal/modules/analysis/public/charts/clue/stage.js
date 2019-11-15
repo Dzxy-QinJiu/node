@@ -3,8 +3,9 @@
  */
 
 import { getFunnelWithConvertRateProcessDataFunc, funnelWithConvertRateProcessCsvData } from '../../utils';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import {listPanelEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 
-import Store from '../../store';
 export function getStageChart() {
     //集客方式的选项
     let sourceClassifyOptionItems = [{
@@ -17,6 +18,8 @@ export function getStageChart() {
         value: 'other',
         name: Intl.get('crm.clue.client.source.other', '未知')
     }];
+    //储存当前的key值
+    let cacheKey = '';
     return {
         title: Intl.get('clue.stage.statics', '线索阶段统计'),
         chartType: 'funnel',
@@ -37,6 +40,8 @@ export function getStageChart() {
             value: '',
         }],
         processData: (data, chart) => {
+            //保存cache_key
+            cacheKey = data[0].cache_key;
             //设置集客方式筛选器
             setSelector(data, 3, chart, Intl.get( 'clue.analysis.all.source.classify','全部集客方式'), 'source_classify', sourceClassifyOptionItems);
 
@@ -82,7 +87,72 @@ export function getStageChart() {
             valueField: 'showValue',
             showConvertRate: true,
         },
+        events: [{
+            name: 'click',
+            func: (name, params) => {
+                let label = getName(params);
+                let type = hasPrivilege('CRM_CLUE_ANALYSIS_STATISTICAL_MANAGER') ? 'all' : 'self';
+                //全部和有效下没有对应的客户
+                if(_.isEqual(label, Intl.get('common.all', '全部')) || _.isEqual(label, Intl.get('clue.analysis.ability', '有效'))){
+                    return false;
+                } else {
+                    const paramObj = {
+                        listType: 'customer',
+                        url: '/rest/analysis/customer/v3/lead/:type/realtime/stage/detail/:page_size/:page_num',
+                        type: 'get',
+                        conditions: [{
+                            name: 'label',
+                            value: label
+                        }, {
+                            name: 'cache_key',
+                            value: cacheKey
+                        }, {
+                            type: 'params',
+                            name: 'page_size',
+                            value: 9999 //分页用前端实现，所以目前只能向后端请求一个很大的page_size
+                        }, {
+                            type: 'params',
+                            name: 'page_num',
+                            value: 1
+                        }, {
+                            type: 'params',
+                            name: 'type',
+                            value: type
+                        }],
+                        columns: [
+                            {
+                                title: Intl.get('clue.customer.clue.name.abbrev', '线索名'),
+                                dataIndex: 'name',
+                                width: '40%'
+                            },
+                            {
+                                title: Intl.get('crm.41', '客户名'),
+                                dataIndex: 'customer_name',
+                                width: '40%'
+                            },
+                            {
+                                title: Intl.get('deal.stage', '阶段'),
+                                dataIndex: 'customer_label',
+                                width: '20%'
+                            }
+                        ],
+                        onRowClick: record => {
+                            phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
+                                customer_params: {
+                                    currentId: record.customer_id
+                                }
+                            });
+                        }
+                    };
+                    listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
+                }
+            }
+        }]
     };
+
+    function getName(param) {
+        return _.get(param, 'data.csvName');
+    }
 
     function setSelector(data, dataIndex, chart, itemAllName, conditionName, optionItem) {
         if (!chart.cardContainer) chart.cardContainer = {selectors: []};

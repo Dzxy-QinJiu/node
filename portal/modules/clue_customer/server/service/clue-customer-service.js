@@ -62,9 +62,9 @@ const restApis = {
     //批量修改线索的跟进人
     changeClueSalesBatch: clueBaseUrl + '/distribute/:type/batch/new',
     //获取相似线索
-    getSimilarClueLists: '/rest/clue/v2/query/:type/similarity/lead',
+    getSimilarClueLists: '/rest/clue/v2/query/leads/by/ids',
     //获取相似客户
-    getSimilarCustomerLists: '/rest/customer/v3/customer/query/:type/similarity/customer',
+    getSimilarCustomerLists: '/rest/customer/v3/customer/query/customers/by/ids',
     //获取推荐的线索
     getRecommendClueLists: '/rest/clue/v2/companys/search/drop_down_load',
     //获取行业配置
@@ -419,10 +419,11 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
             var noData = !_.get(staticsData,'[0]') && !_.get(avalibilityData,'[0]');
             //没有有效的线索，有无效的线索时
             if(!_.get(staticsData,'[0]') && _.get(avalibilityData,'[0]')){
+                data.setting_avaliability = '1';//无效
                 if (selfHandleFlag){//待我处理
                     data.filterAllotNoTraced = 'yes';
+                    delete data.setting_avaliability;
                 }
-                data.setting_avaliability = '1';//无效
                 emitter.emit('success', data);
             }else if (selfHandleFlag && ((_.get(staticsData,'[0].name') === '3' && !_.get(avalibilityData,'[0]')) || noData)){
                 //如果是发我待我处理的数据并且只有已转化有数据, 无需选中已转化
@@ -524,21 +525,21 @@ exports.getClueDetailById = function(req, res) {
 };
 //获取相似线索
 exports.getSimilarClueLists = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
-            url: restApis.getSimilarClueLists.replace(':type', req.params.type),
+            url: restApis.getSimilarClueLists,
             req: req,
             res: res
-        }, req.query);
+        }, req.body);
 };
 //获取相似客户
 exports.getSimilarCustomerLists = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
-            url: restApis.getSimilarCustomerLists.replace(':type', req.params.type),
+            url: restApis.getSimilarCustomerLists,
             req: req,
             res: res
-        }, req.query);
+        }, req.body);
 };
 //获取行业配置
 exports.getClueIndustryLists = function(req, res) {

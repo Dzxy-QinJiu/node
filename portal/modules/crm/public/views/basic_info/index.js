@@ -6,7 +6,7 @@ var CrmOverviewActions = require('../../action/basic-overview-actions');
 var SalesTeamStore = require('../../../../sales_team/public/store/sales-team-store');
 var PrivilegeChecker = require('../../../../../components/privilege/checker').PrivilegeChecker;
 let hasPrivilege = require('../../../../../components/privilege/checker').hasPrivilege;
-import {Tag, Dropdown, Menu, message} from 'antd';
+import { Tag, Dropdown, Menu, message, Popconfirm } from 'antd';
 var history = require('../../../../../public/sources/history');
 let NameTextareaField = require('./name-textarea-field');
 let CrmAction = require('../../action/crm-actions');
@@ -20,6 +20,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import {DetailEditBtn} from 'CMP_DIR/rightPanel';
 import Trace from 'LIB_DIR/trace';
 import CustomerLabel from 'CMP_DIR/customer_label';
+import { myWorkEmitter } from 'OPLATE_EMITTER';
 
 let customerLabelList = [];//存储客户阶段的列表
 class BasicData extends React.Component {
@@ -62,7 +63,8 @@ class BasicData extends React.Component {
         if (nextProps.curCustomer && this.state.basicData.id !== nextProps.curCustomer.id) {
             this.setState({
                 showDetailFlag: false,
-                editNameFlag: false
+                editNameFlag: false,
+                isReleased: false
             });
         }
     }
@@ -239,6 +241,42 @@ class BasicData extends React.Component {
                 CrmAction.editBasicSuccess(interestObj);
             }
         });
+    };
+
+    //释放客户的处理
+    releaseCustomer = () => {
+        let basicData = this.state.basicData;
+        if(!_.get(basicData,'id') || this.state.isReleasingCustomer) return;
+        Trace.traceEvent(ReactDOM.findDOMNode(this), '释放客户');
+        // 单个释放需判断，验证是否有权限处理跟进人
+        CrmBasicAjax.checkCrmUpdateUserByCustomerId(basicData.id).then((res) => {
+            if(res) {
+                this.setState({isReleasingCustomer: true});
+                CrmBasicAjax.releaseCustomer({id: basicData.id}).then(result => {
+                    this.setState({isReleasingCustomer: false, isReleased: true});
+                    //释放完客户后，需要将首页对应的工作设为已完成
+                    if (window.location.pathname === '/home') {
+                        myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
+                    }
+                    CrmAction.afterReleaseCustomer(basicData.id);
+                }, (errorMsg) => {
+                    this.setState({isReleasingCustomer: false});
+                    message.error(errorMsg);
+                });
+            }else {
+                message.error(Intl.get('crm.release.no.permissions', '您不能释放共同跟进的客户'));
+            }
+        }, (errorMsg) => {
+            message.error(errorMsg);
+        });
+    };
+
+    //是否展示释放按钮
+    isShowReleaseBtn = () => {
+        let pathname = window.location.pathname;
+        let basicData = this.state.basicData;
+        //没有被释放，且（在首页或者客户列表里），以及不是运营人员
+        return !this.state.isReleased && (pathname === '/home' || pathname === '/crm' && basicData.isCrmListPage) && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     };
 
     getEditCustomerLabelType() {
@@ -425,6 +463,10 @@ class BasicData extends React.Component {
             <Tag className={crmUtil.getCrmLabelCls(basicData.customer_label)}>
                 {basicData.customer_label.substr(0, 2)}
             </Tag>) : null;
+        const isShowRelease = this.isShowReleaseBtn();
+        const basicInfoNameCls = classNames('basic-info-name', {
+            'show-release-btn': isShowRelease
+        });
         return (
             <div className="basic-info-contianer" data-trace="客户基本信息">
                 {this.state.editNameFlag ? (
@@ -440,7 +482,7 @@ class BasicData extends React.Component {
                         disableEdit={this.props.disableEdit}
                     /> ) : (
                     <div className="basic-info-title-block">
-                        <div className="basic-info-name">
+                        <div className={basicInfoNameCls}>
                             <CustomerLabel label ={basicData.qualify_label} />
                             {this.hasEditCutomerLabelPrivilege() && !this.props.disableEdit ? (
                                 <Dropdown overlay={this.getCustomerLabelMenus()} trigger={['click']}>
@@ -465,6 +507,13 @@ class BasicData extends React.Component {
                                     title={interestTitle}
                                     onClick={this.handleFocusCustomer.bind(this, basicData)}
                                 />)}
+                            {isShowRelease ? (
+                                <Popconfirm placement="bottomRight" onConfirm={this.releaseCustomer}
+                                    title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                    <span className='iconfont icon-release handle-btn-item'
+                                        title={Intl.get('crm.customer.release', '释放')}/>
+                                </Popconfirm>
+                            ) : null}
                         </div>
                     </div>
                 )}

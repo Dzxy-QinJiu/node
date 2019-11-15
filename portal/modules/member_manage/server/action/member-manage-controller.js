@@ -7,7 +7,23 @@ const _ = require('lodash');
 // 获取成员的组织信息
 exports.getMemberOrganization = (req, res) => {
     memberManageService.getMemberOrganization(req, res, req.query).on('success', (data) => {
-        res.status(200).json(data);
+        let user = _.get(req, 'session.user', {});
+        if(_.get(req.query, 'update')) {//更新session中用户的组织信息
+            user.organization = {
+                id: _.get(data,'id', ''),
+                officialName: _.get(data, 'official_name', ''),
+                functions: _.get(data, 'functions', []),
+                type: _.get(data, 'type', ''),
+                version: _.get(data, 'version', {}),
+                endTime: _.get(data, 'end_time', ''),
+                expireAfterDays: _.get(data, 'expire_after_days'),
+            };
+            req.session.save(() => {
+                res.status(200).json(data);
+            });
+        }else {
+            res.status(200).json(data);
+        }
     }).on('error', (codeMessage) => {
         res.status(500).json(codeMessage && codeMessage.message);
     });

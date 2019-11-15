@@ -54,7 +54,7 @@ var zh_CN = {
     'menu.customer.notification': '客户提醒',
     'menu.apply.notification': '申请消息',
     'menu.system.notification': '系统消息',
-    'menu.appuser.apply': '用户审批',
+    'menu.appuser.apply': '用户申请',
     'menu.download.app': '客套APP',
     'menu.leave.apply.list.management': '申请审批',
     'menu.active.user.lists': '活跃用户',
@@ -417,7 +417,7 @@ var zh_CN = {
     'home.page.contacts.clues.week': '本周已联系线索总数',
     'home.page.expire.contract.at.time': '{time}即将到期合同统计',
     'home.page.extract.clues.statistical': '提取线索量统计',
-    'home.page.extract.clues.get.counts': '本组织已提取{count}条线索',
+    'home.page.extract.clues.get.counts': '共提取{count}条线索',
     'home.page.extract.clues.on.months': '本月已提取{extractedCount}条线索，还可提取{canCount}条线索',
     'home.page.extract.clues.on.today': '今天已提取{extractedCount}条线索，还可提取{canCount}条线索',
     'home.page.extracted.clues.on.months': '本月已提取{count}条线索',
@@ -3108,7 +3108,7 @@ var zh_CN = {
     'clue.list.total.num': '共{num}个线索',
     'clue.search.no.found': '没有符合条件的线索，您可以去{cluepool}查看是否有该线索',
     'clue.edit.condition.search': '请修改条件再查看',
-    'clue.customer.has.clue.can.extract': '这里有线索待您提取',
+    'clue.customer.has.clue.can.extract': '您可以从这里提取线索哦',
     //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3834,5 +3834,13 @@ var zh_CN = {
     'payment.get.discount.faild': '获取商品折扣信息失败',
     'payment.please.upgrade.company.version': '请先升级为企业版。您可以联系我们的销售：{contact}',
     /*支付流程 --- end*/
+
+    /*组织到期提示 --- start*/
+    'organization.personal.trial.expired.tip': '您的试用期剩余{time}天，是否{upgrade}？',
+    'organization.company.trial.expired.tip': '您的试用期剩余{time}天，请联系我们的销售人员: {contact}',
+    'organization.personal.formal.expired.tip': '您的账号即将到期，是否{renewal}？',
+    'organization.company.formal.expired.tip': '您的账号即将到期，请联系我们的销售人员: {contact}',
+    /*组织到期提示 --- end*/
+
 };
 export default zh_CN;

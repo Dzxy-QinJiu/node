@@ -55,7 +55,7 @@ var en_US = {
     'menu.customer.notification': 'Customer Reminders',//客户提醒
     'menu.apply.notification': 'Application Messages',//申请消息
     'menu.system.notification': 'System Messages',//系统消息
-    'menu.appuser.apply': 'User Approvals',//用户审批
+    'menu.appuser.apply': 'User Apply',//用户申请
     'menu.download.app': 'Download APP',//下载APP
     'menu.leave.apply.list.management': 'Application for approval',//申请审批
     'menu.active.user.lists': 'Active users',//活跃用户
@@ -408,7 +408,7 @@ var en_US = {
     'home.page.contacts.clues.week': 'Total leads contacted this week',//本周已联系线索总数
     'home.page.expire.contract.at.time': '{time} expiring contract statistics',//{time}即将到期合同统计
     'home.page.extract.clues.statistical': 'Statistics of the quantity of clues extracted',//提取线索量统计
-    'home.page.extract.clues.get.counts': 'The organization has extracted {count} clues',//本组织已提取{count}条线索
+    'home.page.extract.clues.get.counts': 'Extract {count} clues in total',//共提取{count}条线索
     'home.page.extract.clues.on.months': 'This month has been extracted {extractedCount} clues, can also extract {canCount} clues',//本月已提取{extractedCount}条线索，还可提取{canCount}条线索
     'home.page.extract.clues.on.today': '{extractedCount} clues have been extracted today, can also extract {canCount} clues',//今天已提取{extractedCount}条线索，还可提取{canCount}条线索
     'home.page.extracted.clues.on.months': 'The {count} clue has been extracted this month',//本月已提取{count}条线索
@@ -3083,7 +3083,7 @@ var en_US = {
     'clue.list.total.num': 'A total of {num} clues',//共{num}个线索
     'clue.search.no.found': 'There are no qualified leads, you can go to {cluepool} to see if there is any clue',//没有符合条件的线索，您可以去{cluepool}查看是否有该线索
     'clue.edit.condition.search': 'Please change search condition',//请修改条件再查看
-    'clue.customer.has.clue.can.extract': 'Here are some clues for you to pick up',//这里有线索待您提取
+    'clue.customer.has.clue.can.extract': 'You can extract clues from here',//您可以从这里提取线索哦
     //线索模块 end
     'common.memeber.all': 'All members', //'全部成员',
     'user.detail.analysis.tip.activity': 'Active day number in recent 30 days, this takes 20% in total score', //'最近30天的活跃天数/30。该分项在总分中占比30%',
@@ -3784,5 +3784,11 @@ var en_US = {
     'payment.please.upgrade.company.version': 'Please upgrade to enterprise first. You can contact our sales: {contact}',//请先升级为企业版。您可以联系我们的销售：{contact}
     /*支付流程 --- end*/
 
+    /*组织到期提示 --- start*/
+    'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}
+    'organization.company.trial.expired.tip': 'The rest of your probationary period {time} days, please contact our sales staff: {contact}',//您的试用期剩余{time}天，请联系我们的销售人员: {contact}
+    'organization.personal.formal.expired.tip': 'Your account is about to expire, is it {renewal}?',//您的账号即将到期，是否{renewal}？
+    'organization.company.formal.expired.tip': 'Your account is about to expire, please contact our sales staff: {contact}',//您的账号即将到期，请联系我们的销售人员: {contact}
+    /*组织到期提示 --- end*/
 };
 export default en_US;

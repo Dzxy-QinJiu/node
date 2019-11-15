@@ -185,15 +185,15 @@ module.exports = {
             needLogin: true
         },
     }, {
-        method: 'get',
-        path: '/rest/get/similar/cluelists/:type',
+        method: 'post',
+        path: '/rest/clue/v2/query/leads/by/ids',
         handler: 'getSimilarClueLists',
         passport: {
             'needLogin': true
         }
     }, {
-        method: 'get',
-        path: '/rest/get/similar/customerlists/:type',
+        method: 'post',
+        path: '/rest/customer/v3/customer/query/customers/by/ids',
         handler: 'getSimilarCustomerLists',
         passport: {
             'needLogin': true

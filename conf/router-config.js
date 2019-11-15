@@ -181,7 +181,7 @@ let routers = [
         shortName: 'crm.109',//申请
         subMenu: [{
             id: 'APP_USER_MANAGE_APPLY',
-            name: 'menu.appuser.apply',//用户审批
+            name: 'menu.appuser.apply',//用户申请
             routePath: '/application/user_apply',
             component: `${MODULE_PATH}user_apply/public`,
             //有这个权限，才显示入口图标

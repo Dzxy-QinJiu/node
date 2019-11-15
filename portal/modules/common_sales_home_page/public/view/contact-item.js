@@ -44,7 +44,12 @@ class ContactItem extends React.Component {
                     });
                     return (
                         <div className="contact-container" key={idx}>
-                            <span className={cls} title={contactName}>{contactName}</span>
+                            {
+                                this.props.isHideContactName ? null : (
+                                    <span className={cls} title={contactName}>{contactName}</span>
+                                )
+                            }
+
                             {_.isArray(contactItem.phone) && contactItem.phone.length ?
                                 <span className="phone-num-container">
                                     {_.map(contactItem.phone, (phoneItem, index) => {
@@ -121,6 +126,7 @@ ContactItem.defaultProps = {
     showContactLabel: true,//是否展示联系人这几个字
     hasMoreIcon: false,
     hidePhoneIcon: false,
+    isHideContactName: false, // 默认不隐藏联系人信息
     showClueDetailPanel: function() {
 
     }
@@ -133,5 +139,6 @@ ContactItem.propTypes = {
     hasMoreIcon: PropTypes.bool,
     showClueDetailPanel: PropTypes.func,
     hidePhoneIcon: PropTypes.bool,//是否展示电话图标
+    isHideContactName: PropTypes.bool,
 };
 export default ContactItem;

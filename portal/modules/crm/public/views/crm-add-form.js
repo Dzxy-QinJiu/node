@@ -85,7 +85,7 @@ class CRMAddForm extends React.Component {
             submitErrorMsg: '',//保存失败的错误提示
             phoneNum: this.props.phoneNum,//外部传入的电话值
             isBasicExpanded: false, // 客户基本信息是否展示其余项不折叠
-            isContactWayExpanded: false, // 联系方式是否展示其余项不折叠
+            isContactWayExpanded: this.props.isContactWayExpanded, // 联系方式是否展示其余项不折叠
         };
     }
 
@@ -210,7 +210,7 @@ class CRMAddForm extends React.Component {
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData, true);
         function afterAddCustomer(result, _this) {
-            if (result.code === 0) {
+            if (result.code === 0 || result.result === 'success') {
                 //新增添加成功后的方法
                 if(_.isFunction(_this.props.afterAddCustomer)) {
                     _this.props.afterAddCustomer(result.result);
@@ -643,6 +643,8 @@ CRMAddForm.defaultProps = {
     },
     phoneNum: '',
     isAssociateClue: false,
+    //联系方式是否展示其余项不折叠
+    isContactWayExpanded: false,
     formData: {},
     isShowMadal: true,
     //添加完成后是否关闭面板
@@ -660,6 +662,8 @@ CRMAddForm.propTypes = {
     afterAddCustomer: PropTypes.func,
     phoneNum: PropTypes.string,
     isAssociateClue: PropTypes.bool,
+    //联系方式是否展示其余项不折叠
+    isContactWayExpanded: PropTypes.bool,
     formData: PropTypes.object,
     isShowMadal: PropTypes.bool,
     isConvert: PropTypes.bool,

@@ -47,12 +47,14 @@ class ExtractClues extends React.Component {
 
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
+        paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         //获取最多提取线索的数量
         this.getMaxLimitCount();
     }
 
     componentWillUnmount() {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
+        paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
     }
 
     batchExtractCluesLists = (taskInfo, taskParams) => {
@@ -422,20 +424,19 @@ class ExtractClues extends React.Component {
         });
     };
 
+    handleUpdatePersonalVersion = (result) => {
+        //需要更新最大线索量
+        let lead_limit = _.get(result, 'version.lead_limit', '');
+        let clue_number = _.get(lead_limit.split('_'),'[0]',0);
+        this.setState({
+            maxLimitExtractNumber: +clue_number,
+            getMaxLimitExtractNumberError: false,
+            batchPopoverVisible: false
+        });
+    };
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
-            updateVersion: (result) => {
-                //需要更新最大线索量
-                let lead_limit = _.get(result, 'version.lead_limit', '');
-                let clue_number = _.get(lead_limit.split('_'),'[0]',0);
-                this.setState({
-                    maxLimitExtractNumber: +clue_number,
-                    getMaxLimitExtractNumberError: false,
-                    batchPopoverVisible: false
-                });
-            }
-        });
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
     };
     //增加线索量
     handleClickAddClues = () => {
