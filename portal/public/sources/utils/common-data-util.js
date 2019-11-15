@@ -700,3 +700,20 @@ exports.getOrganizationInfo = (queryParams = {}) => {
     });
     return Deferred.promise();
 };
+
+//获取能提取线索的最大数
+exports.getMaxLimitExtractClueCount = function() {
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/maxlimit/count',
+        dataType: 'json',
+        type: 'get',
+        success: (count) => {
+            Deferred.resolve(_.isNumber(count) ? count : 0);
+        },
+        error: (xhr) => {
+            Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
