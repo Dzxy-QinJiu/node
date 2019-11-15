@@ -66,7 +66,7 @@ function SalesTeamAction() {
                 let teamList = _.get(data, 'teamList');
                 // 获取组织信息
                 getOrganizationInfo().then( (result) => {
-                    let organizationName = _.get(result, 'official_name' );
+                    let organizationName = _.get(result, 'official_name');
                     let organizationId = _.get(result, 'id');
                     // 部门树的数据是由组织和部门信息组成的
                     teamList.unshift({group_name: organizationName, group_id: organizationId});
