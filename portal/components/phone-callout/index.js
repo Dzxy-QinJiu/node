@@ -44,7 +44,7 @@ class PhoneCallout extends React.Component {
                 });
             }
         }, () => {
-            message.error(Intl.get('common.call.error.tips', '拨打电话失败'));
+            message.error(Intl.get('crm.call.phone.failed', '拨打失败'));
         });
     };
 
