@@ -5,17 +5,16 @@
  */
 var FilterAction = require('../action/filter-action');
 const datePickerUtils = require('CMP_DIR/datepicker/utils');
-import userData from 'PUB_DIR/sources/user-data';
-import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime} from '../utils/clue-customer-utils';
-import {getStartEndTimeOfDiffRange, isSalesRole, getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime, NEED_MY_HANDLE} from '../utils/clue-customer-utils';
+import {isSalesRole, getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueFilterStore() {
     this.setInitialData();
     //绑定action方法
     this.bindActions(FilterAction);
 }
 
-ClueFilterStore.prototype.setInitialData = function() {
-    var filterClueStatus = _.cloneDeep(CLUE_DIFF_TYPE);
+ClueFilterStore.prototype.setInitialFilterClueStatus = function() {
+    let filterClueStatus = _.cloneDeep(CLUE_DIFF_TYPE);
     //如果不是销售角色，就展示待分配
     if(!isSalesRole()){
         filterClueStatus.push({
@@ -25,12 +24,17 @@ ClueFilterStore.prototype.setInitialData = function() {
         });
     }else{
         //如果是销售角色，默认展示待跟进
-        var targetObj = _.find(filterClueStatus, (item) => item.value === SELECT_TYPE.WILL_TRACE);
-        if (targetObj){
-            targetObj.selected = true;
-        }
+        _.forEach(filterClueStatus, item => {
+            if(_.isEqual(item.value, SELECT_TYPE.WILL_TRACE)){
+                item.selected = true;
+            }
+        });
     }
+    return filterClueStatus;
+};
 
+ClueFilterStore.prototype.setInitialData = function() {
+    this.filterClueStatus = this.setInitialFilterClueStatus();
     //默认展示全部时间
     this.timeType = 'all';
     this.rangeParams = [{//时间范围参数
@@ -39,7 +43,6 @@ ClueFilterStore.prototype.setInitialData = function() {
         type: 'time',
         name: 'source_time'
     }];
-    this.filterClueStatus = filterClueStatus;
     //筛选的线索来源
     this.filterClueSource = [];
     //筛选的线索接入渠道
@@ -180,6 +183,12 @@ ClueFilterStore.prototype.setFilterClueAvailbility = function() {
 };
 ClueFilterStore.prototype.setFilterClueAllotNoTrace = function(updateTrace) {
     this.filterAllotNoTraced = updateTrace || '';
+    // 在当前筛选类型是“无效”的情况下点击“待我跟进”的筛选项时，因为“带我跟进”的筛选项下没有“无效”的tab
+    // 此时将tab默认展示为“待跟进”，将无效的字段状态设置为有效
+    if(_.isEqual(updateTrace, NEED_MY_HANDLE) && _.isEqual(this.filterClueAvailability, AVALIBILITYSTATUS.INAVALIBILITY)) {
+        this.filterClueStatus = this.setInitialFilterClueStatus();
+        this.filterClueAvailability = AVALIBILITYSTATUS.AVALIBILITY;
+    }
 };
 ClueFilterStore.prototype.setFilterClueProvince = function(updateProvince) {
     var selectedProvince = [];
