@@ -50,7 +50,7 @@ var UserInfoPage = createReactClass({
 
     getOrganizationName(data) {
         this.setState({
-            organizationName: _.get(data, 'name', '')
+            organizationName: _.get(data, 'official_name', '')
         });
     },
 
