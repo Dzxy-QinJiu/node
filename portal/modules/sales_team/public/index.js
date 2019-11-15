@@ -207,7 +207,7 @@ class SalesTeamPage extends React.Component {
         }, () => {
             // 从职务切换到部门时，并且在切换前职务，展示的是组织的成员列表，再次切换到部门时，需要再次获取组织的成员列表
             if (key === '1') {
-                let organizationName = _.get(getOrganization(), 'name', '');
+                let organizationName = _.get(getOrganization(), 'officialName', '');
                 let groupName = _.get(this.state.curShowTeamMemberObj, 'groupName');
                 if (groupName === organizationName) {
                     positionEmitter.emit(positionEmitter.CLICK_POSITION, {teamroleId: ''});

@@ -4,7 +4,6 @@
 const SalesTeamActions = require('../action/sales-team-actions');
 //没有团队时的提示信息
 let salesTeamIsNull = 'sales-team-is-null';
-import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {storageUtil} from 'ant-utils';
 //localstorage字段key
 const STORED_TEAM_KEY = 'weekly_report_selected_team';

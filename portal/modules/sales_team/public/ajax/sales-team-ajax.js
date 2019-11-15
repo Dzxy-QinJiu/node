@@ -2,25 +2,6 @@
  * Created by xiaojinfeng on 2016/04/08.
  */
 let teamAjax = require('../../../common/public/ajax/team');
-let memberAjax = require('../../../member_manage/public/ajax');
-
-// 获取成员的组织信息
-exports.getMemberOrganization = () => {
-    const Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/get/member/organization',
-        dataType: 'json',
-        type: 'get',
-        success: (resData) => {
-            Deferred.resolve(resData);
-        },
-        error: (errorInfo) => {
-            Deferred.reject(errorInfo.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
 
 //获取统计团队内成员个数的列表
 let teamMemberCountAjax;
