@@ -44,7 +44,7 @@ class PhoneCallout extends React.Component {
                 });
             }
         }, () => {
-            message.warn(Intl.get('common.call.error.tips', '电话号码出现问题，请联系管理员'));
+            message.error(Intl.get('common.call.error.tips', '拨打电话失败'));
         });
     };
 
