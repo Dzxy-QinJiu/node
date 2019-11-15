@@ -419,10 +419,11 @@ function getExistTypeClueLists(req, res,obj, selfHandleFlag) {
             var noData = !_.get(staticsData,'[0]') && !_.get(avalibilityData,'[0]');
             //没有有效的线索，有无效的线索时
             if(!_.get(staticsData,'[0]') && _.get(avalibilityData,'[0]')){
+                data.setting_avaliability = '1';//无效
                 if (selfHandleFlag){//待我处理
                     data.filterAllotNoTraced = 'yes';
+                    delete data.setting_avaliability;
                 }
-                data.setting_avaliability = '1';//无效
                 emitter.emit('success', data);
             }else if (selfHandleFlag && ((_.get(staticsData,'[0].name') === '3' && !_.get(avalibilityData,'[0]')) || noData)){
                 //如果是发我待我处理的数据并且只有已转化有数据, 无需选中已转化
