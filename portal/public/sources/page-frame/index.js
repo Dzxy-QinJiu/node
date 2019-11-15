@@ -14,6 +14,7 @@ import PhonePanel from 'MOD_DIR/phone_panel/public';
 import ClueDetailPanel from 'MOD_DIR/clue_detail_panel/public';
 import AudioPlayer from 'CMP_DIR/audioPlayer';
 import Notification from 'MOD_DIR/notification/public/index';
+import PersonalCompleteInformation from 'CMP_DIR/personal-complete-information';
 import UserDetail from 'MOD_DIR/app_user_manage/public/views/user-detail';
 import PurchaseLeads from 'CMP_DIR/purchase-leads';
 import OfficialPersonalEdition from 'CMP_DIR/official-personal-edition';
@@ -27,7 +28,7 @@ import{
     paymentEmitter
 } from 'PUB_DIR/sources/utils/emitters';
 let phoneUtil = require('PUB_DIR/sources/utils/phone-util');
-
+import {checkVersionAndType} from '../utils/common-method-util';
 
 const emptyParamObj = {
     customer_params: null,//客户详情相关的参数
@@ -45,6 +46,7 @@ class PageFrame extends React.Component {
         clueDetailPanelShow: false,
         isShowUserDetailPanel: false, // 是否显示用户详情界面
         clueParamObj: $.extend(true, {}, emptyParamObj),
+        isShowPersonalCompletePanel: false,//是否显示个人试用首次登录完善资料信息面板
         userDetailParamObj: $.extend(true, {}), // 用户详情组件相关的参数
         isShowPurchaseLeadsPanel: false,//是否展示购买线索量面板
         cluePaymentParamObj: {},
@@ -247,6 +249,19 @@ class PageFrame extends React.Component {
         this.closePhonePanel();
     };
 
+    showPersonalCompletePanel = (websitConfig) => {
+        let versionAndType = checkVersionAndType();
+        if(versionAndType.isPersonalTrial && !_.get(websitConfig,'no_show_personal_complete_info')) {
+            this.setState({
+                isShowPersonalCompletePanel: true
+            });
+        }
+    };
+
+    closePersonalCompleteInfoPanel = () => {
+        this.setState({isShowPersonalCompletePanel: false});
+    };
+
     showPurchaseLeadsPanel = (paramObj) => {
         this.setState({isShowPurchaseLeadsPanel: true, cluePaymentParamObj: $.extend(this.state.cluePaymentParamObj, paramObj)});
     };
@@ -270,6 +285,7 @@ class PageFrame extends React.Component {
                         <LeftMenu
                             toggleNotificationPanel={this.toggleNotificationPanel}
                             closeNotificationPanel={this.closeNotificationPanel}
+                            showPersonalCompletePanel={this.showPersonalCompletePanel}
                             isShowNotificationPanel={this.state.isShowNotificationPanel}
                         />
                     </div>
@@ -291,6 +307,13 @@ class PageFrame extends React.Component {
                         {
                             this.state.isShowNotificationPanel ? (
                                 <Notification closeNotificationPanel={this.closeNotificationPanel}/>
+                            ) : null
+                        }
+                        {
+                            this.state.isShowPersonalCompletePanel ? (
+                                <PersonalCompleteInformation
+                                    hideRightPanel={this.closePersonalCompleteInfoPanel}
+                                />
                             ) : null
                         }
                         {

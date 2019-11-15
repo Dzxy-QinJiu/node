@@ -2915,6 +2915,7 @@ var zh_CN = {
     'crm.75': '点',
     'scan.ketao.qrcode.download.tip': '扫码下载客套APP安卓端',
     'config.manage.input.teleRepeat': '该电话号码已录入',
+    'config.not.fill.in': '暂不填写',
     //缺失补充end
     'common.batch.sales.target': '设置团队销售目标',
     'common.batch.self.sales.target': '批量设置个人销售目标',
@@ -3834,5 +3835,10 @@ var zh_CN = {
     'payment.get.discount.faild': '获取商品折扣信息失败',
     'payment.please.upgrade.company.version': '请先升级为企业版。您可以联系我们的销售：{contact}',
     /*支付流程 --- end*/
+
+    /*个人试用 --- start*/
+    'personal.welcome.use.curtao': '欢迎使用客套',
+    'personal.open.success.tip': '恭喜您成功开通个人试用版，试用期剩余 {count} 天',
+    /*个人试用 --- end*/
 };
 export default zh_CN;
