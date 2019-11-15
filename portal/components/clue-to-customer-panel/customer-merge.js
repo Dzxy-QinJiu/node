@@ -389,12 +389,6 @@ class CustomerMerge extends React.Component {
                     _.each(CONTACT_WAY_TYPE_FIELDS, field => {
                         //如果联系方式有不同
                         if (contactWayComparisonResult[field].isDiff) {
-                            //标记联系方式需要更新
-                            if (_.isArray(customerContact.updateFields)) {
-                                customerContact.updateFields.push(field);
-                            } else {
-                                customerContact.updateFields = [field];
-                            }
 
                             //将联系方式设为合并后的联系方式
                             customerContact[field] = contactWayComparisonResult[field].uniqSet;
@@ -448,9 +442,7 @@ class CustomerMerge extends React.Component {
         //删除暂存的替换名称
         delete contact.replaceName;
 
-        if (!contact.updateFields) contact.updateFields = [];
         //在联系人需要更新的字段中加上名称
-        contact.updateFields.push('name');
 
         //是否禁用“确认合并”按钮
         //若客户联系人列表中还有需要处理名称替换的联系人，则禁用“确认合并”按钮
@@ -540,22 +532,9 @@ class CustomerMerge extends React.Component {
         const contacts = this.state.customerContacts;
         var clue = this.props.clue;
         const clueId = clue.id;
-
-        //变化了的联系人（新增或需要更新的）
-        const changedContacts = _.filter(contacts, contact => contact.isNew || !_.isEmpty(contact.updateFields));
-
-        //如果没有变化的联系人
-        if (_.isEmpty(changedContacts)) {
-            //将第一个联系人设置为名字需要更新，以便能合并到客户
-            _.set(contacts, '[0].updateFields', ['name']);
-        }
-
-        const promises = [];
         let contactErrors = [];
 
         _.each(contacts, (contact, index) => {
-            delete contact.isDup
-
             //如果是新联系人
             if (contact.isNew) {
                 let res = this[`form${contact.id}Ref`].handleSubmit();
@@ -566,30 +545,11 @@ class CustomerMerge extends React.Component {
 
                     //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
                     contact.def_contancts = 'false';
-
-                    const promise = ajax.send({
-                        url: `/rest/customer/v3/contacts/lead?clue_id=${clueId}`,
-                        type: 'post',
-                        data: contact
-                    });
-
-                    promises.push(promise);
                 }
-            } else {
-                //遍历需要更新的字段
-                _.each(contact.updateFields, field => {
-
-                    const promise = ajax.send({
-                        url: `/rest/customer/v3/contacts/property/${field}/lead?clue_id=${clueId}`,
-                        type: 'put',
-                        data: contact
-                    }, `clueToCustomer${index}${field}`);
-
-                    promises.push(promise);
-                });
-
-                delete contact.updateFields;
             }
+
+            delete contact.isDup
+            delete contact.isNew
         });
 
         if(_.get(contactErrors,'[0]')) {
@@ -597,7 +557,16 @@ class CustomerMerge extends React.Component {
             return false;
         }
 
-        $.when(...promises)
+        const customerData = {
+            id: this.state.customerId,
+            contacts,
+        }
+
+        ajax.send({
+            url: `/force_use_common_rest/rest/clue/v2/lead_transfer/customer/merge?lead_id=${clueId}`,
+            type: 'post',
+            data: customerData
+        })
             .done(() => {
                 message.success(Intl.get('common.merge.success', '合并成功'));
 
