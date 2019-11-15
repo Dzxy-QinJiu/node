@@ -238,6 +238,12 @@ clueEmitter.FLY_CLUE_INVALID = 'fly_clue_invalid';//线索动态移动到无效�
 //移动到
 export { clueEmitter };
 
+//线索转客户面板相关事件
+const clueToCustomerPanelEmitter = new EventEmitter();
+clueToCustomerPanelEmitter.OPEN_PANEL = 'open_clue_to_customer_panel';
+clueToCustomerPanelEmitter.CLOSE_PANEL = 'close_clue_to_customer_panel';
+export { clueToCustomerPanelEmitter };
+
 //订单相关事件
 const orderEmitter = new EventEmitter();
 orderEmitter.REFRESH_ORDER_LIST = 'refresh_order_list';
