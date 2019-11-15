@@ -1588,17 +1588,49 @@ class ClueCustomer extends React.Component {
                 }
             },{
                 dataIndex: 'contact',
+                width: '100px',
+                render: (text, salesClueItem, index) => {
+                    //联系人的相关信息
+                    let contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
+                    if (_.isArray(contacts) && contacts.length) {
+                        return (
+                            <div className="contact-container">
+                                {_.map(contacts, (contactItem, idx) => {
+                                    var contactName = _.trim(contactItem.name) || '';
+                                    var cls = classNames({
+                                        'contact-name': contactName
+                                    });
+                                    return (
+                                        <div className="contact-container" key={idx}>
+                                            <span
+                                                className={cls}
+                                                title={contactName}
+                                            >
+                                                {contactName}
+                                            </span>
+                                        </div>
+                                    )})}
+                            </div>
+
+                        );
+                    } else {
+                        return null;
+                    }
+                }
+            },{
+                dataIndex: 'phone',
                 width: '200px',
                 render: (text, salesClueItem, index) => {
                     //联系人的相关信息
-                    var contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
+                    let contacts = salesClueItem.contacts ? salesClueItem.contacts : [];
                     if (_.isArray(contacts) && contacts.length){
                         //处理联系方式，处理成只有一种联系方式
-                        var handledContactObj = this.handleContactLists(_.cloneDeep(contacts));
-                        var hasMoreIconPrivilege = handledContactObj.clipContact;
+                        let handledContactObj = this.handleContactLists(_.cloneDeep(contacts));
+                        let hasMoreIconPrivilege = handledContactObj.clipContact;
                         return (
                             <div className="contact-container">
                                 <ContactItem
+                                    isHideContactName={true}
                                     contacts={handledContactObj.contact}
                                     customerData={salesClueItem}
                                     showContactLabel={false}
