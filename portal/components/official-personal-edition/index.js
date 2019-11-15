@@ -248,7 +248,7 @@ class OfficialPersonalEdition extends React.Component{
                 getOrganizationInfo().then((result) => {
                     complete(result,{
                         id: _.get(result, 'id', ''),
-                        name: _.get(result, 'name', ''),
+                        officialName: _.get(result, 'official_name', ''),
                         version: _.get(result, 'version', {}),
                         functions: _.get(result, 'functions', []),
                     });

@@ -4,7 +4,7 @@
 //联系人的ajax
 const SalesTeamAjax = require('../ajax/sales-team-ajax');
 import {getMyTeamTreeAndFlattenList} from 'PUB_DIR/sources/utils/common-data-util';
-import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
+
 
 function SalesTeamAction() {
 

@@ -165,11 +165,12 @@ function loginSuccess(req, res) {
         req.session.save(function() {
             //登录成功后获取用户的组织信息，（主页的matomo数据参数设置中需要放入组织信息）
             DesktopLoginService.getOrganization(req, res).on('success', data => {
-                // 组织信息中名称和id字段转为name和id字段，方便前端处理（若后端更改字段名时）
+                // 现在系统中展示和修改的都是公司名（official_name），组织名name是不能修改的
+                // 组织信息中公司名official_name和id字段转为officialName和id字段，方便前端处理（若后端更改字段名时）
                 let userData = _.get(req, 'session.user', {});
                 userData.organization = {
                     id: _.get(data,'id', ''),
-                    name: _.get(data, 'official_name', ''),
+                    officialName: _.get(data, 'official_name', ''),
                     functions: _.get(data, 'functions', []),
                     type: _.get(data, 'type', ''),
                     version: _.get(data, 'version', {})
@@ -403,7 +404,7 @@ function extensionLoginSuccess(req, res){
                 let userData = _.get(req, 'session.user', {});
                 userData.organization = {
                     id: _.get(data,'id', ''),
-                    name: _.get(data, 'name', ''),
+                    officialName: _.get(data, 'official_name', ''),
                     functions: _.get(data, 'functions', []),
                     type: _.get(data, 'type', ''),
                     version: _.get(data, 'version', {})

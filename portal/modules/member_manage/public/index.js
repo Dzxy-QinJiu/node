@@ -12,7 +12,6 @@ import MemberInfo from './view/member-info';
 import {memberStatusList} from 'PUB_DIR/sources/utils/consts';
 import {Icon, Button, Popover} from 'antd';
 import Trace from 'LIB_DIR/trace';
-import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
 import MemberTableList from 'MOD_DIR/member-table-list';
 import {BACKGROUG_LAYOUT_CONSTANTS, BOOT_PROCESS_KEYS} from 'PUB_DIR/sources/utils/consts';
