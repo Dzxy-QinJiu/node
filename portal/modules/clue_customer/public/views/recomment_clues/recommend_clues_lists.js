@@ -61,6 +61,7 @@ class RecommendCustomerRightPanel extends React.Component {
 
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
+        paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         clueCustomerStore.listen(this.onStoreChange);
         //获取推荐的线索
         this.getRecommendClueLists();
@@ -187,6 +188,7 @@ class RecommendCustomerRightPanel extends React.Component {
 
     componentWillUnmount() {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
+        paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
         this.clearSelectSales();
         clueCustomerStore.unlisten(this.onStoreChange);
     }
@@ -458,21 +460,20 @@ class RecommendCustomerRightPanel extends React.Component {
     isOfficalAccount = () => {
         return _.get(getOrganization(),'version.type') === '正式';
     };
+    handleUpdatePersonalVersion = (result) => {
+        //需要更新最大线索量
+        let lead_limit = _.get(result, 'version.lead_limit', '');
+        let clue_number = _.get(lead_limit.split('_'),'[0]',0);
+        this.setState({
+            maxLimitExtractNumber: +clue_number,
+            getMaxLimitExtractNumberError: false,
+            tablePopoverVisible: '',
+            batchPopoverVisible: false
+        });
+    };
     //个人试用升级为正式版
     handleUpgradePersonalVersion = () => {
-        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL, {
-            updateVersion: (result) => {
-                //需要更新最大线索量
-                let lead_limit = _.get(result, 'version.lead_limit', '');
-                let clue_number = _.get(lead_limit.split('_'),'[0]',0);
-                this.setState({
-                    maxLimitExtractNumber: +clue_number,
-                    getMaxLimitExtractNumberError: false,
-                    tablePopoverVisible: '',
-                    batchPopoverVisible: ''
-                });
-            }
-        });
+        paymentEmitter.emit(paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL);
     };
     //增加线索量
     handleClickAddClues = () => {
