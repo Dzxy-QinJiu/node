@@ -62,9 +62,9 @@ const restApis = {
     //批量修改线索的跟进人
     changeClueSalesBatch: clueBaseUrl + '/distribute/:type/batch/new',
     //获取相似线索
-    getSimilarClueLists: '/rest/clue/v2/query/:type/similarity/lead',
+    getSimilarClueLists: '/rest/clue/v2/query/leads/by/ids',
     //获取相似客户
-    getSimilarCustomerLists: '/rest/customer/v3/customer/query/:type/similarity/customer',
+    getSimilarCustomerLists: '/rest/customer/v3/customer/query/customers/by/ids',
     //获取推荐的线索
     getRecommendClueLists: '/rest/clue/v2/companys/search/drop_down_load',
     //获取行业配置
@@ -524,21 +524,21 @@ exports.getClueDetailById = function(req, res) {
 };
 //获取相似线索
 exports.getSimilarClueLists = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
-            url: restApis.getSimilarClueLists.replace(':type', req.params.type),
+            url: restApis.getSimilarClueLists,
             req: req,
             res: res
-        }, req.query);
+        }, req.body);
 };
 //获取相似客户
 exports.getSimilarCustomerLists = function(req, res) {
-    return restUtil.authRest.get(
+    return restUtil.authRest.post(
         {
-            url: restApis.getSimilarCustomerLists.replace(':type', req.params.type),
+            url: restApis.getSimilarCustomerLists,
             req: req,
             res: res
-        }, req.query);
+        }, req.body);
 };
 //获取行业配置
 exports.getClueIndustryLists = function(req, res) {

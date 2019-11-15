@@ -55,7 +55,9 @@ import {
     sourceClassifyArray,
     FLOW_FLY_TIME,
     HIDE_CLUE_TIME,
-    ADD_SELECT_TYPE
+    ADD_SELECT_TYPE,
+    SIMILAR_CLUE,
+    SIMILAR_CUSTOMER
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -815,8 +817,12 @@ class ClueCustomer extends React.Component {
             }
             //相似客户和线索
             let filterLabels = filterStoreData.filterLabels;
-            if(_.isArray(filterLabels) && filterLabels.length){
-                typeFilter.labels = filterLabels;
+            if(!_.isEmpty(filterLabels)){
+                if(_.isEqual(filterLabels, SIMILAR_CLUE)) {
+                    typeFilter.lead_similarity = SIMILAR_CLUE;
+                }else if(_.isEqual(filterLabels, SIMILAR_CUSTOMER)) {
+                    typeFilter.customer_similarity = SIMILAR_CUSTOMER;
+                }
             }
 
             if(_.isArray(existFilelds) && existFilelds.length){
@@ -1540,7 +1546,10 @@ class ClueCustomer extends React.Component {
                 dataIndex: 'clue_name',
                 width: '220px',
                 render: (text, salesClueItem, index) => {
-                    let similarClue = _.get(salesClueItem, 'labels');
+                    //有相似线索
+                    let hasSimilarClue = _.get(salesClueItem, 'lead_similarity');
+                    //有相似客户
+                    let hasSimilarClient = _.get(salesClueItem, 'customer_similarity');
                     let availability = _.get(salesClueItem, 'availability');
                     let status = _.get(salesClueItem, 'status');
                     //判断是否为无效客户
@@ -1562,11 +1571,11 @@ class ClueCustomer extends React.Component {
                                     {isShowNewIcon ? <i className="icon-new-clue"></i> : null}
                                     {salesClueItem.name}</span>
 
-                                {!isInvalidClients && _.indexOf(similarClue, '有相似线索') !== -1 ?
+                                {!isInvalidClients && hasSimilarClue ?
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.clue', '有相似线索')}
                                     </span> : null}
-                                {ifShowTags && _.indexOf(similarClue, '有相似客户') !== -1 ?
+                                {ifShowTags && hasSimilarClient ?
                                     <span className="clue-label intent-tag-style">
                                         {Intl.get('clue.has.similar.customer', '有相似客户')}
                                     </span> : null}

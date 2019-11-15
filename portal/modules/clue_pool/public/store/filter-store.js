@@ -45,7 +45,7 @@ class FilterStore {
         //按照销售团队进行筛选
         this.salesTeamId = [];
         //按照相思线索相似客户筛选
-        this.filterLabels = [];
+        this.filterLabels = '';
     }
 
     // 设置开始和结束时间
@@ -134,9 +134,9 @@ class FilterStore {
     //筛选相似（labels）的字段
     setSimilarFiled(similarItem){
         if (similarItem){
-            this.filterLabels = [similarItem];
+            this.filterLabels = similarItem;
         }else{
-            this.filterLabels = [];
+            this.filterLabels = '';
         }
     }
 

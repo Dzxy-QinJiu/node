@@ -90,11 +90,13 @@ class ClueDetailOverview extends React.Component {
         clueCustomerStore.listen(this.onClueCustomerStoreChange);
         //curClue为空的时候不调用接口发起请求
         if(!_.isEmpty(this.state.curClue)) {
-            //获取相似线索列表
-            this.getSimilarClueLists();
-            //获取相似客户列表
+            //获取相似线索列表,如果有相似线索字段才获取
+            if(_.get(this.state, 'curClue.lead_similarity')) {
+                this.getSimilarClueLists();
+            }
+            //获取相似客户列表，如果有相似客户字段才获取
             //如果是已转化的客户，不需要展示相似客户
-            if (!this.isHasTransferClue()){
+            if (!this.isHasTransferClue() && _.get(this.state, 'curClue.customer_similarity')){
                 this.getSimilarCustomerLists();
             }
         }
@@ -116,27 +118,29 @@ class ClueDetailOverview extends React.Component {
         this.setState({curClue});
     };
     getSimilarClueLists = () => {
+        let ids = _.reduce(_.get(this.state, 'curClue.similarity_lead_ids'), (result, id) => {
+            return result + `,${id}`;
+        });
+        //如果当前没有相似线索的字段，将相似线索列表清空
+        if(!_.get(this.state, 'curClue.customer_similarity')) {
+            this.setState({
+                similarCustomerLists: []
+            });
+        }
         this.setState({
             similarClueLoading: true,
             similarClueErrmsg: ''
         });
-        var curClue = this.state.curClue;
-        var type = 'self';
-        if(hasPrivilege('LEAD_QUERY_SIMILARITY_LEAD_ALL')){
-            type = 'all';
-        }
         $.ajax({
-            url: '/rest/get/similar/cluelists/' + type,
-            type: 'get',
+            url: '/rest/clue/v2/query/leads/by/ids',
+            type: 'post',
             dateType: 'json',
             data: {
-                lead_id: _.get(curClue, 'id'),
-                lead_name: _.get(curClue, 'name'),
-                lead_phones: this.getCurCluePhones()
+                id: ids
             },
             success: (data) => {
                 this.setState({
-                    similarClueLists: _.isArray(data.similarity_list) ? data.similarity_list : [],
+                    similarClueLists: _.isArray(data) ? data : [],
                     similarClueLoading: false,
                     similarClueErrmsg: ''
                 });
@@ -164,22 +168,29 @@ class ClueDetailOverview extends React.Component {
         return phones.join(',');
     }
     getSimilarCustomerLists = () => {
+        let ids = _.reduce(_.get(this.state, 'curClue.similarity_customer_ids'), (result, id) => {
+            return result + `,${id}`;
+        });
+        //如果当前没有相似客户的字段，将相似客户列表清空
+        if(!_.get(this.state, 'curClue.clue_similarity')) {
+            this.setState({
+                similarClueLists: []
+            });
+        }
         this.setState({
             similarCustomerLoading: true,
             similarCustomerErrmsg: ''
         });
-        var curClue = this.state.curClue;
         $.ajax({
-            url: '/rest/get/similar/customerlists/all',
-            type: 'get',
+            url: '/rest/customer/v3/customer/query/customers/by/ids',
+            type: 'post',
             dateType: 'json',
             data: {
-                name: _.get(curClue, 'name'),
-                phones: this.getCurCluePhones()
+                id: ids
             },
             success: (data) => {
                 this.setState({
-                    similarCustomerLists: _.isArray(data.similarity_list) ? data.similarity_list : [],
+                    similarCustomerLists: _.isArray(data) ? data : [],
                     similarCustomerLoading: false,
                     similarCustomerErrmsg: ''
                 });
@@ -200,15 +211,24 @@ class ClueDetailOverview extends React.Component {
         if (_.get(nextProps.curClue,'id')) {
             var diffClueId = _.get(nextProps,'curClue.id') !== _.get(this, 'props.curClue.id');
             this.setState({
-                curClue: $.extend(true, {}, nextProps.curClue)
+                curClue: $.extend(true, {}, nextProps.curClue),
             },() => {
-                var curClue = nextProps.curClue;
                 if (diffClueId){
-                    //获取相似线索列表
-                    this.getSimilarClueLists();
-                    //获取相似客户列表
-                    if (!this.isHasTransferClue()){
+                    //获取相似线索列表,如果有相似线索字段才获取
+                    if(_.get(this.state, 'curClue.lead_similarity')) {
+                        this.getSimilarClueLists();
+                    }
+                    //获取相似客户列表，如果有相似客户字段才获取
+                    //如果是已转化的客户，不需要展示相似客户
+                    if (!this.isHasTransferClue() && _.get(this.state, 'curClue.customer_similarity')) {
                         this.getSimilarCustomerLists();
+                    }
+                    //如果相似客户和相似线索两个字段都没有，清空相似客户和相似线索列表
+                    if(!_.get(this.state, 'curClue.customer_similarity') && !_.get(this.state, 'curClue.customer_similarity')) {
+                        this.setState({
+                            similarClueLists: [],
+                            similarCustomerLists: []
+                        });
                     }
                 }
             });

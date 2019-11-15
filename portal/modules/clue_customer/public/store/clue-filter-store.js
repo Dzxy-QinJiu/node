@@ -63,7 +63,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     //按负责人进行筛选
     this.teamMemberList = [];
     //筛选相似线索
-    this.filterLabels = [];
+    this.filterLabels = '';
     //如果是销售领导或者销售角色或者运营 默认选中 待我处理 进行筛选
     this.filterAllotNoTraced = getClueUnhandledPrivilege() ? '0' : '';
     //未打通电话的线索
@@ -211,9 +211,9 @@ ClueFilterStore.prototype.setUnexistedFiled = function(unexistedItem) {
 //筛选相似（labels）的字段
 ClueFilterStore.prototype.setSimilarFiled = function(similarItem){
     if (similarItem){
-        this.filterLabels = [similarItem];
+        this.filterLabels = similarItem;
     }else{
-        this.filterLabels = [];
+        this.filterLabels = '';
     }
 };
 
