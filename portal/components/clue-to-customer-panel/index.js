@@ -62,7 +62,12 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     componentDidMount() {
-        if (!this.state.viewType) {
+        let customerIds = _.get(this.props.clue, 'similarity_customer_ids');
+
+        if (!_.isEmpty(customerIds)) {
+            customerIds = customerIds.join(',');
+            this.getCustomerById(customerIds);
+        } else {
             this.checkExistingCustomer();
         }
     }
@@ -206,6 +211,28 @@ class ClueToCustomerPanel extends React.Component {
             });
     }
 
+    getCustomerById(ids) {
+        ajax.send({
+            url: '/force_use_common_rest/rest/customer/v3/customer/query/customers/by/ids',
+            type: 'post',
+            data: {
+                id: ids
+            }
+        })
+            .done(result => {
+                this.setState({
+                    isLoading: false,
+                    existingCustomers: result,
+                    viewType: VIEW_TYPE.CUSTOMER_LIST
+                });
+            })
+            .fail(err => {
+                this.props.onClose();
+                const errMsg = Intl.get('member.apply.approve.tips', '操作失败') + Intl.get('user.info.retry', '请重试');
+                message.error(errMsg);
+            });
+    }
+
     //线索转客户完成后的操作
     onAfterConvert = (customerId, delayShowCustomerDetail) => {
         //关闭线索转客户面板
@@ -222,7 +249,7 @@ class ClueToCustomerPanel extends React.Component {
                         currentId: customerId,
                         activeKey: TAB_KEYS.CONTACT_TAB
                     }
-                })
+                });
             }
         }
 
