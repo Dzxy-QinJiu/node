@@ -23,7 +23,6 @@ import Trace from 'LIB_DIR/trace';
 var className = require('classnames');
 var userData = require('PUB_DIR/sources/user-data');
 var CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-import { VIEW_TYPE as CLUE_TO_CUSTOMER_PANEL_VIEW_TYPE } from 'CMP_DIR/clue-to-customer-panel/consts';
 
 import {
     SELECT_TYPE,
@@ -1676,11 +1675,9 @@ class ClueDetailOverview extends React.Component {
 
     //转为客户
     convertToCustomer = clue => {
-        clue = _.cloneDeep(clue);
-        clue.similarCustomers = this.state.similarCustomerLists;
-
         clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {
             clue,
+            similarCustomers: this.state.similarCustomerLists,
             afterConvert: this.props.afterTransferClueSuccess
         });
     }
@@ -1689,9 +1686,7 @@ class ClueDetailOverview extends React.Component {
     mergeToThisCustomer = (clue, customer) => {
         clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {
             clue,
-            targetCustomer: customer,
-            viewType: CLUE_TO_CUSTOMER_PANEL_VIEW_TYPE.CUSTOMER_MERGE,
-            isLoading: false
+            targetCustomer: customer
         });
     }
 

@@ -9,8 +9,7 @@
 require('./style.less');
 import { message } from 'antd';
 import ajax from 'ant-ajax';
-import { hasPrivilege } from 'CMP_DIR/privilege/checker';
-import { AUTHS, TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
+import { TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import { subtracteGlobalClue } from 'PUB_DIR/sources/utils/common-method-util';
@@ -19,12 +18,9 @@ import CustomerSearch from './customer-search';
 import CustomerMerge from './customer-merge';
 import { VIEW_TYPE, NOOP } from './consts';
 const CRMAddForm = require('MOD_DIR/crm/public/views/crm-add-form');
-const Spinner = require('CMP_DIR/spinner');
 
 class ClueToCustomerPanel extends React.Component {
     static defaultProps = {
-        //是否正在加载
-        isLoading: true,
         //视图类型
         viewType: '',
         //关闭面板
@@ -34,22 +30,22 @@ class ClueToCustomerPanel extends React.Component {
         //当前线索
         clue: {},
         //要合并到的客户
-        targetCustomer: {},
+        targetCustomer: null,
+        //相似客户
+        similarCustomers: []
     }
     static propTypes = {
-        isLoading: PropTypes.bool,
         viewType: PropTypes.string,
         onClose: PropTypes.func,
         afterConvert: PropTypes.func,
         clue: PropTypes.object,
         targetCustomer: PropTypes.object,
+        similarCustomers: PropTypes.array
     }
     constructor(props) {
         super(props);
 
         this.state = {
-            //是否正在加载
-            isLoading: this.props.isLoading,
             //视图类型
             viewType: this.props.viewType,
             //前一个视图类型
@@ -62,34 +58,28 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     componentDidMount() {
-        const customers = _.get(this.props.clue, 'similarCustomers');
-        let customerIds = _.get(this.props.clue, 'similarity_customer_ids');
+        const targetCustomer = this.props.targetCustomer;
+        const similarCustomers = this.props.similarCustomers;
+        const similarCustomerIds = this.props.clue.similarity_customer_ids;
 
-        if (!_.isEmpty(customers)) {
-            this.changeViewType(VIEW_TYPE.CUSTOMER_LIST, customers);
-        } else if (!_.isEmpty(customerIds)) {
-            customerIds = customerIds.join(',');
-            this.getCustomerById(customerIds);
+        if (targetCustomer) {
+            this.changeViewType(VIEW_TYPE.CUSTOMER_MERGE, targetCustomer);
+        } else if (!_.isEmpty(similarCustomers)) {
+            this.changeViewType(VIEW_TYPE.CUSTOMER_LIST, similarCustomers);
+        } else if (!_.isEmpty(similarCustomerIds)) {
+            this.getCustomerById(similarCustomerIds, customers => {
+                this.changeViewType(VIEW_TYPE.CUSTOMER_LIST, customers);
+            });
         } else {
-            this.checkExistingCustomer();
+            this.changeViewType(VIEW_TYPE.ADD_CUSTOMER);
         }
     }
 
     render() {
         return (
             <div className="clue-to-customer-panel">
-                {this.state.isLoading ? this.renderLoading() : this.renderContent()}
+                {this.renderContent()}
             </div>
-        );
-    }
-
-    renderLoading() {
-        return (
-            <RightPanelModal
-                isShowCloseBtn={true}
-                onClosePanel={this.props.onClose}
-                content={<Spinner />}
-            />
         );
     }
 
@@ -153,68 +143,9 @@ class ClueToCustomerPanel extends React.Component {
         }
     }
 
-    checkExistingCustomer() {
-        let { name, phones } = this.props.clue;
+    getCustomerById(ids, cb) {
+        ids = ids.join(',');
 
-        name = _.trim(name);
-
-        //线索名为空时不能执行转为客户的操作
-        //此时提示用户完善客户名
-        if (!name) {
-            message.error(Intl.get('clue.need.complete.clue.name', '请先完善线索名'));
-            this.props.onClose();
-            return;
-        }
-
-        //查询相似客户的接口要求线索名不能少于两个字
-        if (name.length < 2) {
-            message.error(Intl.get('common.clue.name.need.at.least.two.char.to.do.customer.convert', '线索名称必须在两个字或以上，才能进行转为客户的操作'));
-            this.props.onClose();
-            return;
-        }
-
-        if (_.isArray(phones)) {
-            phones = phones.join(',');
-        } else {
-            phones = '';
-        }
-        
-        //权限类型
-        const authType = hasPrivilege(AUTHS.GETALL) ? 'manager' : 'user';
-
-        //根据线索名称查询相似客户
-        ajax.send({
-            url: `/rest/customer/v3/customer/query/${authType}/similarity/customer`,
-            query: {
-                name,
-                phones
-            }
-        })
-            .done(result => {
-                const existingCustomers = _.get(result, 'similarity_list');
-
-                let newState = {
-                    isLoading: false
-                };
-
-                //若存在相似客户
-                if (_.isArray(existingCustomers) && !_.isEmpty(existingCustomers)) {
-                    newState.existingCustomers = existingCustomers;
-                    newState.viewType = VIEW_TYPE.CUSTOMER_LIST;
-                } else {
-                    newState.viewType = VIEW_TYPE.ADD_CUSTOMER;
-                }
-
-                this.setState(newState);
-            })
-            .fail(err => {
-                this.props.onClose();
-                const errMsg = Intl.get('member.apply.approve.tips', '操作失败') + Intl.get('user.info.retry', '请重试');
-                message.error(errMsg);
-            });
-    }
-
-    getCustomerById(ids) {
         ajax.send({
             url: '/force_use_common_rest/rest/customer/v3/customer/query/customers/by/ids',
             type: 'post',
@@ -223,7 +154,7 @@ class ClueToCustomerPanel extends React.Component {
             }
         })
             .done(result => {
-                this.changeViewType(VIEW_TYPE.CUSTOMER_LIST, result);
+                if (_.isFunction(cb)) cb(result);
             })
             .fail(err => {
                 this.props.onClose();
@@ -278,7 +209,6 @@ class ClueToCustomerPanel extends React.Component {
         }
 
         let newState = {
-            isLoading: false,
             viewType,
             prevViewType: this.state.viewType,
         };
