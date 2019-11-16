@@ -223,11 +223,7 @@ class ClueToCustomerPanel extends React.Component {
             }
         })
             .done(result => {
-                this.setState({
-                    isLoading: false,
-                    existingCustomers: result,
-                    viewType: VIEW_TYPE.CUSTOMER_LIST
-                });
+                this.changeViewType(VIEW_TYPE.CUSTOMER_LIST, result);
             })
             .fail(err => {
                 this.props.onClose();
