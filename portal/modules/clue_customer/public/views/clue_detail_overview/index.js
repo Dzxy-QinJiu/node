@@ -1676,6 +1676,9 @@ class ClueDetailOverview extends React.Component {
 
     //转为客户
     convertToCustomer = clue => {
+        clue = _.cloneDeep(clue);
+        clue.similarCustomers = this.state.similarCustomerLists;
+
         clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {
             clue,
             afterConvert: this.props.afterTransferClueSuccess

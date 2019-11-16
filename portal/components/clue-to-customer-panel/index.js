@@ -62,9 +62,12 @@ class ClueToCustomerPanel extends React.Component {
     }
 
     componentDidMount() {
+        const customers = _.get(this.props.clue, 'similarCustomers');
         let customerIds = _.get(this.props.clue, 'similarity_customer_ids');
 
-        if (!_.isEmpty(customerIds)) {
+        if (!_.isEmpty(customers)) {
+            this.changeViewType(VIEW_TYPE.CUSTOMER_LIST, customers);
+        } else if (!_.isEmpty(customerIds)) {
             customerIds = customerIds.join(',');
             this.getCustomerById(customerIds);
         } else {
@@ -279,12 +282,17 @@ class ClueToCustomerPanel extends React.Component {
         }
 
         let newState = {
+            isLoading: false,
             viewType,
             prevViewType: this.state.viewType,
         };
 
         if (customer) {
-            newState.targetCustomer = customer;
+            if (_.isArray(customer)) {
+                newState.existingCustomers = customer;
+            } else {
+                newState.targetCustomer = customer;
+            }
         }
 
         this.setState(newState);
