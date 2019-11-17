@@ -19,7 +19,7 @@ const CONTACT_OTHER_KEYS = ContactForm.CONTACT_OTHER_KEYS;
 //联系人store
 const ContactStore = require('MOD_DIR/crm/public/store/contact-store');
 
-const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig'));
+const websiteConfig = JSON.parse(storageUtil.local.get('websiteConfig')) || {};
 
 //联系方式种类
 const CONTACT_WAY_TYPES = [
@@ -272,7 +272,7 @@ class CustomerMerge extends React.Component {
 
     //渲染联系人
     renderContact(contact, contactIndex) {
-        const className = contact.isDup? '': 'hide'
+        const className = contact.isDup ? '' : 'hide';
         return (
             <DetailCard
                 title={this.renderContactTitle(contact, contactIndex)}
@@ -548,8 +548,8 @@ class CustomerMerge extends React.Component {
                 }
             }
 
-            delete contact.isDup
-            delete contact.isNew
+            delete contact.isDup;
+            delete contact.isNew;
         });
 
         if(_.get(contactErrors,'[0]')) {
@@ -560,7 +560,7 @@ class CustomerMerge extends React.Component {
         const customerData = {
             id: this.state.customerId,
             contacts,
-        }
+        };
 
         ajax.send({
             url: `/force_use_common_rest/rest/clue/v2/lead_transfer/customer/merge?lead_id=${clueId}`,
@@ -583,6 +583,25 @@ class CustomerMerge extends React.Component {
                 this.setState({
                     isConfirmMergeBtnDisabled: false
                 });
+            });
+    }
+
+    //不再提示按钮点击事件
+    handleNoLongerTipsBtnClick = () => {
+        ajax.send({
+            url: '/rest/base/v1/user/website/config/personnel',
+            type: 'post',
+            data: {
+                no_longer_tips_clue_will_disappear: true
+            }
+        })
+            .done(result => {
+                this.setState({
+                    isShowClueWillDisappearTip: false
+                });
+            })
+            .fail(err => {
+                message.error(err);
             });
     }
 }
