@@ -4,6 +4,7 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import officeManageAjax from './ajax';
 import {validatorNameRuleRegex} from 'PUB_DIR/sources/utils/validate-util';
 const DEFAULT_CUSTOMER_NUM = 1000; // 默认客户数
+const MAX_CUSTOMER_NUM = 10000; // 最大客户数
 
 class OfficeForm extends React.Component{
     constructor(props) {
@@ -143,6 +144,20 @@ class OfficeForm extends React.Component{
         };
     };
 
+    getNumberValidator = () => {
+        return (rule, value, callback) => {
+            if (value) {
+                if (value > MAX_CUSTOMER_NUM) {
+                    callback(Intl.get('member.position.count.tips', '客户数不能超过{number}', {number: MAX_CUSTOMER_NUM}));
+                } else {
+                    callback();
+                }
+            } else {
+                callback(Intl.get('member.position.no.count.tips', '请输入客户数'));
+            }
+        };
+    };
+
     render() {
         const formItemLayout = {
             colon: false,
@@ -179,7 +194,10 @@ class OfficeForm extends React.Component{
                         {...formItemLayout}
                     >
                         {getFieldDecorator('count', {
-                            initialValue: count
+                            initialValue: count,
+                            rules: [{
+                                validator: this.getNumberValidator()
+                            }]
                         })(
                             <InputNumber
                                 min={1}
