@@ -32,28 +32,32 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
         },
         option: {
             columns: [{
-                title: Intl.get('common.definition', '名称'),
-                dataIndex: 'name',
-                width: '20%',
+                title: Intl.get('user.user.team', '团队'),
+                dataIndex: 'sales_team',
+                width: '10%',
+            }, {
+                title: Intl.get('sales.home.sales', '销售'),
+                dataIndex: 'nick_name',
+                width: '10%',
             }, {
                 title: Intl.get('common.number.of.customers.visited', '拜访客户数'),
                 dataIndex: 'visit',
-                width: '20%',
+                width: '10%',
                 render: (value, record) => {
                     return <span style={{cursor: 'pointer'}} onClick={visitedCustomerNumClickHandler.bind(null, record.id)}>{value}</span>;
                 }
             }, {
                 title: Intl.get('common.number.of.customers.contacted', '联系客户数'),
                 dataIndex: 'phone_all',
-                width: '20%',
+                width: '10%',
             }, {
                 title: Intl.get('common.number.of.calls.made', '接通数'),
                 dataIndex: 'phone_answer',
-                width: '20%',
+                width: '10%',
             }, {
                 title: Intl.get('common.number.of.calls.not.connected', '未接通数'),
                 dataIndex: 'phone_no_answer',
-                width: '20%',
+                width: '10%',
             }]
         },
     };
