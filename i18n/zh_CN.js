@@ -368,7 +368,7 @@ var zh_CN = {
     'register.wechat.register.bind': '注册新账号',
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
-
+    'register.personal.title': '注册个人版',
 
     //首页
     'menu.home.page': '首页',

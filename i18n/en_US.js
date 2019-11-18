@@ -360,6 +360,7 @@ var en_US = {
     'register.wechat.register.bind': 'Registration of new accounts',//注册新账号
     'register.wechat.bind.btn': 'Bind immediately', // 立即绑定
     'login.wechat.register.login.error': 'WeChat register login failed',//微信号注册登录失败
+    'register.personal.title': 'Register for personal',//注册个人版
 
     //首页
     'home.page': 'Home page',//首页
