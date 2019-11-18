@@ -264,7 +264,9 @@ class ContactItem extends React.Component {
                                         callback();
                                     } else {
                                         //已存在
-                                        callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: _.get(data, 'list[0].name', [])}));
+                                        let customer_name = _.get(data, 'list[0].name', '');
+                                        customer_name = _.isEmpty(customer_name) ? '' : `"${customer_name}"`;
+                                        callback(Intl.get('crm.repeat.phone.user', '该电话已被客户{userName}使用',{userName: customer_name}));
                                     }
                                 }
                             },{contactId});

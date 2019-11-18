@@ -1666,7 +1666,7 @@ var en_US = {
     'crm.sales.customerStage': 'customer stage statistic',//'客户阶段变更统计',
     'crm.sales.newTrailCustomer': 'new customer statistic',//'新开试用、签约客户数统计',
     'crm.repeat.phone': 'Phone repeating',//电话重复
-    'crm.repeat.phone.user': 'The phone has been used by customer {userName}',//该电话已被客户"{userName}"使用
+    'crm.repeat.phone.user': 'The phone has been used by customer {userName}',//该电话已被客户{userName}使用
     'crm.repeat.phone.unhandle': 'You have an unprocessed repeat phone: ',//您还有未处理的重复电话：
     'crm.order.stage': 'Order stage',//订单阶段
     'crm.basic.detail.show': 'Show detail',//展开详情
