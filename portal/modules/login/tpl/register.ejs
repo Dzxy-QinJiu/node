@@ -1,0 +1,115 @@
+<% // 页头1   %>
+<% addBrowserChecker = true %>
+<% include ../../common/public/tpl/common-header.begin.ejs %>
+
+<script type="text/javascript">
+    if (self != top) {
+        top.location = self.location;
+    }
+    curtaoObj = {
+        isCurtao: '<%= isCurtao %>',
+        lang: '<%= lang %>',
+    };
+</script>
+<% if(isFormal == "true") { %>
+<!-- Piwik -->
+<script type="text/javascript">
+    var _paq = _paq || [];
+    // tracker methods like "setCustomDimension" should be called before "trackPageView"
+    _paq.push(['setDocumentTitle', '/']);
+    _paq.push(['trackPageView'])
+    _paq.push(['enableHeartBeatTimer', 30]);
+    (function() {
+        var u = '//ustatweb.antfact.com/';
+        _paq.push(['setTrackerUrl', u + 'piwik.php']);
+        _paq.push(['setSiteId', '17']);
+        var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+        g.type = 'text/javascript';
+        g.async = true;
+        g.defer = true;
+        g.src = u + 'piwik.js';
+        s.parentNode.insertBefore(g, s);
+    })();
+</script>
+<!-- End Piwik Code -->
+<% } %>
+<% // 页头2        %>
+<% include ../../common/public/tpl/common-header.end.ejs %>
+
+<div id="react-placeholder">
+    <style>
+        #newBridge #nb_icon_wrap {
+            display: none;
+        }
+        .register-wrap {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            font-size: 14px;
+            color: #d8eaf4;
+        }
+        .register-wrap .isloading {
+            position: absolute;
+            top: 45%;
+            left: 48%;
+        }
+        .load8 .loader8 {
+            margin: auto;
+            font-size: 10px;
+            position: relative;
+            text-indent: -9999em;
+            border-top: 0.55em solid rgba(0, 171, 234, 0.2);
+            border-right: 0.55em solid rgba(0, 171, 234, 0.2);
+            border-bottom: 0.55em solid rgba(0, 171, 234, 0.2);
+            border-left: 0.55em solid #00ABEA;
+            -webkit-animation: load8 0.5s infinite linear;
+            animation: load8 0.5s infinite linear;
+        }
+        .load8 .loader8,
+        .load8 .loader8:after {
+            border-radius: 50%;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            -o-border-radius: 50%;
+            width: 58.813px;
+            height: 58.813px;
+        }
+        @-webkit-keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes load8 {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <div class="register-wrap" style="background-color: '#FFFFFF' %>">
+        <div class="load8 isloading">
+            <div class="loader8"></div>
+        </div>
+    </div>
+</div>
+<% // 页脚%>
+<script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
+<script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
+<script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
+<% // --- 注册界面 ---   %>
+<script src="/resources/register.bundle.js?timestamp=<%= timeStamp %>"></script>
+<% // 注册页展示客服           %>
+<% show_custom_service = true %>
+<% showFooterContent = true %>
+<% include ../../common/public/tpl/common-footer.ejs %>

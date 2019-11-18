@@ -1,0 +1,123 @@
+/*
+注册界面的样式
+ */
+@font-color: #333;
+@button-height: 48px;
+@blue-color: #2196f3;
+@margin: 24px;
+.register-wrap{
+  height: 100vh;
+  .logo{
+    margin-top: 16px;
+    margin-left: 16px;
+  }
+  //注册页图片区
+  .register-image-container{
+    position: absolute;
+    width: 50%;
+    height: 413px;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    .register-image{
+      float: right;
+    }
+  }
+  //注册表单区
+  .register-form-wrap{
+    position: absolute;
+    width: 50%;
+    height: 400px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    .form-wrap{
+      height: 400px;
+      width: 416px;
+      margin-left: 48px;
+      padding: 40px;
+      background-color: #F1F4F8;
+      .form-title{
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        color: #213340;
+      }
+      //注册表单样式
+      .register-form{
+        margin-top: 10px;
+        .ant-form-item{
+          margin-bottom: 8px;
+        }
+        input{
+          height: 40px;
+          line-height: 42px;
+          color: @font-color;
+          font-size: 14px;
+        }
+        //隐藏的密码框
+        .password-hidden-input{
+          width: 0;
+          height: 0;
+          border: 0;
+          padding: 0;
+          margin: 0;
+        }
+        //正在验证状态图标的样式修改
+        .is-validating.has-feedback:after{
+          right: 80px;
+          line-height: 40px;
+          height: 40px;
+        }
+
+        //验证码输入框
+        input.captcha-code-input{
+          width: 180px;
+        }
+        .captcha-code-wrap{
+          float: right;
+          width: 150px;
+          height: 40px;
+          line-height: 38px;
+          text-align: center;
+          font-size: 16px;
+          color: #8da8c5;
+          border: 1px solid #d9d9d9;
+          border-radius: 4px;
+          .get-captcha-code{
+            cursor: pointer;
+          }
+          .anticon-loading{
+            margin-left: 4px;
+          }
+        }
+        button{
+          width: 100%;
+          height: 40px;
+          margin-top: 20px;
+          color: #ffffff;
+          background-color: #EFA246;
+          border-color: #EFA246;
+        }
+        //注册错误提示
+        .register-error-tip {
+          margin-top: 4px;
+          line-height: 22px;
+          font-size: 14px;
+          color: #ee5b44;
+        }
+      }
+      //有隐藏的密码框的form表单样式
+      .register-form.register-finished-form{
+        margin-top: 8px;
+      }
+    }
+  }
+}
+
+#footer {
+  .footer-content {
+    color: #000000;
+  }
+}
