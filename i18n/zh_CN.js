@@ -893,6 +893,8 @@ var zh_CN = {
     'member.position.name.label': '职务名称',
     'member.position.name.placeholder': '请输入职务名称',
     'member.position.has.repeat': '该职务名称已存在',
+    'member.position.count.tips': '客户数不能超过{number}',
+    'member.position.no.count.tips': '请输入客户数',
     'member.team.add.child.department': '添加子部门',
     'member.group.sales.goal': '部门销售目标',
     'member.selected.member.count': '已选{count}',

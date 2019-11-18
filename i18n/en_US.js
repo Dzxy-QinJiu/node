@@ -890,6 +890,8 @@ var en_US = {
     'member.position.name.label': 'Name', // 职务名称
     'member.position.name.placeholder': 'Please enter the name of position', // 请输入职务名称
     'member.position.has.repeat': 'The name of position already exists', // 该职务名称已存在
+    'member.position.count.tips': 'the number of customer cannot exceed {number}', // 客户数不能超过{number}
+    'member.position.no.count.tips': 'Please enter the number of customer',// 请输入客户数
     'member.team.add.child.department': 'Add sub department', // 添加子部门
     'member.group.sales.goal': 'Department Sales Target', // 部门销售目标
     'member.selected.member.count': '{count} selected', // 已选{count}
