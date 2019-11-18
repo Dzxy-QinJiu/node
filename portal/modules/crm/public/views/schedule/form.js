@@ -616,9 +616,11 @@ var CrmAlertForm = createReactClass({
         if (!checked){
             formData.start_time = moment().valueOf();
         }
+        //选中全天或关闭全天选项后，将时间提示设置为默认“不提醒”
         this.setState({
             isSelectFullday: checked,
-            formData: formData
+            formData: formData,
+            selectedAlertTimeRange: 'not_remind'
         });
     },
 
