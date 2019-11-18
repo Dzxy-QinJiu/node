@@ -22,14 +22,16 @@ class PhoneCallout extends React.Component {
     componentDidMount() {
     }
 
-    getOrganizationCallFee = (phoneNumber, contactName) => {
+    // 自动拨号
+    handleClickCallOut = (phoneNumber, contactName) => {
         getOrganizationCallFee().then((result) => {
             let callFee = _.get(result, 'call_fee', 0); // 当前话费
             let accountBalance = _.get(result, 'account_balance', 0);
-            // 当前话费大于组织余额时，标识已经欠费
-            if (callFee > accountBalance) {
+            // 当前话费大于等于组织余额时，标识已经欠费
+            if (callFee >= accountBalance) {
                 message.warn(Intl.get('common.call.owe.tips', '您的电话号码已欠费，请充值后再试！'));
             } else {
+                Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-active-call_record-ico'), '拨打电话');
                 handleCallOutResult({
                     contactName: contactName,//联系人姓名
                     phoneNumber: phoneNumber,//拨打的电话
@@ -46,12 +48,6 @@ class PhoneCallout extends React.Component {
         }, () => {
             message.error(Intl.get('crm.call.phone.failed', '拨打失败'));
         });
-    };
-
-    // 自动拨号
-    handleClickCallOut = (phoneNumber, contactName) => {
-        this.getOrganizationCallFee(phoneNumber, contactName);
-        Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.icon-active-call_record-ico'), '拨打电话');
     };
     handleVisibleChange = (phoneNumber, contactName,visible) => {
         //如果是个人正式版，需要提示升级为企业版才能拨打号码
