@@ -121,7 +121,7 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
             onRowClick: record => {
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
-                        currentId: record.id 
+                        currentId: record.customer_id 
                     }
                 });
             }
