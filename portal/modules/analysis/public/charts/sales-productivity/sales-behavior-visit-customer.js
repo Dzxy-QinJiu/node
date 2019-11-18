@@ -44,7 +44,7 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
                 dataIndex: 'visit',
                 width: '10%',
                 render: (value, record) => {
-                    return <span style={{cursor: 'pointer'}} onClick={visitedCustomerNumClickHandler.bind(null, record.id)}>{value}</span>;
+                    return <span style={{cursor: 'pointer'}} onClick={visitedCustomerNumClickHandler.bind(null, record.user_id)}>{value}</span>;
                 }
             }, {
                 title: Intl.get('common.number.of.customers.contacted', '联系客户数'),
