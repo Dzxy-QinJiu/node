@@ -73,6 +73,10 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
         chart = {...chart, ...paramObj.chartProps};
     }
 
+    function timeRender(value) {
+        return moment(value).format(oplateConsts.DATE_TIME_FORMAT);
+    }
+
     //销售行为统计拜访客户数点击处理函数
     function visitedCustomerNumClickHandler(id, e) {
         Trace.traceEvent(e, '点击销售个人报告页面上的销售行为统计拜访客户数查看详细列表');
@@ -88,21 +92,23 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
             columns: [
                 {
                     title: Intl.get('crm.41', '客户名'),
-                    dataIndex: 'name',
+                    dataIndex: 'customer_name',
                     width: '20%'
                 },
                 {
                     title: Intl.get('common.visit.start.time', '拜访开始时间'),
-                    dataIndex: 'start_time',
+                    dataIndex: 'visit_start_time',
+                    render: timeRender,
                     width: '15%'
                 },
                 {
                     title: Intl.get('common.visit.end.time', '拜访结束时间'),
-                    dataIndex: 'end_time',
+                    dataIndex: 'visit_end_time',
+                    render: timeRender,
                     width: '15%'
                 },
                 {
-                    title: Intl.get('common.customer.visit.record', '客户拜访记录'),
+                    title: Intl.get('common.customer.visit.record', '拜访记录'),
                     dataIndex: 'remark',
                     width: '50%'
                 }
