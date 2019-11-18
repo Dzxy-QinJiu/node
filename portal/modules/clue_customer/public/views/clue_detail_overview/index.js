@@ -866,6 +866,8 @@ class ClueDetailOverview extends React.Component {
             }
             clueCustomerAction.afterReleaseClue(curClue.id);
             subtracteGlobalClue(curClue);
+            //需要关闭面板
+            _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel();
         }, errorMsg => {
             this.setState({isReleasingClue: false});
             message.error(errorMsg);
@@ -1018,7 +1020,7 @@ class ClueDetailOverview extends React.Component {
                     <Popconfirm
                         placement="topRight" onConfirm={this.handleReleaseClue}
                         title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
-                        <Button disabled={this.state.isReleasingClue} loading={this.state.isReleasingClue}>{Intl.get('clue.release', '释放线索')}</Button>
+                        <Button className='clue-inability-btn' disabled={this.state.isReleasingClue} loading={this.state.isReleasingClue}>{Intl.get('clue.release', '释放线索')}</Button>
                     </Popconfirm>
                 ) : null}
             </div>;

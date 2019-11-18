@@ -259,6 +259,8 @@ class BasicData extends React.Component {
                         myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
                     }
                     CrmAction.afterReleaseCustomer(basicData.id);
+                    //需要关闭面板
+                    _.isFunction(this.props.hideRightPanel) && this.props.hideRightPanel($(ReactDOM.findDOMNode(this)));
                 }, (errorMsg) => {
                     this.setState({isReleasingCustomer: false});
                     message.error(errorMsg);
@@ -531,6 +533,7 @@ BasicData.propTypes = {
     setTabsContainerHeight: PropTypes.func,
     showRightPanel: PropTypes.func,
     disableEdit: PropTypes.bool,
+    hideRightPanel: PropTypes.func,
 };
 module.exports = BasicData;
 

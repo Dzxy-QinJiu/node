@@ -443,7 +443,7 @@ class PhonePanel extends React.Component {
                 currentId={customer.id}
                 curCustomer={customer}
                 editCustomerBasic={this.editCustomerBasic.bind(this, customer)}
-                hideRightPanel={this.hideRightPanel.bind(this)}
+                hideRightPanel={this.hidePhonePanel.bind(this)}
                 ShowCustomerUserListPanel={this.ShowCustomerUserListPanel}
                 showApplyUserForm={this.showApplyUserForm.bind(this)}
                 showOpenAppForm={this.showOpenAppForm.bind(this)}
@@ -813,7 +813,7 @@ class PhonePanel extends React.Component {
                     {/*{只打开客户详情或从当前展示的客户详情中打电话时}*/}
                     {this.isOnlyOpenCustomerDetail(paramObj) || this.isCustomerDetailCall(paramObj) ? (
                         <CustomerDetail {...paramObj.customer_params}
-                            hideRightPanel={this.hideRightPanel.bind(this)}
+                            hideRightPanel={this.hidePhonePanel.bind(this)}
                             showApplyUserForm={this.showApplyUserForm.bind(this)}
                             showOpenAppForm={this.showOpenAppForm.bind(this)}
                             returnInfoPanel={this.returnInfoPanel.bind(this)}
