@@ -1634,7 +1634,7 @@ class ClueCustomer extends React.Component {
                                                 {contactName}
                                             </span>
                                         </div>
-                                    )})}
+                                    );})}
                             </div>
 
                         );
@@ -2090,14 +2090,10 @@ class ClueCustomer extends React.Component {
     };
 
     renderClueCustomerBlock = () => {
-        var divHeight = getTableContainerHeight();
         if (this.state.curClueLists.length) {
             return (
                 <div id="clue-content-block" className="clue-content-block" ref="clueCustomerList">
-                    <div className="clue-customer-list"
-                        style={{height: divHeight + LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
-                        id="area"
-                    >
+                    <div className="clue-customer-list" id="area">
                         {this.renderClueCustomerLists()}
                     </div>
                 </div>
