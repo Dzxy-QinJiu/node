@@ -93,24 +93,29 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
                 {
                     title: Intl.get('crm.41', '客户名'),
                     dataIndex: 'customer_name',
-                    width: '20%'
+                    width: '10%'
                 },
                 {
                     title: Intl.get('common.visit.start.time', '拜访开始时间'),
                     dataIndex: 'visit_start_time',
                     render: timeRender,
-                    width: '15%'
+                    width: '10%'
                 },
                 {
                     title: Intl.get('common.visit.end.time', '拜访结束时间'),
                     dataIndex: 'visit_end_time',
                     render: timeRender,
-                    width: '15%'
+                    width: '10%'
+                },
+                {
+                    title: Intl.get('common.customer.visit.target', '拜访目标'),
+                    dataIndex: 'remark',
+                    width: '10%'
                 },
                 {
                     title: Intl.get('common.customer.visit.record', '拜访记录'),
-                    dataIndex: 'remark',
-                    width: '50%'
+                    dataIndex: 'trace_remark',
+                    width: '10%'
                 }
             ],
             onRowClick: record => {
