@@ -414,6 +414,15 @@ class CrmFilterPanel extends React.Component {
                 }))
             },
             {
+                groupName: Intl.get('crm.clue.client.source', '集客方式'),
+                groupId: 'source_classify',
+                data: _.map(sourceClassifyArray, x => ({
+                    name: x.name,
+                    value: x.value,
+                    selected: x.value && _.indexOf(selectedSourceClassify, x.value) !== -1
+                }))
+            },
+            {
                 groupName: Intl.get('common.industry', '行业'),
                 groupId: 'industry',
                 singleSelect: true,
@@ -421,15 +430,6 @@ class CrmFilterPanel extends React.Component {
                     name: x,
                     value: x,
                     selected: x === _.get(this.state, 'condition.industry', '')
-                }))
-            },
-            {
-                groupName: Intl.get('crm.clue.client.source', '集客方式'),
-                groupId: 'source_classify',
-                data: _.map(sourceClassifyArray, x => ({
-                    name: x.name,
-                    value: x.value,
-                    selected: x.value && _.indexOf(selectedSourceClassify, x.value) !== -1
                 }))
             },
             {
