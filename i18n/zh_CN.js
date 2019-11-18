@@ -1686,7 +1686,7 @@ var zh_CN = {
     'crm.sales.customerStage': '客户阶段变更统计',
     'crm.sales.newTrailCustomer': '新开客户数统计',
     'crm.repeat.phone': '电话重复',
-    'crm.repeat.phone.user': '该电话已被客户"{userName}"使用',
+    'crm.repeat.phone.user': '该电话已被客户{userName}使用',
     'crm.repeat.phone.unhandle': '您还有未处理的重复电话：',
     'crm.order.stage': '订单阶段',
     'crm.basic.detail.show': '展开详情',
