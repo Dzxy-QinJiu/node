@@ -170,6 +170,7 @@ class ClueCustomer extends React.Component {
         //获取已提取线索量
         this.getRecommendClueCount();
         this.getSalesmanList();
+        this.getClueList();
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_CHANGE_TRACE, this.batchChangeTraceMan);
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_LEAD_RELEASE, this.batchReleaseLead);
         clueEmitter.on(clueEmitter.REMOVE_CLUE_ITEM, this.removeClueItem);
@@ -241,7 +242,6 @@ class ClueCustomer extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.clickUnhandleNum')) {
-
             var filterStoreData = clueFilterStore.getState();
             var checkAllotNoTraced = filterStoreData.filterAllotNoTraced === NEED_MY_HANDLE;//待我处理
             var checkedAdvance = false;//在高级筛选中是否有其他的选中项
@@ -271,7 +271,6 @@ class ClueCustomer extends React.Component {
             //点击数字进行跳转时，如果当前选中的条件只是待我审批的条件，那么就不需要清空数据,如果当前选中的除了待我审批的，还有其他的条件，就需要把数据进行情况  checkAllotNoTraced： 选中了待我审批  checkedAdvance： 还有其他筛选项
             if ((!checkAllotNoTraced || (checkAllotNoTraced && checkedAdvance))) {
                 delete nextProps.location.state.clickUnhandleNum;
-
                 clueCustomerAction.setClueInitialData();
                 this.getUnhandledClue();
             }
@@ -2102,8 +2101,6 @@ class ClueCustomer extends React.Component {
             return null;
         }
     };
-
-
     onTypeChange = () => {
         clueCustomerAction.setClueInitialData();
         rightPanelShow = false;
