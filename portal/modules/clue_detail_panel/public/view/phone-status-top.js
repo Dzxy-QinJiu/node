@@ -45,7 +45,8 @@ class phoneStatusTop extends React.Component {
             addClueSchedule: false,//正在添加联系计划
             addClueScheduleMsg: '',//添加联系计划的提示
             hasAddedSchedlue: false,//已经添加了联系计划就不可以再添加了
-            messageType: ''
+            messageType: '',
+            isClueDetailCall: this.props.isClueDetailCall//是否是在线索详情中打出的电话
         };
     }
 
@@ -78,7 +79,8 @@ class phoneStatusTop extends React.Component {
             detailClueId: nextProps.detailClueId,
             phonemsgObj: phonemsgObj,
             isAddingMoreProdctInfo: nextProps.isAddingMoreProdctInfo,
-            isAddingPlanInfo: nextProps.isAddingPlanInfo
+            isAddingPlanInfo: nextProps.isAddingPlanInfo,
+            isClueDetailCall: nextProps.isClueDetailCall
         });
         if (!_.isEmpty(nextProps.curClue)) {
             this.setState({
@@ -237,7 +239,12 @@ class phoneStatusTop extends React.Component {
         var onHide = function() {
             phoneAlertAction.setSubmitErrMsg('');
         };
-        const options = this.state.clueInfoArr.map((item) => (
+
+        var clueInfoArr = _.get(this,'state.clueInfoArr[0]') ? this.state.clueInfoArr : [];
+        if(_.isEmpty(clueInfoArr) && !this.state.isClueDetailCall && _.get(phonemsgObj,'leads[0]') ){
+            clueInfoArr = phonemsgObj.leads;
+        }
+        const options = clueInfoArr.map((item) => (
             <Option value={item.id} key={item.id}>{item.name}</Option>
         ));
         var commonPhoneDesArray = this.props.commonPhoneDesArray;
@@ -283,12 +290,12 @@ class phoneStatusTop extends React.Component {
                     </div>
                     {//通话结束后，展示保存跟进记录的按钮
                         HANG_UP_TYPES.includes(phonemsgObj.type) ? <div className="btn-select-container">
-                            {/*如果获取到的客户不止一个，要手动选择要关联的客户*/}
-                            {this.state.clueInfoArr.length > 1 ?
+                            {/*如果获取到的线索不止一个，要手动选择要关联的线索*/}
+                            {clueInfoArr.length > 1 ?
                                 <div className="select-add-trace-customer">
                                     {Intl.get('apply.select.trace.clue', '请选择要跟进的线索')}：
                                     <Select
-                                        defaultValue={this.state.clueInfoArr[0].id}
+                                        defaultValue={clueInfoArr[0].id}
                                         dropdownMatchSelectWidth={false}
                                         onChange={this.handleSelectCustomer}
                                     >
@@ -320,7 +327,6 @@ class phoneStatusTop extends React.Component {
             );
         }
     }
-
     //通话结束
     isFinishedCall = (phonemsgObj) => {
         return phonemsgObj.type === PHONERINGSTATUS.phone || phonemsgObj.type === PHONERINGSTATUS.curtao_phone || phonemsgObj.type === PHONERINGSTATUS.call_back;
@@ -456,8 +462,7 @@ class phoneStatusTop extends React.Component {
                 <div className="trace-and-handle-btn">
                     <div className="trace-content-container">
                         { //该电话有对应的客户可以展示跟进记录输入框，通话结束后，展示跟进记录的保存标签
-                            this.getSaveTraceClueId() ? this.renderTraceItem(phonemsgObj) : null
-                        }
+                            this.renderTraceItem(phonemsgObj)}
                     </div>
                     {/*已转化的线索和无效线索不能展示这两个按钮*/}
                     {!this.state.isAddingMoreProdctInfo && !this.state.isAddingPlanInfo && ![SELECT_TYPE.HAS_TRANSFER].includes(_.get(this, 'state.curClue.status')) && _.get(this, 'state.curClue.availability') === AVALIBILITYSTATUS.AVALIBILITY ?
@@ -538,7 +543,8 @@ phoneStatusTop.defaultProps = {
     showMarkClueInvalid: function() {
 
     },
-    curClue: {}
+    curClue: {},
+    isClueDetailCall: true
 };
 phoneStatusTop.propTypes = {
     addMoreInfoCls: PropTypes.string,
@@ -554,6 +560,7 @@ phoneStatusTop.propTypes = {
     showMarkClueInvalid: PropTypes.func,
     curClue: PropTypes.object,
     closeAddPlan: PropTypes.func,
-    setTraceEditStatus: PropTypes.func //添加跟进内容回调，获取编辑状态 'edit' 'text'
+    setTraceEditStatus: PropTypes.func, //添加跟进内容回调，获取编辑状态 'edit' 'text'
+    isClueDetailCall: PropTypes.bool,
 };
 export default phoneStatusTop;
