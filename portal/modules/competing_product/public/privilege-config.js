@@ -1,0 +1,5 @@
+let BATCH_PRIVILEGE = {
+    //获取，增加，删除竞品
+    CRM_COMPETING_PRODUCT: 'CRM_COMPETING_PRODUCT'
+};
+export default {BATCH_PRIVILEGE};
