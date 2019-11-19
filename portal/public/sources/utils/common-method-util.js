@@ -1174,9 +1174,11 @@ function checkCurrentVersion() {
     let version = _.get(organization, 'version', {});
     let name = _.get(version, 'name', '');
     //'个人试用',’企业试用‘
+    //todo 暂时按照name字段进行判断，后期需要给定一个字段
     return {
         personal: new RegExp('个人').test(name),
-        company: new RegExp('企业').test(name),
+        // company: new RegExp('企业').test(name),
+        company: !new RegExp('个人').test(name),
     };
 }
 exports.checkCurrentVersion = checkCurrentVersion;
