@@ -48,7 +48,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'UPDATE_MEMBER_BASE_INFO'
+            'USER_MANAGE_EDIT_USER'
         ]
     },{
         'method': 'put',
@@ -75,7 +75,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'UPDATE_MEMBER_ROLE'
+            'USER_MANAGE_EDIT_USER'
         ]
     }, {
         'method': 'put',
