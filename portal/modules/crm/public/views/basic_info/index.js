@@ -23,6 +23,13 @@ import CustomerLabel from 'CMP_DIR/customer_label';
 import { myWorkEmitter } from 'OPLATE_EMITTER';
 
 let customerLabelList = [];//存储客户阶段的列表
+const CRM_VIEW_TYPES = crmUtil.CRM_VIEW_TYPES;
+const VIEW_MAPS = [
+    CRM_VIEW_TYPES.CRM_REPEAT,
+    CRM_VIEW_TYPES.CRM_RECYCLE,
+    CRM_VIEW_TYPES.CRM_POOL
+];
+
 class BasicData extends React.Component {
     state = {
         ...CrmOverviewStore.getState(),
@@ -64,7 +71,6 @@ class BasicData extends React.Component {
             this.setState({
                 showDetailFlag: false,
                 editNameFlag: false,
-                isReleased: false
             });
         }
     }
@@ -253,7 +259,7 @@ class BasicData extends React.Component {
             if(res) {
                 this.setState({isReleasingCustomer: true});
                 CrmBasicAjax.releaseCustomer({id: basicData.id}).then(result => {
-                    this.setState({isReleasingCustomer: false, isReleased: true});
+                    this.setState({isReleasingCustomer: false});
                     //释放完客户后，需要将首页对应的工作设为已完成
                     if (window.location.pathname === '/home') {
                         myWorkEmitter.emit(myWorkEmitter.SET_WORK_FINISHED);
@@ -277,8 +283,10 @@ class BasicData extends React.Component {
     isShowReleaseBtn = () => {
         let pathname = window.location.pathname;
         let basicData = this.state.basicData;
-        //没有被释放，且（在首页或者客户列表里），以及不是运营人员
-        return !this.state.isReleased && (pathname === '/home' || pathname === '/crm' && basicData.isCrmListPage) && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
+        //（在首页或者客户列表里），以及不是运营人员
+        const isNotShowRelease = _.includes(VIEW_MAPS, basicData.customer_type);
+        const isAllowPath = pathname === '/home' || pathname === '/crm';
+        return isAllowPath && !isNotShowRelease && !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
     };
 
     getEditCustomerLabelType() {

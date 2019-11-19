@@ -122,7 +122,8 @@ class CustomerRecycleBin extends React.Component {
             if(curCustomer){
                 let customerInfo = {
                     ...curCustomer,
-                    id: curCustomer.unique_id//客户真实的id, 获取客户详情中的数据时需要用此id
+                    id: curCustomer.unique_id,//客户真实的id, 获取客户详情中的数据时需要用此id
+                    customer_type: 'customer_recycle'
                 };
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {

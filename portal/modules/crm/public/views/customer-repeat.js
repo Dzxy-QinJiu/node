@@ -394,7 +394,7 @@ class CustomerRepeat extends React.Component {
                 customer_params: {
                     isRepeat: true,
                     refreshCustomerList: this.refreshRepeatCustomerList,
-                    curCustomer: this.state.curCustomer,
+                    curCustomer: {...this.state.curCustomer, customer_type: 'customer_repeat'},
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     updateCustomerDefContact: CustomerRepeatAction.updateCustomerDefContact,
                     hideRightPanel: this.hideRightPanel,

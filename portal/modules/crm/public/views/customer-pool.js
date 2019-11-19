@@ -351,7 +351,7 @@ class CustomerPool extends React.Component {
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
                         currentId: this.state.currentId,
-                        curCustomer: curCustomer,
+                        curCustomer: {...curCustomer, customer_type: 'customer_pool'},
                         hideRightPanel: this.colseRightPanel,
                         disableEdit: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)
                         hideContactWay: true,//客户池中打开的客户详情，不展示联系方式
