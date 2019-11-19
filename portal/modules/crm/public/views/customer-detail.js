@@ -136,6 +136,7 @@ class CrmRightPanel extends React.Component {
                     setTabsContainerHeight={this.setTabsContainerHeight}
                     showRightPanel={this.props.showRightPanel}
                     disableEdit={this.props.disableEdit}
+                    hideRightPanel={this.props.hideRightPanel}
                 />
                 <div className="crm-right-panel-content" style={{height: this.state.tabsContainerHeight}}>
                     {this.state.curCustomer ? (
