@@ -48,6 +48,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import cluePoolAjax from 'MOD_DIR/clue_pool/public/ajax';
 import userData from 'PUB_DIR/sources/user-data';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 //用来判断是否是线索池中打开的线索详情的类型标识
 const ClUE_POOL = 'clue_pool';
 
@@ -340,7 +341,7 @@ class ClueRightPanel extends React.Component {
     render() {
         let curClue = _.get(this.state, 'curClue');
         //是否没有权限修改线索详情
-        var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER');
+        var hasPrivilegeEdit = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL);
         var divHeight = this.getCluePanelHeight();
         var cls = 'clue_customer_rightpanel white-space-nowrap';
         if (this.props.className){
@@ -370,7 +371,7 @@ class ClueRightPanel extends React.Component {
                                     />
                                 </div>
                             </div>
-                            {hasPrivilege('CLUECUSTOMER_DELETE') && editCluePrivilege(curClue) ?
+                            {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE) && editCluePrivilege(curClue) ?
                                 <div className="remove-clue">
                                     <i className="iconfont icon-delete handle-btn-item"
                                         onClick={this.handleRemoveClue.bind(this, curClue)} data-tracename="点击删除线索按钮"></i>
