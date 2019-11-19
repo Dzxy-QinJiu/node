@@ -22,6 +22,7 @@ import ShearContent from '../../../../components/shear-content';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import BackMainPage from 'CMP_DIR/btn-back';
+import {CRM_VIEW_TYPES} from '../utils/crm-util';
 
 let CONSTANTS = {
     PADDING_TOP: 84,
@@ -394,7 +395,7 @@ class CustomerRepeat extends React.Component {
                 customer_params: {
                     isRepeat: true,
                     refreshCustomerList: this.refreshRepeatCustomerList,
-                    curCustomer: {...this.state.curCustomer, customer_type: 'customer_repeat'},
+                    curCustomer: {...this.state.curCustomer, customer_type: CRM_VIEW_TYPES.CRM_REPEAT},
                     ShowCustomerUserListPanel: this.ShowCustomerUserListPanel,
                     updateCustomerDefContact: CustomerRepeatAction.updateCustomerDefContact,
                     hideRightPanel: this.hideRightPanel,

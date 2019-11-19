@@ -1005,8 +1005,8 @@ class ClueDetailOverview extends React.Component {
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
         if (avalibility){
-            //不是运营人员，且（在首页或者线索列表里）
             let pathname = window.location.pathname;
+            //不是运营人员，且（在首页或者线索列表里）
             var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (pathname === '/home' || pathname === '/clue_customer');
             return <div>
                 {associatedPrivilege ? <Button type="primary"
