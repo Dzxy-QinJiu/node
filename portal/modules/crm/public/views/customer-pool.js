@@ -28,6 +28,7 @@ import {DAY_TIME} from 'PUB_DIR/sources/utils/consts';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import CustomerPoolRule from './customer_pool_rule';
 import BackMainPage from 'CMP_DIR/btn-back';
+import { CRM_VIEW_TYPES } from '../utils/crm-util';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -351,7 +352,7 @@ class CustomerPool extends React.Component {
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
                         currentId: this.state.currentId,
-                        curCustomer: curCustomer,
+                        curCustomer: {...curCustomer, customer_type: CRM_VIEW_TYPES.CRM_POOL},
                         hideRightPanel: this.colseRightPanel,
                         disableEdit: true,//是否是客户回收站中打开的客户详情(禁止编辑、添加客户信息)
                         hideContactWay: true,//客户池中打开的客户详情，不展示联系方式

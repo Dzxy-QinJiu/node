@@ -18,6 +18,7 @@ import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import {getTableContainerHeight, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import BackMainPage from 'CMP_DIR/btn-back';
+import {CRM_VIEW_TYPES} from '../utils/crm-util';
 const PRIVILEGES = {
     MANAGER_CUSTOMER_BAK_AUTH: 'CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD'//管理员获取回收站中客户列表的权限
 };
@@ -122,7 +123,8 @@ class CustomerRecycleBin extends React.Component {
             if(curCustomer){
                 let customerInfo = {
                     ...curCustomer,
-                    id: curCustomer.unique_id//客户真实的id, 获取客户详情中的数据时需要用此id
+                    id: curCustomer.unique_id,//客户真实的id, 获取客户详情中的数据时需要用此id
+                    customer_type: CRM_VIEW_TYPES.CRM_RECYCLE
                 };
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {

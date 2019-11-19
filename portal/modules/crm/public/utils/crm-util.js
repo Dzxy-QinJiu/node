@@ -219,4 +219,11 @@ exports.LAYOUT_CONSTANTS = {
     STATISTIC_TYPE_HEIGHT: 50,//类型统计高度
     OVER_VIEW_LOADING_HEIGHT: 30//概览页”最新跟进“加载效果的高度
 };
+//客户视图类型
+exports.CRM_VIEW_TYPES = {
+    CRM_LIST: 'customer_list',//客户列表
+    CRM_REPEAT: 'customer_repeat',//重复客户
+    CRM_RECYCLE: 'customer_recycle',//回收站
+    CRM_POOL: 'customer_pool',//客户池
+};
 
