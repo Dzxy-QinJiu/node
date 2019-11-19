@@ -67,7 +67,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     this.teamMemberList = [];
     //筛选相似线索
     this.filterLabels = '';
-    //todo 如果是销售领导或者销售角色或者运营 默认选中 待我处理 进行筛选  这个功能暂时隐藏
+    //如果是销售领导或者销售角色或者运营 默认选中 待我处理 进行筛选  这个功能暂时隐藏
     //this.filterAllotNoTraced = getClueUnhandledPrivilege() ? '0' : '';
     this.filterAllotNoTraced = '';
     //未打通电话的线索
