@@ -4,6 +4,7 @@
  * Created by liwenjun on 2018/12/19.
  */
 const MODULE_PATH = 'modules/';
+import analysisPrivilegeConst from 'modules/analysis/public/privilege-const';
 let routers = [
     {
         id: 'HOME_PAGE', //唯一标识，首页
@@ -98,8 +99,8 @@ let routers = [
                 component: `${MODULE_PATH}analysis/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: [
-                    'CUSTOMER_ANALYSIS_COMMON',
-                    'CUSTOMER_ANALYSIS_MANAGER',
+                    analysisPrivilegeConst.CUSTOMER_ANALYSIS_COMMON,
+                    analysisPrivilegeConst.CUSTOMER_ANALYSIS_MANAGER
                 ]
             },
             {
@@ -115,8 +116,8 @@ let routers = [
                         routePath: '/analysis/report/weekly_report',
                         component: `${MODULE_PATH}weekly_report/public`,
                         showPrivileges: [
-                            'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
-                            'KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON',
+                            analysisPrivilegeConst.KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER,
+                            analysisPrivilegeConst.KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON,
                         ],
                     },
                     //月报统计
@@ -126,8 +127,8 @@ let routers = [
                         routePath: '/analysis/report/monthly_report',
                         component: `${MODULE_PATH}monthly-report/public`,
                         showPrivileges: [
-                            'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
-                            'CALLRECORD_ASKFORLEAVE_QUERY_USER',
+                            analysisPrivilegeConst.CALLRECORD_ASKFORLEAVE_QUERY_MANAGER,
+                            analysisPrivilegeConst.CALLRECORD_ASKFORLEAVE_QUERY_USER,
                         ],
                     },
                     //销售报告
@@ -138,8 +139,8 @@ let routers = [
                         component: `${MODULE_PATH}sales-report/public`,
                         //有这个权限，才显示入口图标
                         showPrivileges: [
-                            'CURTAO_SALES_REPORTS_COMMON',
-                            'CURTAO_SALES_REPORTS_MANAGER',
+                            analysisPrivilegeConst.CURTAO_SALES_REPORTS_COMMON,
+                            analysisPrivilegeConst.CURTAO_SALES_REPORTS_MANAGER,
                         ]
                     },
                 ],
