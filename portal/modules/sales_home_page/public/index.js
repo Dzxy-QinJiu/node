@@ -40,6 +40,7 @@ import {getEmailActiveUrl} from 'PUB_DIR/sources/utils/common-method-util';
 import InviteMember from 'MOD_DIR/invite_member/public';
 import AlertTip from 'CMP_DIR/alert-tip';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
+import commonSalesHomePrivilegeConst from './privilege-const';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -96,6 +97,7 @@ class SalesHomePage extends React.Component {
     };
 
     getDataType = () => {
+        //TODO 待确认
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
@@ -124,7 +126,7 @@ class SalesHomePage extends React.Component {
         SalesHomeStore.listen(this.onChange);
         let type = this.getDataType();
         // 有审批权限时，获取待我审批的邀请成员列表
-        if (hasPrivilege('MEMBER_INVITE_MANAGE')) {
+        if (hasPrivilege(commonSalesHomePrivilegeConst.MEMBER_INVITE_APPLY)) {
             SalesHomeAction.getPendingApproveMemberApplyList();
         }
         //获取统计团队内成员个数的列表
@@ -1152,7 +1154,7 @@ class SalesHomePage extends React.Component {
                                 activeView={this.state.activeView}
                             />
                             {/*即将过期的用户列表*/}
-                            {hasPrivilege('GET_EXPIRE_USER_STATISTIC') ? (
+                            {hasPrivilege(commonSalesHomePrivilegeConst.GET_USER_STATISTIC_VIEW) ? (
                                 <div className="will-expire-user-container">
                                     {this.renderWillExpireUser()}
                                 </div>
