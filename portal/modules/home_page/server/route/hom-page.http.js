@@ -3,6 +3,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2019/6/21.
  */
+var homePagePrivilegeConst = require('../../public/privilege-const');
+var crmPrivilegeConst = require('MOD_DIR/crm/public/privilege-const');
+
 module.exports = {
     module: 'home_page/server/action/home-page-controller',
     routes: [{
@@ -13,7 +16,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [homePagePrivilegeConst.BASE_QUERY_PERMISSION_MEMBER]
     }, {
         // 获取我的工作类型列表
         'method': 'get',
@@ -22,7 +25,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [homePagePrivilegeConst.BASE_QUERY_PERMISSION_MEMBER]
     }, {
         //修改我的工作状态
         'method': 'put',
@@ -31,7 +34,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['ORGANIZATION_BASE_PERMISSION']
+        'privileges': [homePagePrivilegeConst.BASE_OPERATE_PERMISSION]
     }, {
         // 获取业绩排名
         'method': 'get',
@@ -40,7 +43,10 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['CURTAO_SALES_REPORTS_MANAGER', 'CURTAO_SALES_REPORTS_COMMON']
+        'privileges': [
+            homePagePrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON,
+            homePagePrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER
+        ]
     }, {//获取通话时长数据
         'method': 'get',
         'path': '/rest/call/time/data',
@@ -48,7 +54,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [homePagePrivilegeConst.CURTAO_CRM_CALLRECORD_STATISTICS]
     }, {
         //获取联系的客户数
         'method': 'get',
@@ -57,7 +63,10 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['CRM_LIST_CUSTOMERS', 'CUSTOMER_ALL']
+        'privileges': [
+            crmPrivilegeConst.CUSTOMER_ALL,
+            crmPrivilegeConst.CRM_LIST_CUSTOMERS
+        ]
     }, {
         //获取我关注的数据
         'method': 'get',
@@ -66,7 +75,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['CRM_GET_INTERESTED_CUSTOMER_INFO']
+        'privileges': [crmPrivilegeConst.CRM_INTERESTED_CUSTOMER_INFO]
     }, {
         //修改我关注数据的状态
         'method': 'put',
@@ -75,6 +84,6 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['CRM_UPDATE_INTERESTED_CUSTOMER_INFO']
+        'privileges': [crmPrivilegeConst.CRM_INTERESTED_CUSTOMER_INFO]
     }]
 };

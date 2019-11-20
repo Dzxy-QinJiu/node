@@ -4,6 +4,8 @@
  * Created by wangliping on 2019/6/21.
  */
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import homePagePrivilegeConst from '../privilege-const';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 //获取我的工作列表
 let getMyWorkListAjax = null;
 exports.getMyWorkList = function(queryParams) {
@@ -64,8 +66,8 @@ exports.handleMyWorkStatus = function(bodyObj) {
 //获取业绩排名
 let getContractPerformanceAjax = null;
 exports.getContractPerformance = function(queryParams) {
-    let type = 'self';//CURTAO_SALES_REPORTS_COMMON
-    if (hasPrivilege('CURTAO_SALES_REPORTS_MANAGER')) {
+    let type = 'self';//homePagePrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON
+    if (hasPrivilege(homePagePrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER)) {
         type = 'all';
     }
     var Deferred = $.Deferred();
@@ -109,8 +111,8 @@ exports.getCallTimeData = function(reqData) {
 //获取本周联系过的客户数
 let getContactCustomerCountAjax = null;
 exports.getContactCustomerCount = function(reqData) {
-    let type = 'user';//CRM_LIST_CUSTOMERS
-    if (hasPrivilege('CUSTOMER_ALL')) {
+    let type = 'user';//crmPrivilegeConst.CRM_LIST_CUSTOMERS
+    if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL)) {
         type = 'manager';
     }
     var Deferred = $.Deferred();
