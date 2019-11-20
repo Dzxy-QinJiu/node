@@ -187,7 +187,7 @@ function modifySessionData(req, data) {
 }
 
 //登录成功处理
-function loginSuccess(req, res, isRegisterLogin) {
+function loginSuccess(req, res) {
     req.session.stopcheck = '';
     return function(data) {
         //修改session数据
@@ -211,8 +211,8 @@ function loginSuccess(req, res, isRegisterLogin) {
                     expireAfterDays: _.get(data, 'expire_after_days'),
                 };
                 req.session.save(() => {
-                    //ajax请求并且非注册登录才返回sussess(注册登录后，直接跳转到首页）
-                    if (req.xhr && !isRegisterLogin) {
+                    //ajax请求返回sussess
+                    if (req.xhr) {
                         //session失效时，登录成功后的处理
                         res.status(200).json('success');
                     } else {
@@ -489,17 +489,19 @@ exports.getVertificationCode = function(req, res) {
 //注册个人账号
 exports.registerAccount = function(req, res) {
     DesktopLoginService.registerAccount(req, res).on('success', function(data) {
-        if (data) {//注册成功后自动登录
-            var username = req.body.phone;
-            var password = req.body.pwd;
-            //记录上一次登录用户名，到session中
-            username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-            req.session.last_login_user = username;
-            DesktopLoginService.login(req, res, username, password)
-                .on('success', loginSuccess(req, res, true))
-                .on('error', function(errorObj) {
-                    res.status(500).json(errorObj && errorObj.message);
-                });
+        if (data) {//注册成功后延时2s（es组织初始化需要时间）后自动登录
+            setTimeout(function() {
+                var username = req.body.phone;
+                var password = req.body.pwd;
+                //记录上一次登录用户名，到session中
+                username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+                req.session.last_login_user = username;
+                DesktopLoginService.login(req, res, username, password)
+                    .on('success', loginSuccess(req, res))
+                    .on('error', function(errorObj) {
+                        res.status(500).json(errorObj && errorObj.message);
+                    });
+            }, 2000);
         } else {
             res.status(200).json(data);
         }

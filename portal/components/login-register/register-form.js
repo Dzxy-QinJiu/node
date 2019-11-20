@@ -35,6 +35,22 @@ class RegisterForm extends React.Component {
         };
     }
 
+    //获取网页的来源
+    getWebReferrer() {
+        var referrer = '';
+        if (document.referrer.length > 0) {
+            referrer = document.referrer;
+        }
+        try {
+            if (referrer.length === 0 && opener.location.href.length > 0) {
+                referrer = opener.location.href;
+            }
+        } catch (e) {
+            console.log('获取网页reffer出错了');
+        }
+        return referrer;
+    }
+
     //提交form表单的数据
     submitFormData(e) {
         const form = this.props.form;
@@ -42,13 +58,14 @@ class RegisterForm extends React.Component {
             if (err) return;
             let formData = {
                 phone: values.phone,
-                code: values.code
+                code: values.code,
+                referrer: this.getWebReferrer()
             };
             Trace.traceEvent(e, '个人注册手机号:' + formData.phone);
             let md5Hash = crypto.createHash('md5');
             md5Hash.update(values.pwd);
             formData.pwd = md5Hash.digest('hex');
-            this.setState({registerErrorMsg: ''});
+            this.setState({registerErrorMsg: '', isRegistering: true});
             $.ajax({
                 url: '/account/register',
                 dataType: 'json',
@@ -56,13 +73,17 @@ class RegisterForm extends React.Component {
                 data: formData,
                 success: data => {
                     if (data) {
-                        this.setState({registerErrorMsg: ''});
+                        this.setState({registerErrorMsg: '', isRegistering: false});
+                        window.location.href = '/';
                     } else {
-                        this.setState({registerErrorMsg: Intl.get('register.error.tip', '注册失败')});
+                        this.setState({registerErrorMsg: Intl.get('register.error.tip', '注册失败'), isRegistering: false});
                     }
                 },
                 error: xhr => {
-                    this.setState({registerErrorMsg: xhr.responseJSON || Intl.get('register.error.tip', '注册失败')});
+                    this.setState({
+                        registerErrorMsg: xhr.responseJSON || Intl.get('register.error.tip', '注册失败'),
+                        isRegistering: false
+                    });
                 }
             });
         });
@@ -102,7 +123,7 @@ class RegisterForm extends React.Component {
             return (
                 <span className="get-captcha-code">
                     {Intl.get('register.get.phone.captcha.code', '获取短信验证码')}
-                    {this.state.isLoadingValidCode ? <Icon type="loading" /> : null}
+                    {this.state.isLoadingValidCode ? <Icon type="loading"/> : null}
                 </span>);
         }
     }
@@ -255,8 +276,10 @@ class RegisterForm extends React.Component {
                     )}
                 </FormItem>
                 <FormItem>
-                    <Button
-                        onClick={this.submitFormData.bind(this)}> {Intl.get('register.wechat.register.btn', '注册并登录')}</Button>
+                    <Button onClick={this.submitFormData.bind(this)}>
+                        {Intl.get('register.wechat.register.btn', '注册并登录')}
+                        {this.state.isRegistering ? <Icon type="loading"/> : null}
+                    </Button>
                     {this.state.registerErrorMsg ? (
                         <div className="register-error-tip">{this.state.registerErrorMsg}</div>) : null}
                 </FormItem>
