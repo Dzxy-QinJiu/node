@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import CustomerStageForm from 'CMP_DIR/basic-form';
 import {Draggable} from 'react-beautiful-dnd';
 import Trace from 'LIB_DIR/trace';
+import CUSTOMER_STAGE_PRIVILEGE from '../privilege-const';
 
 const getItemStyle = (isDragging, draggableStyle) => ({
     border: '1px solid #E5E5E5',
@@ -142,7 +143,7 @@ class CustomerStageTimeLine extends React.Component {
                                     </div>
                                 ) : (
                                     <div className="operation-btn">
-                                        <PrivilegeChecker check="CRM_DELETE_CUSTOMER_STAGE">
+                                        <PrivilegeChecker check={CUSTOMER_STAGE_PRIVILEGE.DELETE_SPECIFIC_STAGE}>
                                             <Button
                                                 className="icon-delete iconfont handle-btn-item"
                                                 onClick={this.handleDeleteCustomerStage}
@@ -150,7 +151,7 @@ class CustomerStageTimeLine extends React.Component {
                                             >
                                             </Button>
                                         </PrivilegeChecker>
-                                        <PrivilegeChecker check="CRM_UPDATE_CUSTOMER_SALES">
+                                        <PrivilegeChecker check={CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE}>
                                             <Button
                                                 className="icon-update iconfont handle-btn-item"
                                                 onClick={this.handleEditCustomerStage}
