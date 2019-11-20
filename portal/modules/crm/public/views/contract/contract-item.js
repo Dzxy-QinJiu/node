@@ -1,5 +1,3 @@
-import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
-
 var React = require('react');
 import DetailCard from 'CMP_DIR/detail-card';
 import { AntcTable, AntcValidity } from 'antc';
@@ -17,6 +15,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import ProductTable from 'CMP_DIR/basic-edit-field-new/product-table';
 const { CategoryList, ContractLabel} = require('PUB_DIR/sources/utils/consts');
+import crmPrivilegeConst from '../../privilege-const';
 const EDIT_WIDTH = 350;
 
 class ContractItem extends React.Component {
@@ -222,7 +221,7 @@ class ContractItem extends React.Component {
 
     //是否有编辑合同的权限
     hasContractEditPrivilege = (contract) => {
-        return !this.props.disableEdit && contract.stage === '待审' && hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_OPERATOR_COMMON_BASE);
+        return !this.props.disableEdit && contract.stage === '待审' && hasPrivilege(crmPrivilegeConst.CRM_CONTRACT_COMMON_BASE);
     };
 
     renderContractContent = () => {

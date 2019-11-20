@@ -33,6 +33,7 @@ import CrmScoreCard from './basic_info/crm-score-card';
 import {INTEGRATE_TYPES, PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 import CustomerStageCard from './basic_info/customer-stage-card';
 import {getApplyState} from 'PUB_DIR/sources/utils/apply-estimate';
+import crmPrivilegeConst from '../privilege-const';
 class BasicOverview extends React.Component {
     constructor(props) {
         super(props);
@@ -89,7 +90,7 @@ class BasicOverview extends React.Component {
             // this.getCustomerStageByTeamId(teamId); // 获取客户阶段
             setTimeout(() => {
                 //有获取客户下用户列表的权限，并且不是csm.curtao.com
-                if (hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !isCurtao()) {
+                if (hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) && !isCurtao()) {
                     this.getCrmUserList(this.props.curCustomer);
                 }
                 //需要展示未处理的电联的联系计划
@@ -190,7 +191,7 @@ class BasicOverview extends React.Component {
         if (!this.props.disableEdit && _.get(nextProps, 'curCustomer.id') !== _.get(this.state, 'basicData.id')) {
             setTimeout(() => {
                 //有获取客户下用户列表的权限，并且不是csm.curtao.com
-                if (hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && !isCurtao()) {
+                if (hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) && !isCurtao()) {
                     this.getCrmUserList(nextProps.curCustomer);
                 }
                 //需要展示未处理的电联的联系计划
@@ -539,7 +540,7 @@ class BasicOverview extends React.Component {
             <RightPanelScrollBar isMerge={this.props.isMerge}>
                 <div className="basic-overview-contianer">
                     {!this.props.disableEdit && !isCurtao() ? (
-                        hasPrivilege(PRIVILEGE_MAP.APP_USER_LIST) && hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && _.get(this.state.crmUserList, '[0]') ?
+                        hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) && _.get(this.state.crmUserList, '[0]') ?
                             this.renderExpireTip() : this.renderApplyUserBlock()) : null}
                     {/*<CustomerStageCard*/}
                     {/*isMerge={this.props.isMerge}*/}
@@ -570,7 +571,7 @@ class BasicOverview extends React.Component {
                             />
                         ) : null
                     }
-                    {hasPrivilege(PRIVILEGE_MAP.CRM_CUSTOMER_SCORE_RECORD) && !this.props.disableEdit ? (
+                    {crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_ALL, crmPrivilegeConst.CRM_LIST_CUSTOMERS]) && !this.props.disableEdit ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             showUserDetail={this.props.showUserDetail}
                             customerUserSize={_.get(this.state.crmUserList, 'length', 0)}/>) : null
@@ -580,7 +581,7 @@ class BasicOverview extends React.Component {
                         data={basicData}
                         tags={tagArray}
                         recommendTags={this.state.recommendTags}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.disableEdit}
+                        enableEdit={crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]) && !this.props.disableEdit}
                         noDataTip={tagArray.length ? '' : Intl.get('crm.detail.no.tag', '暂无标签')}
                         saveTags={this.saveEditTags}
                     />
@@ -589,7 +590,7 @@ class BasicOverview extends React.Component {
                         tags={basicData.competing_products}
                         recommendTags={this.state.competitorList}
                         data={basicData}
-                        enableEdit={hasPrivilege('CUSTOMER_UPDATE_LABEL') && !this.props.disableEdit}
+                        enableEdit={crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]) && !this.props.disableEdit}
                         noDataTip={_.get(basicData, 'competing_products[0]') ? '' : Intl.get('crm.no.competing', '暂无竞品')}
                         saveTags={this.saveEditCompetitors}
                     />

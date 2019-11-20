@@ -3,12 +3,15 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/5/11.
  */
+// 跟进记录
+var crmPrivilegeConst = require('../../public/privilege-const');
+
 module.exports = {
     module: 'crm/server/action/customer-trace-controller',
     routes: [
         {
             method: 'get',
-            path: '/rest/customer/trace_type',
+            path: '/rest/customer/trace_type',//todo 这个后期需要移除，没有权限
             handler: 'getExtraTraceType',
             passport: {
                 needLogin: true
@@ -20,6 +23,10 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [
+                crmPrivilegeConst.CURTAO_CRM_TRACE_QUERY_ALL,
+                crmPrivilegeConst.CURTAO_CRM_TRACE_QUERY_SELF
+            ]
         },{
             method: 'get',
             path: '/rest/customer/trace/statistic',
@@ -27,6 +34,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: ['CURTAO_CRM_CALLRECORD_STATISTICS']
         },{
             method: 'post',
             path: '/rest/customer/add_customer_trace_list',
@@ -34,6 +42,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.CURTAO_CRM_TRACE_ADD]
         },{
             method: 'put',
             path: '/rest/customer/update_customer_trace_list',
@@ -41,13 +50,15 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.CUSTOMER_TRACE_UPDATE]
         },{
             method: 'get',
             path: '/record/*',
             handler: 'getPhoneRecordAudio',
             passport: {
                 needLogin: true
-            }
+            },
+            privileges: [crmPrivilegeConst.PHONE_ACCESS_CALL_OU]
         },{
             method: 'post',
             path: '/wechat/customer/visit',
@@ -55,5 +66,6 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [crmPrivilegeConst.CURTAO_CRM_TRACE_ADD]
         }]
 };
