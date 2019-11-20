@@ -3,6 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2019/6/21.
  */
+import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 module.exports = {
     module: 'home_page/server/action/home-page-controller',
     routes: [{
@@ -40,7 +41,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['CURTAO_SALES_REPORTS_MANAGER', 'CURTAO_SALES_REPORTS_COMMON']
+        'privileges': [analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER, analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON]
     }, {//获取通话时长数据
         'method': 'get',
         'path': '/rest/call/time/data',

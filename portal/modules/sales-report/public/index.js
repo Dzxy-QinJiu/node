@@ -23,8 +23,9 @@ const TopNav = require('CMP_DIR/top-nav');
 //是否在蚁坊域的判断方法
 const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
 const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
-const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'common';
-const dataType = hasPrivilege('GET_TEAM_LIST_ALL') ? 'all' : 'self';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
+const authType = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMERTRACE_STATISTICS_MANAGER) ? 'manager' : 'common';
+const dataType = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_SALES_COMPREHENSIVE_DATA) ? 'all' : 'self';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 
