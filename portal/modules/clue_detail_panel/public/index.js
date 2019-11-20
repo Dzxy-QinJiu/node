@@ -3,6 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2019/6/14.
  */
+import {subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 var React = require('react');
 require('./css/index.less');
 require('./css/phone-status.less');
@@ -22,6 +23,7 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 import {PHONERINGSTATUS,cluePhoneDesArray} from 'MOD_DIR/phone_panel/public/consts';
 import {getCallClient} from 'PUB_DIR/sources/utils/phone-util';
 import {AVALIBILITYSTATUS} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {clueEmitter} from 'PUB_DIR/sources/utils/emitters';
 const DIVLAYOUT = {
     CUSTOMER_COUNT_TIP_H: 26,//对应几个线索提示的高度
     PHONE_STATUS_TIP_H: 50,//只展示通话状态时的高度
@@ -63,6 +65,8 @@ class ClueDetailPanel extends React.Component {
             hasPhonePanel: false,//是否有电话面板，用于线索面板计算高度
             phonePanelHasCustomerSchedule: false,//是否正在编辑自定义事件，用于线索面板计算高度
             phonePanelFinishTrace: false,//电话面板是否完成跟进,用于线索面板计算高度
+            //要从待我处理的线索列表删掉的线索，是在打过电话，再关闭线索详情或者来了新的电话消息后删掉
+            deleteFromWaitMeHandleClue: {}
         };
     }
 
@@ -108,6 +112,12 @@ class ClueDetailPanel extends React.Component {
             //记录一下拨打电话的时间及通话的id
             phoneRecordObj.callid = phonemsgObj.callid;
             phoneRecordObj.received_time = phonemsgObj.recevied_time;
+            //只要打过电话，就不在待我处理列表中了
+            var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(this.props, 'paramObj.clue_params.curClue',{});
+            this.setState({
+                deleteFromWaitMeHandleClue: curClue
+            });
+
         }
 
         //增加打开客户详情面板的事件监听
@@ -150,6 +160,11 @@ class ClueDetailPanel extends React.Component {
                 paramObj: paramObj,
                 hasPhonePanel: false
             });
+            this.deleteFromWaitMeHandleLists(() => {
+                this.setState({
+                    deleteFromWaitMeHandleClue: {}
+                });
+            });
         } else {
             //如果未切换线索，只把线索详情赋值
             // let paramObj = this.state.paramObj;
@@ -160,6 +175,10 @@ class ClueDetailPanel extends React.Component {
                     //最新的通话状态
                     if (phonemsgObj.callid === phoneRecordObj.callid) {
                         phoneRecordObj.received_time = phonemsgObj.recevied_time;
+                        if(!_.get(this,'state.clueInfoArr[0]')){
+                            //这里发请求获取是因为如果在线索A的地方打电话，然后打开线索B详情，此时如果电话最新的状态过来，应该再展示线索A的详情
+                            this.getClueInfoByClueId(phonemsgObj);
+                        }
                     } else {
                         phoneRecordObj.received_time = phonemsgObj.recevied_time;
                         phoneRecordObj.callid = phonemsgObj.callid;
@@ -177,6 +196,21 @@ class ClueDetailPanel extends React.Component {
                     if ($modal && $modal.length > 0 && phonemsgObj.type === PHONERINGSTATUS.ALERT) {
                         this.setInitialData(phonemsgObj);
                     }
+                    if(phonemsgObj.type === PHONERINGSTATUS.ALERT){
+                        this.deleteFromWaitMeHandleLists(() => {
+                            var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(nextProps, 'paramObj.clue_params.curClue',{});
+                            //只要打过电话，就算处理过线索了
+                            this.setState({
+                                deleteFromWaitMeHandleClue: curClue
+                            });
+                        });
+                    }else{
+                        var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(nextProps, 'paramObj.clue_params.curClue',{});
+                        //只要打过电话，就算处理过线索了
+                        this.setState({
+                            deleteFromWaitMeHandleClue: curClue
+                        });
+                    }
                     paramObj.call_params = _.cloneDeep(_.get(nextProps, 'paramObj.call_params', null));
                 }
                 //如果打电话的模态框展示，将flag值变为true
@@ -189,7 +223,16 @@ class ClueDetailPanel extends React.Component {
             });
         }
     }
-
+    //只要打过电话，在关闭电话面板或者是有新电话打进来的时候，就要把该线索在待我处理列表中去掉
+    deleteFromWaitMeHandleLists = (callback) => {
+        var deleteClue = this.state.deleteFromWaitMeHandleClue;
+        subtracteGlobalClue(deleteClue, (flag) => {
+            if(flag){
+                clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM, deleteClue);
+                _.isFunction(callback) && callback();
+            }
+        });
+    };
     setInitialData(phonemsgObj) {
         var phoneNum = '';
         if (phonemsgObj.call_type === 'IN') {
@@ -469,6 +512,8 @@ class ClueDetailPanel extends React.Component {
         phoneRecordObj.callid = '';
         phoneRecordObj.received_time = '';//通话时间
         phoneAlertAction.setInitialState();
+        //调用在待我处理列表中删除线索的方法
+        this.deleteFromWaitMeHandleLists();
     }
 
     //获取详情中打电话时的线索id
@@ -539,6 +584,8 @@ class ClueDetailPanel extends React.Component {
                         commonPhoneDesArray={cluePhoneDesArray}
                         showMarkClueInvalid={showMarkClueInvalid}
                         curClue={curClue}
+                        ref={dom => {this.phoneStatusTop = dom;}}
+                        isClueDetailCall={this.isClueDetailCall(this.state.paramObj)}
                     />
                     {this.renderMainContent()}
                     {!this.isClueDetailCall(this.state.paramObj) ? //不是从线索详情中拨打的电话时
