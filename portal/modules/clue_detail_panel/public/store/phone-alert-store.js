@@ -12,7 +12,7 @@ ClueCustomerPhoneAlertStore.prototype.resetState = function() {
     this.isGettingCustomer = false;
     //获取客户详情失败后的提示
     this.getCustomerErrMsg = '';
-    //通过客户id查询到的客户基本信息，用于展示客户的基本资料
+    //通过线索id查询到的线索基本信息，用于展示线索的基本资料
     this.clueInfoArr = [];
     //跟进记录textare中的内容
     this.inputContent = '';
