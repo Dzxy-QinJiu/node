@@ -428,6 +428,7 @@ class SalesHomePage extends React.Component {
     };
 
     getDataType = () => {
+        //TODO 待确认
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {

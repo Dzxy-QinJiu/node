@@ -30,6 +30,7 @@ var notificationEmitter = require('PUB_DIR/sources/utils/emitters').notification
 import {renderClueStatus, subtracteGlobalClue} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
 import { AUTHS,TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
+import commonSalesHomePrivilegeConst from '../privilege-const';
 import CustomerLabel from 'CMP_DIR/customer_label';
 class SalesClueItem extends React.Component {
     constructor(props) {
@@ -349,9 +350,9 @@ class SalesClueItem extends React.Component {
         var handlePersonName = _.get(salesClueItem,'user_name');//当前跟进人
         var cls = 'foot-text-content';
         //是否有标记线索无效的权限
-        var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
+        var avalibilityPrivilege = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF) || hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL);
         //分配线索给销售的权限
-        var hasAssignedPrivilege = hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales);
+        var hasAssignedPrivilege = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || (hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF) && !user.isCommonSales);
         //是否有修改线索关联客户的权利
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability !== '1';
         return <div className={cls} data-tracename="线索详情操作区域">
@@ -411,7 +412,7 @@ class SalesClueItem extends React.Component {
                         /> : null
                     }
                 </div>
-                {hasPrivilege('CLUECUSTOMER_ADD_TRACE') ?
+                {hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_TRACE_ADD) ?
                     <Button className='add-trace-content handle-btn-item'  
                         onClick={this.handleEditTrace.bind(this, salesClueItem)}>{Intl.get('clue.add.trace.content', '添加跟进内容')}</Button>
                     : null}

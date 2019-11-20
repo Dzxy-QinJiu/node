@@ -1,4 +1,6 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+import commonSalesHomePrivilegeConst from '../privilege-const';
 //获取今日电话统计数据
 var getPhoneTotalAjax;
 exports.getPhoneTotal = function(reqData) {
@@ -66,7 +68,7 @@ exports.getTodayContactCustomer = function(rangParams, pageSize, sorter) {
         rangParams: JSON.stringify(rangParams),
     };
     let type = 'user';
-    if(hasPrivilege('CUSTOMER_ALL')){
+    if(hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL)){
         type = 'manager';
     }
     getTodayContactCustomerAjax = $.ajax({
@@ -107,7 +109,7 @@ exports.getScheduleList = function(queryObj) {
 };
 //最近登录的客户
 const AUTHS = {
-    'GETALL': 'CUSTOMER_ALL',
+    'GETALL': crmPrivilegeConst.CUSTOMER_ALL,
     'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
     'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
 };
@@ -201,6 +203,7 @@ exports.getCrmUserList = function(reqData) {
 //获取到期或者即将到期的客户
 exports.getExpireCustomer = function(data) {
     var Deferred = $.Deferred();
+    //todo 待确认
     //普通销售，销售领导和舆情秘书用common，其他的用manager
     let type = hasPrivilege('KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER') ? 'manager' : 'common';
     $.ajax({
@@ -323,7 +326,7 @@ exports.getClueCustomerList = function(constObj, unexist_fields) {
         data.lastClueId = constObj.id;
     }
     var type = 'user';
-    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+    if (hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
     }
     var Deferred = $.Deferred();
