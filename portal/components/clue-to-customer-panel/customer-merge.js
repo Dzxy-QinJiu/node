@@ -541,10 +541,11 @@ class CustomerMerge extends React.Component {
                 if(res.error) {
                     contactErrors.push('true');
                 }else {
-                    contact = res.data;
+                    let contactFormData = res.data;
 
                     //联系人表单组件会将当前要添加的联系人设置为默认联系人，不是我们需要的，所以在这里恢复成非默认
-                    contact.def_contancts = 'false';
+                    contactFormData.def_contancts = 'false';
+                    contacts[index] = contactFormData;
                 }
             }
 
