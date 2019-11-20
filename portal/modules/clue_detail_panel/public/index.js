@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2015-2018 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
@@ -200,14 +199,14 @@ class ClueDetailPanel extends React.Component {
                     if(phonemsgObj.type === PHONERINGSTATUS.ALERT){
                         this.deleteFromWaitMeHandleLists(() => {
                             var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(nextProps, 'paramObj.clue_params.curClue',{});
-                            //如果打过电话，并且是待我审批的线索，需要把待我处理左侧数字减一
+                            //只要打过电话，就算处理过线索了
                             this.setState({
                                 deleteFromWaitMeHandleClue: curClue
                             });
                         });
                     }else{
                         var curClue = _.get(this.state, 'clueInfoArr[0]') || _.get(nextProps, 'paramObj.clue_params.curClue',{});
-                        //如果打过电话，并且是待我审批的线索，需要把待我处理左侧数字减一
+                        //只要打过电话，就算处理过线索了
                         this.setState({
                             deleteFromWaitMeHandleClue: curClue
                         });
@@ -224,7 +223,7 @@ class ClueDetailPanel extends React.Component {
             });
         }
     }
-    //从待我处理的线索列表中删掉该线索
+    //只要打过电话，在关闭电话面板或者是有新电话打进来的时候，就要把该线索在待我处理列表中去掉
     deleteFromWaitMeHandleLists = (callback) => {
         var deleteClue = this.state.deleteFromWaitMeHandleClue;
         subtracteGlobalClue(deleteClue, (flag) => {
