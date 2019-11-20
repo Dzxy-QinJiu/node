@@ -521,7 +521,8 @@ class ClueFilterPanel extends React.Component {
                         onFilterChange={this.handleFilterChange.bind(this)}
                         renderOtherDataContent={this.renderTimeRangeSelect}
                         setDefaultSelectCommonFilter={this.setDefaultSelectCommonFilter}
-                        hasSettedDefaultCommonSelect={true}
+                        //普通销售或者运营人员一开始进来的时候展示待我处理面板 这个功能暂时隐藏
+                        // hasSettedDefaultCommonSelect={true}
                         style={this.props.style}
                         showSelectTip={this.props.showSelectTip}
                         toggleList={this.props.toggleList}
