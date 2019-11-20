@@ -3,7 +3,6 @@ import UserDetailAddAppActions from '../action/user-detail-add-app-actions';
 var userData = require('../../../../public/sources/user-data');
 var AppUserAction = require('../action/app-user-actions');
 var DateSelectorUtils = require('../../../../components/date-selector/utils');
-var privilegeChecker = require('../../../../components/privilege/checker');
 
 //用户详情添加应用的store
 function UserDetailAddAppStore() {
@@ -11,44 +10,6 @@ function UserDetailAddAppStore() {
     this.resetState();
     //绑定action
     this.bindActions(UserDetailAddAppActions);
-}
-
-//获取当前用户批量操作默认展示哪个tab
-function getMultipleSubType() {
-    var hasPrivilege = privilegeChecker.hasPrivilege;
-    //如果是销售批量，默认选中批量延期
-    if(!hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN)) {
-        return 'grant_delay';
-    } else {
-        //如果是管理员批量添加、修改应用
-        if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_GRANT_APPLICATION)) {
-            return 'grant_application';
-        }
-        //如果是管理员批量修改密码
-        if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_USER_PASSWORD)) {
-            return 'change_password';
-        }
-        //如果是管理员批量修改类型
-        if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_TYPE)) {
-            return 'grant_type';
-        }
-        //如果是管理员批量修改状态
-        if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_STATUS)) {
-            return 'grant_status';
-        }
-        //如果是管理员批量修改周期
-        if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_PERIOD)) {
-            return 'grant_period';
-        }
-        //如果是管理员批量修改客户
-        if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_USER_CUSTOMER)) {
-            return 'grant_customer';
-        }
-        //如果是管理员批量修改角色
-        if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_ROLES)) {
-            return 'grant_roles';
-        }
-    }
 }
 
 UserDetailAddAppStore.prototype.resetState = function() {
@@ -77,7 +38,7 @@ UserDetailAddAppStore.prototype.resetState = function() {
         开通周期 change-time-range
         申请延期 grant_delay (只有销售有这个，也只能看到这个)
      */
-    this.multipleSubType = getMultipleSubType();
+    this.multipleSubType = 'grant_application';
 
     //表单验证使用
     this.status = {

@@ -132,33 +132,6 @@ function getUserTypeText(user_type_value){
 }
 exports.getUserTypeText = getUserTypeText;
 
-//批量操作权限
-var BATCH_PRIVILEGE = {
-    //管理员有批量管理用户的权限
-    ADMIN: 'USER_BATCH_OPERATE',
-    SALES: 'GRANT_DELAY_APPLY',
-    //批量开通、修改应用
-    BATCH_GRANT_APPLICATION: 'BATCH_GRANT_APPLICATION',
-    //批量延期
-    BATCH_UPDATE_GRANT_DELAY: 'BATCH_UPDATE_GRANT_DELAY',
-    //批量修改开通时间
-    BATCH_UPDATE_GRANT_PERIOD: 'BATCH_UPDATE_GRANT_PERIOD',
-    //批量修改角色
-    BATCH_UPDATE_GRANT_ROLES: 'BATCH_UPDATE_GRANT_ROLES',
-    //批量修改开通状态
-    BATCH_UPDATE_GRANT_STATUS: 'BATCH_UPDATE_GRANT_STATUS',
-    //批量修改类型
-    BATCH_UPDATE_GRANT_TYPE: 'BATCH_UPDATE_GRANT_TYPE',
-    //批量修改用户所属客户
-    BATCH_UPDATE_USER_CUSTOMER: 'BATCH_UPDATE_USER_CUSTOMER',
-    //批量修改密码
-    BATCH_UPDATE_USER_PASSWORD: 'BATCH_UPDATE_USER_PASSWORD',
-
-};
-
-//导出批量操作权限
-exports.BATCH_PRIVILEGE = BATCH_PRIVILEGE;
-
 //整合task保存的参数，有一些额外信息，是不需要发送到服务端的
 /**
  * @param batch_data 批量操作，发送给服务端的数据

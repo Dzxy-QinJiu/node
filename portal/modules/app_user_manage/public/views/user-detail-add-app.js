@@ -1,4 +1,3 @@
-var React = require('react');
 var createReactClass = require('create-react-class');
 const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
@@ -23,26 +22,21 @@ import UserDetailAddAppStore from '../store/user-detail-add-app-store';
 var CustomRadioGroup = require('../../../../components/custom_radio_group');
 import DateSelector from '../../../../components/date-selector';
 var crypto = require('crypto');
-var Tabs = require('antd').Tabs;
-var TabPane = Tabs.TabPane;
-var Form = require('antd').Form;
-var FormItem = Form.Item;
-var Input = require('antd').Input;
-var InputNumber = require('antd').InputNumber;
-var Select = require('antd').Select;
-var Option = Select.Option;
-import { DatePicker } from 'antd';
+import { Tabs, Form, Input, InputNumber, Select, DatePicker, Radio, Icon, Alert } from 'antd';
+const TabPane = Tabs.TabPane;
+const FormItem = Form.Item;
+const Option = Select.Option;
+const RadioGroup = Radio.Group;
 import FieldMixin from '../../../../components/antd-form-fieldmixin';
-var Radio = require('antd').Radio;
-var RadioGroup = Radio.Group;
 var AlertTimer = require('../../../../components/alert-timer');
-var Icon = require('antd').Icon;
-var Alert = require('antd').Alert;
 var privilegeChecker = require('../../../../components/privilege/checker');
 var AutosizeTextarea = require('../../../../components/autosize-textarea');
 var language = require('../../../../public/language/getLanguage');
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
 import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
+import userData from 'PUB_DIR/sources/user-data';
+import USER_MANAGE_PRIVILEGE from '../privilege-const';
+import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -103,7 +97,7 @@ var UserDetailAddApp = createReactClass({
         var extra = {};
         var selectedAppId = '';
         //只有销售批量申请权限时
-        var isSales = privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && !privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN);
+        var isSales = isSalesRole() && hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
         //真正提交逻辑
         function submit() {
             //申请修改密码
@@ -190,7 +184,7 @@ var UserDetailAddApp = createReactClass({
                 data: result,
                 selectedAppId: selectedAppId,
                 subType: _this.state.multipleSubType,
-                isSales: privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES),
+                isSales: isSales,
                 extra: extra
             });
         }
@@ -550,7 +544,9 @@ var UserDetailAddApp = createReactClass({
 
     //获取tab的padding
     getTabPadding: function() {
-        if(privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN)) {
+        // 管理员角色判断
+        let isAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+        if(isAdmin) {
             return 6;
         } else {
             return 14;
@@ -559,56 +555,50 @@ var UserDetailAddApp = createReactClass({
 
     //渲染批量操作的tab
     renderTabForBatch: function() {
+        // 管理员角色判断
+        let isAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
+        // 销售角色判断
+        let isSales = isSalesRole();
         var hasPrivilege = privilegeChecker.hasPrivilege;
-        var selectUserCount = AppUserStore.getState().selectUserCount;
         var subType = this.state.multipleSubType;
+        if (isSales) {
+            subType = 'grant_delay';
+            setTimeout( () => {
+                UserDetailAddAppAction.changeMultipleSubType('grant_delay');
+            }, 0 );
+        }
+        var selectUserCount = AppUserStore.getState().selectUserCount;
         var options = [];
-        var isAdmin = hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN);
-        //针对管理员做判断
-        if(isAdmin) {
-            //批量开通、修改应用
-            if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_GRANT_APPLICATION)) {
+
+        if(hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE)) {
+            // 针对管理员做判断
+            if (isAdmin) {
+                //批量开通、修改应用
                 options.push({name: Intl.get('user.batch.app.open', '开通产品'),value: 'grant_application'});
-            }
-            //批量修改密码
-            if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_USER_PASSWORD)) {
+                //批量修改密码
                 options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'change_password'});
-            }
-            //批量修改类型
-            if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_TYPE)) {
+                //批量修改类型
                 options.push({name: Intl.get('user.batch.open.type', '开通类型'),value: 'grant_type'});
-            }
-            //批量修改开通状态
-            if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_STATUS)) {
+                //批量修改开通状态
                 options.push({name: Intl.get('common.app.status', '开通状态'),value: 'grant_status'});
-            }
-            //批量修改开通时间
-            if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_PERIOD)) {
+                //批量修改开通时间
                 options.push({name: Intl.get('user.open.cycle', '开通周期'),value: 'grant_period'});
-            }
-            //批量修改用户所属客户
-            if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_USER_CUSTOMER)) {
+                //批量修改用户所属客户
                 options.push({name: Intl.get('common.belong.customer', '所属客户'),value: 'grant_customer'});
-            }
-            //批量修改角色、权限
-            if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_ROLES)) {
+                //批量修改角色、权限
                 options.push({name: Intl.get('user.batch.auth.set', '权限设置'),value: 'grant_roles'});
+                if (this.hasDelayTimeTab()) {
+                    options.push({name: Intl.get('user.batch.delay', '批量延期') , value: 'grant_delay'});
+                }
+            } else if(isSales){ // 针对销售做判断
+                if (this.hasDelayTimeTab()) {
+                    options.push({name: Intl.get('user.batch.apply.delay', '申请延期') , value: 'grant_delay'});
+                }
+                options.push({name: Intl.get('common.app.status', '开通状态'),value: 'sales_grant_status'});
+                options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'sales_change_password'});
             }
         }
 
-        if(this.hasDelayTimeTab()) {
-            if(isAdmin) {
-                if(hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.BATCH_UPDATE_GRANT_DELAY)) {
-                    options.push({name: Intl.get('user.batch.delay', '批量延期') , value: 'grant_delay'});
-                }
-            } else {
-                options.push({name: Intl.get('user.batch.apply.delay', '申请延期') , value: 'grant_delay'});
-            }
-        }
-        if(!isAdmin) {
-            options.push({name: Intl.get('common.app.status', '开通状态'),value: 'sales_grant_status'});
-            options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'sales_change_password'});
-        }
         return (
             <div className="user-batch-operator-style">
                 <div className="selected-number">
@@ -972,7 +962,7 @@ var UserDetailAddApp = createReactClass({
 
     //是否有申请延期的tab
     hasDelayTimeTab: function() {
-        return privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) || privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN);
+        return hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
     },
 
     //是否当前在申请延期/批量延期的tab下面
@@ -1081,7 +1071,7 @@ var UserDetailAddApp = createReactClass({
         if(!this.hasDelayTimeBlock()) {
             return null;
         }
-        var isSales = privilegeChecker.hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
+        var isSales = isSalesRole();
         var divWidth = (language.lan() === 'zh') ? '80px' : '74px';
         let label = '';
         if (this.state.formData.delayTimeRange === SELECT_CUSTOM_TIME_TYPE) {
