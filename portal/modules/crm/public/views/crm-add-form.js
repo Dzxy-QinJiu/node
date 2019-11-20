@@ -210,7 +210,7 @@ class CRMAddForm extends React.Component {
         //去除表单数据中值为空的项
         commonMethodUtil.removeEmptyItem(formData, true);
         function afterAddCustomer(result, _this) {
-            if (result.code === 0 || result.result === 'success') {
+            if (result.code === 0) {
                 //新增添加成功后的方法
                 if(_.isFunction(_this.props.afterAddCustomer)) {
                     _this.props.afterAddCustomer(result.result);
@@ -221,7 +221,9 @@ class CRMAddForm extends React.Component {
                 }
                 _this.setState(_this.getInitialState());
             } else {
-                _this.setState({isLoading: false, submitErrorMsg: result});
+                //错误信息，必须保证其类型为字符串，否则会导致页面报错
+                const errMsg = _.isString(result) ? result : Intl.get('member.apply.approve.tips', '操作失败');
+                _this.setState({isLoading: false, submitErrorMsg: errMsg});
             }
         }
         //由线索创建的客户和普通的添加客户不是一个接口
