@@ -13,7 +13,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_TIME_LINE'
+            'BASE_QUERY_PERMISSION_MEMBER'
         ]
     },]
 };

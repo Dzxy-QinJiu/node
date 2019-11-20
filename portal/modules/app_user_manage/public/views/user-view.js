@@ -423,14 +423,11 @@ class UserTabContent extends React.Component {
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         AppUserStore.listen(this.onStoreChange);
-        if (!Oplate.hideSomeItem) {
-            AppUserAction.getRealmList(); // 获取安全域列表
-        }
         $(this.refs.userListTable).on('click', 'tr', this.onRowClick);
         $(window).on('resize', this.changeScrollBarHeight);
         this.bindEventEmitter();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
+        if (hasPrivilege(USER_MANAGE_PRIVILEGE.CREATE_CLUE)) {
             //获取线索来源
             this.getClueSource();
             //获取线索渠道
@@ -650,7 +647,7 @@ class UserTabContent extends React.Component {
                         //是否展示 生成线索的 按钮，必须要选中某个应用，
                         // create_tag === "register" 表示是自注册的用户
                         // clue_created属性存在，并且为true 表示已经生成过线索客户
-                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CUSTOMER_ADD_CLUE') ? true : false;
+                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege(USER_MANAGE_PRIVILEGE.CREATE_CLUE) ? true : false;
                         return user ? (
                             <div title={user.description}>
                                 {user.description}
@@ -812,7 +809,7 @@ class UserTabContent extends React.Component {
                         //是否展示 生成线索的 按钮，必须要选中某个应用，
                         // create_tag === "register" 表示是自注册的用户
                         // clue_created属性存在，并且为true 表示已经生成过线索客户
-                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CUSTOMER_ADD_CLUE') ? true : false;
+                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege(USER_MANAGE_PRIVILEGE.CREATE_CLUE) ? true : false;
                         return user ? (
                             <div title={user.description}>
                                 {user.description}

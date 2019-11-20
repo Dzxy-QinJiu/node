@@ -1,5 +1,6 @@
 /**
  * 请求路径 - login
+ * todo 需要把USER_MANAGE_LIST_LOG 替换为 USER_AUDIT_LOG_LIST，为了测试，先写为USER_MANAGE_LIST_LOG
  */
 
 module.exports = {
