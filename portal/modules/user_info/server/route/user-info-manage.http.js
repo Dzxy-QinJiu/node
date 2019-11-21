@@ -33,7 +33,8 @@ module.exports = {
         'handler': 'activeUserEmail',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': []
     }, {
         'method': 'put',
         'path': '/rest/user_info',
@@ -48,7 +49,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privilege': [privilegeConst_user_info.CURTAO_USER_CONFIG]
+        'privileges': [privilegeConst_user_info.CURTAO_USER_CONFIG]
     }, {
         'method': 'put',
         'path': '/rest/user_info_pwd',
@@ -56,7 +57,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privilege': [privilegeConst_user_info.USER_INFO_UPDATE]
+        'privileges': [privilegeConst_user_info.USER_INFO_UPDATE]
     }, {
         'method': 'get',
         'path': '/rest/user_info_pwd',
@@ -100,7 +101,8 @@ module.exports = {
         'handler': 'bindUserInfoPhone',
         'passport': {
             'needLogin': true
-        }
+        },
+        privileges: [privilegeConst_user_info.USER_INFO_UPDATE]
     }, {
         // 获取用户交易记录
         'method': 'get',

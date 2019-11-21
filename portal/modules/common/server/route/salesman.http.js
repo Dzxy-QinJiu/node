@@ -19,6 +19,6 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_TEAM]
+        'privileges': []
     }]
 };

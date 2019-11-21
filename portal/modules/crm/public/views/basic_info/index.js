@@ -89,11 +89,11 @@ class BasicData extends React.Component {
             isCustomerLabelLoading: true
         });
         $.ajax({
-            url: '/rest/customer_stage',
+            url: '/rest/customer/v2/salestage',
             type: 'get',
             dateType: 'json',
             success: (data) => {
-                customerLabelList = _.isArray(data) ? data : customerLabelList;
+                customerLabelList = _.isArray(_.get(data, 'result')) ? _.get(data, 'result') : customerLabelList;
                 this.setState({
                     customerLabelList: customerLabelList,
                     isCustomerLabelLoading: false

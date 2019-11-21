@@ -110,8 +110,8 @@ exports.getScheduleList = function(queryObj) {
 //最近登录的客户
 const AUTHS = {
     'GETALL': crmPrivilegeConst.CUSTOMER_ALL,
-    'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
-    'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
+    'UPDATE_ALL': crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL,
+    'TRANSFER_MANAGER': crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
 };
 //最近登录的客户
 exports.getRecentLoginCustomers = function(condition, rangParams, pageSize, pageNum, sorter) {

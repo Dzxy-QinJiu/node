@@ -61,7 +61,7 @@ let routers = [
             name: 'menu.appuser.list',//用户列表
             routePath: '/user/list',
             component: `${MODULE_PATH}app_user_manage/public`,
-            //有这个权限，才显示入口图标 TODO 需要替换为 APP_USER_QUERY，现在为了测试暂时没有替换
+            //有这个权限，才显示入口图标
             showPrivileges: ['APP_USER_QUERY']
         }, {
             id: 'ORGANIZATION_MANAGE',
@@ -354,7 +354,7 @@ let routers = [
             routePath: '/user_info_manage/user_pwd',
             component: `${MODULE_PATH}user_password/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['USER_INFO_PWD']
+            showPrivileges: ['USER_INFO_UPDATE']
         }]
     },
     //todo 申请审批代码优化后会去掉

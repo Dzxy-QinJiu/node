@@ -2591,6 +2591,7 @@ var zh_CN = {
     'errorcode.163': '成员数量已达上限',
     'errorcode.phone.busy': '座机繁忙，请稍后再试！',
     'errorcode.164': '获取即将到期的客户统计数据失败',
+    'errorcode.165': '已达到本月的提取上限',
     'errorcode.organization.expire': '您的账号已到期',
     'errorcode.clue.batch.change.pending': '上次批量操作未完成，请稍后再试',
     'errorcode.login.failed': '登录失败',
@@ -3842,7 +3843,7 @@ var zh_CN = {
 
     /*个人试用 --- start*/
     'personal.welcome.use.curtao': '欢迎使用客套',
-    'personal.open.success.tip': '恭喜您成功开通个人试用版，试用期剩余 {count} 天',
+    'personal.open.success.tip': '恭喜您成功开通试用版，试用期剩余 {count} 天',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/

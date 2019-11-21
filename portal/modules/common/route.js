@@ -335,6 +335,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
+    'privileges': [privilegeConst_common.USER_CUSTOMER_LABEL_COUNT, privilegeConst_common.CRM_MANAGER]
 }, {
     //获取客户阶段变更的客户数据
     'method': 'post',
@@ -351,6 +352,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
+    'privileges': [privilegeConst_common.KETAO_WEEKLY_REPORTS_CUSTOMER_STAGE_STATISITC_COMMON, privilegeConst_common.KETAO_WEEKLY_REPORTS_CUSTOMER_STAGE_STATISITC_MANAGER]
 }, {
     //获取销售新开客户数
     'method': 'get',
@@ -359,6 +361,7 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
+    'privileges': [privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_MANAGER, privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_COMMON]
 }, {
     //获取所有成员基本信息（仅包含姓名、id，不分页)
     'method': 'get',

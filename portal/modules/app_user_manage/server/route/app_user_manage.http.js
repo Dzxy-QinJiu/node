@@ -4,7 +4,8 @@
  *  todo 需要把 USER_BATCH_OPERATE 替换为 APP_USER_MANAGE ，为了测试，先写为USER_BATCH_OPERATE
  *  todo 需要把 APP_USER_MANAGE 替换为 APP_USER_ADD ，为了测试，先写为USER_BATCH_OPERATE
  */
-
+import appUserPrivilegeConst from '../../public/privilege-const';
+import crmPrivilegeConst from '../../../crm/public/privilege-const';
 module.exports = {
     module: 'app_user_manage/server/action/app_user_manage.action',
     routes: [{
@@ -15,7 +16,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_LIST'
+            appUserPrivilegeConst.USER_QUERY
         ]
     }, {
         'method': 'get',
@@ -33,7 +34,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_LIST'
+            appUserPrivilegeConst.USER_QUERY
         ]
     },
     {
@@ -72,7 +73,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_LIST'
+            appUserPrivilegeConst.USER_QUERY
         ]
     },
     {
@@ -83,7 +84,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_BATCH_OPERATE'
+            appUserPrivilegeConst.USER_MANAGE
         ]
     },
     {
@@ -94,7 +95,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_BATCH_OPERATE'
+            appUserPrivilegeConst.USER_MANAGE
         ]
     },
     {
@@ -105,8 +106,8 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_LIST', //列出用户
-            'CRM_LIST_CUSTOMERS' //列出客户
+            appUserPrivilegeConst.USER_QUERY, //列出用户
+            crmPrivilegeConst.CRM_LIST_CUSTOMERS //列出客户
         ]
     },
     {

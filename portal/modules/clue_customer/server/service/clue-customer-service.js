@@ -78,7 +78,7 @@ const restApis = {
     batchExtractRecommendLists: '/rest/clue/v2/ent/clues',
     //根据关键词获取线索
     getClueListByKeyword: clueBaseUrl + '/query/:type/:page_size/:sort_field/:order',
-    //获取提取推荐线索剩余数量
+    //获取已经提取推荐线索数量
     getRecommendClueCount: '/rest/clue/v2/ent/clues/get',
     //释放线索
     releaseClue: clueBaseUrl + '/lead_pool/release/:type',
@@ -86,8 +86,8 @@ const restApis = {
     batchReleaseClue: clueBaseUrl + '/lead_pool/release/batch/:type',
     //线索名、电话唯一性验证
     checkOnlyClueNamePhone: clueBaseUrl + '/repeat/search',
-    //获取线索最大提取量的数值（适用用户是今天的最大提取量，正式用户是本月的最大提取量）
-    getMaxLimitCount: 'rest/clue/v2/month/able/clues',
+    //获取线索最大提取量的数值（适用用户是今天的最大提取量，正式用户是本月的最大提取量）及已经提取了多少的数值
+    getMaxLimitCountAndHasExtractedClue: 'rest/clue/v2/month/able/clues',
 };
 
 //获取线索来源
@@ -99,11 +99,11 @@ exports.getClueSource = function(req, res) {
             res: res
         }, null);
 };
-//获取线索最大提取量
-exports.getMaxLimitCount = function(req, res) {
+//获取线索最大提取量及已经提取了多少
+exports.getMaxLimitCountAndHasExtractedClue = function(req, res) {
     return restUtil.authRest.get(
         {
-            url: restApis.getMaxLimitCount,
+            url: restApis.getMaxLimitCountAndHasExtractedClue,
             req: req,
             res: res
         }, null);
@@ -126,7 +126,7 @@ exports.batchExtractRecommendLists = function(req, res) {
             res: res
         }, req.body);
 };
-//获取提取推荐线索剩余数量
+//获取已经提取推荐线索数量
 exports.getRecommendClueCount = function(req, res) {
     return restUtil.authRest.get(
         {

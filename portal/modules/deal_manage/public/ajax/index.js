@@ -5,6 +5,7 @@
  */
 import {hasPrivilege, getDataAuthType} from 'CMP_DIR/privilege/checker';
 import orderPrivilege from '../privilege-const';
+import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 const AUTHS = {
     MANAGER_DEAL_LIST: orderPrivilege.CRM_MANAGER_LIST_SALESOPPORTUNITY,
 };
@@ -71,7 +72,7 @@ exports.deleteDeal = function(deal_id) {
 exports.getStageTotalBudget = function(query) {
     // let type = getDataAuthType().toLowerCase();
     let type = 'common';//CURTAO_CRM_CUSTOMER_ANALYSIS_SELF
-    if(hasPrivilege('CURTAO_CRM_CUSTOMER_ANALYSIS_ALL ')) {
+    if(hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL)) {
         type = 'manager';
     }
     let Deferred = $.Deferred();
