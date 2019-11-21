@@ -2,8 +2,8 @@
  * Created by zhangshujuan on 2018/2/27.
  */
 require('../action/sales-home-controller');
-var commonSalesHomePrivilegeConst = require('../../public/privilege-const');
-var crmPrivilegeConst = require('../../../crm/public/privilege-const');
+var commonSalesHomePrivilegeConst = require('../../public/privilege-const').default;
+var crmPrivilegeConst = require('../../../crm/public/privilege-const').default;
 
 module.exports = {
     module: 'common_sales_home_page/server/action/sales-home-controller',

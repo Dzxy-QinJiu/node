@@ -3,7 +3,7 @@
  * * 请求路径 - app
  */
 require('../action/sales-home-controller');
-var shpPrivilegeConst = require('../../public/privilege-const');
+var shpPrivilegeConst = require('../../public/privilege-const').default;
 
 module.exports = {
     module: 'sales_home_page/server/action/sales-home-controller',

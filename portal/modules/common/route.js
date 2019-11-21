@@ -327,6 +327,8 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
+    //TODO 这里的权限待确认
+    // 'privileges': [privilegeConst_common.CRM_CUSTOMER_TRANSFER_RECORD]
 }, {
     //获取客户阶段变更数据
     'method': 'get',
@@ -335,7 +337,8 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.USER_CUSTOMER_LABEL_COUNT, privilegeConst_common.CRM_MANAGER]
+    // todo 这里的权限待确认
+    // 'privileges': [privilegeConst_common.USER_CUSTOMER_LABEL_COUNT, privilegeConst_common.CRM_MANAGER]
 }, {
     //获取客户阶段变更的客户数据
     'method': 'post',

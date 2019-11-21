@@ -75,7 +75,7 @@ class RecommendCustomerRightPanel extends React.Component {
             type: 'get',
             success: (data) => {
                 var maxCount = _.get(data,'total', 0);
-                var hasExtractedCount = _.get(data,'pulled_clue_numbers')
+                var hasExtractedCount = _.get(data,'pulled_clue_numbers');
                 this.setState({
                     hasExtractCount: hasExtractedCount,
                     maxLimitExtractNumber: maxCount,
