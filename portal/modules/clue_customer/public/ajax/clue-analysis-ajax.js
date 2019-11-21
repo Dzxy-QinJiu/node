@@ -5,6 +5,7 @@
  */
 //获取线索阶段分析列表
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 exports.getCustomerById = function(data) {
     var Deferred = $.Deferred();
     var pageSize = 10;
@@ -27,7 +28,7 @@ exports.getCustomerById = function(data) {
 //获取线索统计列表
 exports.getClueStatics = function(pathParams, rangeParams, queryParams) {
     var type = 'self';
-    if (hasPrivilege('CRM_CLUE_STATISTICAL_ALL')){
+    if (hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_ALL)){
         type = 'all';
     }
     //销售取值时，query参数必须有，管理员可以没有

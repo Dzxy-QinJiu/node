@@ -14,6 +14,7 @@ const EventEmitter = require('events').EventEmitter;
 const clueBaseUrl = '/rest/clue/v2';
 const ROLE_CONSTANTS = require('../../../../lib/consts').ROLE_CONSTANS;
 const auth = require('../../../../lib/utils/auth');
+import cluePrivilegeConst from '../../../clue_customer/public/privilege-const';
 const restApis = {
     //获取线索来源
     getClueSource: clueBaseUrl + '/clue_source/100/1',
