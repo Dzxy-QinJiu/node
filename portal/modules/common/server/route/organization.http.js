@@ -28,7 +28,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [privilegeConst_common.CALLSYSTEM_CONFIG_MANAGE]
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_ORGANIZATION]
     },{
         //完善个人试用资料
         'method': 'put',

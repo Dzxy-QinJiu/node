@@ -13,6 +13,6 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [privilegeConst_common.CURTAO_USER_CONFIG]
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_MEMBER]
     }]
 };
