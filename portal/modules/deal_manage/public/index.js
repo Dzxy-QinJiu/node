@@ -20,6 +20,7 @@ import AppUserManage from 'MOD_DIR/app_user_manage/public';
 import classNames from 'classnames';
 import DealBoardList from './views/deal-board-list';
 import DealTable from './views/deal-table';
+import orderPrivilegeConst from './privilege-const';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -223,7 +224,7 @@ class DealManage extends React.Component {
                             className="btn-item"
                         />
                     </div>
-                    <PrivilegeChecker check="CUSTOMER_ADD">
+                    <PrivilegeChecker check={orderPrivilegeConst.SALESOPPORTUNITY_ADD}>
                         <Button className='btn-item add-deal-btn' onClick={this.showDealForm}>
                             {Intl.get('crm.161', '添加订单')}
                         </Button>

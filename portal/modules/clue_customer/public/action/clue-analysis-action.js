@@ -5,8 +5,9 @@
  */
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var clueAnalysisAjax = require('../ajax/clue-analysis-ajax');
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 const AUTHS = {
-    'GETALL': 'CUSTOMER_ALL'
+    'GETALL': crmPrivilegeConst.CUSTOMER_ALL
 };
 function ClueAnalysisActions() {
     this.generateActions(

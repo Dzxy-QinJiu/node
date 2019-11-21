@@ -1,3 +1,5 @@
+import analysisPrivilegeConst from '../../modules/analysis/public/privilege-const';
+
 var React = require('react');
 var UserData = require('../../public/sources/user-data');
 
@@ -96,8 +98,8 @@ function hasPrivilege(list) {
 }
 
 function getDataAuthType() {
-    let type = 'Common';//CUSTOMER_ANALYSIS_COMMON
-    if (hasPrivilege('CUSTOMER_ANALYSIS_MANAGER')) {
+    let type = 'Common';//CURTAO_CRM_CUSTOMER_ANALYSIS_SELF
+    if (hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL)) {
         type = 'Manager';
     }
     return type;

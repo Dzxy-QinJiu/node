@@ -353,7 +353,7 @@ class SalesClueItem extends React.Component {
         var avalibilityPrivilege = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF) || hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL);
         //分配线索给销售的权限
         var hasAssignedPrivilege = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || (hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF) && !user.isCommonSales);
-        //是否有修改线索关联客户的权利
+        //是否有修改线索关联客户的权利 todo 这个权限没有整理
         var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability !== '1';
         return <div className={cls} data-tracename="线索详情操作区域">
             {/*有跟进记录*/}
