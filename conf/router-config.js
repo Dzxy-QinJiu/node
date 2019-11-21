@@ -3,6 +3,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by liwenjun on 2018/12/19.
  */
+import user_info_privilegeConst from '../portal/modules/user_info/public/privilege-config';
+import call_record_privilegeConst from '../portal/modules/call_record/public/privilege-const';
+
 const MODULE_PATH = 'modules/';
 let routers = [
     {
@@ -12,7 +15,7 @@ let routers = [
         isNotShow: 'true',//不在菜单中展示
         component: `${MODULE_PATH}home_page/public`,
         //有这个权限，才显示入口图标
-        showPrivileges: ['USER_INFO_USER']
+        showPrivileges: [user_info_privilegeConst.BASE_QUERY_PERMISSION_MEMBER]
     },
     {
         id: 'ClUE_CUSTOMER',
@@ -48,7 +51,7 @@ let routers = [
         component: `${MODULE_PATH}call_record/public`,
         shortName: 'menu.shortName.call',//通话
         //有这个权限，才显示入口图标
-        showPrivileges: ['CUSTOMER_CALLRECORD_SALE_ONLY']
+        showPrivileges: [call_record_privilegeConst.CURTAO_CRM_TRACE_QUERY_ALL]
     },
     {
         id: 'APP_USER_MANAGE',//唯一标识
@@ -350,7 +353,7 @@ let routers = [
             routePath: '/user_info_manage/user_info',
             component: `${MODULE_PATH}user_info/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['USER_INFO_USER']
+            showPrivileges: [user_info_privilegeConst.BASE_QUERY_PERMISSION_MEMBER]
         }, {
             id: 'USER_PASSWORD',
             name: 'menu.user.password',//密码管理

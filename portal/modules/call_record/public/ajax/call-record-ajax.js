@@ -1,4 +1,5 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import call_record_privilegeConst from '../privilege-const';
 //获取当前页的应用列表
 var getCallRecordAjax = null;
 
@@ -29,7 +30,7 @@ exports.getCallRecordList = function(params, filterObj) {
     //查询无效电话记录
     else {
         //角色类型
-        let type = hasPrivilege('CUSTOMER_TRACE_MANAGER_QUERY') ? 'manager' : 'user';
+        let type = hasPrivilege(call_record_privilegeConst.CURTAO_CRM_TRACE_QUERY_ALL) ? 'manager' : 'user';
         url = '/rest/invalid_call_record/' + type + '/' + params.start_time + '/' + params.end_time + '/' + params.page_size + '/' + params.sort_field + '/' + params.sort_order;
         if (params.lastId) {
             url += '?id=' + params.lastId;

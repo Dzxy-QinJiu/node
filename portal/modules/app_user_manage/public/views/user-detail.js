@@ -1,3 +1,5 @@
+import common_privilegeConst from 'MOD_DIR/common/public/privilege-const';
+
 var language = require('../../../../public/language/getLanguage');
 require('../css/user-detail-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -432,7 +434,7 @@ class UserDetail extends React.Component {
                 </TabPane>
             );
         }
-        if (hasPrivilege('USER_TIME_LINE')) {
+        if (hasPrivilege(common_privilegeConst.BASE_QUERY_PERMISSION_MEMBER)) {
             tabPaneList.push(
                 <TabPane tab={Intl.get('user.change.record', '变更记录')} key="4">
                     {this.state.activeKey === '4' ? <div className="user_manage_user_record">

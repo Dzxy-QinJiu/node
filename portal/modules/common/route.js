@@ -1,3 +1,5 @@
+import privilegeConst_common from './public/privilege-const';
+
 const geoUrl = '/rest/geo/service/v1/';
 const customerUrl = '/rest/customer/v3/customer/';
 const userAnalysisUrl = '/rest/analysis/user/v1/';
@@ -59,14 +61,16 @@ module.exports = [{
     'handler': 'getTeamList',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_TEAM]
 }, {
     'method': 'get',
     'path': customerUrl + 'upload/confirm/:flag',
     'handler': 'uploadCustomerConfirm',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [privilegeConst_common.CUSTOMER_ADD]
 }, {
     'method': 'get',
     'path': customerCommonAnalysisUrl + ':type/:property',
@@ -95,7 +99,7 @@ module.exports = [{
         'needLogin': true
     },
     'privileges': [
-        'MEMBER_WEBSITE_CONFIG'
+        privilegeConst_common.CURTAO_USER_CONFIG
     ]
 }, {
     'method': 'post',
@@ -105,7 +109,7 @@ module.exports = [{
         'needLogin': true
     },
     'privileges': [
-        'MEMBER_WEBSITE_CONFIG'
+        privilegeConst_common.CURTAO_USER_CONFIG
     ]
 }, {
     'method': 'get',
@@ -115,7 +119,7 @@ module.exports = [{
         'needLogin': true
     },
     'privileges': [
-        'MEMBER_WEBSITE_CONFIG'
+        privilegeConst_common.CURTAO_USER_CONFIG
     ]
 }, {
     // 合同统计
@@ -132,133 +136,188 @@ module.exports = [{
     'handler': 'getDeviceTypeBymanager',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_MANAGER
+    ]
 }, {
     'method': 'get',//获取设备类型统计common
     'path': userAnalysisV3Url + '/common/device',
     'handler': 'getDeviceTypeBycommon',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_COMMON
+    ]
 }, {
     'method': 'get',//获取浏览器统计manager
     'path': userAnalysisV3Url + '/manager/browser',
     'handler': 'getBrowserBymanager',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_MANAGER
+    ]
 }, {
     'method': 'get',//获取浏览器统计common
     'path': userAnalysisV3Url + '/common/browser',
     'handler': 'getBrowserBycommon',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_COMMON
+    ]
 }, {
     'method': 'get',//获取活跃用户省份统计manager
     'path': userAnalysisV3Url + '/manager/zone/province',
     'handler': 'getActiveZoneBymanager',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_MANAGER
+    ]
 }, {
     'method': 'get',//获取活跃用户省份统计common
     'path': userAnalysisV3Url + '/common/zone/province',
     'handler': 'getActiveZoneBycommon',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_COMMON
+    ]
 }, {
     'method': 'post',//用户登录次数manager
     'path': userAnalysisV3Url + '/manager/logins/distribution/num',
     'handler': 'getUserLoginCountsDataBymanager',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_MANAGER
+    ]
 }, {
     'method': 'post',//用户登录次数common
     'path': userAnalysisV3Url + '/common/logins/distribution/num',
     'handler': 'getUserLoginCountsDataBycommon',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_COMMON
+    ]
 }, {
     'method': 'post',//用户登陆时间manager
     'path': userAnalysisV3Url + '/manager/online_time/distribution/num',
     'handler': 'getUserLoginTimesDataBymanager',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_MANAGER
+    ]
 }, {
     'method': 'post',//用户登陆时间common
     'path': userAnalysisV3Url + '/common/online_time/distribution/num',
     'handler': 'getUserLoginTimesDataBycommon',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_COMMON
+    ]
 }, {
     'method': 'post',// 用户登录天数manager
     'path': userAnalysisV3Url + '/manager/login/day/distribution/num',
     'handler': 'getUserLoginDaysDataBymanager',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_MANAGER
+    ]
 }, {
     'method': 'post',// 用户登录天数common
     'path': userAnalysisV3Url + '/common/login/day/distribution/num',
     'handler': 'getUserLoginDaysDataBycommon',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_COMMON
+    ]
 }, {
     'method': 'get',// 用户在线时长manager
     'path': userAnalysisV3Url + '/manager/app/avg/online_time/trend',
     'handler': 'getUserOnlineTimeDataBymanager',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_MANAGER
+    ]
 }, {
     'method': 'get',// 用户在线时长common
     'path': userAnalysisV3Url + '/common/app/avg/online_time/trend',
     'handler': 'getUserOnlineTimeDataBycommon',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_COMMON
+    ]
 }, {
     'method': 'get',// 用户未登录数manager
     'path': userAnalysisV3Url + '/manager/app/count/no_login',
     'handler': 'getOfflineUserDataBymanager',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_MANAGER
+    ]
 }, {
     'method': 'get',// 用户未登录数common
     'path': userAnalysisV3Url + '/common/app/count/no_login',
     'handler': 'getOfflineUserDataBycommon',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.USER_ANALYSIS_COMMON
+    ]
 }, {
     'method': 'get',//获取无效电话
     'path': invalidPhone,
     'handler': 'getInvalidPhone',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.CALLSYSTEM_CONFIG_MANAGE
+    ]
 }, {
     'method': 'post',//增加无效电话
     'path': invalidPhone,
     'handler': 'addInvalidPhone',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        privilegeConst_common.CALLSYSTEM_CONFIG_MANAGE
+    ]
 }, {
     'method': 'delete',
     'path': customerUrl + 'upload/preview/:index',
     'handler': 'deleteDuplicatImportCustomer',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [privilegeConst_common.CUSTOMER_ADD]
 }, {
     //获取迁出客户数据
     'method': 'get',
@@ -266,7 +325,8 @@ module.exports = [{
     'handler': 'getTransferCustomers',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [privilegeConst_common.CRM_CUSTOMER_TRANSFER_RECORD]
 }, {
     //获取客户阶段变更数据
     'method': 'get',
@@ -274,7 +334,8 @@ module.exports = [{
     'handler': 'getStageChangeCustomers',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [privilegeConst_common.USER_CUSTOMER_LABEL_COUNT || privilegeConst_common.CRM_MANAGER]
 }, {
     //获取客户阶段变更的客户数据
     'method': 'post',
@@ -290,7 +351,8 @@ module.exports = [{
     'handler': 'getIndustryCustomerOverlay',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [privilegeConst_common.KETAO_WEEKLY_REPORTS_CUSTOMER_STAGE_STATISITC_COMMON || privilegeConst_common.KETAO_WEEKLY_REPORTS_CUSTOMER_STAGE_STATISITC_MANAGER]
 }, {
     //获取销售新开客户数
     'method': 'get',
@@ -298,7 +360,8 @@ module.exports = [{
     'handler': 'getNewCustomerCount',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges':[privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_MANAGER || privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_COMMON]
 }, {
     //获取所有成员基本信息（仅包含姓名、id，不分页)
     'method': 'get',
@@ -306,7 +369,8 @@ module.exports = [{
     'handler': 'getAllUsers',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges':[privilegeConst_common.USER_MANAGE_LIST_USERS]
 }, {
     //获取应用下角色{query: tags}
     'method': 'get',
@@ -380,7 +444,8 @@ module.exports = [{
     'handler': 'getSingleUserAllAuditLog',
     'passport': {
         'needLogin': true
-    }
+    },
+    privileges:[privilegeConst_common.USER_AUDIT_LOG_LIST]
 }, {
     //批量获取角色信息
     'method': 'post',
@@ -388,7 +453,8 @@ module.exports = [{
     'handler': 'getBatchRoleInfo',
     'passport': {
         'needLogin': true
-    }
+    },
+    privileges: [privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION]
 }, {
     //批量获取权限信息
     'method': 'post',
@@ -396,7 +462,8 @@ module.exports = [{
     'handler': 'getBatchPermissionInfo',
     'passport': {
         'needLogin': true
-    }
+    },
+    privileges: [privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION]
 }, {
     //add查询条件
     'method': 'post',
@@ -436,7 +503,8 @@ module.exports = [{
     'handler': 'applyDelayMultiApp',
     'passport': {
         'needLogin': true
-    }
+    },
+    privileges: [privilegeConst_common.USER_APPLY_APPROVE]
 }, {
     //审批（多应用
     'method': 'post',
@@ -444,5 +512,6 @@ module.exports = [{
     'handler': 'submitMultiAppApply',
     'passport': {
         'needLogin': true
-    }
+    },
+    privileges: [privilegeConst_common.USER_APPLY_APPROVE]
 }];

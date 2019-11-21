@@ -3,6 +3,9 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2019/6/21.
  */
+
+import privilegeConst_user_info from '../../../user_info/public/privilege-config';
+
 module.exports = {
     module: 'home_page/server/action/home-page-controller',
     routes: [{
@@ -31,7 +34,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['ORGANIZATION_BASE_PERMISSION']
+        'privileges': [privilegeConst_user_info.BASE_QUERY_PERMISSION_MEMBER]
     }, {
         // 获取业绩排名
         'method': 'get',

@@ -1,9 +1,4 @@
 let BATCH_PRIVILEGE = {
-    //获得产品列表
-    //通过id获得产品信息
-    //添加产品
-    //添加产品
-    BASE_QUERY_PERMISSION_MEMBER: 'BASE_QUERY_PERMISSION_MEMBER',
     //修改产品的集成类型
     //修改产品的基本信息
     //添加uem产品
