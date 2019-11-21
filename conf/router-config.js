@@ -4,6 +4,9 @@
  * Created by liwenjun on 2018/12/19.
  */
 const MODULE_PATH = 'modules/';
+import applyPrivilegeConst from 'modules/apply_approve_manage/public/privilege-const';
+import analysisPrivilegeConst from 'modules/analysis/public/privilege-const';
+
 let routers = [
     {
         id: 'HOME_PAGE', //唯一标识，首页
@@ -60,7 +63,7 @@ let routers = [
             name: 'menu.appuser.list',//用户列表
             routePath: '/user/list',
             component: `${MODULE_PATH}app_user_manage/public`,
-            //有这个权限，才显示入口图标
+            //有这个权限，才显示入口图标 TODO 需要替换为 APP_USER_QUERY，现在为了测试暂时没有替换
             showPrivileges: ['APP_USER_LIST']
         }, {
             id: 'ORGANIZATION_MANAGE',
@@ -98,8 +101,8 @@ let routers = [
                 component: `${MODULE_PATH}analysis/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: [
-                    'CUSTOMER_ANALYSIS_COMMON',
-                    'CUSTOMER_ANALYSIS_MANAGER',
+                    analysisPrivilegeConst.CUSTOMER_ANALYSIS_COMMON,
+                    analysisPrivilegeConst.CUSTOMER_ANALYSIS_MANAGER
                 ]
             },
             {
@@ -115,8 +118,8 @@ let routers = [
                         routePath: '/analysis/report/weekly_report',
                         component: `${MODULE_PATH}weekly_report/public`,
                         showPrivileges: [
-                            'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
-                            'KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON',
+                            analysisPrivilegeConst.KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER,
+                            analysisPrivilegeConst.KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON,
                         ],
                     },
                     //月报统计
@@ -126,8 +129,8 @@ let routers = [
                         routePath: '/analysis/report/monthly_report',
                         component: `${MODULE_PATH}monthly-report/public`,
                         showPrivileges: [
-                            'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
-                            'CALLRECORD_ASKFORLEAVE_QUERY_USER',
+                            analysisPrivilegeConst.CALLRECORD_ASKFORLEAVE_QUERY_MANAGER,
+                            analysisPrivilegeConst.CALLRECORD_ASKFORLEAVE_QUERY_USER,
                         ],
                     },
                     //销售报告
@@ -138,8 +141,8 @@ let routers = [
                         component: `${MODULE_PATH}sales-report/public`,
                         //有这个权限，才显示入口图标
                         showPrivileges: [
-                            'CURTAO_SALES_REPORTS_COMMON',
-                            'CURTAO_SALES_REPORTS_MANAGER',
+                            analysisPrivilegeConst.CURTAO_SALES_REPORTS_COMMON,
+                            analysisPrivilegeConst.CURTAO_SALES_REPORTS_MANAGER,
                         ]
                     },
                 ],
@@ -185,7 +188,7 @@ let routers = [
             routePath: '/application/user_apply',
             component: `${MODULE_PATH}user_apply/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['APP_USER_APPLY_LIST']
+            showPrivileges: [applyPrivilegeConst.USERAPPLY_BASE_PERMISSION]
 
         }, {
             id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
@@ -193,35 +196,35 @@ let routers = [
             routePath: '/application/sales_opportunity',
             component: `${MODULE_PATH}sales_opportunity/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_BUSINESSOPPO_MANAGE']
+            showPrivileges: [applyPrivilegeConst.MEMBER_BUSINESSOPPO_APPLY_APPROVE]
         }, {
             id: 'BUSSINESS_APPLY_MANAGEMENT',
             name: 'leave.apply.add.leave.apply',//出差申请
             routePath: '/application/business_apply',
             component: `${MODULE_PATH}business-apply/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['BUSINESS_TRIP_MANAGE']
+            showPrivileges: [applyPrivilegeConst.BUSINESS_TRIP_APPLY_APPROVE]
         }, {
             id: 'LEAVE_APPLY_MANAGEMENT',
             name: 'leave.apply.leave.application',//请假申请
             routePath: '/application/leave_apply',
             component: `${MODULE_PATH}leave-apply/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_LEAVE_MANAGE']
+            showPrivileges: [applyPrivilegeConst.MEMBER_LEAVE_APPLY_APPROVE]
         }, {
             id: 'REPORTSEND_APPLY_MANAGEMENT',
             name: 'apply.approve.lyrical.report',//舆情报告
             routePath: '/application/report_send',
             component: `${MODULE_PATH}report_send/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_OPINION_MANAGE']
+            showPrivileges: [applyPrivilegeConst.MEMBER_REPORT_APPLY_APPROVE]
         }, {
             id: 'DOCUMENTWRITING_APPLY_MANAGEMENT',
             name: 'apply.approve.document.writing',//文件撰写
             routePath: '/application/document_write',
             component: `${MODULE_PATH}document_write/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+            showPrivileges: [applyPrivilegeConst.MEMBER_REPORT_APPLY_APPROVE]
         },
         {
             //todo 待修改的！！！！！！
@@ -230,7 +233,7 @@ let routers = [
             routePath: '/application/self_setting',
             component: `${MODULE_PATH}self_setting/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+            showPrivileges: [applyPrivilegeConst.MEMBER_REPORT_APPLY_APPROVE]
         }, {
             //todo 待修改的！！！！！！
             id: 'MY_DOMAIN_APPLY_MANAGEMENT',
@@ -238,7 +241,7 @@ let routers = [
             routePath: '/application/domain_name',
             component: `${MODULE_PATH}domain_application/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
+            showPrivileges: [applyPrivilegeConst.MEMBER_REPORT_APPLY_APPROVE]
         }
         ]
     },

@@ -5,6 +5,7 @@
  */
 var homePagePrivilegeConst = require('../../public/privilege-const');
 var crmPrivilegeConst = require('MOD_DIR/crm/public/privilege-const');
+import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 
 module.exports = {
     module: 'home_page/server/action/home-page-controller',
@@ -44,8 +45,8 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            homePagePrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON,
-            homePagePrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER
+            analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON,
+            analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER
         ]
     }, {//获取通话时长数据
         'method': 'get',

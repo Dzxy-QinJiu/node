@@ -10,6 +10,8 @@ var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitte
 import {getAllApplyList,getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
 import {APPLY_TYPE_STATUS_CONST} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveAjax from '../../../common/public/ajax/apply-approve';
+import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
+
 function LeaveApplyActions() {
     this.generateActions(
         'setInitState',
@@ -31,7 +33,7 @@ function LeaveApplyActions() {
         //如果选中的是我审批过的
         if (queryObj.status === APPLY_TYPE_STATUS_CONST.MYAPPROVED){
             delete queryObj.status;
-             getApplyListApprovedByMe.bind(this,queryObj)();
+            getApplyListApprovedByMe.bind(this,queryObj)();
         }else if (queryObj.status === 'ongoing' || !queryObj.status){
             //如果是全部申请，要先取一下待我审批的列表
             getWorklistApplyList({type: APPLY_APPROVE_TYPES.LEAVE}).then((workList) => {
@@ -41,7 +43,7 @@ function LeaveApplyActions() {
                     _.forEach(workList.list,(workItem) => {
                         workItem.showApproveBtn = true;
                         //如果是我申请的，除了可以审批之外，我也可以撤回
-                        if (_.get(workItem,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST')){
+                        if (_.get(workItem,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege(applyPrivilegeConst.WORKFLOW_BASE_PERMISSION)){
                             workItem.showCancelBtn = true;
                         }
                     });
@@ -69,12 +71,12 @@ function getApplyListApprovedByMe(queryObj) {
         scrollBarEmitter.emit(scrollBarEmitter.HIDE_BOTTOM_LOADING);
         this.dispatch({error: false, loading: false, data: data});
     }).error(xhr => {
-            this.dispatch({
-                error: true,
-                loading: false,
-                errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取我审批过的{type}申请失败', {type: Intl.get('weekly.report.ask.for.leave', '请假')})
-            });
-        }
+        this.dispatch({
+            error: true,
+            loading: false,
+            errorMsg: xhr.responseJSON || Intl.get('apply.has.approved.by.me', '获取我审批过的{type}申请失败', {type: Intl.get('weekly.report.ask.for.leave', '请假')})
+        });
+    }
     );
 }
 function getDiffTypeApplyList(that,queryObj,workListArr) {
@@ -93,7 +95,7 @@ function getDiffTypeApplyList(that,queryObj,workListArr) {
         }
         //给 自己申请的并且是未通过的审批加上可以撤销的标识
         _.forEach(data.list,(item) => {
-            if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST')){
+            if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege(applyPrivilegeConst.WORKFLOW_BASE_PERMISSION)){
                 item.showCancelBtn = true;
             }
         });

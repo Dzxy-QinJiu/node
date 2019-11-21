@@ -1,3 +1,7 @@
+/**
+ * 获取用户登录相关的信息 获取用户登录统计图中登录时长、登录频次 权限需要替换
+ * todo 需要把 USER_AUDIT_LOG_LIST 替换为 CRM_USER_ANALYSIS_ALL_ROLE_QUERY ，为了测试，先写为USER_AUDIT_LOG_LIST
+ * **/
 module.exports = {
     module: 'app_user_manage/server/action/user_audit_log_controller',
     routes: [{
@@ -28,7 +32,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_AUDIT_LOG_LIST'
+            'CRM_USER_ANALYSIS_ALL_ROLE_QUERY'
         ]
     },{ // 获取用户登录统计图中登录时长、登录频次
         'method': 'get',
@@ -38,7 +42,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_AUDIT_LOG_LIST'
+            'CRM_USER_ANALYSIS_ALL_ROLE_QUERY'
         ]
     }, { // 获取用户的分数
         'method': 'get',

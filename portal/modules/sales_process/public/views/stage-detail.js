@@ -12,7 +12,7 @@ import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import CustomerStageAjax from '../ajax';
 import AutoConditionsStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import CustomerStageAction from '../action/customer-stage-action';
-
+import CUSTOMER_STAGE_PRIVILEGE from '../privilege-const';
 import Trace from 'LIB_DIR/trace';
 const EDIT_FEILD_LESS_WIDTH = 310;
 
@@ -120,7 +120,7 @@ class CustomerStageDetail extends React.Component {
                                     id={id}
                                     field='play_books'
                                     value={playBooks}
-                                    hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                                    hasEditPrivilege={hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE)}
                                     placeholder={Intl.get('sales.process.customer.stage.play.placeholder', '请输入剧本')}
                                     saveEditData={this.saveCustomerStageSettingPlay.bind(this, {editItem: 'play_books',id: customerStage.id})}
                                     noDataTip={Intl.get('sales.process.customer.stage.no.play', '暂无剧本')}
@@ -158,7 +158,7 @@ class CustomerStageDetail extends React.Component {
                                             placeholder={Intl.get('sales.process.auto.conditions.placeholder', '请选择自动变更的条件')}
                                             validators={[{message: Intl.get('sales.process.auto.conditions.placeholder', '请选择自动变更的条件')}]}
                                             width={EDIT_FEILD_LESS_WIDTH}
-                                            hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                                            hasEditPrivilege={hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE)}
                                             saveEditSelect={this.saveEditAutoConditions.bind(this)}
                                             noDataTip={Intl.get('sales.process.auto.conditions.no.conditions', '暂无条件')}
                                             addDataTip={Intl.get('apply.add.apply.condition', '添加条件')}

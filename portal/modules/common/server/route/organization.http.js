@@ -27,5 +27,14 @@ module.exports = {
             'needLogin': true
         },
         'privileges': ['CALLSYSTEM_CONFIG_MANAGE','ORGANIZATION_BASE_PERMISSION']
+    },{
+        //完善个人试用资料
+        'method': 'put',
+        'path': '/rest/global/organization/personal/trial/info',
+        'handler': 'updatePersonalTrialInfo',
+        'passport': {
+            'needLogin': true
+        },
+        'privileges': []
     }]
 };

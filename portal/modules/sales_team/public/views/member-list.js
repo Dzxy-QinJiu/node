@@ -1,11 +1,9 @@
 /**
  * Created by xiaojinfeng on 2016/04/13.
  */
-
-const React = require('react');
 const createReactClass = require('create-react-class');
 import {InputNumber, Button, message, Icon} from 'antd';
-const PrivilegeChecker = require('../../../../components/privilege/checker').PrivilegeChecker;
+import {PrivilegeChecker} from 'CMP_DIR/privilege/checker';
 const Spinner = require('../../../../components/spinner');
 const AlertTimer = require('../../../../components/alert-timer');
 import {SearchInput} from 'antc';
@@ -23,6 +21,7 @@ import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import MemberTableList from 'MOD_DIR/member-table-list';
 import { num as antUtilsNum } from 'ant-utils';
 const parseAmount = antUtilsNum.parseAmount;
+import SALES_DEPARTMENT_PRIVILEGE from '../privilege-const';
 
 const tableHeadHeight = 50; // table表格头部高度
 
@@ -1192,7 +1191,7 @@ const MemberList = createReactClass({
             >
                 <div className="member-top-operation-div">
                     <div className='pull-left'>
-                        <PrivilegeChecker check="BGM_SALES_TEAM_MEMBER_EDIT" className="btn-item">
+                        <PrivilegeChecker check={SALES_DEPARTMENT_PRIVILEGE.EDIT_DEPARTMENT} className="btn-item">
                             <Button
                                 title={Intl.get('sales.team.add.team.member', '添加团队成员')}
                                 data-tracename="添加团队成员"

@@ -41,6 +41,7 @@ import {batchPushEmitter, phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters'
 import filterEmitter from 'CMP_DIR/filter/emitter';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 //用于布局的高度
 const LAYOUT_CONSTANTS = {
     FILTER_TOP: 64,//筛选框高度
@@ -833,7 +834,7 @@ class ClueExtract extends React.Component {
                 }
             });
         }
-        if (hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF')) {
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF)) {
             columns = _.concat(columns, {
                 className: 'invalid-td-clue',
                 width: TABLE_WIDTH.EXTRACT,
@@ -855,7 +856,7 @@ class ClueExtract extends React.Component {
     };
     //是否有选中线索的权限
     hasClueSelectPrivilege = () => {
-        return hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF');
+        return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF);
     };
     renderClueCustomerLists = () => {
         let customerList = this.state.cluePoolList;

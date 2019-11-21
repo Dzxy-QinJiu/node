@@ -10,7 +10,6 @@ import {StatusWrapper} from 'antc';
 import {PropTypes} from 'prop-types';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import Trace from 'LIB_DIR/trace';
-var React = require('react');
 //class的前缀
 const USER_CUSTOMER_SUGGEST_ID = 'user-customer-suggest-wrap';
 

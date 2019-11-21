@@ -5,7 +5,9 @@ var urls = {
     getOrganizationList: '/rest/base/v1/usergroup/list',
     changeOrganization: '/rest/base/v1/usergroup/user/:user_id/:group_id',
     // 获取组织电话系统配置
-    getCallSystemConfig: '/rest//base/v1/realm/callsystemconfig'
+    getCallSystemConfig: '/rest//base/v1/realm/callsystemconfig',
+    //完善个人试用信息
+    updatePersonalTrialInfo: '/rest/base/v1/user/baseinfo'
 };
 var restLogger = require('../../../../lib/utils/logger').getLogger('rest');
 var restUtil = require('ant-auth-request').restUtil(restLogger);
@@ -46,4 +48,12 @@ exports.getCallSystemConfig = function(req,res) {
         req: req,
         res: res
     });
+};
+
+exports.updatePersonalTrialInfo = function(req,res) {
+    return restUtil.authRest.put({
+        url: urls.updatePersonalTrialInfo,
+        req: req,
+        res: res
+    }, req.body);
 };

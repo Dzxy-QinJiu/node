@@ -4,8 +4,9 @@
  * Created by wangliping on 2019/6/21.
  */
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import homePagePrivilegeConst from '../privilege-const';
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
+
 //获取我的工作列表
 let getMyWorkListAjax = null;
 exports.getMyWorkList = function(queryParams) {
@@ -66,8 +67,8 @@ exports.handleMyWorkStatus = function(bodyObj) {
 //获取业绩排名
 let getContractPerformanceAjax = null;
 exports.getContractPerformance = function(queryParams) {
-    let type = 'self';//homePagePrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON
-    if (hasPrivilege(homePagePrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER)) {
+    let type = 'self';//analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON
+    if (hasPrivilege(analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER)) {
         type = 'all';
     }
     var Deferred = $.Deferred();

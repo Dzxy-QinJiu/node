@@ -57,7 +57,7 @@ module.exports = {
         'passport': {
             'needLogin': false
         }, 'privileges': [
-            'MEMBER_TEAM_ROLE_MANAGE'
+            'TEAM_ROLE_MANAGE'
         ]
     },{//修改销售的角色
         'method': 'post',
@@ -67,7 +67,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'MEMBER_TEAM_ROLE_MANAGE'
+            'TEAM_ROLE_MANAGE'
         ]
     },{//设置某个角色的客户容量
         method: 'put',

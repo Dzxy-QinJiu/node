@@ -1,4 +1,3 @@
-var React = require('react');
 var language = require('../../../public/language/getLanguage');
 require('./css/main-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
@@ -39,7 +38,7 @@ import {RETRY_GET_APP} from './util/consts';
 import Trace from 'LIB_DIR/trace';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import {getIntegrationConfig, getProductList, uniqueObjectOfArray} from 'PUB_DIR/sources/utils/common-data-util';
-import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOplateUser, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import Spinner from 'CMP_DIR/spinner';
 import NoDataIntro from 'CMP_DIR/no-data-intro';
@@ -49,7 +48,7 @@ import ImportUser from './views/import';
 import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import BackMainPage from 'CMP_DIR/btn-back';
-
+import USER_MANAGE_PRIVILEGE from './privilege-const';
 const UPLOAD_USER_TIPS = {
     EXIST: 'data exist', // （用户名、邮箱 ）已存在
     ILLEGAL: 'data illegal', // （用户名、邮箱、手机号）不合法
@@ -406,7 +405,7 @@ class AppUserManage extends React.Component {
 
     //是否有添加用户按钮
     addUserBtnCheckun = () => {
-        return hasPrivilege('APP_USER_ADD') && !this.state.customer_id;
+        return hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) && !this.state.customer_id;
     };
 
     //销售选择用户的提示
@@ -468,7 +467,7 @@ class AppUserManage extends React.Component {
         //是否是从某个客户详情中跳转过来的
         let isCustomerDetailJump = currentView === 'user' && this.props.customer_id;
         //管理员：可以进行批量变更，销售：从某个客户详情中跳转过来时，可以批量变更（销售只可以批量操作同一客户下的用户）
-        return hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) || (isCustomerDetailJump && hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES));
+        return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || (isSalesRole() && isCustomerDetailJump);
     };
 
     //显示批量操作按钮
@@ -498,7 +497,7 @@ class AppUserManage extends React.Component {
     //显示申请用户按钮
     getApplyUserBtn = () => {
         //销售显示开通应用
-        if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
+        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) && this.state.customer_id) {
             //选中了用户直接显示
             if (this.state.selectedUserRows.length) {
                 return (
@@ -521,7 +520,7 @@ class AppUserManage extends React.Component {
 
     //显示缩放时候的开通应用按钮
     getApplyUserBtnMini = () => {
-        if (hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES) && this.state.customer_id) {
+        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) && this.state.customer_id) {
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block  add-btn-mini" onClick={this.showApplyUserForm}>
                     <i className="iconfont icon-shenqing"/>
@@ -878,7 +877,7 @@ class AppUserManage extends React.Component {
                         <span>
                             <PrivilegeChecker
                                 onClick={this.showImportUserRightPanel}
-                                check='USER_IMPORT_MANAGE'
+                                check={USER_MANAGE_PRIVILEGE.USER_MANAGE}
                                 className="inline-block  btn-item">
                                 <Button>{Intl.get('user.import.user', '导入用户')}</Button>
                             </PrivilegeChecker>

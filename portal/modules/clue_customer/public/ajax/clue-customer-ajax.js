@@ -4,29 +4,15 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 const hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
-const AUTHS = {
-    'GETALL': 'CLUECUSTOMER_QUERY_MANAGER',
-    'GETSELF': 'CLUECUSTOMER_QUERY_USER'
-};
-const DISTRIBUTEAUTHS = {
-    'DISTRIBUTEALL': 'CLUECUSTOMER_DISTRIBUTE_MANAGER',
-    'DISTRIBUTESELF': 'CLUECUSTOMER_DISTRIBUTE_USER'
-};
 const RELATEAUTHS = {
     'RELATEALL': 'CRM_MANAGER_CUSTOMER_CLUE_ID',//管理员通过线索id查询客户的权限
     'RELATESELF': 'CRM_USER_CUSTOMER_CLUE_ID'//普通销售通过线索id查询客户的权限
 };
-const QUERYCLUE = {
-    'MANAGER': 'CLUECUSTOMER_QUERY_MANAGER', //管理员通过关键词查询线索的权限
-    'USER': 'CLUECUSTOMER_QUERY_USER'//普通销售通过关键词查询线索的权限
-};
-const BATCH_RELEASE = {
-    MANAGER: 'LEAD_POOL_RELEASE_MANAGER', //管理员进行批量释放
-    USER: 'LEAD_POOL_RELEASE_USER'//普通销售进行批量释放
-};
+
 let salesmanAjax = require('../../../common/public/ajax/salesman');
 let teamAjax = require('../../../common/public/ajax/team');
 var userData = require('PUB_DIR/sources/user-data');
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 //获取线索来源列表
 exports.getClueSource = function() {
     var Deferred = $.Deferred();
@@ -145,7 +131,7 @@ exports.addCluecustomerTrace = function(submitObj) {
 var distributeCluecustomerToSaleAjax;
 exports.distributeCluecustomerToSale = function(submitObj) {
     var Deferred = $.Deferred();
-    if (hasPrivilege(DISTRIBUTEAUTHS.DISTRIBUTEALL)) {
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL)) {
         submitObj.hasDistributeAuth = true;
     }
     distributeCluecustomerToSaleAjax && distributeCluecustomerToSaleAjax.abort();
@@ -168,7 +154,7 @@ var distributeCluecustomerToSaleBatchAjax;
 exports.distributeCluecustomerToSaleBatch = function(submitObj) {
     var Deferred = $.Deferred();
     var type = 'user';
-    if (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER')){
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL)){
         type = 'manager';
     }
     distributeCluecustomerToSaleBatchAjax && distributeCluecustomerToSaleBatchAjax.abort();
@@ -235,7 +221,7 @@ exports.getClueFulltext = function(queryObj) {
     var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
     var type = 'user';
-    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
     }
     var url = '/rest/get/clue/fulltext/' + pageSize + '/' + pageNum + '/' + sorter.field + '/' + sorter.order + '/' + type;
@@ -263,9 +249,9 @@ exports.getClueListByKeyword = function(queryObj) {
     let sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
     let type = '';
-    if(hasPrivilege(QUERYCLUE.USER)) {
+    if(hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF)) {
         type = 'user';
-    }else if (hasPrivilege(QUERYCLUE.MANAGER)){
+    }else if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
     }
     let query = {
@@ -296,7 +282,7 @@ exports.getClueFulltextSelfHandle = function(queryObj) {
     var sorter = queryObj.sorter ? queryObj.sorter : {field: 'source_time', order: 'descend'};
     delete queryObj.sorter;
     var type = 'user';
-    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
     }
     var pageNum = queryObj.pageNum;
@@ -443,7 +429,7 @@ exports.getRecommendClueLists = function(obj) {
 exports.releaseClue = function(reqData) {
     let Deferred = $.Deferred();
     let authType = 'user';
-    if(hasPrivilege(BATCH_RELEASE.MANAGER)){
+    if(hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL)){
         authType = 'manager';
     }
     $.ajax({
@@ -468,7 +454,7 @@ exports.batchReleaseClue = function(condition) {
     var Deferred = $.Deferred();
     var jsonStr = JSON.stringify(condition);
     let authType = 'user';
-    if(hasPrivilege(BATCH_RELEASE.MANAGER)){
+    if(hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL)){
         authType = 'manager';
     }
     $.ajax({
