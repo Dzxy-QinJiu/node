@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import history from 'PUB_DIR/sources/history';
 var userData = require('../../../../public/sources/user-data');
+import crmPrivilegeConst from '../privilege-const';
 // 跟进记录类型常量
 const CALL_RECORD_TYPE = {
     PHONE: 'phone',//呼叫中心 - effung的电话系统（讯时+usterisk）
@@ -205,9 +206,9 @@ exports.getApplyActiveEmailTip = (applyErrorMsg) => {
     return applyErrorMsg;
 };
 exports.AUTHS = {
-    'GETALL': 'CUSTOMER_ALL',
-    'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
-    'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
+    'GETALL': crmPrivilegeConst.CUSTOMER_ALL,
+    'UPDATE_ALL': crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL,
+    'TRANSFER_MANAGER': crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
 };
 //用于布局的高度
 exports.LAYOUT_CONSTANTS = {

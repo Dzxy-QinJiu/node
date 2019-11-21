@@ -116,7 +116,7 @@ class PersonalCompleteInformation extends React.Component{
                                 <div>{Intl.get('personal.welcome.use.curtao', '欢迎使用客套')}</div>
                                 <ReactIntl.FormattedMessage
                                     id="personal.open.success.tip"
-                                    defaultMessage={'恭喜您成功开通个人试用版，试用期剩余 {count} 天'}
+                                    defaultMessage={'恭喜您成功开通试用版，试用期剩余 {count} 天'}
                                     values={{
                                         'count': <span className="personal-complete-remaining-day">{_.get(organization,'expireAfterDays',0)}</span>
                                     }}
