@@ -6,6 +6,7 @@ let userData = require('PUB_DIR/sources/user-data');
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 var scrollBarEmitter = require('PUB_DIR/sources/utils/emitters').scrollBarEmitter;
 import {getAllApplyList,getWorklistApplyList} from 'PUB_DIR/sources/utils/apply-common-data-utils';
+import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 
 function MemberApplyActions() {
     this.generateActions(
@@ -27,7 +28,7 @@ function MemberApplyActions() {
             getWorklistApplyList({type: APPLY_APPROVE_TYPES.MEMBER_INVITE}).then((workList) => {
                 //如果是待我审批的列表，不需要在发获取全部列表的请求了
                 if (queryObj.status){
-                    let hasCancelPrivilege = userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST');
+                    let hasCancelPrivilege = userData.getUserData().user_id && hasPrivilege(applyPrivilegeConst.WORKFLOW_BASE_PERMISSION);
                     //需要对全部列表都加一个可以审批的属性
                     _.forEach(workList.list,(workItem) => {
                         workItem.showApproveBtn = true;
@@ -70,7 +71,7 @@ function getDiffTypeApplyList(that,queryObj,workListArr) {
         }
         //给 自己申请的并且是未通过的审批加上可以撤销的标识
         _.forEach(data.list,(item) => {
-            if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege('GET_MY_WORKFLOW_LIST')){
+            if (item.status === 'ongoing' && _.get(item,'applicant.user_id') === userData.getUserData().user_id && hasPrivilege(applyPrivilegeConst.WORKFLOW_BASE_PERMISSION)){
                 item.showCancelBtn = true;
             }
         });
