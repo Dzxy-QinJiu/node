@@ -146,7 +146,7 @@ class ClueCustomer extends React.Component {
             cluePoolCondition: {},//线索池的搜索条件
             filterInputWidth: 210,//筛选输入框的宽度
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
-            showRecommendTips: !_.get(websiteConfig,`${oplateConsts.STORE_PERSONNAL_SETTING.NO_SHOW_RECOMMEND_CLUE_TIPS}`,false),
+            showRecommendTips: !_.get(websiteConfig,['oplateConsts','STORE_PERSONNAL_SETTING','NO_SHOW_RECOMMEND_CLUE_TIPS'],false),
             //显示内容
             ...clueCustomerStore.getState()
         };
