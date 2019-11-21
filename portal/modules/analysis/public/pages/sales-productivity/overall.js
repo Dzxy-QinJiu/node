@@ -4,14 +4,15 @@
 
 import salesProductivityChart from '../../charts/sales-productivity';
 import {SALES_PRODUCTIVITY_MENUS} from '../../consts';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
     title: SALES_PRODUCTIVITY_MENUS.OVERALL.name,
     key: SALES_PRODUCTIVITY_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER,
+        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_USER,
     ],
     adjustDatePicker,
     adjustInterval,

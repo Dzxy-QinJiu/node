@@ -4,14 +4,14 @@
 
 import customerChart from '../../charts/customer';
 import {CUSTOMER_MENUS} from '../../consts';
-
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 module.exports = {
     title: CUSTOMER_MENUS.ACTIVE.name,
     key: CUSTOMER_MENUS.ACTIVE.key,
     menuIndex: 2,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
     ],
     charts: getCharts()
 };

@@ -61,6 +61,7 @@ const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
 import { clueEmitter, clueToCustomerPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {sourceClassifyArray, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -1001,9 +1002,9 @@ class ClueDetailOverview extends React.Component {
     };
     renderAvailabilityClue = (curClue) => {
         //标记线索无效的权限
-        var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
+        var avalibility = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF);
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
+        var associatedPrivilege = true; //(hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER)) && editCluePrivilege(curClue);
         if (avalibility){
             let pathname = window.location.pathname;
             //不是运营人员，且（在首页或者线索列表里）
@@ -1040,8 +1041,8 @@ class ClueDetailOverview extends React.Component {
     };
     //判断是否显示按钮控制tab高度
     hasButtonTabHeight = (curClue, associatedCustomer ) => {
-        var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
-                            || (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
+        var avalibility = (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF))
+                            || (hasPrivilege(cluePrivilegeConst. LEAD_TRANSFER_MERGE_CUSTOMER)) && editCluePrivilege(curClue);
         var associatedClue = (curClue.clue_type !== 'clue_pool')
                                 && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);
         let height = this.state.divHeight;
@@ -1117,7 +1118,7 @@ class ClueDetailOverview extends React.Component {
     renderTraceContent = () => {
         var curClue = this.state.curClue;
         //是否有添加跟进记录的权限
-        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE') && editCluePrivilege(curClue);
+        var hasPrivilegeAddEditTrace = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_TRACE_ADD) && editCluePrivilege(curClue);
         let noTraceData = _.isEmpty(_.get(curClue, 'customer_traces'));
         return (
             <DetailCard
@@ -1165,7 +1166,7 @@ class ClueDetailOverview extends React.Component {
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
-        var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER') && editCluePrivilege(curClue);
+        var hasPrivilegeEdit = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && editCluePrivilege(curClue);
         return (
             <div className="clue-info-wrap clue-detail-block">
                 <div className="clue-basic-info">
@@ -1659,7 +1660,7 @@ class ClueDetailOverview extends React.Component {
     // 渲染关联线索
     renderAssociatedClue = (curClue, associatedCustomer ) => {
         if (curClue.clue_type === 'clue_pool') { // 线索池中详情，处理线索
-            if ( hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF')) {
+            if ( hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF)) {
                 return this.renderExtractClueBtn(curClue);
             } else {
                 return null;

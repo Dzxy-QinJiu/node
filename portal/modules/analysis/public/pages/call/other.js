@@ -4,14 +4,14 @@
 
 import callChart from '../../charts/call';
 import {CALL_MENUS} from '../../consts';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
     title: CALL_MENUS.OTHER.name,
     key: CALL_MENUS.OTHER.key,
     menuIndex: 2,
     privileges: [
-        'CUSTOMER_CALLRECORD_STATISTIC_USER',
-        'CUSTOMER_CALLRECORD_STATISTIC_MANAGER',
+        analysisPrivilegeConst.CURTAO_CRM_CALLRECORD_STATISTICS
     ],
     charts: getCharts()
 };

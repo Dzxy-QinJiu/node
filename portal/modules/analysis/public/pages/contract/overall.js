@@ -5,13 +5,13 @@
 import { contractChart } from 'ant-chart-collection';
 import { isSales, isSelectedAllTeamMember, isAdminOrOpStaff } from '../../utils';
 import {CONTRACT_MENUS} from '../../consts';
-
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 module.exports = {
     title: CONTRACT_MENUS.OVERALL.name,
     key: CONTRACT_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
-        'OPLATE_CONTRACT_ANALYSIS',
+        analysisPrivilegeConst.CRM_CONTRACT_ANALYSIS,
     ],
     charts: getCharts()
 };

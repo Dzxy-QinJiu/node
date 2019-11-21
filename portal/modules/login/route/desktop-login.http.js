@@ -11,10 +11,17 @@
 
 module.exports = {
     module: 'login/action/desktop-login-controller',
-    routes: [{
+    routes: [{//登录界面
         'method': 'get',
         'path': '/login',
         'handler': 'showLoginPage',
+        'passport': {
+            'needLogin': false
+        }
+    },{//注册界面
+        'method': 'get',
+        'path': '/register',
+        'handler': 'showRegisterPage',
         'passport': {
             'needLogin': false
         }

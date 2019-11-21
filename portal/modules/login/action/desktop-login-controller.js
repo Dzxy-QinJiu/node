@@ -18,6 +18,38 @@ const _ = require('lodash');
 //登录后绑定微信的标识
 const bindWechatAfterLoginKey = 'isOnlyBindWechat';
 
+
+//注册界面
+exports.showRegisterPage = function(req, res) {
+    //优先使用环境变量中设置的语言
+    const registerLang = global.config.lang || req.query.lang || '';
+    //将当前的语言环境存入session中
+    if (req.session) {
+        req.session.lang = registerLang;
+        req.session.save();
+    }
+    let custom_service_lang = registerLang || 'zh_CN';
+    custom_service_lang = custom_service_lang === 'zh_CN' ? 'ZHCN' : 'EN';
+    let isCurtao = commonUtil.method.isCurtao(req);
+    const phone = '400-6978-520';
+    let backendIntl = new BackendIntl(req);
+    let company = isCurtao ? backendIntl.get('company.name.curtao', '© 客套智能科技 鲁ICP备18038856号') : backendIntl.get('company.name.eefung', '© 蚁坊软件 湘ICP备14007253号-1');
+    res.render('login/tpl/register', {
+        isFormal: global.config.isFormal,
+        isCurtao: isCurtao,
+        siteID: global.config.siteID,
+        lang: registerLang,
+        company: company,
+        hotline: backendIntl.get('companay.hotline', '服务热线: {phone}', {'phone': phone}),
+        timeStamp: global.config.timeStamp,
+        userid: '',
+        contact: '',
+        custom_service_lang
+    });
+
+};
+
+
 /**
  * 首页
  * @param req
@@ -179,6 +211,7 @@ function loginSuccess(req, res) {
                     expireAfterDays: _.get(data, 'expire_after_days'),
                 };
                 req.session.save(() => {
+                    //ajax请求返回sussess
                     if (req.xhr) {
                         //session失效时，登录成功后的处理
                         res.status(200).json('success');
@@ -453,10 +486,25 @@ exports.getVertificationCode = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
-//注册新公司账号
+//注册个人账号
 exports.registerAccount = function(req, res) {
     DesktopLoginService.registerAccount(req, res).on('success', function(data) {
-        res.status(200).json(data);
+        if (data) {//注册成功后延时2s（es组织初始化需要时间）后自动登录
+            setTimeout(function() {
+                var username = req.body.phone;
+                var password = req.body.pwd;
+                //记录上一次登录用户名，到session中
+                username = username.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+                req.session.last_login_user = username;
+                DesktopLoginService.login(req, res, username, password)
+                    .on('success', loginSuccess(req, res))
+                    .on('error', function(errorObj) {
+                        res.status(500).json(errorObj && errorObj.message);
+                    });
+            }, 2000);
+        } else {
+            res.status(200).json(data);
+        }
     }).on('error', function(errorObj) {
         res.status(500).json(errorObj && errorObj.message);
     });

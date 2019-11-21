@@ -4,14 +4,15 @@
 
 import accountChart from '../../charts/account';
 import {ACCOUNT_MENUS} from '../../consts';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
     title: ACCOUNT_MENUS.OVERALL.name,
     key: ACCOUNT_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
-        'USER_ANALYSIS_COMMON',
-        'USER_ANALYSIS_MANAGER',
+        analysisPrivilegeConst.USER_ANALYSIS_MANAGER,
+        analysisPrivilegeConst.USER_ANALYSIS_COMMON,
     ],
     charts: getCharts()
 };
