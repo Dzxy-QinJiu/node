@@ -24,8 +24,7 @@ module.exports = {
                 needLogin: true
             },
             privileges: [
-                crmPrivilegeConst.CURTAO_CRM_TRACE_QUERY_ALL,
-                crmPrivilegeConst.CURTAO_CRM_TRACE_QUERY_SELF
+
             ]
         },{
             method: 'get',
