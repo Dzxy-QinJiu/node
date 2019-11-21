@@ -44,8 +44,8 @@ module.exports = {
         ]
     }, {
         method: 'get',
-        path: '/rest/get/maxlimit/count',
-        handler: 'getMaxLimitCount',
+        path: '/rest/get/maxlimit/and/hasExtracted/count',
+        handler: 'getMaxLimitCountAndHasExtractedClue',
         passport: {
             needLogin: true
         }
