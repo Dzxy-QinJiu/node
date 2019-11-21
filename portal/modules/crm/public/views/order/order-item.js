@@ -20,13 +20,14 @@ import SaveCancelButton from 'CMP_DIR/detail-card/save-cancel-button';
 import classNames from 'classnames';
 import ApplyUserForm from '../apply-user-form';
 import StepsBar from 'CMP_DIR/steps-bar';
+import orderPrivilegeConst from 'MOD_DIR/deal_manage/public/privilege-const';
 //订单状态
 const ORDER_STATUS = {
     WIN: 'win',//赢单
     LOSE: 'lose'//丢单
 };
-const HAS_DELETE = 'CRM_SALESOPPORTUNITY_DELETE';//删除权限的常量
-const HAS_UPDATA = 'SALESOPPORTUNITY_UPDATE';//修改权限的常量
+const HAS_DELETE = orderPrivilegeConst.CRM_SALESOPPORTUNITY_DELETE;//删除权限的常量
+const HAS_UPDATA = orderPrivilegeConst.SALESOPPORTUNITY_UPDATE;//修改权限的常量
 //展示申请签约用户的阶段
 const APPLY_OFFICIALL_STAGES = [Intl.get('crm.141', '成交阶段'), Intl.get('crm.142', '执行阶段')];
 //展示申请试用用户的阶段
@@ -351,6 +352,7 @@ class OrderItem extends React.Component {
             className += ' apply-user-modal';
         }
 
+        //todo 这个生成合同的按钮不展示了，所以后台没有给权限
         //是否显示生成合同的按钮
         let showGenerateContractBtn = false;
         if (this.props.order.sale_stages === Intl.get('crm.141', '成交阶段') && !this.props.order.contract_id && hasPrivilege('SALESOPPORTUNITY_CONTRACT')) {

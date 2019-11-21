@@ -1,6 +1,8 @@
 /**
  * 请求路径 - contact
+ * 合同管理
  */
+var crmPrivilegeCons = require('../../public/privilege-const');
 
 module.exports = {
     module: 'crm/server/action/contract-controller',
@@ -12,7 +14,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [crmPrivilegeCons.CRM_CONTRACT_COMMON_BASE]
     }, {
         // 添加合同
         'method': 'post',
@@ -21,7 +23,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [crmPrivilegeCons.CRM_CONTRACT_COMMON_BASE]
     },{
         // 删除待审合同
         'method': 'delete',
@@ -29,7 +31,8 @@ module.exports = {
         'handler': 'deletePendingContract',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [crmPrivilegeCons.CRM_CONTRACT_COMMON_BASE]
     },{
         // 编辑待审合同
         'method': 'put',
@@ -37,6 +40,7 @@ module.exports = {
         'handler': 'editPendingContract',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [crmPrivilegeCons.CRM_CONTRACT_COMMON_BASE]
     }]
 };

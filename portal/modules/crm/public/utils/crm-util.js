@@ -227,3 +227,24 @@ exports.CRM_VIEW_TYPES = {
     CRM_POOL: 'customer_pool',//客户池
 };
 
+//检测是否有权限
+exports.checkPrivilege = function(list) {
+    if (typeof list === 'string') {
+        list = [list];
+    }
+    var userInfo = userData.getUserData() || {};
+    var privileges = userInfo.privileges || [];
+    for(let i = 0; i < list.length; i++) {
+        var checkPrivilege = list[i].toLowerCase();
+        var hasPrivilege = _.find(privileges, function(item) {
+            if (item.toLowerCase() === checkPrivilege) {
+                return true;
+            }
+        });
+        if(hasPrivilege) {
+            return true;
+        }
+    }
+    return false;
+};
+

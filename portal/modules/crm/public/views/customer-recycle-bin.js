@@ -18,9 +18,10 @@ import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
 import {getTableContainerHeight, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import BackMainPage from 'CMP_DIR/btn-back';
-import {CRM_VIEW_TYPES} from '../utils/crm-util';
+import {CRM_VIEW_TYPES, checkPrivilege} from '../utils/crm-util';
+import crmPrivilegeConst from '../privilege-const';
 const PRIVILEGES = {
-    MANAGER_CUSTOMER_BAK_AUTH: 'CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD'//管理员获取回收站中客户列表的权限
+    MANAGER_CUSTOMER_BAK_AUTH: crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD//管理员获取回收站中客户列表的权限
 };
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -368,28 +369,29 @@ class CustomerRecycleBin extends React.Component {
                 render: (text, record, index) => {
                     if (record.id === this.state.isRecoveringId || record.id === this.state.isDeletingId) {
                         return (<Icon type="loading" className='operate-icon'/>);
-                    } else {
+                    } else if(checkPrivilege([
+                        crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD,
+                        crmPrivilegeConst.CRM_USER_CUSTOMER_BAK_OPERATOR_RECORD
+                    ])) {
                         return (
-                            <span>
-                                {hasPrivilege('CRM_RECOVERY_CUSTOMER') ? (
-                                    <Popconfirm placement="leftTop" data-tracename="恢复客户"
-                                        title={Intl.get('crm.recovery.customer.confirm.tip', '确定要恢复客户 {name} 吗？', {name: _.get(record, 'name', '')})}
-                                        onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'id', ''))}>
-                                        <span className="iconfont icon-recovery operate-icon handle-btn-item"
-                                            data-tracename="恢复客户"
-                                            title={Intl.get('crm.customer.recovery', '恢复')}/>
-                                    </Popconfirm>) : null}
-                                {hasPrivilege('CRM_DELETE_CUSTOMER') ? (
-                                    <Popconfirm placement="leftTop"
-                                        title={Intl.get('crm.delete.customer.confirm.tip', '删除后不可恢复，确定要彻底删除客户 {name} 吗？', {name: _.get(record, 'name', '')})}
-                                        onConfirm={this.deleteCustomer.bind(this, _.get(record, 'id', ''))}>
-                                        <span className="iconfont icon-delete operate-icon handle-btn-item"
-                                            data-tracename="彻底删除客户"
-                                            title={Intl.get('crm.delete.thoroughly', '彻底删除')}/>
-                                    </Popconfirm>) : null}
-                            </span>);
-                    }
-
+                            <React.Fragment>
+                                <Popconfirm placement="leftTop" data-tracename="恢复客户"
+                                    title={Intl.get('crm.recovery.customer.confirm.tip', '确定要恢复客户 {name} 吗？', {name: _.get(record, 'name', '')})}
+                                    onConfirm={this.recoveryCustomer.bind(this, _.get(record, 'id', ''))}>
+                                    <span className="iconfont icon-recovery operate-icon handle-btn-item"
+                                        data-tracename="恢复客户"
+                                        title={Intl.get('crm.customer.recovery', '恢复')}/>
+                                </Popconfirm>
+                                <Popconfirm placement="leftTop"
+                                    title={Intl.get('crm.delete.customer.confirm.tip', '删除后不可恢复，确定要彻底删除客户 {name} 吗？', {name: _.get(record, 'name', '')})}
+                                    onConfirm={this.deleteCustomer.bind(this, _.get(record, 'id', ''))}>
+                                    <span className="iconfont icon-delete operate-icon handle-btn-item"
+                                        data-tracename="彻底删除客户"
+                                        title={Intl.get('crm.delete.thoroughly', '彻底删除')}/>
+                                </Popconfirm>
+                            </React.Fragment>
+                        );
+                    }else { return null; }
                 }
             }
         ];
@@ -398,7 +400,7 @@ class CustomerRecycleBin extends React.Component {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
         }
         //没有恢复、彻底删除的权限，就去掉操作列
-        if (!hasPrivilege('CRM_RECOVERY_CUSTOMER') && !hasPrivilege('CRM_DELETE_CUSTOMER')) {
+        if (!checkPrivilege([crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD, crmPrivilegeConst.CRM_USER_CUSTOMER_BAK_OPERATOR_RECORD])) {
             columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));
         }
         return columns;

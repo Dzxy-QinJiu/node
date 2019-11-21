@@ -1,3 +1,10 @@
+/**
+ * 请求路径 - cpr
+ * 客户池规则管理
+ */
+
+var crmPrivilegeCons = require('../../public/privilege-const');
+
 module.exports = {
     module: 'crm/server/action/customer-pool-rule-controller',
     routes: [
@@ -7,7 +14,11 @@ module.exports = {
             'handler': 'getCustomerLabel',
             'passport': {
                 'needLogin': true
-            }
+            },
+            privileges: [
+                crmPrivilegeCons.CRM_LIST_CUSTOMERS,
+                crmPrivilegeCons.CUSTOMER_ALL
+            ]
         },
         {
             'method': 'get',
@@ -16,7 +27,7 @@ module.exports = {
             'passport': {
                 'needLogin': true
             },
-            privileges: ['CRM_GET_SALES_PROCESS_BY_TEAM']
+            privileges: [crmPrivilegeCons.CRM_GET_SALES_PROCESS_BY_TEAM]
         },
         { // 获取客户池配置
             'method': 'get',
@@ -25,7 +36,7 @@ module.exports = {
             'passport': {
                 'needLogin': true
             },
-            privileges: ['CUSTOMER_POOL_MANAGE']
+            privileges: [crmPrivilegeCons.CUSTOMER_POOL_MANAGE]
         },
         { // 添加客户池配置
             'method': 'post',
@@ -34,7 +45,7 @@ module.exports = {
             'passport': {
                 'needLogin': true
             },
-            privileges: ['CUSTOMER_POOL_CONFIG']
+            privileges: [crmPrivilegeCons.CUSTOMER_POOL_CONFIG]
         },
         { // 更新客户池配置
             'method': 'put',
@@ -43,7 +54,7 @@ module.exports = {
             'passport': {
                 'needLogin': true
             },
-            privileges: ['CUSTOMER_POOL_CONFIG']
+            privileges: [crmPrivilegeCons.CUSTOMER_POOL_CONFIG]
         },
         { // 删除客户池配置
             'method': 'delete',
@@ -52,7 +63,7 @@ module.exports = {
             'passport': {
                 'needLogin': true
             },
-            privileges: ['CUSTOMER_POOL_CONFIG']
+            privileges: [crmPrivilegeCons.CUSTOMER_POOL_CONFIG]
         },
     ]
 };

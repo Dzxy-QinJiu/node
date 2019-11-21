@@ -51,6 +51,7 @@ import ajax from 'ant-ajax';
 import CRMAddForm from 'MOD_DIR/crm/public/views/crm-add-form';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import CustomerRecordActions from 'MOD_DIR/crm/public/action/customer-record-action';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 //工作类型
 const WORK_TYPES = {
     LEAD: 'lead',//待处理线索，区分日程是否是线索的类型
@@ -1169,7 +1170,7 @@ class MyWorkColumn extends React.Component {
         this.setState({isShowRecormendClue: true});
     }
     renderAddAndImportBtns = () => {
-        if (hasPrivilege('CUSTOMER_ADD')) {
+        if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD)) {
             return (
                 <div className="btn-containers">
                     <Button type='primary' className='import-btn'

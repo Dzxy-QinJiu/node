@@ -23,6 +23,7 @@ var delayConstant = constantUtil.DELAY.TIMERANG;
 const CALLING_STATUS = 'busy';//正在打电话的状态（busy繁忙，idle空闲，空值-还未配置座机号）
 import MemberApply from './member-apply';
 import classNames from 'classnames';
+import shpPrivilegeConst from '../privilege-const';
 
 const OPERATOR_MEMBER_APPLY_HEIGHT = 165; // 运营人员，成员申请的高度
 const SALE_MEMBER_APPLY_HEIGHT = 190; // 销售人员，成员申请的高度
@@ -347,7 +348,7 @@ class CrmRightList extends React.Component {
     renderSalesRoleSetBtn = (salesman) => {
         let salesRoleList = this.state.salesRoleList;
         // salesman.status !== 0 &&
-        if (hasPrivilege('MEMBER_TEAM_ROLE_MANAGE') && _.isArray(salesRoleList) && salesRoleList.length) {
+        if (hasPrivilege(shpPrivilegeConst.USER_MANAGE_EDIT_USER) && _.isArray(salesRoleList) && salesRoleList.length) {
             return (
                 <Dropdown overlay={this.getSalesRoleMenus(salesman)}
                     getPopupContainer={() => document.getElementById('sales-member-li' + salesman.userId)}>
@@ -559,7 +560,7 @@ class CrmRightList extends React.Component {
         return (
             <div className="crm-sales-team-zone">
                 {
-                    hasPrivilege('MEMBER_INVITE_MANAGE') && pendingLength ? (
+                    hasPrivilege(shpPrivilegeConst.MEMBER_INVITE_APPLY) && pendingLength ? (
                         <div className="member-apply-container" data-tracename='成员审批'>
                             {this.renderPendingApproveMemberContent()}
                         </div>

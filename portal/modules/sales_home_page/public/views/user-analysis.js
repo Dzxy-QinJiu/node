@@ -17,6 +17,7 @@ let chartLegend = [{name: Intl.get('common.official', '签约'), key: 'formal'},
     {name: Intl.get('user.type.employee', '员工'), key: 'internal'},
     {name: Intl.get('user.unknown', '未知'), key: 'unknown'}];
 var constantUtil = require('../util/constant');
+import shpPrivilegeConst from '../privilege-const';
 
 //用户分析
 class UserAnlyis extends React.Component {
@@ -62,6 +63,7 @@ class UserAnlyis extends React.Component {
     }
 
     getDataType = () => {
+        //todo 待确认
         if (hasPrivilege('GET_TEAM_LIST_ALL')) {
             return 'all';
         } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
@@ -164,7 +166,7 @@ class UserAnlyis extends React.Component {
     // 获取一段时间开通账号登录情况的权限
     getAccountAuthType = () => {
         let type = 'self';
-        if (hasPrivilege('USER_ANALYSIS_MANAGER')) {
+        if (hasPrivilege(shpPrivilegeConst.USER_ANALYSIS_MANAGER)) {
             type = 'all';
         }
         return type;

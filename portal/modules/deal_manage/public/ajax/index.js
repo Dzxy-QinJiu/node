@@ -4,8 +4,9 @@
  * Created by wangliping on 2018/10/31.
  */
 import {hasPrivilege, getDataAuthType} from 'CMP_DIR/privilege/checker';
+import orderPrivilege from '../privilege-const';
 const AUTHS = {
-    MANAGER_DEAL_LIST: 'CRM_MANAGER_LIST_SALESOPPORTUNITY',
+    MANAGER_DEAL_LIST: orderPrivilege.CRM_MANAGER_LIST_SALESOPPORTUNITY,
 };
 //获取订单列表
 exports.getDealList = function(params, body) {

@@ -1,3 +1,5 @@
+const crmPrivilegeConst = require('../public/privilege-const');
+const orderPrivilegeConst = require('MOD_DIR/deal_manage/public/privilege-const');
 const orderUrl = '/rest/customer/v3/salesopportunity';
 //获取全部销售阶段，包括系统设置的和导入的旧数据中的
 const stageUrl = '/rest/customer/v2/salesopportunity/term/sale_stages';
@@ -21,21 +23,30 @@ module.exports = [{
     'handler': 'addOrder',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        orderPrivilegeConst.SALESOPPORTUNITY_ADD
+    ]
 }, {
     'method': 'put',
     'path': orderUrl + '/property/:property',
     'handler': 'editOrder',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        orderPrivilegeConst.SALESOPPORTUNITY_UPDATE
+    ]
 }, {
     'method': 'delete',
     'path': orderUrl + '/:id',
     'handler': 'deleteOrder',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        orderPrivilegeConst.SALESOPPORTUNITY_UPDATE
+    ]
 }, {
     'method': 'post',
     'path': orderUrl + '/contract/:id',
@@ -49,14 +60,19 @@ module.exports = [{
     'handler': 'applyUser',
     'passport': {
         'needLogin': true
-    }
+    },
+    privileges: [crmPrivilegeConst.USER_APPLY_APPROVE]
 }, {
     'method': 'post',
     'path': stageUrl,
     'handler': 'getStageList',
     'passport': {
         'needLogin': true
-    }
+    },
+    'privileges': [
+        orderPrivilegeConst.SALESOPPORTUNITY_QUERY,
+        orderPrivilegeConst.CRM_MANAGER_LIST_SALESOPPORTUNITY
+    ]
 }, {
     'method': 'get',
     'path': sysStageUrl,
@@ -65,6 +81,7 @@ module.exports = [{
         'needLogin': true
     }
 }, {
+    //todo 后端没有这个接口
     method: 'get',
     path: queryCustomerUrl,
     handler: 'getCustomerById',
@@ -72,7 +89,7 @@ module.exports = [{
         needLogin: true
     },
     privileges: [
-        'CRM_LIST_CUSTOMERS'
+        // 'CRM_LIST_CUSTOMERS'
     ]
 }, {
     'method': 'post',
@@ -80,5 +97,8 @@ module.exports = [{
     'handler': 'addSalesClue',
     'passport': {
         'needLogin': true
-    }
+    },
+    privileges: [
+        crmPrivilegeConst.CURTAO_CRM_LEAD_ADD
+    ]
 }];
