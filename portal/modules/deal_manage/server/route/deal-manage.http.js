@@ -1,4 +1,5 @@
-var orderPrivilegeConst = require('../../public/privilege-const');
+import orderPrivilegeConst from '../../public/privilege-const';
+import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 
 module.exports = {
     module: 'deal_manage/server/action/deal-manage-controller',
@@ -44,6 +45,6 @@ module.exports = {
         passport: {
             needLogin: true
         },
-        privileges: ['USER_ANALYSIS_COMMON', 'CUSTOMER_ANALYSIS_MANAGER']
+        // privileges: [analysisPrivilegeConst.USER_ANALYSIS_COMMON, analysisPrivilegeConst.CUSTOMER_ANALYSIS_MANAGER]
     }]
 };

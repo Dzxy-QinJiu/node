@@ -1,5 +1,5 @@
-const crmPrivilegeConst = require('../public/privilege-const');
-const orderPrivilegeConst = require('../../deal_manage/public/privilege-const');
+const crmPrivilegeConst = require('../public/privilege-const').default;
+const orderPrivilegeConst = require('../../deal_manage/public/privilege-const').default;
 const orderUrl = '/rest/customer/v3/salesopportunity';
 //获取全部销售阶段，包括系统设置的和导入的旧数据中的
 const stageUrl = '/rest/customer/v2/salesopportunity/term/sale_stages';

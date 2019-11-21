@@ -1,5 +1,5 @@
 //日程管理
-var crmPrivilegeConst = require('../../public/privilege-const');
+var crmPrivilegeConst = require('../../public/privilege-const').default;
 
 module.exports = {
     module: 'crm/server/action/schedule-controller',

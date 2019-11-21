@@ -3,7 +3,7 @@
  * 客户池规则管理
  */
 
-var crmPrivilegeCons = require('../../public/privilege-const');
+var crmPrivilegeCons = require('../../public/privilege-const').default;
 
 module.exports = {
     module: 'crm/server/action/customer-pool-rule-controller',

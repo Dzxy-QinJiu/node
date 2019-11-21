@@ -69,7 +69,11 @@ exports.deleteDeal = function(deal_id) {
 
 //各阶段总预算的获取
 exports.getStageTotalBudget = function(query) {
-    let type = getDataAuthType().toLowerCase();
+    // let type = getDataAuthType().toLowerCase();
+    let type = 'common';//CURTAO_CRM_CUSTOMER_ANALYSIS_SELF
+    if(hasPrivilege('CURTAO_CRM_CUSTOMER_ANALYSIS_ALL ')) {
+        type = 'manager';
+    }
     let Deferred = $.Deferred();
     $.ajax({
         url: `/rest/deal/${type}/stage/total_budget`,

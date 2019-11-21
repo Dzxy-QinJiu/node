@@ -2,7 +2,7 @@
  * 请求路径 - contact
  * 合同管理
  */
-var crmPrivilegeCons = require('../../public/privilege-const');
+var crmPrivilegeCons = require('../../public/privilege-const').default;
 
 module.exports = {
     module: 'crm/server/action/contract-controller',
