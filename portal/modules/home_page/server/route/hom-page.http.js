@@ -6,6 +6,7 @@
 var homePagePrivilegeConst = require('../../public/privilege-const');
 var crmPrivilegeConst = require('MOD_DIR/crm/public/privilege-const');
 import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
+import privilegeConst_user_info from '../../../user_info/public/privilege-config';
 
 module.exports = {
     module: 'home_page/server/action/home-page-controller',
@@ -35,7 +36,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [homePagePrivilegeConst.BASE_OPERATE_PERMISSION]
+        'privileges': [privilegeConst_user_info.BASE_QUERY_PERMISSION_MEMBER]
     }, {
         // 获取业绩排名
         'method': 'get',

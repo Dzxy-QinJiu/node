@@ -1,3 +1,5 @@
+import privilegeConfig_industry from '../../../industry/public/privilege-config';
+
 /**
  * IP配置的路径
  * */
@@ -26,7 +28,7 @@ module.exports = {
                 'needLogin': true
             },
             'privileges': [
-                'CREATE_CONFIG_IP' // 添加IP配置权限
+                privilegeConfig_industry.ORGANIZATION_CONFIG // 添加IP配置权限
             ]
         }, {
             // 删除IP配置
@@ -37,7 +39,7 @@ module.exports = {
                 'needLogin': true
             },
             'privileges': [
-                'DELETE_CONFIG_IP' // 删除IP配置权限
+                privilegeConfig_industry.ORGANIZATION_CONFIG // 删除IP配置权限
             ]
         }, {
             // 添加过滤内网ip
@@ -48,7 +50,7 @@ module.exports = {
                 'needLogin': true
             },
             'privileges': [
-                'CREATE_CONFIG_IP' // 添加过滤内网网段的权限
+                privilegeConfig_industry.ORGANIZATION_CONFIG // 添加过滤内网网段的权限
             ]
         }, {
             // 获取安全域是否过滤内网网段

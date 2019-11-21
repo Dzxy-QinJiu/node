@@ -1,3 +1,5 @@
+import privilegeConfig_industry from '../../../industry/public/privilege-config';
+
 require('../action/industry_manage.action');
 module.exports = {
     module: 'config_manage/server/action/industry_manage.action',
@@ -19,7 +21,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'CREATE_CONFIG_INDUSTRY' // 添加行业配置权限
+            privilegeConfig_industry.ORGANIZATION_CONFIG // 添加行业配置权限
         ]
     },{
         'method': 'delete',
@@ -29,7 +31,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'DELETE_CONFIG_INDUSTRY' // 删除行业配置权限
+            privilegeConfig_industry.ORGANIZATION_CONFIG // 删除行业配置权限
         ]
     }
     ]

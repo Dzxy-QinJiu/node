@@ -1,3 +1,5 @@
+import privilegeConst_common from '../../../user_info/public/privilege-config';
+
 module.exports = {
     module: 'common/server/action/organization',
     routes: [{
@@ -8,7 +10,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': []
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_MEMBER]
     },{
         //获取组织列表
         'method': 'put',
@@ -26,7 +28,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['CALLSYSTEM_CONFIG_MANAGE','ORGANIZATION_BASE_PERMISSION']
+        'privileges': [privilegeConst_common.CALLSYSTEM_CONFIG_MANAGE]
     },{
         //完善个人试用资料
         'method': 'put',

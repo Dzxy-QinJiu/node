@@ -17,6 +17,7 @@ import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType} from 'P
 import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
+import privilegeConst_user_info from '../privilege-config';
 const session = storageUtil.session;
 const CLOSE_TIP_TIME = 56;
 const langArray = [{key: 'zh_CN', val: '简体中文'},
@@ -623,7 +624,7 @@ class UserInfo extends React.Component{
                             ：</span>
                         <span className="user-info-item-content">{formData.rolesName}</span>
                     </div>
-                    {hasPrivilege('GET_MANAGED_REALM') || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
+                    {hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
                         <div className="user-info-item">
                             <span className="user-info-item-title">
                                 <ReactIntl.FormattedMessage className="user-info-item-content" id="common.company" defaultMessage="公司"/>：
@@ -640,7 +641,7 @@ class UserInfo extends React.Component{
                                 value={this.state.lang}
                                 field="language"
                                 selectOptions={this.getLangOptions()}
-                                hasEditPrivilege={hasPrivilege('MEMBER_LANGUAGE_SETTING')}
+                                hasEditPrivilege={hasPrivilege(privilegeConst_user_info.CURTAO_USER_CONFIG)}
                                 onSelectChange={this.onSelectLang.bind(this)}
                                 cancelEditField={this.cancelEditLang.bind(this)}
                                 saveEditSelect={this.saveEditLanguage}
@@ -751,7 +752,7 @@ class UserInfo extends React.Component{
                     </div> ) : (
                         this.renderUserInfo()
                     )}
-                    <PrivilegeChecker check="MEMBER_APPLY_EMAIL_REJECTION">
+                    <PrivilegeChecker check={privilegeConst_user_info.CURTAO_USER_CONFIG}>
                         <div className="user-tips-div">
                             <div className="user-tips-title-div">
                                 <div className="user-tips-name">

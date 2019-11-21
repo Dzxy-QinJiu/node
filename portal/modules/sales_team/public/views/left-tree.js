@@ -12,6 +12,7 @@ import {SearchInput} from 'antc';
 const SalesTeamAction = require('../action/sales-team-actions');
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import Trace from 'LIB_DIR/trace';
+import privilegeConfig_industry from 'MOD_DIR/industry/public/privilege-config';
 const TAB_HAED_HEIGHT = 40; // tabs 头部高度
 import SALES_DEPARTMENT_PRIVILEGE from '../privilege-const';
 
