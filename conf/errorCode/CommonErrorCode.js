@@ -171,6 +171,7 @@ function getConfigJson(req) {
         '90010': {'httpCode': 500, 'message': backendIntl.get('errorcode.150', '修改线索信息失败')},
         '90031': {'httpCode': 500, 'message': backendIntl.get('errorcode.152', '线索重复')},
         '90061': {'httpCode': 500, 'message': backendIntl.get('errorcode.162', '已达到一天的提取上限')},
+        '90064': {'httpCode': 500, 'message': backendIntl.get('errorcode.165', '已达到本月的提取上限')},
         '190001': {'httpCode': 500, 'message': backendIntl.get('errorcode.phone.busy', '座机繁忙，请稍后再试！')},//总机返回busy，分机忙
 
         /*************************** 角色权限 *****************************/

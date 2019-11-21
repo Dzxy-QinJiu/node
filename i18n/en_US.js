@@ -2553,6 +2553,7 @@ var en_US = {
     'errorcode.163': 'The number of members has been reached.', // 成员数量已达上限
     'errorcode.phone.busy': 'Landline busy, please try again later.',//座机繁忙，请稍后再试！
     'errorcode.164': 'Failed to get will expired customers statics',//获取即将到期的客户统计数据失败
+    'errorcode.165': 'You has achevie the max limit of this month',//已达到本月的提取上限
     'errorcode.organization.expire': 'Your account has expired',//您的账号已到期
     'errorcode.clue.batch.change.pending': 'Last batch operation has not completed, please try again later',//上次批量操作未完成，请稍后再试
     'errorcode.login.failed': 'Login failed',//登录失败
