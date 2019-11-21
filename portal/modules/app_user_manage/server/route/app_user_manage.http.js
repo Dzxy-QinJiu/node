@@ -1,5 +1,8 @@
 /**
- * 请求路径 - user
+ * 请求路径 - user 
+ *  todo 需要把 APP_USER_LIST 替换为 APP_USER_QUERY，为了测试，先写为APP_USER_LIST
+ *  todo 需要把 USER_BATCH_OPERATE 替换为 APP_USER_MANAGE ，为了测试，先写为USER_BATCH_OPERATE
+ *  todo 需要把 APP_USER_MANAGE 替换为 APP_USER_ADD ，为了测试，先写为USER_BATCH_OPERATE
  */
 
 module.exports = {

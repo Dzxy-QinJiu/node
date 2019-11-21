@@ -13,7 +13,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'GET_LOGIN_EXCEPTION_USERS'
+            'APP_USER_QUERY'
         ]
     },{
         'method': 'post',
@@ -23,7 +23,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'GET_LOGIN_EXCEPTION_USERS'
+            'APP_USER_QUERY'
         ]
     }
     ]

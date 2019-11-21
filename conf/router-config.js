@@ -63,7 +63,7 @@ let routers = [
             name: 'menu.appuser.list',//用户列表
             routePath: '/user/list',
             component: `${MODULE_PATH}app_user_manage/public`,
-            //有这个权限，才显示入口图标
+            //有这个权限，才显示入口图标 TODO 需要替换为 APP_USER_QUERY，现在为了测试暂时没有替换
             showPrivileges: ['APP_USER_LIST']
         }, {
             id: 'ORGANIZATION_MANAGE',

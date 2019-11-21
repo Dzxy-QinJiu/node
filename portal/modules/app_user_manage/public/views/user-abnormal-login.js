@@ -3,7 +3,6 @@
  * 版权所有 (c) 2016-2017 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by zhangshujuan on 2017/8/8.
  */
-var React = require('react');
 var language = require('../../../../public/language/getLanguage');
 if (language.lan() === 'es' || language.lan() === 'en') {
     require('../css/user-abnornal-login-zh_CN.less');
@@ -22,7 +21,7 @@ import UserAbnormalLoginAjax from '../ajax/user-abnormal-login-ajax';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
 import ShearContent from '../../../../components/shear-content';
-
+import USER_MANAGE_PRIVILEGE from '../privilege-const';
 var Option = Select.Option;
 // 没有消息的提醒
 var NoMoreDataTip = require('CMP_DIR/no_more_data_tip');
@@ -216,7 +215,7 @@ class UserAbnormalLogin extends React.Component {
                 <dd>
                     {title}
                     {
-                        hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && item.type === 'illegalLocation' ?
+                        hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY) && item.type === 'illegalLocation' ?
                             <span className="title-btn" onClick={this.handleIgnoreAbnormal.bind(this, item)}>
                                 {Intl.get('user.login.abnormal.ignore', '忽略')}
                             </span> : null

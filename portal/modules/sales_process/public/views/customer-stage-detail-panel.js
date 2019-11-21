@@ -16,6 +16,7 @@ import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
 import StageSelectTeamUser from './stage-select-team-user';
 import classNames from 'classnames';
 import { DragDropContext, Droppable} from 'react-beautiful-dnd';
+import CUSTOMER_STAGE_PRIVILEGE from '../privilege-const';
 
 import Trace from 'LIB_DIR/trace';
 
@@ -328,7 +329,7 @@ class CustomerStageDetailPanel extends React.Component {
                                 </div>
                                 <div className="operate-zone">
                                     {
-                                        hasPrivilege('CRM_ADD_CUSTOMER_SALES') ? (
+                                        hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.CREATE_SPECIFIC_STAGE) ? (
                                             length > 7 ? null : (
                                                 <span
                                                     onClick={this.handleAddCustomerStage}
@@ -395,7 +396,7 @@ class CustomerStageDetailPanel extends React.Component {
                             </div>
                             <div className="operate-zone">
                                 {
-                                    hasPrivilege('CRM_UPDATE_CUSTOMER_SALES') ? (
+                                    hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE) ? (
                                         <span onClick={this.handleEditCustomerScope}>
                                             <i className='icon-update iconfont handle-btn-item' />
                                         </span>
@@ -491,7 +492,7 @@ class CustomerStageDetailPanel extends React.Component {
                         value={name}
                         field='name'
                         type="text"
-                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        hasEditPrivilege={hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE)}
                         validators={[{validator: this.getValidator()}]}
                         placeholder={Intl.get('customer.stage.name.placeholder', '请输入客户阶段')}
                         saveEditInput={this.saveEditCustomerStageName.bind(this, 'name')}

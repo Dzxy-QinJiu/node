@@ -1,4 +1,3 @@
-const React = require('react');
 require('./index.less');
 const Spinner = require('CMP_DIR/spinner');
 const AlertTimer = require('CMP_DIR/alert-timer');
@@ -11,6 +10,8 @@ import OfficeForm from './office-form';
 const ALERT_TIME = 4000;//错误提示的展示时间：4s
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import { positionEmitter } from 'PUB_DIR/sources/utils/emitters';
+import POSITION_PRIVILEGE from './privilege-const';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 const LAYOUT = {
     HAED_HEIGHT: 40, // tabs项的高度
@@ -348,6 +349,7 @@ class OfficeManage extends React.Component {
                 </div>
             );
         } else if (_.isArray(positionList) && length) {
+            let privilege = hasPrivilege(POSITION_PRIVILEGE.POSITION_MANAGE);
             // 职务列表
             return (
                 <div className="office-content-zone">
@@ -358,9 +360,9 @@ class OfficeManage extends React.Component {
                                 let defaultCls = classNames('default-role-descr', {'default-role-checked': isDefaultFlag});
                                 let count = _.get(item, 'customer_num', 0);
                                 let id = _.get(item, 'id');
-                                let isShowMoreBtn = this.state.mouseZoneHoverItemId === id; // 是否显示更多按钮
-                                let isEdit = _.get(item, 'isEdit');
-                                let isDelete = _.get(item, 'isDelete');
+                                let isShowMoreBtn = privilege && this.state.mouseZoneHoverItemId === id; // 是否显示更多按钮
+                                let isEdit = privilege && _.get(item, 'isEdit');
+                                let isDelete = privilege && _.get(item, 'isDelete');
                                 let itemContainerCls = classNames('item-office-container', {
                                     'item-office-delete-container': isDelete,
                                     'item-selected': item.selected
@@ -473,18 +475,22 @@ class OfficeManage extends React.Component {
         let height = this.getContentHeight();
         return (
             <div className="office-container" data-tracename="职务" style={{height: height}}>
-                <div className="add-office-container">
-                    {this.state.isShowAddPosition ? (
-                        <div className="add-office" onClick={this.addPosition}>
-                            <Icon type="plus" />
-                            <span className="name-label">{Intl.get('member.add.position', '添加职务')}</span>
+                {
+                    hasPrivilege(POSITION_PRIVILEGE.POSITION_MANAGE) ? (
+                        <div className="add-office-container">
+                            { this.state.isShowAddPosition ? (
+                                <div className="add-office" onClick={this.addPosition}>
+                                    <Icon type="plus" />
+                                    <span className="name-label">{Intl.get('member.add.position', '添加职务')}</span>
+                                </div>
+                            ) : (
+                                <div className="add-office-box">
+                                    {this.renderEditOrAddPosition()}
+                                </div>
+                            )}
                         </div>
-                    ) : (
-                        <div className="add-office-box">
-                            {this.renderEditOrAddPosition()}
-                        </div>
-                    )}
-                </div>
+                    ) : null
+                }
                 <div className="office-content">
                     {this.renderPositionList()}
                 </div>
