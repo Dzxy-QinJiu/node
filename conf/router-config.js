@@ -5,6 +5,7 @@
  */
 import user_info_privilegeConst from '../portal/modules/user_info/public/privilege-config';
 import call_record_privilegeConst from '../portal/modules/call_record/public/privilege-const';
+import industry_privilegeConst from '../portal/modules/industry/public/privilege-config';
 
 const MODULE_PATH = 'modules/';
 let routers = [
@@ -301,7 +302,7 @@ let routers = [
                 routePath: '/background_management/industry',
                 component: `${MODULE_PATH}industry/public`,
                 //有这个权限，才显示入口图标
-                showPrivileges: ['CREATE_CONFIG_INDUSTRY']
+                showPrivileges: [industry_privilegeConst.ORGANIZATION_CONFIG]
             },
             {
                 id: 'COMPETE',
