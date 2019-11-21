@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/5/11.
  */
 // 跟进记录
-var crmPrivilegeConst = require('../../public/privilege-const');
+import crmPrivilegeConst from '../../public/privilege-const';
 
 module.exports = {
     module: 'crm/server/action/customer-trace-controller',

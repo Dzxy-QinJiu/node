@@ -62,6 +62,7 @@ import { clueEmitter, clueToCustomerPanelEmitter } from 'PUB_DIR/sources/utils/e
 import {sourceClassifyArray, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import commonSalesHomePrivilegeConst from 'MOD_DIR/common_sales_home_page/public/privilege-const';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -1118,7 +1119,7 @@ class ClueDetailOverview extends React.Component {
     renderTraceContent = () => {
         var curClue = this.state.curClue;
         //是否有添加跟进记录的权限
-        var hasPrivilegeAddEditTrace = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_TRACE_ADD) && editCluePrivilege(curClue);
+        var hasPrivilegeAddEditTrace = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_TRACE_ADD) && editCluePrivilege(curClue);
         let noTraceData = _.isEmpty(_.get(curClue, 'customer_traces'));
         return (
             <DetailCard

@@ -6,6 +6,7 @@ var userData = require('PUB_DIR/sources/user-data');
 import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
 import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
@@ -87,7 +88,7 @@ export const editCluePrivilege = function(clueItem) {
 };
 export const assignSalesPrivilege = (curClue) => {
     let user = userData.getUserData();
-    return (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER') && !user.isCommonSales)) && editCluePrivilege(curClue);
+    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF) && !user.isCommonSales)) && editCluePrivilege(curClue);
 };
 
 export const CLUE_DIFF_TYPE = [
@@ -219,11 +220,11 @@ export const handleSubmitContactData = function(submitObj){
 export const handlePrivilegeType = function(isMarkingAvalibility) {
     var type = 'user';
     if (isMarkingAvalibility){
-        if (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER')){
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL)){
             type = 'manager';
         }
     }else{
-        if (hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER')){
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL)){
             type = 'manager';
         }
     }
