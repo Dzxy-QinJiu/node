@@ -358,7 +358,7 @@ let routers = [
             routePath: '/user_info_manage/user_pwd',
             component: `${MODULE_PATH}user_password/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['USER_INFO_PWD']
+            showPrivileges: ['USER_INFO_UPDATE']
         }]
     },
     //todo 申请审批代码优化后会去掉
