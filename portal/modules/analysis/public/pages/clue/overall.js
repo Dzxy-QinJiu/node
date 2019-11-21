@@ -5,13 +5,14 @@
 import clueChart from '../../charts/clue';
 import {CLUE_MENUS} from '../../consts';
 import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
     title: CLUE_MENUS.OVERALL.name,
     key: CLUE_MENUS.OVERALL.key,
     privileges: [
-        'CRM_CLUE_STATISTICAL_SELF',
-        'CRM_CLUE_STATISTICAL_ALL',
+        analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_SELF,
+        analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_ALL,
     ],
     charts: getCharts()
 };
