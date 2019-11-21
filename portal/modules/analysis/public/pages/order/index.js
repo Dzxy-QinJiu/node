@@ -4,6 +4,7 @@
 
 import { getContextContent } from '../../utils';
 import {ORDER_MENUS} from '../../consts';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 //引入同目录下以.js结尾的并且不包含index的文件
 const req = require.context('.', false, /^((?!index).)*\.js$/);
@@ -16,8 +17,8 @@ module.exports = {
     key: ORDER_MENUS.INDEX.key,
     menuIndex: 2,
     privileges: [
-        'CUSTOMER_ANALYSIS_COMMON',
-        'CUSTOMER_ANALYSIS_MANAGER',
+        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER,
+        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_USER,
     ],
     pages,
 };
