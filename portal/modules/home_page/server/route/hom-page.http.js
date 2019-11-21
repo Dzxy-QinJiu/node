@@ -4,7 +4,7 @@
  * Created by wangliping on 2019/6/21.
  */
 var homePagePrivilegeConst = require('../../public/privilege-const');
-var crmPrivilegeConst = require('MOD_DIR/crm/public/privilege-const');
+var crmPrivilegeConst = require('../../../crm/public/privilege-const');
 import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 import privilegeConst_user_info from '../../../user_info/public/privilege-config';
 

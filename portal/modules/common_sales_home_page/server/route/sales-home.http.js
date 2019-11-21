@@ -3,7 +3,7 @@
  */
 require('../action/sales-home-controller');
 var commonSalesHomePrivilegeConst = require('../../public/privilege-const');
-var crmPrivilegeConst = require('MOD_DIR/crm/public/privilege-const');
+var crmPrivilegeConst = require('../../../crm/public/privilege-const');
 
 module.exports = {
     module: 'common_sales_home_page/server/action/sales-home-controller',

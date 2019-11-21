@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2017/10/16.
  */
 require('../action/clue-customer-controller');
-import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import cluePrivilegeConst from '../../../clue_customer/public/privilege-const';
 
 module.exports = {
     module: 'clue_customer/server/action/clue-customer-controller',
