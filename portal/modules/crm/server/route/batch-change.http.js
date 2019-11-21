@@ -1,4 +1,4 @@
-var crmPrivilegeConst = require('../../public/privilege-const');
+var crmPrivilegeConst = require('../../public/privilege-const').default;
 
 module.exports = {
     module: 'crm/server/action/batch-change-controller',
