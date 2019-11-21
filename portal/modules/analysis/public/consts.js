@@ -5,9 +5,9 @@
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 //权限类型
-export const authType = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) ? 'manager' : 'common';
+export const authType = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) || hasPrivilege(analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER) ? 'manager' : 'common';
 //数据类型
-export const dataType = hasPrivilege(analysisPrivilegeConst.CUSTOMER_ANALYSIS_MANAGER) || hasPrivilege(analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER) || hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_ALL) ? 'all' : 'self';
+export const dataType = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) || hasPrivilege(analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER) || hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_ALL) ? 'all' : 'self';
 
 //初始时间
 export const initialTime = {

@@ -65,55 +65,23 @@ class RecommendCustomerRightPanel extends React.Component {
         clueCustomerStore.listen(this.onStoreChange);
         //获取推荐的线索
         this.getRecommendClueLists();
-        //获取最多提取线索的数量
-        this.getMaxLimitCount();
-    }
-    getMaxLimitCount(){
-        $.ajax({
-            url: '/rest/get/maxlimit/count',
-            dataType: 'json',
-            type: 'get',
-            success: (count) => {
-                this.setState({
-                    maxLimitExtractNumber: _.isNumber(count) ? count : 0,
-                    getMaxLimitExtractNumberError: false
-                });
-            },
-            error: (xhr) => {
-                this.setState({
-                    getMaxLimitExtractNumberError: true
-                });
-            }
-        });
     }
 
-    //获取某个安全域已经提取多少推荐线索数量,
+    //获取最多提取线索的数量以及已经提取多少线索
     getRecommendClueCount(callback){
-        //如果是试用的账号，要获取今天的提取量，
-        var submitObj = {
-            timeStart: moment().startOf('day').valueOf(),
-            timeEnd: moment().endOf('day').valueOf(),
-        };
-        //如果是正式账号，要获取本月的提取量
-        if(this.isOfficalAccount()){
-            submitObj = {
-                timeStart: moment().startOf('month').valueOf(),
-                timeEnd: moment().endOf('month').valueOf(),
-            };
-        }
-
         $.ajax({
-            url: '/rest/recommend/clue/count',
+            url: '/rest/get/maxlimit/and/hasExtracted/count',
             dataType: 'json',
             type: 'get',
-            data: submitObj,
             success: (data) => {
-                var count = _.get(data,'total', 0);
+                var maxCount = _.get(data,'total', 0);
+                var hasExtractedCount = _.get(data,'pulled_clue_numbers');
                 this.setState({
-                    hasExtractCount: count
+                    hasExtractCount: hasExtractedCount,
+                    maxLimitExtractNumber: maxCount,
+                },() => {
+                    _.isFunction(callback) && callback(hasExtractedCount);
                 });
-                _.isFunction(callback) && callback(count);
-
             },
             error: (errorInfo) => {
                 this.setState({

@@ -11,7 +11,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'GET_CONFIG_INDUSTRY' // 获取行业配置权限
+            privilegeConfig_industry.BASE_QUERY_PERMISSION_ORGANIZATION // 获取行业配置权限
         ]
     },{
         'method': 'post',

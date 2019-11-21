@@ -99,8 +99,7 @@ let routers = [
                 component: `${MODULE_PATH}analysis/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: [
-                    'CUSTOMER_ANALYSIS_COMMON',
-                    'CUSTOMER_ANALYSIS_MANAGER'
+                    'CRM_CONTRACT_ANALYSIS',
                 ]
             },
             {
@@ -116,8 +115,7 @@ let routers = [
                         routePath: '/analysis/report/weekly_report',
                         component: `${MODULE_PATH}weekly_report/public`,
                         showPrivileges: [
-                            'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
-                            'KETAO_SALES_TEAM_WEEKLY_REPORTS_COMMON',
+                            'CRM_CONTRACT_ANALYSIS',
                         ],
                     },
                     //月报统计
@@ -127,8 +125,7 @@ let routers = [
                         routePath: '/analysis/report/monthly_report',
                         component: `${MODULE_PATH}monthly-report/public`,
                         showPrivileges: [
-                            'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
-                            'CALLRECORD_ASKFORLEAVE_QUERY_USER',
+                            'CRM_CONTRACT_ANALYSIS',
                         ],
                     },
                     //销售报告
@@ -139,8 +136,7 @@ let routers = [
                         component: `${MODULE_PATH}sales-report/public`,
                         //有这个权限，才显示入口图标
                         showPrivileges: [
-                            'CURTAO_SALES_REPORTS_COMMON',
-                            'CURTAO_SALES_REPORTS_MANAGER',
+                            'CRM_CONTRACT_ANALYSIS',
                         ]
                     },
                 ],

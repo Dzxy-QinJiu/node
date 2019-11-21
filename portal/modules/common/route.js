@@ -12,6 +12,7 @@ const websiteConfigUrl = '/rest/base/v1/user/website/config';
 const websiteModuleRecordConfigUrl = '/rest/base/v1/user/website/config/module/record';
 const userAnalysisV3Url = '/rest/analysis/user/v3'; //  common（普通权限用户）manager（管理员权限）
 const invalidPhone = '/rest/base/v1/realm/config/customerservicephone';//获取或者添加无效电话
+import analysisPrivilegeConst from '../analysis/public/privilege-const';
 
 module.exports = [{
     'method': 'get',
@@ -89,7 +90,7 @@ module.exports = [{
         'needLogin': true
     },
     'privileges': [
-        'CUSTOMER_ANALYSIS_MANAGER'
+        analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER
     ]
 }, {
     'method': 'post',
@@ -372,7 +373,6 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.USER_MANAGE_LIST_USERS]
 }, {
     //获取应用下角色{query: tags}
     'method': 'get',

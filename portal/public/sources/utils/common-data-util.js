@@ -705,11 +705,13 @@ exports.getOrganizationInfo = (queryParams = {}) => {
 exports.getMaxLimitExtractClueCount = function() {
     const Deferred = $.Deferred();
     $.ajax({
-        url: '/rest/get/maxlimit/count',
+        url: '/rest/get/maxlimit/and/hasExtracted/count',
         dataType: 'json',
         type: 'get',
-        success: (count) => {
-            Deferred.resolve(_.isNumber(count) ? count : 0);
+        success: (data) => {
+            var maxCount = _.get(data,'total', 0);
+            var hasExtractedCount = _.get(data,'pulled_clue_numbers');
+            Deferred.resolve({maxCount, hasExtractedCount});
         },
         error: (xhr) => {
             Deferred.reject(xhr.responseJSON);
