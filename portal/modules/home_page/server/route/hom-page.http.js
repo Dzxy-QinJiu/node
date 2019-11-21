@@ -3,8 +3,7 @@
  * 版权所有 (c) 2015-2018 湖南蚁坊软件股份有限公司。保留所有权利。
  * Created by wangliping on 2019/6/21.
  */
-var homePagePrivilegeConst = require('../../public/privilege-const');
-var crmPrivilegeConst = require('../../../crm/public/privilege-const');
+import crmPrivilegeConst from '../../../crm/public/privilege-const';
 import analysisPrivilegeConst from '../../../analysis/public/privilege-const';
 import privilegeConst_user_info from '../../../user_info/public/privilege-config';
 
@@ -18,7 +17,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [homePagePrivilegeConst.BASE_QUERY_PERMISSION_MEMBER]
+        'privileges': [privilegeConst_user_info.BASE_QUERY_PERMISSION_MEMBER]
     }, {
         // 获取我的工作类型列表
         'method': 'get',
@@ -27,7 +26,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [homePagePrivilegeConst.BASE_QUERY_PERMISSION_MEMBER]
+        'privileges': [privilegeConst_user_info.BASE_QUERY_PERMISSION_MEMBER]
     }, {
         //修改我的工作状态
         'method': 'put',
@@ -56,7 +55,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [homePagePrivilegeConst.CURTAO_CRM_CALLRECORD_STATISTICS]
+        'privileges': [analysisPrivilegeConst.CURTAO_CRM_CALLRECORD_STATISTICS]
     }, {
         //获取联系的客户数
         'method': 'get',
