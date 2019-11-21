@@ -6,21 +6,9 @@
     if (self != top) {
         top.location = self.location;
     }
-
-    Oplate = {
-        initialProps: {
-            loginErrorMsg: '<%- loginErrorMsg %>',
-            username: '<%- username %>',
-            captchaCode: '<%- captchaCode %>',
-            isBindWechat: '<%- isBindWechat %>',
-            isWechatRegisterError: '<%- isWechatRegisterError %>',
-        },
+    curtaoObj = {
         isCurtao: '<%= isCurtao %>',
         lang: '<%= lang %>',
-        hideLangQRcode: '<%- hideLangQRcode %>',
-        clientId: '<%- clientId %>',
-        stopcheck: '<%- stopcheck %>',
-        useSso: '<%- useSso %>'
     };
 </script>
 <% if(isFormal == "true") { %>
@@ -28,15 +16,13 @@
 <script type="text/javascript">
     var _paq = _paq || [];
     // tracker methods like "setCustomDimension" should be called before "trackPageView"
-    _paq.push(['setUserId', '<%= username %>']);
-    _paq.push(['setCustomDimension', 2, '<%= username %>']);
     _paq.push(['setDocumentTitle', '/']);
-    _paq.push(['trackPageView']);
+    _paq.push(['trackPageView'])
     _paq.push(['enableHeartBeatTimer', 30]);
     (function() {
-        var u = '//ustat.antfact.com/';
+        var u = '//ustatweb.antfact.com/';
         _paq.push(['setTrackerUrl', u + 'piwik.php']);
-        _paq.push(['setSiteId', '<%= siteID %>']);
+        _paq.push(['setSiteId', '17']);
         var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
         g.type = 'text/javascript';
         g.async = true;
@@ -53,9 +39,9 @@
 <div id="react-placeholder">
     <style>
         #newBridge #nb_icon_wrap {
-           display: none;
+            display: none;
         }
-        .login-wrap {
+        .register-wrap {
             position: absolute;
             top: 0;
             right: 0;
@@ -64,7 +50,7 @@
             font-size: 14px;
             color: #d8eaf4;
         }
-        .login-wrap .isloading {
+        .register-wrap .isloading {
             position: absolute;
             top: 45%;
             left: 48%;
@@ -111,24 +97,19 @@
             }
         }
     </style>
-    <div class="login-wrap" style="background-color: <%= isCurtao ? '#ffffff' : '#1d2b36' %>">
+    <div class="register-wrap" style="background-color: '#FFFFFF' %>">
         <div class="load8 isloading">
             <div class="loader8"></div>
         </div>
     </div>
 </div>
-<% // 页脚         %>
-<% showFooterContent = hideLangQRcode || useSso ? false : true %>
+<% // 页脚%>
 <script src="/dll/dll.vendor.js?timestamp=<%= timeStamp %>"></script>
 <script src="/dll/dll.reactRel.js?timestamp=<%= timeStamp %>"></script>
 <script src="/resources/common.bundle.js?timestamp=<%= timeStamp %>"></script>
-<% if(isCurtao){ %>
-<% // --- curtao的登录界面 ---   %>
-<script src="/resources/login_curtao.bundle.js?timestamp=<%= timeStamp %>"></script>
-<% } else { %>
-<% // --- ketao的登录界面 ---   %>
-<script src="/resources/login.bundle.js?timestamp=<%= timeStamp %>"></script>
-<% } %>
-<% // 登录页展示客服           %>
+<% // --- 注册界面 ---   %>
+<script src="/resources/register.bundle.js?timestamp=<%= timeStamp %>"></script>
+<% // 注册页展示客服           %>
 <% show_custom_service = true %>
+<% showFooterContent = true %>
 <% include ../../common/public/tpl/common-footer.ejs %>

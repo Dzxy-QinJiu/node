@@ -35,3 +35,14 @@ exports.getCallSystemConfig = function(req,res) {
         res.status(500).json(codeMessage && codeMessage.message || backendIntl.get('common.callsystem.get.faild', '获取组织电话系统配置失败'));
     });
 };
+
+/**
+ * 完善个人试用资料
+ */
+exports.updatePersonalTrialInfo = function(req,res) {
+    organizationService.updatePersonalTrialInfo(req,res).on('success' , function(data) {
+        res.json(data);
+    }).on('error' , function(codeMessage) {
+        res.status(500).json(codeMessage && codeMessage.message);
+    });
+};

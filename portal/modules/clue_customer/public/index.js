@@ -103,6 +103,7 @@ import { clueEmitter, notificationEmitter } from 'PUB_DIR/sources/utils/emitters
 import { parabola } from 'PUB_DIR/sources/utils/parabola';
 import { storageUtil } from 'ant-utils';
 import { setWebsiteConfig } from 'LIB_DIR/utils/websiteConfig';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 const DIFFREF = {
     ASSIGN: 'assign',//分配
     TRACE: 'trace', //跟进
@@ -556,7 +557,7 @@ class ClueCustomer extends React.Component {
         return (
             <div className="recomend-clue-customer-container">
                 {
-                    hasPrivilege('CUSTOMER_ADD_CLUE') ?
+                    hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD) ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
                             <Button className="ant-btn ant-btn-primary manual-add-btn">
                                 <Icon type="plus" className="add-btn"/>
@@ -595,7 +596,7 @@ class ClueCustomer extends React.Component {
     renderClueRecommend = () => {
         return (
             <div className="recomend-clue-customer-container pull-right">
-                {hasPrivilege('COMPANYS_GET') ?
+                {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ?
                     <Popover
                         placement="bottom"
                         content={(
@@ -922,7 +923,7 @@ class ClueCustomer extends React.Component {
         Trace.traceEvent('线索管理', '导出线索');
         const sorter = this.state.sorter;
         var type = 'user';
-        if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
             type = 'manager';
         }
         var isGetAll = this.state.exportRange === 'all';
@@ -1267,7 +1268,7 @@ class ClueCustomer extends React.Component {
     };
     renderInavailabilityOrValidClue = (salesClueItem) => {
         //是否有标记线索无效的权限
-        var avalibilityPrivilege = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
+        var avalibilityPrivilege = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF);
         return(
             <span className="valid-or-invalid-container">
                 {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
@@ -1432,7 +1433,7 @@ class ClueCustomer extends React.Component {
     };
     renderAvailabilityClue = (salesClueItem) => {
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && salesClueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
+        var associatedPrivilege = (hasPrivilege('') || hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER)) && salesClueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
         return(
             <div className="avalibility-container">
                 <div className="associate-customer">
@@ -1739,7 +1740,7 @@ class ClueCustomer extends React.Component {
         //除了运营不能释放线索，管理员、销售都可以释放
         //待跟进，已跟进，无效线索才可以被释放
         let showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue);
-        let showDelete = hasPrivilege(privileCOnst.CURTAO_CRM_LEAD_DELETE);
+        let showDelete = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
         if(showRelease || showDelete) {
             columns.push({
                 dataIndex: 'clue_action',
@@ -1814,7 +1815,7 @@ class ClueCustomer extends React.Component {
     };
     getRowSelection = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示选择框的处理
-        let showSelectionFlag = (hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales;
+        let showSelectionFlag = (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && !userData.getUserData().isCommonSales);
         //待跟进，已跟进，无效可以有批量释放,可以展示选择框
         let typeFilter = this.getFilterStatus();//线索类型
         let willTrace = SELECT_TYPE.WILL_TRACE === typeFilter.status;
@@ -2113,7 +2114,7 @@ class ClueCustomer extends React.Component {
         });
     };
     renderAddDataContent = () => {
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD)) {
             return (
                 <div className="btn-containers">
                     <div>
@@ -2129,7 +2130,7 @@ class ClueCustomer extends React.Component {
         }
     };
     renderImportDataContent = () => {
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
+        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD)) {
             return (
                 <div className="btn-containers">
                     <div>
@@ -2199,7 +2200,7 @@ class ClueCustomer extends React.Component {
         }
         else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
             //总的线索不存在并且没有筛选条件时
-            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && hasPrivilege('CUSTOMER_ADD_CLUE');
+            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD);
             return (
                 <NoDataAddAndImportIntro
                     renderOtherOperation={this.renderOtherOperation}
@@ -2660,7 +2661,7 @@ class ClueCustomer extends React.Component {
     //渲染批量操作按钮
     renderBatchChangeClues = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
-        let showBatchChange = ((hasPrivilege('CLUECUSTOMER_DISTRIBUTE_MANAGER') || hasPrivilege('CLUECUSTOMER_DISTRIBUTE_USER')) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
+        let showBatchChange = ((hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF)) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
         let filterClueStatus = clueFilterStore.getState().filterClueStatus;
         let curStatus = getClueStatusValue(filterClueStatus);
         //除了运营不能释放线索，管理员、销售都可以释放
@@ -2756,12 +2757,12 @@ class ClueCustomer extends React.Component {
     }
     topBarDropList = (isWebMin) => {
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
-            {isWebMin && hasPrivilege('CUSTOMER_ADD_CLUE') ?
+            {isWebMin && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD) ?
                 <Menu.Item key="add" >
                     {Intl.get('crm.sales.manual_add.clue','手动添加')}
                 </Menu.Item>
                 : null}
-            {isWebMin && hasPrivilege('CUSTOMER_ADD_CLUE') ?
+            {isWebMin && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD) ?
                 <Menu.Item key="import" >
                     {Intl.get('crm.sales.manual.import.clue','导入线索')}
                 </Menu.Item>
@@ -2769,11 +2770,11 @@ class ClueCustomer extends React.Component {
             <Menu.Item key="export" >
                 {Intl.get('clue.export.clue.list','导出线索')}
             </Menu.Item>
-            {hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF') ?
+            {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) ?
                 <Menu.Item key="clue_pool">
                     {Intl.get('clue.pool', '线索池')}
                 </Menu.Item> : null}
-            {hasPrivilege('COMPANYS_GET') ?
+            {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE) ?
                 <Menu.Item key="recommend">
                     {Intl.get('clue.customer.clue.recommend', '线索推荐')}
                 </Menu.Item> : null}
@@ -2795,7 +2796,7 @@ class ClueCustomer extends React.Component {
                 {/*this.renderClueAnalysisBtn() : null*/}
                 {/*}*/}
                 {
-                    !(isWebMiddle || isWebMin) && (hasPrivilege('LEAD_QUERY_LEAD_POOL_ALL') || hasPrivilege('LEAD_QUERY_LEAD_POOL_SELF')) ?
+                    !(isWebMiddle || isWebMin) && (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF)) ?
                         this.renderExtractClue() : null
                 }
                 {!(isWebMiddle || isWebMin) ? this.renderExportClue() : null}
@@ -2812,7 +2813,7 @@ class ClueCustomer extends React.Component {
     };
     isShowRecommendSettingPanel = () => {
         var settedCustomerRecommend = this.state.settedCustomerRecommend;
-        return (!this.state.isLoading && !this.state.clueCustomerErrMsg) && !settedCustomerRecommend.loading && this.state.showRecommendCustomerCondition && hasPrivilege('COMPANYS_GET');
+        return (!this.state.isLoading && !this.state.clueCustomerErrMsg) && !settedCustomerRecommend.loading && this.state.showRecommendCustomerCondition && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE);
     };
     hideFocusCustomerPanel = () => {
         this.setState({
