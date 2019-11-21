@@ -69,9 +69,9 @@ exports.getClueChannel = function(req, res) {
             res.status(500).json(err && err.message);
         });
 };
-//获取线索最大提取量
-exports.getMaxLimitCount = function(req, res) {
-    clueCustomerService.getMaxLimitCount(req, res)
+//获取线索最大提取量及已经提取的线索量
+exports.getMaxLimitCountAndHasExtractedClue = function(req, res) {
+    clueCustomerService.getMaxLimitCountAndHasExtractedClue(req, res)
         .on('success', function(data) {
             res.status(200).json(data);
         }).on('error', function(err) {
