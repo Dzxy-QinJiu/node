@@ -12,6 +12,7 @@ const websiteConfigUrl = '/rest/base/v1/user/website/config';
 const websiteModuleRecordConfigUrl = '/rest/base/v1/user/website/config/module/record';
 const userAnalysisV3Url = '/rest/analysis/user/v3'; //  common（普通权限用户）manager（管理员权限）
 const invalidPhone = '/rest/base/v1/realm/config/customerservicephone';//获取或者添加无效电话
+import analysisPrivilegeConst from '../analysis/public/privilege-const';
 
 module.exports = [{
     'method': 'get',
@@ -89,7 +90,7 @@ module.exports = [{
         'needLogin': true
     },
     'privileges': [
-        'CUSTOMER_ANALYSIS_MANAGER'
+        analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER
     ]
 }, {
     'method': 'post',
@@ -326,7 +327,6 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.CRM_CUSTOMER_TRANSFER_RECORD]
 }, {
     //获取客户阶段变更数据
     'method': 'get',
@@ -335,7 +335,6 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.USER_CUSTOMER_LABEL_COUNT || privilegeConst_common.CRM_MANAGER]
 }, {
     //获取客户阶段变更的客户数据
     'method': 'post',
@@ -352,7 +351,6 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.KETAO_WEEKLY_REPORTS_CUSTOMER_STAGE_STATISITC_COMMON || privilegeConst_common.KETAO_WEEKLY_REPORTS_CUSTOMER_STAGE_STATISITC_MANAGER]
 }, {
     //获取销售新开客户数
     'method': 'get',
@@ -361,7 +359,6 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_MANAGER || privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_COMMON]
 }, {
     //获取所有成员基本信息（仅包含姓名、id，不分页)
     'method': 'get',
@@ -370,7 +367,6 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.USER_MANAGE_LIST_USERS]
 }, {
     //获取应用下角色{query: tags}
     'method': 'get',
