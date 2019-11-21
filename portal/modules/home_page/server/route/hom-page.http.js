@@ -44,10 +44,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': [
-            analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_COMMON,
-            analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER
-        ]
+        'privileges': []
     }, {//获取通话时长数据
         'method': 'get',
         'path': '/rest/call/time/data',
