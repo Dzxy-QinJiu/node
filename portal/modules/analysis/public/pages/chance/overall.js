@@ -4,13 +4,14 @@
 
 import chanceChart from '../../charts/chance';
 import {CHANCE_MENUS} from '../../consts';
+import analysisPrivilegeConst from '../../privilege-const';
 
 module.exports = {
     title: CHANCE_MENUS.OVERALL.name,
     key: CHANCE_MENUS.OVERALL.key,
     privileges: [
-        'CURTAO_CRM_LEAD_QUERY_SELF',
-        'CURTAO_CRM_LEAD_QUERY_ALL',
+        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_USER,
+        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER,
     ],
     charts: getCharts()
 };

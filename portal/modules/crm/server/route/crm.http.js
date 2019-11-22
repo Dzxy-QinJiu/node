@@ -156,7 +156,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
-            privileges: [crmPrivilegeConst.CUSTOMER_ADD]
+            // privileges: [crmPrivilegeConst.CUSTOMER_ADD]
         },
         {
             method: 'post',

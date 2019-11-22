@@ -41,7 +41,7 @@ var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
-import publicPrivilegeConst from '../../privilege-const';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key

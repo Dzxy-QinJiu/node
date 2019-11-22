@@ -14,6 +14,9 @@ import Spinner from 'CMP_DIR/spinner';
 import CallNumberUtil from 'PUB_DIR/sources/utils/common-data-util';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import {Button} from 'antd';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+
 //高度常量
 var LAYOUT_CONSTANTS = {
     MERGE_SELECT_HEIGHT: 30,//合并面板下拉框的高度
@@ -111,7 +114,7 @@ class Contacts extends React.Component {
                                     Intl.get('crm.no.contact.tip', '该客户还没有联系人')}
                             </span>
                         )}
-                        {this.props.isMerge || this.props.disableEdit ? null : (
+                        {this.props.isMerge || this.props.disableEdit || !hasPrivilege(crmPrivilegeConst.CRM_ADD_CONTACT) ? null : (
                             <Button className='crm-detail-add-btn' onClick={this.showAddContactForm.bind(this)}>
                                 {Intl.get('crm.detail.contact.add', '添加联系人')}
                             </Button>

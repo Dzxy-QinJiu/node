@@ -171,7 +171,7 @@ class ContactItem extends React.Component {
                         </Button>
                     </span>) : (
                     <span className="contact-item-buttons">
-                        {this.props.disableEdit ? null : (
+                        {this.props.disableEdit || !hasPrivilege(crmPrivilegeConst.CRM_DELETE_CONTACT) ? null : (
                             <span className="iconfont icon-delete handle-btn-item"
                                 title={Intl.get('common.delete', '删除')}
                                 data-tracename="点击删除联系人按钮"

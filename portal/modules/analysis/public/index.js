@@ -173,13 +173,14 @@ class CurtaoAnalysis extends React.Component {
 
         return _.filter(menus, menu => {
             //若果定义了是否显示该菜单的回调函数，则调用该函数，以控制菜单的显示隐藏
+            //所以这个方法得慎重，因为会跳过权限处理，所以若需要用到权限，还需在这个方法里进行权限验证
+            //TODO 最好的处理是 isShowCallBack和privileges都验证通过后，才展示菜单
             if (_.isFunction(menu.isShowCallback)) {
                 return menu.isShowCallback();
             }
 
             if (menu.privileges) {
                 const foundPrivilege = _.find(menu.privileges, privilege => hasPrivilege(privilege));
-
                 //没有开通营收中心时，去掉对应的菜单项
                 if(!isOpenCash()) {
                     let flag = _.includes(NO_OPEN_CASH_SHOW_MENUS_KEY, menu.key);

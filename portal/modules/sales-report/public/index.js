@@ -24,8 +24,9 @@ const TopNav = require('CMP_DIR/top-nav');
 const isOrganizationEefung = require('PUB_DIR/sources/utils/common-method-util').isOrganizationEefung;
 const STORED_MEMBER_ID_KEY = 'sales_report_selected_member_id';
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 const authType = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMERTRACE_STATISTICS_MANAGER) ? 'manager' : 'common';
-const dataType = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_SALES_COMPREHENSIVE_DATA) ? 'all' : 'self';
+const dataType = hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL) ? 'all' : 'self';
 import ButtonZones from 'CMP_DIR/top-nav/button-zones';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 

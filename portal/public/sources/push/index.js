@@ -25,6 +25,7 @@ import {getClueUnhandledPrivilege, getUnhandledClueCountParams} from 'PUB_DIR/so
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 const session = storageUtil.session;
 import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 
 // 获取弹窗通知的状态
 function getNotifyStatus() {
@@ -1016,7 +1017,7 @@ function getNotificationUnread(queryObj, callback) {
 function getClueUnreadNum(data, callback){
     //pageSize设置为0，只取到数据就行
     var type = 'user';
-    if (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER')){
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'manager';
     }
     $.ajax({

@@ -1364,16 +1364,20 @@ class Crm extends React.Component {
                         >
                             <Button><i className="iconfont icon-search-duplicates" />{Intl.get('crm.1', '客户查重')}</Button>
                         </PrivilegeChecker>
-                        <Popover content={Intl.get('crm.customer.pool.explain', '存放释放的客户')}
-                            trigger="hover"
-                            placement="bottom"
-                            overlayClassName="explain-pop">
-                            <Button className='btn-item customer-pool-btn'
-                                onClick={this.props.showCustomerPool}>
-                                <i className="iconfont icon-client-pool" />
-                                {Intl.get('crm.customer.pool', '客户池')}
-                            </Button>
-                        </Popover>
+                        {
+                            userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                                <Popover content={Intl.get('crm.customer.pool.explain', '存放释放的客户')}
+                                    trigger="hover"
+                                    placement="bottom"
+                                    overlayClassName="explain-pop">
+                                    <Button className='btn-item customer-pool-btn'
+                                        onClick={this.props.showCustomerPool}>
+                                        <i className="iconfont icon-client-pool" />
+                                        {Intl.get('crm.customer.pool', '客户池')}
+                                    </Button>
+                                </Popover>
+                            )
+                        }
                         {crmUtil.checkPrivilege([crmPrivilegeConst.CRM_USER_CUSTOMER_BAK_OPERATOR_RECORD, crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD]) ? (
                             <div className={btnClass + ' customer-recycle-btn btn-m-r-2'}
                                 title={Intl.get('crm.customer.recycle.bin', '回收站')}
