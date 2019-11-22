@@ -73,7 +73,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION, 'GET_MEMBER_SELF_INFO'
+            privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION
         ]
     },{
         'method': 'post',

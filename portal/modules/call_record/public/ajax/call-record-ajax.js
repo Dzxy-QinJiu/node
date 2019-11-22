@@ -17,7 +17,7 @@ exports.getCallRecordList = function(params, filterObj) {
     //查询全部和客户电话记录
     if (querAll || queryCustomer) {
         let filter_phone = queryCustomer;//是否过滤114和无效的电话号码
-        let auth_type = hasPrivilege('CUSTOMER_CALLRECORD_MANAGER_ONLY') ? 'manager' : 'user';
+        let auth_type = hasPrivilege(call_record_privilegeConst.CURTAO_CRM_TRACE_QUERY_ALL) ? 'manager' : 'user';
         url = '/rest/call_record/' + auth_type + '/' + params.start_time + '/' + params.end_time + '/' + params.page_size + '/' + params.sort_field + '/' + params.sort_order;
         if (params.lastId) {
             url += '?id=' + params.lastId;            

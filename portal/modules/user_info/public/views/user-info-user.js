@@ -624,7 +624,7 @@ class UserInfo extends React.Component{
                             ：</span>
                         <span className="user-info-item-content">{formData.rolesName}</span>
                     </div>
-                    {hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) || hasPrivilege('GET_MEMBER_SELF_INFO') ? (
+                    {hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) ? (
                         <div className="user-info-item">
                             <span className="user-info-item-title">
                                 <ReactIntl.FormattedMessage className="user-info-item-content" id="common.company" defaultMessage="公司"/>：

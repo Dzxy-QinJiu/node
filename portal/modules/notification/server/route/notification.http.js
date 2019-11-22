@@ -46,7 +46,7 @@ module.exports = {
             'needLogin': true
         },
         //需要权限
-        'privileges': []
+        'privileges': [privilegeConst_notification.CUSTOMER_NOTICE_MANAGE]
     }, {
         //http方法
         'method': 'put',
@@ -59,6 +59,6 @@ module.exports = {
             'needLogin': true
         },
         //需要权限
-        'privileges': []
+        'privileges': [privilegeConst_notification.CUSTOMER_NOTICE_MANAGE]
     }]
 };
