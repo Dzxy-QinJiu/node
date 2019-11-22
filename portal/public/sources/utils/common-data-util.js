@@ -10,6 +10,7 @@ import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 import { INTEGRATE_TYPES } from 'PUB_DIR/sources/utils/consts';
 import CONSTS from 'LIB_DIR/consts';
+import publicPrivilegeConst from '../../privilege-const';
 const session = storageUtil.session;
 let appList = [];
 //oplate中的应用+客套中的产品列表
@@ -25,7 +26,7 @@ let myTeamTreeMemberList = [];//我所在团队及下级团队的人员列表（
 //缓存在sessionStorage中的我能查看的团队
 const MY_TEAM_TREE_KEY = 'my_team_tree';
 const AUTH_MAP = {
-    ALL_TEAM_AUTH: 'GET_TEAM_LIST_ALL'//管理员获取所有团队树的权限
+    ALL_TEAM_AUTH: publicPrivilegeConst.GET_TEAM_LIST_ALL//管理员获取所有团队树的权限
 };
 import {DIFF_TYPE_LOG_FILES, AM_AND_PM} from './consts';
 import {isEqualArray} from 'LIB_DIR/func';
