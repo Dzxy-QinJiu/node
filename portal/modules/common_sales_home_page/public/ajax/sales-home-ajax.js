@@ -203,9 +203,8 @@ exports.getCrmUserList = function(reqData) {
 //获取到期或者即将到期的客户
 exports.getExpireCustomer = function(data) {
     var Deferred = $.Deferred();
-    //todo 待确认
     //普通销售，销售领导和舆情秘书用common，其他的用manager
-    let type = hasPrivilege('KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER') ? 'manager' : 'common';
+    let type = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) ? 'manager' : 'common';
     $.ajax({
         url: '/rest/get_expire_customer/' + type,
         dataType: 'json',

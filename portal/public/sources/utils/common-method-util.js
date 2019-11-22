@@ -40,6 +40,8 @@ var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -381,7 +383,7 @@ exports.renderClueStatus = function(listItem) {
 //获取线索未处理的权限
 //销售和运营有展示线索未读数的权限
 exports.getClueUnhandledPrivilege = function() {
-    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && (isSalesRole() || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON));
+    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF)) && (isSalesRole() || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON));
 };
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {

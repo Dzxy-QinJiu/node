@@ -35,6 +35,7 @@ const CrmList = require('MOD_DIR/crm/public/crm-list');
 var AppUserManage = require('MOD_DIR/app_user_manage/public');
 var CrmAction = require('MOD_DIR/crm/public/action/crm-actions');
 const showTypeConstant = constantUtil.SHOW_TYPE_CONSTANT;
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 //客户分析
 class CustomerAnalysis extends React.Component {
@@ -128,10 +129,9 @@ class CustomerAnalysis extends React.Component {
     };
 
     getDataType = () => {
-        //TODO 待确认
-        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)) {
             return 'all';
-        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+        } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS)) {
             return 'self';
         } else {
             return '';
