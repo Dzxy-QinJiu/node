@@ -1,7 +1,7 @@
 /**
  * 请求路径 - login
- * todo 需要把USER_MANAGE_LIST_LOG 替换为 USER_AUDIT_LOG_LIST，为了测试，先写为USER_MANAGE_LIST_LOG
  */
+import memberPrivilegeConst from '../../public/privilege-const';
 
 module.exports = {
     module: 'member_manage/server/action/member-manage-controller',
@@ -21,7 +21,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_MANAGE_LIST_LOG'
+            memberPrivilegeConst.USER_LOG
         ]
     }, {
         'method': 'get',

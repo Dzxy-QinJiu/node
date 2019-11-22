@@ -1,6 +1,7 @@
 /**
  * Created by wangliping on 2018/3/1.
  */
+import positionPrivilegeConst from '../../public/privilege-const';
 
 module.exports = {
     module: 'office_manage/server/action/office-manage-controller',
@@ -57,7 +58,7 @@ module.exports = {
         'passport': {
             'needLogin': false
         }, 'privileges': [
-            'TEAM_ROLE_MANAGE'
+            positionPrivilegeConst.MEMBER_EDIT_POSITION
         ]
     },{//修改销售的角色
         'method': 'post',
@@ -67,7 +68,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'TEAM_ROLE_MANAGE'
+            positionPrivilegeConst.MEMBER_EDIT_POSITION
         ]
     },{//设置某个角色的客户容量
         method: 'put',
