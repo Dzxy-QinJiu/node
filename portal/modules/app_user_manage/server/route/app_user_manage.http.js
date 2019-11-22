@@ -3,6 +3,7 @@
  */
 import appUserPrivilegeConst from '../../public/privilege-const';
 import crmPrivilegeConst from '../../../crm/public/privilege-const';
+import commonPrivilegeConst from '../../../common/public/privilege-const';
 module.exports = {
     module: 'app_user_manage/server/action/app_user_manage.action',
     routes: [{
@@ -115,7 +116,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_APPLY_LIST'//获取用户审批列表
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批列表
         ]
     },
     {
@@ -126,7 +127,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'GET_MEMBER_APPLY_LIST'//获取未读回复列表
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取未读回复列表
         ]
     },
     {
@@ -145,7 +146,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_APPLY_LIST'//获取用户审批详情
+            commonPrivilegeConst.USERAPPLY_BASE_PERMISSION//获取用户审批详情
         ]
     },
     {
