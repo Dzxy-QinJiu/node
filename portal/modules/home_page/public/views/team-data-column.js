@@ -231,24 +231,10 @@ class TeamDataColumn extends React.Component {
             startTime: '',
             endTime: ''
         };
-        let promiseList = [
-            // 获取本组织已提取线索数，不传是获取全部的
-            this.getExtractCluesData(queryObj)
-        ];
-        //判断是正式还是试用用户
-        /*const versionAndType = checkVersionAndType();
-        if(versionAndType.formal) {//正式, 获取本月提取数
-            queryObj.startTime = moment().startOf('month').valueOf();
-            queryObj.endTime = moment().endOf('month').valueOf();
-        }else {//试用，获取今天提取数
-            queryObj.startTime = moment().startOf('day').valueOf();
-            queryObj.endTime = moment().endOf('day').valueOf();
-        }
-        promiseList.push(this.getExtractCluesData(queryObj));*/
-        Promise.all(promiseList).then((result) => {
+        // 获取本组织已提取线索数，不传是获取全部的
+        this.getExtractCluesData(queryObj).then((result) => {
             this.setState({
-                extractCluesTotal: result[0],
-                // extractCluesCount: result[1],
+                extractCluesTotal: result,
             });
         });
     }
@@ -258,7 +244,6 @@ class TeamDataColumn extends React.Component {
             this.setState({
                 maxLimitExtractNumber: data.maxCount,
                 extractCluesCount: data.hasExtractedCount
-
             });
         });
     }

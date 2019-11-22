@@ -89,13 +89,11 @@ class ExtractClues extends React.Component {
     //获取某个安全域已经提取多少推荐线索数量,
     getRecommendClueCount(callback){
         getMaxLimitExtractClueCount().then((data) => {
-            var maxCount = _.get(data,'total', 0);
-            var hasExtractedCount = _.get(data,'pulled_clue_numbers');
             this.setState({
-                hasExtractCount: hasExtractedCount,
-                maxLimitExtractNumber: maxCount,
+                hasExtractCount: data.hasExtractedCount,
+                maxLimitExtractNumber: data.maxCount,
             });
-            _.isFunction(callback) && callback(hasExtractedCount);
+            _.isFunction(callback) && callback(data.hasExtractedCount);
         }).catch(() => {
             this.setState({
                 hasExtractCount: 0,
