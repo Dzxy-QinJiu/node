@@ -11,7 +11,7 @@ import {
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 export function getCustomerNewAddStageChart(paramObj = {}) {
-    let type = hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL) ? 'all' : 'self';
+    let type = hasPrivilege('CURTAO_CRM_CUSTOMER_ANALYSIS_ALL') ? 'all' : 'self';
     return {
         title: Intl.get('oplate_customer_analysis.customer_stage', '客户阶段统计'),
         url: `/rest/analysis/customer/v3/${type}/customer/realtime/stage`,

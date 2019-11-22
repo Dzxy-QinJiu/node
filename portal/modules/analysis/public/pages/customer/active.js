@@ -10,8 +10,8 @@ module.exports = {
     key: CUSTOMER_MENUS.ACTIVE.key,
     menuIndex: 2,
     privileges: [
-        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
         analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
     ],
     charts: getCharts()
 };

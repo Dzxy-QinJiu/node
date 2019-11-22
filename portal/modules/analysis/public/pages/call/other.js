@@ -11,7 +11,7 @@ module.exports = {
     key: CALL_MENUS.OTHER.key,
     menuIndex: 2,
     privileges: [
-        analysisPrivilegeConst.CURTAO_CRM_CALLRECORD_STATISTICS
+        analysisPrivilegeConst.CALL_RECORD_DATA_HISTOGRAM,
     ],
     charts: getCharts()
 };

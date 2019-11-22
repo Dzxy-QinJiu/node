@@ -12,6 +12,7 @@ module.exports = {
     key: CALL_MENUS.NUMBER_DURATION.key,
     menuIndex: 1,
     privileges: [
+        analysisPrivilegeConst.CALL_RECORD_DATA_HISTOGRAM,
         analysisPrivilegeConst.CURTAO_CRM_CUSTOMERTRACE_STATISTICS_MANAGER,
         analysisPrivilegeConst.CURTAO_CRM_CUSTOMERTRACE_STATISTICS_USER,
     ],

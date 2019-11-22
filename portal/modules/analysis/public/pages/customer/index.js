@@ -17,8 +17,8 @@ module.exports = {
     key: CUSTOMER_MENUS.INDEX.key,
     menuIndex: 3,
     privileges: [
-        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
         analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
     ],
     pages,
 };

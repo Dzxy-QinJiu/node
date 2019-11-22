@@ -12,8 +12,8 @@ module.exports = {
     key: CUSTOMER_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
-        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
         analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
     ],
     charts: getCharts({
         type: 'total',

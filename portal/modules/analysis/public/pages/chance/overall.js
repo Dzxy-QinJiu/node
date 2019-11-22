@@ -9,8 +9,8 @@ module.exports = {
     title: CHANCE_MENUS.OVERALL.name,
     key: CHANCE_MENUS.OVERALL.key,
     privileges: [
-        'CRM_CLUE_STATISTICAL_SELF',
-        'CRM_CLUE_STATISTICAL_ALL',
+        'CURTAO_CRM_LEAD_QUERY_SELF',
+        'CURTAO_CRM_LEAD_QUERY_ALL',
     ],
     charts: getCharts()
 };
