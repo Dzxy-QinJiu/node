@@ -122,9 +122,9 @@ exports.removeEmptyItem = removeEmptyItem;
 
 exports.getParamByPrivilege = function() {
     let reqData = {};
-    if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL) || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
+    if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL) || hasPrivilege(publicPrivilegeConst.TEAM_QUERY_PERMISSION)) {
         reqData.type = 'all';
-    } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS) || hasPrivilege('GET_TEAM_MEMBERS_MYTEAM_WITH_SUBTEAMS')) {
+    } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS) || hasPrivilege(publicPrivilegeConst.TEAM_QUERY_PERMISSION)) {
         reqData.type = 'self';
     }
     return reqData;

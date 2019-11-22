@@ -49,6 +49,8 @@ import {XLS_FILES_TYPE_RULES} from 'PUB_DIR/sources/utils/consts';
 import userData from 'PUB_DIR/sources/user-data';
 import BackMainPage from 'CMP_DIR/btn-back';
 import USER_MANAGE_PRIVILEGE from './privilege-const';
+import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+
 const UPLOAD_USER_TIPS = {
     EXIST: 'data exist', // （用户名、邮箱 ）已存在
     ILLEGAL: 'data illegal', // （用户名、邮箱、手机号）不合法
@@ -497,7 +499,7 @@ class AppUserManage extends React.Component {
     //显示申请用户按钮
     getApplyUserBtn = () => {
         //销售显示开通应用
-        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) && this.state.customer_id) {
+        if (hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE) && this.state.customer_id) {
             //选中了用户直接显示
             if (this.state.selectedUserRows.length) {
                 return (
@@ -520,7 +522,7 @@ class AppUserManage extends React.Component {
 
     //显示缩放时候的开通应用按钮
     getApplyUserBtnMini = () => {
-        if (hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE) && this.state.customer_id) {
+        if (hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE) && this.state.customer_id) {
             if (this.state.selectedUserRows.length) {
                 return <div className="inline-block  add-btn-mini" onClick={this.showApplyUserForm}>
                     <i className="iconfont icon-shenqing"/>

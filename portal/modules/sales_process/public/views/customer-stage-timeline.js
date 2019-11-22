@@ -102,8 +102,9 @@ class CustomerStageTimeLine extends React.Component {
                 data-tracename="客户阶段列表"
             >
                 <Draggable
-                    draggableId={customerStage.id}
-                    index={this.props.index}>
+                    draggableId={_.get(customerStage, 'id', this.props.index + 1)}
+                    index={this.props.index}
+                >
                     {(provided, snapshot) => (
                         <div className={contentZoneCls}
                             ref={provided.innerRef}

@@ -321,27 +321,27 @@ class CustomerStageDetailPanel extends React.Component {
         return (
             <div className="stage-detail-wrap" style={{height: height}}>
                 <GeminiScrollBar style={{height: height}}>
-                    <DragDropContext onDragEnd={this.onDragEnd}>
-                        <div className="stage-content-set-stage">
-                            <div className="stage-set-title-zone">
-                                <div className="stage-label">
-                                    {Intl.get('customer.stage.stage.title', '阶段设置')}
-                                </div>
-                                <div className="operate-zone">
-                                    {
-                                        hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.CREATE_SPECIFIC_STAGE) ? (
-                                            length > 7 ? null : (
-                                                <span
-                                                    onClick={this.handleAddCustomerStage}
-                                                    className="add-stage"
-                                                >
-                                                    <i className='iconfont icon-plus' />
-                                                </span>
-                                            )
-                                        ) : null
-                                    }
-                                </div>
+                    <div className="stage-content-set-stage">
+                        <div className="stage-set-title-zone">
+                            <div className="stage-label">
+                                {Intl.get('customer.stage.stage.title', '阶段设置')}
                             </div>
+                            <div className="operate-zone">
+                                {
+                                    hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.CREATE_SPECIFIC_STAGE) ? (
+                                        length > 7 ? null : (
+                                            <span
+                                                onClick={this.handleAddCustomerStage}
+                                                className="add-stage"
+                                            >
+                                                <i className='iconfont icon-plus' />
+                                            </span>
+                                        )
+                                    ) : null
+                                }
+                            </div>
+                        </div>
+                        <DragDropContext onDragEnd={this.onDragEnd}>
                             <Droppable droppableId={_.get(currentCustomerStage, 'id', '')}>
                                 {(provided, snapshot) => (
                                     <div className='stage-board-wrap' ref={provided.innerRef}>
@@ -387,8 +387,9 @@ class CustomerStageDetailPanel extends React.Component {
                                     </div>
                                 )}
                             </Droppable>
-                        </div>
-                    </DragDropContext>
+                        </DragDropContext>
+
+                    </div>
                     <div className="stage-content-team-user">
                         <div className="stage-set-title-zone">
                             <div className="stage-label">

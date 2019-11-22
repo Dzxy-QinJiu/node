@@ -9,6 +9,7 @@ import ajax from 'ant-ajax';
 import commonMethodUtil from 'PUB_DIR/sources/utils/common-method-util';
 import {LEAVE_TYPES} from './consts';
 import {AntcAttendanceRemarks} from 'antc';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 import ReportLeftMenu from 'CMP_DIR/report-left-menu';
 
@@ -100,7 +101,7 @@ class MonthlyReport extends React.Component {
     };
 
     getDataType = () => {
-        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)) {
             return 'all';
         } else {
             return 'self';
