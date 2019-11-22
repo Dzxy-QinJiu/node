@@ -60,7 +60,6 @@ class CurtaoAnalysis extends React.Component {
         super(props);
 
         const processedGroups = this.processMenu(groups);
-        console.log(processedGroups);
 
         this.state = {
             currentMenuIndex: '0,0',
@@ -182,7 +181,6 @@ class CurtaoAnalysis extends React.Component {
 
             if (menu.privileges) {
                 const foundPrivilege = _.find(menu.privileges, privilege => hasPrivilege(privilege));
-                console.log(menu.title, menu.key, menu.privileges, foundPrivilege);
                 //没有开通营收中心时，去掉对应的菜单项
                 if(!isOpenCash()) {
                     let flag = _.includes(NO_OPEN_CASH_SHOW_MENUS_KEY, menu.key);
