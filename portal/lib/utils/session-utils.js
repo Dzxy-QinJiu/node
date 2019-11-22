@@ -7,7 +7,7 @@
 var logoutService = require('../../modules/logout/service/desktop-logout-service');
 var sessionLogger = require('./logger').getLogger('session');
 var authLogger = require('./logger').getLogger('auth');
-var sessionExpireEmitter = require('../../public/sources/utils/emitters').sessionExpireEmitter;
+var sessionExpireEmitter = require('../utils/server-emitters').sessionExpireEmitter;
 var config = require('../../../conf/config');
 var isStarted = false;
 

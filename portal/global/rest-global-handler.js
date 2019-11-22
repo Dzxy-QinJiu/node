@@ -8,7 +8,7 @@ var _ = require('lodash');
 var errors = require('ant-auth-request').constUtilErrors;
 //发送到界面的错误信息
 var UI_CONST = require('../lib/utils/request-error-util');
-
+var logoutMsgEmitter = require('../../portal/lib/utils/server-emitters').logoutMsgEmitter;
 /**
  * 返回403错误信息
  * @param req
@@ -17,6 +17,11 @@ var UI_CONST = require('../lib/utils/request-error-util');
  */
 function cleanAuthAndSendData(req, res, data) {
     try {
+        //发送退出事件给chrome extension插件
+        logoutMsgEmitter.emit(logoutMsgEmitter.LOGOUT_ACCOUNT,{
+            sessionId: req.sessionID,
+            user: req.session.user,
+        });
         res.status(403).json(data);
     } catch (e) {
         // eslint-disable-next-line no-console

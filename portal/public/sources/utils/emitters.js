@@ -179,10 +179,6 @@ teamTreeEmitter.SELECT_MEMBER = 'team_tree.select_member';
 exports.teamTreeEmitter = teamTreeEmitter;
 export { teamTreeEmitter };
 
-//session过期的emitter
-exports.sessionExpireEmitter = new EventEmitter();
-exports.sessionExpireEmitter.SESSION_EXPIRED = 'session_expired';
-
 //合同相关事件
 const contractEmitter = new EventEmitter();
 contractEmitter.IMPORT_CONTRACT = 'import_contract';
@@ -262,7 +258,3 @@ paymentEmitter.OPEN_ADD_CLUES_PANEL = 'open_add_clues_panel';//打开购买线�
 paymentEmitter.OPEN_UPGRADE_PERSONAL_VERSION_PANEL = 'open_upgrade_personal_version_panel';//打开升级个人正式版的面板
 paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS = 'personal_good_payment_success';//个人版商品支付成功
 export { paymentEmitter };
-
-//暴露一个emitter，做退出
-exports.logoutMsgEmitter = new EventEmitter();
-exports.logoutMsgEmitter.LOGOUT_ACCOUNT = 'logout_account';

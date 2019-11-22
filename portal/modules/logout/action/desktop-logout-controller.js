@@ -6,7 +6,7 @@
 'use strict';
 var DesktopLogoutService = require('../service/desktop-logout-service');
 var config = require('../../../../conf/config');
-var logoutMsgEmitter = require('../../../public/sources/utils/emitters').logoutMsgEmitter;
+var logoutMsgEmitter = require('../../../../portal/lib/utils/server-emitters').logoutMsgEmitter;
 /*
  * logout page handler.
  */

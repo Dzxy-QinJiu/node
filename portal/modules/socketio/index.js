@@ -36,8 +36,8 @@ const crmOperatorChannel = 'com.curtao.customer.operator.message.notice.channel'
 var userBatch = require('./batch');
 var _ = require('lodash');
 var auth = require('../../lib/utils/auth');
-var sessionExpireEmitter = require('../../public/sources/utils/emitters').sessionExpireEmitter;
-var logoutMsgEmitter = require('../../public/sources/utils/emitters').logoutMsgEmitter;
+var sessionExpireEmitter = require('../../../portal/lib/utils/server-emitters').sessionExpireEmitter;
+var logoutMsgEmitter = require('../../../portal/lib/utils/server-emitters').logoutMsgEmitter;
 let pushDto = require('./push-dto');
 var client = null;
 //存储用户id对应的socketId、token的对象
@@ -363,28 +363,32 @@ module.exports.startSocketio = function(nodeServer) {
     createBackendClient();
     //添加session过期的监听
     sessionExpireEmitter.on(sessionExpireEmitter.SESSION_EXPIRED, sessionExpired);
-    logoutMsgEmitter.on(logoutMsgEmitter.LOGOUT_ACCOUNT,logoutAccount);
+    logoutMsgEmitter.on(logoutMsgEmitter.LOGOUT_ACCOUNT,logoutAccount);//账号退出登录后发送事件给extension
 
 };
 /*
 * 退出账号前发送事件*/
 function logoutAccount(logoutObj) {
-    let logoutUser = logoutObj && logoutObj.user;
-    let logoutSessionId = logoutObj && logoutObj.sessionId;
-    if (logoutUser && logoutSessionId) {
-        pushLogger.debug('退出某个账号' + (logoutUser && logoutUser.nickname));
-        var userId = logoutUser ? logoutUser.userid : '';
+    socketEmitter(logoutObj,'logoutAccount','退出账号');
+}
+/*发送事件到前端*/
+function socketEmitter(Obj, emitterChannel,loggerType) {
+    let user = Obj && Obj.user;
+    let sessionId = Obj && Obj.sessionId;
+    if (user && sessionId) {
+        pushLogger.debug((user && user.nickname) + loggerType);
+        var userId = user ? user.userid : '';
         if (userId) {
             //找到消息接收者对应的socket，将数据推送到浏览器
             var socketArray = socketStore[userId] || [];
             if (socketArray.length > 0) {
                 socketArray.forEach(function(socketObj) {
-                    if (socketObj.sessionId === logoutSessionId) {
+                    if (socketObj.sessionId === sessionId) {
                         //找到相同sessionId的socket
                         var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
                         if (socket) {
                             //推送session过期消息
-                            socket.emit('logoutAccount', logoutUser);
+                            socket.emit(emitterChannel, user);
                         }
                     }
                 });
@@ -392,31 +396,11 @@ function logoutAccount(logoutObj) {
         }
     }
 }
+
 /**
  *session过期后，推送过期消息到界面
  */
 function sessionExpired(expiredObj) {
-    let expiredUser = expiredObj && expiredObj.user;
-    let expiredSessionId = expiredObj && expiredObj.sessionId;
-    if (expiredUser && expiredSessionId) {
-        pushLogger.debug('session过期,过期用户:' + (expiredUser && expiredUser.nickname));
-        var userId = expiredUser ? expiredUser.userid : '';
-        if (userId) {
-            //找到消息接收者对应的socket，将数据推送到浏览器
-            var socketArray = socketStore[userId] || [];
-            if (socketArray.length > 0) {
-                socketArray.forEach(function(socketObj) {
-                    if (socketObj.sessionId === expiredSessionId) {
-                        //找到相同sessionId的socket
-                        var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
-                        if (socket) {
-                            //推送session过期消息
-                            socket.emit('sessionExpired', expiredUser);
-                        }
-                    }
-                });
-            }
-        }
-    }
+    socketEmitter(expiredObj,'sessionExpired','session过期');
 }
 
