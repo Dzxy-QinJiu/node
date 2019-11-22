@@ -2,6 +2,7 @@
  * * 请求路径 - app
  */
 require('../action/call-analysis-controller');
+import call_record_privilegeConst from '../../public/privilege-const'
 
 module.exports = {
     module: 'call_record/server/action/call-analysis-controller',
@@ -12,7 +13,8 @@ module.exports = {
             'handler': 'getCallDurTopTen',
             'passport': {
                 'needLogin': true
-            }
+            },
+            'privileges': [call_record_privilegeConst.CURTAO_CRM_TRACE_QUERY_ALL]
         }, { // 获取通话数量和通话时长趋势图统计
             'method': 'post',
             'path': '/rest/call/duration/count/:start_time/:end_time',
