@@ -16,6 +16,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {SetLocalSalesClickCount} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
+import {getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
@@ -48,8 +49,6 @@ class ExtractClues extends React.Component {
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
-        //获取最多提取线索的数量
-        this.getMaxLimitCount();
     }
 
     componentWillUnmount() {
@@ -87,60 +86,20 @@ class ExtractClues extends React.Component {
         });
     };
 
-    //获取最多提取线索的数量
-    getMaxLimitCount(){
-        $.ajax({
-            url: '/rest/get/maxlimit/count',
-            dataType: 'json',
-            type: 'get',
-            success: (count) => {
-                this.setState({
-                    maxLimitExtractNumber: _.isNumber(count) ? count : 0,
-                    getMaxLimitExtractNumberError: false
-                });
-            },
-            error: (xhr) => {
-                this.setState({
-                    getMaxLimitExtractNumberError: true
-                });
-            }
-        });
-    }
-
     //获取某个安全域已经提取多少推荐线索数量,
     getRecommendClueCount(callback){
-        //如果是试用的账号，要获取今天的提取量，
-        var submitObj = {
-            timeStart: moment().startOf('day').valueOf(),
-            timeEnd: moment().endOf('day').valueOf(),
-        };
-        //如果是正式账号，要获取本月的提取量
-        if(checkCurrentVersionType().formal){
-            submitObj = {
-                timeStart: moment().startOf('month').valueOf(),
-                timeEnd: moment().endOf('month').valueOf(),
-            };
-        }
-
-        $.ajax({
-            url: '/rest/recommend/clue/count',
-            dataType: 'json',
-            type: 'get',
-            data: submitObj,
-            success: (data) => {
-                var count = _.get(data,'total', 0);
-                this.setState({
-                    hasExtractCount: count
-                });
-                _.isFunction(callback) && callback(count);
-
-            },
-            error: (errorInfo) => {
-                this.setState({
-                    hasExtractCount: 0,
-                });
-                _.isFunction(callback) && callback('error');
-            }
+        getMaxLimitExtractClueCount().then((data) => {
+            this.setState({
+                hasExtractCount: data.hasExtractedCount,
+                maxLimitExtractNumber: data.maxCount,
+            });
+            _.isFunction(callback) && callback(data.hasExtractedCount);
+        }).catch(() => {
+            this.setState({
+                hasExtractCount: 0,
+                maxLimitExtractNumber: 0
+            });
+            _.isFunction(callback) && callback('error');
         });
     }
 
