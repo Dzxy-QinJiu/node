@@ -32,28 +32,32 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
         },
         option: {
             columns: [{
-                title: Intl.get('common.definition', '名称'),
-                dataIndex: 'name',
-                width: '20%',
+                title: Intl.get('user.user.team', '团队'),
+                dataIndex: 'sales_team',
+                width: '10%',
+            }, {
+                title: Intl.get('sales.home.sales', '销售'),
+                dataIndex: 'nick_name',
+                width: '10%',
             }, {
                 title: Intl.get('common.number.of.customers.visited', '拜访客户数'),
                 dataIndex: 'visit',
-                width: '20%',
+                width: '10%',
                 render: (value, record) => {
-                    return <span style={{cursor: 'pointer'}} onClick={visitedCustomerNumClickHandler.bind(null, record.id)}>{value}</span>;
+                    return <span style={{cursor: 'pointer'}} onClick={visitedCustomerNumClickHandler.bind(null, record.user_id)}>{value}</span>;
                 }
             }, {
                 title: Intl.get('common.number.of.customers.contacted', '联系客户数'),
                 dataIndex: 'phone_all',
-                width: '20%',
+                width: '10%',
             }, {
                 title: Intl.get('common.number.of.calls.made', '接通数'),
                 dataIndex: 'phone_answer',
-                width: '20%',
+                width: '10%',
             }, {
                 title: Intl.get('common.number.of.calls.not.connected', '未接通数'),
                 dataIndex: 'phone_no_answer',
-                width: '20%',
+                width: '10%',
             }]
         },
     };
@@ -67,6 +71,10 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
 
     if (paramObj.chartProps) {
         chart = {...chart, ...paramObj.chartProps};
+    }
+
+    function timeRender(value) {
+        return moment(value).format(oplateConsts.DATE_TIME_FORMAT);
     }
 
     //销售行为统计拜访客户数点击处理函数
@@ -84,29 +92,36 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
             columns: [
                 {
                     title: Intl.get('crm.41', '客户名'),
-                    dataIndex: 'name',
-                    width: '20%'
+                    dataIndex: 'customer_name',
+                    width: '10%'
                 },
                 {
                     title: Intl.get('common.visit.start.time', '拜访开始时间'),
-                    dataIndex: 'start_time',
-                    width: '15%'
+                    dataIndex: 'visit_start_time',
+                    render: timeRender,
+                    width: '10%'
                 },
                 {
                     title: Intl.get('common.visit.end.time', '拜访结束时间'),
-                    dataIndex: 'end_time',
-                    width: '15%'
+                    dataIndex: 'visit_end_time',
+                    render: timeRender,
+                    width: '10%'
                 },
                 {
-                    title: Intl.get('common.customer.visit.record', '客户拜访记录'),
-                    dataIndex: 'remark',
-                    width: '50%'
+                    title: Intl.get('common.customer.visit.target', '拜访目标'),
+                    dataIndex: 'remarks',
+                    width: '10%'
+                },
+                {
+                    title: Intl.get('common.customer.visit.record', '拜访记录'),
+                    dataIndex: 'trace_remark',
+                    width: '10%'
                 }
             ],
             onRowClick: record => {
                 phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                     customer_params: {
-                        currentId: record.id 
+                        currentId: record.customer_id 
                     }
                 });
             }

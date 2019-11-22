@@ -179,10 +179,6 @@ teamTreeEmitter.SELECT_MEMBER = 'team_tree.select_member';
 exports.teamTreeEmitter = teamTreeEmitter;
 export { teamTreeEmitter };
 
-//session过期的emitter
-exports.sessionExpireEmitter = new EventEmitter();
-exports.sessionExpireEmitter.SESSION_EXPIRED = 'session_expired';
-
 //合同相关事件
 const contractEmitter = new EventEmitter();
 contractEmitter.IMPORT_CONTRACT = 'import_contract';

@@ -6,10 +6,16 @@
 'use strict';
 var DesktopLogoutService = require('../service/desktop-logout-service');
 var config = require('../../../../conf/config');
+var logoutMsgEmitter = require('../../../../portal/lib/utils/server-emitters').logoutMsgEmitter;
 /*
  * logout page handler.
  */
 exports.logout = function(req, res) {
+    //退出的时候需要发送事件，通知给chrome extend插件
+    logoutMsgEmitter.emit(logoutMsgEmitter.LOGOUT_ACCOUNT,{
+        sessionId: req.sessionID,
+        user: req.session.user
+    });
     //语言环境
     var lang = req.session.lang;
     var langParam = lang ? ('lang=' + lang) : '';//语言参数
