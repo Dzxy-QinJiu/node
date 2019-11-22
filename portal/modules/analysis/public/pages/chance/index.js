@@ -16,8 +16,8 @@ module.exports = {
     key: CHANCE_MENUS.INDEX.key,
     menuIndex: 3,
     privileges: [
-        'CRM_CLUE_STATISTICAL_SELF',
-        'CRM_CLUE_STATISTICAL_ALL',
+        'CURTAO_CRM_LEAD_QUERY_SELF',
+        'CURTAO_CRM_LEAD_QUERY_ALL',
     ],
     pages,
 };

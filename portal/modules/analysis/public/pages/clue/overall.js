@@ -11,8 +11,8 @@ module.exports = {
     title: CLUE_MENUS.OVERALL.name,
     key: CLUE_MENUS.OVERALL.key,
     privileges: [
-        analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_SELF,
-        analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_ALL,
+        'CURTAO_CRM_LEAD_QUERY_SELF',
+        'CURTAO_CRM_LEAD_QUERY_ALL',
     ],
     charts: getCharts()
 };

@@ -17,8 +17,8 @@ module.exports = {
     key: SALES_PRODUCTIVITY_MENUS.INDEX.key,
     menuIndex: 6,
     privileges: [
-        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER,
-        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_USER,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
     ],
     isShowCallback: () => {
         //普通销售不能看到该菜单

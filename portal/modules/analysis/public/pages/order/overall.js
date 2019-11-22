@@ -11,8 +11,8 @@ module.exports = {
     key: ORDER_MENUS.OVERALL.key,
     menuIndex: 1,
     privileges: [
-        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER,
-        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_USER,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL,
     ],
     adjustDatePicker,
     charts: getCharts()
