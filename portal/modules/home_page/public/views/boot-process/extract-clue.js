@@ -16,6 +16,7 @@ import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {SetLocalSalesClickCount} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { formatSalesmanList, checkCurrentVersionType, checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
+import {getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
 import Trace from 'LIB_DIR/trace';
 
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
@@ -87,27 +88,20 @@ class ExtractClues extends React.Component {
 
     //获取某个安全域已经提取多少推荐线索数量,
     getRecommendClueCount(callback){
-        $.ajax({
-            url: '/rest/get/maxlimit/and/hasExtracted/count',
-            dataType: 'json',
-            type: 'get',
-            success: (data) => {
-                var maxCount = _.get(data,'total', 0);
-                var hasExtractedCount = _.get(data,'pulled_clue_numbers');
-                this.setState({
-                    hasExtractCount: hasExtractedCount,
-                    maxLimitExtractNumber: maxCount,
-                });
-                _.isFunction(callback) && callback(hasExtractedCount);
-
-            },
-            error: (errorInfo) => {
-                this.setState({
-                    hasExtractCount: 0,
-                    maxLimitExtractNumber: 0
-                });
-                _.isFunction(callback) && callback('error');
-            }
+        getMaxLimitExtractClueCount().then((data) => {
+            var maxCount = _.get(data,'total', 0);
+            var hasExtractedCount = _.get(data,'pulled_clue_numbers');
+            this.setState({
+                hasExtractCount: hasExtractedCount,
+                maxLimitExtractNumber: maxCount,
+            });
+            _.isFunction(callback) && callback(hasExtractedCount);
+        }).catch(() => {
+            this.setState({
+                hasExtractCount: 0,
+                maxLimitExtractNumber: 0
+            });
+            _.isFunction(callback) && callback('error');
         });
     }
 
