@@ -13,7 +13,7 @@ import { storageUtil } from 'ant-utils';
 import PhoneShowEditField from './phone-show-edit-field';
 import userData from 'PUB_DIR/sources/user-data';
 import {checkQQ, emailRegex} from 'PUB_DIR/sources/utils/validate-util';
-import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType} from 'PUB_DIR/sources/utils/common-method-util';
+import {getEmailActiveUrl, checkCurrentVersion, checkCurrentVersionType, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import {getOrganizationInfo} from 'PUB_DIR/sources/utils/common-data-util';
 import {paymentEmitter} from 'PUB_DIR/sources/utils/emitters';
 import history from 'PUB_DIR/sources/history';
@@ -752,15 +752,19 @@ class UserInfo extends React.Component{
                     </div> ) : (
                         this.renderUserInfo()
                     )}
-                    <PrivilegeChecker check={privilegeConst_user_info.CURTAO_USER_CONFIG}>
-                        <div className="user-tips-div">
-                            <div className="user-tips-title-div">
-                                <div className="user-tips-name">
-                                    {this.renderReceiveEmail()}
+                    {
+                        isCurtao() ? null : (
+                            <PrivilegeChecker check={privilegeConst_user_info.CURTAO_USER_CONFIG}>
+                                <div className="user-tips-div">
+                                    <div className="user-tips-title-div">
+                                        <div className="user-tips-name">
+                                            {this.renderReceiveEmail()}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </PrivilegeChecker>
+                            </PrivilegeChecker>
+                        )
+                    }
                 </div> : null}
             </div>
         );
