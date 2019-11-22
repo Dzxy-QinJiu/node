@@ -10,8 +10,7 @@ module.exports = {
         'handler': 'getIntegrationConfig',
         'passport': {
             'needLogin': true
-        },
-        'privileges': [privilegeConst_common.PRODUCTS_MANAGE]
+        }
     },{
         //根据当前用户数据权限，获取应用列表
         'method': 'get',

@@ -17,7 +17,6 @@ export default {
      * 应用用户修改
      * 用户导入
      * */
-    // 应该APP_USER_MANAGE 管理员旧权限：USER_BATCH_OPERATE， 销售旧权限：GRANT_DELAY_APPLY
     USER_MANAGE: 'APP_USER_MANAGE',
     /**
      * 用户查询
