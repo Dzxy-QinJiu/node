@@ -80,7 +80,7 @@ module.exports = [{
         'needLogin': true
     },
     'privileges': [
-        'CUSTOMER_ANALYSIS_COMMON'
+        // 'CUSTOMER_ANALYSIS_COMMON'
     ]
 }, {
     'method': 'get',
@@ -364,7 +364,8 @@ module.exports = [{
     'passport': {
         'needLogin': true
     },
-    'privileges': [privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_MANAGER, privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_COMMON]
+    //TODO 待确认
+    // 'privileges': [privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_MANAGER, privilegeConst_common.CUSTOMER_ANALYSIS_REGION_OVERLAY_STATISTIC_COMMON]
 }, {
     //获取所有成员基本信息（仅包含姓名、id，不分页)
     'method': 'get',

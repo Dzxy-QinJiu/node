@@ -41,6 +41,7 @@ var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -121,9 +122,9 @@ exports.removeEmptyItem = removeEmptyItem;
 
 exports.getParamByPrivilege = function() {
     let reqData = {};
-    if (hasPrivilege('GET_TEAM_LIST_ALL') || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
+    if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL) || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
         reqData.type = 'all';
-    } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS') || hasPrivilege('GET_TEAM_MEMBERS_MYTEAM_WITH_SUBTEAMS')) {
+    } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS) || hasPrivilege('GET_TEAM_MEMBERS_MYTEAM_WITH_SUBTEAMS')) {
         reqData.type = 'self';
     }
     return reqData;

@@ -4,6 +4,7 @@
 
 import { getContextContent } from '../../utils';
 import {CHANCE_MENUS} from '../../consts';
+import analysisPrivilegeConst from '../../privilege-const';
 
 //引入同目录下以.js结尾的并且不包含index的文件
 const req = require.context('.', false, /^((?!index).)*\.js$/);
@@ -16,8 +17,8 @@ module.exports = {
     key: CHANCE_MENUS.INDEX.key,
     menuIndex: 3,
     privileges: [
-        'CURTAO_CRM_LEAD_QUERY_SELF',
-        'CURTAO_CRM_LEAD_QUERY_ALL',
+        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_USER,
+        analysisPrivilegeConst.CRM_CUSTOMER_ANALYSIS_SALES_OPPORTUNITY_MANAGER,
     ],
     pages,
 };
