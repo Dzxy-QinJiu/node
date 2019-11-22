@@ -26,6 +26,7 @@ import {isOplateUser, isSalesRole} from 'PUB_DIR/sources/utils/common-method-uti
 import { getProductList } from 'PUB_DIR/sources/utils/common-data-util';
 import USER_MANAGE_PRIVILEGE from '../privilege-const';
 import userData from 'PUB_DIR/sources/user-data';
+import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 //异常登录的类型
 const EXCEPTION_TYPES = [{
     name: Intl.get('common.all', '全部'),
@@ -1540,7 +1541,10 @@ class UserTabContent extends React.Component {
         }
         //管理员可以批量操作
         //销售可以批量操作
-        const hasSelectAuth = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
+        let hasSelectAuth = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
+        if (isSalesRole()) {
+            hasSelectAuth = hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE);
+        }
         //只有oplate的用户才有批量操作
         var rowSelection = hasSelectAuth && isOplateUser() && this.isShowBatchOperate() ? this.getRowSelection() : null;
         var divHeight = getTableContainerHeight() - (this.state.filterAreaExpanded ? $(this.refs.filter_adv).outerHeight() || 0 : 0);

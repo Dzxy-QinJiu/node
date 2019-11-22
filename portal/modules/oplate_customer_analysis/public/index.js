@@ -15,6 +15,7 @@ const userData = require('PUB_DIR/sources/user-data');
 const emitters = require('PUB_DIR/sources/utils/emitters');
 const querystring = require('querystring');
 const history = require('PUB_DIR/sources/history');
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 //从 unknown 到 未知 的对应关系对象
 const unknownObj = { name: Intl.get('user.unknown', '未知'), key: 'unknown' };
@@ -117,9 +118,9 @@ class OPLATE_CUSTOMER_ANALYSIS extends React.Component {
     };
 
     getDataType = () => {
-        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)) {
             return 'all';
-        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+        } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS)) {
             return 'self';
         } else {
             return '';

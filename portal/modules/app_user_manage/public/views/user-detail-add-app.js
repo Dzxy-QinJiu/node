@@ -37,6 +37,7 @@ import userData from 'PUB_DIR/sources/user-data';
 import USER_MANAGE_PRIVILEGE from '../privilege-const';
 import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -97,7 +98,7 @@ var UserDetailAddApp = createReactClass({
         var extra = {};
         var selectedAppId = '';
         //只有销售批量申请权限时
-        var isSales = isSalesRole() && hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
+        var isSales = isSalesRole() && hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE);
         //真正提交逻辑
         function submit() {
             //申请修改密码
@@ -410,6 +411,9 @@ var UserDetailAddApp = createReactClass({
         UserDetailAddAppStore.listen(this.onStoreChange);
         UserDetailAddAppAction.getApps();
         $(window).on('resize' , this.onWindowResize);
+        if (isSalesRole()) {
+            this.batchTabChange('grant_delay');
+        }
         AppUserUtil.emitter.on(AppUserUtil.EMITTER_CONSTANTS.SELECTED_USER_ROW_CHANGE , this.checkSelectedBatchAppList);
         //能够选择的批量应用
         var batchAppsToSelect = this.getBatchAppJsonList();
@@ -560,12 +564,6 @@ var UserDetailAddApp = createReactClass({
         // 销售角色判断
         let isSales = isSalesRole();
         var subType = this.state.multipleSubType;
-        if (isSales) {
-            subType = 'grant_delay';
-            setTimeout( () => {
-                UserDetailAddAppAction.changeMultipleSubType('grant_delay');
-            }, 0 );
-        }
         var selectUserCount = AppUserStore.getState().selectUserCount;
         var options = [];
 
@@ -586,13 +584,11 @@ var UserDetailAddApp = createReactClass({
                 options.push({name: Intl.get('common.belong.customer', '所属客户'),value: 'grant_customer'});
                 //批量修改角色、权限
                 options.push({name: Intl.get('user.batch.auth.set', '权限设置'),value: 'grant_roles'});
-                if (this.hasDelayTimeTab()) {
-                    options.push({name: Intl.get('user.batch.delay', '批量延期') , value: 'grant_delay'});
-                }
-            } else if(isSales){ // 针对销售做判断
-                if (this.hasDelayTimeTab()) {
-                    options.push({name: Intl.get('user.batch.apply.delay', '申请延期') , value: 'grant_delay'});
-                }
+                options.push({name: Intl.get('user.batch.delay', '批量延期') , value: 'grant_delay'});
+            }
+        } else if(hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE)) {
+            if(isSales){ // 针对销售做判断
+                options.push({name: Intl.get('user.batch.apply.delay', '申请延期') , value: 'grant_delay'});
                 options.push({name: Intl.get('common.app.status', '开通状态'),value: 'sales_grant_status'});
                 options.push({name: Intl.get('common.edit.password', '修改密码'),value: 'sales_change_password'});
             }
@@ -957,11 +953,6 @@ var UserDetailAddApp = createReactClass({
         if(resultObj.customer.id) {
             UserDetailAddAppAction.hideCustomerError();
         }
-    },
-
-    //是否有申请延期的tab
-    hasDelayTimeTab: function() {
-        return hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
     },
 
     //是否当前在申请延期/批量延期的tab下面
