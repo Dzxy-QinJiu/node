@@ -353,6 +353,7 @@ class WeeklyReportDetail extends React.Component {
     };
 
     getCallInfoAuth = () => {
+        //todo 这个方法没有用到的地方
         let authType = 'user';//CUSTOMER_CALLRECORD_STATISTIC_USER
         if (hasPrivilege('CUSTOMER_CALLRECORD_STATISTIC_MANAGER')) {
             authType = 'manager';

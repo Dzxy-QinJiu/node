@@ -18,6 +18,7 @@ let chartLegend = [{name: Intl.get('common.official', '签约'), key: 'formal'},
     {name: Intl.get('user.unknown', '未知'), key: 'unknown'}];
 var constantUtil = require('../util/constant');
 import shpPrivilegeConst from '../privilege-const';
+import publickPrivilegeConst from 'PUB_DIR/privilege-const';
 
 //用户分析
 class UserAnlyis extends React.Component {
@@ -63,10 +64,10 @@ class UserAnlyis extends React.Component {
     }
 
     getDataType = () => {
-        //todo 待确认
-        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        //这个权限保留了
+        if (hasPrivilege(publickPrivilegeConst.GET_TEAM_LIST_ALL)) {
             return 'all';
-        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+        } else if (hasPrivilege(publickPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS)) {
             return 'self';
         } else {
             return '';

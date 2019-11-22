@@ -58,7 +58,7 @@ exports.getClueStatics = function(pathParams, rangeParams, queryParams) {
 exports.getClueTrendStatics = function(data) {
     var Deferred = $.Deferred();
     var type = 'self';
-    if (hasPrivilege('CRM_CLUE_TREND_STATISTIC_ALL')){
+    if (hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL)){
         type = 'all';
     }
     $.ajax({

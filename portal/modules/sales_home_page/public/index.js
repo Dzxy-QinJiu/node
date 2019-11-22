@@ -41,6 +41,7 @@ import InviteMember from 'MOD_DIR/invite_member/public';
 import AlertTip from 'CMP_DIR/alert-tip';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 import commonSalesHomePrivilegeConst from './privilege-const';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 //延时展示激活邮箱提示框的时间
 const DELAY_TIME = 2000;
@@ -97,10 +98,10 @@ class SalesHomePage extends React.Component {
     };
 
     getDataType = () => {
-        //TODO 待确认
-        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        //这个权限保留了
+        if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)) {
             return 'all';
-        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+        } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS)) {
             return 'self';
         } else {
             return '';

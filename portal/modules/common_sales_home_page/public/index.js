@@ -36,6 +36,8 @@ import {message, Button} from 'antd';
 const DELAY_TIME = 2000;
 //即将到期合同合同统计
 const EXPIRING_CONTRACT_STATISTICS = 'expiring_contract_statistics';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
+
 class SalesHomePage extends React.Component {
     constructor(props) {
         super(props);
@@ -428,10 +430,9 @@ class SalesHomePage extends React.Component {
     };
 
     getDataType = () => {
-        //TODO 待确认
-        if (hasPrivilege('GET_TEAM_LIST_ALL')) {
+        if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL)) {
             return 'all';
-        } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS')) {
+        } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS)) {
             return 'self';
         } else {
             return '';
