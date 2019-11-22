@@ -86,7 +86,7 @@ class SalesProcess extends React.Component {
                     _.remove(salesTeamList, item => item.group_id === id);
                 } else {
                     let selectUser = _.find(salesMemberList, item => item.user_id === id);
-                    saleProcess.users.push({id: id, name: selectUser.nick_name});
+                    saleProcess.users.push({id: id, name: _.get(selectUser, 'nick_name')});
                     _.remove(salesMemberList, item => item.user_id === id);
                 }
             });
