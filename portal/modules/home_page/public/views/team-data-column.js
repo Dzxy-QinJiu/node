@@ -236,7 +236,7 @@ class TeamDataColumn extends React.Component {
             this.getExtractCluesData(queryObj)
         ];
         //判断是正式还是试用用户
-        const versionAndType = checkVersionAndType();
+        /*const versionAndType = checkVersionAndType();
         if(versionAndType.formal) {//正式, 获取本月提取数
             queryObj.startTime = moment().startOf('month').valueOf();
             queryObj.endTime = moment().endOf('month').valueOf();
@@ -244,19 +244,21 @@ class TeamDataColumn extends React.Component {
             queryObj.startTime = moment().startOf('day').valueOf();
             queryObj.endTime = moment().endOf('day').valueOf();
         }
-        promiseList.push(this.getExtractCluesData(queryObj));
+        promiseList.push(this.getExtractCluesData(queryObj));*/
         Promise.all(promiseList).then((result) => {
             this.setState({
                 extractCluesTotal: result[0],
-                extractCluesCount: result[1],
+                // extractCluesCount: result[1],
             });
         });
     }
 
     getMaxLimitCount() {
-        getMaxLimitExtractClueCount().then((count) => {
+        getMaxLimitExtractClueCount().then((data) => {
             this.setState({
-                maxLimitExtractNumber: count
+                maxLimitExtractNumber: data.maxCount,
+                extractCluesCount: data.hasExtractedCount
+
             });
         });
     }
