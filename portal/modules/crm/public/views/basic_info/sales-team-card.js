@@ -31,13 +31,6 @@ const SALES_EDIT_TYPES = {
     SALES_TEAM: 'sales_team',//负责人及团队的修改
     SECOND_SALES_TEAM: 'second_sales_team'//联合跟进人及团队的修改
 };
-//修改的权限
-const EDIT_PRIVILIGES = {
-    //修复负责人的权限
-    EDIT_SALES: 'CUSTOMER_UPDATE_SALES',
-    //修改联合跟进人的权限
-    EDIT_SECOND_SALES: 'CRM_ASSERT_CUSTOMER_SALES'
-};
 //编辑表单的宽度设置
 const EDIT_FEILD_WIDTH = {
     SALES: 348,
@@ -434,7 +427,7 @@ class SalesTeamCard extends React.Component {
     //是否可修改联合跟进人
     enableEditSecondSales() {
         //有修改联合跟进人的权限，可修改，不是普通销售
-        return checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]) && !this.props.disableEdit && !this.isCommonSales();
+        return checkPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES) && !this.props.disableEdit && !this.isCommonSales();
     }
 
     // 验证是否可以处理负责人
