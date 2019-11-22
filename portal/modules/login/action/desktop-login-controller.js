@@ -246,7 +246,10 @@ exports.getLoginCaptcha = function(req, res) {
         res.status(500).json(errorObj && errorObj.message);
     });
 };
-
+//获取session中的用户信息
+exports.getSessionUserData = function(req, res){
+    res.status(200).json(_.get(req,'session.user',{}));
+};
 //刷新验证码
 exports.refreshCaptcha = function(req, res) {
     var type = req.query.type;

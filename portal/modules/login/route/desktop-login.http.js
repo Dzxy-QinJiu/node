@@ -179,5 +179,12 @@ module.exports = {
         'passport': {
             'needLogin': true
         }
+    },{//获取session中的用户信息
+        'method': 'get',
+        'path': '/session/userData',
+        'handler': 'getSessionUserData',
+        'passport': {
+            'needLogin': false
+        }
     }]
 };
