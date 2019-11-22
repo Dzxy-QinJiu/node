@@ -109,7 +109,7 @@ export function getSalesBehaviorVisitCustomerChart(paramObj = {}) {
                 },
                 {
                     title: Intl.get('common.customer.visit.target', '拜访目标'),
-                    dataIndex: 'remark',
+                    dataIndex: 'remarks',
                     width: '10%'
                 },
                 {
