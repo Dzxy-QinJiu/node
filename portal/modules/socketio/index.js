@@ -37,6 +37,7 @@ var userBatch = require('./batch');
 var _ = require('lodash');
 var auth = require('../../lib/utils/auth');
 var sessionExpireEmitter = require('../../public/sources/utils/emitters').sessionExpireEmitter;
+var logoutMsgEmitter = require('../../public/sources/utils/emitters').logoutMsgEmitter;
 let pushDto = require('./push-dto');
 var client = null;
 //存储用户id对应的socketId、token的对象
@@ -362,8 +363,35 @@ module.exports.startSocketio = function(nodeServer) {
     createBackendClient();
     //添加session过期的监听
     sessionExpireEmitter.on(sessionExpireEmitter.SESSION_EXPIRED, sessionExpired);
-};
+    logoutMsgEmitter.on(logoutMsgEmitter.LOGOUT_ACCOUNT,logoutAccount);
 
+};
+/*
+* 退出账号前发送事件*/
+function logoutAccount(logoutObj) {
+    let logoutUser = logoutObj && logoutObj.user;
+    let logoutSessionId = logoutObj && logoutObj.sessionId;
+    if (logoutUser && logoutSessionId) {
+        pushLogger.debug('退出某个账号' + (logoutUser && logoutUser.nickname));
+        var userId = logoutUser ? logoutUser.userid : '';
+        if (userId) {
+            //找到消息接收者对应的socket，将数据推送到浏览器
+            var socketArray = socketStore[userId] || [];
+            if (socketArray.length > 0) {
+                socketArray.forEach(function(socketObj) {
+                    if (socketObj.sessionId === logoutSessionId) {
+                        //找到相同sessionId的socket
+                        var socket = ioServer && ioServer.sockets.sockets[socketObj.socketId];
+                        if (socket) {
+                            //推送session过期消息
+                            socket.emit('logoutAccount', logoutUser);
+                        }
+                    }
+                });
+            }
+        }
+    }
+}
 /**
  *session过期后，推送过期消息到界面
  */
