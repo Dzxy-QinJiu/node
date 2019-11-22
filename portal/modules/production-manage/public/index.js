@@ -26,6 +26,7 @@ import ProductDropDown from './views/product-dropdown';
 import {BACKGROUG_LAYOUT_CONSTANTS} from 'PUB_DIR/sources/utils/consts';
 import IpFilterAjax from './ajax/ip-filter-ajax';
 import IpFilter from './views/ip-filter';
+import production_manager_privilegeConfig from './privilege-config';
 
 
 //用来存储获取的oplate\matomo产品列表，不用每次添加产品时都获取一遍
@@ -229,7 +230,7 @@ class ProductionManage extends React.Component {
 
     };
     renderAddAndImportBtns = () => {
-        if (hasPrivilege('USER_MANAGE_ADD_USER')) {
+        if (hasPrivilege(production_manager_privilegeConfig.USER_MANAGE_ADD_USER)) {
             return (
                 <div className="btn-containers">
                     <Button className='add-clue-btn btn-item btn-m-r-2'
@@ -259,7 +260,7 @@ class ProductionManage extends React.Component {
             <div className='condition-operator'>
                 <div className='pull-left'>
                     <PrivilegeChecker
-                        check="PRODUCTS_MANAGE"
+                        check= {production_manager_privilegeConfig.PRODUCTS_MANAGE}
                         className="btn-item"
                     >
                         <Button
@@ -281,7 +282,7 @@ class ProductionManage extends React.Component {
                 </div>
                 <div className='pull-right'>
                     <PrivilegeChecker
-                        check="GET_CONFIG_IP"
+                        check={production_manager_privilegeConfig.PRODUCTS_MANAGE}
                         className="btn-item"
                     >
                         <Button
