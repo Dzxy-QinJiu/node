@@ -1,8 +1,5 @@
 /**
- * 请求路径 - user 
- *  todo 需要把 APP_USER_LIST 替换为 APP_USER_QUERY，为了测试，先写为APP_USER_LIST
- *  todo 需要把 USER_BATCH_OPERATE 替换为 APP_USER_MANAGE ，为了测试，先写为USER_BATCH_OPERATE
- *  todo 需要把 APP_USER_MANAGE 替换为 APP_USER_ADD ，为了测试，先写为USER_BATCH_OPERATE
+ * 请求路径 - user
  */
 import appUserPrivilegeConst from '../../public/privilege-const';
 import crmPrivilegeConst from '../../../crm/public/privilege-const';
@@ -54,7 +51,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_ADD'
+            appUserPrivilegeConst.USER_MANAGE
         ]
     }, {
         'method': 'put',
@@ -167,7 +164,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_ADD'//为用户添加应用
+            appUserPrivilegeConst.USER_MANAGE//为用户添加应用
         ]
     },
     {
@@ -178,7 +175,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'APP_USER_EDIT'//为用户修改应用
+            appUserPrivilegeConst.USER_MANAGE//为用户修改应用
         ]
     },
     {

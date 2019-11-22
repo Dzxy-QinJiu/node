@@ -29,7 +29,6 @@ const Option = Select.Option;
 const RadioGroup = Radio.Group;
 import FieldMixin from '../../../../components/antd-form-fieldmixin';
 var AlertTimer = require('../../../../components/alert-timer');
-var privilegeChecker = require('../../../../components/privilege/checker');
 var AutosizeTextarea = require('../../../../components/autosize-textarea');
 var language = require('../../../../public/language/getLanguage');
 import { APPLY_TYPES } from 'PUB_DIR/sources/utils/consts';
@@ -37,6 +36,7 @@ import {ignoreCase} from 'LIB_DIR/utils/selectUtil';
 import userData from 'PUB_DIR/sources/user-data';
 import USER_MANAGE_PRIVILEGE from '../privilege-const';
 import { isSalesRole } from 'PUB_DIR/sources/utils/common-method-util';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 
 var LAYOUT_CONSTANTS = $.extend({} , AppUserUtil.LAYOUT_CONSTANTS);//右侧面板常量
 LAYOUT_CONSTANTS.BOTTOM_DELTA = 82;
@@ -559,7 +559,6 @@ var UserDetailAddApp = createReactClass({
         let isAdmin = userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN);
         // 销售角色判断
         let isSales = isSalesRole();
-        var hasPrivilege = privilegeChecker.hasPrivilege;
         var subType = this.state.multipleSubType;
         if (isSales) {
             subType = 'grant_delay';

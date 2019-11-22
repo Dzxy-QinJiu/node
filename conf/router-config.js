@@ -83,7 +83,7 @@ let routers = [
             routePath: '/user/active',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['USER_TIME_LINE']
+            showPrivileges: ['BASE_QUERY_PERMISSION_MEMBER']
         }]
     },
     {
