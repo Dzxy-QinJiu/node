@@ -3,6 +3,9 @@ import {FilterList} from 'CMP_DIR/filter';
 import {COMMON_OTHER_ITEM} from 'PUB_DIR/sources/utils/consts';
 import filterAJax from '../ajax/filter-ajax';
 import {sourceClassifyArray} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
+import crmPrivilegeConst from '../privilege-const';
+
 const otherFilterArray = [
     {
         name: Intl.get('crm.over.day.without.contact', '超{day}天未联系', {day: 15}),
@@ -53,8 +56,10 @@ class CustomerPoolFilter extends React.Component {
     componentDidMount() {
         //获取客户阶段
         this.getFilterCustomerLabels();
-        //获取合格标签
-        this.getFilterQualifyTags();
+        if(hasPrivilege(crmPrivilegeConst.APP_USER_QUERY)) {
+            //获取合格标签
+            this.getFilterQualifyTags();
+        }
         //获取系统标签
         this.getFilterSystemTags();
         //获取自定义标签
@@ -187,18 +192,6 @@ class CustomerPoolFilter extends React.Component {
                 }))
             },
             {
-                groupName: Intl.get('common.qualified', '合格'),
-                groupId: 'qualify_label',
-                singleSelect: true,
-                data: _.map(this.state.qualifyLabelList, x => {
-                    return {
-                        name: x.name,
-                        value: x.value,
-                        selected: x.value === _.get(this.state, 'condition.qualify_label', '')
-                    };
-                })
-            },
-            {
                 groupName: Intl.get('crm.system.labels', '系统标签'),
                 groupId: 'immutable_labels',
                 data: _.map(this.state.immutableLabelsList, x => {
@@ -254,6 +247,21 @@ class CustomerPoolFilter extends React.Component {
                 })
             }
         ];
+        //有获取用户列表的权限,才展示合格筛选项
+        if(hasPrivilege(crmPrivilegeConst.APP_USER_QUERY)) {
+            advancedData.splice(1, 0, {
+                groupName: Intl.get('common.qualified', '合格'),
+                groupId: 'qualify_label',
+                singleSelect: true,
+                data: _.map(this.state.qualifyLabelList, x => {
+                    return {
+                        name: x.name,
+                        value: x.value,
+                        selected: x.value === _.get(this.state, 'condition.qualify_label', '')
+                    };
+                })
+            });
+        }
         return (
             <div data-tracename="筛选">
                 <div className="customer-pool-filter">

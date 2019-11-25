@@ -22,6 +22,7 @@ import Trace from 'LIB_DIR/trace';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import { myWorkEmitter } from 'OPLATE_EMITTER';
 import crmPrivilegeConst from '../../privilege-const';
+import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 
 let customerLabelList = [];//存储客户阶段的列表
 const CRM_VIEW_TYPES = crmUtil.CRM_VIEW_TYPES;
@@ -351,28 +352,30 @@ class BasicData extends React.Component {
         return (
             <div className="basic-info-detail-block">
                 <div className="basic-info-detail-show">
-                    <div className="basic-info-administrative basic-info-item">
-                        <span className="basic-info-label">
-                            {Intl.get('crm.administrative.level', '行政级别')}:
-                        </span>
-                        <BasicEditSelectField
-                            width={EDIT_FEILD_WIDTH_LESS}
-                            updateMergeCustomer={this.props.updateMergeCustomer}
-                            id={basicData.id}
-                            displayText={this.getAdministrativeLevel(level)}
-                            value={level}
-                            field="administrative_level"
-                            selectOptions={this.getAdministrativeLevelOptions()}
-                            hasEditPrivilege={crmUtil.checkPrivilege([
-                                crmPrivilegeConst.CUSTOMER_UPDATE,
-                                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
-                            ]) && !this.props.disableEdit}
-                            placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
-                            saveEditSelect={this.saveEditBasicInfo.bind(this, 'administrative_level')}
-                            noDataTip={Intl.get('crm.basic.no.administrative', '暂无行政级别')}
-                            addDataTip={Intl.get('crm.basic.add.administrative', '添加行政级别')}
-                        />
-                    </div>
+                    {checkVersionAndType().isPersonalTrial ? null : (
+                        <div className="basic-info-administrative basic-info-item">
+                            <span className="basic-info-label">
+                                {Intl.get('crm.administrative.level', '行政级别')}:
+                            </span>
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH_LESS}
+                                updateMergeCustomer={this.props.updateMergeCustomer}
+                                id={basicData.id}
+                                displayText={this.getAdministrativeLevel(level)}
+                                value={level}
+                                field="administrative_level"
+                                selectOptions={this.getAdministrativeLevelOptions()}
+                                hasEditPrivilege={crmUtil.checkPrivilege([
+                                    crmPrivilegeConst.CUSTOMER_UPDATE,
+                                    crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                                ]) && !this.props.disableEdit}
+                                placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
+                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'administrative_level')}
+                                noDataTip={Intl.get('crm.basic.no.administrative', '暂无行政级别')}
+                                addDataTip={Intl.get('crm.basic.add.administrative', '添加行政级别')}
+                            />
+                        </div>
+                    )}
                     <div className="basic-info-indestry basic-info-item">
                         <span className="basic-info-label">
                             {Intl.get('common.industry', '行业')}:
