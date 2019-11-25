@@ -306,16 +306,17 @@ class ClueRightPanel extends React.Component {
         var curClue = this.state.curClue;
         let contactsKey = ['qq','weChat','phone','email'];
         let contact_id = updateProperty.contact_id;
-        let index = _.findIndex(curClue.contacts, ele => ele.id === contact_id);
 
         for (var key in updateProperty){
-            if(index > -1){
-                if(key === 'contact_name'){//对联系人信息的改变进行特殊处理
-                    curClue.contacts[index]['name'] = updateProperty[key];
-                }else if(contactsKey.indexOf(key) > -1){
-                    curClue.contacts[index][key] = updateProperty[key];
+            _.find(curClue.contacts, ele => {
+                if(contact_id === ele.id){
+                    if(key === 'contact_name'){
+                        ele['name'] = updateProperty[key];
+                    }else if(contactsKey.indexOf(key) > -1){
+                        ele[key] = updateProperty[key];
+                    }
                 }
-            }
+            });
             curClue[key] = updateProperty[key];
         }
         this.setState({
