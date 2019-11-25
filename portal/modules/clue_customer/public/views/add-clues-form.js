@@ -56,7 +56,7 @@ class ClueAddForm extends React.Component {
                 source_ip: '',//客户来源的ip
                 source_time: today,//线索时间，默认：今天,
                 source_classify: 'outbound',//集客类型，默认：自拓
-                industry: [],//行业
+                industry: '',//行业
                 province: '',
                 city: '',
                 county: '',
