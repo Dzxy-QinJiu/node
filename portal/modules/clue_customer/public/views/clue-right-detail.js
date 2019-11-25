@@ -337,6 +337,15 @@ class ClueRightPanel extends React.Component {
         return baseHeight;
     };
 
+    handleContactsChange = (contacts) => {//切换tab时实时更新修改的线索详情
+        let tempClue = _.cloneDeep(this.state.curClue);
+        let tempContacts = _.cloneDeep(contacts);
+        tempClue.contacts = tempContacts;
+        this.setState({
+            curClue: tempClue
+        });
+    }
+
     render() {
         let curClue = _.get(this.state, 'curClue');
         //是否没有权限修改线索详情
@@ -408,6 +417,7 @@ class ClueRightPanel extends React.Component {
                                             extractClueOperator={this.props.extractClueOperator}
                                             changeActiveKey={this.changeActiveKey}
                                             hideContactWay={hideContactWay}
+                                            handleContactsChange={this.handleContactsChange}
                                         />
                                     ) : null}
                                 </TabPane>
