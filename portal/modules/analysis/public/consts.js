@@ -238,9 +238,3 @@ export const SALES_PRODUCTIVITY_MENUS = {
         key: 'sales_productivity_overall'
     }
 };
-
-// 没有开通营收中心，不能展示的菜单
-export const NO_OPEN_CASH_SHOW_MENUS_KEY = [
-    CONTRACT_MENUS.INDEX.key,// 合同分析
-    CHANCE_MENUS.INDEX.key,// 销售机会分析
-];

@@ -22,8 +22,8 @@ module.exports = {
         analysisPrivilegeConst.CRM_CONTRACT_ANALYSIS,
     ],
     isShowCallback: () => {
-        //开通营收中心
-        return isOpenCash() && hasPrivilege(analysisPrivilegeConst.CRM_CONTRACT_ANALYSIS);
+        //开通营收中心时才显示该菜单
+        return isOpenCash();
     },
     pages,
 };
