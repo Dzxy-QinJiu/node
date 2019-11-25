@@ -588,7 +588,7 @@ class UserInfo extends React.Component{
                                 displayType={this.state.qqEditType}
                                 field="qq"
                                 value={qqInputInfo}
-                                hasEditPrivilege={isEditable}
+                                hasEditPrivilege={hasPrivilege(privilegeConst_user_info.USER_INFO_UPDATE)}
                                 hoverShowEdit={false}
                                 validators={[{validator: checkQQ}]}
                                 placeholder={Intl.get('member.input.qq', '请输入QQ号')}
@@ -732,7 +732,12 @@ class UserInfo extends React.Component{
                             isUseDefaultUserImage={true}
                         />
                         <div className="user-info-nickname">
-                            {_.get(this.state, 'iconSaveError') ? <span className="icon-save-error">{_.get(this.state, 'iconSaveError')}</span> : null}
+                            {
+                                _.get(this.state, 'iconSaveError') ?
+                                    <span className="icon-save-error">
+                                        {_.get(this.state, 'iconSaveError')}
+                                    </span> : null
+                            }
                             <BasicEditInputField
                                 displayType="text"
                                 id={formData.id}
@@ -742,6 +747,8 @@ class UserInfo extends React.Component{
                                 hoverShowEdit={false}
                                 validators={[nameLengthRule]}
                                 saveEditInput={this.saveNicknameEditInput}
+                                noDataTip={Intl.get('user.nickname.no.tip', '暂无昵称')}
+                                addDataTip={Intl.get('user.nickname.add.tip', '添加昵称')}
                             />
                         </div>
                     </div>
