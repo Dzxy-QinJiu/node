@@ -20,7 +20,7 @@ let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from 'LIB_DIR/trace';
 import ShearContent from '../../../../components/shear-content';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao,checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import BackMainPage from 'CMP_DIR/btn-back';
 import {CRM_VIEW_TYPES, checkPrivilege} from '../utils/crm-util';
 import crmPrivilegeConst from '../privilege-const';
@@ -294,7 +294,9 @@ class CustomerRepeat extends React.Component {
                         <Col span={2} className="repeat-customer-col">
                             {Intl.get('user.apply.detail.order', '订单')}
                         </Col>)}
-                    <Col span={2} className="repeat-customer-col">{Intl.get('crm.6', '负责人')}</Col>
+                    {checkVersionAndType().isPersonalTrial ? null : (
+                        <Col span={2} className="repeat-customer-col">{Intl.get('crm.6', '负责人')}</Col>
+                    )}
                     <Col span={2}
                         className="repeat-customer-col">{Intl.get('member.create.time', '创建时间')}</Col>
                     <Col span={2} className="repeat-customer-col">{Intl.get('crm.7', '最后联系时间')}</Col>

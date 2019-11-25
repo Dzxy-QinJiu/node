@@ -16,7 +16,7 @@ import {message, Popconfirm, Icon, Button} from 'antd';
 import {addHyphenToPhoneNumber} from 'LIB_DIR/func';
 import { phoneMsgEmitter } from 'PUB_DIR/sources/utils/emitters';
 import BottomTotalCount from 'CMP_DIR/bottom-total-count';
-import {getTableContainerHeight, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {getTableContainerHeight, isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import BackMainPage from 'CMP_DIR/btn-back';
 import {CRM_VIEW_TYPES, checkPrivilege} from '../utils/crm-util';
 import crmPrivilegeConst from '../privilege-const';
@@ -399,6 +399,10 @@ class CustomerRecycleBin extends React.Component {
         if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
         }
+        //个人试用不展示负责人
+        if(checkVersionAndType().isPersonalTrial) {
+            columns = _.filter(columns, column => column.title !== Intl.get('crm.6', '负责人'));
+        }
         //没有恢复、彻底删除的权限，就去掉操作列
         if (!checkPrivilege([crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD, crmPrivilegeConst.CRM_USER_CUSTOMER_BAK_OPERATOR_RECORD])) {
             columns = _.filter(columns, column => column.title !== Intl.get('common.operate', '操作'));
@@ -509,15 +513,18 @@ class CustomerRecycleBin extends React.Component {
                 field: 'operator_name'
             },
             {
-                name: Intl.get('crm.6', '负责人'),
-                field: 'user_name'
-
-            },
-            {
                 name: Intl.get('call.record.contacts', '联系人'),
                 field: 'contact_name'
             }
         ];
+        //个人试用不展示负责人
+        if(!checkVersionAndType().isPersonalTrial) {
+            searchFields.splice(searchFields.length - 1, 0, {
+                name: Intl.get('crm.6', '负责人'),
+                field: 'user_name'
+
+            });
+        }
         return (
             <div className="customer-recycle-bin" data-tracename="回收站客户列表">
                 <TopNav>
