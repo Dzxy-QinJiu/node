@@ -7,9 +7,9 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import DetailCard from 'CMP_DIR/detail-card';
 import NoDataIconTip from 'CMP_DIR/no-data-icon-tip';
 import Spinner from 'CMP_DIR/spinner';
-import ShearContent from 'CMP_DIR/shear-content';
 import MemberManageAjax from '../ajax';
 import {CHANGE_RECORD_TYPE} from 'PUB_DIR/sources/utils/consts';
+import { recordChangeTimeLineItem } from 'PUB_DIR/sources/utils/common-method-util';
 
 const pageSize = 200;
 const appId = window.Oplate && window.Oplate.clientId || '3722pgujaa35r3u29jh0wJodBg574GAaqb0lun4VCq9';
@@ -65,21 +65,7 @@ class MemberRecord extends React.Component{
             });
         });
     };
-
-    renderTimeLineItem = (item) => {
-        let operateTime = _.get(item, 'record_time'); // 具体变的时间
-        return (
-            <dl>
-                <dd>
-                    <ShearContent>
-                        {_.get(item, 'content')}
-                    </ShearContent>
-                </dd>
-                <dt>{moment(operateTime).format(oplateConsts.TIME_FORMAT)}</dt>
-            </dl>
-        );
-    };
-
+    
     renderMemberRecordList() {
         return (
             <AntcTimeLine
@@ -87,7 +73,7 @@ class MemberRecord extends React.Component{
                 data={this.state.recordList}
                 groupByDay={true}
                 timeField="record_time"
-                contentRender={this.renderTimeLineItem}
+                contentRender={recordChangeTimeLineItem}
                 dot={<span className="iconfont icon-change"></span>}
             />
         );

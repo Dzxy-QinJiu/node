@@ -17,10 +17,10 @@ var GeminiScrollbar = require('../../../../components/react-gemini-scrollbar');
 var Spinner = require('../../../../components/spinner');
 import { Select, Alert } from 'antd';
 import StatusWrapper from 'CMP_DIR/status-wrapper';
-import ShearContent from '../../../../components/shear-content';
 import { ignoreCase } from 'LIB_DIR/utils/selectUtil';
 var Option = Select.Option;
 import {CHANGE_RECORD_TYPE} from 'PUB_DIR/sources/utils/consts';
+import { recordChangeTimeLineItem } from 'PUB_DIR/sources/utils/common-method-util';
 //高度常量
 var LAYOUT_CONSTANTS = {
     RIGHT_PANEL_PADDING_TOP: 20,//右侧面板顶部padding
@@ -93,23 +93,7 @@ class UserDetailChangeRecord extends React.Component {
     componentWillUnmount() {
         UserDetailChangeRecordStore.unlisten(this.onStateChange);
     }
-
-    renderTimeLineItem = (item) => {
-        let operateTime = _.get(item, 'record_time'); // 具体变的时间
-        return (
-            <dl>
-                <dd>
-                    <p>
-                        <ShearContent>
-                            {_.get(item, 'content')}
-                        </ShearContent>
-                    </p>
-                </dd>
-                <dt>{moment(operateTime).format(oplateConsts.TIME_FORMAT)}</dt>
-            </dl>
-        );
-    };
-
+    
     handleChange = (value) => {
         const app = _.find(this.props.appLists, item => item.app_id === value);
         const appName = app ? app.app_name : '';
@@ -186,7 +170,7 @@ class UserDetailChangeRecord extends React.Component {
                         data={this.state.changeRecord}
                         groupByDay={true}
                         timeField="record_time"
-                        contentRender={this.renderTimeLineItem}
+                        contentRender={recordChangeTimeLineItem}
                         dot={<span className="iconfont icon-change"></span>}
                     />
                 </div>
