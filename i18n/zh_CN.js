@@ -3838,7 +3838,7 @@ var zh_CN = {
     'payment.renewal.version.success': '您已成功续费，{time} 到期',
     'payment.get.payment.mode.faild': '获取支付渠道失败',
     'payment.get.discount.faild': '获取商品折扣信息失败',
-    'payment.please.upgrade.company.version': '请先升级为企业版。您可以联系我们的销售：{contact}',
+    'payment.please.upgrade.company.version': '请先升级到基础版以上版本，联系销售：{contact}',
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/

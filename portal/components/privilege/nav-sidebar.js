@@ -516,9 +516,9 @@ var NavSidebar = createReactClass({
                             {obj.name}
                         </NavLink>
                     );
-                    //判断是否是个人正式版，以及有通话路由
+                    //判断是否是个人版，以及有通话路由
                     let versionAndType = checkVersionAndType();
-                    if(ROUTE_CONST.CALL_RECORD === category && versionAndType.isPersonalFormal) {
+                    if(ROUTE_CONST.CALL_RECORD === category && versionAndType.personal) {
                         routeContent = _this.disableClickBlock('', obj.name);
                     }
                     return (
@@ -590,7 +590,7 @@ var NavSidebar = createReactClass({
         return (
             <Popover
                 placement='right'
-                content={Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'})}
+                content={Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'})}
                 trigger="hover"
             >
                 <a className={`${cls} disable-link`}>{text}</a>
@@ -628,9 +628,9 @@ var NavSidebar = createReactClass({
                     {/*{this.state.isReduceNavIcon ? (<span> {menu.shortName} </span>) : null}*/}
                 </NavLink>
             );
-            //判断是否是个人正式版，以及有通话路由
+            //判断是否是个人版，以及有通话路由
             let versionAndType = checkVersionAndType();
-            if(ROUTE_CONST.CALL_RECORD === category && versionAndType.isPersonalFormal) {
+            if(ROUTE_CONST.CALL_RECORD === category && versionAndType.personal) {
                 routeContent = this.disableClickBlock(extraClass);
             }
             return (
@@ -651,9 +651,9 @@ var NavSidebar = createReactClass({
 
         const versionAndType = checkVersionAndType();
         let dialUpKeyBoardContent = null;
-        //个人正式版，拨号功能不可用，需提示升级为企业版
-        if(this.state.isShowDialUpKeyboard && versionAndType.isPersonalFormal) {
-            dialUpKeyBoardContent = Intl.get('payment.please.upgrade.company.version', '请先升级为企业版。您可以联系我们的销售：{contact}',{contact: '400-6978-520'});
+        //个人版，拨号功能不可用，需提示升级为企业版
+        if(this.state.isShowDialUpKeyboard && versionAndType.personal) {
+            dialUpKeyBoardContent = Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'});
         }
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
