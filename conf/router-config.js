@@ -83,7 +83,7 @@ let routers = [
             routePath: '/user/active',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['BASE_QUERY_PERMISSION_MEMBER']
+            showPrivileges: ['APP_USER_QUERY']
         }]
     },
     {
@@ -368,6 +368,7 @@ let routers = [
         routePath: '/application',
         shortName: 'crm.109',//申请
         component: `${MODULE_PATH}/setting_workflow_tip/public`,
+        showPrivileges: ['WORKFLOW_BASE_PERMISSION'],
     },
     {
         id: 'NO_MATCH',
