@@ -181,7 +181,6 @@ class CurtaoAnalysis extends React.Component {
                         let subMenus = menu[subMenuField];
     
                         if (subMenus) {
-                            // subMenus = this.processMenu(subMenus);
                             menu[subMenuField] = this.processMenu(subMenus);
                         }
     
