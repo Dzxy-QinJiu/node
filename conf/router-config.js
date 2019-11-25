@@ -361,7 +361,7 @@ let routers = [
             showPrivileges: ['USER_INFO_UPDATE']
         }]
     },
-    //todo 申请审批代码优化后会去掉
+    // 没有配置的申请审批流程时的提示页面，todo 申请审批代码优化后会去掉
     {
         id: 'APPLICATION_APPLY_MANAGEMENT1',
         name: 'crm.109',//申请
