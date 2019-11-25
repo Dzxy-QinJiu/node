@@ -25,7 +25,7 @@ import ScheduleItem from './schedule/schedule-item';
 import Trace from 'LIB_DIR/trace';
 import RightPanelScrollBar from './components/rightPanelScrollBar';
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import CustomerRecordStore from '../store/customer-record-store';
 import ApplyUserForm from './apply-user-form';
 import TimeStampUtil from 'PUB_DIR/sources/utils/time-stamp-util';
@@ -551,17 +551,20 @@ class BasicOverview extends React.Component {
                     {/*basicData={basicData}*/}
                     {/*editBasicSuccess={this.editBasicSuccess}*/}
                     {/*/>*/}
-                    <SalesTeamCard
-                        isMerge={this.props.isMerge}
-                        updateMergeCustomer={this.props.updateMergeCustomer}
-                        disableEdit={this.props.disableEdit}
-                        customerId={basicData.id}
-                        userName={basicData.user_name}
-                        userId={basicData.user_id}
-                        salesTeam={basicData.sales_team}
-                        salesTeamId={basicData.sales_team_id}
-                        modifySuccess={this.editBasicSuccess}
-                    />
+                    {/*只要负责人或者联合跟进人有一项能修改，就展示*/}
+                    {!hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES) && checkVersionAndType().isPersonalTrial ? null : (
+                        <SalesTeamCard
+                            isMerge={this.props.isMerge}
+                            updateMergeCustomer={this.props.updateMergeCustomer}
+                            disableEdit={this.props.disableEdit}
+                            customerId={basicData.id}
+                            userName={basicData.user_name}
+                            userId={basicData.user_id}
+                            salesTeam={basicData.sales_team}
+                            salesTeamId={basicData.sales_team_id}
+                            modifySuccess={this.editBasicSuccess}
+                        />
+                    )}
                     {
                         subDomain ? (
                             <DetailCard
@@ -571,7 +574,7 @@ class BasicOverview extends React.Component {
                             />
                         ) : null
                     }
-                    {crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_ALL, crmPrivilegeConst.CRM_LIST_CUSTOMERS]) && !this.props.disableEdit ? (
+                    {crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_ALL, crmPrivilegeConst.CRM_LIST_CUSTOMERS]) && !this.props.disableEdit && hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) ? (
                         <CrmScoreCard customerScore={basicData.score} customerId={basicData.id}
                             showUserDetail={this.props.showUserDetail}
                             customerUserSize={_.get(this.state.crmUserList, 'length', 0)}/>) : null

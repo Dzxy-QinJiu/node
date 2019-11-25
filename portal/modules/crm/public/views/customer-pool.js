@@ -16,6 +16,7 @@ import crmAjax from '../ajax/index';
 import userData from 'PUB_DIR/sources/user-data';
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {formatSalesmanList, isResponsiveDisplay, removeEmptyItem} from 'PUB_DIR/sources/utils/common-method-util';
 import {getAllSalesUserList} from 'PUB_DIR/sources/utils/common-data-util';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
@@ -29,6 +30,7 @@ import CustomerLabel from 'CMP_DIR/customer_label';
 import CustomerPoolRule from './customer_pool_rule';
 import BackMainPage from 'CMP_DIR/btn-back';
 import { CRM_VIEW_TYPES } from '../utils/crm-util';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 
 //用于布局的高度
 var LAYOUT_CONSTANTS = {
@@ -438,6 +440,11 @@ class CustomerPool extends React.Component {
                 className: 'has-filter',
             }
         ];
+
+        //没有获取用户列表的权限，或者不是销售或者管理员时不展示分数
+        if(!hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) || !(hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL))){
+            columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
+        }
 
         //只要不是运营人员都可以提取
         if (!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {

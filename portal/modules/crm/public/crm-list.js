@@ -52,7 +52,7 @@ import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
 import CustomerLabel from 'CMP_DIR/customer_label';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import crmPrivilegeConst from './privilege-const';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -1206,9 +1206,11 @@ class Crm extends React.Component {
                 <Menu.Item key="repeat">
                     {Intl.get('crm.1', '客户查重')}
                 </Menu.Item> : null}
-            <Menu.Item key="client_pool">
-                {Intl.get('crm.customer.pool', '客户池')}
-            </Menu.Item>
+            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                <Menu.Item key="client_pool">
+                    {Intl.get('crm.customer.pool', '客户池')}
+                </Menu.Item>
+            )}
             {hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL) ?
                 <Menu.Item key="bin">
                     {Intl.get('crm.customer.recycle.bin', '回收站')}
@@ -2153,8 +2155,13 @@ class Crm extends React.Component {
         if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
         }
-        if(!(hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL))){
+        //没有获取用户列表的权限，或者不是销售或者管理员时不展示分数
+        if(!hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) || !(hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL))){
             columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
+        }
+        //个人试用不展示负责人
+        if(checkVersionAndType().isPersonalTrial) {
+            columns = _.filter(columns, column => column.title !== Intl.get('crm.6', '负责人'));
         }
 
         //运营人员不展示操作列，管理员展示删除、释放，销售展示释放

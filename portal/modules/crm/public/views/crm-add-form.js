@@ -327,7 +327,9 @@ class CRMAddForm extends React.Component {
                 }
             });
 
-            this.getAdministrativeLevelByName(customerName);
+            if(!commonMethodUtil.checkVersionAndType().isPersonalTrial) {
+                this.getAdministrativeLevelByName(customerName);
+            }
             //根据客户名查询地域、行业等信息并自动填充到相关字段
             this.autofillGeoInfo(customerName);
         } else {
@@ -495,21 +497,23 @@ class CRMAddForm extends React.Component {
                                     )
                                 )}
                             </FormItem >
-                            <FormItem
-                                label={Intl.get('crm.administrative.level', '行政级别')}
-                                {...formItemLayout}
-                            >
-                                {
-                                    getFieldDecorator('administrative_level')(
-                                        <Select
-                                            placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
-                                            getPopupContainer={() => document.getElementById('crm-add-form')}
-                                        >
-                                            {this.getAdministrativeLevelOptions()}
-                                        </Select>
-                                    )
-                                }
-                            </FormItem >
+                            {commonMethodUtil.checkVersionAndType().isPersonalTrial ? null : (
+                                <FormItem
+                                    label={Intl.get('crm.administrative.level', '行政级别')}
+                                    {...formItemLayout}
+                                >
+                                    {
+                                        getFieldDecorator('administrative_level')(
+                                            <Select
+                                                placeholder={Intl.get('crm.administrative.level.placeholder', '请选择行政级别')}
+                                                getPopupContainer={() => document.getElementById('crm-add-form')}
+                                            >
+                                                {this.getAdministrativeLevelOptions()}
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem >
+                            )}
                             <AntcAreaSelection
                                 labelCol="5"
                                 wrapperCol="19"
