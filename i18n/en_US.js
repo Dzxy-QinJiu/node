@@ -1168,6 +1168,9 @@ var en_US = {
     'notification.system.tip.count': 'You have {systemTipCount} system messages.',//您有{systemTipCount}条系统消息
     'notification.pop.up.notify': 'Pop-up notification', // 弹窗通知
     'notification.pop.up.notify.title': '{status} pop-up notification', // {status}弹窗通知
+    'notification.call.up.failed': 'Failed to call out', // 拨打电话失败
+    'notification.extract.clue.failed': 'Failed to extract clue', // 提取线索失败
+
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序

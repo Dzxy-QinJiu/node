@@ -59,6 +59,8 @@ export const SYSTEM_NOTICE_TYPES = {
     DISABLE_CUSTOMER_LOGIN: 'appIllegal',//停用客户登录
     FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin',//关注客户登录
     LOGIN_FAILED: 'loginFailed',//登录失败
+    CALL_UP_FAIL: 'callupfail', // 拨打电话失败
+    PULL_CLUE_FAIL: 'pullcluefail', // 提取线索失败
 };
 export const APPLY_APPROVE_TYPES = {
     //获取数据时，接口返回数据中用于展示的申请类型标识
@@ -94,7 +96,9 @@ export const SYSTEM_NOTICE_TYPE_MAP = {
     'appIllegal': Intl.get('ketao.frontpage.illeagl.login', '停用客户登录'),
     'concerCustomerLogin': Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录'),
     'loginFailed': Intl.get('notification.login.failed', '登录失败'),
-    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录')
+    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录'),
+    'callupfail': Intl.get('notification.call.up.failed', '拨打电话失败'),
+    'pullcluefail': Intl.get('notification.extract.clue.failed', '提取线索失败'),
 };
 
 export const NO_SELECT_FULL_OPTIONS = [

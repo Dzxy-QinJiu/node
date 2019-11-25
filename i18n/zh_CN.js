@@ -1170,6 +1170,9 @@ var zh_CN = {
     'notification.system.tip.count': '您有{systemTipCount}条系统消息',
     'notification.pop.up.notify': '弹窗通知',
     'notification.pop.up.notify.title': '{status}弹窗通知',
+    'notification.call.up.failed': '拨打电话失败',
+    'notification.extract.clue.failed': '提取线索失败',
+
     //通知end
     //销售阶段start
     'sales.stage.change.sort': '变更顺序',
