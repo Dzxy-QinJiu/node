@@ -6,6 +6,7 @@
 //获取线索阶段分析列表
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
+import cluePrivilegeConst from '../privilege-const';
 exports.getCustomerById = function(data) {
     var Deferred = $.Deferred();
     var pageSize = 10;
@@ -25,10 +26,10 @@ exports.getCustomerById = function(data) {
     });
     return Deferred.promise();
 };
-//获取线索统计列表
+//获取线索统计列表（线索筛选中，地域下拉列表中的数据通过此接口获取）
 exports.getClueStatics = function(pathParams, rangeParams, queryParams) {
     var type = 'self';
-    if (hasPrivilege(analysisPrivilegeConst.CURTAO_CRM_ANALYSIS_LEAD_ALL)){
+    if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
         type = 'all';
     }
     //销售取值时，query参数必须有，管理员可以没有

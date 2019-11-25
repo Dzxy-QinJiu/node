@@ -83,7 +83,7 @@ let routers = [
             routePath: '/user/active',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
-            showPrivileges: ['BASE_QUERY_PERMISSION_MEMBER']
+            showPrivileges: ['APP_USER_QUERY']
         }]
     },
     {
@@ -361,13 +361,14 @@ let routers = [
             showPrivileges: ['USER_INFO_UPDATE']
         }]
     },
-    //todo 申请审批代码优化后会去掉
+    // 没有配置的申请审批流程时的提示页面，todo 申请审批代码优化后会去掉
     {
         id: 'APPLICATION_APPLY_MANAGEMENT1',
         name: 'crm.109',//申请
         routePath: '/application',
         shortName: 'crm.109',//申请
         component: `${MODULE_PATH}/setting_workflow_tip/public`,
+        showPrivileges: ['WORKFLOW_BASE_PERMISSION'],
     },
     {
         id: 'NO_MATCH',
