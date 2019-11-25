@@ -6,10 +6,18 @@
     padding:12px;
     margin-bottom: 8px;
     background: #fff;
+    .clue-basic-info{
+      .clear-float{
+        clear: both;
+      }
+    }
     .clue-info-item{
       border-radius: 4px;
-      overflow: hidden;
+      //overflow: hidden;
       margin-bottom:4px;
+      min-height: 24px;
+      float: left;
+      width: 100%;
       .clue-info-label,.item-show-label{
         width: 60px;
         float: left;
@@ -18,6 +26,7 @@
         line-height: 24px;
         &.contact-way-icon{
           margin-top:0;
+          margin-right: 0px;
         }
       }
       .clue-info-detail{
@@ -36,8 +45,21 @@
           }
         }
       }
-      .item-show-container .item-show-content,.clue-info-detail.area-item{
-        padding-left: 65px;
+      .item-show-container .item-show-content{
+          padding-left: 65px;
+        }
+      .clue-info-detail.area-item{
+        float: left;
+        width: calc(100% - 60px);
+
+      }
+      .clue-info-detail.area-item .icon-edit-btn{
+        display: none;
+      }
+      &.area-content:hover{
+        .clue-info-detail.area-item .icon-edit-btn{
+          display: block;
+        }
       }
       .clue-info-detail.clue-contact-container{
 
@@ -75,6 +97,14 @@
       overflow: hidden;
       margin-bottom:10px;
       .contact-item-content{
+        overflow: hidden;
+        .dynamic-item-form{
+            .item-wrap{
+              .item-content .ant-form-item-label{
+                text-align: left;
+              }
+            }
+        }
         label.ant-form-item-required:before{
           display: none;
         }
@@ -340,6 +370,7 @@
   }
   .assign-sales-warp.clue-detail-block{
     padding: 0;
+    overflow: hidden;
     .clue-info-item{
       border-radius: 4px;
       position: relative;

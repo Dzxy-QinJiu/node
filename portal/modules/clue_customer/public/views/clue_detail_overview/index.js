@@ -49,7 +49,7 @@ import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerStore = require('../../store/clue-customer-store');
 import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
-import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
+import crmUtil, {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -63,6 +63,8 @@ import {sourceClassifyArray, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_D
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 import commonSalesHomePrivilegeConst from 'MOD_DIR/common_sales_home_page/public/privilege-const';
+import LocationSelectField from 'CMP_DIR/basic-edit-field-new/location-select';
+import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -86,6 +88,8 @@ class ClueDetailOverview extends React.Component {
         isShowInvalidateInputPanel: false, //正在展示无效信息输入框
         myTeamTree: [],//销售领导获取我所在团队及下级团队树
         phoneDuplicateWarning: [], //联系人电话重复时的提示
+        isLoadingIndustryList: false,//正在加载
+        industryList: []//行业列表
     };
 
     componentDidMount() {
@@ -102,11 +106,26 @@ class ClueDetailOverview extends React.Component {
                 this.getSimilarCustomerLists();
             }
         }
+        if (this.getEditClueInfoPrivilege()) {
+            this.getIndustryList();
+        }
         //销售领导获取我所在团队及下级团队树
         getMyTeamTreeList(result => {
             this.setState({myTeamTree: _.get(result, 'teamTreeList', [])});
         });
     }
+    //获取行业列表
+    getIndustryList = () => {
+        //获取后台管理中设置的行业列表
+        this.setState({isLoadingIndustryList: true});
+        CrmAction.getIndustries(result => {
+            let list = _.isArray(result) ? result : [];
+            if (list.length > 0) {
+                list = _.map(list, 'industry');
+            }
+            this.setState({isLoadingIndustryList: false, industryList: list});
+        });
+    };
     //线索的状态是已转化的线索
     isHasTransferClue = () => {
         return _.get(this, 'state.curClue.status') === SELECT_TYPE.HAS_TRANSFER;
@@ -402,7 +421,7 @@ class ClueDetailOverview extends React.Component {
 
         }else{
             //修改线索的基本信息
-            this.changeClueItemInfo(saveObj, successFunc, errorFunc);
+            this.changeClueItemInfo(type, saveObj, successFunc, errorFunc);
 
         }
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${item}的修改`);
@@ -423,7 +442,7 @@ class ClueDetailOverview extends React.Component {
         });
     };
     //修改线索的相关信息
-    changeClueItemInfo = (saveObj, successFunc, errorFunc) => {
+    changeClueItemInfo = (type, saveObj, successFunc, errorFunc) => {
         var data = handleSubmitClueItemData(_.cloneDeep(saveObj));
         clueCustomerAjax.updateClueItemDetail(data).then((result) => {
             if (result) {
@@ -1164,10 +1183,17 @@ class ClueDetailOverview extends React.Component {
         }
         return displayText;
     };
+    getEditClueInfoPrivilege = () => {
+        var curClue = this.state.curClue;
+        return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && editCluePrivilege(curClue);
+    };
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
-        var hasPrivilegeEdit = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && editCluePrivilege(curClue);
+        var hasPrivilegeEdit = this.getEditClueInfoPrivilege();
+        let industryOptions = this.state.industryList.map((item, i) => {
+            return (<Option key={i} value={item}>{item}</Option>);
+        });
         return (
             <div className="clue-info-wrap clue-detail-block">
                 <div className="clue-basic-info">
@@ -1267,17 +1293,67 @@ class ClueDetailOverview extends React.Component {
                             />
                         </div>
                     </div>
-                    {curClue.province || curClue.city ?
-                        <div className="clue-info-item">
-                            <div className="clue-info-label">
-                                {Intl.get('crm.96', '地域')}
-                            </div>
-                            <div className="clue-info-detail area-item">
-                                {curClue.province}
-                                {curClue.city}
-                            </div>
+                    <div className="basic-info-industry clue-info-item">
+                        <span className="clue-info-label">
+                            {Intl.get('common.industry', '行业')}:
+                        </span>
+                        <div className="clue-info-detail">
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                id={curClue.id}
+                                displayText={curClue.industry}
+                                value={curClue.industry}
+                                field="industry"
+                                selectOptions={industryOptions}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                placeholder={Intl.get('crm.22', '请选择行业')}
+                                editBtnTip={Intl.get('crm.163', '设置行业')}
+                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
+                                noDataTip={Intl.get('crm.basic.no.industry', '暂无行业')}
+                                addDataTip={Intl.get('crm.basic.add.industry', '添加行业')}
+                            />
                         </div>
-                        : null}
+                    </div>
+                    <div className="clue-info-item area-content">
+                        <div className="clue-info-label">
+                            {Intl.get('crm.96', '地域')}
+                        </div>
+                        <div className="clue-info-detail area-item">
+                            <LocationSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                id={curClue.id}
+                                province={curClue.province}
+                                city={curClue.city}
+                                county={curClue.county}
+                                province_code={curClue.province_code}
+                                city_code={curClue.city_code}
+                                county_code={curClue.county_code}
+                                saveEditLocation={this.saveEditBasicInfo.bind(this, 'province')}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                noDataTip={Intl.get('crm.basic.no.location', '暂无地域信息')}
+                                addDataTip={Intl.get('crm.basic.add.location', '添加地域信息')}
+                            />
+                        </div>
+                    </div>
+                    <div className="basic-info-detail-address clue-info-item">
+                        <span className="clue-info-label">
+                            {Intl.get('common.full.address', '详细地址')}
+                        </span>
+                        <div className="clue-info-detail">
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={curClue.id}
+                                value={curClue.address}
+                                field="address"
+                                type="input"
+                                placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                saveEditInput={this.saveEditBasicInfo.bind(this, 'address')}
+                                noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
+                                addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
+                            />
+                        </div>
+                    </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
                             {Intl.get('crm.sales.clue.access.channel', '接入渠道')}
@@ -1436,6 +1512,7 @@ class ClueDetailOverview extends React.Component {
                             })}
                         </div>
                     </div>
+                    <div className='clear-float'></div>
                 </div>
                 <div className="add-person-info">
                     <div className="add-clue-info">

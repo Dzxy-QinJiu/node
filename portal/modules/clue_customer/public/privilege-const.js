@@ -47,8 +47,13 @@ let cluePrivilegeConst = {
     
     //线索推荐start
     //线索推荐
-    CURTAO_CRM_COMPANY_STORAGE: 'CURTAO_CRM_COMPANY_STORAGE'
+    CURTAO_CRM_COMPANY_STORAGE: 'CURTAO_CRM_COMPANY_STORAGE',
     //线索推荐end
+    //线索分配start
+    //线索分配
+    CURTAO_CRM_LEAD_DISTRIBUTE_SELF: 'CURTAO_CRM_LEAD_DISTRIBUTE_SELF',
+    CURTAO_CRM_LEAD_DISTRIBUTE_ALL: 'CURTAO_CRM_LEAD_DISTRIBUTE_ALL'
+    //线索分配end
 };
 export default cluePrivilegeConst;
 

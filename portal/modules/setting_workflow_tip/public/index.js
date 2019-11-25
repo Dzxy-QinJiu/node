@@ -6,7 +6,7 @@
 import userData from 'PUB_DIR/sources/user-data';
 import {NavLink} from 'react-router-dom';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
-import applyPrivilegeConst from '../../apply_approve_manage/public/privilege-const'
+import applyPrivilegeConst from '../../apply_approve_manage/public/privilege-const';
 require('./index.less');
 class SettingWorkflowTip extends React.Component {
     state = {
@@ -31,10 +31,10 @@ class SettingWorkflowTip extends React.Component {
                                 values={{
 
                                     tip: <span className="set-workflow">
-                                <NavLink to="/background_management/apply_approve" activeClassName="active" data-tracename="设置流程">
-                                    {Intl.get('apply.approve.go.set.workflow','去设置？')}
-                                </NavLink>
-                            </span>
+                                        <NavLink to="/background_management/apply_approve" activeClassName="active" data-tracename="设置流程">
+                                            {Intl.get('apply.approve.go.set.workflow','去设置？')}
+                                        </NavLink>
+                                    </span>
                                 }}
                             /> : null
                     }

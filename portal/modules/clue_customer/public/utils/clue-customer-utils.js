@@ -88,7 +88,7 @@ export const editCluePrivilege = function(clueItem) {
 };
 export const assignSalesPrivilege = (curClue) => {
     let user = userData.getUserData();
-    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF) && !user.isCommonSales)) && editCluePrivilege(curClue);
+    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_SELF) || (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_ALL) && !user.isCommonSales)) && editCluePrivilege(curClue);
 };
 
 export const CLUE_DIFF_TYPE = [
@@ -247,6 +247,9 @@ export const handleSubmitClueItemData = function(submitObj,isMarkingAvalibility)
     for (var key in submitObj) {
         data.updateItem = key;
         updateObj[key] = submitObj[key];
+    }
+    if(submitObj['province'] || submitObj['city'] || submitObj['county']){
+        data.updateItem = 'province';
     }
     data.updateObj = JSON.stringify(updateObj);
     data.type = handlePrivilegeType(isMarkingAvalibility);
