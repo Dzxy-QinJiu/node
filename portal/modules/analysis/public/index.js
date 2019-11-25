@@ -174,18 +174,22 @@ class CurtaoAnalysis extends React.Component {
                 const foundPrivilege = _.find(menu.privileges, privilege => hasPrivilege(privilege));
 
                 if (foundPrivilege) {
+                    let isShow = true;
+
                     //若果定义了是否显示该菜单的回调函数，则调用该函数，以控制菜单的显示隐藏
                     if (_.isFunction(menu.isShowCallback)) {
-                        return menu.isShowCallback();
-                    } else {
+                        isShow = menu.isShowCallback();
+                    }
+
+                    if (isShow) {
                         let subMenus = menu[subMenuField];
     
                         if (subMenus) {
                             menu[subMenuField] = this.processMenu(subMenus);
                         }
-    
-                        return true;
                     }
+    
+                    return isShow;
                 } else {
                     return false;
                 }
