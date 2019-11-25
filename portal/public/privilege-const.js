@@ -14,4 +14,6 @@ export default {
     GET_TEAM_LIST_ALL: 'GET_TEAM_LIST_ALL',
     // 获取我的团队以及我的下属团队
     GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS: 'GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS',
+    //是否有打电话的权限
+    PHONE_ACCESS_CALL_OU: 'PHONE_ACCESS_CALL_OU',
 };
