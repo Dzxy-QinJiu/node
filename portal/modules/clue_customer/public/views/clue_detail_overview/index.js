@@ -404,7 +404,6 @@ class ClueDetailOverview extends React.Component {
 
         }
         this.props.updateClueProperty(saveObj); //切换tab时实时更新线索详情
-        this.props.handleContactsChange(_.get(clueCustomerStore.getState(), 'curClue.contacts'));//切换tab时实时更新联系人的详情
         Trace.traceEvent(ReactDOM.findDOMNode(this), `保存线索${item}的修改`);
     };
     //修改联系人的相关信息
@@ -1780,8 +1779,7 @@ ClueDetailOverview.propTypes = {
     extractClueOperator: PropTypes.func,
     showClueToCustomerPanel: PropTypes.func,
     changeActiveKey: PropTypes.func,
-    hideContactWay: PropTypes.bool,
-    handleContactsChange: PropTypes.func
+    hideContactWay: PropTypes.bool
 };
 
 module.exports = ClueDetailOverview;

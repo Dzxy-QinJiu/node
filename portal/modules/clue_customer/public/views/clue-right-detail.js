@@ -305,6 +305,17 @@ class ClueRightPanel extends React.Component {
     updateClueProperty = (updateProperty,flag) => {
         var curClue = this.state.curClue;
         for (var key in updateProperty){
+            if(key === 'contact_name'){//对联系人信息的改变进行特殊处理
+                curClue.contacts[0]['name'] = updateProperty[key];
+            }else if(key === 'qq'){
+                curClue.contacts[0]['qq'] = updateProperty[key];
+            }else if(key === 'weChat'){
+                curClue.contacts[0]['weChat'] = updateProperty[key];
+            }else if(key === 'phone'){
+                curClue.contacts[0]['phone'] = updateProperty[key];
+            }else if(key === 'email'){
+                curClue.contacts[0]['email'] = updateProperty[key];
+            }
             curClue[key] = updateProperty[key];
         }
         this.setState({
@@ -337,14 +348,6 @@ class ClueRightPanel extends React.Component {
         return baseHeight;
     };
 
-    handleContactsChange = (contacts) => {//切换tab时实时更新修改的线索详情
-        let tempClue = _.cloneDeep(this.state.curClue);
-        let tempContacts = _.cloneDeep(contacts);
-        tempClue.contacts = tempContacts;
-        this.setState({
-            curClue: tempClue
-        });
-    }
 
     render() {
         let curClue = _.get(this.state, 'curClue');
@@ -417,7 +420,6 @@ class ClueRightPanel extends React.Component {
                                             extractClueOperator={this.props.extractClueOperator}
                                             changeActiveKey={this.changeActiveKey}
                                             hideContactWay={hideContactWay}
-                                            handleContactsChange={this.handleContactsChange}
                                         />
                                     ) : null}
                                 </TabPane>
