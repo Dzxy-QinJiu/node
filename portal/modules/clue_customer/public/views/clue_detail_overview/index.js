@@ -280,6 +280,7 @@ class ClueDetailOverview extends React.Component {
             newCustomerDetail.contact_id = contact_id;
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
+        this.props.updateClueProperty(newCustomerDetail);
     };
 
     //今天之后的日期不可以选
