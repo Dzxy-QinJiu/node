@@ -6,7 +6,7 @@ let conditionCache = {};
 
 export function getVisitCustomerChart() {
     let chart = {
-        title: Intl.get('common.sales.behavior.statistics', '拜访客户统计'),
+        title: '出差拜访频率统计',
         chartType: 'table',
         url: '/rest/analysis/callrecord/v1/customertrace/:data_type/sale/trace/statistics',
         argCallback: arg => {
@@ -25,7 +25,7 @@ export function getVisitCustomerChart() {
                     dataIndex: 'nick_name',
                     width: '10%',
                     render: (value, record) => {
-                        return <span onClick={onSalesNameClick.bind(this, record, analysisInstance, chartIndex)}>{value}</span>;
+                        return <span onClick={onSalesNameClick.bind(this, value, record, analysisInstance, chartIndex)}>{value}</span>;
                     }
                 }]
             };
@@ -36,12 +36,12 @@ export function getVisitCustomerChart() {
     };
 
     //销售人员名点击事件
-    function onSalesNameClick(record, analysisInstance, chartIndex) {
+    function onSalesNameClick(salesName, record, analysisInstance, chartIndex) {
         let charts = analysisInstance.state.charts;
 
         let chart = charts[chartIndex];
 
-        chart.title = '拜访客户频率统计';
+        chart.title = salesName + '拜访客户频率统计';
         const subTitle = <span>返回</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
         chart.url = '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics';
