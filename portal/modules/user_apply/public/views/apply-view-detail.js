@@ -854,7 +854,7 @@ const ApplyViewDetail = createReactClass({
         return this.hasApprovalPrivilege() && this.isUnApproved() && (_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork) && isFinalTask(this.state.applyNode);
     },
     notShowIcon(){
-        return !this.isUnApproved() || !hasPrivilege('APP_USER_APPLY_APPROVAL') || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
+        return !this.isUnApproved() || !hasPrivilege('USER_APPLY_APPROVE') || !this.state.isOplateUser || !isFinalTask(this.state.applyNode) || !(_.get(this, 'state.detailInfoObj.info.showApproveBtn') || this.props.isHomeMyWork);
     },
     //选择了手动设置密码时，未输入密码，不能通过
     settingPasswordManuWithNoValue: function() {
