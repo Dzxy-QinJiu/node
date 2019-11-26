@@ -241,12 +241,9 @@ class phoneStatusTop extends React.Component {
         };
 
         var clueInfoArr = _.get(this,'state.clueInfoArr[0]') ? this.state.clueInfoArr : [];
-        var defaultClueSelect = _.get(clueInfoArr,'[0].id');
-        if(_.isEmpty(clueInfoArr) && !this.state.isClueDetailCall && _.get(phonemsgObj,'leads[0]') ) {
+        if(_.isEmpty(clueInfoArr) && !this.state.isClueDetailCall && _.get(phonemsgObj,'leads[0]')) {
             clueInfoArr = phonemsgObj.leads;
-            defaultClueSelect = _.get(phonemsgObj,'lead_id') || _.get(clueInfoArr, '[0].id','');
         }
-
         const options = clueInfoArr.map((item) => (
             <Option value={item.id} key={item.id}>{item.name}</Option>
         ));
@@ -298,7 +295,7 @@ class phoneStatusTop extends React.Component {
                                 <div className="select-add-trace-customer">
                                     {Intl.get('apply.select.trace.clue', '请选择要跟进的线索')}：
                                     <Select
-                                        defaultValue={defaultClueSelect}
+                                        defaultValue={clueInfoArr[0].id}
                                         dropdownMatchSelectWidth={false}
                                         onChange={this.handleSelectCustomer}
                                     >
