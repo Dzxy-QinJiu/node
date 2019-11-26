@@ -188,10 +188,10 @@ class ClueDetailPanel extends React.Component {
                         phoneRecordObj.received_time = phonemsgObj.recevied_time;
                         phoneRecordObj.callid = phonemsgObj.callid;
                         //如果是从线索详情中打的电话，则不需要再获取线索详情
-                        // if (!this.isClueDetailCall(nextProps.paramObj)) {
-                        //     //根据线索的id获取线索的详情
-                        //     this.getClueInfoByClueId(phonemsgObj);
-                        // }
+                        if (!this.isClueDetailCall(nextProps.paramObj)) {
+                            //根据线索的id获取线索的详情
+                            this.getClueInfoByClueId(phonemsgObj);
+                        }
                     }
                     //页面上如果存在上次打电话的模态框，再次拨打电话的时候
                     var $modal = $('#clue-phone-status-content');
