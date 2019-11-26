@@ -43,6 +43,7 @@ class ExtractClues extends React.Component {
             getMaxLimitExtractNumberError: false,//获取该账号的最大提取量出错
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
+            canClickExtract: true //防止连续点击批量提取相同线索
         };
     }
 
@@ -88,6 +89,7 @@ class ExtractClues extends React.Component {
 
     //获取某个安全域已经提取多少推荐线索数量,
     getRecommendClueCount(callback){
+        this.setState({canClickExtract: false});
         getMaxLimitExtractClueCount().then((data) => {
             this.setState({
                 hasExtractCount: data.hasExtractedCount,
@@ -107,11 +109,13 @@ class ExtractClues extends React.Component {
         this.setState({
             batchExtractLoading: true,
             unSelectDataTip: '',
-            saveErrorMsg: ''
+            saveErrorMsg: '',
+            canClickExtract: false
         });
         GuideAjax.batchExtractRecommendClues(submitObj).then((data) => {
             this.setState({
-                batchExtractLoading: false
+                batchExtractLoading: false,
+                canClickExtract: true
             });
             var taskId = _.get(data, 'batch_label','');
             if (taskId){
@@ -141,6 +145,7 @@ class ExtractClues extends React.Component {
             }
         }, (errorMsg) => {
             this.setState({
+                canClickExtract: true,
                 batchExtractLoading: false,
                 saveErrorMsg: errorMsg || Intl.get('clue.extract.failed', '提取失败'),
                 unSelectDataTip: errorMsg || Intl.get('clue.extract.failed', '提取失败')
@@ -331,6 +336,7 @@ class ExtractClues extends React.Component {
         this.handleBatchAssignClues(submitObj);
     };
     handleSubmitAssignSalesBatch = () => {
+        if(!this.state.canClickExtract) return;
         let selectedIds = _.map(this.state.selectedRecommendClues,'id');
         if(_.isEmpty(selectedIds)) {
             return;
@@ -357,6 +363,7 @@ class ExtractClues extends React.Component {
                     ){
                         this.setState({
                             batchPopoverVisible: true,
+                            canClickExtract: true
                         });
                     }else{
                         this.batchAssignRecommendClues(submitObj);
