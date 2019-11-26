@@ -41,7 +41,7 @@ var DefaultHeadIconImage = require('../../../common/public/image/default-head-ic
 // 应用的默认配置
 var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
-
+import privilegeConst_common from '../../public/privilege-const';
 var moment = require('moment');
 import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount, isFinalTask, isApprovedByManager} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
@@ -135,6 +135,7 @@ const APPLY_LIST_WIDTH = 421;
 import commonDataUtil from 'PUB_DIR/sources/utils/common-data-util';
 import {INTEGRATE_TYPES} from 'PUB_DIR/sources/utils/consts';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
+import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 const ApplyViewDetail = createReactClass({
     propTypes: {
         detailItem: PropTypes.object,
@@ -150,7 +151,7 @@ const ApplyViewDetail = createReactClass({
     mixins: [FieldMixin, UserNameTextField],
 
     hasApprovalPrivilege() {
-        return hasPrivilege('USER_PWD_CHANGE_APPROVAL');
+        return hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE);
     },
 
     getDefaultProps() {
@@ -221,7 +222,7 @@ const ApplyViewDetail = createReactClass({
             //获取该审批所在节点的位置
             ApplyViewDetailActions.getApplyTaskNode({id: detailItem.id});
             //获取回复列表
-            if (hasPrivilege('GET_APPLY_COMMENTS')) {
+            if (hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION)) {
                 ApplyViewDetailActions.getReplyList(detailItem.id);
             }
         });
@@ -634,8 +635,8 @@ const ApplyViewDetail = createReactClass({
                                 <div className="reply-info-block apply-info-block">
                                     <div className="reply-list-container apply-info-content">
                                         {this.props.isUnreadDetail ? this.renderRefreshReplyTip() : null}
-                                        {hasPrivilege('GET_APPLY_COMMENTS') ? this.renderReplyList() : null}
-                                        {hasPrivilege('CREATE_APPLY_COMMENT') ? (
+                                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderReplyList() : null}
+                                        {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? (
                                             <Input addonAfter={(
                                                 <a onClick={this.addReply}>{Intl.get('user.apply.reply.button', '回复')}</a>)}
                                             value={this.state.formData.comment}
@@ -646,7 +647,7 @@ const ApplyViewDetail = createReactClass({
                                     </div>
                                 </div>
                             </div>
-                            {hasPrivilege('GET_APPLY_COMMENTS') ? this.renderSameCustomerHistoricalApply() : null}
+                            {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) ? this.renderSameCustomerHistoricalApply() : null}
                         </GeminiScrollbar>
                     )}
                 </div>
@@ -1177,7 +1178,7 @@ const ApplyViewDetail = createReactClass({
                 }
             }];
         //角色的展示
-        if (hasPrivilege('GET_APP_EXTRA_GRANTS')) {//待审状态，并且有获取应用角色的权限
+        if (hasPrivilege(privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION)) {//待审状态，并且有获取应用角色的权限
             columns.push({
                 title: Intl.get('user.apply.detail.table.role', '角色'),
                 dataIndex: 'rolesNames',
@@ -1423,11 +1424,11 @@ const ApplyViewDetail = createReactClass({
                             {this.renderDetailOperateBtn()}
                         </div>
                         {/** 不显示角色和权限的情况：
-                         detailInfo.approval_state === '0' &&  !hasPrivilege("GET_APP_EXTRA_GRANTS") 销售人员待审批的情况
+                         detailInfo.approval_state === '0' &&  !hasPrivilege("BASE_QUERY_PERMISSION_APPLICATION") 销售人员待审批的情况
                          detailInfo.approval_state === '2'表示是已驳回的应用，
                          detailInfo.approval_state === '3'表示是已撤销的应用，
                          */}
-                        {detailInfo.approval_state === '0' && !hasPrivilege('GET_APP_EXTRA_GRANTS') ||
+                        {detailInfo.approval_state === '0' && !hasPrivilege(privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION) ||
                         detailInfo.approval_state === '2' ||
                         detailInfo.approval_state === '3' ?
                             this.renderAppTable() : this.renderAppTableRolePermission()
@@ -2330,7 +2331,7 @@ const ApplyViewDetail = createReactClass({
                 <Row className="approval_person clearfix">
                     <Col>
                         {isConsumed ? null : (<div className="pull-right">
-                            {hasPrivilege('APPLY_CANCEL') && showBackoutApply ?
+                            {hasPrivilege(commonPrivilegeConst.USERAPPLY_BASE_PERMISSION) && showBackoutApply ?
                                 <Button type="primary" className="btn-primary-sure" size="small"
                                     onClick={this.clickApprovalFormBtn.bind(this, '3')}>
                                     {Intl.get('user.apply.detail.backout', '撤销申请')}
