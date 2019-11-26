@@ -41,7 +41,6 @@ var DefaultHeadIconImage = require('../../../common/public/image/default-head-ic
 // 应用的默认配置
 var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
-import privilegeConst_common from '/public/privilege-const';
 var moment = require('moment');
 import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount, isFinalTask, isApprovedByManager} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';
@@ -1178,7 +1177,7 @@ const ApplyViewDetail = createReactClass({
                 }
             }];
         //角色的展示
-        if (hasPrivilege(privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION)) {//待审状态，并且有获取应用角色的权限
+        if (hasPrivilege(commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION)) {//待审状态，并且有获取应用角色的权限
             columns.push({
                 title: Intl.get('user.apply.detail.table.role', '角色'),
                 dataIndex: 'rolesNames',
@@ -1428,7 +1427,7 @@ const ApplyViewDetail = createReactClass({
                          detailInfo.approval_state === '2'表示是已驳回的应用，
                          detailInfo.approval_state === '3'表示是已撤销的应用，
                          */}
-                        {detailInfo.approval_state === '0' && !hasPrivilege(privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION) ||
+                        {detailInfo.approval_state === '0' && !hasPrivilege(commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION) ||
                         detailInfo.approval_state === '2' ||
                         detailInfo.approval_state === '3' ?
                             this.renderAppTable() : this.renderAppTableRolePermission()
