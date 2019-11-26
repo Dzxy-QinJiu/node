@@ -41,7 +41,9 @@ export function getVisitCustomerChart() {
 
         let chart = charts[chartIndex];
 
-        chart.title = <div>拜访客户频率统计<span>返回</span></div>;
+        chart.title = '拜访客户频率统计';
+        const subTitle = <span>返回</span>;
+        _.set(chart, 'cardContainer.props.subTitle', subTitle);
         chart.url = '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics';
 
         conditionCache.member_id = record.user_id;
