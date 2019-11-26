@@ -54,14 +54,6 @@ export const logTypeList = [
     {name: ROLE_AUTH_LOG, value: '角色权限'}
 ];
 
-export const SYSTEM_NOTICE_TYPES = {
-    OFFSITE_LOGIN: 'illegalLocation',//异地登录
-    DISABLE_CUSTOMER_LOGIN: 'appIllegal',//停用客户登录
-    FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin',//关注客户登录
-    LOGIN_FAILED: 'loginFailed',//登录失败
-    CALL_UP_FAIL: 'callupfail', // 拨打电话失败
-    PULL_CLUE_FAIL: 'pullcluefail', // 提取线索失败
-};
 export const APPLY_APPROVE_TYPES = {
     //获取数据时，接口返回数据中用于展示的申请类型标识
     CUSTOMER_VISIT: 'customer_visit',//出差申请，后端传到前端的出差申请的类型
@@ -90,6 +82,15 @@ export const APPLY_APPROVE_TYPES = {
     UNHANDLEMEDOMAINAPPLY: 'unhandleDomainApply', // 未处理的域名申请数量
     UNHANDLE_USER_APPLY: 'approve',//待处理的用户申请
 };
+// 系统消息对应的通知类型
+export const SYSTEM_NOTICE_TYPES = {
+    OFFSITE_LOGIN: 'illegalLocation',//异地登录
+    DISABLE_CUSTOMER_LOGIN: 'appIllegal',//停用客户登录
+    FOCUS_CUSTOMER_LOGIN: 'concerCustomerLogin',//关注客户登录
+    LOGIN_FAILED: 'loginFailed',//登录失败
+    CALL_UP_FAIL: 'callupfail', // 拨打电话失败
+    PULL_CLUE_FAIL: 'pullcluefail', // 提取线索失败
+};
 
 //系统消息对应的几种类型
 export const SYSTEM_NOTICE_TYPE_MAP = {
@@ -97,9 +98,18 @@ export const SYSTEM_NOTICE_TYPE_MAP = {
     'concerCustomerLogin': Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录'),
     'loginFailed': Intl.get('notification.login.failed', '登录失败'),
     'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录'),
+};
+
+// 客套组织，系统消息对应的消息类型
+export const CURTAO_SYSTEM_NOTICE_TYPE_MAP = {
+    'appIllegal': Intl.get('ketao.frontpage.illeagl.login', '停用客户登录'),
+    'concerCustomerLogin': Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录'),
+    'loginFailed': Intl.get('notification.login.failed', '登录失败'),
+    'illegalLocation': Intl.get('ketao.frontpage.illegal.location.login', '异地登录'),
     'callupfail': Intl.get('notification.call.up.failed', '拨打电话失败'),
     'pullcluefail': Intl.get('notification.extract.clue.failed', '提取线索失败'),
 };
+
 
 export const NO_SELECT_FULL_OPTIONS = [
     {value: 'not_remind', name: Intl.get('crm.not.alert', '不提醒')},
