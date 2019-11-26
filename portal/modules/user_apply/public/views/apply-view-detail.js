@@ -41,7 +41,7 @@ var DefaultHeadIconImage = require('../../../common/public/image/default-head-ic
 // 应用的默认配置
 var UserTypeConfigForm = require('./user-type-config-form');
 import Trace from 'LIB_DIR/trace';
-import privilegeConst_common from '../../public/privilege-const';
+import privilegeConst_common from '../../../../public/privilege-const';
 var moment = require('moment');
 import {handleDiffTypeApply,getUserApplyFilterReplyList,getApplyStatusTimeLineDesc,formatUsersmanList,updateUnapprovedCount, isFinalTask, isApprovedByManager} from 'PUB_DIR/sources/utils/common-method-util';
 import ApplyDetailInfo from 'CMP_DIR/apply-components/apply-detail-info';

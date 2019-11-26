@@ -5,7 +5,7 @@
  * * 请求路径
  */
 require('../action/user-type-config');
-import privilegeConst_common from '../../public/privilege-const';
+import privilegeConst_common from '../../../../public/privilege-const';
 module.exports = {
     module: 'user_apply/server/action/user-type-config',
     routes: [{
