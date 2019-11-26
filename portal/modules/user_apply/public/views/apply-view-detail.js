@@ -608,7 +608,7 @@ const ApplyViewDetail = createReactClass({
                     {this.renderDetailBottom()}
                 </div>
                 <div className="apply-detail-content" style={{height: applyDetailHeight}} ref="geminiWrap">
-                    <PrivilegeChecker check='APP_USER_APPLY_APPROVAL'>
+                    <PrivilegeChecker check='USER_APPLY_APPROVE'>
                         {this.notShowRoleAndPrivilegeSettingBtn(detailInfo) ? null : this.renderDetailForm(detailInfo)}
                     </PrivilegeChecker>
                     {this.state.applyIsExpanded ? null : (
