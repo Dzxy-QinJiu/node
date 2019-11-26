@@ -2,10 +2,15 @@
  * 拜访客户统计
  */
 
+//查询条件缓存
 let conditionCache = null;
+//第一层图表缓存
 let levelOneChartCache = null;
+//第二层图表缓存
 let levelTwoChartCache = null;
+//分析组件实例缓存
 let analysisInstanceCache = null;
+//图表索引缓存
 let chartIndexCache = -1;
 
 export function getVisitCustomerChart() {
@@ -18,10 +23,13 @@ export function getVisitCustomerChart() {
         argCallback: arg => {
             arg.query.result_type = 'user';
 
+            //将查询条件缓存下来，供进入第二级或第三级图表查询时使用
             conditionCache = arg.query;
         },
         processData: (data, chart, analysisInstance, chartIndex) => {
+            //将分析组件实例缓存下来，供一、二、三级图表间切换时使用
             analysisInstanceCache = analysisInstance;
+            //将图表索引缓存下来，供一、二、三级图表间切换时使用
             chartIndexCache = chartIndex;
 
             const list = _.get(data, 'list');
@@ -60,6 +68,7 @@ export function getVisitCustomerChart() {
         chart.conditions = _.map(conditionCache, (value, key) => ({name: key, value}));
 
         chart.processData = data => data.list;
+        delete chart.argCallback;
 
         chart.option.columns = [
             {
