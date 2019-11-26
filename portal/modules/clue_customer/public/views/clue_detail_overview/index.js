@@ -48,7 +48,7 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerStore = require('../../store/clue-customer-store');
-import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
+import { subtracteGlobalClue, renderClueStatus, checkCurrentVersion } from 'PUB_DIR/sources/utils/common-method-util';
 import crmUtil, {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
@@ -1029,7 +1029,13 @@ class ClueDetailOverview extends React.Component {
         if (avalibility){
             let pathname = window.location.pathname;
             //不是运营人员，且（在首页或者线索列表里）
-            var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (pathname === '/home' || pathname === '/clue_customer');
+            var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (pathname === '/home' || pathname === '/clue_customer'), releaseTip = '';
+            if(showRelease) {
+                releaseTip = Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？');
+                if(checkCurrentVersion().personal) {//个人版
+                    releaseTip = Intl.get('clue.customer.personal.release.confirm.tip', '释放后可以再从线索池提取');
+                }
+            }
             return <div>
                 {associatedPrivilege ? <Button type="primary"
                     onClick={this.convertToCustomer.bind(this, curClue)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
@@ -1041,7 +1047,7 @@ class ClueDetailOverview extends React.Component {
                 {showRelease ? (
                     <Popconfirm
                         placement="topRight" onConfirm={this.handleReleaseClue}
-                        title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                        title={releaseTip}>
                         <Button className='clue-inability-btn' disabled={this.state.isReleasingClue} loading={this.state.isReleasingClue}>{Intl.get('clue.release', '释放线索')}</Button>
                     </Popconfirm>
                 ) : null}
