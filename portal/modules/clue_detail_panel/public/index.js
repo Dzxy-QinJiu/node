@@ -175,7 +175,8 @@ class ClueDetailPanel extends React.Component {
                     //最新的通话状态
                     if (phonemsgObj.callid === phoneRecordObj.callid) {
                         phoneRecordObj.received_time = phonemsgObj.recevied_time;
-                        if(!_.get(this,'state.clueInfoArr[0]')){
+                        if(!_.get(this,'state.clueInfoArr[0]') && !this.isClueDetailCall(nextProps.paramObj)
+                        ){
                             //这里发请求获取是因为如果在线索A的地方打电话，然后打开线索B详情，此时如果电话最新的状态过来，应该再展示线索A的详情
                             this.getClueInfoByClueId(phonemsgObj);
                         }
