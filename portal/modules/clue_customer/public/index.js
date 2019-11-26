@@ -56,7 +56,8 @@ import {
     ADD_SELECT_TYPE,
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
-    NEED_MY_HANDLE
+    NEED_MY_HANDLE,
+    isCommonSalesOrPersonnalVersion
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -153,9 +154,6 @@ class ClueCustomer extends React.Component {
             ...clueCustomerStore.getState()
         };
     }
-    isCommonSales = () => {
-        return userData.getUserData().isCommonSales;
-    };
 
     componentDidMount() {
         const query = queryString.parse(this.props.location.search);
@@ -2661,7 +2659,7 @@ class ClueCustomer extends React.Component {
     //渲染批量操作按钮
     renderBatchChangeClues = () => {
         //只有有批量变更权限并且不是普通销售的时候，才展示批量分配
-        let showBatchChange = ((hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF)) && !userData.getUserData().isCommonSales) && this.editCluePrivilege();
+        let showBatchChange = ((hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_SELF)) && !isCommonSalesOrPersonnalVersion()) && this.editCluePrivilege();
         let filterClueStatus = clueFilterStore.getState().filterClueStatus;
         let curStatus = getClueStatusValue(filterClueStatus);
         //除了运营不能释放线索，管理员、销售都可以释放
