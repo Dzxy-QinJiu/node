@@ -287,12 +287,14 @@ class AddApplyNodePanel extends React.Component {
                         _.forEach(teamowner_range.candidateUsers, item => {
                             if(item.indexOf('all_senior_teams') > -1){
                                 submitObj[radioValue]['all_senior_teams'] = true;
+                                //上级这里要特殊处理一下，选择所有上级的时候也需要把表示直属上级的字段传过去
+                                submitObj[radioValue]['team_levels'] = [0];
                             } else if (item.indexOf('team_') > -1){
                                 var teamArr = item.split('_');
                                 submitObj[radioValue]['team_levels'].push(_.get(teamArr,'[1]'));
                             }
                         });
-                        if (!_.get(submitObj[radioValue],'team_levels[0]')){
+                        if (_.get(submitObj[radioValue],'team_levels[0]','') === ''){
                             delete submitObj[radioValue]['team_levels'];
                         }
                         errTip = false;
