@@ -62,7 +62,7 @@ export function getVisitCustomerChart() {
         chart.option.columns = [
             {
                 title: '日期',
-                dataIndex: 'customer_name',
+                dataIndex: 'customer_id',
                 width: '10%'
             },
             {
@@ -99,7 +99,7 @@ export function getVisitCustomerChart() {
         chart.option.columns = [
             {
                 title: '日期',
-                dataIndex: 'customer_name',
+                dataIndex: 'apply_id',
                 width: '10%'
             },
             {
