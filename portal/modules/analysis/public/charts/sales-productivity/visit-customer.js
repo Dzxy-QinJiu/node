@@ -4,6 +4,7 @@
 
 let conditionCache = null;
 let levelOneChartCache = null;
+let levelTwoChartCache = null;
 let analysisInstanceCache = null;
 let chartIndexCache = -1;
 
@@ -67,7 +68,49 @@ export function getVisitCustomerChart() {
             {
                 title: '拜访客户',
                 dataIndex: 'customer_name',
+                width: '10%',
+                render: (value, record) => {
+                    return <span onClick={onCustomerNameClick.bind(this, value, record)}>{value}</span>;
+                }
+            },
+        ];
+
+        analysisInstanceCache.getData(chartIndexCache);
+    }
+
+    //销售人员名点击事件
+    function onCustomerNameClick(customerName, record) {
+        let charts = analysisInstanceCache.state.charts;
+
+        let chart = charts[chartIndexCache];
+        levelTwoChartCache = _.cloneDeep(chart);
+
+        chart.title = '拜访' + customerName + '的频率统计';
+        const subTitle = <span onClick={backToLevelTwo}>返回</span>;
+        _.set(chart, 'cardContainer.props.subTitle', subTitle);
+        chart.url = '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics';
+
+        conditionCache.member_id = record.user_id;
+
+        chart.conditions = _.map(conditionCache, (value, key) => ({name: key, value}));
+
+        chart.processData = data => data.list;
+
+        chart.option.columns = [
+            {
+                title: '日期',
+                dataIndex: 'customer_name',
                 width: '10%'
+            },
+            {
+                title: '销售',
+                dataIndex: 'user_id',
+                width: '10%',
+            },
+            {
+                title: '拜访记录',
+                dataIndex: 'trace_remark',
+                width: '10%',
             },
         ];
 
@@ -78,6 +121,14 @@ export function getVisitCustomerChart() {
     function backToLevelOne() {
         let charts = analysisInstanceCache.state.charts;
         charts[chartIndexCache] = levelOneChartCache;
+
+        analysisInstanceCache.setState({charts});
+    }
+
+    //返回第二层
+    function backToLevelTwo() {
+        let charts = analysisInstanceCache.state.charts;
+        charts[chartIndexCache] = levelTwoChartCache;
 
         analysisInstanceCache.setState({charts});
     }
