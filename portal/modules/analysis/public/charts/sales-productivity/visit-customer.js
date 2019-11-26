@@ -35,7 +35,7 @@ export function getVisitCustomerChart() {
                 dataIndex: 'nick_name',
                 width: '10%',
                 render: (value, record) => {
-                    return <span onClick={onSalesNameClick.bind(this, value, record)}>{value}</span>;
+                    return <span className="clickable" onClick={onSalesNameClick.bind(this, value, record)}>{value}</span>;
                 }
             }]
         },
@@ -49,7 +49,7 @@ export function getVisitCustomerChart() {
         levelOneChartCache = _.cloneDeep(chart);
 
         chart.title = salesName + '拜访客户频率统计';
-        const subTitle = <span onClick={backToLevelOne}>返回</span>;
+        const subTitle = <span className="clickable" onClick={backToLevelOne}>返回</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
         chart.url = '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics';
 
@@ -70,7 +70,7 @@ export function getVisitCustomerChart() {
                 dataIndex: 'customer_name',
                 width: '10%',
                 render: (value, record) => {
-                    return <span onClick={onCustomerNameClick.bind(this, value, record)}>{value}</span>;
+                    return <span className="clickable" onClick={onCustomerNameClick.bind(this, value, record)}>{value}</span>;
                 }
             },
         ];
@@ -86,7 +86,7 @@ export function getVisitCustomerChart() {
         levelTwoChartCache = _.cloneDeep(chart);
 
         chart.title = '拜访' + customerName + '的频率统计';
-        const subTitle = <span onClick={backToLevelTwo}>返回</span>;
+        const subTitle = <span className="clickable" onClick={backToLevelTwo}>返回</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
         chart.url = '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics';
 
