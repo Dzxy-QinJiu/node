@@ -12,6 +12,8 @@ export function getVisitCustomerChart() {
     let chart = {
         title: '出差拜访频率统计',
         chartType: 'table',
+        layout: { sm: 24 },
+        height: 'auto',
         url: '/rest/analysis/callrecord/v1/customertrace/:data_type/sale/trace/statistics',
         argCallback: arg => {
             arg.query.result_type = 'user';
