@@ -18,7 +18,8 @@ import {
     formatSalesmanList,
     getTableContainerHeight,
     isResponsiveDisplay,
-    checkCurrentVersion, checkVersionAndType
+    checkCurrentVersion,
+    checkVersionAndType
 } from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 const LAYOUT_CONSTANTS = {

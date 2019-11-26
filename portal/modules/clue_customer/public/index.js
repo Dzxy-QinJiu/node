@@ -56,7 +56,8 @@ import {
     ADD_SELECT_TYPE,
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
-    NEED_MY_HANDLE, isCommonSalesOrPersonnalVersion
+    NEED_MY_HANDLE,
+    isCommonSalesOrPersonnalVersion
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
