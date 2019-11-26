@@ -51,6 +51,7 @@ class RecommendCustomerRightPanel extends React.Component {
             tablePopoverVisible: '',//单个提取展示popover的那条推荐线索
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
+            canClickExtract: true,//防止用户连续点击批量提取
             ...clueCustomerStore.getState()
         };
     }
@@ -79,6 +80,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 this.setState({
                     hasExtractCount: hasExtractedCount,
                     maxLimitExtractNumber: maxCount,
+                    canClickExtract: true
                 },() => {
                     _.isFunction(callback) && callback(hasExtractedCount);
                 });
@@ -86,6 +88,7 @@ class RecommendCustomerRightPanel extends React.Component {
             error: (errorInfo) => {
                 this.setState({
                     hasExtractCount: 0,
+                    canClickExtract: true
                 });
                 _.isFunction(callback) && callback('error');
             }
@@ -499,6 +502,8 @@ class RecommendCustomerRightPanel extends React.Component {
         this.handleBatchAssignClues(submitObj);
     };
     handleSubmitAssignSalesBatch = () => {
+        if(!this.state.canClickExtract) return;
+        this.setState({canClickExtract: false});
         //如果是选了修改全部
         let submitObj = this.handleBeforeSumitChangeSales(_.map(this.state.selectedRecommendClues,'id'));
         if (_.isEmpty(submitObj)){
@@ -508,6 +513,7 @@ class RecommendCustomerRightPanel extends React.Component {
             //如果获取提取总量失败了,就不校验数字了
             if(this.state.getMaxLimitExtractNumberError){
                 this.batchAssignRecommendClues(submitObj);
+                this.setState({canClickExtract: true});
             }else{
                 this.getRecommendClueCount((count) => {
                     if (
