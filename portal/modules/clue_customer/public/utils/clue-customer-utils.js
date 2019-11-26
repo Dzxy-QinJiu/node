@@ -7,6 +7,7 @@ import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
 import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
@@ -86,9 +87,13 @@ export const isNotHasTransferStatus = function(salesClueItem){
 export const editCluePrivilege = function(clueItem) {
     return isNotHasTransferStatus(clueItem) && clueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
 };
+// 判断是否为普通销售或者是个人版本
+export const isCommonSalesOrPersonnalVersion = () => {
+    return userData.getUserData().isCommonSales || checkVersionAndType().personal;
+};
 export const assignSalesPrivilege = (curClue) => {
     let user = userData.getUserData();
-    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_SELF) || (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_ALL) && !user.isCommonSales)) && editCluePrivilege(curClue);
+    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_SELF) || (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_ALL) && !isCommonSalesOrPersonnalVersion())) && editCluePrivilege(curClue);
 };
 
 export const CLUE_DIFF_TYPE = [

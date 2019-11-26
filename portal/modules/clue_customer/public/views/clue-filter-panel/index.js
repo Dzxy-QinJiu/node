@@ -11,13 +11,14 @@ var FilterAction = require('../../action/filter-action');
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerAction = require('../../action/clue-customer-action');
 import { FilterList } from 'CMP_DIR/filter';
-import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED, sourceClassifyArray, NEED_MY_HANDLE } from '../../utils/clue-customer-utils';
+import {clueStartTime, SELECT_TYPE, getClueStatusValue, COMMON_OTHER_ITEM, SIMILAR_CUSTOMER, SIMILAR_CLUE,NOT_CONNECTED, sourceClassifyArray, NEED_MY_HANDLE, isCommonSalesOrPersonnalVersion } from '../../utils/clue-customer-utils';
 import {getClueUnhandledPrivilege, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 var ClueAnalysisStore = require('../../store/clue-analysis-store');
 var ClueAnalysisAction = require('../../action/clue-analysis-action');
 import userData from 'PUB_DIR/sources/user-data';
 import { DatePicker } from 'antd';
 const { RangePicker } = DatePicker;
+import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 let otherFilterArray = [
     {
         name: Intl.get('clue.filter.wait.me.handle', '待我处理'),
@@ -485,8 +486,8 @@ class ClueFilterPanel extends React.Component {
                 value: x.value
             }))
         });
-        //非普通销售才有销团队和负责人
-        if (!userData.getUserData().isCommonSales) {
+        //非普通销售 且 非个人版本才有销团队和负责人
+        if (!isCommonSalesOrPersonnalVersion()) {
             let ownerList = _.uniqBy(this.state.teamMemberList, 'nickname');
             advancedData.unshift(
                 {

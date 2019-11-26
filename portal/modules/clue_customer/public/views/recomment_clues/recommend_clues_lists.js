@@ -18,7 +18,7 @@ import {
     formatSalesmanList,
     getTableContainerHeight,
     isResponsiveDisplay,
-    checkCurrentVersion
+    checkCurrentVersion, checkVersionAndType
 } from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 const LAYOUT_CONSTANTS = {
@@ -398,7 +398,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 width: '100px',
                 render: (text, record, index) => {
                     // 提取线索分配给相关的销售人员的权限
-                    let hasAssignedPrivilege = !this.isCommonSales();
+                    let hasAssignedPrivilege = !this.isCommonSalesOrPersonnalVersion();
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
                     let containerCls = classNames('singl-extract-clue',{'assign-privilege handle-btn-item': hasAssignedPrivilege},);
 
@@ -411,10 +411,6 @@ class RecommendCustomerRightPanel extends React.Component {
             }
         ];
         return columns;
-    };
-    // 判断是否为普通销售
-    isCommonSales = () => {
-        return userData.getUserData().isCommonSales;
     };
     //判断是否为管理员
     isManager = () => {
@@ -532,7 +528,7 @@ class RecommendCustomerRightPanel extends React.Component {
 
     //批量提取,发请求前的参数处理
     handleBeforeSumitChangeSales = (itemId) => {
-        if (this.isCommonSales()) { // 普通销售，批量提取参数处理
+        if (this.isCommonSalesOrPersonnalVersion()) { // 普通销售或者是个人版本，批量提取参数处理
             let saleLoginData = userData.getUserData();
             let submitObj = {
                 'user_id': saleLoginData.user_id,
@@ -678,7 +674,7 @@ class RecommendCustomerRightPanel extends React.Component {
         var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract,timerange: this.getTimeRangeText()});
         let {isWebMin} = isResponsiveDisplay();
         maxLimitTip = this.hasNoExtractCountTip(maxLimitTip);
-        if (this.isCommonSales()) { // 普通销售批量提取线索
+        if (this.isCommonSalesOrPersonnalVersion()) { // 普通销售或者个人版批量提取线索
             return (
                 <Popover
                     placement="right"
