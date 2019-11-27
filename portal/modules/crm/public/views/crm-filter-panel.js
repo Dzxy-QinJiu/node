@@ -17,6 +17,7 @@ import { sourceClassifyArray } from 'MOD_DIR/clue_customer/public/utils/clue-cus
 import { DatePicker } from 'antd';
 const { RangePicker } = DatePicker;
 import crmPrivilegeConst from '../privilege-const';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 //行政级别筛选项
 let filterLevelArray = administrativeLevels;
 
@@ -473,8 +474,8 @@ class CrmFilterPanel extends React.Component {
                 }))
             });
         }
-        //普通销售展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
-        if (userData.getUserData().isCommonSales) {
+        //普通销售或者个人版，展示负责人和联合跟进人的筛选（用户来筛选销售是负责人还是联合跟进人）
+        if (isCommonSalesOrPersonnalVersion()) {
             let loginUserName = userData.getUserData().nick_name;
             if(hasPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES)) {
                 advancedData.unshift({

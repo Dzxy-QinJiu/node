@@ -19,6 +19,7 @@ import {formatSalesmanList, checkVersionAndType} from 'PUB_DIR/sources/utils/com
 import BasicEditSelectField from 'CMP_DIR/basic-edit-field-new/select';
 import {checkPrivilege} from '../../utils/crm-util';
 import crmPrivilegeConst from '../../privilege-const';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
 //展示的类型
 const DISPLAY_TYPES = {
@@ -76,7 +77,7 @@ class SalesTeamCard extends React.Component {
 
     componentDidMount() {
         //不是普通销售时，获取负责人、联合跟进人修改时的下拉列表
-        if (!this.isCommonSales()) {
+        if (!isCommonSalesOrPersonnalVersion()) {
             // 验证是否能修改负责人和联合跟进人
             this.checkCanEditSales(this.state.customerId);
             this.checkCanEditSecondSales(this.state.customerId);
@@ -107,7 +108,7 @@ class SalesTeamCard extends React.Component {
         if (nextProps.customerId !== this.state.customerId) {
             //切换客户时，重新设置state数据
             this.setState(this.getInitStateData(nextProps));
-            if(!this.isCommonSales()) {
+            if(!isCommonSalesOrPersonnalVersion()) {
                 // 验证是否能修改负责人和联合跟进人
                 this.checkCanEditSales(nextProps.customerId);
                 this.checkCanEditSecondSales(nextProps.customerId);
@@ -421,13 +422,13 @@ class SalesTeamCard extends React.Component {
     //是否可修改负责人
     enableEditSales() {
         //有修改负责人的权限，可修改，不是普通销售,负责人是我团队的人
-        return checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]) && !this.props.disableEdit && !this.isCommonSales();
+        return checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL]) && !this.props.disableEdit && !isCommonSalesOrPersonnalVersion();
     }
 
     //是否可修改联合跟进人
     enableEditSecondSales() {
-        //有修改联合跟进人的权限，可修改，不是普通销售
-        return checkPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES) && !this.props.disableEdit && !this.isCommonSales();
+        //有修改联合跟进人的权限，可修改，不是普通销售或者个人版
+        return checkPrivilege(crmPrivilegeConst.CRM_ASSERT_CUSTOMER_SALES) && !this.props.disableEdit && !isCommonSalesOrPersonnalVersion();
     }
 
     // 验证是否可以处理负责人

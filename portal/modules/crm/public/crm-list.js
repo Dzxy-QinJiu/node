@@ -53,6 +53,7 @@ const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmPrivilegeConst from './privilege-const';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -1257,7 +1258,7 @@ class Crm extends React.Component {
                     {Intl.get('crm.21', '变更地域')}
                 </Menu.Item> : null
             }
-            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) && !this.isCommonSales() ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) && !isCommonSalesOrPersonnalVersion() ?
                 <Menu.Item key="changeSales">
                     {Intl.get('crm.103', '变更负责人')}
                 </Menu.Item> : null
