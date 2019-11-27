@@ -49,7 +49,7 @@ export function getVisitCustomerChart() {
                 const weekDay = WEEKDAY[weekDayIndex];
                 dayStr += '(' + weekDay + ')';
                 let dataItem = { day_str: dayStr };
-                const matchedItem = _.find(data, item => item.visit_time >= dayStart && item.visit_time < dayEnd);
+                const matchedItem = _.find(data, item => item.visit_time >= dayStart && item.visit_time <= dayEnd);
 
                 if (matchedItem) {
                     _.extend(dataItem, matchedItem);
