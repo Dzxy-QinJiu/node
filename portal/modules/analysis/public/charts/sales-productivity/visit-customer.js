@@ -19,12 +19,12 @@ export function getVisitCustomerChart() {
         chartType: 'table',
         layout: { sm: 24 },
         height: 'auto',
-        url: '/rest/analysis/callrecord/v1/customertrace/:data_type/sale/trace/statistics',
+        url: '/rest/base/v1/workflow/businesstrip/customervisit/statistic',
         argCallback: arg => {
-            arg.query.result_type = 'user';
-
             //将查询条件缓存下来，供进入第二级或第三级图表查询时使用
-            conditionCache = arg.query;
+            const {start_time, end_time, team_ids} = arg.query;
+            conditionCache = {start_time, end_time};
+            if (team_ids) conditionCache.team_ids = team_ids;
         },
         processData: (data, chart, analysisInstance, chartIndex) => {
             //将分析组件实例缓存下来，供一、二、三级图表间切换时使用
@@ -32,27 +32,42 @@ export function getVisitCustomerChart() {
             //将图表索引缓存下来，供一、二、三级图表间切换时使用
             chartIndexCache = chartIndex;
 
-            const list = _.get(data, 'list');
-            return _.filter(list, item => item.visit > 0);
+            return data;
         },
         option: {
             columns: [{
                 title: '日期',
-                dataIndex: 'sales_team',
+                dataIndex: 'visit_time',
                 width: '10%',
             }, {
                 title: '出差人员',
-                dataIndex: 'nick_name',
                 width: '10%',
                 render: (value, record) => {
-                    return <span className="clickable" onClick={onSalesNameClick.bind(this, value, record)}>{value}</span>;
+                    let users = record.users;
+
+                    users = _.map(users, (item, index) => {
+                        let seperator = null;
+
+                        if (users.length > 1 && index < (users.length - 1)) {
+                            seperator = '、';
+                        }
+
+                        return (
+                            <span className="clickable" onClick={onSalesNameClick.bind(this, item.nick_name, item.user_id)}>
+                                {item.nick_name}
+                                {seperator}
+                            </span>
+                        );
+                    });
+
+                    return <div>{users}</div>;
                 }
             }]
         },
     };
 
     //销售人员名点击事件
-    function onSalesNameClick(salesName, record) {
+    function onSalesNameClick(salesName, userId) {
         let charts = analysisInstanceCache.state.charts;
 
         let chart = charts[chartIndexCache];
@@ -61,14 +76,10 @@ export function getVisitCustomerChart() {
         chart.title = salesName + '拜访客户频率统计';
         const subTitle = <span className="clickable" onClick={backToLevelOne}>返回</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
-        chart.url = '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics';
 
-        conditionCache.member_id = record.user_id;
+        conditionCache.user_id = userId;
 
         chart.conditions = _.map(conditionCache, (value, key) => ({name: key, value}));
-
-        chart.processData = data => data.list;
-        delete chart.argCallback;
 
         chart.option.columns = [
             {
@@ -99,7 +110,6 @@ export function getVisitCustomerChart() {
         chart.title = '拜访' + customerName + '的频率统计';
         const subTitle = <span className="clickable" onClick={backToLevelTwo}>返回</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
-        chart.url = '/rest/analysis/callrecord/v1/customertrace/sale/visit/statistics';
 
         conditionCache.member_id = record.user_id;
 
