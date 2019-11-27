@@ -1210,6 +1210,18 @@ exports.checkVersionAndType = function() {
     };
 };
 
+//获取日程打电话时需要的类型（customer/lead）和id
+exports.getScheduleCallTypeId = function(scheduleItem) {
+    let type = 'customer';
+    let id = _.get(scheduleItem, 'customer_id', '');
+    //如果客户id不存在，线索id存在，说明是线索的日程
+    if (!id && _.get(scheduleItem,'lead_id','')) {
+        type = 'lead';
+        id = scheduleItem.lead_id;
+    }
+    return {id, type};
+};
+
 //获取某个安全域已经提取多少推荐线索数量,
 exports.getRecommendClueCount = function(paramsObj = {},callback) {
     //如果是试用的账号，要获取今天的提取量，

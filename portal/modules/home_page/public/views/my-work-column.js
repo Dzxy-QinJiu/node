@@ -383,7 +383,7 @@ class MyWorkColumn extends React.Component {
     }
 
     //联系人和联系电话
-    renderPopoverContent(contacts, item) {
+    renderPopoverContent(contacts, item, id, type) {
         return (
             <div className="contacts-containers">
                 {_.map(contacts, (contact) => {
@@ -409,6 +409,8 @@ class MyWorkColumn extends React.Component {
                                                 showPhoneIcon={true}
                                                 hidePhoneNumber={onlyOnePhone}
                                                 onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                                type={type}
+                                                id={id}
                                             />
                                         </div>
                                     );
@@ -424,6 +426,9 @@ class MyWorkColumn extends React.Component {
     //联系人及电话的渲染
     renderContactItem(item) {
         let contacts = [];
+        //打电话时所需的客户/线索id和type
+        let id = '';
+        let type = '';
         //是否是通过的用户申请
         let isUserApplyPass = false;
         if (item.type === WORK_TYPES.APPLY && _.get(item, `[${WORK_TYPES.APPLY}].opinion`) === APPLY_STATUS.PASS) {
@@ -438,8 +443,12 @@ class MyWorkColumn extends React.Component {
         //拜访类型的时候不展示打电话的图标
         if (item.type === WORK_TYPES.CUSTOMER && !_.includes(item.tags, WORK_DETAIL_TAGS.CUSTOMER_VISIT) || isUserApplyPass) {
             contacts = _.get(item, 'customer.contacts', []);
+            type = 'customer';
+            id = _.get(item, 'customer.id', '');
         } else if (item.type === WORK_TYPES.LEAD) {
             contacts = _.get(item, 'lead.contacts', []);
+            type = 'lead';
+            id = _.get(item, 'lead.id', '');
         }
         let phones = [];
         _.each(contacts, contact => {
@@ -450,7 +459,7 @@ class MyWorkColumn extends React.Component {
         //将各个电话数组整合到一个数组中进行判断
         let phoneNumArray = _.flatten(phones);
         if (!_.isEmpty(contacts) && !_.isEmpty(phoneNumArray)) {
-            let contactsContent = this.renderPopoverContent(contacts, item);
+            let contactsContent = this.renderPopoverContent(contacts, item, id, type);
             let phoneCount = _.get(phoneNumArray, 'length');
             let phoneContactName = '';
             //只有一个电话时，点击拨号按钮可以直接拨打出去
@@ -468,6 +477,8 @@ class MyWorkColumn extends React.Component {
                                 showPhoneIcon={true}
                                 hidePhoneNumber={true}
                                 onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                type={type}
+                                id={id}
                             />
                         </span>
                     ) : (

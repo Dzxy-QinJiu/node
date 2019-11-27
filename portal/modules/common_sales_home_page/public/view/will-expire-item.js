@@ -42,6 +42,8 @@ class WillExpireItem extends React.Component {
                 </div>
                 {_.isArray(expireItem.contact_list) && expireItem.contact_list.length ? <ContactItem
                     contacts={expireItem.contact_list}
+                    type='customer'
+                    id={_.get(expireItem, 'customer_id','')}
                 /> : null}
             </div>
         );

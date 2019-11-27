@@ -663,6 +663,8 @@ class CustomerRecord extends React.Component {
                             <PhoneCallout
                                 phoneNumber={item.dst}
                                 hidePhoneNumber={true}
+                                type='customer'
+                                id={item.customer_id}
                             />
                         </span>) : null}
                     <span className="item-bottom-right">

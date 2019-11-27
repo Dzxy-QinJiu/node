@@ -473,6 +473,8 @@ class SalesClueItem extends React.Component {
                         contacts={contacts}
                         customerData={salesClueItem}
                         showContactLabel={false}
+                        type='lead'
+                        id={_.get(salesClueItem, 'id', '')}
                     /> : null}
                 </div>
                 <div className="clue-foot" id="clue-foot">
