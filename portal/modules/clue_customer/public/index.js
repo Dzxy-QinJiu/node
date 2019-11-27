@@ -142,7 +142,6 @@ class ClueCustomer extends React.Component {
             selectedClues: [],//获取批量操作选中的线索
             isShowExtractCluePanel: false, // 是否显示提取线索界面，默认不显示
             addType: 'start',//添加按钮的初始
-            showRecommendCustomerCondition: false,
             isReleasingClue: false,//是否正在释放线索
             selectedClue: [],//选中的线索
             isShowRefreshPrompt: false,//是否展示刷新线索面板的提示
@@ -1478,11 +1477,7 @@ class ClueCustomer extends React.Component {
             if (errorMsg) {
                 message.error(errorMsg);
             } else {
-                subtracteGlobalClue(curDeleteClue, (flag) => {
-                    if(flag){
-                        clueEmitter.emit(clueEmitter.REMOVE_CLUE_ITEM,curDeleteClue);
-                    }
-                });
+                subtracteGlobalClue(curDeleteClue);
             }
         });
     }
@@ -2214,11 +2209,6 @@ class ClueCustomer extends React.Component {
             return this.renderClueCustomerBlock();
         }
     };
-    openRecommendClues = () => {
-        this.setState({
-            showRecommendCustomerCondition: true
-        });
-    }
     renderOtherOperation = () => {
         return (
             <div className="intro-recommend-list">
@@ -2226,7 +2216,7 @@ class ClueCustomer extends React.Component {
                     id="import.excel.no.data"
                     defaultMessage={'试下客套给您{recommend}的功能'}
                     values={{
-                        'recommend': <a onClick={this.openRecommendClues} data-tracename="点击推荐线索">
+                        'recommend': <a onClick={this.showClueRecommendTemplate} data-tracename="点击推荐线索">
                             {Intl.get('import.recommend.clue.lists', '推荐线索')}
                         </a>
                     }}/>
@@ -2809,22 +2799,6 @@ class ClueCustomer extends React.Component {
     isFirstLoading = () => {
         return this.state.isLoading && this.state.firstLogin;
     };
-    isShowRecommendSettingPanel = () => {
-        var settedCustomerRecommend = this.state.settedCustomerRecommend;
-        return (!this.state.isLoading && !this.state.clueCustomerErrMsg) && !settedCustomerRecommend.loading && this.state.showRecommendCustomerCondition && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_COMPANY_STORAGE);
-    };
-    hideFocusCustomerPanel = () => {
-        this.setState({
-            showRecommendCustomerCondition: false
-        });
-    };
-    saveRecommedConditionsSuccess = (saveCondition) => {
-        //修改掉查询条件
-        this.hideFocusCustomerPanel();
-        //将保存后的条件记录下来
-        clueCustomerAction.saveSettingCustomerRecomment(saveCondition);
-        this.showClueRecommendTemplate();
-    };
 
     //渲染有新线索，刷新页面提示
     getClueRefreshPrompt = () => {
@@ -3089,12 +3063,6 @@ class ClueCustomer extends React.Component {
                                 }
                             </RightPanel> : null
                     }
-
-                    {this.isShowRecommendSettingPanel() ?
-                        <RecommendCluesForm
-                            hideFocusCustomerPanel={this.hideFocusCustomerPanel}
-                            saveRecommedConditionsSuccess={this.saveRecommedConditionsSuccess}
-                        /> : null}
                 </div>
             </RightContent>
         );

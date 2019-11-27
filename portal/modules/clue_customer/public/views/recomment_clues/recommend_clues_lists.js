@@ -33,7 +33,7 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,isCommonSalesOrPersonnalVersion} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
@@ -399,7 +399,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 width: '100px',
                 render: (text, record, index) => {
                     // 提取线索分配给相关的销售人员的权限
-                    let hasAssignedPrivilege = !this.isCommonSalesOrPersonnalVersion();
+                    let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
                     let containerCls = classNames('singl-extract-clue',{'assign-privilege handle-btn-item': hasAssignedPrivilege},);
 
@@ -529,7 +529,7 @@ class RecommendCustomerRightPanel extends React.Component {
 
     //批量提取,发请求前的参数处理
     handleBeforeSumitChangeSales = (itemId) => {
-        if (this.isCommonSalesOrPersonnalVersion()) { // 普通销售或者是个人版本，批量提取参数处理
+        if (isCommonSalesOrPersonnalVersion()) { // 普通销售或者是个人版本，批量提取参数处理
             let saleLoginData = userData.getUserData();
             let submitObj = {
                 'user_id': saleLoginData.user_id,
@@ -675,7 +675,7 @@ class RecommendCustomerRightPanel extends React.Component {
         var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract,timerange: this.getTimeRangeText()});
         let {isWebMin} = isResponsiveDisplay();
         maxLimitTip = this.hasNoExtractCountTip(maxLimitTip);
-        if (this.isCommonSalesOrPersonnalVersion()) { // 普通销售或者个人版批量提取线索
+        if (isCommonSalesOrPersonnalVersion()) { // 普通销售或者个人版批量提取线索
             return (
                 <Popover
                     placement="right"
