@@ -499,10 +499,7 @@ class BasicData extends React.Component {
         });
         var releaseTip = '';
         if(isShowRelease) {
-            releaseTip = Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？');
-            if(checkVersionAndType().personal) {//个人版
-                releaseTip = Intl.get('crm.customer.personal.release.confirm.tip', '释放后可以再从客户池提取');
-            }
+            releaseTip = crmUtil.releaseCustomerTip();
         }
         return (
             <div className="basic-info-contianer" data-trace="客户基本信息">

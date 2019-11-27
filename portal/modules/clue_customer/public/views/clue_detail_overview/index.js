@@ -37,7 +37,8 @@ import {
     editCluePrivilege,
     assignSalesPrivilege,
     handlePrivilegeType,
-    FLOW_FLY_TIME
+    FLOW_FLY_TIME,
+    releaseClueTip
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -1031,10 +1032,7 @@ class ClueDetailOverview extends React.Component {
             //不是运营人员，且（在首页或者线索列表里）
             var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (pathname === '/home' || pathname === '/clue_customer'), releaseTip = '';
             if(showRelease) {
-                releaseTip = Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？');
-                if(checkCurrentVersion().personal) {//个人版
-                    releaseTip = Intl.get('clue.customer.personal.release.confirm.tip', '释放后可以再从线索池提取');
-                }
+                releaseTip = releaseClueTip();
             }
             return <div>
                 {associatedPrivilege ? <Button type="primary"

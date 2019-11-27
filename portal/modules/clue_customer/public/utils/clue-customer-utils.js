@@ -7,6 +7,7 @@ import { storageUtil } from 'ant-utils';
 const local = storageUtil.local;
 import {clueNameContactRule} from 'PUB_DIR/sources/utils/validate-util';
 import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import { checkCurrentVersion } from 'PUB_DIR/sources/utils/common-method-util';
 export const SESSION_STORAGE_CLUE_SALES_SELECTED = 'clue_assign_selected_sales';
 export const checkClueName = function(rule, value, callback) {
     value = _.trim(value);
@@ -424,3 +425,11 @@ export const sourceClassifyOptions = sourceClassifyWithoutOtherArray.map((source
 });
 export const FLOW_FLY_TIME = 800;//增加一个数字的动画时长
 export const HIDE_CLUE_TIME = 2000;
+//释放线索的提示
+export function releaseClueTip() {
+    let releaseTip = Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？');
+    if(checkCurrentVersion().personal) {//个人版
+        releaseTip = Intl.get('clue.customer.personal.release.confirm.tip', '释放后可以再从线索池提取');
+    }
+    return releaseTip;
+}

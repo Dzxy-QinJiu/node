@@ -56,7 +56,8 @@ import {
     ADD_SELECT_TYPE,
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
-    NEED_MY_HANDLE
+    NEED_MY_HANDLE,
+    releaseClueTip
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -1742,10 +1743,7 @@ class ClueCustomer extends React.Component {
         let showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue);
         let showDelete = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
         if(showRelease || showDelete) {
-            let releaseTip = Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？');
-            if(checkCurrentVersion().personal) {//个人版
-                releaseTip = Intl.get('clue.customer.personal.release.confirm.tip', '释放后可以再从线索池提取');
-            }
+            let releaseTip = releaseClueTip();
             columns.push({
                 dataIndex: 'clue_action',
                 className: 'action-td-clue',
@@ -2677,10 +2675,7 @@ class ClueCustomer extends React.Component {
         let assignCls = classNames('pull-right', {
             'responsive-mini-btn': isWebMin
         });
-        let releaseTip = Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？');
-        if(checkCurrentVersion().personal) {//个人版
-            releaseTip = Intl.get('clue.customer.personal.release.confirm.tip', '释放后可以再从线索池提取');
-        }
+        let releaseTip = releaseClueTip();
         return (
             <div className="pull-right">
                 <div className={assignCls}>
