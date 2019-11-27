@@ -5,7 +5,7 @@
  * * 请求路径
  */
 require('../action/user-type-config');
-import privilegeConst_common from '../../../../public/privilege-const';
+import commonPrivilegeConst from '../../../common/public/privilege-const';
 module.exports = {
     module: 'user_apply/server/action/user-type-config',
     routes: [{
@@ -17,7 +17,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION
+            commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION
         ]
     }, {
         // 添加用户类型设置
@@ -28,7 +28,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION
+            commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION
         ]
     },{
         // 修改用户类型设置
@@ -39,7 +39,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            privilegeConst_common.BASE_QUERY_PERMISSION_APPLICATION
+            commonPrivilegeConst.BASE_QUERY_PERMISSION_APPLICATION
         ]
     }
     ]
