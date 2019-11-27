@@ -285,7 +285,7 @@ class RecommendCustomerCondition extends React.Component {
         }
 
         return (
-            <div className="recommend-customer-condition" data-tracename="设置推荐线索条件面板">
+            <div className="recommend-customer-condition recommend-customer-condition-wrapper" data-tracename="设置推荐线索条件面板">
                 <div
                     className="recommend-top-title">{Intl.get('clue.customer.select.focus.customer', '请选择您关注的客户类型')}</div>
                 <div className="add-customer-recommend">
