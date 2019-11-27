@@ -496,6 +496,7 @@ class UserInfo extends React.Component{
         </span>;
         // 根据是否拥有qq改变渲染input默认文字
         let qqInputInfo = _.get(formData, 'qq', '');
+        let currentVersion = checkCurrentVersion();
 
         if (this.props.userInfoErrorMsg) {
             var errMsg = <span>{this.props.userInfoErrorMsg}<a onClick={this.retryUserInfo.bind(this)}
@@ -618,17 +619,17 @@ class UserInfo extends React.Component{
                                         </a>)}
                         </span>
                     </div>
-                    <div className="user-info-item">
-                        <span className="user-info-item-title">
-                            <ReactIntl.FormattedMessage id="common.role" defaultMessage="角色"/>
-                            ：</span>
-                        <span className="user-info-item-content">{formData.rolesName}</span>
-                    </div>
+                    {
+                        currentVersion.personal ? null : (
+                            <div className="user-info-item">
+                                <span className="user-info-item-title">{Intl.get('common.role', '角色')}：</span>
+                                <span className="user-info-item-content">{formData.rolesName}</span>
+                            </div>
+                        )
+                    }
                     {hasPrivilege(privilegeConst_user_info.BASE_QUERY_PERMISSION_ORGANIZATION) ? (
                         <div className="user-info-item">
-                            <span className="user-info-item-title">
-                                <ReactIntl.FormattedMessage className="user-info-item-content" id="common.company" defaultMessage="公司"/>：
-                            </span>
+                            <span className="user-info-item-title">{Intl.get('common.company', '公司')}：</span>
                             <span className="user-info-item-content">{this.props.managedRealm}</span>
                         </div>
                     ) : null}
