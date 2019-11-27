@@ -70,12 +70,11 @@ export function getVisitCustomerChart() {
             columns: [{
                 title: Intl.get('crm.146', '日期'),
                 dataIndex: 'day_str',
-                width: '10%',
+                width: 150,
             }, {
                 title: Intl.get('leave.apply.add.leave.person', '出差人员'),
                 dataIndex: 'sales_names',
                 isSetCsvValueBlank: true,
-                width: '10%',
                 render: (value, record) => {
                     let users = record.users;
 
@@ -119,11 +118,10 @@ export function getVisitCustomerChart() {
             {
                 title: Intl.get('crm.146', '日期'),
                 dataIndex: 'day_str',
-                width: '10%'
+                width: 150,
             },
             {
                 title: Intl.get('customer.visit.customer', '拜访客户'),
-                width: '10%',
                 dataIndex: 'customer_names',
                 isSetCsvValueBlank: true,
                 render: (value, record) => {
@@ -172,11 +170,11 @@ export function getVisitCustomerChart() {
             {
                 title: Intl.get('crm.146', '日期'),
                 dataIndex: 'day_str',
-                width: '10%'
+                width: 150,
             },
             {
                 title: Intl.get('sales.home.sales', '销售'),
-                width: '10%',
+                width: 150,
                 dataIndex: 'sales_names',
                 isSetCsvValueBlank: true,
                 render: (value, record) => {
@@ -190,7 +188,6 @@ export function getVisitCustomerChart() {
                 title: Intl.get('common.customer.visit.record', '拜访记录'),
                 dataIndex: 'visit_record',
                 isSetCsvValueBlank: true,
-                width: '10%',
             },
         ];
 
