@@ -510,7 +510,7 @@ class SystemNotification extends React.Component {
             if (type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL) { // 拨打电话失败
                 iconfontClassName += ' icon-call-failed';
             } else if (type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL) { // 提取线索失败
-                iconfontClassName += ' icon-pull=clue-failed';
+                iconfontClassName += ' icon-pull-clue-failed';
             }
         }
         return iconfontClassName;
