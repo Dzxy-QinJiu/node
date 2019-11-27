@@ -1508,7 +1508,7 @@ class ClueCustomer extends React.Component {
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
-            {isSalesRole() ? null : <span className={willDistCls}
+            {isCommonSalesOrPersonnalVersion() ? null : <span className={willDistCls}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span ref={dom => {this.$willDistribute = dom;}} className="clue-status-num">{_.get(statics, 'willDistribute', 0)}</span>
@@ -1526,7 +1526,7 @@ class ClueCustomer extends React.Component {
                 <span className="clue-status-num" ref={dom => {this.$hasTrace = dom;}}>{_.get(statics, 'hasTrace', 0)}</span>
                 <span className={hasTraceAddCls}> +1 </span>
             </span>
-            {filterAllotNoTraced || isSalesRole() ? null : <span className={hasTransfer}
+            {filterAllotNoTraced || isCommonSalesOrPersonnalVersion() ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}
                 title={getCertainTabsTitle(SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num" ref={dom => {this.$hasTransfer = dom;}} >{_.get(statics, 'hasTransfer', 0)}</span>

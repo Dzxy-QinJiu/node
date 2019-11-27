@@ -16,7 +16,7 @@ const FormItem = Form.Item;
 import ajax from '../../../crm/common/ajax';
 const routes = require('../../../crm/common/route');
 var clueCustomerAction = require('../action/clue-customer-action');
-import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions} from '../utils/clue-customer-utils';
+import {checkClueName, checkClueSourceIP,contactNameRule, sourceClassifyOptions,isCommonSalesOrPersonnalVersion} from '../utils/clue-customer-utils';
 import {nameRegex} from 'PUB_DIR/sources/utils/validate-util';
 var classNames = require('classnames');
 import PropTypes from 'prop-types';
@@ -28,6 +28,7 @@ import DynamicAddDelContact from 'CMP_DIR/dynamic-add-del-contacts';
 import Trace from 'LIB_DIR/trace';
 import {renderClueNameMsg} from 'PUB_DIR/sources/utils/common-method-util';
 import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
+import userData from 'PUB_DIR/sources/user-data';
 const DIFCONTACTWAY = {
     PHONE: 'phone',
     EMAIL: 'email',
@@ -190,6 +191,24 @@ class ClueAddForm extends React.Component {
             let submitObj = this.getSubmitObj(values);
             let addRoute = _.find(routes, (route) => route.handler === 'addSalesClue');
             this.setState({isSaving: true, saveMsg: '', saveResult: ''});
+            //添加线索的时候，如果是管理员添加不需要加字段
+            //如果是普通销售添加，字段加上user_id user_name team_id team_name
+            //如果是个人版本，字段加上user_id user_name
+            if(isCommonSalesOrPersonnalVersion()){
+                var userDataInfo = userData.getUserData();
+                var user_id = userDataInfo.user_id;
+                var user_name = userDataInfo.user_name;
+                var team_id = userDataInfo.team_id;
+                var team_name = userDataInfo.team_name;
+                if(user_id && user_name){
+                    submitObj.user_id = user_id;
+                    submitObj.user_name = user_name;
+                }
+                if(team_id && team_name){
+                    submitObj.team_id = team_id;
+                    submitObj.team_name = team_name;
+                }
+            }
             ajax({
                 url: addRoute.path,
                 type: addRoute.method,
@@ -203,7 +222,7 @@ class ClueAddForm extends React.Component {
                     });
                     clueCustomerAction.afterAddSalesClue({newCustomer: data.result});
                     this.afterAddClue(submitObj);
-                    //线索客户添加成功后的回调
+                    //在其他模块，线索客户添加成功后的回调
                     _.isFunction(this.props.afterAddSalesClue) && this.props.afterAddSalesClue();
                 } else {
                     var errTip = Intl.get('crm.154', '添加失败');
