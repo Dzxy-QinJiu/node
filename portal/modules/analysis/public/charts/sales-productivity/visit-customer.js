@@ -44,7 +44,8 @@ export function getVisitCustomerChart() {
                 const dayEnd = day.valueOf();
                 const dayStart = day.startOf('day').valueOf();
                 let dayStr = day.format('YYYY.MM.DD');
-                const weekDayIndex = day.weekday() + 1;
+                let weekDayIndex = day.weekday() + 1;
+                if (weekDayIndex === 7) weekDayIndex = 0;
                 const weekDay = WEEKDAY[weekDayIndex];
                 dayStr += '(' + weekDay + ')';
                 let dataItem = { day_str: dayStr };
