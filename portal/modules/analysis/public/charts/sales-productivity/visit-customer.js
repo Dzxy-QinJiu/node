@@ -17,7 +17,7 @@ let chartIndexCache = -1;
 
 export function getVisitCustomerChart() {
     let chart = {
-        title: '出差拜访频率统计',
+        title: Intl.get('analysis.business.visit.frequency.statistics', '出差拜访频率统计'),
         chartType: 'table',
         layout: { sm: 24 },
         height: 'auto',
@@ -62,11 +62,11 @@ export function getVisitCustomerChart() {
         },
         option: {
             columns: [{
-                title: '日期',
+                title: Intl.get('crm.146', '日期'),
                 dataIndex: 'day_str',
                 width: '10%',
             }, {
-                title: '出差人员',
+                title: Intl.get('leave.apply.add.leave.person', '出差人员'),
                 width: '10%',
                 render: (value, record) => {
                     let users = record.users;
@@ -99,7 +99,7 @@ export function getVisitCustomerChart() {
         let chart = charts[chartIndexCache];
         levelOneChartCache = _.cloneDeep(chart);
 
-        chart.title = salesName + '拜访客户频率统计';
+        chart.title = Intl.get('analysis.statistics.on.the.frequency.of.sales.visiting.customers', '{sales}拜访客户频率统计', {sales: salesName});
         const subTitle = <span className="clickable" onClick={backToLevelOne}>返回</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
 
@@ -109,12 +109,12 @@ export function getVisitCustomerChart() {
 
         chart.option.columns = [
             {
-                title: '日期',
+                title: Intl.get('crm.146', '日期'),
                 dataIndex: 'day_str',
                 width: '10%'
             },
             {
-                title: '拜访客户',
+                title: Intl.get('customer.visit.customer', '拜访客户'),
                 width: '10%',
                 render: (value, record) => {
                     let customers = record.customers;
@@ -149,7 +149,7 @@ export function getVisitCustomerChart() {
         let chart = charts[chartIndexCache];
         levelTwoChartCache = _.cloneDeep(chart);
 
-        chart.title = '拜访' + customerName + '的频率统计';
+        chart.title = Intl.get('analysis.statistics.on.frequency.of.visits.to.customer', '拜访{customer}的频率统计', {customer: customerName});
         const subTitle = <span className="clickable" onClick={backToLevelTwo}>返回</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
 
@@ -160,12 +160,12 @@ export function getVisitCustomerChart() {
 
         chart.option.columns = [
             {
-                title: '日期',
+                title: Intl.get('crm.146', '日期'),
                 dataIndex: 'day_str',
                 width: '10%'
             },
             {
-                title: '销售',
+                title: Intl.get('sales.home.sales', '销售'),
                 width: '10%',
                 render: (value, record) => {
                     let users = _.map(record.users, 'nick_name');
@@ -175,7 +175,7 @@ export function getVisitCustomerChart() {
                 }
             },
             {
-                title: '拜访记录',
+                title: Intl.get('common.customer.visit.record', '拜访记录'),
                 dataIndex: 'visit_record',
                 width: '10%',
             },
