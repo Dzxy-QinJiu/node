@@ -34,6 +34,9 @@ export function getVisitCustomerChart() {
             //将图表索引缓存下来，供一、二、三级图表间切换时使用
             chartIndexCache = chartIndex;
 
+            //返回数据为空时，直接返回空数组，界面上显示暂无数据
+            if (_.isEmpty(data)) return [];
+
             const startTime = conditionCache.start_time;
             const endTime = conditionCache.end_time;
             const dayDiff = moment(endTime).diff(startTime, 'days');
