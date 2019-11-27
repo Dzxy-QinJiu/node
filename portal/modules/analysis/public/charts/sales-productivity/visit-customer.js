@@ -41,7 +41,7 @@ export function getVisitCustomerChart() {
                 const day = moment(endTime).subtract(i, 'days');
                 const dayEnd = day.valueOf();
                 const dayStart = day.startOf('day').valueOf();
-                const dayStr = day.format('YYYY');
+                const dayStr = day.format('YYYY.MM.DD');
                 let dataItem = { day_str: dayStr };
                 const matchedItem = _.find(data, item => item.visit_time >= dayStart && item.visit_time < dayEnd);
 
