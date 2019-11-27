@@ -32,12 +32,32 @@ export function getVisitCustomerChart() {
             //将图表索引缓存下来，供一、二、三级图表间切换时使用
             chartIndexCache = chartIndex;
 
-            return data;
+            const startTime = conditionCache.start_time;
+            const endTime = conditionCache.end_time;
+            const dayDiff = moment(endTime).diff(startTime, 'days');
+            let processedData = [];
+
+            for (let i = 0; i <= dayDiff; i++) {
+                const day = moment(endTime).subtract(i, 'days');
+                const dayEnd = day.valueOf();
+                const dayStart = day.startOf('day').valueOf();
+                const dayStr = day.format('YYYY');
+                let dataItem = { day_str: dayStr };
+                const matchedItem = _.find(data, item => item.visit_time >= dayStart && item.visit_time < dayEnd);
+
+                if (matchedItem) {
+                    _.extend(dataItem, matchedItem);
+                }
+
+                processedData.push(dataItem);
+            }
+
+            return processedData;
         },
         option: {
             columns: [{
                 title: '日期',
-                dataIndex: 'visit_time',
+                dataIndex: 'day_str',
                 width: '10%',
             }, {
                 title: '出差人员',
@@ -115,7 +135,6 @@ export function getVisitCustomerChart() {
 
         chart.conditions = _.map(conditionCache, (value, key) => ({name: key, value}));
 
-        chart.processData = data => data.list;
 
         chart.option.columns = [
             {
