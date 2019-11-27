@@ -2,6 +2,8 @@
  * 拜访客户统计
  */
 
+import { WEEKDAY } from '../../consts';
+
 //查询条件缓存
 let conditionCache = null;
 //第一层图表缓存
@@ -41,7 +43,10 @@ export function getVisitCustomerChart() {
                 const day = moment(endTime).subtract(i, 'days');
                 const dayEnd = day.valueOf();
                 const dayStart = day.startOf('day').valueOf();
-                const dayStr = day.format('YYYY.MM.DD');
+                let dayStr = day.format('YYYY.MM.DD');
+                const weekDayIndex = day.weekday() + 1;
+                const weekDay = WEEKDAY[weekDayIndex];
+                dayStr += '(' + weekDay + ')';
                 let dataItem = { day_str: dayStr };
                 const matchedItem = _.find(data, item => item.visit_time >= dayStart && item.visit_time < dayEnd);
 
