@@ -114,7 +114,7 @@ class ContactItem extends React.Component {
                 showPhoneNum={addHyphenToPhoneNumber(item)}
                 showPhoneIcon={true}
                 type='customer'
-                id={_.get(item, 'customer_id', '')}
+                id={_.get(this.props, 'contact.contact.customer_id', '')}
             />);
     };
     renderItemSelfSettingForm = (key, index, that) => {
