@@ -15,13 +15,13 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, CURTAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, KETAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
-import {getClueUnhandledPrivilege, getUnhandledClueCountParams, isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege, getUnhandledClueCountParams, isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 const session = storageUtil.session;
 
@@ -301,8 +301,8 @@ function listenSystemNotice(notice) {
         //申请消息列表弹出，有新数据，是否刷新数据的提示
         notificationEmitter.emit(notificationEmitter.SYSTEM_NOTICE_UPDATED, notice);
         let filterType = SYSTEM_NOTICE_TYPE_MAP;
-        if (isCurtao()) {
-            filterType = CURTAO_SYSTEM_NOTICE_TYPE_MAP;
+        if (isKetaoOrganizaion()) {
+            filterType = KETAO_SYSTEM_NOTICE_TYPE_MAP;
         }
         let title = notice.type ? filterType[notice.type] : '';
         let tipContent = notice.customer_name;//xxx（客户）
@@ -328,7 +328,7 @@ function listenSystemNotice(notice) {
             tipContent += ' , ' + _.get(notice, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
         }
         // 判断是否是客套组织，是客套的话，才会有拨打电话失败和提取线索失败的
-        if (isCurtao()) {
+        if (isKetaoOrganizaion()) {
             // 拨打电话失败
             let isCallUpFailed = notice.type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
             if (isCallUpFailed) {

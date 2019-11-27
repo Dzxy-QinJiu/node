@@ -7,7 +7,7 @@ import notificationAjax from '../ajax/notification-ajax';
 // 没有消息的提醒
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
 //系统消息对应的几种类型
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES, CURTAO_SYSTEM_NOTICE_TYPE_MAP} from 'PUB_DIR/sources/utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES, KETAO_SYSTEM_NOTICE_TYPE_MAP} from 'PUB_DIR/sources/utils/consts';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {RightPanel} from 'CMP_DIR/rightPanel';
@@ -26,7 +26,7 @@ const classnames = require('classnames');
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import { storageUtil } from 'ant-utils';
 import ajax from 'ant-ajax';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 
 const STATUS_ARRAY = [{
     name: Intl.get('notification.system.untreated', '待处理'),
@@ -181,8 +181,8 @@ class SystemNotification extends React.Component {
         // 是否是登录失败
         let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
         // 判断是否是客套组织，客套组织有拨打电话失败和提取线索失败的情况
-        let isCallFailed = isCurtao() && notice.type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
-        let isPullClueFail = isCurtao() && notice.type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
+        let isCallFailed = isKetaoOrganizaion() && notice.type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
+        let isPullClueFail = isKetaoOrganizaion() && notice.type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
 
         let handleNoticeLiItemClass = classnames({
             'system-notice-handled-item': true,
@@ -195,7 +195,7 @@ class SystemNotification extends React.Component {
                     <i className={iconfontClassName}></i>
                     <div className="system-notice-type">
                         {
-                            isCurtao() ? (CURTAO_SYSTEM_NOTICE_TYPE_MAP[notice.type]) : (SYSTEM_NOTICE_TYPE_MAP[notice.type])
+                            isKetaoOrganizaion() ? (KETAO_SYSTEM_NOTICE_TYPE_MAP[notice.type]) : (SYSTEM_NOTICE_TYPE_MAP[notice.type])
                         }
                     </div>
                     <div className="customer-name"
@@ -456,8 +456,8 @@ class SystemNotification extends React.Component {
         } else if (type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN) { // 异地登录
             iconfontClassName += ' icon-remote-login';
         }
-        // 客套系统，才有拨打电话失败和提取线索失败
-        if (isCurtao()) {
+        // 客套组织，才有拨打电话失败和提取线索失败
+        if (isKetaoOrganizaion()) {
             if (type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL) { // 拨打电话失败
                 iconfontClassName += ' icon-call-failed';
             } else if (type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL) { // 提取线索失败
@@ -482,7 +482,7 @@ class SystemNotification extends React.Component {
                     <i className={iconfontClassName}></i>
                     <div className="system-notice-type">
                         {
-                            isCurtao() ? (CURTAO_SYSTEM_NOTICE_TYPE_MAP[notice.type]) : (SYSTEM_NOTICE_TYPE_MAP[notice.type])
+                            isKetaoOrganizaion() ? (KETAO_SYSTEM_NOTICE_TYPE_MAP[notice.type]) : (SYSTEM_NOTICE_TYPE_MAP[notice.type])
                         }
                     </div>
                     <div className="customer-name"
@@ -609,9 +609,11 @@ class SystemNotification extends React.Component {
             Intl.get('notification.pop.up.notify.title', '{status}弹窗通知', {status: Intl.get('common.app.status.close', '关闭')}) :
             Intl.get('notification.pop.up.notify.title', '{status}弹窗通知', {status: Intl.get('common.app.status.open', '开启')});
         let filterType = SYSTEM_NOTICE_TYPE_MAP;
-        if (isCurtao()) {
-            filterType = CURTAO_SYSTEM_NOTICE_TYPE_MAP;
+        if (isKetaoOrganizaion()) {
+            filterType = KETAO_SYSTEM_NOTICE_TYPE_MAP;
         }
+        console.log('isKetaoOrganizaion:',isKetaoOrganizaion());
+        console.log('filterType:',filterType);
         return (
             <div className="notification_system" data-tracename="系统消息列表">
                 <TopNav>

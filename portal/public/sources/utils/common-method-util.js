@@ -1261,3 +1261,9 @@ exports.getOrganizationCallFee = function(cb) {
     });
     return Deferred.promise();
 };
+
+// 判断是否是客套组织
+exports.isKetaoOrganizaion = () => {
+    let organizationId = _.get(getOrganization(), 'id');
+    return organizationId === ORGANIZATION_TYPE.KETAO;
+};

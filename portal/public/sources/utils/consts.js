@@ -101,7 +101,7 @@ export const SYSTEM_NOTICE_TYPE_MAP = {
 };
 
 // 客套组织，系统消息对应的消息类型
-export const CURTAO_SYSTEM_NOTICE_TYPE_MAP = {
+export const KETAO_SYSTEM_NOTICE_TYPE_MAP = {
     'appIllegal': Intl.get('ketao.frontpage.illeagl.login', '停用客户登录'),
     'concerCustomerLogin': Intl.get('ketao.frontpage.focus.customer.login', '关注客户登录'),
     'loginFailed': Intl.get('notification.login.failed', '登录失败'),
@@ -469,7 +469,8 @@ export const REFRESH_APPLY_RANGE = 1000;//1秒后刷新未读数
 //组织类型
 export const ORGANIZATION_TYPE = {
     EEFUNG: '36v8tudu9Z', // 蚁坊
-    CIVIW: '36duh3ok3i'//识微
+    CIVIW: '36duh3ok3i',//识微
+    KETAO: '34pj27enfq' // 客套
 };
 export const APPLY_FINISH_STATUS = ['pass', 'reject', 'cancel'];
 export const APPLY_USER_STATUS = {
