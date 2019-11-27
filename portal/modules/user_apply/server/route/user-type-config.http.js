@@ -5,7 +5,7 @@
  * * 请求路径
  */
 require('../action/user-type-config');
-import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
+import commonPrivilegeConst from '../../../common/public/privilege-const';
 module.exports = {
     module: 'user_apply/server/action/user-type-config',
     routes: [{
