@@ -53,6 +53,12 @@ export function getVisitCustomerChart() {
 
                 if (matchedItem) {
                     _.extend(dataItem, matchedItem);
+
+                    //增加销售名字段，供导出用
+                    dataItem.sales_names = _.map(dataItem.users, 'nick_name').join('、');
+
+                    //增加客户名字段，供导出用
+                    dataItem.customer_names = _.map(dataItem.customers, 'name').join('、');
                 }
 
                 processedData.push(dataItem);
@@ -67,6 +73,8 @@ export function getVisitCustomerChart() {
                 width: '10%',
             }, {
                 title: Intl.get('leave.apply.add.leave.person', '出差人员'),
+                dataIndex: 'sales_names',
+                isSetCsvValueBlank: true,
                 width: '10%',
                 render: (value, record) => {
                     let users = record.users;
@@ -116,6 +124,8 @@ export function getVisitCustomerChart() {
             {
                 title: Intl.get('customer.visit.customer', '拜访客户'),
                 width: '10%',
+                dataIndex: 'customer_names',
+                isSetCsvValueBlank: true,
                 render: (value, record) => {
                     let customers = record.customers;
 
@@ -167,6 +177,8 @@ export function getVisitCustomerChart() {
             {
                 title: Intl.get('sales.home.sales', '销售'),
                 width: '10%',
+                dataIndex: 'sales_names',
+                isSetCsvValueBlank: true,
                 render: (value, record) => {
                     let users = _.map(record.users, 'nick_name');
                     users = users.join('、');
@@ -177,6 +189,7 @@ export function getVisitCustomerChart() {
             {
                 title: Intl.get('common.customer.visit.record', '拜访记录'),
                 dataIndex: 'visit_record',
+                isSetCsvValueBlank: true,
                 width: '10%',
             },
         ];
