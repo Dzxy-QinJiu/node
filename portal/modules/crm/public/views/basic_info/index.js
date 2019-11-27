@@ -497,6 +497,10 @@ class BasicData extends React.Component {
         const basicInfoNameCls = classNames('basic-info-name', {
             'show-release-btn': isShowRelease
         });
+        var releaseTip = '';
+        if(isShowRelease) {
+            releaseTip = crmUtil.releaseCustomerTip();
+        }
         return (
             <div className="basic-info-contianer" data-trace="客户基本信息">
                 {this.state.editNameFlag ? (
@@ -542,7 +546,7 @@ class BasicData extends React.Component {
                                 />)}
                             {isShowRelease ? (
                                 <Popconfirm placement="bottomRight" onConfirm={this.releaseCustomer}
-                                    title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                    title={releaseTip}>
                                     <span className='iconfont icon-release handle-btn-item'
                                         title={Intl.get('crm.customer.release', '释放')}/>
                                 </Popconfirm>

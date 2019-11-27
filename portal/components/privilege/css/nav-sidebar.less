@@ -31,10 +31,15 @@
     z-index: 1000;
 }
 
-.disable-link{
-    cursor: no-drop;
+.disable-link {
+    cursor: not-allowed;
+    &:hover,
+    &:active,
+    &:focus,
+    &.iconfont:before, .iconfont:before {
+        color: @icon-grey !important;
+    }
 }
-
 @media (max-height: 715px) {
     //缩小浏览器时，展示小图标
     .navbar {

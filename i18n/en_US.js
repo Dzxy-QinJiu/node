@@ -1826,6 +1826,7 @@ var en_US = {
     'crm.customer.release.pool': 'Release to customer pool',//释放到客户池
     'crm.customer.delete': 'After deletion, the customer can be found in the recycle bin. Are you sure you want to delete it?',//删除后，可以在回收站中找回该客户，您确定要删除吗？
     'crm.customer.release.confirm.tip': 'After release to the customer pool, other people can also view and extract. Are you sure you want to release it?',//释放到客户池后，其他人也可以查看、提取，您确定要释放吗？
+    'crm.customer.personal.release.confirm.tip': 'After release, it can be extracted from the customer pool',//释放后可以再从客户池提取
     'crm.customer.release.failed': 'Customer Release Failed',//释放客户失败
     'crm.customer.pool.failed': 'Failure to get customer pool customer',//获取客户池客户失败
     'crm.customer.extract.failed': 'Failure to extract customer',//提取客户失败
@@ -3078,6 +3079,7 @@ var en_US = {
     'clue.customer.release.pool': 'Release to clue pool',//释放到线索池
     'clue.customer.batch.release': 'Batch release',//批量释放
     'clue.customer.release.confirm.tip': 'When released into the clue pool, other people can also view and extract it. Are you sure you want to release it?',//释放到线索池后，其他人也可以查看、提取，您确定要释放吗？
+    'clue.customer.personal.release.confirm.tip': 'After release, it can be extracted from the cue pool',//释放后可以再从线索池提取
     'clue.customer.fail.to.release.tip': 'Fail to release to clue pool',//释放线索失败
     'clue.pool.batch.extract.clue': 'Batch extract', // 批量提取
     'clue.extract.get.list.failed': 'Failed to get extract clue lists', // 获取提取线索列表失败

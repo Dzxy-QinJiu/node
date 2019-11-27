@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import history from 'PUB_DIR/sources/history';
 var userData = require('../../../../public/sources/user-data');
 import crmPrivilegeConst from '../privilege-const';
+import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 // 跟进记录类型常量
 const CALL_RECORD_TYPE = {
     PHONE: 'phone',//呼叫中心 - effung的电话系统（讯时+usterisk）
@@ -247,5 +248,14 @@ exports.checkPrivilege = function(list) {
         }
     }
     return false;
+};
+
+//释放客户的提示
+exports.releaseCustomerTip = function() {
+    let releaseTip = Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？');
+    if(checkVersionAndType().personal) {//个人版
+        releaseTip = Intl.get('crm.customer.personal.release.confirm.tip', '释放后可以再从客户池提取');
+    }
+    return releaseTip;
 };
 

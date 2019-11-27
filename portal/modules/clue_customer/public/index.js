@@ -57,6 +57,7 @@ import {
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
     NEED_MY_HANDLE,
+    releaseClueTip,
     isCommonSalesOrPersonnalVersion
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
@@ -1735,6 +1736,7 @@ class ClueCustomer extends React.Component {
         let showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue);
         let showDelete = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
         if(showRelease || showDelete) {
+            let releaseTip = releaseClueTip();
             columns.push({
                 dataIndex: 'clue_action',
                 className: 'action-td-clue',
@@ -1744,7 +1746,7 @@ class ClueCustomer extends React.Component {
                         <React.Fragment>
                             {showRelease ? <div className="release-clue-btn">
                                 <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
-                                    title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                    title={releaseTip}>
                                     <a className='release-customer'
                                         title={Intl.get('crm.customer.release', '释放')}>
                                         <i className="iconfont icon-release handle-btn-item"/>
@@ -2661,6 +2663,7 @@ class ClueCustomer extends React.Component {
         let assignCls = classNames('pull-right', {
             'responsive-mini-btn': isWebMin
         });
+        let releaseTip = releaseClueTip();
         return (
             <div className="pull-right">
                 <div className={assignCls}>
@@ -2690,7 +2693,7 @@ class ClueCustomer extends React.Component {
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
-                                title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                title={releaseTip}>
                                 <Button data-tracename="点击批量释放线索按钮"
                                     className='btn-item handle-btn-item'
                                     title={Intl.get('clue.customer.release.pool', '释放到线索池')}>
