@@ -100,7 +100,7 @@ export function getVisitCustomerChart() {
         levelOneChartCache = _.cloneDeep(chart);
 
         chart.title = Intl.get('analysis.statistics.on.the.frequency.of.sales.visiting.customers', '{sales}拜访客户频率统计', {sales: salesName});
-        const subTitle = <span className="clickable" onClick={backToLevelOne}>返回</span>;
+        const subTitle = <span className="clickable" onClick={backToLevelOne}>{Intl.get('crm.52', '返回')}</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
 
         conditionCache.user_id = userId;
@@ -150,7 +150,7 @@ export function getVisitCustomerChart() {
         levelTwoChartCache = _.cloneDeep(chart);
 
         chart.title = Intl.get('analysis.statistics.on.frequency.of.visits.to.customer', '拜访{customer}的频率统计', {customer: customerName});
-        const subTitle = <span className="clickable" onClick={backToLevelTwo}>返回</span>;
+        const subTitle = <span className="clickable" onClick={backToLevelTwo}>{Intl.get('crm.52', '返回')}</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
 
         conditionCache.customer_id = customerId;
