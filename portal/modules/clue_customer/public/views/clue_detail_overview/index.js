@@ -38,7 +38,11 @@ import {
     assignSalesPrivilege,
     handlePrivilegeType,
     FLOW_FLY_TIME,
-    isCommonSalesOrPersonnalVersion
+    isCommonSalesOrPersonnalVersion,
+    freedCluePrivilege,
+    avalibilityCluePrivilege,
+    transferClueToCustomerIconPrivilege,
+    editClueItemIconPrivilege
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -107,7 +111,7 @@ class ClueDetailOverview extends React.Component {
                 this.getSimilarCustomerLists();
             }
         }
-        if (this.getEditClueInfoPrivilege()) {
+        if (editClueItemIconPrivilege(this.state.curClue)) {
             this.getIndustryList();
         }
         //销售领导获取我所在团队及下级团队树
@@ -1024,9 +1028,9 @@ class ClueDetailOverview extends React.Component {
     };
     renderAvailabilityClue = (curClue) => {
         //标记线索无效的权限
-        var avalibility = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF);
+        var avalibility = avalibilityCluePrivilege();
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER)) && editCluePrivilege(curClue);
+        var associatedPrivilege = transferClueToCustomerIconPrivilege(curClue);
         if (avalibility){
             let pathname = window.location.pathname;
             //不是运营人员，且（在首页或者线索列表里）
@@ -1063,8 +1067,8 @@ class ClueDetailOverview extends React.Component {
     };
     //判断是否显示按钮控制tab高度
     hasButtonTabHeight = (curClue, associatedCustomer ) => {
-        var avalibility = (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF))
-                            || (hasPrivilege(cluePrivilegeConst. LEAD_TRANSFER_MERGE_CUSTOMER)) && editCluePrivilege(curClue);
+        var avalibility = (avalibilityCluePrivilege())
+                            || (hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER)) && editCluePrivilege(curClue);
         var associatedClue = (curClue.clue_type !== 'clue_pool')
                                 && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);
         let height = this.state.divHeight;
@@ -1185,14 +1189,10 @@ class ClueDetailOverview extends React.Component {
         }
         return displayText;
     };
-    getEditClueInfoPrivilege = () => {
-        var curClue = this.state.curClue;
-        return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && editCluePrivilege(curClue);
-    };
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
-        var hasPrivilegeEdit = this.getEditClueInfoPrivilege();
+        var hasPrivilegeEdit = editClueItemIconPrivilege(curClue);
         let industryOptions = this.state.industryList.map((item, i) => {
             return (<Option key={i} value={item}>{item}</Option>);
         });
@@ -1739,7 +1739,7 @@ class ClueDetailOverview extends React.Component {
     // 渲染关联线索
     renderAssociatedClue = (curClue, associatedCustomer ) => {
         if (curClue.clue_type === 'clue_pool') { // 线索池中详情，处理线索
-            if ( hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF)) {
+            if (freedCluePrivilege()) {
                 return this.renderExtractClueBtn(curClue);
             } else {
                 return null;

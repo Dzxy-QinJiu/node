@@ -91,9 +91,38 @@ export const editCluePrivilege = function(clueItem) {
 export const isCommonSalesOrPersonnalVersion = () => {
     return userData.getUserData().isCommonSales || checkVersionAndType().personal;
 };
+//分配线索的权限
 export const assignSalesPrivilege = (curClue) => {
     let user = userData.getUserData();
     return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_SELF) || (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DISTRIBUTE_ALL) && !isCommonSalesOrPersonnalVersion())) && editCluePrivilege(curClue);
+};
+//渲染释放线索的权限
+export const freedCluePrivilege = () => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF);
+};
+//删除线索的权限名字
+export const deleteCluePrivilege = () => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
+};
+//能有删除线索
+export const deleteClueIconPrivilege = (clue) => {
+    return deleteCluePrivilege() && editCluePrivilege(clue);
+};
+//标记线索有效或者无效的权限
+export const avalibilityCluePrivilege = () => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF);
+};
+//线索转客户的权限
+export const transferClueToCustomerIconPrivilege = (clue) => {
+    return hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER) && editCluePrivilege(clue);
+};
+//添加线索的权限
+export const addCluePrivilege = () => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD);
+};
+//修改线索基本资料的权限
+export const editClueItemIconPrivilege = (clue) => {
+    return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_ALL) && editCluePrivilege(clue);
 };
 
 export const CLUE_DIFF_TYPE = [

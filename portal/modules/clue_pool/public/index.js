@@ -30,7 +30,8 @@ import {
     getClueStatusValue,
     SELECT_TYPE,
     SIMILAR_CLUE, 
-    SIMILAR_CUSTOMER
+    SIMILAR_CUSTOMER,
+    freedCluePrivilege
 } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {Button, message} from 'antd';
 
@@ -834,7 +835,7 @@ class ClueExtract extends React.Component {
                 }
             });
         }
-        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF)) {
+        if (freedCluePrivilege()) {
             columns = _.concat(columns, {
                 className: 'invalid-td-clue',
                 width: TABLE_WIDTH.EXTRACT,

@@ -57,7 +57,13 @@ import {
     SIMILAR_CLUE,
     SIMILAR_CUSTOMER,
     NEED_MY_HANDLE,
-    isCommonSalesOrPersonnalVersion
+    isCommonSalesOrPersonnalVersion,
+    freedCluePrivilege,
+    deleteCluePrivilege,
+    deleteClueIconPrivilege,
+    avalibilityCluePrivilege,
+    transferClueToCustomerIconPrivilege,
+    addCluePrivilege
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -554,7 +560,7 @@ class ClueCustomer extends React.Component {
         return (
             <div className="recomend-clue-customer-container">
                 {
-                    hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD) ?
+                    addCluePrivilege() ?
                         <Dropdown overlay={menu} overlayClassName="norm-add-dropdown" placement="bottomCenter">
                             <Button className="ant-btn ant-btn-primary manual-add-btn">
                                 <Icon type="plus" className="add-btn"/>
@@ -862,7 +868,7 @@ class ClueCustomer extends React.Component {
             queryParam: {
                 rangeParams: rangeParams,
                 keyword: isGetAllClue ? '' : _.trim(this.state.keyword),
-                statistics_fields: 'status,availability',
+                statistics_fields: 'status,availability'
             },
             bodyParam: {
                 query: {
@@ -923,8 +929,18 @@ class ClueCustomer extends React.Component {
         if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL)){
             type = 'manager';
         }
-        var isGetAll = this.state.exportRange === 'all';
-        const reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
+        //如果是有已经选中的线索，那么导出的就是已经选中的线索
+        //没有选中的线索，再根据radio的选择不同导出该筛选条件下或者是全部的线索
+        var reqData = {};
+        if(this.hasSelectedClues()){
+            reqData = _.cloneDeep(this.getClueSearchCondition(true, true));
+            //然后再在query中加id字段
+            var selectCluesIds = _.map(_.get(this, 'state.selectedClues'),'id');
+            reqData.bodyParam.query.id = selectCluesIds.join(',');
+        }else{
+            var isGetAll = this.state.exportRange === 'all';
+            reqData = isGetAll ? this.getClueSearchCondition(true, true) : this.getClueSearchCondition(true,false);
+        }
         const params = {
             page_size: 10000,
             sort_field: sorter.field,
@@ -1264,11 +1280,9 @@ class ClueCustomer extends React.Component {
         });
     };
     renderInavailabilityOrValidClue = (salesClueItem) => {
-        //是否有标记线索无效的权限
-        var avalibilityPrivilege = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_UPDATE_AVAILABILITY_SELF);
         return(
             <span className="valid-or-invalid-container">
-                {avalibilityPrivilege ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
+                {avalibilityCluePrivilege() ? <span className="cancel-invalid" onClick={this.handleClickClueInvalid.bind(this, salesClueItem)}
                     data-tracename="判定线索无效">
                     {editCluePrivilege(salesClueItem) ? <span className="can-edit handle-btn-item">{Intl.get('clue.customer.set.invalid', '标为无效')}</span> : <span className="can-edit handle-btn-item"> {Intl.get('clue.cancel.set.invalid', '改为有效')}</span>}
                 </span> : null}
@@ -1430,7 +1444,7 @@ class ClueCustomer extends React.Component {
     };
     renderAvailabilityClue = (salesClueItem) => {
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('') || hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER)) && salesClueItem.availability === AVALIBILITYSTATUS.AVALIBILITY;
+        var associatedPrivilege = transferClueToCustomerIconPrivilege(salesClueItem);
         return(
             <div className="avalibility-container">
                 <div className="associate-customer">
@@ -1730,11 +1744,10 @@ class ClueCustomer extends React.Component {
         let hasTrace = SELECT_TYPE.HAS_TRACE === typeFilter.status;
         let filterStore = clueFilterStore.getState();
         let invalidClue = filterStore.filterClueAvailability === AVALIBILITYSTATUS.INAVALIBILITY;
-        //除了运营不能释放线索，管理员、销售都可以释放
+        //除了运营不能释放线索，管理员、销售，都可以释放
         //待跟进，已跟进，无效线索才可以被释放
         let showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue);
-        let showDelete = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
-        if(showRelease || showDelete) {
+        if(showRelease || deleteCluePrivilege()) {
             columns.push({
                 dataIndex: 'clue_action',
                 className: 'action-td-clue',
@@ -1751,7 +1764,7 @@ class ClueCustomer extends React.Component {
                                     </a>
                                 </Popconfirm>
                             </div> : null}
-                            {showDelete && editCluePrivilege(salesClueItem) ?
+                            {deleteClueIconPrivilege(salesClueItem) ?
                                 <Popconfirm placement="topRight" onConfirm={this.deleteClue.bind(this, salesClueItem)}
                                     title={Intl.get('clue.customer.delete', '删除后无法恢复，您确定要删除吗？')}>
                                     <a className="order-btn-class delete-btn handle-btn-item"
@@ -2107,7 +2120,7 @@ class ClueCustomer extends React.Component {
         });
     };
     renderAddDataContent = () => {
-        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD)) {
+        if (addCluePrivilege()) {
             return (
                 <div className="btn-containers">
                     <div>
@@ -2123,7 +2136,7 @@ class ClueCustomer extends React.Component {
         }
     };
     renderImportDataContent = () => {
-        if (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD)) {
+        if (addCluePrivilege()) {
             return (
                 <div className="btn-containers">
                     <div>
@@ -2193,7 +2206,7 @@ class ClueCustomer extends React.Component {
         }
         else if (!this.state.isLoading && !this.state.clueCustomerErrMsg && !this.state.curClueLists.length) {
             //总的线索不存在并且没有筛选条件时
-            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD);
+            var showAddBtn = !this.state.allClueCount && this.hasNoFilterCondition() && addCluePrivilege();
             return (
                 <NoDataAddAndImportIntro
                     renderOtherOperation={this.renderOtherOperation}
@@ -2663,6 +2676,7 @@ class ClueCustomer extends React.Component {
         });
         return (
             <div className="pull-right">
+                {this.renderExportClue()}
                 <div className={assignCls}>
                     {showBatchChange ?
                         <AntcDropdown
@@ -2745,12 +2759,12 @@ class ClueCustomer extends React.Component {
     }
     topBarDropList = (isWebMin) => {
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
-            {isWebMin && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD) ?
+            {isWebMin && addCluePrivilege() ?
                 <Menu.Item key="add" >
                     {Intl.get('crm.sales.manual_add.clue','手动添加')}
                 </Menu.Item>
                 : null}
-            {isWebMin && hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_ADD) ?
+            {isWebMin && addCluePrivilege() ?
                 <Menu.Item key="import" >
                     {Intl.get('crm.sales.manual.import.clue','导入线索')}
                 </Menu.Item>
@@ -2758,7 +2772,7 @@ class ClueCustomer extends React.Component {
             <Menu.Item key="export" >
                 {Intl.get('clue.export.clue.list','导出线索')}
             </Menu.Item>
-            {hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) ?
+            {freedCluePrivilege() ?
                 <Menu.Item key="clue_pool">
                     {Intl.get('clue.pool', '线索池')}
                 </Menu.Item> : null}
@@ -2784,7 +2798,7 @@ class ClueCustomer extends React.Component {
                 {/*this.renderClueAnalysisBtn() : null*/}
                 {/*}*/}
                 {
-                    !(isWebMiddle || isWebMin) && (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF)) ?
+                    !(isWebMiddle || isWebMin) && freedCluePrivilege() ?
                         this.renderExtractClue() : null
                 }
                 {!(isWebMiddle || isWebMin) ? this.renderExportClue() : null}
@@ -3028,22 +3042,28 @@ class ClueCustomer extends React.Component {
                         onOk={this.exportData}
                         onCancel={this.hideExportModal}
                     >
-                        <div>
-                            {Intl.get('contract.116', '导出范围')}:
-                            <RadioGroup
-                                value={this.state.exportRange}
-                                onChange={this.onExportRangeChange}
-                            >
-                                <Radio key="all" value="all">
-                                    {Intl.get('common.all', '全部')}
-                                </Radio>
-                                <Radio key="filtered" value="filtered">
-                                    {Intl.get('contract.117', '符合当前筛选条件')}
-                                </Radio>
-                            </RadioGroup>
+                        <div className='modal-tip'>
+                            {Intl.get('contract.116', '导出范围')}：
+                            {/*如果当前有选中的线索就提示导出选中的线索，如果没有就提示导出全部或者符合当前条件的线索*/}
+                            {this.hasSelectedClues() ?
+                                <span>
+                                    {Intl.get('clue.customer.export.select.clue', '导出选中的线索')}
+                                </span>
+                                : <RadioGroup
+                                    value={this.state.exportRange}
+                                    onChange={this.onExportRangeChange}
+                                >
+                                    <Radio key="all" value="all">
+                                        {Intl.get('common.all', '全部')}
+                                    </Radio>
+                                    <Radio key="filtered" value="filtered">
+                                        {Intl.get('contract.117', '符合当前筛选条件')}
+                                    </Radio>
+                                </RadioGroup>}
+
                         </div>
-                        <div>
-                            {Intl.get('contract.118','导出类型')}:
+                        <div className='modal-tip'>
+                            {Intl.get('contract.118','导出类型')}：
                             {Intl.get('contract.152','excel格式')}
                         </div>
                     </Modal>
