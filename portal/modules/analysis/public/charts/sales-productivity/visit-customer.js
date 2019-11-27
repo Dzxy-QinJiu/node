@@ -109,15 +109,31 @@ export function getVisitCustomerChart() {
         chart.option.columns = [
             {
                 title: '日期',
-                dataIndex: 'customer_id',
+                dataIndex: 'day_str',
                 width: '10%'
             },
             {
                 title: '拜访客户',
-                dataIndex: 'customer_name',
                 width: '10%',
                 render: (value, record) => {
-                    return <span className="clickable" onClick={onCustomerNameClick.bind(this, value, record)}>{value}</span>;
+                    let customers = record.customers;
+
+                    customers = _.map(customers, (item, index) => {
+                        let seperator = null;
+
+                        if (customers.length > 1 && index < (customers.length - 1)) {
+                            seperator = '、';
+                        }
+
+                        return (
+                            <span className="clickable" onClick={onCustomerNameClick.bind(this, item.name, item.id)}>
+                                {item.name}
+                                {seperator}
+                            </span>
+                        );
+                    });
+
+                    return <div>{customers}</div>;
                 }
             },
         ];
@@ -126,7 +142,7 @@ export function getVisitCustomerChart() {
     }
 
     //销售人员名点击事件
-    function onCustomerNameClick(customerName, record) {
+    function onCustomerNameClick(customerName, customerId) {
         let charts = analysisInstanceCache.state.charts;
 
         let chart = charts[chartIndexCache];
@@ -136,7 +152,7 @@ export function getVisitCustomerChart() {
         const subTitle = <span className="clickable" onClick={backToLevelTwo}>返回</span>;
         _.set(chart, 'cardContainer.props.subTitle', subTitle);
 
-        conditionCache.member_id = record.user_id;
+        conditionCache.customer_id = customerId;
 
         chart.conditions = _.map(conditionCache, (value, key) => ({name: key, value}));
 
@@ -144,17 +160,22 @@ export function getVisitCustomerChart() {
         chart.option.columns = [
             {
                 title: '日期',
-                dataIndex: 'apply_id',
+                dataIndex: 'day_str',
                 width: '10%'
             },
             {
                 title: '销售',
-                dataIndex: 'user_id',
                 width: '10%',
+                render: (value, record) => {
+                    let users = _.map(record.users, 'nick_name');
+                    users = users.join('、');
+
+                    return <div>{users}</div>;
+                }
             },
             {
                 title: '拜访记录',
-                dataIndex: 'trace_remark',
+                dataIndex: 'visit_record',
                 width: '10%',
             },
         ];
