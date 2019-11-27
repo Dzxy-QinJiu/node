@@ -23,6 +23,7 @@ import CustomerLabel from 'CMP_DIR/customer_label';
 import { myWorkEmitter } from 'OPLATE_EMITTER';
 import crmPrivilegeConst from '../../privilege-const';
 import {checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 
 let customerLabelList = [];//存储客户阶段的列表
 const CRM_VIEW_TYPES = crmUtil.CRM_VIEW_TYPES;
@@ -156,12 +157,11 @@ class BasicData extends React.Component {
 
     //是否有转出客户的权限
     enableTransferCustomer = () => {
-        let isCommonSales = userData.getUserData().isCommonSales;
         let enable = false;
         //管理员有转出的权限
         if (hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL)) {
             enable = true;
-        } else if (hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) && !isCommonSales) {
+        } else if (hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) && !isCommonSalesOrPersonnalVersion()) {
             //销售主管有转出的权限
             enable = true;
         }
