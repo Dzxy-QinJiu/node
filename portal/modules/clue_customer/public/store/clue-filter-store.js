@@ -4,9 +4,8 @@
  * Created by zhangshujuan on 2018/8/27.
  */
 var FilterAction = require('../action/filter-action');
-const datePickerUtils = require('CMP_DIR/datepicker/utils');
 import {SELECT_TYPE, CLUE_DIFF_TYPE, AVALIBILITYSTATUS, clueStartTime, NEED_MY_HANDLE,isCommonSalesOrPersonnalVersion} from '../utils/clue-customer-utils';
-import {isSalesRole, getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
 function ClueFilterStore() {
     this.setInitialData();
     //绑定action方法
