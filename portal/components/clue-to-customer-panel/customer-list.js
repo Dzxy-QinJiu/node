@@ -11,6 +11,7 @@ import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { VIEW_TYPE, NOOP } from './consts';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
 
 //客户列表标题区域高度
 const TITLE_BLOCK_HEIGHT = 135;
@@ -87,7 +88,7 @@ class CustomerList extends React.Component {
                     <div className="btn-block">
                         <Button onClick={this.props.onClose}>{Intl.get('common.cancel', '取消')}</Button>
     
-                        {hasPrivilege('LEAD_TRANSFER_MERGE_CUSTOMER') ? null : (
+                        {hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER) ? null : (
                             <Button type="primary" onClick={this.props.changeViewType.bind(this.props.parent, VIEW_TYPE.ADD_CUSTOMER)}>{Intl.get('common.convert.to.new.customer', '转为新客户')}</Button>
                         )}
                     </div>

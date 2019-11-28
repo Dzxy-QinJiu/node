@@ -11,7 +11,6 @@ import TableListPanel from 'CMP_DIR/table-list-panel';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import TopBar from './top-bar';
 import {getCallSystemConfig} from 'PUB_DIR/sources/utils/common-data-util';
-import {isOpenCash} from 'PUB_DIR/sources/utils/common-method-util';
 import HistoricHighDetail from './historic-high-detail';
 import AppSelector from './app-selector';
 import {getContextContent} from './utils';
@@ -22,7 +21,6 @@ import {
     initialTime,
     STORED_APP_ID_KEY,
     CUSTOMER_IDS_FIELD,
-    NO_OPEN_CASH_SHOW_MENUS_KEY,
     CALL_MENUS,
     ACCOUNT_MENUS
 } from './consts';
@@ -172,31 +170,26 @@ class CurtaoAnalysis extends React.Component {
         menus = _.cloneDeep(menus);
 
         return _.filter(menus, menu => {
-            //若果定义了是否显示该菜单的回调函数，则调用该函数，以控制菜单的显示隐藏
-            if (_.isFunction(menu.isShowCallback)) {
-                return menu.isShowCallback();
-            }
-
             if (menu.privileges) {
                 const foundPrivilege = _.find(menu.privileges, privilege => hasPrivilege(privilege));
 
-                //没有开通营收中心时，去掉对应的菜单项
-                if(!isOpenCash()) {
-                    let flag = _.includes(NO_OPEN_CASH_SHOW_MENUS_KEY, menu.key);
-                    if(flag) {
-                        return false;
-                    }
-                }
-
                 if (foundPrivilege) {
-                    let subMenus = menu[subMenuField];
+                    let isShow = true;
 
-                    if (subMenus) {
-                        // subMenus = this.processMenu(subMenus);
-                        menu[subMenuField] = this.processMenu(subMenus);
+                    //若果定义了是否显示该菜单的回调函数，则调用该函数，以控制菜单的显示隐藏
+                    if (_.isFunction(menu.isShowCallback)) {
+                        isShow = menu.isShowCallback();
                     }
 
-                    return true;
+                    if (isShow) {
+                        let subMenus = menu[subMenuField];
+    
+                        if (subMenus) {
+                            menu[subMenuField] = this.processMenu(subMenus);
+                        }
+                    }
+    
+                    return isShow;
                 } else {
                     return false;
                 }

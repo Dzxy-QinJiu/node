@@ -11,6 +11,7 @@ import { Select, message } from 'antd';
 import RightPanelModal from 'CMP_DIR/right-panel-modal';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 import { VIEW_TYPE, NOOP } from './consts';
+import crmPrivilegeConst from 'MOD_DIR/crm/public/privilege-const';
 
 let queryCustomerTimeout = null;
 
@@ -92,7 +93,7 @@ class CustomerSearch extends React.Component {
         }
 
         queryCustomerTimeout = setTimeout(() => {
-            const authType = hasPrivilege('CALL_RECORD_VIEW_MANAGER') ? 'manager' : 'user';
+            const authType = hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL) ? 'manager' : 'user';
 
             ajax.send({
                 url: `/rest/customer/v3/customer/range/${authType}/10/1/start_time/descend`,

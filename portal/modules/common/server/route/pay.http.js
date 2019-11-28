@@ -1,3 +1,5 @@
+import privilegeConst_common from '../../public/privilege-const';
+
 /**
  * Copyright (c) 2018-2019 EEFUNG Software Co.Ltd. All rights reserved.
  * 版权所有 (c) 2018-2019 山东客套智能科技有限公司。保留所有权利。
@@ -57,6 +59,7 @@ module.exports = {
         'handler': 'getOrganizationCallFee',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_ORGANIZATION]
     }]
 };

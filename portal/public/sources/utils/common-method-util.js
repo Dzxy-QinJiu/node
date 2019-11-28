@@ -41,6 +41,8 @@ var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 import ShearContent from 'CMP_DIR/shear-content';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import publicPrivilegeConst from 'PUB_DIR/privilege-const';
 
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
@@ -121,9 +123,9 @@ exports.removeEmptyItem = removeEmptyItem;
 
 exports.getParamByPrivilege = function() {
     let reqData = {};
-    if (hasPrivilege('GET_TEAM_LIST_ALL') || hasPrivilege('GET_TEAM_MEMBERS_ALL')) {
+    if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_ALL) || hasPrivilege(publicPrivilegeConst.TEAM_QUERY_PERMISSION)) {
         reqData.type = 'all';
-    } else if (hasPrivilege('GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS') || hasPrivilege('GET_TEAM_MEMBERS_MYTEAM_WITH_SUBTEAMS')) {
+    } else if (hasPrivilege(publicPrivilegeConst.GET_TEAM_LIST_MYTEAM_WITH_SUBTEAMS) || hasPrivilege(publicPrivilegeConst.TEAM_QUERY_PERMISSION)) {
         reqData.type = 'self';
     }
     return reqData;
@@ -383,7 +385,7 @@ exports.renderClueStatus = function(listItem) {
 //获取线索未处理的权限
 //销售和运营有展示线索未读数的权限
 exports.getClueUnhandledPrivilege = function() {
-    return (hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_MANAGER') || hasPrivilege('CUSTOMERCLUE_QUERY_FULLTEXT_USER')) && (isSalesRole() || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON));
+    return (hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF)) && (isSalesRole() || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON));
 };
 //获取线索未读数的参数
 exports.getUnhandledClueCountParams = function() {

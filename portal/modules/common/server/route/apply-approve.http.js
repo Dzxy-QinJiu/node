@@ -4,7 +4,7 @@
  * Created by zhangshujuan on 2018/12/10.
  */
 'use strict';
-
+import privilegeConst_common from '../../public/privilege-const';
 module.exports = {
     module: 'common/server/action/apply-approve',
     routes: [{
@@ -13,35 +13,41 @@ module.exports = {
         'handler': 'getNextCandidate',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
     }, {
         'method': 'post',
         'path': '/rest/add/apply/new/candidate',
         'handler': 'addNewCandidate',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
+
     }, {
         'method': 'post',
         'path': '/rest/add/userapply/new/candidate',
         'handler': 'addUserApplyNewCandidate',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_common.USERAPPLY_BASE_PERMISSION]
     }, {
         'method': 'get',
         'path': '/rest/get/userapply/worklist',
         'handler': 'getMyUserApplyWorkList',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_common.USERAPPLY_BASE_PERMISSION]
     }, {
         'method': 'get',
         'path': '/rest/get/myapproved/apply/list',
         'handler': 'getApplyListApprovedByMe',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_common.WORKFLOW_BASE_PERMISSION]
     }, {
         'method': 'get',
         'path': '/rest/get/apply/node',

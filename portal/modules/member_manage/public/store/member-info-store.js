@@ -60,18 +60,19 @@ MemberInfoStore.prototype.setLogLoading = function(loadingState) {
     }
 };
 MemberInfoStore.prototype.getLogList = function(resObj) {
-    var logListObj = resObj.logListObj;
     this.logIsLoading = false;
-    if (_.isString(logListObj)) {
-        this.getLogErrorMsg = logListObj;
+    if (_.isString(resObj)) {
+        this.getLogErrorMsg = resObj;
     } else {
         this.getLogErrorMsg = '';
+        let logListObj = _.get(resObj, 'logListObj');
         this.logTotal = _.get(logListObj, 'total') || 0;
-        if (_.isArray(logListObj.list)) {
+        let list = _.get(logListObj, 'list');
+        if (_.isArray(list)) {
             if (this.logNum === 1) {
-                this.logList = logListObj.list;
+                this.logList = list;
             } else {
-                this.logList = this.logList.concat(logListObj.list);
+                this.logList = this.logList.concat(list);
             }
             this.logNum++;
         }

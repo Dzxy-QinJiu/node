@@ -5,14 +5,16 @@
 import callChart from '../../charts/call';
 import Store from '../../store';
 import {CALL_MENUS} from '../../consts';
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 
 module.exports = {
     title: CALL_MENUS.NUMBER_DURATION.name,
     key: CALL_MENUS.NUMBER_DURATION.key,
     menuIndex: 1,
     privileges: [
-        'CUSTOMER_CALLRECORD_STATISTIC_USER',
-        'CUSTOMER_CALLRECORD_STATISTIC_MANAGER',
+        analysisPrivilegeConst.CALL_RECORD_DATA_HISTOGRAM,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMERTRACE_STATISTICS_MANAGER,
+        analysisPrivilegeConst.CURTAO_CRM_CUSTOMERTRACE_STATISTICS_USER,
     ],
     charts: getCharts()
 };

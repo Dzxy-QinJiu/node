@@ -1,3 +1,7 @@
+/**
+ * 获取用户登录相关的信息 获取用户登录统计图中登录时长、登录频次 权限需要替换
+ * **/
+import appUserPrivilegeConst from '../../public/privilege-const';
 module.exports = {
     module: 'app_user_manage/server/action/user_audit_log_controller',
     routes: [{
@@ -8,7 +12,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_AUDIT_LOG_LIST'
+            appUserPrivilegeConst.CRM_USER_ANALYSIS_ALL_ROLE_QUERY
         ]
     },{
         'method': 'get',
@@ -18,7 +22,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_AUDIT_LOG_LIST'
+            appUserPrivilegeConst.CRM_USER_ANALYSIS_ALL_ROLE_QUERY
         ]
     },{ // 获取用户登录相关的信息（时长、次数、首次和最后一次登录时间）
         'method': 'get',
@@ -28,7 +32,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_AUDIT_LOG_LIST'
+            appUserPrivilegeConst.CRM_USER_ANALYSIS_ALL_ROLE_QUERY
         ]
     },{ // 获取用户登录统计图中登录时长、登录频次
         'method': 'get',
@@ -38,7 +42,7 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'USER_AUDIT_LOG_LIST'
+            appUserPrivilegeConst.CRM_USER_ANALYSIS_ALL_ROLE_QUERY
         ]
     }, { // 获取用户的分数
         'method': 'get',

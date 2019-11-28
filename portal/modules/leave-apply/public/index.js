@@ -26,6 +26,7 @@ var NoData = require('CMP_DIR/analysis-nodata');
 import {storageUtil} from 'ant-utils';
 const session = storageUtil.session;
 import {DIFF_APPLY_TYPE_UNREAD_REPLY} from 'PUB_DIR/sources/utils/consts';
+import applyPrivilgeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 class LeaveApplyManagement extends React.Component {
     state = {
         showAddApplyPanel: false,//是否展示添加请假申请面板
@@ -295,7 +296,7 @@ class LeaveApplyManagement extends React.Component {
                         <ApplyDropdownAndAddBtn
                             menuClick={this.menuClick}
                             getApplyListType= {this.getApplyListType}
-                            addPrivilege='MEMBER_LEAVE_APPLY'
+                            addPrivilege={applyPrivilgeConst.MEMBER_LEAVE_APPLY_APPROVE}
                             showAddApplyPanel={this.showAddApplyPanel}
                             addApplyMessage={Intl.get('add.leave.apply', '添加申请')}
                             menuList={selectMenuList}

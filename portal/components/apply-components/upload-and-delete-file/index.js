@@ -12,6 +12,7 @@ import {isEqualArray} from 'LIB_DIR/func';
 import {FILES_TYPE_FORBIDDEN_RULES, FILES_TYPE_ALLOW_RULES, FILES_LIMIT} from 'PUB_DIR/sources/utils/consts';
 import {seperateFilesDiffType, hasApprovedReportAndDocumentApply} from 'PUB_DIR/sources/utils/common-data-util';
 import {checkFileSizeLimit, checkFileNameForbidRule, checkFileNameAllowRule, checkFileNameRepeat} from 'PUB_DIR/sources/utils/common-method-util';
+import applyPrivilegeConst from 'MOD_DIR/apply_approve_manage/public/privilege-const';
 class UploadAndDeleteFile extends React.Component {
     constructor(props) {
         super(props);
@@ -344,7 +345,7 @@ class UploadAndDeleteFile extends React.Component {
                         return (
                             <div className="upload-file-name">
                                 <span className="file-name">
-                                    {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId ?
+                                    {hasPrivilege(applyPrivilegeConst.MEMBER_REPORT_APPLY_APPROVE) && fileId ?
                                         <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
                                 </span>
 
@@ -367,7 +368,7 @@ class UploadAndDeleteFile extends React.Component {
                         return (
                             <div className="upload-file-name">
                                 <span className="file-name">
-                                    {hasPrivilege('DOCUMENT_DOWNLOAD') && fileId ?
+                                    {hasPrivilege(applyPrivilegeConst.MEMBER_REPORT_APPLY_APPROVE) && fileId ?
                                         <a href={'/rest/reportsend/download/' + JSON.stringify(reqData)}>{fileName}</a> : fileName}
                                 </span>
                                 {approverUploadAndDeletePrivilege ? this.renderDeleteAndLoadingBtn(fileItem) : null}

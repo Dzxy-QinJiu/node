@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import history from 'PUB_DIR/sources/history';
 var userData = require('../../../../public/sources/user-data');
+import crmPrivilegeConst from '../privilege-const';
+import { checkVersionAndType } from 'PUB_DIR/sources/utils/common-method-util';
 // 跟进记录类型常量
 const CALL_RECORD_TYPE = {
     PHONE: 'phone',//呼叫中心 - effung的电话系统（讯时+usterisk）
@@ -205,9 +207,9 @@ exports.getApplyActiveEmailTip = (applyErrorMsg) => {
     return applyErrorMsg;
 };
 exports.AUTHS = {
-    'GETALL': 'CUSTOMER_ALL',
-    'UPDATE_ALL': 'CUSTOMER_MANAGER_UPDATE_ALL',
-    'TRANSFER_MANAGER': 'CRM_MANAGER_TRANSFER'
+    'GETALL': crmPrivilegeConst.CUSTOMER_ALL,
+    'UPDATE_ALL': crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL,
+    'TRANSFER_MANAGER': crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
 };
 //用于布局的高度
 exports.LAYOUT_CONSTANTS = {
@@ -225,5 +227,35 @@ exports.CRM_VIEW_TYPES = {
     CRM_REPEAT: 'customer_repeat',//重复客户
     CRM_RECYCLE: 'customer_recycle',//回收站
     CRM_POOL: 'customer_pool',//客户池
+};
+
+//检测是否有权限
+exports.checkPrivilege = function(list) {
+    if (typeof list === 'string') {
+        list = [list];
+    }
+    var userInfo = userData.getUserData() || {};
+    var privileges = userInfo.privileges || [];
+    for(let i = 0; i < list.length; i++) {
+        var checkPrivilege = list[i].toLowerCase();
+        var hasPrivilege = _.find(privileges, function(item) {
+            if (item.toLowerCase() === checkPrivilege) {
+                return true;
+            }
+        });
+        if(hasPrivilege) {
+            return true;
+        }
+    }
+    return false;
+};
+
+//释放客户的提示
+exports.releaseCustomerTip = function() {
+    let releaseTip = Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？');
+    if(checkVersionAndType().personal) {//个人版
+        releaseTip = Intl.get('crm.customer.personal.release.confirm.tip', '释放后可以再从客户池提取');
+    }
+    return releaseTip;
 };
 

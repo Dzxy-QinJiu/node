@@ -1,5 +1,3 @@
-var React = require('react');
-const PropTypes = require('prop-types');
 require('../../../../components/antd-table-pagination/index.less');
 var Spinner = require('../../../../components/spinner');
 import {AntcTable} from 'antc';
@@ -24,8 +22,11 @@ import SalesClueAddForm from 'MOD_DIR/clue_customer/public/views/add-clues-form'
 import {clueSourceArray, accessChannelArray, clueClassifyArray} from 'PUB_DIR/sources/utils/consts';
 import clueCustomerAjax from 'MOD_DIR/clue_customer/public/ajax/clue-customer-ajax';
 import {commonPhoneRegex, areaPhoneRegex, hotlinePhoneRegex} from 'PUB_DIR/sources/utils/validate-util';
-import {isOplateUser} from 'PUB_DIR/sources/utils/common-method-util';
+import {isOplateUser, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import { getProductList } from 'PUB_DIR/sources/utils/common-data-util';
+import USER_MANAGE_PRIVILEGE from '../privilege-const';
+import userData from 'PUB_DIR/sources/user-data';
+import commonPrivilegeConst from 'MOD_DIR/common/public/privilege-const';
 //异常登录的类型
 const EXCEPTION_TYPES = [{
     name: Intl.get('common.all', '全部'),
@@ -423,14 +424,11 @@ class UserTabContent extends React.Component {
     componentDidMount() {
         $('body').css('overflow', 'hidden');
         AppUserStore.listen(this.onStoreChange);
-        if (!Oplate.hideSomeItem) {
-            AppUserAction.getRealmList(); // 获取安全域列表
-        }
         $(this.refs.userListTable).on('click', 'tr', this.onRowClick);
         $(window).on('resize', this.changeScrollBarHeight);
         this.bindEventEmitter();
         topNavEmitter.emit(topNavEmitter.RELAYOUT);
-        if (hasPrivilege('CUSTOMER_ADD_CLUE')) {
+        if (hasPrivilege(USER_MANAGE_PRIVILEGE.CREATE_CLUE)) {
             //获取线索来源
             this.getClueSource();
             //获取线索渠道
@@ -479,7 +477,7 @@ class UserTabContent extends React.Component {
                         return (
                             <div>
                                 <div title={user_name}>
-                                    {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
+                                    {hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY) && isShown ?
                                         <i className="iconfont icon-warn-icon unnormal-login"
                                             title={Intl.get('user.login.abnormal', '异常登录')}></i> : null}
                                     {rowData.apps[0].qualify_label === 1 ? (
@@ -650,7 +648,7 @@ class UserTabContent extends React.Component {
                         //是否展示 生成线索的 按钮，必须要选中某个应用，
                         // create_tag === "register" 表示是自注册的用户
                         // clue_created属性存在，并且为true 表示已经生成过线索客户
-                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CUSTOMER_ADD_CLUE') ? true : false;
+                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege(USER_MANAGE_PRIVILEGE.CREATE_CLUE) ? true : false;
                         return user ? (
                             <div title={user.description}>
                                 {user.description}
@@ -686,7 +684,7 @@ class UserTabContent extends React.Component {
                         return (
                             <div>
                                 <div title={user_name}>
-                                    {hasPrivilege('GET_LOGIN_EXCEPTION_USERS') && isShown ?
+                                    {hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY) && isShown ?
                                         <i className="iconfont icon-warn-icon unnormal-login"
                                             title={Intl.get('user.login.abnormal', '异常登录')}></i> : null}
                                     {rowData.apps[0].qualify_label === 1 ? (
@@ -812,7 +810,7 @@ class UserTabContent extends React.Component {
                         //是否展示 生成线索的 按钮，必须要选中某个应用，
                         // create_tag === "register" 表示是自注册的用户
                         // clue_created属性存在，并且为true 表示已经生成过线索客户
-                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege('CUSTOMER_ADD_CLUE') ? true : false;
+                        var isShowTransClueButton = _.isArray(rowData.apps) && rowData.apps.length && rowData.apps[0].create_tag === 'register' && !rowData.apps[0].clue_created && hasPrivilege(USER_MANAGE_PRIVILEGE.CREATE_CLUE) ? true : false;
                         return user ? (
                             <div title={user.description}>
                                 {user.description}
@@ -1128,7 +1126,7 @@ class UserTabContent extends React.Component {
                         </dd>
                     </dl>
                     {Oplate.hideSomeItem ? null : this.renderFilterTeamName()}
-                    {((language.lan() === 'zh' || language.lan() === 'en') && hasPrivilege('GET_LOGIN_EXCEPTION_USERS')) ?
+                    {((language.lan() === 'zh' || language.lan() === 'en') && hasPrivilege(USER_MANAGE_PRIVILEGE.USER_QUERY)) ?
                         (<dl>
                             <dt><ReactIntl.FormattedMessage id="user.login.abnormal" defaultMessage="异常登录"/>：</dt>
                             <dd>
@@ -1524,7 +1522,7 @@ class UserTabContent extends React.Component {
             //是否是从某个客户详情中跳转过来的
             let isCustomerDetailJump = currentView === 'user' && this.props.customer_id;
             //管理员：可以进行批量变更，销售：从某个客户详情中跳转过来时，可以批量变更（销售只可以批量操作同一客户下的用户）
-            return hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) || (isCustomerDetailJump && hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES));
+            return userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || (isSalesRole() && isCustomerDetailJump);
         };
 
     //渲染表格区域
@@ -1543,8 +1541,10 @@ class UserTabContent extends React.Component {
         }
         //管理员可以批量操作
         //销售可以批量操作
-        const hasSelectAuth = hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.ADMIN) ||
-            hasPrivilege(AppUserUtil.BATCH_PRIVILEGE.SALES);
+        let hasSelectAuth = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
+        if (isSalesRole()) {
+            hasSelectAuth = hasPrivilege(commonPrivilegeConst.USER_APPLY_APPROVE);
+        }
         //只有oplate的用户才有批量操作
         var rowSelection = hasSelectAuth && isOplateUser() && this.isShowBatchOperate() ? this.getRowSelection() : null;
         var divHeight = getTableContainerHeight() - (this.state.filterAreaExpanded ? $(this.refs.filter_adv).outerHeight() || 0 : 0);

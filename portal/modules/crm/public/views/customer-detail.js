@@ -23,6 +23,7 @@ const RightPanel = rightPanelUtil.RightPanel;
 import {isOpenCash, isCurtao, isSalesRole} from 'PUB_DIR/sources/utils/common-method-util';
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 let history = require('../../../../public/sources/history');
+import crmPrivilegeConst from '../privilege-const';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 
 class CrmRightPanel extends React.Component {
@@ -193,7 +194,7 @@ class CrmRightPanel extends React.Component {
                                 ) : null}
                             </TabPane>
                             {//用获取客户的用户列表的权限并且有获取用户列表的权限，并且不是从回收站中打开客户详情,并且不是csm.curtao.com域名下，才展示用户列表
-                                hasPrivilege(PRIVILEGE_MAP.USER_BASE_PRIVILEGE) && hasPrivilege(PRIVILEGE_MAP.APP_USER_LIST) && !this.props.disableEdit && !isCurtao() ? (
+                                hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) && !this.props.disableEdit && !isCurtao() ? (
                                     <TabPane
                                         tab={Intl.get('crm.detail.user', '用户')}
                                         key={TAB_KEYS.USER_TAB}
@@ -230,7 +231,7 @@ class CrmRightPanel extends React.Component {
                                     </TabPane>
                                 )}
                             {//有合同查询权限并且开通了营收中心时，才展示合同列表
-                                hasPrivilege(PRIVILEGE_MAP.CRM_CONTRACT_QUERY_COMMON_BASE) && isOpenCash() ? (
+                                hasPrivilege(crmPrivilegeConst.CRM_CONTRACT_COMMON_BASE) && isOpenCash() ? (
                                     <TabPane
                                         tab={Intl.get('contract.125', '合同')}
                                         key={TAB_KEYS.CONTRACT_TAB}

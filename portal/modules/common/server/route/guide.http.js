@@ -1,3 +1,4 @@
+import privilegeConst_common from '../../public/privilege-const';
 module.exports = {
     module: 'common/server/action/guide',
     routes: [{
@@ -8,7 +9,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['USER_INFO_USER']
+        'privileges': [privilegeConst_common.BASE_QUERY_PERMISSION_MEMBER]
     },{
         //引导步骤标注
         'method': 'post',
@@ -17,7 +18,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['USER_INFO_USER']
+        'privileges': [privilegeConst_common.USER_INFO_UPDATE]
     },{
         //关闭引导步骤标注
         'method': 'post',
@@ -26,7 +27,7 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
-        'privileges': ['USER_INFO_USER']
+        'privileges': [privilegeConst_common.USER_INFO_UPDATE]
     },{
         //获取推荐线索
         'method': 'post',
@@ -34,7 +35,8 @@ module.exports = {
         'handler': 'getRecommendClueLists',
         'passport': {
             'needLogin': true
-        }
+        },
+        'privileges': [privilegeConst_common.CURTAO_CRM_COMPANY_STORAGE]
     },{
         //批量提取推荐线索
         'method': 'post',
@@ -42,6 +44,6 @@ module.exports = {
         'handler': 'batchExtractRecommendLists',
         'passport': {
             'needLogin': true
-        }
+        },
     },]
 };

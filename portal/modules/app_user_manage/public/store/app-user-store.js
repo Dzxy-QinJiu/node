@@ -5,7 +5,7 @@ var AppUserUtil = require('../util/app-user-util');
 var hasPrivilege = require('../../../../components/privilege/checker').hasPrivilege;
 import { storageUtil } from 'ant-utils';
 import { packageTry } from 'LIB_DIR/func';
-
+import GENERAL_PERMISSIONS from 'PUB_DIR/privilege-const';
 //app用户的store
 function AppUserStore() {
     this.resetState();
@@ -60,7 +60,7 @@ AppUserStore.prototype.resetState = function() {
     //角色过滤相关属性
     this.filterRoles = {
         //只有oplate成员有GET_USERLIST_BY_ROLE权限，才在界面上显示
-        shouldShow: hasPrivilege('GET_USERLIST_BY_ROLE'),
+        shouldShow: hasPrivilege(GENERAL_PERMISSIONS.APP_QUERY_PERMISSION),
         //当前应用对应的角色列表
         roles: [],
         //选中的角色

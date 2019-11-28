@@ -8,6 +8,7 @@ import DetailCard from 'CMP_DIR/detail-card';
 import { PropTypes } from 'prop-types';
 import { hasPrivilege } from 'CMP_DIR/privilege/checker';
 var UserDetailEditField = require('CMP_DIR/basic-edit-field-new/input');
+import USER_MANAGE_PRIVILEGE from '../../privilege-const';
 
 class ContactCard extends React.Component {
     constructor(props) {
@@ -34,7 +35,7 @@ class ContactCard extends React.Component {
     }
     render() {
         const { userInfo } = this.props;
-        const hasEditAuth = hasPrivilege('APP_USER_EDIT');
+        const hasEditAuth = hasPrivilege(USER_MANAGE_PRIVILEGE.USER_MANAGE);
         return (
             <DetailCard
                 className='contact-card-container'

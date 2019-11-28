@@ -20,9 +20,10 @@ let PrivilegeChecker = Privilege.PrivilegeChecker;
 import Trace from 'LIB_DIR/trace';
 import ShearContent from '../../../../components/shear-content';
 import AppUserManage from 'MOD_DIR/app_user_manage/public';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao,checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
 import BackMainPage from 'CMP_DIR/btn-back';
-import {CRM_VIEW_TYPES} from '../utils/crm-util';
+import {CRM_VIEW_TYPES, checkPrivilege} from '../utils/crm-util';
+import crmPrivilegeConst from '../privilege-const';
 
 let CONSTANTS = {
     PADDING_TOP: 84,
@@ -293,7 +294,9 @@ class CustomerRepeat extends React.Component {
                         <Col span={2} className="repeat-customer-col">
                             {Intl.get('user.apply.detail.order', '订单')}
                         </Col>)}
-                    <Col span={2} className="repeat-customer-col">{Intl.get('crm.6', '负责人')}</Col>
+                    {checkVersionAndType().isPersonalTrial ? null : (
+                        <Col span={2} className="repeat-customer-col">{Intl.get('crm.6', '负责人')}</Col>
+                    )}
                     <Col span={2}
                         className="repeat-customer-col">{Intl.get('member.create.time', '创建时间')}</Col>
                     <Col span={2} className="repeat-customer-col">{Intl.get('crm.7', '最后联系时间')}</Col>
@@ -337,7 +340,7 @@ class CustomerRepeat extends React.Component {
                     </ShearContent>
                 </Col>
                 <Col span={1}>
-                    <PrivilegeChecker check="CRM_DELETE_CUSTOMER">
+                    <PrivilegeChecker check={() => checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL])}>
                         <Popconfirm title={this.getModalContent(customer)}
                             onConfirm={this.delRepeatCustomer.bind(this, customer)}
                             okText={Intl.get('common.sure', '确认')}
@@ -374,8 +377,11 @@ class CustomerRepeat extends React.Component {
                             })}
                         </Col>
                         <Col span={1}>
-                            <PrivilegeChecker check="CUSTOMER_MERGE_CUSTOMER" className="repeat-merge-btn handle-btn-item"
-                                onClick={this.showMergePanel.bind(this, repeatObj.repeatList)}>
+                            <PrivilegeChecker check={() => checkPrivilege([
+                                crmPrivilegeConst.CUSTOMER_UPDATE,
+                                crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL
+                            ])} className="repeat-merge-btn handle-btn-item"
+                            onClick={this.showMergePanel.bind(this, repeatObj.repeatList)}>
                                 <span className="iconfont icon-merge-btn" title={Intl.get('crm.54', '合并')}></span>
                             </PrivilegeChecker>
                         </Col>

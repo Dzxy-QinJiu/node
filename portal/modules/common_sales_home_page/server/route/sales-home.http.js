@@ -2,6 +2,9 @@
  * Created by zhangshujuan on 2018/2/27.
  */
 require('../action/sales-home-controller');
+var commonSalesHomePrivilegeConst = require('../../public/privilege-const').default;
+var crmPrivilegeConst = require('../../../crm/public/privilege-const').default;
+
 module.exports = {
     module: 'common_sales_home_page/server/action/sales-home-controller',
     routes: [{
@@ -10,7 +13,8 @@ module.exports = {
         'handler': 'getSalesPhone',
         'passport': {
             'needLogin': true
-        }
+        },
+        privileges: [commonSalesHomePrivilegeConst.CURTAO_CRM_CALLRECORD_STATISTICS]
     },{
         'method': 'post',
         'path': '/rest/contact_customer/:type/:pageSize/:pageNum/:sortFeild/:sortOrder',
@@ -19,7 +23,8 @@ module.exports = {
             'needLogin': true
         },
         'privileges': [
-            'CRM_LIST_CUSTOMERS'
+            crmPrivilegeConst.CRM_LIST_CUSTOMERS,
+            crmPrivilegeConst.CUSTOMER_ALL
         ]
     },{
         'method': 'post',
@@ -28,12 +33,20 @@ module.exports = {
         'passport': {
             'needLogin': true
         },
+        privileges: [
+            commonSalesHomePrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_SELF,
+            commonSalesHomePrivilegeConst.CURTAO_CRM_CUSTOMER_ANALYSIS_ALL
+        ]
     }, {//获取线索客户
         method: 'post',
         path: '/rest/saleshome/v2/range/clue/:type/:pageSize/:sortField/:sortOrder',
         handler: 'getSalesClueList',
         passport: {
             needLogin: true
-        }
+        },
+        privileges: [
+            commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_QUERY_ALL,
+            commonSalesHomePrivilegeConst.CURTAO_CRM_LEAD_QUERY_SELF
+        ]
     }]
 };

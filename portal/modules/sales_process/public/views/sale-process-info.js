@@ -10,6 +10,7 @@ import BasicEditInputField from 'CMP_DIR/basic-edit-field-new/input';
 import SalesProcessStatusSwitch from 'CMP_DIR/confirm-switch-modify-status';
 import SalesProcessStore from '../store';
 import SalesProcessAjax from '../ajax';
+import CUSTOMER_STAGE_PRIVILEGE from '../privilege-const';
 
 class SalesProcessInfo extends React.Component {
     constructor(props) {
@@ -83,7 +84,7 @@ class SalesProcessInfo extends React.Component {
                         value={saleProcess.name}
                         field='name'
                         type="text"
-                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        hasEditPrivilege={hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE)}
                         placeholder={Intl.get('sales.process.name.placeholder', '请输入销售流程名称')}
                         saveEditInput={this.saveEditSaleProcess.bind(this, 'name')}
                     />
@@ -91,7 +92,7 @@ class SalesProcessInfo extends React.Component {
                 <div className="basic-info-item">
                     <span className="basic-info-label">{Intl.get('common.status', '状态')}:</span>
                     {
-                        hasPrivilege('CRM_UPDATE_CUSTOMER_SALES') ? (
+                        hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE) ? (
                             <div className="process-status">
                                 <SalesProcessStatusSwitch
                                     title={Intl.get('sales.process.status.edit.tip', '确定要{status}该销售流程？', {
@@ -113,7 +114,7 @@ class SalesProcessInfo extends React.Component {
                         value={saleProcess.description}
                         field='description'
                         type="text"
-                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        hasEditPrivilege={hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE)}
                         placeholder={Intl.get('sales.process.destrip.placeholder', '请输入销售流程的描述信息')}
                         saveEditInput={this.saveEditSaleProcess.bind(this, 'description')}
                     />

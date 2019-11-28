@@ -24,7 +24,7 @@ import {formatRoundingData} from 'PUB_DIR/sources/utils/common-method-util';
 import {PRIVILEGE_MAP} from 'PUB_DIR/sources/utils/consts';
 
 const isCommonSales = userData.getUserData().isCommonSales;
-
+import analysisPrivilegeConst from 'MOD_DIR/analysis/public/privilege-const';
 class WeeklyReportDetail extends React.Component {
     static defaultProps = {
         selectedItem: {}
@@ -353,6 +353,7 @@ class WeeklyReportDetail extends React.Component {
     };
 
     getCallInfoAuth = () => {
+        //todo 这个方法没有用到的地方
         let authType = 'user';//CUSTOMER_CALLRECORD_STATISTIC_USER
         if (hasPrivilege('CUSTOMER_CALLRECORD_STATISTIC_MANAGER')) {
             authType = 'manager';
@@ -362,7 +363,7 @@ class WeeklyReportDetail extends React.Component {
 
     getContractType = () => {
         let authType = 'common';
-        if (hasPrivilege('KETAO_CONTRACT_ANALYSIS_REPORT_FORM')) {
+        if (hasPrivilege(analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER)) {
             authType = 'manager';
         }
         return authType;
@@ -370,7 +371,7 @@ class WeeklyReportDetail extends React.Component {
 
     getOverlayType = () => {
         let authType = 'common';
-        if (hasPrivilege('KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER')) {
+        if (hasPrivilege(analysisPrivilegeConst.CRM_CONTRACT_SALES_REPORTS_MANAGER)) {
             authType = 'manager';
         }
         return authType;

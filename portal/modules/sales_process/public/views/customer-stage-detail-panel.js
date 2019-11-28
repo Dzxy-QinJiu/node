@@ -16,6 +16,7 @@ import { CUSTOMER_STAGE_COLOR } from 'PUB_DIR/sources/utils/consts';
 import StageSelectTeamUser from './stage-select-team-user';
 import classNames from 'classnames';
 import { DragDropContext, Droppable} from 'react-beautiful-dnd';
+import CUSTOMER_STAGE_PRIVILEGE from '../privilege-const';
 
 import Trace from 'LIB_DIR/trace';
 
@@ -320,27 +321,27 @@ class CustomerStageDetailPanel extends React.Component {
         return (
             <div className="stage-detail-wrap" style={{height: height}}>
                 <GeminiScrollBar style={{height: height}}>
-                    <DragDropContext onDragEnd={this.onDragEnd}>
-                        <div className="stage-content-set-stage">
-                            <div className="stage-set-title-zone">
-                                <div className="stage-label">
-                                    {Intl.get('customer.stage.stage.title', '阶段设置')}
-                                </div>
-                                <div className="operate-zone">
-                                    {
-                                        hasPrivilege('CRM_ADD_CUSTOMER_SALES') ? (
-                                            length > 7 ? null : (
-                                                <span
-                                                    onClick={this.handleAddCustomerStage}
-                                                    className="add-stage"
-                                                >
-                                                    <i className='iconfont icon-plus' />
-                                                </span>
-                                            )
-                                        ) : null
-                                    }
-                                </div>
+                    <div className="stage-content-set-stage">
+                        <div className="stage-set-title-zone">
+                            <div className="stage-label">
+                                {Intl.get('customer.stage.stage.title', '阶段设置')}
                             </div>
+                            <div className="operate-zone">
+                                {
+                                    hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.CREATE_SPECIFIC_STAGE) ? (
+                                        length > 7 ? null : (
+                                            <span
+                                                onClick={this.handleAddCustomerStage}
+                                                className="add-stage"
+                                            >
+                                                <i className='iconfont icon-plus' />
+                                            </span>
+                                        )
+                                    ) : null
+                                }
+                            </div>
+                        </div>
+                        <DragDropContext onDragEnd={this.onDragEnd}>
                             <Droppable droppableId={_.get(currentCustomerStage, 'id', '')}>
                                 {(provided, snapshot) => (
                                     <div className='stage-board-wrap' ref={provided.innerRef}>
@@ -386,8 +387,9 @@ class CustomerStageDetailPanel extends React.Component {
                                     </div>
                                 )}
                             </Droppable>
-                        </div>
-                    </DragDropContext>
+                        </DragDropContext>
+
+                    </div>
                     <div className="stage-content-team-user">
                         <div className="stage-set-title-zone">
                             <div className="stage-label">
@@ -395,7 +397,7 @@ class CustomerStageDetailPanel extends React.Component {
                             </div>
                             <div className="operate-zone">
                                 {
-                                    hasPrivilege('CRM_UPDATE_CUSTOMER_SALES') ? (
+                                    hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE) ? (
                                         <span onClick={this.handleEditCustomerScope}>
                                             <i className='icon-update iconfont handle-btn-item' />
                                         </span>
@@ -491,7 +493,7 @@ class CustomerStageDetailPanel extends React.Component {
                         value={name}
                         field='name'
                         type="text"
-                        hasEditPrivilege={hasPrivilege('CRM_UPDATE_CUSTOMER_SALES')}
+                        hasEditPrivilege={hasPrivilege(CUSTOMER_STAGE_PRIVILEGE.UPDATE_SPECIFIC_STAGE)}
                         validators={[{validator: this.getValidator()}]}
                         placeholder={Intl.get('customer.stage.name.placeholder', '请输入客户阶段')}
                         saveEditInput={this.saveEditCustomerStageName.bind(this, 'name')}

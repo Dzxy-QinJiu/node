@@ -1,3 +1,4 @@
+import schedule_management_privilegeConst from '../../public/privilege-config';
 module.exports = {
     module: 'schedule_management/server/action/schedule-management-controller',
     routes: [
@@ -8,6 +9,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [schedule_management_privilegeConst.MEMBER_SCHEDULE_MANAGE]
         }, {
             method: 'put',
             path: '/rest/change/schedule/:scheduleId/:status',
@@ -15,6 +17,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [schedule_management_privilegeConst.MEMBER_SCHEDULE_MANAGE]
         }, {
             method: 'post',
             path: '/rest/customer/add/schedule',
@@ -22,6 +25,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [schedule_management_privilegeConst.MEMBER_SCHEDULE_MANAGE]
         },
         {
             method: 'put',
@@ -30,6 +34,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [schedule_management_privilegeConst.MEMBER_SCHEDULE_MANAGE]
         },
         {
             method: 'delete',
@@ -38,6 +43,7 @@ module.exports = {
             passport: {
                 needLogin: true
             },
+            privileges: [schedule_management_privilegeConst.MEMBER_SCHEDULE_MANAGE]
         },
     ]
 };

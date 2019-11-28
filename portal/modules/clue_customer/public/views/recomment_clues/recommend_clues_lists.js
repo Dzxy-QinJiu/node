@@ -18,7 +18,8 @@ import {
     formatSalesmanList,
     getTableContainerHeight,
     isResponsiveDisplay,
-    checkCurrentVersion
+    checkCurrentVersion,
+    checkVersionAndType
 } from 'PUB_DIR/sources/utils/common-method-util';
 import userData from 'PUB_DIR/sources/user-data';
 const LAYOUT_CONSTANTS = {
@@ -32,7 +33,7 @@ var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
 import {updateGuideMark, getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
-import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
+import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount,isCommonSalesOrPersonnalVersion} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
@@ -141,7 +142,8 @@ class RecommendCustomerRightPanel extends React.Component {
         _.each(clueArr, (clueItem) => {
             var arr = _.split(clueItem,'_');
             //如果当前客户是需要更新的客户，才更新
-            clueCustomerAction.updateRecommendClueLists(arr[0]);
+
+            this.updateRecommendClueLists(arr[0]);
         });
         if (_.isEmpty(this.state.recommendClueLists)) {
             this.getRecommendClueLists();
@@ -149,7 +151,14 @@ class RecommendCustomerRightPanel extends React.Component {
         this.setState({
             selectedRecommendClues: []
         });
-    }
+    };
+    updateRecommendClueLists = (updateClueId) => {
+        var selectedRecommendClues = this.state.selectedRecommendClues;
+        this.setState({
+            selectedRecommendClues: _.filter(selectedRecommendClues,item => item.id !== updateClueId)
+        });
+        clueCustomerAction.updateRecommendClueLists(updateClueId);
+    };
 
     componentWillUnmount() {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
@@ -201,7 +210,7 @@ class RecommendCustomerRightPanel extends React.Component {
                     message.success(Intl.get('clue.extract.success', '提取成功'));
                     this.clearSelectSales();
                     SetLocalSalesClickCount(salesMan, CLUE_RECOMMEND_SELECTED_SALES);
-                    clueCustomerAction.updateRecommendClueLists(_.get(reqData,'companyIds[0]'));
+                    this.updateRecommendClueLists(_.get(reqData,'companyIds[0]'));
                     //线索提取完后，会到待分配状态中
                 }else{
                     message.error(Intl.get('clue.extract.failed', '提取失败'));
@@ -272,6 +281,10 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     // 单个提取线索
     handleExtractClueAssignToSale(record, flag, isDetailExtract) {
+        //如果这条线索已经提取过了，就不能再点击提取了
+        if(record.hasExtracted){
+            return;
+        }
         if (!this.state.salesMan && flag) {
             clueCustomerAction.setUnSelectDataTip(Intl.get('crm.17', '请选择销售人员'));
         } else {
@@ -308,6 +321,7 @@ class RecommendCustomerRightPanel extends React.Component {
         if (hasAssignedPrivilege) {
             return (
                 <AntcDropdown
+                    isDropdownAble={record.hasExtracted}
                     ref={assignSale => this['assignSale' + record.id] = assignSale}
                     content={
                         <span
@@ -395,7 +409,7 @@ class RecommendCustomerRightPanel extends React.Component {
                 width: '100px',
                 render: (text, record, index) => {
                     // 提取线索分配给相关的销售人员的权限
-                    let hasAssignedPrivilege = !this.isCommonSales();
+                    let hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
                     let assigenCls = classNames('assign-btn',{'can-edit': !text});
                     let containerCls = classNames('singl-extract-clue',{'assign-privilege handle-btn-item': hasAssignedPrivilege},);
 
@@ -408,10 +422,6 @@ class RecommendCustomerRightPanel extends React.Component {
             }
         ];
         return columns;
-    };
-    // 判断是否为普通销售
-    isCommonSales = () => {
-        return userData.getUserData().isCommonSales;
     };
     //判断是否为管理员
     isManager = () => {
@@ -531,7 +541,7 @@ class RecommendCustomerRightPanel extends React.Component {
 
     //批量提取,发请求前的参数处理
     handleBeforeSumitChangeSales = (itemId) => {
-        if (this.isCommonSales()) { // 普通销售，批量提取参数处理
+        if (isCommonSalesOrPersonnalVersion()) { // 普通销售或者是个人版本，批量提取参数处理
             let saleLoginData = userData.getUserData();
             let submitObj = {
                 'user_id': saleLoginData.user_id,
@@ -583,7 +593,10 @@ class RecommendCustomerRightPanel extends React.Component {
             onSelectAll: (selected, selectedRows, changeRows) => {
                 this.setState({selectedRecommendClues: selectedRows});
                 Trace.traceEvent($(ReactDOM.findDOMNode(this)).find('.ant-table-selection-column'), '点击选中/取消选中全部线索');
-            }
+            },
+            getCheckboxProps: record => ({
+                disabled: record.hasExtracted, // 有hasExtracted属性是已经成功提取了的
+            }),
         };
         return rowSelection;
     };
@@ -613,8 +626,19 @@ class RecommendCustomerRightPanel extends React.Component {
                     columns={this.getRecommendClueTableColunms()}
                     scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
                     locale={{emptyText: emptyText}}
+                    rowClassName={this.setInvalidClassName}
                 />);
         }
+    };
+    setInvalidClassName= (record, index) => {
+        var cls = '';
+        if ((record.id === this.state.currentId) && rightPanelShow){
+            cls += ' current-row';
+        }
+        if(record.hasExtracted){
+            cls += ' has-extracted-row';
+        }
+        return cls;
     };
     getRowKey = (record, index) => {
         return record.id;
@@ -679,7 +703,7 @@ class RecommendCustomerRightPanel extends React.Component {
         var maxLimitTip = Intl.get('clue.recommend.has.extract', '您所在的组织{timerange}已经提取了{hasExtract}条，最多还能提取{ableExtract}条线索',{hasExtract: this.state.hasExtractCount, ableExtract: ableExtract,timerange: this.getTimeRangeText()});
         let {isWebMin} = isResponsiveDisplay();
         maxLimitTip = this.hasNoExtractCountTip(maxLimitTip);
-        if (this.isCommonSales()) { // 普通销售批量提取线索
+        if (isCommonSalesOrPersonnalVersion()) { // 普通销售或者个人版批量提取线索
             return (
                 <Popover
                     placement="right"

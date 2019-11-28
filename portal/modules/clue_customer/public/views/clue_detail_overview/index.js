@@ -37,7 +37,13 @@ import {
     editCluePrivilege,
     assignSalesPrivilege,
     handlePrivilegeType,
-    FLOW_FLY_TIME
+    FLOW_FLY_TIME,
+    isCommonSalesOrPersonnalVersion,
+    freedCluePrivilege,
+    avalibilityCluePrivilege,
+    transferClueToCustomerIconPrivilege,
+    editClueItemIconPrivilege,
+    releaseClueTip,
 } from '../../utils/clue-customer-utils';
 import {RightPanel} from 'CMP_DIR/rightPanel';
 import GeminiScrollbar from 'CMP_DIR/react-gemini-scrollbar';
@@ -48,8 +54,8 @@ import PhoneCallout from 'CMP_DIR/phone-callout';
 import PhoneInput from 'CMP_DIR/phone-input';
 var clueFilterStore = require('../../store/clue-filter-store');
 var clueCustomerStore = require('../../store/clue-customer-store');
-import {subtracteGlobalClue,renderClueStatus} from 'PUB_DIR/sources/utils/common-method-util';
-import {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
+import { subtracteGlobalClue, renderClueStatus, checkCurrentVersion } from 'PUB_DIR/sources/utils/common-method-util';
+import crmUtil, {TAB_KEYS } from 'MOD_DIR/crm/public/utils/crm-util';
 import {phoneMsgEmitter, userDetailEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {myWorkEmitter} from 'PUB_DIR/sources/utils/emitters';
 import DetailCard from 'CMP_DIR/detail-card';
@@ -61,6 +67,10 @@ const HAS_INPUT_HEIGHT = 140;//为无效输入框预留空间
 import { clueEmitter, clueToCustomerPanelEmitter } from 'PUB_DIR/sources/utils/emitters';
 import {sourceClassifyArray, SOURCE_CLASSIFY, sourceClassifyOptions} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import {getMyTeamTreeList} from 'PUB_DIR/sources/utils/common-data-util';
+import cluePrivilegeConst from 'MOD_DIR/clue_customer/public/privilege-const';
+import commonSalesHomePrivilegeConst from 'MOD_DIR/common_sales_home_page/public/privilege-const';
+import LocationSelectField from 'CMP_DIR/basic-edit-field-new/location-select';
+import CrmAction from 'MOD_DIR/crm/public/action/crm-actions';
 class ClueDetailOverview extends React.Component {
     state = {
         clickAssigenedBtn: false,//是否点击了分配客户的按钮
@@ -84,6 +94,8 @@ class ClueDetailOverview extends React.Component {
         isShowInvalidateInputPanel: false, //正在展示无效信息输入框
         myTeamTree: [],//销售领导获取我所在团队及下级团队树
         phoneDuplicateWarning: [], //联系人电话重复时的提示
+        isLoadingIndustryList: false,//正在加载
+        industryList: []//行业列表
     };
 
     componentDidMount() {
@@ -100,11 +112,26 @@ class ClueDetailOverview extends React.Component {
                 this.getSimilarCustomerLists();
             }
         }
+        if (editClueItemIconPrivilege(this.state.curClue)) {
+            this.getIndustryList();
+        }
         //销售领导获取我所在团队及下级团队树
         getMyTeamTreeList(result => {
             this.setState({myTeamTree: _.get(result, 'teamTreeList', [])});
         });
     }
+    //获取行业列表
+    getIndustryList = () => {
+        //获取后台管理中设置的行业列表
+        this.setState({isLoadingIndustryList: true});
+        CrmAction.getIndustries(result => {
+            let list = _.isArray(result) ? result : [];
+            if (list.length > 0) {
+                list = _.map(list, 'industry');
+            }
+            this.setState({isLoadingIndustryList: false, industryList: list});
+        });
+    };
     //线索的状态是已转化的线索
     isHasTransferClue = () => {
         return _.get(this, 'state.curClue.status') === SELECT_TYPE.HAS_TRANSFER;
@@ -259,6 +286,7 @@ class ClueDetailOverview extends React.Component {
             newCustomerDetail.contact_id = contact_id;
         }
         clueCustomerAction.afterEditCustomerDetail(newCustomerDetail);
+        this.props.updateClueProperty(newCustomerDetail);
     };
 
     //今天之后的日期不可以选
@@ -400,7 +428,7 @@ class ClueDetailOverview extends React.Component {
 
         }else{
             //修改线索的基本信息
-            this.changeClueItemInfo(saveObj, successFunc, errorFunc);
+            this.changeClueItemInfo(type, saveObj, successFunc, errorFunc);
 
         }
         this.props.updateClueProperty(saveObj); //切换tab时实时更新线索详情
@@ -422,7 +450,7 @@ class ClueDetailOverview extends React.Component {
         });
     };
     //修改线索的相关信息
-    changeClueItemInfo = (saveObj, successFunc, errorFunc) => {
+    changeClueItemInfo = (type, saveObj, successFunc, errorFunc) => {
         var data = handleSubmitClueItemData(_.cloneDeep(saveObj));
         clueCustomerAjax.updateClueItemDetail(data).then((result) => {
             if (result) {
@@ -1004,13 +1032,16 @@ class ClueDetailOverview extends React.Component {
     };
     renderAvailabilityClue = (curClue) => {
         //标记线索无效的权限
-        var avalibility = hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER');
+        var avalibility = avalibilityCluePrivilege();
         //是否有修改线索关联客户的权利
-        var associatedPrivilege = (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
+        var associatedPrivilege = transferClueToCustomerIconPrivilege(curClue);
         if (avalibility){
             let pathname = window.location.pathname;
             //不是运营人员，且（在首页或者线索列表里）
-            var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (pathname === '/home' || pathname === '/clue_customer');
+            var showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (pathname === '/home' || pathname === '/clue_customer'), releaseTip = '';
+            if(showRelease) {
+                releaseTip = releaseClueTip();
+            }
             return <div>
                 {associatedPrivilege ? <Button type="primary"
                     onClick={this.convertToCustomer.bind(this, curClue)}>{Intl.get('common.convert.to.customer', '转为客户')}</Button> : null}
@@ -1022,7 +1053,7 @@ class ClueDetailOverview extends React.Component {
                 {showRelease ? (
                     <Popconfirm
                         placement="topRight" onConfirm={this.handleReleaseClue}
-                        title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                        title={releaseTip}>
                         <Button className='clue-inability-btn' disabled={this.state.isReleasingClue} loading={this.state.isReleasingClue}>{Intl.get('clue.release', '释放线索')}</Button>
                     </Popconfirm>
                 ) : null}
@@ -1043,8 +1074,8 @@ class ClueDetailOverview extends React.Component {
     };
     //判断是否显示按钮控制tab高度
     hasButtonTabHeight = (curClue, associatedCustomer ) => {
-        var avalibility = (hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_MANAGER') || hasPrivilege('CLUECUSTOMER_UPDATE_AVAILABILITY_USER'))
-                            || (hasPrivilege('CRM_MANAGER_CUSTOMER_CLUE_ID') || hasPrivilege('CRM_USER_CUSTOMER_CLUE_ID')) && editCluePrivilege(curClue);
+        var avalibility = (avalibilityCluePrivilege())
+                            || (hasPrivilege(cluePrivilegeConst.LEAD_TRANSFER_MERGE_CUSTOMER)) && editCluePrivilege(curClue);
         var associatedClue = (curClue.clue_type !== 'clue_pool')
                                 && ((curClue.status === SELECT_TYPE.WILL_DISTRIBUTE || curClue.status === SELECT_TYPE.HAS_TRACE || curClue.status === SELECT_TYPE.WILL_TRACE) && !associatedCustomer);
         let height = this.state.divHeight;
@@ -1120,7 +1151,7 @@ class ClueDetailOverview extends React.Component {
     renderTraceContent = () => {
         var curClue = this.state.curClue;
         //是否有添加跟进记录的权限
-        var hasPrivilegeAddEditTrace = hasPrivilege('CLUECUSTOMER_ADD_TRACE') && editCluePrivilege(curClue);
+        var hasPrivilegeAddEditTrace = hasPrivilege(commonSalesHomePrivilegeConst.CURTAO_CRM_TRACE_ADD) && editCluePrivilege(curClue);
         let noTraceData = _.isEmpty(_.get(curClue, 'customer_traces'));
         return (
             <DetailCard
@@ -1168,7 +1199,10 @@ class ClueDetailOverview extends React.Component {
     renderClueBasicDetailInfo = () => {
         var curClue = this.state.curClue;
         //是否有权限修改线索详情
-        var hasPrivilegeEdit = hasPrivilege('CLUECUSTOMER_UPDATE_MANAGER') && editCluePrivilege(curClue);
+        var hasPrivilegeEdit = editClueItemIconPrivilege(curClue);
+        let industryOptions = this.state.industryList.map((item, i) => {
+            return (<Option key={i} value={item}>{item}</Option>);
+        });
         return (
             <div className="clue-info-wrap clue-detail-block">
                 <div className="clue-basic-info">
@@ -1268,17 +1302,67 @@ class ClueDetailOverview extends React.Component {
                             />
                         </div>
                     </div>
-                    {curClue.province || curClue.city ?
-                        <div className="clue-info-item">
-                            <div className="clue-info-label">
-                                {Intl.get('crm.96', '地域')}
-                            </div>
-                            <div className="clue-info-detail area-item">
-                                {curClue.province}
-                                {curClue.city}
-                            </div>
+                    <div className="basic-info-industry clue-info-item">
+                        <span className="clue-info-label">
+                            {Intl.get('common.industry', '行业')}:
+                        </span>
+                        <div className="clue-info-detail">
+                            <BasicEditSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                id={curClue.id}
+                                displayText={curClue.industry}
+                                value={curClue.industry}
+                                field="industry"
+                                selectOptions={industryOptions}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                placeholder={Intl.get('crm.22', '请选择行业')}
+                                editBtnTip={Intl.get('crm.163', '设置行业')}
+                                saveEditSelect={this.saveEditBasicInfo.bind(this, 'industry')}
+                                noDataTip={Intl.get('crm.basic.no.industry', '暂无行业')}
+                                addDataTip={Intl.get('crm.basic.add.industry', '添加行业')}
+                            />
                         </div>
-                        : null}
+                    </div>
+                    <div className="clue-info-item area-content">
+                        <div className="clue-info-label">
+                            {Intl.get('crm.96', '地域')}
+                        </div>
+                        <div className="clue-info-detail area-item">
+                            <LocationSelectField
+                                width={EDIT_FEILD_WIDTH}
+                                id={curClue.id}
+                                province={curClue.province}
+                                city={curClue.city}
+                                county={curClue.county}
+                                province_code={curClue.province_code}
+                                city_code={curClue.city_code}
+                                county_code={curClue.county_code}
+                                saveEditLocation={this.saveEditBasicInfo.bind(this, 'province')}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                noDataTip={Intl.get('crm.basic.no.location', '暂无地域信息')}
+                                addDataTip={Intl.get('crm.basic.add.location', '添加地域信息')}
+                            />
+                        </div>
+                    </div>
+                    <div className="basic-info-detail-address clue-info-item">
+                        <span className="clue-info-label">
+                            {Intl.get('common.full.address', '详细地址')}
+                        </span>
+                        <div className="clue-info-detail">
+                            <BasicEditInputField
+                                width={EDIT_FEILD_WIDTH}
+                                id={curClue.id}
+                                value={curClue.address}
+                                field="address"
+                                type="input"
+                                placeholder={Intl.get('crm.detail.address.placeholder', '请输入详细地址')}
+                                hasEditPrivilege={hasPrivilegeEdit}
+                                saveEditInput={this.saveEditBasicInfo.bind(this, 'address')}
+                                noDataTip={Intl.get('crm.basic.no.address', '暂无详细地址')}
+                                addDataTip={Intl.get('crm.basic.add.address', '添加详细地址')}
+                            />
+                        </div>
+                    </div>
                     <div className="clue-info-item">
                         <div className="clue-info-label">
                             {Intl.get('crm.sales.clue.access.channel', '接入渠道')}
@@ -1437,6 +1521,7 @@ class ClueDetailOverview extends React.Component {
                             })}
                         </div>
                     </div>
+                    <div className='clear-float'></div>
                 </div>
                 <div className="add-person-info">
                     <div className="add-clue-info">
@@ -1493,9 +1578,9 @@ class ClueDetailOverview extends React.Component {
         //后端会返回user_id或者member_id，哪个返回用哪个
         let isMyClientsOrClues = _.isEqual(_.get(listItem, 'user_id'), user_id) || _.isEqual(_.get(listItem, 'member_id'), user_id);
         //展示相似客户，相似线索的时候判断
-        //如果是普通销售，判断当前客户或线索是否属于此销售，如果是销售领导，判断查看是否是他团队或下级团队下的
+        //如果是普通销售或者个人版本，判断当前客户或线索是否属于此销售，如果是销售领导，判断查看是否是他团队或下级团队下的
         //管理员和运营人员可以看
-        let hasPrivilege = (userData.getUserData().isCommonSales && isMyClientsOrClues)
+        let hasPrivilege = (isCommonSalesOrPersonnalVersion() && isMyClientsOrClues)
                             || this.isMyTeamOrChildUser(_.get(listItem, 'sales_team_id'))
                             || userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN) || userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON);
         //如果在线索池中，相似客户相似线索都不能点击查看，只能展示
@@ -1645,8 +1730,7 @@ class ClueDetailOverview extends React.Component {
 
     // 渲染提取线索按钮
     renderExtractClueBtn = (curClue) => {
-        const user = userData.getUserData();
-        const hasAssignedPrivilege = !user.isCommonSales;
+        const hasAssignedPrivilege = !isCommonSalesOrPersonnalVersion();
         const assigenCls = 'detail-extract-clue-btn';
         return (
             <div className="clue-info-item">
@@ -1662,7 +1746,7 @@ class ClueDetailOverview extends React.Component {
     // 渲染关联线索
     renderAssociatedClue = (curClue, associatedCustomer ) => {
         if (curClue.clue_type === 'clue_pool') { // 线索池中详情，处理线索
-            if ( hasPrivilege('LEAD_EXTRACT_ALL') || hasPrivilege('LEAD_EXTRACT_SELF')) {
+            if (freedCluePrivilege()) {
                 return this.renderExtractClueBtn(curClue);
             } else {
                 return null;

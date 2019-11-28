@@ -52,7 +52,9 @@ import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
 const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
 import CustomerLabel from 'CMP_DIR/customer_label';
-import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
+import crmPrivilegeConst from './privilege-const';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
     tried: '试用阶段',
@@ -1191,25 +1193,26 @@ class Crm extends React.Component {
     //渲染响应式布局下的选项
     topBarDropList = (isMinWeb) => {
         return (<Menu onClick={this.handleMenuSelectClick.bind(this)}>
-            {isMinWeb && hasPrivilege('CUSTOMER_ADD') ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD) ?
                 <Menu.Item key="add">
                     {Intl.get('crm.sales.manual_add.clue','手动添加')}
                 </Menu.Item>
                 : null}
-            {isMinWeb && hasPrivilege('CUSTOMER_ADD') ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD) ?
                 <Menu.Item key="import" >
                     {Intl.get('crm.2', '导入客户')}
                 </Menu.Item>
                 : null}
-            {hasPrivilege('CRM_REPEAT') ?
+            {hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL) ?
                 <Menu.Item key="repeat">
                     {Intl.get('crm.1', '客户查重')}
                 </Menu.Item> : null}
-            <Menu.Item key="client_pool">
-                {Intl.get('crm.customer.pool', '客户池')}
-            </Menu.Item>
-            {hasPrivilege('CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD')
-            || hasPrivilege('CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD') ?
+            {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                <Menu.Item key="client_pool">
+                    {Intl.get('crm.customer.pool', '客户池')}
+                </Menu.Item>
+            )}
+            {hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL) ?
                 <Menu.Item key="bin">
                     {Intl.get('crm.customer.recycle.bin', '回收站')}
                 </Menu.Item> : null}
@@ -1240,36 +1243,36 @@ class Crm extends React.Component {
     //渲染响应式布局下的批量操作的选项
     batchTopBarDropList = (isMinWeb) => {
         return (<Menu onClick={this.handleBatchMenuSelectClick.bind(this)}>
-            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
                 <Menu.Item key="changeTag">
                     {Intl.get('crm.19', '变更标签')}
                 </Menu.Item> : null
             }
-            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
                 <Menu.Item key="changeIndustry">
                     {Intl.get('crm.20', '变更行业')}
                 </Menu.Item> : null
             }
-            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
                 <Menu.Item key="changeTerritory">
                     {Intl.get('crm.21', '变更地域')}
                 </Menu.Item> : null
             }
-            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') && !this.isCommonSales() ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) && !isCommonSalesOrPersonnalVersion() ?
                 <Menu.Item key="changeSales">
                     {Intl.get('crm.103', '变更负责人')}
                 </Menu.Item> : null
             }
-            {isMinWeb && hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
                 <Menu.Item key="changeAdministrativeLevel">
                     {Intl.get('crm.administrative.level.change', '变更行政级别')}
                 </Menu.Item> : null
             }
-            {hasPrivilege('CUSTOMER_BATCH_OPERATE') ?
+            {hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
                 <Menu.Item key="add">
                     {Intl.get('crm.214', '添加联系计划')}
                 </Menu.Item> : null}
-            {hasPrivilege('CUSTOMER_MERGE_CUSTOMER') ?
+            {hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) ?
                 <Menu.Item key="merge">
                     {Intl.get('crm.0', '合并客户')}
                 </Menu.Item> : null}
@@ -1290,10 +1293,14 @@ class Crm extends React.Component {
             'hide-change-schedule': isWebMiddle
         });
         if (this.state.selectedCustomer.length) {
+            var releaseTip = '';
+            if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+                releaseTip = crmUtil.releaseCustomerTip();
+            }
             //选择客户后，展示合并和批量变更、释放的按钮
             return (<div className={batchChangeCls}>
                 {/*不渲染CrmBatchChange无法用ref获取到里面的方法，在这里用css处理隐藏批量操作*/}
-                <PrivilegeChecker check="CUSTOMER_BATCH_OPERATE" className='batch-btn-wrapper'>
+                <PrivilegeChecker check={() => crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL, crmPrivilegeConst.CUSTOMER_UPDATE])} className='batch-btn-wrapper'>
                     <CrmBatchChange ref="batchChange"
                         isWebMini={isWebMin}
                         isWebMiddle={isWebMiddle}
@@ -1309,7 +1316,7 @@ class Crm extends React.Component {
                 {!(isWebMiddle || isWebMin) ?
                     <React.Fragment>
                         <PrivilegeChecker
-                            check="CUSTOMER_MERGE_CUSTOMER"
+                            check={() => crmUtil.checkPrivilege([crmPrivilegeConst.CUSTOMER_UPDATE, crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL])}
                             className='crm-merge-btn btn-item'
                             onClick={this.showMergePanel}
                         >
@@ -1321,7 +1328,7 @@ class Crm extends React.Component {
                         {/*除了运营不能释放客户，管理员、销售都可以释放*/}
                         {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}
-                                title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>
+                                title={releaseTip}>
                                 <Button className='btn-item handle-btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
                                     <span className="iconfont icon-release-client"></span>
                                     {Intl.get('crm.customer.release', '释放')}
@@ -1339,7 +1346,7 @@ class Crm extends React.Component {
             return (<div className="top-btn-wrapper">
                 {
                     !isWebMin ? <PrivilegeChecker
-                        check="CUSTOMER_ADD"
+                        check={crmPrivilegeConst.CUSTOMER_ADD}
                         className={btnClass}
                         title={Intl.get('crm.3', '添加客户')}>
                         <Dropdown overlay={this.dropList()} placement="bottomCenter"
@@ -1357,39 +1364,42 @@ class Crm extends React.Component {
                 {!(isWebMiddle || isWebMin) ? (
                     <React.Fragment>
                         <PrivilegeChecker
-                            check="CRM_REPEAT"
+                            check={() => crmUtil.checkPrivilege([crmPrivilegeConst.CRM_LIST_CUSTOMERS, crmPrivilegeConst.CUSTOMER_ALL])}
                             className={btnClass + ' customer-repeat-btn btn-m-r-2'}
                             title={Intl.get('crm.1', '客户查重')}
                             onClick={this.props.showRepeatCustomer}
                         >
                             <Button><i className="iconfont icon-search-duplicates" />{Intl.get('crm.1', '客户查重')}</Button>
                         </PrivilegeChecker>
-                        <Popover content={Intl.get('crm.customer.pool.explain', '存放释放的客户')}
-                            trigger="hover"
-                            placement="bottom"
-                            overlayClassName="explain-pop">
-                            <Button className='btn-item customer-pool-btn'
-                                onClick={this.props.showCustomerPool}>
-                                <i className="iconfont icon-client-pool" />
-                                {Intl.get('crm.customer.pool', '客户池')}
-                            </Button>
-                        </Popover>
-                        {hasPrivilege('CRM_MANAGER_GET_CUSTOMER_BAK_OPERATOR_RECORD')
-                        || hasPrivilege('CRM_USER_GET_CUSTOMER_BAK_OPERATOR_RECORD') ? (
-                                <div className={btnClass + ' customer-recycle-btn btn-m-r-2'}
-                                    title={Intl.get('crm.customer.recycle.bin', '回收站')}
-                                    onClick={this.props.showCustomerRecycleBin}
-                                >
-                                    <Popover content={Intl.get('crm.customer.recycle.bin.explain', '存放删除或合并的客户')}
-                                        trigger="hover"
-                                        placement="bottomRight"
-                                        overlayClassName="explain-pop">
-                                        <Button>
-                                            <i className="iconfont icon-delete handle-btn-item"/>
-                                            {Intl.get('crm.customer.recycle.bin', '回收站')}
-                                        </Button>
-                                    </Popover>
-                                </div>) : null
+                        {
+                            userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
+                                <Popover content={Intl.get('crm.customer.pool.explain', '存放释放的客户')}
+                                    trigger="hover"
+                                    placement="bottom"
+                                    overlayClassName="explain-pop">
+                                    <Button className='btn-item customer-pool-btn'
+                                        onClick={this.props.showCustomerPool}>
+                                        <i className="iconfont icon-client-pool" />
+                                        {Intl.get('crm.customer.pool', '客户池')}
+                                    </Button>
+                                </Popover>
+                            )
+                        }
+                        {crmUtil.checkPrivilege([crmPrivilegeConst.CRM_USER_CUSTOMER_BAK_OPERATOR_RECORD, crmPrivilegeConst.CRM_MANAGER_CUSTOMER_BAK_OPERATOR_RECORD]) ? (
+                            <div className={btnClass + ' customer-recycle-btn btn-m-r-2'}
+                                title={Intl.get('crm.customer.recycle.bin', '回收站')}
+                                onClick={this.props.showCustomerRecycleBin}
+                            >
+                                <Popover content={Intl.get('crm.customer.recycle.bin.explain', '存放删除或合并的客户')}
+                                    trigger="hover"
+                                    placement="bottomRight"
+                                    overlayClassName="explain-pop">
+                                    <Button>
+                                        <i className="iconfont icon-delete handle-btn-item"/>
+                                        {Intl.get('crm.customer.recycle.bin', '回收站')}
+                                    </Button>
+                                </Popover>
+                            </div>) : null
                         }
                     </React.Fragment>
                 ) : (
@@ -1666,7 +1676,7 @@ class Crm extends React.Component {
         }
     };
     renderAddDataContent = () => {
-        if (hasPrivilege('CUSTOMER_ADD')) {
+        if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD)) {
             return (
                 <div className="btn-containers">
                     <div>
@@ -1682,7 +1692,7 @@ class Crm extends React.Component {
         }
     };
     renderImportDataContent = () => {
-        if (hasPrivilege('CUSTOMER_ADD')) {
+        if (hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD)) {
             return (
                 <div className="btn-containers">
                     <div>
@@ -1963,7 +1973,7 @@ class Crm extends React.Component {
     render() {
         var _this = this;
         //只有有批量变更和合并客户的权限时，才展示选择框的处理
-        let showSelectionFlag = hasPrivilege('CUSTOMER_MERGE_CUSTOMER') || hasPrivilege('CUSTOMER_BATCH_OPERATE');
+        let showSelectionFlag = hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL);
         let rowSelection = showSelectionFlag ? {
             type: 'checkbox',
             selectedRowKeys: _.map(this.state.selectedCustomer, 'id'),
@@ -2108,12 +2118,15 @@ class Crm extends React.Component {
                     //是否处于导入状态
                     const isPreview = this.state.crmTemplateRightPanelShow;
                     //是否在客户列表上可以删除
-                    const canDeleteOnCrmList = !isPreview && hasPrivilege('CRM_DELETE_CUSTOMER');
+                    const canDeleteOnCrmList = !isPreview && hasPrivilege(crmPrivilegeConst.CRM_DELETE_CUSTOMER);
                     //是否在导入预览列表上可以删除
                     const canDeleteOnPreviewList = isPreview && isRepeat;
                     //是否显示删除按钮
                     const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
-
+                    var releaseTip = '';
+                    if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+                        releaseTip = crmUtil.releaseCustomerTip();
+                    }
                     return (
                         <span>
                             <span className="cus-op" data-tracename="删除客户">
@@ -2136,7 +2149,7 @@ class Crm extends React.Component {
                             </span>
                             {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
                                 <Popconfirm placement="topRight" onConfirm={this.releaseCustomer.bind(this, record.id)}
-                                    title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                    title={releaseTip}>
                                     <a className='release-customer'
                                         title={Intl.get('crm.customer.release', '释放')}>
                                         <i className="iconfont icon-release handle-btn-item"/>
@@ -2152,8 +2165,13 @@ class Crm extends React.Component {
         if (isCurtao()) {
             columns = _.filter(columns, column => column.title !== Intl.get('user.apply.detail.order', '订单'));
         }
-        if(!hasPrivilege('CRM_CUSTOMER_SCORE_RECORD')){
+        //没有获取用户列表的权限，或者不是销售或者管理员时不展示分数
+        if(!hasPrivilege(crmPrivilegeConst.APP_USER_QUERY) || !(hasPrivilege(crmPrivilegeConst.CRM_LIST_CUSTOMERS) || hasPrivilege(crmPrivilegeConst.CUSTOMER_ALL))){
             columns = _.filter(columns, column => column.title !== Intl.get('user.login.score', '分数'));
+        }
+        //个人试用不展示负责人
+        if(checkVersionAndType().isPersonalTrial) {
+            columns = _.filter(columns, column => column.title !== Intl.get('crm.6', '负责人'));
         }
 
         //运营人员不展示操作列，管理员展示删除、释放，销售展示释放
@@ -2280,7 +2298,7 @@ class Crm extends React.Component {
                             /> : <NoDataAddAndImportIntro
                                 renderAddDataContent={this.renderAddDataContent}
                                 renderImportDataContent={this.renderImportDataContent}
-                                showAddBtn={this.hasNoFilterCondition() && hasPrivilege('CUSTOMER_ADD')}
+                                showAddBtn={this.hasNoFilterCondition() && hasPrivilege(crmPrivilegeConst.CUSTOMER_ADD)}
                                 noDataTip={this.hasNoFilterCondition() ? Intl.get('contract.60', '暂无客户') : this.renderNotFoundCustomer()}
                             />}
                         </div>
