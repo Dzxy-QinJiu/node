@@ -3035,6 +3035,9 @@ var en_US = {
     'analysis.business.visit.frequency.statistics': 'Analysis business visit frequency statistics', //出差拜访频率统计
     'analysis.sales.visiting.customer.frequency': 'Analysis statistics on the frequency of {sales} visiting customers', //{sales}拜访客户频率统计
     'analysis.visits.customer.frequency': 'Analysis statistics on frequency of visits to {customer}', //拜访{customer}的频率统计
+    'analysis.contact.customer.statistics': 'Contact clue statistics',//联系客户统计
+    'analysis.contact.clue.statistics': 'Contact clue statistics',//联系线索统计
+    'analysis.number.of.contact.clue': 'Number of contact clue',//联系线索数
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
