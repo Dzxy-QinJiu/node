@@ -244,8 +244,11 @@ ClueCustomerStore.prototype.getClueFulltextSelfHandle = function(clueData) {
     this.handleClueData(clueData);
 },
 ClueCustomerStore.prototype.updateRecommendClueLists = function(extractClues) {
-    this.recommendClueLists = _.filter(this.recommendClueLists, item => item.id !== extractClues);
-
+    //需要给已经提取成功的加上一个类名，界面相应的加上对应的不能处理的样式
+    var targetObj = _.find(this.recommendClueLists, item => item.id === extractClues);
+    if(targetObj){
+        targetObj.hasExtracted = true;
+    }
 };    
 //全文查询线索
 ClueCustomerStore.prototype.getClueFulltext = function(clueData) {
