@@ -1166,12 +1166,13 @@ var zh_CN = {
     'notification.login.failed': '登录失败',
     'notification.system.handled.success': '处理成功',
     'notification.system.handled.error': '处理失败',
-    'notification.system.login.count': '{count}次，最后一次',
+    'notification.system.login.count': '最后一次',
     'notification.system.tip.count': '您有{systemTipCount}条系统消息',
     'notification.pop.up.notify': '弹窗通知',
     'notification.pop.up.notify.title': '{status}弹窗通知',
     'notification.call.up.failed': '拨打电话失败',
     'notification.extract.clue.failed': '提取线索失败',
+    'notification.system.count': '{count}次',
 
     //通知end
     //销售阶段start

@@ -411,6 +411,17 @@ class SystemNotification extends React.Component {
                 <div className="system-notice-item" key={index}>
                     <a onClick={this.openUserDetail.bind(this, item.user_id, index)}>{item.user_name}</a>
                     {
+                        isPullClueFailed ? (
+                            <span>
+                                <span>{Intl.get('clue.extract.failed', '提取失败')}</span>
+                                <span className="login-count">
+                                    {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}，
+                                </span>
+                            </span>
+
+                        ) : null
+                    }
+                    {
                         isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''
                     }
                     {
@@ -435,11 +446,14 @@ class SystemNotification extends React.Component {
                                 ，{TimeUtil.transTimeFormat(item.create_time)}
                             </span>
                         ) : (<span>
-                            <ReactIntl.FormattedMessage
-                                id="notification.system.login.count"
-                                defaultMessage={'{count}次,最后一次'}
-                                values={{count: <span className="login-count">{item.login_count}</span>}}
-                            />
+                            {
+                                isPullClueFailed ? null : (
+                                    <span className="login-count">
+                                        {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}
+                                    </span>
+                                )
+                            }
+                            <span>，{Intl.get('notification.system.login.count', '最后一次')}</span>
                             <span className="login-time">{TimeUtil.transTimeFormat(item.create_time)}</span>
                         </span>)}
                     </span>
