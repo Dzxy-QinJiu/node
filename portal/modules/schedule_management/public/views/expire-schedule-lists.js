@@ -25,6 +25,7 @@ const DELAY_RANGE = {
 };
 const LAYOUT = {PADDING_TOP: 40};
 import PhoneCallout from 'CMP_DIR/phone-callout';
+import {getScheduleCallTypeId} from 'PUB_DIR/sources/utils/common-method-util';
 class ExpireScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -120,6 +121,7 @@ class ExpireScheduleLists extends React.Component {
                         'icon-schedule-other': item.type === 'other'
                     });
                     var phoneNum = _.get(item, 'contacts[0].phone[0]','');
+                    let scheduleTypeId = getScheduleCallTypeId(item);
                     return (
                         <div className="list-item" data-tracename="超期日程列表">
                             <h4 className="item-title">
@@ -141,6 +143,8 @@ class ExpireScheduleLists extends React.Component {
                                 <p className="item-customer-content">
                                     <PhoneCallout
                                         phoneNumber={phoneNum}
+                                        id={scheduleTypeId.id}
+                                        type={scheduleTypeId.type}
                                     />
                                     { Intl.get('schedule.expired.call.time.at','于') + moment(item.create_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT) + Intl.get('schedule.expired.call.in.phone.num','拨打过您的电话')}
                                 </p>

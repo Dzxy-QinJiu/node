@@ -653,6 +653,8 @@ class ClueDetailOverview extends React.Component {
             showPhoneNum={addHyphenToPhoneNumber(item)}
             showPhoneIcon={true}
             hidePhoneIcon={!hasPrivilege}
+            type='lead'
+            id={_.get(curClue, 'id', '')}
         />;
     };
     renderItemSelfSettingForm = (key, index, that) => {

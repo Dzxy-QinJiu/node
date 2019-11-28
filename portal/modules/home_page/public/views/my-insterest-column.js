@@ -346,6 +346,8 @@ class MyInsterestColumn extends React.Component {
                                                 contactName={contact.name}
                                                 showPhoneIcon={true}
                                                 // onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                                type='customer'
+                                                id={_.get(item, 'customer_id','')}
                                             />
                                         </div>
                                     );

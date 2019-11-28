@@ -35,6 +35,8 @@ class PhoneCallout extends React.Component {
                 handleCallOutResult({
                     contactName: contactName,//联系人姓名
                     phoneNumber: phoneNumber,//拨打的电话
+                    id: this.props.id,
+                    type: this.props.type
                 },() => {
                     this.setState({
                         ableClickPhoneIcon: true
@@ -88,7 +90,7 @@ class PhoneCallout extends React.Component {
         });
         return (
             <Popover placement="right" content={contentTip} trigger="click" visible={visible}
-                onVisibleChange={this.handleVisibleChange.bind(this,this.props.phoneNumber,contactName)}>
+                onVisibleChange={this.handleVisibleChange.bind(this, this.props.phoneNumber, contactName)}>
                 <i className={iconCls}
                     title={titleTip}></i>
             </Popover>
@@ -104,6 +106,8 @@ class PhoneCallout extends React.Component {
     }
 }
 PhoneCallout.defaultProps = {
+    id: '',//线索的id或客户的id
+    type: '',//'customer'或‘lead'
     showPhoneNum: '',//（非必传）当展示和拨打时用的不是同一个时，展示的用此属性值展示（例如：展示：0531-88457451，拨打：053188457451）
     phoneNumber: '',//（必传）拨打和展示的相同时，用来拨号和展示，不同时，用来拨号
     contactName: '',//（非必传）拨打电话时，用来在弹屏上展示的联系人姓名
@@ -114,6 +118,8 @@ PhoneCallout.defaultProps = {
     onCallSuccess: function(){},//打电话成功的处理（首页）
 };
 PhoneCallout.propTypes = {
+    id: PropTypes.string,
+    type: PropTypes.string,
     showPhoneNum: PropTypes.string,
     phoneNumber: PropTypes.string,
     contactName: PropTypes.string,

@@ -8,6 +8,7 @@ import SalesHomePageAction from '../action/sales-home-actions';
 import {Button, message} from 'antd';
 import userData from 'PUB_DIR/sources/user-data';
 import ContactItem from './contact-item';
+import {getScheduleCallTypeId} from 'PUB_DIR/sources/utils/common-method-util';
 var user_id = userData.getUserData().user_id;
 class ScheduleItem extends React.Component {
     constructor(props) {
@@ -63,6 +64,7 @@ class ScheduleItem extends React.Component {
         //联系人的相关信息
         var contacts = schedule.contacts ? schedule.contacts : [];
         var contactTime = moment(schedule.start_time).format(oplateConsts.DATE_TIME_WITHOUT_SECOND_FORMAT) + '-' + moment(schedule.end_time).format(oplateConsts.TIME_FORMAT_WITHOUT_SECOND_FORMAT);
+        let scheduleTypeId = getScheduleCallTypeId(schedule);
         return (
             <div className="schedule-item-container customer-detail-item">
                 {this.props.isShowTopTitle ? <div className="schedule-top-panel">
@@ -89,6 +91,8 @@ class ScheduleItem extends React.Component {
                         {schedule.content}
                     </div>
                     {_.isArray(contacts) && contacts.length ? <ContactItem
+                        id={scheduleTypeId.id}
+                        type={scheduleTypeId.type}
                         contacts={contacts}
                         customerData={schedule}
                         itemType="schedule"

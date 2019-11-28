@@ -40,8 +40,8 @@ class CustomerNoticeMessage extends React.Component {
     renderTagsContent(customerMessage) {
         return (
             <span>
-                    <CustomerLabel label={customerMessage.qualify_label} />
-                    <CustomerLabel label={customerMessage.customer_label}  />
+                <CustomerLabel label={customerMessage.qualify_label} />
+                <CustomerLabel label={customerMessage.customer_label} />
                 }
             </span>
         );
@@ -139,7 +139,7 @@ class CustomerNoticeMessage extends React.Component {
                     </div>}
                 </div>
                 {_.isArray(customerMessage.contacts) && customerMessage.contacts.length ?
-                    <ContactItem contacts={customerMessage.contacts} /> : null}
+                    <ContactItem contacts={customerMessage.contacts} type='customer' id={customer_id} /> : null}
             </div>
         );
     }
