@@ -1,9 +1,14 @@
 /**
  * 联系客户或线索统计
+ *
+ * 根据传入的类型（type）决定显示联系客户统计还是联系线索统计
+ * type为customer时显示联系客户统计，type为lead时显示联系线索统计
  */
 
 export function getContactChart(type) {
+    //图表标题
     let title = '';
+    //联系数列标题
     let contactNumColumnTitle = '';
 
     if (type === 'customer') {
