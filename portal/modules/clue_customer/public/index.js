@@ -1748,13 +1748,8 @@ class ClueCustomer extends React.Component {
         //除了运营不能释放线索，管理员、销售，都可以释放
         //待跟进，已跟进，无效线索才可以被释放
         let showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue);
-<<<<<<< portal/modules/clue_customer/public/index.js
         if(showRelease || deleteCluePrivilege()) {
-=======
-        let showDelete = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
-        if(showRelease || showDelete) {
             let releaseTip = releaseClueTip();
->>>>>>> portal/modules/clue_customer/public/index.js
             columns.push({
                 dataIndex: 'clue_action',
                 className: 'action-td-clue',
