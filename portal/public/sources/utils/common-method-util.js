@@ -40,6 +40,8 @@ var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import ShearContent from 'CMP_DIR/shear-content';
+
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -1260,4 +1262,21 @@ exports.getOrganizationCallFee = function(cb) {
         }
     });
     return Deferred.promise();
+};
+
+// 变更记录
+exports.recordChangeTimeLineItem = (item) => {
+    let operateTime = _.get(item, 'record_time'); // 具体变的时间
+    return (
+        <dl>
+            <dd>
+                <p>
+                    <ShearContent>
+                        {_.get(item, 'content')}
+                    </ShearContent>
+                </p>
+            </dd>
+            <dt>{moment(operateTime).format(oplateConsts.TIME_FORMAT)}</dt>
+        </dl>
+    );
 };
