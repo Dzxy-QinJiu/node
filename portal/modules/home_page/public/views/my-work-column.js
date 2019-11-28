@@ -794,7 +794,7 @@ class MyWorkColumn extends React.Component {
                 remark = this.getApplyRemark(item, tag);
                 break;
             case WORK_DETAIL_TAGS.LEAD://待处理线索
-                tagDescr = Intl.get('crm.sales.clue', '线索');
+                tagDescr = Intl.get('home.page.new.clue', '新线索');
                 //线索描述
                 remark = _.get(item, `[${tag}].source`, '');
                 break;
@@ -819,7 +819,7 @@ class MyWorkColumn extends React.Component {
                 remark = this.getLastTrace(item);
                 break;
             case WORK_DETAIL_TAGS.DISTRIBUTION://新分配未联系
-                tagDescr = Intl.get('home.page.distribute.new', '新分配');
+                tagDescr = Intl.get('home.page.new.customer', '新客户');
                 break;
             case WORK_DETAIL_TAGS.WILLEXPIRE://即将到期
                 tagDescr = Intl.get('home.page.will.expire.customer', '即将到期');
@@ -866,7 +866,11 @@ class MyWorkColumn extends React.Component {
         let tip = Intl.get('home.page.my.work.visit.tips', '{month}月{day}日{time}拜访客户', {month: date[1], day: date[2],time: timePeriod});
         let city = _.get(customerVisit, 'city') ? `/${customerVisit.city}` : '';
         let county = _.get(customerVisit, 'county') ? `/${customerVisit.county}` : '';
-        return `${tip}, ${Intl.get('common.address', '地址')}: ${customerVisit.province}${city}${county} ${customerVisit.address}`;
+        let address = '';
+        if(customerVisit.province || city || county || customerVisit.address) {
+            address = `, ${Intl.get('common.address', '地址')}: ${customerVisit.province}${city}${county} ${customerVisit.address}`;
+        }
+        return `${tip}${address}`;
     }
 
     renderWorkCard(item, index) {
