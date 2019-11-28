@@ -301,6 +301,7 @@ function listenSystemNotice(notice) {
         //申请消息列表弹出，有新数据，是否刷新数据的提示
         notificationEmitter.emit(notificationEmitter.SYSTEM_NOTICE_UPDATED, notice);
         let filterType = SYSTEM_NOTICE_TYPE_MAP;
+        // 判断是否是客套组织，是客套的话，才会有拨打电话失败和提取线索失败的
         if (isKetaoOrganizaion()) {
             filterType = KETAO_SYSTEM_NOTICE_TYPE_MAP;
         }
@@ -310,6 +311,11 @@ function listenSystemNotice(notice) {
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
         //登录失败
         let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
+        // 是否事拨打电话失败
+        let isCallUpFailed = notice.type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
+        // 是否事提取线索失败
+        let isPullClueFailed = notice.type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
+
         //异地登录
         if (isOffsetLogin) {
             //在 xxx (地名)
@@ -319,7 +325,8 @@ function listenSystemNotice(notice) {
             //用账号xxx
             tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
         }
-        if (notice.app_name) {
+        // 客套组织不显示，登录的应用名称
+        if (!isKetaoOrganizaion() && notice.app_name) {
             //登录了 xxx (应用)
             tipContent += (isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name;
         }
@@ -327,18 +334,14 @@ function listenSystemNotice(notice) {
             //密码或验证码错误等的详细错误信息
             tipContent += ' , ' + _.get(notice, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
         }
-        // 判断是否是客套组织，是客套的话，才会有拨打电话失败和提取线索失败的
-        if (isKetaoOrganizaion()) {
-            // 拨打电话失败
-            let isCallUpFailed = notice.type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
-            if (isCallUpFailed) {
-                tipContent += Intl.get('notification.call.up.failed', '拨打电话失败') + ' , ' + _.get(notice, 'content.operate_detail');
-            }
-            // 提取线索失败
-            let isPullClueFailed = notice.type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
-            if (isPullClueFailed) {
-                tipContent += Intl.get('notification.extract.clue.failed', '提取线索失败') + ' , ' + _.get(notice, 'content.operate_detail');
-            }
+
+        // 拨打电话失败
+        if (isCallUpFailed) {
+            tipContent += _.get(notice, 'content.operate_detail',Intl.get('notification.call.up.failed', '拨打电话失败'));
+        }
+        // 提取线索失败
+        if (isPullClueFailed) {
+            tipContent += _.get(notice, 'content.operate_detail',Intl.get('notification.extract.clue.failed', '提取线索失败'));
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {
