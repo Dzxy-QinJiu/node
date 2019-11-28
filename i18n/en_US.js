@@ -3033,8 +3033,8 @@ var en_US = {
     'analysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'analysis.sales.monthly.report': 'Sales monthly report',//销售月报
     'analysis.business.visit.frequency.statistics': 'Analysis business visit frequency statistics', //出差拜访频率统计
-    'analysis.statistics.on.the.frequency.of.sales.visiting.customers': 'Analysis statistics on the frequency of {sales} visiting customers', //{sales}拜访客户频率统计
-    'analysis.statistics.on.frequency.of.visits.to.customer': 'Analysis statistics on frequency of visits to {customer}', //拜访{customer}的频率统计
+    'analysis.sales.visiting.customer.frequency': 'Analysis statistics on the frequency of {sales} visiting customers', //{sales}拜访客户频率统计
+    'analysis.visits.customer.frequency': 'Analysis statistics on frequency of visits to {customer}', //拜访{customer}的频率统计
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
