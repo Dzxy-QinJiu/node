@@ -416,6 +416,8 @@ var en_US = {
     'home.page.extracted.clues.on.months': 'The {count} clue has been extracted this month',//本月已提取{count}条线索
     'home.page.extracted.clues.on.today': 'The {count} clues have been extracted today',//今天已提取{count}条线索
     'home.page.performance.at.time': '{time} performance',//{time}业绩
+    'home.page.new.customer': 'New customer',//新客户
+    'home.page.new.clue': 'New clues',//新线索
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/

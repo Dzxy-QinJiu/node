@@ -424,6 +424,8 @@ var zh_CN = {
     'home.page.extracted.clues.on.months': '本月已提取{count}条线索',
     'home.page.extracted.clues.on.today': '今天已提取{count}条线索',
     'home.page.performance.at.time': '{time}业绩',
+    'home.page.new.customer': '新客户',
+    'home.page.new.clue': '新线索',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
