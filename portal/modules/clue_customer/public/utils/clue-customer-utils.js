@@ -100,11 +100,11 @@ export const assignSalesPrivilege = (curClue) => {
 export const freedCluePrivilege = () => {
     return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_ALL) || hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_POOL_SELF);
 };
-//删除线索的权限名字
+//删除线索的权限
 export const deleteCluePrivilege = () => {
     return hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
 };
-//能有删除线索
+//能有展示删除线索按钮的权限
 export const deleteClueIconPrivilege = (clue) => {
     return deleteCluePrivilege() && editCluePrivilege(clue);
 };
