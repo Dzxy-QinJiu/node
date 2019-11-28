@@ -63,7 +63,8 @@ import {
     deleteClueIconPrivilege,
     avalibilityCluePrivilege,
     transferClueToCustomerIconPrivilege,
-    addCluePrivilege
+    addCluePrivilege,
+    releaseClueTip,
 } from './utils/clue-customer-utils';
 var Spinner = require('CMP_DIR/spinner');
 import clueCustomerAjax from './ajax/clue-customer-ajax';
@@ -1522,7 +1523,7 @@ class ClueCustomer extends React.Component {
         //如果选中了待我审批状态，就不展示已转化
         var filterAllotNoTraced = clueFilterStore.getState().filterAllotNoTraced;
         return <span className={clueStatusCls}>
-            {isSalesRole() ? null : <span className={willDistCls}
+            {isCommonSalesOrPersonnalVersion() ? null : <span className={willDistCls}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.WILL_DISTRIBUTE)}
                 title={getCertainTabsTitle(SELECT_TYPE.WILL_DISTRIBUTE)}>{Intl.get('clue.customer.will.distribution', '待分配')}
                 <span ref={dom => {this.$willDistribute = dom;}} className="clue-status-num">{_.get(statics, 'willDistribute', 0)}</span>
@@ -1540,7 +1541,7 @@ class ClueCustomer extends React.Component {
                 <span className="clue-status-num" ref={dom => {this.$hasTrace = dom;}}>{_.get(statics, 'hasTrace', 0)}</span>
                 <span className={hasTraceAddCls}> +1 </span>
             </span>
-            {filterAllotNoTraced || isSalesRole() ? null : <span className={hasTransfer}
+            {filterAllotNoTraced || isCommonSalesOrPersonnalVersion() ? null : <span className={hasTransfer}
                 onClick={this.handleChangeSelectedType.bind(this, SELECT_TYPE.HAS_TRANSFER)}
                 title={getCertainTabsTitle(SELECT_TYPE.HAS_TRANSFER)}>{Intl.get('clue.customer.has.transfer', '已转化')}
                 <span className="clue-status-num" ref={dom => {this.$hasTransfer = dom;}} >{_.get(statics, 'hasTransfer', 0)}</span>
@@ -1747,7 +1748,13 @@ class ClueCustomer extends React.Component {
         //除了运营不能释放线索，管理员、销售，都可以释放
         //待跟进，已跟进，无效线索才可以被释放
         let showRelease = !userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) && (willTrace || hasTrace || invalidClue);
+<<<<<<< portal/modules/clue_customer/public/index.js
         if(showRelease || deleteCluePrivilege()) {
+=======
+        let showDelete = hasPrivilege(cluePrivilegeConst.CURTAO_CRM_LEAD_DELETE);
+        if(showRelease || showDelete) {
+            let releaseTip = releaseClueTip();
+>>>>>>> portal/modules/clue_customer/public/index.js
             columns.push({
                 dataIndex: 'clue_action',
                 className: 'action-td-clue',
@@ -1757,7 +1764,7 @@ class ClueCustomer extends React.Component {
                         <React.Fragment>
                             {showRelease ? <div className="release-clue-btn">
                                 <Popconfirm placement="topRight" onConfirm={this.releaseClue.bind(this, salesClueItem)}
-                                    title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                    title={releaseTip}>
                                     <a className='release-customer'
                                         title={Intl.get('crm.customer.release', '释放')}>
                                         <i className="iconfont icon-release handle-btn-item"/>
@@ -2674,6 +2681,7 @@ class ClueCustomer extends React.Component {
         let assignCls = classNames('pull-right', {
             'responsive-mini-btn': isWebMin
         });
+        let releaseTip = releaseClueTip();
         return (
             <div className="pull-right">
                 {this.renderExportClue()}
@@ -2704,7 +2712,7 @@ class ClueCustomer extends React.Component {
                     {
                         roleRule && batchRule ? (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseClue}
-                                title={Intl.get('clue.customer.release.confirm.tip','释放到线索池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                title={releaseTip}>
                                 <Button data-tracename="点击批量释放线索按钮"
                                     className='btn-item handle-btn-item'
                                     title={Intl.get('clue.customer.release.pool', '释放到线索池')}>

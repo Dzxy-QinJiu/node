@@ -454,8 +454,8 @@ class ClueFilterPanel extends React.Component {
                 value: x
             }))
         }];
-        //非销售角色才有来源
-        if(!isSalesRole()) {
+        //非销售角色或者个人版，企业版才展示来源
+        if(!userData.hasRole(userData.ROLE_CONSTANS.SALES)) {
             advancedData.unshift(
                 {
                     groupName: Intl.get('clue.analysis.source', '来源'),

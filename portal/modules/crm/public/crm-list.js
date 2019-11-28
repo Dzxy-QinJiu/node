@@ -53,6 +53,7 @@ const batchOperate = require('PUB_DIR/sources/push/batch');
 import batchAjax from './ajax/batch-change-ajax';
 import CustomerLabel from 'CMP_DIR/customer_label';
 import {isCurtao, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {isCommonSalesOrPersonnalVersion} from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import crmPrivilegeConst from './privilege-const';
 //从客户分析点击图表跳转过来时的参数和销售阶段名的映射
 const tabSaleStageMap = {
@@ -1257,7 +1258,7 @@ class Crm extends React.Component {
                     {Intl.get('crm.21', '变更地域')}
                 </Menu.Item> : null
             }
-            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) && !this.isCommonSales() ?
+            {isMinWeb && hasPrivilege(crmPrivilegeConst.CUSTOMER_UPDATE) || hasPrivilege(crmPrivilegeConst.CUSTOMER_MANAGER_UPDATE_ALL) && !isCommonSalesOrPersonnalVersion() ?
                 <Menu.Item key="changeSales">
                     {Intl.get('crm.103', '变更负责人')}
                 </Menu.Item> : null
@@ -1292,6 +1293,10 @@ class Crm extends React.Component {
             'hide-change-schedule': isWebMiddle
         });
         if (this.state.selectedCustomer.length) {
+            var releaseTip = '';
+            if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+                releaseTip = crmUtil.releaseCustomerTip();
+            }
             //选择客户后，展示合并和批量变更、释放的按钮
             return (<div className={batchChangeCls}>
                 {/*不渲染CrmBatchChange无法用ref获取到里面的方法，在这里用css处理隐藏批量操作*/}
@@ -1323,7 +1328,7 @@ class Crm extends React.Component {
                         {/*除了运营不能释放客户，管理员、销售都可以释放*/}
                         {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
                             <Popconfirm placement="bottomRight" onConfirm={this.batchReleaseCustomer}
-                                title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人可以查看、提取，您确认释放吗？')}>
+                                title={releaseTip}>
                                 <Button className='btn-item handle-btn-item' title={Intl.get('crm.customer.release.pool', '释放到客户池')}>
                                     <span className="iconfont icon-release-client"></span>
                                     {Intl.get('crm.customer.release', '释放')}
@@ -2116,7 +2121,10 @@ class Crm extends React.Component {
                     const canDeleteOnPreviewList = isPreview && isRepeat;
                     //是否显示删除按钮
                     const isDeleteBtnShow = canDeleteOnCrmList || canDeleteOnPreviewList;
-
+                    var releaseTip = '';
+                    if(!userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON)) {
+                        releaseTip = crmUtil.releaseCustomerTip();
+                    }
                     return (
                         <span>
                             <span className="cus-op" data-tracename="删除客户">
@@ -2139,7 +2147,7 @@ class Crm extends React.Component {
                             </span>
                             {userData.hasRole(userData.ROLE_CONSTANS.OPERATION_PERSON) ? null : (
                                 <Popconfirm placement="topRight" onConfirm={this.releaseCustomer.bind(this, record.id)}
-                                    title={Intl.get('crm.customer.release.confirm.tip', '释放到客户池后，其他人也可以查看、提取，您确定要释放吗？')}>
+                                    title={releaseTip}>
                                     <a className='release-customer'
                                         title={Intl.get('crm.customer.release', '释放')}>
                                         <i className="iconfont icon-release handle-btn-item"/>

@@ -641,20 +641,35 @@ var NavSidebar = createReactClass({
         });
     },
 
-    render: function() {
-        const iconCls = classNames('iconfont ', {
-            'icon-dial-up-keybord': !this.state.ronglianNum,
-            'icon-active-call_record-ico': this.state.ronglianNum,
-        });
-        const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
-            (<i className={iconCls} style={{fontSize: 24}}/>);
+    //生成拨号按钮
+    renderDailCallBlock() {
+        if(this.state.isShowDialUpKeyboard) {
+            const iconCls = classNames('iconfont ', {
+                'icon-dial-up-keybord': !this.state.ronglianNum,
+                'icon-active-call_record-ico': this.state.ronglianNum,
+            });
+            const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
+                (<i className={iconCls} style={{fontSize: 24}}/>);
 
-        const versionAndType = checkVersionAndType();
-        let dialUpKeyBoardContent = null;
-        //个人版，拨号功能不可用，需提示升级为企业版
-        if(this.state.isShowDialUpKeyboard && versionAndType.personal) {
-            dialUpKeyBoardContent = Intl.get('payment.please.upgrade.company.version', '请先升级到基础版以上版本，联系销售：{contact}',{contact: '400-6978-520'});
+            const versionAndType = checkVersionAndType();
+            let dialUpKeyBoardContent = null;
+            //个人版，拨号功能不可用，需提示升级为企业版
+            if(versionAndType.personal) {
+                return this.disableClickBlock('dial-up-keyboard-btn', DialIcon);
+            }
+            return (
+                <DialUpKeyboard
+                    placement="right"
+                    content={dialUpKeyBoardContent}
+                    dialIcon={DialIcon}
+                    inputNumber={this.state.ronglianNum}
+                />
+            );
         }
+        return null;
+    },
+
+    render: function() {
         return (
             <nav className="navbar" onClick={this.closeNotificationPanel}>
                 <div className="container">
@@ -687,16 +702,7 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
-                        {
-                            this.state.isShowDialUpKeyboard ? (
-                                <DialUpKeyboard
-                                    placement="right"
-                                    content={dialUpKeyBoardContent}
-                                    dialIcon={DialIcon}
-                                    inputNumber={this.state.ronglianNum}
-                                />
-                            ) : null
-                        }
+                        {this.renderDailCallBlock()}
                         {isCurtao() ? null : this.getNotificationBlock()}
                         {this.renderBackendConfigBlock()}
                         {this.getUserInfoBlock()}
