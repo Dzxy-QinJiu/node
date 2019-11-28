@@ -513,7 +513,12 @@ class MyWorkColumn extends React.Component {
     }
 
     //添加跟进记录
-    addVisitTrace(item) {
+    addVisitTrace(item, event) {
+        if(event){
+            event.stopPropagation();
+            Trace.traceEvent(event, '点击添加跟进记录按钮');
+        }
+
         //获取客户跟踪列表
         //只获取前三条
         let queryObj = {
@@ -604,7 +609,7 @@ class MyWorkColumn extends React.Component {
                     customer_id: _.get(curRecord, 'customer_visit.id', ''),
                     type: 'visit',
                     remark: trace.value,
-                    apply_id: curRecord.id
+                    apply_id: _.get(curRecord, 'apply.id', '')
                 };
                 CustomerRecordActions.updateCustomerTrace(queryObj, () => {
                     trace.validateStatus = 'success';
@@ -619,7 +624,7 @@ class MyWorkColumn extends React.Component {
                     customer_id: _.get(curRecord, 'customer_visit.id', ''),
                     type: 'visit',
                     remark: trace.value,
-                    apply_id: curRecord.id
+                    apply_id: _.get(curRecord, 'apply.id', '')
                 };
                 CustomerRecordActions.addCustomerTrace(queryObj, () => {
                     trace.validateStatus = 'success';
