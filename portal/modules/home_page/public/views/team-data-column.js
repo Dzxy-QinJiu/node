@@ -393,13 +393,15 @@ class TeamDataColumn extends React.Component {
         let totalData = _.sumBy(performanceData.top, 'performance');
         _.each(_.get(performanceData, 'top', []), (item, index) => {
             if (index <= 2) {
+                let performanceAmount = _.get(performanceData, `top[${index}].performance`);
+                performanceAmount = performanceAmount ? performanceAmount.toFixed(2) : performanceAmount;
                 topPerformance.push(
                     <div key={index} className="performance-data-item">
                         <span className="performance-data-left">
                             <img className="performance-image" src={performance[`image_${item.order}`]}/>
                         </span>
                         <span className="performance-data-left contact-data">
-                            {Intl.get('contract.159', '{num}元', {num: _.get(performanceData, `top[${index}].performance`)})}
+                            {Intl.get('contract.159', '{num}元', {num: performanceAmount})}
                         </span>
                         <span className="performance-data-right">{_.get(performanceData, `top[${index}].name`)}</span>
                     </div>);
@@ -425,6 +427,8 @@ class TeamDataColumn extends React.Component {
         }else {
             time = Intl.get('clue.customer.this.year', '今年');
         }
+        let performanceAmount = _.get(performanceData, 'own.performance');
+        performanceAmount = performanceAmount ? performanceAmount.toFixed(2) : performanceAmount;
         const performanceContent = (
             <div>
                 <div className='my-data-title'>
@@ -443,7 +447,7 @@ class TeamDataColumn extends React.Component {
                     <div>
                         <div className='my-contact-performance my-data-title-data'>
                             <span
-                                className="performance-data-left"> {Intl.get('contract.159', '{num}元', {num: _.get(performanceData, 'own.performance')})}</span>
+                                className="performance-data-left"> {Intl.get('contract.159', '{num}元', {num: performanceAmount})}</span>
                             {isSales ? (
                                 <span
                                     className="performance-data-right">{Intl.get('home.page.performance.num', '第{n}名', {n: _.get(performanceData, 'own.order')})}</span>) : null}
