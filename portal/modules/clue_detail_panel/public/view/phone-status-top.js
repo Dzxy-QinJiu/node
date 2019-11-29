@@ -241,7 +241,7 @@ class phoneStatusTop extends React.Component {
         };
 
         var clueInfoArr = _.get(this,'state.clueInfoArr[0]') ? this.state.clueInfoArr : [];
-        if(_.isEmpty(clueInfoArr) && !this.state.isClueDetailCall && _.get(phonemsgObj,'leads[0]') ){
+        if(_.isEmpty(clueInfoArr) && !this.state.isClueDetailCall && _.get(phonemsgObj,'leads[0]')) {
             clueInfoArr = phonemsgObj.leads;
         }
         const options = clueInfoArr.map((item) => (

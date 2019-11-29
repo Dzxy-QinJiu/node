@@ -90,8 +90,14 @@ class PhonePanel extends React.Component {
     }
 
     getPhoneStatusCustomerIds(phonemsgObj) {
-        if (phonemsgObj && _.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
-            return _.map(phonemsgObj.customers, 'id');
+        if (phonemsgObj) {
+            if(phonemsgObj.customer_id){
+                return [phonemsgObj.customer_id];
+            }else if(_.get(phonemsgObj,'customers[0]')){
+                return _.map(phonemsgObj.customers, 'id');
+            }else{
+                return [];
+            }
         }
         return [];
     }
@@ -182,8 +188,6 @@ class PhonePanel extends React.Component {
                         phoneRecordObj.callid = phonemsgObj.callid;
                         //如果是从客户详情中打的电话，则不需要再获取客户详情
                         if (!this.isCustomerDetailCall(nextProps.paramObj)) {
-                            //根据客户的id获取客户的详情
-                            phoneAlertAction.setInitialCustomerArr();
                             this.getCustomerInfoByCustomerId(phonemsgObj);
                         }
                     }
@@ -296,13 +300,18 @@ class PhonePanel extends React.Component {
     };
     //根据客户的id获取客户详情
     getCustomerInfoByCustomerId(phonemsgObj) {
-        //通过后端传过来的客户id，查询客户详情
-        if (phonemsgObj && _.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
-            _.each(phonemsgObj.customers, (item) => {
-                phoneAlertAction.getCustomerById(item.id);
-            });
+        //优先通过客户id查询客户详情customer_id,如果没有customer_id，那么要通过customers查询
+        if(phonemsgObj){
+            if(phonemsgObj.customer_id){
+                phoneAlertAction.setInitialCustomerArr();
+                phoneAlertAction.getCustomerById(phonemsgObj.customer_id);
+            }else if(_.get(phonemsgObj,'customers[0]')){
+                phoneAlertAction.setInitialCustomerArr();
+                _.each(phonemsgObj.customers, (item) => {
+                    phoneAlertAction.getCustomerById(item.id);
+                });
+            }
         }
-
     }
 
     retryGetCustomer = () => {
@@ -389,7 +398,9 @@ class PhonePanel extends React.Component {
                 }
             } else {//该电话对应多个客户时的处理
                 let showDetailCustomer = _.find(customerInfoArr, customer => customer.isShowDetail);
-                if (showDetailCustomer) {//有展示的客户详情时
+                if(this.isPhoneMsgWithLeadId(phonemsgObj) && _.get(customerInfoArr,'[0]') ){
+                    return this.renderClueDetail(customerInfoArr[0]);
+                }else if (showDetailCustomer) {//有展示的客户详情时
                     return (
                         <div className="show-customer-detail">
                             <a className="return-customer-cards"
@@ -436,7 +447,10 @@ class PhonePanel extends React.Component {
                 </span>);
         }
     }
-
+    //后端推送的消息是否有lead_id
+    isPhoneMsgWithLeadId(phoneMsg) {
+        return phoneMsg && phoneMsg.customer_id;
+    }
     renderCustomerDetail(customer) {
         return (
             <CustomerDetail
@@ -611,7 +625,7 @@ class PhonePanel extends React.Component {
         if (!this.state.isAddFlag && !this.state.isAddToCustomerFlag) {
             if (_.isArray(phonemsgObj.customers) && phonemsgObj.customers.length) {
                 //只对应一个客户时不用提示
-                if (phonemsgObj.customers.length !== 1) {
+                if (phonemsgObj.customers.length !== 1 && !this.isPhoneMsgWithLeadId(phonemsgObj)) {
                     tipContent = Intl.get('call.record.some.customer', '此号码对应{num}个{type}', {num: phonemsgObj.customers.length, type: Intl.get('call.record.customer', '客户')});
                 }
             } else if (!(_.isArray(this.state.customerInfoArr) && this.state.customerInfoArr.length)) {//添加完客户后，此提示不用展示
@@ -725,9 +739,10 @@ class PhonePanel extends React.Component {
                         closeAddPlan={this.closeAddPlan} //手动控制关闭面板
                         isAddingScheduleSuccess={this.state.isAddingScheduleSuccess}//检查自定义是否添加成功
                         isAddingPlanInfo={this.state.isAddingPlanInfo}
+                        isCustomerDetailCall={this.isCustomerDetailCall(this.state.paramObj) || this.isPhoneMsgWithLeadId(phonemsgObj)}
                     />
                     {this.renderMainContent()}
-                    {!this.isCustomerDetailCall(this.state.paramObj) ? //不是从客户详情中拨打的电话时
+                    {!this.isCustomerDetailCall(this.state.paramObj) ? //不是从客户详情中拨打的电话并且推送来的消息中有customer_id
                         //客户信息展示或者添加客户按钮
 
                         <div className="customer-info-container">

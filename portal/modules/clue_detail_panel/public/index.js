@@ -79,8 +79,14 @@ class ClueDetailPanel extends React.Component {
     }
 
     getPhoneStatusClueIds(phonemsgObj) {
-        if (phonemsgObj && _.isArray(phonemsgObj.leads) && phonemsgObj.leads.length) {
-            return _.map(phonemsgObj.leads, 'id');
+        if (phonemsgObj) {
+            if(phonemsgObj.lead_id){
+                return [phonemsgObj.lead_id];
+            }else if(_.isArray(phonemsgObj.leads) && phonemsgObj.leads.length){
+                return _.map(phonemsgObj.leads, 'id');
+            }else{
+                return [];
+            }
         }
         return [];
     }
@@ -176,7 +182,6 @@ class ClueDetailPanel extends React.Component {
                     if (phonemsgObj.callid === phoneRecordObj.callid) {
                         phoneRecordObj.received_time = phonemsgObj.recevied_time;
                         if(!_.get(this,'state.clueInfoArr[0]')){
-                            //这里发请求获取是因为如果在线索A的地方打电话，然后打开线索B详情，此时如果电话最新的状态过来，应该再展示线索A的详情
                             this.getClueInfoByClueId(phonemsgObj);
                         }
                     } else {
@@ -185,7 +190,6 @@ class ClueDetailPanel extends React.Component {
                         //如果是从线索详情中打的电话，则不需要再获取线索详情
                         if (!this.isClueDetailCall(nextProps.paramObj)) {
                             //根据线索的id获取线索的详情
-                            phoneAlertAction.setInitialClueArr();
                             this.getClueInfoByClueId(phonemsgObj);
                         }
                     }
@@ -287,10 +291,17 @@ class ClueDetailPanel extends React.Component {
     //根据线索的id获取线索详情
     getClueInfoByClueId(phonemsgObj) {
         //通过后端传过来的线索id，查询线索详情
-        if (phonemsgObj && _.isArray(phonemsgObj.leads) && phonemsgObj.leads.length) {
-            _.each(phonemsgObj.leads, (item) => {
-                phoneAlertAction.getClueById(item.id);
-            });
+        //优先通过线索id查询线索详情lead_id,如果没有lead_id，那么要通过leads查询
+        if(phonemsgObj){
+            if(phonemsgObj.lead_id){
+                phoneAlertAction.setInitialClueArr();
+                phoneAlertAction.getClueById(phonemsgObj.lead_id);
+            }else if(_.isArray(phonemsgObj.leads) && phonemsgObj.leads.length){
+                phoneAlertAction.setInitialClueArr();
+                _.each(phonemsgObj.leads, (item) => {
+                    phoneAlertAction.getClueById(item.id);
+                });
+            }
         }
 
     }
@@ -362,7 +373,10 @@ class ClueDetailPanel extends React.Component {
                 }
             } else {//该电话对应多个线索时的处理
                 let showDetailCustomer = _.find(clueInfoArr, clue => clue.isShowDetail);
-                if (showDetailCustomer) {//有展示的线索详情时
+                // 即使有多个线索但是推送过来的消息有lead_id的时候
+                if(this.isPhoneMsgWithLeadId(phonemsgObj) && _.get(clueInfoArr,'[0]') ){
+                    return this.renderClueDetail(clueInfoArr[0]);
+                }else if (showDetailCustomer) {//有展示的线索详情时
                     return (
                         <div className="show-customer-detail">
                             <a className="return-customer-cards"
@@ -483,8 +497,8 @@ class ClueDetailPanel extends React.Component {
     renderCustomerSizeTip(phonemsgObj) {
         let tipContent = '';
         if (_.isArray(phonemsgObj.leads) && phonemsgObj.leads.length) {
-            //只对应一个线索时不用提示
-            if (phonemsgObj.leads.length !== 1) {
+            //只对应一个线索时不用提示 或者推送的消失有lead_id的时候不用提示
+            if (phonemsgObj.leads.length !== 1 && !this.isPhoneMsgWithLeadId(phonemsgObj)) {
                 tipContent = Intl.get('call.record.some.customer', '此号码对应{num}个{type}', {num: phonemsgObj.leads.length,type: Intl.get('crm.sales.clue', '线索')});
             }
         } else if (!(_.isArray(this.state.clueInfoArr) && this.state.clueInfoArr.length)) {//添加完线索后，此提示不用展示
@@ -585,10 +599,10 @@ class ClueDetailPanel extends React.Component {
                         showMarkClueInvalid={showMarkClueInvalid}
                         curClue={curClue}
                         ref={dom => {this.phoneStatusTop = dom;}}
-                        isClueDetailCall={this.isClueDetailCall(this.state.paramObj)}
+                        isClueDetailCall={this.isClueDetailCall(this.state.paramObj) || this.isPhoneMsgWithLeadId(phonemsgObj)}
                     />
                     {this.renderMainContent()}
-                    {!this.isClueDetailCall(this.state.paramObj) ? //不是从线索详情中拨打的电话时
+                    {!this.isClueDetailCall(this.state.paramObj) ? //不是从线索详情中拨打的电话并且推送来的消息中有lead_id时
                         //线索信息展示或者添加线索按钮
                         <div className="customer-info-container">
                             <div>
@@ -616,6 +630,10 @@ class ClueDetailPanel extends React.Component {
         }
 
         return flag;
+    }
+    //后端推送的消息是否有lead_id
+    isPhoneMsgWithLeadId(phoneMsg) {
+        return phoneMsg && phoneMsg.lead_id;
     }
 
     //只打开了线索详情
