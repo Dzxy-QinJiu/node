@@ -374,8 +374,8 @@ class ClueDetailPanel extends React.Component {
             } else {//该电话对应多个线索时的处理
                 let showDetailCustomer = _.find(clueInfoArr, clue => clue.isShowDetail);
                 // 即使有多个线索但是推送过来的消息有lead_id的时候
-                if(this.isPhoneMsgWithLeadId(phonemsgObj) && _.isArray(clueInfoArr) && clueInfoArr[0]){
-                     return this.renderClueDetail(clueInfoArr[0]);
+                if(this.isPhoneMsgWithLeadId(phonemsgObj) && _.get(clueInfoArr,'[0]') ){
+                    return this.renderClueDetail(clueInfoArr[0]);
                 }else if (showDetailCustomer) {//有展示的线索详情时
                     return (
                         <div className="show-customer-detail">
