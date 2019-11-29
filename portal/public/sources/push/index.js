@@ -15,13 +15,13 @@ var phoneMsgEmitter = require('../../../public/sources/utils/emitters').phoneMsg
 var phoneEmitter = require('../../../public/sources/utils/emitters').phoneEmitter;
 let ajaxGlobal = require('../jquery.ajax.global');
 var hasPrivilege = require('../../../components/privilege/checker').hasPrivilege;
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, KETAO_SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES,APPLY_APPROVE_TYPES, DIFF_APPLY_TYPE_UNREAD_REPLY,CALL_TYPES} from '../utils/consts';
 import logoSrc from './notification.png';
 import userData from '../user-data';
 import Trace from 'LIB_DIR/trace';
 import {storageUtil} from 'ant-utils';
 import {handleCallOutResult} from 'PUB_DIR/sources/utils/common-data-util';
-import {getClueUnhandledPrivilege, getUnhandledClueCountParams} from 'PUB_DIR/sources/utils/common-method-util';
+import {getClueUnhandledPrivilege, getUnhandledClueCountParams, isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
 const session = storageUtil.session;
 
@@ -300,12 +300,22 @@ function listenSystemNotice(notice) {
         systemTipCount++;//系统消息个数加一
         //申请消息列表弹出，有新数据，是否刷新数据的提示
         notificationEmitter.emit(notificationEmitter.SYSTEM_NOTICE_UPDATED, notice);
-        let title = notice.type ? SYSTEM_NOTICE_TYPE_MAP[notice.type] : '';
+        let filterType = SYSTEM_NOTICE_TYPE_MAP;
+        // 判断是否是客套组织，是客套的话，才会有拨打电话失败和提取线索失败的
+        if (isKetaoOrganizaion()) {
+            filterType = KETAO_SYSTEM_NOTICE_TYPE_MAP;
+        }
+        let title = notice.type ? filterType[notice.type] : '';
         let tipContent = notice.customer_name;//xxx（客户）
         //是否是异地登录的类型
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
         //登录失败
         let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
+        // 是否事拨打电话失败
+        let isCallUpFailed = notice.type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
+        // 是否事提取线索失败
+        let isPullClueFailed = notice.type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
+
         //异地登录
         if (isOffsetLogin) {
             //在 xxx (地名)
@@ -315,13 +325,23 @@ function listenSystemNotice(notice) {
             //用账号xxx
             tipContent += Intl.get('notification.system.use.account', '用账号') + notice.user_name;
         }
-        if (notice.app_name) {
+        // 客套组织不显示，登录的应用名称
+        if (!isKetaoOrganizaion() && notice.app_name) {
             //登录了 xxx (应用)
             tipContent += (isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name;
         }
         if (isLoginFailed) {
             //密码或验证码错误等的详细错误信息
             tipContent += ' , ' + _.get(notice, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
+        }
+
+        // 拨打电话失败
+        if (isCallUpFailed) {
+            tipContent += _.get(notice, 'content.operate_detail',Intl.get('notification.call.up.failed', '拨打电话失败'));
+        }
+        // 提取线索失败
+        if (isPullClueFailed) {
+            tipContent += _.get(notice, 'content.operate_detail',Intl.get('notification.extract.clue.failed', '提取线索失败'));
         }
         //标签页不可见时，有桌面通知，并且允许弹出桌面通知时
         if (canPopDesktop()) {

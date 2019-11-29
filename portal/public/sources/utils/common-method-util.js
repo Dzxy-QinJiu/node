@@ -1276,6 +1276,12 @@ exports.getOrganizationCallFee = function(cb) {
     return Deferred.promise();
 };
 
+// 判断是否是客套组织
+exports.isKetaoOrganizaion = () => {
+    let organizationId = _.get(getOrganization(), 'id');
+    return organizationId === ORGANIZATION_TYPE.KETAO;
+};
+
 // 变更记录
 exports.recordChangeTimeLineItem = (item) => {
     let operateTime = _.get(item, 'record_time'); // 具体变的时间
