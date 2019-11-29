@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import {USER_TYPE_VALUE_MAP, USER_TYPE_TEXT_MAP} from 'PUB_DIR/sources/utils/consts';
 import {Form, Radio, InputNumber, Checkbox} from 'antd';
 const RadioGroup = Radio.Group;
+const CheckboxGroup = Checkbox.Group;
 const FormItem = Form.Item;
 class AppConfigForm extends React.Component {
     constructor(props) {
@@ -75,6 +76,21 @@ class AppConfigForm extends React.Component {
                             defaultMessage="不变"/></Radio>
                     </RadioGroup>
                 </FormItem>}
+                {
+                    this.props.isHideTerminals ? null : (
+                        <FormItem
+                            {...formItemLayout}
+                            label={Intl.get('common.terminals.type', '终端类型')}
+                        >
+                            <CheckboxGroup
+                                options={['web', 'pc', 'app']}
+                                onChange={this.props.onSelectTerminalChange.bind(this, appFormData)}
+                                value={['web', 'pc', 'app']}
+                            >
+                            </CheckboxGroup>
+                        </FormItem>
+                    )
+                }
                 {this.props.needTwoFactorMultiLogin ? (
                     <FormItem
                         {...formItemLayout}
@@ -111,6 +127,8 @@ AppConfigForm.propTypes = {
     onCheckMultiLogin: PropTypes.func,//多人登录修改事件
     needEndTimeOnly: PropTypes.bool, //是否只传结束时间
     hideExpiredSelect: PropTypes.bool, //是否展示到期可选
+    isHideTerminals: PropTypes.bool, //是否隐藏终端类型
+    onSelectTerminalChange: PropTypes.func,
 };
 AppConfigForm.defaultProps = {
     appFormData: {
@@ -139,5 +157,8 @@ AppConfigForm.defaultProps = {
     },//二步认证修改事件
     onCheckMultiLogin: function() {
     },//多人登录修改事件
+    isHideTerminals: true, // 默认隐藏
+    onSelectTerminalChange: function() {
+    },// 多终端选择
 };
 export default AppConfigForm;

@@ -3,7 +3,7 @@ const Validation = require('rc-form-validation-for-react16');
 const Validator = Validation.Validator;
 require('../css/apply-user-form.less');
 require('../../../../public/css/antd-vertical-tabs.css');
-import {Tooltip, Form, Input, Radio, Select, message,DatePicker,Checkbox} from 'antd';
+import {Form, Input, Radio, Select, DatePicker,Checkbox} from 'antd';
 const {TextArea} = Input;
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -217,6 +217,7 @@ const ApplyUserForm = createReactClass({
                 client_id: appIds.join(','),
                 with_addition: false
             }).success((dataList) => {
+                console.log('dataList:',dataList);
                 if (_.isArray(dataList) && dataList.length) {
                     //去重取并集
                     let appDefaultConfigList = _.union(this.state.appDefaultConfigList, dataList);
@@ -594,15 +595,28 @@ const ApplyUserForm = createReactClass({
             appId: 'applyUser'
         };
         var isOplateUser = this.state.isOplateUser;
-        return (<AppConfigForm appFormData={appFormData}
+        return (<AppConfigForm
+            appFormData={appFormData}
             needApplyNum={(this.state.applyFrom === 'order' || this.isApplyNewUsers()) && isOplateUser}
             timePickerConfig={timePickerConfig}
             renderUserTimeRangeBlock={isOplateUser ? this.renderUserTimeRangeBlock : this.renderUserEndTimeBlock}
             onCountChange={this.onCountChange}
             onOverDraftChange={this.onOverDraftChange}
-            needEndTimeOnly={!isOplateUser} hideExpiredSelect={!isOplateUser}
+            needEndTimeOnly={!isOplateUser}
+            hideExpiredSelect={!isOplateUser}
+            isHideTerminals={false}
+            onSelectTerminalChange={this.onSelectTerminalChange}
         />);
     },
+
+    onSelectTerminalChange(app, checkedValues) {
+        let appFormData = _.find(this.state.formData.products, item => item.client_id === app.client_id);
+        if (appFormData) {
+            appFormData.terminals = checkedValues;
+        }
+        this.setState(this.state);
+    },
+
 
     //从订单中申请用户或申请新用户时，用户名和昵称输入框的渲染
     renderUserNamesInputs: function(formData, formItemLayout) {
