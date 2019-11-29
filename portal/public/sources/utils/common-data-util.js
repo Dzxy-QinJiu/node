@@ -316,7 +316,7 @@ exports.handleCallOutResult = function(paramObj, callback) {
         if (hasCalloutPrivilege()) {
             //开始打电话
             Oplate.isCalling = true;
-            callClient.callout(phoneNumber).then((result) => {
+            callClient.callout(phoneNumber, paramObj.id, paramObj.type).then((result) => {
                 //不是容联的电话系统不能同时打俩电话（结束推送事件可能会很慢），所以此时就可以设成false，容联的电话系统可以同时打俩电话，所以需推送过来结束事件后才可以继续打电话
                 if (!isRongLianPhoneSystem()) {
                     Oplate.isCalling = false;

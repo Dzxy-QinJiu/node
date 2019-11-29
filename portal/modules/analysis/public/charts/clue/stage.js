@@ -92,60 +92,57 @@ export function getStageChart() {
             func: (name, params) => {
                 let label = getName(params);
                 let type = hasPrivilege('CRM_CLUE_ANALYSIS_STATISTICAL_MANAGER') ? 'all' : 'self';
-                //全部和有效下没有对应的客户
-                if(_.isEqual(label, Intl.get('common.all', '全部')) || _.isEqual(label, Intl.get('clue.analysis.ability', '有效'))){
-                    return false;
-                } else {
-                    const paramObj = {
-                        listType: 'customer',
-                        url: '/rest/analysis/customer/v3/lead/:type/realtime/stage/detail/:page_size/:page_num',
-                        type: 'get',
-                        conditions: [{
-                            name: 'label',
-                            value: label
-                        }, {
-                            name: 'cache_key',
-                            value: cacheKey
-                        }, {
-                            type: 'params',
-                            name: 'page_size',
-                            value: 9999 //分页用前端实现，所以目前只能向后端请求一个很大的page_size
-                        }, {
-                            type: 'params',
-                            name: 'page_num',
-                            value: 1
-                        }, {
-                            type: 'params',
-                            name: 'type',
-                            value: type
-                        }],
-                        columns: [
-                            {
-                                title: Intl.get('clue.customer.clue.name.abbrev', '线索名'),
-                                dataIndex: 'name',
-                                width: '40%'
-                            },
-                            {
-                                title: Intl.get('crm.41', '客户名'),
-                                dataIndex: 'customer_name',
-                                width: '40%'
-                            },
-                            {
-                                title: Intl.get('deal.stage', '阶段'),
-                                dataIndex: 'customer_label',
-                                width: '20%'
-                            }
-                        ],
-                        onRowClick: record => {
+                const paramObj = {
+                    listType: 'customer',
+                    url: '/rest/analysis/customer/v3/lead/:type/realtime/stage/detail/:page_size/:page_num',
+                    type: 'get',
+                    conditions: [{
+                        name: 'label',
+                        value: label
+                    }, {
+                        name: 'cache_key',
+                        value: cacheKey
+                    }, {
+                        type: 'params',
+                        name: 'page_size',
+                        value: 9999 //分页用前端实现，所以目前只能向后端请求一个很大的page_size
+                    }, {
+                        type: 'params',
+                        name: 'page_num',
+                        value: 1
+                    }, {
+                        type: 'params',
+                        name: 'type',
+                        value: type
+                    }],
+                    columns: [
+                        {
+                            title: Intl.get('clue.customer.clue.name.abbrev', '线索名'),
+                            dataIndex: 'name',
+                            width: '40%'
+                        },
+                        {
+                            title: Intl.get('crm.41', '客户名'),
+                            dataIndex: 'customer_name',
+                            width: '40%'
+                        },
+                        {
+                            title: Intl.get('deal.stage', '阶段'),
+                            dataIndex: 'customer_label',
+                            width: '20%'
+                        }
+                    ],
+                    onRowClick: record => {
+                        if(!_.isEmpty(record.customer_id)) {
                             phoneMsgEmitter.emit(phoneMsgEmitter.OPEN_PHONE_PANEL, {
                                 customer_params: {
                                     currentId: record.customer_id
                                 }
                             });
                         }
-                    };
-                    listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
-                }
+                    }
+                };
+                listPanelEmitter.emit(listPanelEmitter.SHOW, paramObj);
             }
         }]
     };

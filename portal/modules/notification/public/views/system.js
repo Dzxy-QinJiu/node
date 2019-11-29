@@ -7,7 +7,7 @@ import notificationAjax from '../ajax/notification-ajax';
 // 没有消息的提醒
 import NoMoreDataTip from 'CMP_DIR/no_more_data_tip';
 //系统消息对应的几种类型
-import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES} from 'PUB_DIR/sources/utils/consts';
+import {SYSTEM_NOTICE_TYPE_MAP, SYSTEM_NOTICE_TYPES, KETAO_SYSTEM_NOTICE_TYPE_MAP} from 'PUB_DIR/sources/utils/consts';
 import {scrollBarEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import {RightPanel} from 'CMP_DIR/rightPanel';
@@ -26,6 +26,7 @@ const classnames = require('classnames');
 import TimeUtil from 'PUB_DIR/sources/utils/time-format-util';
 import { storageUtil } from 'ant-utils';
 import ajax from 'ant-ajax';
+import {isKetaoOrganizaion} from 'PUB_DIR/sources/utils/common-method-util';
 
 const STATUS_ARRAY = [{
     name: Intl.get('notification.system.untreated', '待处理'),
@@ -177,7 +178,12 @@ class SystemNotification extends React.Component {
     renderHandledNotice = (notice, idx) => {
         //是否是异地登录的类型
         let isOffsetLogin = (notice.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && notice.content);
+        // 是否是登录失败
         let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
+        // 判断是否是客套组织，客套组织有拨打电话失败和提取线索失败的情况
+        let isCallFailed = isKetaoOrganizaion() && notice.type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
+        let isPullClueFail = isKetaoOrganizaion() && notice.type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
+
         let handleNoticeLiItemClass = classnames({
             'system-notice-handled-item': true,
             'select-li-item': idx === this.state.selectedLiIndex,
@@ -188,20 +194,50 @@ class SystemNotification extends React.Component {
                 <div className="system-notice-title">
                     <i className={iconfontClassName}></i>
                     <div className="system-notice-type">
-                        {SYSTEM_NOTICE_TYPE_MAP[notice.type]}
+                        {
+                            isKetaoOrganizaion() ? (KETAO_SYSTEM_NOTICE_TYPE_MAP[notice.type]) : (SYSTEM_NOTICE_TYPE_MAP[notice.type])
+                        }
                     </div>
-                    <div className="customer-name" onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>
-                        {notice.customer_name}<i className='iconfont icon-arrow'></i>
+                    <div className="customer-name"
+                        onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}
+                    >
+                        {notice.customer_name}
+                        <i className='iconfont icon-arrow'></i>
                     </div>
                 </div>
                 <div className="system-notice-descr">
-                    {isOffsetLogin ? (Intl.get('notification.system.on', '在') + notice.content.current_location) : ''}
+                    {
+                        isOffsetLogin ? (Intl.get('notification.system.on', '在') + notice.content.current_location) : ''
+                    }
                     {Intl.get('notification.system.use.account', '用账号')}
-                    {notice.user_name ? (
-                        <a onClick={this.openUserDetail.bind(this, notice.user_id, idx)}>{notice.user_name}</a>) : null}
-                    {notice.app_name ?
-                        <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}</span> : ''}
-                    {isLoginFailed ? <span>,{_.get(notice, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'))}</span> : null}
+                    {
+                        notice.user_name ? (
+                            <a onClick={this.openUserDetail.bind(this, notice.user_id, idx)}>
+                                {notice.user_name}
+                            </a>) : null
+                    }
+                    {
+                        notice.app_name ?
+                            <span>
+                                {(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + notice.app_name}
+                            </span> : ''
+                    }
+                    {
+                        isLoginFailed ?
+                            <span>
+                                ,{_.get(notice, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'))}
+                            </span> : null
+                    }
+                    {
+                        isCallFailed ? <span>
+                                ,{_.get(notice, 'content.operate_detail', Intl.get('notification.call.up.failed', '拨打电话失败'))}
+                        </span> : null
+                    }
+                    {
+                        isPullClueFail ? <span>
+                                ,{_.get(notice, 'content.operate_detail', Intl.get('notification.extract.clue.failed', '提取线索失败'))}
+                        </span> : null
+                    }
                     <span className="system-notice-time">
                         {'，' + TimeUtil.transTimeFormat(notice.create_time)}
                     </span>
@@ -263,7 +299,14 @@ class SystemNotification extends React.Component {
     };
 
     // 待处理数据整合,同一个用户登录同一个应用，计算登录次数以及获取最后一次登录时间
-    handleNoticeDetailData = (noticeDetail, isLoginFailed) => {
+    handleNoticeDetailData = (noticeDetail, notifyType) => {
+        // 是否是登录失败
+        let isLoginFailed = notifyType === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
+        // 是否是拨打电话失败
+        let isCallUpFailed = notifyType === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
+        // 是否是提取线失败
+        let isPullClueFailed = notifyType === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
+
         let noticeDetailData = _.cloneDeep(noticeDetail);
         // 登录的用户名 eg: [a, b]
         let userName = _.chain(noticeDetailData).map('user_name').uniq().value();
@@ -271,10 +314,21 @@ class SystemNotification extends React.Component {
         let appName = _.chain(noticeDetailData).map('app_name').uniq().value();
         //登录失败的错误提示信息 eg: ['用户名或密码错误','验证码错误']
         let loginErrorArray = [];
+        // 登录失败的处理
         if(isLoginFailed){
             loginErrorArray = _.map(noticeDetailData, item => {
                 //旧数据中没有content.operate_detail, 默认用’用户名或密码错误‘
                 return _.get(item, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
+            });
+            loginErrorArray = _.uniq(loginErrorArray);
+        } else if (isCallUpFailed) { // 拨打电话失败的处理
+            loginErrorArray = _.map(noticeDetailData, item => {
+                return _.get(item, 'content.operate_detail', Intl.get('notification.call.up.failed', '拨打电话失败'));
+            });
+            loginErrorArray = _.uniq(loginErrorArray);
+        } else if (isPullClueFailed) { // 提取线失败的处理
+            loginErrorArray = _.map(noticeDetailData, item => {
+                return _.get(item, 'content.operate_detail', Intl.get('notification.extract.clue.failed', '提取线索失败'));
             });
             loginErrorArray = _.uniq(loginErrorArray);
         }
@@ -298,9 +352,19 @@ class SystemNotification extends React.Component {
             // 同一个用户登录同一个应用（同一种登录错误），次数累加，获取最后一次登录时间
             noticeDetailData.forEach( (noticeItem, index) => {
                 let isSame = item.user_name === noticeItem.user_name && item.app_name === noticeItem.app_name;
-                //同类登录失败错误提示的次数累计
+                // 同类登录失败错误提示的次数累计
                 if(item.login_error_msg){
-                    isSame = isSame && item.login_error_msg === _.get(noticeItem, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
+                    let failedMsg = '';
+                    if (isLoginFailed) {
+                        failedMsg = _.get(noticeItem, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
+                        isSame = isSame && item.login_error_msg === failedMsg;
+                    } else if (isCallUpFailed) {
+                        failedMsg = _.get(noticeItem, 'content.operate_detail', Intl.get('notification.call.up.failed', '拨打电话失败'));
+                        isSame = isSame && item.login_error_msg === failedMsg;
+                    } else if (isPullClueFailed) {
+                        failedMsg = _.get(noticeItem, 'content.operate_detail', Intl.get('notification.extract.clue.failed', '提取线索失败'));
+                        isSame = isSame && item.login_error_msg === failedMsg;
+                    }
                 }
                 if (isSame) {
                     if (processObj && processObj.app_name) {
@@ -324,39 +388,92 @@ class SystemNotification extends React.Component {
         } );
         // 按时间逆序排序
         processData = _.sortBy(processData, item => -item.create_time);
-
         return processData;
     };
 
     // idx表示的是系统通知的条数
     renderUnHandledNoticeContent = (notice, idx) => {
         let showList = [];
+        // 是否是登录失败
         let isLoginFailed = notice.type === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
+        // 是否是拨打电话失败
+        let isCallUpFailed = notice.type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
+        // 是否是提取线失败
+        let isPullClueFailed = notice.type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
+
         if (_.isArray(notice.detail) && notice.detail.length) {
-            showList = this.handleNoticeDetailData(notice.detail, isLoginFailed);
+            showList = this.handleNoticeDetailData(notice.detail, notice.type);
         }
         return showList.map((item, index) => {
             //是否是异地登录的类型
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
-            return <div className="system-notice-item" key={index}>
-                <a onClick={this.openUserDetail.bind(this, item.user_id, index)}>{item.user_name}</a>
-                {isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''}
-                {item.app_name ?
-                    <span>{(isLoginFailed ? Intl.get('login.login', '登录') : Intl.get('notification.system.login', '登录了')) + item.app_name}</span> : ''}
-                {isLoginFailed ? <span>，{_.get(item, 'login_error_msg', '')}</span> : null}
-                <span className="system-notice-time">
-                    {item.login_count === 1 ? (
-                        <span>
-                            ，{TimeUtil.transTimeFormat(item.create_time)}
-                        </span>
-                    ) : (<span>
-                        <ReactIntl.FormattedMessage id="notification.system.login.count"
-                            defaultMessage={'{count}次,最后一次'}
-                            values={{count: <span className="login-count">{item.login_count}</span>}}/>
-                        <span className="login-time">{TimeUtil.transTimeFormat(item.create_time)}</span>
-                    </span>)}
-                </span>
-            </div>;
+            let loginErrMsg = _.get(item, 'login_error_msg');
+            let callUpFailedMsg = [];
+            if (isCallUpFailed) {
+                callUpFailedMsg = loginErrMsg.split(',');
+            }
+            return (
+                <div className="system-notice-item" key={index}>
+                    <a onClick={this.openUserDetail.bind(this, item.user_id, index)}>{item.user_name}</a>
+                    {
+                        isPullClueFailed ? (
+                            <span className="system-notice-time">
+                                <span>{Intl.get('clue.extract.failed', '提取失败')}</span>
+                                <span className="login-count">
+                                    {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}，
+                                </span>
+                            </span>
+                        ) : null
+                    }
+                    {
+                        isOffsetLogin ? (Intl.get('notification.system.on', '在') + item.content.current_location) : ''
+                    }
+                    {
+                        isCallUpFailed || isPullClueFailed ? null : (
+                            item.app_name ?
+                                <span>
+                                    {
+                                        (isLoginFailed ? Intl.get('login.login', '登录') :
+                                            Intl.get('notification.system.login', '登录了')) + item.app_name
+                                    }
+                                </span> : ''
+                        )
+                    }
+                    {
+                        isCallUpFailed ? (
+                            <span className="system-notice-time">
+                                <span>{callUpFailedMsg.slice(0, 1)}</span>
+                                <span className="login-count">
+                                    {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}
+                                </span>
+                                <span>{callUpFailedMsg.slice(2)}</span>
+                            </span>
+                        ) : null
+                    }
+                    {
+                        isLoginFailed || isPullClueFailed ?
+                            <span>{loginErrMsg}</span> : null
+                    }
+
+                    <span className="system-notice-time">
+                        {item.login_count === 1 ? (
+                            <span>
+                                ，{TimeUtil.transTimeFormat(item.create_time)}
+                            </span>
+                        ) : (<span>
+                            {
+                                isPullClueFailed || isCallUpFailed ? null : (
+                                    <span className="login-count">
+                                        {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}
+                                    </span>
+                                )
+                            }
+                            <span>，{Intl.get('notification.system.login.count', '最后一次')}</span>
+                            <span className="login-time">{TimeUtil.transTimeFormat(item.create_time)}</span>
+                        </span>)}
+                    </span>
+                </div>
+            );
         });
     };
 
@@ -417,6 +534,14 @@ class SystemNotification extends React.Component {
         } else if (type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN) { // 异地登录
             iconfontClassName += ' icon-remote-login';
         }
+        // 客套组织，才有拨打电话失败和提取线索失败
+        if (isKetaoOrganizaion()) {
+            if (type === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL) { // 拨打电话失败
+                iconfontClassName += ' icon-call-failed';
+            } else if (type === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL) { // 提取线索失败
+                iconfontClassName += ' icon-pull-clue-failed';
+            }
+        }
         return iconfontClassName;
     };
 
@@ -434,10 +559,15 @@ class SystemNotification extends React.Component {
                 <div className="system-notice-title">
                     <i className={iconfontClassName}></i>
                     <div className="system-notice-type">
-                        {SYSTEM_NOTICE_TYPE_MAP[notice.type]}
+                        {
+                            isKetaoOrganizaion() ? (KETAO_SYSTEM_NOTICE_TYPE_MAP[notice.type]) : (SYSTEM_NOTICE_TYPE_MAP[notice.type])
+                        }
                     </div>
-                    <div className="customer-name" onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}>
-                        {notice.customer_name}<i className='iconfont icon-arrow'></i>
+                    <div className="customer-name"
+                        onClick={this.openCustomerDetail.bind(this, notice.customer_id, idx)}
+                    >
+                        {notice.customer_name}
+                        <i className='iconfont icon-arrow'></i>
                     </div>
                 </div>
                 <div className="system-notice-content">
@@ -556,6 +686,10 @@ class SystemNotification extends React.Component {
         let notifyTitle = this.state.isOpenPopUpNotify ?
             Intl.get('notification.pop.up.notify.title', '{status}弹窗通知', {status: Intl.get('common.app.status.close', '关闭')}) :
             Intl.get('notification.pop.up.notify.title', '{status}弹窗通知', {status: Intl.get('common.app.status.open', '开启')});
+        let filterType = SYSTEM_NOTICE_TYPE_MAP;
+        if (isKetaoOrganizaion()) {
+            filterType = KETAO_SYSTEM_NOTICE_TYPE_MAP;
+        }
         return (
             <div className="notification_system" data-tracename="系统消息列表">
                 <TopNav>
@@ -566,7 +700,7 @@ class SystemNotification extends React.Component {
                             onChange={this.handleTypeChange}
                         >
                             <Option value="">{Intl.get('user.online.all.type', '全部类型')}</Option>
-                            {_.map(SYSTEM_NOTICE_TYPE_MAP, (key, val) => {
+                            {_.map(filterType, (key, val) => {
                                 return (<Option value={val}>{key}</Option>);
                             })}
                         </SelectFullWidth>
@@ -589,7 +723,6 @@ class SystemNotification extends React.Component {
                                 onChange={this.handlePopUpNotify}
                             />
                         </span>
-
                     </div>
                 </TopNav>
                 {this.renderUpdateTip()}

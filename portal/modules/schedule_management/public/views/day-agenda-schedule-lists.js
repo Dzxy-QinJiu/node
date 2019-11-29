@@ -23,6 +23,7 @@ var scheduleManagementEmitter = require('PUB_DIR/sources/utils/emitters').schedu
 import Trace from 'LIB_DIR/trace';
 import {isEqualArray} from 'LIB_DIR/func';
 import PhoneCallout from 'CMP_DIR/phone-callout';
+import {getScheduleCallTypeId} from 'PUB_DIR/sources/utils/common-method-util';
 class DayAgendaScheduleLists extends React.Component {
     constructor(props) {
         super(props);
@@ -107,6 +108,7 @@ class DayAgendaScheduleLists extends React.Component {
     }
     //联系人和联系电话
     renderPopoverContent(item){
+        let scheduleTypeId = getScheduleCallTypeId(item);
         return (
             <div className="contacts-containers">
                 {_.map(item.contacts,(contact) => {
@@ -125,6 +127,8 @@ class DayAgendaScheduleLists extends React.Component {
                                             <PhoneCallout
                                                 phoneNumber={phone}
                                                 contactName={contact.name}
+                                                type={scheduleTypeId.type}
+                                                id={scheduleTypeId.id}
                                             />
                                         </div>
                                     );

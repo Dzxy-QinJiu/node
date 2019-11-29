@@ -416,6 +416,8 @@ var en_US = {
     'home.page.extracted.clues.on.months': 'The {count} clue has been extracted this month',//本月已提取{count}条线索
     'home.page.extracted.clues.on.today': 'The {count} clues have been extracted today',//今天已提取{count}条线索
     'home.page.performance.at.time': '{time} performance',//{time}业绩
+    'home.page.new.customer': 'New customer',//新客户
+    'home.page.new.clue': 'New clues',//新线索
 
     //'superHello': '{appName}有{number}名{user_type}过期！',//
     /*用户管理模块-start*/
@@ -1120,6 +1122,7 @@ var en_US = {
     'user.trade.payment.name': '{name} payment', // {name}支付
     'user.trade.payment.alipay': 'Alipay', // 支付宝
     'user.trade.no.payment': 'You have no purchase record', // 您还没有购买记录
+    'user.info.bind.wechat.tip': 'Bind WeChat ID', // 绑定微信号
     //基本资料end
     //密码管理start
     'user.password.input.again': 'The original password was incorrect',//原密码不正确，请重新输入。
@@ -1164,10 +1167,14 @@ var en_US = {
     'notification.login.failed': 'Login failed', //登录失败
     'notification.system.handled.success': 'Successfully processed', // 处理成功
     'notification.system.handled.error': 'Failed processed', // 处理失败
-    'notification.system.login.count': '{count} counts, last time', // {count}次，最后一次
+    'notification.system.login.count': 'last time', // 最后一次
     'notification.system.tip.count': 'You have {systemTipCount} system messages.',//您有{systemTipCount}条系统消息
     'notification.pop.up.notify': 'Pop-up notification', // 弹窗通知
     'notification.pop.up.notify.title': '{status} pop-up notification', // {status}弹窗通知
+    'notification.call.up.failed': 'Failed to call out', // 拨打电话失败
+    'notification.extract.clue.failed': 'Failed to extract clue', // 提取线索失败
+    'notification.system.count': '{count} times', // {count}次
+
     //通知end
     //销售阶段start
     'sales.stage.change.sort': 'Change order',//变更顺序
@@ -3032,6 +3039,17 @@ var en_US = {
     'clue.cancel.set.invalid': 'Cancel invalid',//改为有效
     'analysis.sales.weekly.report': 'Sales weekly report',//销售周报
     'analysis.sales.monthly.report': 'Sales monthly report',//销售月报
+    'analysis.business.visit.frequency.statistics': 'Analysis business visit frequency statistics', //出差拜访频率统计
+    'analysis.sales.visiting.customer.frequency': 'Analysis statistics on the frequency of {sales} visiting customers', //{sales}拜访客户频率统计
+    'analysis.visits.customer.frequency': 'Analysis statistics on frequency of visits to {customer}', //拜访{customer}的频率统计
+    'analysis.contact.customer.statistics': 'Contact clue statistics',//联系客户统计
+    'analysis.contact.clue.statistics': 'Contact clue statistics',//联系线索统计
+    'analysis.number.of.contact.clue': 'Number of contact clue',//联系线索数
+    'analysis.market.lead.allocation.statistics': 'market lead allocation statistics',//市场线索分配统计
+    'analysis.sales.pull.lead.statistics': 'sales pull lead statistics',//销售提取线索统计
+    'analysis.assigned.clue.number': 'assigned clue number',//分配线索数
+    'analysis.extracting.cue.number': 'extracting cue number',//提取线索数
+    'analysis.follow-up.leads': 'follow-up leads',//跟进线索数
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式

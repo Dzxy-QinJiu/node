@@ -120,6 +120,8 @@ class ScheduleItem extends React.Component {
                                                 <span className="contact-name">{obj.name || ''}</span>
                                                 <PhoneCallout
                                                     phoneNumber={obj.phone}
+                                                    type="lead"
+                                                    id={item.lead_id}
                                                 />
                                             </p>
                                         );

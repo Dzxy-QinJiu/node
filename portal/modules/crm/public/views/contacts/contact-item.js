@@ -110,7 +110,12 @@ class ContactItem extends React.Component {
     };
     renderItemSelfSettingContent = (item) => {
         return this.props.disableEdit ? addHyphenToPhoneNumber(item) : (
-            <PhoneCallout phoneNumber={item} showPhoneNum={addHyphenToPhoneNumber(item)} showPhoneIcon={true}/>);
+            <PhoneCallout phoneNumber={item}
+                showPhoneNum={addHyphenToPhoneNumber(item)}
+                showPhoneIcon={true}
+                type='customer'
+                id={_.get(this.props, 'contact.contact.customer_id', '')}
+            />);
     };
     renderItemSelfSettingForm = (key, index, that) => {
         const fieldKey = `${that.props.field}[${key}]`;

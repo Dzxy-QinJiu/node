@@ -44,7 +44,8 @@ class phoneStatusTop extends React.Component {
             addCustomerSchedule: false,//正在添加联系计划
             addCustomerScheduleMsg: '',//添加联系计划的提示
             hasAddedSchedlue: false,//已经添加了联系计划就不可以再添加了
-            messageType: ''
+            messageType: '',
+            isCustomerDetailCall: this.props.isCustomerDetailCall//是否是在客户详情中打出的电话
         };
     }
 
@@ -67,7 +68,8 @@ class phoneStatusTop extends React.Component {
             detailCustomerId: nextProps.detailCustomerId,
             phonemsgObj: phonemsgObj,
             isAddingMoreProdctInfo: nextProps.isAddingMoreProdctInfo,
-            isAddingPlanInfo: nextProps.isAddingPlanInfo
+            isAddingPlanInfo: nextProps.isAddingPlanInfo,
+            isCustomerDetailCall: nextProps.isCustomerDetailCall
         });
         //如果接听后，把状态isConnected 改为true
         if (phonemsgObj.type === PHONERINGSTATUS.ANSWERED) {
@@ -208,7 +210,11 @@ class phoneStatusTop extends React.Component {
         var onHide = function() {
             phoneAlertAction.setSubmitErrMsg('');
         };
-        const options = this.state.customerInfoArr.map((item) => (
+        var customerInfoArr = _.get(this,'state.customerInfoArr[0]') ? this.state.customerInfoArr : [];
+        if(_.isEmpty(customerInfoArr) && !this.state.isCustomerDetailCall && _.get(phonemsgObj,'customers[0]')) {
+            customerInfoArr = phonemsgObj.customers;
+        }
+        const options = customerInfoArr.map((item) => (
             <Option value={item.id} key={item.id}>{item.name}</Option>
         ));
         const menu =
@@ -501,7 +507,8 @@ phoneStatusTop.defaultProps = {
     isAddingPlanInfo: false,
     handleAddPlan: function() {
 
-    }
+    },
+    isCustomerDetailCall: true
 };
 phoneStatusTop.propTypes = {
     addMoreInfoCls: PropTypes.string,
@@ -515,6 +522,7 @@ phoneStatusTop.propTypes = {
     isAddingPlanInfo: PropTypes.bool,
     handleAddPlan: PropTypes.bool,
     closeAddPlan: PropTypes.func,
-    isAddingScheduleSuccess: PropTypes.string
+    isAddingScheduleSuccess: PropTypes.string,
+    isCustomerDetailCall: PropTypes.bool,
 };
 export default phoneStatusTop;
