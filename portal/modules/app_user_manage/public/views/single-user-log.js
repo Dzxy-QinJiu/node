@@ -29,7 +29,10 @@ class SingleUserLog extends React.Component {
     };
 
     getStateData = () => {
-        return SingleUserLogStore.getState();
+        return {
+            appTerminalType: '', // 应用终端类型，默认全部
+            ...SingleUserLogStore.getState()
+        };
     };
 
     getSingleUserLogInfoByApp = (userId, selectedAppId, appLists) => {
@@ -65,7 +68,7 @@ class SingleUserLog extends React.Component {
 
     singleUserLogQuery = (userId, props) => {
         if (props.selectedAppId) {
-            this.getSingleUserLogInfoByApp(userId, props.selectedAppId);
+            this.getSingleUserLogInfoByApp(userId, props.selectedAppId, this.props.appLists);
         } else {
             this.getSingleUserLogInfoByApp(userId, props.selectedAppId, props.appLists);
         }
@@ -117,6 +120,12 @@ class SingleUserLog extends React.Component {
         if (log_type) {
             queryObj.log_type = log_type;
         }
+        // 多终端类型 TODO 参数传值待定
+        let appTerminalType = _.get(queryParams, 'appTerminalType') || this.state.appTerminalType;
+        if (appTerminalType) {
+            queryObj.terminal = appTerminalType;
+        }
+
         SingleUserLogAction.getSingleAuditLogList(queryObj);
     };
 
@@ -192,6 +201,36 @@ class SingleUserLog extends React.Component {
             </Option>);
         return list;
     };
+
+    // 筛选终端类型
+    onSelectTerminalsUserType = (value) => {
+        this.setState({
+            appTerminalType: value
+        }, () => {
+            this.getSingleUserAuditLogList({
+                appTerminalType: value
+            });
+        });
+    };
+
+    // 渲染多终端类型
+    renderAppTerminalsType = () => {
+        let selectAppTerminals = this.state.selectAppTerminals;
+        return (
+            <SelectFullWidth
+                className="select-app-terminal-type btn-item"
+                value={this.state.appTerminalType}
+                onChange={this.onSelectTerminalsUserType}
+            >
+                {
+                    selectAppTerminals.map((terminalType, idx) => {
+                        return (<Option key={idx} value={terminalType.id}> {terminalType.name} </Option>);
+                    })
+                }
+            </SelectFullWidth>
+        );
+    };
+
     renderUserLogSelectInfo = () => {
         let showAppSelect = this.props.selectedAppId;
         const appOptions = this.getAppOptions();
@@ -211,6 +250,11 @@ class SingleUserLog extends React.Component {
                         {appOptions}
                     </SelectFullWidth>
                 </div>}
+                {
+                    _.get(this.state.selectAppTerminals, 'length') ? (
+                        this.renderAppTerminalsType()
+                    ) : null
+                }
                 <div className="select-time">
                     <DatePicker
                         disableDateAfterToday={true}

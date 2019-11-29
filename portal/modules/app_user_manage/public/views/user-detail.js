@@ -333,6 +333,7 @@ class UserDetail extends React.Component {
 
     render() {
         let userInfo = {data: _.get(this.state.initialUser, 'user')};
+        // 用户详情的应用列表中，包含多终端信息，在用户分析和操作记录中，显示多终端信息
         let appLists = _.get(this.state.initialUser, 'apps', []);
         let loading = this.state.isLoading;
         let errorMsg = this.state.getDetailErrorMsg;

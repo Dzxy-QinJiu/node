@@ -25,6 +25,8 @@ SingleUserLogStore.prototype.resetState = function() {
     this.isLoading = true;
     this.userOwnAppArray = [];
     this.selectedLogAppId = '';
+    // 选择产品对应的终端类型
+    this.selectAppTerminals = [];
     this.searchName = '';
     this.defaultRange = 'week';
     // 默认显示审计日志（对应的是过滤掉心跳服务和角色权限），this.typeFilter = ''显示全部日志
@@ -87,11 +89,25 @@ SingleUserLogStore.prototype.getSingleUserAppList = function(obj) {
     } else {
         this.selectedLogAppId = obj.appId;
         this.userOwnAppArray = obj.appList;
+        let matchSelectApp = _.find(obj.appList, item => item.app_id === obj.appId);
+        if (matchSelectApp) {
+            this.selectAppTerminals = matchSelectApp.app_terminals || [];
+            if (_.get(matchSelectApp.app_terminals, 'length')) {
+                this.selectAppTerminals.unshift({id: '', name: '所有终端'});
+            }
+        }
     }
 
 };
 
 SingleUserLogStore.prototype.setSelectedAppId = function(appId){
+    let matchSelectApp = _.find(this.userOwnAppArray, item => item.app_id === appId);
+    if (matchSelectApp) {
+        this.selectAppTerminals = matchSelectApp.app_terminals || [];
+        if (_.get(matchSelectApp.app_terminals, 'length')) {
+            this.selectAppTerminals.unshift({id: '', name: '所有终端'});
+        }
+    }
     this.selectedLogAppId = appId;
     ShareObj.share_differ_user_keep_app_id = this.selectedLogAppId;
 };
