@@ -352,7 +352,7 @@ class RecommendCustomerCondition extends React.Component {
                             countyName={hasSavedRecommendParams.district}
                             updateLocation={this.updateLocation}
                         />
-                        <div onClick={this.handleToggleOtherCondition}>
+                        <div className='show-hide-tip' onClick={this.handleToggleOtherCondition}>
                             {show_tip}
                         </div>
                         <div className={cls}>
