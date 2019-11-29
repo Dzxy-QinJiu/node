@@ -756,7 +756,7 @@ class ClueCustomer extends React.Component {
             && _.isEmpty(filterStoreData.filterClueAccess)
             && _.isEmpty(filterStoreData.filterClueClassify)
             && _.isEmpty(filterStoreData.filterSourceClassify)
-            && _.get(filterStoreData, 'rangeParams[0].from') === clueStartTime
+            && _.get(filterStoreData, 'rangeParams[0].from') === 0
             && this.state.keyword === ''
             && _.isEmpty(filterStoreData.exist_fields)
             && _.isEmpty(filterStoreData.unexist_fields)

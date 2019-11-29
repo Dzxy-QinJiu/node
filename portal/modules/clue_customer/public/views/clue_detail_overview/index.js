@@ -1775,7 +1775,8 @@ class ClueDetailOverview extends React.Component {
     mergeToThisCustomer = (clue, customer) => {
         clueToCustomerPanelEmitter.emit(clueToCustomerPanelEmitter.OPEN_PANEL, {
             clue,
-            targetCustomer: customer
+            targetCustomer: customer,
+            afterConvert: this.props.afterTransferClueSuccess
         });
     }
 

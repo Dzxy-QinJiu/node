@@ -663,10 +663,12 @@ export const INDICATOR_TOOLTIP = [{
     key: 'online_time',
     value: Intl.get('user.score.online.time.score', '指定时间内在线时长分数')
 }];
-export const extractIcon = (<Button>
-    <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}></i>
-    {Intl.get('clue.extract.clue', '提取线索')}
-</Button>);
+// export const extractIcon = (<Button>
+//     <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}></i>
+//     {Intl.get('clue.extract.clue', '提取线索')}
+// </Button>);
+export const extractIcon = (
+    <i className="iconfont icon-extract" title={Intl.get('clue.extract', '提取')}></i>);
 export const DIFF_STATUS_TAB = [{
     key: '0',
     value: Intl.get('clue.diff.type.tab.title.noassign', '未分配负责人')
