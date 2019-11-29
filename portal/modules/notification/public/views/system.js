@@ -407,18 +407,22 @@ class SystemNotification extends React.Component {
         return showList.map((item, index) => {
             //是否是异地登录的类型
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
+            let loginErrMsg = _.get(item, 'login_error_msg');
+            let callUpFailedMsg = [];
+            if (isCallUpFailed) {
+                callUpFailedMsg = loginErrMsg.split(',');
+            }
             return (
                 <div className="system-notice-item" key={index}>
                     <a onClick={this.openUserDetail.bind(this, item.user_id, index)}>{item.user_name}</a>
                     {
                         isPullClueFailed ? (
-                            <span>
+                            <span className="system-notice-time">
                                 <span>{Intl.get('clue.extract.failed', '提取失败')}</span>
                                 <span className="login-count">
                                     {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}，
                                 </span>
                             </span>
-
                         ) : null
                     }
                     {
@@ -436,8 +440,19 @@ class SystemNotification extends React.Component {
                         )
                     }
                     {
-                        isLoginFailed || isCallUpFailed || isPullClueFailed ?
-                            <span>{_.get(item, 'login_error_msg')}</span> : null
+                        isCallUpFailed ? (
+                            <span className="system-notice-time">
+                                <span>{callUpFailedMsg.slice(0, 1)}</span>
+                                <span className="login-count">
+                                    {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}
+                                </span>
+                                <span>{callUpFailedMsg.slice(2)}</span>
+                            </span>
+                        ) : null
+                    }
+                    {
+                        isLoginFailed || isPullClueFailed ?
+                            <span>{loginErrMsg}</span> : null
                     }
 
                     <span className="system-notice-time">
@@ -447,7 +462,7 @@ class SystemNotification extends React.Component {
                             </span>
                         ) : (<span>
                             {
-                                isPullClueFailed ? null : (
+                                isPullClueFailed || isCallUpFailed ? null : (
                                     <span className="login-count">
                                         {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}
                                     </span>
