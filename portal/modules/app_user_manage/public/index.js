@@ -1,4 +1,3 @@
-var React = require('react');
 var language = require('../../../public/language/getLanguage');
 require('./css/main-zh_CN.less');
 if (language.lan() === 'es' || language.lan() === 'en') {
