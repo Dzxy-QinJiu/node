@@ -639,7 +639,7 @@ class LogView extends React.Component {
                 appTerminalType: value
             });
         });
-        Trace.traceEvent('用户审计日志', '用户筛选');
+        Trace.traceEvent('用户审计日志', '多终端类型');
     }
 
     // 渲染多终端类型
