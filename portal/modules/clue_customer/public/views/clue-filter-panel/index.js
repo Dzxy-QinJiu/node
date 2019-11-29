@@ -342,7 +342,7 @@ class ClueFilterPanel extends React.Component {
     };
     changeRangePicker = (date, dateString) => {
         if (!_.get(date,'[0]')){
-            FilterAction.setTimeRange({start_time: '', end_time: '', range: 'all'});
+            FilterAction.setTimeRange({start_time: 0, end_time: moment().endOf('day').valueOf(), range: 'all'});
         }else{
             FilterAction.setTimeRange({start_time: moment(_.get(date, '[0]')).startOf('day').valueOf(), end_time: moment(_.get(date, '[1]')).endOf('day').valueOf(), range: ''});
         }
@@ -358,7 +358,7 @@ class ClueFilterPanel extends React.Component {
     renderTimeRangeSelect = () => {
         const startTime = this.state.rangeParams[0].from;
         const endTime = this.state.rangeParams[0].to;
-        var timeRange = _.isNumber(startTime) && _.isNumber(endTime) ? [moment(startTime), moment(endTime)] : [];
+        var timeRange = startTime !== 0 ? [moment(startTime), moment(endTime)] : [];
         return(
             <div className="time-range-wrap">
                 <span className="consult-time">{Intl.get('common.login.time', '时间')}</span>
