@@ -369,8 +369,7 @@ var zh_CN = {
     'register.wechat.register.bind': '注册新账号',
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
-
-
+    
     //首页
     'menu.home.page': '首页',
     'home.page.my.work': '我的工作',
@@ -1124,6 +1123,7 @@ var zh_CN = {
     'user.trade.payment.name': '{name}支付',
     'user.trade.payment.alipay': '支付宝',
     'user.trade.no.payment': '您还没有购买记录',
+    'user.info.bind.wechat.tip': '绑定微信号',
     //基本资料end
     //密码管理start
     'user.password.input.again': '原密码不正确，请重新输入。',

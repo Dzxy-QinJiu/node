@@ -1122,6 +1122,7 @@ var en_US = {
     'user.trade.payment.name': '{name} payment', // {name}支付
     'user.trade.payment.alipay': 'Alipay', // 支付宝
     'user.trade.no.payment': 'You have no purchase record', // 您还没有购买记录
+    'user.info.bind.wechat.tip': 'Bind WeChat ID', // 绑定微信号
     //基本资料end
     //密码管理start
     'user.password.input.again': 'The original password was incorrect',//原密码不正确，请重新输入。
