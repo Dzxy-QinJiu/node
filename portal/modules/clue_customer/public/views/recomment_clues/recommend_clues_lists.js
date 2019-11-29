@@ -31,7 +31,7 @@ import Trace from 'LIB_DIR/trace';
 var batchOperate = require('PUB_DIR/sources/push/batch');
 import AntcDropdown from 'CMP_DIR/antc-dropdown';
 import AlwaysShowSelect from 'CMP_DIR/always-show-select';
-import {updateGuideMark} from 'PUB_DIR/sources/utils/common-data-util';
+import {updateGuideMark, getMaxLimitExtractClueCount} from 'PUB_DIR/sources/utils/common-data-util';
 import {SELECT_TYPE, getClueStatusValue,clueStartTime, getClueSalesList, getLocalSalesClickCount, SetLocalSalesClickCount} from '../../utils/clue-customer-utils';
 import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
@@ -51,6 +51,7 @@ class RecommendCustomerRightPanel extends React.Component {
             tablePopoverVisible: '',//单个提取展示popover的那条推荐线索
             batchPopoverVisible: false,//批量操作展示popover
             batchSelectedSales: '',//记录当前批量选择的销售，销销售团队id
+            canClickExtract: true,//防止用户连续点击批量提取
             ...clueCustomerStore.getState()
         };
     }
@@ -69,26 +70,22 @@ class RecommendCustomerRightPanel extends React.Component {
 
     //获取最多提取线索的数量以及已经提取多少线索
     getRecommendClueCount(callback){
-        $.ajax({
-            url: '/rest/get/maxlimit/and/hasExtracted/count',
-            dataType: 'json',
-            type: 'get',
-            success: (data) => {
-                var maxCount = _.get(data,'total', 0);
-                var hasExtractedCount = _.get(data,'pulled_clue_numbers')
-                this.setState({
-                    hasExtractCount: hasExtractedCount,
-                    maxLimitExtractNumber: maxCount,
-                },() => {
-                    _.isFunction(callback) && callback(hasExtractedCount);
-                });
-            },
-            error: (errorInfo) => {
-                this.setState({
-                    hasExtractCount: 0,
-                });
-                _.isFunction(callback) && callback('error');
-            }
+        this.setState({
+            canClickExtract: false
+        });
+        getMaxLimitExtractClueCount().then((data) => {
+            this.setState({
+                maxLimitExtractNumber: data.maxCount,
+                hasExtractCount: data.hasExtractedCount
+            },() => {
+                _.isFunction(callback) && callback(data.hasExtractedCount);
+            });
+        }).catch(() => {
+            this.setState({
+                hasExtractCount: 0,
+                maxLimitExtractNumber: 0
+            });
+            _.isFunction(callback) && callback('error');
         });
     }
 
@@ -499,6 +496,7 @@ class RecommendCustomerRightPanel extends React.Component {
         this.handleBatchAssignClues(submitObj);
     };
     handleSubmitAssignSalesBatch = () => {
+        if(!this.state.canClickExtract) return;
         //如果是选了修改全部
         let submitObj = this.handleBeforeSumitChangeSales(_.map(this.state.selectedRecommendClues,'id'));
         if (_.isEmpty(submitObj)){
@@ -520,7 +518,8 @@ class RecommendCustomerRightPanel extends React.Component {
                     ){
                         this.setState({
                             batchPopoverVisible: true,
-                            singleExtractLoading: false
+                            singleExtractLoading: false,
+                            canClickExtract: true
                         });
                     }else{
                         this.batchAssignRecommendClues(submitObj);
@@ -625,7 +624,7 @@ class RecommendCustomerRightPanel extends React.Component {
     };
     handleBatchAssignClues = (submitObj) => {
         this.setState({
-            batchExtractLoading: true,
+            batchExtractLoading: true
         });
         $.ajax({
             url: '/rest/clue/batch/recommend/list',
@@ -634,7 +633,8 @@ class RecommendCustomerRightPanel extends React.Component {
             data: submitObj,
             success: (data) => {
                 this.setState({
-                    batchExtractLoading: false
+                    batchExtractLoading: false,
+                    canClickExtract: true
                 });
                 var taskId = _.get(data, 'batch_label','');
                 if (taskId){
@@ -665,7 +665,8 @@ class RecommendCustomerRightPanel extends React.Component {
             },
             error: (errorInfo) => {
                 this.setState({
-                    batchExtractLoading: false
+                    batchExtractLoading: false,
+                    canClickExtract: true
                 });
                 message.error(errorInfo.responseJSON || Intl.get('clue.extract.failed', '提取失败'));
             }

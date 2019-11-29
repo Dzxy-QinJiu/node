@@ -59,6 +59,8 @@ class ContactItem extends React.Component {
                                                 contactName={contactName}
                                                 showClueDetailPanel={this.props.showClueDetailPanel}
                                                 hidePhoneIcon={this.props.hidePhoneIcon}
+                                                id={this.props.id}
+                                                type={this.props.type}
                                             />
                                         );
                                     })}
@@ -120,6 +122,8 @@ class ContactItem extends React.Component {
 
 }
 ContactItem.defaultProps = {
+    id: '',//日程对应线索id或客户id
+    type: '',//客户还是线索的日程'customer'或lead
     contacts: [],//联系人信息
     customerData: {},//客户信息
     itemType: '',
@@ -132,6 +136,8 @@ ContactItem.defaultProps = {
     }
 };
 ContactItem.propTypes = {
+    id: PropTypes.string,
+    type: PropTypes.string,
     contacts: PropTypes.object,//联系人信息
     customerData: PropTypes.object,//客户信息
     itemType: PropTypes.string,

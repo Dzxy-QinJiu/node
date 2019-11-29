@@ -613,7 +613,7 @@ class UserInfo extends React.Component{
                                             </a>
                                         </Popconfirm>) : (
                                         <a href="/page/login/wechat?isBindWechatAfterLogin=true" data-tracename="绑定微信">
-                                            {Intl.get('register.wechat.bind.btn', '立即绑定')}
+                                            {Intl.get('user.info.bind.wechat.tip', '绑定微信号')}
                                         </a>)}
                         </span>
                     </div>

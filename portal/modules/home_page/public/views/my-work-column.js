@@ -383,7 +383,7 @@ class MyWorkColumn extends React.Component {
     }
 
     //联系人和联系电话
-    renderPopoverContent(contacts, item) {
+    renderPopoverContent(contacts, item, id, type) {
         return (
             <div className="contacts-containers">
                 {_.map(contacts, (contact) => {
@@ -409,6 +409,8 @@ class MyWorkColumn extends React.Component {
                                                 showPhoneIcon={true}
                                                 hidePhoneNumber={onlyOnePhone}
                                                 onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                                type={type}
+                                                id={id}
                                             />
                                         </div>
                                     );
@@ -424,6 +426,9 @@ class MyWorkColumn extends React.Component {
     //联系人及电话的渲染
     renderContactItem(item) {
         let contacts = [];
+        //打电话时所需的客户/线索id和type
+        let id = '';
+        let type = '';
         //是否是通过的用户申请
         let isUserApplyPass = false;
         if (item.type === WORK_TYPES.APPLY && _.get(item, `[${WORK_TYPES.APPLY}].opinion`) === APPLY_STATUS.PASS) {
@@ -438,8 +443,12 @@ class MyWorkColumn extends React.Component {
         //拜访类型的时候不展示打电话的图标
         if (item.type === WORK_TYPES.CUSTOMER && !_.includes(item.tags, WORK_DETAIL_TAGS.CUSTOMER_VISIT) || isUserApplyPass) {
             contacts = _.get(item, 'customer.contacts', []);
+            type = 'customer';
+            id = _.get(item, 'customer.id', '');
         } else if (item.type === WORK_TYPES.LEAD) {
             contacts = _.get(item, 'lead.contacts', []);
+            type = 'lead';
+            id = _.get(item, 'lead.id', '');
         }
         let phones = [];
         _.each(contacts, contact => {
@@ -450,7 +459,7 @@ class MyWorkColumn extends React.Component {
         //将各个电话数组整合到一个数组中进行判断
         let phoneNumArray = _.flatten(phones);
         if (!_.isEmpty(contacts) && !_.isEmpty(phoneNumArray)) {
-            let contactsContent = this.renderPopoverContent(contacts, item);
+            let contactsContent = this.renderPopoverContent(contacts, item, id, type);
             let phoneCount = _.get(phoneNumArray, 'length');
             let phoneContactName = '';
             //只有一个电话时，点击拨号按钮可以直接拨打出去
@@ -468,6 +477,8 @@ class MyWorkColumn extends React.Component {
                                 showPhoneIcon={true}
                                 hidePhoneNumber={true}
                                 onCallSuccess={this.onCallSuccess.bind(this, item)}
+                                type={type}
+                                id={id}
                             />
                         </span>
                     ) : (
@@ -513,7 +524,12 @@ class MyWorkColumn extends React.Component {
     }
 
     //添加跟进记录
-    addVisitTrace(item) {
+    addVisitTrace(item, event) {
+        if(event){
+            event.stopPropagation();
+            Trace.traceEvent(event, '点击添加跟进记录按钮');
+        }
+
         //获取客户跟踪列表
         //只获取前三条
         let queryObj = {
@@ -604,7 +620,7 @@ class MyWorkColumn extends React.Component {
                     customer_id: _.get(curRecord, 'customer_visit.id', ''),
                     type: 'visit',
                     remark: trace.value,
-                    apply_id: curRecord.id
+                    apply_id: _.get(curRecord, 'apply.id', '')
                 };
                 CustomerRecordActions.updateCustomerTrace(queryObj, () => {
                     trace.validateStatus = 'success';
@@ -619,7 +635,7 @@ class MyWorkColumn extends React.Component {
                     customer_id: _.get(curRecord, 'customer_visit.id', ''),
                     type: 'visit',
                     remark: trace.value,
-                    apply_id: curRecord.id
+                    apply_id: _.get(curRecord, 'apply.id', '')
                 };
                 CustomerRecordActions.addCustomerTrace(queryObj, () => {
                     trace.validateStatus = 'success';
@@ -778,7 +794,7 @@ class MyWorkColumn extends React.Component {
                 remark = this.getApplyRemark(item, tag);
                 break;
             case WORK_DETAIL_TAGS.LEAD://待处理线索
-                tagDescr = Intl.get('crm.sales.clue', '线索');
+                tagDescr = Intl.get('home.page.new.clue', '新线索');
                 //线索描述
                 remark = _.get(item, `[${tag}].source`, '');
                 break;
@@ -803,7 +819,7 @@ class MyWorkColumn extends React.Component {
                 remark = this.getLastTrace(item);
                 break;
             case WORK_DETAIL_TAGS.DISTRIBUTION://新分配未联系
-                tagDescr = Intl.get('home.page.distribute.new', '新分配');
+                tagDescr = Intl.get('home.page.new.customer', '新客户');
                 break;
             case WORK_DETAIL_TAGS.WILLEXPIRE://即将到期
                 tagDescr = Intl.get('home.page.will.expire.customer', '即将到期');
@@ -850,7 +866,11 @@ class MyWorkColumn extends React.Component {
         let tip = Intl.get('home.page.my.work.visit.tips', '{month}月{day}日{time}拜访客户', {month: date[1], day: date[2],time: timePeriod});
         let city = _.get(customerVisit, 'city') ? `/${customerVisit.city}` : '';
         let county = _.get(customerVisit, 'county') ? `/${customerVisit.county}` : '';
-        return `${tip}, ${Intl.get('common.address', '地址')}: ${customerVisit.province}${city}${county} ${customerVisit.address}`;
+        let address = '';
+        if(customerVisit.province || city || county || customerVisit.address) {
+            address = `, ${Intl.get('common.address', '地址')}: ${customerVisit.province}${city}${county} ${customerVisit.address}`;
+        }
+        return `${tip}${address}`;
     }
 
     renderWorkCard(item, index) {

@@ -592,6 +592,8 @@ class ClueTraceList extends React.Component {
                                 <PhoneCallout
                                     phoneNumber={item.dst}
                                     hidePhoneNumber={true}
+                                    type="lead"
+                                    id={item.lead_id}
                                 />
                             </span>) : null}
                         <span className="item-bottom-right">

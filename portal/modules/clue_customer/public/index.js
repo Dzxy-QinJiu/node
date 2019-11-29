@@ -1659,6 +1659,8 @@ class ClueCustomer extends React.Component {
                                     showContactLabel={false}
                                     hasMoreIcon={hasMoreIconPrivilege}
                                     showClueDetailPanel={this.showClueDetailPanel.bind(this, salesClueItem)}
+                                    id={_.get(salesClueItem, 'id', '')}
+                                    type='lead'
                                 />
                                 {hasMoreIconPrivilege ? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
                             </div>

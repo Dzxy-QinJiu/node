@@ -1457,6 +1457,8 @@ class Crm extends React.Component {
                         <PhoneCallout
                             phoneNumber={item}
                             contactName={record.contact}
+                            type="customer"
+                            id={record.id}
                         />
                     </div>
                 );

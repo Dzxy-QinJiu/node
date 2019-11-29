@@ -369,8 +369,7 @@ var zh_CN = {
     'register.wechat.register.bind': '注册新账号',
     'register.wechat.bind.btn': '立即绑定',
     'register.wechat.register.btn': '注册并登录',
-
-
+    
     //首页
     'menu.home.page': '首页',
     'home.page.my.work': '我的工作',
@@ -424,6 +423,8 @@ var zh_CN = {
     'home.page.extracted.clues.on.months': '本月已提取{count}条线索',
     'home.page.extracted.clues.on.today': '今天已提取{count}条线索',
     'home.page.performance.at.time': '{time}业绩',
+    'home.page.new.customer': '新客户',
+    'home.page.new.clue': '新线索',
 
     //"superHello": "{appName}有{number}名{user_type}过期！",
     /*用户管理模块-start*/
@@ -1122,6 +1123,7 @@ var zh_CN = {
     'user.trade.payment.name': '{name}支付',
     'user.trade.payment.alipay': '支付宝',
     'user.trade.no.payment': '您还没有购买记录',
+    'user.info.bind.wechat.tip': '绑定微信号',
     //基本资料end
     //密码管理start
     'user.password.input.again': '原密码不正确，请重新输入。',
@@ -3060,6 +3062,12 @@ var zh_CN = {
     'clue.cancel.set.invalid': '改为有效',
     'analysis.sales.weekly.report': '销售周报',
     'analysis.sales.monthly.report': '销售月报',
+    'analysis.business.visit.frequency.statistics': '出差拜访频率统计',
+    'analysis.sales.visiting.customer.frequency': '{sales}拜访客户频率统计',
+    'analysis.visits.customer.frequency': '拜访{customer}的频率统计',
+    'analysis.contact.customer.statistics': '联系客户统计',
+    'analysis.contact.clue.statistics': '联系线索统计',
+    'analysis.number.of.contact.clue': '联系线索数',
     'common.font.the': '第',
     'common.weeks': '周',
     'clue.add.contacts.tip': '添加联系方式',

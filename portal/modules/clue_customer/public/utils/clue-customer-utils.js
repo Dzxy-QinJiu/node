@@ -131,8 +131,8 @@ export const getClueStatusValue = (filterClueStatus) => {
     }
     return typeFilter;
 };
-//为了防止开始时间不传，后端默认时间是从1970年开始的问题,把开始时间设置从2010年开始
-export const clueStartTime = moment('2010-01-01 00:00:00').valueOf();
+//开始时间应该设置为0
+export const clueStartTime = 0;
 export const getClueSalesList = function(sessionKey) {
     let clueSalesIdList = [];
     if(_.isEmpty(sessionKey)) {

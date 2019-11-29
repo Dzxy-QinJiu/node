@@ -40,6 +40,8 @@ var websiteConfig = require('../../../lib/utils/websiteConfig');
 var getWebsiteConfig = websiteConfig.getWebsiteConfig;
 import {getMyTeamTreeAndFlattenList} from './common-data-util';
 import {SELF_SETTING_FLOW} from 'MOD_DIR/apply_approve_manage/public/utils/apply-approve-utils';
+import ShearContent from 'CMP_DIR/shear-content';
+
 exports.getTeamMemberCount = function(salesTeam, teamMemberCount, teamMemberCountList, filterManager) {
     let curTeamId = salesTeam.group_id || salesTeam.key;//销售首页的是group_id，团队管理界面是key
     let teamMemberCountObj = _.find(teamMemberCountList, item => item.team_id === curTeamId);
@@ -1210,6 +1212,18 @@ exports.checkVersionAndType = function() {
     };
 };
 
+//获取日程打电话时需要的类型（customer/lead）和id
+exports.getScheduleCallTypeId = function(scheduleItem) {
+    let type = 'customer';
+    let id = _.get(scheduleItem, 'customer_id', '');
+    //如果客户id不存在，线索id存在，说明是线索的日程
+    if (!id && _.get(scheduleItem,'lead_id','')) {
+        type = 'lead';
+        id = scheduleItem.lead_id;
+    }
+    return {id, type};
+};
+
 //获取某个安全域已经提取多少推荐线索数量,
 exports.getRecommendClueCount = function(paramsObj = {},callback) {
     //如果是试用的账号，要获取今天的提取量，
@@ -1266,4 +1280,21 @@ exports.getOrganizationCallFee = function(cb) {
 exports.isKetaoOrganizaion = () => {
     let organizationId = _.get(getOrganization(), 'id');
     return organizationId === ORGANIZATION_TYPE.KETAO;
+};
+
+// 变更记录
+exports.recordChangeTimeLineItem = (item) => {
+    let operateTime = _.get(item, 'record_time'); // 具体变的时间
+    return (
+        <dl>
+            <dd>
+                <p>
+                    <ShearContent>
+                        {_.get(item, 'content')}
+                    </ShearContent>
+                </p>
+            </dd>
+            <dt>{moment(operateTime).format(oplateConsts.TIME_FORMAT)}</dt>
+        </dl>
+    );
 };
