@@ -38,7 +38,7 @@ ClueFilterStore.prototype.setInitialData = function() {
     //默认展示全部时间
     this.timeType = 'all';
     this.rangeParams = [{//时间范围参数
-        from: 0,
+        from: clueStartTime,
         to: moment().endOf('day').valueOf(),
         type: 'time',
         name: 'source_time'
@@ -103,7 +103,7 @@ ClueFilterStore.prototype.setTimeRange = function(timeRange) {
 ClueFilterStore.prototype.setTimeType = function(timeType) {
     this.timeType = timeType;
     if (timeType === 'all'){
-        this.setTimeRange({start_time: 0, end_time: moment().endOf('day').valueOf()});
+        this.setTimeRange({start_time: clueStartTime, end_time: moment().endOf('day').valueOf()});
     }
 
 };
