@@ -3040,6 +3040,11 @@ var en_US = {
     'analysis.contact.customer.statistics': 'Contact clue statistics',//联系客户统计
     'analysis.contact.clue.statistics': 'Contact clue statistics',//联系线索统计
     'analysis.number.of.contact.clue': 'Number of contact clue',//联系线索数
+    'analysis.market.lead.allocation.statistics': 'market lead allocation statistics',//市场线索分配统计
+    'analysis.sales.pull.lead.statistics': 'sales pull lead statistics',//销售提取线索统计
+    'analysis.assigned.clue.number': 'assigned clue number',//分配线索数
+    'analysis.extracting.cue.number': 'extracting cue number',//提取线索数
+    'analysis.follow-up.leads': 'follow-up leads',//跟进线索数
     'common.font.the': 'The',//第
     'common.weeks': 'Weeks',//周
     'clue.add.contacts.tip': 'Add contact way',//添加联系方式
