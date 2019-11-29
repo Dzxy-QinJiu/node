@@ -73,10 +73,7 @@ ClueCustomerPhoneAlertStore.prototype.updateClueTrace = function(result) {
 ClueCustomerPhoneAlertStore.prototype.setSubmitErrMsg = function(errMsg) {
     this.submittingTraceMsg = errMsg;
 };
-//设置客户的基本信息
-ClueCustomerPhoneAlertStore.prototype.setClueInfoArr = function(obj) {
-    this.clueInfoArr = [obj];
-};
+
 //设置客户信息为空
 ClueCustomerPhoneAlertStore.prototype.setInitialClueArr = function() {
     this.clueInfoArr = [];

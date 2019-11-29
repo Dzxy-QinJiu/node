@@ -34,7 +34,9 @@ exports.phoneMsgToFrontend = function(phoneMsg) {
         callid: phoneMsg.callid, //通话id,一个通话中，'ALERT', 'ANSWERED', 'phone'/'call_back'状态的callid相同
         recevied_time: phoneMsg.recevied_time, //通话状态的接收时间，'ALERT', 'ANSWERED', 'phone'/'call_back'状态的接收时间是有序（后面的状态接收时间要在前面状态之后）
         billsec: phoneMsg.billsec, //通话时长
-        call_date: phoneMsg.call_date
+        call_date: phoneMsg.call_date,
+        lead_id: phoneMsg.lead_id,
+        customer_id: phoneMsg.customer_id
     };
 };
 

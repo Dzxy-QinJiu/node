@@ -7,7 +7,6 @@ function PhoneAlertAction() {
         'setEditStatus',
         'setInitialState',
         'setSubmitErrMsg',
-        'setClueInfoArr',
         'setInitialClueArr',
         'toggleClueDetail'
     );
