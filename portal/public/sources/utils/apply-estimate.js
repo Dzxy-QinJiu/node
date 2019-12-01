@@ -84,7 +84,7 @@ function getUserInfo() {
 
 //获取返回的错误信息jsx
 function getApplyMessage(hasPrivilege) {
-    let userInfoUrl = '/user_info_manage/user_info';
+    let userInfoUrl = '/user-preference';
     let errorMsg = null;
     if (_.get(hasPrivilege, 'needActive')) {
         errorMsg = (<ReactIntl.FormattedMessage

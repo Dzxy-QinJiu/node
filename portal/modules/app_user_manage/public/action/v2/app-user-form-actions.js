@@ -52,7 +52,7 @@ class AppUserFormActions {
                 //需要弹框
                 showPop: true,
                 //在用户页面处理
-                urlPath: '/user/list'
+                urlPath: '/users'
             });
             //添加任务id，仅在当前页显示
             batchOperate.addTaskIdToList(taskId);

@@ -166,7 +166,7 @@ class CrmScoreCard extends React.Component {
         //判断是不是管理员
         if(userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
             return(<div className="handle-btn-item"
-                onClick={() => {history.push('/background_management/sales_auto');}}>
+                onClick={() => {history.push('/settings/automation');}}>
                 {Intl.get('user.login.score.explain.mananer', '设置分数规则？')}
             </div>);
         }else{

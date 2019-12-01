@@ -79,7 +79,7 @@ class AppUserCustomerSwitch extends React.Component {
 
     back = () => {
         //返回客户列表
-        history.push('/crm', {});
+        history.push('/accounts', {});
     };
 
     showApplyForm = () => {

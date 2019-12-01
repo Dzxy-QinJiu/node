@@ -142,7 +142,7 @@ var UserInfoPage = createReactClass({
                                                     defaultMessage={'以下为您最近的操作记录，若存在异常情况，请在核实后尽快{editpassword}'}
                                                     values={{
                                                         editpassword: <span className="update-pwd">
-                                                            <NavLink to="/user_info_manage/user_pwd" activeClassName="active"data-tracename="修改密码">
+                                                            <NavLink to="/user-preference/password" activeClassName="active"data-tracename="修改密码">
                                                                 <ReactIntl.FormattedMessage id="common.edit.password" defaultMessage="修改密码"/>
                                                             </NavLink>
                                                         </span>

@@ -320,7 +320,7 @@ class CustomerAnalysis extends React.Component {
             }
         }
         return {
-            url: '/crm',
+            url: '/accounts',
             query: {
                 app_id: '',
                 analysis_filter_field: analysis_filter_field

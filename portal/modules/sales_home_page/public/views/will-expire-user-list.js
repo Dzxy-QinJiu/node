@@ -61,7 +61,7 @@ class WillExpireUserList extends React.Component {
             jumpUserObj.team_ids = this.props.team_id;
         }
         //跳转到用户列表
-        history.push('/user/list', jumpUserObj);
+        history.push('/users', jumpUserObj);
     }
 
     showExpireUserItem(items) {

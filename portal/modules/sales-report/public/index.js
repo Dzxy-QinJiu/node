@@ -296,7 +296,7 @@ class SalesReport extends React.Component {
                                     nickName={currentMember.nick_name}
                                     round={false}
                                     link={true}
-                                    url="/user_info_manage"
+                                    url="/user-preference"
                                     isUseDefaultUserImage={true}
                                 />
                             </td>

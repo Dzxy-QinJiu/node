@@ -136,7 +136,7 @@ function UserDetailAddAppActions() {
                     //需要弹框
                     showPop: true,
                     //在用户页面处理
-                    urlPath: '/user/list'
+                    urlPath: '/users'
                 });
                 //添加到任务列表，仅在当前页显示
                 batchOperate.addTaskIdToList(taskId);
@@ -173,7 +173,7 @@ function UserDetailAddAppActions() {
                     //需要弹框
                     showPop: true,
                     //在用户页面处理
-                    urlPath: '/user/list'
+                    urlPath: '/users'
                 });
                 //保存到任务列表，仅在当前页显示
                 batchOperate.addTaskIdToList(taskId);

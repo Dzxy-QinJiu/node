@@ -222,7 +222,7 @@ var NavSidebar = createReactClass({
                 return;
             }
             //点击到线索未处理的数字上，进行跳转
-            history.push('/clue_customer', {clickUnhandleNum: true});
+            history.push('/leads', {clickUnhandleNum: true});
         });
     },
     //呼叫中心的电话系统初始化完成后，触发拨号键盘是否展示的判断
@@ -481,7 +481,7 @@ var NavSidebar = createReactClass({
                             src={this.state.userInfoLogo}
                             userName={this.state.userInfo.user_name}
                             nickName={this.state.userInfo.nick_name}
-                            round="true" link="true" url="/user_info_manage"
+                            round="true" link="true" url="/user-preference"
                             isActiveFlag={this.props.isShowNotificationPanel}
                             isUseDefaultUserImage={true}
                         />

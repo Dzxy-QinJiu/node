@@ -234,7 +234,7 @@ class OfficialPersonalEdition extends React.Component{
                 _this.onClosePanel();
             },
             goFn: () => {
-                history.push('/user_info_manage/user_info',{
+                history.push('/user-preference',{
                     show_pay_record: true
                 });
                 _this.onClosePanel();

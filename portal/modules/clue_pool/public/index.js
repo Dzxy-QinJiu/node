@@ -927,7 +927,7 @@ class ClueExtract extends React.Component {
                 let batchParams = _.cloneDeep(submitObj);
                 batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
                     showPop: true,
-                    urlPath: '/clue_customer'
+                    urlPath: '/leads'
                 });
                 //立即在界面上显示推送通知
                 //界面上立即显示一个初始化推送

@@ -41,7 +41,7 @@ export function handleChartClick(name, value, conditions) {
         customerType: conditionObj.tab,
     };
 
-    const url = '/crm?' + querystring.stringify(query);
+    const url = '/accounts?' + querystring.stringify(query);
 
     //跳转到客户列表
     window.open(url);

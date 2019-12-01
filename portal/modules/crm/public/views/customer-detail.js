@@ -275,11 +275,11 @@ class CrmRightPanel extends React.Component {
     }
     handleClickCustomerPool = () => {
         //跳转到客户界面的客户池
-        history.push('/crm', {showCustomerPool: true, condition: {name: _.get(this, 'props.currentName')}});
+        history.push('/accounts', {showCustomerPool: true, condition: {name: _.get(this, 'props.currentName')}});
     }
     handleClickCustomerRecycle = () => {
         //跳转到客户界面的回收站
-        history.push('/crm', {
+        history.push('/accounts', {
             showCustomerRecycle: true, condition: {
                 field: 'name',
                 value: _.get(this, 'props.currentName')
