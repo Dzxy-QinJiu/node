@@ -216,7 +216,7 @@ class TopNav extends React.Component {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/apply/domain_name');
+            history.push('/apply/domain-name');
         });
 
 
