@@ -403,12 +403,7 @@ var NavSidebar = createReactClass({
         linkList = _.filter(linkList, menu => !menuUtil.menuIsNotShow(menu));
         return (
             <ul className="ul-unstyled">
-                {//是csm.curtao.com域名下，并且是个人资料下的二级菜单中加入在线咨询
-                    isCurtao() && isShowLogOut ? (
-                        <li onClick={this.onChatClick}>
-                            <a>{Intl.get('menu.online.consulting', '在线咨询')}</a>
-                        </li>
-                    ) : null}
+            
                 {
                     _.map(linkList, obj =>
                         <li key={obj.id} onClick={this.closeNotificationPanel}>
@@ -640,7 +635,7 @@ var NavSidebar = createReactClass({
             'icon-active-call_record-ico': this.state.ronglianNum,
         });
         const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
-            (<i className={iconCls} style={{fontSize: 24}}/>);
+            (<i className={iconCls}/>);
 
         const versionAndType = checkVersionAndType();
         let dialUpKeyBoardContent = null;
@@ -680,6 +675,12 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
+                        {//是csm.curtao.com域名下，在线咨询的展示
+                            isCurtao() ? (
+                                <div className='customer-service-navicon' onClick={this.onChatClick}>
+                                    <a className='iconfont icon-customer-service' title={Intl.get('menu.online.consulting', '在线咨询')}/>
+                                </div>
+                            ) : null}
                         {
                             this.state.isShowDialUpKeyboard ? (
                                 <DialUpKeyboard
