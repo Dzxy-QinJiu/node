@@ -399,7 +399,7 @@ class PhonePanel extends React.Component {
             } else {//该电话对应多个客户时的处理
                 let showDetailCustomer = _.find(customerInfoArr, customer => customer.isShowDetail);
                 if(this.isPhoneMsgWithLeadId(phonemsgObj) && _.get(customerInfoArr,'[0]') ){
-                    return this.renderClueDetail(customerInfoArr[0]);
+                    return this.renderCustomerDetail(customerInfoArr[0]);
                 }else if (showDetailCustomer) {//有展示的客户详情时
                     return (
                         <div className="show-customer-detail">
