@@ -576,6 +576,9 @@ class ClueCustomer extends React.Component {
     closeRecommendCluePanel = () => {
         this.setState({
             isShowRecommendCluePanel: false
+        },() => {
+            //重新刷新一下线索列表,防止提取线索后页面不刷新的问题
+            this.getClueList();
         });
     }
     handleClickCloseClue = () => {

@@ -80,7 +80,7 @@ class RecommendCustomerRightPanel extends React.Component {
             },() => {
                 _.isFunction(callback) && callback(data.hasExtractedCount);
             });
-        }).catch(() => {
+        },(error) => {
             this.setState({
                 hasExtractCount: 0,
                 maxLimitExtractNumber: 0
