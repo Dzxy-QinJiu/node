@@ -420,7 +420,7 @@ class SystemNotification extends React.Component {
                             <span className="system-notice-time">
                                 <span>{Intl.get('clue.extract.failed', '提取失败')}</span>
                                 <span className="login-count">
-                                    {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}，
+                                    {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}
                                 </span>
                             </span>
                         ) : null
@@ -446,13 +446,18 @@ class SystemNotification extends React.Component {
                                 <span className="login-count">
                                     {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}
                                 </span>
-                                <span>{callUpFailedMsg.slice(2)}</span>
+                                {
+                                    callUpFailedMsg.length > 1 ? (
+                                        <span>，{callUpFailedMsg.slice(1)}</span>
+                                    ) : null
+                                }
+
                             </span>
                         ) : null
                     }
                     {
-                        isLoginFailed || isPullClueFailed ?
-                            <span>{loginErrMsg}</span> : null
+                        (isLoginFailed || isPullClueFailed) && loginErrMsg ?
+                            <span>，{loginErrMsg}</span> : null
                     }
 
                     <span className="system-notice-time">
