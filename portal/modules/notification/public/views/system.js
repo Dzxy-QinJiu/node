@@ -298,6 +298,31 @@ class SystemNotification extends React.Component {
         userDetailEmitter.emit(userDetailEmitter.OPEN_USER_DETAIL, {userId: user_id});
     };
 
+    // 获取通知失败
+    getNoticeErrorArray = (notifyType, noticeDetailData) => {
+        // 是否是登录失败
+        let isLoginFailed = notifyType === SYSTEM_NOTICE_TYPES.LOGIN_FAILED;
+        // 是否是拨打电话失败
+        let isCallUpFailed = notifyType === SYSTEM_NOTICE_TYPES.CALL_UP_FAIL;
+        // 是否是提取线失败
+        let isPullClueFailed = notifyType === SYSTEM_NOTICE_TYPES.PULL_CLUE_FAIL;
+        let noticeErrorArray = _.map(noticeDetailData, item => {
+            let detailContent = _.get(item, 'content.operate_detail');
+            if (!detailContent) {
+                if (isLoginFailed) { // 登录失败的处理
+                    detailContent = Intl.get('login.username.password.error', '用户名或密码错误');
+                } else if (isCallUpFailed) { // 拨打电话失败的处理
+                    detailContent = Intl.get('notification.call.up.failed', '拨打电话失败');
+                }else if (isPullClueFailed) { // 提取线失败的处理
+                    detailContent = Intl.get('notification.extract.clue.failed', '提取线索失败');
+                }
+            }
+            return detailContent;
+        });
+
+        return _.uniq(noticeErrorArray);
+    };
+
     // 待处理数据整合,同一个用户登录同一个应用，计算登录次数以及获取最后一次登录时间
     handleNoticeDetailData = (noticeDetail, notifyType) => {
         // 是否是登录失败
@@ -313,25 +338,8 @@ class SystemNotification extends React.Component {
         // 登录的应用名 eg: ['鹰击', '鹰眼']
         let appName = _.chain(noticeDetailData).map('app_name').uniq().value();
         //登录失败的错误提示信息 eg: ['用户名或密码错误','验证码错误']
-        let loginErrorArray = [];
-        // 登录失败的处理
-        if(isLoginFailed){
-            loginErrorArray = _.map(noticeDetailData, item => {
-                //旧数据中没有content.operate_detail, 默认用’用户名或密码错误‘
-                return _.get(item, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
-            });
-            loginErrorArray = _.uniq(loginErrorArray);
-        } else if (isCallUpFailed) { // 拨打电话失败的处理
-            loginErrorArray = _.map(noticeDetailData, item => {
-                return _.get(item, 'content.operate_detail', Intl.get('notification.call.up.failed', '拨打电话失败'));
-            });
-            loginErrorArray = _.uniq(loginErrorArray);
-        } else if (isPullClueFailed) { // 提取线失败的处理
-            loginErrorArray = _.map(noticeDetailData, item => {
-                return _.get(item, 'content.operate_detail', Intl.get('notification.extract.clue.failed', '提取线索失败'));
-            });
-            loginErrorArray = _.uniq(loginErrorArray);
-        }
+        let loginErrorArray = this.getNoticeErrorArray(notifyType, noticeDetailData);
+
         let userAppArray = [];
         // 可能出现的用户登录应用的情况, eg: [{user_name: a, app_name: '鹰击'},{user_name: a, app_name: '鹰眼'},{user_name: b, app_name: '鹰击'},{user_name: b, app_name: '鹰眼'}]
         // 登录失败的情况，eg:  [{user_name: a, app_name: '鹰击', login_error_msg:'用户名密码错误'},{user_name: a, app_name: '鹰眼', login_error_msg:'用户名密码错误'},{user_name: b, app_name: '鹰击', login_error_msg:'用户名密码错误'},{user_name: b, app_name: '鹰眼', login_error_msg:'验证码错误'}]
@@ -353,16 +361,18 @@ class SystemNotification extends React.Component {
             noticeDetailData.forEach( (noticeItem, index) => {
                 let isSame = item.user_name === noticeItem.user_name && item.app_name === noticeItem.app_name;
                 // 同类登录失败错误提示的次数累计
+                // 注意：_.get(object, path, [defaultValue])，根据 object对象的path路径获取值。 如果解析 value 是 undefined 会以 defaultValue 取代。
+                // 如果value有值且为空字符串的话，则_.get(object, 'value')的值是空字符串，
                 if(item.login_error_msg){
                     let failedMsg = '';
                     if (isLoginFailed) {
-                        failedMsg = _.get(noticeItem, 'content.operate_detail', Intl.get('login.username.password.error', '用户名或密码错误'));
+                        failedMsg = _.get(noticeItem, 'content.operate_detail') || Intl.get('login.username.password.error', '用户名或密码错误');
                         isSame = isSame && item.login_error_msg === failedMsg;
                     } else if (isCallUpFailed) {
-                        failedMsg = _.get(noticeItem, 'content.operate_detail', Intl.get('notification.call.up.failed', '拨打电话失败'));
+                        failedMsg = _.get(noticeItem, 'content.operate_detail') || Intl.get('notification.call.up.failed', '拨打电话失败');
                         isSame = isSame && item.login_error_msg === failedMsg;
                     } else if (isPullClueFailed) {
-                        failedMsg = _.get(noticeItem, 'content.operate_detail', Intl.get('notification.extract.clue.failed', '提取线索失败'));
+                        failedMsg = _.get(noticeItem, 'content.operate_detail') || Intl.get('notification.extract.clue.failed', '提取线索失败');
                         isSame = isSame && item.login_error_msg === failedMsg;
                     }
                 }
