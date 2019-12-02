@@ -15,9 +15,11 @@ let analysisInstanceCache = null;
 //图表索引缓存
 let chartIndexCache = -1;
 
+const CHART_TITLE = Intl.get('analysis.business.visit.frequency.statistics', '出差拜访频率统计');
+
 export function getVisitCustomerChart() {
     let chart = {
-        title: Intl.get('analysis.business.visit.frequency.statistics', '出差拜访频率统计'),
+        title: CHART_TITLE,
         chartType: 'table',
         layout: { sm: 24 },
         height: 'auto',
@@ -46,7 +48,7 @@ export function getVisitCustomerChart() {
                 const day = moment(endTime).subtract(i, 'days');
                 const dayEnd = day.valueOf();
                 const dayStart = day.startOf('day').valueOf();
-                let dayStr = day.format('YYYY.MM.DD');
+                let dayStr = day.format(oplateConsts.DATE_FORMAT);
                 let weekDayIndex = day.weekday() + 1;
                 if (weekDayIndex === 7) weekDayIndex = 0;
                 const weekDay = WEEKDAY[weekDayIndex];
@@ -89,7 +91,7 @@ export function getVisitCustomerChart() {
                         }
 
                         return (
-                            <span className="clickable" onClick={onSalesNameClick.bind(this, item.nick_name, item.user_id)}>
+                            <span className="clickable-with-color" onClick={onSalesNameClick.bind(this, item.nick_name, item.user_id)}>
                                 {item.nick_name}
                                 {seperator}
                             </span>
@@ -109,9 +111,7 @@ export function getVisitCustomerChart() {
         let chart = charts[chartIndexCache];
         levelOneChartCache = _.cloneDeep(chart);
 
-        chart.title = Intl.get('analysis.sales.visiting.customer.frequency', '{sales}拜访客户频率统计', {sales: salesName});
-        const subTitle = <span className="clickable" onClick={backToLevelOne}>{Intl.get('crm.52', '返回')}</span>;
-        _.set(chart, 'cardContainer.props.subTitle', subTitle);
+        chart.title = <span><span className="clickable-with-hover-color" onClick={backToLevelOne}>{chart.title}</span> &gt; {salesName}</span>;
 
         conditionCache.user_id = userId;
 
@@ -138,7 +138,7 @@ export function getVisitCustomerChart() {
                         }
 
                         return (
-                            <span className="clickable" onClick={onCustomerNameClick.bind(this, item.name, item.id)}>
+                            <span className="clickable-with-color" onClick={onCustomerNameClick.bind(this, item.name, item.id, salesName)}>
                                 {item.name}
                                 {seperator}
                             </span>
@@ -154,15 +154,13 @@ export function getVisitCustomerChart() {
     }
 
     //销售人员名点击事件
-    function onCustomerNameClick(customerName, customerId) {
+    function onCustomerNameClick(customerName, customerId, salesName) {
         let charts = analysisInstanceCache.state.charts;
 
         let chart = charts[chartIndexCache];
         levelTwoChartCache = _.cloneDeep(chart);
 
-        chart.title = Intl.get('analysis.visits.customer.frequency', '拜访{customer}的频率统计', {customer: customerName});
-        const subTitle = <span className="clickable" onClick={backToLevelTwo}>{Intl.get('crm.52', '返回')}</span>;
-        _.set(chart, 'cardContainer.props.subTitle', subTitle);
+        chart.title = <span><span className="clickable-with-hover-color" onClick={backToLevelOne}>{CHART_TITLE}</span> &gt; <span className="clickable-with-hover-color" onClick={backToLevelTwo}>{salesName}</span> &gt; {customerName}</span>;
 
         conditionCache.customer_id = customerId;
 
