@@ -3068,6 +3068,7 @@ var zh_CN = {
     'analysis.contact.customer.statistics': '联系客户统计',
     'analysis.contact.clue.statistics': '联系线索统计',
     'analysis.number.of.contact.clue': '联系线索数',
+    'analysis.number.of.remarked.trace': '跟进记录数',
     'analysis.market.lead.allocation.statistics': '市场线索分配统计',
     'analysis.sales.pull.lead.statistics': '销售提取线索统计',
     'analysis.assigned.clue.number': '分配线索数',
