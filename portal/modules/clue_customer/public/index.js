@@ -1661,6 +1661,7 @@ class ClueCustomer extends React.Component {
                                     showClueDetailPanel={this.showClueDetailPanel.bind(this, salesClueItem)}
                                     id={_.get(salesClueItem, 'id', '')}
                                     type='lead'
+                                    hidePhoneIcon={!editCluePrivilege(salesClueItem)}
                                 />
                                 {hasMoreIconPrivilege ? <i className="iconfont icon-more" onClick={this.showClueDetailOut.bind(this, salesClueItem)}/> : null}
                             </div>
