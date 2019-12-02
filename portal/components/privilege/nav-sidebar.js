@@ -675,12 +675,6 @@ var NavSidebar = createReactClass({
                     <div className="sidebar-user" ref={(element) => {
                         this.userInfo = element;
                     }}>
-                        {//是csm.curtao.com域名下，在线咨询的展示
-                            isCurtao() ? (
-                                <div className='customer-service-navicon' onClick={this.onChatClick}>
-                                    <a className='iconfont icon-customer-service' title={Intl.get('menu.online.consulting', '在线咨询')}/>
-                                </div>
-                            ) : null}
                         {
                             this.state.isShowDialUpKeyboard ? (
                                 <DialUpKeyboard
@@ -689,6 +683,13 @@ var NavSidebar = createReactClass({
                                     dialIcon={DialIcon}
                                     inputNumber={this.state.ronglianNum}
                                 />
+                            ) : null
+                        }
+                        {//是csm.curtao.com域名下，在线咨询的展示
+                            isCurtao() ? (
+                                <div className='customer-service-navicon' onClick={this.onChatClick}>
+                                    <a className='iconfont icon-customer-service' title={Intl.get('menu.online.consulting', '在线咨询')}/>
+                                </div>
                             ) : null
                         }
                         {isCurtao() ? null : this.getNotificationBlock()}
