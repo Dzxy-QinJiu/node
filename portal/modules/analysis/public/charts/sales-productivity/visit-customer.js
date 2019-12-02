@@ -46,7 +46,7 @@ export function getVisitCustomerChart() {
                 const day = moment(endTime).subtract(i, 'days');
                 const dayEnd = day.valueOf();
                 const dayStart = day.startOf('day').valueOf();
-                let dayStr = day.format('YYYY.MM.DD');
+                let dayStr = day.format(oplateConsts.DATE_FORMAT);
                 let weekDayIndex = day.weekday() + 1;
                 if (weekDayIndex === 7) weekDayIndex = 0;
                 const weekDay = WEEKDAY[weekDayIndex];
