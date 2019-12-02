@@ -45,6 +45,10 @@ export function getContactChart(type) {
                 dataIndex: 'trace_num',
                 width: '10%',
             }, {
+                title: Intl.get('analysis.number.of.remarked.trace', '跟进记录数'),
+                dataIndex: 'remarked_trace_num',
+                width: '10%',
+            }, {
                 title: Intl.get('common.number.of.calls.made', '接通数'),
                 dataIndex: 'answer_phone_num',
                 width: '10%',
