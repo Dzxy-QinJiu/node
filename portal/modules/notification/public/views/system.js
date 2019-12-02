@@ -419,13 +419,13 @@ class SystemNotification extends React.Component {
             let isOffsetLogin = (item.type === SYSTEM_NOTICE_TYPES.OFFSITE_LOGIN && item.content);
             let loginErrMsg = _.get(item, 'login_error_msg');
             let callUpFailedMsg = [];
-            let callUpFailedDecribe = ''; // 拨打电话的描述信息
+            let callUpFailedDescribe = ''; // 拨打电话的描述信息
             let callUpFailedBecause = ''; // 拨打电话的失败的原因
             if (isCallUpFailed) {
                 callUpFailedMsg = loginErrMsg.split(',');
                 let length = callUpFailedMsg.length;
                 if (length) {
-                    callUpFailedDecribe = callUpFailedMsg[0];
+                    callUpFailedDescribe = callUpFailedMsg[0];
                     if (length > 1) {
                         callUpFailedBecause = callUpFailedMsg.slice(1).join();
                     }
@@ -461,7 +461,7 @@ class SystemNotification extends React.Component {
                     {
                         isCallUpFailed ? (
                             <span className="system-notice-time">
-                                <span>{callUpFailedDecribe}</span>
+                                <span>{callUpFailedDescribe}</span>
                                 <span className="login-count">
                                     {Intl.get('notification.system.count', '{count}次', {count: item.login_count})}
                                 </span>
