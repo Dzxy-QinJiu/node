@@ -3045,6 +3045,7 @@ var en_US = {
     'analysis.contact.customer.statistics': 'Contact clue statistics',//联系客户统计
     'analysis.contact.clue.statistics': 'Contact clue statistics',//联系线索统计
     'analysis.number.of.contact.clue': 'Number of contact clue',//联系线索数
+    'analysis.number.of.remarked.trace': 'Number of remarked trace',//跟进记录数
     'analysis.market.lead.allocation.statistics': 'market lead allocation statistics',//市场线索分配统计
     'analysis.sales.pull.lead.statistics': 'sales pull lead statistics',//销售提取线索统计
     'analysis.assigned.clue.number': 'assigned clue number',//分配线索数
