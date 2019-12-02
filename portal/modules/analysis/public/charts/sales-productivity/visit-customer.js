@@ -89,7 +89,7 @@ export function getVisitCustomerChart() {
                         }
 
                         return (
-                            <span className="clickable" onClick={onSalesNameClick.bind(this, item.nick_name, item.user_id)}>
+                            <span className="clickable-with-color" onClick={onSalesNameClick.bind(this, item.nick_name, item.user_id)}>
                                 {item.nick_name}
                                 {seperator}
                             </span>
@@ -138,7 +138,7 @@ export function getVisitCustomerChart() {
                         }
 
                         return (
-                            <span className="clickable" onClick={onCustomerNameClick.bind(this, item.name, item.id)}>
+                            <span className="clickable-with-color" onClick={onCustomerNameClick.bind(this, item.name, item.id)}>
                                 {item.name}
                                 {seperator}
                             </span>
