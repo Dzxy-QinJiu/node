@@ -127,7 +127,7 @@ const BOOT_PROCESS_KEYS_MAP = {
                 />
             ),
         },
-        icon: 'icon-clue_customer-ico',
+        icon: 'icon-leads-ico',
         bgColor: '#8280e7',
         btnText: Intl.get('clue.extract.clue', '提取线索')
     },

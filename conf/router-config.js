@@ -44,7 +44,7 @@ let routers = [
     {
         id: 'CALL_RECORD',
         name: 'menu.shortName.call',//通话
-        routePath: '/calling/records',
+        routePath: '/call-records',
         component: `${MODULE_PATH}call_record/public`,
         shortName: 'menu.shortName.call',//通话
         //有这个权限，才显示入口图标
@@ -58,17 +58,10 @@ let routers = [
         subMenu: [{
             id: 'APP_USER_MANAGE_USER',
             name: 'menu.appuser.list',//用户列表
-            routePath: '/users',
+            routePath: '/users/list',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['APP_USER_LIST']
-        }, {
-            id: 'ORGANIZATION_MANAGE',
-            name: 'menu.appuser.org',//组织管理
-            routePath: '/user/organization',
-            component: `${MODULE_PATH}organization_manage/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['USER_ORGANIZATION_LIST']
         }, {
             id: 'USER_AUDIT_LOG', // 用户审计日志的唯一标识
             name: 'menu.appuser.auditlog',//操作记录
@@ -94,7 +87,7 @@ let routers = [
             {
                 id: 'ANALYSIS',//唯一标识
                 name: 'user.detail.analysis',//分析
-                routePath: '/analysis',
+                routePath: '/analysis/data',
                 component: `${MODULE_PATH}analysis/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: [
@@ -105,14 +98,14 @@ let routers = [
             {
                 id: 'REPORT',//唯一标识
                 name: 'common.report',//报告
-                routePath: '/report',
+                routePath: '/analysis/report',
                 //有这个权限，才显示入口图标
                 subMenu: [
                     //周报统计
                     {
                         id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
                         name: 'contract.14',//周报
-                        routePath: '/report/weekly',
+                        routePath: '/analysis/report/weekly',
                         component: `${MODULE_PATH}weekly_report/public`,
                         showPrivileges: [
                             'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
@@ -123,7 +116,7 @@ let routers = [
                     {
                         id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
                         name: 'contract.15',//月报
-                        routePath: '/report/monthly',
+                        routePath: '/analysis/report/monthly',
                         component: `${MODULE_PATH}monthly-report/public`,
                         showPrivileges: [
                             'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
@@ -134,7 +127,7 @@ let routers = [
                     {
                         id: 'SALES_REPORT_ANALYSIS',//唯一标识
                         name: 'common.individual.report',//个人报告
-                        routePath: '/report/personal',
+                        routePath: '/analysis/report/personal',
                         component: `${MODULE_PATH}sales-report/public`,
                         //有这个权限，才显示入口图标
                         showPrivileges: [
@@ -168,7 +161,7 @@ let routers = [
     {
         id: 'SCHEDULE_MANAGEMENT',
         name: 'menu.shortName.schedule',//日程
-        routePath: '/canlender',
+        routePath: '/calender',
         component: `${MODULE_PATH}schedule_management/public`,
         shortName: 'menu.shortName.schedule',//日程
         //有这个权限，才显示入口图标
@@ -347,7 +340,7 @@ let routers = [
         subMenu: [{
             id: 'USER_INFO',
             name: 'menu.userinfo',//个人资料
-            routePath: '/user-preference',
+            routePath: '/user-preference/info',
             component: `${MODULE_PATH}user_info/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_INFO_USER']

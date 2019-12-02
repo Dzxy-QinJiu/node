@@ -216,7 +216,7 @@ var NavSidebar = createReactClass({
                 this.selectedIntroElement();
             }
         });
-        $('.navbar').on('click', '.clue_customer_icon_container', function(e) {
+        $('.navbar').on('click', '.leads_icon_container', function(e) {
             //点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
@@ -632,7 +632,7 @@ var NavSidebar = createReactClass({
     render: function() {
         const iconCls = classNames('iconfont ', {
             'icon-dial-up-keybord': !this.state.ronglianNum,
-            'icon-active-call_record-ico': this.state.ronglianNum,
+            'icon-active-call-records-ico': this.state.ronglianNum,
         });
         const DialIcon = this.state.hideNavIcon ? Intl.get('phone.dial.up.text', '拨号') :
             (<i className={iconCls}/>);

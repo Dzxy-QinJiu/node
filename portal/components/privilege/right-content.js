@@ -15,6 +15,7 @@ class RightContent extends React.Component {
         var locationPath = location.pathname;
         if (this.props.route && locationPath === this.props.route.path) {
             var routes = this.props.route.routes;
+            // 如果有子路由
             if (routes && routes[0] && routes[0].path) {
                 history.replace(routes[0].path);
                 return true;
