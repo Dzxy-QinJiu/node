@@ -18,10 +18,6 @@ module.exports = {
 
 function getCharts() {
     let charts = [
-        //市场线索分配统计
-        clueChart.getClueDistributionChart(),
-        //销售提取线索统计
-        clueChart.getClueRetrievalChart(),
         //阶段统计
         clueChart.getStageChart(),
         //渠道统计
@@ -46,6 +42,10 @@ function getCharts() {
     charts.push(
         //历史同期数量统计对比
         clueChart.getClueHistoricalPeriodComparisionChart(),
+        //市场线索分配统计
+        clueChart.getClueDistributionChart(),
+        //销售提取线索统计
+        clueChart.getClueRetrievalChart(),
     );
 
     return charts;
