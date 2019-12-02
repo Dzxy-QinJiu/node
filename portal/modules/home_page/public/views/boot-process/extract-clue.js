@@ -96,13 +96,14 @@ class ExtractClues extends React.Component {
                 maxLimitExtractNumber: data.maxCount,
             });
             _.isFunction(callback) && callback(data.hasExtractedCount);
-        }).catch(() => {
+        }, (error) => {
             this.setState({
                 hasExtractCount: 0,
                 maxLimitExtractNumber: 0
             });
             _.isFunction(callback) && callback('error');
-        });
+        }
+        );
     }
 
     handleBatchAssignClues = (submitObj) => {
