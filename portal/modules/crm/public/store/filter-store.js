@@ -29,8 +29,7 @@ function FilterStore() {
     this.inputCondition = {};
     this.setInitialCondition();
     this.isPanelShow = false;
-    this.createTimeFilterCondition = {};//根据创建时间筛选
-    this.lastContactTimeFilterCondition = {};//根据最后跟进时间筛选
+    this.timeFilterCondition = [];//根据时间进行筛选（创建时间，最后跟进时间，拜访时间）
     this.bindActions(FilterActions);
 }
 FilterStore.prototype.setInitialCondition = function() {
@@ -142,11 +141,8 @@ FilterStore.prototype.setCondition = function(conditionObj) {
     this.condition = $.extend({}, this.condition, conditionObj);
 };
 
-FilterStore.prototype.setCreateTimeFilter = function(conditionObj) {
-    this.createTimeFilterCondition = conditionObj;
-};
-FilterStore.prototype.setLastContactTimeFilter = function(conditionObj) {
-    this.lastContactTimeFilterCondition = conditionObj;
+FilterStore.prototype.setTimeFilterCondition = function(conditionArray) {
+    this.timeFilterCondition = conditionArray;
 };
 
 //将查询条件转换为前端展示用的格式

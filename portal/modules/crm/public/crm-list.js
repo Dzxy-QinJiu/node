@@ -897,15 +897,10 @@ class Crm extends React.Component {
         if (interval) {
             this.state.rangParams[0].interval = interval;
         }
-        //如果根据创建时间筛选的条件不为空
-        if(!_.isEmpty(FilterStore.getState().createTimeFilterCondition)) {
-            let condition = FilterStore.getState().createTimeFilterCondition;
-            this.state.rangParams.push(condition);
-        }
-        //如果根据最后联系时间筛选的条件不为空
-        if(!_.isEmpty(FilterStore.getState().lastContactTimeFilterCondition)) {
-            let condition = FilterStore.getState().lastContactTimeFilterCondition;
-            this.state.rangParams.push(condition);
+        //如果根据时间范围筛选的条件不为空（创建时间，最后跟进时间，拜访时间）
+        if(!_.isEmpty(FilterStore.getState().timeFilterCondition)) {
+            let conditions = FilterStore.getState().timeFilterCondition;
+            this.state.rangParams = _.concat(this.state.rangParams, conditions);
         }
         if (unexist.length > 0) {
             condition.unexist_fields = unexist;

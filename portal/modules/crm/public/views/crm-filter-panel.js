@@ -15,6 +15,7 @@ import {isCurtao} from 'PUB_DIR/sources/utils/common-method-util';
 import { sourceClassifyArray } from 'MOD_DIR/clue_customer/public/utils/clue-customer-utils';
 import { DatePicker } from 'antd';
 const { RangePicker } = DatePicker;
+import Trace from 'LIB_DIR/trace';
 //行政级别筛选项
 let filterLevelArray = administrativeLevels;
 
@@ -104,6 +105,18 @@ const qualifiedTagList = [{
 }, {
     name: CUSTOMER_TAGS.NEVER_QUALIFIED, value: '3'
 }];
+
+//时间筛选
+const TIME_FILTER_MAPS = {
+    START_TIME: 'start_time',//创建时间
+    LAST_CONTACT_TIME: 'last_contact_time',//最后跟进时间
+    LAST_VISIT_TIME: 'last_visit_time',//拜访时间
+};
+const TRACE_TIP = {
+    [TIME_FILTER_MAPS.START_TIME]: '创建时间',
+    [TIME_FILTER_MAPS.LAST_CONTACT_TIME]: '最后跟进时间',
+    [TIME_FILTER_MAPS.LAST_VISIT_TIME]: '拜访时间'
+};
 
 class CrmFilterPanel extends React.Component {
     state = FilterStore.getState();
@@ -245,45 +258,36 @@ class CrmFilterPanel extends React.Component {
         _.isFunction(callback) && callback(targetIndex);
     };
 
-    //修改创建时间
-    changeRangePicker = (date, dateString) => {
-        if (!_.get(date,'[0]')){
+    //根据时间范围筛选
+    changeTimeRangPicker = (field, dates) => {
+        let timeFilterCondition = this.state.timeFilterCondition;
+        if (!_.get(dates,'[0]')){
             //如果选择了全部，将条件置空
-            let searchedObj = {};
-            FilterAction.setCreateTimeFilter(searchedObj);
+            timeFilterCondition = _.filter(timeFilterCondition, timeFilter => timeFilter.name !== field);
         }else{
-            let from = moment(_.get(date, '[0]')).startOf('day').valueOf();
-            let to = moment(_.get(date, '[1]')).endOf('day').valueOf();
+            let from = moment(_.get(dates, '[0]')).startOf('day').valueOf();
+            let to = moment(_.get(dates, '[1]')).endOf('day').valueOf();
             let searchedObj = {
-                name: 'start_time',
+                name: field,
                 type: 'time',
                 from,
                 to,
             };
-            FilterAction.setCreateTimeFilter(searchedObj);
+            let fieldCondition = _.find(timeFilterCondition, timeFilter => timeFilter.name === field);
+            //先判断数组里是否已经有了，有了需要更新数据，没有push进去
+            if(!fieldCondition) {
+                timeFilterCondition.push(searchedObj);
+            }else {
+                timeFilterCondition = _.map(timeFilterCondition, condition => {
+                    if(condition.name === field) {
+                        condition = searchedObj;
+                    }
+                    return condition;
+                });
+            }
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), `选择${TRACE_TIP[field] || '时间筛选'}`);
         }
-        setTimeout(() => {
-            this.props.search();
-        });
-    };
-
-    //修改最后跟进时间
-    changeLastTraceRangePicker = (date, dateString) => {
-        if (!_.get(date,'[0]')){
-            //如果选择了全部，将条件置空
-            let searchedObj = {};
-            FilterAction.setLastContactTimeFilter(searchedObj);
-        }else{
-            let from = moment(_.get(date, '[0]')).startOf('day').valueOf();
-            let to = moment(_.get(date, '[1]')).endOf('day').valueOf();
-            let searchedObj = {
-                name: 'last_contact_time',
-                type: 'time',
-                from,
-                to,
-            };
-            FilterAction.setLastContactTimeFilter(searchedObj);
-        }
+        FilterAction.setTimeFilterCondition(timeFilterCondition);
         setTimeout(() => {
             this.props.search();
         });
@@ -301,13 +305,19 @@ class CrmFilterPanel extends React.Component {
                     <span className="consult-time">{Intl.get('third.party.app.create.time', '创建时间')}</span>
                     <RangePicker
                         disabledDate={this.disabledDate}
-                        onChange={this.changeRangePicker}/>
+                        onChange={this.changeTimeRangPicker.bind(this, TIME_FILTER_MAPS.START_TIME)}/>
                 </div>
                 <div className="time-range-wrap">
                     <span className="consult-time">{Intl.get('crm.7', '最后联系时间')}</span>
                     <RangePicker
                         disabledDate={this.disabledDate}
-                        onChange={this.changeLastTraceRangePicker}/>
+                        onChange={this.changeTimeRangPicker.bind(this, TIME_FILTER_MAPS.LAST_CONTACT_TIME)}/>
+                </div>
+                <div className="time-range-wrap">
+                    <span className="consult-time">{Intl.get('bussiness.trip.time.range', '拜访时间')}</span>
+                    <RangePicker
+                        disabledDate={this.disabledDate}
+                        onChange={this.changeTimeRangPicker.bind(this, TIME_FILTER_MAPS.LAST_VISIT_TIME)}/>
                 </div>
             </div>
         );
