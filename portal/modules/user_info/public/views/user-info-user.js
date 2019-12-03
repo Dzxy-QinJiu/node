@@ -148,7 +148,7 @@ class UserInfo extends React.Component{
         if(!_.isEmpty(this.props.userInfo.email) && this.props.userInfo.emailEnable){
             //已激活可以订阅
             content = <a onClick={this.handleSubscribe}>
-                <ReactIntl.FormattedMessage id="user.info.receive.subscribe" defaultMessage="重新订阅"/>
+                {Intl.get('user.info.receive.subscribe','重新订阅')}
             </a>;
         }else{
             //没有邮箱
