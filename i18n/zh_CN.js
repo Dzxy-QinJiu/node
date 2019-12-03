@@ -3131,6 +3131,8 @@ var zh_CN = {
     'clue.search.no.found': '没有符合条件的线索，您可以去{cluepool}查看是否有该线索',
     'clue.edit.condition.search': '请修改条件再查看',
     'clue.customer.has.clue.can.extract': '您可以从这里提取线索哦',
+    'lead.recommend.refresh.list': '如果没有符合您需求的线索，您可以',
+    'lead.recommend.change.condition': '再试试',
     //线索模块 end
     'common.memeber.all': '全部成员',
     'user.detail.analysis.tip.activity': '最近30天的活跃天数/30。该分项在总分中占比30%',

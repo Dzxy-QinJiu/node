@@ -37,6 +37,7 @@ import {getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {extractIcon} from 'PUB_DIR/sources/utils/consts';
 import BackMainPage from 'CMP_DIR/btn-back';
 const CLUE_RECOMMEND_SELECTED_SALES = 'clue_recommend_selected_sales';
+import {leadRecommendEmitter} from 'PUB_DIR/sources/utils/emitters';
 class RecommendCustomerRightPanel extends React.Component {
     constructor(props) {
         super(props);
@@ -63,6 +64,15 @@ class RecommendCustomerRightPanel extends React.Component {
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        //因为AntcTable中没有数据提示的时候只能传字符串，提示中的click事件中传this进去会报错，这个方法只能暂时加到window上，卸载的时候把这个方法删掉
+        window.handleClickRefreshBtn = function(event) {
+            leadRecommendEmitter.emit(leadRecommendEmitter.REFRESH_LEAD_LIST);
+        };
+        window.handleClickEditCondition = function(event,that) {
+            leadRecommendEmitter.emit(leadRecommendEmitter.CHANGE_LEAD_CONDITION);
+        };
+        leadRecommendEmitter.on(leadRecommendEmitter.REFRESH_LEAD_LIST, this.handleClickRefreshBtn);
+        leadRecommendEmitter.on(leadRecommendEmitter.CHANGE_LEAD_CONDITION, this.handleClickEditCondition);
         clueCustomerStore.listen(this.onStoreChange);
         //获取推荐的线索
         this.getRecommendClueLists();
@@ -154,6 +164,10 @@ class RecommendCustomerRightPanel extends React.Component {
     componentWillUnmount() {
         batchPushEmitter.removeListener(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.removeListener(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        delete window.handleClickRefreshBtn;
+        delete window.handleClickEditCondition;
+        leadRecommendEmitter.removeListener(leadRecommendEmitter.REFRESH_LEAD_LIST, this.handleClickRefreshBtn);
+        leadRecommendEmitter.removeListener(leadRecommendEmitter.CHANGE_LEAD_CONDITION, this.handleClickEditCondition);
         this.clearSelectSales();
         clueCustomerStore.unlisten(this.onStoreChange);
     }
@@ -604,11 +618,24 @@ class RecommendCustomerRightPanel extends React.Component {
             delete conditionObj.userId;
             //如果有筛选条件的时候，提醒修改条件再查看，没有筛选条件的时候，提示暂无数据
             var emptyText = _.isEmpty(conditionObj) ? Intl.get('common.no.data', '暂无数据') : Intl.get('clue.edit.condition.search', '请修改条件再查看');
+            var recommendList = this.state.recommendClueLists;
+            //因为antctable中的noMoreDataText只接受字符串，所以这个带点击功能的提示要用字符串拼接起来
+            var refreshTip = Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以') +
+                '<a title=\'' + '\' onclick=\'handleClickRefreshBtn(event ' + ')\'>' + Intl.get('clue.customer.refresh.list', '换一批') + '</a>';
+            var changeCondition = Intl.get('lead.recommend.refresh.list','如果没有符合您需求的线索，您可以') + '<a title=\'' + '\' onclick=\'handleClickEditCondition(event ' + ')\'>' + Intl.get('clue.customer.condition.change', '修改条件') + '</a>' + Intl.get('lead.recommend.change.condition', '再试试');
+            const dropLoadConfig = {
+                listenScrollBottom: false,
+                handleScrollBottom: function(){},
+                loading: false,
+                showNoMoreDataTip: true,
+                noMoreDataText: recommendList.length >= this.state.pageSize ? refreshTip : changeCondition
+            };
             return (
                 <AntcTable
+                    dropLoad={recommendList.length ? dropLoadConfig : {}}
                     rowSelection={rowSelection}
                     rowKey={this.getRowKey}
-                    dataSource={this.state.recommendClueLists}
+                    dataSource={recommendList}
                     pagination={false}
                     columns={this.getRecommendClueTableColunms()}
                     scroll={{y: getTableContainerHeight() - LAYOUT_CONSTANTS.TH_MORE_HEIGHT}}
