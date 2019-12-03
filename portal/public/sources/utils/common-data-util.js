@@ -722,7 +722,6 @@ exports.getMaxLimitExtractClueCount = function() {
 
 // 获取组织的通话费用
 exports.getOrganizationCallFee = function() {
-    console.log('getOrganization:',getOrganization());
     let organizationId = _.get(getOrganization(), 'id');
     const Deferred = $.Deferred();
     $.ajax({
