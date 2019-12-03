@@ -85,6 +85,8 @@ var CONSTANTS = {
     EXIST_APPLY_FORMAL: 'apply_app_official',
     //uem用户申请
     APPLY_USER: 'apply_user',
+    //uem已有用户申请开通应用
+    APPLY_APP: 'apply_app',
     // 待审批的状态
     APPLY_STATUS: 0,
     // 详单的高度（当底部有批注内容时）
@@ -752,7 +754,8 @@ const ApplyViewDetail = createReactClass({
         var detailInfoObj = this.state.detailInfoObj.info || {};
         if (
             detailInfoObj.type === CONSTANTS.EXIST_APPLY_TRIAL ||
-            detailInfoObj.type === CONSTANTS.EXIST_APPLY_FORMAL
+            detailInfoObj.type === CONSTANTS.EXIST_APPLY_FORMAL ||
+            detailInfoObj.type === CONSTANTS.APPLY_APP
         ) {
             return true;
         }
