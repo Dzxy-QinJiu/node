@@ -526,9 +526,6 @@ class ClueCustomer extends React.Component {
     getSettingCustomerRecomment = () => {
         clueCustomerAction.getSettingCustomerRecomment();
     };
-    saveSettingCustomerRecomment = () => {
-
-    };
 
     getRecommendClueCount = () => {
         let version = _.get(userData.getUserData(), 'organization.version', {});
