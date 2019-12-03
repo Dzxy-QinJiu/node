@@ -108,14 +108,9 @@ const qualifiedTagList = [{
 
 //时间筛选
 const TIME_FILTER_MAPS = {
-    START_TIME: 'start_time',//创建时间
-    LAST_CONTACT_TIME: 'last_contact_time',//最后跟进时间
-    LAST_VISIT_TIME: 'last_visit_time',//拜访时间
-};
-const TRACE_TIP = {
-    [TIME_FILTER_MAPS.START_TIME]: '创建时间',
-    [TIME_FILTER_MAPS.LAST_CONTACT_TIME]: '最后跟进时间',
-    [TIME_FILTER_MAPS.LAST_VISIT_TIME]: '拜访时间'
+    'start_time': Intl.get('third.party.app.create.time', '创建时间'),
+    'last_contact_time': Intl.get('crm.7', '最后联系时间'),
+    'last_visit_time': Intl.get('bussiness.trip.time.range', '拜访时间')
 };
 
 class CrmFilterPanel extends React.Component {
@@ -285,7 +280,7 @@ class CrmFilterPanel extends React.Component {
                     return condition;
                 });
             }
-            Trace.traceEvent($(ReactDOM.findDOMNode(this)), `选择${TRACE_TIP[field] || '时间筛选'}`);
+            Trace.traceEvent($(ReactDOM.findDOMNode(this)), `选择${TIME_FILTER_MAPS[field] || '时间筛选'}`);
         }
         FilterAction.setTimeFilterCondition(timeFilterCondition);
         setTimeout(() => {
@@ -301,24 +296,18 @@ class CrmFilterPanel extends React.Component {
     renderTimeRangeSelect = () => {
         return(
             <div className='time-range-wrap-container'>
-                <div className="time-range-wrap">
-                    <span className="consult-time">{Intl.get('third.party.app.create.time', '创建时间')}</span>
-                    <RangePicker
-                        disabledDate={this.disabledDate}
-                        onChange={this.changeTimeRangPicker.bind(this, TIME_FILTER_MAPS.START_TIME)}/>
-                </div>
-                <div className="time-range-wrap">
-                    <span className="consult-time">{Intl.get('crm.7', '最后联系时间')}</span>
-                    <RangePicker
-                        disabledDate={this.disabledDate}
-                        onChange={this.changeTimeRangPicker.bind(this, TIME_FILTER_MAPS.LAST_CONTACT_TIME)}/>
-                </div>
-                <div className="time-range-wrap">
-                    <span className="consult-time">{Intl.get('bussiness.trip.time.range', '拜访时间')}</span>
-                    <RangePicker
-                        disabledDate={this.disabledDate}
-                        onChange={this.changeTimeRangPicker.bind(this, TIME_FILTER_MAPS.LAST_VISIT_TIME)}/>
-                </div>
+                {
+                    _.map(TIME_FILTER_MAPS, (value, key) => {
+                        return (
+                            <div className="time-range-wrap" key={key}>
+                                <span className="consult-time">{value}</span>
+                                <RangePicker
+                                    disabledDate={this.disabledDate}
+                                    onChange={this.changeTimeRangPicker.bind(this, key)}/>
+                            </div>
+                        );
+                    })
+                }
             </div>
         );
     };
