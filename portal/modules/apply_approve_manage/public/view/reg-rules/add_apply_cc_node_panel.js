@@ -23,6 +23,8 @@ import {
     USEROPTIONS
 } from '../../utils/apply-approve-utils';
 require('../../style/add-apply-node.less');
+//用户昵称和index直接的链接用&& 间隔
+const CONNECTNAMEANDINDEX = '&&';
 class AddApplyNodePanel extends React.Component {
     constructor(props) {
         super(props);
@@ -138,7 +140,7 @@ class AddApplyNodePanel extends React.Component {
         system_roles.selectRole = [];
         system_roles.showSelectRole = [];
         _.forEach(rolesArr, value => {
-            var userArr = value.split('-');
+            var userArr = value.split(CONNECTNAMEANDINDEX);
             var index = _.get(userArr, '[1]');
             var target = _.get(this, `state.roleList[${index}]`);
             if (target) {
@@ -156,14 +158,14 @@ class AddApplyNodePanel extends React.Component {
         setting_users.selectUser = [];
         setting_users.showSelectUser = [];
         _.forEach(selectUserArr,value => {
-            var userArr = value.split('-');
+            var userArr = value.split(CONNECTNAMEANDINDEX);
             var index = _.get(userArr,'[1]');
-            var target = _.get(this,`state.userList[${index}]`);
+            var target = _.get(this.state,`userList[${index}]`);
             if (target){
                 setting_users.selectUser.push(target.userId);
                 setting_users.showSelectUser.push(target.nickName);
                 this.setState({
-                    setting_users: setting_users
+                    setting_users
                 });
             }
         });
@@ -254,7 +256,7 @@ class AddApplyNodePanel extends React.Component {
                                     onChange={this.handleChangeSelectRole}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.roleList, (item, index) => {
-                                        return <Option value={item.role_name + '-' + index} key={index}>{item.role_name}(
+                                        return <Option value={item.role_name + CONNECTNAMEANDINDEX + index} key={index}>{item.role_name}(
                                             {Intl.get('apply.add.approve.num.person', '{num}人', {num: item.num})})</Option>;
                                     })}
                                 </Select>
@@ -269,7 +271,7 @@ class AddApplyNodePanel extends React.Component {
                                     onChange={this.handleChangeSelectUser}
                                     filterOption={(input, option) => ignoreCase(input, option)}>
                                     {_.map(this.state.userList, (item,index) => {
-                                        return <Option value={item.nickName + '-' + index} key={index}>{item.nickName}</Option>;
+                                        return <Option value={item.nickName + CONNECTNAMEANDINDEX + index} key={index}>{item.nickName}</Option>;
                                     })}
                                 </Select>
                             </div>

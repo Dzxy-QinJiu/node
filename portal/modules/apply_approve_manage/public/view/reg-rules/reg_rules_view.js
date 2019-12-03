@@ -31,7 +31,7 @@ import {
     ASSIGEN_APPROVER,
     isSalesOpportunityFlow,
     isVisitApplyFlow,
-    isDomainApplyFlow, ROLES_SETTING
+    isDomainApplyFlow, ROLES_SETTING,CC_SETTINGT_TYPE
 } from '../../utils/apply-approve-utils';
 import {CC_INFO,NOTIFY_PERSON_TYPE} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
@@ -46,8 +46,8 @@ class RegRulesView extends React.Component {
             addNodePanelFlow: '',
             addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
-            roleList: [],//角色列表
-            userList: [],//用户列表
+            roleList: this.props.roleList,//角色列表
+            userList: this.props.userList,//用户列表
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -57,6 +57,10 @@ class RegRulesView extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
+        this.setState({
+            roleList: nextProps.roleList,//角色列表
+            userList: nextProps.userList,//用户列表
+        });
     }
 
     componentDidMount() {
@@ -75,38 +79,9 @@ class RegRulesView extends React.Component {
 
         });
         this.createBpmnTool(bpmnModeler);
-        //获取用户列表
-        this.getUserList();
+
         ApplyApproveManageStore.listen(this.onStoreChange);
     }
-    getUserList = () => {
-        $.ajax({
-            url: '/rest/user',
-            dataType: 'json',
-            type: 'get',
-            data: {cur_page: 1},
-            success: (userListObj) => {
-                var rolesList = _.get(userListObj, 'roles');
-                _.forEach(rolesList, item => {
-                    var roleName = item.role_name;
-                    var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
-                    if (target) {
-                        item.save_role_value = target.value;
-                    }
-                });
-                this.setState({
-                    userList: _.get(userListObj, 'data'),
-                    roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
-                });
-            },
-            error: (xhr, textStatus) => {
-                this.setState({
-                    roleList: [],
-                    userList: []
-                });
-            }
-        });
-    };
 
     componentWillUnmount() {
         ApplyApproveManageStore.unlisten(this.onStoreChange);
@@ -385,7 +360,7 @@ class RegRulesView extends React.Component {
                         </div>
                     );
                 })}
-                {keyNum === 4 ? null : <div className="item-node">
+                {keyNum === CC_SETTINGT_TYPE.length ? null : <div className="item-node">
                     <div className="icon-container add-node" onClick={this.addApplyCC.bind(this, flowType)}>
                         <i className="iconfont icon-add handle-btn-item"></i>
                     </div>
@@ -1083,11 +1058,15 @@ RegRulesView.defaultProps = {
     updateRegRulesView: function() {
 
     },
+    roleList: [],
+    userList: []
 };
 
 RegRulesView.propTypes = {
     applyTypeData: PropTypes.object,
-    updateRegRulesView: PropTypes.func
+    updateRegRulesView: PropTypes.func,
+    roleList: PropTypes.array,
+    userList: PropTypes.array,
 
 };
 export default RegRulesView;
