@@ -29,7 +29,7 @@ function getConfigJson(req) {
         '10110': {'httpCode': 500, 'message': backendIntl.get('errorcode.4', '获取成员失败')},
         '10111': {'httpCode': 500, 'message': backendIntl.get('errorcode.9', '该邮箱已激活，无需重复激活')},
         '10113': {'httpCode': 500, 'message': backendIntl.get('errorcode.10', '已发送过激活邮件了，无需重复发送')},
-        '10116': {'httpCode': 500, 'message': backendIntl.get('register.phon.has.registed', '该手机号已被注册')},
+        '10116': {'httpCode': 500, 'message': backendIntl.get('errorcode.166', '该手机号已被使用，不能绑定到当前账号')},
         '10118': {'httpCode': 500, 'message': backendIntl.get('register.code.validate.expire', '短信验证码已过期')},
         '10119': {'httpCode': 500, 'message': backendIntl.get('register.code.validate.error', '短信验证码验证错误')},
         '10120': {'httpCode': 500, 'message': backendIntl.get('errorcode.12', '您的邮箱未激活，请先激活邮箱')},
@@ -37,6 +37,7 @@ function getConfigJson(req) {
         '10122': {'httpCode': 500, 'message': backendIntl.get('errorcode.13', '成员授权失败')},
         '10123': {'httpCode': 500, 'message': backendIntl.get('errorcode.14', '原始密码错误')},
         '10124': {'httpCode': 500, 'message': backendIntl.get('errorcode.138', '座席号已存在！')},
+        '10126': {'httpCode': 500, 'message': backendIntl.get('errorcode.167', '该手机号已被绑定到其他账号，请先登录原账号解绑')},
         /**用户**/
         '10202': {'httpCode': 500, 'message': backendIntl.get('errorcode.15', '添加用户失败')},
         '10203': {'httpCode': 500, 'message': backendIntl.get('errorcode.16', '获取用户失败')},
