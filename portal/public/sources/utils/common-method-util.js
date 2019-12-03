@@ -1257,25 +1257,6 @@ exports.getRecommendClueCount = function(paramsObj = {},callback) {
     });
 };
 
-// 获取组织的通话费用
-exports.getOrganizationCallFee = function(cb) {
-    let organizationId = _.get(getOrganization(), 'id');
-    const Deferred = $.Deferred();
-    $.ajax({
-        url: '/rest/get/organization/phone/fee',
-        dataType: 'json',
-        type: 'get',
-        data: {organization: organizationId},
-        success: (data) => {
-            Deferred.resolve(data);
-        },
-        error: (errorInfo) => {
-            Deferred.reject(errorInfo.responseJSON);
-        }
-    });
-    return Deferred.promise();
-};
-
 // 判断是否是客套组织
 exports.isKetaoOrganizaion = () => {
     let organizationId = _.get(getOrganization(), 'id');
