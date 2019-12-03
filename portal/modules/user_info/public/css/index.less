@@ -9,7 +9,6 @@
   padding: 20px @container_padding 30px @container_padding;
   //个人资料展示区域样式
   .user-info-container-div {
-    height: 470px;
     background-color: #fff;
     padding: 0;
     .user-logo-div {
@@ -55,7 +54,7 @@
             text-align: center;
             color: #506470;
             font-size: 14px;
-            margin-top: 0px;
+            margin-top: 0;
             width: auto;
           }
           .upload-img-tooltip {
@@ -195,7 +194,7 @@
           //邮箱input样式
           .user-email-item, .user-qq-item{
             display: inline-block;
-            width: 82%;
+            width: 80%;
             .basic-edit-field-input {
               display: inline-block;
               vertical-align: top;
@@ -236,6 +235,15 @@
                 &:before {
                   content: "\E708";
                 }
+              }
+            }
+          }
+          .user-email-item {
+            .edit-container {
+              text-align: left;
+              padding-right: 15px;
+              .icon-edit-btn {
+                margin-right: -28px;;
               }
             }
           }
@@ -499,10 +507,9 @@
   }
 }
 
-//展示区域宽度低于1035时样式
-@media (max-width: 1035px) {
+//展示区域宽度低于992时样式
+@media (max-width: 992px) {
   .user-record-container-wrap {
-    margin-top: 80px;
     .ant-tabs {
       padding: 20px 0 0 0;
     }

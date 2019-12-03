@@ -16,7 +16,7 @@ var paddingBotton = 50;//距离底部高度
 var minUserInfoContainerWidth = 1035;//个人资料界面可并排展示时的最小宽度 低于此宽度时个人资料与登录日志上下展示
 var userLogHeight = 690;//如果界面宽度低于最小宽度时，登录日志高度默认值
 var minUserInfoHeight = 380;//如果并排展示时，登录日志展示区域最小高度
-var PrivilegeChecker = require('../../../components/privilege/checker');
+import {hasPrivilege} from 'CMP_DIR/privilege/checker';
 import reactIntlMixin from '../../../components/react-intl-mixin';
 import {Tabs} from 'antd';
 const TabPane = Tabs.TabPane;
@@ -55,7 +55,6 @@ var UserInfoPage = createReactClass({
     },
 
     componentDidMount: function() {
-        var hasPrivilege = PrivilegeChecker.hasPrivilege;
         $(window).on('resize', this.resizeWindow);
         UserInfoStore.listen(this.onChange);
         // 判断是不是跳转过来的，若是的话，显示购买记录界面
@@ -165,18 +164,22 @@ var UserInfoPage = createReactClass({
                                     : null
                             }
                         </TabPane>
-                        <TabPane
-                            tab={Intl.get('user.trade.record', '购买记录')}
-                            key={TAB_KEYS.TRADE_TAB}
-                        >
-                            {
-                                this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
-                                    <TradeRecord
-                                        height={containerHeight + logTitleHeight}
-                                    />
-                                ) : null
-                            }
-                        </TabPane>
+                        {
+                            hasPrivilege('CURTAO_TRADE_ORDERS') ? (
+                                <TabPane
+                                    tab={Intl.get('user.trade.record', '购买记录')}
+                                    key={TAB_KEYS.TRADE_TAB}
+                                >
+                                    {
+                                        this.state.activeKey === TAB_KEYS.TRADE_TAB ? (
+                                            <TradeRecord
+                                                height={containerHeight + logTitleHeight}
+                                            />
+                                        ) : null
+                                    }
+                                </TabPane>
+                            ) : null
+                        }
                     </Tabs>
                 </div>
             </div>
