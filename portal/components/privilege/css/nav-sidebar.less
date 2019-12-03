@@ -188,7 +188,7 @@
         font-size: @nav-text-fontSize;
         >li {
             //线索未读数
-            &.clue_customer_icon_container, &.sidebar-applyentry ,&.application_icon_container{
+            &.leads_icon_container, &.sidebar-applyentry ,&.apply_icon_container{
                 pointer-events:none;
                 &:before {
                     pointer-events:auto;
@@ -211,7 +211,7 @@
                     pointer-events:auto;
                 }
             }
-            &.application_icon_container:before{
+            &.apply_icon_container:before{
                 min-width: 10px;
                 height: 10px;
                 top: 11px;
@@ -223,7 +223,7 @@
                 left: -29px;
             }
             //申请审批入口
-            &.application_icon_container {
+            &.apply_icon_container {
                 //有未读回复提示的样式
                 .iconfont.icon-apply-message-tip {
                     position: absolute;
@@ -283,7 +283,7 @@
                 }
             }
         }
-        >li.clue_customer_ico {
+        >li.leads_icon_container {
             &:before {
                 &:extend(.unread-style);
                 top: 12px;
@@ -426,7 +426,7 @@
             text-align: center;
             .avatar {
                 .no-user-logo-div {
-                    .icon-user-ico {
+                    .icon-users-ico {
                         font-size: 32px;
                     }
                 }

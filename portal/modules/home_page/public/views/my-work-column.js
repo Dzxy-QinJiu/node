@@ -486,7 +486,7 @@ class MyWorkColumn extends React.Component {
                             overlayClassName='contact-phone-popover'
                             getPopupContainer={() => document.getElementById(`home-page-work${item.id}`)}>
                             <span className='work-contact-phone'>
-                                <i className="iconfont icon-active-call_record-ico"/>
+                                <i className="iconfont icon-active-call-records-ico"/>
                             </span>
                         </Popover>)}
                 </div>);

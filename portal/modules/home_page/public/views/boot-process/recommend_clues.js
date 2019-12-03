@@ -211,7 +211,7 @@ class RecommendClues extends React.Component {
                         });
                     }}
                     goFn={() => {
-                        history.push('/clue_customer');
+                        history.push('/leads');
                     }}
                 />
             );

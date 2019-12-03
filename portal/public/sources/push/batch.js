@@ -159,7 +159,7 @@ const SESSION_STORAGE_TASKID = 'batch_operation_taskid_list';
  *  //是否需要弹框显示操作进度
  *  showPop : true,
  *  //在哪个界面才进行处理
- *  urlPath : '/user/list'
+ *  urlPath : '/users'
  *  //是否需要显示错误
  *  showFailed : true
  *  //错误数点击监听函数

@@ -166,7 +166,7 @@ class CrmScoreCard extends React.Component {
         //判断是不是管理员
         if(userData.hasRole(userData.ROLE_CONSTANS.REALM_ADMIN)){
             return(<div className="handle-btn-item"
-                onClick={() => {history.push('/background_management/sales_auto');}}>
+                onClick={() => {history.push('/settings/automation');}}>
                 {Intl.get('user.login.score.explain.mananer', '设置分数规则？')}
             </div>);
         }else{
@@ -202,7 +202,7 @@ class CrmScoreCard extends React.Component {
                         {
                             _.get(this.state, 'qualifiedUserList[0]') ? _.map(this.state.qualifiedUserList, user => {
                                 return (<Tag onClick={this.showUserDetail.bind(this, user.user_id)}><span
-                                    className="iconfont icon-active-user-ico"/>{user.user_name}</Tag>);
+                                    className="iconfont icon-active-users-ico"/>{user.user_name}</Tag>);
                             }) : (<span className="no-qualify-account-tip">
                                 {Intl.get('crm.no.qualify.account', '暂无合格账号')}
                             </span>)

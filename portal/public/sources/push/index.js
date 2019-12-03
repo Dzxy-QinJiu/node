@@ -169,7 +169,7 @@ window.closeAllNoty = function() {
 };
 //打开线索列表，同时将新分配的线索加上new的标识
 window.openAllClues = function(){
-    history.push('/clue_customer', {refreshClueList: true});
+    history.push('/leads', {refreshClueList: true});
 };
 //处理线索的数据
 function clueUnhandledListener(data) {

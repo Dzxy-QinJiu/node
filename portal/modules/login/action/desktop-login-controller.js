@@ -521,10 +521,10 @@ exports.wechatLoginBindByCode = function(req, res) {
                     DesktopLoginService.bindWechat(req, res, unionId)
                         .on('success', function(result) {
                             //绑定成功,个人资料界面
-                            res.redirect('/user_info_manage/user_info');
+                            res.redirect('user-preference');
                         }).on('error', function(errorObj) {
                         //绑定失败后，也跳到个人资料界面
-                            res.redirect('/user_info_manage/user_info?bind_error=true');
+                            res.redirect('/user-preference?bind_error=true');
                         });
                 } else {//点微信登录的处理
                     checkWechatIsBind(req, res, unionId);
@@ -545,7 +545,7 @@ function loginWithWechatError(req, res, isBindWechatAfterLogin) {
     return function(errorObj) {
         //个人资料绑定微信的处理
         if (isBindWechatAfterLogin) {
-            res.redirect('/user_info_manage/user_info?bind_error=true');
+            res.redirect('/user-preference?bind_error=true');
         } else {
             loginError(req, res)(errorObj);
         }

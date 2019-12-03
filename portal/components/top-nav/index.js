@@ -24,35 +24,35 @@ import {Popover, Icon} from 'antd';
 const unhandleApplyNumObj = [
     {
         name: APPLY_APPROVE_TYPES.UNHANDLE_USER_APPLY,
-        cls: 'application_user_apply_ico',
+        cls: 'apply_users_ico',
         style: 'unhandleUserAplplyNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLECUSTOMERVISIT,
-        cls: 'application_business_apply_ico',
+        cls: 'apply_business_ico',
         style: 'unhandleBusinessApplyNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEPERSONALLEAVE,
-        cls: 'application_leave_apply_ico',
+        cls: 'apply_leave_ico',
         style: 'unhandleLeaveApplyNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEBUSINESSOPPORTUNITIES,
-        cls: 'application_sales_opportunity_ico',
+        cls: 'apply_opportunities_ico',
         style: 'unhandleSalesOpperNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEREPORTSEND,
-        cls: 'application_report_send_ico',
+        cls: 'apply_reports_ico',
         style: 'unhandleReportSendNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEDOCUMENTWRITE,
-        cls: 'application_document_write_ico',
+        cls: 'apply_documents_ico',
         style: 'unhandleDocumentWriteNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,
-        cls: 'application_self_setting_ico',
+        cls: 'apply_visits_ico',
         style: 'unhandleVisitNumStyle'
     }, {
         name: APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,
-        cls: 'application_domain_name_ico',
+        cls: 'apply_domain-name_ico',
         style: 'unhandleDomainNumSyle'
     }];
 
@@ -154,69 +154,69 @@ class TopNav extends React.Component {
         notificationEmitter.on(notificationEmitter.SHOW_UNHANDLE_APPLY_APPROVE_COUNT, this.renderUnhandleApplyStyle);
         this.renderUnhandleApplyStyle();
         //点击审批数字后，查看待审批的数量
-        $('.topNav').on('click', '.application_user_apply_ico', function(e) {
+        $('.topNav').on('click', '.apply_users_ico', function(e) {
             //如果点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/user_apply');
+            history.push('/apply/users');
         });
-        $('.topNav').on('click', '.application_business_apply_ico', function(e) {
+        $('.topNav').on('click', '.apply_business_ico', function(e) {
             //如果点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/business_apply');
+            history.push('/apply/business');
         });
-        $('.topNav').on('click', '.application_sales_opportunity_ico', function(e) {
+        $('.topNav').on('click', '.apply_opportunities_ico', function(e) {
             //如果点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/sales_opportunity');
+            history.push('/apply/oppotunities');
         });
-        $('.topNav').on('click', '.application_leave_apply_ico', function(e) {
+        $('.topNav').on('click', '.apply_leave_ico', function(e) {
             //如果点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/leave_apply');
+            history.push('/apply/leave');
         });
-        $('.topNav').on('click', '.application_report_send_ico', function(e) {
+        $('.topNav').on('click', '.apply_reports_ico', function(e) {
             //如果点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/report_send');
+            history.push('/apply/reports');
         });
-        $('.topNav').on('click', '.application_document_write_ico', function(e) {
+        $('.topNav').on('click', '.apply_documents_ico', function(e) {
             //如果点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/document_write');
+            history.push('/apply/documents');
         });
-        $('.topNav').on('click', '.application_self_setting_ico', function(e) {
+        $('.topNav').on('click', '.apply_visits_ico', function(e) {
             //如果点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/self_setting');
+            history.push('/apply/visits');
         });
-        $('.topNav').on('click', '.application_domain_name_ico', function(e) {
+        $('.topNav').on('click', '.apply_domain-name_ico', function(e) {
             //如果点击到a标签上，不做处理
             if ($(e.target).is('a')) {
                 return;
             }
             //点击到数字上，进行跳转
-            history.push('/application/domain_name');
+            history.push('/apply/domain-name');
         });
 
 

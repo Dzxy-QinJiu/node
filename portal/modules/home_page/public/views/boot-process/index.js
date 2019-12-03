@@ -71,7 +71,7 @@ const BOOT_PROCESS_KEYS_MAP = {
                     id="guide.finished.can.see"
                     defaultMessage={'可以去{page}界面查看'}
                     values={{
-                        'page': <Link to="/background_management/member">{Intl.get('menu.user', '成员管理')}</Link>
+                        'page': <Link to="/settings/members">{Intl.get('menu.user', '成员管理')}</Link>
                     }}
                 />
             ),
@@ -97,7 +97,7 @@ const BOOT_PROCESS_KEYS_MAP = {
                     id="guide.finished.can.see"
                     defaultMessage={'可以去{page}界面查看'}
                     values={{
-                        'page': <Link to="/crm">{Intl.get('sales.home.customer', '客户')}</Link>
+                        'page': <Link to="/accounts">{Intl.get('sales.home.customer', '客户')}</Link>
                     }}
                 />
             ),
@@ -122,12 +122,12 @@ const BOOT_PROCESS_KEYS_MAP = {
                     id="guide.finished.can.see"
                     defaultMessage={'可以去{page}界面查看'}
                     values={{
-                        'page': <Link to="/clue_customer">{Intl.get('crm.sales.clue', '线索')}</Link>
+                        'page': <Link to="/leads">{Intl.get('crm.sales.clue', '线索')}</Link>
                     }}
                 />
             ),
         },
-        icon: 'icon-clue_customer-ico',
+        icon: 'icon-leads-ico',
         bgColor: '#8280e7',
         btnText: Intl.get('clue.extract.clue', '提取线索')
     },
@@ -554,7 +554,7 @@ class BootProcess extends React.Component {
                                     });
                                 }}
                                 goFn={() => {
-                                    history.push('/crm');
+                                    history.push('/accounts');
                                 }}
                             />
                         )}

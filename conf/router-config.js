@@ -17,7 +17,7 @@ let routers = [
     {
         id: 'ClUE_CUSTOMER',
         name: 'crm.sales.clue',//线索
-        routePath: '/clue_customer',
+        routePath: '/leads',
         component: `${MODULE_PATH}clue_customer/public`,
         shortName: 'crm.sales.clue',//线索
         //有这个权限，才显示入口图标
@@ -26,7 +26,7 @@ let routers = [
     {
         id: 'CRM',
         name: 'call.record.customer',//客户
-        routePath: '/crm',
+        routePath: '/accounts',
         component: `${MODULE_PATH}crm/public`,
         shortName: 'call.record.customer',//客户
         //有这个权限，才显示入口图标
@@ -35,7 +35,7 @@ let routers = [
     {
         id: 'DEAL_MANAGE',
         name: 'user.apply.detail.order',//订单
-        routePath: '/deal_manage',
+        routePath: '/deals',
         component: `${MODULE_PATH}deal_manage/public`,
         shortName: 'user.apply.detail.order',//订单
         //有这个权限，才显示入口图标
@@ -44,7 +44,7 @@ let routers = [
     {
         id: 'CALL_RECORD',
         name: 'menu.shortName.call',//通话
-        routePath: '/call_record',
+        routePath: '/call-records',
         component: `${MODULE_PATH}call_record/public`,
         shortName: 'menu.shortName.call',//通话
         //有这个权限，才显示入口图标
@@ -53,33 +53,26 @@ let routers = [
     {
         id: 'APP_USER_MANAGE',//唯一标识
         name: 'crm.detail.user',//用户
-        routePath: '/user',
+        routePath: '/users',
         shortName: 'crm.detail.user',//用户
         subMenu: [{
             id: 'APP_USER_MANAGE_USER',
             name: 'menu.appuser.list',//用户列表
-            routePath: '/user/list',
+            routePath: '/users/list',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['APP_USER_LIST']
         }, {
-            id: 'ORGANIZATION_MANAGE',
-            name: 'menu.appuser.org',//组织管理
-            routePath: '/user/organization',
-            component: `${MODULE_PATH}organization_manage/public`,
-            //有这个权限，才显示入口图标
-            showPrivileges: ['USER_ORGANIZATION_LIST']
-        }, {
             id: 'USER_AUDIT_LOG', // 用户审计日志的唯一标识
             name: 'menu.appuser.auditlog',//操作记录
-            routePath: '/user/log',
+            routePath: '/users/logs',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_AUDIT_LOG_LIST']
         }, {
             id: 'ACTIVE_USER_LIST', // 活跃用户
             name: 'menu.active.user.lists',//活跃用户
-            routePath: '/user/active',
+            routePath: '/users/active',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_TIME_LINE']
@@ -94,7 +87,7 @@ let routers = [
             {
                 id: 'ANALYSIS',//唯一标识
                 name: 'user.detail.analysis',//分析
-                routePath: '/analysis/analysis',
+                routePath: '/analysis/data',
                 component: `${MODULE_PATH}analysis/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: [
@@ -112,7 +105,7 @@ let routers = [
                     {
                         id: 'WEEKLY_REPORT_ANALYSIS',//唯一标识
                         name: 'contract.14',//周报
-                        routePath: '/analysis/report/weekly_report',
+                        routePath: '/analysis/report/weekly',
                         component: `${MODULE_PATH}weekly_report/public`,
                         showPrivileges: [
                             'KETAO_SALES_TEAM_WEEKLY_REPORTS_MANAGER',
@@ -123,7 +116,7 @@ let routers = [
                     {
                         id: 'MONTHLY_REPORT_ANALYSIS',//唯一标识
                         name: 'contract.15',//月报
-                        routePath: '/analysis/report/monthly_report',
+                        routePath: '/analysis/report/monthly',
                         component: `${MODULE_PATH}monthly-report/public`,
                         showPrivileges: [
                             'CALLRECORD_ASKFORLEAVE_QUERY_MANAGER',
@@ -134,7 +127,7 @@ let routers = [
                     {
                         id: 'SALES_REPORT_ANALYSIS',//唯一标识
                         name: 'common.individual.report',//个人报告
-                        routePath: '/analysis/report/sales_report',
+                        routePath: '/analysis/report/personal',
                         component: `${MODULE_PATH}sales-report/public`,
                         //有这个权限，才显示入口图标
                         showPrivileges: [
@@ -168,7 +161,7 @@ let routers = [
     {
         id: 'SCHEDULE_MANAGEMENT',
         name: 'menu.shortName.schedule',//日程
-        routePath: '/schedule_management',
+        routePath: '/calender',
         component: `${MODULE_PATH}schedule_management/public`,
         shortName: 'menu.shortName.schedule',//日程
         //有这个权限，才显示入口图标
@@ -177,12 +170,12 @@ let routers = [
     {
         id: 'APPLICATION_APPLY_MANAGEMENT',
         name: 'crm.109',//申请
-        routePath: '/application',
+        routePath: '/apply',
         shortName: 'crm.109',//申请
         subMenu: [{
             id: 'APP_USER_MANAGE_APPLY',
             name: 'menu.appuser.apply',//用户申请
-            routePath: '/application/user_apply',
+            routePath: '/apply/users',
             component: `${MODULE_PATH}user_apply/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['APP_USER_APPLY_LIST']
@@ -190,35 +183,35 @@ let routers = [
         }, {
             id: 'SALES_BUSSINESS_APPLY_MANAGEMENT',
             name: 'leave.apply.sales.oppotunity',//机会申请
-            routePath: '/application/sales_opportunity',
+            routePath: '/apply/oppotunities',
             component: `${MODULE_PATH}sales_opportunity/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_BUSINESSOPPO_MANAGE']
         }, {
             id: 'BUSSINESS_APPLY_MANAGEMENT',
             name: 'leave.apply.add.leave.apply',//出差申请
-            routePath: '/application/business_apply',
+            routePath: '/apply/business',
             component: `${MODULE_PATH}business-apply/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['BUSINESS_TRIP_MANAGE']
         }, {
             id: 'LEAVE_APPLY_MANAGEMENT',
             name: 'leave.apply.leave.application',//请假申请
-            routePath: '/application/leave_apply',
+            routePath: '/apply/leave',
             component: `${MODULE_PATH}leave-apply/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_LEAVE_MANAGE']
         }, {
             id: 'REPORTSEND_APPLY_MANAGEMENT',
             name: 'apply.approve.lyrical.report',//舆情报告
-            routePath: '/application/report_send',
+            routePath: '/apply/reports',
             component: `${MODULE_PATH}report_send/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_OPINION_MANAGE']
         }, {
             id: 'DOCUMENTWRITING_APPLY_MANAGEMENT',
             name: 'apply.approve.document.writing',//文件撰写
-            routePath: '/application/document_write',
+            routePath: '/apply/documents',
             component: `${MODULE_PATH}document_write/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
@@ -227,7 +220,7 @@ let routers = [
             //todo 待修改的！！！！！！
             id: 'MY_LEAVE_APPLY_MANAGEMENT',
             name: 'apply.my.self.setting.work.flow',//拜访申请
-            routePath: '/application/self_setting',
+            routePath: '/apply/visits',
             component: `${MODULE_PATH}self_setting/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
@@ -235,7 +228,7 @@ let routers = [
             //todo 待修改的！！！！！！
             id: 'MY_DOMAIN_APPLY_MANAGEMENT',
             name: 'apply.domain.application.work.flow',//申请
-            routePath: '/application/domain_name',
+            routePath: '/apply/domain-name',
             component: `${MODULE_PATH}domain_application/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['MEMBER_DOCUMENT_MANAGE']
@@ -245,7 +238,7 @@ let routers = [
     {
         id: 'NOTIFICATION',//唯一标识 - 通知
         name: 'menu.notification',//通知
-        routePath: '/notification_system',
+        routePath: '/notifications',
         component: `${MODULE_PATH}notification/public`,
         shortName: 'menu.notification',//通知
         bottom: true,
@@ -255,7 +248,7 @@ let routers = [
     {
         id: 'BACKGROUND_MANAGEMENT',//唯一标识
         name: 'menu.shortName.config',//设置
-        routePath: '/background_management',
+        routePath: '/settings',
         shortName: 'menu.shortName.config',//设置
         bottom: true,
         subMenuPosition: 'left',//二级菜单的展示位置，顶部还是左侧展示（默认: 'top'）
@@ -263,7 +256,7 @@ let routers = [
             {
                 id: 'MEMBER', //唯一标识
                 name: 'menu.member',//成员
-                routePath: '/background_management/member',
+                routePath: '/settings/members',
                 component: `${MODULE_PATH}sales_team/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['USER_MANAGE_LIST_USERS', 'BGM_SALES_TEAM_LIST']
@@ -271,7 +264,7 @@ let routers = [
             {
                 id: 'PRODUCTIONS',
                 name: 'menu.product',// 产品
-                routePath: '/background_management/products',
+                routePath: '/settings/products',
                 component: `${MODULE_PATH}production-manage/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE']
@@ -279,7 +272,7 @@ let routers = [
             {
                 id: 'APPLY_APPROVE',
                 name: 'menu.apply.approve',//申请审批
-                routePath: '/background_management/apply_approve',
+                routePath: '/settings/applies',
                 component: `${MODULE_PATH}apply_approve_manage/public`,
                 //todo 权限名称待修改= 有这个权限，才显示入口图标
                 showPrivileges: ['PRODUCTS_MANAGE']
@@ -287,7 +280,7 @@ let routers = [
             {
                 id: 'ORDERSTAGE',
                 name: 'menu.order.stage',// 订单阶段
-                routePath: '/background_management/sales_stage',
+                routePath: '/settings/deals/stages',
                 component: `${MODULE_PATH}sales_stage/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['BGM_SALES_STAGE_ADD']
@@ -295,7 +288,7 @@ let routers = [
             {
                 id: 'INDUSTRY',
                 name: 'menu.industry',// 行业
-                routePath: '/background_management/industry',
+                routePath: '/settings/industry',
                 component: `${MODULE_PATH}industry/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CREATE_CONFIG_INDUSTRY']
@@ -303,7 +296,7 @@ let routers = [
             {
                 id: 'COMPETE',
                 name: 'menu.competing.product',// 竞品
-                routePath: '/background_management/competing/product',
+                routePath: '/settings/competing/products',
                 component: `${MODULE_PATH}competing_product/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CRM_COMPETING_PRODUCT']
@@ -311,14 +304,14 @@ let routers = [
             {
                 id: 'CLUE_ASSIGNMENT',
                 name: 'menu.clue.allocation', //线索分配
-                routePath: '/background_management/clue_assignment',
+                routePath: '/settings/leads/assignment',
                 component: `${MODULE_PATH}clue_assignment/public`,
                 showPrivileges: ['CURTAO_RULE_MANAGE']
             },
             {
                 id: 'SALES_AUTO',
                 name: 'menu.sales.auto.manage.config',// 销售自动化
-                routePath: '/background_management/sales_auto',
+                routePath: '/settings/automation',
                 component: `${MODULE_PATH}sales_auto/public`,
                 //有这个权限，才显示入口图标
                 showPrivileges: ['CURTAO_RULE_MANAGE']
@@ -327,14 +320,14 @@ let routers = [
             // {
             //     id: 'SALES_PROCESS', // 唯一标识
             //     name: 'menu.sales.process',// 客户阶段
-            //     routePath: '/background_management/customer_stage',
+            //     routePath: '/settings/accounts/stages',
             //     component: `${MODULE_PATH}sales_process/public`,
             //     showPrivileges: ['CRM_GET_SALES_PROCESS']
             // },
             {
                 id: 'CLUE_INTEGRATION', // 唯一标识
                 name: 'menu.clue.integration',// 线索集成
-                routePath: '/background_management/clue_integration',
+                routePath: '/settings/leads/integration',
                 component: `${MODULE_PATH}clue_integration/public`,
                 showPrivileges: ['DATA_INTEGRATION_MANAGE']
             }]
@@ -342,19 +335,19 @@ let routers = [
     {
         id: 'USER_INFO_MANAGE',//唯一标识
         name: 'menu.userinfo',//个人资料
-        routePath: '/user_info_manage',
+        routePath: '/user-preference',
         bottom: true,
         subMenu: [{
             id: 'USER_INFO',
             name: 'menu.userinfo',//个人资料
-            routePath: '/user_info_manage/user_info',
+            routePath: '/user-preference/info',
             component: `${MODULE_PATH}user_info/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_INFO_USER']
         }, {
             id: 'USER_PASSWORD',
             name: 'menu.user.password',//密码管理
-            routePath: '/user_info_manage/user_pwd',
+            routePath: '/user-preference/password',
             component: `${MODULE_PATH}user_password/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_INFO_PWD']
@@ -364,7 +357,7 @@ let routers = [
     {
         id: 'APPLICATION_APPLY_MANAGEMENT1',
         name: 'crm.109',//申请
-        routePath: '/application',
+        routePath: '/apply',
         shortName: 'crm.109',//申请
         component: `${MODULE_PATH}/setting_workflow_tip/public`,
     },

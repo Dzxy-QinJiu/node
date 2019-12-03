@@ -200,7 +200,7 @@ class UserLoginAnalysis extends React.Component {
     };
     //跳转到销售自动化页面
     jumpToSalesAuto = () => {
-        history.push('/background_management/sales_auto', {});
+        history.push('/settings/automation', {});
     };
     // 用户分数
     renderUserLoginScore = (app) => {

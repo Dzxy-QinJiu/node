@@ -2020,7 +2020,7 @@ class ClueCustomer extends React.Component {
                     batchParams.isWillDistribute = isWillDistribute;
                     batchOperate.saveTaskParamByTaskId(taskId, batchParams, {
                         showPop: true,
-                        urlPath: '/clue_customer'
+                        urlPath: '/leads'
                     });
                     //立即在界面上显示推送通知
                     //界面上立即显示一个初始化推送
@@ -2629,7 +2629,7 @@ class ClueCustomer extends React.Component {
             //存储批量操作参数，后续更新时使用
             batchOperate.saveTaskParamByTaskId(batch_label, batchParams, {
                 showPop: true,
-                urlPath: '/clue_customer'
+                urlPath: '/leads'
             });
             //立即在界面上显示推送通知
             //界面上立即显示一个初始化推送

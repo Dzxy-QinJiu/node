@@ -29,7 +29,7 @@ function switchIcon(type) {
         visit: 'icon-visit-briefcase',//日程：拜访
         other: 'icon-trace-other',//日程：其他
         clue: 'icon-clue',//线索
-        customer: 'icon-crm-ico',//客户
+        customer: 'icon-accounts-ico',//客户
         release: ' icon-release',//批量释放
     };
     let icon = `<span class="iconfont ${_.get(list,type,'')}"></span>`;

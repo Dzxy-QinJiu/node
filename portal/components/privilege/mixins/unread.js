@@ -12,7 +12,7 @@ import {APPLY_APPROVE_TYPES} from 'PUB_DIR/sources/utils/consts';
  */
 const UNREADCOUNT = [{//待分配或待跟进线索数的数据
     name: 'unhandleClue',
-    cls: 'clue_customer_icon_container',
+    cls: 'leads_icon_container',
     style: 'clueUnhandledStyle',
     showNum: true
 }, {//待处理申请审批数的数据
@@ -27,7 +27,7 @@ const UNREADCOUNT = [{//待分配或待跟进线索数的数据
         APPLY_APPROVE_TYPES.UNHANDLEMEVISISTAPPLY,//拜访申请的待我审批数
         APPLY_APPROVE_TYPES.UNHANDLEMEDOMAINAPPLY,//域名申请的待我审批数
     ],
-    cls: 'application_icon_container',
+    cls: 'apply_icon_container',
     style: 'applyApproveUnhandledStyle',
     showNum: false
 }];

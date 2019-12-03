@@ -194,7 +194,7 @@ exports.getApplyActiveEmailTip = (applyErrorMsg) => {
                         'aciveEmail': (
                             <a onClick={() => {
                                 //跳转到个人资料界面，设置邮箱或激活
-                                history.push('/user_info_manage/user_info');
+                                history.push('/user-preference');
                             }}>
                                 {Intl.get('sales.frontpage.active.email', '激活邮箱')}
                             </a>),
