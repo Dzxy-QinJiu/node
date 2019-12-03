@@ -189,6 +189,10 @@ class ClueCustomer extends React.Component {
         if (query.add === 'true') {
             this.showAddForm();
         }
+        //如果是进入线索推荐
+        if(_.get(this.props, 'history.action') === 'REPLACE' && _.get(this.props, 'location.state.showRecommendCluePanel')) {
+            this.showClueRecommendTemplate();
+        }
         this.setFilterInputWidth();
         //响应式布局时动态计算filterinput的宽度
         $(window).on('resize', this.resizeHandler);
@@ -282,6 +286,10 @@ class ClueCustomer extends React.Component {
         //是否是点击noty上的查看全部线索
         if (_.get(nextProps, 'history.action') === 'PUSH' && _.get(nextProps, 'location.state.refreshClueList')){
             this.onTypeChange();
+        }
+        //如果是进入线索推荐
+        if(_.get(nextProps, 'history.action') === 'REPLACE' && _.get(nextProps, 'location.state.showRecommendCluePanel')) {
+            this.showClueRecommendTemplate();
         }
     }
 
@@ -517,6 +525,9 @@ class ClueCustomer extends React.Component {
     };
     getSettingCustomerRecomment = () => {
         clueCustomerAction.getSettingCustomerRecomment();
+    };
+    saveSettingCustomerRecomment = () => {
+
     };
 
     getRecommendClueCount = () => {

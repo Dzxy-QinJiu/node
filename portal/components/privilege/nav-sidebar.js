@@ -118,7 +118,7 @@ var NavSidebar = createReactClass({
             },
             closeNotificationPanel: function() {
             },
-            showPersonalCompletePanel: function() {
+            showBootCompletePanel: function() {
             },
         };
     },
@@ -144,7 +144,7 @@ var NavSidebar = createReactClass({
     propTypes: {
         toggleNotificationPanel: PropTypes.func,
         closeNotificationPanel: PropTypes.func,
-        showPersonalCompletePanel: PropTypes.func,
+        showBootCompletePanel: PropTypes.func,
         isShowNotificationPanel: PropTypes.bool
     },
 
@@ -217,7 +217,7 @@ var NavSidebar = createReactClass({
             //
             let personnel_setting = storageUtil.local.get('websiteConfig');
             personnel_setting = personnel_setting ? JSON.parse(personnel_setting) : {};
-            this.props.showPersonalCompletePanel(personnel_setting);
+            this.props.showBootCompletePanel(personnel_setting);
             //本次要加引导的模块是否点击过
             if (this.isIntroModlueNeverClicked(WebsiteConfigModuleRecord)) {
                 this.selectedIntroElement();

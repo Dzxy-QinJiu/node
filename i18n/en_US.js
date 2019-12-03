@@ -3726,6 +3726,7 @@ var en_US = {
     'crm.search.customer.name.no.found.tip': 'If there is no qualified customer, you can go to {customerpool} to see if there is one',//没有符合条件的客户，您可以去{customerpool}查看是否有该客户
     'batch.faild.count': 'The number of failed: {count}',//失败数{count}
     'batch.success.count': 'The number of successful: {count}',//成功数{count}
+    'clue.see.recommend': 'See recommendations',//查看推荐
     // 线索分配策略
     'clue.assignment.strategy.add': 'Add assignment strategy',//添加分配策略
     'clue.assignment.strategy.fail.to.get': 'Fail to fetch clue assignment strategy list',//获取线索分配策略列表失败
@@ -3804,8 +3805,10 @@ var en_US = {
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': 'Welcome to use the Curtao',//欢迎使用客套
+    'personal.welcome.use.curtao': 'Welcome to use the Curtao System',//欢迎使用客套系统
     'personal.open.success.tip': 'Congratulations! You have successfully opened the trial version. The rest of the trial period is {count} days',//恭喜您成功开通试用版，试用期剩余 {count} 天
+    'boot.complete.step.set.industry': 'Which industries do you focus on?',//您关注哪些行业的客户?
+    'boot.complete.step.set.area': 'Which geographic customers do you focus on?',//您关注哪个地域的客户?
     /*个人试用 --- end*/
     /*组织到期提示 --- start*/
     'organization.personal.trial.expired.tip': 'Your probation period remains {time} days, whether {upgrade}？',//您的试用期剩余{time}天，是否{upgrade}

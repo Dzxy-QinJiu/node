@@ -3775,6 +3775,7 @@ var zh_CN = {
     'crm.search.customer.name.no.found.tip': '没有符合条件的客户，您可以去{customerpool}查看是否有该客户',
     'batch.faild.count': '失败数: {count}',
     'batch.success.count': '成功数: {count}',
+    'clue.see.recommend': '查看推荐',
     // 线索分配策略
     'clue.assignment.strategy.add': '添加分配策略',
     'clue.assignment.strategy.fail.to.get': '获取线索分配策略列表失败',
@@ -3853,8 +3854,10 @@ var zh_CN = {
     /*支付流程 --- end*/
 
     /*个人试用 --- start*/
-    'personal.welcome.use.curtao': '欢迎使用客套',
+    'personal.welcome.use.curtao': '欢迎使用客套系统',
     'personal.open.success.tip': '恭喜您成功开通试用版，试用期剩余 {count} 天',
+    'boot.complete.step.set.industry': '您关注哪些行业的客户?',
+    'boot.complete.step.set.area': '您关注哪个地域的客户?',
     /*个人试用 --- end*/
 
     /*组织到期提示 --- start*/
