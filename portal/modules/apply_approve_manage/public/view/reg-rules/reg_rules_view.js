@@ -31,7 +31,7 @@ import {
     ASSIGEN_APPROVER,
     isSalesOpportunityFlow,
     isVisitApplyFlow,
-    isDomainApplyFlow
+    isDomainApplyFlow, ROLES_SETTING,CC_SETTINGT_TYPE
 } from '../../utils/apply-approve-utils';
 import {CC_INFO,NOTIFY_PERSON_TYPE} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
@@ -46,6 +46,8 @@ class RegRulesView extends React.Component {
             addNodePanelFlow: '',
             addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
+            roleList: this.props.roleList,//角色列表
+            userList: this.props.userList,//用户列表
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -55,6 +57,10 @@ class RegRulesView extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
+        this.setState({
+            roleList: nextProps.roleList,//角色列表
+            userList: nextProps.userList,//用户列表
+        });
     }
 
     componentDidMount() {
@@ -73,6 +79,7 @@ class RegRulesView extends React.Component {
 
         });
         this.createBpmnTool(bpmnModeler);
+
         ApplyApproveManageStore.listen(this.onStoreChange);
     }
 
@@ -330,6 +337,18 @@ class RegRulesView extends React.Component {
                         });
                         showName = systemItem['show_name'].join('，');
                     }
+                    if (key === 'member_ids' && !item.show_name){
+                        var cloneSystem = _.cloneDeep(item);
+                        var systemItem = {
+                            show_name: []};
+                        _.forEach(cloneSystem, userId => {
+                            var targetObj = _.find(this.state.userList, item => item.userId === userId);
+                            if(targetObj){
+                                systemItem['show_name'].push(targetObj.nickName);
+                            }
+                        });
+                        showName = systemItem['show_name'].join('，');
+                    }
                     return (
                         <div className="item-node">
                             <div className="icon-container">
@@ -341,7 +360,7 @@ class RegRulesView extends React.Component {
                         </div>
                     );
                 })}
-                {keyNum === 4 ? null : <div className="item-node">
+                {keyNum === CC_SETTINGT_TYPE.length ? null : <div className="item-node">
                     <div className="icon-container add-node" onClick={this.addApplyCC.bind(this, flowType)}>
                         <i className="iconfont icon-add handle-btn-item"></i>
                     </div>
@@ -1012,6 +1031,8 @@ class RegRulesView extends React.Component {
                             applyTypeData={this.props.applyTypeData}
                             notify_configs={this.state.notify_configs}
                             addCCNodePanelFlow={this.state.addCCNodePanelFlow}
+                            roleList={this.state.roleList}
+                            userList={this.state.userList}
                         />
                     </div>
                     : null}
@@ -1037,11 +1058,15 @@ RegRulesView.defaultProps = {
     updateRegRulesView: function() {
 
     },
+    roleList: [],
+    userList: []
 };
 
 RegRulesView.propTypes = {
     applyTypeData: PropTypes.object,
-    updateRegRulesView: PropTypes.func
+    updateRegRulesView: PropTypes.func,
+    roleList: PropTypes.array,
+    userList: PropTypes.array,
 
 };
 export default RegRulesView;

@@ -266,6 +266,9 @@ exports.CC_SETTINGT_TYPE = [{
 },{
     name: Intl.get('apply.add.approver.setting.role', '指定角色'),
     value: 'system_roles',
+},{
+    name: Intl.get('apply.add.approver.setting.user', '指定成员'),
+    value: 'member_ids'
 }
 ];
 exports.SECRETRYOPTIONS = [{

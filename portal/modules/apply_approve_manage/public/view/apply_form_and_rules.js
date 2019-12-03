@@ -18,7 +18,8 @@ import {
     APPLYAPPROVE_LAYOUT,
     ALL_COMPONENTS,
     ALL_COMPONENTS_TYPE,
-    ADDAPPLYFORMCOMPONENTS
+    ADDAPPLYFORMCOMPONENTS,
+    ROLES_SETTING
 } from '../utils/apply-approve-utils';
 import ComponentEdit from './basic-components/component-edit';
 import ComponentShow from './basic-components/component-show';
@@ -38,6 +39,8 @@ class ApplyFormAndRules extends React.Component {
             isEdittingApplyName: false,//正在修改申请审批的标题
             updateApplyName: '',//修改后标题的名称
             applyTypeData: {},//编辑某个审批的相关数据
+            roleList: [],
+            userList: [],
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -48,8 +51,38 @@ class ApplyFormAndRules extends React.Component {
     componentDidMount = () => {
         //如果还没有配置过，就只有一个默认的规则
         ApplyApproveManageStore.listen(this.onStoreChange);
+        //获取用户列表
+        this.getUserList();
         //请求展示内容
         this.getSelfSettingWorkFlow(this.props.applyTypeId);
+    };
+    getUserList = () => {
+        $.ajax({
+            url: '/rest/user',
+            dataType: 'json',
+            type: 'get',
+            data: {cur_page: 1},
+            success: (userListObj) => {
+                var rolesList = _.get(userListObj, 'roles');
+                _.forEach(rolesList, item => {
+                    var roleName = item.role_name;
+                    var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
+                    if (target) {
+                        item.save_role_value = target.value;
+                    }
+                });
+                this.setState({
+                    userList: _.get(userListObj, 'data'),
+                    roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
+                });
+            },
+            error: (xhr, textStatus) => {
+                this.setState({
+                    roleList: [],
+                    userList: []
+                });
+            }
+        });
     };
     componentWillUnmount(){
         ApplyApproveManageStore.unlisten(this.onStoreChange);
@@ -370,6 +403,8 @@ class ApplyFormAndRules extends React.Component {
             <ApplyRulesView
                 applyTypeData={applyTypeData}
                 updateRegRulesView={this.updateRegRulesView}
+                roleList={this.state.roleList}
+                userList={this.state.userList}
             />
         );
     };
