@@ -20,8 +20,20 @@
     "start": "node app.js -p",
     "build": "npm run gen-route && npm run dll && npm run webpack && npm run server",
     "production": "npm run build && npm run start",
+    "precommit": "lint-staged",
+    "eslint_fix": "eslint --fix  --ext .jsx,.js ./  -o eslint-fix.log"
   },
- 
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix  -o eslint-staged-fix.log",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
+  },
   "dependencies": {
     "ant-auth-request": "1.0.18",
     "ant-chart-collection": "1.0.26",
