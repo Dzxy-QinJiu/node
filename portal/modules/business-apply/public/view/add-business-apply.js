@@ -54,17 +54,9 @@ class AddBusinessApply extends React.Component {
 
     componentDidMount() {
         this.calculateTotalLeaveRange();
-        this.addLabelRequiredCls();
     }
 
     componentDidUpdate() {
-        this.addLabelRequiredCls();
-    }
-
-    addLabelRequiredCls() {
-        if (!$('.add-leave-apply-form-wrap form .customer-name label').hasClass('ant-form-item-required')) {
-            $('.add-leave-apply-form-wrap form .customer-name label').addClass('ant-form-item-required');
-        }
     }
 
 
@@ -161,7 +153,6 @@ class AddBusinessApply extends React.Component {
             submitObj.condition = {
                 condition: formData.total_range
             };
-            var hasNoExistCustomer = false;
             _.forEach(formData.customers, (customerItem, index) => {
                 var submitCustomerItem = {
                     name: customerItem.name || '',
@@ -185,14 +176,7 @@ class AddBusinessApply extends React.Component {
                     submitObj.reason += customerItem['remarks'];
                 }
                 submitObj.customers.push(submitCustomerItem);
-                if(!customerItem.id){
-                    hasNoExistCustomer = true;
-                    return;
-                }
             });
-            if (hasNoExistCustomer){
-                return;
-            }
             this.setState({
                 isSaving: true,
                 saveMsg: '',
@@ -410,6 +394,7 @@ class AddBusinessApply extends React.Component {
                                         initial_visit_start_type={formData.begin_type}
                                         initial_visit_end_time={formData.end_time}
                                         initial_visit_end_type={formData.end_type}
+                                        isRequired={false}
                                     />
                                     <div className="submit-button-container">
                                         <Button type="primary" className="submit-btn" onClick={this.handleSubmit}

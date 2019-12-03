@@ -148,7 +148,7 @@ class DynamicAddDelCustomers extends React.Component {
     checkCustomerName = (key, rule, value, callback,) => {
         let customers = this.state.customers;
         let curCustomer = _.find(customers, (item) => {return item.key === key;}) || {};
-        if (!curCustomer.name && !curCustomer.hideCustomerRequiredTip) {
+        if (!curCustomer.name && !curCustomer.hideCustomerRequiredTip && this.props.isRequired) {
             callback(new Error(Intl.get('leave.apply.select.customer', '请先选择客户')));
         } else {
             callback();
@@ -483,6 +483,7 @@ DynamicAddDelCustomers.propTypes = {
     initial_visit_end_time: PropTypes.string,
     initial_visit_start_type: PropTypes.string,
     initial_visit_end_type: PropTypes.string,
+    isRequired: PropTypes.boolean//是否客户是必填项
 
 };
 DynamicAddDelCustomers.defaultProps = {
@@ -497,6 +498,7 @@ DynamicAddDelCustomers.defaultProps = {
     initial_visit_end_time: '',
     initial_visit_start_type: '',
     initial_visit_end_type: '',
+    isRequired: true
 
 };
 export default Form.create()(DynamicAddDelCustomers);
