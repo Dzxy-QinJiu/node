@@ -623,7 +623,7 @@ class UserInfo extends React.Component{
                                 displayType={this.state.qqEditType}
                                 field="qq"
                                 value={qqInputInfo}
-                                hasEditPrivilege={hasPrivilege(privilegeConst_user_info.USER_INFO_UPDATE)}
+                                hasEditPrivilege={isEditable}
                                 hoverShowEdit={false}
                                 validators={[{validator: checkQQ}]}
                                 placeholder={Intl.get('member.input.qq', '请输入QQ号')}
