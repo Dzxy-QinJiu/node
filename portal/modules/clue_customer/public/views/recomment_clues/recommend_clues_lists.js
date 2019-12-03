@@ -64,6 +64,7 @@ class RecommendCustomerRightPanel extends React.Component {
     componentDidMount() {
         batchPushEmitter.on(batchPushEmitter.CLUE_BATCH_ENT_CLUE, this.batchExtractCluesLists);
         paymentEmitter.on(paymentEmitter.PERSONAL_GOOD_PAYMENT_SUCCESS, this.handleUpdatePersonalVersion);
+        //因为AntcTable中没有数据提示的时候只能传字符串，提示中的click事件中传this进去会报错，这个方法只能暂时加到window上，卸载的时候把这个方法删掉
         window.handleClickRefreshBtn = function(event) {
             leadRecommendEmitter.emit(leadRecommendEmitter.REFRESH_LEAD_LIST);
         };
