@@ -17,6 +17,7 @@ var SingleUserLog = require('./single-user-log');
 var UserDetailChangeRecord = require('./user-detail-change-record');
 var UserAbnormalLogin = require('./user-abnormal-login');
 var AppUserPanelSwitchStore = require('../store/app-user-panelswitch-store');
+var AppUserPanelSwitchAction = require('../action/app-user-panelswitch-actions');
 var AppUserDetailStore = require('../store/app-user-detail-store');
 import UserDetailAddApp from './v2/user-detail-add-app';
 var UserDetailEditApp = require('./v2/user-detail-edit-app');
@@ -160,6 +161,9 @@ class UserDetail extends React.Component {
     componentWillUnmount() {
         this._isMounted = false;
         $(window).off('resize', this.reLayout);
+        // 查看用户详情，切换到单个应用的设置界面，再次打开用户详情时，切换面板需要重置，
+        // 若不重置，有可能会不在用户详情的基本资料面板上
+        AppUserPanelSwitchAction.resetState();
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserDetailStore.unlisten(this.onDetailStoreChange);
         AppUserUtil.emitter.removeListener(AppUserUtil.EMITTER_CONSTANTS.PANEL_SWITCH_LEFT, this.panelSwitchLeft);
@@ -360,7 +364,12 @@ class UserDetail extends React.Component {
             switch (this.state.panel_switch_currentView) {
                 case 'app':
                     var initialUser = this.state.initialUser;
-                    moveView = (<UserDetailAddApp height={contentHeight} initialUser={initialUser} />);
+                    moveView = (
+                        <UserDetailAddApp 
+                            height={contentHeight} 
+                            initialUser={initialUser} 
+                        />
+                    );
                     break;
                 case 'editapp':
                     var initialUser = this.state.initialUser;
