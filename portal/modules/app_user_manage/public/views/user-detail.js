@@ -161,7 +161,8 @@ class UserDetail extends React.Component {
     componentWillUnmount() {
         this._isMounted = false;
         $(window).off('resize', this.reLayout);
-        // 查看用户详情，切换到单个应用的设置界面，关闭或是不关用户详情界面，再次打开用户详情时，切换面板需要重置
+        // 查看用户详情，切换到单个应用的设置界面，再次打开用户详情时，切换面板需要重置，
+        // 若不重置，有可能会不在用户详情的基本资料面板上
         AppUserPanelSwitchAction.resetState();
         AppUserPanelSwitchStore.unlisten(this.onStoreChange);
         AppUserDetailStore.unlisten(this.onDetailStoreChange);
