@@ -34,7 +34,7 @@ const STEPS_MAPS = {
 //默认最多展示的数目
 const MAX_COUNT = 16;
 //默认最小高度
-const MIN_HEIGHT = 80;
+const MIN_HEIGHT = 75;
 
 class BootCompleteInformation extends React.Component{
     constructor(props) {
@@ -329,6 +329,7 @@ class BootCompleteInformation extends React.Component{
         let industrys = stepData.industrys;
         if(item === Intl.get('crm.basic.more', '更多')) {
             this.setState({
+                industryListHeight: 5 * MIN_HEIGHT,
                 showIndustryList: this.state.industryList
             });
             return false;
