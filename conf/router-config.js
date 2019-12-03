@@ -72,7 +72,7 @@ let routers = [
         }, {
             id: 'ACTIVE_USER_LIST', // 活跃用户
             name: 'menu.active.user.lists',//活跃用户
-            routePath: '/users/active-users',
+            routePath: '/users/active',
             component: `${MODULE_PATH}app_user_manage/public`,
             //有这个权限，才显示入口图标
             showPrivileges: ['USER_TIME_LINE']

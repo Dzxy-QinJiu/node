@@ -62,7 +62,7 @@ exports.getCurrentView = function() {
     if (window.location.href.indexOf('/users/logs') >= 0){
         currentView = 'log';
     }
-    if (window.location.href.indexOf('/users/active-users') >= 0){
+    if (window.location.href.indexOf('/users/active') >= 0){
         currentView = 'active';
     }
     return currentView;
