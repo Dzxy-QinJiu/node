@@ -102,6 +102,7 @@ function showLoginOrBindWechatPage(req, res) {
                 timeStamp: global.config.timeStamp,
                 isBindWechat: isBindWechat,//是否是绑定微信的界面
                 isWechatRegisterError: obj.isWechatRegisterError,//是否是微信注册新账号界面报的错
+                ssoUrl: global.config.ssoUrl,
             });
         }
     };
