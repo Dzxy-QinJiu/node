@@ -4,7 +4,7 @@ import teamAjaxTrans from 'MOD_DIR/common/public/ajax/team';
 import salesmanAjax from 'MOD_DIR/common/public/ajax/salesman';
 import guideAjax from 'MOD_DIR/common/public/ajax/guide';
 import {storageUtil} from 'ant-utils';
-import {traversingTeamTree, getParamByPrivilege, hasCalloutPrivilege} from 'PUB_DIR/sources/utils/common-method-util';
+import {traversingTeamTree, getParamByPrivilege, hasCalloutPrivilege, getOrganization} from 'PUB_DIR/sources/utils/common-method-util';
 import {message} from 'antd';
 import {phoneMsgEmitter} from 'PUB_DIR/sources/utils/emitters';
 import {getCallClient, isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
@@ -715,6 +715,26 @@ exports.getMaxLimitExtractClueCount = function() {
         },
         error: (xhr) => {
             Deferred.reject(xhr.responseJSON);
+        }
+    });
+    return Deferred.promise();
+};
+
+// 获取组织的通话费用
+exports.getOrganizationCallFee = function() {
+    console.log('getOrganization:',getOrganization());
+    let organizationId = _.get(getOrganization(), 'id');
+    const Deferred = $.Deferred();
+    $.ajax({
+        url: '/rest/get/organization/phone/fee',
+        dataType: 'json',
+        type: 'get',
+        data: {organization: organizationId},
+        success: (data) => {
+            Deferred.resolve(data);
+        },
+        error: (errorInfo) => {
+            Deferred.reject(errorInfo.responseJSON);
         }
     });
     return Deferred.promise();

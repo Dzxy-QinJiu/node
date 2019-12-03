@@ -4,8 +4,8 @@
  * Created by zhangshujuan on 2019/2/28.
  */
 import {Popover, message} from 'antd';
-import {hasCalloutPrivilege, checkVersionAndType, getOrganizationCallFee} from 'PUB_DIR/sources/utils/common-method-util';
-import {showDisabledCallTip, handleCallOutResult}from 'PUB_DIR/sources/utils/common-data-util';
+import {hasCalloutPrivilege, checkVersionAndType} from 'PUB_DIR/sources/utils/common-method-util';
+import {showDisabledCallTip, handleCallOutResult, getOrganizationCallFee}from 'PUB_DIR/sources/utils/common-data-util';
 import {isRongLianPhoneSystem} from 'PUB_DIR/sources/utils/phone-util';
 var phoneMsgEmitter = require('PUB_DIR/sources/utils/emitters').phoneMsgEmitter;
 var classNames = require('classnames');
