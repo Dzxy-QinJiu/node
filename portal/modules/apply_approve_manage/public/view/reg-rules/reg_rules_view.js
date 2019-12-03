@@ -31,7 +31,7 @@ import {
     ASSIGEN_APPROVER,
     isSalesOpportunityFlow,
     isVisitApplyFlow,
-    isDomainApplyFlow
+    isDomainApplyFlow, ROLES_SETTING
 } from '../../utils/apply-approve-utils';
 import {CC_INFO,NOTIFY_PERSON_TYPE} from 'PUB_DIR/sources/utils/consts';
 import ApplyApproveManageStore from '../../store/apply_approve_manage_store';
@@ -46,6 +46,8 @@ class RegRulesView extends React.Component {
             addNodePanelFlow: '',
             addCCNodePanelFlow: '',//添加抄送人的流程类型
             showAddConditionPanel: false,
+            roleList: [],//角色列表
+            userList: [],//用户列表
             ...ApplyApproveManageStore.getState()
         };
     }
@@ -73,8 +75,38 @@ class RegRulesView extends React.Component {
 
         });
         this.createBpmnTool(bpmnModeler);
+        //获取用户列表
+        this.getUserList();
         ApplyApproveManageStore.listen(this.onStoreChange);
     }
+    getUserList = () => {
+        $.ajax({
+            url: '/rest/user',
+            dataType: 'json',
+            type: 'get',
+            data: {cur_page: 1},
+            success: (userListObj) => {
+                var rolesList = _.get(userListObj, 'roles');
+                _.forEach(rolesList, item => {
+                    var roleName = item.role_name;
+                    var target = _.find(ROLES_SETTING, levelItem => levelItem.name === roleName);
+                    if (target) {
+                        item.save_role_value = target.value;
+                    }
+                });
+                this.setState({
+                    userList: _.get(userListObj, 'data'),
+                    roleList: _.filter(rolesList, item => item.save_role_value)//暂时把销售角色先去掉
+                });
+            },
+            error: (xhr, textStatus) => {
+                this.setState({
+                    roleList: [],
+                    userList: []
+                });
+            }
+        });
+    };
 
     componentWillUnmount() {
         ApplyApproveManageStore.unlisten(this.onStoreChange);
@@ -326,6 +358,18 @@ class RegRulesView extends React.Component {
                                 case 'managers':
                                     systemItem['show_name'].push(Intl.get('common.managers', '管理员'));
                                     break;
+                            }
+                        });
+                        showName = systemItem['show_name'].join('，');
+                    }
+                    if (key === 'member_ids' && !item.show_name){
+                        var cloneSystem = _.cloneDeep(item);
+                        var systemItem = {
+                            show_name: []};
+                        _.forEach(cloneSystem, userId => {
+                            var targetObj = _.find(this.state.userList, item => item.userId === userId);
+                            if(targetObj){
+                                systemItem['show_name'].push(targetObj.nickName);
                             }
                         });
                         showName = systemItem['show_name'].join('，');
@@ -1012,6 +1056,8 @@ class RegRulesView extends React.Component {
                             applyTypeData={this.props.applyTypeData}
                             notify_configs={this.state.notify_configs}
                             addCCNodePanelFlow={this.state.addCCNodePanelFlow}
+                            roleList={this.state.roleList}
+                            userList={this.state.userList}
                         />
                     </div>
                     : null}
